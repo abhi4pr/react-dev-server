@@ -123,7 +123,7 @@ const Experties = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.29.110:8080/api/expertise",
+        "http://34.93.221.166:3000/api/expertise",
         {
           exp_name: expertiesusername.label,
           user_id: expertiesusername.user_id,

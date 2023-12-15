@@ -607,6 +607,12 @@ const SidebarLinks = () => {
                         <>
                           <Link
                             className="collapse-item"
+                            to="/admin/phase-dashboard"
+                          >
+                            Phase Dashbaord
+                          </Link>
+                          <Link
+                            className="collapse-item"
                             to="/admin/register-campaign"
                           >
                             Add Campaign
@@ -617,6 +623,7 @@ const SidebarLinks = () => {
                           >
                             Registered Campaign
                           </Link>
+
                           <Link
                             className="collapse-item"
                             to="/admin/experties-overview"
@@ -642,6 +649,13 @@ const SidebarLinks = () => {
                           >
                             Check Page Follower
                           </Link>
+                          <Link
+                            className="collapse-item"
+                            to="/admin/createAssign"
+                          >
+                          createAssign
+                          </Link>
+
                           <Link
                             className="collapse-item"
                             to="/admin/brandmaster"

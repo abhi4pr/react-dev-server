@@ -2,7 +2,7 @@
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CampaignDetailes from "./CampaignDetailes";
-import { useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
@@ -25,9 +25,10 @@ import {
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Accordioan from "./Accordioan";
-
+import { useNavigate } from "react-router-dom";
 let options = [];
 const PhaseCreation = () => {
+  const navigate = useNavigate();
   const param = useParams();
   const id = param.id;
   const [allPageData, setAllPageData] = useState([]);
@@ -50,6 +51,7 @@ const PhaseCreation = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [cmpName, setCmpName] = useState("");
   const [allPhaseData, setAllPhaseData] = useState([]);
+  console.log(allPhaseData, "zzzzz");
   const [showPageDetails, setShowPageDetails] = useState(false);
 
   const [postpage, setPostPage] = useState(0);
@@ -443,6 +445,7 @@ const PhaseCreation = () => {
   //   setModalSearchPage
   // },[selectedRows])
 
+
   const columns = [
     {
       field: "S.NO",
@@ -512,9 +515,14 @@ const PhaseCreation = () => {
       {/* } */}
 
       {/* add Accordion for show phase------------------- */}
-      <Paper sx={{ pb: 4 }}>
+      <Paper >
         {allPhaseData?.map((item, index) => (
-          <Paper key={index} sx={{ mb: 2 }}>
+          <Paper key={index}>
+            <Link to={`/admin/createAssign/${item.phase_id}`} style={{ margin: "2px", display: "flex", justifyContent: "flex-end" }}>
+              <Button variant="contained" color="primary" size="small">
+                Create Assignment
+              </Button>
+            </Link>
             <Accordion
               key={index}
               expanded={expanded === `panel${index}`}

@@ -35,6 +35,7 @@ const SalaryWFH = () => {
   const [allWFHUsers, setAllWFHUsers] = useState(0);
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [salaryMonthYearData, setSalaryMonthYearData] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -216,6 +217,22 @@ const SalaryWFH = () => {
     setMonth(data.month);
   };
 
+  const handleMonthYearData = async () => {
+    try {
+      const response = await axios.post(
+        "http://34.93.221.166:3000/api/get_salary_by_month_year",
+        {
+          month: month,
+          year: Number(year),
+        }
+      );
+      const data = response.data.data;
+      setSalaryMonthYearData(data);
+    } catch (error) {
+      console.log("Api No respnose", error);
+    }
+  };
+
   //Create all Department Salary
   function handleAllDepartmentSalary() {
     axios
@@ -232,6 +249,7 @@ const SalaryWFH = () => {
   }
 
   const handleSubmit = () => {
+    setFilterData([]);
     const payload = {
       dept_id: department,
       month: month,
@@ -245,7 +263,6 @@ const SalaryWFH = () => {
       })
       .catch((error) => {
         console.error("Error submitting data:", error);
-        toastAlert("Failed to submit data");
       });
   };
 
@@ -272,6 +289,11 @@ const SalaryWFH = () => {
   }, [search]);
 
   useEffect(() => {
+    if (month || year !== "") {
+      handleMonthYearData();
+      gettingDepartmentSalaryExists();
+    }
+
     if (department || month || year !== "") {
       axios
         .get("http://34.93.221.166:3000/api/get_total_salary")
@@ -286,15 +308,13 @@ const SalaryWFH = () => {
         .then((res) => SetEmployeeLeft(res.data));
     }
 
-    if (month || year || department !== "") {
-      axios
-        .post("http://34.93.221.166:3000/api/new_joiners", {
-          dept_id: department,
-          month: month,
-          year: year,
-        })
-        .then((res) => setNewJoineeCount(res.data));
-    }
+    axios
+      .post("http://34.93.221.166:3000/api/new_joiners", {
+        dept_id: department,
+        month: month,
+        year: year,
+      })
+      .then((res) => setNewJoineeCount(res.data));
 
     axios
       .post("http://34.93.221.166:3000/api/check_salary_status", {
@@ -315,35 +335,35 @@ const SalaryWFH = () => {
       })
       .then((res) => setDeptSalary(res.data));
   }
-  useEffect(() => {
-    gettingDepartmentSalaryExists();
-  }, [month, year]);
 
-  const handleAttendence = () => {
-    axios
-      .post("http://34.93.221.166:3000/api/add_attendance", {
-        dept: department,
-        user_id: userName.user_id,
-        noOfabsent: 0,
-        month: month,
-        year: year,
-      })
-      .then(() => {
-        axios.put("http://34.93.221.166:3000/api/update_attendence_status", {
+  const handleAttendance = async () => {
+    try {
+      const addAttendanceResponse = await axios.post(
+        "http://34.93.221.166:3000/api/add_attendance",
+        {
+          dept: department,
+          user_id: userName.user_id,
+          noOfabsent: 0,
+          month: month,
+          year: year,
+        }
+      );
+      const updateAttendanceStatusResponse = await axios.put(
+        "http://34.93.221.166:3000/api/update_attendence_status",
+        {
           month: month,
           year: Number(year),
           dept: department,
-        });
-      })
-      .then(() => {
-        setNoOfAbsent("");
-        toastAlert("Submitted success");
-        handleSubmit();
-      })
-      .catch((error) => {
-        console.error("Error submitting data:", error);
-        toastAlert("Failed to submit data");
-      });
+        }
+      );
+
+      setNoOfAbsent("");
+      toastAlert("Submitted success");
+      handleSubmit();
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      toastAlert("Failed to submit data");
+    }
   };
 
   if (loading) {
@@ -584,24 +604,6 @@ const SalaryWFH = () => {
       name: "Action",
       cell: (row) => (
         <>
-          {/* {row?.invoice_template_no !== "0" && (
-            <PDFDownloadLink
-              document={templateMap[row?.invoice_template_no]}
-              fileName={row?.user_name + " " + row?.month + " " + row?.year}
-              style={{
-                color: "#4a4a4a",
-              }}
-            >
-              <button
-                className="btn btn-outline-primary btn-sm"
-                title="Download Invoice"
-                type="button"
-                onClick={() => handleInvoice(row)}
-              >
-                <CloudDownloadIcon />
-              </button>
-            </PDFDownloadLink>
-          )} */}
           {!row?.invoice_template_no ? (
             <button
               type="button"
@@ -611,7 +613,6 @@ const SalaryWFH = () => {
               data-target="#exampleModalCenter"
               onClick={() => handleInvoice(row)}
             >
-              {/* select invoice */}
               <FileOpenIcon />
             </button>
           ) : (
@@ -765,6 +766,50 @@ const SalaryWFH = () => {
     XLSX.writeFile(workbook, fileName);
   };
 
+  const handleAllDepartmentSalaryExcel = () => {
+    const formattedData = salaryMonthYearData?.map((row, index) => ({
+      "S.No": index + 1,
+      "Beneficiary Name (Mandatory) Special characters not supported":
+        row.user_name,
+      "Beneficiary's Account Number (Mandatory) Typically 9-18 digits":
+        row.account_no,
+      "IFSC Code (Mandatory) 11 digit code of the beneficiary’s bank account. Eg. HDFC0004277":
+        row.ifsc_code,
+      "Payout Amount (Mandatory) Amount should be in rupees": row.toPay,
+      "Phone Number (Optional)": row.user_contact_no,
+      "Email ID (Optional)": row.user_email_id,
+      "Contact Reference ID (Optional) Eg: Employee ID or Customer ID":
+        row?.emp_id,
+    }));
+
+    const fileName = "AllSalary.xlsx";
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, fileName);
+  };
+
+  const handleBankDepartmentExcel = () => {
+    const formattedData = filterData?.map((row, index) => ({
+      "S.No": index + 1,
+      "Beneficiary Name (Mandatory) Special characters not supported":
+        row.user_name,
+      "Beneficiary's Account Number (Mandatory) Typically 9-18 digits":
+        row.account_no,
+      "IFSC Code (Mandatory) 11 digit code of the beneficiary’s bank account. Eg. HDFC0004277":
+        row.ifsc_code,
+      "Payout Amount (Mandatory) Amount should be in rupees": row.toPay,
+      "Phone Number (Optional)": row.user_contact_no,
+      "Email ID (Optional)": row.user_email_id,
+      "Contact Reference ID (Optional) Eg: Employee ID or Customer ID":
+        row?.emp_id,
+    }));
+    const fileName = "AllSalary.xlsx";
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, fileName);
+  };
   return (
     <>
       <div className="modal fade" id="myModal" role="dialog">
@@ -838,16 +883,22 @@ const SalaryWFH = () => {
       <div className="card mb24">
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
-          {deptSalary.length !== departmentdata.length && (
-            <span>
+          <span>
+            <button
+              className="btn btn-primary mr-3"
+              onClick={handleAllDepartmentSalaryExcel}
+            >
+              Export Excel
+            </button>
+            {deptSalary.length !== departmentdata.length && (
               <button
                 className="btn btn-primary"
                 onClick={handleAllDepartmentSalary}
               >
                 Create All Department Salary
               </button>
-            </span>
-          )}
+            )}
+          </span>
         </div>
         <div className="card-body">
           <div className="d-flex gap4 h_scroller mb24">
@@ -889,7 +940,7 @@ const SalaryWFH = () => {
           selectedMonth &&
           selectedYear && (
             <button
-              onClick={handleAttendence}
+              onClick={handleAttendance}
               className="btn btn-warning"
               style={{ marginTop: "25px" }}
             >
@@ -1019,6 +1070,12 @@ const SalaryWFH = () => {
               subHeader
               subHeaderComponent={
                 <>
+                  <button
+                    className="btn btn-primary mr-2"
+                    onClick={handleBankDepartmentExcel}
+                  >
+                    Export Bank Excel
+                  </button>
                   <Button
                     sx={{ marginRight: "10px" }}
                     size="medium"

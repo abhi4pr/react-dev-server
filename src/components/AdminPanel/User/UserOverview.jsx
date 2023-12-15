@@ -57,7 +57,7 @@ const UserOverview = () => {
   const [separationLWD, setSeparationLWD] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [KRIData, setKRIData] = useState([]);
-  const [map1, setMap1] = useState({})
+  const [map1, setMap1] = useState({});
 
   const handleKRA = (userId) => {
     setIsModalOpen(true);
@@ -228,7 +228,6 @@ const UserOverview = () => {
       (d) => d.dept_id == departmentFilter
     );
     setDesignationData(deptWiseDesi);
-    
   }, [departmentFilter]);
 
   useEffect(() => {
@@ -278,6 +277,12 @@ const UserOverview = () => {
           {params.row.user_name}
         </Link>
       ),
+      sortable: true,
+    },
+    {
+      field: "emp_id",
+      headerName: "Employee ID",
+      width: 100,
       sortable: true,
     },
     { field: "Role_name", headerName: "Role", width: 110, sortable: true },
@@ -455,12 +460,12 @@ const UserOverview = () => {
           size="small"
           variant="contained"
           color="success"
-          onClick={()=>setMap1(params.row)}
-          >
+          onClick={() => setMap1(params.row)}
+        >
           Open Map
         </Button>
       ),
-    }
+    },
   ];
 
   const handleTransfer = (userId) => {
@@ -622,21 +627,29 @@ const UserOverview = () => {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <button type="button" className="close" data-dismiss="modal">&times;</button>
+              <button type="button" className="close" data-dismiss="modal">
+                &times;
+              </button>
               <h4 className="modal-title"></h4>
             </div>
             <div className="modal-body">
-            <iframe
-              width="600"
-              height="450"
-              frameBorder="0"
-              style={{border:"0"}}
-              src= {mapUrl}
-              allowFullScreen
-            ></iframe>
+              <iframe
+                width="600"
+                height="450"
+                frameBorder="0"
+                style={{ border: "0" }}
+                src={mapUrl}
+                allowFullScreen
+              ></iframe>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-default" data-dismiss="modal">Close</button>
+              <button
+                type="button"
+                className="btn btn-default"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

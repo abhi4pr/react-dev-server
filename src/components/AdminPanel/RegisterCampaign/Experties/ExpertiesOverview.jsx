@@ -30,7 +30,7 @@ const ExpertiesOverview = () => {
 
   const ExpertiesData = async () => {
     const Experties = await axios.get(
-      "http://192.168.29.110:8080/api/expertise"
+      "http://34.93.221.166:3000/api/expertise"
     );
     const setexdata = Experties.data.data;
     setGetExpertiesData(setexdata);
@@ -74,7 +74,7 @@ const ExpertiesOverview = () => {
       .then((result) => {
         if (result.isConfirmed) {
           axios
-            .delete(`http://192.168.29.110:8080/api/expertise/${userId}`)
+            .delete(`http://34.93.221.166:3000/api/expertise/${userId}`)
             .then(() => {
               // Check if no error occurred and then show the success alert
               swalWithBootstrapButtons.fire(

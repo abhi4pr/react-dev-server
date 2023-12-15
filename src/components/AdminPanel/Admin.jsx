@@ -166,6 +166,9 @@ import PagePerformanceDashboard from "../Execution/PagePerformanceDashboard";
 import ExcusionCampaign from "./RegisterCampaign/ExcusionCampaign";
 import ExpertiesOverview from "./RegisterCampaign/Experties/ExpertiesOverview";
 import ExpertiesUpdate from "./RegisterCampaign/Experties/ExpertUpdate";
+import PhaseDashboard from "./RegisterCampaign/PhaseDashboard/PhaseDashboard";
+import WFHUserOverview from "./WFH/WFHUserOverview";
+import CreateAssign from "./RegisterCampaign/CreateAssign";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -303,6 +306,11 @@ const Admin = () => {
                   <Route
                     path="/wfh-dashboard-overview/:id"
                     element={<DashboardWFHCardDetails />}
+                  />
+
+                  <Route
+                    path="/wfh-users-overview"
+                    element={<WFHUserOverview />}
                   />
 
                   {/* <Route
@@ -633,6 +641,10 @@ const Admin = () => {
                     path="/register-campaign"
                     element={<RegisterCampaign />}
                   />
+
+                  {/* Phase Dashboard here  */}
+                  <Route path="/phase-dashboard" element={<PhaseDashboard />} />
+
                   <Route path="/experties" element={<Experties />} />
                   <Route
                     path="/experties-overview"
@@ -655,6 +667,8 @@ const Admin = () => {
                   <Route path="/planOverview/:id" element={<PlanOverview />} />
                   <Route path="/phase/:id" element={<PhaseCreation />} />
                   <Route path="/planCreation/:id" element={<PlanCreation />} />
+                  <Route path="/createAssign/:id" element={<CreateAssign />} />
+
 
                   <Route
                     path="/checkPageFollowers"

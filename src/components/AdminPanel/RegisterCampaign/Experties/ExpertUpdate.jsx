@@ -100,7 +100,7 @@ const ExpertiesUpdate = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://192.168.29.110:8080/api/expertise/${expertiesusername.user_id}`,
+        `http://34.93.221.166:3000/api/expertise/${expertiesusername.user_id}`,
         {
           user_id: expertiesusername.user_id,
           area_of_expertise: {

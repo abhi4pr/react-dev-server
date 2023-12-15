@@ -13,6 +13,7 @@ const DepartmentMaster = () => {
   const [remark, setRemark] = useState("");
   const [error, setError] = useState("");
   const [createdBy, setCreatedBy] = useState("");
+  const [shortName, setShortName] = useState("");
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const token = sessionStorage.getItem("token");
@@ -25,9 +26,9 @@ const DepartmentMaster = () => {
     await axios
       .post("http://34.93.221.166:3000/api/add_department", {
         dept_name: departmentName,
+        short_name: shortName,
         remark: remark,
         created_by: loginUserId,
-
       })
       .then(() => {
         setDepartmentName("");
@@ -60,7 +61,13 @@ const DepartmentMaster = () => {
           value={departmentName}
           onChange={(e) => setDepartmentName(e.target.value)}
         />
-            <FieldContainer
+        <FieldContainer
+          label="Short Name"
+          value={shortName}
+          onChange={(e) => setShortName(e.target.value)}
+          required={false}
+        />
+        <FieldContainer
           label="Created By"
           value={createdBy}
           onChange={(e) => setCreatedBy(e.target.value)}
@@ -73,6 +80,7 @@ const DepartmentMaster = () => {
           required={false}
           onChange={(e) => setRemark(e.target.value)}
         />
+
         {error && <p style={{ color: "red" }}>{error}</p>}
       </FormContainer>
     </>

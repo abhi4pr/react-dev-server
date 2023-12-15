@@ -113,7 +113,8 @@ const DepartmentOverview = () => {
                       row.Creation_date,
                       row.created_by,
                       row.Last_updated_by,
-                      row.Last_updated_date
+                      row.Last_updated_date,
+                      row.short_name
                     )
                   }
                 >
@@ -144,7 +145,8 @@ const DepartmentOverview = () => {
     Creation_date,
     created_by,
     Last_updated_by,
-    Last_updated_date
+    Last_updated_date,
+    short_name
   ) => {
     localStorage.setItem("dept_id", dept_id);
     localStorage.setItem("dept_name", dept_name);
@@ -153,6 +155,7 @@ const DepartmentOverview = () => {
     localStorage.setItem("created_by", created_by);
     localStorage.setItem("Last_updated_by", Last_updated_by);
     localStorage.setItem("Last_updated_date", Last_updated_date);
+    localStorage.setItem("short_name");
   };
 
   const handleRowClick = (row) => {

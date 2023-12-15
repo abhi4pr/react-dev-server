@@ -16,7 +16,7 @@ const CampaignDetailes = ({
   const [commitData, setCommitData] = useState([]);
   const [commitmentCompleteData, setCommitmentCompleteData] = useState([]);
 
-  console.log(campaignData, "cmpdata");
+  // console.log(campaignData, "cmpdata");
   const getData = async () => {
     try {
       const res = await axios.get(
@@ -28,7 +28,7 @@ const CampaignDetailes = ({
     }
   };
 
-  // console.log(campaignData);
+  // console.log(cid, "mycid");
   // console.log(commitData)
   const getBrandInfo = async () => {
     const brand = await axios.get(`http://34.93.221.166:3000/api/get_brands`);
@@ -52,7 +52,7 @@ const CampaignDetailes = ({
   };
   useEffect(() => {
     getData();
-  }, []);
+  }, [cid]);
 
   const getCommitments = async () => {
     const comm = await axios.get(
@@ -94,31 +94,37 @@ const CampaignDetailes = ({
       <Paper sx={{ p: 1 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={3}>
-            <label> Brand Name</label>
             <TextField
-              // label="dfsd"
-              disabled
+              label="Brand "
+              InputLabelProps={{ shrink: true }}
+              InputProps={{
+                readOnly: true,
+              }}
               fullWidth
               value={brandData.brand_name}
               sx={{ m: 2 }}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <label> Campaign Name</label>
-
             <TextField
-              disabled
+              InputProps={{
+                readOnly: true,
+              }}
               fullWidth
+              label="Campaign"
+              InputLabelProps={{ shrink: true }}
               value={cmpName.exeCmpName}
               sx={{ m: 2 }}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={3}>
-            <label> Campaign Details</label>
-
             <TextField
-              disabled
+             InputProps={{
+              readOnly: true,
+            }}
               fullWidth
+              label="Campaign Details"
+              InputLabelProps={{ shrink: true }}
               value={campaignData.detailing}
               sx={{ m: 2 }}
             />
@@ -128,7 +134,9 @@ const CampaignDetailes = ({
               <>
                 <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
                   <TextField
-                    disabled
+                    InputProps={{
+                      readOnly: true,
+                    }}
                     fullWidth
                     label="Commitment"
                     value={comm.cmtName}
@@ -136,7 +144,9 @@ const CampaignDetailes = ({
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
                   <TextField
-                    disabled
+                  InputProps={{
+                    readOnly: true,
+                  }}
                     fullWidth
                     label="value"
                     value={campaignData?.commitment[index]?.textValue}

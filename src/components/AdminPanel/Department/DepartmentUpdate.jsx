@@ -10,6 +10,7 @@ const DepartmentUpdate = () => {
   const [id, setId] = useState(0);
   const [departmentName, setDepartmentName] = useState("");
   const [remark, setRemark] = useState("");
+  const [shortName, setShortName] = useState("");
   const [error, setError] = useState("");
   const [creationDate, setCreationDate] = useState("");
   const [createdBy, setCreatedBy] = useState("");
@@ -22,12 +23,13 @@ const DepartmentUpdate = () => {
     e.preventDefault();
     setError("");
 
-  await  axios
+    await axios
       .put(`http://34.93.221.166:3000/api/update_department`, {
         dept_id: id,
         dept_name: departmentName,
+        short_name: shortName,
         remark: remark,
-        created_by:createdBy
+        created_by: createdBy,
       })
       .then(() => {
         setDepartmentName("");
@@ -51,6 +53,7 @@ const DepartmentUpdate = () => {
     setLastUpdatedDate(
       localStorage.getItem("Last_updated_date").substring(0, 10)
     );
+    setShortName(localStorage.getItem("short_name"));
   }, []);
 
   if (isFormSubmitted) {
@@ -68,7 +71,12 @@ const DepartmentUpdate = () => {
           value={departmentName}
           onChange={(e) => setDepartmentName(e.target.value)}
         />
-
+        <FieldContainer
+          label="Short Name"
+          value={shortName}
+          onChange={(e) => setShortName(e.target.value)}
+          required={false}
+        />
         <FieldContainer
           label="Remark"
           rows={"4"}
