@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Delivery.css";
 import "./DeliveryResponsive.css";
-// import image1 from "../../assets/img/user/ob1.jpg";
 import jwtDecode from "jwt-decode";
 
 let orderLength = 0;
@@ -12,7 +11,7 @@ const DeliveryData = () => {
   const [reason, setReason] = useState("");
   const [deliveryData, setDeliveryData] = useState([]);
   const [deliveryBoyData, setDeliveryBoyData] = useState([]);
-  const [productStatus, setProductStatus] = useState("");
+
   const [orderRequestTransfer, setOrderRequestTransfer] = useState("");
   const [selectedDeliveryBoy, setSelectedDeliveryBoy] = useState("");
   const token = sessionStorage.getItem("token");
@@ -46,12 +45,11 @@ const DeliveryData = () => {
         if (res.data && res.data.length > 0) {
           setDeliveryData(res.data);
         } else {
-          // alert("No Order available");
-          console.log("No Order Available");
+
         }
       })
       .catch((error) => {
-        console.error("Error fetching delivery data:", error);
+
       });
   }
 
@@ -59,13 +57,11 @@ const DeliveryData = () => {
     const intervalId = setInterval(getData, 10000);
     return () => clearInterval(intervalId);
   }, []);
+
   useEffect(() => {
     getData();
     axios
-      // .post(`http://34.93.221.166:3000/api/usersdata`, {
-      //   user_id: loginUserId,
-      //   role_id: roleId,
-      // })
+
       .get(`http://34.93.221.166:3000/api/get_delivery_user`)
       .then((res) => {
         setDeliveryBoyData(res.data);
@@ -129,11 +125,9 @@ const DeliveryData = () => {
 
   const createOrderCards = () => {
     const userIds = [...new Set(deliveryData?.map((d) => d.User_id))];
-    console.log(deliveryData, "there is data delivery");
 
     return userIds?.map((userId) => {
       const filteredData = filterDataByUserId(userId);
-      console.log("ffffff", filteredData);
 
       return (
         <div className="col-12" key={userId}>
@@ -170,8 +164,7 @@ const DeliveryData = () => {
                           </li>
                         </ul>
                         {d.props1 == null ? "" : <h4>{d.props1}</h4>}
-                        {/* {d.props2Int == 0 ? "" : <h4>{d.props2}</h4>}
-                        {d.props3Int == 0 ? "" : <h4>{d.props3}</h4>} */}
+                        {/*  */}
                       </div>
                       <div className="order_item_action">
                         <button
@@ -232,12 +225,7 @@ const DeliveryData = () => {
                 </div>
               </div>
               {/* <div className="order_card_request">
-              <p>
-              <span>Special Request : </span>
-              {deliveryData.map((d) => (
-                <>{d.Special_request}</>
-                ))}
-                </p>
+              
               </div> */}
             </div>
           ))}

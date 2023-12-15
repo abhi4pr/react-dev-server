@@ -37,6 +37,7 @@ export default function ExecutionAccepted() {
     // Fetch data when the component mounts
     fetchData();
   }, []);
+
   useEffect(() => {
     setTimeout(() => {
       fetchData();
@@ -59,28 +60,22 @@ export default function ExecutionAccepted() {
             if (res.data[26].view_value == 1) {
               setContextData(true);
               setAlert(res.data);
-              console.log(contextData);
             }
-            console.log(res.data[26].view_value);
           });
       }
       const formData = new URLSearchParams();
       formData.append("loggedin_user_id", 36);
-      // formData.append("filter_criteria", "m");
-      // formData.append("pendingorcomplete", "pending");
-      console.log(formData);
+      
       const response = axios
         .get("http://44.211.225.140:8000/executionSummary", {
           loggedin_user_id: 52,
         })
         .then((res) => {
           setData(res.data.filter((ele) => ele.execution_status == "2"));
-          // console.log()
-          // console.log(jsonData);
+          
         });
     } catch (error) {
       console.error("Error fetching data:", error);
-      // setLoading(false);
     }
   };
 
