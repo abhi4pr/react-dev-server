@@ -169,6 +169,7 @@ import ExpertiesUpdate from "./RegisterCampaign/Experties/ExpertUpdate";
 import PhaseDashboard from "./RegisterCampaign/PhaseDashboard/PhaseDashboard";
 import WFHUserOverview from "./WFH/WFHUserOverview";
 import CreateAssign from "./RegisterCampaign/CreateAssign";
+import IncompleteProfileUsers from "./WFH/IncompleteProfileUsers";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -304,7 +305,7 @@ const Admin = () => {
                   />
 
                   <Route
-                    path="/wfh-dashboard-overview/:id"
+                    path="/wfh-dashboard-overview"
                     element={<DashboardWFHCardDetails />}
                   />
 
@@ -321,6 +322,10 @@ const Admin = () => {
                     path="/wfh-dashboard-overview/:id"
                     element={<DashboardWFHCardDetails />}
                   /> */}
+                  <Route
+                    path="/wfh-incomplete-user-overview"
+                    element={<IncompleteProfileUsers />}
+                  />
 
                   {contextData &&
                     contextData[1] &&
@@ -668,7 +673,6 @@ const Admin = () => {
                   <Route path="/phase/:id" element={<PhaseCreation />} />
                   <Route path="/planCreation/:id" element={<PlanCreation />} />
                   <Route path="/createAssign/:id" element={<CreateAssign />} />
-
 
                   <Route
                     path="/checkPageFollowers"

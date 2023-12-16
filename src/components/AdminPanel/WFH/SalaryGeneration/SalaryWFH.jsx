@@ -256,7 +256,10 @@ const SalaryWFH = () => {
       year: Number(year),
     };
     axios
-      .post("http://34.93.221.166:3000/api/get_salary_by_id_month_year", payload)
+      .post(
+        "http://34.93.221.166:3000/api/get_salary_by_id_month_year",
+        payload
+      )
       .then((res) => {
         setFilterData(res.data.data);
         setData(res.data.data);
