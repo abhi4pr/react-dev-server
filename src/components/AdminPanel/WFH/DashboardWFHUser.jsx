@@ -1,20 +1,24 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AnniversaryBirthdayCard from "./AnniversaryBirthdayCard";
+import TabPanelCard from "./Components/TabPanelCard";
 
 const DashboardWFHUser = () => {
   const [departmentData, setDepartmentData] = useState([]);
   const [wfhUsersCount, setWfhUsersCount] = useState(0);
   const [yetToOnBoardCount, setYetToOnBoardCount] = useState(0);
   const [totalSalary, setTotalSalary] = useState(0);
-  const [anniversaryBirthdays, setAnniversaryBirthdays] = useState([]);
+  const [birthdays, setBirthdays] = useState([]);
+  const [workAnniversary, setWorkAnniversary] = useState([]);
   const [thisMonthJoinee, setThisMonthJoinee] = useState([]);
+  const [IncompleteUserProfilesData, setIncompleteUserProfileData] = useState(
+    []
+  );
 
   const getDepartment = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/all_departments_of_wfh"
+        "http://192.168.29.115:3000/api/all_departments_of_wfh"
       );
 
       setDepartmentData(response.data.data);
@@ -37,7 +41,7 @@ const DashboardWFHUser = () => {
   const preOnboardCount = async () => {
     try {
       const res = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_wfh_users"
+        "http://192.168.29.115:3000/api/get_all_wfh_users"
       );
       const data = res.data.data;
       const onboarddata = data.filter((d) => d.onboard_status === 2).length;
@@ -51,10 +55,14 @@ const DashboardWFHUser = () => {
 
   const getAnniversaryBirthdays = async () => {
     try {
-      const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_users_with_dob_doj"
+      const responseDOB = await axios.get(
+        "http://192.168.29.115:3000/api/get_all_users_with_dob"
       );
-      setAnniversaryBirthdays(response.data.users);
+      const responseDOJ = await axios.get(
+        "http://192.168.29.115:3000/api/get_all_users_with_doj"
+      );
+      setBirthdays(responseDOB.data.users);
+      setWorkAnniversary(responseDOJ.data.users);
     } catch (error) {
       console.log("Api problem getanniversary", error);
     }
@@ -63,11 +71,22 @@ const DashboardWFHUser = () => {
   const getThisMonthJoinees = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_last_month_users"
+        "http://192.168.29.115:3000/api/get_last_month_users"
       );
       setThisMonthJoinee(response.data);
     } catch (error) {
       console.log("Api problem getanniversary", error);
+    }
+  };
+
+  const IncompleteUserProfiles = async () => {
+    try {
+      const response = await axios.get(
+        "http://192.168.29.115:3000/api/get_all_percentage"
+      );
+      setIncompleteUserProfileData(response.data.incompleteUsersDetails);
+    } catch (error) {
+      console.log("incomplete profile Api Problem", error);
     }
   };
 
@@ -78,6 +97,7 @@ const DashboardWFHUser = () => {
     getTotalSalary();
     getAnniversaryBirthdays();
     getThisMonthJoinees();
+    IncompleteUserProfiles();
   }, []);
 
   return (
@@ -92,13 +112,11 @@ const DashboardWFHUser = () => {
         </div>
         <div className="card-body">
           <div className="row gap_24_0">
-            <div className="col-xl-9 col-lg-9 col-md-6 col-sm-12 col-12">
+            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
                   <div className="d-flex justify-content-between">
-                    <Link>
-                      <h2>Details</h2>
-                    </Link>
+                    <h2>Details</h2>
                     <button className="btn btn-primary">
                       <Link to="/admin/user">Add New Employee</Link>
                     </button>
@@ -126,15 +144,21 @@ const DashboardWFHUser = () => {
                       {yetToOnBoardCount}
                     </li>
                     <li>
-                      <span>This Month Joinee</span>
-                      {thisMonthJoinee.length}
+                      <span>
+                        <Link to="/admin/wfh-incomplete-user-overview">
+                          Incomplete Profile
+                        </Link>
+                      </span>
+                      {IncompleteUserProfilesData.length}
                     </li>
                   </ul>
                 </div>
               </div>
             </div>
-            <AnniversaryBirthdayCard
-              anniversaryBirthdays={anniversaryBirthdays}
+            <TabPanelCard
+              birthdays={birthdays}
+              workAnniversary={workAnniversary}
+              thisMonthJoinee={thisMonthJoinee}
             />
           </div>
         </div>
@@ -170,20 +194,9 @@ const DashboardWFHUser = () => {
                   <div className="salary_dtlCard_info">
                     <ul>
                       <li>
-                        <span>New Joinee</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="salary_dtlCard_info">
-                    <ul>
-                      <li>
                         <span>Employee Left</span>
+                        {item.leftCount}
                       </li>
-                    </ul>
-                  </div>
-                  <div className="salary_dtlCard_info">
-                    <ul>
-                      <li>Yet To Register</li>
                     </ul>
                   </div>
                 </div>

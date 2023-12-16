@@ -113,7 +113,7 @@ const AdminPreOnboarding = () => {
     formData.append("user_email_id", email);
     formData.append("permanent_city", city);
     formData.append("ctc", userCtc);
-    formData.append("offer_letter_send", sendLetter.value);
+    formData.append("offer_letter_send", Boolean(sendLetter.value));
     formData.append("annexure_pdf", annexurePdf);
 
     formData.append("tds_applicable", tdsApplicable);
