@@ -21,18 +21,20 @@ const BalancePaymentList = () => {
   const [paymentType, setPaymentType] = useState("");
   const [paymentDetails, setPaymentDetails] = useState("");
   const [paymentMode, setPaymentMode] = useState("");
+  const [singleRow, setSingleRow] = useState({})
+  const [dropdownData, setDropDownData] = useState([])
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  const handleSubmit = async(row) => {
-    // e.preventDefault();
+  const handleSubmit = async(e,row) => {
+    e.preventDefault();
 
     const formData = new FormData();
     formData.append("loggedin_user_id",36);
-    formData.append("sale_booking_id", row.sale_booking_id);
-    formData.append("payment_update_id",row.payment_update_id);
+    formData.append("sale_booking_id", singleRow.sale_booking_id);
+    formData.append("payment_update_id",singleRow.payment_update_id);
     formData.append("payment_ref_no", paymentRefNo);
     formData.append("payment_detail_id", paymentDetails);
     formData.append("payment_screenshot", paymentRefImg);
@@ -48,6 +50,7 @@ const BalancePaymentList = () => {
 
     toastAlert("Data updated");
     setIsFormSubmitted(true);
+    setImageModalOpen(false);
   };
 
   function getData() {
@@ -64,7 +67,24 @@ const BalancePaymentList = () => {
     getData();
   }, []);
 
+  const getDropdownData = async() => {
+    const formData = new FormData();
+    formData.append("loggedin_user_id", 36);
+    const response = await axios.post('https://production.sales.creativefuel.io/webservices/RestController.php?view=sales-payment_account_list', formData, {
+        headers:{
+          "Content-Type": "multipart/form-data",
+        }
+      })
+    const responseData = response.data.body;
+    setDropDownData(responseData)
+  }
+
+  useEffect(() => {
+    getDropdownData()
+  },[])
+
   const handleImageClick = (row) => {
+    setSingleRow(row)
     setImageModalOpen(true);
   };
 
@@ -247,15 +267,11 @@ const BalancePaymentList = () => {
 
             <div className="form-group">
               <label htmlFor="images">Payment Details</label>
-              <select name="payment_detail" value={paymentDetails} onChange={(e)=> setPaymentDetails(e.target.value)}>
-                <option value="Gst payment details">Gst payment details</option>
-                <option value="paypal">paypal</option>
-                <option value="other payment details">other payment details</option>
-                <option value="upi details for mmc">upi details for mmc</option>
-                <option value="bank details for sarcasm">bank details for sarcasm</option>
-                <option value="bank details for mmc">bank details for mmc</option>
-                <option value="upi mmc">upi mmc</option>
-                <option value="meta mask for ethereum">meta mask for ethereum</option>
+              <select name="payment_detail" value={paymentDetails} onChange={(e)=> setPaymentDetails(e.target.value)} required>
+                <option value="">Please select</option>
+                {dropdownData.map((item)=>(
+                  <option value={item.id}>{item.title}</option>
+                ))}
               </select>
             </div>
 

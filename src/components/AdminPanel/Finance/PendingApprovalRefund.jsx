@@ -15,6 +15,7 @@ const PendingApprovalRefund = () => {
   const [filterData, setFilterData] = useState([]);
   const [status, setStatus] = useState("");
   const [refundImage, setRefundImage] = useState(null);
+  const [singleRow, setSingleRow] = useState({})
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -55,24 +56,28 @@ const PendingApprovalRefund = () => {
       setIsFormSubmitted(true);
   };
 
-  const uploadImage = async(e) => {
+  const uploadImage = async(e,row) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("loggedin_user_id",36)
-    formData.append("sale_booking_refund_id",row.sale_booking_refund_id)
-    formData.append("sale_booking_id",row.sale_booking_id)
-    formData.append("refund_files",refundImage)
-    
-    await axios.post("https://prrrroduction.sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file", formData ,{
-      headers:{
-        "Content-Type":"multipart/form-data"
+    formData.append("loggedin_user_id", 36);
+    formData.append("sale_booking_refund_id", row.sale_booking_refund_id);
+    formData.append("sale_booking_id", row.sale_booking_id);
+    formData.append("refund_files", refundImage);
+  
+    await axios.post(
+      "https://production.sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       }
-    });
-
+    );
+  
     toastAlert("Data updated");
     setIsFormSubmitted(true);
-  }
+  };
 
   useEffect(() => {
     const result = datas.filter((d) => {
@@ -115,9 +120,21 @@ const PendingApprovalRefund = () => {
       name: "Refund Payment Image",
       selector: (row) => (
         <form method="POST" encType="multipart/form-data" action="">
-            <input type="file" name="refund_image" onChange={(e)=>setRefundImage(e.target.files[0])} />
-            <br/>
-            <input type="submit" value="upload" disabled={!refundImage} onClick={(e)=>uploadImage()} />
+          <input
+            type="file"
+            name="refund_image"
+            onChange={(e) => setRefundImage(e.target.files[0])}
+          />
+          <br />
+          <input
+            type="submit"
+            value="upload"
+            disabled={!refundImage}
+            onClick={(e) => {
+              setSingleRow(row)
+              uploadImage(e,row); 
+            }}
+          />
         </form>
       )
     },
