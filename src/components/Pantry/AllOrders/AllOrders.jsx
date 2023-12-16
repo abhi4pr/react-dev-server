@@ -15,7 +15,6 @@ const AllOrder = () => {
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);
-        console.log(res.data.data);
       });
   }
 

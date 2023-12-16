@@ -14,12 +14,13 @@ const RefundRequests = () => {
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [refundImage, setRefundImage] = useState(null);
+  const [singleRow, setSingleRow] = useState({})
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  const uploadImage = async(e) => {
+  const uploadImage = async(e,row) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -28,7 +29,7 @@ const RefundRequests = () => {
     formData.append("sale_booking_id",row.sale_booking_id)
     formData.append("refund_files",refundImage)
     
-    await axios.post("https://prrrroduction.sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file", formData ,{
+    await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file", formData ,{
       headers:{
         "Content-Type":"multipart/form-data"
       }
@@ -95,7 +96,12 @@ const RefundRequests = () => {
         <form method="POST" encType="multipart/form-data" action="">
             <input type="file" name="refund_image" onChange={(e)=>setRefundImage(e.target.files[0])} />
             <br/>
-            <input type="submit" value="upload" disabled={!refundImage} onClick={(e)=>uploadImage()} />
+            <input type="submit" value="upload" disabled={!refundImage} 
+              onClick={(e)=>{
+                setSingleRow(row)
+                uploadImage(e,row)
+              }} 
+            />
         </form>
       )
     },

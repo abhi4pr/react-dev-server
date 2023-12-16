@@ -20,9 +20,20 @@ export default function PagePerformanceAnalytics() {
   const [followerCountFilter, setFollowerCoutFilter] = useState(0);
   const [reachFilter, setReachFilter] = useState(0);
   const [impressionFilter, setImpressionFilter] = useState(0);
-  const [followerCoutnCompareFlag, setFollowerCoutnCompareFlag] = useState({ label: "Greater than", value: ">" });
-  const [reachCompareFlag, setReachCompareFlag] = useState({ label: "Greater than", value: ">" });
-  const [impressionCompareFlag, setImpressionCompareFlag] = useState({ label: "Greater than", value: ">" });
+  const [followerCoutnCompareFlag, setFollowerCoutnCompareFlag] = useState({
+    label: "Greater than",
+    value: ">",
+  });
+  const [reachCompareFlag, setReachCompareFlag] = useState({
+    label: "Greater than",
+    value: ">",
+  });
+  const [impressionCompareFlag, setImpressionCompareFlag] = useState({
+    label: "Greater than",
+    value: ">",
+  });
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
 
   const callApi = () => {
     axios
@@ -59,14 +70,14 @@ export default function PagePerformanceAnalytics() {
     { label: "Custom", value: 4 },
   ];
 
-const compareFlagOptions = [
-  {label:"Greater than",value:">"},
-  {label:"Less than",value:"<"},
-  {label:"Equal to",value:"=="},
-  {label:"Greater than or Equal to",value:">="},
-  {label:"Less than or Equal to",value:"<="},
-  {label:"Not Equal to",value:"!="},
-]
+  const compareFlagOptions = [
+    { label: "Greater than", value: ">" },
+    { label: "Less than", value: "<" },
+    { label: "Equal to", value: "==" },
+    { label: "Greater than or Equal to", value: ">=" },
+    { label: "Less than or Equal to", value: "<=" },
+    { label: "Not Equal to", value: "!=" },
+  ];
 
   const columns = [
     {
@@ -255,36 +266,84 @@ const compareFlagOptions = [
   ];
 
   const handleFilterFollowerCount = (e) => {
-
-      setFollowerCoutFilter(e.target.value);
-      filterData();
-
+    setFollowerCoutFilter(e.target.value);
+    filterData();
   };
-  
+
   const handleFilterReach = (e) => {
-
-      setReachFilter(e.target.value);
-      filterData();
-
+    setReachFilter(e.target.value);
+    filterData();
   };
-  
+
   const handleFilterImpression = (e) => {
-
-      setImpressionFilter(e.target.value);
-      filterData();
-    
+    setImpressionFilter(e.target.value);
+    filterData();
   };
-  
-  const filterData = () => {
-    const filteredRows = pageHistory.filter((row) => {
-      return row.follower_count >= followerCountFilter &&
-             row.reach >= reachFilter &&
-             row.impression >= impressionFilter;
-    });
-    console.log(filteredRows);
-    setRowData(filteredRows);
-};
 
+useEffect(() => {
+  filterData();
+}, [followerCountFilter, reachFilter, impressionFilter]);
+
+  const filterData = () => {
+    const compareFollowerCount = (rowValue, filterValue, compareFlag) => {
+      switch (compareFlag) {
+        case ">":
+          return rowValue > filterValue;
+        case "<":
+          return rowValue < filterValue;
+        case ">=":
+          return rowValue >= filterValue;
+        case "<=":
+          return rowValue <= filterValue;
+        case "==":
+          return rowValue === filterValue;
+        default:
+          return false;
+      }
+    };
+    const filteredRows = pageHistory.filter((row) => {
+      return (
+        compareFollowerCount(
+          +row.follower_count,
+          +followerCountFilter,
+          followerCoutnCompareFlag.value
+        ) &&
+        row.reach >= reachFilter &&
+        row.impression >= impressionFilter
+      );
+    });
+    setRowData(filteredRows);
+  };
+
+  const handleEndDateChange = (e) => {
+    setEndDate(e);
+    const endDateString = e.$d;
+    const endDateObject = new Date(endDateString);
+    const endYear = endDateObject.getFullYear();
+    const endMonth = (endDateObject.getMonth() + 1).toString().padStart(2, "0");
+    const endDay = endDateObject.getDate().toString().padStart(2, "0");
+
+    const endFormattedDate = `${endYear}-${endMonth}-${endDay}`;
+    console.log(endFormattedDate);
+
+    const startDateString = startDate.$d;
+    const startDateObject = new Date(startDateString);
+    const startYear = startDateObject.getFullYear();
+    const startMonth = (startDateObject.getMonth() + 1)
+      .toString()
+      .padStart(2, "0");
+    const startDay = startDateObject.getDate().toString().padStart(2, "0");
+    const startFormattedDate = `${startYear}-${startMonth}-${startDay}`;
+    axios
+      .post("http://34.93.135.33:8080/api/page_health_dashboard", {
+        startDate: startFormattedDate,
+        endDate: endFormattedDate,
+      })
+      .then((res) => {
+        setPageHistory(res.data.data);
+        setRowData(res.data.data);
+      });
+  };
 
   return (
     <div>
@@ -314,11 +373,25 @@ const compareFlagOptions = [
         {intervalFlag.value === 4 && (
           <>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker onChange={(e) => console.log(e)} label="From" />
+              <DatePicker
+                value={startDate}
+                format="DD/MM/YY"
+                onChange={(e) => {
+                  setStartDate(e), console.log(e);
+                }}
+                label="From"
+              />
             </LocalizationProvider>
             <span className="ms-3">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker onChange={(e) => console.log(e)} label="To" />
+                <DatePicker
+                  value={endDate}
+                  onChange={(e) => {
+                    handleEndDateChange(e);
+                  }}
+                  label="To"
+                  disabled={!startDate}
+                />
               </LocalizationProvider>
             </span>
           </>
@@ -328,17 +401,15 @@ const compareFlagOptions = [
           type="number"
           variant="outlined"
           inputProps={{
-            min: 0, // minimum value allowed
-            step: 1, // only integer increments
+            min: 0,
+            step: 1,
             onInput: (e) => {
-              // prevent non-numeric input
               e.target.value = e.target.value.replace(/[^0-9]/g, "");
             },
           }}
           onChange={handleFilterFollowerCount}
         />
         <Autocomplete
-          // className="ms-2"
           disablePortal
           value={followerCoutnCompareFlag.label}
           defaultValue={compareFlagOptions[0].label}
@@ -355,9 +426,7 @@ const compareFlagOptions = [
             setFollowerCoutnCompareFlag(newValue);
           }}
           sx={{ width: 100 }}
-          renderInput={(params) => (
-            <TextField {...params} />
-          )}
+          renderInput={(params) => <TextField {...params} />}
         />
         <TextField
           label="Reach"
@@ -373,7 +442,7 @@ const compareFlagOptions = [
           }}
           onChange={handleFilterReach}
         />
-         <Autocomplete
+        <Autocomplete
           // className="ms-2"
           disablePortal
           value={reachCompareFlag.label}
@@ -391,9 +460,7 @@ const compareFlagOptions = [
             setFollowerCoutnCompareFlag(newValue);
           }}
           sx={{ width: 100 }}
-          renderInput={(params) => (
-            <TextField {...params} />
-          )}
+          renderInput={(params) => <TextField {...params} />}
         />
         <TextField
           label="Impression"
@@ -409,7 +476,7 @@ const compareFlagOptions = [
           }}
           onChange={handleFilterImpression}
         />
-         <Autocomplete
+        <Autocomplete
           // className="ms-2"
           disablePortal
           value={impressionCompareFlag.label}
@@ -421,15 +488,16 @@ const compareFlagOptions = [
           }))}
           onChange={(event, newValue) => {
             if (newValue === null) {
-              return setImpressionCompareFlag({ label: "Greater than", value: ">" });
+              return setImpressionCompareFlag({
+                label: "Greater than",
+                value: ">",
+              });
             }
             console.log(newValue);
             setFollowerCoutnCompareFlag(newValue);
           }}
           sx={{ width: 100 }}
-          renderInput={(params) => (
-            <TextField {...params} />
-          )}
+          renderInput={(params) => <TextField {...params} />}
         />
       </div>
       {!loading ? (

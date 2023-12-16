@@ -190,7 +190,10 @@ const Attendence = () => {
       year: selectedYear,
     };
     axios
-      .post("http://34.93.221.166:3000/api/get_salary_by_id_month_year", payload)
+      .post(
+        "http://34.93.221.166:3000/api/get_salary_by_id_month_year",
+        payload
+      )
       .then((res) => {
         setAttendenceData(res.data.data);
         setFilterData(res.data.data);

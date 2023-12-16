@@ -5,6 +5,7 @@ import axios from "axios";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../../DeleteButton";
 import { Link } from "react-router-dom";
+
 const PreonboardingDocumentOverview = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
@@ -66,7 +67,6 @@ const PreonboardingDocumentOverview = () => {
       const data = response.data.data;
       setData(data);
       setFilterData(data);
-      console.log(data);
     } catch (error) {
       console.log("", error);
     }

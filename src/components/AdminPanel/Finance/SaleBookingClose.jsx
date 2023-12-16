@@ -26,8 +26,10 @@ const SaleBookingClose = () => {
     formData.append("tds_status",1)
     formData.append("sale_booking_id",row.sale_booking_id)
 
-    await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=close_booking", {
-      display_sequence: displaySeq,
+    await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=close_booking", formData, {
+      headers:{
+        "application-type":"multipart/form-data"
+      }
     });
 
     toastAlert("Data Updated");
