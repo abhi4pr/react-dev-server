@@ -10,27 +10,29 @@ const FilterDataOptions = [
   "Highest",
   "Lowest",
   "Avg",
-  "Avg Male Percnet",
+  "Avg Male Percent",
   "Avg Female Percent",
   "Top 5 Age Group",
 ];
 
 const intervalFlagOptions = [
-  {label: "Current Month", value: 1},
-  {label: "Last Three months", value: 3},
-  {label: "Last six months", value:6},
+  { label: "Current Month", value: 1 },
+  { label: "Last Three months", value: 3 },
+  { label: "Last six months", value: 6 },
 
-  {label: "Last one year", value: 10},
-  {label: "All Data", value: 2},
+  { label: "Last one year", value: 10 },
+  { label: "All Data", value: 2 },
 ];
 export default function PagePerformanceDashboard() {
   const [pageHistory, setPageHistory] = React.useState([]);
   const [filterDataVal, setFilterDataVal] = useState("Highest");
-  const [openPerformanceGraphDialog, setOpenPerformanceGraphDialog] = useState(false);
+  const [openPerformanceGraphDialog, setOpenPerformanceGraphDialog] =
+    useState(false);
   const [rowData, setRowData] = useState([]);
-  const [intervalFlag, setIntervalFlag] = useState({label: "Current Month", value: "1"});
-
-
+  const [intervalFlag, setIntervalFlag] = useState({
+    label: "Current Month",
+    value: "1",
+  });
 
   useEffect(() => {
     callApi();
@@ -41,20 +43,17 @@ export default function PagePerformanceDashboard() {
   }, [intervalFlag]);
 
   const callApi = () => {
-      // axios
-      //   .get("http://34.93.221.166:3000/api/page_health_dashboard")
-      //   .then((res) => {
+    // axios
+    //   .get("http://34.93.135.33:8080/api/page_health_dashboard")
+    //   .then((res) => {
 
-      //     setPageHistory(res.data.data);
-      //   });
-      axios
-      .post("http://34.93.221.166:3000/api/page_health_dashboard",
-      {
-        "intervalFlag" : intervalFlag.value,
-      }
-      )
+    //     setPageHistory(res.data.data);
+    //   });
+    axios
+      .post("http://34.93.135.33:8080/api/page_health_dashboard", {
+        intervalFlag: intervalFlag.value,
+      })
       .then((res) => {
-
         setPageHistory(res.data.data);
       });
   };
@@ -244,7 +243,7 @@ export default function PagePerformanceDashboard() {
         );
       },
     });
-  } else if (filterDataVal === "Avg Male Percnet") {
+  } else if (filterDataVal === "Avg Male Percent") {
     columns.push({
       field: "avgMalePercent",
       headerName: "Avg Male Per",
@@ -267,21 +266,21 @@ export default function PagePerformanceDashboard() {
     <>
       <FormContainer mainTitle="Page Performance Dashboard" link="/ip-master" />
       <div className="d-flex">
-      <Autocomplete
+        <Autocomplete
           disablePortal
-          va lue={intervalFlag.label}
+          va
+          lue={intervalFlag.label}
           defaultValue={intervalFlagOptions[0].label}
           id="combo-box-demo"
           options={intervalFlagOptions.map((option) => ({
             label: option.label,
-            value: option.value
+            value: option.value,
           }))}
-          
           onChange={(event, newValue) => {
             if (newValue === null) {
-              return setIntervalFlag({label:"Current Month", value: 1});
+              return setIntervalFlag({ label: "Current Month", value: 1 });
             }
-          console.log(newValue);
+            console.log(newValue);
             setIntervalFlag(newValue);
           }}
           sx={{ width: 300 }}
@@ -290,7 +289,7 @@ export default function PagePerformanceDashboard() {
           )}
         />
         <Autocomplete
-        className="ms-3"
+          className="ms-3"
           disablePortal
           value={filterDataVal}
           defaultChecked="Higest"
@@ -318,7 +317,15 @@ export default function PagePerformanceDashboard() {
         disableSelectionOnClick
         getRowId={(row) => row._id}
       />
-     {openPerformanceGraphDialog && <PerformanceGraphDialog setOpenPerformanceGraphDialog={setOpenPerformanceGraphDialog} rowData={rowData} />}
+      {openPerformanceGraphDialog && (
+        <PerformanceGraphDialog
+          setOpenPerformanceGraphDialog={setOpenPerformanceGraphDialog}
+          rowData={rowData}
+          intervalFlag={intervalFlag}
+          setIntervalFlag={setIntervalFlag}
+          intervalFlagOptions={intervalFlagOptions}
+        />
+      )}
     </>
   );
 }

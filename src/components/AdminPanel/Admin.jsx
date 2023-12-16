@@ -169,6 +169,7 @@ import ExpertiesUpdate from "./RegisterCampaign/Experties/ExpertUpdate";
 import PhaseDashboard from "./RegisterCampaign/PhaseDashboard/PhaseDashboard";
 import WFHUserOverview from "./WFH/WFHUserOverview";
 import CreateAssign from "./RegisterCampaign/CreateAssign";
+import PagePerformanceAnalytics from "../Execution/PagePerformanceAnalytics";
 import IncompleteProfileUsers from "./WFH/IncompleteProfileUsers";
 
 const Admin = () => {
@@ -737,6 +738,10 @@ const Admin = () => {
                   <Route
                     path="/exeexecution/PagePerformanceDashboard"
                     element={<PagePerformanceDashboard />}
+                  />
+                   <Route
+                    path="/exeexecution/PagePerformanceAnalytics"
+                    element={<PagePerformanceAnalytics />}
                   />
                   <Route path="/exe-update/:id" element={<ExeUPdate />} />
                   <Route path="/exe-history/:id" element={<ExeHistory />} />

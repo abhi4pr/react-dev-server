@@ -486,6 +486,9 @@ const SidebarLinks = () => {
                         <Link className="collapse-item" to="/admin/cityMsater">
                           City Mast
                         </Link>{" "}
+                        <Link className="collapse-item" to="/admin/exeexecution/PagePerformanceAnalytics">
+                          Analytics
+                        </Link>{" "}
                         <Link
                           to="/admin/exeexecution/dashboard"
                           className="collapse-item"
