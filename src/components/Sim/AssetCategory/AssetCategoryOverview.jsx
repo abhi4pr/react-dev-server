@@ -50,7 +50,11 @@ const AssetCategoryOverview = () => {
       name: "Category Name",
       selector: (row) => row.category_name,
       sortable: true,
-      width: "40%",
+    },
+    {
+      name: "Sub Category Name",
+      selector: (row) => row.category_name,
+      sortable: true,
     },
     {
       name: "Description",

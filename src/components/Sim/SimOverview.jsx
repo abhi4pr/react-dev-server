@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import FormContainer from "../AdminPanel/FormContainer";
@@ -27,7 +27,7 @@ const SimOverview = () => {
 
   const [simallocationdata, setSimAllocationData] = useState([]);
 
-  const [selectedStatus, setSelectedStatus] = useState("Allocated");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const [selectedUserTransfer, setSelectedUserTransfer] = useState("");
 
@@ -90,16 +90,23 @@ const SimOverview = () => {
       });
   };
   const getSubCategoryData = () => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_sub_category")
-      .then((res) => {
-        setSubCategoryData(res.data);
-      });
+    if (category) {
+      axios
+        .get(
+          `http://192.168.1.231:3000/api/get_single_asset_sub_category/${category}`
+        )
+        .then((res) => {
+          setSubCategoryData(res.data);
+        });
+    }
   };
+  useEffect(() => {
+    getSubCategoryData();
+  }, [category]);
+
   useEffect(() => {
     getData();
     getCategoryData();
-    getSubCategoryData();
   }, [selectedStatus]);
 
   useEffect(() => {
@@ -168,7 +175,7 @@ const SimOverview = () => {
         submitted_at: dateString,
       });
 
-      axios.post("http://192.168.29.116:8080/api/add_sim_allocation", {
+      axios.post("http://34.93.221.166:3000/api/add_sim_allocation", {
         user_id: Number(selectedUserTransfer),
         sim_id: Number(simAllocationTransferData[0].sim_id),
         // dept_id: Number(modalSelectedUserData[0].dept_id),
@@ -182,7 +189,7 @@ const SimOverview = () => {
 
   const handleSimAllocation = async () => {
     if (selectedUserTransfer !== "") {
-      await axios.post("http://192.168.29.116:8080/api/add_sim_allocation", {
+      await axios.post("http://34.93.221.166:3000/api/add_sim_allocation", {
         user_id: Number(selectedUserTransfer),
         status: "Allocated",
         sim_id: Number(modalData.sim_id),
@@ -397,7 +404,6 @@ const SimOverview = () => {
                 <FormContainer
                   mainTitle="Assets"
                   link="/sim-master"
-                  // buttonAccess={true}
                   submitButton={false}
                 />
               </div>
@@ -530,19 +536,30 @@ const SimOverview = () => {
                     </label>
                     <Select
                       className=""
-                      options={subcategoryData.map((option) => ({
-                        value: option.sub_category_id,
-                        label: `${option.sub_category_name}`,
-                      }))}
-                      value={{
-                        value: subcategory,
-                        label:
-                          subcategoryData.find(
-                            (user) => user.sub_category_id === subcategory
-                          )?.sub_category_name || "",
-                      }}
-                      onChange={(e) => {
-                        setSubCategory(e.value);
+                      options={[
+                        { value: "", label: "All" },
+                        ...subcategoryData.map((option) => ({
+                          value: option.sub_category_id,
+                          label: `${option.sub_category_name}`,
+                        })),
+                      ]}
+                      value={
+                        subcategory === ""
+                          ? { value: "", label: "All" }
+                          : {
+                              value: subcategory,
+                              label:
+                                subcategoryData.find(
+                                  (sub) => sub.sub_category_id === subcategory
+                                )?.sub_category_name || "Select...",
+                            }
+                      }
+                      onChange={(select) => {
+                        const selectsub = select ? select.value : "";
+                        setSubCategory(selectsub);
+                        if (selectsub === "") {
+                          getData();
+                        }
                       }}
                       required
                     />

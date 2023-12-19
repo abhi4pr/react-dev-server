@@ -6,8 +6,9 @@ import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../Context/Context";
 import Modal from "react-modal";
 import DataTable from "react-data-table-component";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import Select from "react-select";
+import SimOverview from "../Sim/SimOverview";
 
 const SimDashboard = () => {
   const { toastAlert } = useGlobalContext();
@@ -27,6 +28,43 @@ const SimDashboard = () => {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
 
+  const [categoryData, setCategoryData] = useState([]);
+  const [category, setCategory] = useState("");
+  const [subcategoryData, setSubCategoryData] = useState([]);
+  const [subcategory, setSubCategory] = useState("");
+
+  const isAllocation = simData.filter((d) => d.status);
+  console.log(isAllocation, "allocation");
+  const getCategoryData = () => {
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_asset_category")
+      .then((res) => {
+        setCategoryData(res.data);
+      });
+  };
+  const getSubCategoryData = () => {
+    if (category) {
+      axios
+        .get(
+          `http://192.168.1.231:3000/api/get_single_asset_sub_category/${category}`
+        )
+        .then((res) => {
+          setSubCategoryData(res.data);
+          const filtersubcat = subcategory
+            ? res.data.filter((item) => item.sub_category_id === subcategory)
+            : res.data;
+          setDepartmentData(filtersubcat);
+        });
+    }
+  };
+  useEffect(() => {
+    getSubCategoryData();
+  }, [category]);
+
+  useEffect(() => {
+    getCategoryData();
+  }, []);
+
   function getData() {
     axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
       setSimData(res.data.data);
@@ -42,20 +80,25 @@ const SimDashboard = () => {
       setAllocatedCount(allocatedObjects);
     });
     axios
-      .get("http://34.93.221.166:3000/api/get_asset_department_count")
+      .get("http://192.168.1.231:3000/api/get_asset_department_count")
       .then((res) => {
         setDepartmentData(res.data.data);
+
+        const filteredDatas = category
+          ? res.data.data.filter((item) => item.category_id === category)
+          : res.data.data;
+        setDepartmentData(filteredDatas);
       });
   }
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [category]);
 
   const handleRowClick = (row) => {
     setSelectedRow(row);
     axios
-      .get(`http://34.93.221.166:3000/api/get_asset_users_of_dept/${row}`)
+      .get(`http://192.168.1.231:3000/api/get_asset_users_of_dept/${row}`)
       .then((res) => {
         setSelectedUserData(res.data.data);
       });
@@ -83,16 +126,16 @@ const SimDashboard = () => {
           <div className="row">
             <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <div className="d_infocard card shadow">
-                <div className="card-body">
-                  <div className="d_infocard_txt">
-                    <Link to="/sim-overview">
+                <Link to="/sim-overview">
+                  <div className="card-body">
+                    <div className="d_infocard_txt">
                       <h2>Total</h2>
-                    </Link>
+                    </div>
+                    <div className="d_infocard_icon">
+                      <span>{simData.length}</span>
+                    </div>
                   </div>
-                  <div className="d_infocard_icon">
-                    <span>{simData.length}</span>
-                  </div>
-                </div>
+                </Link>
               </div>
             </div>
 
@@ -117,6 +160,7 @@ const SimDashboard = () => {
                   <div className="d_infocard_txt">
                     <Link to="/sim-overview">
                       <h2>Allocated</h2>
+                      {/* <SimOverview allocated={isAllocation} /> */}
                     </Link>
                   </div>
                   <div className="d_infocard_icon">
@@ -127,37 +171,106 @@ const SimDashboard = () => {
             </div>
           </div>
           <hr className="mb-3" />
-          <div className="form-group col-3">
-            <label className="form-label">
-              Department Name<sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              options={[
-                { value: "", label: "All" },
-                ...departmentData.map((option) => ({
-                  value: option.dept_id,
-                  label: option.dept_name,
-                })),
-              ]}
-              value={
-                departmentFilter === ""
-                  ? { value: "", label: "All" }
-                  : {
-                      value: departmentFilter,
-                      label:
-                        departmentData.find(
-                          (dept) => dept.dept_id === departmentFilter
-                        )?.dept_name || "Select...",
-                    }
-              }
-              onChange={(selectedOption) => {
-                const selectedValue = selectedOption
-                  ? selectedOption.value
-                  : "";
-                setDepartmentFilter(selectedValue);
-              }}
-              required
-            />
+          <div className="row">
+            <div className="form-group col-3">
+              <label className="form-label">
+                Department Name<sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={[
+                  { value: "", label: "All" },
+                  ...departmentData.map((option) => ({
+                    value: option.dept_id,
+                    label: option.dept_name,
+                  })),
+                ]}
+                value={
+                  departmentFilter === ""
+                    ? { value: "", label: "All" }
+                    : {
+                        value: departmentFilter,
+                        label:
+                          departmentData.find(
+                            (dept) => dept.dept_id === departmentFilter
+                          )?.dept_name || "Select...",
+                      }
+                }
+                onChange={(selectedOption) => {
+                  const selectedValue = selectedOption
+                    ? selectedOption.value
+                    : "";
+                  setDepartmentFilter(selectedValue);
+                }}
+              />
+            </div>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Category <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={[
+                  { value: "", label: "All" },
+                  ...categoryData.map((option) => ({
+                    value: option.category_id,
+                    label: option.category_name,
+                  })),
+                ]}
+                value={
+                  category === ""
+                    ? { value: "", label: "All" }
+                    : {
+                        value: category,
+                        label:
+                          categoryData.find(
+                            (dept) => dept.category_id === category
+                          )?.category_name || "Select...",
+                      }
+                }
+                onChange={(selectedOption) => {
+                  const selectedValues = selectedOption
+                    ? selectedOption.value
+                    : "";
+                  setCategory(selectedValues);
+                  // if (selectedValues === "") {
+                  //   getData();
+                  // }
+                }}
+              />
+            </div>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Sub Category <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                className=""
+                options={[
+                  { value: "", label: "All" },
+                  ...subcategoryData.map((option) => ({
+                    value: option.sub_category_id,
+                    label: `${option.sub_category_name}`,
+                  })),
+                ]}
+                value={
+                  subcategory === ""
+                    ? { value: "", label: "All" }
+                    : {
+                        value: subcategory,
+                        label:
+                          subcategoryData.find(
+                            (sub) => sub.sub_category_id === subcategory
+                          )?.sub_category_name || "Select...",
+                      }
+                }
+                onChange={(select) => {
+                  const selectsub = select ? select.value : "";
+                  setSubCategory(selectsub);
+                  if (selectsub === "") {
+                    getData();
+                  }
+                }}
+                required
+              />
+            </div>
           </div>
           <div className="row">
             {departmentData.map((item) => {
@@ -175,7 +288,8 @@ const SimDashboard = () => {
                       <div className="card-body">
                         <div className="d_infocard_txt">
                           <h3>{item.dept_name}</h3>
-                          <h2></h2>
+                          <h3>cat -{item.category_name}</h3>
+                          {/* <h3>subcat -{item.sub_category_name}</h3> */}
                         </div>
                         <div className="d_infocard_icon">
                           <span>{item.count}</span>
@@ -225,6 +339,8 @@ const SimDashboard = () => {
                   width: "10%",
                 },
                 { name: "Name", selector: "user_name" },
+                { name: "Category Name", selector: "category_name" },
+                { name: "SubCategory Name", selector: "sub_category_name" },
               ]}
               data={selectedUserData.filter((user) =>
                 user.user_name.toLowerCase().includes(modalSearch.toLowerCase())

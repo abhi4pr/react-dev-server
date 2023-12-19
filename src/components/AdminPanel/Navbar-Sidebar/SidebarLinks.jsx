@@ -612,7 +612,13 @@ const SidebarLinks = () => {
                             className="collapse-item"
                             to="/admin/phase-dashboard"
                           >
-                            Phase Dashbaord
+                            Phase Dashboard
+                          </Link>
+                          <Link
+                            className="collapse-item"
+                            to="/admin/replacement-dashboard"
+                          >
+                            Replacement Dashboard
                           </Link>
                           <Link
                             className="collapse-item"
@@ -656,7 +662,7 @@ const SidebarLinks = () => {
                             className="collapse-item"
                             to="/admin/createAssign"
                           >
-                          createAssign
+                            createAssign
                           </Link>
 
                           <Link
