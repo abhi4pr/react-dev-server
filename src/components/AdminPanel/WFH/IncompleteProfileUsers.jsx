@@ -38,7 +38,7 @@ const IncompleteProfileUsers = () => {
   async function getData() {
     try {
       const res = await axios.get(
-        "http://192.168.29.115:3000/api/get_all_percentage"
+        "http://34.93.221.166:3000/api/get_all_percentage"
       );
 
       const data = res.data.incompleteUsersDetails;
@@ -93,6 +93,7 @@ const IncompleteProfileUsers = () => {
       });
   };
 
+  console.log(filterdata);
   const columns = [
     {
       field: "id",
@@ -114,7 +115,13 @@ const IncompleteProfileUsers = () => {
       ),
       sortable: true,
     },
-    { field: "emp_id", headerName: "Employee ID", width: 100, sortable: true },
+    {
+      field: "emp_id",
+      headerName: "Employee ID",
+      width: 100,
+      sortable: true,
+      renderCell: (params) => params?.row.emp_id,
+    },
     {
       field: "filledPercentage",
       headerName: "Profile Status",
@@ -124,9 +131,9 @@ const IncompleteProfileUsers = () => {
     },
     { field: "Role_name", headerName: "Role", width: 110, sortable: true },
     {
-      field: "user_login_id",
-      headerName: "Login ID",
-      width: 190,
+      field: "department_name",
+      headerName: "Department",
+      width: 120,
       sortable: true,
     },
     {
@@ -135,13 +142,7 @@ const IncompleteProfileUsers = () => {
       width: 180,
       sortable: true,
     },
-    {
-      field: "department_name",
-      headerName: "Department",
-      width: 120,
-      sortable: true,
-    },
-    { field: "user_email_id", headerName: "Email", width: 230 },
+    { field: "PersonalEmail", headerName: "Personal Email", width: 230 },
     {
       field: "actions",
       headerName: "Action",

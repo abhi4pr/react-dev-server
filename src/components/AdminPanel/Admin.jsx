@@ -306,7 +306,7 @@ const Admin = () => {
                   />
 
                   <Route
-                    path="/wfh-dashboard-overview"
+                    path="/wfh-dashboard-overview/:id"
                     element={<DashboardWFHCardDetails />}
                   />
 
