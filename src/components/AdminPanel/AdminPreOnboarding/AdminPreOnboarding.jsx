@@ -20,7 +20,6 @@ const AdminPreOnboarding = () => {
 
   const jobTypeData = ["WFO", "WFH"];
   const tdsApplicableData = ["Yes", "No"];
-
   const genderData = ["Male", "Female", "Other"];
 
   const whatsappApi = WhatsappAPI();
@@ -36,10 +35,12 @@ const AdminPreOnboarding = () => {
   const [reportL2, setReportL2] = useState("");
   const [reportL3, setReportL3] = useState("");
   const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(true);
   const [city, setCity] = useState("");
 
   const [personalEmail, setPersonalEmail] = useState("");
-  const [validEmail, setValidEmail] = useState(true);
+  const [validPersonalEmail, setValidPersonalEmail] = useState(true);
+
   const [annexurePdf, setAnnexurePdf] = useState("");
 
   //TDS fields
@@ -115,10 +116,8 @@ const AdminPreOnboarding = () => {
     formData.append("ctc", userCtc);
     formData.append("offer_letter_send", Boolean(sendLetter.value));
     formData.append("annexure_pdf", annexurePdf);
-
     formData.append("tds_applicable", tdsApplicable);
     formData.append("tds_per", tdsPercentage);
-
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
     formData.append("user_contact_no", contact);
@@ -222,7 +221,7 @@ const AdminPreOnboarding = () => {
   // Email Validation
   function handleEmailChange(e) {
     const newEmail = e.target.value;
-    setPersonalEmail(newEmail);
+    setEmail(newEmail);
 
     if (newEmail == "") {
       setValidEmail(false);
@@ -231,8 +230,41 @@ const AdminPreOnboarding = () => {
       setValidEmail(emailRegex.test(newEmail));
     }
   }
+  function handlePersonalEmailChange(e) {
+    const newEmail = e.target.value;
+    setPersonalEmail(newEmail);
 
-  // Number validation
+    if (newEmail == "") {
+      setValidPersonalEmail(false);
+    } else {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      setValidPersonalEmail(emailRegex.test(newEmail));
+    }
+  }
+
+  //user Contact validation
+  function handleContactChange(event) {
+    const newContact1 = event.target.value;
+    setContact(newContact1);
+
+    if (newContact1 === "") {
+      setValidContact(false);
+    } else {
+      setValidContact(
+        /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+      );
+    }
+  }
+
+  function handleContactBlur() {
+    setisContactTouched(true);
+    if (contact.length < 10) {
+      setValidContact(false);
+    }
+  }
+
+  //personal Contact validation
+
   function handlePersonalContactChange(event) {
     const newContact1 = event.target.value;
     setPersonalContact(newContact1);
@@ -246,11 +278,9 @@ const AdminPreOnboarding = () => {
     }
   }
 
-  function handleContentBlur() {
-    setisContactTouched(true);
+  function handlePersonalContactBlur() {
     setisContactTouched1(true);
-    if (contact.length < 10) {
-      setValidContact(false);
+    if (personalContact.length < 10) {
       setValidContact1(false);
     }
   }
@@ -372,14 +402,25 @@ const AdminPreOnboarding = () => {
         </div>
 
         <FieldContainer
+          label="Email"
+          type="email"
+          fieldGrid={3}
+          required={false}
+          value={email}
+          onChange={handleEmailChange}
+        />
+        {!validEmail && (
+          <p style={{ color: "red" }}>*Please enter valid email</p>
+        )}
+        <FieldContainer
           label="Personal Email"
           type="email"
           fieldGrid={3}
           required={false}
           value={personalEmail}
-          onChange={handleEmailChange}
+          onChange={handlePersonalEmailChange}
         />
-        {!validEmail && (
+        {!validPersonalEmail && (
           <p style={{ color: "red" }}>*Please enter valid email</p>
         )}
         <FieldContainer
@@ -499,13 +540,26 @@ const AdminPreOnboarding = () => {
         )}
 
         <FieldContainer
+          label="Contact"
+          type="number"
+          fieldGrid={3}
+          value={contact}
+          required={true}
+          onChange={handleContactChange}
+          onBlur={handleContactBlur}
+        />
+        {(isContactTouched || contact.length >= 10) && !isValidcontact && (
+          <p style={{ color: "red" }}>*Please enter a valid Number</p>
+        )}
+
+        <FieldContainer
           label="Personal Contact"
           type="number"
           fieldGrid={3}
           value={personalContact}
           required={false}
           onChange={handlePersonalContactChange}
-          onBlur={handleContentBlur}
+          onBlur={handlePersonalContactBlur}
         />
         {(isContactTouched1 || personalContact.length >= 10) &&
           !isValidcontact1 && (

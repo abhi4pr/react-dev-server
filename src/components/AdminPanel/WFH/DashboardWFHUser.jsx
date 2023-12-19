@@ -18,7 +18,7 @@ const DashboardWFHUser = () => {
   const getDepartment = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.29.115:3000/api/all_departments_of_wfh"
+        "http://34.93.221.166:3000/api/all_departments_of_wfh"
       );
 
       setDepartmentData(response.data.data);
@@ -41,7 +41,7 @@ const DashboardWFHUser = () => {
   const preOnboardCount = async () => {
     try {
       const res = await axios.get(
-        "http://192.168.29.115:3000/api/get_all_wfh_users"
+        "http://34.93.221.166:3000/api/get_all_wfh_users"
       );
       const data = res.data.data;
       const onboarddata = data.filter((d) => d.onboard_status === 2).length;
@@ -56,10 +56,10 @@ const DashboardWFHUser = () => {
   const getAnniversaryBirthdays = async () => {
     try {
       const responseDOB = await axios.get(
-        "http://192.168.29.115:3000/api/get_all_users_with_dob"
+        "http://34.93.221.166:3000/api/get_all_users_with_dob"
       );
       const responseDOJ = await axios.get(
-        "http://192.168.29.115:3000/api/get_all_users_with_doj"
+        "http://34.93.221.166:3000/api/get_all_users_with_doj"
       );
       setBirthdays(responseDOB.data.users);
       setWorkAnniversary(responseDOJ.data.users);
@@ -71,7 +71,7 @@ const DashboardWFHUser = () => {
   const getThisMonthJoinees = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.29.115:3000/api/get_last_month_users"
+        "http://34.93.221.166:3000/api/get_last_month_users"
       );
       setThisMonthJoinee(response.data);
     } catch (error) {
@@ -82,7 +82,7 @@ const DashboardWFHUser = () => {
   const IncompleteUserProfiles = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.29.115:3000/api/get_all_percentage"
+        "http://34.93.221.166:3000/api/get_all_percentage"
       );
       setIncompleteUserProfileData(response.data.incompleteUsersDetails);
     } catch (error) {
@@ -132,9 +132,7 @@ const DashboardWFHUser = () => {
                       </span>
                       {wfhUsersCount}
                     </li>
-                    <li>
-                      <span>Total Salary</span>₹ {totalSalary}
-                    </li>
+
                     <li>
                       <span>
                         <Link to="/admin/pre-onboarding-overview">
@@ -150,6 +148,9 @@ const DashboardWFHUser = () => {
                         </Link>
                       </span>
                       {IncompleteUserProfilesData.length}
+                    </li>
+                    <li>
+                      <span>Total Salary</span>₹ {totalSalary}
                     </li>
                   </ul>
                 </div>
