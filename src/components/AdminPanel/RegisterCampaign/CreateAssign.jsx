@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import {
@@ -11,19 +11,20 @@ import {
   Typography,
 } from "@mui/material";
 import CampaignDetailes from "./CampaignDetailes";
+import Assigned from "./Assigned";
 const CreateAssign = () => {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [allPageData, setAllPageData] = useState([]);
   const [commit, setCommit] = useState([]);
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [singlePhaseData, setSinglePhaseData] = useState([]);
-  console.log(singlePhaseData[0]?.page_name, "new data from come to phase");
   const [expertiseData, setExpertiseData] = useState([]);
-
-  const [expertisename, setExpertiseName] = useState('');
   const [selectedRows, setSelectedRows] = useState([]);
   const [getId, setGetId] = useState("");
+  const [externalExpert, setExternalExpert] = useState();
+  const [loading, setLoading] = useState(false);
   let options = [];
   const Follower_Count = [
     "<10k",
@@ -40,7 +41,6 @@ const CreateAssign = () => {
       setSinglePhaseData(response?.data?.data?.pages);
       setGetId(response?.data?.data?.pages[0].campaignId);
       setCommit(response?.data?.data?.commitment);
-      // console.log(response?.data?.data?.phaseName, "response");
     } catch (error) {
       console.error("Error fetching phase data:", error);
     }
@@ -49,9 +49,7 @@ const CreateAssign = () => {
     );
     setAllPageData(pageData.data.body);
   };
-  const handleSelectionChange = (newSelection) => {
-    setSelectedRows(newSelection);
-  };
+
   const ExpertiseDa = async () => {
     try {
       const response = await axios.get(
@@ -64,32 +62,47 @@ const CreateAssign = () => {
     }
   };
   const handleSubmitAssign = () => {
-    const dt = axios.post(`http://34.93.221.166:3000/api/assignment`, {
-      ass_to: expertiseData[0].exp_id,
-      ass_by: "4444",
-      page: {
-        phase_id: singlePhaseData[0]?.phase_id,
-        phaseName: singlePhaseData[0]?.phaseName,
-        plan_id: singlePhaseData[0]?.plan_id,
-        planName: singlePhaseData[0]?.planName,
-        vendor_id: singlePhaseData[0]?.vendor_id,
-        p_id: singlePhaseData[0]?.p_id,
-        postPerPage: singlePhaseData[0]?.postPerPage,
-        postRemaining: singlePhaseData[0]?.postRemaining,
-        campaignName: singlePhaseData[0]?.campaignName,
-        campaignId: getId,
-        page_name: singlePhaseData[0]?.page_name,
-        cat_name: singlePhaseData[0]?.cat_name,
-        // "platform": "Instagram",
-        // "follower_count": "9501423",
-        // "page_link": "https://www.instagram.com/naughtyworld_/",
-        // "createdAt": "2023-12-01T12:48:31.688Z",
-        // "__v": 0
-      },
-      ass_status: "assigned",
-    });
-    console.log(dt, "ewewe");
+    try {
+      const createAssignment = axios.post(`http://34.93.221.166:3000/api/assignment`, {
+        ass_by: "4444",
+        ass_to: expertiseData[0]?.exp_id,
+        page: {
+          phase_id: singlePhaseData[0]?.phase_id,
+          phaseName: singlePhaseData[0]?.phaseName,
+          plan_id: singlePhaseData[0]?.plan_id,
+          planName: singlePhaseData[0]?.planName,
+          vendor_id: singlePhaseData[0]?.vendor_id,
+          p_id: singlePhaseData[0]?.p_id,
+          postPerPage: singlePhaseData[0]?.postPerPage,
+          postRemaining: singlePhaseData[0]?.postRemaining,
+          campaignName: singlePhaseData[0]?.campaignName,
+          campaignId: getId,
+          page_name: singlePhaseData[0]?.page_name,
+          cat_name: singlePhaseData[0]?.cat_name,
+          platform: singlePhaseData[0]?.platform,
+          follower_count: singlePhaseData[0]?.follower_count,
+          page_link: singlePhaseData[0]?.page_link,
+        },
+        ass_status: "assigned",
+      });
+      console.log(createAssignment,"create assignment");
+      navigate("/admin/excusionCampaign");
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  useEffect(() => {
+    if (externalExpert) {
+      const updatedData = singlePhaseData.map((row) => {
+        if (selectedRows.includes(row.p_id)) {
+          return { ...row, expert: { label: "", value: "" } };
+        }
+        return row;
+      });
+      setSinglePhaseData(updatedData);
+    }
+  }, []);
 
   useEffect(() => {
     getPhaseData();
@@ -110,6 +123,42 @@ const CreateAssign = () => {
   }, [allPageData]);
   const categoryChangeHandler = (e, op) => {
     setSelectedCategory(op);
+  };
+  const handleSelectionChange = (selectedIds) => {
+    setSelectedRows(selectedIds);
+  };
+  const handleExternalExpertChange = (event, newValue) => {
+    setExternalExpert(newValue);
+    setLoading(true);
+    const updatedData = singlePhaseData.map((row) => {
+      if (selectedRows.includes(row.p_id)) {
+        return {
+          ...row,
+          expert: newValue
+            ? { label: newValue.label, value: newValue.value }
+            : null,
+        };
+      }
+      return row;
+    });
+
+    setSinglePhaseData(updatedData);
+    setLoading(false);
+  };
+
+  const handleExpertsChange = (event, newValue, params) => {
+    const updatedData = singlePhaseData.map((row) => {
+      if (row.p_id === params.row.p_id) {
+        return {
+          ...row,
+          expert: newValue
+            ? { label: newValue.label, value: newValue.value }
+            : null,
+        };
+      }
+      return row;
+    });
+    setSinglePhaseData(updatedData);
   };
   const followerChangeHandler = (e, op) => {
     setSelectedFollower(op);
@@ -151,20 +200,28 @@ const CreateAssign = () => {
       editable: true,
     },
     {
-      field: "text",
+      field: "expert",
       headerName: "Experts",
       width: 190,
-      renderCell: () => {
+      renderCell: (params) => {
         return (
-          <Autocomplete
-            options={expertiseData.map((user) => ({
-              label: user.exp_name,
-              value: user.exp_id,
-            }))}
-            renderInput={(params) => <TextField {...params} />}
-            fullWidth
-            disablePortal
-          />
+          !loading && (
+            <Autocomplete
+              value={params.row?.expert ? params.row.expert.label : ""}
+              isOptionEqualToValue={(option, value) => {
+                option.value === value.value && option.value == value.label;
+              }}
+              options={expertiseData.map((user) => ({
+                label: user.exp_name,
+                value: user.exp_id,
+              }))}
+              onChange={(event, newValue) =>
+                handleExpertsChange(event, newValue, params)
+              }
+              renderInput={(params) => <TextField {...params} />}
+              fullWidth
+            />
+          )
         );
       },
     },
@@ -181,6 +238,13 @@ const CreateAssign = () => {
       editable: true,
     },
   ];
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <>
@@ -246,25 +310,18 @@ const CreateAssign = () => {
       <Box sx={{ display: "flex", m: 2 }}>
         <div className="col-sm-12 col-lg-3">
           <Autocomplete
-            fullWidth={true}
-            disablePortal
-            id="combo-box-demo"
+            value={externalExpert}
             options={expertiseData.map((user) => ({
               label: user.exp_name,
               value: user.exp_id,
             }))}
-            onChange={(e, newvalue) => {
-              if (newvalue != null) {
-                setExpertiseName((prev) => ({
-                  label: newvalue.label,
-                  exp_id: newvalue.value,
-                }));
-              }
-            }}
-            renderInput={(params) => <TextField {...params} label="Experts" />}
+            onChange={handleExternalExpertChange}
+            renderInput={(params) => (
+              <TextField {...params} label="External Expert" />
+            )}
+            fullWidth
           />
         </div>
-
         <div className="col-sm-12 col-lg-3">
           <Autocomplete
             multiple
@@ -274,7 +331,9 @@ const CreateAssign = () => {
             onChange={categoryChangeHandler}
           />
         </div>
+
         <div className="col-sm-12 col-lg-3">
+          {" "}
           <Autocomplete
             id="combo-box-demo"
             options={Follower_Count}
@@ -286,23 +345,37 @@ const CreateAssign = () => {
             onChange={followerChangeHandler}
           />
         </div>
+        <Box>
+          <Button variant="outlined" onClick={handleOpenModal}>
+            {" "}
+            Assigned Task
+          </Button>
+        </Box>
       </Box>
-      <Box sx={{ height: 500, width: "100%" }}>
-        <DataGrid
-          rows={singlePhaseData}
-          columns={columns}
-          getRowId={(row) => row.p_id}
-          pageSizeOptions={[5]}
-          checkboxSelection
-          onRowSelectionModelChange={(row) => handleSelectionChange(row)}
-          rowSelectionModel={selectedRows.map((row) => row)}
-        />
+
+      <Box sx={{ height: loading ? 100 : 500, width: "100%" }}>
+        {!loading && (
+          <DataGrid
+            rows={singlePhaseData}
+            columns={columns}
+            getRowId={(row) => row.p_id}
+            pageSizeOptions={[5]}
+            checkboxSelection
+            onRowSelectionModelChange={(row) => handleSelectionChange(row)}
+            rowSelectionModel={selectedRows.map((row) => row)}
+          />
+        )}
       </Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Button variant="contained" sx={{ m: 2 }} onClick={handleSubmitAssign}>
           Create Assignment{" "}
         </Button>
       </Box>
+      <Assigned
+        open={isModalOpen}
+        handleClose={handleCloseModal}
+        data={singlePhaseData}
+      />
     </>
   );
 };
