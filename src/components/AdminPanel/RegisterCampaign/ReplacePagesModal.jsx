@@ -1,3 +1,4 @@
+import { SdStorageRounded } from "@mui/icons-material";
 import {
   Modal,
   Box,
@@ -6,6 +7,8 @@ import {
   TextField,
   Autocomplete,
 } from "@mui/material";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 const style = {
   position: "absolute",
@@ -17,9 +20,57 @@ const style = {
   boxShadow: 24,
   p: 4,
 };
-const Pages = ["tollywood_insta", "bollywood_insta"];
+
 // eslint-disable-next-line react/prop-types
-const ReplacePagesModal = ({ open, handleClose }) => {
+const ReplacePagesModal = ({ open, handleClose,selection,planData,stage }) => {
+  
+  const [replacementData,setReplacementData] = useState({});
+  const [remainingPages,setRemainingPages] = useState([])
+  console.log(planData)
+
+  const getAllPages=async ()=>{
+    const pageData = await axios.get(
+      `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
+    );
+    console.log(pageData.data.body)
+    const remainingData = pageData?.data?.body.filter(
+      (item) =>
+        !planData.some((selectedItem) => selectedItem.p_id == item.p_id)
+    );
+    setRemainingPages(remainingData);
+  }
+
+
+console.log(remainingPages)
+  useEffect(()=>{
+    if(planData.length>0 ){
+
+      getAllPages();
+    }
+  },[planData])
+
+  const handlePageReplacement = (params,op)=>{
+    
+    setReplacementData({...replacementData,
+    "campaignName":selection?.campaignName,
+    "campaignId":selection?.campaignId,
+    "replacement_request_by":"12345",
+    replacement_stage:stage,
+    page:op,
+    newPage_id:op.p_id,
+    oldPage_id:selection?.p_id,
+    planName:selection?.planName
+
+
+    })
+  }
+   console.log(replacementData)
+  const handleSubmit=async ()=>{
+    const result=await axios.post('http://localhost:3000/api/replacement/plan',replacementData)
+    handleClose()
+    
+  }
+ 
   
   return (
     <Modal
@@ -34,14 +85,26 @@ const ReplacePagesModal = ({ open, handleClose }) => {
         </Typography>
         <Autocomplete
           id="combo-box-demo"
-          options={Pages}
-          getOptionLabel={(option) => option}
+          options={remainingPages}
+          getOptionLabel={(option) => option.page_name}
           sx={{ width: 300 }}
           renderInput={(params) => (
             <TextField {...params} label="Pages" />
           )}
-          // onChange={followerChangeHandler}
+          onChange={handlePageReplacement}
         />
+        <TextField
+            label="post/page"
+            defaultValue="5"
+            
+            fullWidth
+            margin="normal"
+            onChange={(e)=>{
+              console.log("first")
+              const page={...replacementData.page,postPerPage:e.target.value};
+              setReplacementData({...replacementData,page})}}
+          />
+          
         <Box sx={{ display: "flex" }}>
           <TextField
             label="Page Name"
@@ -50,6 +113,7 @@ const ReplacePagesModal = ({ open, handleClose }) => {
             fullWidth
             margin="normal"
           />
+          
           <TextField
             label="Category Name"
             defaultValue="Bollywood Page"
@@ -69,7 +133,7 @@ const ReplacePagesModal = ({ open, handleClose }) => {
           <Button onClick={handleClose} variant="contained" color="secondary">
             Close
           </Button>
-          <Button onClick={handleClose} variant="contained" color="primary">
+          <Button onClick={handleSubmit} variant="contained" color="primary">
           Replace  Request 
           </Button>
         </Box>
