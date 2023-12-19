@@ -744,7 +744,7 @@ const Admin = () => {
                     path="/exeexecution/PagePerformanceDashboard"
                     element={<PagePerformanceDashboard />}
                   />
-                   <Route
+                  <Route
                     path="/exeexecution/PagePerformanceAnalytics"
                     element={<PagePerformanceAnalytics />}
                   />

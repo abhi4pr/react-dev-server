@@ -10,6 +10,7 @@
   --info: #1a73e8;
   --warning: #fb8c00;
   --danger: #f44335;
+  --secondary: #da37df;
   --transition: all 0.3s;
   --font-montserrat: "Montserrat", sans-serif;
   --font-recoleta: "Recoleta", sans-serif;
@@ -2074,6 +2075,14 @@ img {
 
 .warning_badges.pending h4 {
   background: var(--warning);
+}
+
+.warning_badges.not_uploaded h4 {
+  background: var(--gray);
+}
+
+.warning_badges.document_uploaded h4 {
+  background: var(--secondary);
 }
 
 .warning_badges h4 span {

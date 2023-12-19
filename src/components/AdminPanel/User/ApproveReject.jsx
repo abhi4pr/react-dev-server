@@ -3,7 +3,7 @@ import React from "react";
 const ApproveReject = ({ data }) => {
   return (
     <>
-      {data === "Reject" && (
+      {data === "Rejected" && (
         <div className="documentCard_message">
           <p className="color_danger">
             <i className="bi bi-x-circle-fill" />
@@ -11,7 +11,7 @@ const ApproveReject = ({ data }) => {
           </p>
         </div>
       )}
-      {data === "Approve" && (
+      {data === "Approved" && (
         <div className="documentCard_message">
           <p className="color_success">
             <i className="bi bi-check-circle-fill" />
@@ -19,7 +19,7 @@ const ApproveReject = ({ data }) => {
           </p>
         </div>
       )}
-      {data === "Pending" && (
+      {data === "Verification Pending" && (
         <div className="documentCard_message">
           <p className="color_warning">
             <i className="bi bi-check-circle-fill" />
