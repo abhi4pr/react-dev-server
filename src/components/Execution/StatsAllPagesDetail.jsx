@@ -9,6 +9,7 @@ import { Button } from "antd";
 import InsertPhotoTwoToneIcon from "@mui/icons-material/InsertPhotoTwoTone";
 import OndemandVideoTwoToneIcon from "@mui/icons-material/OndemandVideoTwoTone";
 import DeleteHistoryConfirmation from "./DeleteHistoryConfirmation";
+import ContentLoader from "react-content-loader";
 
 export default function StatsAllPagesDetail() {
   const [allPagesDetail, setAllPagesDetail] = useState([]);
@@ -20,7 +21,7 @@ export default function StatsAllPagesDetail() {
   const [updatePercentage, setSetUpdatePercentage] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [copiedData, setCopiedData] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const apiCall = () => {
     axios
       .get("http://34.93.221.166:3000/api/get_distinct_count_history")
@@ -33,29 +34,18 @@ export default function StatsAllPagesDetail() {
   useEffect(() => {
     const formData = new URLSearchParams();
     formData.append("loggedin_user_id", 36);
-
+setLoading(true);
     axios
       .get(
         "http://34.93.221.166:3000/api/get_all_purchase_data",
       ).then((res) => {
-        console.log(res.data.result);
+        setLoading(false);
         setPhpData(res.data.result);
         let tempdata = res.data.result.filter((ele) => {
           return ele.platform.toLowerCase() == "instagram";
         });
 
-        // for (let i = 0; i < tempdata.length; i++) {
-        //   axios
-        //     .post(`http://34.93.221.166:3000/api/get_percentage`, {
-        //       p_id: tempdata[i].p_id,
-        //     })
-        //     .then((res) => {
-        //       if (res.status == 200) {
-        //         setSetUpdatePercentage((prev) => [...prev, res.data]);
-        //       }
-        //     });
-        // }
-
+       
       });
     apiCall();
       axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
@@ -617,12 +607,72 @@ export default function StatsAllPagesDetail() {
     //   },
     // },
   ];
+  const SkeletonLoading =()=>  {
+    return <ContentLoader
+        width={1200}
+        height={400}
+        viewBox="0 0 1200 400"
+        backgroundColor="#f3f3f3"
+        foregroundColor="#ecebeb"
+        
+      >
+        <rect x="27" y="139" rx="4" ry="4" width="20" height="20" />
+        <rect x="67" y="140" rx="10" ry="10" width="85" height="19" />
+        <rect x="188" y="141" rx="10" ry="10" width="169" height="19" />
+        <rect x="402" y="140" rx="10" ry="10" width="85" height="19" />
+        <rect x="523" y="141" rx="10" ry="10" width="169" height="19" />
+        <rect x="731" y="139" rx="10" ry="10" width="85" height="19" />
+        <rect x="852" y="138" rx="10" ry="10" width="85" height="19" />
   
+        <rect x="26" y="196" rx="4" ry="4" width="20" height="20" />
+        <rect x="66" y="197" rx="10" ry="10" width="85" height="19" />
+        <rect x="187" y="198" rx="10" ry="10" width="169" height="19" />
+        <rect x="401" y="197" rx="10" ry="10" width="85" height="19" />
+        <rect x="522" y="198" rx="10" ry="10" width="169" height="19" />
+        <rect x="730" y="196" rx="10" ry="10" width="85" height="19" />
+        <rect x="851" y="195" rx="10" ry="10" width="85" height="19" />
+  
+        <rect x="26" y="258" rx="4" ry="4" width="20" height="20" />
+        <rect x="66" y="259" rx="10" ry="10" width="85" height="19" />
+        <rect x="187" y="260" rx="10" ry="10" width="169" height="19" />
+        <rect x="401" y="259" rx="10" ry="10" width="85" height="19" />
+        <rect x="522" y="260" rx="10" ry="10" width="169" height="19" />
+        <rect x="730" y="258" rx="10" ry="10" width="85" height="19" />
+        <rect x="851" y="257" rx="10" ry="10" width="85" height="19" />
+  
+        <rect x="26" y="316" rx="4" ry="4" width="20" height="20" />
+        <rect x="66" y="317" rx="10" ry="10" width="85" height="19" />
+        <rect x="187" y="318" rx="10" ry="10" width="169" height="19" />
+        <rect x="401" y="317" rx="10" ry="10" width="85" height="19" />
+        <rect x="522" y="318" rx="10" ry="10" width="169" height="19" />
+        <rect x="730" y="316" rx="10" ry="10" width="85" height="19" />
+        <rect x="851" y="315" rx="10" ry="10" width="85" height="19" />
+  
+        <rect x="26" y="379" rx="4" ry="4" width="20" height="20" />
+        <rect x="66" y="380" rx="10" ry="10" width="85" height="19" />
+        <rect x="187" y="381" rx="10" ry="10" width="169" height="19" />
+        <rect x="401" y="380" rx="10" ry="10" width="85" height="19" />
+        <rect x="522" y="381" rx="10" ry="10" width="169" height="19" />
+        <rect x="730" y="379" rx="10" ry="10" width="85" height="19" />
+        <rect x="851" y="378" rx="10" ry="10" width="85" height="19" />
+  
+        <rect x="978" y="138" rx="10" ry="10" width="169" height="19" />
+        <rect x="977" y="195" rx="10" ry="10" width="169" height="19" />
+        <rect x="977" y="257" rx="10" ry="10" width="169" height="19" />
+        <rect x="977" y="315" rx="10" ry="10" width="169" height="19" />
+        <rect x="977" y="378" rx="10" ry="10" width="169" height="19" />
+  
+        <circle cx="37" cy="97" r="11" />
+        <rect x="26" y="23" rx="5" ry="5" width="153" height="30" />
+        <circle cx="77" cy="96" r="11" />
+      </ContentLoader>;
+    };
+
   return (
     <div>
       <div style={{ width: "100%", margin: "0 0 0 0" }}>
         <FormContainer mainTitle="All Pages Detailed" link="/ip-master" />
-        <DataGrid
+       {!loading && <DataGrid
           rows={allPagesDetail}
           columns={columns}
           // pageSize={10}
@@ -644,7 +694,8 @@ export default function StatsAllPagesDetail() {
           rowSelectionModel={rowSelectionModel}
           onClipboardCopy={(copiedString) => setCopiedData(copiedString)}
           unstable_ignoreValueFormatterDuringExport
-        />
+        />}
+        {loading && <SkeletonLoading/>}
       </div>
       <DeleteHistoryConfirmation
         handleCloseDeleteHistoryConFirmation={

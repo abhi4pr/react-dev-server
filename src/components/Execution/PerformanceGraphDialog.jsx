@@ -12,77 +12,69 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { LineChart } from "@mui/x-charts/LineChart";
 import { BarChart } from "@mui/x-charts/BarChart";
+import axios from "axios";
 
 export default function PerformanceGraphDialog({
   setOpenPerformanceGraphDialog,
   rowData,
   intervalFlag,
   setIntervalFlag,
-  intervalFlagOptions
+  intervalFlagOptions,
 }) {
   const [open, setOpen] = useState(true);
+  const [graphData, setGraphData] = useState([]);
   // const [intervalFlag, setintervalFlag] = useState("Current Month");
+  useEffect(() => {
+    callApi();
+  }, {});
+
+  useEffect(() => {
+    callApi();
+  }, [intervalFlag]);
+
+  const callApi = () => {
+    axios
+      .post("http://34.93.221.166:3000/api/page_health_dashboard", {
+        p_id: rowData?.p_id,
+        interval: intervalFlag?.value,
+      })
+      .then((res) => {
+        setGraphData(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleClose = () => {
     setOpenPerformanceGraphDialog(false);
   };
-
-  useEffect(() => {
-    console.log(rowData);
-    // console.log(rowData.maxEngagement);
-  }, []);
-
-  // const GraphAutoCompSelectdata = [
-  //   "Current Month",
-  //   "Last six months",
-  //   "Last one year",
-  // ];
 
   return (
     <React.Fragment>
       <Dialog open={open} onClose={handleClose} maxWidth={"xl"}>
         <DialogTitle>Subscribe</DialogTitle>
         <DialogContent>
-          {/* <Autocomplete
+          <Autocomplete
             disablePortal
+            value={intervalFlag.label}
+            defaultValue={intervalFlagOptions[0].label}
             id="combo-box-demo"
-            options={GraphAutoCompSelectdata}
-            sx={{ width: 250 }}
-            className="mt-2"
-            value={intervalFlag}
+            options={intervalFlagOptions.map((option) => ({
+              label: option.label,
+              value: option.value,
+            }))}
             onChange={(event, newValue) => {
               if (newValue === null) {
-                return setintervalFlag("Current Month");
+                return setIntervalFlag({ label: "Current Month", value: 1 });
               }
-              setintervalFlag(newValue);
+              setIntervalFlag(newValue);
             }}
+            sx={{ width: 300 }}
             renderInput={(params) => (
-              <TextField {...params} label="Choose Option" />
+              <TextField {...params} label="Filter Date" />
             )}
-          /> */}
-
-<Autocomplete
-          disablePortal
-          va
-          lue={intervalFlag.label}
-          defaultValue={intervalFlagOptions[0].label}
-          id="combo-box-demo"
-          options={intervalFlagOptions.map((option) => ({
-            label: option.label,
-            value: option.value,
-          }))}
-          onChange={(event, newValue) => {
-            if (newValue === null) {
-              return setIntervalFlag({ label: "Current Month", value: 1 });
-            }
-            console.log(newValue);
-            setIntervalFlag(newValue);
-          }}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Filter Date" />
-          )}
-        />
+          />
 
           {intervalFlag.label === "Current Month" && (
             <>
@@ -134,52 +126,31 @@ export default function PerformanceGraphDialog({
                 <h6 className="fs-5 mx-2 pt-3">Highest</h6>
                 <LineChart
                   xAxis={[
-                    intervalFlag?.label === "Current Month"
-                      ? { data: [1] }
-                      : intervalFlag.label === "Last six months"
-                      ? { data: [1, 2, 3, 4, 5, 6] }
-                      : intervalFlag.label === "Last one year"
-                      ? { data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }
-                      : null,
+                    {
+                      data:
+                        intervalFlag?.label === "Current Month"
+                          ? [1]
+                          : intervalFlag.label === "Last Three months"
+                          ? [1, 2, 3]
+                          : intervalFlag.label === "Last six months"
+                          ? [1, 2, 3, 4, 5, 6]
+                          : intervalFlag.label === "Last one year"
+                          ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+                          : null,
+                    },
                   ]}
                   series={[
                     {
                       label: "Engagement",
-                      data:
-                        intervalFlag?.label === "Current Month"
-                          ? [rowData?.maxEngagement] // Assuming rowData?.maxEngagement is a number
-                          : intervalFlag.label === "Last six months"
-                          ? [583, 4854, 7885, 444, 455, 8624] // Array for last six months
-                          : intervalFlag.label === "Last one year"
-                          ? [rowData?.maxEngagement] // Array for last one year
-                          : null, // Default case
-                      // data: [rowData?.maxEngagement],
+                      data: graphData.map((e) => e?.maxEngagement),
                     },
                     {
                       label: "Impression",
-                      data:
-                        intervalFlag?.label === "Current Month"
-                          ? [rowData?.maxImpression] // Assuming rowData?.maxImpression is a number for "Current Month"
-                          : intervalFlag.label === "Last six months"
-                          ? [47526, 12547, 2562, 4789, 3657, 85478] // Replace with actual data for last six months
-                          : intervalFlag.label === "Last one year"
-                          ? [
-                            rowData?.maxImpression
-                            ] // Replace with actual data for last one year
-                          : null, // Default case
+                      data: graphData.map((e) => e?.maxImpression),
                     },
                     {
                       label: "Reach",
-                      data:
-                        intervalFlag?.label === "Current Month"
-                          ? [rowData?.maxReach] // Assuming rowData?.maxReach is a number for "Current Month"
-                          : intervalFlag.label === "Last six months"
-                          ? [474526, 128547, 25562, 47389, 36457, 875478] // Replace with actual data for last six months
-                          : intervalFlag.label === "Last one year"
-                          ? [
-                            rowData?.maxReach
-                            ] // Replace with actual data for last one year
-                          : null, // Default case
+                      data: graphData.map((e) => e?.maxReach),
                     },
                   ]}
                   width={500}
@@ -192,13 +163,13 @@ export default function PerformanceGraphDialog({
                   xAxis={[{ data: [1] }]}
                   series={[
                     {
-                      data: [rowData?.avgEngagement],
+                      data: graphData.map((e) => e.avgEngagement),
                     },
                     {
-                      data: [rowData?.avgImpression], // Second line data
+                      data: graphData.map((e) => e.avgImpression), // Second line data
                     },
                     {
-                      data: [rowData?.avgReach], // Third line data
+                      data: graphData.map((e) => e.avgReach), // Third line data
                     },
                   ]}
                   width={500}
@@ -212,13 +183,13 @@ export default function PerformanceGraphDialog({
                   xAxis={[{ data: [1] }]}
                   series={[
                     {
-                      data: [rowData?.minEngagement],
+                      data: graphData.map((e) => e.minEngagement),
                     },
                     {
-                      data: [rowData?.minImpression], // Second line data
+                      data: graphData.map((e) => e.minImpression), // Second line data
                     },
                     {
-                      data: [rowData?.minReach], // Third line data
+                      data: graphData.map((e) => e.minReach), // Third line data
                     },
                   ]}
                   width={500}

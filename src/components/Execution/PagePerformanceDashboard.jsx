@@ -19,7 +19,6 @@ const intervalFlagOptions = [
   { label: "Current Month", value: 1 },
   { label: "Last Three months", value: 3 },
   { label: "Last six months", value: 6 },
-
   { label: "Last one year", value: 10 },
   { label: "All Data", value: 2 },
 ];
@@ -43,12 +42,6 @@ export default function PagePerformanceDashboard() {
   }, [intervalFlag]);
 
   const callApi = () => {
-    // axios
-    //   .get("http://34.93.135.33:8080/api/page_health_dashboard")
-    //   .then((res) => {
-
-    //     setPageHistory(res.data.data);
-    //   });
     axios
       .post("http://34.93.135.33:8080/api/page_health_dashboard", {
         intervalFlag: intervalFlag.value,
@@ -260,6 +253,7 @@ export default function PagePerformanceDashboard() {
   const handleRowClick = (params) => {
     setOpenPerformanceGraphDialog(true);
     setRowData(params.row);
+    console.log(params.row)
   };
 
   return (
@@ -280,7 +274,6 @@ export default function PagePerformanceDashboard() {
             if (newValue === null) {
               return setIntervalFlag({ label: "Current Month", value: 1 });
             }
-            console.log(newValue);
             setIntervalFlag(newValue);
           }}
           sx={{ width: 300 }}

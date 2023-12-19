@@ -3,11 +3,9 @@ import { DataGrid } from "@mui/x-data-grid";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
-import { set } from "date-fns";
-import jwtDecode from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
-import { useNavigate } from "react-router-dom";
+import FormContainer from "../AdminPanel/FormContainer";
 
 export default function PagePerformanceAnalytics() {
   const [loading, setLoading] = useState(false);
@@ -280,9 +278,9 @@ export default function PagePerformanceAnalytics() {
     filterData();
   };
 
-useEffect(() => {
-  filterData();
-}, [followerCountFilter, reachFilter, impressionFilter]);
+  useEffect(() => {
+    filterData();
+  }, [followerCountFilter, reachFilter, impressionFilter]);
 
   const filterData = () => {
     const compareFollowerCount = (rowValue, filterValue, compareFlag) => {
@@ -324,7 +322,6 @@ useEffect(() => {
     const endDay = endDateObject.getDate().toString().padStart(2, "0");
 
     const endFormattedDate = `${endYear}-${endMonth}-${endDay}`;
-    console.log(endFormattedDate);
 
     const startDateString = startDate.$d;
     const startDateObject = new Date(startDateString);
@@ -346,7 +343,8 @@ useEffect(() => {
   };
 
   return (
-    <div>
+    <>
+    <FormContainer mainTitle="Analytics" link="/ip-master" />
       <div className="d-flex">
         <Autocomplete
           className="me-2"
@@ -362,7 +360,7 @@ useEffect(() => {
             if (newValue === null) {
               return setIntervalFlag({ label: "Current Month", value: 1 });
             }
-            console.log(newValue);
+
             setIntervalFlag(newValue);
           }}
           sx={{ width: 300 }}
@@ -376,9 +374,7 @@ useEffect(() => {
               <DatePicker
                 value={startDate}
                 format="DD/MM/YY"
-                onChange={(e) => {
-                  setStartDate(e), console.log(e);
-                }}
+                onChange={(e) => setStartDate(e)}
                 label="From"
               />
             </LocalizationProvider>
@@ -386,9 +382,7 @@ useEffect(() => {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   value={endDate}
-                  onChange={(e) => {
-                    handleEndDateChange(e);
-                  }}
+                  onChange={(e) => handleEndDateChange(e)}
                   label="To"
                   disabled={!startDate}
                 />
@@ -422,7 +416,7 @@ useEffect(() => {
             if (newValue === null) {
               return setIntervalFlag({ label: "Greater than", value: ">" });
             }
-            console.log(newValue);
+
             setFollowerCoutnCompareFlag(newValue);
           }}
           sx={{ width: 100 }}
@@ -456,7 +450,7 @@ useEffect(() => {
             if (newValue === null) {
               return setReachCompareFlag({ label: "Greater than", value: ">" });
             }
-            console.log(newValue);
+
             setFollowerCoutnCompareFlag(newValue);
           }}
           sx={{ width: 100 }}
@@ -493,7 +487,6 @@ useEffect(() => {
                 value: ">",
               });
             }
-            console.log(newValue);
             setFollowerCoutnCompareFlag(newValue);
           }}
           sx={{ width: 100 }}
@@ -521,6 +514,6 @@ useEffect(() => {
           <rect x="42" y="77" rx="10" ry="10" width="1100" height="600" />
         </ContentLoader>
       )}
-    </div>
+    </>
   );
 }

@@ -2484,12 +2484,12 @@ function ExecutionAll() {
       .get("http://34.93.221.166:3000/api/get_all_purchase_data")
       .then((res) => {
         setLoading(false);
-        console.log(res.data.result);
+
         setAlldata(res.data.result);
         let tempdata = res.data.result.filter((ele) => {
           return ele.platform.toLowerCase() == "instagram";
         });
-        console.log(tempdata);
+
         setRows(tempdata);
 
         // for (let i = 0; i < tempdata.length; i++) {
@@ -2789,11 +2789,7 @@ function ExecutionAll() {
       width: 150,
       headerName: "History",
       renderCell: (params) => {
-        console.log(
-          params?.row?.latestEntry?.stats_update_flag
-            ? params?.row?.latestEntry.stats_update_flag
-            : ""
-        );
+ 
         return (
           <button
             type="button"
