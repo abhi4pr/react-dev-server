@@ -26,6 +26,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Accordioan from "./Accordioan";
 import { useNavigate } from "react-router-dom";
+import PageOverview from "./PageOverview";
 let options = [];
 const PhaseCreation = () => {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ const PhaseCreation = () => {
   const [showPageDetails, setShowPageDetails] = useState(false);
 
   const [postpage, setPostPage] = useState(0);
+  const [render,setRender]=useState(false);
 
   const Follower_Count = [
     "<10k",
@@ -106,6 +108,9 @@ const PhaseCreation = () => {
       }
     });
   };
+  const renderHard=()=>{
+    getPhaseData()
+  }
   //whenever a pageData is available call categoryset function
   useEffect(() => {
     if (allPageData.length > 0) {
@@ -536,7 +541,9 @@ const PhaseCreation = () => {
                 <Typography>{`Phase ${index + 1}`}</Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Accordioan data={item} />
+                {/* <Accordioan data={item} /> */}
+                {console.log(item)}
+                <PageOverview selectData={item.pages} stage={"phase"} setRender={renderHard}/>
               </AccordionDetails>
             </Accordion>
           </Paper>

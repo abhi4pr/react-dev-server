@@ -7,16 +7,18 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import ReplacePagesModal from "./ReplacePagesModal";
 import CampaignDetailes from "./CampaignDetailes";
+import PageOverview from "./PageOverview";
 
 const PlanOverview = () => {
   const [selectData, setSelectData] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [render,setRender]=useState(false);
+
   const param = useParams();
   const id = param.id;
   console.log(selectData);
   const getSelectPage = async () => {
     const newPlan = await axios.get(
-      `http://34.93.221.166:3000/api/campaignplan/${id}`
+      `http://localhost:3000/api/campaignplan/${id}`
     );
     setSelectData(newPlan.data.data);
   };
@@ -25,73 +27,12 @@ const PlanOverview = () => {
     getSelectPage();
   }, []);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
+const renderHard=()=>{
+ 
+  getSelectPage()
+}
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const columns = [
-    {
-      field: "S.NO",
-      headerName: "S.NO",
-      width: 90,
-      editable: false,
-      renderCell: (params) => {
-        const rowIndex = selectData.indexOf(params.row);
-        return <div>{rowIndex + 1}</div>;
-      },
-    },
-    {
-      field: "page_name",
-      headerName: "Page Name",
-      width: 150,
-    },
-
-    {
-      field: "cat_name",
-      headerName: "Category Name",
-      width: 150,
-    },
-    {
-      field: "follower_count",
-      headerName: "Follower Count",
-      width: 150,
-    },
-    {
-      field: "postPerPage",
-      headerName: "post / Page",
-      width: 150,
-    },
-    {
-      field: "Action",
-      headerName: "Action",
-      width: 150,
-      editable: true,
-      renderCell: () => {
-        return (
-          <Button>
-            <DeleteIcon />
-          </Button>
-        );
-      },
-    },
-    {
-      field: "replace",
-      headerName: "Replace Pages",
-      width: 150,
-      editable: true,
-      renderCell: () => {
-        return (
-          <Button onClick={handleOpenModal}>
-            <PublishedWithChangesIcon />
-          </Button>
-        );
-      },
-    },
-  ];
+  
 
   return (
     <Paper>
@@ -101,15 +42,7 @@ const PlanOverview = () => {
         </div>
       </div>
       <CampaignDetailes cid={id} />
-  <Box sx={{ height: 400, width: "100%", mt:2 }}>      <DataGrid
-        rows={selectData}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        getRowId={(row) => row.p_id}
-      />
-      <ReplacePagesModal open={isModalOpen} handleClose={handleCloseModal} />
-      </Box>
+    <PageOverview selectData={selectData} setrender={renderHard} stage={'plan'}/>
 
     </Paper>
   );
