@@ -90,10 +90,6 @@ const PreOnboardingUserMaster = () => {
 
   const [contact, setContact] = useState("");
   const [personalContact, setPersonalContact] = useState("");
-  const [isValidcontact, setValidContact] = useState(false);
-  const [isValidcontact1, setValidContact1] = useState(false);
-  const [isContactTouched, setisContactTouched] = useState(false);
-  const [isContactTouched1, setisContactTouched1] = useState(false);
 
   const [backendSpeakingLanguage, setBackendSpeakingLanguage] = useState("");
   const [speakingLanguage, setSpeakingLanguage] = useState([]);
@@ -855,7 +851,9 @@ const PreOnboardingUserMaster = () => {
         <div className="page_wrapper">
           <div className="sidebar_wrapper">
             <div className="sidebar_header">
-              <h2>Home</h2>
+              <h2 onClick={() => setActiveTab(0)}>
+                Home <i className="bi bi-house-fill" />
+              </h2>
             </div>
             <div className="sidebar_items">
               <div
@@ -972,7 +970,7 @@ const PreOnboardingUserMaster = () => {
               <div className="user_box">
                 <div className="user_name">
                   <h3>
-                    <span>Welcome back,</span>
+                    <span>Welcome </span>
                     {getNickName}
                   </h3>
                 </div>
@@ -1385,6 +1383,7 @@ const PreOnboardingUserMaster = () => {
 
                           <div className="board_form">
                             <h2>Permanent Address</h2>
+
                             <div className="form-group">
                               <TextField
                                 required

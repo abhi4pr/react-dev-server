@@ -15,12 +15,13 @@ const DocumentTab = ({ documentData, setDocumentData, getDocuments }) => {
 
   const handleFileUpload = (file, documentId) => {
     updateDocumentData(documentId, "file", file);
-    updateDocumentData(documentId, "status", "Pending");
+    updateDocumentData(documentId, "status", "Document Uploaded");
   };
 
   useEffect(() => {
     console.log(documentData);
   }, [documentData]);
+
   const handleSubmit = async () => {
     try {
       const mandatoryDocTypes = ["10th", "12th", "Graduation"];
@@ -41,7 +42,12 @@ const DocumentTab = ({ documentData, setDocumentData, getDocuments }) => {
             let formData = new FormData();
             formData.append("doc_image", document.file);
             formData.append("_id", document._id);
-            formData.append("status", document.status);
+            formData.append(
+              "status",
+              document.status == "Document Uploaded"
+                ? "Verification Pending"
+                : document.status
+            );
             const response = await axios.put(
               "http://34.93.221.166:3000/api/update_user_doc",
               formData,
@@ -93,9 +99,6 @@ const DocumentTab = ({ documentData, setDocumentData, getDocuments }) => {
                         <span>
                           <i className="bi bi-cloud-arrow-up" /> Upload
                         </span>
-                        {/* <span className="color_success">
-                          <i className="bi bi-check" /> Done
-                        </span> */}
                         <input
                           type="file"
                           onChange={(e) =>
@@ -106,10 +109,28 @@ const DocumentTab = ({ documentData, setDocumentData, getDocuments }) => {
                     </td>
                     <td>
                       <div className="docStatus">
-                        <span className="warning_badges reject">
+                        <span
+                          className={`warning_badges 
+                        ${item.status == "" && "not_uploaded"}
+                        ${
+                          item.status == "Document Uploaded" &&
+                          "document_uploaded"
+                        }
+                        ${item.status == "Verification Pending" && "pending"}
+                        ${item.status == "Approved" && "approve"}
+                        ${item.status == "Rejected" && "reject"}
+                        `}
+                        >
                           <h4>
-                            {item.status !== "" ? item.status : "Not Uploaded"}
+                            {item.status == "" && "Not Uploaded"}
+                            {item.status !== "" && item.status}
                           </h4>
+                          {item.status == "Rejected" && (
+                            <i
+                              class="bi bi-exclamation-circle-fill"
+                              title={item.reject_reason}
+                            />
+                          )}
                         </span>
                       </div>
                     </td>

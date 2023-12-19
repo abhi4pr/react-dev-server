@@ -6,11 +6,11 @@ import DataTable from "react-data-table-component";
 import { useGlobalContext } from "../../../Context/Context";
 
 const LoginHistory = () => {
-  
   const { toastAlert } = useGlobalContext();
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterdata, setFilterData] = useState([]);
+  const [durationFilter, setDurationFilter] = useState(7);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -31,28 +31,28 @@ const LoginHistory = () => {
 
   useEffect(() => {
     const result = data.filter((d) => {
-      return d.user_email_id.toLowerCase().match(search.toLowerCase());
+      return d.user_name?.toLowerCase()?.match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
 
   function formatTimestamp(timestamp) {
     const date = new Date(timestamp);
-  
+
     const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-  
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-    const seconds = date.getSeconds().toString().padStart(2, '0');
-  
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
+    const day = date.getDate().toString().padStart(2, "0");
+
+    const hours = date.getHours().toString().padStart(2, "0");
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    const seconds = date.getSeconds().toString().padStart(2, "0");
+
     const formattedTimestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  
+
     return formattedTimestamp;
   }
 
-  function getDuration(seconds){
+  function getDuration(seconds) {
     const days = Math.floor(seconds / (3600 * 24));
     seconds -= days * 3600 * 24;
     const hrs = Math.floor(seconds / 3600);
@@ -67,6 +67,11 @@ const LoginHistory = () => {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
       width: "5%",
+      sortable: true,
+    },
+    {
+      name: "User Name",
+      selector: (row) => row.user_name,
       sortable: true,
     },
     {
@@ -104,33 +109,31 @@ const LoginHistory = () => {
         // handleSubmit={handleSubmit}
         submitButton={false}
       >
-      
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title="Pre Onboard User Login History"
-              columns={columns}
-              data={filterdata}
-              fixedHeader
-              // pagination
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
-            />
+        <div className="page_height">
+          <div className="card mb-4">
+            <div className="data_tbl table-responsive">
+              <DataTable
+                title="Pre Onboard User Login History"
+                columns={columns}
+                data={filterdata}
+                fixedHeader
+                // pagination
+                fixedHeaderScrollHeight="64vh"
+                highlightOnHover
+                subHeader
+                subHeaderComponent={
+                  <input
+                    type="text"
+                    placeholder="Search here"
+                    className="w-50 form-control "
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                }
+              />
+            </div>
           </div>
         </div>
-      </div>
-
       </FormContainer>
     </>
   );

@@ -13,6 +13,7 @@ import UserSingleTab1 from "./UserSingleTab1";
 import UserSingleTab2 from "./UserSingleTab2";
 import UserSingleTab4 from "./UserSingleTab4";
 import UserSingleTab3 from "./UserSingleTab3";
+import DocumentTabUserSingle from "./DocumentTabUserSingle";
 const UserSingle = () => {
   const whatsappApi = WhatsappAPI();
   const [KRIData, setKRIData] = useState([]);
@@ -120,7 +121,13 @@ const UserSingle = () => {
     );
     setRoomId(selectedOption);
   }, [defaultSeatData, user?.sitting_id]);
-  const accordionButtons = ["Genral", "Professional", "KRA", "Documents"];
+  const accordionButtons = [
+    "Genral",
+    "Professional",
+    "KRA",
+    "Documents",
+    "Documents",
+  ];
 
   const handleVerification = (
     e,
@@ -1147,6 +1154,7 @@ const UserSingle = () => {
             {activeAccordionIndex === 3 && (
               <UserSingleTab4 user={user} id={id} getData={getData} />
             )}
+            {activeAccordionIndex == 4 && <DocumentTabUserSingle id={id} />}
           </FormContainer>
         </div>
       </div>
