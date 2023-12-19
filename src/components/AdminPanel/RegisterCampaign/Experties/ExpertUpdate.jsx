@@ -49,12 +49,14 @@ const ExpertiesUpdate = () => {
   };
   const ExsingleData = async () => {
     const singledata = await axios.get(
-      `http://192.168.29.110:8080/api/expertise/${id}`
+      `http://34.93.221.166:3000/api/expertise/${id}`
     );
-    const fetcheData = singledata.data.data;
+    const fetcheData = singledata?.data.data;
     console.log(fetcheData, "single data ");
-    const { exp_name, user_id } = fetcheData;
-    setExpertiesUserName(exp_name);
+    const { exp_name, user_id, area_of_expertise } = fetcheData;
+    console.log(category);
+    setExpertiesUserName(area_of_expertise.category);
+    // setSelectedCategory(category);
   };
 
   useEffect(() => {
@@ -80,7 +82,7 @@ const ExpertiesUpdate = () => {
   };
 
   useEffect(() => {
-    if (allPageData.length > 0) {
+    if (allPageData?.length > 0) {
       categorySet();
       platformset();
     }

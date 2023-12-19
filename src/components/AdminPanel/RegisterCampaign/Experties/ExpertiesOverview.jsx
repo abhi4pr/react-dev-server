@@ -13,7 +13,7 @@ import { Box, Button, Modal } from "@mui/material";
 // var desturctureData;
 const ExpertiesOverview = () => {
   const [getExpertiesData, setGetExpertiesData] = useState([]);
-  console.log(getExpertiesData, "desturctureData");
+
   // const handleClose = () => setOpen(false);
   const [open2, setOpen2] = React.useState(false);
   const [expertieareadata, setExpertieAreaData] = useState([]);

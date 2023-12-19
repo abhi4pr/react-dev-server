@@ -28,7 +28,7 @@ const VenderOverView = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_vendor"
+        "http://192.168.1.231:3000/api/get_all_vendor"
       );
       setFilterData(response.data);
       setData(response.data);
@@ -56,7 +56,21 @@ const VenderOverView = () => {
       name: "Vender Contect",
       selector: (row) => row.vendor_contact_no,
       sortable: true,
-      width: "20%",
+    },
+    {
+      name: "Secondery Contect",
+      selector: (row) => row.secondary_contact_no,
+      sortable: true,
+    },
+    {
+      name: "Secondery Person",
+      selector: (row) => row.secondary_person_name,
+      sortable: true,
+    },
+    {
+      name: "Type",
+      selector: (row) => row.vendor_type,
+      sortable: true,
     },
     {
       name: " Email",
@@ -70,12 +84,12 @@ const VenderOverView = () => {
       sortable: true,
       width: "12%",
     },
-    {
-      name: "Description",
-      selector: (row) => row.description,
-      sortable: true,
-      width: "15%",
-    },
+    // {
+    //   name: "Description",
+    //   selector: (row) => row.description,
+    //   sortable: true,
+    //   width: "15%",
+    // },
     {
       name: "Action",
       width: "15%",
@@ -109,7 +123,7 @@ const VenderOverView = () => {
             <div className="action_heading">
               <div className="action_title">
                 <FormContainer
-                  mainTitle="Vendor Master"
+                  mainTitle="Vendor Overview"
                   link="/vendorMaster"
                   submitButton={false}
                 />

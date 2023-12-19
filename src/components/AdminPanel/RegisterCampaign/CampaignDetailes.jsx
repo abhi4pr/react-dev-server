@@ -67,7 +67,7 @@ const CampaignDetailes = ({
     myComm.forEach((x) => {
       data.push({ commitment: x.cmtName, value: "0" });
     });
-    // console.log(cmpName)
+
     setCommitmentCompleteData(data);
   };
 
@@ -93,7 +93,7 @@ const CampaignDetailes = ({
       {/* Non editable campaigning detailes */}
       <Paper sx={{ p: 1 }}>
         <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
               label="Brand "
               InputLabelProps={{ shrink: true }}
@@ -102,10 +102,9 @@ const CampaignDetailes = ({
               }}
               fullWidth
               value={brandData.brand_name}
-              sx={{ m: 2 }}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
               InputProps={{
                 readOnly: true,
@@ -114,19 +113,17 @@ const CampaignDetailes = ({
               label="Campaign"
               InputLabelProps={{ shrink: true }}
               value={cmpName.exeCmpName}
-              sx={{ m: 2 }}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <TextField
-             InputProps={{
-              readOnly: true,
-            }}
+              InputProps={{
+                readOnly: true,
+              }}
               fullWidth
               label="Campaign Details"
               InputLabelProps={{ shrink: true }}
               value={campaignData.detailing}
-              sx={{ m: 2 }}
             />
           </Grid>
           {commitData.length > 0 &&
@@ -144,9 +141,9 @@ const CampaignDetailes = ({
                 </Grid>
                 <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
                   <TextField
-                  InputProps={{
-                    readOnly: true,
-                  }}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                     fullWidth
                     label="value"
                     value={campaignData?.commitment[index]?.textValue}
