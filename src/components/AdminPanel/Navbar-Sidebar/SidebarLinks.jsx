@@ -168,6 +168,9 @@ const SidebarLinks = () => {
                 <Link className="collapse-item" to="/sim-overview">
                   Asset Management
                 </Link>
+                <Link className="collapse-item" to="/admin/user-graph">
+                  User Graphs
+                </Link>
             </div>
           </div>
         </li>

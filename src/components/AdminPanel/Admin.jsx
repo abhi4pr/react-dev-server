@@ -172,6 +172,7 @@ import WFHUserOverview from "./WFH/WFHUserOverview";
 import CreateAssign from "./RegisterCampaign/CreateAssign";
 import PagePerformanceAnalytics from "../Execution/PagePerformanceAnalytics";
 import IncompleteProfileUsers from "./WFH/IncompleteProfileUsers";
+import UserGraphs from './User/UserGraphs';
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -268,6 +269,10 @@ const Admin = () => {
                         <Route
                           path="/user-single/:id"
                           element={<UserSingle />}
+                        />
+                        <Route
+                          path="/user-graph"
+                          element={<UserGraphs />}
                         />
                       </>
                     )}
