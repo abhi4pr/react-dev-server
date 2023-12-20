@@ -190,6 +190,27 @@ const UserSingleTab1 = ({ user }) => {
               </div>
             </div>
           )}
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            {" "}
+            <div className="profileInfo_box">
+              <h3>Alternate Contact </h3>
+              <h4>{user.alternate_contact ? user.alternate_contact : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            {" "}
+            <div className="profileInfo_box">
+              <h3>Emergency Contact </h3>
+              <h4>{user.emergency_contact ? user.emergency_contact : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            {" "}
+            <div className="profileInfo_box">
+              <h3>Cast </h3>
+              <h4>{user.cast_type ? user.cast_type : "NA"}</h4>
+            </div>
+          </div>
         </div>
       </div>
     </>

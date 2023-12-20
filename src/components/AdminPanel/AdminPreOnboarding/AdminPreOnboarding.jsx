@@ -87,6 +87,10 @@ const AdminPreOnboarding = () => {
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState("");
 
+  const [isRequired, setIsRequired] = useState({
+    reportL1:false,
+  });
+
   useEffect(() => {
     axios
       .get("http://34.93.221.166:3000/api/get_all_departments")
@@ -383,6 +387,7 @@ const AdminPreOnboarding = () => {
             Report L1 <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
+          required={true}
             className=""
             options={usersData.map((option) => ({
               value: option.user_id,
@@ -396,9 +401,17 @@ const AdminPreOnboarding = () => {
             }}
             onChange={(e) => {
               setReportL1(e.value);
+             e.value && setIsRequired(prev=>{return {...prev,reportL1:false}});
+
             }}
-            required
+            onBlur={(e) => {
+              console.log(reportL1);
+              !reportL1 && setIsRequired(prev=>{return {...prev,reportL1:true}});
+              reportL1 && setIsRequired(prev=>{return {...prev,reportL1:false}});
+
+            }}
           />
+          {isRequired.reportL1 && <p style={{ color: "red" }}>*Please select  Report L1</p>}
         </div>
 
         <FieldContainer
