@@ -142,6 +142,21 @@ const UserMaster = () => {
   const [higestQualification, setHigestQualification] = useState("");
   const [isValidPAN, setIsValidPAN] = useState(true);
   const [isValidUID, setIsValidUID] = useState(true); // State to track UID validation
+  const [alternateContact, setAlternateContact] = useState("");
+  const [isValidcontact3, setValidContact3] = useState(false);
+  const [isAlternateTouched, setisAlternateTouched] = useState(false);
+  const [isAlternateTouched1, setisAlternateTouched1] = useState(false);
+  const [validAlternateContact, setValidAlternateContact] = useState(false);
+  const [validAlternateContact1, setValidAlternateContact1] = useState(false);
+const [emergencyContact, setEmergencyContact] = useState("");
+const [isValidcontact4, setValidContact4] = useState(false);
+const [isEmergencyContactTouched, setisEmergencyContactTouched] = useState(false);
+const [isEmergencyContactTouched1, setisEmergencyContactTouched1] = useState(false);
+const [validEmergencyContact, setValidEmergencyContact] = useState(false);
+const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
+  const [cast, setCast] = useState("");
+
+
   const higestQualificationData = [
     "10th",
     "12th",
@@ -164,6 +179,13 @@ const UserMaster = () => {
     "O+ (O Positive)",
     "O- (O Negetive)",
   ];
+
+  const castOption = [
+    "General",
+    "OBC",
+    "SC",
+    "ST", 
+  ]
   const maritialStatusData = ["Single", "Married"]; //,"Divorced","Widowed","Separated"
   const handlePANChange = (e) => {
     const inputPAN = e.target.value.toUpperCase();
@@ -314,6 +336,9 @@ const UserMaster = () => {
     formData.append("spouse_name", spouseName);
     formData.append("sub_dept_id", subDepartment);
     formData.append("highest_qualification_name", higestQualification);
+    formData.append("alternate_contact", alternateContact);
+    formData.append("emergency_contact", emergencyContact);
+    formData.append("cast_type", cast);
     if (isValidcontact == true && validEmail == true) {
       try {
         const isLoginIdExists = usersData.some(
@@ -462,6 +487,32 @@ const UserMaster = () => {
       );
     }
   }
+  function handleAlternateContactChange(event) {
+    const newContact1 = event.target.value;
+    setAlternateContact(newContact1);
+
+    if (newContact1 === "") {
+      setValidContact3(false);
+    } else {
+      setValidContact3(
+        /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+      );
+    }
+  }
+
+  function handleEmergencyContactChange(event) {
+    const newContact1 = event.target.value;
+    setEmergencyContact(newContact1);
+
+    if (newContact1 === "") {
+      setValidContact4(false);
+    } else {
+      setValidContact4(
+        /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+      );
+    }
+  }
+
 
   function handleContentBlur() {
     setisContactTouched(true);
@@ -469,6 +520,25 @@ const UserMaster = () => {
     if (contact.length < 10) {
       setValidContact(false);
       setValidContact1(false);
+    }
+  }
+
+  function handleAlternateBlur() {
+    setisAlternateTouched(true);
+    setisAlternateTouched1(true);
+    if (contact.length < 10) {
+      setValidAlternateContact(false);
+      setValidAlternateContact1(false);
+    }
+  }
+
+
+  function handleEmergencyBlur() {
+    setisEmergencyContactTouched(true);
+    setisEmergencyContactTouched1(true);
+    if (contact.length < 10) {
+      setValidEmergencyContact(false);
+      setValidEmergencyContact1(false);
     }
   }
 
@@ -633,6 +703,27 @@ const UserMaster = () => {
           }}
           onChange={(e) => {
             setDesignation(e.value);
+          }}
+          required
+        />
+      </div>
+
+      <div className="form-group col-3">
+        <label className="form-label">
+          Cast <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={castOption.map((option) => ({
+            value: option,
+            label: `${option}`,
+          }))}
+          value={{
+            value: cast,
+            label: cast,
+          }}
+          onChange={(e) => {
+            setCast(e.value);
           }}
           required
         />
@@ -811,6 +902,40 @@ const UserMaster = () => {
         !isValidcontact1 && (
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
         )}
+        <FieldContainer
+        label="Alternate Contact *"
+        type="number"
+        fieldGrid={3}
+        value={alternateContact}
+        required={false}
+        onChange={handleAlternateContactChange}
+        onBlur={handleAlternateBlur}
+
+        // setValidAlternateContact1  setValidAlternateContact setisAlternateTouched1 setisAlternateTouched
+
+      />
+        {(isAlternateTouched1 || alternateContact.length >= 10) &&
+        !isValidcontact3 && (
+          <p style={{ color: "red" }}>*Please enter a valid Number</p>
+        )}
+     
+        <FieldContainer
+        label="Emergency Contact *"
+        type="number"
+        fieldGrid={3}
+        value={emergencyContact}
+        required={false}
+        onChange={handleEmergencyContactChange}
+        onBlur={handleEmergencyBlur}
+
+        // setValidAlternateContact1  setValidAlternateContact setisAlternateTouched1 setisAlternateTouched
+
+      />
+       {(isEmergencyContactTouched1 || emergencyContact.length >= 10) &&
+        !isValidcontact3 && (
+          <p style={{ color: "red" }}>*Please enter a valid Number</p>
+        )}
+    
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
           <label>Login ID *</label>
