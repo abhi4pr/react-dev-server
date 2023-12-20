@@ -566,6 +566,11 @@ const UserOverview = () => {
           />
         </div>
         <div className="action_btns">
+          <Link to="/sim-overview">
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Asset
+            </button>
+          </Link>
           <Link to="/admin/users-dashboard">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Dashboard

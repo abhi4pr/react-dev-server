@@ -165,6 +165,9 @@ const SidebarLinks = () => {
                     </Link>
                   </>
                 )}
+                <Link className="collapse-item" to="/sim-overview">
+                  Asset Management
+                </Link>
             </div>
           </div>
         </li>

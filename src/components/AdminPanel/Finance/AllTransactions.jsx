@@ -52,7 +52,7 @@ const AllTransactions = () => {
     },
     {
       name: <div style={{ whiteSpace: 'normal' }}>Requested By</div>,
-      selector: (row) => <div style={{ whiteSpace: 'normal' }}>Growth Manager </div>,
+      selector: (row) => <div style={{ whiteSpace: 'normal' }}>{row.user_name} </div>,
       width: "8%",
       sortable: false,
     },

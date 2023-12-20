@@ -115,7 +115,7 @@ const BalancePaymentList = () => {
     },
     {
       name: "Sales Executive Name",
-      selector: (row) => "	Bhushan",
+      selector: (row) => row.sales_exe_name,
 
     },
     {
@@ -133,7 +133,7 @@ const BalancePaymentList = () => {
     },
     {
       name: "Balance Amount",
-      selector: (row) => "800",
+      selector: (row) => row.campaign_amount - row.total_paid_amount,
     },
     
     {

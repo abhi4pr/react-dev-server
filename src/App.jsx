@@ -43,10 +43,36 @@ import VenderOverView from "./components/Sim/Vender/VenderOverView";
 import VenderMaster from "./components/Sim/Vender/VenderMaster";
 import VendorUpdate from "./components/Sim/Vender/VendorUpdate";
 import SingleAssetUserDetails from "./components/Sim/SingleAssetUserDetails";
+import { useEffect,useState } from "react";
 
 function App() {
+
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnlineStatusChange = () => {
+      setIsOnline(navigator.onLine);
+    };
+
+    window.addEventListener('online', handleOnlineStatusChange);
+    window.addEventListener('offline', handleOnlineStatusChange);
+
+    return () => {
+      window.removeEventListener('online', handleOnlineStatusChange);
+      window.removeEventListener('offline', handleOnlineStatusChange);
+    };
+  }, []);
+
   return (
     <>
+      <div>
+        {isOnline ? (
+          <h1></h1>
+        ) : (
+          alert('No Internet Connection')
+        )}
+      </div>
+
       {/* <Notification /> */}
       <BrowserRouter>
         <Routes>

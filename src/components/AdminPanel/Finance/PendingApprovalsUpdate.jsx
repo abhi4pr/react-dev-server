@@ -71,7 +71,7 @@ const PendingApprovalUpdate = () => {
     },
     {
       name: <div style={{ whiteSpace: 'normal' }}>Requested By</div>,
-      selector: (row) => <div style={{ whiteSpace: 'normal' }}>Growth Manager </div>,
+      selector: (row) => <div style={{ whiteSpace: 'normal' }}>{row.user_name} </div>,
       width: "7%",
       sortable: false,
     },
@@ -115,7 +115,7 @@ const PendingApprovalUpdate = () => {
     },
     {
       name: "Bank Detail",
-      selector: (row) => <div style={{ whiteSpace: 'normal' }}> Indore (M.P.) </div>,
+      selector: (row) => <div style={{ whiteSpace: 'normal' }}> {row.detail} </div>,
       width: "12%",
     },
     {
