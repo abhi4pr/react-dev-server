@@ -42,6 +42,7 @@ const UserGraphs = () => {
           required={false}
           onChange={(e) => handleFilterChange(e)}
         >
+          <option value=""> Select To See Graph </option>
           <option value="gender"> Gender </option>
           <option value="job"> Job Type </option>
           <option value="year"> Joined in year </option>
@@ -52,7 +53,7 @@ const UserGraphs = () => {
 
         <div style={{marginBottom:'10%'}}></div>
 
-        {graphData.length > 0 && (
+        {graphData.length > 0 && (selectedFilter == 'job' || selectedFilter == 'gender') && (
           <>
             <BarChart
               width={800}
@@ -76,6 +77,31 @@ const UserGraphs = () => {
             />
           </>
         )}  
+
+        {graphData.length > 0 && (selectedFilter == 'year' || selectedFilter == 'age' || selectedFilter == 'experience') && (
+          <>
+          <BarChart
+            width={800}
+            height={400}
+            series={[
+              {
+                data: 
+                  selectedFilter === 'year' ? graphData.map((item) => item.userjoined) : 
+                  selectedFilter === 'age' ? graphData.map((item) => item.userCount) :
+                  selectedFilter === 'experience' ? graphData.map((item) => item.userCounts) : [],
+                label: 'User Counts',
+              }
+            ]}
+            xAxis={[{ 
+              scaleType: 'band', 
+              data: 
+                selectedFilter === 'year' ? graphData.map((item) => item.year) : 
+                selectedFilter === 'age' ? graphData.map((item) => item.age) :
+                selectedFilter === 'experience' ? graphData.map((item) => item.years) : []
+            }]}
+          />
+        </>
+        )}
       </>  
     );
 };
