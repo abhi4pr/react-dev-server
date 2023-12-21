@@ -16,19 +16,14 @@ const style = {
 };
 
 const Assigned = ({ open, handleClose, data }) => {
-  const [assignDa, setAssignDa] = useState([]);
-  const getAssignData = async () => {
-    const getData = await axios.get(
-      `http://34.93.221.166:3000/api/assignment/all/123456`
-    );
-    const assigned = getData?.data?.data.filter(
-      (item) => item.ass_status == "assigned"
-    );
-    setAssignDa(assigned);
-  };
+  const [newPayload, setNewPayload] = useState([]);
+  
   useEffect(() => {
-    getAssignData();
-  }, []);
+    const x=data?.filter(page=>page?.ass_status=='pending')
+    setNewPayload(x)
+  }, [data]);
+
+console.log(newPayload)
   const columns = [
     {
       field: "S.NO",
@@ -36,7 +31,7 @@ const Assigned = ({ open, handleClose, data }) => {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = assignDa.indexOf(params.row);
+        const rowIndex = newPayload.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -49,6 +44,12 @@ const Assigned = ({ open, handleClose, data }) => {
     {
       field: "cat_name",
       headerName: "Category",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "exp_name",
+      headerName: "expert",
       width: 150,
       editable: true,
     },
@@ -69,7 +70,7 @@ const Assigned = ({ open, handleClose, data }) => {
           </div>
         </div>
         <DataGrid
-          rows={assignDa}
+          rows={newPayload}
           columns={columns}
           pageSize={5}
           getRowId={(row) => row.p_id}

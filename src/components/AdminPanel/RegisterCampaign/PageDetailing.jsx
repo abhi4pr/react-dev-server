@@ -29,8 +29,8 @@ const PageDetaling = ({
   setFilteredPages,
   phaseInfo,
   setPhaseDataError,
-  setPostPage,
-  postpage,
+  // setPostPage,
+  // postpage,
 }) => {
   const { toastAlert, toastError } = useGlobalContext();
 
@@ -95,7 +95,7 @@ const PageDetaling = ({
       setAllPages(updatedPages);
     }
   };
-  // console.log(allPages);
+  
   const columns = [
     {
       field: "S.NO",
@@ -215,13 +215,15 @@ const PageDetaling = ({
     setOpenDialog(false);
   };
   const handlePost = (e) => {
-    const ppp = allPages.map((page) => {
+    const postperpage = allPages.map((page) => {
       return { ...page, postPerPage: Number(e.target.value) };
     });
-    setAllPages(ppp);
-    setPostPage(Number(e.target.value));
+   
+    setAllPages(postperpage);
+    // setPostPage(Number(e.target.value));
   };
 
+  console.log(allPages);
   const submitPlan = async (e) => {
     if (pageName == "planCreation") {
       const planName = data.campaignName + "plan";
@@ -292,7 +294,7 @@ const PageDetaling = ({
           InputLabelProps={{ shrink: true }}
           label="Post/pages"
           variant="outlined"
-          value={postpage}
+          // value={postpage}
           onChange={handlePost}
         />
       </Box>
