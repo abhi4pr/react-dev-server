@@ -18,7 +18,7 @@ const PlanOverview = () => {
   console.log(selectData);
   const getSelectPage = async () => {
     const newPlan = await axios.get(
-      `http://localhost:3000/api/campaignplan/${id}`
+      `http://192.168.29.110:3000/api/campaignplan/${id}`
     );
     setSelectData(newPlan.data.data);
   };

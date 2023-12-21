@@ -1,100 +1,111 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from "react";
 import {
-    Modal,
-    Box,
-    Typography,
-    Button,
-    TextField,
-    Autocomplete,
+  Modal,
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Autocomplete,
 } from "@mui/material";
-import axios from 'axios';
+import axios from "axios";
 
 const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 700,
-    bgcolor: "background.paper",
-    boxShadow: 24,
-    p: 4,
-  };
-
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 700,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+};
 
 const ReplacementRecord = ({ open, data, handleClose }) => {
-    console.log(open, data,)
-    const [replacementData,setReplacementData]=useState({})
-    const [oldPageData,seteOldPageData]=useState({})
-    const [newPageData,seteNewPageData]=useState({})
+  // console.log( data.replacement_id._id,"id")
+  const [replacementData, setReplacementData] = useState({});
+  const [oldPageData, seteOldPageData] = useState({});
+  const [newPageData, seteNewPageData] = useState([]);
+  console.log(newPageData, "daata");
 
-    const getRecord=async ()=>{
-        const record=await axios.get(`http://localhost:3000/api/replacement/${data.replacement_id._id}`)
-        setReplacementData(record?.data?.data)
-        // console.log(record)
+  const getRecord = async () => {
+    const record = await axios.get(
+      `http://192.168.29.110:3000/api/replacement/${data.replacement_id._id}`
+    );
+    console.log(record.data.data, "<---------------------------------");
+    setReplacementData(record?.data?.data);
+    // console.log(record)
+  };
+  const getPageData = async () => {
+    const oldPageData = await axios.get(
+      `http://192.168.29.110:3000/api/replacement/${data.replacement_id._id}`
+    );
+    seteNewPageData(oldPageData?.data?.data?.newPages);
+    console.log(oldPageData, "hello");
+  };
+
+  // console.log(replacementData)
+
+  useEffect(() => {
+    if (data) {
+      getRecord();
     }
-    const getPageData=async ()=>{
-        const oldPageData=await axios.get('http://localhost:3000/api/')
+  }, [data]);
+  useEffect(() => {
+    if (replacementData) {
+      getPageData();
     }
+  }, [replacementData]);
+  return (
+    <Modal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      <Box sx={style}>
+        <Typography sx={{ mb: 2 }} variant="h6" component="h2">
+          Replacement Record
+        </Typography>
 
-    console.log(replacementData)
-
-    useEffect(()=>{
-        if(data){
-            getRecord()
-        }
-    },[data])
-    useEffect(()=>{
-        if(replacementData){
-            getPageData()
-        }
-    },[replacementData])
-    return (
-        <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-        >
-            <Box sx={style}>
-                <Typography sx={{ mb: 4 }} variant="h6" component="h2">
-                    Replacement Record
-                </Typography>
-                <Box sx={{ display: "flex" }}>
-          <TextField
-            label="status"
-            defaultValue={replacementData?.replacement_status}
-            disabled
-            fullWidth
-            margin="normal"
-          />
-          
-          <TextField
-            label="Stage"
-            defaultValue={replacementData?.replacement_stage}
-            disabled
-            fullWidth
-            sx={{ m: 2 }}
-          />
-          <TextField
-            label="replacement for"
-            defaultValue={replacementData?.oldPage_id}
-            disabled
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="replacement by"
-            defaultValue={replacementData?.newPage_id}
-            disabled
-            fullWidth
-            margin="normal"
-          />
-        </Box>
+        {newPageData.map((item) => (
+          <>
+            <Box sx={{ display: "flex" }}>
+              <TextField
+                label="Page"
+                disabled
+                fullWidth
+                value={item?.page_name}
+                sx={{m:1}}
+              />
+                 <TextField
+                label="Category"
+                disabled
+                fullWidth
+                value={item?.cat_name}
+                sx={{m:1}}
+              />
+                 <TextField
+                label="Follower"
+                disabled
+                fullWidth
+                value={item?.follower_count}
+                sx={{m:1}}
+              />
+                 <TextField
+                label="Follower"
+                disabled
+                fullWidth
+                value={item?.platform}
+                sx={{m:1}}
+              />
+              
+              
             </Box>
+          </>
+        ))}
+      </Box>
+    </Modal>
+  );
+};
 
-
-        </Modal>
-    )
-}
-
-export default ReplacementRecord
+export default ReplacementRecord;
