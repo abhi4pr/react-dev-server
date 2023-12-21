@@ -78,7 +78,6 @@ const UserOverview = () => {
   };
 
   function handleSeprationReason(userId, username, user_contact_no) {
-    console.log(userId, username, "---------()");
     setSeparationUserID(userId);
     setUserName(username);
     setUserContact(user_contact_no);
@@ -286,6 +285,12 @@ const UserOverview = () => {
       sortable: true,
     },
     { field: "Role_name", headerName: "Role", width: 110, sortable: true },
+    {
+      field: "percentage_filled",
+      headerName: "Profile Status",
+      width: 110,
+      sortable: true,
+    },
     {
       field: "user_login_id",
       headerName: "Login ID",
@@ -566,6 +571,11 @@ const UserOverview = () => {
           />
         </div>
         <div className="action_btns">
+          <Link to="/admin/hobbies-overview">
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Hobbies
+            </button>
+          </Link>
           <Link to="/sim-overview">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Asset

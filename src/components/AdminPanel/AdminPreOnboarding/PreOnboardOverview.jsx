@@ -61,7 +61,7 @@ const PreOnboardingOverview = () => {
       width: "5%",
       sortable: true,
     },
-    
+
     {
       name: "User Name",
       selector: (row) => (

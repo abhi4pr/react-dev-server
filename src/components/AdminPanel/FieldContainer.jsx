@@ -16,6 +16,7 @@ const FieldContainer = ({
   placeholder,
   accept,
   max,
+  name,
 }) => {
   return (
     <div
@@ -42,6 +43,7 @@ const FieldContainer = ({
           accept={accept}
           placeholder={placeholder}
           max={max}
+          name={name}
         >
           {children}
         </Tag>

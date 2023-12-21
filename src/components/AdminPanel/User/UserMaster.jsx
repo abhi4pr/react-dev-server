@@ -35,12 +35,24 @@ import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import IndianStates from "../../ReusableComponents/IndianStates";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { event } from "jquery";
+import { TextField, Button, Box, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const colourOptions = [
   { value: "English", label: "English" },
   { value: "Hindi", label: "Hindi" },
   { value: "Other", label: "Other" },
 ];
+
+const initialFamilyDetailsGroup = {
+  Name: "",
+  DOB: "",
+  Relation: "",
+  Contact: "",
+  Occupation: "",
+  Income: "",
+};
 
 const UserMaster = () => {
   const whatsappApi = WhatsappAPI();
@@ -133,6 +145,9 @@ const UserMaster = () => {
   const [subDepartment, setSubDeparment] = useState([]);
   const [status, setStatus] = useState("");
   const [documents, setDocuments] = useState([]);
+  const [familyDetails, setFamilyDetails] = useState([
+    initialFamilyDetailsGroup,
+  ]);
   const [UIDNumber, setUIDNumber] = useState("");
   const [PANNumber, setPANNumber] = useState("");
   const [spouseName, setSpouseName] = useState("");
@@ -141,21 +156,22 @@ const UserMaster = () => {
   const loginUserId = decodedToken.id;
   const [higestQualification, setHigestQualification] = useState("");
   const [isValidPAN, setIsValidPAN] = useState(true);
-  const [isValidUID, setIsValidUID] = useState(true); // State to track UID validation
+  const [isValidUID, setIsValidUID] = useState(true);
   const [alternateContact, setAlternateContact] = useState("");
   const [isValidcontact3, setValidContact3] = useState(false);
   const [isAlternateTouched, setisAlternateTouched] = useState(false);
   const [isAlternateTouched1, setisAlternateTouched1] = useState(false);
   const [validAlternateContact, setValidAlternateContact] = useState(false);
   const [validAlternateContact1, setValidAlternateContact1] = useState(false);
-const [emergencyContact, setEmergencyContact] = useState("");
-const [isValidcontact4, setValidContact4] = useState(false);
-const [isEmergencyContactTouched, setisEmergencyContactTouched] = useState(false);
-const [isEmergencyContactTouched1, setisEmergencyContactTouched1] = useState(false);
-const [validEmergencyContact, setValidEmergencyContact] = useState(false);
-const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
+  const [emergencyContact, setEmergencyContact] = useState("");
+  const [isValidcontact4, setValidContact4] = useState(false);
+  const [isEmergencyContactTouched, setisEmergencyContactTouched] =
+    useState(false);
+  const [isEmergencyContactTouched1, setisEmergencyContactTouched1] =
+    useState(false);
+  const [validEmergencyContact, setValidEmergencyContact] = useState(false);
+  const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
   const [cast, setCast] = useState("");
-
 
   const higestQualificationData = [
     "10th",
@@ -180,12 +196,7 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
     "O- (O Negetive)",
   ];
 
-  const castOption = [
-    "General",
-    "OBC",
-    "SC",
-    "ST", 
-  ]
+  const castOption = ["General", "OBC", "SC", "ST"];
   const maritialStatusData = ["Single", "Married"]; //,"Divorced","Widowed","Separated"
   const handlePANChange = (e) => {
     const inputPAN = e.target.value.toUpperCase();
@@ -223,7 +234,9 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
   useEffect(() => {
     if (department) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_subdept_from_dept/${department}`)
+        .get(
+          `http://34.93.221.166:3000/api/get_subdept_from_dept/${department}`
+        )
         .then((res) => setSubDepartmentData(res.data));
     }
   }, [department]);
@@ -398,6 +411,22 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
               }
             );
           }
+          //temproary ip
+          for (const elements of familyDetails) {
+            const response = await axios.post(
+              "http://192.168.1.29/api/add_family",
+              {
+                name: elements.Name,
+                DOB: elements.DOB,
+                relation: elements.Relation,
+                contact: elements.Contact,
+                occupation: elements.Occupation,
+                annual_income: elements.Income,
+              }
+            );
+            console.log(response);
+          }
+
           axios
             .post("http://34.93.221.166:3000/api/add_send_user_mail", {
               email: email,
@@ -425,12 +454,13 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
           setIsFormSubmitted(true);
         }
       } catch (error) {
-        // console.log("Failed to submit form", error);
+        console.error("Failed to submit form", error);
       }
     } else {
       if (contact.length !== 10) {
         if (isValidcontact == false)
-          alert("Enter Phone Number in Proper Format");
+          toastAlert("Enter Phone Number in Proper Format");
+        // alert("Enter Phone Number in Proper Format");
       } else if (validEmail != true) {
         alert("Enter Valid Email");
       }
@@ -450,6 +480,7 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
   //     setOtherUpload(null);
   //   }
   // };
+
   // Email Validation
   function handleEmailChange(e) {
     const newEmail = e.target.value;
@@ -513,7 +544,6 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
     }
   }
 
-
   function handleContentBlur() {
     setisContactTouched(true);
     setisContactTouched1(true);
@@ -531,7 +561,6 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
       setValidAlternateContact1(false);
     }
   }
-
 
   function handleEmergencyBlur() {
     setisEmergencyContactTouched(true);
@@ -668,13 +697,39 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
     setDocuments(updatedDocuments);
   }
 
+  //familyDetails
+  const handleAddFamilyDetails = () => {
+    setFamilyDetails([...familyDetails, { ...initialFamilyDetailsGroup }]);
+  };
+
+  const handleFamilyDetailsChange = (index, event) => {
+    const updatedFamilyDetails = familyDetails.map((detail, idx) => {
+      if (idx === index) {
+        return { ...detail, [event.target.name]: event.target.value };
+      }
+      return detail;
+    });
+    setFamilyDetails(updatedFamilyDetails);
+  };
+
   function handleLanguageSelect(selectedOption) {
     setTempLanguage(selectedOption);
   }
 
+  const handleRemoveFamilyDetails = (index) => {
+    const newFamilyDetails = familyDetails.filter((_, idx) => idx !== index);
+    setFamilyDetails(newFamilyDetails);
+  };
+
   const isPersonalEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personalEmail);
 
-  const accordionButtons = ["General", "Personal", "Salary", "Documents"];
+  const accordionButtons = [
+    "General",
+    "Personal",
+    "Salary",
+    "Documents",
+    "Family",
+  ];
 
   const genralFields = (
     <>
@@ -902,7 +957,7 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
         !isValidcontact1 && (
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
         )}
-        <FieldContainer
+      <FieldContainer
         label="Alternate Contact *"
         type="number"
         fieldGrid={3}
@@ -912,14 +967,13 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
         onBlur={handleAlternateBlur}
 
         // setValidAlternateContact1  setValidAlternateContact setisAlternateTouched1 setisAlternateTouched
-
       />
-        {(isAlternateTouched1 || alternateContact.length >= 10) &&
+      {(isAlternateTouched1 || alternateContact.length >= 10) &&
         !isValidcontact3 && (
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
         )}
-     
-        <FieldContainer
+
+      <FieldContainer
         label="Emergency Contact *"
         type="number"
         fieldGrid={3}
@@ -929,13 +983,12 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
         onBlur={handleEmergencyBlur}
 
         // setValidAlternateContact1  setValidAlternateContact setisAlternateTouched1 setisAlternateTouched
-
       />
-       {(isEmergencyContactTouched1 || emergencyContact.length >= 10) &&
+      {(isEmergencyContactTouched1 || emergencyContact.length >= 10) &&
         !isValidcontact3 && (
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
         )}
-    
+
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
           <label>Login ID *</label>
@@ -1589,6 +1642,55 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
     </>
   );
 
+  const familyFields = (
+    <>
+      {familyDetails.map((detail, index) => (
+        <div key={index} mb={2}>
+          <div className="row">
+            {Object.keys(detail).map((key) =>
+              key === "DOB" ? (
+                <FieldContainer
+                  key={key}
+                  fieldGrid={3}
+                  type="date"
+                  name={key}
+                  label="Date of Birth"
+                  value={detail[key]}
+                  onChange={(e) => handleFamilyDetailsChange(index, e)}
+                />
+              ) : (
+                <FieldContainer
+                  key={key}
+                  fieldGrid={3}
+                  name={key}
+                  label={key}
+                  value={detail[key]}
+                  onChange={(e) => handleFamilyDetailsChange(index, e)}
+                />
+              )
+            )}
+            {familyDetails.length > 1 && (
+              <IconButton onClick={() => handleRemoveFamilyDetails(index)}>
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </div>
+        </div>
+      ))}
+      <div className="row">
+        <div className="col-12">
+          <button
+            onClick={handleAddFamilyDetails}
+            variant="contained"
+            className="btn btn-outline-primary me-2"
+          >
+            Add More Family Details
+          </button>
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <>
       <FormContainer
@@ -1603,6 +1705,7 @@ const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
         {activeAccordionIndex === 1 && personalFields}
         {activeAccordionIndex === 2 && salaryFields}
         {activeAccordionIndex === 3 && documentsFields}
+        {activeAccordionIndex === 4 && familyFields}
       </FormContainer>
     </>
   );
