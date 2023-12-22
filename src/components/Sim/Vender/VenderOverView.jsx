@@ -28,7 +28,7 @@ const VenderOverView = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.1.231:3000/api/get_all_vendor"
+        "http://34.93.221.166:3000/api/get_all_vendor"
       );
       setFilterData(response.data);
       setData(response.data);

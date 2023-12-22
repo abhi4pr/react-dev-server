@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
+import Select from "react-select";
 
 const AssetCategoryUpdate = () => {
   const { id } = useParams();
@@ -18,6 +19,13 @@ const AssetCategoryUpdate = () => {
   const [categoryName, setCategoryName] = useState("");
   const [description, setDescription] = useState("");
 
+  const [selfAuditPeriod, setSelfAuditPeriod] = useState("");
+  const [selfAuditUnit, setSelfAuditUnit] = useState("");
+  const [hrselfAuditPeriod, setHrSelfAuditPeriod] = useState("");
+  const [hrselfAuditUnit, setHrSelfAuditUnit] = useState("");
+
+  const Unit = ["Month", "Days", "Year"];
+
   useEffect(() => {
     getData();
   }, [id]);
@@ -29,6 +37,10 @@ const AssetCategoryUpdate = () => {
         const response = res.data.data;
         setCategoryName(response.category_name);
         setDescription(response.description);
+        setSelfAuditPeriod(response.selfAuditPeriod);
+        setSelfAuditUnit(response.selfAuditUnit);
+        setHrSelfAuditPeriod(response.hrAuditPeriod);
+        setHrSelfAuditUnit(response.hrAuditUnit);
       });
   };
 
@@ -41,6 +53,10 @@ const AssetCategoryUpdate = () => {
           category_id: id,
           category_name: categoryName,
           description: description,
+          selfAuditPeriod: selfAuditPeriod,
+          selfAuditUnit: selfAuditUnit,
+          hrselfAuditPeriod: hrselfAuditPeriod,
+          hrAuditUnit: hrselfAuditUnit,
           last_updated_by: loginUserId,
         }
       );
@@ -66,15 +82,69 @@ const AssetCategoryUpdate = () => {
           buttonAccess={false}
         >
           <FieldContainer
+            fieldGrid={12}
             label="Category Name"
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
           />
+
           <FieldContainer
+            type="number"
+            label="Self Audit Period"
+            value={selfAuditPeriod}
+            onChange={(e) => setSelfAuditPeriod(e.target.value)}
+          />
+          <div className="form-group col-6">
+            <label className="form-label">
+              Self Audit Unit <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={Unit.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: selfAuditUnit,
+                label: `${selfAuditUnit}`,
+              }}
+              onChange={(e) => {
+                setSelfAuditUnit(e.value);
+              }}
+              required
+            />
+          </div>
+          <FieldContainer
+            type="number"
+            label="Hr Audit Period"
+            value={hrselfAuditPeriod}
+            onChange={(e) => setHrSelfAuditPeriod(e.target.value)}
+          />
+          <div className="form-group col-6">
+            <label className="form-label">
+              HR Audit Unit <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={Unit.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: hrselfAuditUnit,
+                label: `${hrselfAuditUnit}`,
+              }}
+              onChange={(e) => {
+                setHrSelfAuditUnit(e.value);
+              }}
+              required
+            />
+          </div>
+          {/* <FieldContainer
             label="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-          />
+          /> */}
         </FormContainer>
       </div>
     </>

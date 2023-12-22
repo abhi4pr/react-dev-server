@@ -46,7 +46,7 @@ const SimDashboard = () => {
     if (category) {
       axios
         .get(
-          `http://192.168.1.231:3000/api/get_single_asset_sub_category/${category}`
+          `http://34.93.221.166:3000/api/get_single_asset_sub_category/${category}`
         )
         .then((res) => {
           setSubCategoryData(res.data);
@@ -80,7 +80,7 @@ const SimDashboard = () => {
       setAllocatedCount(allocatedObjects);
     });
     axios
-      .get("http://192.168.1.231:3000/api/get_asset_department_count")
+      .get("http://34.93.221.166:3000/api/get_asset_department_count")
       .then((res) => {
         setDepartmentData(res.data.data);
 
@@ -98,7 +98,7 @@ const SimDashboard = () => {
   const handleRowClick = (row) => {
     setSelectedRow(row);
     axios
-      .get(`http://192.168.1.231:3000/api/get_asset_users_of_dept/${row}`)
+      .get(`http://34.93.221.166:3000/api/get_asset_users_of_dept/${row}`)
       .then((res) => {
         setSelectedUserData(res.data.data);
       });
