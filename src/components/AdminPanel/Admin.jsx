@@ -172,7 +172,9 @@ import WFHUserOverview from "./WFH/WFHUserOverview";
 import CreateAssign from "./RegisterCampaign/CreateAssign";
 import PagePerformanceAnalytics from "../Execution/PagePerformanceAnalytics";
 import IncompleteProfileUsers from "./WFH/IncompleteProfileUsers";
-import UserGraphs from './User/UserGraphs';
+import UserGraphs from "./User/UserGraphs";
+import Hobbies from "./Hobbies/Hobbies";
+import HobbiesOverview from "./Hobbies/HobbiesOverview";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -270,10 +272,7 @@ const Admin = () => {
                           path="/user-single/:id"
                           element={<UserSingle />}
                         />
-                        <Route
-                          path="/user-graph"
-                          element={<UserGraphs />}
-                        />
+                        <Route path="/user-graph" element={<UserGraphs />} />
                       </>
                     )}
 
@@ -652,6 +651,13 @@ const Admin = () => {
                   <Route
                     path="/register-campaign"
                     element={<RegisterCampaign />}
+                  />
+
+                  {/* HOBBIES */}
+                  <Route path="/hobbies/:id" element={<Hobbies />} />
+                  <Route
+                    path="hobbies-overview"
+                    element={<HobbiesOverview />}
                   />
 
                   {/* Phase Dashboard here  */}
