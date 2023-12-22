@@ -126,6 +126,7 @@ export default function ExeUPdate() {
 
   const navigate = useNavigate();
   const saveStats = async (e) => {
+    console.log(storyViewDate)
     e.preventDefault();
 
     const formData = new FormData();
@@ -179,7 +180,7 @@ export default function ExeUPdate() {
     formData.append("percentage_country5_name", country5Percentage);
     formData.append("country_image_upload", countryImg);
     formData.append("user_id", userID);
-    formData.append("story_view_date", storyViewDate);
+    formData.append("story_view_date", storyViewDate );
 
     axios
       .put(`http://34.93.221.166:3000/api/edit_exe_ip_count_history`, formData, {
@@ -224,7 +225,7 @@ export default function ExeUPdate() {
         setEndDate(data.end_date);
         setEndDate(dayjs(new Date(data.end_date?.split("T")[0])));
         setStartDate(dayjs(new Date(data.start_date?.split("T")[0])));
-        setStoryViewDate(dayjs(new Date(data.story_view_date?.split("T")[0])));
+        setStoryViewDate(data.story_view_date!=null?dayjs(new Date(data.story_view_date?.split("T")[0])):"");
         setEngagement(data.engagement);
         // setEngagementImg(data.engagement_upload_image_url);
         setEngagementImgSrc(data.engagement_upload_image_url);

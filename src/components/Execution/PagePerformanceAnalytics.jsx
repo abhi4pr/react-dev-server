@@ -205,7 +205,7 @@ export default function PagePerformanceAnalytics() {
     {
       field: "top5AgeGroupPercentage",
       headerName: "Top 5 Age Group",
-      width: 400,
+      width: 430,
       renderCell: (params) => {
         const ageGroup = params.row.top5AgeGroupPercentage;
         return (
@@ -255,13 +255,36 @@ export default function PagePerformanceAnalytics() {
       field: "avgMalePercent",
       headerName: "Avg Male Per",
       width: 200,
-    },
+      renderCell: (params) => {
+        const avgMalePercent = params.row.avgMalePercent;
+        return (
+          <>
+            <span>
+              {avgMalePercent % 1 == 0
+                ? avgMalePercent
+                : avgMalePercent.toFixed(1)}
+            </span>
+          </>
+        );
+    }},
     {
       field: "avgFemalePercent",
       headerName: "Avg Female Per",
       width: 200,
-    },
+      renderCell: (params) => {
+        const avgFemalePercent = params.row.avgFemalePercent;
+        return (
+          <>
+            <span>
+              {avgFemalePercent % 1 == 0
+                ? avgFemalePercent
+                : avgFemalePercent.toFixed(1)}
+            </span>
+          </>
+        );
+    }},
   ];
+
 
   const handleFilterFollowerCount = (e) => {
     setFollowerCoutFilter(e.target.value);

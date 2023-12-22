@@ -2210,7 +2210,7 @@ import { styled } from "@mui/material/styles";
 import { Country, City } from "country-state-city";
 import { param } from "jquery";
 import CloseTwoToneIcon from "@mui/icons-material/CloseTwoTone";
-import { set } from "date-fns";
+import { add, set } from "date-fns";
 import ContentLoader from "react-content-loader";
 
 const VisuallyHiddenInput = styled("input")({
@@ -2237,10 +2237,10 @@ function ExecutionAll() {
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [copiedData, setCopiedData] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [reach, setReach] = useState(0);
-  const [impression, setImpression] = useState(0);
-  const [engagement, setEngagement] = useState(0);
-  const [storyView, setStoryView] = useState(0);
+  const [reach, setReach] = useState();
+  const [impression, setImpression] = useState();
+  const [engagement, setEngagement] = useState();
+  const [storyView, setStoryView] = useState();
   const [rowData, setRowData] = useState({});
   const [statesFor, setStatesFor] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -2271,23 +2271,23 @@ function ExecutionAll() {
   const [city3, setCity3] = useState();
   const [city4, setCity4] = useState();
   const [city5, setCity5] = useState();
-  const [city1Percentage, setCity1Percentage] = useState(0);
-  const [city2Percentage, setCity2Percentage] = useState(0);
-  const [city3Percentage, setCity3Percentage] = useState(0);
-  const [city4Percentage, setCity4Percentage] = useState(0);
-  const [city5Percentage, setCity5Percentage] = useState(0);
+  const [city1Percentage, setCity1Percentage] = useState();
+  const [city2Percentage, setCity2Percentage] = useState();
+  const [city3Percentage, setCity3Percentage] = useState();
+  const [city4Percentage, setCity4Percentage] = useState();
+  const [city5Percentage, setCity5Percentage] = useState();
   const [cityImg, setCityImg] = useState();
-  const [malePercentage, setMalePercentage] = useState(0);
-  const [femalePercentage, setFemalePercentage] = useState(0);
-  const [age1Percentage, setAge1Percentage] = useState(0);
-  const [age2Percentage, setAge2Percentage] = useState(0);
-  const [age3Percentage, setAge3Percentage] = useState(0);
-  const [age4Percentage, setAge4Percentage] = useState(0);
-  const [age5Percentage, setAge5Percentage] = useState(0);
-  const [age6percentage, setAge6Percentage] = useState(0);
-  const [age7Percentage, setAge7Percentage] = useState(0);
+  const [malePercentage, setMalePercentage] = useState();
+  const [femalePercentage, setFemalePercentage] = useState();
+  const [age1Percentage, setAge1Percentage] = useState();
+  const [age2Percentage, setAge2Percentage] = useState();
+  const [age3Percentage, setAge3Percentage] = useState();
+  const [age4Percentage, setAge4Percentage] = useState();
+  const [age5Percentage, setAge5Percentage] = useState();
+  const [age6percentage, setAge6Percentage] = useState();
+  const [age7Percentage, setAge7Percentage] = useState();
   const [ageImg, setAgeImg] = useState("");
-  const [profileVisit, setProfileVisit] = useState(0);
+  const [profileVisit, setProfileVisit] = useState();
   const [countryList, setCountryList] = useState([]);
   const [cityList, setCityList] = useState([]);
   const [cityListTemp, setCityListTemp] = useState();
@@ -2296,14 +2296,14 @@ function ExecutionAll() {
   const [country3, setCountry3] = useState("");
   const [country4, setCountry4] = useState("");
   const [country5, setCountry5] = useState("");
-  const [country1Percentage, setCountry1Percentage] = useState(0);
-  const [country2Percentage, setCountry2Percentage] = useState(0);
-  const [country3Percentage, setCountry3Percentage] = useState(0);
-  const [country4Percentage, setCountry4Percentage] = useState(0);
-  const [country5Percentage, setCountry5Percentage] = useState(0);
+  const [country1Percentage, setCountry1Percentage] = useState();
+  const [country2Percentage, setCountry2Percentage] = useState();
+  const [country3Percentage, setCountry3Percentage] = useState();
+  const [country4Percentage, setCountry4Percentage] = useState();
+  const [country5Percentage, setCountry5Percentage] = useState();
   const [countryImg, setCountryImg] = useState();
 
-  const [totalPercentage, setTotalPercentage] = useState(0);
+  const [totalPercentage, setTotalPercentage] = useState();
 
   const [profileVisitError, setProfileVisitError] = useState(false);
   // const [reachAndImpressionimgSrc, setReachAndImpressionimgSrc] =
@@ -2318,6 +2318,8 @@ function ExecutionAll() {
   const [reachImgSrc, setReachImgSrc] = useState(null);
   const [reachImg, setReachImg] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reachkey, setReachkey] = useState(1);
+  const [countryListTemp, setCountryListTemp] = useState([]);
   const handlePercentageChange = (value, setter) => {
     const newValue = parseFloat(value);
     if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
@@ -2347,6 +2349,7 @@ function ExecutionAll() {
 
   useEffect(() => {
     setCountryList(Country.getAllCountries());
+    setCountryListTemp(Country.getAllCountries());
 
     axios.get("http://34.93.221.166:3000/api/get_all_cities").then((res) => {
       setCityListTemp(res.data.data.map((city) => city.city_name));
@@ -2380,13 +2383,30 @@ function ExecutionAll() {
     }, 400);
   };
 
-  const countryCopyValidation = (value) => {
+  const countryCopyValidation = (selectedCountry, country) => {
     setTimeout(() => {
-      let tempCountryList = countryList;
-      tempCountryList = tempCountryList.filter(
-        (country) => !value.includes(country.name)
+      // Early exit if the selected country is null
+      if (selectedCountry === null) {
+        let temp = countryListTemp.filter(
+          (e) =>
+            ![country1, country2, country3, country4, country5].includes(e.name)
+        );
+        const addCountry = countryListTemp.filter((e) => e.name === country);
+        setCountryList([...temp, ...addCountry]);
+        return;
+      }
+      // ... rest of your code
+
+      // Filter out the selected country from the country list
+      const newCountryList = countryListTemp.filter(
+        (country) =>
+          country.name !== selectedCountry &&
+          ![country1, country2, country3, country4, country5].includes(
+            country.name
+          )
       );
-      setCountryList(tempCountryList);
+
+      setCountryList(newCountryList);
     }, 400);
   };
 
@@ -2401,47 +2421,47 @@ function ExecutionAll() {
     setStatesFor(null);
     setStartDate(null);
     setEndDate(null);
-    setReach(0);
-    setImpression(0);
-    setEngagement(0);
-    setStoryView(0);
+    setReach();
+    setImpression();
+    setEngagement();
+    setStoryView();
     setRowData({});
     setCity1("");
     setCity2("");
     setCity3("");
     setCity4("");
     setCity5("");
-    setCity1Percentage(0);
-    setCity2Percentage(0);
-    setCity3Percentage(0);
-    setCity4Percentage(0);
-    setCity5Percentage(0);
-    setMalePercentage(0);
-    setFemalePercentage(0);
-    setAge1Percentage(0);
-    setAge2Percentage(0);
-    setAge3Percentage(0);
-    setAge4Percentage(0);
-    setAge5Percentage(0);
-    setAge6Percentage(0);
-    setAge7Percentage(0);
+    setCity1Percentage();
+    setCity2Percentage();
+    setCity3Percentage();
+    setCity4Percentage();
+    setCity5Percentage();
+    setMalePercentage();
+    setFemalePercentage();
+    setAge1Percentage();
+    setAge2Percentage();
+    setAge3Percentage();
+    setAge4Percentage();
+    setAge5Percentage();
+    setAge6Percentage();
+    setAge7Percentage();
     setAgeImg();
     setCityImg();
     setImpressionImg();
     setEngagementImg();
     setStoryViewImg();
     setStoryViewVideo();
-    setProfileVisit(0);
+    setProfileVisit();
     setCountry1("");
     setCountry2("");
     setCountry3("");
     setCountry4("");
     setCountry5("");
-    setCountry1Percentage(0);
-    setCountry2Percentage(0);
-    setCountry3Percentage(0);
-    setCountry4Percentage(0);
-    setCountry5Percentage(0);
+    setCountry1Percentage();
+    setCountry2Percentage();
+    setCountry3Percentage();
+    setCountry4Percentage();
+    setCountry5Percentage();
     setCountryImg();
     setCityImgSrc(null);
     setCountryImgSrc(null);
@@ -2688,11 +2708,6 @@ function ExecutionAll() {
           // width: 150,
         },
     {
-      field: "service_name",
-      headerName: "Page Type",
-      // width: 150,
-    },
-    {
       field: "cat_name",
       headerName: "Account Category",
       width: 150,
@@ -2789,7 +2804,6 @@ function ExecutionAll() {
       width: 150,
       headerName: "History",
       renderCell: (params) => {
- 
         return (
           <button
             type="button"
@@ -2871,9 +2885,9 @@ function ExecutionAll() {
     const formData = new FormData();
     formData.append("p_id", rowData.p_id);
     formData.append("reach", reach);
-    formData.append("impression", impression);
-    formData.append("engagement", engagement);
-    formData.append("story_view", storyView);
+    formData.append("impression", impression ? impression : 0);
+    formData.append("engagement", engagement ? engagement : 0);
+    formData.append("story_view", storyView ? storyView : 0);
     demoFile ? formData.append("media", demoFile) : "";
     quater ? formData.append("quater", quater) : "";
     formData.append("start_date", sDate);
@@ -2892,31 +2906,61 @@ function ExecutionAll() {
     formData.append("city3_name", city3);
     formData.append("city4_name", city4);
     formData.append("city5_name", city5);
-    formData.append("percentage_city1_name", city1Percentage);
-    formData.append("percentage_city2_name", city2Percentage);
-    formData.append("percentage_city3_name", city3Percentage);
-    formData.append("percentage_city4_name", city4Percentage);
-    formData.append("percentage_city5_name", city5Percentage);
-    formData.append("male_percent", malePercentage);
-    formData.append("female_percent", femalePercentage);
-    formData.append("Age_13_17_percent", age1Percentage);
-    formData.append("Age_18_24_percent", age2Percentage);
-    formData.append("Age_25_34_percent", age3Percentage);
-    formData.append("Age_35_44_percent", age4Percentage);
-    formData.append("Age_45_54_percent", age5Percentage);
-    formData.append("Age_55_64_percent", age6percentage);
-    formData.append("Age_65_plus_percent", age7Percentage);
-    formData.append("profile_visit", profileVisit);
+    formData.append(
+      "percentage_city1_name",
+      city1Percentage ? city1Percentage : 0
+    );
+    formData.append(
+      "percentage_city2_name",
+      city2Percentage ? city2Percentage : 0
+    );
+    formData.append(
+      "percentage_city3_name",
+      city3Percentage ? city3Percentage : 0
+    );
+    formData.append(
+      "percentage_city4_name",
+      city4Percentage ? city4Percentage : 0
+    );
+    formData.append(
+      "percentage_city5_name",
+      city5Percentage ? city5Percentage : 0
+    );
+    formData.append("male_percent", malePercentage ? malePercentage : 0);
+    formData.append("female_percent", femalePercentage ? femalePercentage : 0);
+    formData.append("Age_13_17_percent", age1Percentage ? age1Percentage : 0);
+    formData.append("Age_18_24_percent", age2Percentage ? age2Percentage : 0);
+    formData.append("Age_25_34_percent", age3Percentage ? age3Percentage : 0);
+    formData.append("Age_35_44_percent", age4Percentage ? age4Percentage : 0);
+    formData.append("Age_45_54_percent", age5Percentage ? age5Percentage : 0);
+    formData.append("Age_55_64_percent", age6percentage ? age6percentage : 0);
+    formData.append("Age_65_plus_percent", age7Percentage ? age7Percentage : 0);
+    formData.append("profile_visit", profileVisit ? profileVisit : 0);
     formData.append("country1_name", country1);
     formData.append("country2_name", country2);
     formData.append("country3_name", country3);
     formData.append("country4_name", country4);
     formData.append("country5_name", country5);
-    formData.append("percentage_country1_name", country1Percentage);
-    formData.append("percentage_country2_name", country2Percentage);
-    formData.append("percentage_country3_name", country3Percentage);
-    formData.append("percentage_country4_name", country4Percentage);
-    formData.append("percentage_country5_name", country5Percentage);
+    formData.append(
+      "percentage_country1_name",
+      country1Percentage ? country1Percentage : 0
+    );
+    formData.append(
+      "percentage_country2_name",
+      country2Percentage ? country2Percentage : 0
+    );
+    formData.append(
+      "percentage_country3_name",
+      country3Percentage ? country3Percentage : 0
+    );
+    formData.append(
+      "percentage_country4_name",
+      country4Percentage ? country4Percentage : 0
+    );
+    formData.append(
+      "percentage_country5_name",
+      country5Percentage ? country5Percentage : 0
+    );
     formData.append("country_image_upload", countryImg);
     formData.append("user_id", userID);
 
@@ -2927,35 +2971,36 @@ function ExecutionAll() {
         },
       })
       .then(() => {
+        setReachkey((perv) => perv + 1);
         callDataForLoad();
         setQuater("");
         setStatesFor(null);
         setStartDate(null);
         setEndDate(null);
-        setReach(0);
-        setImpression(0);
-        setEngagement(0);
-        setStoryView(0);
+        setReach();
+        setImpression();
+        setEngagement();
+        setStoryView();
         setRowData({});
         setCity1("");
         setCity2("");
         setCity3("");
         setCity4("");
         setCity5("");
-        setCity1Percentage(0);
-        setCity2Percentage(0);
-        setCity3Percentage(0);
-        setCity4Percentage(0);
-        setCity5Percentage(0);
-        setMalePercentage(0);
-        setFemalePercentage(0);
-        setAge1Percentage(0);
-        setAge2Percentage(0);
-        setAge3Percentage(0);
-        setAge4Percentage(0);
-        setAge5Percentage(0);
-        setAge6Percentage(0);
-        setAge7Percentage(0);
+        setCity1Percentage();
+        setCity2Percentage();
+        setCity3Percentage();
+        setCity4Percentage();
+        setCity5Percentage();
+        setMalePercentage();
+        setFemalePercentage();
+        setAge1Percentage();
+        setAge2Percentage();
+        setAge3Percentage();
+        setAge4Percentage();
+        setAge5Percentage();
+        setAge6Percentage();
+        setAge7Percentage();
         setAgeImg(null);
         setCityImg(null);
         setReachImg(null);
@@ -2963,17 +3008,17 @@ function ExecutionAll() {
         setEngagementImg("");
         setStoryViewImg("");
         setStoryViewVideo("");
-        setProfileVisit(0);
+        setProfileVisit();
         setCountry1("");
         setCountry2("");
         setCountry3("");
         setCountry4("");
         setCountry5("");
-        setCountry1Percentage(0);
-        setCountry2Percentage(0);
-        setCountry3Percentage(0);
-        setCountry4Percentage(0);
-        setCountry5Percentage(0);
+        setCountry1Percentage();
+        setCountry2Percentage();
+        setCountry3Percentage();
+        setCountry4Percentage();
+        setCountry5Percentage();
         setCountryImg();
         setCityImgSrc(null);
         setCountryImgSrc(null);
@@ -3338,6 +3383,7 @@ function ExecutionAll() {
                         label="Reach"
                         type="number"
                         value={reach}
+                        key={reachkey}
                         onChange={(e) => {
                           const enteredValue = e.target.value;
                           if (enteredValue >= 0) {
@@ -3401,6 +3447,7 @@ function ExecutionAll() {
                         label="Impressions *"
                         type="number"
                         value={impression}
+                        key={reachkey}
                         onChange={(e) => {
                           const enteredValue = e.target.value;
                           if (enteredValue >= 0) {
@@ -3464,6 +3511,7 @@ function ExecutionAll() {
                     <div className="col-md-3 col-lg-12 my-2">
                       <TextField
                         label="Engagement *"
+                        key={reachkey}
                         type="number"
                         value={engagement}
                         onChange={(e) => {
@@ -3526,6 +3574,7 @@ function ExecutionAll() {
                         label="Story View *"
                         type="number"
                         value={storyView}
+                        key={reachkey}
                         onChange={(e) => {
                           const enteredValue = e.target.value;
                           if (enteredValue >= 0) {
@@ -3644,6 +3693,7 @@ function ExecutionAll() {
                     <div className="col-md-3 col-lg-12 my-2">
                       <TextField
                         label="Profile Visit"
+                        key={reachkey}
                         type="number"
                         value={profileVisit}
                         onChange={(e) => {
@@ -3685,6 +3735,7 @@ function ExecutionAll() {
                       className="mb-1 "
                       type="number"
                       value={city1Percentage}
+                      key={reachkey}
                       onChange={(e) => {
                         setCity1Percentage(e.target.value);
                       }}
@@ -3713,6 +3764,7 @@ function ExecutionAll() {
                     <TextField
                       className="mb-2"
                       value={city2Percentage}
+                      key={reachkey}
                       onChange={(e) => {
                         setCity2Percentage(e.target.value);
                       }}
@@ -3742,6 +3794,7 @@ function ExecutionAll() {
                     <TextField
                       className="mb-2"
                       type="number"
+                      key={reachkey}
                       value={city3Percentage}
                       onChange={(e) => {
                         setCity3Percentage(e.target.value);
@@ -3772,6 +3825,7 @@ function ExecutionAll() {
                       className="mb-2"
                       type="number"
                       value={city4Percentage}
+                      key={reachkey}
                       onChange={(e) => {
                         setCity4Percentage(e.target.value);
                       }}
@@ -3800,6 +3854,7 @@ function ExecutionAll() {
                     <TextField
                       type="number"
                       value={city5Percentage}
+                      key={reachkey}
                       onChange={(e) => {
                         setCity5Percentage(e.target.value);
                       }}
@@ -3866,7 +3921,7 @@ function ExecutionAll() {
                       value={country1}
                       options={countryList.map((country) => country.name)}
                       onChange={(e, value) => {
-                        countryCopyValidation(value);
+                        countryCopyValidation(value, country1);
                         setCountry1(value);
                       }}
                       // sx={{ width: 250 }}
@@ -3878,6 +3933,7 @@ function ExecutionAll() {
                       className="mb-2"
                       type="number"
                       value={country1Percentage}
+                      key={reachkey}
                       onChange={(e) => {
                         setCountry1Percentage(e.target.value);
                       }}
@@ -3895,7 +3951,7 @@ function ExecutionAll() {
                       disablePortal
                       value={country2}
                       onChange={(e, value) => {
-                        countryCopyValidation(value);
+                        countryCopyValidation(value, country2);
                         setCountry2(value);
                       }}
                       id="combo-box-demo"
@@ -3907,6 +3963,7 @@ function ExecutionAll() {
                     <TextField
                       className="mb-2"
                       value={country2Percentage}
+                      key={reachkey}
                       onChange={(e) => {
                         setCountry2Percentage(e.target.value);
                       }}
@@ -3926,7 +3983,7 @@ function ExecutionAll() {
                       value={country3}
                       onChange={(e, value) => {
                         setCountry3(value);
-                        countryCopyValidation(value);
+                        countryCopyValidation(value, country3);
                       }}
                       id="combo-box-demo"
                       options={countryList.map((country) => country.name)}
@@ -3938,6 +3995,7 @@ function ExecutionAll() {
                       className="mb-2"
                       type="number"
                       value={country3Percentage}
+                      key={reachkey}
                       onChange={(e) => {
                         setCountry3Percentage(e.target.value);
                       }}
@@ -3958,7 +4016,7 @@ function ExecutionAll() {
                       value={country4}
                       onChange={(e, value) => {
                         setCountry4(value);
-                        countryCopyValidation(value);
+                        countryCopyValidation(value, country4);
                       }}
                       renderInput={(params) => (
                         <TextField {...params} label="Country 4" />
@@ -3968,6 +4026,7 @@ function ExecutionAll() {
                       className="mb-2"
                       type="number"
                       value={country4Percentage}
+                      key={reachkey}
                       onChange={(e) => {
                         setCountry4Percentage(e.target.value);
                       }}
@@ -3988,7 +4047,7 @@ function ExecutionAll() {
                       value={country5}
                       onChange={(e, value) => {
                         setCountry5(value);
-                        countryCopyValidation(value);
+                        countryCopyValidation(value, country5);
                       }}
                       renderInput={(params) => (
                         <TextField {...params} label="Country 5" />
@@ -3998,6 +4057,7 @@ function ExecutionAll() {
                       className="mb-2"
                       type="number"
                       value={country5Percentage}
+                      key={reachkey}
                       onChange={(e) => {
                         setCountry5Percentage(e.target.value);
                       }}
@@ -4064,6 +4124,7 @@ function ExecutionAll() {
                         type="number"
                         className="mb-2"
                         value={age1Percentage}
+                        key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge1Percentage(e.target.value)
@@ -4084,6 +4145,7 @@ function ExecutionAll() {
                         type="number"
                         className="mb-2"
                         value={age2Percentage}
+                        key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge2Percentage(e.target.value)
@@ -4104,6 +4166,7 @@ function ExecutionAll() {
                         type="number"
                         className="mb-2"
                         value={age3Percentage}
+                        key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge3Percentage(e.target.value)
@@ -4124,6 +4187,7 @@ function ExecutionAll() {
                         type="number"
                         className="mb-2"
                         value={age4Percentage}
+                        key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge4Percentage(e.target.value)
@@ -4144,6 +4208,7 @@ function ExecutionAll() {
                         type="number"
                         className="mb-2"
                         value={age5Percentage}
+                        key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge5Percentage(e.target.value)
@@ -4164,6 +4229,7 @@ function ExecutionAll() {
                         type="number"
                         className="mb-2"
                         value={age6percentage}
+                        key={reachkey}
                         onChange={(e) => {
                           setAge6Percentage(e.target.value);
                         }}
@@ -4182,6 +4248,7 @@ function ExecutionAll() {
                         type="number"
                         className="mb-2"
                         value={age7Percentage}
+                        key={reachkey}
                         onChange={(e) => {
                           setAge7Percentage(e.target.value);
                         }}

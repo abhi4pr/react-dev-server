@@ -6,7 +6,6 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 
 const PendingApprovalRefund = () => {
-  
   const { toastAlert } = useGlobalContext();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [datas, setData] = useState([]);
@@ -14,57 +13,68 @@ const PendingApprovalRefund = () => {
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [status, setStatus] = useState("");
-  const [refundImage, setRefundImage] = useState(null);
-  const [singleRow, setSingleRow] = useState({})
+  const [refundImage, setRefundImage] = useState([]);
+  const [singleRow, setSingleRow] = useState({});
+  const [imageChanged, setImageChanged] = useState(false);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
   function getData() {
-    axios.post("http://34.93.221.166:3000/api/add_php_payment_refund_data_in_node").then((res)=>{
-      console.log('data save in local success')
-    })
-    axios.get("http://34.93.221.166:3000/api/get_all_php_payment_refund_data_pending").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-    });
+    axios
+      .post("http://34.93.221.166:3000/api/add_php_payment_refund_data_in_node")
+      .then((res) => {
+        console.log("data save in local success");
+      });
+    axios
+      .get(
+        "http://34.93.221.166:3000/api/get_all_php_payment_refund_data_pending"
+      )
+      .then((res) => {
+        setData(res.data.data);
+        setFilterData(res.data.data);
+      });
   }
 
   useEffect(() => {
     getData();
   }, []);
 
-  const handleStatusChange = async(row, selectedStatus) => {
-    setStatus(selectedStatus)
+  const handleStatusChange = async (row, selectedStatus) => {
+    setStatus(selectedStatus);
 
     const formData = new FormData();
-      formData.append("loggedin_user_id",36)
-      formData.append("sale_booking_refund_id",row.sale_booking_refund_id)
-      formData.append("sale_booking_id",row.sale_booking_id)
-      formData.append("refund_approval_status",selectedStatus)
-      formData.append("refund_reason","")
-      formData.append("refund_finance_approval",1)
-      
-      await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=refund_finance_approval", formData ,{
-        headers:{
-          "Content-Type":"multipart/form-data"
-        }
-      });
+    formData.append("loggedin_user_id", 36);
+    formData.append("sale_booking_refund_id", row.sale_booking_refund_id);
+    formData.append("sale_booking_id", row.sale_booking_id);
+    formData.append("refund_approval_status", selectedStatus);
+    formData.append("refund_reason", "");
+    formData.append("refund_finance_approval", 1);
 
-      toastAlert("Data updated");
-      setIsFormSubmitted(true);
+    await axios.post(
+      "https://production.sales.creativefuel.io/webservices/RestController.php?view=refund_finance_approval",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    toastAlert("Data updated");
+    setIsFormSubmitted(true);
   };
 
-  const uploadImage = async(e,row) => {
+  const uploadImage = async (e, row,index) => {
     e.preventDefault();
 
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_refund_id", row.sale_booking_refund_id);
     formData.append("sale_booking_id", row.sale_booking_id);
-    formData.append("refund_files", refundImage);
-  
+    formData.append("refund_files", refundImage[index]);
+
     await axios.post(
       "https://production.sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file",
       formData,
@@ -73,17 +83,17 @@ const PendingApprovalRefund = () => {
           "Content-Type": "multipart/form-data",
         },
       }
-    );
-  
+    ).then((res) => {
+      res.status === 200 && refundImage.splice(index, 1); // Remove the image from the array
+    });
+
     toastAlert("Data updated");
     setIsFormSubmitted(true);
   };
 
   useEffect(() => {
     const result = datas.filter((d) => {
-      return (
-        d.cust_name?.toLowerCase().match(search.toLowerCase())
-      );
+      return d.cust_name?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
@@ -114,30 +124,38 @@ const PendingApprovalRefund = () => {
     },
     {
       name: "Refund Updated Date",
-      selector: (row) =>row.last_updated_date 
+      selector: (row) => row.last_updated_date,
     },
+
     {
       name: "Refund Payment Image",
-      selector: (row) => (
+      selector: (row, index) => (
         <form method="POST" encType="multipart/form-data" action="">
           <input
             type="file"
             name="refund_image"
-            onChange={(e) => setRefundImage(e.target.files[0])}
+            onChange={(e) => {
+              refundImage.splice(index, 1, e.target.files[0]);
+              console.log(index);
+              console.log(refundImage);
+              setImageChanged(!imageChanged); // Toggle the state to trigger re-render
+            }}
           />
           <br />
           <input
+            key={index}
             type="submit"
             value="upload"
-            disabled={!refundImage}
+            disabled={!refundImage[index] ? true : false}
             onClick={(e) => {
-              setSingleRow(row)
-              uploadImage(e,row); 
+              setSingleRow(row);
+              uploadImage(e, row,index);
             }}
           />
         </form>
-      )
+      ),
     },
+
     {
       name: "Action",
       selector: (row) => (

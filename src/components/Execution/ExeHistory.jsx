@@ -106,7 +106,7 @@ export default function ExeHistory() {
           <div>
             {params.row?.reach ? (
               <>
-                {params.row.reach} {params.row.percentage_reach}%&nbsp;
+                {params.row.reach} {params.row.percentage_reach}&nbsp;
                 {params.row.reach_upload_image_url && (
                   <a
                     key="reach"
@@ -138,7 +138,7 @@ export default function ExeHistory() {
             {params.row?.impression ? (
               <>
                 {params.row.impression} {params.row.percentage_impression}
-                %&nbsp;
+                &nbsp;
                 {params.row.impression_upload_image_url && (
                   <a
                     key="reach"
@@ -170,7 +170,7 @@ export default function ExeHistory() {
             {params.row?.engagement ? (
               <>
                 {params.row.engagement} {params.row.percentage_engagement}
-                %&nbsp;
+                &nbsp;
                 {params.row.engagement_upload_image_url && (
                   <a
                     key="engagement"
@@ -202,7 +202,7 @@ export default function ExeHistory() {
             {params.row?.story_view ? (
               <>
                 {params.row.story_view} {params.row.percentage_story_view}
-                %&nbsp;
+                &nbsp;
                 {params.row.story_view_upload_image_url && (
                   <a
                     key="storyImg"
@@ -257,7 +257,7 @@ export default function ExeHistory() {
             {params.row?.city1_name ? (
               <>
                 {params.row.city1_name} &nbsp;{" "}
-                {params.row.percentage_city1_name}%
+                {params.row.percentage_city1_name}
                 {params.row.city_image_upload_url && (
                   <a
                     key="cityImg"
@@ -289,7 +289,7 @@ export default function ExeHistory() {
             {params.row?.city2_name ? (
               <>
                 {params.row.city2_name} &nbsp;{" "}
-                {params.row.percentage_city2_name}%
+                {params.row.percentage_city2_name}
               </>
             ) : (
               ""
@@ -308,7 +308,7 @@ export default function ExeHistory() {
             {params.row?.city3_name ? (
               <>
                 {params.row.city3_name} &nbsp;{" "}
-                {params.row.percentage_city3_name}%
+                {params.row.percentage_city3_name}
               </>
             ) : (
               ""
@@ -327,7 +327,7 @@ export default function ExeHistory() {
             {params.row?.city4_name ? (
               <>
                 {params.row.city4_name} &nbsp;{" "}
-                {params.row.percentage_city4_name}%
+                {params.row.percentage_city4_name}
               </>
             ) : (
               ""
@@ -346,7 +346,7 @@ export default function ExeHistory() {
             {params.row?.city5_name ? (
               <>
                 {params.row.city5_name} &nbsp;{" "}
-                {params.row.percentage_city5_name}%
+                {params.row.percentage_city5_name}
               </>
             ) : (
               ""

@@ -307,11 +307,6 @@ const handleEndDateChange = (newValue) => {
           // width: 150,
         },
     {
-      field: "service_name",
-      headerName: "Page Type",
-      // width: 150,
-    },
-    {
       field: "cat_name",
       headerName: "Account Category",
       width: 150,

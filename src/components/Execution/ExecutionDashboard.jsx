@@ -184,10 +184,6 @@ setLoading(true)
           headerName: "Channel Name",
         },
     {
-      field: "service_name",
-      headerName: "Page Type",
-    },
-    {
       field: "cat_name",
       headerName: "Account Category",
       width: 150,
@@ -291,7 +287,7 @@ setLoading(true)
             onClick={() => handleHistoryRowClick(params.row)}
             disabled={
               params?.row?.latestEntry?.stats_update_flag
-                ? !params?.row?.latestEntry.stats_update_flag
+                ? !params?.row?.latestEntry.stats_update_flag||params?.row?.latestEntry?.isDeleted===true
                 : true
             }
           >

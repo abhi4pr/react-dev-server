@@ -21,6 +21,17 @@ const selectOptions = [
   },
 ];
 
+const mandatoryOption = [
+  {
+    value: true,
+    label: "Yes",
+  },
+  {
+    value: false,
+    label: "No",
+  },
+];
+
 const PreonboardingDocuments = () => {
   const { toastAlert } = useGlobalContext();
   const navigate = useNavigate();
@@ -28,6 +39,8 @@ const PreonboardingDocuments = () => {
   const [period, setPeriod] = useState(null);
   const [priority, setPriority] = useState("");
   const [description, setDescription] = useState("");
+  const [mandatory, setMandatory] = useState("");
+  const [documentNumber, setDocumentNumber] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -37,6 +50,8 @@ const PreonboardingDocuments = () => {
         priority: priority,
         period: Number(period),
         description: description,
+        isRequired: mandatory,
+        doc_number: documentNumber,
       })
       .then(() => {
         setDocumentType("");
@@ -77,6 +92,23 @@ const PreonboardingDocuments = () => {
             onChange={(e) => setPriority(e.value)}
           />
         </div>
+
+        <div className="form-group col-3">
+          <label className="form-label">Mandatory</label>
+          <Select
+            value={mandatoryOption.find((option) => option.value === mandatory)}
+            label={mandatory}
+            options={mandatoryOption}
+            onChange={(e) => setMandatory(e.value)}
+          />
+        </div>
+        <FieldContainer
+          fieldGrid={3}
+          label="Documetn Number"
+          value={documentNumber}
+          onChange={(e) => setDocumentNumber(e.target.value)}
+        />
+
         <FieldContainer
           Tag="textarea"
           label="Description"
