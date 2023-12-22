@@ -32,13 +32,14 @@ const ExePageDetailes = ({
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [singlePhase, setSinglePhase] = useState([]);
-  console.log(singlePhase, "new phase");
+
   const [assignedData, setAssignedData] = useState({});
+  const [assignmentCommits, setAssignmentCommits] = useState([])
+  const [commitPayload,setCommitPayload] = useState({});
 
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
-  const handleButtonClick = (row) => {
-    console.log(row);
+  const handleButtonClick = async (row) => {
     setAssignedData({
       ass_id: row.ass_id,
       campaignId: row.campaignId,
@@ -47,23 +48,40 @@ const ExePageDetailes = ({
     setOpen(true);
   };
 
-  const handleExcute = async () => {
+  const handleExcute = async (params) => {
+
     const response = await axios.get(
-      `http://192.168.29.110:3000/api/campaignphase/singlephase/60`
+      `http://192.168.29.110:3000/api/campaignphase/singlephase/${params.row.phase_id}`
     );
     setSinglePhase(response?.data?.data?.commitment);
+
+    const assCommit = await axios.get(`http://localhost:3000/api/assignment/commit/single/${params.row.ass_id}`)
+    setAssignmentCommits(assCommit.data.data)
+
     setOpen2(true);
   };
+
+  console.log(singlePhase)
 
   const handleVerified = () => {
     setActiveAccordionIndex(3);
   };
 
+  const handleCommitChange=(e,field,id)=>{
+    // console.log(field)
+    setCommitPayload({...commitPayload,[field]:e.target.value,id})
+  }
+console.log(commitPayload)
+  const updateSingleCommitment=async (params)=>{
+    console.log(params)
+    console.log(commitPayload)
+    const response=await axios.put(`http://localhost:3000/api/assignment/commit/single/${params.comm_id}`,commitPayload)
+    console.log(response)
+  }
+
   const handleAssignedSubmit = async () => {
-    const result = await axios.post(
-      "http://192.168.29.110:8080/api/assignment/commit",
-      assignedData
-    );
+    const response = await axios.post('http://localhost:3000/api/assignment/commit', assignedData)
+
   };
   const column = [
     {
@@ -108,7 +126,7 @@ const ExePageDetailes = ({
               <Button
                 variant="outlined"
                 color="error"
-                onClick={() => handleExcute()}
+                onClick={() => handleExcute(params)}
               >
                 update
               </Button>
@@ -128,6 +146,157 @@ const ExePageDetailes = ({
       },
     },
   ];
+
+  const columnForAssCommit = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      renderCell: (params) => {
+        const rowIndex = data?.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "link",
+      headerName: "link",
+      width: 150,
+    },
+    
+    {
+      field: "likes",
+      name: "likes",
+      headerName: "likes",
+      width: 150,
+      
+      renderCell:(params)=>{
+        const x=singlePhase.some((element)=>{
+          console.log(element)
+          return element.commitment=='Likes'
+        })
+        console.log(x)
+        if(x){
+
+          return <TextField type="number"
+   
+           // value={params.row.comments || commitPayload.comments}
+           placeholder={params.row.likes}
+           onChange={(e)=>handleCommitChange(e,"likes")}
+           />
+        }
+
+        return <p>N/A</p>
+
+       
+      }
+    },
+    {
+      field: "comments",
+      headerName: "comments",
+      width: 150,
+      renderCell:(params)=>{
+        const x=singlePhase.some((element)=>{
+        return  element.commitment=='comments'
+        })
+        if(x==true){
+
+          return <TextField type="number"
+   
+           // value={params.row.comments || commitPayload.comments}
+           placeholder={params.row.comments}
+           onChange={(e)=>handleCommitChange(e,"comments")}
+           />
+        }
+
+        return <p>N/A</p>
+
+       
+      }
+    },
+    {
+      field: "engagement",
+      headerName: "engagement",
+      width: 150,
+      
+      
+        renderCell:(params)=>{
+          const x=singlePhase.some((element)=>{
+         return   element.commitment=='engagement'
+          })
+          if(x==true){
+  
+            return <TextField type="number"
+     
+             // value={params.row.comments || commitPayload.comments}
+             placeholder={params.row.engagement}
+             onChange={(e)=>handleCommitChange(e,"engagement")}
+             />
+          }
+  
+          return <p>N/A</p>
+  
+         
+        }
+    },
+    {
+      field: "reach",
+      headerName: "reach",
+      width: 150,
+      renderCell:(params)=>{
+        const x=singlePhase.some((element)=>{
+         return element.commitment=='reach'
+        })
+        if(x==true){
+
+          return <TextField type="number"
+   
+           // value={params.row.comments || commitPayload.comments}
+           placeholder={params.row.reach}
+           onChange={(e)=>handleCommitChange(e,"reach")}
+           />
+        }
+
+        return <p>N/A</p>
+
+       
+      }
+    },
+    {
+      field: "snapshot",
+      headerName: "snapshot",
+      width: 150,
+      renderCell:(params)=>{
+       
+
+          return <TextField type="text"
+   
+           // value={params.row.comments || commitPayload.comments}
+           placeholder={params.row.snapshot}
+           onChange={(e)=>handleCommitChange(e,"snapshot")}
+           />
+        }
+
+        
+
+       
+      
+    },
+    {
+      field:"action",
+      headerName:"action",
+      width:150,
+      renderCell:(params)=>{
+        return  <Button
+        variant="contained"
+        color="primary"
+        style={{ marginRight: "8px" }}
+      onClick={()=>updateSingleCommitment(params.row)}
+      >
+        update
+      </Button>
+      }
+    }
+  ]
 
   return (
     <>
@@ -231,14 +400,13 @@ const ExePageDetailes = ({
                 />
               </Box>
             ))}
-            <Button
-              variant="contained"
-              color="primary"
-              style={{ marginRight: "8px" }}
-            // onClick={}
-            >
-              Submit
-            </Button>
+            <DataGrid
+              rows={assignmentCommits}
+              columns={columnForAssCommit}
+              getRowId={(row) => row.comm_id}
+              pagination
+            />
+           
           </Box>
         </Modal>
       </>
