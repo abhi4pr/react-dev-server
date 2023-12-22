@@ -6,6 +6,8 @@ import { useGlobalContext } from "../../../Context/Context";
 import { useNavigate, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
+import Select from "react-select";
+import { Autocomplete, TextField } from "@mui/material";
 
 const VendorUpdate = () => {
   const { id } = useParams();
@@ -20,21 +22,65 @@ const VendorUpdate = () => {
   const [vendorEmail, setVendorEmail] = useState("");
   const [vendorAddress, setVendorAddress] = useState("");
   const [description, setDescription] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState([]);
+  const [secondaryContact, setSecondaryContact] = useState("");
+  const [secondaryPersonName, setSecondaryPersonName] = useState("");
+  const [type, setType] = useState("");
+  const [categoryData, setCategoryData] = useState([]);
+
+  const Type = ["Self", "Service", "Both"];
 
   useEffect(() => {
-    getData();
-  }, [id]);
+    setTimeout(() => {
+      getData();
+    }, 1000);
+  }, [categoryData]);
+  const getCategoryData = () => {
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_asset_category")
+      .then((res) => {
+        console.log(res.data, "category");
+        setCategoryData(res.data);
+      });
+  };
+  useEffect(() => {
+    getCategoryData();
+  }, []);
 
   const getData = () => {
     axios
       .get(`http://34.93.221.166:3000/api/get_single_vendor/${id}`)
       .then((res) => {
         const response = res.data.data;
+
+        setSelectedCategory(
+          categoryData.length > 0
+            ? res.data.data.vendor_category?.map((category) => ({
+                label: categoryData?.filter((e) => {
+                  return e.category_id == category;
+                })[0]?.category_name,
+                value: category ? +category : "",
+              }))
+            : []
+        );
+
         setVendorName(response.vendor_name);
         setVendorContact(response.vendor_contact_no);
         setVendorEmail(response.vendor_email_id);
         setVendorAddress(response.vendor_address);
         setDescription(response.description);
+        setSecondaryContact(response.secondary_contact_no);
+        setSecondaryPersonName(response.secondary_person_name);
+        setType(response.vendor_type);
+
+        // console.log(
+        //   response.vendor_category?.map((category) => ({
+        //     label: categoryData?.filter((e) => {
+        //       return e.category_id == category;
+        //     })[0]?.category_name,
+        //     value: +category,
+        //   }))
+        // );
       });
   };
 
@@ -52,6 +98,10 @@ const VendorUpdate = () => {
           description: description,
           created_by: loginUserId,
           last_updated_by: loginUserId,
+          secondary_contact_no: secondaryContact,
+          secondary_person_name: secondaryPersonName,
+          vendor_type: type,
+          vendor_category: selectedCategory.map((category) => category.value),
         }
       );
       toastAlert("Data Updated Successfully");
@@ -66,6 +116,10 @@ const VendorUpdate = () => {
     } catch (error) {
       toastAlert(error.message);
     }
+  };
+  const categoryChangeHandler = (e, op) => {
+    // console.log(selectedCategory);
+    setSelectedCategory(op);
   };
 
   return (
@@ -83,6 +137,53 @@ const VendorUpdate = () => {
             value={vendorName}
             onChange={(e) => setVendorName(e.target.value)}
           />
+          <div className="form-group col-6">
+            <label className="form-label">
+              Vendor Type <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={Type.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: type,
+                label: `${type}`,
+              }}
+              onChange={(e) => {
+                setType(e.value);
+              }}
+              required
+            />
+          </div>
+
+          <div className="col-sm-12 col-lg-6 ">
+            <Autocomplete
+              multiple
+              id="combo-box-demo"
+              value={selectedCategory.length > 0 ? selectedCategory : []}
+              options={categoryData?.map((d) => ({
+                label: d?.category_name,
+                value: d?.category_id,
+              }))}
+              InputLabelProps={{ shrink: true }}
+              renderInput={(params) => (
+                <TextField {...params} label="Vendor Category" />
+              )}
+              onChange={categoryChangeHandler}
+            />
+          </div>
+          <FieldContainer
+            label="Secondary Contect"
+            value={secondaryContact}
+            onChange={(e) => setSecondaryContact(e.target.value)}
+          />
+          <FieldContainer
+            label="Secondary Peroson Name"
+            value={secondaryPersonName}
+            onChange={(e) => setSecondaryPersonName(e.target.value)}
+          />
           <FieldContainer
             label="Contect"
             value={vendorContact}
@@ -98,11 +199,11 @@ const VendorUpdate = () => {
             value={vendorAddress}
             onChange={(e) => setVendorAddress(e.target.value)}
           />
-          <FieldContainer
+          {/* <FieldContainer
             label="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-          />
+          /> */}
         </FormContainer>
       </div>
     </>

@@ -18,6 +18,8 @@ const AssetSubCategoryMaster = () => {
   const [subCategoryName, setSubCategoryName] = useState("");
   const [description, setDescription] = useState("");
   const [selectedCat, setSelectedCat] = useState("");
+  const [inWarranty, setInWarranty] = useState("");
+  const warranty = ["Yes", "No"];
 
   useEffect(() => {
     axios
@@ -30,7 +32,6 @@ const AssetSubCategoryMaster = () => {
       });
   }, []);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -39,6 +40,7 @@ const AssetSubCategoryMaster = () => {
         {
           sub_category_name: subCategoryName,
           category_id: selectedCat,
+          inWarranty: inWarranty,
           description: description,
           created_by: loginUserId,
           last_updated_by: loginUserId,
@@ -94,12 +96,32 @@ const AssetSubCategoryMaster = () => {
               required
             />
           </div>
+          <div className="form-group col-6">
+            <label className="form-label">
+              In Warranty <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={warranty.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: inWarranty,
+                label: `${inWarranty}`,
+              }}
+              onChange={(e) => {
+                setInWarranty(e.value);
+              }}
+              required
+            />
+          </div>
 
-          <FieldContainer
+          {/* <FieldContainer
             label="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-          />
+          /> */}
         </FormContainer>
       </div>
     </>

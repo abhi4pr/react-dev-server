@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormContainer from "../../AdminPanel/FormContainer";
 import FieldContainer from "../../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
@@ -33,16 +33,28 @@ const VenderMaster = () => {
   //   "Operating Asset",
   //   "Non Operating Asset",
   // ];
-  const Type = ["Self", "Service", "Both"];
+  const Type = ["Sales", "Service", "Both"];
+  const [categoryData, setCategoryData] = useState([]);
+  const getCategoryData = () => {
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_asset_category")
+      .then((res) => {
+        setCategoryData(res.data);
+      });
+  };
+  useEffect(() => {
+    getCategoryData();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://192.168.1.231:3000/api/add_vendor",
+        "http://34.93.221.166:3000/api/add_vendor",
         {
           vendor_name: vendorName,
           vendor_type: type,
-          vendor_category: selectedCategory,
+          vendor_category: selectedCategory.map((category) => category.value),
           vendor_contact_no: vendorContact,
           secondary_contact_no: secondaryContact,
           secondary_person_name: secondaryPersonName,
@@ -107,10 +119,13 @@ const VenderMaster = () => {
           </div>
           <div className="col-sm-12 col-lg-6 ">
             <Autocomplete
-              // multiple
+              multiple
               id="combo-box-demo"
-              // options={options}
-              // InputLabelProps={{ shrink: true }}
+              options={categoryData.map((d) => ({
+                label: d.category_name,
+                value: d.category_id,
+              }))}
+              InputLabelProps={{ shrink: true }}
               renderInput={(params) => (
                 <TextField {...params} label="Vendor Category" />
               )}

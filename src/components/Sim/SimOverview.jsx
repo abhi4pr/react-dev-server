@@ -93,7 +93,7 @@ const SimOverview = () => {
     if (category) {
       axios
         .get(
-          `http://192.168.1.231:3000/api/get_single_asset_sub_category/${category}`
+          `http://34.93.221.166:3000/api/get_single_asset_sub_category/${category}`
         )
         .then((res) => {
           setSubCategoryData(res.data);

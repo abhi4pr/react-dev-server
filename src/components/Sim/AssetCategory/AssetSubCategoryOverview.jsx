@@ -45,7 +45,7 @@ const AssetSubCategoryOverview = () => {
       width: "10%",
       sortable: true,
     },
-   
+
     {
       name: "Sub Category Name",
       selector: (row) => row.sub_category_name,
@@ -59,11 +59,18 @@ const AssetSubCategoryOverview = () => {
       width: "23%",
     },
     {
-      name: "Description",
-      selector: (row) => row.description,
+      name: "In Warranty",
+      selector: (row) => row.inWarranty,
       sortable: true,
       width: "23%",
     },
+
+    // {
+    //   name: "Description",
+    //   selector: (row) => row.description,
+    //   sortable: true,
+    //   width: "23%",
+    // },
     {
       name: "Action",
       width: "23%",
