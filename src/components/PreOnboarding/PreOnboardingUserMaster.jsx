@@ -155,10 +155,10 @@ const PreOnboardingUserMaster = () => {
   const [documentPercentage, setDocumentPercentage] = useState(0);
 
   //Permanent Address
-  const [permanentAddress, setPermanentAddress] = useState("");
+  const [permanentAddress, setPermanentAddress] = useState();
   const [permanentCity, setPermanentCity] = useState("");
   const [permanentState, setPermanentState] = useState("");
-  const [permanentPincode, setPermanentPincode] = useState("");
+  const [permanentPincode, setPermanentPincode] = useState();
 
   //Current Address
   const [currentAddress, setCurrentAddress] = useState("");
@@ -787,7 +787,7 @@ const PreOnboardingUserMaster = () => {
     },
     {
       selector: "#sidebarDocumentBox",
-      content: "From here you can see our policies",
+      content: "From here you can submit your documents.",
     },
     {
       selector: "#sidebarPolicyBox",
@@ -899,6 +899,8 @@ const PreOnboardingUserMaster = () => {
                 </div>
                 <h2 className="document_tab_name">Documents</h2>
                 <h3>{documentPercentage}%</h3>
+                <h3>Men{documentPercentage}%</h3>
+                <h3>non men{documentPercentage}%</h3>
               </div>
 
               <div
@@ -1419,6 +1421,7 @@ const PreOnboardingUserMaster = () => {
 
                             <div className="form-group">
                               <TextField
+                              key={permanentPincode}
                                 required
                                 id="outlined-basic"
                                 label="Pincode"
