@@ -407,6 +407,15 @@ console.log(commitPayload)
               pagination
             />
            
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginRight: "8px" }}
+            // onClick={}
+
+>
+              Submit
+            </Button>
           </Box>
         </Modal>
       </>

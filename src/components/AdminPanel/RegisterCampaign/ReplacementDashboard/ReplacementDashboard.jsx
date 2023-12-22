@@ -21,7 +21,7 @@ const ReplacementDashboard = () => {
   const getReplacementData = async () => {
     try {
 
-      const replace = await axios.get('http://localhost:3000/api/replacement/plan')
+      const replace = await axios.get('http://192.168.29.110:3000/api/replacement/plan')
       setReplacementData(replace?.data?.data)
 
       const getCampaigns = await axios.get('http://34.93.221.166:3000/api/exe_campaign')
@@ -79,16 +79,16 @@ const ReplacementDashboard = () => {
 
   return (
     <>
-      {/* <div className="col-sm-12 col-lg-3">{
-        allCampaigns?.length >0 &&
+      {/* <div className="col-sm-12 col-lg-3">
+        {allCampaigns?.length >0 &&
         <Autocomplete
           multiple
           id="combo-box-demo"
           options={allCampaigns}
           renderInput={(params) => (
-            <TextField {...params} label="detailing" />
+            <TextField {...params} label="campaign" />
           )}
-          onChange={() => handleCampaignSelect()}
+          // onChange={() => handleCampaignSelect()}
         />
       }
       </div> */}
@@ -100,7 +100,6 @@ const ReplacementDashboard = () => {
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
       >
-
         {activeAccordionIndex === 0 && tab1}
         {activeAccordionIndex === 1 && tab2}
         {activeAccordionIndex === 2 && tab3}
