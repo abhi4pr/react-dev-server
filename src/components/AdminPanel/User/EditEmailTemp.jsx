@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
@@ -8,7 +8,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
 const EditEmailTemp = () => {
-
+  const { id } = useParams();
   const [emailFor, setEmailFor] = useState("");
   const [emailContent, setEmailContent] = useState("");
   const [remarks, setRemarks] = useState("");
@@ -31,6 +31,7 @@ const EditEmailTemp = () => {
     e.preventDefault();
                 
       await axios.post("http://34.93.221.166:3000/api/update_email_content",{
+        _id: id,
         email_for: emailFor,
         email_content: emailContent,
         remarks: remarks,
