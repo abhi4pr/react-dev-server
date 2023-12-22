@@ -14,11 +14,10 @@ const ExcusionCampaign = () => {
 
   const getAssignment = async () => {
     const getData = await axios.get(
-      `http://34.93.221.166:3000/api/assignment/all/123456`
+      `http://34.93.221.166:3000/api/assignment/all/25`
     );
     const assigned = getData?.data?.data.filter(
       (item) => item.ass_status == "assigned" 
-      || item.ass_status == "pending"
     );
     const pending = getData?.data?.data.filter(
       (item) => item.ass_status == "pending"
