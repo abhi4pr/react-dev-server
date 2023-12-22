@@ -175,6 +175,9 @@ import IncompleteProfileUsers from "./WFH/IncompleteProfileUsers";
 import UserGraphs from "./User/UserGraphs";
 import Hobbies from "./Hobbies/Hobbies";
 import HobbiesOverview from "./Hobbies/HobbiesOverview";
+import AddEmailTemp from "./User/AddEmailTemp";
+import EmailTempOverview from "./User/EmailTempOverview";
+import EditEmailTemp from "./User/EditEmailTemp";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -273,6 +276,9 @@ const Admin = () => {
                           element={<UserSingle />}
                         />
                         <Route path="/user-graph" element={<UserGraphs />} />
+                        <Route path="/email-template" element={<AddEmailTemp />} />
+                        <Route path="/email-template-overview" element={<EmailTempOverview />} />
+                        <Route path="/email-template-update/:id" element={<EditEmailTemp />} />
                       </>
                     )}
 

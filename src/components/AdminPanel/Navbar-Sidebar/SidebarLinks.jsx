@@ -171,6 +171,9 @@ const SidebarLinks = () => {
                 <Link className="collapse-item" to="/admin/user-graph">
                   User Graphs
                 </Link>
+                <Link className="collapse-item" to="/admin/email-template-overview">
+                  Email Templates
+                </Link>
             </div>
           </div>
         </li>
