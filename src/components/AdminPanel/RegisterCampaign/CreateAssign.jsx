@@ -337,7 +337,7 @@ const CreateAssign = () => {
     setLoading(true)
     const data=payload.map(page=>{
       if(selectedRows.includes(page.p_id)){
-        return {...page,ass_to:newValue.value,exp_name:newValue.label,ass_status:'pending',
+        return {...page,ass_to:newValue.value,exp_name:newValue.label,ass_status:'assigned',
         expert:newValue?{label:newValue.label,value:newValue.value}:null
       }
     }else return page
@@ -357,7 +357,7 @@ const CreateAssign = () => {
     console.log(event, newValue, params);
     const data = payload.map(page => {
       if (page.p_id == params.row.p_id) {
-        return { ...page, ass_to: newValue.all.exp_id, exp_name: newValue.label, ass_status: newValue == null ? 'unassigned' : 'pending' }
+        return { ...page, ass_to: newValue.all.exp_id, exp_name: newValue.label, ass_status: newValue == null ? 'unassigned' : 'assigned' }
       } else return page
     })
 
@@ -553,7 +553,7 @@ const CreateAssign = () => {
         >
           <FormControlLabel value="all" control={<Radio />} label="all" />
           <FormControlLabel value="unassigned" control={<Radio />} label="unassigned" />
-          <FormControlLabel value="pending" control={<Radio />} label="assigned" />
+          <FormControlLabel value="assigned" control={<Radio />} label="assigned" />
 
         </RadioGroup>
       </FormControl>
