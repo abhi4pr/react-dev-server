@@ -6,14 +6,14 @@ import { FaEdit } from "react-icons/fa";
 import FormContainer from "../AdminPanel/FormContainer";
 import DeleteButton from "../AdminPanel/DeleteButton";
 import UserNav from "../Pantry/UserPanel/UserNav";
-import FieldContainer from "../AdminPanel/FieldContainer";
 import jwtDecode from "jwt-decode";
 import * as XLSX from "xlsx";
 import Select from "react-select";
 import Modal from "react-modal";
 import { useGlobalContext } from "../../Context/Context";
+
 const SimOverview = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, categoryDataContext } = useGlobalContext();
   const [search, setSearch] = useState("");
   const [ImageModalOpen, setImageModalOpen] = useState(false);
 
@@ -22,8 +22,8 @@ const SimOverview = () => {
 
   const [userData, setUserData] = useState([]);
 
-  const [simTypeFilter, setSimTypeFilter] = useState("");
-  const [providerFilter, setProviderFilter] = useState("");
+  // const [simTypeFilter, setSimTypeFilter] = useState("");
+  // const [providerFilter, setProviderFilter] = useState("");
 
   const [simallocationdata, setSimAllocationData] = useState([]);
 
@@ -55,7 +55,13 @@ const SimOverview = () => {
   function getData() {
     axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
       const simAllData = res.data.data;
-      if (selectedStatus !== "") {
+      if (status != "") {
+        const AvailableData = simAllData.filter(
+          (data) => data.status.toLowerCase() == status
+        );
+        setData(AvailableData);
+        setFilterData(AvailableData);
+      } else if (selectedStatus !== "") {
         const AvailableData = simAllData.filter(
           (data) => data.status == selectedStatus
         );
@@ -78,17 +84,20 @@ const SimOverview = () => {
     setModalSelectedUserData(MSD);
   }, [selectedUserTransfer]);
 
-  const [categoryData, setCategoryData] = useState([]);
   const [category, setCategory] = useState("");
   const [subcategoryData, setSubCategoryData] = useState([]);
   const [subcategory, setSubCategory] = useState("");
-  const getCategoryData = () => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_category")
-      .then((res) => {
-        setCategoryData(res.data);
-      });
-  };
+
+  // i want to use context api this is replace
+
+  // const [categoryData, setCategoryData] = useState([]);
+  // const getCategoryData = () => {
+  //   axios
+  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .then((res) => {
+  //       setCategoryData(res.data);
+  //     });
+  // };
   const getSubCategoryData = () => {
     if (category) {
       axios
@@ -106,7 +115,7 @@ const SimOverview = () => {
 
   useEffect(() => {
     getData();
-    getCategoryData();
+    // getCategoryData();
   }, [selectedStatus]);
 
   useEffect(() => {
@@ -357,7 +366,7 @@ const SimOverview = () => {
     },
   ];
 
-  const [buttonAccess, setButtonAccess] = useState(false);
+  // const [buttonAccess, setButtonAccess] = useState(false);
 
   const handleExport = () => {
     const fileName = "data.xlsx";
@@ -502,7 +511,7 @@ const SimOverview = () => {
                     <Select
                       options={[
                         { value: "", label: "All" },
-                        ...categoryData.map((option) => ({
+                        ...categoryDataContext.map((option) => ({
                           value: option.category_id,
                           label: option.category_name,
                         })),
@@ -513,7 +522,7 @@ const SimOverview = () => {
                           : {
                               value: category,
                               label:
-                                categoryData.find(
+                                categoryDataContext.find(
                                   (dept) => dept.category_id === category
                                 )?.category_name || "Select...",
                             }

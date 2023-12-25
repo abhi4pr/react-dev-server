@@ -12,7 +12,7 @@ import { Autocomplete, TextField } from "@mui/material";
 const VendorUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, categoryDataContext } = useGlobalContext();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
@@ -26,7 +26,6 @@ const VendorUpdate = () => {
   const [secondaryContact, setSecondaryContact] = useState("");
   const [secondaryPersonName, setSecondaryPersonName] = useState("");
   const [type, setType] = useState("");
-  const [categoryData, setCategoryData] = useState([]);
 
   const Type = ["Self", "Service", "Both"];
 
@@ -34,18 +33,20 @@ const VendorUpdate = () => {
     setTimeout(() => {
       getData();
     }, 1000);
-  }, [categoryData]);
-  const getCategoryData = () => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_category")
-      .then((res) => {
-        console.log(res.data, "category");
-        setCategoryData(res.data);
-      });
-  };
-  useEffect(() => {
-    getCategoryData();
-  }, []);
+  }, [categoryDataContext]);
+
+  // const [categoryData, setCategoryData] = useState([]);
+  // const getCategoryData = () => {
+  //   axios
+  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .then((res) => {
+  //       console.log(res.data, "category");
+  //       setCategoryData(res.data);
+  //     });
+  // };
+  // useEffect(() => {
+  //   getCategoryData();
+  // }, []);
 
   const getData = () => {
     axios
@@ -54,9 +55,9 @@ const VendorUpdate = () => {
         const response = res.data.data;
 
         setSelectedCategory(
-          categoryData.length > 0
+          categoryDataContext.length > 0
             ? res.data.data.vendor_category?.map((category) => ({
-                label: categoryData?.filter((e) => {
+                label: categoryDataContext?.filter((e) => {
                   return e.category_id == category;
                 })[0]?.category_name,
                 value: category ? +category : "",
@@ -163,7 +164,7 @@ const VendorUpdate = () => {
               multiple
               id="combo-box-demo"
               value={selectedCategory.length > 0 ? selectedCategory : []}
-              options={categoryData?.map((d) => ({
+              options={categoryDataContext?.map((d) => ({
                 label: d?.category_name,
                 value: d?.category_id,
               }))}

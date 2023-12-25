@@ -13,7 +13,7 @@ const HobbiesOverview = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.1.20:3000/api/get_all_hobbies"
+        "http://34.93.221.166:3000/api/get_all_hobbies"
       );
       const data = response.data.data;
       setHobbiesData(data);

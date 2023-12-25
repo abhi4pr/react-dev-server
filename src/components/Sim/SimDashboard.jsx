@@ -6,12 +6,11 @@ import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../Context/Context";
 import Modal from "react-modal";
 import DataTable from "react-data-table-component";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Select from "react-select";
-import SimOverview from "../Sim/SimOverview";
 
 const SimDashboard = () => {
-  const { toastAlert } = useGlobalContext();
+  const { categoryDataContext } = useGlobalContext();
 
   const [simData, setSimData] = useState([]);
   const [availableObjects, setAvailableCount] = useState([]);
@@ -26,22 +25,26 @@ const SimDashboard = () => {
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
-  const userID = decodedToken.id;
+  // const userID = decodedToken.id;
 
-  const [categoryData, setCategoryData] = useState([]);
   const [category, setCategory] = useState("");
   const [subcategoryData, setSubCategoryData] = useState([]);
   const [subcategory, setSubCategory] = useState("");
 
-  const isAllocation = simData.filter((d) => d.status);
-  console.log(isAllocation, "allocation");
-  const getCategoryData = () => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_category")
-      .then((res) => {
-        setCategoryData(res.data);
-      });
-  };
+  // const isAllocation = simData.filter((d) => d.status);
+
+  // const [categoryData, setCategoryData] = useState([]);
+  // const getCategoryData = () => {
+  //   axios
+  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .then((res) => {
+  //       setCategoryData(res.data);
+  //     });
+  // };
+  // useEffect(() => {
+  //   getCategoryData();
+  // }, []);
+
   const getSubCategoryData = () => {
     if (category) {
       axios
@@ -60,10 +63,6 @@ const SimDashboard = () => {
   useEffect(() => {
     getSubCategoryData();
   }, [category]);
-
-  useEffect(() => {
-    getCategoryData();
-  }, []);
 
   function getData() {
     axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
@@ -210,7 +209,7 @@ const SimDashboard = () => {
               <Select
                 options={[
                   { value: "", label: "All" },
-                  ...categoryData.map((option) => ({
+                  ...categoryDataContext.map((option) => ({
                     value: option.category_id,
                     label: option.category_name,
                   })),
@@ -221,7 +220,7 @@ const SimDashboard = () => {
                     : {
                         value: category,
                         label:
-                          categoryData.find(
+                          categoryDataContext.find(
                             (dept) => dept.category_id === category
                           )?.category_name || "Select...",
                       }

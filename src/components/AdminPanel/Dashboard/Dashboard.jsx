@@ -58,12 +58,16 @@ function Dashboard() {
     axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
       getAllSimData(res.data.data);
     });
-    axios.get("http://34.93.221.166:3000/api/get_all_logo_brands").then((res) => {
-      getLogoBrandData(res.data);
-    });
-    axios.get("http://34.93.221.166:3000/api/get_all_instapages").then((res) => {
-      getIntellectualProperty(res.data);
-    });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_logo_brands")
+      .then((res) => {
+        getLogoBrandData(res.data);
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_instapages")
+      .then((res) => {
+        getIntellectualProperty(res.data);
+      });
     axios.get("http://34.93.221.166:3000/api/get_finances").then((res) => {
       const response = res?.data;
       setAccountsPendingPaymentsCount(
@@ -160,7 +164,6 @@ function Dashboard() {
                       <div className="d_infocard_txt">
                         <h3>Assets</h3>
                         <h2>{AllSimData}</h2>
-                        
                       </div>
                       <div className="d_infocard_icon">
                         <span>

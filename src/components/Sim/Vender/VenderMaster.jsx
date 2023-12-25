@@ -10,7 +10,7 @@ import Select from "react-select";
 import { Autocomplete, TextField } from "@mui/material";
 
 const VenderMaster = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, categoryDataContext } = useGlobalContext();
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -34,17 +34,17 @@ const VenderMaster = () => {
   //   "Non Operating Asset",
   // ];
   const Type = ["Sales", "Service", "Both"];
-  const [categoryData, setCategoryData] = useState([]);
-  const getCategoryData = () => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_category")
-      .then((res) => {
-        setCategoryData(res.data);
-      });
-  };
-  useEffect(() => {
-    getCategoryData();
-  }, []);
+  // const [categoryData, setCategoryData] = useState([]);
+  // const getCategoryData = () => {
+  //   axios
+  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .then((res) => {
+  //       setCategoryData(res.data);
+  //     });
+  // };
+  // useEffect(() => {
+  //   getCategoryData();
+  // }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -121,7 +121,7 @@ const VenderMaster = () => {
             <Autocomplete
               multiple
               id="combo-box-demo"
-              options={categoryData.map((d) => ({
+              options={categoryDataContext.map((d) => ({
                 label: d.category_name,
                 value: d.category_id,
               }))}

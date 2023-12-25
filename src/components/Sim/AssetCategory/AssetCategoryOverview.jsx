@@ -9,7 +9,6 @@ import axios from "axios";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../../AdminPanel/DeleteButton";
 import Modal from "react-modal";
-import Select from "react-select";
 
 const AssetCategoryOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -17,7 +16,7 @@ const AssetCategoryOverview = () => {
   const [filterData, setFilterData] = useState([]);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
-  const [selectedRow, setSelectedRow] = useState(null);
+  // const [selectedRow, setSelectedRow] = useState(null);
 
   // Modal State
   const [catId, setCatId] = useState(0);
@@ -221,7 +220,7 @@ const AssetCategoryOverview = () => {
               <div className="card mb-4">
                 <div className="data_tbl table-responsive">
                   <DataTable
-                    title="User Overview"
+                    title="Asset Categroy"
                     columns={columns}
                     data={filterData}
                     fixedHeader
