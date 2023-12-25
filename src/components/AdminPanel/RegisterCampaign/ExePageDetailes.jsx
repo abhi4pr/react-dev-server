@@ -195,7 +195,7 @@ const ExePageDetailes = ({
           return <TextField type="number"
    
            // value={params.row.comments || commitPayload.comments}
-           value={activeAccordion!="2" ? params.row.likes:""}
+          //  value={activeAccordion!="2" ? params.row.likes:""}
            placeholder={params.row.likes}
            onChange={(e)=>handleCommitChange(e,"likes",params)}
            />
@@ -219,7 +219,7 @@ const ExePageDetailes = ({
           return <TextField type="number"
    
            // value={params.row.comments || commitPayload.comments}
-           value={activeAccordion!="2" && params.row.comments}
+          //  value={activeAccordion!="2" && params.row.comments}
            placeholder={params.row.comments}
            onChange={(e)=>handleCommitChange(e,"comments",params)}
            />
@@ -245,7 +245,7 @@ const ExePageDetailes = ({
             return <TextField type="number"
      
              // value={params.row.comments || commitPayload.comments}
-             value={activeAccordion!="2" && params.row.engagement}
+            //  value={activeAccordion!="2" && params.row.engagement}
              placeholder={params.row.engagement}
              onChange={(e)=>handleCommitChange(e,"engagement",params)}
              />
@@ -269,7 +269,7 @@ const ExePageDetailes = ({
           return <TextField type="number"
    
            // value={params.row.comments || commitPayload.comments}
-           value={activeAccordion!="2" && params.row.reach}
+          //  value={activeAccordion!="2" && params.row.reach}
            placeholder={params.row.reach}
            onChange={(e)=>handleCommitChange(e,"reach",params)}
            />
@@ -289,7 +289,7 @@ const ExePageDetailes = ({
 
           return <TextField type="text"
           
-           value={activeAccordion!="2" && params.row.snapshot}
+          //  value={activeAccordion!="2" && params.row.snapshot}
            placeholder={params.row.snapshot}
            onChange={(e)=>handleCommitChange(e,"snapshot",params)}
            />
