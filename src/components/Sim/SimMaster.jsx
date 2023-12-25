@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
@@ -8,7 +8,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
 
 const SimMaster = () => {
-  const { toastAlert, toastError } = useGlobalContext();
+  const { toastAlert, toastError, categoryDataContext, getBrandDataContext } =
+    useGlobalContext();
   const [assetsName, setAssetsName] = useState("");
 
   const [assetsID, setAssetsID] = useState("");
@@ -47,7 +48,6 @@ const SimMaster = () => {
   const [remark, setRemark] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
-  const [categoryData, setCategoryData] = useState([]);
   const [subcategoryData, setSubCategoryData] = useState([]);
   const [vendorData, setVendorData] = useState([]);
 
@@ -62,15 +62,28 @@ const SimMaster = () => {
   const inWarrantyOption = ["No", "Yes"];
   const IMGType = ["HR", "User"];
   const assettype = ["New", "Old"];
+  const [modalData, setModalData] = useState([]);
+  const [modalName, setModalName] = useState("");
+  const [brandName, setBrandName] = useState("");
 
   // All Category , subcategory and vendor api here
-  const getAllCategory = () => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_category")
-      .then((res) => {
-        setCategoryData(res.data);
-      });
-  };
+  // const [categoryData, setCategoryData] = useState([]);
+  // const getAllCategory = () => {
+  //   axios
+  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .then((res) => {
+  //       setCategoryData(res.data);
+  //     });
+  // };
+
+  // const [brandData, setBrandData] = useState([]);
+  // async function getBrandData() {
+  //   const res = await axios.get(
+  //     "http://34.93.221.166:3000/api/get_all_asset_brands"
+  //   );
+  //   setBrandData(res.data.data);
+  // }
+
   const getAllSubCategory = () => {
     if (assetsCategory.category_id) {
       axios
@@ -87,25 +100,34 @@ const SimMaster = () => {
       setVendorData(res.data);
     });
   };
+  async function getModalData() {
+    const res = await axios.get(
+      "http://34.93.221.166:3000/api/get_all_asset_modals"
+    );
+    setModalData(res.data);
+  }
 
   useEffect(() => {
-    console.log(assetsCategory.category_id, "ok");
-    const selectedCategory = categoryData.filter(
+    const selectedCategory = categoryDataContext.filter(
       (d) => d.category_id === assetsCategory.category_id
     );
-    console.log(selectedCategory, "selevtefd dasd");
     if (selectedCategory) {
       setSelfAuditPeriod(selectedCategory[0]?.selfAuditPeriod);
       setSelfAuditUnit(selectedCategory[0]?.selfAuditUnit);
       setHrSelfAuditPeriod(selectedCategory[0]?.hrAuditPeriod);
       setHrSelfAuditUnit(selectedCategory[0]?.hrAuditUnit);
     }
-  }, [assetsCategory, categoryData]);
+  }, [assetsCategory.category_id, categoryDataContext]);
   useEffect(() => {
-    getAllSubCategory();
-    getAllCategory();
+    getModalData();
+    // getBrandData();
+    // getAllCategory();
     getAllVendor();
   }, []);
+
+  useEffect(() => {
+    getAllSubCategory();
+  }, [assetsCategory]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -127,6 +149,8 @@ const SimMaster = () => {
       formData.append("sim_no", assetsID);
       formData.append("assetsOtherID", assetsOtherID);
       formData.append("s_type", assetType);
+      formData.append("s_type", modalName.asset_modal_id);
+      formData.append("s_type", brandName.asset_brand_id);
       formData.append("warrantyDate", warrantyDate);
       formData.append("inWarranty", inWarranty);
       formData.append("dateOfPurchase", dateOfPurchase);
@@ -188,8 +212,22 @@ const SimMaster = () => {
     <div style={{ width: "80%", margin: "0 0 0 10%" }}>
       <UserNav />
       <div className="form-heading">
-        <div className="form_heading_title">
-          <h2>Assets Registration</h2>
+        <div className="action_heading">
+          <div className="form_heading_title">
+            <h2>Assets Registration</h2>
+          </div>
+        </div>
+        <div className="action_btns">
+          <Link to="/brand-mast">
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Brand Master
+            </button>
+          </Link>
+          <Link to="/modal-mast">
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Add Modal
+            </button>
+          </Link>
         </div>
       </div>
       <form mainTitle="Assets" title="Assets Register" onSubmit={handleSubmit}>
@@ -216,17 +254,17 @@ const SimMaster = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={categoryData.map((cat) => ({
+                  options={categoryDataContext.map((cat) => ({
                     label: cat.category_name,
                     value: cat.category_id,
                   }))}
                   // value={assetsCategory}
                   onChange={(e, newvalue) => {
                     // if (newvalue != null) {
-                    setAssetsCategory((pre) => ({
+                    setAssetsCategory({
                       label: newvalue.label,
                       category_id: newvalue.value,
-                    }));
+                    });
                     // console.log(newvalue, "there is new value");
                     if (assetsCategoryError) {
                       setAssetsCategoryError("");
@@ -280,30 +318,20 @@ const SimMaster = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={categoryData.map((cat) => ({
-                    label: cat.category_name,
-                    value: cat.category_id,
+                  options={getBrandDataContext.map((cat) => ({
+                    label: cat.asset_brand_name,
+                    value: cat.asset_brand_id,
                   }))}
-                  // value={assetsCategory}
                   onChange={(e, newvalue) => {
-                    // if (newvalue != null) {
-                    setAssetsCategory((pre) => ({
-                      label: newvalue.label,
-                      category_id: newvalue.value,
-                    }));
-                    // console.log(newvalue, "there is new value");
-                    if (assetsCategoryError) {
-                      setAssetsCategoryError("");
+                    if (newvalue != null) {
+                      setBrandName((pre) => ({
+                        label: newvalue.label,
+                        asset_brand_id: newvalue.value,
+                      }));
                     }
-                    // }
                   }}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Brand Name"
-                      error={!!assetsCategoryError}
-                      helperText={assetsCategoryError}
-                    />
+                    <TextField {...params} label="Brand Name" />
                   )}
                 />
               </div>
@@ -327,26 +355,20 @@ const SimMaster = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={categoryData.map((cat) => ({
-                    label: cat.category_name,
-                    value: cat.category_id,
+                  options={modalData.map((cat) => ({
+                    label: cat.asset_modal_name,
+                    value: cat.asset_modal_id,
                   }))}
                   onChange={(e, newvalue) => {
-                    setAssetsCategory((pre) => ({
-                      label: newvalue.label,
-                      category_id: newvalue.value,
-                    }));
-                    if (assetsCategoryError) {
-                      setAssetsCategoryError("");
+                    if (newvalue != null) {
+                      setModalName((pre) => ({
+                        label: newvalue.label,
+                        asset_modal_id: newvalue.value,
+                      }));
                     }
                   }}
                   renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Add Modal"
-                      error={!!assetsCategoryError}
-                      helperText={assetsCategoryError}
-                    />
+                    <TextField {...params} label="Add Modal" />
                   )}
                 />
               </div>
@@ -480,6 +502,7 @@ const SimMaster = () => {
                   id="outlined-basic"
                   label="Self Audit Period in days"
                   type="number"
+                  disabled={true}
                   value={selfAuditPeriod}
                   onChange={(e) => setSelfAuditPeriod(e.target.value)}
                 />
@@ -489,6 +512,7 @@ const SimMaster = () => {
               <div className="form-group">
                 <TextField
                   fullWidth={true}
+                  disabled={true}
                   id="outlined-basic"
                   label="Self Audit Unit"
                   value={selfAuditUnit}
@@ -507,6 +531,7 @@ const SimMaster = () => {
                   id="outlined-basic"
                   label="HR Self Audit Period in days"
                   type="number"
+                  disabled={true}
                   value={hrselfAuditPeriod}
                   onChange={(e) => setHrSelfAuditPeriod(e.target.value)}
                 />
@@ -517,6 +542,7 @@ const SimMaster = () => {
               <div className="form-group">
                 <TextField
                   fullWidth={true}
+                  disabled={true}
                   id="outlined-basic"
                   label="HR Self Audit Unit"
                   value={hrselfAuditUnit}

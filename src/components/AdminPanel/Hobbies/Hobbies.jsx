@@ -18,7 +18,7 @@ const Hobbies = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.1.20:3000/api/get_single_hobby/${id}`
+        `http://34.93.221.166:3000/api/get_single_hobby/${id}`
       );
       const hobbyName = response.data.data.hobby_name;
       setHobby(hobbyName);
@@ -32,14 +32,14 @@ const Hobbies = () => {
     try {
       if (id == 0) {
         const response = await axios.post(
-          "http://192.168.1.20:3000/api/add_hobby",
+          "http://34.93.221.166:3000/api/add_hobby",
           {
             hobby_name: hobby,
           }
         );
       } else {
         const response = await axios.put(
-          `http://192.168.1.20:3000/api/update_hobby`,
+          `http://34.93.221.166:3000/api/update_hobby`,
           {
             hobby_id: id,
             hobby_name: hobby,

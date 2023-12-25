@@ -11,27 +11,27 @@ import Select from "react-select";
 const AssetSubCategoryUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, categoryDataContext } = useGlobalContext();
   const token = sessionStorage.getItem("token");
-  const [categories, setCategories] = useState([]);
   const [description, setDescription] = useState("");
   const [subCategoryName, setSubCategoryName] = useState("");
   const [selectedCat, setSelectedCat] = useState("");
   const [inWarranty, setInWarranty] = useState("");
   const warranty = ["Yes", "No"];
 
-  useEffect(() => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_category")
-      .then((res) => setCategories(res.data))
-      .catch((error) => console.error("Error fetching categories:", error));
-  }, []);
+  // const [categories, setCategories] = useState([]);
+  // useEffect(() => {
+  //   axios
+  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .then((res) => setCategories(res.data))
+  //     .catch((error) => console.error("Error fetching categories:", error));
+  // }, []);
 
   const getData = () => {
     axios
-      .get(`http://192.168.1.20:3000/api/get_single_asset_sub_category/${id}`)
+      .get(`http://34.93.221.166:3000/api/get_single_asset_cat/${id}`)
       .then((res) => {
-        const response = res.data;
+        const response = res.data.data;
         console.log(response[0], "lalit is here");
         setSelectedCat(response[0].category_id);
         setSubCategoryName(response[0].sub_category_name);
@@ -93,15 +93,16 @@ const AssetSubCategoryUpdate = () => {
               Category Name <sup style={{ color: "red" }}>*</sup>
             </label>
             <Select
-              options={categories.map((opt) => ({
+              options={categoryDataContext.map((opt) => ({
                 value: opt.category_id,
                 label: opt.category_name,
               }))}
               value={{
                 value: selectedCat,
                 label:
-                  categories.find((cat) => cat.category_id === selectedCat)
-                    ?.category_name || "",
+                  categoryDataContext.find(
+                    (cat) => cat.category_id === selectedCat
+                  )?.category_name || "",
               }}
               onChange={(e) => setSelectedCat(e.value)}
               required

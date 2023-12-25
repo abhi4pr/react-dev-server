@@ -44,13 +44,22 @@ const SimUpdate = () => {
   const [subcategoryData, setSubCategoryData] = useState([]);
   const [vendorData, setVendorData] = useState([]);
 
+  const [finacialType, setFinacialType] = useState("");
+  const [depreciation, setDescription] = useState("");
+
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
   const inWarrantyOption = ["No", "Yes"];
+  const IMGType = ["HR", "User"];
   const assettype = ["New", "Old"];
   const { id } = useParams();
+  const [modalData, setModalData] = useState([]);
+  const [modalName, setModalName] = useState("");
+
+  const [brandData, setBrandData] = useState([]);
+  const [brandName, setBrandName] = useState("");
 
   // All Category , subcategory and vendor api here
   const getAllCategory = () => {
@@ -61,22 +70,59 @@ const SimUpdate = () => {
       });
   };
   const getAllSubCategory = () => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_sub_category")
-      .then((res) => {
-        setSubCategoryData(res.data);
-      });
+    console.log(assetsCategory);
+    if (assetsCategory) {
+      axios
+        .get(
+          `http://34.93.221.166:3000/api/get_single_asset_sub_category/${assetsCategory}`
+        )
+        .then((res) => {
+          console.log(res.data);
+          setSubCategoryData(res.data);
+        });
+    }
   };
   const getAllVendor = () => {
     axios.get("http://34.93.221.166:3000/api/get_all_vendor").then((res) => {
       setVendorData(res.data);
     });
   };
+
+  async function getModalData() {
+    const res = await axios.get(
+      "http://34.93.221.166:3000/api/get_all_asset_modals"
+    );
+    setModalData(res.data);
+  }
+  async function getBrandData() {
+    const res = await axios.get(
+      "http://34.93.221.166:3000/api/get_all_asset_brands"
+    );
+    setBrandData(res.data.data);
+  }
   useEffect(() => {
+    const selectedCategory = categoryData.filter(
+      (d) => d.category_id === assetsCategory
+    );
+    if (selectedCategory) {
+      setSelfAuditPeriod(selectedCategory[0]?.selfAuditPeriod);
+      setSelfAuditUnit(selectedCategory[0]?.selfAuditUnit);
+      setHrSelfAuditPeriod(selectedCategory[0]?.hrAuditPeriod);
+      setHrSelfAuditUnit(selectedCategory[0]?.hrAuditUnit);
+      console.log(selfAuditPeriod, "data hai");
+    }
+  }, [categoryData, assetsCategory]);
+  useEffect(() => {
+    getBrandData();
+    getModalData();
     getAllCategory();
-    getAllSubCategory();
+    // getAllSubCategory();
     getAllVendor();
   }, []);
+
+  useEffect(() => {
+    getAllSubCategory();
+  }, [assetsCategory]);
 
   useEffect(() => {
     axios
@@ -95,13 +141,15 @@ const SimUpdate = () => {
           vendor_id,
           inWarranty,
           warrantyDate,
-          selfAuditPeriod,
-          selfAuditUnit,
-          hrAuditPeriod,
-          hrAuditUnit,
+          // selfAuditPeriod,
+          // selfAuditUnit,
+          // hrAuditPeriod,
+          // hrAuditUnit,
           assetsValue,
           assetsCurrentValue,
           dateOfPurchase,
+          asset_financial_type,
+          depreciation_percentage,
           Remarks,
         } = fetchedData;
         setAssetsName(assetsName);
@@ -114,12 +162,14 @@ const SimUpdate = () => {
         setInWarranty(inWarranty);
         setWarrantyDate(warrantyDate?.split("T")?.[0]);
         setDateOfPurchase(dateOfPurchase?.split("T")?.[0]);
-        setSelfAuditPeriod(selfAuditPeriod);
-        setSelfAuditUnit(selfAuditUnit);
-        setHrSelfAuditPeriod(hrAuditPeriod);
-        setHrSelfAuditUnit(hrAuditUnit);
+        // setSelfAuditPeriod(selfAuditPeriod);
+        // setSelfAuditUnit(selfAuditUnit);
+        // setHrSelfAuditPeriod(hrAuditPeriod);
+        // setHrSelfAuditUnit(hrAuditUnit);
         setAssetsValue(assetsValue);
         setAssetsCurrentValue(assetsCurrentValue);
+        setFinacialType(asset_financial_type);
+        setDescription(depreciation_percentage);
         setRemark(Remarks);
         // setSimData(fetchedData);
       });
@@ -134,6 +184,10 @@ const SimUpdate = () => {
     formData.append("sim_no", assetsID);
     formData.append("assetsOtherID", assetsOtherID);
     formData.append("s_type", assetType);
+
+    formData.append("s_type", modalName.asset_modal_id);
+    formData.append("s_type", brandName.asset_brand_id);
+
     formData.append("warrantyDate", Date(warrantyDate));
     formData.append("inWarranty", inWarranty);
     formData.append("dateOfPurchase", Date(dateOfPurchase));
@@ -147,6 +201,8 @@ const SimUpdate = () => {
     formData.append("hrselfAuditUnit", hrselfAuditUnit);
     formData.append("assetsValue", Number(assetsValue));
     formData.append("assetsCurrentValue", Number(assetsCurrentValue));
+    formData.append("asset_financial_type", finacialType);
+    formData.append("depreciation_percentage", depreciation);
     formData.append("remark", remark);
     formData.append("created_by", loginUserId);
     formData.append("status", "Available");
@@ -164,7 +220,10 @@ const SimUpdate = () => {
       imageData.append("img2", assetsImg2);
       imageData.append("img3", assetsImg3);
       imageData.append("img4", assetsImg4);
-      axios.put("http://34.93.221.166:3000/api/update_assets_images", imageData);
+      axios.put(
+        "http://34.93.221.166:3000/api/update_assets_images",
+        imageData
+      );
 
       if (response.status === 200) {
         toastAlert("Form Submitted successfully");
@@ -192,72 +251,6 @@ const SimUpdate = () => {
         <div className="formarea">
           <div className="row">
             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-              <div className="form-group ">
-                <TextField
-                  id="outlined-basic"
-                  label="Assets Name"
-                  type="text"
-                  value={assetsName}
-                  onChange={(e) => setAssetsName(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-              <div className="form-group">
-                <TextField
-                  id="outlined-basic"
-                  label="Assets ID *"
-                  type="number"
-                  value={assetsID}
-                  onChange={(e) => setAssetsID(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-              <div className="form-group">
-                <TextField
-                  id="outlined-basic"
-                  label="Assets Other ID"
-                  type="number"
-                  value={assetsOtherID}
-                  onChange={(e) => setAssetsOtherID(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-              <div className="form-group form_select">
-                <Autocomplete
-                  disablePortal
-                  // sx={{ width: 600 }}
-                  id="combo-box-demo"
-                  options={inWarrantyOption}
-                  value={inWarranty}
-                  onChange={(e, newvalue) => setInWarranty(newvalue)}
-                  defaultValue={inWarrantyOption[0]}
-                  renderInput={(params) => (
-                    <TextField {...params} label="In Warranty" />
-                  )}
-                />
-              </div>
-            </div>
-
-            {inWarranty == "Yes" && (
-              <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                <div className="form-group">
-                  <TextField
-                    id="outlined-basic"
-                    InputLabelProps={{ shrink: true }}
-                    label="Warranty Date"
-                    type="date"
-                    value={warrantyDate}
-                    onChange={(e) => setWarrantyDate(e.target.value)}
-                  />
-                </div>
-              </div>
-            )}
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="form-group form_select">
                 <Autocomplete
                   disablePortal
@@ -273,23 +266,8 @@ const SimUpdate = () => {
                 />
               </div>
             </div>
-
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-              <div className="form-group">
-                <TextField
-                  id="outlined-basic"
-                  InputLabelProps={{ shrink: true }}
-                  label="Date of Purchase"
-                  type="date"
-                  value={dateOfPurchase}
-                  onChange={(e) => setDateOfPurchase(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
               <div className="form-group form_select">
-                `{" "}
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
@@ -303,17 +281,17 @@ const SimUpdate = () => {
                     )?.category_name || ""
                   }
                   onChange={(e, newValue) => {
-                    setAssetsCategory(newValue.value);
+                    if (newValue != null) {
+                      setAssetsCategory(newValue.value);
+                    }
                   }}
                   renderInput={(params) => (
                     <TextField {...params} label="Assets Category *" />
                   )}
                 />
-                `
               </div>
             </div>
-
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
               <div className="form-group form_select">
                 <Autocomplete
                   disablePortal
@@ -337,8 +315,137 @@ const SimUpdate = () => {
                 />
               </div>
             </div>
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group form_select">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={brandData.map((cat) => ({
+                    label: cat.asset_brand_name,
+                    value: cat.asset_brand_id,
+                  }))}
+                  onChange={(e, newvalue) => {
+                    if (newvalue != null) {
+                      setBrandName((pre) => ({
+                        label: newvalue.label,
+                        asset_brand_id: newvalue.value,
+                      }));
+                    }
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Brand Name" />
+                  )}
+                />
+              </div>
+            </div>
 
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group ">
+                <TextField
+                  fullWidth={true}
+                  id="outlined-basic"
+                  label="Assets Name"
+                  type="text"
+                  value={assetsName}
+                  onChange={(e) => setAssetsName(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group form_select">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={modalData.map((cat) => ({
+                    label: cat.asset_modal_name,
+                    value: cat.asset_modal_id,
+                  }))}
+                  onChange={(e, newvalue) => {
+                    setModalName((pre) => ({
+                      label: newvalue.label,
+                      asset_modal_id: newvalue.value,
+                    }));
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Add Modal" />
+                  )}
+                />
+              </div>
+            </div>
+
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group">
+                <TextField
+                  fullWidth={true}
+                  id="outlined-basic"
+                  label="Assets ID *"
+                  type="number"
+                  value={assetsID}
+                  onChange={(e) => setAssetsID(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group">
+                <TextField
+                  fullWidth={true}
+                  id="outlined-basic"
+                  label="Assets Other ID"
+                  type="number"
+                  value={assetsOtherID}
+                  onChange={(e) => setAssetsOtherID(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group form_select">
+                <Autocomplete
+                  disablePortal
+                  fullWidth={true}
+                  id="combo-box-demo"
+                  options={inWarrantyOption}
+                  value={inWarranty}
+                  onChange={(e, newvalue) => setInWarranty(newvalue)}
+                  defaultValue={inWarrantyOption[0]}
+                  renderInput={(params) => (
+                    <TextField {...params} label="In Warranty" />
+                  )}
+                />
+              </div>
+            </div>
+
+            {inWarranty == "Yes" && (
+              <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+                <div className="form-group">
+                  <TextField
+                    fullWidth={true}
+                    id="outlined-basic"
+                    InputLabelProps={{ shrink: true }}
+                    label="Warranty Date"
+                    type="date"
+                    value={warrantyDate}
+                    onChange={(e) => setWarrantyDate(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group">
+                <TextField
+                  fullWidth={true}
+                  id="outlined-basic"
+                  InputLabelProps={{ shrink: true }}
+                  label="Date of Purchase"
+                  type="date"
+                  value={dateOfPurchase}
+                  onChange={(e) => setDateOfPurchase(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
               <div className="form-group form_select">
                 <Autocomplete
                   disablePortal
@@ -362,9 +469,10 @@ const SimUpdate = () => {
               </div>
             </div>
 
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
                   id="outlined-basic"
                   InputLabelProps={{ shrink: true }}
                   label="Invoice Copy"
@@ -379,6 +487,9 @@ const SimUpdate = () => {
             <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
+                  disabled={true}
+                  key={selfAuditPeriod}
                   id="outlined-basic"
                   label="Self Audit Period in dasy"
                   type="number"
@@ -390,9 +501,10 @@ const SimUpdate = () => {
             <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
+                  disabled={true}
                   id="outlined-basic"
                   label="Self Audit Unit"
-                  type="number"
                   value={selfAuditUnit}
                   onChange={(e) => setSelfAuditUnit(e.target.value)}
                 />
@@ -405,6 +517,8 @@ const SimUpdate = () => {
             <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  disabled={true}
+                  fullWidth={true}
                   id="outlined-basic"
                   label="HR Self Audit Period in days"
                   type="number"
@@ -417,9 +531,10 @@ const SimUpdate = () => {
             <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
+                  disabled={true}
                   id="outlined-basic"
                   label="HR Self Audit Unit"
-                  type="number"
                   value={hrselfAuditUnit}
                   onChange={(e) => setHrSelfAuditUnit(e.target.value)}
                 />
@@ -430,6 +545,7 @@ const SimUpdate = () => {
             <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
                   id="outlined-basic"
                   InputLabelProps={{ shrink: true }}
                   label="IMG 1"
@@ -441,6 +557,7 @@ const SimUpdate = () => {
             <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
                   id="outlined-basic"
                   InputLabelProps={{ shrink: true }}
                   label="IMG 2"
@@ -449,9 +566,10 @@ const SimUpdate = () => {
                 />
               </div>
             </div>
-            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
+            <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
                   id="outlined-basic"
                   InputLabelProps={{ shrink: true }}
                   label="IMG 3"
@@ -460,9 +578,10 @@ const SimUpdate = () => {
                 />
               </div>
             </div>
-            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
+            <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
                   id="outlined-basic"
                   InputLabelProps={{ shrink: true }}
                   label="IMG 4"
@@ -471,9 +590,25 @@ const SimUpdate = () => {
                 />
               </div>
             </div>
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+            <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12 col-12">
+              <div className="form-group form_select">
+                <Autocomplete
+                  disablePortal
+                  // sx={{ width: 600 }}
+                  id="combo-box-demo"
+                  options={IMGType}
+                  value={imageType}
+                  onChange={(e, newvalue) => setImageType(newvalue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Type" />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
                   id="outlined-basic"
                   label="Assets Value"
                   type="number"
@@ -482,14 +617,40 @@ const SimUpdate = () => {
                 />
               </div>
             </div>
-            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
+                  fullWidth={true}
                   id="outlined-basic"
                   label="Assets Current Value"
                   type="number"
                   value={assetsCurrentValue}
                   onChange={(e) => setAssetsCurrentValue(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
+              <div className="form-group">
+                <TextField
+                  fullWidth={true}
+                  id="outlined-basic"
+                  label="Assets Finacial Type"
+                  type="number"
+                  value={finacialType}
+                  onChange={(e) => setFinacialType(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
+              <div className="form-group">
+                <TextField
+                  fullWidth={true}
+                  id="outlined-basic"
+                  label="
+                  Depreciation Percentage"
+                  type="number"
+                  value={depreciation}
+                  onChange={(e) => setDescription(e.target.value)}
                 />
               </div>
             </div>
