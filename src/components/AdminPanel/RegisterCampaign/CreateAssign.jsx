@@ -52,9 +52,9 @@ const CreateAssign = () => {
   const getPhaseData = async () => {
     try {
       let response = await axios.get(
-        `http://localhost:3000/api/campaignphase/singlephase/${id}`
+        `http://34.93.221.166:3000/api/campaignphase/singlephase/${id}`
       );
-      const getPhaseAssignment = await axios.get(`http://localhost:3000/api/assignment/phase/${id}`)
+      const getPhaseAssignment = await axios.get(`http://34.93.221.166:3000/api/assignment/phase/${id}`)
 
       if (getPhaseAssignment?.data?.data.length > 0) {
         setSinglePhaseData(getPhaseAssignment?.data?.data);
@@ -96,7 +96,7 @@ const CreateAssign = () => {
   //submiting the assignment
   const handleSubmitAssign = async () => {
     try {
-      const createAssignment = await axios.post(`http://localhost:3000/api/assignment/bulk`, { pages: payload });
+      const createAssignment = await axios.post(`http://34.93.221.166:3000/api/assignment/bulk`, { pages: payload });
 
       // navigate("/admin/excusionCampaign");
     } catch (error) {

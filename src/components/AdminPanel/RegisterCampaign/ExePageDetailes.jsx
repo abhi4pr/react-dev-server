@@ -35,7 +35,7 @@ const ExePageDetailes = ({
 
   const [assignedData, setAssignedData] = useState({});
   const [assignmentCommits, setAssignmentCommits] = useState([])
-  const [commitPayload,setCommitPayload] = useState({});
+  const [commitPayload,setCommitPayload] = useState([]);
 
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
@@ -48,39 +48,57 @@ const ExePageDetailes = ({
     setOpen(true);
   };
 
-  const handleExcute = async (params) => {
+  const handleUpdate = async (params) => {
 
     const response = await axios.get(
-      `http://192.168.29.110:3000/api/campaignphase/singlephase/${params.row.phase_id}`
+      `http://34.93.221.166:3000/api/campaignphase/singlephase/${params.row.phase_id}`
     );
     setSinglePhase(response?.data?.data?.commitment);
 
-    const assCommit = await axios.get(`http://localhost:3000/api/assignment/commit/single/${params.row.ass_id}`)
+    const assCommit = await axios.get(`http://34.93.221.166:3000/api/assignment/commit/single/${params.row.ass_id}`)
     setAssignmentCommits(assCommit.data.data)
-
+    setCommitPayload(assCommit.data.data)
     setOpen2(true);
   };
 
-  console.log(singlePhase)
+  console.log(commitPayload,"commit payload")
 
   const handleVerified = () => {
-    setActiveAccordionIndex(3);
+   
   };
 
-  const handleCommitChange=(e,field,id)=>{
-    // console.log(field)
-    setCommitPayload({...commitPayload,[field]:e.target.value,id})
+  const handleCommitChange=(e,field,param)=>{
+    console.log(param.row)
+    // setCommitPayload({...commitPayload,[field]:e.target.value,id})
+    const data=commitPayload.map(commit=>{
+      if(commit.comm_id==param.row.comm_id){
+        return {...commit,[field]:e.target.value}
+      }else return commit
+    })
+
+    setCommitPayload(data)
   }
-console.log(commitPayload)
-  const updateSingleCommitment=async (params)=>{
+
+  const handleExecute=async (params)=>{
     console.log(params)
-    console.log(commitPayload)
-    const response=await axios.put(`http://localhost:3000/api/assignment/commit/single/${params.comm_id}`,commitPayload)
-    console.log(response)
+    const response=await axios.post('http://34.93.221.166:3000/api/assignment/status',{
+      ass_id:params.row.ass_id,
+      campaignId:params.row.campaignId,
+      ass_status:'executed'
+    })
+
+    
+  }
+
+  const updateSingleCommitment=async (params)=>{
+    const payload=commitPayload.find(commit => commit.comm_id==params.comm_id)
+    // console.log(payload)
+    const response=await axios.put(`http://34.93.221.166:3000/api/assignment/commit/single/${params.comm_id}`,payload)
+    
   }
 
   const handleAssignedSubmit = async () => {
-    const response = await axios.post('http://localhost:3000/api/assignment/commit', assignedData)
+    const response = await axios.post('http://34.93.221.166:3000/api/assignment/commit', assignedData)
 
   };
   const column = [
@@ -126,22 +144,19 @@ console.log(commitPayload)
               <Button
                 variant="outlined"
                 color="error"
-                onClick={() => handleExcute(params)}
+                onClick={() => handleUpdate(params)}
               >
                 update
               </Button>
-              <Button variant="outlined" color="secondary">
+              <Button variant="outlined" color="secondary" onClick={()=>handleExecute(params)}>
                 Excute
               </Button>
             </div>
           );
-        } else if (params.row.ass_status === "verified") {
-          return <Button onClick={() => handleVerified()}>res</Button>;
-        } else if (params.row.ass_status === "rejected") {
-          return <Button onClick={() => handleReject()}>--asdasdasdas-</Button>;
         } else {
-          return <Button onClick={() => handleReject()}>--fdgdfg-</Button>;
-        }
+          return <Button onClick={() => handleUpdate(params)}>commitment</Button>;
+        } 
+        
         // return null;
       },
     },
@@ -171,17 +186,18 @@ console.log(commitPayload)
       
       renderCell:(params)=>{
         const x=singlePhase.some((element)=>{
-          console.log(element)
+          
           return element.commitment=='Likes'
         })
-        console.log(x)
+       
         if(x){
 
           return <TextField type="number"
    
            // value={params.row.comments || commitPayload.comments}
+           value={activeAccordion!="2" ? params.row.likes:""}
            placeholder={params.row.likes}
-           onChange={(e)=>handleCommitChange(e,"likes")}
+           onChange={(e)=>handleCommitChange(e,"likes",params)}
            />
         }
 
@@ -203,8 +219,9 @@ console.log(commitPayload)
           return <TextField type="number"
    
            // value={params.row.comments || commitPayload.comments}
+           value={activeAccordion!="2" && params.row.comments}
            placeholder={params.row.comments}
-           onChange={(e)=>handleCommitChange(e,"comments")}
+           onChange={(e)=>handleCommitChange(e,"comments",params)}
            />
         }
 
@@ -228,8 +245,9 @@ console.log(commitPayload)
             return <TextField type="number"
      
              // value={params.row.comments || commitPayload.comments}
+             value={activeAccordion!="2" && params.row.engagement}
              placeholder={params.row.engagement}
-             onChange={(e)=>handleCommitChange(e,"engagement")}
+             onChange={(e)=>handleCommitChange(e,"engagement",params)}
              />
           }
   
@@ -251,8 +269,9 @@ console.log(commitPayload)
           return <TextField type="number"
    
            // value={params.row.comments || commitPayload.comments}
+           value={activeAccordion!="2" && params.row.reach}
            placeholder={params.row.reach}
-           onChange={(e)=>handleCommitChange(e,"reach")}
+           onChange={(e)=>handleCommitChange(e,"reach",params)}
            />
         }
 
@@ -269,10 +288,10 @@ console.log(commitPayload)
        
 
           return <TextField type="text"
-   
-           // value={params.row.comments || commitPayload.comments}
+          
+           value={activeAccordion!="2" && params.row.snapshot}
            placeholder={params.row.snapshot}
-           onChange={(e)=>handleCommitChange(e,"snapshot")}
+           onChange={(e)=>handleCommitChange(e,"snapshot",params)}
            />
         }
 
@@ -280,7 +299,7 @@ console.log(commitPayload)
 
        
       
-    },
+    },activeAccordion=="2" &&
     {
       field:"action",
       headerName:"action",
