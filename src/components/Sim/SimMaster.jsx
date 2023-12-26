@@ -228,6 +228,11 @@ const SimMaster = () => {
               Add Modal
             </button>
           </Link>
+          <Link to="/repair-reason">
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Repair Reason
+            </button>
+          </Link>
         </div>
       </div>
       <form mainTitle="Assets" title="Assets Register" onSubmit={handleSubmit}>

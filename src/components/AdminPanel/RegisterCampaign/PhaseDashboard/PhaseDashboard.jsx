@@ -11,7 +11,7 @@ const PhaseDashboard = () => {
   var planId;
   const phaseData = async () => {
     const phase = await axios.get(
-      `http://192.168.29.110:3000/api/campaignphase/singlephase/${44}`
+      `http://localhost:3000/api/campaignphase/singlephase/${44}`
     );
     const setsinglephasedata = phase.data.data.pages[0].campaignId;
     console.log(phase.data.data.pages[0]._id, "singledasta");
