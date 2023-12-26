@@ -53,7 +53,7 @@ const ReplacePagesModal = ({ open, handleClose, selection, planData, stage }) =>
       vendor_id: page.vendor_id
     }));
     const result = await axios.post(
-      "http://192.168.29.110:3000/api/replacement/plan", {
+      "http://localhost:3000/api/replacement/plan", {
       campaignName: selection?.campaignName,
       campaignId: selection?.campaignId,
       replacement_request_by: "12345",

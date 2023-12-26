@@ -54,17 +54,27 @@ const CreateAssign = () => {
       let response = await axios.get(
         `http://34.93.221.166:3000/api/campaignphase/singlephase/${id}`
       );
-      const getPhaseAssignment = await axios.get(`http://34.93.221.166:3000/api/assignment/phase/${id}`)
+      const getPhaseAssignment=await axios.get(`http://34.93.221.166:3000/api/assignment/phase/${id}`)
+     
 
       if (getPhaseAssignment?.data?.data.length > 0) {
-        setSinglePhaseData(getPhaseAssignment?.data?.data);
-        setFilteredPages(getPhaseAssignment?.data?.data);
-        setPayload(getPhaseAssignment?.data?.data);
+        const filter=getPhaseAssignment?.data?.data.filter((page)=>{
+          if(page.replacement_status=='pending' || page.replacement_status=="replacement" || page.replacement_status=="inactive"){
+            return page
+          }
+        })
+        setSinglePhaseData(filter);
+        setFilteredPages(filter);
+        setPayload(filter);
       } else {
-
-        setSinglePhaseData(response?.data?.data?.pages);
-        setFilteredPages(response?.data?.data?.pages);
-        setPayload(response?.data?.data?.pages);
+        const filter=response?.data?.data.pages.filter((page)=>{
+          if(page.replacement_status=='pending' || page.replacement_status=="replacement" || page.replacement_status=="inactive"){
+            return page
+          }
+        })
+        setSinglePhaseData(filter);
+        setFilteredPages(filter);
+        setPayload(filter);
       }
 
 
@@ -96,7 +106,7 @@ const CreateAssign = () => {
   //submiting the assignment
   const handleSubmitAssign = async () => {
     try {
-      const createAssignment = await axios.post(`http://34.93.221.166:3000/api/assignment/bulk`, { pages: payload });
+      const createAssignment = await axios.post(`http://localhost:3000/api/assignment/bulk`, { pages: payload });
 
       // navigate("/admin/excusionCampaign");
     } catch (error) {

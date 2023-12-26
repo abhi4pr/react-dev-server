@@ -118,6 +118,7 @@ const PhaseCreation = () => {
     }
   }, [allPageData]);
 
+  console.log(allPhaseData)
   //useEffect for category selection change events
   useEffect(() => {
     if (selectedCategory.length > 0 && selectedFollower) {

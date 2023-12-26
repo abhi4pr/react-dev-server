@@ -24,7 +24,7 @@ const ReplacementList = ({ replacementData, hardRender }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const getReplacementDetail = async (id) => {
     const x = await axios.get(
-      `http://34.93.221.166:3000/api/replacement/${id}`
+      `http://localhost:3000/api/replacement/${id}`
     );
     setReplacementDetails(x.data.data);
   };
@@ -34,12 +34,12 @@ const ReplacementList = ({ replacementData, hardRender }) => {
 
     const data = {
       status,
-      replacementRecord: x.replacementDetails,
+      replacementRecord:replacementDetails,
       approved_by: "123",
     };
 
     const result = await axios.post(
-      "http://34.93.221.166:3000/api/replacement/status",
+      "http://localhost:3000/api/replacement/status",
       data
     );
     if (result.status == 200) {

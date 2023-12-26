@@ -34,7 +34,7 @@ const Experties = () => {
   //   console.log(expertiesusername.user_id, "res");
   //   const getExperties = () => {
   //     axios
-  //       .get("http://192.168.29.110:8080/api/expertise")
+  //       .get("http://localhost:8080/api/expertise")
   //       .then((res) => {
   //         console.log(res.data.data.user_id, "expert");
   //         const matchdata = res.data.data.map(
@@ -65,7 +65,7 @@ const Experties = () => {
       "http://34.93.221.166:3000/api/get_all_users"
     );
     setGetUserData(alluser.data.data);
-    // const expert = await axios.get("http://192.168.29.110:8080/api/expertise");
+    // const expert = await axios.get("http://localhost:8080/api/expertise");
     // console.log(expert.data.data);
     // const difference = alluser?.data?.data?.filter(
     //   (obj1) =>
@@ -74,7 +74,7 @@ const Experties = () => {
     // console.log(difference, "diffrence here");
   };
   // const getExpertData = () => {
-  //   const expertdata = axios.get("http://192.168.29.110:8080/api/expertise");
+  //   const expertdata = axios.get("http://localhost:8080/api/expertise");
   //   const expert = expertdata.data.data;
   //   setExpertData(expert);
   //   console.log(expert, "all expet data");
