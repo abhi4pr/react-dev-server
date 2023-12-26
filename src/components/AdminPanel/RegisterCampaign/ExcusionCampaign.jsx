@@ -51,6 +51,7 @@ const ExcusionCampaign = () => {
       // setActiveAccordionIndex={setActiveAccordionIndex}
       setActiveAccordionIndex={setActiveAccordionIndex}
       activeAccordion="1"
+      getAssignment={getAssignment}
     />
   );
   const tab2 = (
@@ -59,6 +60,7 @@ const ExcusionCampaign = () => {
       status={"assigned"}
       setActiveAccordionIndex={setActiveAccordionIndex}
       activeAccordion="2"
+      getAssignment={getAssignment}
     />
   );
   const tab3 = (
@@ -67,6 +69,7 @@ const ExcusionCampaign = () => {
       status={"executed"}
       setActiveAccordionIndex={setActiveAccordionIndex}
       activeAccordion="3"
+      getAssignment={getAssignment}
     />
   );
   const tab4 = (
@@ -75,6 +78,7 @@ const ExcusionCampaign = () => {
       status={"verified"}
       setActiveAccordionIndex={setActiveAccordionIndex}
       activeAccordion="4"
+      getAssignment={getAssignment}
     />
   );
   const tab5 = (
@@ -82,6 +86,7 @@ const ExcusionCampaign = () => {
       data={rejectedData}
       status={"rejected"}
       setActiveAccordionIndex={setActiveAccordionIndex}
+      getAssignment={getAssignment}
     />
   );
 

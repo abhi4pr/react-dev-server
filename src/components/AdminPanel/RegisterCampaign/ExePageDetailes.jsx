@@ -27,6 +27,7 @@ const ExePageDetailes = ({
   data,
   setActiveAccordionIndex,
   activeAccordion,
+  getAssignment
 }) => {
   console.log(data, "sAsaSASA");
   const [open, setOpen] = useState(false);
@@ -87,6 +88,8 @@ const ExePageDetailes = ({
       ass_status:'executed'
     })
 
+    getAssignment()
+
     
   }
 
@@ -94,11 +97,14 @@ const ExePageDetailes = ({
     const payload=commitPayload.find(commit => commit.comm_id==params.comm_id)
     // console.log(payload)
     const response=await axios.put(`http://34.93.221.166:3000/api/assignment/commit/single/${params.comm_id}`,payload)
+    getAssignment()
     
   }
 
   const handleAssignedSubmit = async () => {
     const response = await axios.post('http://34.93.221.166:3000/api/assignment/commit', assignedData)
+    getAssignment()
+    setOpen(false)
 
   };
   const column = [

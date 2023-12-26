@@ -389,18 +389,14 @@ const CreateAssign = () => {
   const assignModalfn = (newPayload) => {
     setPayload(newPayload);
   }
-
+  console.log(payload)
   const handleRadioChange = (e) => {
     setRadioSelected(e.target.value)
 
     setSelectedCategory([])
     setSelectedFollower(null)
-    const cat=document.getElementById('combo-box-demo')
-    const spans=cat.getElementsByTagName('span')
-    while (spans.length > 0) {
-      spans[0].parentNode.removeChild(spans[0]);
-  }
-  
+    
+    
     const data = payload?.filter(page => {
       if (e.target.value == 'all') {
 
