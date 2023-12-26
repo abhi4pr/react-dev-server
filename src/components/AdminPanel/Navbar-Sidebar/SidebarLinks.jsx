@@ -612,6 +612,12 @@ const SidebarLinks = () => {
                     >
                       <div className="bg-white collapse-inner">
                         <>
+                        <Link
+                            className="collapse-item"
+                            to="/admin/manager-dashboard"
+                          >
+                            Manager Dashboard
+                          </Link>
                           <Link
                             className="collapse-item"
                             to="/admin/phase-dashboard"

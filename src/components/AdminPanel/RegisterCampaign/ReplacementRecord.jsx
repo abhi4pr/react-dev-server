@@ -21,29 +21,25 @@ const style = {
 };
 
 const ReplacementRecord = ({ open, data, handleClose }) => {
-  // console.log( data.replacement_id._id,"id")
   const [replacementData, setReplacementData] = useState({});
   const [oldPageData, seteOldPageData] = useState({});
   const [newPageData, seteNewPageData] = useState([]);
-  console.log(newPageData, "daata");
+  const [oldData, setOldData] = useState([]);
 
   const getRecord = async () => {
     const record = await axios.get(
-      `http://localhost:3000/api/replacement/${data.replacement_id._id}`
+      `http://192.168.29.110:3000/api/replacement/${data.replacement_id._id}`
     );
     console.log(record.data.data, "<---------------------------------");
     setReplacementData(record?.data?.data);
-    // console.log(record)
   };
   const getPageData = async () => {
     const oldPageData = await axios.get(
-      `http://localhost:3000/api/replacement/${data.replacement_id._id}`
+      `http://192.168.29.110:3000/api/replacement/${data.replacement_id._id}`
     );
     seteNewPageData(oldPageData?.data?.data?.newPages);
-    console.log(oldPageData, "hello");
+    setOldData(oldPageData?.data?.data);
   };
-
-  // console.log(replacementData)
 
   useEffect(() => {
     if (data) {
@@ -64,7 +60,41 @@ const ReplacementRecord = ({ open, data, handleClose }) => {
     >
       <Box sx={style}>
         <Typography sx={{ mb: 2 }} variant="h6" component="h2">
-          Replacement Record
+          Old Page
+        </Typography>
+        <Box sx={{ display: "flex" }}>
+          <TextField
+            label="Page"
+            disabled
+            fullWidth
+            value={oldData.old?.page_name}
+            sx={{ m: 1 }}
+          />
+
+          <TextField
+            label="Category"
+            disabled
+            fullWidth
+            value={oldData.old?.cat_name}
+            sx={{ m: 1 }}
+          />
+          <TextField
+            label="Follower"
+            disabled
+            fullWidth
+            value={oldData.old?.follower_count}
+            sx={{ m: 1 }}
+          />
+          <TextField
+            label="Follower"
+            disabled
+            fullWidth
+            value={oldData.old?.platform}
+            sx={{ m: 1 }}
+          />
+        </Box>
+        <Typography sx={{ mb: 2 }} variant="h6" component="h2">
+          New Pages
         </Typography>
 
         {newPageData.map((item) => (
@@ -75,31 +105,29 @@ const ReplacementRecord = ({ open, data, handleClose }) => {
                 disabled
                 fullWidth
                 value={item?.page_name}
-                sx={{m:1}}
+                sx={{ m: 1 }}
               />
-                 <TextField
+              <TextField
                 label="Category"
                 disabled
                 fullWidth
                 value={item?.cat_name}
-                sx={{m:1}}
+                sx={{ m: 1 }}
               />
-                 <TextField
+              <TextField
                 label="Follower"
                 disabled
                 fullWidth
                 value={item?.follower_count}
-                sx={{m:1}}
+                sx={{ m: 1 }}
               />
-                 <TextField
+              <TextField
                 label="Follower"
                 disabled
                 fullWidth
                 value={item?.platform}
-                sx={{m:1}}
+                sx={{ m: 1 }}
               />
-              
-              
             </Box>
           </>
         ))}
