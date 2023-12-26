@@ -393,11 +393,40 @@ const UserMaster = () => {
         if (isLoginIdExists) {
           alert("this login ID already exists");
         } else {
-          await axios.post("http://34.93.221.166:3000/api/add_user", formData, {
+          axios.post("http://34.93.221.166:3000/api/add_user", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
           });
+
+          for (const elements of familyDetails) {
+            const response = axios.post(
+              "http://34.93.221.166:3000/api/add_family",
+              {
+                name: elements.Name,
+                DOB: elements.DOB,
+                relation: elements.Relation,
+                contact: elements.Contact,
+                occupation: elements.Occupation,
+                annual_income: elements.Income,
+              }
+            );
+          }
+
+          for (const elements of educationDetails) {
+            const response = axios.post(
+              "http://34.93.221.166:3000/api/add_education",
+              {
+                title: elements.title,
+                institute_name: elements.universityInstitute,
+                from_year: elements.from,
+                to_year: elements.to,
+                percentage: elements.percentage,
+                stream: elements.stream,
+                specialization: elements.specialization,
+              }
+            );
+          }
           if (reportL1 !== "") {
             axios
               .post("http://34.93.221.166:3000/api/add_send_user_mail", {
@@ -439,37 +468,6 @@ const UserMaster = () => {
                 headers: {
                   "Content-Type": "multipart/form-data",
                 },
-              }
-            );
-          }
-          //temproary ip
-          for (const elements of familyDetails) {
-            const response = await axios.post(
-              "http://34.93.221.166:3000/api/update_family",
-              {
-                family_id: id,
-                name: elements.Name,
-                DOB: elements.DOB,
-                relation: elements.Relation,
-                contact: elements.Contact,
-                occupation: elements.Occupation,
-                annual_income: elements.Income,
-              }
-            );
-          }
-
-          for (const elements of educationDetails) {
-            const response = await axios.post(
-              "http://34.93.221.166:3000/api/update_education",
-              {
-                education_id: id,
-                title: elements.title,
-                institute_name: elements.universityInstitute,
-                from_year: elements.from,
-                to_year: elements.to,
-                percentage: elements.percentage,
-                stream: elements.stream,
-                specialization: elements.specialization,
               }
             );
           }
@@ -823,27 +821,6 @@ const UserMaster = () => {
 
       <div className="form-group col-3">
         <label className="form-label">
-          Cast <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={castOption.map((option) => ({
-            value: option,
-            label: `${option}`,
-          }))}
-          value={{
-            value: cast,
-            label: cast,
-          }}
-          onChange={(e) => {
-            setCast(e.value);
-          }}
-          required
-        />
-      </div>
-
-      <div className="form-group col-3">
-        <label className="form-label">
           Department Name <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
@@ -1031,7 +1008,7 @@ const UserMaster = () => {
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
         )}
 
-      <FieldContainer
+      {/* <FieldContainer
         label="Emergency Contact *"
         type="number"
         fieldGrid={3}
@@ -1045,7 +1022,13 @@ const UserMaster = () => {
       {(isEmergencyContactTouched1 || emergencyContact.length >= 10) &&
         !isValidcontact3 && (
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
-        )}
+        )} */}
+
+      <ContactNumberReact
+        label="Emergency Contact *"
+        parentComponentContact={emergencyContact}
+        setParentComponentContact={setEmergencyContact}
+      />
 
       <FieldContainer
         label="Emergency Contact Person Name"
@@ -1583,11 +1566,34 @@ const UserMaster = () => {
           required
         />
       </div>
+
+      <div className="form-group col-3">
+        <label className="form-label">
+          Caste <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={castOption.map((option) => ({
+            value: option,
+            label: `${option}`,
+          }))}
+          value={{
+            value: cast,
+            label: cast,
+          }}
+          onChange={(e) => {
+            setCast(e.value);
+          }}
+          required
+        />
+      </div>
+
       <FieldContainer
         label="Nationality"
         value={nationality}
         onChange={(e) => setNationality(e.target.value)}
       />
+
       <div className="from-group col-6">
         <label className="form-label">
           DOB <sup style={{ color: "red" }}>*</sup>
