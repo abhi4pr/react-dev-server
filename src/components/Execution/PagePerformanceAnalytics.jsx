@@ -1,4 +1,4 @@
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -7,12 +7,7 @@ import React, { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import FormContainer from "../AdminPanel/FormContainer";
 
-
-const viewInOptions = [
-  "Millions",
-  "Thousands",
-  "Default",
-]
+const viewInOptions = ["Millions", "Thousands", "Default"];
 
 export default function PagePerformanceAnalytics() {
   const [loading, setLoading] = useState(false);
@@ -47,8 +42,7 @@ export default function PagePerformanceAnalytics() {
     from: 0,
     to: 0,
   });
-const [viewType, setViewType] = useState("Default");
-
+  const [viewType, setViewType] = useState("Default");
 
   const callApi = () => {
     axios
@@ -177,6 +171,8 @@ const [viewType, setViewType] = useState("Default");
           return rowValue <= filterValue;
         case "==":
           return rowValue === filterValue;
+        case "between":
+          return rowValue >= filterValue.from && rowValue <= filterValue.to;
         default:
           return false;
       }
@@ -241,124 +237,81 @@ const [viewType, setViewType] = useState("Default");
       },
     },
     { field: "page_name", headerName: "Page Name", width: 200 },
-    { field: "follower_count", headerName: "Follower Count", width: 200 ,
-    renderCell: (params) => {
-      const followerCount = params.row.follower_count;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(followerCount / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(followerCount / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {followerCount}
-          </span>
-        );
-      }
-    }
-
-  },
-    { field: "maxReach", headerName: "Highest Reach", width: 200,
-    renderCell: (params) => {
-      const reach = params.row.maxReach;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(reach / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(reach / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {reach}
-          </span>
-        );
-      }
-    }
-  },
-    { field: "maxImpression", headerName: "Hightest Impression", width: 200,
-    renderCell: (params) => {
-      const impression = params.row.maxImpression;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(impression / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(impression / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {impression}
-          </span>
-        );
-      }
-    } },
-    { field: "maxEngagement", headerName: "Hightest Engagement", width: 200,
-    renderCell: (params) => {
-      const engagement = params.row.maxEngagement;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(engagement / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(engagement / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {engagement}
-          </span>
-        );
-      }
-    } },
-    { field: "maxStoryView", headerName: "Hightest Story view", width: 200 ,
-    renderCell: (params) => {
-      const storyView = params.row.maxStoryView;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(storyView / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(storyView / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {storyView}
-          </span>
-        );
-      }
-    }},
+    {
+      field: "follower_count",
+      headerName: "Follower Count",
+      width: 200,
+      renderCell: (params) => {
+        const followerCount = params.row.follower_count;
+        if (viewType === "Millions") {
+          return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{followerCount}</span>;
+        }
+      },
+    },
+    {
+      field: "maxReach",
+      headerName: "Highest Reach",
+      width: 200,
+      renderCell: (params) => {
+        const reach = params.row.maxReach;
+        if (viewType === "Millions") {
+          return <span>{(reach / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(reach / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{reach}</span>;
+        }
+      },
+    },
+    {
+      field: "maxImpression",
+      headerName: "Hightest Impression",
+      width: 200,
+      renderCell: (params) => {
+        const impression = params.row.maxImpression;
+        if (viewType === "Millions") {
+          return <span>{(impression / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(impression / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{impression}</span>;
+        }
+      },
+    },
+    {
+      field: "maxEngagement",
+      headerName: "Hightest Engagement",
+      width: 200,
+      renderCell: (params) => {
+        const engagement = params.row.maxEngagement;
+        if (viewType === "Millions") {
+          return <span>{(engagement / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(engagement / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{engagement}</span>;
+        }
+      },
+    },
+    {
+      field: "maxStoryView",
+      headerName: "Hightest Story view",
+      width: 200,
+      renderCell: (params) => {
+        const storyView = params.row.maxStoryView;
+        if (viewType === "Millions") {
+          return <span>{(storyView / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(storyView / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{storyView}</span>;
+        }
+      },
+    },
     // { field: "maxStoryView", headerName: "Hightest Story view", width: 200 },
     {
       field: "maxStoryViewDate",
@@ -388,75 +341,51 @@ const [viewType, setViewType] = useState("Default");
         );
       },
     },
-    { field: "avgReach", headerName: "Avg Reach", width: 200 ,
-    renderCell: (params) => {
-      const reach = params.row.avgReach;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(reach / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(reach / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {reach}
-          </span>
-        );
-      }
-    }},
-    { field: "avgImpression", headerName: "Avg Impression", width: 200,
-    renderCell: (params) => {
-      const impression = params.row.avgImpression;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(impression / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(impression / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {impression}
-          </span>
-        );
-      }
-    } },
-    { field: "avgEngagement", headerName: "Avg Engagement", width: 200,
-    renderCell: (params) => {
-      const engagement = params.row.avgEngagement;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(engagement / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(engagement / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {engagement}
-          </span>
-        );
-      }
-    } },
+    {
+      field: "avgReach",
+      headerName: "Avg Reach",
+      width: 200,
+      renderCell: (params) => {
+        const reach = params.row.avgReach;
+        if (viewType === "Millions") {
+          return <span>{(reach / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(reach / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{reach}</span>;
+        }
+      },
+    },
+    {
+      field: "avgImpression",
+      headerName: "Avg Impression",
+      width: 200,
+      renderCell: (params) => {
+        const impression = params.row.avgImpression;
+        if (viewType === "Millions") {
+          return <span>{(impression / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(impression / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{impression}</span>;
+        }
+      },
+    },
+    {
+      field: "avgEngagement",
+      headerName: "Avg Engagement",
+      width: 200,
+      renderCell: (params) => {
+        const engagement = params.row.avgEngagement;
+        if (viewType === "Millions") {
+          return <span>{(engagement / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(engagement / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{engagement}</span>;
+        }
+      },
+    },
     {
       field: "avgStoryView",
       headerName: "Avg Story view",
@@ -464,25 +393,13 @@ const [viewType, setViewType] = useState("Default");
       renderCell: (params) => {
         const storyView = params.row.avgStoryView;
         if (viewType === "Millions") {
-          return (
-            <span>
-              {(storyView / 1000000).toFixed(1)}M
-            </span>
-          );
+          return <span>{(storyView / 1000000).toFixed(1)}M</span>;
         } else if (viewType === "Thousands") {
-          return (
-            <span>
-              {(storyView / 1000).toFixed(2)}K
-            </span>
-          );
+          return <span>{(storyView / 1000).toFixed(2)}K</span>;
         } else {
-          return (
-            <span>
-              {storyView}
-            </span>
-          );
+          return <span>{storyView}</span>;
         }
-      }
+      },
     },
     {
       field: "avgStoryViewDate",
@@ -512,111 +429,65 @@ const [viewType, setViewType] = useState("Default");
         );
       },
     },
-    { field: "minReach", headerName: "Lowest Reach", width: 200
-    ,renderCell: (params) => {
-      const reach = params.row.minReach;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(reach / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(reach / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {reach}
-          </span>
-        );
-      }
-    }},
-    { field: "minImpression", headerName: "Lowest Impression", width: 200,
-    renderCell: (params) => {
-      const impression = params.row.minImpression;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(impression / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(impression / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {impression}
-          </span>
-        );
-      }
-    } },
-    { field: "minEngagement", headerName: "Lowest Engagement", width: 200,
-    renderCell: (params) => {
-      const engagement = params.row.minEngagement;
-      if (viewType === "Millions") {
-        return (
-          <span>
-            {(engagement / 1000000).toFixed(1)}M
-          </span>
-        );
-      } else if (viewType === "Thousands") {
-        return (
-          <span>
-            {(engagement / 1000).toFixed(2)}K
-          </span>
-        );
-      } else {
-        return (
-          <span>
-            {engagement}
-          </span>
-        );
-      }
-    } },
+    {
+      field: "minReach",
+      headerName: "Lowest Reach",
+      width: 200,
+      renderCell: (params) => {
+        const reach = params.row.minReach;
+        if (viewType === "Millions") {
+          return <span>{(reach / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(reach / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{reach}</span>;
+        }
+      },
+    },
+    {
+      field: "minImpression",
+      headerName: "Lowest Impression",
+      width: 200,
+      renderCell: (params) => {
+        const impression = params.row.minImpression;
+        if (viewType === "Millions") {
+          return <span>{(impression / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(impression / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{impression}</span>;
+        }
+      },
+    },
+    {
+      field: "minEngagement",
+      headerName: "Lowest Engagement",
+      width: 200,
+      renderCell: (params) => {
+        const engagement = params.row.minEngagement;
+        if (viewType === "Millions") {
+          return <span>{(engagement / 1000000).toFixed(1)}M</span>;
+        } else if (viewType === "Thousands") {
+          return <span>{(engagement / 1000).toFixed(2)}K</span>;
+        } else {
+          return <span>{engagement}</span>;
+        }
+      },
+    },
     {
       field: "minStoryView",
       headerName: "Lowest Story view",
       width: 200,
-      // renderCell: (params) => {
-      //   const storyView = params.row.minStoryView;
-      //   if (storyView % 1 !== 0) {
-      //     return (
-      //       <>
-      //         <span>{storyView.toFixed(2)}</span>
-      //       </>
-      //     );
-      //   }
-      // },
       renderCell: (params) => {
         const storyView = params.row.minStoryView;
         if (viewType === "Millions") {
-          return (
-            <span>
-              {(storyView / 1000000).toFixed(1)}M
-            </span>
-          );
+          return <span>{(storyView / 1000000).toFixed(1)}M</span>;
         } else if (viewType === "Thousands") {
-          return (
-            <span>
-              {(storyView / 1000).toFixed(2)}K
-            </span>
-          );
+          return <span>{(storyView / 1000).toFixed(2)}K</span>;
         } else {
-          return (
-            <span>
-              {storyView}
-            </span>
-          );
+          return <span>{storyView}</span>;
         }
-      }
+      },
     },
     {
       field: "minStoryViewDate",
@@ -829,7 +700,7 @@ const [viewType, setViewType] = useState("Default");
             </span>
           </>
         )}
-        <div className="d-flex">
+        <div className="d-flex my-3">
           <Autocomplete
             disablePortal
             value={followerCoutnCompareFlag.label}
@@ -856,6 +727,7 @@ const [viewType, setViewType] = useState("Default");
 
           {followerCoutnCompareFlag.label !== "Between" && (
             <TextField
+              className="mx-2"
               label="Follower Count"
               type="number"
               variant="outlined"
@@ -874,6 +746,7 @@ const [viewType, setViewType] = useState("Default");
             <>
               {" "}
               <TextField
+                className="mx-2"
                 label="From"
                 type="number"
                 variant="outlined"
@@ -903,7 +776,7 @@ const [viewType, setViewType] = useState("Default");
           )}
         </div>
 
-        <div className="d-flex">
+        <div className="d-flex my-3">
           {" "}
           <Autocomplete
             disablePortal
@@ -929,7 +802,7 @@ const [viewType, setViewType] = useState("Default");
           />
           {reachCompareFlag.label !== "Between" && (
             <TextField
-              className="d-block"
+              className="d-block mx-2"
               label="Reach"
               type="number"
               variant="outlined"
@@ -946,6 +819,7 @@ const [viewType, setViewType] = useState("Default");
           {reachCompareFlag.label === "Between" && (
             <>
               <TextField
+                className="mx-2"
                 label="From"
                 type="number"
                 variant="outlined"
@@ -974,7 +848,7 @@ const [viewType, setViewType] = useState("Default");
             </>
           )}
         </div>
-        <div className="d-flex">
+        <div className="d-flex my-3">
           <Autocomplete
             disablePortal
             value={impressionCompareFlag.label}
@@ -999,6 +873,7 @@ const [viewType, setViewType] = useState("Default");
           />
           {impressionCompareFlag.label != "Between" && (
             <TextField
+              className="mx-2"
               label="Impression"
               type="number"
               variant="outlined"
@@ -1015,6 +890,7 @@ const [viewType, setViewType] = useState("Default");
           {impressionCompareFlag.label === "Between" && (
             <>
               <TextField
+                className="mx-2"
                 label="From"
                 type="number"
                 variant="outlined"
@@ -1042,6 +918,13 @@ const [viewType, setViewType] = useState("Default");
               />
             </>
           )}
+          {/* <Button
+            className="mx-2 d-block"
+            variant="contained"
+            onClick={filterData}
+          >
+            Filter
+          </Button> */}
         </div>
         <div>
           <Autocomplete
@@ -1052,7 +935,7 @@ const [viewType, setViewType] = useState("Default");
             options={viewInOptions}
             onChange={(event, newValue) => {
               if (newValue === null) {
-                return setVievType({
+                return setViewType({
                   newValue: "Default",
                 });
               }
