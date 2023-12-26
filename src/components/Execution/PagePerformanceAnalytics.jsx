@@ -7,6 +7,13 @@ import React, { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import FormContainer from "../AdminPanel/FormContainer";
 
+
+const viewInOptions = [
+  "Millions",
+  "Thousands",
+  "Default",
+]
+
 export default function PagePerformanceAnalytics() {
   const [loading, setLoading] = useState(false);
   const [intervalFlag, setIntervalFlag] = useState({
@@ -32,6 +39,16 @@ export default function PagePerformanceAnalytics() {
   });
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
+  const [followerCountCustomFilter, setFollowerCountCustomFilter] = useState({
+    from: 0,
+    to: 0,
+  });
+  const [reachCountCustomFilter, setReachCountCustomFilter] = useState({
+    from: 0,
+    to: 0,
+  });
+const [viewType, setViewType] = useState("Default");
+
 
   const callApi = () => {
     axios
@@ -75,7 +92,143 @@ export default function PagePerformanceAnalytics() {
     { label: "Greater than or Equal to", value: ">=" },
     { label: "Less than or Equal to", value: "<=" },
     { label: "Not Equal to", value: "!=" },
+    { label: "Between", value: "between" },
   ];
+
+  const handleFilterCustomFollowerCount = (e, type) => {
+    if (type === "from") {
+      setFollowerCountCustomFilter({
+        ...followerCountCustomFilter,
+        from: e.target.value,
+      });
+    } else {
+      setFollowerCountCustomFilter({
+        ...followerCountCustomFilter,
+        to: e.target.value,
+      });
+
+      const filteredRows = pageHistory.filter((row) => {
+        return (
+          row.follower_count >= followerCountCustomFilter.from &&
+          row.follower_count <= e.target.value
+        );
+      });
+
+      setRowData(filteredRows);
+    }
+  };
+
+  const handleFilterCustomReachCount = (e, type) => {
+    if (type === "from") {
+      setReachCountCustomFilter({
+        ...followerCountCustomFilter,
+        from: e.target.value,
+      });
+    } else {
+      setReachCountCustomFilter({
+        ...followerCountCustomFilter,
+        to: e.target.value,
+      });
+
+      const filteredRows = pageHistory.filter((row) => {
+        return (
+          row.reach >= reachCountCustomFilter.from &&
+          row.reach <= e.target.value
+        );
+      });
+
+      setRowData(filteredRows);
+    }
+  };
+
+  const handleFilterCustomImpressionCount = (e, type) => {
+    if (type === "from") {
+      setReachCountCustomFilter({
+        ...followerCountCustomFilter,
+        from: e.target.value,
+      });
+    } else {
+      setReachCountCustomFilter({
+        ...followerCountCustomFilter,
+        to: e.target.value,
+      });
+
+      const filteredRows = pageHistory.filter((row) => {
+        return (
+          row.impression >= reachCountCustomFilter.from &&
+          row.impression <= e.target.value
+        );
+      });
+
+      setRowData(filteredRows);
+    }
+  };
+
+  const filterData = () => {
+    const compareFollowerCount = (rowValue, filterValue, compareFlag) => {
+      switch (compareFlag) {
+        case ">":
+          return rowValue > filterValue;
+        case "<":
+          return rowValue < filterValue;
+        case ">=":
+          return rowValue >= filterValue;
+        case "<=":
+          return rowValue <= filterValue;
+        case "==":
+          return rowValue === filterValue;
+        default:
+          return false;
+      }
+    };
+    const filteredRows = pageHistory.filter((row) => {
+      return (
+        compareFollowerCount(
+          +row.follower_count,
+          +followerCountFilter,
+          followerCoutnCompareFlag.value
+        ) &&
+        row.reach >= reachFilter &&
+        row.impression >= impressionFilter
+      );
+    });
+    setRowData(filteredRows);
+  };
+
+  // const filterData = () => {
+  //   const compareValue = (rowValue, filterValue, compareFlag) => {
+  //     switch (compareFlag.value) {
+  //       case ">":
+  //         return rowValue > filterValue;
+  //       case "<":
+  //         return rowValue < filterValue;
+  //       case ">=":
+  //         return rowValue >= filterValue;
+  //       case "<=":
+  //         return rowValue <= filterValue;
+  //       case "==":
+  //         return rowValue === filterValue;
+  //       case "between":
+  //         return rowValue >= filterValue.from && rowValue <= filterValue.to;
+  //       default:
+  //         return true;
+  //     }
+  //   };
+
+  //   const filteredRows = pageHistory.filter((row) => {
+  //     return (
+  //       compareValue(row.follower_count, followerCoutnCompareFlag.label === "Between" ? followerCountCustomFilter : followerCountFilter, followerCoutnCompareFlag) &&
+  //       compareValue(row.reach, reachCompareFlag.label === "Between" ? reachCountCustomFilter : reachFilter, reachCompareFlag) &&
+  //       compareValue(row.impression, impressionCompareFlag.label === "Between" ? reachCountCustomFilter : impressionFilter, impressionCompareFlag)
+  //     );
+  //   });
+
+  //   setRowData(filteredRows);
+  // };
+
+  // useEffect(() => {
+  //   filterData();
+  // }, [followerCountFilter, reachFilter, impressionFilter, followerCoutnCompareFlag, reachCompareFlag, impressionCompareFlag, pageHistory]);
 
   const columns = [
     {
@@ -88,11 +241,125 @@ export default function PagePerformanceAnalytics() {
       },
     },
     { field: "page_name", headerName: "Page Name", width: 200 },
-    { field: "follower_count", headerName: "Follower Count", width: 200 },
-    { field: "maxReach", headerName: "Highest Reach", width: 200 },
-    { field: "maxImpression", headerName: "Hightest Impression", width: 200 },
-    { field: "maxEngagement", headerName: "Hightest Engagement", width: 200 },
-    { field: "maxStoryView", headerName: "Hightest Story view", width: 200 },
+    { field: "follower_count", headerName: "Follower Count", width: 200 ,
+    renderCell: (params) => {
+      const followerCount = params.row.follower_count;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(followerCount / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(followerCount / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {followerCount}
+          </span>
+        );
+      }
+    }
+
+  },
+    { field: "maxReach", headerName: "Highest Reach", width: 200,
+    renderCell: (params) => {
+      const reach = params.row.maxReach;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(reach / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(reach / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {reach}
+          </span>
+        );
+      }
+    }
+  },
+    { field: "maxImpression", headerName: "Hightest Impression", width: 200,
+    renderCell: (params) => {
+      const impression = params.row.maxImpression;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(impression / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(impression / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {impression}
+          </span>
+        );
+      }
+    } },
+    { field: "maxEngagement", headerName: "Hightest Engagement", width: 200,
+    renderCell: (params) => {
+      const engagement = params.row.maxEngagement;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(engagement / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(engagement / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {engagement}
+          </span>
+        );
+      }
+    } },
+    { field: "maxStoryView", headerName: "Hightest Story view", width: 200 ,
+    renderCell: (params) => {
+      const storyView = params.row.maxStoryView;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(storyView / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(storyView / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {storyView}
+          </span>
+        );
+      }
+    }},
+    // { field: "maxStoryView", headerName: "Hightest Story view", width: 200 },
     {
       field: "maxStoryViewDate",
       headerName: "Hightest Story view Date",
@@ -121,26 +388,101 @@ export default function PagePerformanceAnalytics() {
         );
       },
     },
-    { field: "avgReach", headerName: "Avg Reach", width: 200 },
-    { field: "avgImpression", headerName: "Avg Impression", width: 200 },
-    { field: "avgEngagement", headerName: "Avg Engagement", width: 200 },
+    { field: "avgReach", headerName: "Avg Reach", width: 200 ,
+    renderCell: (params) => {
+      const reach = params.row.avgReach;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(reach / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(reach / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {reach}
+          </span>
+        );
+      }
+    }},
+    { field: "avgImpression", headerName: "Avg Impression", width: 200,
+    renderCell: (params) => {
+      const impression = params.row.avgImpression;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(impression / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(impression / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {impression}
+          </span>
+        );
+      }
+    } },
+    { field: "avgEngagement", headerName: "Avg Engagement", width: 200,
+    renderCell: (params) => {
+      const engagement = params.row.avgEngagement;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(engagement / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(engagement / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {engagement}
+          </span>
+        );
+      }
+    } },
     {
       field: "avgStoryView",
       headerName: "Avg Story view",
       width: 200,
       renderCell: (params) => {
         const storyView = params.row.avgStoryView;
-        if (storyView % 1 !== 0) {
+        if (viewType === "Millions") {
           return (
-            <>
-              <span>{storyView.toFixed(2)}</span>
-            </>
+            <span>
+              {(storyView / 1000000).toFixed(1)}M
+            </span>
+          );
+        } else if (viewType === "Thousands") {
+          return (
+            <span>
+              {(storyView / 1000).toFixed(2)}K
+            </span>
+          );
+        } else {
+          return (
+            <span>
+              {storyView}
+            </span>
           );
         }
-        // return <>
-        //  <span>{storyView.toFixed(2)}</span>
-        //  </>;
-      },
+      }
     },
     {
       field: "avgStoryViewDate",
@@ -170,10 +512,112 @@ export default function PagePerformanceAnalytics() {
         );
       },
     },
-    { field: "minReach", headerName: "Lowest Reach", width: 200 },
-    { field: "minImpression", headerName: "Lowest Impression", width: 200 },
-    { field: "minEngagement", headerName: "Lowest Engagement", width: 200 },
-    { field: "minStoryView", headerName: "Lowest Story view", width: 200 },
+    { field: "minReach", headerName: "Lowest Reach", width: 200
+    ,renderCell: (params) => {
+      const reach = params.row.minReach;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(reach / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(reach / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {reach}
+          </span>
+        );
+      }
+    }},
+    { field: "minImpression", headerName: "Lowest Impression", width: 200,
+    renderCell: (params) => {
+      const impression = params.row.minImpression;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(impression / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(impression / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {impression}
+          </span>
+        );
+      }
+    } },
+    { field: "minEngagement", headerName: "Lowest Engagement", width: 200,
+    renderCell: (params) => {
+      const engagement = params.row.minEngagement;
+      if (viewType === "Millions") {
+        return (
+          <span>
+            {(engagement / 1000000).toFixed(1)}M
+          </span>
+        );
+      } else if (viewType === "Thousands") {
+        return (
+          <span>
+            {(engagement / 1000).toFixed(2)}K
+          </span>
+        );
+      } else {
+        return (
+          <span>
+            {engagement}
+          </span>
+        );
+      }
+    } },
+    {
+      field: "minStoryView",
+      headerName: "Lowest Story view",
+      width: 200,
+      // renderCell: (params) => {
+      //   const storyView = params.row.minStoryView;
+      //   if (storyView % 1 !== 0) {
+      //     return (
+      //       <>
+      //         <span>{storyView.toFixed(2)}</span>
+      //       </>
+      //     );
+      //   }
+      // },
+      renderCell: (params) => {
+        const storyView = params.row.minStoryView;
+        if (viewType === "Millions") {
+          return (
+            <span>
+              {(storyView / 1000000).toFixed(1)}M
+            </span>
+          );
+        } else if (viewType === "Thousands") {
+          return (
+            <span>
+              {(storyView / 1000).toFixed(2)}K
+            </span>
+          );
+        } else {
+          return (
+            <span>
+              {storyView}
+            </span>
+          );
+        }
+      }
+    },
     {
       field: "minStoryViewDate",
       headerName: "Lowest Story view Date",
@@ -266,7 +710,8 @@ export default function PagePerformanceAnalytics() {
             </span>
           </>
         );
-    }},
+      },
+    },
     {
       field: "avgFemalePercent",
       headerName: "Avg Female Per",
@@ -282,9 +727,9 @@ export default function PagePerformanceAnalytics() {
             </span>
           </>
         );
-    }},
+      },
+    },
   ];
-
 
   const handleFilterFollowerCount = (e) => {
     setFollowerCoutFilter(e.target.value);
@@ -304,37 +749,6 @@ export default function PagePerformanceAnalytics() {
   useEffect(() => {
     filterData();
   }, [followerCountFilter, reachFilter, impressionFilter]);
-
-  const filterData = () => {
-    const compareFollowerCount = (rowValue, filterValue, compareFlag) => {
-      switch (compareFlag) {
-        case ">":
-          return rowValue > filterValue;
-        case "<":
-          return rowValue < filterValue;
-        case ">=":
-          return rowValue >= filterValue;
-        case "<=":
-          return rowValue <= filterValue;
-        case "==":
-          return rowValue === filterValue;
-        default:
-          return false;
-      }
-    };
-    const filteredRows = pageHistory.filter((row) => {
-      return (
-        compareFollowerCount(
-          +row.follower_count,
-          +followerCountFilter,
-          followerCoutnCompareFlag.value
-        ) &&
-        row.reach >= reachFilter &&
-        row.impression >= impressionFilter
-      );
-    });
-    setRowData(filteredRows);
-  };
 
   const handleEndDateChange = (e) => {
     setEndDate(e);
@@ -367,8 +781,10 @@ export default function PagePerformanceAnalytics() {
 
   return (
     <>
-    <FormContainer mainTitle="Analytics" link="/ip-master" />
-      <div className="d-flex">
+      <FormContainer mainTitle="Analytics" link="/ip-master" />
+      <div
+      // className="d-flex"
+      >
         <Autocomplete
           className="me-2"
           disablePortal
@@ -413,114 +829,246 @@ export default function PagePerformanceAnalytics() {
             </span>
           </>
         )}
-        <TextField
-          label="Follower Count"
-          type="number"
-          variant="outlined"
-          inputProps={{
-            min: 0,
-            step: 1,
-            onInput: (e) => {
-              e.target.value = e.target.value.replace(/[^0-9]/g, "");
-            },
-          }}
-          onChange={handleFilterFollowerCount}
-        />
-        <Autocomplete
-          disablePortal
-          value={followerCoutnCompareFlag.label}
-          defaultValue={compareFlagOptions[0].label}
-          id="combo-box-demo"
-          options={compareFlagOptions.map((option) => ({
-            label: option.label,
-            value: option.value,
-          }))}
-          onChange={(event, newValue) => {
-            if (newValue === null) {
-              return setIntervalFlag({ label: "Greater than", value: ">" });
-            }
+        <div className="d-flex">
+          <Autocomplete
+            disablePortal
+            value={followerCoutnCompareFlag.label}
+            defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={compareFlagOptions.map((option) => ({
+              label: option.label,
+              value: option.value,
+            }))}
+            onChange={(event, newValue) => {
+              console.log(newValue);
+              if (newValue === null) {
+                return setFollowerCoutnCompareFlag({
+                  label: "Greater than",
+                  value: ">",
+                });
+              }
 
-            setFollowerCoutnCompareFlag(newValue);
-          }}
-          sx={{ width: 100 }}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        <TextField
-          label="Reach"
-          type="number"
-          variant="outlined"
-          inputProps={{
-            min: 0, // minimum value allowed
-            step: 1, // only integer increments
-            onInput: (e) => {
-              // prevent non-numeric input
-              e.target.value = e.target.value.replace(/[^0-9]/g, "");
-            },
-          }}
-          onChange={handleFilterReach}
-        />
-        <Autocomplete
-          // className="ms-2"
-          disablePortal
-          value={reachCompareFlag.label}
-          defaultValue={compareFlagOptions[0].label}
-          id="combo-box-demo"
-          options={compareFlagOptions.map((option) => ({
-            label: option.label,
-            value: option.value,
-          }))}
-          onChange={(event, newValue) => {
-            if (newValue === null) {
-              return setReachCompareFlag({ label: "Greater than", value: ">" });
-            }
+              setFollowerCoutnCompareFlag(newValue);
+            }}
+            sx={{ width: 250 }}
+            renderInput={(params) => <TextField {...params} />}
+          />
 
-            setFollowerCoutnCompareFlag(newValue);
-          }}
-          sx={{ width: 100 }}
-          renderInput={(params) => <TextField {...params} />}
-        />
-        <TextField
-          label="Impression"
-          type="number"
-          variant="outlined"
-          inputProps={{
-            min: 0, // minimum value allowed
-            step: 1, // only integer increments
-            onInput: (e) => {
-              // prevent non-numeric input
-              e.target.value = e.target.value.replace(/[^0-9]/g, "");
-            },
-          }}
-          onChange={handleFilterImpression}
-        />
-        <Autocomplete
-          // className="ms-2"
-          disablePortal
-          value={impressionCompareFlag.label}
-          defaultValue={compareFlagOptions[0].label}
-          id="combo-box-demo"
-          options={compareFlagOptions.map((option) => ({
-            label: option.label,
-            value: option.value,
-          }))}
-          onChange={(event, newValue) => {
-            if (newValue === null) {
-              return setImpressionCompareFlag({
-                label: "Greater than",
-                value: ">",
-              });
-            }
-            setFollowerCoutnCompareFlag(newValue);
-          }}
-          sx={{ width: 100 }}
-          renderInput={(params) => <TextField {...params} />}
-        />
+          {followerCoutnCompareFlag.label !== "Between" && (
+            <TextField
+              label="Follower Count"
+              type="number"
+              variant="outlined"
+              inputProps={{
+                min: 0,
+                step: 1,
+                onInput: (e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                },
+              }}
+              onChange={handleFilterFollowerCount}
+            />
+          )}
+
+          {followerCoutnCompareFlag.label === "Between" && (
+            <>
+              {" "}
+              <TextField
+                label="From"
+                type="number"
+                variant="outlined"
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                  onInput: (e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                  },
+                }}
+                onChange={(e) => handleFilterCustomFollowerCount(e, "from")}
+              />
+              <TextField
+                label="To"
+                type="number"
+                variant="outlined"
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                  onInput: (e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                  },
+                }}
+                onChange={(e) => handleFilterCustomFollowerCount(e, "to")}
+              />
+            </>
+          )}
+        </div>
+
+        <div className="d-flex">
+          {" "}
+          <Autocomplete
+            disablePortal
+            value={reachCompareFlag.label}
+            defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={compareFlagOptions.map((option) => ({
+              label: option.label,
+              value: option.value,
+            }))}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setReachCompareFlag({
+                  label: "Greater than",
+                  value: ">",
+                });
+              }
+
+              setReachCompareFlag(newValue);
+            }}
+            sx={{ width: 250 }}
+            renderInput={(params) => <TextField {...params} />}
+          />
+          {reachCompareFlag.label !== "Between" && (
+            <TextField
+              className="d-block"
+              label="Reach"
+              type="number"
+              variant="outlined"
+              inputProps={{
+                min: 0,
+                step: 1,
+                onInput: (e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                },
+              }}
+              onChange={handleFilterReach}
+            />
+          )}
+          {reachCompareFlag.label === "Between" && (
+            <>
+              <TextField
+                label="From"
+                type="number"
+                variant="outlined"
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                  onInput: (e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                  },
+                }}
+                onChange={(e) => handleFilterCustomReachCount(e, "from")}
+              />
+              <TextField
+                label="To"
+                type="number"
+                variant="outlined"
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                  onInput: (e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                  },
+                }}
+                onChange={(e) => handleFilterCustomReachCount(e, "to")}
+              />
+            </>
+          )}
+        </div>
+        <div className="d-flex">
+          <Autocomplete
+            disablePortal
+            value={impressionCompareFlag.label}
+            defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={compareFlagOptions.map((option) => ({
+              label: option.label,
+              value: option.value,
+            }))}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setImpressionCompareFlag({
+                  label: "Greater than",
+                  value: ">",
+                });
+              }
+              setImpressionCompareFlag(newValue);
+            }}
+            sx={{ width: 250 }}
+            rende
+            renderInput={(params) => <TextField {...params} />}
+          />
+          {impressionCompareFlag.label != "Between" && (
+            <TextField
+              label="Impression"
+              type="number"
+              variant="outlined"
+              inputProps={{
+                min: 0,
+                step: 1,
+                onInput: (e) => {
+                  e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                },
+              }}
+              onChange={handleFilterImpression}
+            />
+          )}
+          {impressionCompareFlag.label === "Between" && (
+            <>
+              <TextField
+                label="From"
+                type="number"
+                variant="outlined"
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                  onInput: (e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                  },
+                }}
+                onChange={(e) => handleFilterCustomImpressionCount(e, "from")}
+              />
+              <TextField
+                label="To"
+                type="number"
+                variant="outlined"
+                inputProps={{
+                  min: 0,
+                  step: 1,
+                  onInput: (e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, "");
+                  },
+                }}
+                onChange={(e) => handleFilterCustomImpressionCount(e, "to")}
+              />
+            </>
+          )}
+        </div>
+        <div>
+          <Autocomplete
+            disablePortal
+            value={viewType}
+            // defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={viewInOptions}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setVievType({
+                  newValue: "Default",
+                });
+              }
+
+              setViewType(newValue);
+            }}
+            sx={{ width: 250 }}
+            renderInput={(params) => <TextField {...params} label="View In" />}
+            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+          />
+        </div>
       </div>
       {!loading ? (
         <DataGrid
           rows={rowData}
           columns={columns}
-          // onRowClick={handleRowClick}
           pageSize={10}
           rowsPerPageOptions={[10]}
           disableSelectionOnClick

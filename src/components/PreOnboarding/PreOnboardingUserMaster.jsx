@@ -200,6 +200,8 @@ const PreOnboardingUserMaster = () => {
     longitude: 0,
   });
 
+  const [showMandotaryPer, setShowMandotaryPer] = useState(0);
+  const [showNonMandotaryPer, setShowNonMandotaryPer] = useState(0);
   useEffect(() => {
     const getLocation = () => {
       if (navigator.geolocation) {
@@ -328,6 +330,36 @@ const PreOnboardingUserMaster = () => {
     );
 
     setDocumentPercentage(documentPercentageTemp);
+
+    const mandatoryCount = documentData.filter(
+      (item) => item.document.isRequired == true
+    ).length;
+
+    const mandatoryFilledCount = documentData.filter(
+      (item) => item.document.isRequired == true && item.doc_image
+    ).length;
+    
+    const mandoatoryPercentageTemp = Math.ceil(
+      (mandatoryFilledCount / mandatoryCount) * 100
+      );
+    console.log(mandoatoryPercentageTemp, "mand");
+    setShowMandotaryPer(mandoatoryPercentageTemp);
+
+    const nonMandatoryCount = documentData.filter(
+      (item) => item.document.isRequired == false
+    ).length;
+
+    const nonMandatoryFilledCount = documentData.filter(
+      (item) => item.document.isRequired == false && item.doc_image
+    )?.length;
+    
+    const nonMandoatoryPercentageTemp = Math.ceil(
+      (nonMandatoryFilledCount / nonMandatoryCount) * 100
+      );
+    console.log(mandoatoryPercentageTemp, "mand");
+    setShowMandotaryPer(mandoatoryPercentageTemp);
+    setShowNonMandotaryPer(nonMandoatoryPercentageTemp);
+
   }, [getDocuments]);
 
   const gettingData = () => {
@@ -899,8 +931,8 @@ const PreOnboardingUserMaster = () => {
                 </div>
                 <h2 className="document_tab_name">Documents</h2>
                 <h3>{documentPercentage}%</h3>
-                <h3>Men{documentPercentage}%</h3>
-                <h3>non men{documentPercentage}%</h3>
+                <h3>Mandotary{showMandotaryPer}%</h3>
+                <h3>Non Mandotary{showNonMandotaryPer?showNonMandotaryPer:0}%</h3>
               </div>
 
               <div
