@@ -27,7 +27,21 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Accordioan from "./Accordioan";
 import { useNavigate } from "react-router-dom";
 import PageOverview from "./PageOverview";
+
+
 let options = [];
+let timer;
+
+const Follower_Count = [
+  "<10k",
+  "10k to 100k ",
+  "100k to 1M ",
+  "1M to 5M ",
+  ">5M ",
+];
+const page_health = ["Active", "nonActive"];
+
+
 const PhaseCreation = () => {
   const navigate = useNavigate();
   const param = useParams();
@@ -55,25 +69,26 @@ const PhaseCreation = () => {
   console.log(allPhaseData, "zzzzz");
   const [showPageDetails, setShowPageDetails] = useState(false);
 
-  const [postpage, setPostPage] = useState(0);
-  const [render,setRender]=useState(false);
+  const [payload, setPayload] = useState([])
 
-  const Follower_Count = [
-    "<10k",
-    "10k to 100k ",
-    "100k to 1M ",
-    "1M to 5M ",
-    ">5M ",
-  ];
-  const page_health = ["Active", "nonActive"];
+  const [postpage, setPostPage] = useState(0);
+  const [render, setRender] = useState(false);
+
 
   //fetching data for the single plan
   const getPageData = async () => {
     const pageD = await axios.get(
       `http://34.93.221.166:3000/api/campaignplan/${id}`
     );
-    setFilteredPages(pageD.data.data);
-    setActualPlanData(pageD.data.data);
+
+    const x = pageD.data.data.filter((page) => {
+      return page.replacement_status == "inactive" || page.replacement_status == "replacement"
+    }).map(page => {
+      return { ...page, postPerPage: 0 }
+    })
+    setFilteredPages(x);
+    setActualPlanData(x);
+    setPayload(x);
 
     const allpage = await axios.get(
       `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
@@ -93,7 +108,7 @@ const PhaseCreation = () => {
   }, []);
 
   useEffect(() => {
-    const remainingData = allPageData.filter(
+    const remainingData = allPageData?.filter(
       (item) =>
         !filterdPages.some((selectedItem) => selectedItem.p_id == item.p_id)
     );
@@ -108,12 +123,12 @@ const PhaseCreation = () => {
       }
     });
   };
-  const renderHard=()=>{
+  const renderHard = () => {
     getPhaseData()
   }
   //whenever a pageData is available call categoryset function
   useEffect(() => {
-    if (allPageData.length > 0) {
+    if (allPageData?.length > 0) {
       categorySet();
     }
   }, [allPageData]);
@@ -123,7 +138,7 @@ const PhaseCreation = () => {
   useEffect(() => {
     if (selectedCategory.length > 0 && selectedFollower) {
       //if there is a selected category and selected follower
-      const page = filterdPages.filter((pages) => {
+      const page = actualPlanData.filter((pages) => {
         //based on the selected follower a condition will be executed
 
         if (selectedFollower == "<10k") {
@@ -194,99 +209,26 @@ const PhaseCreation = () => {
       });
       //to set the filtered page
       setFilteredPages(page);
+      setPayload(page)
     } else if (selectedCategory.length > 0 && !selectedFollower) {
       //in case category is present but follower count is not selected
-      const page = filterdPages.filter((pages) => {
+      const page = actualPlanData.filter((pages) => {
         return selectedCategory.includes(pages.cat_name);
       });
+      console.log(page)
       setFilteredPages(page);
+      setPayload(page)
       // setSelectedFollower(null)
     } else if (selectedCategory.length == 0 && !selectedFollower) {
-      setFilteredPages(filterdPages);
+      setFilteredPages(actualPlanData);
+      setPayload(actualPlanData);
     } else if (selectedCategory.length == 0 && selectedFollower) {
       setFilteredPages(filterdPages);
+      setPayload(filterdPages);
     }
   }, [selectedCategory]);
 
-  //useEffect for follower selection change events
-  // useEffect(() => {
-  //   //
-  //   if (selectedFollower) {
-  //     const page = filterdPages.filter((pages) => {
-  //       if (selectedFollower == "<10k") {
-  //         if (selectedCategory.length > 0) {
-  //           return (
-  //             Number(pages.follower_count) <= 10000 &&
-  //             selectedCategory.includes(pages.cat_name)
-  //           );
-  //         } else {
-  //           return Number(pages.follower_count) <= 10000;
-  //         }
-  //       }
-  //       if (selectedFollower == "10k to 100k ") {
-  //         if (selectedCategory.length > 0) {
-  //           return (
-  //             Number(pages.follower_count) <= 100000 &&
-  //             Number(pages.follower_count) > 10000 &&
-  //             selectedCategory.includes(pages.cat_name)
-  //           );
-  //         } else {
-  //           return (
-  //             Number(pages.follower_count) <= 100000 &&
-  //             Number(pages.follower_count) > 10000
-  //           );
-  //         }
-  //       }
-  //       if (selectedFollower == "100k to 1M ") {
-  //         if (selectedCategory.length > 0) {
-  //           return (
-  //             Number(pages.follower_count) <= 1000000 &&
-  //             Number(pages.follower_count) > 100000 &&
-  //             selectedCategory.includes(pages.cat_name)
-  //           );
-  //         } else {
-  //           return (
-  //             Number(pages.follower_count) <= 1000000 &&
-  //             Number(pages.follower_count) > 100000
-  //           );
-  //         }
-  //       }
-  //       if (selectedFollower == "1M to 5M ") {
-  //         if (selectedCategory.length > 0) {
-  //           return (
-  //             Number(pages.follower_count) <= 5000000 &&
-  //             Number(pages.follower_count) > 1000000 &&
-  //             selectedCategory.includes(pages.cat_name)
-  //           );
-  //         } else {
-  //           return (
-  //             Number(pages.follower_count) <= 5000000 &&
-  //             Number(pages.follower_count) > 1000000
-  //           );
-  //         }
-  //       }
-  //       if (selectedFollower == ">5M ") {
-  //         if (selectedCategory.length > 0) {
-  //           return (
-  //             Number(pages.follower_count) > 5000000 &&
-  //             selectedCategory.includes(pages.cat_name)
-  //           );
-  //         } else {
-  //           return Number(pages.follower_count) > 5000000;
-  //         }
-  //       }
-  //     });
-  //     setFilteredPages(page);
-  //   } else {
-  //     if (selectedCategory.length > 0) {
-  //       const page = filterdPages.filter((pages) => {
-  //         return selectedCategory.includes(pages.cat_name);
-  //       });
-  //       setFilteredPages(page);
-  //     } else setFilteredPages(filterdPages);
-  //   }
 
-  // }, [selectedFollower]);
 
   useEffect(() => {
     //
@@ -357,15 +299,21 @@ const PhaseCreation = () => {
         // return selectedCategory.includes(pages.cat_name)
       });
       setFilteredPages(page);
+      setPayload(page);
     } else {
       if (selectedCategory.length > 0) {
-        const page = allPhaseData.filter((pages) => {
+        const page = actualPlanData.filter((pages) => {
           return selectedCategory.includes(pages.cat_name);
         });
         setFilteredPages(page);
-      } else setFilteredPages(actualPlanData);
+        setPayload(page);
+      } else {
+        setFilteredPages(actualPlanData);
+        setPayload(actualPlanData);
+      }
     }
     if (selectedCategory.length == 0 && !selectedFollower) {
+      setPayload(actualPlanData);
       setFilteredPages(actualPlanData);
     }
   }, [selectedFollower]);
@@ -379,12 +327,12 @@ const PhaseCreation = () => {
     setSelectedFollower(op);
   };
 
-  let timer;
+
   const handleSearchChange = (e) => {
     if (!e.target.value.length == 0) {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        const searched = filterdPages.filter((page) => {
+        const searched = payload.filter((page) => {
           return (
             page.page_name
               .toLowerCase()
@@ -393,11 +341,15 @@ const PhaseCreation = () => {
           );
         });
 
-        setSearchedPages(searched);
         setSearched(true);
+        setFilteredPages(searched)
       }, 500);
     } else {
+
       setSearched(false);
+      setFilteredPages(payload)
+      clearTimeout(timer);
+
     }
   };
 
@@ -439,6 +391,7 @@ const PhaseCreation = () => {
       remainingPages.find((row) => row.p_id === rowId)
     );
     setFilteredPages([...filterdPages, ...selectedRowData]);
+    setPayload([...filterdPages, ...selectedRowData]);
     setModalSearchPageStatus(false);
     setIsModalOpen(false);
   };
@@ -511,6 +464,13 @@ const PhaseCreation = () => {
     setShowPageDetails(!showPageDetails);
   };
 
+
+  const payloadChangeOnSearchChangeInPageDetailing = (pl,up) => {
+    console.log(pl)
+    setPayload([...pl])
+    setFilteredPages(up)
+  }
+
   return (
     <>
       <div className="form_heading_title">
@@ -536,15 +496,15 @@ const PhaseCreation = () => {
             >
               <AccordionSummary
                 expandIcon={<GridExpandMoreIcon />}
-                // aria-controls={`panel${index}bh-content`}
-                // id={`panel${index}bh-header`}
+              // aria-controls={`panel${index}bh-content`}
+              // id={`panel${index}bh-header`}
               >
                 <Typography>{`Phase ${index + 1}`}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 {/* <Accordioan data={item} /> */}
                 {console.log(item)}
-                <PageOverview selectData={item.pages} stage={"phase"} setRender={renderHard}/>
+                <PageOverview selectData={item.pages} stage={"phase"} setRender={renderHard} />
               </AccordionDetails>
             </Accordion>
           </Paper>
@@ -688,7 +648,7 @@ const PhaseCreation = () => {
             search={searched}
             searchedpages={searchedPages}
             setFilteredPages={setFilteredPages}
-            type={"plan"}
+            realPageData={allPageData}
             setPhaseDataError={setPhaseDataError}
             setPostPage={setPostPage}
             postpage={postpage}
@@ -698,6 +658,8 @@ const PhaseCreation = () => {
               commitment: campaignName,
               phaseDataError: phaseDataError,
             }}
+            payload={payload}
+            payloadChange={payloadChangeOnSearchChangeInPageDetailing}
           />
         </>
       )}

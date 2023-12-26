@@ -29,6 +29,8 @@ const PageDetaling = ({
   setFilteredPages,
   phaseInfo,
   setPhaseDataError,
+  payload,
+  payloadChange
   // setPostPage,
   // postpage,
 }) => {
@@ -39,32 +41,45 @@ const PageDetaling = ({
   const [openDialog, setOpenDialog] = useState(false);
   const [deletingPageId, setDeletingPageId] = useState(null);
   const [remainingPages, setRemainingPages] = useState([]);
+  const [smallPostPerPage, setSmallPostPerPage] = useState(Number.MAX_SAFE_INTEGER)
+
+  console.log(pages)
 
   useEffect(() => {
-    if (search == false) {
-      if (pages?.length > 0) {
-        const addPost = pages.map((page) => {
+    if (pages?.length > 0) {
+      const addPost = pages.map((page) => {
+        if (!page.postPerPage) {
+
           return { ...page, postPerPage: 0 };
-        });
-        setAllPages([...addPost]);
-        const differenceArray = realPageData?.filter((element) => {
-          if (!pages.includes(element)) {
-            options.push(element.page_name);
-            return !pages.includes(element);
-          }
-        });
-        setRemainingPages(differenceArray);
-      }
-    } else {
-      if (searchedpages?.length > 0) {
-        // console.log("first");
-        const addPost = searchedpages.map((page) => {
-          return { ...page, postPerPage: 0 };
-        });
-        setAllPages([...addPost]);
-      }
+
+        } else return page
+      });
+      setAllPages([...addPost]);
+      const differenceArray = realPageData?.filter((element) => {
+        if (!pages.includes(element)) {
+          options.push(element.page_name);
+          return !pages.includes(element);
+        }
+      });
+      setRemainingPages(differenceArray);
     }
-  }, [pages, search, searchedpages]);
+  }, [pages])
+
+  useEffect(()=>{
+    if(pageName=='phaseCreation')
+    {
+
+      let smallest=Number.MAX_SAFE_INTEGER
+      console.log(pages)
+      pages.forEach((page)=>{
+        if(Number(page.postRemaining)<smallest){
+          smallest=Number(page.postRemaining)
+        }
+      })
+      // console.log(smallest)
+      setSmallPostPerPage(smallest)
+    }
+  },[pages])
 
   const pageReplacement = (e, params, index) => {
     // console.log(e.target.innerText,params,index)
@@ -80,8 +95,10 @@ const PageDetaling = ({
   };
 
   const handlePostPerPageChange = (e, params) => {
+
     let updatedValue = e.target.value;
     if (e.target.value > Number(params.row.postRemaining)) {
+
       updatedValue = params.row.postRemaining;
     }
 
@@ -92,10 +109,25 @@ const PageDetaling = ({
           ? { ...page, postPerPage: updatedValue, value: null }
           : page
       );
+      console.log(updatedPages)
       setAllPages(updatedPages);
+      const x = payload.map(page => {
+        if (page.p_id === params.row.p_id) {
+          return { ...page, postPerPage: updatedValue }
+        }
+        else return page
+      })
+      if (pageName == 'planCreation') {
+
+      }
+      // console.log(x)
+      payloadChange(x, updatedPages)
+      // setFilteredPages(x)
     }
   };
-  
+  // console.log(payload)
+  console.log(pages)
+  console.log(allPages)
   const columns = [
     {
       field: "S.NO",
@@ -215,15 +247,24 @@ const PageDetaling = ({
     setOpenDialog(false);
   };
   const handlePost = (e) => {
+    let updatedValue = e.target.value;
+    console.log(smallPostPerPage)
+    if (e.target.value >= smallPostPerPage) {
+
+      updatedValue = smallPostPerPage
+    }
+    
     const postperpage = allPages.map((page) => {
-      return { ...page, postPerPage: Number(e.target.value) };
+      return { ...page, postPerPage: updatedValue};
     });
-   
+
     setAllPages(postperpage);
+    // payloadChange(postperpage);
     // setPostPage(Number(e.target.value));
   };
 
-  console.log(allPages);
+  // console.log(allPages);
+
   const submitPlan = async (e) => {
     if (pageName == "planCreation") {
       const planName = data.campaignName + "plan";

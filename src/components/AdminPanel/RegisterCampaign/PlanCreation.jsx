@@ -21,6 +21,7 @@ import {
 
 let options = [];
 let text;
+let timer;
 const PlanCreation = () => {
   const param = useParams();
   const id = param.id;
@@ -37,6 +38,7 @@ const PlanCreation = () => {
   const [modalSearchPageStatus, setModalSearchPageStatus] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [postpage, setPostPage] = useState(0);
+  const [payload, setPayload] = useState([])
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -60,6 +62,7 @@ const PlanCreation = () => {
     );
     setAllPageData(pageData.data.body);
     setFilteredPages(pageData.data.body);
+    setPayload(pageData.data.body);
     // setSearchedPages(pageData.data.body)
   };
 
@@ -69,7 +72,7 @@ const PlanCreation = () => {
   }, []);
 
   useEffect(() => {
-    const remainingData = allPageData.filter(
+    const remainingData = allPageData?.filter(
       (item) =>
         !filterdPages.some((selectedItem) => selectedItem.p_id == item.p_id)
     );
@@ -87,7 +90,7 @@ const PlanCreation = () => {
   };
   //whenever a pageData is available call categoryset function
   useEffect(() => {
-    if (allPageData.length > 0) {
+    if (allPageData?.length > 0) {
       categorySet();
     }
   }, [allPageData]);
@@ -168,15 +171,18 @@ const PlanCreation = () => {
       });
       //to set the filtered page
       setFilteredPages(page);
+      setPayload(page)
     } else if (selectedCategory.length > 0 && !selectedFollower) {
       //in case category is present but follower count is not selected
       const page = allPageData.filter((pages) => {
         return selectedCategory.includes(pages.cat_name);
       });
       setFilteredPages(page);
+      setPayload(page)
       // setSelectedFollower(null)
     } else if (selectedCategory.length == 0 && !selectedFollower) {
       setFilteredPages(allPageData);
+      setPayload(allPageData)
     } else if (selectedCategory.length == 0 && selectedFollower) {
     }
   }, [selectedCategory]);
@@ -256,12 +262,14 @@ const PlanCreation = () => {
         // return selectedCategory.includes(pages.cat_name)
       });
       setFilteredPages(page);
+      setPayload(page)
     } else {
       if (selectedCategory.length > 0) {
         const page = allPageData.filter((pages) => {
           return selectedCategory.includes(pages.cat_name);
         });
         setFilteredPages(page);
+        setPayload(page)
       } else setFilteredPages(allPageData);
     }
   }, [selectedFollower]);
@@ -277,12 +285,12 @@ const PlanCreation = () => {
     setSelectedFollower(op);
   };
 
-  let timer;
+  
   const handleSearchChange = (e) => {
     if (!e.target.value.length == 0) {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        const searched = filterdPages.filter((page) => {
+        const searched = payload.filter((page) => {
           return (
             page.page_name
               .toLowerCase()
@@ -292,12 +300,15 @@ const PlanCreation = () => {
         });
 
         // console.log(searched);
-        setSearchedPages(searched);
+        // setSearchedPages(searched);
         setSearched(true);
+        setFilteredPages(searched)
       }, 500);
     } else {
       // console.log("empty");
       setSearched(false);
+      setFilteredPages(payload)
+      clearTimeout(timer);
       // if(e.targe)
     }
   };
@@ -344,6 +355,7 @@ const PlanCreation = () => {
     );
     // console.log(selectedRowData);
     setFilteredPages([...filterdPages, ...selectedRowData]);
+    setPayload([...filterdPages, ...selectedRowData]);
     setModalSearchPageStatus(false);
     setIsModalOpen(false);
   };
@@ -385,6 +397,7 @@ const PlanCreation = () => {
       return { page_name: element, status: false, p_id: String(pid) };
     });
     setFilteredPages([...remainingData, ...falsepage]);
+    setPayload([...remainingData, ...falsepage]);
     // console.log(x);
     // console.log(differenceArray);
     // console.log(remainingData);
@@ -498,6 +511,10 @@ const PlanCreation = () => {
     },
   ];
 
+  const payloadChangeOnSearchChangeInPageDetailing=(pl)=>{
+    setPayload(pl)
+  }
+console.log(filterdPages)
   return (
     <>
       <div>
@@ -559,6 +576,8 @@ const PlanCreation = () => {
         postpage={postpage}
         setFilteredPages={setFilteredPages}
         data={{ campaignId: id, campaignName }}
+        payload={payload}
+        payloadChange={payloadChangeOnSearchChangeInPageDetailing}
       />
       <>
         <Dialog open={isModalOpenCP}>
