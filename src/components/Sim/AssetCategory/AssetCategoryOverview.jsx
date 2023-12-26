@@ -26,7 +26,21 @@ const AssetCategoryOverview = () => {
 
   //Asset Count Modal
   const [assetModal, seAssetModel] = useState(false);
+  const [subcategoryCount, setSubcategroycount] = useState([]);
 
+  const [handleOpenSubCat, setHandleOpenSubCat] = useState(false);
+
+  const handleSubCategroy = async (row) => {
+    try {
+      const response = await axios.get(
+        `http://34.93.221.166:3000/api/get_count_sub_category/${row}`
+      );
+      setSubcategroycount(response.data.data.sub_categories);
+      setHandleOpenSubCat(true);
+    } catch (error) {
+      console.log(error, "sub cat api not working");
+    }
+  };
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
@@ -89,8 +103,8 @@ const AssetCategoryOverview = () => {
         "http://34.93.221.166:3000/api/get_all_asset_category"
       );
 
-      setFilterData(response.data);
-      setData(response.data);
+      setFilterData(response.data.data.asset_categories);
+      setData(response.data.data.asset_categories);
     } catch (error) {
       toastAlert("Data not submitted", error.message);
       return null;
@@ -131,8 +145,15 @@ const AssetCategoryOverview = () => {
       ),
     },
     {
-      name: "Sub Category Name",
-      selector: (row) => row.sub_category_name,
+      name: "Sub Category",
+      cell: (row) => (
+        <button
+          className="btn btn-outline-warning"
+          onClick={() => handleSubCategroy(row.category_id)}
+        >
+          {row.sub_category_count}
+        </button>
+      ),
       sortable: true,
     },
     {
@@ -142,7 +163,7 @@ const AssetCategoryOverview = () => {
           className="btn btn-outline-warning"
           onClick={() => handleTotalasset(row.category_id)}
         >
-          {totalAssets?.length}
+          {row.available_assets_count}
         </button>
       ),
       sortable: true,
@@ -154,7 +175,7 @@ const AssetCategoryOverview = () => {
           className="btn btn-outline-warning"
           onClick={() => handleAllocatedAsset(row.category_id)}
         >
-          {totalAssets?.length}
+          {row.allocated_assets_count}
         </button>
       ),
       sortable: true,
@@ -186,6 +207,10 @@ const AssetCategoryOverview = () => {
       ),
     },
   ];
+
+  const handleCloseSubCat = () => {
+    setHandleOpenSubCat(false);
+  };
 
   return (
     <>
@@ -328,7 +353,7 @@ const AssetCategoryOverview = () => {
               X
             </button>
           </div>
-          <h1>hello worl</h1>
+          <h1></h1>
           <DataTable
             columns={[
               {
@@ -344,6 +369,67 @@ const AssetCategoryOverview = () => {
               { name: "Asset ID", selector: "asset_id" },
             ]}
             data={totalAssets}
+            highlightOnHover
+            subHeader
+            // subHeaderComponent={
+            //   <input
+            //     type="text"
+            //     placeholder="Search..."
+            //     className="w-50 form-control"
+            //     value={modalSearch}
+            //     onChange={(e) => setModalSearch(e.target.value)}
+            //   />
+            // }
+          />
+        </div>
+        {/* )} */}
+      </Modal>
+
+      {/* Sub Category modal here  */}
+      <Modal
+        isOpen={handleOpenSubCat}
+        onRequestClose={handleCloseSubCat}
+        style={{
+          content: {
+            width: "80%",
+            height: "80%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        {/* {selectedRow && ( */}
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            {/* <h2>Department: {selectedRow.dept_name}</h2> */}
+
+            <button
+              className="btn btn-success float-left"
+              onClick={handleCloseSubCat}
+            >
+              X
+            </button>
+          </div>
+          <h1></h1>
+          <DataTable
+            columns={[
+              {
+                name: "S.No",
+                cell: (row, index) => <div>{index + 1}</div>,
+                width: "10%",
+              },
+              {
+                name: "Subcategory Name",
+                width: "40%",
+                selector: "sub_category_name",
+              },
+              { name: "Category Name", selector: "category_name" },
+            ]}
+            data={subcategoryCount}
             highlightOnHover
             subHeader
             // subHeaderComponent={

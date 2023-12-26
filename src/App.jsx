@@ -36,6 +36,7 @@ import AssetCategoryOverview from "./components/Sim/AssetCategory/AssetCategoryO
 import AssetCategoryUpdate from "./components/Sim/AssetCategory/AssetCategoryUpdate";
 import BrandMast from "./components/Sim/Brand/BrandMast";
 import ModalMast from "./components/Sim/ModalName/ModalMast";
+import RepairReason from "./components/Sim/RepairReasonMast/RepairReason";
 
 import ForgetPassword from "./Login/Forget/ForgetPassword";
 import ExeHistory from "./components/Execution/ExeHistory";
@@ -133,6 +134,7 @@ function App() {
           />
           <Route path="/brand-mast" element={<BrandMast />} />
           <Route path="/modal-mast" element={<ModalMast />} />
+          <Route path="/repair-reason" element={<RepairReason />} />
 
           <Route
             path="/asset/subCategory/overview"
