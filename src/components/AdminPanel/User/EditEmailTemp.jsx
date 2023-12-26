@@ -10,8 +10,10 @@ import 'react-quill/dist/quill.snow.css';
 const EditEmailTemp = () => {
   const { id } = useParams();
   const [emailFor, setEmailFor] = useState("");
+  const [emailForId, setEmailForId] = useState("");
   const [emailContent, setEmailContent] = useState("");
   const [remarks, setRemarks] = useState("");
+  const [emailSub, setEmailSub] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   const token = sessionStorage.getItem("token");
@@ -22,7 +24,9 @@ const EditEmailTemp = () => {
     axios.get(`http://34.93.221.166:3000/api/get_single_email_content/${id}`).then((res) => {
       const fetchedData = res.data.data;
       setEmailFor(fetchedData.email_for);
+      setEmailForId(fetchedData.email_for_id);
       setEmailContent(fetchedData.email_content);
+      setEmailSub(fetchedData.email_sub);
       setRemarks(fetchedData.remarks);
     });
   }, []);  
@@ -33,7 +37,9 @@ const EditEmailTemp = () => {
       await axios.post("http://34.93.221.166:3000/api/update_email_content",{
         _id: id,
         email_for: emailFor,
+        email_for_id: emailForId,
         email_content: emailContent,
+        email_sub: emailSub,
         remarks: remarks,
         updated_by: loginUserId
       });
@@ -43,7 +49,7 @@ const EditEmailTemp = () => {
   };
 
   if (isFormSubmitted) {
-    return <Navigate to="/admin/all-email-templates" />;
+    return <Navigate to="/admin/email-template-overview" />;
   }
 
     return (
@@ -62,6 +68,15 @@ const EditEmailTemp = () => {
         />
 
         <FieldContainer
+          label="Email Template Id"
+          type="number"
+          fieldGrid={6}
+          value={emailForId}
+          required={true}
+          onChange={(e) => setEmailForId(e.target.value)}
+        />
+
+        <FieldContainer
           label="Remarks"
           fieldGrid={6}
           value={remarks}
@@ -69,13 +84,13 @@ const EditEmailTemp = () => {
           onChange={(e)=> setRemarks(e.target.value)}
         />
 
-        {/* <FieldContainer
-          label="Email Content"
-          fieldGrid={12}
-          required={false}
-          value={emailContent}
-          onChange={(e)=> setEmailContent(e.target.value)}
-        /> */}
+        <FieldContainer
+          label="Email Subject"
+          fieldGrid={6}
+          required={true}
+          value={emailSub}
+          onChange={(e)=> setEmailSub(e.target.value)}
+        /> 
 
         <ReactQuill 
           theme="snow" 
