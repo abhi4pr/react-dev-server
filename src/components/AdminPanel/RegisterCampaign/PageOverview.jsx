@@ -16,9 +16,18 @@ const PageOverview = ({selectData,setrender,stage}) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isRecordOpen,setIsRecordOpen] = useState(false);
     const [selection,setSelections] = useState();
+    const [realData,setRealData] = useState([])
 
 
+    useEffect(()=>{
+        const data=selectData.filter(page=>{
+            if(page.replacement_status=='pending' || page.replacement_status=="replacement" || page.replacement_status=="inactive"){
+                return page
+              }
+        })
 
+        setRealData(data)
+    },[selectData])
 
 
     const columns = [
@@ -122,7 +131,7 @@ const PageOverview = ({selectData,setrender,stage}) => {
         <div><Paper>
             <Box sx={{ height: 400, width: "100%", mt: 2 }}>      
             <DataGrid
-                rows={selectData}
+                rows={realData}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}

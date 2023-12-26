@@ -18,9 +18,15 @@ const PlanOverview = () => {
   console.log(selectData);
   const getSelectPage = async () => {
     const newPlan = await axios.get(
-      `http://192.168.29.110:3000/api/campaignplan/${id}`
+      `http://localhost:3000/api/campaignplan/${id}`
     );
-    setSelectData(newPlan.data.data);
+
+    const x=newPlan.data.data.filter(page=>{
+      if(page.replacement_status=='pending' || page.replacement_status=="replacement" || page.replacement_status=="inactive"){
+        return page
+      }
+    })
+    setSelectData(x);
   };
 
   useEffect(() => {
