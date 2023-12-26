@@ -178,6 +178,7 @@ import HobbiesOverview from "./Hobbies/HobbiesOverview";
 import AddEmailTemp from "./User/AddEmailTemp";
 import EmailTempOverview from "./User/EmailTempOverview";
 import EditEmailTemp from "./User/EditEmailTemp";
+import ManagerDashboard from "./RegisterCampaign/ManagerDashboard/ManagerDashboard";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -672,7 +673,10 @@ const Admin = () => {
                     path="/replacement-dashboard"
                     element={<ReplacementDashobard />}
                   />
-
+  <Route
+                    path="/manager-dashboard"
+                    element={<ManagerDashboard />}
+                  />
                   <Route path="/experties" element={<Experties />} />
                   <Route
                     path="/experties-overview"
