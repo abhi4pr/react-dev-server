@@ -1,18 +1,20 @@
-import { useState } from "react";
-import FieldContainer from "../../FieldContainer";
-import FormContainer from "../../FormContainer";
-import Select from "react-select";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import Select, { components } from "react-select";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import { useGlobalContext } from "../../../../Context/Context";
+import FieldContainer from "../../FieldContainer";
+import FormContainer from "../../FormContainer";
 
 const BillingMast = () => {
   const { toastAlert } = useGlobalContext();
   const [bilingName, setBillingName] = useState("");
   const [department, setDepartment] = useState("");
-  const [departmentdata, setDepartmentData] = useState([]);
+  const [showAllDepartments, setShowAllDepartments] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [allWFHDepartments, setAllWFHDepartments] = useState([]);
+  const [unassignedWFHDepartments, setUnassignedWFHDepartments] = useState([]);
+  const [seeMoreButtonActive, setSeeMoreButtonActive] = useState(true);
 
   useEffect(() => {
     async function fetchData() {
@@ -20,35 +22,48 @@ const BillingMast = () => {
         const assignedDepartmentResponse = await axios.get(
           "http://34.93.221.166:3000/api/get_all_billingheaders"
         );
-        const allDepartmentsResponse = await axios.get(
-          "http://34.93.221.166:3000/api/get_all_departments"
+        const wfhDepartmentsResponse = await axios.get(
+          "http://34.93.221.166:3000/api/dept_with_wfh"
         );
 
-        const assignedDepartment = assignedDepartmentResponse.data;
-        const allDepartments = allDepartmentsResponse.data;
+        const assignedDepartments = assignedDepartmentResponse.data;
+        const wfhDepartments = wfhDepartmentsResponse.data;
 
-        if (!assignedDepartment || !assignedDepartment.length) {
-          setDepartment(departmentdata);
-        } else {
-          // Create a set of dept_ids from assignedDepartment
-          const assignedDeptIds = new Set(
-            assignedDepartment.map((item) => item.dept_id)
-          );
+        const assignedDeptIds = new Set(
+          assignedDepartments.map((dept) => dept.dept_id)
+        );
 
-          // Filter allDepartments to exclude those present in assignedDeptIds
-          const filteredDepartments = allDepartments.filter(
-            (dept) => !assignedDeptIds.has(dept.dept_id)
-          );
+        const unassignedWfhDepartments = wfhDepartments.filter(
+          (dept) => !assignedDeptIds.has(dept.dept_id)
+        );
 
-          setDepartmentData(filteredDepartments);
+        setUnassignedWFHDepartments(unassignedWfhDepartments);
+        setAllWFHDepartments(wfhDepartments);
+        if (unassignedWfhDepartments.length == wfhDepartments.length) {
+          setSeeMoreButtonActive(false);
         }
       } catch (error) {
-        console.error("Error fetching data: ", error);
+        console.error("Error Fetching Data", error);
       }
     }
 
     fetchData();
   }, []);
+
+  const toggleDepartmentList = () => {
+    setShowAllDepartments((prev) => !prev);
+  };
+
+  const DepartmentMenuList = (props) => (
+    <>
+      {props.children}
+      {seeMoreButtonActive && (
+        <button className="btn btn-primary" onClick={toggleDepartmentList}>
+          {showAllDepartments ? "Show Less" : "See More"}
+        </button>
+      )}
+    </>
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -58,13 +73,18 @@ const BillingMast = () => {
         dept_id: department,
       })
       .then(() => {
-        setIsFormSubmitted(true), toastAlert("Submitted");
+        setIsFormSubmitted(true);
+        toastAlert("Submitted");
       });
   };
 
   if (isFormSubmitted) {
     return <Navigate to="/admin/billing-overview" />;
   }
+
+  const options = showAllDepartments
+    ? allWFHDepartments
+    : unassignedWFHDepartments;
 
   return (
     <>
@@ -85,19 +105,18 @@ const BillingMast = () => {
           </label>
           <Select
             className=""
-            options={departmentdata.map((option) => ({
+            options={options.map((option) => ({
               value: option.dept_id,
-              label: `${option.dept_name}`,
+              label: option.dept_name,
             }))}
             value={{
               value: department,
               label:
-                departmentdata.find((user) => user.dept_id === department)
-                  ?.dept_name || "",
+                options.find((opt) => opt.dept_id === department)?.dept_name ||
+                "",
             }}
-            onChange={(e) => {
-              setDepartment(e.value);
-            }}
+            onChange={(selectedOption) => setDepartment(selectedOption.value)}
+            components={{ MenuList: DepartmentMenuList }}
             required
           />
         </div>

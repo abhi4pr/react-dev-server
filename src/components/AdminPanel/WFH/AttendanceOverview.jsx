@@ -64,6 +64,7 @@ const AttendanceOverview = () => {
       selector: (row) => row.dept_name,
       sortable: true,
     },
+
     {
       name: "No.of Absent",
       selector: (row) => row.noOfabsent,
