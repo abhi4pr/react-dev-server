@@ -12,6 +12,8 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
 import * as XLSX from "xlsx";
+import dayjs from "dayjs";
+
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterCampaign() {
@@ -155,7 +157,7 @@ export default function RegisterCampaign() {
     );
   };
 
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(dayjs());
 
   const handleDateChange = (date) => {
     setSelectedDate(date);

@@ -614,6 +614,12 @@ const SidebarLinks = () => {
                         <>
                         <Link
                             className="collapse-item"
+                            to="/admin/manager-campaign"
+                          >
+                            Manager Campaign Dashboard
+                          </Link>
+                        <Link
+                            className="collapse-item"
                             to="/admin/manager-dashboard"
                           >
                             Manager Dashboard
