@@ -27,22 +27,6 @@ const AppProvider = ({ children }) => {
     setAlertText(text);
   };
 
-  // const storedToken = sessionStorage.getItem("token");
-  // useEffect(() => {
-  //   if (storedToken) {
-  //     const decodedToken = jwtDecode(storedToken);
-  //     const userID = decodedToken.id;
-  //     setToken(decodedToken);
-  //     axios
-  //       .get(
-  //         `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
-  //       )
-  //       .then((res) => {
-  //         setData(res.data);
-  //       });
-  //   }
-  // }, [storedToken]);
-
   const getAllCategoryContextFunction = () => {
     axios
       .get("http://34.93.221.166:3000/api/get_all_asset_category")

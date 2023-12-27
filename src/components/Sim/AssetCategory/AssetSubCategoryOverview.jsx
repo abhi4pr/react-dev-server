@@ -19,7 +19,7 @@ const AssetSubCategoryOverview = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.29.115:3000/api/get_all_asset_sub_category"
+        "http://34.93.221.166:3000/api/get_all_asset_sub_category"
       );
       setFilterData(response.data);
       setData(response.data);

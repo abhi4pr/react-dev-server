@@ -180,6 +180,8 @@ import EmailTempOverview from "./User/EmailTempOverview";
 import EditEmailTemp from "./User/EditEmailTemp";
 import ManagerDashboard from "./RegisterCampaign/ManagerDashboard/ManagerDashboard";
 import ManagerCampaign from "./RegisterCampaign/ManagerCampaignDashboard/ManagerCampaign";
+import AssetVisibleToTagedPerosn from "../Sim/AssetVisibleToTagedPerson/AssetVisibleToTagedPerosn";
+import AssetVisibleToHr from "../Sim/AssetVisibleToHr/AssetVisibleToHr";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -278,9 +280,18 @@ const Admin = () => {
                           element={<UserSingle />}
                         />
                         <Route path="/user-graph" element={<UserGraphs />} />
-                        <Route path="/email-template" element={<AddEmailTemp />} />
-                        <Route path="/email-template-overview" element={<EmailTempOverview />} />
-                        <Route path="/email-template-update/:id" element={<EditEmailTemp />} />
+                        <Route
+                          path="/email-template"
+                          element={<AddEmailTemp />}
+                        />
+                        <Route
+                          path="/email-template-overview"
+                          element={<EmailTempOverview />}
+                        />
+                        <Route
+                          path="/email-template-update/:id"
+                          element={<EditEmailTemp />}
+                        />
                       </>
                     )}
 
@@ -434,10 +445,16 @@ const Admin = () => {
                     contextData[5].view_value === 1 && ( */}
                   <>
                     <Route path="/self-audit" element={<SelfAudit />} />
-                    {/* <Route
-                          path="/product-overview"
-                          element={<ProductOverview />}
-                        /> */}
+
+                    {/* Asset Section  */}
+                    <Route
+                      path="/asset-visible-to-hr"
+                      element={<AssetVisibleToHr />}
+                    />
+                    <Route
+                      path="/asset-visible-to-taged-person"
+                      element={<AssetVisibleToTagedPerosn />}
+                    />
                   </>
                   {/* )} */}
                   {contextData &&
@@ -678,7 +695,7 @@ const Admin = () => {
                     path="/manager-dashboard/:id"
                     element={<ManagerDashboard />}
                   />
-                   <Route
+                  <Route
                     path="/manager-campaign"
                     element={<ManagerCampaign />}
                   />

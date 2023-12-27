@@ -101,7 +101,7 @@ const RepairReason = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://192.168.29.115:3000/api/add_asset_reason",
+        "http://34.93.221.166:3000/api/add_asset_reason",
         {
           reason: reason,
           category_id: categoryName,
@@ -119,7 +119,7 @@ const RepairReason = () => {
   };
   async function getRepairReason() {
     const res = await axios.get(
-      "http://192.168.29.115:3000/api/get_all_assetResons"
+      "http://34.93.221.166:3000/api/get_all_assetResons"
     );
     setModalData(res?.data.data);
     setModalFilter(res?.data.data);
@@ -142,7 +142,7 @@ const RepairReason = () => {
   const handleModalUpdate = () => {
     console.log(repairId, "id");
     axios
-      .put("http://192.168.29.115:3000/api/update_asset_reason", {
+      .put("http://34.93.221.166:3000/api/update_asset_reason", {
         asset_reason_id: repairId,
         category_id: categoryNameUpdate,
         sub_category_id: subCategoryNameUpdate,
