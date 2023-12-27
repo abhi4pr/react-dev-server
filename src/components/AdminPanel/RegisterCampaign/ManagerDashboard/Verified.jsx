@@ -14,8 +14,8 @@ const Verified = ({ verified }) => {
     const _id = params.row.ass_id;
     try {
       const response = await axios.get(
-        // `http://192.168.29.110:3000/api/assignment/commit/single/${_id}`
-        `http://192.168.29.110:3000/api/assignment/commit/single/2`
+        `http://34.93.221.166:3000/api/assignment/commit/single/${_id}`
+        // `http://34.93.221.166:3000/api/assignment/commit/single/2`
       );
       setPendingCommit(response.data.data);
       setOpen2(true);
@@ -59,6 +59,11 @@ const Verified = ({ verified }) => {
       width: 180,
     },
     {
+      field: "postPerPage",
+      headerName: "post/page",
+      width: 180,
+    },
+    {
       field: "follower_count",
       headerName: "Followers",
       width: 180,
@@ -98,6 +103,11 @@ const Verified = ({ verified }) => {
     {
       field: "engagement",
       headerName: "Engagement",
+      width: 180,
+    },
+    {
+      field: "snapshot",
+      headerName: "snapshot",
       width: 180,
     },
   ];

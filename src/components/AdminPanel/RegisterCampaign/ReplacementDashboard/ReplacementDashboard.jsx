@@ -21,7 +21,7 @@ const ReplacementDashboard = () => {
   const getReplacementData = async () => {
     try {
 
-      const replace = await axios.get('http://localhost:3000/api/replacement/plan')
+      const replace = await axios.get('http://34.93.221.166:3000/api/replacement/plan')
       setReplacementData(replace?.data?.data)
 
       const getCampaigns = await axios.get('http://34.93.221.166:3000/api/exe_campaign')

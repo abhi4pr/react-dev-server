@@ -4,7 +4,7 @@ import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Modal, Paper, Typography, Button } from "@mui/material";
 import axios from "axios";
 
-const Executed = ({ executed }) => {
+const Executed = ({ executed,forceRender }) => {
   console.log(executed, "new data");
   const [open2, setOpen2] = useState(false);
   const [executedCommit, setExecutedCommit] = useState([]);
@@ -12,8 +12,8 @@ const Executed = ({ executed }) => {
     const _id = params.row.ass_id;
     try {
       const response = await axios.get(
-        // `http://192.168.29.110:3000/api/assignment/commit/single/${_id}`
-        `http://192.168.29.110:3000/api/assignment/commit/single/2`
+        `http://34.93.221.166:3000/api/assignment/commit/single/${_id}`
+        // `http://34.93.221.166:3000/api/assignment/commit/single/2`
       );
       setExecutedCommit(response.data.data);
       setOpen2(true);
@@ -52,6 +52,11 @@ const Executed = ({ executed }) => {
     {
       field: "exp_name",
       headerName: "Expertise",
+      width: 180,
+    },
+    {
+      field: "postPerPage",
+      headerName: "post/page",
       width: 180,
     },
     {
@@ -96,28 +101,39 @@ const Executed = ({ executed }) => {
       headerName: "Engagement",
       width: 180,
     },
+    {
+      field: "snapshot",
+      headerName: "snapshot",
+      width: 180,
+    },
   ];
 
   const handleVerified = async () => {
     // console.log(executed[0]?.ass_id, executed[0]?.campaignId);
     const response = await axios.post(
-      `http://192.168.29.110:3000/api/assignment/status`,
+      `http://34.93.221.166:3000/api/assignment/status`,
       {
         ass_id: executed[0]?.ass_id,
         campaignId: executed[0]?.campaignId,
         ass_status: "verified",
       }
     );
+    alert('verified successfully')
+    setOpen2(false)
+    forceRender()
   };
   const handleReject = async () => {
     const response = await axios.post(
-      `http://192.168.29.110:3000/api/assignment/status`,
+      `http://34.93.221.166:3000/api/assignment/status`,
       {
         ass_id: executed[0]?.ass_id,
         campaignId: executed[0]?.campaignId,
         ass_status: "rejected",
       }
     );
+    alert('rejected successfully');
+    setOpen2(false)
+    forceRender()
   };
   return (
     <>

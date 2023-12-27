@@ -28,14 +28,14 @@ const ReplacementRecord = ({ open, data, handleClose }) => {
 
   const getRecord = async () => {
     const record = await axios.get(
-      `http://192.168.29.110:3000/api/replacement/${data.replacement_id._id}`
+      `http://34.93.221.166:3000/api/replacement/${data.replacement_id._id}`
     );
     console.log(record.data.data, "<---------------------------------");
     setReplacementData(record?.data?.data);
   };
   const getPageData = async () => {
     const oldPageData = await axios.get(
-      `http://192.168.29.110:3000/api/replacement/${data.replacement_id._id}`
+      `http://34.93.221.166:3000/api/replacement/${data.replacement_id._id}`
     );
     seteNewPageData(oldPageData?.data?.data?.newPages);
     setOldData(oldPageData?.data?.data);

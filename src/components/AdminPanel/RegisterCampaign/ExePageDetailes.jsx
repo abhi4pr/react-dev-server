@@ -97,12 +97,14 @@ const ExePageDetailes = ({
     const payload=commitPayload.find(commit => commit.comm_id==params.comm_id)
     // console.log(payload)
     const response=await axios.put(`http://34.93.221.166:3000/api/assignment/commit/single/${params.comm_id}`,payload)
+    alert("updated successfully")
     getAssignment()
     
   }
 
   const handleAssignedSubmit = async () => {
     const response = await axios.post('http://34.93.221.166:3000/api/assignment/commit', assignedData)
+    alert("submitted successfully")
     getAssignment()
     setOpen(false)
 

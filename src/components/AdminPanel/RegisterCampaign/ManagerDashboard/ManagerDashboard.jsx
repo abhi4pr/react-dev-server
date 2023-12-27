@@ -71,11 +71,15 @@ const ManagerDashboard = () => {
   const filteredRejected = rejectedData.filter((item) =>
     item.exp_name.toLowerCase().includes(filterData.toLowerCase())
   );
+  
+    const forceRender=()=>{
+      Assigndata()
+    }
 
-  const tab1 = <Pending pending={filteredPending} />;
-  const tab2 = <Executed executed={filteredExecuted} />;
-  const tab3 = <Verified verified={filteredVerified} />;
-  const tab4 = <Rejected rejected={filteredRejected} />;
+  const tab1 = <Pending pending={filteredPending} forceRender={forceRender} />;
+  const tab2 = <Executed executed={filteredExecuted} forceRender={forceRender} />;
+  const tab3 = <Verified verified={filteredVerified} forceRender={forceRender} />;
+  const tab4 = <Rejected rejected={filteredRejected} forceRender={forceRender} />;
 
   const accordionButtons = ["Pending", "Executed", "Verified", "Rejected"];
 

@@ -259,6 +259,7 @@ const PageDetaling = ({
     });
 
     setAllPages(postperpage);
+    payloadChange(postperpage,postperpage);
     // payloadChange(postperpage);
     // setPostPage(Number(e.target.value));
   };
