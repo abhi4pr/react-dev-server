@@ -365,7 +365,6 @@ const SalaryWFH = () => {
       handleSubmit();
     } catch (error) {
       console.error("Error submitting data:", error);
-      toastAlert("Failed to submit data");
     }
   };
 

@@ -23,6 +23,15 @@ const colourOptions = [
   { value: "Other", label: "Other" },
 ];
 
+const initialFamilyDetailsGroup = {
+  name: "",
+  DOB: "",
+  contact: "",
+  occupation: "",
+  annual_income: "",
+  relation: "",
+};
+
 const familyDisplayFields = [
   "name",
   "DOB",
@@ -30,16 +39,6 @@ const familyDisplayFields = [
   "occupation",
   "relation",
   "annual_income",
-];
-
-const educationDispalyFields = [
-  "institute_name",
-  "from_year",
-  "to_year",
-  "percentage",
-  "stream",
-  "specialization",
-  "title",
 ];
 
 const familyFieldLabels = {
@@ -51,25 +50,6 @@ const familyFieldLabels = {
   relation: "Relationship",
 };
 
-const educationFieldLabels = {
-  institute_name: "Institute Name",
-  from_year: "From Year",
-  to_year: "To Year",
-  percentage: "Percentage",
-  stream: "Stream",
-  specialization: "Specialization",
-  title: "Title",
-};
-
-const initialFamilyDetailsGroup = {
-  name: "",
-  DOB: "",
-  contact: "",
-  occupation: "",
-  annual_income: "",
-  relation: "",
-};
-
 const initialEducationDetailsGroup = {
   institute_name: "",
   from_year: "",
@@ -78,6 +58,26 @@ const initialEducationDetailsGroup = {
   stream: "",
   specialization: "",
   title: "",
+};
+
+const educationDispalyFields = [
+  "institute_name",
+  "from_year",
+  "to_year",
+  "percentage",
+  "stream",
+  "specialization",
+  "title",
+];
+
+const educationFieldLabels = {
+  institute_name: "Institute Name",
+  from_year: "From Year",
+  to_year: "To Year",
+  percentage: "Percentage",
+  stream: "Stream",
+  specialization: "Specialization",
+  title: "Title",
 };
 
 const UserUpdate = () => {
@@ -314,10 +314,10 @@ const UserUpdate = () => {
   useEffect(() => {
     async function getDetails() {
       const familyDataResponse = await axios.get(
-        `http://192.168.29.155:3000/api/get_single_family/${id}`
+        `http://34.93.221.166:3000/api/get_single_family/${id}`
       );
       const educationDataResponse = await axios.get(
-        `http://192.168.29.155:3000/api/get_single_education/${id}`
+        `http://34.93.221.166:3000/api/get_single_education/${id}`
       );
       setFamilyDetails(familyDataResponse.data.data);
       setEducationDetails(educationDataResponse.data.data);
@@ -590,7 +590,7 @@ const UserUpdate = () => {
         }
         try {
           const response = await axios.put(
-            "http://192.168.29.155:3000/api/update_family",
+            "http://34.93.221.166:3000/api/update_family",
             payload
           );
         } catch (error) {
@@ -602,9 +602,9 @@ const UserUpdate = () => {
         let payload = {
           user_id: id,
           title: elements.title,
-          institute_name: elements.universityInstitute,
-          from_year: elements.from,
-          to_year: elements.to,
+          institute_name: elements.institute_name,
+          from_year: elements.from_year,
+          to_year: elements.to_year,
           percentage: elements.percentage,
           stream: elements.stream,
           specialization: elements.specialization,
@@ -615,7 +615,7 @@ const UserUpdate = () => {
         }
         try {
           const response = await axios.put(
-            "http://192.168.29.155:3000/api/update_education",
+            "http://34.93.221.166:3000/api/update_education",
             payload
           );
           console.log(response.data);
@@ -847,7 +847,7 @@ const UserUpdate = () => {
     if (itemToRemove && itemToRemove.family_id) {
       try {
         await axios.delete(
-          `http://192.168.29.155:3000/api/delete_family/${itemToRemove.family_id}`
+          `http://34.93.221.166:3000/api/delete_family/${itemToRemove.family_id}`
         );
         console.log(
           "Deleted family detail from server:",
@@ -888,7 +888,7 @@ const UserUpdate = () => {
     if (itemToRemove && itemToRemove.education_id) {
       try {
         await axios.delete(
-          `http://192.168.29.155:3000/api/delete_education/${itemToRemove.family_id}`
+          `http://34.93.221.166:3000/api/delete_education/${itemToRemove.education_id}`
         );
         console.log(
           "Deleted Education detail from server:",
@@ -1815,34 +1815,29 @@ const UserUpdate = () => {
       {educationDetails?.map((detail, index) => (
         <div key={index} mb={2}>
           <div className="row">
-            {Object.keys(detail).map((key) => {
-              if (educationDispalyFields.includes(key)) {
-                key === "from" || key === "to" ? (
-                  <FieldContainer
-                    key={key}
-                    fieldGrid={3}
-                    type="date"
-                    name={key}
-                    label={educationFieldLabels[key]}
-                    value={
-                      detail[key] ? detail[key].split("T")[0] : detail[key]
-                    }
-                    onChange={(e) => handleEducationDetailsChange(index, e)}
-                  />
-                ) : (
-                  <FieldContainer
-                    key={key}
-                    fieldGrid={3}
-                    name={key}
-                    label={educationFieldLabels[key]}
-                    value={detail[key]}
-                    onChange={(e) => handleEducationDetailsChange(index, e)}
-                  />
-                );
-              }
-              return null;
+            {educationDispalyFields.map((key) => {
+              return key === "from_year" || key === "to_year" ? (
+                <FieldContainer
+                  key={key}
+                  fieldGrid={3}
+                  type="date"
+                  name={key}
+                  label={educationFieldLabels[key]}
+                  value={detail[key].split("T")[0]}
+                  onChange={(e) => handleEducationDetailsChange(index, e)}
+                />
+              ) : (
+                <FieldContainer
+                  key={key}
+                  fieldGrid={3}
+                  name={key}
+                  label={educationFieldLabels[key]}
+                  value={detail[key] || ""}
+                  onChange={(e) => handleEducationDetailsChange(index, e)}
+                />
+              );
             })}
-            {educationDetails.length > 1 && (
+            {educationDetails?.length > 1 && (
               <IconButton onClick={() => handleRemoveEducationDetails(index)}>
                 <DeleteIcon />
               </IconButton>
@@ -1861,7 +1856,6 @@ const UserUpdate = () => {
           </button>
         </div>
       </div>
-
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           className="btn btn-primary"

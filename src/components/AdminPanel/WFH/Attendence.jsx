@@ -16,10 +16,8 @@ import ClearIcon from "@mui/icons-material/Clear";
 const Attendence = () => {
   const { toastAlert } = useGlobalContext();
   const [department, setDepartment] = useState("");
-  // const [userName, setUserName] = useState("");
   const [departmentdata, getDepartmentData] = useState([]);
   const [noOfAbsent, setNoOfAbsent] = useState(null);
-  // const [bonus, setBonus] = useState("");
   const [remark, setRemark] = useState("");
   const [userData, getUsersData] = useState([]);
   const [attendenceData, setAttendenceData] = useState([]);
@@ -30,6 +28,8 @@ const Attendence = () => {
   const [completedYearsMonths, setCompletedYearsMonths] = useState([]);
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
   const [deptSalary, setDeptSalary] = useState([]);
+
+  const [rowUpdateError, setRowUpdateError] = useState(null);
 
   let isInEditMode = false;
 
@@ -42,10 +42,20 @@ const Attendence = () => {
     arrows: true,
     infinite: false,
     speed: 500,
-    slidesToShow: 1,
+    initialSlide: new Date().getMonth() - 4,
+    sliderToScroll: 1,
+    // slidesToShow: 1,
     swipeToSlide: true,
     variableWidth: true,
   };
+
+  function gettingSliderData() {
+    axios
+      .get("http://34.93.221.166:3000/api/get_month_year_data")
+      .then((res) => {
+        setCompletedYearsMonths(res.data.data);
+      });
+  }
 
   useEffect(() => {
     axios
@@ -54,11 +64,7 @@ const Attendence = () => {
         getDepartmentData(res.data.data);
       });
 
-    axios
-      .get("http://34.93.221.166:3000/api/get_month_year_data")
-      .then((res) => {
-        setCompletedYearsMonths(res.data.data);
-      });
+    gettingSliderData();
   }, []);
 
   useEffect(() => {
@@ -109,7 +115,17 @@ const Attendence = () => {
   };
 
   const handleSaveClick = (id) => () => {
+    const row = rowModesModel[id];
+    if (row.noOfabsent > 30) {
+      setRowUpdateError({
+        id,
+        error: "Absent days cannot be greater than 30.",
+      });
+      return;
+    }
+
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    setRowUpdateError(null);
   };
 
   const handleCancelClick = (id) => () => {
@@ -142,6 +158,20 @@ const Attendence = () => {
       });
   };
 
+  function handleAllDepartmentAttendance() {
+    axios
+      .post("http://34.93.221.166:3000/api/save_all_depts_attendance", {
+        month: selectedMonth,
+        year: selectedYear,
+      })
+      .then(() => {
+        toastAlert("Submitted");
+        gettingSliderData();
+        getAttendanceData();
+        gettingDepartmentSalaryExists();
+      });
+  }
+
   // Get the current year and month
   const currentDate = new Date();
   const currentYear = currentDate.getFullYear();
@@ -152,27 +182,27 @@ const Attendence = () => {
     return previousMonthIndex >= 0 ? months[previousMonthIndex] : months[11];
   };
 
-  // Set the initial state for selectedMonth and selectedYear using the current date
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth());
   const [selectedYear, setSelectedYear] = useState(currentYear.toString());
   const [activeusers, setActiveUsers] = useState("");
 
   const currentMonth = new Date().toLocaleString("en-US", { month: "long" });
 
-  useEffect(() => {
+  function gettingDepartmentSalaryExists() {
     axios
       .post("http://34.93.221.166:3000/api/get_distinct_depts", {
         month: selectedMonth,
         year: selectedYear,
       })
       .then((res) => setDeptSalary(res.data));
-  }, [selectedMonth, selectedYear, department]);
+  }
 
   const handleCardSelect = (index, data) => {
     setSelectedCardIndex(index);
     setSelectedYear(data.year);
     setSelectedMonth(data.month);
   };
+
   useEffect(() => {
     axios.get("http://34.93.221.166:3000/api/get_all_wfh_users").then((res) => {
       const data = res.data.data;
@@ -209,6 +239,7 @@ const Attendence = () => {
   useEffect(() => {
     if (department || selectedMonth || selectedYear !== "") {
       getAttendanceData();
+      gettingDepartmentSalaryExists();
     }
   }, [department, selectedMonth, selectedYear]);
 
@@ -234,21 +265,26 @@ const Attendence = () => {
   };
 
   const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    axios
-      .post("http://34.93.221.166:3000/api/add_attendance", {
-        dept: updatedRow.dept,
-        user_id: updatedRow.user_id,
-        noOfabsent: updatedRow.noOfabsent,
-        salary_deduction: Number(updatedRow.salary_deduction),
-        month: selectedMonth,
-        year: selectedYear,
-        bonus: updatedRow.bonus,
-        remark: remark,
-        created_by: userID,
-      })
-      .then(() => getAttendanceData());
-    return updatedRow;
+    if (newRow.noOfabsent > 30) {
+      toastAlert("Absent days cannot be greater than 30.");
+      return null;
+    } else {
+      const updatedRow = { ...newRow, isNew: false };
+      axios
+        .post("http://34.93.221.166:3000/api/add_attendance", {
+          dept: updatedRow.dept,
+          user_id: updatedRow.user_id,
+          noOfabsent: updatedRow.noOfabsent,
+          salary_deduction: Number(updatedRow.salary_deduction),
+          month: selectedMonth,
+          year: selectedYear,
+          bonus: updatedRow.bonus,
+          remark: remark,
+          created_by: userID,
+        })
+        .then(() => getAttendanceData());
+      return updatedRow;
+    }
   };
 
   const columns = [
@@ -276,6 +312,16 @@ const Attendence = () => {
     {
       field: "designation_name",
       headerName: "Designation",
+      type: "text",
+    },
+    {
+      field: "Report_L1Name",
+      headerName: "Report to L1",
+      type: "text",
+    },
+    {
+      field: "Report_L2Name",
+      headerName: "Report to L2",
       type: "text",
     },
     {
@@ -366,7 +412,6 @@ const Attendence = () => {
             className="textPrimary"
             onClick={handleEditClick(id)}
             color="inherit"
-            // color="primary"
           />,
         ];
       },
@@ -415,116 +460,19 @@ const Attendence = () => {
         </Slider>
       </div>
 
-      {/* <FormContainer
-        mainTitle="Attendance"
-        title="Attendance"
-        handleSubmit={handleSubmit}
-      >
-        <div className="form-group col-4">
-          <label className="form-label">
-            Department Name <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            className=""
-            options={departmentdata.map((option) => ({
-              value: option.dept_id,
-              label: `${option.dept_name}`,
-            }))}
-            value={{
-              value: department,
-              label:
-                departmentdata.find((user) => user.dept_id === department)
-                  ?.dept_name || "",
-            }}
-            onChange={(e) => {
-              setDepartment(e.value);
-            }}
-            required
-          />
-          <span style={{ color: "green" }}>Active : {activeusers.length}</span>
-        </div>
-
-        <div className="form-group col-4">
-          <label className="form-label">Month</label>
-          <Select
-            options={months.map((month) => ({
-              value: month,
-              label: month,
-            }))}
-            value={{
-              value: selectedMonth,
-              label: selectedMonth,
-            }}
-            onChange={(e) => setSelectedMonth(e.value)}
-            required
-          />
-        </div>
-
-        <div className="form-group col-4">
-          <label className="form-label">Year</label>
-          <Select
-            options={years.map((year) => ({
-              value: year,
-              label: `${year}`,
-            }))}
-            value={{
-              value: selectedYear,
-              label: selectedYear,
-            }}
-            onChange={(e) => setSelectedYear(e.value)}
-            required
-          />
-        </div>
-
-        <div className="col-12 ">
-          <hr />
-        </div>
-
-        <div className="form-group col-3">
-          <label className="form-label">Employee Name</label>
-          <Select
-            options={userData?.map((option) => ({
-              value: option.user_id,
-              label: `${option.user_name}`,
-            }))}
-            value={{
-              value: userName,
-              label:
-                userData?.find((user) => user.user_id == userName)?.user_name ||
-                "",
-            }}
-            onChange={(e) => setUserName(e.value)}
-            required
-          />
-        </div>
-
-        <FieldContainer
-          label="Number of Absent"
-          fieldGrid={3}
-          type="number"
-          value={noOfAbsent}
-          onChange={(e) => setNoOfAbsent(Number(e.target.value))}
-        />
-        <FieldContainer
-          label="Bonus (₹)"
-          fieldGrid={3}
-          type="number"
-          value={bonus}
-          required={false}
-          onChange={(e) => setBonus(e.target.value)}
-        />
-        <FieldContainer
-          required={false}
-          label="Remark"
-          fieldGrid={3}
-          value={remark}
-          onChange={(e) => setRemark(e.target.value)}
-        />
-      </FormContainer> */}
-
       <div className="card mb24">
-        <div className="card-header">
+        <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
+          <span>
+            {deptSalary.length !== departmentdata.length && (
+              <button
+                className="btn btn-primary"
+                onClick={handleAllDepartmentAttendance}
+              >
+                Create All Department Attendance
+              </button>
+            )}
+          </span>
         </div>
         <div className="card-body">
           <div className="d-flex gap4 h_scroller mb24">

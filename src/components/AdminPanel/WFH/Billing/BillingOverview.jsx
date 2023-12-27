@@ -20,10 +20,10 @@ const BillingOverview = () => {
 
   const getData = () => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_billingheaders")
+      .get("http://192.168.29.115:3000/api/get_all_billingheaders")
       .then((res) => {
-        setBillData(res.data);
-        setFilterData(res.data);
+        setBillData(res.data.result);
+        setFilterData(res.data.result);
       });
   };
   useEffect(() => {
@@ -52,6 +52,10 @@ const BillingOverview = () => {
     {
       name: "Department",
       selector: (row) => row.department_name,
+    },
+    {
+      name: "WFH Employees Count",
+      selector: (row) => row.wfhUserCount,
     },
     {
       name: "Action",
