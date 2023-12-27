@@ -118,7 +118,7 @@ const AdminPreOnboarding = () => {
     formData.append("user_email_id", email);
     formData.append("permanent_city", city);
     formData.append("ctc", userCtc);
-    formData.append("offer_letter_send", Boolean(sendLetter.value));
+    formData.append("offer_letter_send", sendLetter.value ? Boolean(sendLetter.value) : false);
     formData.append("annexure_pdf", annexurePdf);
     formData.append("tds_applicable", tdsApplicable);
     formData.append("tds_per", tdsPercentage);
@@ -205,7 +205,6 @@ const AdminPreOnboarding = () => {
           setReportL2("");
           setReportL3("");
           setDesignation("");
-          setSendLetter("");
           toastAlert("User Registerd");
           setIsFormSubmitted(true);
         }

@@ -32,6 +32,8 @@ const CocUpdate = () => {
       setSubHeading(fetchedData.sub_heading);
       setSubHeadingSeq(fetchedData.sub_heading_sequence);
       setDescription(fetchedData.description);
+      setHeadingDesc(fetchedData.heading_desc);
+      setSubHeadingDesc(fetchedData.sub_heading_desc);
       setRemarks(fetchedData.remarks);
     });
   }, []);  
