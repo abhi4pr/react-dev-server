@@ -18,7 +18,7 @@ const PlanOverview = () => {
   console.log(selectData);
   const getSelectPage = async () => {
     const newPlan = await axios.get(
-      `http://localhost:3000/api/campaignplan/${id}`
+      `http://34.93.221.166:3000/api/campaignplan/${id}`
     );
 
     const x=newPlan.data.data.filter(page=>{

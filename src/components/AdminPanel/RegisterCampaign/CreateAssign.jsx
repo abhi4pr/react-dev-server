@@ -106,8 +106,8 @@ const CreateAssign = () => {
   //submiting the assignment
   const handleSubmitAssign = async () => {
     try {
-      const createAssignment = await axios.post(`http://localhost:3000/api/assignment/bulk`, { pages: payload });
-
+      const createAssignment = await axios.post(`http://34.93.221.166:3000/api/assignment/bulk`, { pages: payload });
+      alert("assignment created successfully")
       // navigate("/admin/excusionCampaign");
     } catch (error) {
       console.error(error);
