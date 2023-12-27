@@ -64,6 +64,7 @@ const CocMaster = () => {
           label="Display Sequence"
           type="number"
           fieldGrid={4}
+          required={true}
           value={displaySeq}
           onChange={(e) => setDisplaySeq(e.target.value)}
         />
@@ -71,7 +72,7 @@ const CocMaster = () => {
         <FieldContainer
           label="Heading"
           fieldGrid={4}
-          required={false}
+          required={true}
           value={heading}
           onChange={(e)=> setHeading(e.target.value)}
         />
@@ -97,6 +98,7 @@ const CocMaster = () => {
           fieldGrid={4}
           // type="date"
           value={remarks}
+          required={false}
           onChange={(e) => setRemarks(e.target.value)}
         />
 
@@ -121,6 +123,7 @@ const CocMaster = () => {
         <FieldContainer
           Tag="textarea"
           label="description"
+          required={true}
           fieldGrid={4}
           value={description}
           onChange={(e) => setDescription(e.target.value)}

@@ -70,6 +70,7 @@ const CocOverview = () => {
             <button
               title="Edit"
               className="btn btn-outline-primary btn-sm user-button"
+              type="button"
             >
               <FaEdit />{" "}
             </button>
@@ -79,6 +80,7 @@ const CocOverview = () => {
             <button
               title="Coc History"
               className="btn btn-outline-success btn-sml"
+              type="button"
             >
               {"H"}
             </button>

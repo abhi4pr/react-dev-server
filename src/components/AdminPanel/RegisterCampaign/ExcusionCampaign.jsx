@@ -4,13 +4,11 @@ import ExePageDetailes from "./ExePageDetailes";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 
-const storedToken = sessionStorage.getItem("token");
-const decodedToken = jwtDecode(storedToken);
-console.log(decodedToken);
 
 const ExcusionCampaign = () => {
-
-
+  const storedToken = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(storedToken);
+  console.log(decodedToken);
 
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [assignmentData, setAssignmentData] = useState([]);
@@ -19,9 +17,6 @@ const ExcusionCampaign = () => {
   const [executedData, setExecutedData] = useState([]);
   const [verifiedData, setVerifiedData] = useState([]);
   const [rejectedData, setRejectedData] = useState([]); 
-  
-
-
 
 
   const getExpertee=async ()=>{

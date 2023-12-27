@@ -60,6 +60,7 @@ const DeleteButton = ({ endpoint, id, getData }) => {
       title="Delete"
       className="btn btn-outline-danger btn-sml user-button"
       onClick={handleDelete}
+      type="button"
     >
       <i className="bi bi-trash3"></i>
     </button>
