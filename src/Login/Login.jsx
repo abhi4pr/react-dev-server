@@ -86,7 +86,7 @@ const Login = () => {
                 </div>
                 {isError !== "" && (
                   <div className="form-group errorMessage">
-                    <span>Invalid Login Id or Password</span>
+                    <span>{isError?.response?.data?.error}</span>
                   </div>
                 )}
                 <div className="form-group">

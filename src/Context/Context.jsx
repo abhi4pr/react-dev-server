@@ -13,6 +13,8 @@ const AppProvider = ({ children }) => {
   // Get All Categroy Data API State here
   const [categoryDataContext, setCategoryData] = useState([]);
   const [getBrandDataContext, setBrandDataContext] = useState([]);
+  const [getAssetDataContext, setAssetDataContext] = useState([]);
+  const [usersDataContext, setUsersContextData] = useState([]);
 
   const toastAlert = (text) => {
     toast.success(text);
@@ -45,7 +47,7 @@ const AppProvider = ({ children }) => {
     axios
       .get("http://34.93.221.166:3000/api/get_all_asset_category")
       .then((res) => {
-        setCategoryData(res.data);
+        setCategoryData(res.data.data.asset_categories);
       });
   };
   async function getBrandData() {
@@ -54,11 +56,23 @@ const AppProvider = ({ children }) => {
     );
     setBrandDataContext(res.data.data);
   }
+  async function getAssetData() {
+    const res = await axios.get("http://34.93.221.166:3000/api/get_all_sims");
+    setAssetDataContext(res.data.data);
+    console.log(res, "hello welcome");
+  }
+  async function getUserAPIData() {
+    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+      setUsersContextData(res.data.data);
+    });
+  }
+
   useEffect(() => {
     getAllCategoryContextFunction();
     getBrandData();
+    getAssetData();
+    getUserAPIData();
   }, []);
-
   return (
     <AppContext.Provider
       value={{
@@ -68,6 +82,8 @@ const AppProvider = ({ children }) => {
         toastError,
         categoryDataContext,
         getBrandDataContext,
+        getAssetDataContext,
+        usersDataContext,
       }}
     >
       {children}

@@ -8,6 +8,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import FormContainer from "../../AdminPanel/FormContainer";
 import UserNav from "../../Pantry/UserPanel/UserNav";
 import { FaEdit } from "react-icons/fa";
+import Modal from "react-modal";
 
 const AssetSubCategoryOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -18,11 +19,10 @@ const AssetSubCategoryOverview = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_asset_sub_category"
+        "http://192.168.29.115:3000/api/get_all_asset_sub_category"
       );
       setFilterData(response.data);
       setData(response.data);
-      console.log(response.data, "<------------sub cat");
     } catch (error) {
       toastAlert("Data not submitted", error.message);
       return null;
@@ -38,6 +38,35 @@ const AssetSubCategoryOverview = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  const [totalAssets, setTotalAssets] = useState([]);
+  const [assetModal, seAssetModel] = useState(false);
+  const handleTotalasset = async (row) => {
+    try {
+      const response = await axios.get(
+        `http://34.93.221.166:3000/api/get_total_asset_in_category/${row}`
+      );
+      setTotalAssets(response.data.data);
+      seAssetModel(true);
+    } catch (error) {
+      console.log("total asset not working", error);
+    }
+  };
+  const handleClosAssetCounteModal = () => {
+    seAssetModel(false);
+  };
+
+  const handleAllocatedAsset = async (row) => {
+    try {
+      const response = await axios.get(
+        `http://34.93.221.166:3000/api/get_total_asset_in_category_allocated/${row}`
+      );
+      setTotalAssets(response.data.data);
+      seAssetModel(true);
+    } catch (error) {
+      console.log("total asset not working", error);
+    }
+  };
   const columns = [
     {
       name: "S.No",
@@ -59,8 +88,32 @@ const AssetSubCategoryOverview = () => {
       width: "23%",
     },
     {
+      name: "Available Asset",
+      cell: (row) => (
+        <button
+          className="btn btn-outline-warning"
+          onClick={() => handleTotalasset(row.category_id)}
+        >
+          {row.asset_available_count}
+        </button>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Allocated Asset",
+      cell: (row) => (
+        <button
+          className="btn btn-outline-warning"
+          onClick={() => handleAllocatedAsset(row.category_id)}
+        >
+          {row.asset_allocated_count}
+        </button>
+      ),
+      sortable: true,
+    },
+    {
       name: "In Warranty",
-      selector: (row) => row.inWarranty,
+      cell: (row) => row.inWarranty,
       sortable: true,
       width: "23%",
     },
@@ -148,6 +201,66 @@ const AssetSubCategoryOverview = () => {
           </div>
         </div>
       </div>
+
+      <Modal
+        isOpen={assetModal}
+        onRequestClose={handleClosAssetCounteModal}
+        style={{
+          content: {
+            width: "80%",
+            height: "80%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        {/* {selectedRow && ( */}
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            {/* <h2>Department: {selectedRow.dept_name}</h2> */}
+
+            <button
+              className="btn btn-success float-left"
+              onClick={handleClosAssetCounteModal}
+            >
+              X
+            </button>
+          </div>
+          <h1></h1>
+          <DataTable
+            columns={[
+              {
+                name: "S.No",
+                cell: (row, index) => <div>{index + 1}</div>,
+                width: "10%",
+              },
+              { name: "Asset Name", selector: "assetsName" },
+              { name: "Category Name", selector: "category_name" },
+              { name: "Subcategory Name", selector: "sub_category_name" },
+              { name: "Status", selector: "status" },
+              { name: "Asset Type", selector: "asset_type" },
+              { name: "Asset ID", selector: "asset_id" },
+            ]}
+            data={totalAssets}
+            highlightOnHover
+            subHeader
+            // subHeaderComponent={
+            //   <input
+            //     type="text"
+            //     placeholder="Search..."
+            //     className="w-50 form-control"
+            //     value={modalSearch}
+            //     onChange={(e) => setModalSearch(e.target.value)}
+            //   />
+            // }
+          />
+        </div>
+        {/* )} */}
+      </Modal>
     </>
   );
 };
