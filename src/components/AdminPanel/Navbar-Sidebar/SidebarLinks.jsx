@@ -165,15 +165,18 @@ const SidebarLinks = () => {
                     </Link>
                   </>
                 )}
-                <Link className="collapse-item" to="/sim-overview">
-                  Asset Management
-                </Link>
-                <Link className="collapse-item" to="/admin/user-graph">
-                  User Graphs
-                </Link>
-                <Link className="collapse-item" to="/admin/email-template-overview">
-                  Email Templates
-                </Link>
+              <Link className="collapse-item" to="/sim-overview">
+                Asset Management
+              </Link>
+              <Link className="collapse-item" to="/admin/user-graph">
+                User Graphs
+              </Link>
+              <Link
+                className="collapse-item"
+                to="/admin/email-template-overview"
+              >
+                Email Templates
+              </Link>
             </div>
           </div>
         </li>
@@ -299,6 +302,15 @@ const SidebarLinks = () => {
                 contextData[5].view_value === 1 && ( */}
             <Link className="collapse-item" to="/admin/self-audit">
               Audit asset
+            </Link>
+            <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+              Asset Visible To HR
+            </Link>
+            <Link
+              className="collapse-item"
+              to="/admin/asset-visible-to-taged-person"
+            >
+              Asset Visible To Taged Person
             </Link>
             {/* )} */}
 
@@ -456,7 +468,7 @@ const SidebarLinks = () => {
             aria-expanded="true"
             aria-controls="collapsInnerOne"
           >
-             <i className="bi bi-person-gear" />
+            <i className="bi bi-person-gear" />
             <span>Inventory</span>
           </a>
           <div
@@ -612,7 +624,7 @@ const SidebarLinks = () => {
                     >
                       <div className="bg-white collapse-inner">
                         <>
-                        <Link
+                          <Link
                             className="collapse-item"
                             to="/admin/manager-campaign"
                           >

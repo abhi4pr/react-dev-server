@@ -38,7 +38,13 @@ const APIContext = ({ children }) => {
 
   return (
     <ApiContextData.Provider
-      value={{ userContextData, loading, DepartmentContext, contextData }}
+      value={{
+        userContextData,
+        loading,
+        DepartmentContext,
+        contextData,
+        userID,
+      }}
     >
       {children}
     </ApiContextData.Provider>

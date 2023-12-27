@@ -66,7 +66,7 @@ const SimUpdate = () => {
     axios
       .get("http://34.93.221.166:3000/api/get_all_asset_category")
       .then((res) => {
-        setCategoryData(res.data);
+        setCategoryData(res.data.data.asset_categories);
       });
   };
   const getAllSubCategory = () => {
@@ -141,6 +141,8 @@ const SimUpdate = () => {
           vendor_id,
           inWarranty,
           warrantyDate,
+          asset_brand_id,
+          asset_modal_id,
           // selfAuditPeriod,
           // selfAuditUnit,
           // hrAuditPeriod,
@@ -154,6 +156,11 @@ const SimUpdate = () => {
         } = fetchedData;
         setAssetsName(assetsName);
         setAssetsID(sim_no);
+
+        setModalName(asset_modal_id);
+        setBrandName(asset_brand_id);
+        console.log(asset_brand_id, "hello ");
+
         setAssetsOtherID(assetsOtherID);
         setAssetType(s_type);
         setAssetsCategory(category_id);
@@ -185,8 +192,8 @@ const SimUpdate = () => {
     formData.append("assetsOtherID", assetsOtherID);
     formData.append("s_type", assetType);
 
-    formData.append("s_type", modalName.asset_modal_id);
-    formData.append("s_type", brandName.asset_brand_id);
+    formData.append("asset_modal_id", modalName.asset_modal_id);
+    formData.append("asset_brand_id", brandName.asset_brand_id);
 
     formData.append("warrantyDate", Date(warrantyDate));
     formData.append("inWarranty", inWarranty);
@@ -324,6 +331,11 @@ const SimUpdate = () => {
                     label: cat.asset_brand_name,
                     value: cat.asset_brand_id,
                   }))}
+                  value={
+                    brandData?.find(
+                      (brand) => brand.asset_brand_id === brandName
+                    )?.asset_brand_name || ""
+                  }
                   onChange={(e, newvalue) => {
                     if (newvalue != null) {
                       setBrandName((pre) => ({
@@ -356,10 +368,15 @@ const SimUpdate = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={modalData.map((cat) => ({
-                    label: cat.asset_modal_name,
-                    value: cat.asset_modal_id,
+                  options={modalData?.map((cat) => ({
+                    label: cat?.asset_modal_name,
+                    value: cat?.asset_modal_id,
                   }))}
+                  value={
+                    modalData?.find(
+                      (modal) => modal.asset_modal_id === modalName
+                    )?.asset_modal_name || ""
+                  }
                   onChange={(e, newvalue) => {
                     setModalName((pre) => ({
                       label: newvalue.label,

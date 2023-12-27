@@ -32,7 +32,7 @@ const RepairRequest = () => {
   // Update Data State
 
   const [repairId, setRepairId] = useState(0);
-  const [assetsNameUpdate, setAssetNameUpdate] = useState("");
+  // const [assetsNameUpdate, setAssetNameUpdate] = useState("");
   const [repairDateUpdate, setRepairDateUpdate] = useState("");
   const [priorityUpdate, setPriorityUpdate] = useState("");
   const [assetsImg1Update, setAssetsImg1Update] = useState(null);
@@ -40,6 +40,7 @@ const RepairRequest = () => {
   const [assetsImg3Update, setAssetsImg3Update] = useState(null);
   const [assetsImg4Update, setAssetsImg4Update] = useState(null);
   const [problemDetailingUpdate, setProblemDetailingUpdate] = useState("");
+  const [tagUserUpdate, setTagUserUpdate] = useState([]);
 
   const genderData = ["Low", "Medium", "High", "Urgent"];
 
@@ -61,8 +62,8 @@ const RepairRequest = () => {
       sortable: true,
     },
     {
-      name: "Repair Date",
-      selector: (row) => row.repair_request_date_time,
+      name: "Repair Date & Time",
+      selector: (row) => row.repair_request_date_time?.slice(0, 16),
       sortable: true,
     },
     {
@@ -112,7 +113,7 @@ const RepairRequest = () => {
       formData.append("problem_detailing", problemDetailing);
 
       const response = await axios.post(
-        "http://192.168.29.115:3000/api/add_repair_request",
+        "http://34.93.221.166:3000/api/add_repair_request",
         formData
       );
       setAssetName("");
@@ -132,7 +133,7 @@ const RepairRequest = () => {
   };
   async function getRepairReason() {
     const res = await axios.get(
-      "http://192.168.29.115:3000/api/get_all_repair_request"
+      "http://34.93.221.166:3000/api/get_all_repair_request"
     );
     setModalData(res?.data.data);
     setrepairRequestFilter(res?.data.data);
@@ -143,17 +144,46 @@ const RepairRequest = () => {
     getRepairReason();
   }, []);
 
+  const formatApiDate = (apiDate) => {
+    const dateObj = new Date(apiDate);
+    const formattedDate = dateObj.toISOString().slice(0, 16); // Format as "YYYY-MM-DDTHH:MM"
+    return formattedDate;
+  };
+
+  useEffect(() => {
+    setTimeout(() => {
+      getRepairReason();
+    }, 1000);
+  }, [usersDataContext]);
+
   const handleRepairId = (row) => {
-    console.log(row, "data");
     setRepairId(row.repair_id);
-    setRepairDateUpdate(row.reason);
+    const formattedApiDate = formatApiDate(row.repair_request_date_time);
+    setRepairDateUpdate(formattedApiDate);
+    setAssetName(row.sim_id);
+    setPriorityUpdate(row.priority);
+    setProblemDetailingUpdate(row.problem_detailing);
+    setTagUserUpdate();
   };
 
   // Update Function here with submittion
   const handleModalUpdate = () => {
-    console.log(repairId, "id");
+    const formData = new FormData();
+    formData.append("repair_id", repairId);
+    formData.append("repair_request_date_time", repairDateUpdate);
+    formData.append("sim_id", assetsName);
+    formData.append("priority", priorityUpdate);
+    formData.append(
+      "multi_tag",
+      tagUser.map((user) => user.value)
+    );
+    formData.append("img1", assetsImg1Update);
+    formData.append("img2", assetsImg2Update);
+    formData.append("img3", assetsImg3Update);
+    formData.append("img4", assetsImg4Update);
+    formData.append("problem_detailing", problemDetailingUpdate);
     axios
-      .put("http://192.168.29.115:3000/api/update_asset_reason", {})
+      .put("http://34.93.221.166:3000/api/update_repair_request", formData)
       .then((res) => {
         getRepairReason();
         toastAlert("Update Success");
@@ -170,14 +200,17 @@ const RepairRequest = () => {
   const userMultiChangeHandler = (e, op) => {
     setTagUser(op);
   };
+  const userMultiChangeHandlerUpdate = (e, op) => {
+    setTagUserUpdate(op);
+  };
   return (
     <div>
       <div style={{ width: "80%", margin: "0px 0 0 10%" }}>
         <UserNav />
         <div>
           <FormContainer
-            mainTitle="Repair Reason"
-            title="Add Reason"
+            mainTitle="Repair Request"
+            title="Add Repair Request"
             handleSubmit={handleSubmit}
           >
             <FieldContainer
@@ -289,7 +322,7 @@ const RepairRequest = () => {
         <div className="card" style={{ marginTop: "-18px" }}>
           <div className="data_tbl table-responsive mb-2">
             <DataTable
-              title="Repair Reason Overview"
+              title="Repair Request Overview"
               columns={columns}
               data={repairRequestFilter}
               fixedHeader
@@ -342,12 +375,6 @@ const RepairRequest = () => {
               </button>
             </div>
             <div className="modal-body">
-              {/* <FieldContainer
-                label="Reason "
-                fieldGrid={12}
-                value={repairDateUpdate}
-                onChange={(e) => setRepairDateUpdate(e.target.value)}
-              ></FieldContainer> */}
               <div className="row">
                 <FieldContainer
                   fieldGrid={4}
@@ -375,7 +402,7 @@ const RepairRequest = () => {
                         )?.assetsName || "",
                     }}
                     onChange={(e) => {
-                      setAssetNameUpdate(e.value);
+                      setAssetName(e.value);
                     }}
                     required
                   />
@@ -398,6 +425,21 @@ const RepairRequest = () => {
                       setPriorityUpdate(e.value);
                     }}
                     required
+                  />
+                </div>
+
+                <div className="col-sm-12 col-lg-3 p-2">
+                  <Autocomplete
+                    multiple
+                    id="combo-box-demo"
+                    options={usersDataContext.map((d) => ({
+                      label: d.user_name,
+                      value: d.user_id,
+                    }))}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Tag" />
+                    )}
+                    onChange={userMultiChangeHandlerUpdate}
                   />
                 </div>
 

@@ -65,6 +65,7 @@ const SimMaster = () => {
   const [modalData, setModalData] = useState([]);
   const [modalName, setModalName] = useState("");
   const [brandName, setBrandName] = useState("");
+  console.log(assetType, "asset type");
 
   // All Category , subcategory and vendor api here
   // const [categoryData, setCategoryData] = useState([]);
@@ -148,9 +149,9 @@ const SimMaster = () => {
       formData.append("assetsName", assetsName);
       formData.append("sim_no", assetsID);
       formData.append("assetsOtherID", assetsOtherID);
-      formData.append("s_type", assetType);
-      formData.append("s_type", modalName.asset_modal_id);
-      formData.append("s_type", brandName.asset_brand_id);
+      formData.append("s_type", String(assetType));
+      formData.append("asset_modal_id", modalName.asset_modal_id);
+      formData.append("asset_brand_id", brandName.asset_brand_id);
       formData.append("warrantyDate", warrantyDate);
       formData.append("inWarranty", inWarranty);
       formData.append("dateOfPurchase", dateOfPurchase);
@@ -172,7 +173,7 @@ const SimMaster = () => {
 
       //There is asssets post data api
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_sim",
+        "http://192.168.29.115:3000/api/add_sim",
         formData
       );
 
