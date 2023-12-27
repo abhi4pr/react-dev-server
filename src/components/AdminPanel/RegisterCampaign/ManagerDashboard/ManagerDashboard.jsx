@@ -6,8 +6,11 @@ import Pending from "./Pending";
 import Executed from "./Executed";
 import Verified from "./Verified";
 import Rejected from "./Rejected";
+import  {useParams}  from "react-router-dom";
 
 const ManagerDashboard = () => {
+  const param =useParams()
+  const Cid = param.id
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [pending, setPending] = useState([]);
   const [executedData, setExecutedData] = useState([]);
@@ -18,7 +21,7 @@ const ManagerDashboard = () => {
   const Assigndata = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.29.110:3000/api/assignment/campaign/658a7f39101d3687e3043038`
+        `http://34.93.221.166:3000/api/assignment/campaign/${Cid}`
       );
 
       const assigned = response.data?.data?.filter(
