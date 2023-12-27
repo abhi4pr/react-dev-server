@@ -11,7 +11,7 @@ import Select from "react-select";
 import { useGlobalContext } from "../../../Context/Context";
 
 const RepairReason = () => {
-  const { categoryDataContext } = useGlobalContext();
+  const { categoryDataContext, toastAlert } = useGlobalContext();
   const [reason, setReason] = useState("");
   const [modalData, setModalData] = useState([]);
   const [modalFilter, setModalFilter] = useState([]);
@@ -22,7 +22,7 @@ const RepairReason = () => {
   const [subCategoryNameUpdate, setSubCategoryNameUpdate] = useState("");
   const [search, setSearch] = useState("");
 
-  const [modalId, setModalId] = useState(0);
+  const [repairId, setRepairId] = useState(0);
   const [reasonUpdate, setReasonUpdate] = useState("");
 
   // const [brandData, setBrandData] = useState([]);
@@ -59,13 +59,18 @@ const RepairReason = () => {
       sortable: true,
     },
     {
-      name: "Modal Name",
-      selector: (row) => row.asset_modal_name,
+      name: "Category Name",
+      selector: (row) => row.reason,
       sortable: true,
     },
     {
-      name: "Brand Name",
-      selector: (row) => row.asset_brand_name,
+      name: "Category Name",
+      selector: (row) => row.category_name,
+      sortable: true,
+    },
+    {
+      name: "Sub Category Name",
+      selector: (row) => row.sub_category_name,
       sortable: true,
     },
     {
@@ -79,14 +84,14 @@ const RepairReason = () => {
             size="small"
             variant="contained"
             color="primary"
-            onClick={() => handleBrandData(row)}
+            onClick={() => handleRepairId(row)}
           >
             <FaEdit />
           </button>
           <DeleteButton
-            endpoint="delete_asset_brand"
-            id={row.asset_modal_id}
-            getData={getModalData}
+            endpoint="delete_assetReson"
+            id={row.asset_reason_id}
+            getData={getRepairReason}
           />
         </>
       ),
@@ -96,55 +101,62 @@ const RepairReason = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_asset_modal",
+        "http://192.168.29.115:3000/api/add_asset_reason",
         {
-          asset_modal_name: reason,
-          asset_brand_id: categoryName,
+          reason: reason,
+          category_id: categoryName,
+          sub_category_id: subCategoryName,
         }
       );
       setReason("");
       setCategoryName("");
-      getModalData();
+      setSubCategoryName("");
+      getRepairReason("");
+      toastAlert("Success");
     } catch (error) {
       console.log(error);
     }
   };
-  async function getModalData() {
+  async function getRepairReason() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_asset_modals"
+      "http://192.168.29.115:3000/api/get_all_assetResons"
     );
-    setModalData(res.data);
-    setModalFilter(res.data);
+    setModalData(res?.data.data);
+    setModalFilter(res?.data.data);
+    console.log(res.data.data);
   }
 
   useEffect(() => {
-    getModalData();
+    getRepairReason();
   }, []);
 
-  const handleBrandData = (row) => {
+  const handleRepairId = (row) => {
     console.log(row, "data");
-    setModalId(row.asset_modal_id);
-    setReasonUpdate(row.asset_modal_name);
-    setCategoryNameUpdate(row.asset_brand_id);
+    setRepairId(row.asset_reason_id);
+    setReasonUpdate(row.reason);
+    setCategoryNameUpdate(row.category_id);
+    setSubCategoryNameUpdate(row.sub_category_id);
   };
+
+  // Update Function here with submittion
   const handleModalUpdate = () => {
-    console.log(modalId, "id");
+    console.log(repairId, "id");
     axios
-      .put("http://34.93.221.166:3000/api/update_asset_modal", {
-        asset_modal_id: modalId,
-        asset_brand_id: categoryNameUpdate,
-        asset_modal_name: reasonUpdate,
+      .put("http://192.168.29.115:3000/api/update_asset_reason", {
+        asset_reason_id: repairId,
+        category_id: categoryNameUpdate,
+        sub_category_id: subCategoryNameUpdate,
+        reason: reasonUpdate,
       })
       .then((res) => {
-        getModalData();
+        getRepairReason();
+        toastAlert("Update Success");
       });
   };
 
   useEffect(() => {
     const result = modalData.filter((d) => {
-      return d.asset_brand_name
-        ?.toLowerCase()
-        .match(search.toLocaleLowerCase());
+      return d.category_name?.toLowerCase().match(search.toLocaleLowerCase());
     });
     setModalFilter(result);
   }, [search]);
@@ -160,11 +172,13 @@ const RepairReason = () => {
           handleSubmit={handleSubmit}
         >
           <FieldContainer
+            fieldGrid={4}
             label="Reason"
             value={reason}
             onChange={(e) => setReason(e.target.value)}
+            required
           />
-          <div className="form-group col-6">
+          <div className="form-group col-4">
             <label className="form-label">
               Category Name <sup style={{ color: "red" }}>*</sup>
             </label>
@@ -186,7 +200,7 @@ const RepairReason = () => {
               required
             />
           </div>
-          <div className="form-group col-6">
+          <div className="form-group col-4">
             <label className="form-label">
               Sub Category Name <sup style={{ color: "red" }}>*</sup>
             </label>
@@ -208,69 +222,6 @@ const RepairReason = () => {
               required
             />
           </div>
-          {/* <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-              <div className="form-group form_select">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={categoryDataContext.map((cat) => ({
-                    label: cat.category_name,
-                    value: cat.category_id,
-                  }))}
-                  // value={assetsCategory}
-                  onChange={(e, newvalue) => {
-                    // if (newvalue != null) {
-                    setAssetsCategory({
-                      label: newvalue.label,
-                      category_id: newvalue.value,
-                    });
-                    // console.log(newvalue, "there is new value");
-                    if (assetsCategoryError) {
-                      setAssetsCategoryError("");
-                    }
-                    // }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Assets Category *"
-                      error={!!assetsCategoryError}
-                      helperText={assetsCategoryError}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-              <div className="form-group form_select">
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={subcategoryData.map((sub) => ({
-                    label: sub.sub_category_name,
-                    value: sub.sub_category_id,
-                  }))}
-                  value={subCategory}
-                  onChange={(e, newvalue) => {
-                    setSubCategory((pre) => ({
-                      label: newvalue.label,
-                      sub_category_id: newvalue.value,
-                    }));
-                    if (subcategoryError) {
-                      setSubCategoryError("");
-                    }
-                  }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Sub Category *"
-                      error={!!subcategoryError}
-                      helperText={subcategoryError}
-                    />
-                  )}
-                />
-              </div>
-            </div> */}
         </FormContainer>
 
         <div className="card">

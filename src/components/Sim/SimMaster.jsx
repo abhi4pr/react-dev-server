@@ -233,6 +233,11 @@ const SimMaster = () => {
               Repair Reason
             </button>
           </Link>
+          <Link to="/repair-request">
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Repair Request
+            </button>
+          </Link>
         </div>
       </div>
       <form mainTitle="Assets" title="Assets Register" onSubmit={handleSubmit}>
