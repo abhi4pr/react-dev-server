@@ -57,6 +57,15 @@ const SaleBookingVerify = () => {
     });
   }
 
+  const convertDateToDDMMYYYY = (date) => {
+    const dateObj = new Date(date);
+    const month = dateObj.getMonth() + 1;
+    const day = String(dateObj.getDate()).padStart(2, "0");
+    const year = dateObj.getFullYear();
+    const output = day + "/" + month + "/" + year;
+    return output;
+  }
+
   useEffect(() => {
     getData();
   }, []);
@@ -85,7 +94,8 @@ const SaleBookingVerify = () => {
     },
     {
       name: "Booking Date",
-      selector: (row) => row.sale_booking_date,
+      // selector: (row) => row.sale_booking_date,
+      cell : (row) => convertDateToDDMMYYYY(row.sale_booking_date)
     },
     {
       name: "Campaign Amount",
@@ -113,15 +123,13 @@ const SaleBookingVerify = () => {
     },
     {
       name: "Refund Balance Amount",
-      selector: (row) => row.balance_refund_amount,
-    },
-    {
-      name: "Net Bal Cust To Pay Amt",
-      selector: (row) => row.net_balance_amount_to_pay_percentage,
+      
+      cell: (row) =>{console.log(row);return row.balance_refund_amount},
+      width: "10%",
     },
     {
       name: "Net Bal Cust to pay Amt (%)",
-      selector: (row) => row.vendor_name,
+      selector: (row) => row.net_balance_amount_to_pay_percentage,
     },
     {
       name: "Booking Created Date",
