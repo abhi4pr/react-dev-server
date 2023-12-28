@@ -126,7 +126,7 @@ const DashboardWFHUser = () => {
                   <ul>
                     <li>
                       <span>
-                        <Link to="/admin/wfh-users-overview">
+                        <Link to="/admin/wfh-users-overview/0">
                           All Employees
                         </Link>
                       </span>

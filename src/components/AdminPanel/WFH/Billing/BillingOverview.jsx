@@ -18,9 +18,11 @@ const BillingOverview = () => {
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
 
+  //get_wfh_users/${dept_id}
+
   const getData = () => {
     axios
-      .get("http://192.168.29.115:3000/api/get_all_billingheaders")
+      .get("http://34.93.221.166:3000/api/get_all_billingheaders")
       .then((res) => {
         setBillData(res.data.result);
         setFilterData(res.data.result);
@@ -51,7 +53,12 @@ const BillingOverview = () => {
     },
     {
       name: "Department",
-      selector: (row) => row.department_name,
+      cell: (row) => (
+        <Link to={`/admin/wfh-users-overview/${row.dept_id}`}>
+          {row.department_name}
+          {console.log(row.dept_id)}
+        </Link>
+      ),
     },
     {
       name: "WFH Employees Count",

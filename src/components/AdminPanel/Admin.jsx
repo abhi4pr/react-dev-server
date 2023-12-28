@@ -335,7 +335,7 @@ const Admin = () => {
                   />
 
                   <Route
-                    path="/wfh-users-overview"
+                    path="/wfh-users-overview/:deptId"
                     element={<WFHUserOverview />}
                   />
 

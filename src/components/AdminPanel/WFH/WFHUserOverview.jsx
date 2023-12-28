@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "../../AdminPanel/User/Showdata.css";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import FormContainer from "../FormContainer";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../Context/Context";
@@ -11,6 +11,8 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Swal from "sweetalert2";
 
 const WFHUserOverview = () => {
+  const { deptId } = useParams();
+
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
@@ -37,11 +39,20 @@ const WFHUserOverview = () => {
 
   async function getData() {
     try {
-      const res = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_wfh_users"
-      );
-      const data = res.data.data;
-      setFilterData(data);
+      if (deptId != 0) {
+        const res = await axios.get(
+          `http://34.93.221.166:3000/api/get_wfh_user/${deptId}`
+        );
+        console.log(res.data, "res");
+        const data = res.data;
+        setFilterData(data);
+      } else {
+        const res = await axios.get(
+          "http://34.93.221.166:3000/api/get_all_wfh_users"
+        );
+        const data = res.data.data;
+        setFilterData(data);
+      }
     } catch (error) {
       throw new Error(error);
     } finally {
