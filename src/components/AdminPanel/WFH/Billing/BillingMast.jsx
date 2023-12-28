@@ -26,7 +26,7 @@ const BillingMast = () => {
           "http://34.93.221.166:3000/api/dept_with_wfh"
         );
 
-        const assignedDepartments = assignedDepartmentResponse.data;
+        const assignedDepartments = assignedDepartmentResponse.data.result;
         const wfhDepartments = wfhDepartmentsResponse.data;
 
         const assignedDeptIds = new Set(
