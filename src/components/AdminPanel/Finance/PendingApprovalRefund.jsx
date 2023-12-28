@@ -100,7 +100,7 @@ const PendingApprovalRefund = () => {
 
   const columns = [
     {
-      name: "Id",
+      name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
       width: "9%",
       sortable: true,
@@ -115,7 +115,7 @@ const PendingApprovalRefund = () => {
       selector: (row) => row.refund_amount,
     },
     {
-      name: "Finance refund reason",
+      name: "Refund Request Reason",
       selector: (row) => row.finance_refund_reason,
     },
     {

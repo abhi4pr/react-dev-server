@@ -5,6 +5,9 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
+import { Button } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+
 
 const AllTransactions = () => {
   
@@ -29,6 +32,20 @@ const AllTransactions = () => {
       setFilterData(res.data.data);
     });
   }
+
+  function convertDateToDDMMYYYY(dateString) {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // January is 0!
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+}
+
+const handleCopyDetail = (detail) => {
+  navigator.clipboard.writeText(detail);
+  toastAlert("Detail copied");
+};
 
   useEffect(() => {
     getData();
@@ -64,7 +81,7 @@ const AllTransactions = () => {
     {
       name: <div style={{ whiteSpace: 'normal' }}>Campaign Amount</div>,
       selector: (row) => <div style={{ whiteSpace: 'normal' }}>{row.campaign_amount} </div>,
-      width: "6%",
+      width: "170px",
     },
     {
       name: <div style={{ whiteSpace: 'normal' }}>Campaign Amount Without Gst</div>,
@@ -73,8 +90,9 @@ const AllTransactions = () => {
     },
     {
       name: <div style={{ whiteSpace: 'normal' }}>Payment On Date</div>,
-      selector: (row) => row.payment_date,
-      width: "7%",
+      // selector: (row) => row.payment_date,
+      cell: (row) => <div style={{ whiteSpace: 'normal' }}>{convertDateToDDMMYYYY(row.payment_date)}</div>,
+      width: "150px",
     },
     {
       name: <div style={{ whiteSpace: 'normal' }}>Payment Amount</div>,
@@ -96,8 +114,20 @@ const AllTransactions = () => {
     },
     {
       name: "Bank Detail",
-      selector: (row) => <div style={{ whiteSpace: 'normal' }}> Indore (M.P.) </div>,
-      width: "12%",
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {row.detail}
+          <Button
+            key={row.detail}
+            color="secondary"
+            onClick={() => handleCopyDetail(row.detail)}
+            style={{ marginLeft: "10px" }}
+          >
+            <ContentCopyIcon />
+          </Button>
+        </div>
+      ),
+      width: "200px",
     },
     {
       name: <div style={{ whiteSpace: 'normal' }}>Reference No</div>,

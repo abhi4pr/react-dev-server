@@ -63,17 +63,24 @@ const UserGraphs = () => {
                   data: selectedFilter === 'job' ? graphData.map((item) => item.wfoCount) : graphData.map((item) => item.maleCount),
                   label: selectedFilter === 'job' ? 'WFO' : 'Male',
                   stack: 'total',
+                  
                 },
                 {
                   data: selectedFilter === 'job' ? graphData.map((item) => item.wfhCount) : graphData.map((item) => item.femaleCount),
                   label: selectedFilter === 'job' ? 'WFH' : 'FeMale',
                   stack: 'total',
                 },
+              
               ]}
               xAxis={[{ 
                 scaleType: 'band', 
                 data: selectedFilter === 'job' ? graphData.map((item) => item.dept_name) : graphData.map((item) => item.dept_name)
               }]}
+              // onBarClick={(barData, index, event) => {
+              //   // Add your event handling logic here
+              //   console.log('Bar Clicked!');
+              //   // You can perform actions based on the bar data, index, or event
+              // }}
             />
           </>
         )}  

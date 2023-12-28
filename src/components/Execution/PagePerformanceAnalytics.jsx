@@ -154,7 +154,7 @@ export default function PagePerformanceAnalytics() {
         );
       });
 
-      setRowData(filteredRows);
+      setRowData(filteredRows.length > 0 ? filteredRows : pageHistory);
     }
   };
 
@@ -918,13 +918,13 @@ export default function PagePerformanceAnalytics() {
               />
             </>
           )}
-          {/* <Button
-            className="mx-2 d-block"
+          {/* <button
+            classname="mx-2 d-block"
             variant="contained"
-            onClick={filterData}
+            onclick={filterdata}
           >
-            Filter
-          </Button> */}
+            filter
+          </button> */}
         </div>
         <div>
           <Autocomplete
