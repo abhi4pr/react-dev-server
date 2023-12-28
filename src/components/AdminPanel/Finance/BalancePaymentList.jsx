@@ -5,7 +5,24 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import Modal from "react-modal";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
+import { styled } from '@mui/material/styles';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Typography from '@mui/material/Typography';
+
+const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+  '& .MuiDialogContent-root': {
+    padding: theme.spacing(2),
+  },
+  '& .MuiDialogActions-root': {
+    padding: theme.spacing(1),
+  },
+}));
 
 const BalancePaymentList = () => {
   const { toastAlert } = useGlobalContext();
@@ -208,7 +225,7 @@ const BalancePaymentList = () => {
           />
         </div>
       </div>
-      <Modal
+      {/* <Modal
         isOpen={ImageModalOpen}
         onRequestClose={handleCloseImageModal}
         style={{
@@ -360,10 +377,172 @@ const BalancePaymentList = () => {
               {/* <button type="submit" className="btn btn-primary">
               Submit
             </button> */}
+            {/* </form>
+          </div>
+        </div>
+      </Modal> */} 
+
+
+
+      {/* <Button variant="outlined" onClick={handleClickOpen}>
+        Open dialog
+      </Button> */}
+      <BootstrapDialog
+        onClose={handleCloseImageModal}
+        aria-labelledby="customized-dialog-title"
+        open={ImageModalOpen}
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+        Payment Update
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseImageModal}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers>
+        <div className="row">
+          <div className="col-md-12 ">
+            <form onSubmit={handleSubmit}>
+              <div className="form-group col-12"></div>
+
+              <div className="form-group">
+                <label htmlFor="images">Balance Amount</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  value={balAmount}
+                  onChange={(e) => setBalAmount(e.target.value)}
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="images">Payment Reference Number:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  value={paymentRefNo}
+                  onChange={(e) => setPaymentRefNo(e.target.value)}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="images">Payment Reference Image:</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  accept="image/*"
+                  onChange={(e) => setPaymentRefImg(e.target.files[0])}
+                />
+              </div>
+
+              {/* <div className="form-group">
+              <label htmlFor="images">Payment Type</label>
+              <select name="payment_type" value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
+              <option value="full">full</option>
+              <option value="partial">partial</option>
+            </select>
+            </div> */}
+
+              <Autocomplete
+                className="my-2"
+                id="combo-box-demo"
+                value={paymentType}
+                options={[
+                  { label: "Full", value: "full" },
+                  { label: "Partial", value: "partial" },
+                ]}
+                style={{ width: 180, zIndex: 1, position: "relative" }}
+                onChange={(e, value) =>{ setPaymentType(value),console.log(value)}}
+                getOptionLabel={(option) => option.label}
+
+                renderInput={(params) => (
+                  <TextField  {...params} label="Status" variant="outlined" />
+                )}
+              />
+
+            
+
+              {/* <div className="form-group">
+              <label htmlFor="images">Payment Details</label>
+              <select name="payment_detail" value={paymentDetails} onChange={(e)=> setPaymentDetails(e.target.value)} required>
+                <option value="">Please select</option>
+                {dropdownData.map((item)=>(
+                  <option value={item.id}>{item.title}</option>
+                ))}
+              </select>
+            </div> */}
+
+
+            <Autocomplete
+                className="my-2"
+                id="combo-box-demo"
+                // value={row.statusDropdown}
+                options={dropdownData.map((item)=>(
+                 {title: item.title,value: item.id}
+                ))}
+                style={{ width: 180, zIndex: 1, position: "relative" }}
+                onChange={(e, value) => setPaymentDetails(value)}
+                getOptionLabel={(option) => option.label}
+
+                renderInput={(params) => (
+                  <TextField  {...params} label="Payment Details" variant="outlined" />
+                )}
+              />
+
+            {/* <div className="form-group">
+              <label htmlFor="images">Payment Mode</label>
+              <select name="cars" value={paymentMode} onChange={(e)=> setPaymentMode(e.target.value)}>
+                <option value="cash">cash</option>
+                <option value="others">others</option>
+              </select>
+            </div> */}
+
+
+            <Autocomplete
+                className="my-2"
+                id="combo-box-demo"
+                // value={row.statusDropdown}
+                options={[
+                  { label: "Cash", value: "cash" },
+                  { label: "Others", value: "others" },
+                ]}
+                style={{ width: 180, zIndex: 1, position: "relative" }}
+                onChange={(e, value) => setPaymentMode(value)}
+                getOptionLabel={(option) => option.label}
+
+                renderInput={(params) => (
+                  <TextField  {...params} label="Payment Mode" variant="outlined" />
+                )}
+              />
+
+              {/* <button type="submit" className="btn btn-primary">
+              Submit
+            </button> */}
             </form>
           </div>
         </div>
-      </Modal>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleCloseImageModal}>
+            Save changes
+          </Button>
+        </DialogActions>
+      </BootstrapDialog>
     </>
   );
 };

@@ -58,6 +58,17 @@ const PendingInvoice = () => {
     });
   }
 
+  const convertDateToDDMMYYYY = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    const formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
+  };
+
+
+
   useEffect(() => {
     getData();
   }, []);
@@ -82,19 +93,31 @@ const PendingInvoice = () => {
     },
     {
       name: "Requested On Date",
-      selector: (row) => row.sale_booking_date,
+      // selector: (row) => row.sale_booking_date,
+      cell: (row) => convertDateToDDMMYYYY(row.sale_booking_date),
     },
     {
       name: "Sale Booking Description",
       selector: (row) => row.description,
+      width: "17%",
     },
     {
       name: "Customer Name",
-      selector: (row) => row.cust_name,
+      // selector: (row) => row.cust_name,
+      cell: (row) => (
+        <>
+        <Link className="text-primary"
+         to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
+          {row.cust_name}
+        </Link>
+        </>
+      ),
+      width: "15%",
     },
     {
       name: "Invoice particular",
       selector: (row) => row.invoice_particular_name,
+      width: "13%",
     },
     {
       name: "Upload Invioce",
@@ -108,6 +131,7 @@ const PendingInvoice = () => {
           <button type="button" className="btn btn-success" onClick={()=>handleReject(row)}>Reject</button>
         </div>
     ),
+    width: "13%",
     },
     {
       name: "Base Amount",
@@ -121,18 +145,18 @@ const PendingInvoice = () => {
       name: "Net Amount",
       selector: (row) => row.net_amount,
     },
-    {
-      name: "Action",
-      cell: (row) => (
-        <>
-        <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
-          <button className="btn btn-primary" >
-            Customer Details
-          </button>
-        </Link>
-        </>
-      ),
-    },
+    // {
+    //   name: "Action",
+    //   cell: (row) => (
+    //     <>
+    //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
+    //       <button className="btn btn-primary" >
+    //         Customer Details
+    //       </button>
+    //     </Link>
+    //     </>
+    //   ),
+    // },
   ];
 
   return (

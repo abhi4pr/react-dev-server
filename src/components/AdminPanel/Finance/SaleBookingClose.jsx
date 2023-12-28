@@ -84,12 +84,13 @@ const SaleBookingClose = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "9%",
+      width: "4%",
       sortable: true,
     },
     {
       name: "Customer Name",
       selector: (row) => row.cust_name,
+      width: "10%",
     },
     {
       name: "Sales Executive Name",
@@ -128,12 +129,8 @@ const SaleBookingClose = () => {
       selector: (row) => row.balance_refund_amount,
     },
     {
-      name: "Net Bal Cust To Pay Amt",
-      selector: (row) => row.net_balance_amount_to_pay_percentage,
-    },
-    {
       name: "Net Bal Cust to pay Amt (%)",
-      selector: (row) => row.vendor_name,
+      selector: (row) => row.net_balance_amount_to_pay_percentage,
     },
     {
       name: "Booking Created Date",
@@ -148,7 +145,7 @@ const SaleBookingClose = () => {
             className="btn btn-sm btn-outline-info"
             onClick={() => handleVerify(row)}
           >
-            Verify
+            Close
           </button>
         ) : (
           <span>{row.show_fstatus}</span>
