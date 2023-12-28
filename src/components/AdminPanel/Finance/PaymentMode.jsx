@@ -6,9 +6,10 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
+import { Button } from "@mui/material";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const PaymentMode = () => {
-  
   const { toastAlert } = useGlobalContext();
   const [displaySeq, setDisplaySeq] = useState("");
   const [heading, setHeading] = useState("");
@@ -25,24 +26,33 @@ const PaymentMode = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-                
-      await axios.post("http://34.93.221.166:3000/api/",{
-        display_sequence: displaySeq,
-      });
 
-      toastAlert("Coc created");
-      setIsFormSubmitted(true);
+    await axios.post("http://34.93.221.166:3000/api/", {
+      display_sequence: displaySeq,
+    });
+
+    toastAlert("Coc created");
+    setIsFormSubmitted(true);
   };
 
   function getData() {
-    axios.post("http://34.93.221.166:3000/api/add_php_payment_acc_data_in_node").then((res)=>{
-      console.log('data save in local success')
-    })
-    axios.get("http://34.93.221.166:3000/api/get_all_php_payment_acc_data").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-    });
+    axios
+      .post("http://34.93.221.166:3000/api/add_php_payment_acc_data_in_node")
+      .then((res) => {
+        console.log("data save in local success");
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_php_payment_acc_data")
+      .then((res) => {
+        setData(res.data.data);
+        setFilterData(res.data.data);
+      });
   }
+
+  const handleCopyDetail = (detail) => {
+    navigator.clipboard.writeText(detail);
+    toastAlert("Detail copied");
+  };
 
   useEffect(() => {
     getData();
@@ -50,30 +60,44 @@ const PaymentMode = () => {
 
   useEffect(() => {
     const result = datas.filter((d) => {
-      return (
-        d.title?.toLowerCase().match(search.toLowerCase())       
-      );
+      return d.title?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
 
   const columns = [
     {
-      name: "ID",
+      name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
       width: "9%",
       sortable: true,
     },
     {
-      name: <div style={{ whiteSpace: 'normal' }}>Title</div>,
-      selector: (row) => <div style={{ whiteSpace: 'normal' }}>{row.title}</div>,
+      name: <div style={{ whiteSpace: "normal" }}>Title</div>,
+      selector: (row) => (
+        <div style={{ whiteSpace: "normal" }}>{row.title}</div>
+      ),
       width: "15%",
       sortable: false,
     },
     {
       name: "Detail",
-      selector: (row) =>  <div style={{ whiteSpace: 'normal' }}>{row.detail}</div>,
-
+      // selector: (row) =>  <div style={{ whiteSpace: 'normal' }}>{row.detail}
+      //   <Button key={row.detail} variant="contained" color="primary" onClick={console.log('clicked')} style={{marginLeft: "10px"}}>Copy</Button>
+      // </div>,
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {row.detail}
+          <Button
+            key={row.detail}
+            color="secondary"
+            onClick={() => handleCopyDetail(row.detail)}
+            style={{ marginLeft: "10px" }}
+          >
+            <ContentCopyIcon />
+          </Button>
+        </div>
+      ),
     },
     {
       name: "Payment Type",
@@ -82,9 +106,12 @@ const PaymentMode = () => {
     },
     {
       name: "GST Bank",
-      selector: (row) => row.gst_bank,
-      width : "8%"
-    }
+
+      width: "8%",
+      selector: (row) => {
+        return <div>{row.gst_bank === 1 ? "GST" : "Non GST"}</div>;
+      },
+    },
   ];
 
   return (

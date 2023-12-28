@@ -5,9 +5,9 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import Modal from "react-modal";
+import { Autocomplete, TextField } from "@mui/material";
 
 const BalancePaymentList = () => {
-  
   const { toastAlert } = useGlobalContext();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [datas, setData] = useState([]);
@@ -18,35 +18,39 @@ const BalancePaymentList = () => {
   const [balAmount, setBalAmount] = useState("");
   const [paymentRefNo, setPaymentRefNo] = useState("");
   const [paymentRefImg, setPaymentRefImg] = useState("");
-  const [paymentType, setPaymentType] = useState("");
+  const [paymentType, setPaymentType] = useState({ label: "", value: "" });
   const [paymentDetails, setPaymentDetails] = useState("");
   const [paymentMode, setPaymentMode] = useState("");
-  const [singleRow, setSingleRow] = useState({})
-  const [dropdownData, setDropDownData] = useState([])
+  const [singleRow, setSingleRow] = useState({});
+  const [dropdownData, setDropDownData] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  const handleSubmit = async(e,row) => {
+  const handleSubmit = async (e, row) => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append("loggedin_user_id",36);
+    formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_id", singleRow.sale_booking_id);
-    formData.append("payment_update_id",singleRow.payment_update_id);
+    formData.append("payment_update_id", singleRow.payment_update_id);
     formData.append("payment_ref_no", paymentRefNo);
     formData.append("payment_detail_id", paymentDetails);
     formData.append("payment_screenshot", paymentRefImg);
     formData.append("payment_type", paymentType);
     formData.append("payment_mode", paymentMode);
-    
-    await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=balance_payment_update", formData, {
+
+    await axios.post(
+      "https://production.sales.creativefuel.io/webservices/RestController.php?view=balance_payment_update",
+      formData,
+      {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      });
-      setImageModalOpen(false)
+      }
+    );
+    setImageModalOpen(false);
 
     toastAlert("Data updated");
     setIsFormSubmitted(true);
@@ -54,38 +58,56 @@ const BalancePaymentList = () => {
   };
 
   function getData() {
-    axios.post("http://34.93.221.166:3000/api/add_php_payment_bal_data_in_node").then((res)=>{
-      console.log('data save in local success')
-    })
-    axios.get("http://34.93.221.166:3000/api/get_all_php_payment_bal_data").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-    });
+    axios
+      .post("http://34.93.221.166:3000/api/add_php_payment_bal_data_in_node")
+      .then((res) => {
+        console.log("data save in local success");
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_php_payment_bal_data")
+      .then((res) => {
+        setData(res.data.data);
+        setFilterData(res.data.data);
+      });
   }
 
   useEffect(() => {
     getData();
   }, []);
 
-  const getDropdownData = async() => {
+  const getDropdownData = async () => {
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
-    const response = await axios.post('https://production.sales.creativefuel.io/webservices/RestController.php?view=sales-payment_account_list', formData, {
-        headers:{
+    const response = await axios.post(
+      "https://production.sales.creativefuel.io/webservices/RestController.php?view=sales-payment_account_list",
+      formData,
+      {
+        headers: {
           "Content-Type": "multipart/form-data",
-        }
-      })
+        },
+      }
+    );
     const responseData = response.data.body;
-    setDropDownData(responseData)
-  }
+    setDropDownData(responseData);
+  };
 
   useEffect(() => {
-    getDropdownData()
-  },[])
+    getDropdownData();
+  }, []);
 
   const handleImageClick = (row) => {
-    setSingleRow(row)
+    setBalAmount(row.campaign_amount - row.total_paid_amount);
+    setSingleRow(row);
     setImageModalOpen(true);
+  };
+
+  const convertDateToDDMMYYYY = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
   };
 
   const handleCloseImageModal = () => {
@@ -94,18 +116,16 @@ const BalancePaymentList = () => {
 
   useEffect(() => {
     const result = datas.filter((d) => {
-      return (
-        d.cust_name?.toLowerCase().match(search.toLowerCase())
-      );
+      return d.cust_name?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
 
   const columns = [
     {
-      name: "Id",
+      name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "9%",
+      width: "6%",
       sortable: true,
     },
     {
@@ -116,12 +136,15 @@ const BalancePaymentList = () => {
     {
       name: "Sales Executive Name",
       selector: (row) => row.sales_exe_name,
-
     },
     {
       name: "Sale Booking Date",
-      selector: (row) => row.sale_booking_date,
-
+      // selector: (row) => row.sale_booking_date,
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {convertDateToDDMMYYYY(row.sale_booking_date)}
+        </div>
+      ),
     },
     {
       name: "Campaign Amount",
@@ -135,7 +158,7 @@ const BalancePaymentList = () => {
       name: "Balance Amount",
       selector: (row) => row.campaign_amount - row.total_paid_amount,
     },
-    
+
     {
       name: "Status",
       cell: (row) => (
@@ -147,7 +170,6 @@ const BalancePaymentList = () => {
         </button>
       ),
     },
-    
   ];
 
   return (
@@ -191,14 +213,16 @@ const BalancePaymentList = () => {
         onRequestClose={handleCloseImageModal}
         style={{
           content: {
-            width: "80%",
-            height: "80%",
-            top: "50%",
-            left: "50%",
+            width: "50%",
+            height: "70%",
+            top: "30%",
+            // left: "50%",
             right: "auto",
             bottom: "auto",
             marginRight: "-50%",
             transform: "translate(-50%, -50%)",
+            zIndex: 2,
+            position: "relative",
           },
         }}
       >
@@ -212,60 +236,110 @@ const BalancePaymentList = () => {
             >
               X
             </button>
-          </div>               
-        </div> 
+          </div>
+        </div>
         <div className="row">
           <div className="col-md-12 ">
             <form onSubmit={handleSubmit}>
-              
-            <div className="form-group col-12"></div>
+              <div className="form-group col-12"></div>
 
-            <div className="form-group">
-              <label htmlFor="images">Balance Amount</label>
-              <input
-                type="number"
-                className="form-control"
-                id="images"
-                name="images"
-                value={balAmount}
-                onChange={(e)=>setBalAmount(e.target.value)}
-                required
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="images">Balance Amount</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  value={balAmount}
+                  onChange={(e) => setBalAmount(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="images">Payment Reference Number:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="images"
-                name="images"
-                value={paymentRefNo}
-                onChange={(e)=>setPaymentRefNo(e.target.value)}
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="images">Payment Reference Number:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  value={paymentRefNo}
+                  onChange={(e) => setPaymentRefNo(e.target.value)}
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="images">Payment Reference Image:</label>
-              <input
-                type="file"
-                className="form-control"
-                id="images"
-                name="images"
-                accept="image/*"
-                onChange={(e)=>setPaymentRefImg(e.target.files[0])}
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="images">Payment Reference Image:</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  accept="image/*"
+                  onChange={(e) => setPaymentRefImg(e.target.files[0])}
+                />
+              </div>
 
-            <div className="form-group">
+              {/* <div className="form-group">
               <label htmlFor="images">Payment Type</label>
               <select name="payment_type" value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
               <option value="full">full</option>
               <option value="partial">partial</option>
             </select>
-            </div>
+            </div> */}
 
-            <div className="form-group">
+              {/* <Autocomplete
+              className="my-2"
+              id="combo-box-demo"
+              value={paymentType.label}
+              options={[
+                { label: "Full", value: "full" },
+                { label: "Partial", value: "partial" },
+              ]}
+              // onChange={(e, value) => setPaymentType(value)}
+              getOptionLabel={(option) => option.label}
+              renderInput={(params) => (
+                <TextField {...params} label="Payment Type" variant="outlined" />
+              )}
+            /> */}
+
+              <Autocomplete
+                className="my-2"
+                id="combo-box-demo"
+                // value={row.statusDropdown}
+                options={[
+                  { label: "Full", value: "full" },
+                  { label: "Partial", value: "partial" },
+                ]}
+                style={{ width: 180, zIndex: 1, position: "relative" }}
+                // onChange={(e, value) => setPaymentType(value)}
+                getOptionLabel={(option) => option.label}
+
+                renderInput={(params) => (
+                  <TextField  {...params} label="Status" variant="outlined" />
+                )}
+              />
+
+              {/* <Autocomplete
+          className="my-2"
+          id="combo-box-demo"
+          // value={row.statusDropdown}
+          options={[
+            { label: "Approved", value: 1 },
+            { label: "Rejected", value: 0 },
+          ]}
+          getOptionLabel={(option) => option.label}
+          onChange={(e) => {
+            // handleStatusChange(row, e.target.value),
+              console.log(e.target.value);
+          }}
+          style={{ width: 180 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Status" variant="outlined" />
+          )}
+        /> */}
+
+              {/* <div className="form-group">
               <label htmlFor="images">Payment Details</label>
               <select name="payment_detail" value={paymentDetails} onChange={(e)=> setPaymentDetails(e.target.value)} required>
                 <option value="">Please select</option>
@@ -281,15 +355,14 @@ const BalancePaymentList = () => {
                 <option value="cash">cash</option>
                 <option value="others">others</option>
               </select>
-            </div>
+            </div> */}
 
-            <button type="submit" className="btn btn-primary">
+              {/* <button type="submit" className="btn btn-primary">
               Submit
-            </button>
-          </form>
+            </button> */}
+            </form>
+          </div>
         </div>
-      </div>
-
       </Modal>
     </>
   );
