@@ -843,15 +843,10 @@ const UserUpdate = () => {
 
   const handleRemoveFamilyDetails = async (index) => {
     const itemToRemove = familyDetails[index];
-    console.log(itemToRemove, "item to remove");
     if (itemToRemove && itemToRemove.family_id) {
       try {
         await axios.delete(
           `http://34.93.221.166:3000/api/delete_family/${itemToRemove.family_id}`
-        );
-        console.log(
-          "Deleted family detail from server:",
-          itemToRemove.family_id
         );
         toastAlert("Details Deleted");
       } catch (error) {

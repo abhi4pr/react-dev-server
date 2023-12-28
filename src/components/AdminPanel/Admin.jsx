@@ -182,6 +182,7 @@ import ManagerDashboard from "./RegisterCampaign/ManagerDashboard/ManagerDashboa
 import ManagerCampaign from "./RegisterCampaign/ManagerCampaignDashboard/ManagerCampaign";
 import AssetVisibleToTagedPerosn from "../Sim/AssetVisibleToTagedPerson/AssetVisibleToTagedPerosn";
 import AssetVisibleToHr from "../Sim/AssetVisibleToHr/AssetVisibleToHr";
+import WFHAllSalary from "./WFH/WFHAllSalary";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -317,6 +318,7 @@ const Admin = () => {
 
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
+                  <Route path="/all-salary" element={<WFHAllSalary />} />
                   {/* Accounts/Finance */}
                   <Route
                     path="/accounts-finance-overview"

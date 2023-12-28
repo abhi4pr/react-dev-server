@@ -30,7 +30,7 @@ const BillingOverview = () => {
   };
   useEffect(() => {
     getData();
-    if (userID && contextData.length === 0) {
+    if (userID && contextData?.length === 0) {
       axios
         .get(
           `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
@@ -44,7 +44,7 @@ const BillingOverview = () => {
   const columns = [
     {
       name: "s no",
-      cell: (row, index) => <div>{index + 1}</div>,
+      selector: (row, index) => <div>{index + 1}</div>,
       sortable: true,
     },
     {
@@ -53,16 +53,15 @@ const BillingOverview = () => {
     },
     {
       name: "Department",
-      cell: (row) => (
-        <Link to={`/admin/wfh-users-overview/${row.dept_id}`}>
-          {row.department_name}
-          {console.log(row.dept_id)}
-        </Link>
-      ),
+      selector: (row) => row.department_name,
     },
     {
       name: "WFH Employees Count",
-      selector: (row) => row.wfhUserCount,
+      selector: (row) => (
+        <Link to={`/admin/wfh-users-overview/${row.dept_id}`}>
+          {row.wfhUserCount}
+        </Link>
+      ),
     },
     {
       name: "Action",
@@ -112,24 +111,28 @@ const BillingOverview = () => {
           "true"
         }
       />
-      <DataTable
-        title="Billing Overview"
-        columns={columns}
-        data={filterdata}
-        fixedHeader
-        fixedHeaderScrollHeight="64vh"
-        highlightOnHover
-        subHeader
-        subHeaderComponent={
-          <input
-            type="text"
-            placeholder="Search Here"
-            className="w-50 form-control"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+      <div className="card">
+        <div className="data_tbl table-responsive">
+          <DataTable
+            title="Billing Overview"
+            columns={columns}
+            data={filterdata}
+            fixedHeader
+            fixedHeaderScrollHeight="64vh"
+            highlightOnHover
+            subHeader
+            subHeaderComponent={
+              <input
+                type="text"
+                placeholder="Search Here"
+                className="w-50 form-control"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            }
           />
-        }
-      />
+        </div>
+      </div>
     </div>
   );
 };

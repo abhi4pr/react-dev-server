@@ -227,6 +227,13 @@ const SidebarLinks = () => {
                     Payroll
                   </Link>
                 )}
+              {contextData &&
+                contextData[19] &&
+                contextData[19].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/all-salary">
+                    Salary History
+                  </Link>
+                )}
             </div>
           </div>
         </li>
@@ -630,7 +637,7 @@ const SidebarLinks = () => {
                           >
                             Manager Campaign Dashboard
                           </Link>
-                        <Link
+                          <Link
                             className="collapse-item"
                             to="/admin/manager-dashboard"
                           >
