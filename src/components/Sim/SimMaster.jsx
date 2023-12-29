@@ -58,10 +58,18 @@ const SimMaster = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  const [imageType, setImageType] = useState("");
+  const [imageType, setImageType] = useState("HR");
   const inWarrantyOption = ["No", "Yes"];
   const IMGType = ["HR", "User"];
   const assettype = ["New", "Old"];
+  const FinacinalType = [
+    "Current assets",
+    "Fixed assets",
+    " Tangible assets",
+    "Intangible assets",
+    "Operating assets",
+    "Non-operating assets",
+  ];
   const [modalData, setModalData] = useState([]);
   const [modalName, setModalName] = useState("");
   const [brandName, setBrandName] = useState("");
@@ -96,6 +104,15 @@ const SimMaster = () => {
         });
     }
   };
+  useEffect(() => {
+    const selectedSubcat = subcategoryData.filter(
+      (d) => d.sub_category_id === subCategory.sub_category_id
+    );
+    if (selectedSubcat) {
+      setInWarranty(selectedSubcat[0]?.inWarranty);
+    }
+  }, [subCategory.sub_category_id, subcategoryData]);
+
   const getAllVendor = () => {
     axios.get("http://34.93.221.166:3000/api/get_all_vendor").then((res) => {
       setVendorData(res.data);
@@ -173,7 +190,7 @@ const SimMaster = () => {
 
       //There is asssets post data api
       const response = await axios.post(
-        "http://192.168.29.115:3000/api/add_sim",
+        "http://34.93.221.166:3000/api/add_sim",
         formData
       );
 
@@ -229,16 +246,6 @@ const SimMaster = () => {
               Add Modal
             </button>
           </Link>
-          <Link to="/repair-reason">
-            <button type="button" className="btn btn-outline-primary btn-sm">
-              Repair Reason
-            </button>
-          </Link>
-          <Link to="/repair-request">
-            <button type="button" className="btn btn-outline-primary btn-sm">
-              Repair Request
-            </button>
-          </Link>
         </div>
       </div>
       <form mainTitle="Assets" title="Assets Register" onSubmit={handleSubmit}>
@@ -248,12 +255,10 @@ const SimMaster = () => {
               <div className="form-group form_select">
                 <Autocomplete
                   disablePortal
-                  // sx={{ width: 600 }}
                   id="combo-box-demo"
                   options={assettype}
                   value={assetType}
                   onChange={(e, newvalue) => setAssetType(newvalue)}
-                  // defaultValue={assetcondition[0]}
                   renderInput={(params) => (
                     <TextField {...params} label="Asset Type" />
                   )}
@@ -417,8 +422,8 @@ const SimMaster = () => {
               <div className="form-group form_select">
                 <Autocomplete
                   disablePortal
-                  // sx={{ width: 600 }}
                   id="combo-box-demo"
+                  disabled
                   options={inWarrantyOption}
                   value={inWarranty}
                   onChange={(e, newvalue) => setInWarranty(newvalue)}
@@ -615,6 +620,7 @@ const SimMaster = () => {
               <div className="form-group form_select">
                 <Autocomplete
                   disablePortal
+                  disabled
                   // sx={{ width: 600 }}
                   id="combo-box-demo"
                   options={IMGType}
@@ -651,14 +657,16 @@ const SimMaster = () => {
               </div>
             </div>
             <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
-              <div className="form-group">
-                <TextField
-                  fullWidth={true}
-                  id="outlined-basic"
-                  label="Assets Finacial Type"
-                  type="number"
+              <div className="form-group form_select">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={FinacinalType}
                   value={finacialType}
-                  onChange={(e) => setFinacialType(e.target.value)}
+                  onChange={(e, newvalue) => setFinacialType(newvalue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Assets Finacial Type" />
+                  )}
                 />
               </div>
             </div>

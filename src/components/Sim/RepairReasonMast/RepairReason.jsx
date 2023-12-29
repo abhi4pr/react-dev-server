@@ -7,6 +7,7 @@ import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Select from "react-select";
 import { useGlobalContext } from "../../../Context/Context";
 
@@ -165,7 +166,15 @@ const RepairReason = () => {
     <div>
       <div style={{ width: "80%", margin: "0 0 0 10%" }}>
         <UserNav />
-
+        <Link to="/repair-request">
+          <button
+            // style={{ marginRight: "200px", top: "90px" }}
+            type="button"
+            className="btn btn-outline-primary btn-sm"
+          >
+            Repair Request
+          </button>
+        </Link>
         <FormContainer
           mainTitle="Repair Reason"
           title="Add Reason"

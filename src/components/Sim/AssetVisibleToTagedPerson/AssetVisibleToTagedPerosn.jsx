@@ -42,14 +42,20 @@ const AssetVisibleToTagedPerosn = () => {
       sortable: true,
     },
     {
-      name: "Asset Name",
+      name: "Request By",
       selector: (row) => row.asset_name,
       sortable: true,
-      width: "14%",
+      width: "150px",
     },
     {
-      name: "Sub Category",
-      selector: (row) => row.sub_category_name,
+      name: "Request Date",
+      selector: (row) => row.asset_name,
+      sortable: true,
+      width: "150px",
+    },
+    {
+      name: "Priority",
+      selector: (row) => row.priority,
       sortable: true,
     },
     {
@@ -57,10 +63,30 @@ const AssetVisibleToTagedPerosn = () => {
       selector: (row) => row.status,
       sortable: true,
     },
-
     {
-      name: "Date Of Purchase",
-      selector: (row) => row.dateOfPurchase?.split("T")?.[0],
+      name: "Asset Name",
+      selector: (row) => row.asset_name,
+      sortable: true,
+      width: "14%",
+    },
+    {
+      name: "Category",
+      selector: (row) => row.category_name,
+      sortable: true,
+    },
+    {
+      name: "Sub Category",
+      selector: (row) => row.sub_category_name,
+      sortable: true,
+    },
+    {
+      name: "Brand",
+      selector: (row) => row.asset_brand_name,
+      sortable: true,
+    },
+    {
+      name: "Modal",
+      selector: (row) => row.asset_modal_name,
       sortable: true,
     },
   ];
@@ -70,7 +96,7 @@ const AssetVisibleToTagedPerosn = () => {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Asset Visible To Taged"
+            mainTitle="Repair Request To Taged"
             link="/vendorMaster"
             submitButton={false}
           />

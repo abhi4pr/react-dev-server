@@ -10,6 +10,7 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useGlobalContext } from "../../../Context/Context";
 import { Autocomplete, TextField } from "@mui/material";
+import Modal from "react-modal";
 
 const RepairRequest = () => {
   const { toastAlert, getAssetDataContext, usersDataContext } =
@@ -44,6 +45,18 @@ const RepairRequest = () => {
 
   const genderData = ["Low", "Medium", "High", "Urgent"];
 
+  const [ImageModalOpen, setImageModalOpen] = useState(false);
+  const [showAssetsImage, setShowAssetImages] = useState("");
+  const handleImageClick = (row) => {
+    setShowAssetImages(row);
+
+    setImageModalOpen(true);
+  };
+  console.log(showAssetsImage, "modal");
+  const handleCloseImageModal = () => {
+    setImageModalOpen(false);
+  };
+
   const columns = [
     {
       name: "S.No",
@@ -70,6 +83,17 @@ const RepairRequest = () => {
       name: "Problem Detailing",
       selector: (row) => row.problem_detailing,
       sortable: true,
+    },
+    {
+      name: "img",
+      selector: (row) => (
+        <button
+          className="btn btn-outline-success"
+          onClick={() => handleImageClick(row)}
+        >
+          <i className="bi bi-images"></i>
+        </button>
+      ),
     },
     {
       name: "Action",
@@ -500,6 +524,111 @@ const RepairRequest = () => {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={ImageModalOpen}
+        onRequestClose={handleCloseImageModal}
+        style={{
+          content: {
+            width: "80%",
+            height: "80%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            <h2>Assets Images</h2>
+
+            <button
+              className="btn btn-success float-left"
+              onClick={handleCloseImageModal}
+            >
+              X
+            </button>
+          </div>
+        </div>
+
+        {showAssetsImage.length > 0 && (
+          <>
+            <h2>Type : {showAssetsImage[0]?.type}</h2>
+            <div className="summary_cards flex-row row">
+              <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                <div className="summary_card">
+                  <div className="summary_cardtitle"></div>
+                  <div className="summary_cardbody">
+                    <div className="summary_cardrow flex-column">
+                      <div className="summary_box text-center ml-auto mr-auto"></div>
+                      <div className="summary_box col">
+                        <img
+                          src={showAssetsImage[0]?.img1_url}
+                          width="80px"
+                          height="80px"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                <div className="summary_card">
+                  <div className="summary_cardtitle"></div>
+                  <div className="summary_cardbody">
+                    <div className="summary_cardrow flex-column">
+                      <div className="summary_box text-center ml-auto mr-auto"></div>
+                      <div className="summary_box col">
+                        <img
+                          src={showAssetsImage?.row.img2_url}
+                          width="80px"
+                          height="80px"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                <div className="summary_card">
+                  <div className="summary_cardtitle"></div>
+                  <div className="summary_cardbody">
+                    <div className="summary_cardrow flex-column">
+                      <div className="summary_box text-center ml-auto mr-auto"></div>
+                      <div className="summary_box col">
+                        <img
+                          src={showAssetsImage[0]?.img3_url}
+                          width="80px"
+                          height="80px"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                <div className="summary_card">
+                  <div className="summary_cardtitle"></div>
+                  <div className="summary_cardbody">
+                    <div className="summary_cardrow flex-column">
+                      <div className="summary_box text-center ml-auto mr-auto"></div>
+                      <div className="summary_box col">
+                        <img
+                          src={showAssetsImage[0]?.img4_url}
+                          width="80px"
+                          height="80px"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+      </Modal>
     </div>
   );
 };

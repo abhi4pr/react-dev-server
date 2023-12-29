@@ -21,8 +21,8 @@ const AssetSubCategoryOverview = () => {
       const response = await axios.get(
         "http://34.93.221.166:3000/api/get_all_asset_sub_category"
       );
-      setFilterData(response.data);
-      setData(response.data);
+      setFilterData(response.data.data);
+      setData(response.data.data);
     } catch (error) {
       toastAlert("Data not submitted", error.message);
       return null;
@@ -30,7 +30,7 @@ const AssetSubCategoryOverview = () => {
   };
   useEffect(() => {
     const result = data.filter((d) => {
-      return d.sub_category_name.toLowerCase().match(search.toLowerCase());
+      return d.sub_category_nam?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
@@ -94,7 +94,7 @@ const AssetSubCategoryOverview = () => {
           className="btn btn-outline-warning"
           onClick={() => handleTotalasset(row.category_id)}
         >
-          {row.asset_available_count}
+          {row.available_assets_count}
         </button>
       ),
       sortable: true,
@@ -106,7 +106,7 @@ const AssetSubCategoryOverview = () => {
           className="btn btn-outline-warning"
           onClick={() => handleAllocatedAsset(row.category_id)}
         >
-          {row.asset_allocated_count}
+          {row.allocated_assets_count}
         </button>
       ),
       sortable: true,
@@ -178,7 +178,7 @@ const AssetSubCategoryOverview = () => {
                     columns={columns}
                     data={filterData}
                     fixedHeader
-                    pagination
+                    // pagination
                     fixedHeaderScrollHeight="64vh"
                     exportToCSV
                     highlightOnHover

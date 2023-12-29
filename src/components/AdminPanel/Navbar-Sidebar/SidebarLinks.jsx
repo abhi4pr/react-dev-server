@@ -311,13 +311,13 @@ const SidebarLinks = () => {
               Audit asset
             </Link>
             <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-              Asset Visible To HR
+              Repair Request To HR
             </Link>
             <Link
               className="collapse-item"
               to="/admin/asset-visible-to-taged-person"
             >
-              Asset Visible To Taged Person
+              Repair Request To Taged Person
             </Link>
             {/* )} */}
 

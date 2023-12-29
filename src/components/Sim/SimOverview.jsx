@@ -291,6 +291,7 @@ const SimOverview = () => {
       name: "Status",
       selector: (row) => row.status,
     },
+
     {
       name: "img",
       selector: (row) => (
@@ -301,6 +302,21 @@ const SimOverview = () => {
           <i className="bi bi-images"></i>
         </button>
       ),
+    },
+    {
+      name: "Invoice",
+      selector: (row) => (
+        <>
+          <a style={{ cursor: "pointer" }} href={row.invoiceCopy_url} download>
+            <img
+              style={{ width: "100px" }}
+              src={row.invoiceCopy_url}
+              alt="invoice copy"
+            />
+          </a>
+        </>
+      ),
+      sortable: true,
     },
 
     {
@@ -489,6 +505,15 @@ const SimOverview = () => {
                     className="btn btn-outline-primary btn-sm"
                   >
                     Return Assets
+                  </button>
+                </Link>
+
+                <Link to="/repair-reason">
+                  <button
+                    type="button"
+                    className="btn btn-outline-primary btn-sm"
+                  >
+                    Repair Reason
                   </button>
                 </Link>
                 <Link to="/sim-master">
