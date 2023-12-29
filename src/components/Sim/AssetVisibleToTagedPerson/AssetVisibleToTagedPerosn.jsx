@@ -25,7 +25,7 @@ const AssetVisibleToTagedPerosn = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.29.115:3000/api/show_asset_user_data/${userID}`
+        `http://34.93.221.166:3000/api/show_asset_user_data/${userID}`
       );
       setFilterData(response.data.data);
       setData(response.data.data);

@@ -265,7 +265,7 @@ const PreOnboardingUserMaster = () => {
   useEffect(() => {
     async function getGuardian() {
       const response = await axios.get(
-        `http://192.168.29.115:3000/api/get_single_guardian/${id}`
+        `http://34.93.221.166:3000/api/get_single_guardian/${id}`
       );
       setGuardianDetails(response.data.data);
     }
@@ -643,7 +643,7 @@ const PreOnboardingUserMaster = () => {
 
       try {
         const response = await axios.put(
-          "http://192.168.29.115:3000/api/update_guardian",
+          "http://34.93.221.166:3000/api/update_guardian",
           payload
         );
       } catch (error) {

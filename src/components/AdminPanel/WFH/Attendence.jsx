@@ -14,7 +14,7 @@ import SaveAsIcon from "@mui/icons-material/SaveAs";
 import ClearIcon from "@mui/icons-material/Clear";
 
 const Attendence = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [department, setDepartment] = useState("");
   const [departmentdata, getDepartmentData] = useState([]);
   const [noOfAbsent, setNoOfAbsent] = useState(null);
@@ -266,7 +266,7 @@ const Attendence = () => {
 
   const processRowUpdate = (newRow) => {
     if (newRow.noOfabsent > 30) {
-      toastAlert("Absent days cannot be greater than 30.");
+      toastError("Absent days cannot be greater than 30.");
       return null;
     } else {
       const updatedRow = { ...newRow, isNew: false };
@@ -485,7 +485,7 @@ const Attendence = () => {
                 department === option.dept_id
                   ? "btn-primary"
                   : isDeptInSalary
-                  ? "btn-success"
+                  ? "btn-outline-primary"
                   : "btn-outline-primary"
               }`;
 
