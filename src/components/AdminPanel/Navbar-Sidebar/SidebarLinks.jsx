@@ -228,8 +228,8 @@ const SidebarLinks = () => {
                   </Link>
                 )}
               {contextData &&
-                contextData[19] &&
-                contextData[19].view_value === 1 && (
+                contextData[36] &&
+                contextData[36].view_value === 1 && (
                   <Link className="collapse-item" to="/admin/all-salary">
                     Salary History
                   </Link>

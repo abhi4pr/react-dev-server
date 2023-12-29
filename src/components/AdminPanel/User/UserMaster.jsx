@@ -66,7 +66,7 @@ const initialEducationDetailsGroup = {
 
 const UserMaster = () => {
   const whatsappApi = WhatsappAPI();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [username, setUserName] = useState("");
 
   const [activeTab, setActiveTab] = useState(1);
@@ -313,6 +313,37 @@ const UserMaster = () => {
     //   setError("Please select All required Fields");
     //   return;
     // }
+    if (!jobType) {
+      return toastError("Job Type is Required");
+    } else if (!department || department == "") {
+      return toastError("Department is Required");
+    } else if (!designation || designation == "") {
+      return toastError("Designatoin is Required");
+    } else if (!gender || gender == "") {
+      return toastError("Gender is Required");
+    } else if (!reportL1 || reportL1 == "") {
+      return toastError("Report L1 Error Is Required");
+      // } else if (!sitting || sitting == "") {
+      //   return toastError("sitting Error is required");
+    } else if (!loginId || loginId == "") {
+      return toastError("Login Id Error is required");
+    } else if (!username || username == "") {
+      return toastError("User Name Error is required");
+    } else if (!roles || roles == "") {
+      return toastError("Roles Error is required");
+    } else if (!personalContact || personalContact == "") {
+      return toastError("Personal Contact Error is required");
+    } else if (!personalEmail || personalEmail == "") {
+      return toastError("Personal Email Error is required");
+    } else if (!joiningDate || joiningDate == "") {
+      return toastError("Joining Date Error is required");
+    } else if (!email || email == "") {
+      return toastError("Official Email Error is required");
+    }
+
+    if (jobType == "WFO" && sitting == "") {
+      return toastError("Sitting Error is required");
+    }
 
     const formData = new FormData();
     // const formDataa = new FormData();
@@ -325,7 +356,7 @@ const UserMaster = () => {
     formData.append("user_login_password", password);
     formData.append("user_contact_no", contact);
     formData.append("sitting_id", sitting);
-    formData.append("room_id", roomId.room_id);
+    formData.append("room_id", jobType == "WFH" ? "1" : roomId.room_id);
     formData.append("dept_id", department);
     formData.append("job_type", jobType);
     formData.append("personal_number", personalContact);
@@ -393,11 +424,25 @@ const UserMaster = () => {
         if (isLoginIdExists) {
           alert("this login ID already exists");
         } else {
-          axios.post("http://34.93.221.166:3000/api/add_user", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
+          axios
+            .post("http://34.93.221.166:3000/api/add_user", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then((res) => {
+              if (res.status == 200) {
+                setIsFormSubmitted(true);
+                toastAlert("User Registerd");
+              } else {
+                toastError("Sorry User is Not Created, Please try again later");
+              }
+            })
+            .catch((err) => {
+              // toastError("Sorry User is Not Created, Please try again later");
+              toastError(err.message);
+              console.log(err);
+            });
 
           for (const elements of familyDetails) {
             const response = axios.post(
@@ -495,8 +540,8 @@ const UserMaster = () => {
             username,
             [username, loginId, password, "http://jarviscloud.in/"]
           );
-          toastAlert("User Registerd");
-          setIsFormSubmitted(true);
+          // toastAlert("User Registerd");
+          // setIsFormSubmitted(true);
           setFamilyDetails([initialFamilyDetailsGroup]);
         }
       } catch (error) {
@@ -505,13 +550,17 @@ const UserMaster = () => {
     } else {
       if (contact.length !== 10) {
         if (isValidcontact == false)
-          toastAlert("Enter Phone Number in Proper Format");
+          toastError("Enter Phone Number in Proper Format");
         // alert("Enter Phone Number in Proper Format");
       } else if (validEmail != true) {
         alert("Enter Valid Email");
       }
     }
   };
+
+  if (isFormSubmitted) {
+    return <Navigate to="/admin/user-overview" />;
+  }
 
   // Email Validation
   function handleEmailChange(e) {
@@ -601,10 +650,6 @@ const UserMaster = () => {
       setValidEmergencyContact(false);
       setValidEmergencyContact1(false);
     }
-  }
-
-  if (isFormSubmitted) {
-    return <Navigate to="/admin/user-overview" />;
   }
 
   // Password Auto Genrate
@@ -1800,6 +1845,7 @@ const UserMaster = () => {
                   fieldGrid={3}
                   type="date"
                   name={key}
+                  required={false}
                   label={key}
                   value={detail[key]}
                   onChange={(e) => handleEducationDetailsChange(index, e)}
@@ -1809,6 +1855,7 @@ const UserMaster = () => {
                   key={key}
                   fieldGrid={3}
                   name={key}
+                  required={false}
                   label={key}
                   value={detail[key]}
                   onChange={(e) => handleEducationDetailsChange(index, e)}
