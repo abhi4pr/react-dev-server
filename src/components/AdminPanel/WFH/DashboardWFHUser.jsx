@@ -136,7 +136,7 @@ const DashboardWFHUser = () => {
                     <li>
                       <span>
                         <Link to="/admin/pre-onboarding-overview">
-                          Yet To Register
+                          Onboarding Pending
                         </Link>
                       </span>
                       {yetToOnBoardCount}

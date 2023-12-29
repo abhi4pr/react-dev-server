@@ -29,9 +29,11 @@ const DocumentTab = ({ documentData, setDocumentData, getDocuments }) => {
       const isMandatoryDocMissing = documentData.some(
         (doc) =>
           mandatoryDocTypes.includes(doc.document.doc_type) &&
-          !doc.doc_image &&
-          !doc.file
+          doc.doc_image &&
+          doc.file
       );
+
+      console.log(isMandatoryDocMissing, "mnadlakdjfl");
 
       if (isMandatoryDocMissing) {
         toastAlert("Please fill all mandatory fields");
