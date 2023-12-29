@@ -6,7 +6,9 @@ import DeleteButton from "../../AdminPanel/DeleteButton";
 import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Modal from "react-modal";
 
 const BrandMast = () => {
   const [brandName, setBrandName] = useState("");
@@ -17,6 +19,36 @@ const BrandMast = () => {
   const [brandId, setBrandId] = useState(0);
   const [brandNameUpdate, setBrandNameUpdate] = useState("");
 
+  const [totalAssets, setTotalAssets] = useState([]);
+  //Asset Count Modal
+  const [assetModal, seAssetModel] = useState(false);
+
+  const handleTotalasset = async (row) => {
+    try {
+      const response = await axios.get(
+        `http://34.93.221.166:3000/api/get_total_asset_in_category/${row}`
+      );
+      setTotalAssets(response.data.data);
+      seAssetModel(true);
+    } catch (error) {
+      console.log("total asset not working", error);
+    }
+  };
+  const handleClosAssetCounteModal = () => {
+    seAssetModel(false);
+  };
+
+  const handleAllocatedAsset = async (row) => {
+    try {
+      const response = await axios.get(
+        `http://34.93.221.166:3000/api/get_total_asset_in_category_allocated/${row}`
+      );
+      setTotalAssets(response.data.data);
+      seAssetModel(true);
+    } catch (error) {
+      console.log("total asset not working", error);
+    }
+  };
   const columns = [
     {
       name: "S.No",
@@ -27,6 +59,41 @@ const BrandMast = () => {
     {
       name: "Brnad Name",
       selector: (row) => row.asset_brand_name,
+      sortable: true,
+    },
+    {
+      name: "Available Asset",
+      cell: (row) => (
+        <button
+          className="btn btn-outline-warning"
+          onClick={() => handleTotalasset(row.category_id)}
+        >
+          {row.available_assets_count}
+        </button>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Allocated Asset",
+      cell: (row) => (
+        <button
+          className="btn btn-outline-warning"
+          onClick={() => handleAllocatedAsset(row.category_id)}
+        >
+          {row.allocated_assets_count}
+        </button>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Add Modal",
+      cell: (row) => (
+        <>
+          <Link to="/modal-mast">
+            <button className="btn btn-outline-success">Add Modal</button>
+          </Link>
+        </>
+      ),
       sortable: true,
     },
     {
@@ -195,6 +262,65 @@ const BrandMast = () => {
           </div>
         </div>
       </div>
+      <Modal
+        isOpen={assetModal}
+        onRequestClose={handleClosAssetCounteModal}
+        style={{
+          content: {
+            width: "80%",
+            height: "80%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        {/* {selectedRow && ( */}
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            {/* <h2>Department: {selectedRow.dept_name}</h2> */}
+
+            <button
+              className="btn btn-success float-left"
+              onClick={handleClosAssetCounteModal}
+            >
+              X
+            </button>
+          </div>
+          <h1></h1>
+          <DataTable
+            columns={[
+              {
+                name: "S.No",
+                cell: (row, index) => <div>{index + 1}</div>,
+                width: "10%",
+              },
+              { name: "Asset Name", selector: "assetsName" },
+              { name: "Category Name", selector: "category_name" },
+              { name: "Subcategory Name", selector: "sub_category_name" },
+              { name: "Status", selector: "status" },
+              { name: "Asset Type", selector: "asset_type" },
+              { name: "Asset ID", selector: "asset_id" },
+            ]}
+            data={totalAssets}
+            highlightOnHover
+            subHeader
+            // subHeaderComponent={
+            //   <input
+            //     type="text"
+            //     placeholder="Search..."
+            //     className="w-50 form-control"
+            //     value={modalSearch}
+            //     onChange={(e) => setModalSearch(e.target.value)}
+            //   />
+            // }
+          />
+        </div>
+        {/* )} */}
+      </Modal>
     </div>
   );
 };

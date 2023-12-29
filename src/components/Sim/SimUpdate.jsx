@@ -28,7 +28,7 @@ const SimUpdate = () => {
   const [hrselfAuditPeriod, setHrSelfAuditPeriod] = useState("");
   const [hrselfAuditUnit, setHrSelfAuditUnit] = useState("");
 
-  const [imageType, setImageType] = useState("");
+  const [imageType, setImageType] = useState("HR");
   const [assetsImg1, setAssetsImg1] = useState(null);
   const [assetsImg2, setAssetsImg2] = useState(null);
   const [assetsImg3, setAssetsImg3] = useState(null);
@@ -54,6 +54,14 @@ const SimUpdate = () => {
   const inWarrantyOption = ["No", "Yes"];
   const IMGType = ["HR", "User"];
   const assettype = ["New", "Old"];
+  const FinacinalType = [
+    "Current assets",
+    "Fixed assets",
+    " Tangible assets",
+    "Intangible assets",
+    "Operating assets",
+    "Non-operating assets",
+  ];
   const { id } = useParams();
   const [modalData, setModalData] = useState([]);
   const [modalName, setModalName] = useState("");
@@ -70,18 +78,25 @@ const SimUpdate = () => {
       });
   };
   const getAllSubCategory = () => {
-    console.log(assetsCategory);
     if (assetsCategory) {
       axios
         .get(
           `http://34.93.221.166:3000/api/get_single_asset_sub_category/${assetsCategory}`
         )
         .then((res) => {
-          console.log(res.data);
           setSubCategoryData(res.data);
         });
     }
   };
+  console.log(subCategory, "set");
+  useEffect(() => {
+    const selectedSubcat = subcategoryData.filter(
+      (d) => d.sub_category_id === subCategory
+    );
+    if (selectedSubcat) {
+      setInWarranty(selectedSubcat[0]?.inWarranty);
+    }
+  }, [subCategory, subcategoryData]);
   const getAllVendor = () => {
     axios.get("http://34.93.221.166:3000/api/get_all_vendor").then((res) => {
       setVendorData(res.data);
@@ -109,7 +124,6 @@ const SimUpdate = () => {
       setSelfAuditUnit(selectedCategory[0]?.selfAuditUnit);
       setHrSelfAuditPeriod(selectedCategory[0]?.hrAuditPeriod);
       setHrSelfAuditUnit(selectedCategory[0]?.hrAuditUnit);
-      console.log(selfAuditPeriod, "data hai");
     }
   }, [categoryData, assetsCategory]);
   useEffect(() => {
@@ -159,7 +173,6 @@ const SimUpdate = () => {
 
         setModalName(asset_modal_id);
         setBrandName(asset_brand_id);
-        console.log(asset_brand_id, "hello ");
 
         setAssetsOtherID(assetsOtherID);
         setAssetType(s_type);
@@ -421,6 +434,7 @@ const SimUpdate = () => {
                   disablePortal
                   fullWidth={true}
                   id="combo-box-demo"
+                  disabled
                   options={inWarrantyOption}
                   value={inWarranty}
                   onChange={(e, newvalue) => setInWarranty(newvalue)}
@@ -611,7 +625,7 @@ const SimUpdate = () => {
               <div className="form-group form_select">
                 <Autocomplete
                   disablePortal
-                  // sx={{ width: 600 }}
+                  disabled
                   id="combo-box-demo"
                   options={IMGType}
                   value={imageType}
@@ -646,7 +660,7 @@ const SimUpdate = () => {
                 />
               </div>
             </div>
-            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
+            {/* <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
                   fullWidth={true}
@@ -655,6 +669,20 @@ const SimUpdate = () => {
                   type="number"
                   value={finacialType}
                   onChange={(e) => setFinacialType(e.target.value)}
+                />
+              </div>
+            </div> */}
+            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12 col-12">
+              <div className="form-group form_select">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={FinacinalType}
+                  value={finacialType}
+                  onChange={(e, newvalue) => setFinacialType(newvalue)}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Assets Finacial Type" />
+                  )}
                 />
               </div>
             </div>
