@@ -267,59 +267,64 @@ const WFHAllSalary = () => {
     <>
       <div>
         <FormContainer mainTitle="Salary Overview History" link={"/admin/"} />
+        <div className="row">
+              <Autocomplete
+                className="m-2"
+                disablePortal
+                id="combo-box-demo"
+                value={deplartmentFilterValue}
+                onChange={(e, value) => {
+                  // handleFilterChange(value, "Department");
+                  setDepartmentFilterValue(value);
+                }}
+                options={departmentList.map((option) => option.dept_name)}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Department" />
+                )}
+              />
+              <Autocomplete
+                className="m-2"
+                disablePortal
+                value={yearFilterValue}
+                id="combo-box-demo"
+                onChange={(e, value) => {
+                  // handleFilterChange(value, "Year");
+                  setYearFilterValue(value);
+                }}
+                options={yearWiseFilterOptions}
+                sx={{ width: 200 }}
+                renderInput={(params) => <TextField {...params} label="Year" />}
+              />
+              <Autocomplete
+                className="m-2"
+                disablePortal
+                value={monthFilterValue}
+                id="combo-box-demo"
+                onChange={(e, value) => {
+                  // handleFilterChange(value, "Month");
+                  setMonthFilterValue(value);
+                }}
+                options={monthWiseFilterOptions}
+                sx={{ width: 200 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Month" />
+                )}
+              />
+
+              <Button
+                className="m-2 col-md-1"
+                variant="contained"
+                onClick={handleFilterClick}
+              >
+                Search
+              </Button>
+            </div>
         <div className="card">
           <div className="data_tbl table-responsive">
-            <Autocomplete
-              className="m-2"
-              disablePortal
-              id="combo-box-demo"
-              value={deplartmentFilterValue}
-              onChange={(e, value) => {
-                // handleFilterChange(value, "Department");
-                setDepartmentFilterValue(value);
-              }}
-              options={departmentList.map((option) => option.dept_name)}
-              sx={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Department" />
-              )}
-            />
-            <Autocomplete
-              className="m-2"
-              disablePortal
-              value={yearFilterValue}
-              id="combo-box-demo"
-              onChange={(e, value) => {
-                // handleFilterChange(value, "Year");
-                setYearFilterValue(value);
-              }}
-              options={yearWiseFilterOptions}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Year" />}
-            />
-            <Autocomplete
-              className="m-2"
-              disablePortal
-              value={monthFilterValue}
-              id="combo-box-demo"
-              onChange={(e, value) => {
-                // handleFilterChange(value, "Month");
-                setMonthFilterValue(value);
-              }}
-              options={monthWiseFilterOptions}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Month" />}
-            />
-
-            <Button
-              className="d-block m-2"
-              variant="contained"
-              onClick={handleFilterClick}
-            >
-              Search
-            </Button>
+           
             <DataTable
-              title="All Salary Overview"
+              title=" "
               columns={columns}
               data={allSalaryData}
               fixedHeader
