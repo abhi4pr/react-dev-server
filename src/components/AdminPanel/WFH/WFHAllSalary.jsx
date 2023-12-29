@@ -17,7 +17,7 @@ const WFHAllSalary = () => {
 
   const getData = async () => {
     const response = await axios.get(
-      "http://192.168.29.115:3000/api/get_all_attendance_data"
+      "http://34.93.221.166:3000/api/get_all_attendance_data"
     );
     setAllSalaryData(response.data.data);
     setMasterDataList(response.data.data);
@@ -268,61 +268,58 @@ const WFHAllSalary = () => {
       <div>
         <FormContainer mainTitle="Salary Overview History" link={"/admin/"} />
         <div className="row">
-              <Autocomplete
-                className="m-2"
-                disablePortal
-                id="combo-box-demo"
-                value={deplartmentFilterValue}
-                onChange={(e, value) => {
-                  // handleFilterChange(value, "Department");
-                  setDepartmentFilterValue(value);
-                }}
-                options={departmentList.map((option) => option.dept_name)}
-                sx={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Department" />
-                )}
-              />
-              <Autocomplete
-                className="m-2"
-                disablePortal
-                value={yearFilterValue}
-                id="combo-box-demo"
-                onChange={(e, value) => {
-                  // handleFilterChange(value, "Year");
-                  setYearFilterValue(value);
-                }}
-                options={yearWiseFilterOptions}
-                sx={{ width: 200 }}
-                renderInput={(params) => <TextField {...params} label="Year" />}
-              />
-              <Autocomplete
-                className="m-2"
-                disablePortal
-                value={monthFilterValue}
-                id="combo-box-demo"
-                onChange={(e, value) => {
-                  // handleFilterChange(value, "Month");
-                  setMonthFilterValue(value);
-                }}
-                options={monthWiseFilterOptions}
-                sx={{ width: 200 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Month" />
-                )}
-              />
+          <Autocomplete
+            className="m-2"
+            disablePortal
+            id="combo-box-demo"
+            value={deplartmentFilterValue}
+            onChange={(e, value) => {
+              // handleFilterChange(value, "Department");
+              setDepartmentFilterValue(value);
+            }}
+            options={departmentList.map((option) => option.dept_name)}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Department" />
+            )}
+          />
+          <Autocomplete
+            className="m-2"
+            disablePortal
+            value={yearFilterValue}
+            id="combo-box-demo"
+            onChange={(e, value) => {
+              // handleFilterChange(value, "Year");
+              setYearFilterValue(value);
+            }}
+            options={yearWiseFilterOptions}
+            sx={{ width: 200 }}
+            renderInput={(params) => <TextField {...params} label="Year" />}
+          />
+          <Autocomplete
+            className="m-2"
+            disablePortal
+            value={monthFilterValue}
+            id="combo-box-demo"
+            onChange={(e, value) => {
+              // handleFilterChange(value, "Month");
+              setMonthFilterValue(value);
+            }}
+            options={monthWiseFilterOptions}
+            sx={{ width: 200 }}
+            renderInput={(params) => <TextField {...params} label="Month" />}
+          />
 
-              <Button
-                className="m-2 col-md-1"
-                variant="contained"
-                onClick={handleFilterClick}
-              >
-                Search
-              </Button>
-            </div>
+          <Button
+            className="m-2 col-md-1"
+            variant="contained"
+            onClick={handleFilterClick}
+          >
+            Search
+          </Button>
+        </div>
         <div className="card">
           <div className="data_tbl table-responsive">
-           
             <DataTable
               title=" "
               columns={columns}

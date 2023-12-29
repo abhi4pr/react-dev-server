@@ -64,6 +64,9 @@ import KRA from "./KRA/KRA";
 import UserWiseResponsibility from "./UserResponsbility/UserWiseResponsibility/UserWiseResponsibility";
 import UserWiseDashboard from "./User/UserWIseDashboard/UserWiseDashboard";
 import SalaryWFH from "./WFH/SalaryGeneration/SalaryWFH";
+
+import SalarySummary from "./WFH/SalarySummary/SalarySummary";
+
 import UserHierarchy from "./User/UserHierarchy";
 import UserSingle from "./User/UserSingle";
 import DashboardWFHUser from "./WFH/DashboardWFHUser";
@@ -319,6 +322,7 @@ const Admin = () => {
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
                   <Route path="/all-salary" element={<WFHAllSalary />} />
+                  <Route path="/salary-summary" element={<SalarySummary />} />
                   {/* Accounts/Finance */}
                   <Route
                     path="/accounts-finance-overview"

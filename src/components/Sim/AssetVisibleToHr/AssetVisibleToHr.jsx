@@ -25,7 +25,7 @@ const AssetVisibleToHr = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://192.168.29.115:3000/api/show_asset_hr_data"
+        "http://34.93.221.166:3000/api/show_asset_hr_data"
       );
       setFilterData(response.data.data);
       setData(response.data.data);

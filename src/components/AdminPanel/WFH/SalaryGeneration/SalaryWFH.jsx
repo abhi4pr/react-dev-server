@@ -6,6 +6,8 @@ import DataTable from "react-data-table-component";
 import axios from "axios";
 import FormContainer from "../../FormContainer";
 import { useGlobalContext } from "../../../../Context/Context";
+import { useAPIGlobalContext } from "../../APIContext/APIContext";
+
 import jwtDecode from "jwt-decode";
 import image1 from "./images/image1.png";
 import image2 from "./images/image2.png";
@@ -18,8 +20,7 @@ import { Document, PDFDownloadLink, Page, View } from "@react-pdf/renderer";
 import { Text, StyleSheet } from "@react-pdf/renderer";
 import { Button } from "@mui/material";
 import { generatePDF } from "./pdfGenerator";
-import { useParams } from "next/navigation";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import FieldContainer from "../../FieldContainer";
 
 const images = [
@@ -33,6 +34,8 @@ const images = [
 const SalaryWFH = () => {
   const location = useLocation();
   const { toastAlert } = useGlobalContext();
+  const { contextData } = useAPIGlobalContext();
+
   const [allWFHUsers, setAllWFHUsers] = useState(0);
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -83,9 +86,8 @@ const SalaryWFH = () => {
   const [separationUserID, setSeparationUserID] = useState(null);
   const [usercontact, setUserContact] = useState("");
   const [separationResignationDate, setSeparationResignationDate] =
-  useState("");
+    useState("");
   const [separationLWD, setSeparationLWD] = useState("");
-
 
   var settings = {
     dots: false,
@@ -612,7 +614,8 @@ const SalaryWFH = () => {
     setUserName(username);
     setUserContact(user_contact_no);
     axios
-      .get("http://34.93.221.166:3000/api/get_all_reasons").then((res) => setSeparationReasonGet(res.data));
+      .get("http://34.93.221.166:3000/api/get_all_reasons")
+      .then((res) => setSeparationReasonGet(res.data));
   }
 
   const today = new Date().toISOString().split("T")[0];
@@ -904,9 +907,11 @@ const SalaryWFH = () => {
         <Slider {...settings} className="timeline_slider">
           {completedYearsMonths.map((data, index) => (
             <div
-              className={`timeline_slideItem ${data.atdGenerated && "completed"
-                } ${selectedCardIndex === index ? "selected" : ""} ${currentMonth == data.month && "current"
-                }`}
+              className={`timeline_slideItem ${
+                data.atdGenerated && "completed"
+              } ${selectedCardIndex === index ? "selected" : ""} ${
+                currentMonth == data.month && "current"
+              }`}
               onClick={() => handleCardSelect(index, data)}
               key={index}
             >
@@ -933,8 +938,8 @@ const SalaryWFH = () => {
                 {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
-                    ? "Upcoming"
-                    : "Pending"}
+                  ? "Upcoming"
+                  : "Pending"}
               </h3>
             </div>
           ))}
@@ -945,6 +950,15 @@ const SalaryWFH = () => {
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
           <span>
+            {contextData &&
+              contextData[35] &&
+              contextData[35].view_value === 1 && (
+                <Link to="/admin/salary-summary">
+                  <button className="btn btn-warning mr-3">
+                    Salary Summary
+                  </button>
+                </Link>
+              )}
             <button
               className="btn btn-primary mr-3"
               onClick={handleAllDepartmentSalaryExcel}
@@ -968,12 +982,13 @@ const SalaryWFH = () => {
                 Array.isArray(deptSalary) &&
                 deptSalary.some((d) => d.dept === option.dept_id);
 
-              const className = `btn ${department === option.dept_id
-                ? "btn-primary"
-                : isDeptInSalary
+              const className = `btn ${
+                department === option.dept_id
+                  ? "btn-primary"
+                  : isDeptInSalary
                   ? "btn-success"
                   : "btn-outline-primary"
-                }`;
+              }`;
 
               return (
                 <button
@@ -1449,13 +1464,13 @@ const SalaryWFH = () => {
               <FieldContainer
                 label="Reason"
                 Tag="select"
-                value={separationReason?separationReason:''}
+                value={separationReason ? separationReason : ""}
                 onChange={(e) => setSeparationReason(e.target.value)}
               >
-                 <option value=''  disabled>
-                    {" "}
-                    choose
-                  </option>
+                <option value="" disabled>
+                  {" "}
+                  choose
+                </option>
                 {separationReasonGet.map((option) => (
                   <option value={option.id} key={option.id}>
                     {" "}
@@ -1471,13 +1486,13 @@ const SalaryWFH = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                  <FieldContainer
-                    label="Reinstated Date"
-                    type="date"
-                    value={separationReinstateDate}
-                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                  />
-                )}
+                <FieldContainer
+                  label="Reinstated Date"
+                  type="date"
+                  value={separationReinstateDate}
+                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                />
+              )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"
@@ -1507,7 +1522,7 @@ const SalaryWFH = () => {
                 Close
               </button>
               <button
-              disabled={!separationReason}
+                disabled={!separationReason}
                 type="button"
                 className="btn btn-primary"
                 onClick={() => handleSeparationDataPost()}

@@ -2,8 +2,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import TabPanelCard from "./Components/TabPanelCard";
+import { useAPIGlobalContext } from "../APIContext/APIContext";
 
 const DashboardWFHUser = () => {
+  const { contextData } = useAPIGlobalContext();
   const [departmentData, setDepartmentData] = useState([]);
   const [wfhUsersCount, setWfhUsersCount] = useState(0);
   const [yetToOnBoardCount, setYetToOnBoardCount] = useState(0);
@@ -106,6 +108,15 @@ const DashboardWFHUser = () => {
         <div className="card-header d-flex justify-content-between">
           <h4>Dashboard</h4>
           <h4>
+            {contextData &&
+              contextData[35] &&
+              contextData[35].view_value === 1 && (
+                <Link to="/admin/salary-summary">
+                  <button className="btn btn-warning mr-3">
+                    Salary Summary
+                  </button>
+                </Link>
+              )}
             Total WFH User:{" "}
             <span className="color_primary"> {wfhUsersCount}</span>
           </h4>

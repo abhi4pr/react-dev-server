@@ -955,6 +955,11 @@ label.checkbox-inline.propscss {
   width: -webkit-fill-available;
 }
 
+.h_scroller .btn-outline-primary:hover {
+  background-color: rgb(95 69 255 / 15%);
+  color: var(--primary);
+}
+
 .gap4 {
   gap: 4px;
 }
