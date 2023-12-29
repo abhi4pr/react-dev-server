@@ -23,7 +23,7 @@ const AdminPreOnboarding = () => {
   const genderData = ["Male", "Female", "Other"];
 
   const whatsappApi = WhatsappAPI();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -88,7 +88,7 @@ const AdminPreOnboarding = () => {
   const [gender, setGender] = useState("");
 
   const [isRequired, setIsRequired] = useState({
-    reportL1:false,
+    reportL1: false,
   });
 
   useEffect(() => {
@@ -110,6 +110,17 @@ const AdminPreOnboarding = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!jobType) {
+      return toastError("Job Type is Required");
+    } else if (!department || department == "") {
+      return toastError("Department is Required");
+    } else if (!designation || designation == "") {
+      return toastError("Designatoin is Required");
+    } else if (!gender || gender == "") {
+      return toastError("Gender is Required");
+    } else if (!Report_L1Name || Report_L1Name == "") {
+      return toastError("Report Error Is Required");
+    }
     const formData = new FormData();
     formData.append("created_by", loginUserId);
     formData.append("user_name", username);
@@ -118,7 +129,10 @@ const AdminPreOnboarding = () => {
     formData.append("user_email_id", email);
     formData.append("permanent_city", city);
     formData.append("ctc", userCtc);
-    formData.append("offer_letter_send", sendLetter.value ? Boolean(sendLetter.value) : false);
+    formData.append(
+      "offer_letter_send",
+      sendLetter.value ? Boolean(sendLetter.value) : false
+    );
     formData.append("annexure_pdf", annexurePdf);
     formData.append("tds_applicable", tdsApplicable);
     formData.append("tds_per", tdsPercentage);
@@ -179,6 +193,14 @@ const AdminPreOnboarding = () => {
             })
             .then((res) => {
               console.log("Email sent successfully:", res.data);
+            })
+            .then((res) => {
+              if (res.status == 200) {
+                toastAlert("User Registerd");
+                setIsFormSubmitted(true);
+              } else {
+                toastError("Sorry User is Not Created, Please try again later");
+              }
             })
             .catch((error) => {
               console.log("Failed to send email:", error);
@@ -331,6 +353,7 @@ const AdminPreOnboarding = () => {
         <FieldContainer
           label="Full Name"
           fieldGrid={3}
+          required
           value={username}
           onChange={(e) => setUserName(e.target.value)}
         />
@@ -386,7 +409,7 @@ const AdminPreOnboarding = () => {
             Report L1 <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-          required={true}
+            required={true}
             className=""
             options={usersData.map((option) => ({
               value: option.user_id,
@@ -400,24 +423,33 @@ const AdminPreOnboarding = () => {
             }}
             onChange={(e) => {
               setReportL1(e.value);
-             e.value && setIsRequired(prev=>{return {...prev,reportL1:false}});
-
+              e.value &&
+                setIsRequired((prev) => {
+                  return { ...prev, reportL1: false };
+                });
             }}
             onBlur={(e) => {
               console.log(reportL1);
-              !reportL1 && setIsRequired(prev=>{return {...prev,reportL1:true}});
-              reportL1 && setIsRequired(prev=>{return {...prev,reportL1:false}});
-
+              !reportL1 &&
+                setIsRequired((prev) => {
+                  return { ...prev, reportL1: true };
+                });
+              reportL1 &&
+                setIsRequired((prev) => {
+                  return { ...prev, reportL1: false };
+                });
             }}
           />
-          {isRequired.reportL1 && <p style={{ color: "red" }}>*Please select  Report L1</p>}
+          {isRequired.reportL1 && (
+            <p style={{ color: "red" }}>*Please select Report L1</p>
+          )}
         </div>
 
         <FieldContainer
           label="Email"
           type="email"
           fieldGrid={3}
-          required={false}
+          required
           value={email}
           onChange={handleEmailChange}
         />
@@ -585,6 +617,7 @@ const AdminPreOnboarding = () => {
               <input
                 className="form-control"
                 value={loginId}
+                required
                 onChange={handleLoginIdChange}
               />
               <div className="input-group-append">
@@ -608,6 +641,7 @@ const AdminPreOnboarding = () => {
                 type="text"
                 className="form-control"
                 value={password}
+                required
                 onChange={(e) => setPassword(e.target.value)}
               />
               <div className="input-group-append">
@@ -634,6 +668,7 @@ const AdminPreOnboarding = () => {
         <FieldContainer
           label="DOB"
           type="date"
+          required
           value={dateOfBirth}
           onChange={handleDateChange}
         />
