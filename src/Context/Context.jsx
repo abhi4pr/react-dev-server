@@ -43,7 +43,6 @@ const AppProvider = ({ children }) => {
   async function getAssetData() {
     const res = await axios.get("http://34.93.221.166:3000/api/get_all_sims");
     setAssetDataContext(res.data.data);
-    console.log(res, "hello welcome");
   }
   async function getUserAPIData() {
     axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
