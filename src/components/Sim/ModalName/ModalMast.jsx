@@ -142,16 +142,23 @@ const ModalMast = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_asset_modal",
-        {
-          asset_modal_name: modalName,
-          asset_brand_id: brandName,
-        }
+      const isModalExists = modalData.some(
+        (d) => d.asset_modal_name === modalName
       );
-      setModalName("");
-      setBrandName("");
-      getModalData();
+      if (isModalExists) {
+        alert("Brand already Exists");
+      } else {
+        const response = await axios.post(
+          "http://34.93.221.166:3000/api/add_asset_modal",
+          {
+            asset_modal_name: modalName,
+            asset_brand_id: brandName,
+          }
+        );
+        setModalName("");
+        setBrandName("");
+        getModalData();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -217,15 +224,14 @@ const ModalMast = () => {
             </label>
             <Select
               options={getBrandDataContext.map((opt) => ({
-                value: opt.asset_brand_id,
+                value: opt._id,
                 label: opt.asset_brand_name,
               }))}
               value={{
                 value: brandName,
                 label:
-                  getBrandDataContext.find(
-                    (user) => user.asset_brand_id === brandName
-                  )?.asset_brand_name || "",
+                  getBrandDataContext.find((user) => user._id === brandName)
+                    ?.asset_brand_name || "",
               }}
               onChange={(e) => {
                 setBrandName(e.value);
@@ -296,14 +302,14 @@ const ModalMast = () => {
                 </label>
                 <Select
                   options={getBrandDataContext.map((opt) => ({
-                    value: opt.asset_brand_id,
+                    value: opt._id,
                     label: opt.asset_brand_name,
                   }))}
                   value={{
                     value: brandNameUpdate,
                     label:
                       getBrandDataContext.find(
-                        (user) => user.asset_brand_id === brandNameUpdate
+                        (user) => user._id === brandNameUpdate
                       )?.asset_brand_name || "",
                   }}
                   onChange={(e) => {

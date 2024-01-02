@@ -45,6 +45,20 @@ const RepairRequest = () => {
 
   const genderData = ["Low", "Medium", "High", "Urgent"];
 
+  const [reason, setReason] = useState("");
+  const [reasonData, setReasonData] = useState([]);
+  async function getRepairReason() {
+    const res = await axios.get(
+      "http://34.93.221.166:3000/api/get_all_assetResons"
+    );
+    console.log(res.data.data, "reason");
+    setReasonData(res?.data.data);
+  }
+
+  useEffect(() => {
+    getRepairReason();
+  }, []);
+
   const [ImageModalOpen, setImageModalOpen] = useState(false);
   const [showAssetsImage, setShowAssetImages] = useState("");
   const handleImageClick = (row) => {
@@ -52,7 +66,6 @@ const RepairRequest = () => {
 
     setImageModalOpen(true);
   };
-  console.log(showAssetsImage, "modal");
   const handleCloseImageModal = () => {
     setImageModalOpen(false);
   };
@@ -67,6 +80,11 @@ const RepairRequest = () => {
     {
       name: "Asset Name",
       selector: (row) => row.asset_name,
+      sortable: true,
+    },
+    {
+      name: "Reason Name",
+      selector: (row) => row.reason_name,
       sortable: true,
     },
     {
@@ -113,7 +131,7 @@ const RepairRequest = () => {
           <DeleteButton
             endpoint="delete_repair_request"
             id={row.repair_id}
-            getData={getRepairReason}
+            getData={getRepairRequest}
           />
         </>
       ),
@@ -124,6 +142,7 @@ const RepairRequest = () => {
     try {
       const formData = new FormData();
       formData.append("repair_request_date_time", repairDate);
+      formData.append("asset_reason_id", reason);
       formData.append("sim_id", assetsName);
       formData.append("priority", priority);
       formData.append(
@@ -147,7 +166,7 @@ const RepairRequest = () => {
       setAssetsImg2("");
       setAssetsImg3("");
       setAssetsImg4("");
-      getRepairReason("");
+      getRepairRequest("");
       setProblemDetailing("");
       setTagUser([]);
       toastAlert("Success");
@@ -155,7 +174,7 @@ const RepairRequest = () => {
       console.log(error);
     }
   };
-  async function getRepairReason() {
+  async function getRepairRequest() {
     const res = await axios.get(
       "http://34.93.221.166:3000/api/get_all_repair_request"
     );
@@ -165,7 +184,7 @@ const RepairRequest = () => {
   }
 
   useEffect(() => {
-    getRepairReason();
+    getRepairRequest();
   }, []);
 
   const formatApiDate = (apiDate) => {
@@ -176,7 +195,7 @@ const RepairRequest = () => {
 
   useEffect(() => {
     setTimeout(() => {
-      getRepairReason();
+      getRepairRequest();
     }, 1000);
   }, [usersDataContext]);
 
@@ -195,6 +214,7 @@ const RepairRequest = () => {
     const formData = new FormData();
     formData.append("repair_id", repairId);
     formData.append("repair_request_date_time", repairDateUpdate);
+    formData.append("asset_reason_id", reason);
     formData.append("sim_id", assetsName);
     formData.append("priority", priorityUpdate);
     formData.append(
@@ -209,7 +229,7 @@ const RepairRequest = () => {
     axios
       .put("http://34.93.221.166:3000/api/update_repair_request", formData)
       .then((res) => {
-        getRepairReason();
+        getRepairRequest();
         toastAlert("Update Success");
       });
   };
@@ -238,7 +258,7 @@ const RepairRequest = () => {
             handleSubmit={handleSubmit}
           >
             <FieldContainer
-              fieldGrid={3}
+              fieldGrid={2}
               label="Repair Request Date"
               type="datetime-local"
               value={repairDate}
@@ -246,7 +266,7 @@ const RepairRequest = () => {
               required
             />
 
-            <div className="form-group col-3">
+            <div className="form-group col-2">
               <label className="form-label">
                 Asset Name <sup style={{ color: "red" }}>*</sup>
               </label>
@@ -268,7 +288,28 @@ const RepairRequest = () => {
                 required
               />
             </div>
-            <div className="form-group col-3">
+            <div className="form-group col-2">
+              <label className="form-label">
+                Reason <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={reasonData.map((opt) => ({
+                  value: opt.asset_reason_id,
+                  label: opt.reason,
+                }))}
+                value={{
+                  value: reason,
+                  label:
+                    reasonData.find((d) => d.asset_reason_id === reason)
+                      ?.reason || "",
+                }}
+                onChange={(e) => {
+                  setReason(e.value);
+                }}
+                required
+              />
+            </div>
+            <div className="form-group col-2">
               <label className="form-label">
                 priority <sup style={{ color: "red" }}>*</sup>
               </label>
@@ -289,7 +330,7 @@ const RepairRequest = () => {
               />
             </div>
 
-            <div className="col-sm-12 col-lg-3 p-2">
+            <div className="col-sm-12 col-lg-4 p-2">
               <Autocomplete
                 multiple
                 id="combo-box-demo"
@@ -431,6 +472,28 @@ const RepairRequest = () => {
                     required
                   />
                 </div>
+                <div className="form-group col-2">
+                  <label className="form-label">
+                    Reason <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    options={reasonData.map((opt) => ({
+                      value: opt.asset_reason_id,
+                      label: opt.reason,
+                    }))}
+                    value={{
+                      value: reason,
+                      label:
+                        reasonData.find((d) => d.asset_reason_id === reason)
+                          ?.reason || "",
+                    }}
+                    onChange={(e) => {
+                      setReason(e.value);
+                    }}
+                    required
+                  />
+                </div>
+
                 <div className="form-group col-4">
                   <label className="form-label">
                     priority <sup style={{ color: "red" }}>*</sup>
@@ -542,7 +605,7 @@ const RepairRequest = () => {
       >
         <div>
           <div className="d-flex justify-content-between mb-2">
-            <h2>Assets Images</h2>
+            <h2>Repair Images</h2>
 
             <button
               className="btn btn-success float-left"
@@ -553,81 +616,79 @@ const RepairRequest = () => {
           </div>
         </div>
 
-        {showAssetsImage.length > 0 && (
-          <>
-            <h2>Type : {showAssetsImage[0]?.type}</h2>
-            <div className="summary_cards flex-row row">
-              <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-                <div className="summary_card">
-                  <div className="summary_cardtitle"></div>
-                  <div className="summary_cardbody">
-                    <div className="summary_cardrow flex-column">
-                      <div className="summary_box text-center ml-auto mr-auto"></div>
-                      <div className="summary_box col">
-                        <img
-                          src={showAssetsImage[0]?.img1_url}
-                          width="80px"
-                          height="80px"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-                <div className="summary_card">
-                  <div className="summary_cardtitle"></div>
-                  <div className="summary_cardbody">
-                    <div className="summary_cardrow flex-column">
-                      <div className="summary_box text-center ml-auto mr-auto"></div>
-                      <div className="summary_box col">
-                        <img
-                          src={showAssetsImage?.row.img2_url}
-                          width="80px"
-                          height="80px"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-                <div className="summary_card">
-                  <div className="summary_cardtitle"></div>
-                  <div className="summary_cardbody">
-                    <div className="summary_cardrow flex-column">
-                      <div className="summary_box text-center ml-auto mr-auto"></div>
-                      <div className="summary_box col">
-                        <img
-                          src={showAssetsImage[0]?.img3_url}
-                          width="80px"
-                          height="80px"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-                <div className="summary_card">
-                  <div className="summary_cardtitle"></div>
-                  <div className="summary_cardbody">
-                    <div className="summary_cardrow flex-column">
-                      <div className="summary_box text-center ml-auto mr-auto"></div>
-                      <div className="summary_box col">
-                        <img
-                          src={showAssetsImage[0]?.img4_url}
-                          width="80px"
-                          height="80px"
-                        />
-                      </div>
+        <>
+          {/* <h2>Type : {showAssetsImage?.type}</h2> */}
+          <div className="summary_cards flex-row row">
+            <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+              <div className="summary_card">
+                <div className="summary_cardtitle"></div>
+                <div className="summary_cardbody">
+                  <div className="summary_cardrow flex-column">
+                    <div className="summary_box text-center ml-auto mr-auto"></div>
+                    <div className="summary_box col">
+                      <img
+                        src={showAssetsImage?.img1_url}
+                        width="80px"
+                        height="80px"
+                      />
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </>
-        )}
+            <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+              <div className="summary_card">
+                <div className="summary_cardtitle"></div>
+                <div className="summary_cardbody">
+                  <div className="summary_cardrow flex-column">
+                    <div className="summary_box text-center ml-auto mr-auto"></div>
+                    <div className="summary_box col">
+                      <img
+                        src={showAssetsImage?.img2_url}
+                        width="80px"
+                        height="80px"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+              <div className="summary_card">
+                <div className="summary_cardtitle"></div>
+                <div className="summary_cardbody">
+                  <div className="summary_cardrow flex-column">
+                    <div className="summary_box text-center ml-auto mr-auto"></div>
+                    <div className="summary_box col">
+                      <img
+                        src={showAssetsImage?.img3_url}
+                        width="80px"
+                        height="80px"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+              <div className="summary_card">
+                <div className="summary_cardtitle"></div>
+                <div className="summary_cardbody">
+                  <div className="summary_cardrow flex-column">
+                    <div className="summary_box text-center ml-auto mr-auto"></div>
+                    <div className="summary_box col">
+                      <img
+                        src={showAssetsImage?.img4_url}
+                        width="80px"
+                        height="80px"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       </Modal>
     </div>
   );

@@ -123,13 +123,21 @@ const BrandMast = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_asset_brand",
-        {
-          asset_brand_name: brandName,
-        }
+      const isBrandExist = brnadData.some(
+        (d) => d.asset_brand_name === brandName
       );
-      getBrandData();
+      if (isBrandExist) {
+        alert("Brand already Exists");
+      } else {
+        const response = await axios.post(
+          "http://34.93.221.166:3000/api/add_asset_brand",
+          {
+            asset_brand_name: brandName,
+          }
+        );
+        setBrandName("");
+        getBrandData();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -147,7 +155,6 @@ const BrandMast = () => {
   }, []);
 
   const handleBrandData = (row) => {
-    console.log(row, "data");
     setBrandId(row.asset_brand_id);
     setBrandNameUpdate(row.asset_brand_name);
   };
