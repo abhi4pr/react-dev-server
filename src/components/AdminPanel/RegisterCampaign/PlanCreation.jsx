@@ -142,7 +142,7 @@ const PlanCreation = () => {
             );
           }
         }
-        ok;
+        // ok;
         if (selectedFollower == "1M to 5M ") {
           if (selectedCategory.length > 0) {
             return (

@@ -36,7 +36,7 @@ const ManagerCampaign = () => {
     <>
       <FormContainer
         submitButton={false}
-        mainTitle="Manager All Campaign"
+        mainTitle="Manager Dashboard"
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
