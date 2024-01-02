@@ -51,6 +51,7 @@ import ReadyToOnboardContent from "./ReadyToOnboardContent";
 import { City, State } from "country-state-city";
 import IndianCitiesMui from "../ReusableComponents/IndianCitiesMui";
 import GuardianFields from "./GuardianFields";
+import FamilyFields from "./FamilyFields";
 
 const LanguageList = ["English", "Hindi", "Other"];
 
@@ -225,6 +226,7 @@ const PreOnboardingUserMaster = () => {
 
   const [showMandotaryPer, setShowMandotaryPer] = useState(0);
   const [showNonMandotaryPer, setShowNonMandotaryPer] = useState(0);
+
   useEffect(() => {
     const getLocation = () => {
       if (navigator.geolocation) {
@@ -1438,6 +1440,11 @@ const PreOnboardingUserMaster = () => {
                               handleRemoveGuardianDetails={
                                 handleRemoveGuardianDetails
                               }
+                            />
+
+                            <FamilyFields
+                              fieldDetails={fieldDetails}
+                              setFieldDetails={setFieldDetails}
                             />
                           </div>
                         </div>

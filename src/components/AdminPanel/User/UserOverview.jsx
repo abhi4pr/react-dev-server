@@ -309,6 +309,12 @@ const UserOverview = () => {
       width: 120,
       sortable: true,
     },
+    {
+      field: "job_type",
+      headerName: "Job Type",
+      width: 120,
+      sortable: true,
+    },
     { field: "user_email_id", headerName: "Email", width: 230 },
     {
       field: "user_status",

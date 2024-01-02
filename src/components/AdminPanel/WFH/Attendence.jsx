@@ -42,12 +42,18 @@ const Attendence = () => {
     arrows: true,
     infinite: false,
     speed: 500,
-    initialSlide: new Date().getMonth() - 4,
     sliderToScroll: 1,
     // slidesToShow: 1,
+    initialSlide: 9,
     swipeToSlide: true,
     variableWidth: true,
   };
+
+  if (new Date().getMonth() > 3) {
+    settings.initialSlide = new Date().getMonth - 4;
+  } else {
+    settings.initialSlide = new Date().getMonth() + 8;
+  }
 
   function gettingSliderData() {
     axios

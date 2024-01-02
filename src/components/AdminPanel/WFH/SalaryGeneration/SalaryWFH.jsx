@@ -93,14 +93,19 @@ const SalaryWFH = () => {
   var settings = {
     dots: false,
     arrows: true,
+    infinite: false,
     speed: 500,
     // slidesToShow: 8,
-    initialSlide: new Date().getMonth() - 4,
     slidesToScroll: 1,
     swipeToSlide: true,
     variableWidth: true,
-    infinite: false,
   };
+
+  if (new Date().getMonth() > 3) {
+    settings.initialSlide = new Date().getMonth - 4;
+  } else {
+    settings.initialSlide = new Date().getMonth() + 8;
+  }
 
   useEffect(() => {
     if (location.state) {
