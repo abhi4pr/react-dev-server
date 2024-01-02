@@ -60,8 +60,13 @@ const RepairReason = () => {
       sortable: true,
     },
     {
-      name: "Category Name",
+      name: "Reason",
       selector: (row) => row.reason,
+      sortable: true,
+    },
+    {
+      name: "Request",
+      selector: (row) => row.requestCount,
       sortable: true,
     },
     {
