@@ -106,11 +106,25 @@ const handleCopyDetail = (detail) => {
     },
     {
       name: <div style={{ whiteSpace: 'normal' }}>Payment View</div>,
-      selector: (row) => row.payment_approval_status,
+      // selector: (row) => row.payment_approval_status,
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal" }}>
+        {row.payment_approval_status === 0
+          ? "Pending"
+          : row.payment_approval_status === 1
+          ? "Approved"
+          : row.payment_approval_status === 2
+          ? "Rejected"
+          : ""}
+      </div>)
     },
     {
       name: "Bank Name",
-      selector: (row) => <div style={{ whiteSpace: 'normal' }}>{row.gst_bank} </div>,
+      selector: (row) => <div style={{ whiteSpace: 'normal' }}>{row.title} </div>,
+    },
+    {
+      name : "Screenshot",
+      cell: (row) => <div  style={{ whiteSpace: 'normal' }}><img  src={row.payment_screenshot?`https://salesdev.we-fit.in/${row.payment_screenshot}`:""}  /></div>,
     },
     {
       name: "Bank Detail",

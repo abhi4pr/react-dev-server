@@ -126,6 +126,16 @@ const PendingApprovalUpdate = () => {
       width: "150px",
     },
     {
+      name: <div style={{ whiteSpace: "normal" }}>Screenshot</div>,
+      // selector: (row) => row.payment_time,
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal" }}>
+          <img src={row.payment_screenshot?`https://salesdev.we-fit.in/${row.payment_screenshot}`:""}  />
+        </div>
+      ),
+      width: "150px",
+    },
+    {
       name: <div style={{ whiteSpace: "normal" }}>Payment Amount</div>,
       selector: (row) => row.payment_amount,
       width: "150px",
@@ -136,13 +146,24 @@ const PendingApprovalUpdate = () => {
       width: "150px",
     },
     {
-      name: <div style={{ whiteSpace: "normal" }}>Payment View</div>,
-      selector: (row) => row.payment_approval_status,
+      name: <div style={{ whiteSpace: "normal" }}>Payment Status</div>,
+      // selector: (row) => row.payment_approval_status, // 0 = pending, 1 = approved, 2 = rejected
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {row.payment_approval_status === 0
+            ? "Pending"
+            : row.payment_approval_status === 1
+            ? "Approved"
+            : row.payment_approval_status === 2
+            ? "Rejected"
+            : ""}
+        </div>
+      ),
     },
     {
       name: "Bank Name",
       selector: (row) => (
-        <div style={{ whiteSpace: "normal" }}>{row.gst_bank} </div>
+        <div style={{ whiteSpace: "normal" }}>{row.title} </div>
       ),
     },
     {
@@ -196,11 +217,11 @@ const PendingApprovalUpdate = () => {
       ),
       width: "230px",
     },
-    {
-      name: "Payment Requested Date and Time",
-      selector: (row) => row.balance_payment_ondate,
-      width: "200px",
-    },
+    // {
+    //   name: "Payment Requested Date and Time",
+    //   selector: (row) => row.balance_payment_ondate,
+    //   width: "200px",
+    // },
     {
       name: "Action",
       selector: (row) => (

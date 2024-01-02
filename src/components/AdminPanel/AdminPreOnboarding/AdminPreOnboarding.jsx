@@ -83,7 +83,7 @@ const AdminPreOnboarding = () => {
   const [designationData, setDesignationData] = useState([]);
 
   const [selectedImage, setSelectedImage] = useState(null);
-
+  const [roledata, getRoleData] = useState([]);
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [gender, setGender] = useState("");
 
@@ -92,6 +92,9 @@ const AdminPreOnboarding = () => {
   });
 
   useEffect(() => {
+    axios.get("http://34.93.221.166:3000/api/get_all_roles").then((res) => {
+      getRoleData(res.data.data);
+    });
     axios
       .get("http://34.93.221.166:3000/api/get_all_departments")
       .then((res) => {
@@ -118,7 +121,7 @@ const AdminPreOnboarding = () => {
       return toastError("Designatoin is Required");
     } else if (!gender || gender == "") {
       return toastError("Gender is Required");
-    } else if (!Report_L1Name || Report_L1Name == "") {
+    } else if (!reportL1 || reportL1 == "") {
       return toastError("Report Error Is Required");
     }
     const formData = new FormData();
@@ -656,6 +659,27 @@ const AdminPreOnboarding = () => {
             </div>
           </div>
         </div>
+
+        <div className="form-group col-3">
+        <label className="form-label">
+          Role <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          options={roledata.map((option) => ({
+            value: option.role_id,
+            label: option.Role_name,
+          }))}
+          value={{
+            value: roles,
+            label:
+              roledata.find((role) => role.role_id === roles)?.Role_name || "",
+          }}
+          onChange={(e) => {
+            console.log(e.value);
+            setRoles(e.value);
+          }}
+        ></Select>
+      </div>
 
         <FieldContainer
           type="date"

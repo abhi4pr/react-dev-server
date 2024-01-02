@@ -88,6 +88,7 @@ const SalaryWFH = () => {
   const [separationResignationDate, setSeparationResignationDate] =
     useState("");
   const [separationLWD, setSeparationLWD] = useState("");
+  const [separationReinstateDate, setSeparationReinstateDate] = useState("");
 
   var settings = {
     dots: false,
@@ -225,10 +226,65 @@ const SalaryWFH = () => {
 
   const currentMonth = new Date().toLocaleString("en-US", { month: "long" });
 
+
+const  monthNameToNumber=(monthName)=> {
+  const months = {
+    January: '01',
+    February: '02',
+    March: '03',
+    April: '04',
+    May: '05',
+    June: '06',
+    July: '07',
+    August: '08',
+    September: '09',
+    October: '10',
+    November: '11',
+    December: '12'
+  };
+
+  // Convert the input month name to title case for consistent matching
+  const titleCaseMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
+
+  return months[titleCaseMonth] || 'Invalid Month';
+}
+
+function monthNameToNumberAndEndDate(monthName) {
+  const months = {
+    January: { number: '01', days: 31 },
+    February: { number: '02', days: 28 },
+    March: { number: '03', days: 31 },
+    April: { number: '04', days: 30 },
+    May: { number: '05', days: 31 },
+    June: { number: '06', days: 30 },
+    July: { number: '07', days: 31 },
+    August: { number: '08', days: 31 },
+    September: { number: '09', days: 30 },
+    October: { number: '10', days: 31 },
+    November: { number: '11', days: 30 },
+    December: { number: '12', days: 31 }
+  };
+
+  const titleCaseMonth = monthName.charAt(0).toUpperCase() + monthName.slice(1).toLowerCase();
+  const monthInfo = months[titleCaseMonth];
+
+  if (monthInfo) {
+    return {
+      monthNumber: monthInfo.number,
+      endDate: monthInfo.days
+    };
+  } else {
+    return 'Invalid Month';
+  }
+}
+
+
   const handleCardSelect = (index, data) => {
     setSelectedCardIndex(index);
     setYear(data.year);
     setMonth(data.month);
+
+    console.log(data.year, data.month);
   };
 
   const handleMonthYearData = async () => {
@@ -1508,6 +1564,7 @@ const SalaryWFH = () => {
                 <FieldContainer
                   label="Resignation Date"
                   type="date"
+                  min={`${year}-${monthNameToNumber(month)}-01`} max={`${year}-${monthNameToNumber(month)}-31`}
                   value={separationResignationDate}
                   onChange={(e) => setSeparationResignationDate(e.target.value)}
                 />
