@@ -43,7 +43,7 @@ const BillingOverview = () => {
 
   const columns = [
     {
-      name: "s no",
+      name: "S.NO",
       selector: (row, index) => <div>{index + 1}</div>,
       sortable: true,
     },
@@ -58,7 +58,7 @@ const BillingOverview = () => {
     {
       name: "WFH Employees Count",
       selector: (row) => (
-        <Link to={`/admin/wfh-users-overview/${row.dept_id}`}>
+        <Link className="text-primary" to={`/admin/wfh-users-overview/${row.dept_id}`}>
           {row.wfhUserCount}
         </Link>
       ),
