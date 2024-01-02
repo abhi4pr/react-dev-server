@@ -637,12 +637,7 @@ const SidebarLinks = () => {
                           >
                             Manager Campaign Dashboard
                           </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/manager-dashboard"
-                          >
-                            Manager Dashboard
-                          </Link>
+                       
                           <Link
                             className="collapse-item"
                             to="/admin/phase-dashboard"
@@ -693,12 +688,12 @@ const SidebarLinks = () => {
                           >
                             Check Page Follower
                           </Link>
-                          <Link
+                          {/* <Link
                             className="collapse-item"
                             to="/admin/createAssign"
                           >
                             createAssign
-                          </Link>
+                          </Link> */}
 
                           <Link
                             className="collapse-item"

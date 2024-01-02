@@ -87,7 +87,7 @@ const ManagerDashboard = () => {
     <>
       <FormContainer
         submitButton={false}
-        mainTitle="Manager Dashboard"
+        mainTitle=" Campaign Progress Tab "
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}

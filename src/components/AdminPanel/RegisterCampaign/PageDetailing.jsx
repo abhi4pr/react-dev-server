@@ -13,10 +13,11 @@ import {
   DialogContent,
 } from "@mui/material";
 import axios from "axios";
-import { Paper, Autocomplete } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Paper, Autocomplete, Typography } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useGlobalContext } from "../../../Context/Context";
+import { red } from "@mui/material/colors";
 
 let options = [];
 const PageDetaling = ({
@@ -30,9 +31,7 @@ const PageDetaling = ({
   phaseInfo,
   setPhaseDataError,
   payload,
-  payloadChange
-  // setPostPage,
-  // postpage,
+  payloadChange,
 }) => {
   const { toastAlert, toastError } = useGlobalContext();
 
@@ -41,18 +40,18 @@ const PageDetaling = ({
   const [openDialog, setOpenDialog] = useState(false);
   const [deletingPageId, setDeletingPageId] = useState(null);
   const [remainingPages, setRemainingPages] = useState([]);
-  const [smallPostPerPage, setSmallPostPerPage] = useState(Number.MAX_SAFE_INTEGER)
+  const [smallPostPerPage, setSmallPostPerPage] = useState(
+    Number.MAX_SAFE_INTEGER
+  );
 
-  console.log(pages)
+  // console.log(pages);
 
   useEffect(() => {
     if (pages?.length > 0) {
       const addPost = pages.map((page) => {
         if (!page.postPerPage) {
-
           return { ...page, postPerPage: 0 };
-
-        } else return page
+        } else return page;
       });
       setAllPages([...addPost]);
       const differenceArray = realPageData?.filter((element) => {
@@ -63,23 +62,21 @@ const PageDetaling = ({
       });
       setRemainingPages(differenceArray);
     }
-  }, [pages])
+  }, [pages]);
 
-  useEffect(()=>{
-    if(pageName=='phaseCreation')
-    {
-
-      let smallest=Number.MAX_SAFE_INTEGER
-      console.log(pages)
-      pages.forEach((page)=>{
-        if(Number(page.postRemaining)<smallest){
-          smallest=Number(page.postRemaining)
+  useEffect(() => {
+    if (pageName == "phaseCreation") {
+      let smallest = Number.MAX_SAFE_INTEGER;
+      console.log(pages);
+      pages.forEach((page) => {
+        if (Number(page.postRemaining) < smallest) {
+          smallest = Number(page.postRemaining);
         }
-      })
+      });
       // console.log(smallest)
-      setSmallPostPerPage(smallest)
+      setSmallPostPerPage(smallest);
     }
-  },[pages])
+  }, [pages]);
 
   const pageReplacement = (e, params, index) => {
     // console.log(e.target.innerText,params,index)
@@ -95,10 +92,8 @@ const PageDetaling = ({
   };
 
   const handlePostPerPageChange = (e, params) => {
-
     let updatedValue = e.target.value;
     if (e.target.value > Number(params.row.postRemaining)) {
-
       updatedValue = params.row.postRemaining;
     }
 
@@ -109,25 +104,19 @@ const PageDetaling = ({
           ? { ...page, postPerPage: updatedValue, value: null }
           : page
       );
-      console.log(updatedPages)
+      console.log(updatedPages);
       setAllPages(updatedPages);
-      const x = payload.map(page => {
+      const x = payload.map((page) => {
         if (page.p_id === params.row.p_id) {
-          return { ...page, postPerPage: updatedValue }
-        }
-        else return page
-      })
-      if (pageName == 'planCreation') {
-
+          return { ...page, postPerPage: updatedValue };
+        } else return page;
+      });
+      if (pageName == "planCreation") {
       }
       // console.log(x)
-      payloadChange(x, updatedPages)
-      // setFilteredPages(x)
+      payloadChange(x, updatedPages);
     }
   };
-  // console.log(payload)
-  console.log(pages)
-  console.log(allPages)
   const columns = [
     {
       field: "S.NO",
@@ -152,7 +141,6 @@ const PageDetaling = ({
             getOptionLabel={(option) => option}
             sx={{ width: 300 }}
             renderInput={(param) => (
-              // console.log(params)
               <TextField {...param} label={params.row.page_name} />
             )}
             onChange={(e) =>
@@ -182,7 +170,6 @@ const PageDetaling = ({
       width: 150,
 
       renderCell: (params) => {
-        // params.value=params.row.postPerPage
         return (
           <input
             style={{ width: "60%" }}
@@ -203,24 +190,16 @@ const PageDetaling = ({
       headerName: "remainingPages",
       width: 150,
       renderCell: (params) => {
-        // params.value=params.row.postPerPage
         return (
           <input
             style={{ width: "60%" }}
             type="number"
-            // value={}
             disabled
             placeholder={params.row.postRemaining}
           />
         );
       },
     },
-    // {
-    //   field: "platform",
-    //   headerName: "vender",
-    //   width: 150,
-    //   editable: true,
-    // },
     {
       field: "Action",
       headerName: "Action",
@@ -229,13 +208,53 @@ const PageDetaling = ({
       renderCell: (params) => {
         return (
           <Button onClick={() => removePage(params)}>
-            {" "}
             <DeleteIcon />
           </Button>
         );
       },
     },
   ];
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [totalFollowerCount, setTotalFollowerCount] = useState(0);
+  const [totalPostPerPage, setTotalPostPerPage] = useState(0);
+
+  // const handleSelectedRowData = (catName) => {
+  //   let x = selectedRows.filter((e) => e.cat_name === catName);
+  //   let y = new Set(x.map((item) => item.cat_name));
+  //   // if (y.has(catName)) {
+  //     const total = x.reduce((sum, current) => {
+  //       return sum + Number(current.follower_count);
+  //     }, 0);
+  //     const totalPost = x.reduce((sum, current) => {
+  //       return sum + Number(current.postPerPage);
+  //     }, 0);
+  //     setTable2Data(x);
+  //     setTotalFollowerCount(total);
+  //     setTotalPostPerPage(totalPost);
+  //   // }
+  // };
+  const handleSelectedRowData = (catName) => {
+    let x = selectedRows.filter((e) => e.cat_name === catName);
+    let y = new Set(x.map((item) => item.cat_name));
+  
+    const total = x.reduce((sum, current) => {
+      return sum + Number(current.follower_count);
+    }, 0);
+  
+    const totalPost = x.reduce((sum, current) => {
+      return sum + Number(current.postPerPage);
+    }, 0);
+      x = x.map((row) => ({
+      ...row,
+      total_follower_count: total,
+    }));
+  
+    setTable2Data(x);
+    setTotalFollowerCount(total);
+    setTotalPostPerPage(totalPost);
+  };
+  
+
 
   const removePage = (params) => {
     setOpenDialog(true);
@@ -248,24 +267,18 @@ const PageDetaling = ({
   };
   const handlePost = (e) => {
     let updatedValue = e.target.value;
-    console.log(smallPostPerPage)
+    console.log(smallPostPerPage);
     if (e.target.value >= smallPostPerPage) {
-
-      updatedValue = smallPostPerPage
+      updatedValue = smallPostPerPage;
     }
-    
+
     const postperpage = allPages.map((page) => {
-      return { ...page, postPerPage: updatedValue};
+      return { ...page, postPerPage: updatedValue };
     });
 
     setAllPages(postperpage);
-    payloadChange(postperpage,postperpage);
-    // payloadChange(postperpage);
-    // setPostPage(Number(e.target.value));
+    payloadChange(postperpage, postperpage);
   };
-
-  // console.log(allPages);
-
   const submitPlan = async (e) => {
     if (pageName == "planCreation") {
       const planName = data.campaignName + "plan";
@@ -281,7 +294,6 @@ const PageDetaling = ({
           "http://34.93.221.166:3000/api/campaignplan",
           newdata
         );
-        // console.log(result);
         toastAlert("Plan Created SuccessFully");
         setTimeout(() => {
           navigate("/admin/registered-campaign");
@@ -317,8 +329,7 @@ const PageDetaling = ({
           "http://34.93.221.166:3000/api/campaignphase",
           newdata
         );
-        // console.log(result);
-        toastAlert("Plan Created SuccessFully");
+        toastAlert("Phase Created SuccessFully");
         setTimeout(() => {
           navigate("/admin/registered-campaign");
         }, 2000);
@@ -327,7 +338,62 @@ const PageDetaling = ({
       }
     }
   };
-  // console.log(allPages);
+
+  const [catNameLengths, setCatNameLengths] = useState({});
+  const [table2Data, setTable2Data] = useState([]);
+
+  const handleSelectionChange = (params) => {
+    let paramsSet = new Set(params);
+    let selectedRows = allPages.filter((f) => paramsSet.has(f.p_id));
+    setSelectedRows(selectedRows);
+    setTable2Data(selectedRows);
+    const updatedCatNameLengths = {};
+    selectedRows.forEach((entry) => {
+      const catName = entry.cat_name;
+      updatedCatNameLengths[catName] =
+        (updatedCatNameLengths[catName] || 0) + 1;
+    });
+    setCatNameLengths(updatedCatNameLengths);
+
+    // const total = selectedRows.reduce((sum, current) => {
+    //   return sum + Number(current.follower_count);
+    // }, 0);
+
+    // setTotalFollowerCount(total);
+    // const totalPost = selectedRows.reduce((sum, current) => {
+    //   return sum + Number(current.postPerPage);
+    // }, 0);
+
+    // setTotalPostPerPage(totalPost);
+  };
+  const col = [
+    {
+      field: "page_name",
+      headerName: "Pages",
+      width: 150,
+    },
+    {
+      field: "follower_count",
+      headerName: "Follower",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "postPerPage",
+      headerName: "Post / Page",
+      width: 150,
+      editable: true,
+    },
+    {
+      field: "total_follower_count",
+      headerName: "Total Follower Count",
+      width: 200,
+      renderCell: (params) => (
+        <strong>{params.row.total_follower_count}</strong>
+      ),
+    },
+  ];
+  
   return (
     <Paper>
       <Box sx={{ p: 2 }}>
@@ -336,40 +402,73 @@ const PageDetaling = ({
           InputLabelProps={{ shrink: true }}
           label="Post/pages"
           variant="outlined"
-          // value={postpage}
           onChange={handlePost}
         />
       </Box>
-      <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={allPages || []}
-          columns={columns}
-          getRowId={(row) => row.p_id}
-          pageSizeOptions={[5]}
-          getRowClassName={(params) => {
-            return params.row.status == false ? "unavailable" : "available";
-          }}
-          sx={{
-            ml: 2,
-            ".unavailable": {
-              bgcolor: " #FF4433",
-              "&:hover": {
-                bgcolor: "#E30B5C",
+      <Paper sx={{ display: "flex", justifyContent: "space-between", p: 2 }}>
+        <Box sx={{ height: 700, width: "65%" }}>
+          <DataGrid
+            rows={allPages || []}
+            columns={columns}
+            getRowId={(row) => row.p_id}
+            pageSizeOptions={[5]}
+            checkboxSelection
+            onRowSelectionModelChange={(params) => {
+              handleSelectionChange(params);
+            }}
+            getRowClassName={(params) => {
+              return params.row.status == false ? "unavailable" : "available";
+            }}
+            sx={{
+              ml: 2,
+              ".unavailable": {
+                bgcolor: " #FF4433",
+                "&:hover": {
+                  bgcolor: "#E30B5C",
+                },
               },
-            },
-          }}
-        />
-      </Box>
+            }}
+          />
+        </Box>
+        <Box sx={{ height: 577, width: "35%" }}>
+          <Paper sx={{ display: "flex", justifyContent: "space-around", p: 2 }}>
+            <ul>
+              {Object.entries(catNameLengths).map(([catName, count]) => (
+                <li key={catName}>
+                  <Button onClick={(e) => handleSelectedRowData(catName)}>
+                    {catName}: {count}
+                  </Button>
+                </li>
+              ))}
+            </ul>
+          
+          </Paper>
+          {selectedRows.length > 0 && (
+            
+            <>
+              <Typography variant="h6">
+              Total Followers: {totalFollowerCount}
+            </Typography>
+            <Typography variant="h6">
+              Total Post / Page: {totalPostPerPage}
+            </Typography>
+              {/* total : {selectedRows.length} */}
+              <DataGrid
+                rows={table2Data}
+                columns={col}
+                getRowId={(row) => row.p_id}
+                pageSizeOptions={[5]}
+              />
+            </>
+          )}
+        </Box>
+      </Paper>
       {!search && (
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
-            variant="contained"
-            sx={{ mt: 2, mb: 4 }}
-            onClick={submitPlan}
-          >
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2, mb: 4 }}>
+          <Button variant="contained" onClick={submitPlan}>
             submit
-          </Button>{" "}
-        </div>
+          </Button>
+        </Box>
       )}
       <>
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>

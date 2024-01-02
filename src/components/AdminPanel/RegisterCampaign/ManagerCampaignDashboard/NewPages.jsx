@@ -3,7 +3,7 @@ import { Button } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 const NewPages = ({ pages }) => {
     const navigate=useNavigate()
   const [camp, setCamp] = useState([]);
@@ -72,14 +72,14 @@ const handleVerification = (param)=>{
     },
 
     {
-      field: "commits",
-      headerName: "Commits",
+      field: "action",
+      headerName: "Action",
       width: 150,
       renderCell: (params) => {
         return (
           <div>
-            <Button onClick={() => handleVerification(params)} variant="text">
-                Go
+            <Button onClick={() => handleVerification(params)} variant="text" color="secondary" title="Move to Manager Dashborad">
+                <ArrowCircleRightOutlinedIcon sx={{fontSize:"30px"}}/>
             </Button>
           </div>
         );
