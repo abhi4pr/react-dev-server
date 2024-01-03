@@ -11,10 +11,17 @@ import Select from "react-select";
 import { useGlobalContext } from "../../../Context/Context";
 import { Autocomplete, TextField } from "@mui/material";
 import Modal from "react-modal";
+import { Link } from "react-router-dom";
+import jwtDecode from "jwt-decode";
 
 const RepairRequest = () => {
   const { toastAlert, getAssetDataContext, usersDataContext } =
     useGlobalContext();
+
+  const storedToken = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(storedToken);
+  const userID = decodedToken.id;
+
   const [modalData, setModalData] = useState([]);
   const [repairRequestFilter, setrepairRequestFilter] = useState([]);
   const [search, setSearch] = useState("");
@@ -142,6 +149,7 @@ const RepairRequest = () => {
     try {
       const formData = new FormData();
       formData.append("repair_request_date_time", repairDate);
+      formData.append("req_by", userID);
       formData.append("asset_reason_id", reason);
       formData.append("sim_id", assetsName);
       formData.append("priority", priority);
@@ -206,6 +214,7 @@ const RepairRequest = () => {
     setAssetName(row.sim_id);
     setPriorityUpdate(row.priority);
     setProblemDetailingUpdate(row.problem_detailing);
+    setReason(row.repair_id);
     setTagUserUpdate();
   };
 
@@ -247,10 +256,34 @@ const RepairRequest = () => {
   const userMultiChangeHandlerUpdate = (e, op) => {
     setTagUserUpdate(op);
   };
+
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+  useEffect(() => {
+    const currentDate = new Date().toISOString().slice(0, 16);
+    setRepairDate(currentDate);
+  }, []);
+
   return (
     <div>
       <div style={{ width: "80%", margin: "0px 0 0 10%" }}>
         <UserNav />
+        <Link to="/repair-reason">
+          <button
+            // style={{ marginRight: "200px", top: "90px" }}
+            type="button"
+            className="btn btn-outline-primary btn-sm"
+          >
+            Repair Request
+          </button>
+        </Link>
         <div>
           <FormContainer
             mainTitle="Repair Request"
@@ -619,7 +652,11 @@ const RepairRequest = () => {
         <>
           {/* <h2>Type : {showAssetsImage?.type}</h2> */}
           <div className="summary_cards flex-row row">
-            <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+            <div
+              className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
+            >
               <div className="summary_card">
                 <div className="summary_cardtitle"></div>
                 <div className="summary_cardbody">

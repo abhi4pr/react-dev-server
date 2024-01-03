@@ -1,15 +1,63 @@
 import { useEffect, useState } from "react";
 import FormContainer from "../../AdminPanel/FormContainer";
 import DataTable from "react-data-table-component";
+import HrVisibleToHrOverview from "./HrVisibleToHrOverview";
 import axios from "axios";
 import Modal from "react-modal";
 
 const AssetVisibleToHr = () => {
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [filterData, setFilterData] = useState([]);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const [isOpenModal, setIsModalOpen] = useState(false);
   const [vendorData, setVendorData] = useState([]);
+
+  // toggle button
+  const handleAccordionButtonClick = (index) => {
+    setActiveAccordionIndex(index);
+  };
+  const accordionButtons = [
+    "All",
+    "Requested",
+    "Acknowledge",
+    "Submitted",
+    "Resolved",
+  ];
+
+  const hardRender = () => {
+    getData();
+  };
+  const tab1 = (
+    <HrVisibleToHrOverview
+      hrOverviewData={data.filter((d) => d.status == "")}
+      hardRender={hardRender}
+    />
+  );
+  const tab2 = (
+    <HrVisibleToHrOverview
+      hrOverviewData={data.filter((d) => d.status == "")}
+      hardRender={hardRender}
+    />
+  );
+  const tab3 = (
+    <HrVisibleToHrOverview
+      hrOverviewData={data.filter((d) => d.status == "")}
+      hardRender={hardRender}
+    />
+  );
+  const tab4 = (
+    <HrVisibleToHrOverview
+      hrOverviewData={data.filter((d) => d.status == "")}
+      hardRender={hardRender}
+    />
+  );
+  const tab5 = (
+    <HrVisibleToHrOverview
+      hrOverviewData={data.filter((d) => d.status == "")}
+      hardRender={hardRender}
+    />
+  );
 
   useEffect(() => {
     getData();
@@ -40,6 +88,7 @@ const AssetVisibleToHr = () => {
         `http://34.93.221.166:3000/api/get_single_vendor/${id}`
       );
       setVendorData([response.data.data]);
+      console.log([response.data.data], "data jere");
       setIsModalOpen(true);
     } catch (error) {
       console.log(error);
@@ -59,24 +108,19 @@ const AssetVisibleToHr = () => {
     },
     {
       name: "Request By",
-      selector: (row) => row.asset_name,
+      selector: (row) => row.req_by_name,
       sortable: true,
       width: "150px",
     },
     {
       name: "Request Date",
-      selector: (row) => row.asset_name,
+      selector: (row) => row.req_date?.split("T")?.[0],
       sortable: true,
       width: "150px",
     },
     {
       name: "Priority",
       selector: (row) => row.priority,
-      sortable: true,
-    },
-    {
-      name: "Status",
-      selector: (row) => row.status,
       sortable: true,
     },
     {
@@ -159,6 +203,21 @@ const AssetVisibleToHr = () => {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
+            submitButton={false}
+            mainTitle="Repair Request To Hr"
+            title=""
+            accordionButtons={accordionButtons}
+            activeAccordionIndex={activeAccordionIndex}
+            onAccordionButtonClick={handleAccordionButtonClick}
+          >
+            {activeAccordionIndex === 0 && tab1}
+            {activeAccordionIndex === 1 && tab2}
+            {activeAccordionIndex === 2 && tab3}
+            {activeAccordionIndex === 3 && tab4}
+            {activeAccordionIndex === 4 && tab5}
+          </FormContainer>
+
+          <FormContainer
             mainTitle="Repair Request To Hr"
             link="/vendorMaster"
             submitButton={false}
@@ -199,8 +258,8 @@ const AssetVisibleToHr = () => {
         onRequestClose={handleModalClose}
         style={{
           content: {
-            width: "80%",
-            height: "80%",
+            width: "60%",
+            height: "30%",
             top: "50%",
             left: "50%",
             right: "auto",
@@ -214,15 +273,16 @@ const AssetVisibleToHr = () => {
         <div>
           <div className="d-flex justify-content-between mb-2">
             {/* <h2>Department: {selectedRow.dept_name}</h2> */}
-
-            <button
-              className="btn btn-success float-left"
-              onClick={handleModalClose}
-            >
-              X
-            </button>
+            <div className="d-flex">
+              <button
+                className="btn btn-success float-left mr-5"
+                onClick={handleModalClose}
+              >
+                X
+              </button>
+              <h3>Vendor Details</h3>
+            </div>
           </div>
-          <h3>Vendor Details</h3>
           <DataTable
             columns={[
               {
@@ -240,15 +300,6 @@ const AssetVisibleToHr = () => {
             data={vendorData}
             highlightOnHover
             subHeader
-            // subHeaderComponent={
-            //   <input
-            //     type="text"
-            //     placeholder="Search..."
-            //     className="w-50 form-control"
-            //     value={modalSearch}
-            //     onChange={(e) => setModalSearch(e.target.value)}
-            //   />
-            // }
           />
         </div>
         {/* )} */}

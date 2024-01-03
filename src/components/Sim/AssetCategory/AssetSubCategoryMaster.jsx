@@ -20,8 +20,6 @@ const AssetSubCategoryMaster = () => {
   const [inWarranty, setInWarranty] = useState("");
   const warranty = ["Yes", "No"];
 
-  console.log(categoryDataContext, "finaly");
-
   // const [categoryName, setCategoryName] = useState([]);
   // useEffect(() => {
   //   axios

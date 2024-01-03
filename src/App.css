@@ -1055,3 +1055,10 @@ label.checkbox-inline.propscss {
   color: var(--success);
   padding: 4px 4px;
 }
+
+/* image full size inside modal in asset management module  */
+.hovered-card {
+  transform: scale(2.2); /* Increase the size to 120% of the original */
+  transition: transform 0.3s ease; /* Add a smooth transition effect */
+  z-index: 2;
+}
