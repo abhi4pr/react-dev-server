@@ -1,69 +1,69 @@
-// GuardianComponent.js
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import AddMoreFieldsComponent from "../AddMoreFields/AddMoreFieldsComponent";
-import useAddMoreFields from "../../Hooks/useAddMoreFields";
+import React from "react";
+import { IconButton, TextField } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const FamilyFields = () => {
-  const initialFamilyDetailsGroup = {
-    name: "",
-    DOB: "",
-    contact: "",
-    occupation: "",
-    annual_income: "",
-    relation: "",
-  };
-
-  const familyDisplayFields = [
-    "name",
-    "DOB",
-    "contact",
-    "occupation",
-    "relation",
-    "annual_income",
-  ];
-
-  const familyFieldLabels = {
-    name: "Full Name",
-    DOB: "Date of Birth",
-    contact: "Contact Number",
-    occupation: "Occupation",
-    annual_income: "Annual Income",
-    relation: "Relationship",
-  };
-
-  const {
-    fieldDetails,
-    handleAddFieldDetails,
-    handleFieldDetailsChange,
-    handleRemoveFieldDetails,
-  } = useAddMoreFields(initialFamilyDetailsGroup, familyFieldLabels);
-
-  useEffect(() => {
-    async function fetchFamilyData() {
-      try {
-        const response = await axios.get(
-          `http://34.93.221.166:3000/api/get_single_family/1`
-        );
-        setFieldDetails(response.data.data);
-      } catch (error) {
-        console.error("Error fetching family data", error);
-      }
-    }
-    fetchFamilyData();
-  }, []);
-
+const FamilyFields = ({
+  familyDetails,
+  familyDisplayFields,
+  familyFieldLabels,
+  handleFamilyDetailsChange,
+  handleAddFamilyDetails,
+  handleRemoveFamilyDetails,
+}) => {
   return (
     <>
-      <AddMoreFieldsComponent
-        fieldDetails={fieldDetails}
-        fieldLabels={familyFieldLabels}
-        handleFieldDetailsChange={handleFieldDetailsChange}
-        handleAddFieldDetails={handleAddFieldDetails}
-        handleRemoveFieldDetails={handleRemoveFieldDetails}
-        addButtonLabel="Add More Family Details"
-        displayFields={familyDisplayFields}
-      />
+      {familyDetails?.map((detail, index) => (
+        <div key={index} mb={2}>
+          <div className="row">
+            {Object.keys(detail).map((key) => {
+              if (familyDisplayFields.includes(key)) {
+                return key === "DOB" ? (
+                  <FieldContainer
+                    key={key}
+                    fieldGrid={3}
+                    type="date"
+                    name={key}
+                    label="Date of Birth"
+                    value={
+                      key === "DOB" && detail[key]
+                        ? detail[key].split("T")[0]
+                        : detail[key]
+                    }
+                    onChange={(e) => handleFamilyDetailsChange(index, e)}
+                  />
+                ) : (
+                  <FieldContainer
+                    key={key}
+                    fieldGrid={3}
+                    name={key}
+                    label={familyFieldLabels[key]}
+                    value={detail[key]}
+                    onChange={(e) => handleFamilyDetailsChange(index, e)}
+                  />
+                );
+              }
+              return null;
+            })}
+            {familyDetails?.length > 1 && (
+              <IconButton onClick={() => handleRemoveFamilyDetails(index)}>
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </div>
+        </div>
+      ))}
+
+      <div className="row">
+        <div className="col-12">
+          <button
+            onClick={handleAddFamilyDetails}
+            variant="contained"
+            className="btn btn-outline-primary me-2"
+          >
+            Add More Family Details
+          </button>
+        </div>
+      </div>
     </>
   );
 };

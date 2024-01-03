@@ -51,7 +51,8 @@ import ReadyToOnboardContent from "./ReadyToOnboardContent";
 import { City, State } from "country-state-city";
 import IndianCitiesMui from "../ReusableComponents/IndianCitiesMui";
 import GuardianFields from "./GuardianFields";
-import FamilyFields from "./FamilyFields";
+import FamilyFields from "./FamilyFieldsTest";
+import EducationFields from "./EducationFields";
 
 const LanguageList = ["English", "Hindi", "Other"];
 
@@ -70,6 +71,7 @@ const maritialStatusData = ["Single", "Married"]; //,"Divorced","Widowed","Separ
 
 const genderData = ["Male", "Female", "Other"];
 
+//Guardian
 const initialGuardianDetailsGroup = {
   guardian_name: "",
   guardian_contact: "",
@@ -86,6 +88,65 @@ const guardianFieldLabels = {
   guardian_name: "Guardian Name",
   guardian_contact: "Guardian Contact",
   guardian_address: "Guardian Address",
+};
+
+//Family
+const initialFamilyDetailsGroup = {
+  name: "",
+  DOB: "",
+  contact: "",
+  occupation: "",
+  annual_income: "",
+  relation: "",
+};
+
+const familyDisplayFields = [
+  "name",
+  "DOB",
+  "contact",
+  "occupation",
+  "relation",
+  "annual_income",
+];
+
+const familyFieldLabels = {
+  name: "Full Name",
+  DOB: "Date of Birth",
+  contact: "Contact Number",
+  occupation: "Occupation",
+  annual_income: "Annual Income",
+  relation: "Relationship",
+};
+
+//Education
+const initialEducationDetailsGroup = {
+  institute_name: "",
+  from_year: "",
+  to_year: "",
+  percentage: "",
+  stream: "",
+  specialization: "",
+  title: "",
+};
+
+const educationDispalyFields = [
+  "institute_name",
+  "from_year",
+  "to_year",
+  "percentage",
+  "stream",
+  "specialization",
+  "title",
+];
+
+const educationFieldLabels = {
+  institute_name: "Institute Name",
+  from_year: "From Year",
+  to_year: "To Year",
+  percentage: "Percentage",
+  stream: "Stream",
+  specialization: "Specialization",
+  title: "Title",
 };
 
 const PreOnboardingUserMaster = () => {
@@ -204,6 +265,16 @@ const PreOnboardingUserMaster = () => {
   //New Guardian Fields
   const [guardianDetails, setGuardianDetails] = useState([
     initialGuardianDetailsGroup,
+  ]);
+
+  //Family Fields
+  const [familyDetails, setFamilyDetails] = useState([
+    initialFamilyDetailsGroup,
+  ]);
+
+  //Education Fields
+  const [educationDetails, setEducationDetails] = useState([
+    initialEducationDetailsGroup,
   ]);
 
   //coc
@@ -653,6 +724,58 @@ const PreOnboardingUserMaster = () => {
       }
     }
 
+    //family
+    for (const elements of familyDetails) {
+      let payload = {
+        user_id: id,
+        name: elements.name,
+        DOB: elements.DOB,
+        relation: elements.relation,
+        contact: elements.contact,
+        occupation: elements.occupation,
+        annual_income: elements.annual_income,
+      };
+
+      if (elements.family_id) {
+        payload.family_id = elements.family_id;
+      }
+      try {
+        const response = await axios.put(
+          "http://34.93.221.166:3000/api/update_family",
+          payload
+        );
+      } catch (error) {
+        console.error("Error updating family details:", error);
+      }
+    }
+
+    //Education
+    for (const elements of educationDetails) {
+      let payload = {
+        user_id: id,
+        title: elements.title,
+        institute_name: elements.institute_name,
+        from_year: elements.from_year,
+        to_year: elements.to_year,
+        percentage: elements.percentage,
+        stream: elements.stream,
+        specialization: elements.specialization,
+      };
+
+      if (elements.education_id) {
+        payload.education_id = elements.education_id;
+      }
+      try {
+        const response = await axios.put(
+          "http://34.93.221.166:3000/api/update_education",
+          payload
+        );
+        console.log(response.data);
+      } catch (error) {
+        console.error("Error Updating Education details:", error);
+      }
+    }
+
     // After update send mail
     axios
       .post("http://34.93.221.166:3000/api/add_send_user_mail", {
@@ -676,6 +799,20 @@ const PreOnboardingUserMaster = () => {
 
     toastAlert("User Update");
   };
+
+  useEffect(() => {
+    async function getDetails() {
+      const familyDataResponse = await axios.get(
+        `http://34.93.221.166:3000/api/get_single_family/${id}`
+      );
+      const educationDataResponse = await axios.get(
+        `http://34.93.221.166:3000/api/get_single_education/${id}`
+      );
+      setFamilyDetails(familyDataResponse.data.data);
+      setEducationDetails(educationDataResponse.data.data);
+    }
+    getDetails();
+  }, [id]);
 
   //Guardian
   const handleAddGuardianDetails = () => {
@@ -713,6 +850,79 @@ const PreOnboardingUserMaster = () => {
     );
     setGuardianDetails(newGuardianDetails);
   }
+
+  //familyDetails
+  const handleAddFamilyDetails = () => {
+    setFamilyDetails([...familyDetails, { ...initialFamilyDetailsGroup }]);
+  };
+
+  const handleFamilyDetailsChange = (index, event) => {
+    const updatedFamilyDetails = familyDetails?.map((detail, idx) => {
+      if (idx === index) {
+        return { ...detail, [event.target.name]: event.target.value };
+      }
+      return detail;
+    });
+    setFamilyDetails(updatedFamilyDetails);
+  };
+
+  const handleRemoveFamilyDetails = async (index) => {
+    const itemToRemove = familyDetails[index];
+    if (itemToRemove && itemToRemove.family_id) {
+      try {
+        await axios.delete(
+          `http://34.93.221.166:3000/api/delete_family/${itemToRemove.family_id}`
+        );
+        toastAlert("Details Deleted");
+      } catch (error) {
+        console.error("Error deleting family detail:", error);
+        return;
+      }
+    }
+
+    const newFamilyDetails = familyDetails.filter((_, idx) => idx !== index);
+    setFamilyDetails(newFamilyDetails);
+  };
+
+  //EducationDetailsAdd
+  const handleAddEducationDetails = () => {
+    setEducationDetails([
+      ...educationDetails,
+      { ...initialEducationDetailsGroup },
+    ]);
+  };
+
+  const handleEducationDetailsChange = (index, event) => {
+    const updatedEducationDetails = educationDetails?.map((detail, i) => {
+      if (i === index) {
+        return { ...detail, [event.target.name]: event.target.value };
+      }
+      return detail;
+    });
+    setEducationDetails(updatedEducationDetails);
+  };
+
+  const handleRemoveEducationDetails = async (index) => {
+    const itemToRemove = educationDetails[index];
+    console.log(itemToRemove, "item to remove education");
+    if (itemToRemove && itemToRemove.education_id) {
+      try {
+        await axios.delete(
+          `http://34.93.221.166:3000/api/delete_education/${itemToRemove.education_id}`
+        );
+        console.log(
+          "Deleted Education detail from server:",
+          itemToRemove.education_id
+        );
+        toastAlert("Details Deleted");
+      } catch (error) {
+        console.error("Error Deleting Education Detail:", error);
+        return;
+      }
+    }
+    const newEducationDetails = educationDetails.filter((_, i) => i !== index);
+    setEducationDetails(newEducationDetails);
+  };
 
   // Password Auto Genrate
   const generatePassword = () => {
@@ -1443,9 +1653,37 @@ const PreOnboardingUserMaster = () => {
                             />
 
                             <FamilyFields
+                              familyDetails={familyDetails}
+                              familyDisplayFields={familyDisplayFields}
+                              familyFieldLabels={familyFieldLabels}
+                              handleFamilyDetailsChange={
+                                handleFamilyDetailsChange
+                              }
+                              handleAddFamilyDetails={handleAddFamilyDetails}
+                              handleRemoveFamilyDetails={
+                                handleRemoveFamilyDetails
+                              }
+                            />
+
+                            <EducationFields
+                              educationDetails={educationDetails}
+                              educationDispalyFields={educationDispalyFields}
+                              educationFieldLabels={educationFieldLabels}
+                              handleEducationDetailsChange={
+                                handleEducationDetailsChange
+                              }
+                              handleAddEducationDetails={
+                                handleAddEducationDetails
+                              }
+                              handleRemoveEducationDetails={
+                                handleRemoveEducationDetails
+                              }
+                            />
+
+                            {/* <FamilyFieldsTest
                               fieldDetails={fieldDetails}
                               setFieldDetails={setFieldDetails}
-                            />
+                            /> */}
                           </div>
                         </div>
 
