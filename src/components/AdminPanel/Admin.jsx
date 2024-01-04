@@ -184,6 +184,7 @@ import EditEmailTemp from "./User/EditEmailTemp";
 import ManagerDashboard from "./RegisterCampaign/ManagerDashboard/ManagerDashboard";
 import ManagerCampaign from "./RegisterCampaign/ManagerCampaignDashboard/ManagerCampaign";
 import AssetVisibleToTagedPerosn from "../Sim/AssetVisibleToTagedPerson/AssetVisibleToTagedPerosn";
+import AssetSingleUser from "../Sim/AssetSingeUser/AssetSingleUser";
 import AssetVisibleToHr from "../Sim/AssetVisibleToHr/AssetVisibleToHr";
 import WFHAllSalary from "./WFH/WFHAllSalary";
 
@@ -460,6 +461,10 @@ const Admin = () => {
                     <Route
                       path="/asset-visible-to-taged-person"
                       element={<AssetVisibleToTagedPerosn />}
+                    />
+                    <Route
+                      path="/asset-single-user"
+                      element={<AssetSingleUser />}
                     />
                   </>
                   {/* )} */}

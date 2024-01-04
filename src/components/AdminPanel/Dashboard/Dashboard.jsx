@@ -112,7 +112,6 @@ function Dashboard() {
               </div>
             </div>
           )}
-
           {contextData && contextData[9] && contextData[9].view_value === 1 && (
             <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <div className="d_infocard card shadow">
@@ -132,7 +131,6 @@ function Dashboard() {
               </div>
             </div>
           )}
-
           {contextData &&
             contextData[15] &&
             contextData[15].view_value === 1 && (
@@ -175,7 +173,6 @@ function Dashboard() {
                 </div>
               </>
             )}
-
           {contextData &&
             contextData[12] &&
             contextData[12].view_value === 1 && (
@@ -195,7 +192,6 @@ function Dashboard() {
                 </div>
               </div>
             )}
-
           {contextData &&
             contextData[13] &&
             contextData[13].view_value === 1 && (
@@ -215,7 +211,6 @@ function Dashboard() {
                 </div>
               </div>
             )}
-
           {contextData &&
             contextData[30] &&
             contextData[30].view_value === 1 && (
@@ -238,7 +233,28 @@ function Dashboard() {
                 </Link>
               </div>
             )}
+          {/* {contextData &&
+            contextData[30] &&
+            contextData[30].view_value === 1 && ( */}
+          <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+            <Link className="collapse-item" to="/admin/asset-single-user">
+              <div className="d_infocard card shadow">
+                <div className="card-body">
+                  <div className="d_infocard_txt">
+                    {/* <h3>WFH</h3> */}
 
+                    <h2>Asset Single User</h2>
+                  </div>
+                  <div className="d_infocard_icon">
+                    <span>
+                      <FaProductHunt />
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+          {/* // )} */}
           {loginUserData.department_name == "Accounts" && (
             <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <div className="d_infocard card shadow">

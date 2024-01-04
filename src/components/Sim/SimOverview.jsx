@@ -508,12 +508,12 @@ const SimOverview = () => {
                   </button>
                 </Link>
 
-                <Link to="/repair-reason">
+                <Link to="/repair-request">
                   <button
                     type="button"
                     className="btn btn-outline-primary btn-sm"
                   >
-                    Repair Reason
+                    Repair Management
                   </button>
                 </Link>
                 <Link to="/sim-master">
