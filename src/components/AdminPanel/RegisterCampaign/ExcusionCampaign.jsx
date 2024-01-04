@@ -3,7 +3,7 @@ import FormContainer from "../FormContainer";
 import ExePageDetailes from "./ExePageDetailes";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
-
+import RequestAssignPage from "./ReuestAssignPage";
 
 const ExcusionCampaign = () => {
   const storedToken = sessionStorage.getItem("token");
@@ -16,15 +16,26 @@ const ExcusionCampaign = () => {
   const [pendingData, setPendingData] = useState([]);
   const [executedData, setExecutedData] = useState([]);
   const [verifiedData, setVerifiedData] = useState([]);
-  const [rejectedData, setRejectedData] = useState([]); 
+  const [rejectedData, setRejectedData] = useState([]);
+  const [requestAssign, SetRequestAssign] = useState([]);
 
-
-  const getExpertee=async ()=>{
-    const expert=await axios.get(`http://34.93.221.166:3000/api/expertise/user/${decodedToken.id}`);
-    getAssignment(expert.data.data.exp_id)
-    console.log(expert)
-  }
-
+  const getExpertee = async () => {
+    const expert = await axios.get(
+      `http://34.93.221.166:3000/api/expertise/user/${decodedToken.id}`
+    );
+    getAssignment(expert.data.data.exp_id);
+    console.log(expert);
+  };
+  const RequestAssign = async () => {
+    const reqAss = await axios.get(
+      `http://192.168.29.110:3000/api/preassignment/658eb09363ee4e283e03cb34`
+    );
+    const data = reqAss?.data?.data.filter((item) => item.status == "pending");
+    SetRequestAssign(data);
+  };
+  useEffect(() => {
+    RequestAssign();
+  }, []);
   const getAssignment = async (id) => {
     const getData = await axios.get(
       `http://34.93.221.166:3000/api/assignment/all/25`
@@ -52,13 +63,24 @@ const ExcusionCampaign = () => {
   };
   useEffect(() => {
     // getAssignment();
-    getExpertee()
+    getExpertee();
   }, [decodedToken]);
   const handleAccordionButtonClick = (index) => {
     setActiveAccordionIndex(index);
   };
 
   const tab1 = (
+    <RequestAssignPage
+      data={requestAssign}
+      // status={"assigned"}
+      // setActiveAccordionIndex={setActiveAccordionIndex}
+      // setActiveAccordionIndex={setActiveAccordionIndex}
+      // activeAccordion="1"
+      // getAssignment={getAssignment}
+    />
+  );
+
+  const tab2 = (
     <ExePageDetailes
       data={assignmentData}
       // status={"assigned"}
@@ -68,7 +90,7 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
-  const tab2 = (
+  const tab3 = (
     <ExePageDetailes
       data={pendingData}
       status={"assigned"}
@@ -77,7 +99,7 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
-  const tab3 = (
+  const tab4 = (
     <ExePageDetailes
       data={executedData}
       status={"executed"}
@@ -86,7 +108,7 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
-  const tab4 = (
+  const tab5 = (
     <ExePageDetailes
       data={verifiedData}
       status={"verified"}
@@ -95,7 +117,7 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
-  const tab5 = (
+  const tab6 = (
     <ExePageDetailes
       data={rejectedData}
       status={"rejected"}
@@ -105,6 +127,7 @@ const ExcusionCampaign = () => {
   );
 
   const accordionButtons = [
+    "Requested Assign",
     "Assignment",
     "Pending Excuation",
     "Excuted",
@@ -126,6 +149,7 @@ const ExcusionCampaign = () => {
         {activeAccordionIndex === 2 && tab3}
         {activeAccordionIndex === 3 && tab4}
         {activeAccordionIndex === 4 && tab5}
+        {activeAccordionIndex === 5 && tab6}
       </FormContainer>
     </div>
   );
