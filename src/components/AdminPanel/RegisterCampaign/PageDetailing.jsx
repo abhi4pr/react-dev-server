@@ -17,7 +17,6 @@ import { Paper, Autocomplete, Typography } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useGlobalContext } from "../../../Context/Context";
-import { red } from "@mui/material/colors";
 
 let options = [];
 const PageDetaling = ({
@@ -43,6 +42,7 @@ const PageDetaling = ({
   const [smallPostPerPage, setSmallPostPerPage] = useState(
     Number.MAX_SAFE_INTEGER
   );
+  const [totalCountsByCategory, setTotalCountsByCategory] = useState({});
 
   // console.log(pages);
 
@@ -236,25 +236,24 @@ const PageDetaling = ({
   const handleSelectedRowData = (catName) => {
     let x = selectedRows.filter((e) => e.cat_name === catName);
     let y = new Set(x.map((item) => item.cat_name));
-  
+
     const total = x.reduce((sum, current) => {
       return sum + Number(current.follower_count);
     }, 0);
-  
+
     const totalPost = x.reduce((sum, current) => {
       return sum + Number(current.postPerPage);
     }, 0);
-      x = x.map((row) => ({
+
+    x = x.map((row) => ({
       ...row,
       total_follower_count: total,
     }));
-  
+
     setTable2Data(x);
     setTotalFollowerCount(total);
     setTotalPostPerPage(totalPost);
   };
-  
-
 
   const removePage = (params) => {
     setOpenDialog(true);
@@ -303,7 +302,6 @@ const PageDetaling = ({
       }
     }
     if (pageName == "phaseCreation") {
-      // console.log("phase creation")
       if (phaseInfo.phaseDataError === "") {
         setPhaseDataError("Phase ID is Required");
       }
@@ -341,12 +339,18 @@ const PageDetaling = ({
 
   const [catNameLengths, setCatNameLengths] = useState({});
   const [table2Data, setTable2Data] = useState([]);
-
+  const [summaryData, setSummaryData] = useState({
+    total: 0,
+    totalPost: 0,
+    lent: 0,
+  });
+  console.log(summaryData.total, " follower");
   const handleSelectionChange = (params) => {
     let paramsSet = new Set(params);
     let selectedRows = allPages.filter((f) => paramsSet.has(f.p_id));
     setSelectedRows(selectedRows);
     setTable2Data(selectedRows);
+
     const updatedCatNameLengths = {};
     selectedRows.forEach((entry) => {
       const catName = entry.cat_name;
@@ -354,18 +358,19 @@ const PageDetaling = ({
         (updatedCatNameLengths[catName] || 0) + 1;
     });
     setCatNameLengths(updatedCatNameLengths);
+    const total = selectedRows.reduce(
+      (sum, current) => sum + Number(current.follower_count),
+      0
+    );
+    const totalPost = selectedRows.reduce(
+      (sum, current) => sum + Number(current.postPerPage),
+      0
+    );
+    const lent = selectedRows.length;
 
-    // const total = selectedRows.reduce((sum, current) => {
-    //   return sum + Number(current.follower_count);
-    // }, 0);
-
-    // setTotalFollowerCount(total);
-    // const totalPost = selectedRows.reduce((sum, current) => {
-    //   return sum + Number(current.postPerPage);
-    // }, 0);
-
-    // setTotalPostPerPage(totalPost);
+    setSummaryData({ total, totalPost, lent });
   };
+
   const col = [
     {
       field: "page_name",
@@ -393,7 +398,7 @@ const PageDetaling = ({
       ),
     },
   ];
-  
+
   return (
     <Paper>
       <Box sx={{ p: 2 }}>
@@ -431,35 +436,67 @@ const PageDetaling = ({
           />
         </Box>
         <Box sx={{ height: 577, width: "35%" }}>
-          <Paper sx={{ display: "flex", justifyContent: "space-around", p: 2 }}>
-            <ul>
-              {Object.entries(catNameLengths).map(([catName, count]) => (
-                <li key={catName}>
-                  <Button onClick={(e) => handleSelectedRowData(catName)}>
-                    {catName}: {count}
-                  </Button>
-                </li>
-              ))}
-            </ul>
-          
+          <Typography
+            variant="h6"
+            sx={{ display: "flex", justifyContent: "center", mb: 1 }}
+          >
+            Summary
+          </Typography>
+          <Box
+            sx={{
+              textAlign: "right",
+              display: "flex",
+              gap: 4,
+              justifyContent: "center",
+            }}
+          >
+            <Typography variant="h6" sx={{ marginBottom: 1 }}>
+              Pages: {summaryData.lent}
+            </Typography>
+            <Typography variant="h6" sx={{ marginBottom: 1 }}>
+              Followers : {summaryData.total}
+            </Typography>
+            <Typography variant="h6" sx={{ marginBottom: 1 }}>
+              Posts: {summaryData.totalPost}
+            </Typography>
+          </Box>
+          <Paper>
+            <Box>
+              <ul>
+                {Object.entries(catNameLengths).map(([catName, count]) => (
+                  <li key={catName}>
+                    <Button
+                      onClick={(e) => handleSelectedRowData(catName)}
+                      variant="outlined"
+                      color="secondary"
+                      sx={{ marginBottom: 1, display: "flex" }}
+                    >
+                      {catName}: {count}
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            </Box>
+
+            <Box sx={{ textAlign: "right", display: "flex", gap: 2, m: 2 }}>
+              <Typography variant="h6" sx={{ marginBottom: 1 }}>
+                Total Followers: {totalFollowerCount}
+              </Typography>
+              <Typography variant="h6" sx={{ marginBottom: 1 }}>
+                Total Post / Page: {totalPostPerPage}
+              </Typography>
+            </Box>
           </Paper>
+
           {selectedRows.length > 0 && (
-            
-            <>
-              <Typography variant="h6">
-              Total Followers: {totalFollowerCount}
-            </Typography>
-            <Typography variant="h6">
-              Total Post / Page: {totalPostPerPage}
-            </Typography>
-              {/* total : {selectedRows.length} */}
+            <Box mt={2}>
               <DataGrid
                 rows={table2Data}
                 columns={col}
                 getRowId={(row) => row.p_id}
                 pageSizeOptions={[5]}
               />
-            </>
+            </Box>
           )}
         </Box>
       </Paper>
