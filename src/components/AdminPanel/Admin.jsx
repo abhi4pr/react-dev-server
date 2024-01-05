@@ -193,6 +193,7 @@ import PaymentDone from "./Finance/PaymentDone";
 import PurchaseManagementAllTransaction from "./Finance/PurchaseManagementAllTransaction";
 import Discard from "./Finance/Discard";
 import JobTypeMaster from "../JobType/JobTypeMaster";
+import FinanceWFHDashboard from "../Finance Dashboard/FinanceWFHDashboard";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -334,6 +335,10 @@ const Admin = () => {
                   <Route
                     path="/accounts-finance-overview"
                     element={<AccountsOverviewWFH />}
+                  />
+                  <Route
+                    path="/accounts-finance-dashboard"
+                    element={<FinanceWFHDashboard />}
                   />
 
                   <Route path="/wfh-single-user" element={<WFHSingleUser />} />

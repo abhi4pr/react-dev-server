@@ -57,7 +57,7 @@ const ContactNumberReact = ({
         <p style={{ color: "red" }}>*Please enter emergency contact1 valid number</p>
       )}
       {mandatoryFieldsEmpty?.personalContact && (
-        <p style={{ color: "red" }}>*Please enter emergency contact1 contact number</p>
+        <p style={{ color: "red" }}>*Please enter emergency  contact number</p>
       )
       }
     </div>
