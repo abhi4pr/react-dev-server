@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Select from "react-select";
 import statesAndUTs from "./IndianStatesAndUTs";
 
-const IndianStates = ({ onChange, newValue }) => {
+const IndianStates = ({ onBlur,onChange, newValue }) => {
   const [selectedState, setSelectedState] = useState(null);
 
   const options = statesAndUTs.map((state) => ({
@@ -14,10 +14,11 @@ const IndianStates = ({ onChange, newValue }) => {
     setSelectedState(selectedState);
     onChange(selectedState);
   };
+  
 
   return (
     <>
-      <label className="form-label">States and UT</label>
+      <label className="form-label">States and UT <sup style={{ color: "red" }}>*</sup></label>
       <Select
         className=""
         options={options}
@@ -27,6 +28,7 @@ const IndianStates = ({ onChange, newValue }) => {
         isClearable
         isSearchable
         required
+        onBlur={onBlur}
       />
     </>
   );

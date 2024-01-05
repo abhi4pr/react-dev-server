@@ -51,7 +51,7 @@ const AccessTypeUpdate = () => {
       } = fetchedData;
       setAccessTypeName(name);
       setRemark(remark);
-      setSimData(fetchedData);
+      // setSimData(fetchedData);
     });
   }, [id]);
 

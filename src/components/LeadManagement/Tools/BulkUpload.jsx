@@ -18,6 +18,7 @@ import axios from "axios";
 
 export default function BulkUpload({ setUpload }) {
   const { datalead } = useContext(UserContext);
+  console.log(datalead);
   const [open, setOpen] = useState(false);
   const [bulklead, setBulklead] = useState([]);
   const theme = useTheme();

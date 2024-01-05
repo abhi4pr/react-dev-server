@@ -187,6 +187,10 @@ import AssetVisibleToTagedPerosn from "../Sim/AssetVisibleToTagedPerson/AssetVis
 import AssetSingleUser from "../Sim/AssetSingeUser/AssetSingleUser";
 import AssetVisibleToHr from "../Sim/AssetVisibleToHr/AssetVisibleToHr";
 import WFHAllSalary from "./WFH/WFHAllSalary";
+import PendingPaymentRequest from "./Finance/PendingPaymentRequest";
+import PaymentDone from "./Finance/PaymentDone";
+import PurchaseManagementAllTransaction from "./Finance/PurchaseManagementAllTransaction";
+import Discard from "./Finance/Discard";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -623,6 +627,10 @@ const Admin = () => {
                     path="/finance-salebookingverify"
                     element={<SaleBookingVerify />}
                   />
+                  <Route path="/finance-pruchasemanagement-pendingpaymentrequest" element={<PendingPaymentRequest />} />
+                  <Route path="/finance-pruchasemanagement-paymentdone" element={<PaymentDone />} />
+                  <Route path="/finance-pruchasemanagement-alltransaction" element={<PurchaseManagementAllTransaction />} />
+                  <Route path="/finance-pruchasemanagement-discardpayment" element={<Discard />} />
                   <Route
                     path="/payment-summary/:id"
                     element={<PaymentSummary />}
