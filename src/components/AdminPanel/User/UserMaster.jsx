@@ -349,69 +349,81 @@ const UserMaster = () => {
       return toastError("Job Type is Required");
     } else if (!department || department == "") {
       return toastError("Department is Required");
-    }else if (!subDepartment || subDepartment == "" || subDepartment.length===0) {
+    } else if (
+      !subDepartment ||
+      subDepartment == "" ||
+      subDepartment.length === 0
+    ) {
       return toastError("Sub Department is Required");
-    }else if (!designation || designation == "") {
+    } else if (!designation || designation == "") {
       return toastError("Designatoin is Required");
-    }else if (!reportL1 || reportL1 == "") {
+    } else if (!reportL1 || reportL1 == "") {
       return toastError("Report L1 Is Required");
-    }else if(!personalEmail || personalEmail == ""){
+    } else if (!personalEmail || personalEmail == "") {
       return toastError("Personal Email is Required");
-    }else if (!personalContact || personalContact == ""){
+    } else if (!personalContact || personalContact == "") {
       return toastError("Personal Contact is Required");
-    }else if(!alternateContact || alternateContact ==""){
+    } else if (!alternateContact || alternateContact == "") {
       return toastError("Alternate Contact is Required");
-    } else if(!emergencyContact || emergencyContact == ""){
+    } else if (!emergencyContact || emergencyContact == "") {
       return toastError("Emergency Contact is Required");
-    }else if(!emergencyContactName || emergencyContactName ==""){
+    } else if (!emergencyContactName || emergencyContactName == "") {
       return toastError("Emergency Contact Name is Required");
-    }else if(!emergencyContactRelation || emergencyContactRelation ==""){
-      return toastError("Emergency Contact Relation is Required");  
-    }else if(!loginId || loginId == "") {
+    } else if (!emergencyContactRelation || emergencyContactRelation == "") {
+      return toastError("Emergency Contact Relation is Required");
+    } else if (!loginId || loginId == "") {
       return toastError("Login Id is Required");
-    }else if(!password || password==""){
+    } else if (!password || password == "") {
       return toastError("Password is Required");
-    }else if(!speakingLanguage || speakingLanguage==""){
+    } else if (!speakingLanguage || speakingLanguage == "") {
       return toastError("Speaking Language is Required");
-    }else if (!selectedImage|| selectedImage==""||selectedImage.length==0){
+    } else if (
+      !selectedImage ||
+      selectedImage == "" ||
+      selectedImage.length == 0
+    ) {
       return toastError("Profile Pic is Required");
     } else if (!gender || gender == "") {
       return toastError("Gender is Required");
-    }else if(!nationality || nationality==""){
-      return toastError("Nationality is Required")
-    }else if(!dateOfBirth || dateOfBirth==""){
+    } else if (!nationality || nationality == "") {
+      return toastError("Nationality is Required");
+    } else if (!dateOfBirth || dateOfBirth == "") {
       return toastError("Date of Birth is Required");
-    }else if(!FatherName || FatherName==""){
+    } else if (!FatherName || FatherName == "") {
       return toastError("Father Name is Required");
-    }else if(!motherName || motherName){
+    } else if (!motherName || motherName == "") {
       return toastError("Mother Name is Required");
-    }else if(!bloodGroup || bloodGroup== ""){
+    } else if (!bloodGroup || bloodGroup == "") {
       return toastError("Blood Group is Required");
-    }else if (!maritialStatus || maritialStatus =="" || maritialStatus.length ==0){
+    } else if (
+      !maritialStatus ||
+      maritialStatus == "" ||
+      maritialStatus.length == 0
+    ) {
       return toastError("Maritial Status is Required");
-    }else if (!address || address == ""){
+    } else if (!address || address == "") {
       return toastError("Address is Required");
-    }else if(!city || city==""){
+    } else if (!city || city == "") {
       return toastError("City is Required");
-    }else if(!state || state==""){
+    } else if (!state || state == "") {
       return toastError("State/UT is Required");
-    }else if(!pincode || pincode==""){
+    } else if (!pincode || pincode == "") {
       return toastError("Pincode is Required");
-    }else if(!joiningDate || joiningDate==""){
+    } else if (!joiningDate || joiningDate == "") {
       return toastError("Joining Date is Required");
-    }else if(!status || status==""){
+    } else if (!status || status == "") {
       return toastError("Status is Required");
-    }
-    else if (!bankName || bankName == "") {
+    } else if (!bankName || bankName == "") {
       return toastError("Bank Name is Required");
-    }else if(!bankAccountNumber || bankAccountNumber==""){
+    } else if (!bankAccountNumber || bankAccountNumber == "") {
       return toastError("Bank Account Number is Required");
-    }
-     else if (!username || username == "") {
+    } else if (!username || username == "") {
       return toastError("User Name Error is required");
-    } else if (!roles || roles == "") {
-      return toastError("Roles Error is required");
-    }  else if (!email || email == "") {
+    } 
+    // else if (!roles || roles == "") {
+    //   return toastError("Roles Error is required");
+    // }
+     else if (!email || email == "") {
       return toastError("Official Email Error is required");
     }
 
@@ -771,7 +783,8 @@ const UserMaster = () => {
 
   const generateLoginId = () => {
     const randomSuffix = Math.floor(Math.random() * 1000);
-    const generatedLoginId = `${username}@${randomSuffix}`;
+    const userName =username.replace(/\s/g, "");
+    const generatedLoginId = `${userName}@${randomSuffix}`;
     setLoginId(generatedLoginId);
     if (generatedLoginId.length > 0) {
       setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
@@ -946,7 +959,21 @@ const UserMaster = () => {
           label="Full Name *"
           fieldGrid={12}
           value={username}
-          onChange={(e) => setUserName(e.target.value)}
+          onChange={(e) => {
+            const inputValue = e.target.value;
+            // Validation for number presence
+            const containsNumber = /\d/.test(inputValue);
+            
+            if (!containsNumber) {
+              setUserName(inputValue);
+              if (inputValue !== "") {
+                setMandatoryFieldsEmpty((prevState) => ({
+                  ...prevState,
+                  fullName: false,
+                }));
+              }
+            }
+          }}
           onBlur={() => {
             console.log("onBlur called");
             console.log(username);
@@ -957,18 +984,10 @@ const UserMaster = () => {
               }));
             } else {
               // Validation for number presence
-              const containsNumber = /\d/.test(username);
-              if (containsNumber) {
-                setMandatoryFieldsEmpty({
-                  ...mandatoryFieldsEmpty,
-                  fullName: false,
-                });
-              } else {
-                setMandatoryFieldsEmpty((prevState) => ({
-                  ...prevState,
-                  fullName: true,
-                }));
-              }
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                fullName: false,
+              });
             }
           }}
         />
@@ -1061,7 +1080,9 @@ const UserMaster = () => {
       </div>
 
       <div className="form-group col-3">
-        <label className="form-label">Sub Department <sup style={{ color: "red" }}>*</sup></label>
+        <label className="form-label">
+          Sub Department <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           className=""
           options={subDepartmentData.map((option) => ({
@@ -1369,7 +1390,26 @@ const UserMaster = () => {
           label="Emergency Contact Person Name *"
           fieldGrid={12}
           value={emergencyContactName}
-          onChange={(e) => setEmergencyContactName(e.target.value)}
+          onChange={(e) =>{
+            const inputValue = e.target.value;
+            // Validation for number presence
+            const containsNumber = /\d/.test(inputValue);
+            
+            if (!containsNumber) {
+              setEmergencyContactName(inputValue);
+              if (inputValue === "") {
+                setMandatoryFieldsEmpty((prevState) => ({
+                  ...prevState,
+                  emergencyContactName: true,
+                }));
+              } else {
+                setMandatoryFieldsEmpty({
+                  ...mandatoryFieldsEmpty,
+                  emergencyContactName: false,
+                });
+              }
+            }
+          }}
           onBlur={() => {
             if (emergencyContactName === "") {
               // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,emergencyContactName:true});
@@ -1394,7 +1434,26 @@ const UserMaster = () => {
           label="Emergency Contact Person Relation *"
           fieldGrid={12}
           value={emergencyContactRelation}
-          onChange={(e) => setEmergencyContactRelation(e.target.value)}
+          onChange={(e) =>  {
+            const inputValue = e.target.value;
+            // Validation for number presence
+            const containsNumber = /\d/.test(inputValue);
+            
+            if (!containsNumber) {
+              setEmergencyContactRelation(inputValue);
+              if (inputValue === "") {
+                setMandatoryFieldsEmpty((prevState) => ({
+                  ...prevState,
+                  emergencyContactRelation: true,
+                }));
+              } else {
+                setMandatoryFieldsEmpty({
+                  ...mandatoryFieldsEmpty,
+                  emergencyContactRelation: false,
+                });
+              }
+            }
+          }}
           onBlur={() => {
             if (emergencyContactRelation === "") {
               // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,emergencyContactRelation:true});
@@ -1426,15 +1485,36 @@ const UserMaster = () => {
         label="Emergency Contact 2 Person Name"
         fieldGrid={3}
         value={emergencyContactName2}
-        onChange={(e) => setEmergencyContactName2(e.target.value)}
+        onChange={(e) =>{
+          const inputValue = e.target.value;
+          // Validation for number presence
+          const containsNumber = /\d/.test(inputValue);
+          
+          if (!containsNumber) {
+            setEmergencyContactName2(inputValue);
+          } else {
+            // If the input contains a number, do not update the state
+            // or you can handle this scenario as needed
+          }
+        }}
       />
 
       <FieldContainer
         label="Emergency Contact 2 Person Relation"
         fieldGrid={3}
         value={emergencyContactRelation2}
-        onChange={(e) => setEmergencyContactRelation2(e.target.value)}
-      />
+        onChange={(e) => {
+          const inputValue = e.target.value;
+          // Validation for number presence
+          const containsNumber = /\d/.test(inputValue);
+          
+          if (!containsNumber) {
+            setEmergencyContactRelation2(inputValue);
+          } else {
+            // If the input contains a number, you can handle this scenario as needed
+            // For instance, you may choose not to update the state or provide a message to the user
+          }
+        }}      />
 
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
@@ -1658,86 +1738,85 @@ const UserMaster = () => {
                 ...mandatoryFieldsEmpty,
                 status: false,
               });
-            }}
-          }
+            }
+          }}
           required
         />
-          {mandatoryFieldsEmpty.status && (
-            <p style={{ color: "red" }}>Please enter Status</p>
-          )}
-
+        {mandatoryFieldsEmpty.status && (
+          <p style={{ color: "red" }}>Please enter Status</p>
+        )}
       </div>
       <div className="form-group col-6">
-      <FieldContainer
-        label="Bank Name *"
-        value={bankName}
-        onChange={(e) => setBankName(e.target.value)}
-        onBlur={() => {
-          if (bankName === "") {
-            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,bankName:true});
-            return setMandatoryFieldsEmpty((prevState) => ({
-              ...prevState,
-              bankName: true,
-            }));
-          } else {
-            setMandatoryFieldsEmpty({
-              ...mandatoryFieldsEmpty,
-              bankName: false,
-            });
+        <FieldContainer
+          label="Bank Name *"
+          value={bankName}
+          onChange={(e) => setBankName(e.target.value)}
+          onBlur={() => {
+            if (bankName === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,bankName:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                bankName: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                bankName: false,
+              });
+            }
           }}
-        }
-      />
-      {mandatoryFieldsEmpty.bankName && (
-        <p style={{ color: "red" }}>Please enter Bank Name</p>
-      )}
+        />
+        {mandatoryFieldsEmpty.bankName && (
+          <p style={{ color: "red" }}>Please enter Bank Name</p>
+        )}
       </div>
       <div className="form-group col-6">
-      <FieldContainer
-        label="Bank Account Number"
-        value={bankAccountNumber}
-        onChange={(e) => setBankAccountNumber(e.target.value)}
-        onBlur={() => {
-          if (bankAccountNumber === "") {
-            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,bankAccountNumber:true});
-            return setMandatoryFieldsEmpty((prevState) => ({
-              ...prevState,
-              bankAccountNumber: true,
-            }));
-          } else {
-            setMandatoryFieldsEmpty({
-              ...mandatoryFieldsEmpty,
-              bankAccountNumber: false,
-            });
+        <FieldContainer
+          label="Bank Account Number"
+          value={bankAccountNumber}
+          onChange={(e) => setBankAccountNumber(e.target.value)}
+          onBlur={() => {
+            if (bankAccountNumber === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,bankAccountNumber:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                bankAccountNumber: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                bankAccountNumber: false,
+              });
+            }
           }}
-        }
-      />
-      {mandatoryFieldsEmpty.bankAccountNumber && (
-        <p style={{ color: "red" }}>Please enter Bank Account Number</p>
-      )}
+        />
+        {mandatoryFieldsEmpty.bankAccountNumber && (
+          <p style={{ color: "red" }}>Please enter Bank Account Number</p>
+        )}
       </div>
       <div className="form-group col-6">
-      <FieldContainer
-        label="IFSC"
-        value={IFSC}
-        onChange={(e) => setIFSC(e.target.value.toUpperCase())}
-        onBlur={() => {
-          if (IFSC === "") {
-            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,IFSC:true});
-            return setMandatoryFieldsEmpty((prevState) => ({
-              ...prevState,
-              IFSC: true,
-            }));
-          } else {
-            setMandatoryFieldsEmpty({
-              ...mandatoryFieldsEmpty,
-              IFSC: false,
-            });
+        <FieldContainer
+          label="IFSC"
+          value={IFSC}
+          onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+          onBlur={() => {
+            if (IFSC === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,IFSC:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                IFSC: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                IFSC: false,
+              });
+            }
           }}
-        }
-      />
-      {mandatoryFieldsEmpty.IFSC && (
-        <p style={{ color: "red" }}>Please enter IFSC</p>
-      )}
+        />
+        {mandatoryFieldsEmpty.IFSC && (
+          <p style={{ color: "red" }}>Please enter IFSC</p>
+        )}
       </div>
 
       <FieldContainer
