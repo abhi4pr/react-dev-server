@@ -165,6 +165,10 @@ const SidebarLinks = () => {
                     </Link>
                   </>
                 )}
+
+              <Link className="collapse-item" to="/admin/jobType">
+                Job Type
+              </Link>
               <Link className="collapse-item" to="/sim-overview">
                 Asset Management
               </Link>
@@ -637,7 +641,7 @@ const SidebarLinks = () => {
                           >
                             Manager Campaign Dashboard
                           </Link>
-                       
+
                           <Link
                             className="collapse-item"
                             to="/admin/phase-dashboard"

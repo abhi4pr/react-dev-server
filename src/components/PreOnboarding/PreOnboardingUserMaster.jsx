@@ -682,6 +682,9 @@ const PreOnboardingUserMaster = () => {
     formData.append("latitude", coordinates.latitude);
     formData.append("longitude", coordinates.longitude);
 
+    formData.append("document_percentage", documentPercentage);
+    formData.append("document_percentage_mandatory", showMandotaryPer);
+    formData.append("document_percentage_non_mandatory", showNonMandotaryPer);
     await axios
       .put(`http://34.93.221.166:3000/api/update_user`, formData, {
         headers: {
