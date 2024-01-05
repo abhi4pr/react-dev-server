@@ -104,17 +104,7 @@ const ModalMast = () => {
       ),
       sortable: true,
     },
-    {
-      name: "Add Modal",
-      cell: (row) => (
-        <>
-          <Link to="/modal-mast">
-            <button className="btn btn-outline-success">Add Modal</button>
-          </Link>
-        </>
-      ),
-      sortable: true,
-    },
+
     {
       name: "Action",
       cell: (row) => (

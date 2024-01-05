@@ -34,7 +34,7 @@ const images = [
 const SalaryWFH = () => {
   const location = useLocation();
   const { toastAlert } = useGlobalContext();
-  const { contextData } = useAPIGlobalContext();
+  const { contextData, ContextDept, RoleIDContext } = useAPIGlobalContext();
 
   const [allWFHUsers, setAllWFHUsers] = useState(0);
   const [data, setData] = useState([]);
@@ -171,7 +171,13 @@ const SalaryWFH = () => {
     axios
       .get("http://34.93.221.166:3000/api/all_departments_of_wfh")
       .then((res) => {
-        getDepartmentData(res.data.data);
+        if (RoleIDContext === 1 || RoleIDContext === 5) {
+          getDepartmentData(res.data.data);
+        } else {
+          getDepartmentData(
+            res.data.data?.filter((d) => d.dept_id == ContextDept)
+          );
+        }
       });
 
     //harshal
@@ -1012,8 +1018,8 @@ const SalaryWFH = () => {
           <h4>Department</h4>
           <span>
             {contextData &&
-              contextData[35] &&
-              contextData[35].view_value === 1 && (
+              contextData[38] &&
+              contextData[38].view_value === 1 && (
                 <Link to="/admin/salary-summary">
                   <button className="btn btn-warning mr-3">
                     Salary Summary
@@ -1026,14 +1032,16 @@ const SalaryWFH = () => {
             >
               Export Excel
             </button>
-            {deptSalary.length !== departmentdata.length && (
-              <button
-                className="btn btn-primary"
-                onClick={handleAllDepartmentSalary}
-              >
-                Create All Department Salary
-              </button>
-            )}
+
+            {deptSalary?.length !== departmentdata?.length &&
+              (RoleIDContext == 1 || RoleIDContext == 5) && (
+                <button
+                  className="btn btn-primary"
+                  onClick={handleAllDepartmentSalary}
+                >
+                  Create All Department Salary
+                </button>
+              )}
           </span>
         </div>
         <div className="card-body">

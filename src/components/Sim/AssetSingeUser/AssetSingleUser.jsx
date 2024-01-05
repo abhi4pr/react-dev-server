@@ -108,6 +108,7 @@ const AssetSingleUser = () => {
     try {
       const formData = new FormData();
       formData.append("repair_request_date_time", repairDate);
+      formData.append("status", "Requested");
       formData.append("req_by", userID);
       formData.append("asset_reason_id", reason);
       formData.append("sim_id", assetsName);

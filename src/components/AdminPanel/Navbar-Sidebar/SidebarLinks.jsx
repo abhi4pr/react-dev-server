@@ -73,6 +73,12 @@ const SidebarLinks = () => {
   const isInstaApiVisible = [25].some(
     (index) => contextData[index]?.view_value === 1
   );
+  const isWFHDManager = [37].some(
+    (index) => contextData[index]?.view_value === 1
+  );
+  const isWFHDHRPayrollManager = [38].some(
+    (index) => contextData[index]?.view_value === 1
+  );
 
   return (
     <>
@@ -180,6 +186,84 @@ const SidebarLinks = () => {
                 to="/admin/email-template-overview"
               >
                 Email Templates
+              </Link>
+            </div>
+          </div>
+        </li>
+      )}
+
+      {isWFHDManager && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseFourdd"
+            aria-expanded="true"
+            aria-controls="collapseFourdd"
+          >
+            <i className="bi bi-person-gear" />
+            <span>WFHD Manager</span>
+          </Link>
+          <div
+            id="collapseFourdd"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              <Link className="collapse-item" to="/admin/user">
+                WFHD Register
+              </Link>
+
+              <Link className="collapse-item" to="/admin/wfhd-overview">
+                WFHD Overview
+              </Link>
+
+              <Link className="collapse-item" to="/admin/salaryWFH">
+                Payroll
+              </Link>
+
+              <Link className="collapse-item" to="/admin/attendence-mast">
+                Attendance
+              </Link>
+            </div>
+          </div>
+        </li>
+      )}
+
+      {isWFHDHRPayrollManager && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseFourcc"
+            aria-expanded="true"
+            aria-controls="collapseFourcc"
+          >
+            <i className="bi bi-person-gear" />
+            <span>HR/Payroll Manager</span>
+          </Link>
+          <div
+            id="collapseFourcc"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              <Link className="collapse-item" to="/admin/user">
+                WFHD Register
+              </Link>
+
+              <Link className="collapse-item" to="/admin/wfhd-overview">
+                WFHD Overview
+              </Link>
+
+              <Link className="collapse-item" to="/admin/salaryWFH">
+                Salary Related Report
+              </Link>
+
+              <Link className="collapse-item" to="/admin/attendence-mast">
+                Payroll Payout Genration
               </Link>
             </div>
           </div>
