@@ -74,6 +74,25 @@ const PreOnboardingOverview = () => {
       width: "10%",
       sortable: true,
     },
+
+    {
+      name: "Total Documents Filled Percentage",
+      selector: (row) => row.document_percentage,
+      width: "5%",
+      sortable: true,
+    },
+    {
+      name: "Mandatory Documents Filled Percentage",
+      selector: (row) => row.document_percentage_mandatory,
+      width: "5%",
+      sortable: true,
+    },
+    {
+      name: "Non Mandatory Documents Filled Percentage",
+      selector: (row) => row.document_percentage_non_mandatory,
+      width: "5%",
+      sortable: true,
+    },
     {
       name: "Role",
       selector: (row) => row.Role_name,
@@ -118,6 +137,10 @@ const PreOnboardingOverview = () => {
           <Button
             sx={{ marginRight: "10px" }}
             size="small"
+            disabled={
+              row.document_percentage_mandatory < 70 ||
+              row.document_percentage_mandatory === undefined
+            }
             onClick={() => handleStatusChange(row.user_id, row.onboard_status)}
             variant="outlined"
             color="secondary"

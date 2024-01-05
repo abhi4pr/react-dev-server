@@ -191,6 +191,7 @@ import PendingPaymentRequest from "./Finance/PendingPaymentRequest";
 import PaymentDone from "./Finance/PaymentDone";
 import PurchaseManagementAllTransaction from "./Finance/PurchaseManagementAllTransaction";
 import Discard from "./Finance/Discard";
+import JobTypeMaster from "../JobType/JobTypeMaster";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -627,10 +628,22 @@ const Admin = () => {
                     path="/finance-salebookingverify"
                     element={<SaleBookingVerify />}
                   />
-                  <Route path="/finance-pruchasemanagement-pendingpaymentrequest" element={<PendingPaymentRequest />} />
-                  <Route path="/finance-pruchasemanagement-paymentdone" element={<PaymentDone />} />
-                  <Route path="/finance-pruchasemanagement-alltransaction" element={<PurchaseManagementAllTransaction />} />
-                  <Route path="/finance-pruchasemanagement-discardpayment" element={<Discard />} />
+                  <Route
+                    path="/finance-pruchasemanagement-pendingpaymentrequest"
+                    element={<PendingPaymentRequest />}
+                  />
+                  <Route
+                    path="/finance-pruchasemanagement-paymentdone"
+                    element={<PaymentDone />}
+                  />
+                  <Route
+                    path="/finance-pruchasemanagement-alltransaction"
+                    element={<PurchaseManagementAllTransaction />}
+                  />
+                  <Route
+                    path="/finance-pruchasemanagement-discardpayment"
+                    element={<Discard />}
+                  />
                   <Route
                     path="/payment-summary/:id"
                     element={<PaymentSummary />}
@@ -795,6 +808,9 @@ const Admin = () => {
                       </LeadApp>
                     }
                   />
+
+                  {/* ------------------------Job Type ----------------------------- */}
+                  <Route path="/jobType" element={<JobTypeMaster />} />
 
                   {/*------------------------ Execution --------------------------------*/}
                   <Route path="/cityMsater" element={<CityMaster />} />
