@@ -15,6 +15,7 @@ const Navbar = () => {
   const decodedToken = jwtDecode(token);
   const userName = decodedToken.name;
   const loginUserId = decodedToken.id;
+  const RoleID = decodedToken.role_id;
 
   const handleLogOut = () => {
     sessionStorage.clear("token");
@@ -98,38 +99,43 @@ const Navbar = () => {
             </div>
           </li>
           <li>
-            <div className="nav-item dropdown">
-              <a
-                className="nav-link dropdown-toggle"
-                href="#"
-                id="navbarDropdown"
-                role="button"
-                data-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <NotificationsActiveIcon />
-                <span>{count}</span>
-              </a>
-              <div className="dropdown-menu">
-                {notificationData.map((notification) => (
-                  <div>
-                    <div id={notificationData._id} aria-labelledby="headingOne">
-                      {" - " + notification.notification_message}
-                      <DoneIcon
-                        onClick={() => NotificationsOff(notification._id)}
-                      />
+            {(RoleID == 1 || RoleID == 5) && (
+              <div className="nav-item dropdown">
+                <a
+                  className="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <NotificationsActiveIcon />
+                  <span>{count}</span>
+                </a>
+                <div className="dropdown-menu">
+                  {notificationData.map((notification) => (
+                    <div>
+                      <div
+                        id={notificationData._id}
+                        aria-labelledby="headingOne"
+                      >
+                        {" - " + notification.notification_message}
+                        <DoneIcon
+                          onClick={() => NotificationsOff(notification._id)}
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
 
-                <button type="button" className="btn btn-success btn-xs">
-                  <Link to={`/admin/pre-onboard-all-notifications/`}>
-                    See All
-                  </Link>
-                </button>
+                  <button type="button" className="btn btn-success btn-xs">
+                    <Link to={`/admin/pre-onboard-all-notifications/`}>
+                      See All
+                    </Link>
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </li>
           <li className="nav-item">
             <div className="theme-switch">

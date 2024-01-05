@@ -71,6 +71,7 @@ import UserHierarchy from "./User/UserHierarchy";
 import UserSingle from "./User/UserSingle";
 import DashboardWFHUser from "./WFH/DashboardWFHUser";
 import DashboardWFHCardDetails from "./WFH/DashboardWFHCardDetails";
+import WFHDOverview from "./WFH/WFHDOverview";
 import LeadApp from "../LeadManagement/LeadApp";
 import LeadManagement from "../LeadManagement/LeadManagement";
 import EditLead from "../LeadManagement/EditLead";
@@ -345,6 +346,7 @@ const Admin = () => {
                     path="/wfh-dashboard-overview/:id"
                     element={<DashboardWFHCardDetails />}
                   />
+                  <Route path="/wfhd-overview" element={<WFHDOverview />} />
 
                   <Route
                     path="/wfh-users-overview/:deptId"

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
+import { useAPIGlobalContext } from "../APIContext/APIContext";
 import jwtDecode from "jwt-decode";
 import Slider from "react-slick";
 import {
@@ -15,6 +16,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 const Attendence = () => {
   const { toastAlert, toastError } = useGlobalContext();
+  const { ContextDept, RoleIDContext } = useAPIGlobalContext();
   const [department, setDepartment] = useState("");
   const [departmentdata, getDepartmentData] = useState([]);
   const [noOfAbsent, setNoOfAbsent] = useState(null);
@@ -67,7 +69,13 @@ const Attendence = () => {
     axios
       .get("http://34.93.221.166:3000/api/all_departments_of_wfh")
       .then((res) => {
-        getDepartmentData(res.data.data);
+        if (RoleIDContext == 1 || RoleIDContext == 5) {
+          getDepartmentData(res.data.data);
+        } else {
+          getDepartmentData(
+            res.data.data?.filter((d) => d.dept_id == ContextDept)
+          );
+        }
       });
 
     gettingSliderData();
@@ -470,14 +478,15 @@ const Attendence = () => {
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
           <span>
-            {deptSalary.length !== departmentdata.length && (
-              <button
-                className="btn btn-primary"
-                onClick={handleAllDepartmentAttendance}
-              >
-                Create All Department Attendance
-              </button>
-            )}
+            {deptSalary?.length !== departmentdata?.length &&
+              (RoleIDContext == 1 || RoleIDContext == 5) && (
+                <button
+                  className="btn btn-primary"
+                  onClick={handleAllDepartmentAttendance}
+                >
+                  Create All Department Attendance
+                </button>
+              )}
           </span>
         </div>
         <div className="card-body">

@@ -12,7 +12,8 @@ const APIContext = ({ children }) => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
-
+  const ContextDept = decodedToken.dept_id;
+  const RoleIDContext = decodedToken.role_id;
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
@@ -44,6 +45,8 @@ const APIContext = ({ children }) => {
         DepartmentContext,
         contextData,
         userID,
+        ContextDept,
+        RoleIDContext,
       }}
     >
       {children}
