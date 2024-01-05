@@ -15,6 +15,7 @@ import ContactNumber from "../../ReusableComponents/ContactNumber";
 import ContactNumberReact from "../../ReusableComponents/ContactNumberReact";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DocumentTab from "../../PreOnboarding/DocumentTab";
 
 const castOption = ["General", "OBC", "SC", "ST"];
 const colourOptions = [
@@ -201,6 +202,8 @@ const UserUpdate = () => {
   const [emergencyContactRelation2, setEmergencyContactRelation2] =
     useState("");
 
+  const [documentData, setDocumentData] = useState([]);
+
   const [cast, setCast] = useState("");
 
   const higestQualificationData = [
@@ -332,6 +335,20 @@ const UserUpdate = () => {
         setOtherDocuments(res.data.data);
       });
   }
+
+  async function getDocuments() {
+    const response = await axios.post(
+      "http://34.93.221.166:3000/api/get_user_doc",
+      {
+        user_id: id,
+      }
+    );
+    setDocumentData(response.data.data);
+  }
+
+  useEffect(() => {
+    getDocuments();
+  }, [id]);
 
   useEffect(() => {
     axios
@@ -624,6 +641,47 @@ const UserUpdate = () => {
         }
       }
 
+      const mandatoryDocTypes = ["10th", "12th", "Graduation"];
+
+      const isMandatoryDocMissing = documentData.some(
+        (doc) =>
+          mandatoryDocTypes.includes(doc.document.doc_type) &&
+          doc.doc_image &&
+          doc.file
+      );
+
+      if (isMandatoryDocMissing) {
+        toastAlert("Please fill all mandatory fields");
+        return;
+      } else {
+        for (const document of documentData) {
+          if (document.file) {
+            let formData = new FormData();
+            formData.append("doc_image", document.file);
+            formData.append("_id", document._id);
+            formData.append(
+              "status",
+              document.status == "Document Uploaded"
+                ? "Verification Pending"
+                : document.status
+            );
+            const response = await axios.put(
+              "http://34.93.221.166:3000/api/update_user_doc",
+              formData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            );
+          } else {
+            console.log(`No file uploaded for document ${document._id}`);
+          }
+        }
+        toastAlert("Documents Updated");
+        getDocuments();
+      }
+
       if (incomingPassword !== password) {
         whatsappApi.callWhatsAPI(
           "User Password Update by Admin",
@@ -906,6 +964,7 @@ const UserUpdate = () => {
     "Documents",
     "Family Details",
     "Education Details",
+    "Documents Update",
   ];
 
   const genralFields = (
@@ -1861,7 +1920,16 @@ const UserUpdate = () => {
       </div>
     </>
   );
-
+  const documentFieldsNew = (
+    <>
+      <DocumentTab
+        documentData={documentData}
+        setDocumentData={setDocumentData}
+        getDocuments={getDocuments}
+        submitButton={false}
+      />
+    </>
+  );
   return (
     <>
       <FormContainer
@@ -1878,6 +1946,7 @@ const UserUpdate = () => {
         {activeAccordionIndex === 3 && documentsFields}
         {activeAccordionIndex === 4 && familyFields}
         {activeAccordionIndex === 5 && educationFields}
+        {activeAccordionIndex === 6 && documentFieldsNew}
       </FormContainer>
     </>
   );

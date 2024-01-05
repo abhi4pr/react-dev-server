@@ -2,7 +2,12 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
 
-const DocumentTab = ({ documentData, setDocumentData, getDocuments }) => {
+const DocumentTab = ({
+  documentData,
+  setDocumentData,
+  getDocuments,
+  submitButton = true,
+}) => {
   const { toastAlert } = useGlobalContext();
 
   const updateDocumentData = (documentId, key, value) => {
@@ -32,8 +37,6 @@ const DocumentTab = ({ documentData, setDocumentData, getDocuments }) => {
           doc.doc_image &&
           doc.file
       );
-
-      console.log(isMandatoryDocMissing, "mnadlakdjfl");
 
       if (isMandatoryDocMissing) {
         toastAlert("Please fill all mandatory fields");
@@ -141,14 +144,16 @@ const DocumentTab = ({ documentData, setDocumentData, getDocuments }) => {
               </tbody>
             </table>
           </div>
-          <div className="ml-auto mr-auto text-center">
-            <button
-              className="btn btn_pill btn_cmn btn_white"
-              onClick={handleSubmit}
-            >
-              Submit
-            </button>
-          </div>
+          {submitButton && (
+            <div className="ml-auto mr-auto text-center">
+              <button
+                className="btn btn_pill btn_cmn btn_white"
+                onClick={handleSubmit}
+              >
+                Submit
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

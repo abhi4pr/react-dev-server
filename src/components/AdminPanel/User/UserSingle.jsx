@@ -126,7 +126,7 @@ const UserSingle = () => {
     "Professional",
     "KRA",
     "Documents",
-    "Documents",
+    // "Documents",
   ];
 
   const handleVerification = (
@@ -1151,10 +1151,10 @@ const UserSingle = () => {
             {activeAccordionIndex === 0 && <UserSingleTab1 user={user} />}
             {activeAccordionIndex === 1 && <UserSingleTab2 user={user} />}
             {activeAccordionIndex === 2 && <UserSingleTab3 KRIData={KRIData} />}
-            {activeAccordionIndex === 3 && (
+            {/* {activeAccordionIndex === 3 && (
               <UserSingleTab4 user={user} id={id} getData={getData} />
-            )}
-            {activeAccordionIndex == 4 && <DocumentTabUserSingle id={id} />}
+            )} */}
+            {activeAccordionIndex == 3 && <DocumentTabUserSingle id={id} />}
           </FormContainer>
         </div>
       </div>
