@@ -60,7 +60,7 @@ const DocumentTabUserSingle = (id) => {
       <div className="documentCard_view">
         <div className="row align-items-baseline">
           {documentData
-            .filter((item) => item?.status !== "")
+            // .filter((item) => item?.status !== "")
             .map((data) => (
               <>
                 {console.log(data.status)}
@@ -78,11 +78,13 @@ const DocumentTabUserSingle = (id) => {
                       </div>
                       <div className="documentCard_text">
                         <h3>{data.document.doc_type}</h3>
-                        <div className="documentCard_download">
-                          <a href={data.doc_image_url} download>
-                            <FcDownload />
-                          </a>
-                        </div>
+                        {data.status !== "" && (
+                          <div className="documentCard_download">
+                            <a href={data.doc_image_url} download>
+                              <FcDownload />
+                            </a>
+                          </div>
+                        )}
                       </div>
                       {data.status == "Verification Pending" && (
                         <div className="documentCard_action">
@@ -104,6 +106,7 @@ const DocumentTabUserSingle = (id) => {
                           </button>
                         </div>
                       )}
+
                       <ApproveReject data={data.status} />
                       {rejectReasonActive == data._id && (
                         <div className="documentCard_input">
@@ -129,6 +132,7 @@ const DocumentTabUserSingle = (id) => {
                           </button>
                         </div>
                       )}
+                      {data.status == "" && "N/A"}
                     </div>
                   </div>
                 </div>
