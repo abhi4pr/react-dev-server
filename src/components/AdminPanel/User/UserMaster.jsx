@@ -38,6 +38,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContactNumberReact from "../../ReusableComponents/ContactNumberReact";
+import { set } from "date-fns";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -191,6 +192,37 @@ const UserMaster = () => {
   const [validEmergencyContact, setValidEmergencyContact] = useState(false);
   const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
   const [cast, setCast] = useState("");
+  const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState({
+    fullName: false,
+    department: false,
+    subDepartment: false,
+    designation: false,
+    reportL1: false,
+    personalContact: false,
+    personalEmail: false,
+    alternateContact: false,
+    emergencyContact: false,
+    emergencyName: false,
+    emergencyContactRelation: false,
+    loginId: false,
+    password: false,
+    spokenLanguage: false,
+    profilePic: false,
+    gender: false,
+    nationality: false,
+    DOB: false,
+    fatherName: false,
+    motherName: false,
+    bloodGroup: false,
+    maritialStatus: false,
+    address: false,
+    city: false,
+    state: false,
+    pincode: false,
+    joiningDate: false,
+    status: false,
+    bankDetails: false,
+  });
 
   const higestQualificationData = [
     "10th",
@@ -317,27 +349,69 @@ const UserMaster = () => {
       return toastError("Job Type is Required");
     } else if (!department || department == "") {
       return toastError("Department is Required");
-    } else if (!designation || designation == "") {
+    }else if (!subDepartment || subDepartment == "" || subDepartment.length===0) {
+      return toastError("Sub Department is Required");
+    }else if (!designation || designation == "") {
       return toastError("Designatoin is Required");
+    }else if (!reportL1 || reportL1 == "") {
+      return toastError("Report L1 Is Required");
+    }else if(!personalEmail || personalEmail == ""){
+      return toastError("Personal Email is Required");
+    }else if (!personalContact || personalContact == ""){
+      return toastError("Personal Contact is Required");
+    }else if(!alternateContact || alternateContact ==""){
+      return toastError("Alternate Contact is Required");
+    } else if(!emergencyContact || emergencyContact == ""){
+      return toastError("Emergency Contact is Required");
+    }else if(!emergencyContactName || emergencyContactName ==""){
+      return toastError("Emergency Contact Name is Required");
+    }else if(!emergencyContactRelation || emergencyContactRelation ==""){
+      return toastError("Emergency Contact Relation is Required");  
+    }else if(!loginId || loginId == "") {
+      return toastError("Login Id is Required");
+    }else if(!password || password==""){
+      return toastError("Password is Required");
+    }else if(!speakingLanguage || speakingLanguage==""){
+      return toastError("Speaking Language is Required");
+    }else if (!selectedImage|| selectedImage==""||selectedImage.length==0){
+      return toastError("Profile Pic is Required");
     } else if (!gender || gender == "") {
       return toastError("Gender is Required");
-    } else if (!reportL1 || reportL1 == "") {
-      return toastError("Report L1 Error Is Required");
-      // } else if (!sitting || sitting == "") {
-      //   return toastError("sitting Error is required");
-    } else if (!loginId || loginId == "") {
-      return toastError("Login Id Error is required");
-    } else if (!username || username == "") {
+    }else if(!nationality || nationality==""){
+      return toastError("Nationality is Required")
+    }else if(!dateOfBirth || dateOfBirth==""){
+      return toastError("Date of Birth is Required");
+    }else if(!FatherName || FatherName==""){
+      return toastError("Father Name is Required");
+    }else if(!motherName || motherName){
+      return toastError("Mother Name is Required");
+    }else if(!bloodGroup || bloodGroup== ""){
+      return toastError("Blood Group is Required");
+    }else if (!maritialStatus || maritialStatus =="" || maritialStatus.length ==0){
+      return toastError("Maritial Status is Required");
+    }else if (!address || address == ""){
+      return toastError("Address is Required");
+    }else if(!city || city==""){
+      return toastError("City is Required");
+    }else if(!state || state==""){
+      return toastError("State/UT is Required");
+    }else if(!pincode || pincode==""){
+      return toastError("Pincode is Required");
+    }else if(!joiningDate || joiningDate==""){
+      return toastError("Joining Date is Required");
+    }else if(!status || status==""){
+      return toastError("Status is Required");
+    }
+    else if (!bankName || bankName == "") {
+      return toastError("Bank Name is Required");
+    }else if(!bankAccountNumber || bankAccountNumber==""){
+      return toastError("Bank Account Number is Required");
+    }
+     else if (!username || username == "") {
       return toastError("User Name Error is required");
     } else if (!roles || roles == "") {
       return toastError("Roles Error is required");
-    } else if (!personalContact || personalContact == "") {
-      return toastError("Personal Contact Error is required");
-    } else if (!personalEmail || personalEmail == "") {
-      return toastError("Personal Email Error is required");
-    } else if (!joiningDate || joiningDate == "") {
-      return toastError("Joining Date Error is required");
-    } else if (!email || email == "") {
+    }  else if (!email || email == "") {
       return toastError("Official Email Error is required");
     }
 
@@ -625,16 +699,42 @@ const UserMaster = () => {
     }
   }
 
-  function handleContentBlur() {
+  function handleContentBlur(e, type) {
     setisContactTouched(true);
     setisContactTouched1(true);
+    if (type == "personalContact") {
+      if (personalContact == "" || personalContact == null) {
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          personalContact: true,
+        });
+      } else {
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          personalContact: false,
+        });
+      }
+    }
     if (contact.length < 10) {
       setValidContact(false);
       setValidContact1(false);
     }
   }
 
-  function handleAlternateBlur() {
+  function handleAlternateBlur(e, type) {
+    if (type == "alternateContact") {
+      if (alternateContact == "" || alternateContact == null) {
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          alternateContact: true,
+        });
+      } else {
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          alternateContact: false,
+        });
+      }
+    }
     setisAlternateTouched(true);
     setisAlternateTouched1(true);
     if (contact.length < 10) {
@@ -664,12 +764,18 @@ const UserMaster = () => {
       generatePassword += charset[randomIndex];
     }
     setPassword(generatePassword);
+    if (generatePassword.length > 0) {
+      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, password: false });
+    }
   };
 
   const generateLoginId = () => {
     const randomSuffix = Math.floor(Math.random() * 1000);
     const generatedLoginId = `${username}@${randomSuffix}`;
     setLoginId(generatedLoginId);
+    if (generatedLoginId.length > 0) {
+      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+    }
   };
 
   const handleLoginIdChange = (event) => {
@@ -834,34 +940,82 @@ const UserMaster = () => {
 
   const genralFields = (
     <>
-      <FieldContainer
-        label="Full Name *"
-        fieldGrid={3}
-        value={username}
-        onChange={(e) => setUserName(e.target.value)}
-      />
-
+      <div className=" col-3">
+        <FieldContainer
+          className="pb-1"
+          label="Full Name *"
+          fieldGrid={12}
+          value={username}
+          onChange={(e) => setUserName(e.target.value)}
+          onBlur={() => {
+            console.log("onBlur called");
+            console.log(username);
+            if (username === "") {
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                fullName: true,
+              }));
+            } else {
+              // Validation for number presence
+              const containsNumber = /\d/.test(username);
+              if (containsNumber) {
+                setMandatoryFieldsEmpty({
+                  ...mandatoryFieldsEmpty,
+                  fullName: false,
+                });
+              } else {
+                setMandatoryFieldsEmpty((prevState) => ({
+                  ...prevState,
+                  fullName: true,
+                }));
+              }
+            }
+          }}
+        />
+        <div className="">
+          {mandatoryFieldsEmpty.fullName && (
+            <p style={{ color: "red" }}>Please enter Full Name</p>
+          )}
+        </div>
+      </div>
       <div className="form-group col-3">
         <label className="form-label">
-          Designation <sup style={{ color: "red" }}>*</sup>
+          Job Type <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
           className=""
-          options={designationData.map((option) => ({
-            value: option.desi_id,
-            label: `${option.desi_name}`,
+          options={jobTypeData.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
           }))}
           value={{
-            value: designation,
-            label:
-              designationData.find((user) => user.desi_id === designation)
-                ?.desi_name || "",
+            value: jobType,
+            label: `${jobType}`,
           }}
           onChange={(e) => {
-            setDesignation(e.value);
+            setJobType(e.value);
+          }}
+          onBlur={() => {
+            if (jobType === "" || jobType === null) {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,jobType:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                jobType: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                jobType: false,
+              });
+            }
           }}
           required
         />
+        <div className="">
+          {mandatoryFieldsEmpty.jobType && (
+            <p style={{ color: "red" }}>Please enter Job Type</p>
+          )}
+        </div>
       </div>
 
       <div className="form-group col-3">
@@ -883,12 +1037,31 @@ const UserMaster = () => {
           onChange={(e) => {
             setDepartment(e.value);
           }}
+          onBlur={() => {
+            if (department === "" || department === null) {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,department:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                department: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                department: false,
+              });
+            }
+          }}
           required
         />
+        <div className="">
+          {mandatoryFieldsEmpty.department && (
+            <p style={{ color: "red" }}>Please enter Department</p>
+          )}
+        </div>
       </div>
 
       <div className="form-group col-3">
-        <label className="form-label">Sub Department</label>
+        <label className="form-label">Sub Department <sup style={{ color: "red" }}>*</sup></label>
         <Select
           className=""
           options={subDepartmentData.map((option) => ({
@@ -904,10 +1077,74 @@ const UserMaster = () => {
           onChange={(e) => {
             setSubDeparment(e.value);
           }}
+          onBlur={() => {
+            if (
+              subDepartmentData === "" ||
+              subDepartmentData === null ||
+              subDepartmentData.length === 0
+            ) {
+              console.log("onBlur called inside if");
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,subDepartment:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                subDepartment: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                subDepartment: false,
+              });
+            }
+          }}
           required
         />
+        <div className="">
+          {mandatoryFieldsEmpty.subDepartment && (
+            <p style={{ color: "red" }}>Please enter Sub Department</p>
+          )}
+        </div>
       </div>
-
+      <div className="form-group col-3">
+        <label className="form-label">
+          Designation <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={designationData.map((option) => ({
+            value: option.desi_id,
+            label: `${option.desi_name}`,
+          }))}
+          value={{
+            value: designation,
+            label:
+              designationData.find((user) => user.desi_id === designation)
+                ?.desi_name || "",
+          }}
+          onChange={(e) => {
+            setDesignation(e.value);
+          }}
+          onBlur={() => {
+            if (designation === "" || designation === null) {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,designation:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                designation: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                designation: false,
+              });
+            }
+          }}
+          required
+        />
+        <div className="">
+          {mandatoryFieldsEmpty.designation && (
+            <p style={{ color: "red" }}>Please enter Designation</p>
+          )}
+        </div>
+      </div>
       <div className="form-group col-3">
         <label className="form-label">
           Report L1 <sup style={{ color: "red" }}>*</sup>
@@ -927,8 +1164,27 @@ const UserMaster = () => {
           onChange={(e) => {
             setReportL1(e.value);
           }}
+          onBlur={() => {
+            if (reportL1 === "" || reportL1 === null) {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,reportL1:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                reportL1: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                reportL1: false,
+              });
+            }
+          }}
           required
         />
+        <div className="">
+          {mandatoryFieldsEmpty.reportL1 && (
+            <p style={{ color: "red" }}>Please enter Report L1</p>
+          )}
+        </div>
       </div>
 
       <div className="form-group col-3">
@@ -1001,17 +1257,37 @@ const UserMaster = () => {
         onChange={handleEmailChange}
       />
       {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
-      <FieldContainer
-        label="Personal Email *"
-        type="email"
-        fieldGrid={3}
-        required={false}
-        value={personalEmail}
-        onChange={(e) => setPersonalEmail(e.target.value)}
-      />
-      {!isPersonalEmailValid && personalEmail && (
-        <p style={{ color: "red" }}>*Please enter valid email</p>
-      )}
+      <div className="col-md-3">
+        <FieldContainer
+          label="Personal Email *"
+          type="email"
+          fieldGrid={12}
+          required={false}
+          value={personalEmail}
+          onChange={(e) => setPersonalEmail(e.target.value)}
+          onBlur={() => {
+            if (personalEmail === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,personalEmail:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                personalEmail: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                personalEmail: false,
+              });
+            }
+          }}
+        />
+        {!isPersonalEmailValid && personalEmail && (
+          <p style={{ color: "red" }}>*Please enter valid email</p>
+        )}
+
+        {mandatoryFieldsEmpty.personalEmail && (
+          <p style={{ color: "red" }}>Please enter Personal Email</p>
+        )}
+      </div>
       <FieldContainer
         label="Official Contact"
         type="number"
@@ -1024,35 +1300,46 @@ const UserMaster = () => {
       {(isContactTouched || contact.length >= 10) && !isValidcontact && (
         <p style={{ color: "red" }}>*Please enter a valid Number</p>
       )}
-      <FieldContainer
-        label="Personal Contact *"
-        type="number"
-        fieldGrid={3}
-        value={personalContact}
-        required={false}
-        onChange={handlePersonalContactChange}
-        onBlur={handleContentBlur}
-      />
-      {(isContactTouched1 || personalContact.length >= 10) &&
-        !isValidcontact1 && (
-          <p style={{ color: "red" }}>*Please enter a valid Number</p>
+      <div className="col-3">
+        <FieldContainer
+          label="Personal Contact *"
+          type="number"
+          fieldGrid={12}
+          value={personalContact}
+          required={false}
+          onChange={handlePersonalContactChange}
+          onBlur={(e) => handleContentBlur(e, "personalContact")}
+        />
+        {(isContactTouched1 || personalContact.length >= 10) &&
+          !isValidcontact1 &&
+          !mandatoryFieldsEmpty.personalContact && (
+            <p style={{ color: "red" }}>*Please enter a valid Number</p>
+          )}
+        {mandatoryFieldsEmpty.personalContact && (
+          <p style={{ color: "red" }}>Please enter Personal Contact</p>
         )}
-      <FieldContainer
-        label="Alternate Contact *"
-        type="number"
-        fieldGrid={3}
-        value={alternateContact}
-        required={false}
-        onChange={handleAlternateContactChange}
-        onBlur={handleAlternateBlur}
+      </div>
+      <div className="col-3">
+        <FieldContainer
+          label="Alternate Contact *"
+          type="number"
+          fieldGrid={12}
+          value={alternateContact}
+          required={false}
+          onChange={handleAlternateContactChange}
+          onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
 
-        // setValidAlternateContact1  setValidAlternateContact setisAlternateTouched1 setisAlternateTouched
-      />
-      {(isAlternateTouched1 || alternateContact.length >= 10) &&
-        !isValidcontact3 && (
-          <p style={{ color: "red" }}>*Please enter a valid Number</p>
+          // setValidAlternateContact1  setValidAlternateContact setisAlternateTouched1 setisAlternateTouched
+        />
+        {(isAlternateTouched1 || alternateContact.length >= 10) &&
+          !isValidcontact3 &&
+          !mandatoryFieldsEmpty.alternateContact && (
+            <p style={{ color: "red" }}>*Please enter a valid Number</p>
+          )}
+        {mandatoryFieldsEmpty.alternateContact && (
+          <p style={{ color: "red" }}>Please enter Alternate Contact</p>
         )}
-
+      </div>
       {/* <FieldContainer
         label="Emergency Contact *"
         type="number"
@@ -1070,25 +1357,65 @@ const UserMaster = () => {
         )} */}
 
       <ContactNumberReact
+        mandatoryFieldsEmpty={mandatoryFieldsEmpty}
+        setMandatoryFieldsEmpty={setMandatoryFieldsEmpty}
         label="Emergency Contact *"
         parentComponentContact={emergencyContact}
         setParentComponentContact={setEmergencyContact}
       />
 
-      <FieldContainer
-        label="Emergency Contact Person Name"
-        fieldGrid={3}
-        value={emergencyContactName}
-        onChange={(e) => setEmergencyContactName(e.target.value)}
-      />
-
-      <FieldContainer
-        label="Emergency Contact Person Relation"
-        fieldGrid={3}
-        value={emergencyContactRelation}
-        onChange={(e) => setEmergencyContactRelation(e.target.value)}
-      />
-
+      <div className="col-3">
+        <FieldContainer
+          label="Emergency Contact Person Name *"
+          fieldGrid={12}
+          value={emergencyContactName}
+          onChange={(e) => setEmergencyContactName(e.target.value)}
+          onBlur={() => {
+            if (emergencyContactName === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,emergencyContactName:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                emergencyContactName: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                emergencyContactName: false,
+              });
+            }
+          }}
+        />
+        {mandatoryFieldsEmpty.emergencyContactName && (
+          <p style={{ color: "red" }}>Please enter Emergency Contact Name</p>
+        )}
+      </div>
+      <div className="col-3">
+        <FieldContainer
+          label="Emergency Contact Person Relation *"
+          fieldGrid={12}
+          value={emergencyContactRelation}
+          onChange={(e) => setEmergencyContactRelation(e.target.value)}
+          onBlur={() => {
+            if (emergencyContactRelation === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,emergencyContactRelation:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                emergencyContactRelation: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                emergencyContactRelation: false,
+              });
+            }
+          }}
+        />
+        {mandatoryFieldsEmpty.emergencyContactRelation && (
+          <p style={{ color: "red" }}>
+            Please enter Emergency Contact Relation
+          </p>
+        )}
+      </div>
       <ContactNumberReact
         label="Emergency Contact2"
         parentComponentContact={emergencyContact2}
@@ -1117,6 +1444,20 @@ const UserMaster = () => {
               className="form-control"
               value={loginId}
               onChange={handleLoginIdChange}
+              onBlur={() => {
+                if (loginId === "") {
+                  // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,loginId:true});
+                  return setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    loginId: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    loginId: false,
+                  });
+                }
+              }}
             />
             <div className="input-group-append">
               <button
@@ -1129,6 +1470,9 @@ const UserMaster = () => {
             </div>
           </div>
         </div>
+        {mandatoryFieldsEmpty.loginId && (
+          <p style={{ color: "red" }}>Please enter Login ID</p>
+        )}
       </div>
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
@@ -1139,6 +1483,20 @@ const UserMaster = () => {
               className="form-control"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onBlur={() => {
+                if (password === "") {
+                  // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,password:true});
+                  return setMandatoryFieldsEmpty((prevState) => ({
+                    ...prevState,
+                    password: true,
+                  }));
+                } else {
+                  setMandatoryFieldsEmpty({
+                    ...mandatoryFieldsEmpty,
+                    password: false,
+                  });
+                }
+              }}
             />
             <div className="input-group-append">
               <button
@@ -1151,6 +1509,9 @@ const UserMaster = () => {
             </div>
           </div>
         </div>
+        {mandatoryFieldsEmpty.password && (
+          <p style={{ color: "red" }}>Please enter Password</p>
+        )}
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -1193,26 +1554,7 @@ const UserMaster = () => {
         required={false}
         onChange={(e) => setReleavingDate(e.target.value)}
       /> */}
-      <div className="form-group col-3">
-        <label className="form-label">
-          Job Type <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={jobTypeData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: jobType,
-            label: `${jobType}`,
-          }}
-          onChange={(e) => {
-            setJobType(e.value);
-          }}
-          required
-        />
-      </div>
+
       {jobType === "WFH" && (
         <>
           <FieldContainer
@@ -1304,25 +1646,99 @@ const UserMaster = () => {
           onChange={(e) => {
             setStatus(e.value);
           }}
+          onBlur={() => {
+            if (status === "" || status === null) {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,status:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                status: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                status: false,
+              });
+            }}
+          }
           required
         />
+          {mandatoryFieldsEmpty.status && (
+            <p style={{ color: "red" }}>Please enter Status</p>
+          )}
+
       </div>
+      <div className="form-group col-6">
       <FieldContainer
-        label="Bank Name"
+        label="Bank Name *"
         value={bankName}
         onChange={(e) => setBankName(e.target.value)}
+        onBlur={() => {
+          if (bankName === "") {
+            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,bankName:true});
+            return setMandatoryFieldsEmpty((prevState) => ({
+              ...prevState,
+              bankName: true,
+            }));
+          } else {
+            setMandatoryFieldsEmpty({
+              ...mandatoryFieldsEmpty,
+              bankName: false,
+            });
+          }}
+        }
       />
+      {mandatoryFieldsEmpty.bankName && (
+        <p style={{ color: "red" }}>Please enter Bank Name</p>
+      )}
+      </div>
+      <div className="form-group col-6">
       <FieldContainer
         label="Bank Account Number"
         value={bankAccountNumber}
         onChange={(e) => setBankAccountNumber(e.target.value)}
+        onBlur={() => {
+          if (bankAccountNumber === "") {
+            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,bankAccountNumber:true});
+            return setMandatoryFieldsEmpty((prevState) => ({
+              ...prevState,
+              bankAccountNumber: true,
+            }));
+          } else {
+            setMandatoryFieldsEmpty({
+              ...mandatoryFieldsEmpty,
+              bankAccountNumber: false,
+            });
+          }}
+        }
       />
-
+      {mandatoryFieldsEmpty.bankAccountNumber && (
+        <p style={{ color: "red" }}>Please enter Bank Account Number</p>
+      )}
+      </div>
+      <div className="form-group col-6">
       <FieldContainer
         label="IFSC"
         value={IFSC}
         onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+        onBlur={() => {
+          if (IFSC === "") {
+            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,IFSC:true});
+            return setMandatoryFieldsEmpty((prevState) => ({
+              ...prevState,
+              IFSC: true,
+            }));
+          } else {
+            setMandatoryFieldsEmpty({
+              ...mandatoryFieldsEmpty,
+              IFSC: false,
+            });
+          }}
+        }
       />
+      {mandatoryFieldsEmpty.IFSC && (
+        <p style={{ color: "red" }}>Please enter IFSC</p>
+      )}
+      </div>
 
       <FieldContainer
         label="Beneficiary"
@@ -1580,7 +1996,9 @@ const UserMaster = () => {
         </div>
       </div>
       <div className="form-group col-3">
-        <label className="form-label">Spoken Languages</label>
+        <label className="form-label">
+          Spoken Languages <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           isMulti
           name="langauages"
@@ -1589,7 +2007,28 @@ const UserMaster = () => {
           classNamePrefix="select"
           value={tempLanguage}
           onChange={handleLanguageSelect}
+          onBlur={() => {
+            if (
+              tempLanguage === "" ||
+              tempLanguage === null ||
+              tempLanguage.length === 0
+            ) {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,language:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                language: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                language: false,
+              });
+            }
+          }}
         />
+        {mandatoryFieldsEmpty.language && (
+          <p style={{ color: "red" }}>Please enter Languages</p>
+        )}
       </div>
       <div className="form-group col-3">
         <label className="form-label">
@@ -1608,8 +2047,24 @@ const UserMaster = () => {
           onChange={(e) => {
             setGender(e.value);
           }}
+          onBlur={() => {
+            if (gender === "" || gender === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                gender: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                gender: false,
+              });
+            }
+          }}
           required
         />
+        {mandatoryFieldsEmpty.gender && (
+          <p style={{ color: "red" }}>Please enter Gender</p>
+        )}
       </div>
 
       <div className="form-group col-3">
@@ -1629,16 +2084,52 @@ const UserMaster = () => {
           onChange={(e) => {
             setCast(e.value);
           }}
+          onBlur={() => {
+            if (cast === "" || cast === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                cast: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                cast: false,
+              });
+            }
+          }}
           required
         />
+        {mandatoryFieldsEmpty.cast && (
+          <p style={{ color: "red" }}>Please enter Caste</p>
+        )}
       </div>
-
-      <FieldContainer
-        label="Nationality"
-        value={nationality}
-        onChange={(e) => setNationality(e.target.value)}
-      />
-
+      <div className="col-6">
+        <FieldContainer
+          label="Nationality *"
+          value={nationality}
+          onChange={(e) => setNationality(e.target.value)}
+          onBlur={() => {
+            if (
+              nationality === "" ||
+              nationality == null ||
+              nationality.length == 0
+            ) {
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                nationality: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                nationality: false,
+              });
+            }
+          }}
+        />
+        {mandatoryFieldsEmpty.nationality && (
+          <p style={{ color: "red" }}>Please Enter Nationality</p>
+        )}
+      </div>
       <div className="from-group col-6">
         <label className="form-label">
           DOB <sup style={{ color: "red" }}>*</sup>
@@ -1654,18 +2145,56 @@ const UserMaster = () => {
         />
       </div>
       {dateOfBirth !== "" && <FieldContainer label="Age" value={age} />}
-      <FieldContainer
-        label="Father's Name"
-        value={FatherName}
-        onChange={(e) => setFatherName(e.target.value)}
-        required={false}
-      />
-      <FieldContainer
-        label="Mother's Name"
-        value={motherName}
-        onChange={(e) => setMotherName(e.target.value)}
-        required={false}
-      />
+      <div className="col-6">
+        <FieldContainer
+          label="Father's Name *"
+          value={FatherName}
+          onChange={(e) => setFatherName(e.target.value)}
+          required={false}
+          onBlur={() => {
+            if (FatherName === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,fatherName:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                fatherName: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                fatherName: false,
+              });
+            }
+          }}
+        />
+        {mandatoryFieldsEmpty.fatherName && (
+          <p style={{ color: "red" }}>Please enter Father's Name</p>
+        )}
+      </div>
+      <div className="col-6">
+        <FieldContainer
+          label="Mother's Name *"
+          value={motherName}
+          onChange={(e) => setMotherName(e.target.value)}
+          onBlur={() => {
+            if (motherName === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,motherName:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                motherName: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                motherName: false,
+              });
+            }
+          }}
+          required={false}
+        />
+        {mandatoryFieldsEmpty.motherName && (
+          <p style={{ color: "red" }}>Please enter Mother's Name</p>
+        )}
+      </div>
       <FieldContainer
         label="Hobbies"
         value={hobbies}
@@ -1673,7 +2202,9 @@ const UserMaster = () => {
         required={false}
       />
       <div className="form-group col-6">
-        <label className="form-label">Blood Group</label>
+        <label className="form-label">
+          Blood Group <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           className=""
           options={bloodGroupData.map((option) => ({
@@ -1687,8 +2218,29 @@ const UserMaster = () => {
           onChange={(e) => {
             setBloodGroup(e.value);
           }}
+          onBlur={() => {
+            if (
+              bloodGroup === "" ||
+              bloodGroup === null ||
+              bloodGroup.length === 0
+            ) {
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                bloodGroup: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                bloodGroup: false,
+              });
+            }
+          }}
           required={false}
         />
+
+        {mandatoryFieldsEmpty.bloodGroup && (
+          <p style={{ color: "red" }}>Please enter Blood Group</p>
+        )}
       </div>
       <div className="form-group col-6">
         <label className="form-label">
@@ -1707,8 +2259,24 @@ const UserMaster = () => {
           onChange={(e) => {
             setMaritialStatus(e.value);
           }}
+          onBlur={() => {
+            if (maritialStatus === "" || maritialStatus === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                maritialStatus: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                maritialStatus: false,
+              });
+            }
+          }}
           required={false}
         />
+        {mandatoryFieldsEmpty.maritialStatus && (
+          <p style={{ color: "red" }}>Please enter Maritial Status</p>
+        )}
       </div>
 
       {maritialStatus === "Married" && (
@@ -1729,30 +2297,103 @@ const UserMaster = () => {
           required={false}
         />
       )}
-      <FieldContainer
-        label="Address"
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        required={false}
-      />
-      <FieldContainer
-        label="City"
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        required={false}
-      />
+      <div className="col-6">
+        <FieldContainer
+          label="Address *"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          onBlur={() => {
+            if (address === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,address:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                address: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                address: false,
+              });
+            }
+          }}
+          required={false}
+        />
+        {mandatoryFieldsEmpty.address && (
+          <p style={{ color: "red" }}>Please enter Address</p>
+        )}
+      </div>
+      <div className="col-6">
+        <FieldContainer
+          label="City *"
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          onBlur={() => {
+            if (city === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,city:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                city: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                city: false,
+              });
+            }
+          }}
+          required={false}
+        />
+        {mandatoryFieldsEmpty.city && (
+          <p style={{ color: "red" }}>Please enter City</p>
+        )}
+      </div>
       <div className="form-group col-6">
         <IndianStates
+          onBlur={() => {
+            if (state === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,state:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                state: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                state: false,
+              });
+            }
+          }}
           onChange={(option) => setState(option ? option.value : null)}
         />
+        {mandatoryFieldsEmpty.state && (
+          <p style={{ color: "red" }}>Please enter State</p>
+        )}
       </div>
-      <FieldContainer
-        label="Pincode"
-        value={pincode}
-        onChange={(e) => setPincode(e.target.value)}
-        required={false}
-      />
-
+      <div className="col-6">
+        <FieldContainer
+          label="Pincode *"
+          value={pincode}
+          onChange={(e) => setPincode(e.target.value)}
+          onBlur={() => {
+            if (pincode === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,pincode:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                pincode: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                pincode: false,
+              });
+            }
+          }}
+          required={false}
+        />
+        {mandatoryFieldsEmpty.pincode && (
+          <p style={{ color: "red" }}>Please enter Pincode</p>
+        )}
+      </div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           className="btn btn-primary"
@@ -1875,7 +2516,6 @@ const UserMaster = () => {
           <button
             onClick={handleAddEducationDetails}
             className="btn btn-outline-primary me-2"
-            variant="contained"
           >
             Add More Education Details
           </button>

@@ -1042,6 +1042,50 @@ const SidebarLinks = () => {
                   </div>
                 </div>
               </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link collapsed"
+                  data-toggle="collapse"
+                  data-target="#collapsInnerEightFinance"
+                  aria-expanded="true"
+                  aria-controls="collapsInnerEightFinance"
+                >
+                  <span>Purchase Management</span>
+                </Link>
+                <div
+                  id="collapsInnerEightFinance"
+                  className="collapse"
+                  aria-labelledby="headingTwo"
+                  // data-parent="#accordionSidebar"
+                >
+                  <div className="bg-white collapse-inner">
+                    <>
+                      <Link
+                        className="collapse-item"
+                        to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+                      >
+                        Pending Payment Request
+                      </Link>
+                      <Link
+                        className="collapse-item"
+                        to="/admin/finance-pruchasemanagement-paymentdone"
+                      >
+                        Payment Done
+                      </Link><Link
+                        className="collapse-item"
+                        to="/admin/finance-pruchasemanagement-alltransaction"
+                      >
+                        All Transaction
+                      </Link><Link
+                        className="collapse-item"
+                        to="/admin/finance-pruchasemanagement-discardpayment"
+                      >
+                        Discard Payment
+                      </Link>
+                    </>
+                  </div>
+                </div>
+              </li>
             </div>
           </div>
         </li>

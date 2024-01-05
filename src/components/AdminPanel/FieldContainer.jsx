@@ -7,6 +7,7 @@ const FieldContainer = ({
   cols,
   value,
   onChange,
+  onBlur,
   onKeyUp,
   required = true,
   disabled = false,
@@ -46,6 +47,7 @@ const FieldContainer = ({
           max={max}
           name={name}
           min={min}
+          onBlur={onBlur}
         >
           {children}
         </Tag>
