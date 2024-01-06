@@ -194,6 +194,8 @@ import PurchaseManagementAllTransaction from "./Finance/PurchaseManagementAllTra
 import Discard from "./Finance/Discard";
 import JobTypeMaster from "../JobType/JobTypeMaster";
 import FinanceWFHDashboard from "../Finance Dashboard/FinanceWFHDashboard";
+import WFHTemplateOverview from "./WFH/WFHSingleUser/WFHTemplateOverview";
+import ViewEditDigiSignature from "./WFH/DigitalSignature/ViewEditDigiSignature";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -342,6 +344,14 @@ const Admin = () => {
                   />
 
                   <Route path="/wfh-single-user" element={<WFHSingleUser />} />
+                  <Route
+                    path="/wfh-template-overview"
+                    element={<WFHTemplateOverview />}
+                  />
+                  <Route
+                    path="view-edit-digital-signature"
+                    element={<ViewEditDigiSignature />}
+                  />
                   <Route
                     path="/wfh-user-dashboard"
                     element={<DashboardWFHUser />}

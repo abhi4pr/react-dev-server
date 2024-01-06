@@ -231,6 +231,42 @@ const SidebarLinks = () => {
         </li>
       )}
 
+      <li className="nav-item">
+        <Link
+          className="nav-link collapsed"
+          data-toggle="collapse"
+          data-target="#collapseFourdd"
+          aria-expanded="true"
+          aria-controls="collapseFourdd"
+        >
+          <i className="bi bi-person-gear" />
+          <span>WFH New Module</span>
+        </Link>
+        <div
+          id="collapseFourdd"
+          className="collapse"
+          aria-labelledby="headingTwo"
+          data-parent="#accordionSidebar"
+        >
+          <div className="bg-white collapse-inner">
+            <Link
+              className="collapse-item"
+              to="/admin/view-edit-digital-signature"
+            >
+              Digital Signature
+            </Link>
+
+            <Link className="collapse-item" to="/admin/wfh-template-overview">
+              Change/View Template
+            </Link>
+
+            <Link className="collapse-item" to="/admin/wfh-single-user">
+              Payout Summary
+            </Link>
+          </div>
+        </div>
+      </li>
+
       {isWFHDHRPayrollManager && (
         <li className="nav-item">
           <Link
@@ -1159,12 +1195,14 @@ const SidebarLinks = () => {
                         to="/admin/finance-pruchasemanagement-paymentdone"
                       >
                         Payment Done
-                      </Link><Link
+                      </Link>
+                      <Link
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-alltransaction"
                       >
                         All Transaction
-                      </Link><Link
+                      </Link>
+                      <Link
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-discardpayment"
                       >
