@@ -42,8 +42,8 @@ const LogoCategoryMaster = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Logo Category"
-        title="Logo Category Master"
+        mainTitle="Data Category"
+        title="Data Category Master"
         handleSubmit={handleSubmit}
       >
         <FieldContainer

@@ -73,7 +73,7 @@ const LogoCategoryOverview = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Logo Category"
+        mainTitle="Data Category"
         link="/admin/logo-category-master"
         buttonAccess={true}
       />
@@ -81,7 +81,7 @@ const LogoCategoryOverview = () => {
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
-            title="Logo Category Overview"
+            title="Data Category Overview"
             columns={columns}
             data={filterData}
             fixedHeader

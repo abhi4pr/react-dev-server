@@ -196,7 +196,7 @@ const BrandUpdate = () => {
               />
 
               <FieldContainer
-                label="Upload logo"
+                label="Upload Data"
                 type="file"
                 multiple
                 required={false}
@@ -235,7 +235,7 @@ const BrandUpdate = () => {
                       </div>
                       <div className="col summary_box brand_img_box">
                         <h4>
-                          <span>Logo Category:</span>
+                          <span>Data Category:</span>
                           {detail.cat_name}
                         </h4>
                       </div>
@@ -294,7 +294,7 @@ const BrandUpdate = () => {
                       </div>
                       <div className="col summary_box brand_img_box">
                         <FieldContainer
-                          label={`Logo Category`}
+                          label={`Data Category`}
                           fieldGrid={12}
                           Tag="select"
                           value={selectedCategories[index] || ""}

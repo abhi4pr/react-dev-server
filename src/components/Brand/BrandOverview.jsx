@@ -98,7 +98,7 @@ const BrandOverview = () => {
                 </Link>
                 <Link to="/admin/logo-category-overview">
                   <button type="button" className="btn btn-primary btn-sm">
-                    Logo Category
+                    Data Category
                   </button>
                 </Link>
               </div>
@@ -107,7 +107,7 @@ const BrandOverview = () => {
               <div className="card-body pb0 pb4">
                 <div className="row thm_form">
                   <FieldContainer
-                    label="Logo category"
+                    label="Data category"
                     Tag="select"
                     fieldGrid={4}
                     value={selectedCategory}

@@ -130,7 +130,7 @@ const BrandMaster = () => {
         />
 
         <FieldContainer
-          label="Upload logo *"
+          label="Upload Data *"
           type="file"
           multiple
           accept="image/*"
@@ -175,7 +175,7 @@ const BrandMaster = () => {
                 </div>
                 <div className="col summary_box brand_img_box">
                 <FieldContainer
-                  label={`Logo Category`}
+                  label={`Data Category`}
                   fieldGrid={12}
                   Tag="select"
                   value={selectedCategories[index] || ""}
