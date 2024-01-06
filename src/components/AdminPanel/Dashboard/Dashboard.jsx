@@ -211,28 +211,28 @@ function Dashboard() {
                 </div>
               </div>
             )}
-          {contextData &&
+          {/* {contextData &&
             contextData[30] &&
-            contextData[30].view_value === 1 && (
-              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-                <Link className="collapse-item" to="/admin/wfh-single-user">
-                  <div className="d_infocard card shadow">
-                    <div className="card-body">
-                      <div className="d_infocard_txt">
-                        {/* <h3>WFH</h3> */}
+            contextData[30].view_value === 1 && ( */}
+          <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+            <Link className="collapse-item" to="/admin/wfh-single-user">
+              <div className="d_infocard card shadow">
+                <div className="card-body">
+                  <div className="d_infocard_txt">
+                    {/* <h3>WFH</h3> */}
 
-                        <h2>WFH Single User</h2>
-                      </div>
-                      <div className="d_infocard_icon">
-                        <span>
-                          <FaProductHunt />
-                        </span>
-                      </div>
-                    </div>
+                    <h2>WFH Single User</h2>
                   </div>
-                </Link>
+                  <div className="d_infocard_icon">
+                    <span>
+                      <FaProductHunt />
+                    </span>
+                  </div>
+                </div>
               </div>
-            )}
+            </Link>
+          </div>
+          {/* )} */}
           {/* {contextData &&
             contextData[30] &&
             contextData[30].view_value === 1 && ( */}

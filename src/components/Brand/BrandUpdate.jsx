@@ -24,7 +24,7 @@ const BrandUpdate = () => {
   const [category, setCategory] = useState("");
   const [error, setError] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [currentDate, setCurrentDate] = useState('');
+  const [currentDate, setCurrentDate] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -32,22 +32,24 @@ const BrandUpdate = () => {
   const { id } = useParams();
 
   const formatDate = (date) => {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/get_single_logo_data/${id}`).then((res) => {
-      const fetchedData = res.data;
-      const { brand_name, upload_logo, remarks, cat_name } = fetchedData;
-      setBrand(brand_name);
-      setLogo(upload_logo);
-      setRemark(remarks);
-      setCategory(cat_name);
-      setBrandData(fetchedData);
-    });
+    axios
+      .get(`http://34.93.221.166:3000/api/get_single_logo_data/${id}`)
+      .then((res) => {
+        const fetchedData = res.data;
+        const { brand_name, upload_logo, remarks, cat_name } = fetchedData;
+        setBrand(brand_name);
+        setLogo(upload_logo);
+        setRemark(remarks);
+        setCategory(cat_name);
+        setBrandData(fetchedData);
+      });
 
     axios
       .get("http://34.93.221.166:3000/api/get_all_logo_categories")
@@ -67,28 +69,33 @@ const BrandUpdate = () => {
     });
   };
 
-  const getCombinedData = async() => {
-    if(brand){
-      axios.get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`).then((res) => {
-        setLogos(res.data)
-      });
+  const getCombinedData = async () => {
+    if (brand) {
+      axios
+        .get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`)
+        .then((res) => {
+          setLogos(res.data);
+        });
     }
-  }
+  };
 
   useEffect(() => {
     getCombinedData();
   }, [brand]);
 
   const removeImage = async (logo_id) => {
-    if(logo_id == id){
-      setError("You can't delete default image, try to delete brand instead")
-    }else{
-      var data = await axios.delete(`http://34.93.221.166:3000/api/delete_logo/${logo_id}`, null);
+    if (logo_id == id) {
+      setError("You can't delete default image, try to delete brand instead");
+    } else {
+      var data = await axios.delete(
+        `http://34.93.221.166:3000/api/delete_logo/${logo_id}`,
+        null
+      );
       if (data) {
         getCombinedData();
       }
     }
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -106,19 +113,23 @@ const BrandUpdate = () => {
         const formData = new FormData();
         formData.append("id", id);
         formData.append("brand_name", brand);
-        formData.append("image", details[0].file);
+        formData.append("upload_logo", details[0].file);
         formData.append("image_type", details[0].image_type);
-        formData.append("size_in_mb", details[0].sizeInMB)
+        formData.append("size_in_mb", details[0].sizeInMB);
         formData.append("size", details[0].size);
         formData.append("remarks", remark);
         formData.append("last_updated_by", loginUserId);
-        formData.append("logo_cat",selectedCategories[i]);
+        formData.append("logo_cat", selectedCategories[i]);
 
-        await axios.post("http://34.93.221.166:3000/api/add_logo_brand", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await axios.post(
+          "http://34.93.221.166:3000/api/add_logo_brand",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       }
       setIsFormSubmitted(true);
       toastAlert("Logo images updated");
@@ -127,7 +138,7 @@ const BrandUpdate = () => {
       setImage("");
       setSize("");
       setRemark("");
-    }catch (error) {
+    } catch (error) {
       console.error(error);
     }
   };
@@ -135,7 +146,7 @@ const BrandUpdate = () => {
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
     setImages(files);
-  
+
     const details = files.map((file) => {
       const { name } = file;
       const img = new Image();
@@ -155,7 +166,7 @@ const BrandUpdate = () => {
         };
       });
     });
-  
+
     Promise.all(details).then((detailsArray) => {
       setDetails(detailsArray);
     });
@@ -218,7 +229,8 @@ const BrandUpdate = () => {
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Size:</span>
-                          {detail.size_in_mb}{"MB"}
+                          {detail.size_in_mb}
+                          {"MB"}
                         </h4>
                       </div>
                       <div className="col summary_box brand_img_box">
@@ -270,7 +282,8 @@ const BrandUpdate = () => {
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Size:</span>
-                          {detail.sizeInMB}{"MB"}
+                          {detail.sizeInMB}
+                          {"MB"}
                         </h4>
                       </div>
                       <div className="col summary_box brand_img_box">
@@ -280,20 +293,20 @@ const BrandUpdate = () => {
                         </h4>
                       </div>
                       <div className="col summary_box brand_img_box">
-                      <FieldContainer
-                        label={`Logo Category`}
-                        fieldGrid={12}
-                        Tag="select"
-                        value={selectedCategories[index] || ""}
-                        onChange={(e) => handleCategoryChange(e, index)}
-                      >
-                        <option value="">Please select</option>
-                        {categoryData.map((data) => (
-                          <option key={data.id} value={data.id}>
-                            {data.cat_name}
-                          </option>
-                        ))}
-                      </FieldContainer>
+                        <FieldContainer
+                          label={`Logo Category`}
+                          fieldGrid={12}
+                          Tag="select"
+                          value={selectedCategories[index] || ""}
+                          onChange={(e) => handleCategoryChange(e, index)}
+                        >
+                          <option value="">Please select</option>
+                          {categoryData.map((data) => (
+                            <option key={data.id} value={data.id}>
+                              {data.cat_name}
+                            </option>
+                          ))}
+                        </FieldContainer>
                       </div>
                     </div>
                   </div>

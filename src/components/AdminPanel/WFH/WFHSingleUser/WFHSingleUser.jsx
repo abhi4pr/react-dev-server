@@ -7,11 +7,11 @@ import axios from "axios";
 import FormContainer from "../../FormContainer";
 import { useGlobalContext } from "../../../../Context/Context";
 import jwtDecode from "jwt-decode";
-import image1 from "../SalaryGeneration/images/image1.png";
-import image2 from "../SalaryGeneration/images/image2.png";
-import image3 from "../SalaryGeneration/images/i3.png";
-import image4 from "../SalaryGeneration/images/i4.png";
-import image5 from "../SalaryGeneration/images/image5.png";
+// import image1 from "../SalaryGeneration/images/image1.png";
+// import image2 from "../SalaryGeneration/images/image2.png";
+// import image3 from "../SalaryGeneration/images/i3.png";
+// import image4 from "../SalaryGeneration/images/i4.png";
+// import image5 from "../SalaryGeneration/images/image5.png";
 import * as XLSX from "xlsx";
 import { generatePDF } from "../SalaryGeneration/pdfGenerator";
 import {
@@ -31,15 +31,17 @@ import MyTemplate4 from "../SalaryGeneration/Template4";
 import MyTemplate5 from "../SalaryGeneration/Template5";
 import Modal from "react-modal";
 import DigitalSignature from "../../../DigitalSignature/DigitalSignature";
-// import DateFormattingComponent from "../../../DateFormater/DateFormared";
+import useInvoiceTemplateImages from "../Templates/Hooks/useInvoiceTemplateImages";
 
-const images = [
-  { temp_id: 1, image: image1 },
-  { temp_id: 2, image: image2 },
-  { temp_id: 3, image: image3 },
-  { temp_id: 4, image: image4 },
-  { temp_id: 5, image: image5 },
-];
+// const images = [
+//   { temp_id: 1, image: image1 },
+//   { temp_id: 2, image: image2 },
+//   { temp_id: 3, image: image3 },
+//   { temp_id: 4, image: image4 },
+//   { temp_id: 5, image: image5 },
+// ];
+
+const images = useInvoiceTemplateImages();
 
 const WFHSingleUser = () => {
   const { toastAlert } = useGlobalContext();
@@ -68,6 +70,7 @@ const WFHSingleUser = () => {
   const [rowDataModal, setRowDataModal] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -539,7 +542,19 @@ const WFHSingleUser = () => {
               <FileOpenIcon />
             </button>
           )}
-          {!row?.sendToFinance && (
+          <button
+            className="btn btn-secondary"
+            onClick={() => setIsPreviewModalOpen(true)}
+          >
+            Preview Invoice
+          </button>
+          <Modal
+            isOpen={isPreviewModalOpen}
+            onRequestClose={() => setIsPreviewModalOpen(false)}
+            contentLabel="Preview Modal"
+            appElement={document.getElementById("root")}
+          ></Modal>
+          {/* {!row?.sendToFinance && (
             <button
               title="Send to Finance"
               className="btn-outline-primary btn-sm ml-2"
@@ -547,7 +562,7 @@ const WFHSingleUser = () => {
             >
               <IosShareIcon />
             </button>
-          )}
+          )} */}
           {row.sendToFinance == 1 && row.status_ == 1 && (
             <button
               className="btn btn-outline-primary ml-2"
