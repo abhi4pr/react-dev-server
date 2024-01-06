@@ -22,17 +22,21 @@ const LogoCategoryUpdate = () => {
   useEffect(() => {
     if (id) {
       console.log(id);
-      axios.get(`http://34.93.221.166:3000/api/getlogodata/${id}`);
+      axios.get(`http://34.93.221.166:3000/api/get_single_category/${id}`).then((res)=>{
+        const fetchedData = res.data;
+        setCategoryName(fetchedData.cat_name)
+        setRemark(fetchedData.remark)
+      });
     }
   }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
     axios
-      .put("http://34.93.221.166:3000/api/logocatupdate", {
+      .put("http://34.93.221.166:3000/api/update_logo_category", {
         id: id,
         cat_name: categoryName,
-        remarks: remark,
+        remark: remark,
         last_updated_by: loginUserID,
       })
       .then(() => {

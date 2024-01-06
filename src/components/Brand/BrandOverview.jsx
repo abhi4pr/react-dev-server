@@ -20,8 +20,8 @@ const BrandOverview = () => {
   const [countData, setCountData] = useState([]);
   const [employeeData, setEmployeeData] = useState([]);
 
-  function getData() {
-    axios.get("http://34.93.221.166:3000/api/logodata").then((res) => {
+  async function getData() {
+    await axios.get("http://34.93.221.166:3000/api/get_logo_data").then((res) => {
       setCountData(res.data);
       const responseData = res.data;
       const uniqueBrandName = new Set();
@@ -37,7 +37,7 @@ const BrandOverview = () => {
     });
 
     axios
-      .get("http://34.93.221.166:3000/api/alllogocat")
+      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
       .then((res) => setCategoryData(res.data));
 
     axios
@@ -71,7 +71,7 @@ const BrandOverview = () => {
 
   const deleteBrand = async (brand_name) => {
     await axios
-      .delete(`http://34.93.221.166:3000/api/logodeletenew/${brand_name}`)
+      .delete(`http://34.93.221.166:3000/api/delete_logo_based_brand/${brand_name}`)
       .then((res) => {
         getData();
       })

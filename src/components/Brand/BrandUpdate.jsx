@@ -39,7 +39,7 @@ const BrandUpdate = () => {
   };
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/getlogodata/${id}`).then((res) => {
+    axios.get(`http://34.93.221.166:3000/api/get_single_logo_data/${id}`).then((res) => {
       const fetchedData = res.data;
       const { brand_name, upload_logo, remarks, cat_name } = fetchedData;
       setBrand(brand_name);
@@ -50,7 +50,7 @@ const BrandUpdate = () => {
     });
 
     axios
-      .get("http://34.93.221.166:3000/api/alllogocat")
+      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
       .then((res) => setCategoryData(res.data));
 
     const today = new Date();
@@ -68,9 +68,11 @@ const BrandUpdate = () => {
   };
 
   const getCombinedData = async() => {
-    axios.get(`http://34.93.221.166:3000/api/logodata/${brand}`).then((res) => {
-      setLogos(res.data)
-    });
+    if(brand){
+      axios.get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`).then((res) => {
+        setLogos(res.data)
+      });
+    }
   }
 
   useEffect(() => {
@@ -79,9 +81,9 @@ const BrandUpdate = () => {
 
   const removeImage = async (logo_id) => {
     if(logo_id == id){
-      setError("You can't delete default image, try to delete from overview table")
+      setError("You can't delete default image, try to delete brand instead")
     }else{
-      var data = await axios.delete(`http://34.93.221.166:3000/api/logodelete/${logo_id}`, null);
+      var data = await axios.delete(`http://34.93.221.166:3000/api/delete_logo/${logo_id}`, null);
       if (data) {
         getCombinedData();
       }
@@ -91,10 +93,10 @@ const BrandUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    axios.put(`http://34.93.221.166:3000/api/logoupdatenew`, {
+    await axios.put(`http://34.93.221.166:3000/api/update_logo_brand_new`, {
       id: id,
       brand_name: brand,
-      Remarks: remark,
+      remarks: remark,
       // cat_name: category,
       Last_updated_by: loginUserId,
     });
@@ -108,11 +110,11 @@ const BrandUpdate = () => {
         formData.append("image_type", details[0].image_type);
         formData.append("size_in_mb", details[0].sizeInMB)
         formData.append("size", details[0].size);
-        formData.append("remark", remark);
-        formData.append("created_by", loginUserId);
-        formData.append("logocat",selectedCategories[i]);
+        formData.append("remarks", remark);
+        formData.append("last_updated_by", loginUserId);
+        formData.append("logo_cat",selectedCategories[i]);
 
-        await axios.post("http://34.93.221.166:3000/api/postlogodata", formData, {
+        await axios.post("http://34.93.221.166:3000/api/add_logo_brand", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -198,7 +200,7 @@ const BrandUpdate = () => {
                       <div className="col summary_box brand_img_box">
                         <img
                           className="brandimg_icon"
-                          src={detail.upload_logo}
+                          src={detail.logo_image}
                         />
                       </div>
                       <div className="col summary_box brand_img_box">

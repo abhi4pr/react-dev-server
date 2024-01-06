@@ -59,7 +59,7 @@ function Dashboard() {
       getAllSimData(res.data.data);
     });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_logo_brands")
+      .get("http://34.93.221.166:3000/api/get_logo_data")
       .then((res) => {
         getLogoBrandData(res.data);
       });

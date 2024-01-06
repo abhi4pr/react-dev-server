@@ -27,7 +27,7 @@ const BrandView = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/getlogodata/${id}`).then((res) => {
+    axios.get(`http://34.93.221.166:3000/api/get_single_logo_data/${id}`).then((res) => {
       const fetchedData = res.data;
       const { 
         brand_name,
@@ -44,9 +44,11 @@ const BrandView = () => {
   }, [id]);
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/logodata/${brand}`).then((res) => {
-      setLogos(res.data);
-    });
+    if(brand){
+      axios.get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`).then((res) => {
+        setLogos(res.data);
+      });
+    }
   }, [brand]);
 
   const handleSubmit = async (e) => {
@@ -62,7 +64,8 @@ const BrandView = () => {
             <FormContainer
               mainTitle="Brand"
               title="Brand"
-              handleSubmit={handleSubmit}
+              // handleSubmit={handleSubmit}
+              submitButton={false}
             >
               <FieldContainer
                 label="Brand Name"
@@ -77,7 +80,7 @@ const BrandView = () => {
               <div className="row">
                 {logos.map((detail)=>(
                   <div className="col-md-3 card" style={{margin:"0 0 10px 0"}}>
-                    <img className="card-img-top" src={detail.upload_logo} style={{height:"220px"}} />
+                    <img className="card-img-top" src={detail.logo_image} style={{height:"220px"}} />
                     <div className="card-body">      
                     </div>
                     <ul className="list-group list-group-flush">
@@ -88,7 +91,7 @@ const BrandView = () => {
                     </ul>
                     <div className="card-body">
                       <button type="button" className="btn btn-success">
-                        <a href={detail.upload_logo} target="_blank" rel="noopener noreferrer" > {" "} Download{" "} </a>
+                        <a href={detail.logo_image} target="_blank" rel="noopener noreferrer" > {" "} Download{" "} </a>
                       </button>
                     </div>
                   </div>

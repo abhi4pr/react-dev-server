@@ -12,8 +12,8 @@ const LogoCategoryOverview = () => {
   const [filterData, setFilterData] = useState([]);
   // const [contextData, setDatas] = useState([]);
 
-  function getData() {
-    axios.get("http://34.93.221.166:3000/api/alllogocat").then((res) => {
+  async function getData() {
+    await axios.get("http://34.93.221.166:3000/api/get_all_logo_categories").then((res) => {
       setData(res.data);
       setFilterData(res.data);
     });
@@ -59,7 +59,7 @@ const LogoCategoryOverview = () => {
           </Link>
 
           <DeleteButton
-            endpoint="logocatdelete"
+            endpoint="delete_logo_category"
             id={row.id}
             getData={getData}
           />

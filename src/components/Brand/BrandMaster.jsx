@@ -35,7 +35,7 @@ const BrandMaster = () => {
 
   useEffect(()=>{
     axios
-      .get("http://34.93.221.166:3000/api/alllogocat")
+      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
       .then((res) => setCategoryData(res.data))
 
     const today = new Date();
@@ -58,15 +58,15 @@ const BrandMaster = () => {
       for (let i = 0; i < details.length; i++) {
         const formData = new FormData();
         formData.append("brand_name", brand);
-        formData.append("image", details[i].file); 
+        formData.append("upload_logo", details[i].file); 
         formData.append("image_type", details[i].image_type);
         formData.append("size", details[i].size);
         formData.append("size_in_mb", details[i].sizeInMB)
-        formData.append("remark", remark);
+        formData.append("remarks", remark);
         formData.append("created_by", userID);
-        formData.append("logocat",selectedCategories[i]);
+        formData.append("logo_cat",selectedCategories[i]);
   
-        await axios.post("http://34.93.221.166:3000/api/postlogodata", formData, {
+        await axios.post("http://192.168.29.69:3000/api/add_logo_brand", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
