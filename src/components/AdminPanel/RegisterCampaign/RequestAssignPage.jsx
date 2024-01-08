@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const RequestAssignPage = ({ data }) => {
+const RequestAssignPage = ({ data ,RequestAssign}) => {
   console.log(data[0]?.ass_page?.campaignName, "reuset");
   const processedData = data.map((item) => ({
     ...item,
@@ -21,23 +21,23 @@ const RequestAssignPage = ({ data }) => {
   }));
 
   function handleAccept(row) {
-    axios
-      .post(`http://localhost:3000/api/preassignment/phase/update`, {
-        pre_ass_id: row.pre_ass_id,
-        status: "accepted",
-        phase_id: row.phase_id,
-        p_id: row.ass_page.p_id,
-      })
+    axios.post(`http://localhost:3000/api/preassignment/phase/update`, {
+      pre_ass_id: row.pre_ass_id,
+      status: "accepted",
+      phase_id: row.phase_id,
+      p_id: row.ass_page.p_id,
+    });
+    RequestAssign()
   }
 
   function handleReject(row) {
-    axios
-      .post(`http://localhost:3000/api/preassignment/phase/update`, {
-        pre_ass_id: row.pre_ass_id,
-        status: "rejected",
-        phase_id: row.phase_id,
-        p_id: row.ass_page.p_id,
-      })
+    axios.post(`http://localhost:3000/api/preassignment/phase/update`, {
+      pre_ass_id: row.pre_ass_id,
+      status: "rejected",
+      phase_id: row.phase_id,
+      p_id: row.ass_page.p_id,
+    });
+    RequestAssign()
   }
 
   const columns = [
@@ -85,10 +85,18 @@ const RequestAssignPage = ({ data }) => {
           <Button
             style={{ marginRight: "10px" }}
             onClick={() => handleAccept(params.row)}
+            variant="outlined"
+            color="secondary"
           >
             Accept
           </Button>
-          <Button onClick={() => handleReject(params.row)}>Reject</Button>
+          <Button
+            onClick={() => handleReject(params.row)}
+            variant="outlined"
+            color="error"
+          >
+            Reject
+          </Button>
         </div>
       ),
     },

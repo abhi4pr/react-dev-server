@@ -16,7 +16,7 @@ const ExcusionCampaign = () => {
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [assignmentData, setAssignmentData] = useState([]);
   console.log(assignmentData, "new");
-  const [pendingData, setPendingData] = useState([]);
+  // const [pendingData, setPendingData] = useState([]);
   const [executedData, setExecutedData] = useState([]);
   const [verifiedData, setVerifiedData] = useState([]);
   const [rejectedData, setRejectedData] = useState([]);
@@ -46,9 +46,9 @@ const ExcusionCampaign = () => {
     const assigned = getData?.data?.data.filter(
       (item) => item.ass_status == "assigned" || item.ass_status == "pending"
     );
-    const pending = getData?.data?.data.filter(
-      (item) => item.ass_status == "pending"
-    );
+    // const pending = getData?.data?.data.filter(
+    //   (item) => item.ass_status == "pending"
+    // );
     const excuted = getData?.data?.data.filter(
       (item) => item.ass_status == "executed"
     );
@@ -59,7 +59,7 @@ const ExcusionCampaign = () => {
       (item) => item.ass_status == "rejected"
     );
     setAssignmentData(assigned);
-    setPendingData(pending);
+    // setPendingData(pending);
     setExecutedData(excuted);
     setVerifiedData(verified);
     setRejectedData(rejected);
@@ -75,11 +75,8 @@ const ExcusionCampaign = () => {
   const tab1 = (
     <RequestAssignPage
       data={requestAssign}
-      // status={"assigned"}
-      // setActiveAccordionIndex={setActiveAccordionIndex}
-      // setActiveAccordionIndex={setActiveAccordionIndex}
-      // activeAccordion="1"
-      // getAssignment={getAssignment}
+      RequestAssign={RequestAssign}
+
     />
   );
 
@@ -93,16 +90,16 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
+  // const tab3 = (
+  //   <ExePageDetailes
+  //     data={pendingData}
+  //     status={"assigned"}
+  //     setActiveAccordionIndex={setActiveAccordionIndex}
+  //     activeAccordion="2"
+  //     getAssignment={getAssignment}
+  //   />
+  // );
   const tab3 = (
-    <ExePageDetailes
-      data={pendingData}
-      status={"assigned"}
-      setActiveAccordionIndex={setActiveAccordionIndex}
-      activeAccordion="2"
-      getAssignment={getAssignment}
-    />
-  );
-  const tab4 = (
     <ExePageDetailes
       data={executedData}
       status={"executed"}
@@ -111,7 +108,7 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
-  const tab5 = (
+  const tab4 = (
     <ExePageDetailes
       data={verifiedData}
       status={"verified"}
@@ -120,7 +117,7 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
-  const tab6 = (
+  const tab5 = (
     <ExePageDetailes
       data={rejectedData}
       status={"rejected"}
@@ -132,7 +129,7 @@ const ExcusionCampaign = () => {
   const accordionButtons = [
     "Requested Assign",
     "Assignment",
-    "Pending Excuation",
+    // "Pending Excuation",
     "Excuted",
     "Verified",
     "Rejected",
@@ -152,7 +149,7 @@ const ExcusionCampaign = () => {
         {activeAccordionIndex === 2 && tab3}
         {activeAccordionIndex === 3 && tab4}
         {activeAccordionIndex === 4 && tab5}
-        {activeAccordionIndex === 5 && tab6}
+        {/* {activeAccordionIndex === 5 && tab6} */}
       </FormContainer>
     </div>
   );
