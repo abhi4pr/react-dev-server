@@ -7,24 +7,33 @@ import FieldContainer from "../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import { MdCancel } from "react-icons/md";
+import pdf from "./pdf-file.png";
+import sheets from "./sheets.png";
+import video from "./montage.png";
+import Select from "react-select";
 
 const DataBrandUpdate = () => {
   const { toastAlert } = useGlobalContext();
   const [brand, setBrand] = useState("");
-  const [logo, setLogo] = useState("");
-  const [image, setImage] = useState("JPG");
+  const [logo, setLogo] = useState([]);
+  const [image, setImage] = useState("");
   const [size, setSize] = useState("");
   const [remark, setRemark] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [brandData, setBrandData] = useState([]);
-  const [logos, setLogos] = useState([]);
   const [images, setImages] = useState([]);
   const [details, setDetails] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
   const [category, setCategory] = useState("");
-  const [error, setError] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
+  const [platform, setPlateform] = useState("");
+  const [platformData, setPlateformData] = useState([]);
+  const [contentType, setContentType] = useState("");
+  const [contentTypeData, setContentTypeData] = useState([]);
+  const [dataBrand, setDataBrand] = useState("");
+  const [dataBrandData, setDataBrandData] = useState([]);
+  const [dataSubCategory, setDataSubCategory] = useState("");
+  const [dataSubCategoryData, setDataSubCategoryData] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -52,8 +61,25 @@ const DataBrandUpdate = () => {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
-      .then((res) => setCategoryData(res.data));
+      .get("http://34.93.221.166:3000/api/get_all_data_platforms")
+      .then((res) => {
+        setPlateformData(res.data);
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_data_Sub_categories")
+      .then((res) => {
+        setDataSubCategoryData(res.data);
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_data_content_types")
+      .then((res) => {
+        setContentTypeData(res.data);
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_data_brands")
+      .then((res) => {
+        setDataBrandData(res.data);
+      });
 
     const today = new Date();
     const formattedDate = formatDate(today);
@@ -149,6 +175,13 @@ const DataBrandUpdate = () => {
 
     const details = files.map((file) => {
       const { name } = file;
+
+      if (
+        fileType === "jpg" ||
+        fileType === "jpeg" ||
+        fileType === "png" ||
+        fileType === "gif"
+      ) {
       const img = new Image();
       img.src = URL.createObjectURL(file);
       return new Promise((resolve) => {
@@ -165,6 +198,15 @@ const DataBrandUpdate = () => {
           });
         };
       });
+    } else {
+        return Promise.resolve({
+          name,
+          file,
+          fileType,
+          size: "N/A", 
+          sizeInMB: `${sizeInMB}`,
+        });
+      }
     });
 
     Promise.all(details).then((detailsArray) => {
@@ -173,36 +215,153 @@ const DataBrandUpdate = () => {
   };
 
   if (isFormSubmitted) {
-    return <Navigate to="/brand-overview" />;
+    return <Navigate to="/data-brand-overview" />;
   }
+
+  const renderFileIcon = (fileType) => {
+    switch (fileType) {
+      case "pdf":
+        return <img src={pdf} alt="PDF" style={{ width: "32%" }} />;
+      case "mp4":
+        return <img src={video} alt="PDF" style={{ width: "32%" }} />;
+      case "xls":
+      case "xlsx":
+        return <img src={sheets} alt="Excel" style={{ width: "32%" }} />;
+      default:
+        return <i className="fa fa-file"></i>;
+    }
+  };
+
   return (
     <>
       <div>
         <UserNav />
         <div className="section section_padding sec_bg h100vh">
           <div className="container">
-            <FormContainer
-              mainTitle="Brand"
-              title="Brand"
-              handleSubmit={handleSubmit}
-            >
+            <FormContainer mainTitle="Data" title="Data" handleSubmit={handleSubmit}>
               <FieldContainer
-                label="Brand Name"
+                label="Name *"
                 type="text"
                 value={brand}
-                onChange={(e) => {
-                  setBrand(e.target.value);
-                }}
+                onChange={(e) => setBrand(e.target.value)}
+                // onBlur={handleContentBlur}
               />
 
               <FieldContainer
-                label="Upload Data"
+                label="Upload Data *"
                 type="file"
                 multiple
-                required={false}
-                fieldGrid={6}
+                accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
                 onChange={handleFileChange}
+                fieldGrid={6}
               />
+
+              <div className="form-group col-3">
+                <label className="form-label">
+                  Category Name <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={categoryData.map((opt) => ({
+                    value: opt._id,
+                    label: opt.category_name,
+                  }))}
+                  value={{
+                    value: category,
+                    label:
+                      categoryData.find((user) => user._id === category)
+                        ?.category_name || "",
+                  }}
+                  onChange={(e) => {
+                    setCategory(e.value);
+                  }}
+                  required
+                />
+              </div>
+              <div className="form-group col-3">
+                <label className="form-label">
+                  Sub Category Name <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={dataSubCategoryData.map((opt) => ({
+                    value: opt._id,
+                    label: opt.data_sub_cat_name,
+                  }))}
+                  value={{
+                    value: dataSubCategory,
+                    label:
+                      dataSubCategoryData.find(
+                        (user) => user._id === dataSubCategory
+                      )?.data_sub_cat_name || "",
+                  }}
+                  onChange={(e) => {
+                    setDataSubCategory(e.value);
+                  }}
+                  required
+                />
+              </div>
+              <div className="form-group col-3">
+                <label className="form-label">
+                  Platform Name <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={platformData.map((opt) => ({
+                    value: opt._id,
+                    label: opt.platform_name,
+                  }))}
+                  value={{
+                    value: platform,
+                    label:
+                      platformData.find((user) => user._id === platform)
+                        ?.platform_name || "",
+                  }}
+                  onChange={(e) => {
+                    setPlateform(e.value);
+                  }}
+                  required
+                />
+              </div>
+              <div className="form-group col-3">
+                <label className="form-label">
+                  Content Type <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={contentTypeData.map((opt) => ({
+                    value: opt._id,
+                    label: opt.content_name,
+                  }))}
+                  value={{
+                    value: contentType,
+                    label:
+                      contentTypeData.find((user) => user._id === contentType)
+                        ?.content_name || "",
+                  }}
+                  onChange={(e) => {
+                    setContentType(e.value);
+                  }}
+                  required
+                />
+              </div>
+              <div className="form-group col-3">
+                <label className="form-label">
+                  Brand <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={dataBrandData.map((opt) => ({
+                    value: opt._id,
+                    label: opt.brand_name,
+                  }))}
+                  value={{
+                    value: dataBrand,
+                    label:
+                      dataBrandData.find((user) => user._id === dataBrand)
+                        ?.brand_name || "",
+                  }}
+                  onChange={(e) => {
+                    setDataBrand(e.value);
+                  }}
+                  required
+                />
+              </div>
 
               <div className="summary_cards brand_img_list">
                 {logos.map((detail) => (
@@ -292,7 +451,7 @@ const DataBrandUpdate = () => {
                           {currentDate}
                         </h4>
                       </div>
-                      <div className="col summary_box brand_img_box">
+                      {/* <div className="col summary_box brand_img_box">
                         <FieldContainer
                           label={`Data Category`}
                           fieldGrid={12}
@@ -307,7 +466,7 @@ const DataBrandUpdate = () => {
                             </option>
                           ))}
                         </FieldContainer>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 ))}

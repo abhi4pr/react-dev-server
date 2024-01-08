@@ -101,7 +101,7 @@ const DataSubCategory = () => {
   }, []);
 
   const handleBrandData = (row) => {
-    setModalId(row.data_sub_cat_id);
+    setModalId(row._id);
     setSubCatNameUpdate(row.data_sub_cat_name);
     setCategoryNameUpdate(row.cat_id.category_name);
     console.log(row.cat_id.category_name, "ddddddddddddd");
@@ -109,7 +109,7 @@ const DataSubCategory = () => {
   const handleModalUpdate = () => {
     axios
       .put("http://34.93.221.166:3000/api/update_data_sub_category", {
-        data_sub_cat_id: modalId,
+        _id: modalId,
         cat_id: categoryNameUpdate,
         data_sub_cat_name: subCatNameUpdate,
       })

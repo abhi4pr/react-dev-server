@@ -24,8 +24,8 @@ const DataBrandOverview = () => {
         const responseData = res.data;
         const uniqueBrandName = new Set();
         const filteredData = responseData.filter((item) => {
-          if (!uniqueBrandName.has(item.brand_name)) {
-            uniqueBrandName.add(item.brand_name);
+          if (!uniqueBrandName.has(item.data_name)) {
+            uniqueBrandName.add(item.data_name);
             return true;
           }
           return false;
@@ -45,7 +45,7 @@ const DataBrandOverview = () => {
 
   const getBrandCount = (brandName, data) => {
     const count = countData.filter(
-      (item) => item.brand_name === brandName
+      (item) => item.data_name === brandName
     ).length;
     return count;
   };
@@ -106,19 +106,19 @@ const DataBrandOverview = () => {
                     Brand
                   </button>
                 </Link>
-                <Link to="/data-brand-master">
-                  <button type="button" className="btn btn-primary btn-sm">
-                    Create Data
-                  </button>
-                </Link>
                 <Link to="/data-brand-category">
                   <button type="button" className="btn btn-primary btn-sm">
-                    Data Category
+                    Category
                   </button>
                 </Link>
                 <Link to="/data-brand-sub-category">
                   <button type="button" className="btn btn-primary btn-sm">
-                    Data Sub Category
+                    Sub Category
+                  </button>
+                </Link>
+                <Link to="/data-brand-master">
+                  <button type="button" className="btn btn-primary btn-sm">
+                    Create Data
                   </button>
                 </Link>
               </div>
@@ -183,7 +183,7 @@ const DataBrandOverview = () => {
                         <div className="summary_card">
                           <div className="summary_cardtitle">
                             <h5>
-                              Data - <span>{detail.data_name}</span>
+                              <span>{detail.data_name}</span>
                             </h5>
                             <div className="summary_cardaction">
                               <Link to={`/data-brand-update/${detail._id}`}>

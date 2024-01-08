@@ -48,11 +48,11 @@ const DataBrandMaster = () => {
   };
 
   useEffect(() => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
-      .then((res) => {
-        setCategoryData(res.data);
-      });
+    // axios
+    //   .get("http://34.93.221.166:3000/api/get_all_logo_categories")
+    //   .then((res) => {
+    //     setCategoryData(res.data);
+    //   });
     axios
       .get("http://34.93.221.166:3000/api/get_all_data_platforms")
       .then((res) => {
@@ -120,7 +120,7 @@ const DataBrandMaster = () => {
       }
 
       setIsFormSubmitted(true);
-      toastAlert("Logo images uploaded");
+      toastAlert("Data uploaded");
       setBrand("");
       setLogo("");
       setImage("");
@@ -195,6 +195,7 @@ const DataBrandMaster = () => {
         return <i className="fa fa-file"></i>;
     }
   };
+  
   return (
     <div style={{ width: "80%", margin: "0 0 0 10%" }}>
       <UserNav />
@@ -206,6 +207,16 @@ const DataBrandMaster = () => {
           onChange={(e) => setBrand(e.target.value)}
           // onBlur={handleContentBlur}
         />
+
+        <FieldContainer
+          label="Upload Data *"
+          type="file"
+          multiple
+          accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+          onChange={handleFileChange}
+          fieldGrid={6}
+        />
+
         <div className="form-group col-3">
           <label className="form-label">
             Category Name <sup style={{ color: "red" }}>*</sup>
@@ -233,14 +244,14 @@ const DataBrandMaster = () => {
           </label>
           <Select
             options={dataSubCategoryData.map((opt) => ({
-              value: opt.data_sub_cat_id,
+              value: opt._id,
               label: opt.data_sub_cat_name,
             }))}
             value={{
               value: dataSubCategory,
               label:
                 dataSubCategoryData.find(
-                  (user) => user.data_sub_cat_id === dataSubCategory
+                  (user) => user._id === dataSubCategory
                 )?.data_sub_cat_name || "",
             }}
             onChange={(e) => {
@@ -313,15 +324,6 @@ const DataBrandMaster = () => {
           />
         </div>
 
-        <FieldContainer
-          label="Upload Data *"
-          type="file"
-          multiple
-          accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-          onChange={handleFileChange}
-          fieldGrid={6}
-        />
-
         <div className="summary_cards brand_img_list">
           {details.map((detail, index) => (
             <div className="summary_card brand_img_item">
@@ -361,7 +363,7 @@ const DataBrandMaster = () => {
                     {currentDate}
                   </h4>
                 </div>
-                <div className="col summary_box brand_img_box">
+                {/* <div className="col summary_box brand_img_box">
                   <FieldContainer
                     label={`Data Category`}
                     fieldGrid={12}
@@ -376,7 +378,7 @@ const DataBrandMaster = () => {
                       </option>
                     ))}
                   </FieldContainer>
-                </div>
+                </div> */}
               </div>
             </div>
           ))}
