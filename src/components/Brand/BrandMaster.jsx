@@ -20,28 +20,28 @@ const BrandMaster = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [category, setCategory] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [currentDate, setCurrentDate] = useState('');
+  const [currentDate, setCurrentDate] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
 
   const formatDate = (date) => {
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     axios
       .get("http://34.93.221.166:3000/api/get_all_logo_categories")
-      .then((res) => setCategoryData(res.data))
+      .then((res) => setCategoryData(res.data));
 
     const today = new Date();
     const formattedDate = formatDate(today);
     setCurrentDate(formattedDate);
-  },[])
+  }, []);
 
   const handleCategoryChange = (event, index) => {
     const { value } = event.target;
@@ -58,21 +58,25 @@ const BrandMaster = () => {
       for (let i = 0; i < details.length; i++) {
         const formData = new FormData();
         formData.append("brand_name", brand);
-        formData.append("upload_logo", details[i].file); 
+        formData.append("upload_logo", details[i].file);
         formData.append("image_type", details[i].image_type);
         formData.append("size", details[i].size);
-        formData.append("size_in_mb", details[i].sizeInMB)
+        formData.append("size_in_mb", details[i].sizeInMB);
         formData.append("remarks", remark);
         formData.append("created_by", userID);
-        formData.append("logo_cat",selectedCategories[i]);
-  
-        await axios.post("http://192.168.29.69:3000/api/add_logo_brand", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        formData.append("logo_cat", selectedCategories[i]);
+
+        await axios.post(
+          "http://34.93.221.166:3000/api/add_logo_brand",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       }
-  
+
       setIsFormSubmitted(true);
       toastAlert("Logo images uploaded");
       setBrand("");
@@ -84,11 +88,11 @@ const BrandMaster = () => {
       console.error(error);
     }
   };
-  
+
   const handleFileChange = (event) => {
     const files = Array.from(event.target.files);
     setImages(files);
-  
+
     const details = files.map((file) => {
       const { name } = file;
       const img = new Image();
@@ -112,7 +116,6 @@ const BrandMaster = () => {
       setDetails(detailsArray);
     });
   };
-  
 
   if (isFormSubmitted) {
     return <Navigate to="/brand-overview" />;
@@ -120,7 +123,11 @@ const BrandMaster = () => {
   return (
     <div style={{ width: "80%", margin: "0 0 0 10%" }}>
       <UserNav />
-      <FormContainer mainTitle="Brand" title="Brand" handleSubmit={handleSubmit}>
+      <FormContainer
+        mainTitle="Brand"
+        title="Brand"
+        handleSubmit={handleSubmit}
+      >
         <FieldContainer
           label="Brand Name *"
           type="text"
@@ -138,7 +145,7 @@ const BrandMaster = () => {
           fieldGrid={3}
         />
 
-        <div className="summary_cards brand_img_list">  
+        <div className="summary_cards brand_img_list">
           {details.map((detail, index) => (
             <div className="summary_card brand_img_item">
               <div className="summary_cardrow brand_img_row">
@@ -164,7 +171,8 @@ const BrandMaster = () => {
                 <div className="col summary_box brand_img_box col140">
                   <h4>
                     <span>Size:</span>
-                    {detail.sizeInMB}{"MB"}
+                    {detail.sizeInMB}
+                    {"MB"}
                   </h4>
                 </div>
                 <div className="col summary_box brand_img_box col140">
@@ -174,20 +182,20 @@ const BrandMaster = () => {
                   </h4>
                 </div>
                 <div className="col summary_box brand_img_box">
-                <FieldContainer
-                  label={`Data Category`}
-                  fieldGrid={12}
-                  Tag="select"
-                  value={selectedCategories[index] || ""}
-                  onChange={(e) => handleCategoryChange(e, index)}
-                >
-                  <option value="">Please select</option>
-                  {categoryData.map((data) => (
-                    <option key={data.id} value={data.id}>
-                      {data.cat_name}
-                    </option>
-                  ))}
-                </FieldContainer>
+                  <FieldContainer
+                    label={`Data Category`}
+                    fieldGrid={12}
+                    Tag="select"
+                    value={selectedCategories[index] || ""}
+                    onChange={(e) => handleCategoryChange(e, index)}
+                  >
+                    <option value="">Please select</option>
+                    {categoryData.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.cat_name}
+                      </option>
+                    ))}
+                  </FieldContainer>
                 </div>
               </div>
             </div>
