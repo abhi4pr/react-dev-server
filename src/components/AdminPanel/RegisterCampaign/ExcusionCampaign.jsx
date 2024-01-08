@@ -3,12 +3,15 @@ import FormContainer from "../FormContainer";
 import ExePageDetailes from "./ExePageDetailes";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
-import RequestAssignPage from "./ReuestAssignPage";
+import RequestAssignPage from "./RequestAssignPage";
+
 
 const ExcusionCampaign = () => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
+  
   console.log(decodedToken);
+
 
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [assignmentData, setAssignmentData] = useState([]);
@@ -28,7 +31,7 @@ const ExcusionCampaign = () => {
   };
   const RequestAssign = async () => {
     const reqAss = await axios.get(
-      `http://192.168.29.110:3000/api/preassignment/658eb09363ee4e283e03cb34`
+      `http://localhost:3000/api/preassignment/6597d50d37c4ebe46bf05633`
     );
     const data = reqAss?.data?.data.filter((item) => item.status == "pending");
     SetRequestAssign(data);
@@ -38,7 +41,7 @@ const ExcusionCampaign = () => {
   }, []);
   const getAssignment = async (id) => {
     const getData = await axios.get(
-      `http://34.93.221.166:3000/api/assignment/all/25`
+      `http://localhost:3000/api/assignment/all/6597d50d37c4ebe46bf05633`
     );
     const assigned = getData?.data?.data.filter(
       (item) => item.ass_status == "assigned" || item.ass_status == "pending"
@@ -64,7 +67,7 @@ const ExcusionCampaign = () => {
   useEffect(() => {
     // getAssignment();
     getExpertee();
-  }, [decodedToken]);
+  }, []);
   const handleAccordionButtonClick = (index) => {
     setActiveAccordionIndex(index);
   };

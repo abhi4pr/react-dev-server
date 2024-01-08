@@ -22,7 +22,7 @@ const RequestAssignPage = ({ data }) => {
 
   function handleAccept(row) {
     axios
-      .post(`http://192.168.29.110:3000/api/preassignment/phase/update`, {
+      .post(`http://localhost:3000/api/preassignment/phase/update`, {
         pre_ass_id: row.pre_ass_id,
         status: "accepted",
         phase_id: row.phase_id,
@@ -32,7 +32,7 @@ const RequestAssignPage = ({ data }) => {
 
   function handleReject(row) {
     axios
-      .post(`http://192.168.29.110:3000/api/preassignment/phase/update`, {
+      .post(`http://localhost:3000/api/preassignment/phase/update`, {
         pre_ass_id: row.pre_ass_id,
         status: "rejected",
         phase_id: row.phase_id,
