@@ -40,7 +40,6 @@ import RepairReason from "./components/Sim/RepairReasonMast/RepairReason";
 import RepairRequest from "./components/Sim/RepairRequest/RepairRequest";
 
 import ForgetPassword from "./Login/Forget/ForgetPassword";
-import ExeHistory from "./components/Execution/ExeHistory";
 import AssetSubCategoryMaster from "./components/Sim/AssetCategory/AssetSubCategoryMaster";
 import AssetSubCategoryOverview from "./components/Sim/AssetCategory/AssetSubCategoryOverview";
 import AssetSubCategoryUpdate from "./components/Sim/AssetCategory/AssetSubCategoryUpdate";
@@ -49,6 +48,16 @@ import VenderMaster from "./components/Sim/Vender/VenderMaster";
 import VendorUpdate from "./components/Sim/Vender/VendorUpdate";
 import SingleAssetUserDetails from "./components/Sim/SingleAssetUserDetails";
 import { useEffect, useState } from "react";
+
+import DataBrandMaster from "./components/Datas/DataBrandMaster";
+import DataBrandOverview from "./components/Datas/DataBrandOverview";
+import DataBrandUpdate from "./components/Datas/DataBrandUpdate";
+import DataBrandView from "./components/Datas/DataBrandView";
+import DataCategory from "./components/Datas/DataCategory/DataCategory";
+import DataSubCategory from "./components/Datas/DataSubCategory/DataSubCategory";
+import Platform from "./components/Datas/Platform/Platform";
+import ContentType from "./components/Datas/ContentType/ContentType";
+import DataBrand from "./components/Datas/DataBrand/DataBrand";
 
 function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -164,6 +173,19 @@ function App() {
           <Route path="/brand-overview" element={<BrandOverview />} />
           <Route path="/brand-update/:id" element={<BrandUpdate />} />
           <Route path="/brand-view/:id" element={<BrandView />} />
+
+          <Route path="/data-brand-master" element={<DataBrandMaster />} />
+          <Route path="/data-brand-overview" element={<DataBrandOverview />} />
+          <Route path="/data-brand-update/:id" element={<DataBrandUpdate />} />
+          <Route path="/data-brand-view/:id" element={<DataBrandView />} />
+          <Route path="/data-brand-category" element={<DataCategory />} />
+          <Route
+            path="/data-brand-sub-category"
+            element={<DataSubCategory />}
+          />
+          <Route path="/data-platform" element={<Platform />} />
+          <Route path="/data-content-type" element={<ContentType />} />
+          <Route path="/data-brand" element={<DataBrand />} />
 
           {/* Execution history */}
         </Routes>

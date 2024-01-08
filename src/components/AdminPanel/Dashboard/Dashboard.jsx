@@ -26,6 +26,9 @@ function Dashboard() {
   function handleBrand() {
     navigate("/brand-overview");
   }
+  function handleDataBrand() {
+    navigate("/data-brand-overview");
+  }
   function handleIP() {
     navigate("/ip-overview");
   }
@@ -58,11 +61,9 @@ function Dashboard() {
     axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
       getAllSimData(res.data.data);
     });
-    axios
-      .get("http://34.93.221.166:3000/api/get_logo_data")
-      .then((res) => {
-        getLogoBrandData(res.data);
-      });
+    axios.get("http://34.93.221.166:3000/api/get_logo_data").then((res) => {
+      getLogoBrandData(res.data);
+    });
     axios
       .get("http://34.93.221.166:3000/api/get_all_instapages")
       .then((res) => {
@@ -181,6 +182,25 @@ function Dashboard() {
                   <div className="card-body" onClick={handleBrand}>
                     <div className="d_infocard_txt">
                       <h3>Logo Brand</h3>
+                      <h2>{AllLogoBrandData}</h2>
+                    </div>
+                    <div className="d_infocard_icon">
+                      <span>
+                        <TbBrandDenodo />
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          {contextData &&
+            contextData[12] &&
+            contextData[12].view_value === 1 && (
+              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+                <div className="d_infocard card shadow">
+                  <div className="card-body" onClick={handleDataBrand}>
+                    <div className="d_infocard_txt">
+                      <h3>Data</h3>
                       <h2>{AllLogoBrandData}</h2>
                     </div>
                     <div className="d_infocard_icon">

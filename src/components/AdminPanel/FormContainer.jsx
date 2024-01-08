@@ -6,6 +6,9 @@ const FormContainer = ({
   title,
   link,
   buttonAccess,
+  newbutton,
+  newbuttonRouting,
+  newbuttonName,
   children,
   handleSubmit,
   submitButton = true,
@@ -23,7 +26,7 @@ const FormContainer = ({
             <h2>{mainTitle}</h2>
           </div>
           {link && buttonAccess && (
-            <div className="form_heading_action">
+            <div className="form_heading_action d-flex ">
               <Link to={link}>
                 <button
                   title={"Add New " + mainTitle}
@@ -34,6 +37,18 @@ const FormContainer = ({
                   {addNewButtonName ? addNewButtonName : <FaUserPlus />}
                 </button>
               </Link>
+              {link && newbutton && (
+                <Link to={newbuttonRouting}>
+                  <button
+                    title={"Add " + mainTitle}
+                    className={`btn btn-success ml-2 ${
+                      newbuttonName && "text_button"
+                    }`}
+                  >
+                    {newbuttonName ? newbuttonName : <FaUserPlus />}
+                  </button>
+                </Link>
+              )}
             </div>
           )}
         </div>
