@@ -16,6 +16,7 @@ const DataBrandUpdate = () => {
   const { toastAlert } = useGlobalContext();
   const [brand, setBrand] = useState("");
   const [logo, setLogo] = useState([]);
+  const [logos, setLogos] = useState([]);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
   const [remark, setRemark] = useState("");
@@ -34,6 +35,7 @@ const DataBrandUpdate = () => {
   const [dataBrandData, setDataBrandData] = useState([]);
   const [dataSubCategory, setDataSubCategory] = useState("");
   const [dataSubCategoryData, setDataSubCategoryData] = useState([]);
+  const [error, setError] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -49,11 +51,11 @@ const DataBrandUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_logo_data/${id}`)
+      .get(`http://34.93.221.166:3000/api/get_single_data/${id}`)
       .then((res) => {
         const fetchedData = res.data;
-        const { brand_name, upload_logo, remarks, cat_name } = fetchedData;
-        setBrand(brand_name);
+        const { data_name, upload_logo, remarks, cat_name } = fetchedData;
+        setBrand(data_name);
         setLogo(upload_logo);
         setRemark(remarks);
         setCategory(cat_name);
@@ -98,7 +100,7 @@ const DataBrandUpdate = () => {
   const getCombinedData = async () => {
     if (brand) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`)
+        .get(`http://34.93.221.166:3000/api/get_data_based_data_name/${brand}`)
         .then((res) => {
           setLogos(res.data);
         });
@@ -401,7 +403,7 @@ const DataBrandUpdate = () => {
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Date:</span>
-                          {detail.created_at.split("T")[0]}
+                          {/* {detail.created_at.split("T")[0]} */}
                         </h4>
                       </div>
                       <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">

@@ -29,8 +29,8 @@ const DataBrandView = () => {
       .get(`http://34.93.221.166:3000/api/get_single_data/${id}`)
       .then((res) => {
         const fetchedData = res.data;
-        const { brand_name, upload_logo, remark, cat_name } = fetchedData;
-        setBrand(brand_name);
+        const { data_name, upload_logo, remark, cat_name } = fetchedData;
+        setBrand(data_name);
         setLogo(upload_logo);
         setRemark(remark);
         setCategory(cat_name);
@@ -41,7 +41,7 @@ const DataBrandView = () => {
   useEffect(() => {
     if (brand) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`)
+        .get(`http://34.93.221.166:3000/api/get_data_based_data_name/${brand}`)
         .then((res) => {
           setLogos(res.data);
         });
@@ -88,22 +88,22 @@ const DataBrandView = () => {
                     <div className="card-body"></div>
                     <ul className="list-group list-group-flush">
                       <li className="list-group-item">
-                        Extension - {detail.image_type}
+                        Extension - {detail.data_type}
                       </li>
-                      <li className="list-group-item">
+                      {/* <li className="list-group-item">
                         Resolution - {detail.size}
-                      </li>
+                      </li> */}
                       <li className="list-group-item">
                         Size - {detail.size_in_mb}
                       </li>
                       <li className="list-group-item">
-                        Category - {detail.cat_name}
+                        Category - {detail.category_name}
                       </li>
                     </ul>
                     <div className="card-body">
                       <button type="button" className="btn btn-success">
                         <a
-                          href={detail.logo_image}
+                          href={detail.data_image}
                           target="_blank"
                           rel="noopener noreferrer"
                         >

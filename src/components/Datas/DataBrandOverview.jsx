@@ -70,7 +70,7 @@ const DataBrandOverview = () => {
   const deleteBrand = async (brand_name) => {
     await axios
       .delete(
-        `http://34.93.221.166:3000/api/delete_logo_based_brand/${brand_name}`
+        `http://34.93.221.166:3000/api/delete_data_based_data/${brand_name}`
       )
       .then((res) => {
         getData();
@@ -205,7 +205,7 @@ const DataBrandOverview = () => {
                               <button
                                 className="btn btn-sm btn-outline-danger"
                                 title="Delete"
-                                onClick={() => deleteBrand(detail._id)}
+                                onClick={() => deleteBrand(detail.data_name)}
                               >
                                 <i className="bi bi-trash3"></i>
                               </button>
