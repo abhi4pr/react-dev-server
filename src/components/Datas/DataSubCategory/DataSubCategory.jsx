@@ -75,6 +75,9 @@ const DataSubCategory = () => {
   ];
   
   const handleSubmit = async (e) => {
+    if(categoryName == ''){
+      toastError("Category is required");
+    }
     e.preventDefault();
     try {
       const subCategoryExists = modalData.some(

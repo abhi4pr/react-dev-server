@@ -35,7 +35,8 @@ const DataBrandMaster = () => {
   const [dataBrandData, setDataBrandData] = useState([]);
   const [dataSubCategory, setDataSubCategory] = useState("");
   const [dataSubCategoryData, setDataSubCategoryData] = useState([]);
-  const [nerror, setNerror] = useState("")
+  const [designedBy, setDesignedBy] = useState("")
+  const [employeeData, setEmployeeData] = useState([])
   const [isLoading, setIsLoading] = useState(false);
 
   const token = sessionStorage.getItem("token");
@@ -50,11 +51,14 @@ const DataBrandMaster = () => {
   };
 
   useEffect(() => {
-    // axios
-    //   .get("http://34.93.221.166:3000/api/get_all_logo_categories")
-    //   .then((res) => {
-    //     setCategoryData(res.data);
-    //   });
+    axios
+    .get("http://34.93.221.166:3000/api/get_all_users")
+    .then((res) => {
+      const allUsers = res.data.data;
+        const filteredUsers = allUsers.filter(user => user.dept_id == 49);
+        setEmployeeData(filteredUsers);
+    });
+
     axios
       .get("http://34.93.221.166:3000/api/get_all_data_platforms")
       .then((res) => {
@@ -112,10 +116,14 @@ const DataBrandMaster = () => {
       toastError("Content type is required")
     }else if(dataBrand == ''){
       toastError("Brand is required")
+    }else if(designedBy == ''){
+      toastError("Designer is required")
     }
     e.preventDefault();
     try {
-      setIsLoading(true);
+      if(category && platform && contentType && dataBrand && brand && dataSubCategory && designedBy){
+        setIsLoading(true);
+      }
       for (let i = 0; i < details.length; i++) {
         const formData = new FormData();
         formData.append("data_name", brand);
@@ -130,6 +138,7 @@ const DataBrandMaster = () => {
         formData.append("size_in_mb", details[i].sizeInMB);
         formData.append("remark", remark);
         formData.append("created_by", userID);
+        formData.append("designed_by", designedBy);
 
         await axios.post("http://34.93.221.166:3000/api/add_data", formData, {
           headers: {
@@ -341,6 +350,28 @@ const DataBrandMaster = () => {
             }}
             onChange={(e) => {
               setDataBrand(e.value);
+            }}
+            required
+          />
+        </div>
+
+        <div className="form-group col-3">
+          <label className="form-label">
+            Designed by <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={employeeData.map((opt) => ({
+              value: opt.user_id,
+              label: opt.user_name,
+            }))}
+            value={{
+              value: designedBy,
+              label:
+                employeeData.find((user) => user.user_id === designedBy)
+                  ?.user_name || "",
+            }}
+            onChange={(e) => {
+              setDesignedBy(e.value);
             }}
             required
           />

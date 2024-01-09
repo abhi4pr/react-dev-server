@@ -10,10 +10,12 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 import Modal from "react-modal";
+import Select from "react-select";
 
 const DataCategory = () => {
   const { toastAlert, toastError } = useGlobalContext();
-
+  const [subCatName, setSubCatName] = useState("");
+  const [categoryNameSub , setCategoryNameSub] = useState("")
   const [handleOpenSubCat, setHandleOpenSubCat] = useState(false);
   const [subcategoryCount, setSubcategroycount] = useState([]);
 
@@ -38,6 +40,27 @@ const DataCategory = () => {
     }
   };
 
+  const handleSubmitSub = async (e) => {
+    e.preventDefault();
+    try {
+      
+        const response = await axios.post(
+          "http://34.93.221.166:3000/api/add_data_sub_category",
+          {
+            data_sub_cat_name: subCatName,  
+            cat_id: categoryNameSub,
+          }
+        );
+        toastAlert("Successfully Add");
+        setSubCatName("");
+        setCategoryNameSub("");
+        getModalData();
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const columns = [
     {
       name: "S.No",
@@ -54,12 +77,15 @@ const DataCategory = () => {
     {
       name: "Sub Category",
       cell: (row) => (
+        <>
         <button
           className="btn btn-outline-warning"
           onClick={() => handleSubCategroy(row._id)}
         >
           {row.sub_category_count}
         </button>
+        <button type="button" className="btn btn-primary ml-2" data-toggle="modal" data-target="#exampleModal1" data-whatever="@mdo">Add Sub Cat</button>
+        </>
       ),
       sortable: true,
     },
@@ -290,6 +316,74 @@ const DataCategory = () => {
         </div>
         {/* )} */}
       </Modal>
+
+      <div
+        className="modal fade"
+        id="exampleModal1"
+        tabIndex={-1}
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                New message
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+          
+                <FieldContainer
+                  label="Sub Cat Name"
+                  value={subCatName}
+                  onChange={(e) => setSubCatName(e.target.value)}
+                />
+                <div className="form-group col-6">
+                  <label className="form-label">
+                    Category Name <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    options={modalData.map((opt) => ({
+                      value: opt._id,
+                      label: opt.category_name,
+                    }))}
+                    value={{
+                      value: categoryNameSub,
+                      label:
+                      modalData.find((user) => user._id === categoryNameSub)
+                          ?.category_name || "",
+                    }}
+                    onChange={(e) => {
+                      setCategoryNameSub(e.value);
+                    }}
+                    required
+                  />
+                </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" className="btn btn-primary" onClick={handleSubmitSub}>
+                Send message
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

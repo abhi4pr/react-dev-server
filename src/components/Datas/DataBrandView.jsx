@@ -138,6 +138,9 @@ const DataBrandView = () => {
                       <li className="list-group-item">
                         Platform - {detail.platform_name}
                       </li>
+                      <li className="list-group-item">
+                        Designed By - {detail?.designed_by_name}
+                      </li>
                     </ul>
                     <div className="card-body">
                       <button type="button" className="btn btn-success">

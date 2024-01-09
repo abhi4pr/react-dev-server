@@ -199,8 +199,8 @@ function Dashboard() {
               </div>
             )}
           {contextData &&
-            contextData[12] &&
-            contextData[12].view_value === 1 && (
+            contextData[39] &&
+            contextData[39].view_value === 1 && (
               <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
                 <div className="d_infocard card shadow">
                   <div className="card-body" onClick={handleDataBrand}>
