@@ -37,7 +37,7 @@ const InvoiceTemplate1 = ({ data }) => {
                   <h3>
                     INVOICE DATE{" "}
                     <span>
-                      {data?.Creation_date.split("T")[0]
+                      {data?.Creation_date?.split("T")[0]
                         .split("-")
                         .reverse()
                         .join("-")}

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import FieldContainer from "../AdminPanel/FieldContainer";
 
 const ContactNumberReact = ({
- 
+ astric,
   label,
   parentComponentContact,
   setParentComponentContact,
@@ -47,14 +47,15 @@ const ContactNumberReact = ({
         fieldGrid={12}
         id="outlined-basic"
         label={label}
+        astric={astric}
         type="number"
         value={contact}
         onChange={handleContactChange}
         onBlur={handleContactBlur}
       />
-      {(isContactTouched || contact?.length >= 10) && !isValidcontact && !mandatoryFieldsEmpty?.personalContact&& (
+      {(isContactTouched || contact?.length >= 10) && !isValidcontact && mandatoryFieldsEmpty?.personalContact&& (
          
-        <p style={{ color: "red" }}>*Please enter emergency contact1 valid number</p>
+        <p style={{ color: "red" }}>*Please enter emergency contact valid number</p>
       )}
       {mandatoryFieldsEmpty?.personalContact && (
         <p style={{ color: "red" }}>*Please enter emergency  contact number</p>
