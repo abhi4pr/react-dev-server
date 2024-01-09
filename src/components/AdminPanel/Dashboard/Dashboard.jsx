@@ -15,6 +15,7 @@ function Dashboard() {
   const [IntellectualProperty, getIntellectualProperty] = useState([]);
   const [contextData, setDatas] = useState([]);
   const [loginUserData, setLoginUserData] = useState([]);
+  const [allData, setAllData] = useState([]);
   const [accountsPendingPaymentsCount, setAccountsPendingPaymentsCount] =
     useState([]);
 
@@ -64,6 +65,9 @@ function Dashboard() {
     axios.get("http://34.93.221.166:3000/api/get_logo_data").then((res) => {
       getLogoBrandData(res.data);
     });
+    axios.get("http://34.93.221.166:3000/api/get_all_datas").then((res) => {
+      setAllData(res.data);
+    });
     axios
       .get("http://34.93.221.166:3000/api/get_all_instapages")
       .then((res) => {
@@ -80,6 +84,7 @@ function Dashboard() {
   const AllSimData = allsimData.length;
   const AllLogoBrandData = logoBrandData.length;
   const AllIntellectualProperty = IntellectualProperty.length;
+  const AllData = allData.length;
   return (
     <>
       <div>
@@ -201,7 +206,7 @@ function Dashboard() {
                   <div className="card-body" onClick={handleDataBrand}>
                     <div className="d_infocard_txt">
                       <h3>Data</h3>
-                      <h2>{AllLogoBrandData}</h2>
+                      <h2>{AllData}</h2>
                     </div>
                     <div className="d_infocard_icon">
                       <span>

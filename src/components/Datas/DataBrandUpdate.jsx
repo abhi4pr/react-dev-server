@@ -67,7 +67,7 @@ const DataBrandUpdate = () => {
       axios
       .get("http://34.93.221.166:3000/api/get_all_data_categorys")
       .then((res) => {
-        setCategoryData(res.data);
+        setCategoryData(res.data.simcWithSubCategoryCount);
       });
 
     axios
