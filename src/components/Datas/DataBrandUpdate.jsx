@@ -15,6 +15,7 @@ import Select from "react-select";
 const DataBrandUpdate = () => {
   const { toastAlert } = useGlobalContext();
   const [brand, setBrand] = useState("");
+  const[brandName, setBrandName] = useState("")
   const [logo, setLogo] = useState([]);
   const [logos, setLogos] = useState([]);
   const [image, setImage] = useState("");
@@ -56,10 +57,11 @@ const DataBrandUpdate = () => {
         const fetchedData = res.data;
         const { data_name, upload_logo, remark, cat_name } = fetchedData;
         setBrand(data_name);
-        setLogo(upload_logo);
+        setBrandName(data_name);
+        // setLogo(upload_logo);
         // setRemark(remark);
-        setCategory(cat_name);
-        setBrandData(fetchedData);
+        // setCategory(cat_name);
+        // setBrandData(fetchedData);
       });
     
       axios
@@ -109,12 +111,13 @@ const DataBrandUpdate = () => {
         .get(`http://34.93.221.166:3000/api/get_data_based_data_name/${brand}`)
         .then((res) => {
           setLogos(res.data);
-          setCategory(res.data[0].cat_id)
-          setDataSubCategory(res.data[0].sub_cat_id)
-          setPlateform(res.data[0].platform_id)
-          setContentType(res.data[0].content_type_id)
-          setDataBrand(res.data[0].brand_id)
-          setRemark(res.data[0].remark);
+
+          setCategory(res.data[0]?.cat_id)
+          setDataSubCategory(res.data[0]?.sub_cat_id)
+          setPlateform(res.data[0]?.platform_id)
+          setContentType(res.data[0]?.content_type_id)
+          setDataBrand(res.data[0]?.brand_id)
+          setRemark(res.data[0]?.remark);
         });
     }
   };
@@ -141,8 +144,8 @@ const DataBrandUpdate = () => {
     e.preventDefault();
 
     await axios.put(`http://34.93.221.166:3000/api/edit_data_new`, {
-      _id: _id,
-      data_name: brand,
+      _id: id,
+      data_name: brandName,
       remark: remark,
       updated_by: loginUserId,
       updated_at: new Date()
@@ -151,7 +154,7 @@ const DataBrandUpdate = () => {
     try {
       for (let i = 0; i < details.length; i++) {
         const formData = new FormData();
-        formData.append("data_name", brand);
+        formData.append("data_name", brandName);
         formData.append("cat_id", category);
         formData.append("sub_cat_id", dataSubCategory);
         formData.append("platform_id", platform);
@@ -260,8 +263,8 @@ const DataBrandUpdate = () => {
               <FieldContainer
                 label="Name *"
                 type="text"
-                value={brand}
-                onChange={(e) => setBrand(e.target.value)}
+                value={brandName}
+                onChange={(e) => setBrandName(e.target.value)}
                 // onBlur={handleContentBlur}
               />
 
@@ -272,6 +275,7 @@ const DataBrandUpdate = () => {
                 accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
                 onChange={handleFileChange}
                 fieldGrid={6}
+                required={false}
               />
 
               <div className="form-group col-3">
@@ -382,7 +386,7 @@ const DataBrandUpdate = () => {
               </div>
 
               <div className="summary_cards brand_img_list">
-                {logos.map((detail) => (
+                {logos && logos.map((detail) => (
                   <div className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
                       <div className="col summary_box brand_img_box">
