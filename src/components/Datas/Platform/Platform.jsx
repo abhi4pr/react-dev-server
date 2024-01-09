@@ -9,8 +9,10 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Select from "react-select";
+import { useGlobalContext } from "../../../Context/Context";
 
 const Platform = () => {
+  const { toastAlert, toastError } = useGlobalContext();
   const [platformName, setPlatformName] = useState("");
   const [modalData, setModalData] = useState([]);
   const [modalFilter, setModalFilter] = useState([]);
@@ -51,7 +53,7 @@ const Platform = () => {
             <FaEdit />
           </button>
           <DeleteButton
-            endpoint="delete_asset_modal"
+            endpoint="delete_data_platform"
             id={row._id}
             getData={getModalData}
           />
@@ -63,10 +65,10 @@ const Platform = () => {
     e.preventDefault();
     try {
       const isModalExists = modalData.some(
-        (d) => d.asset_modal_name === platformName
+        (d) => d.platform_name === platformName
       );
       if (isModalExists) {
-        alert("Brand already Exists");
+        alert("Platform already Exists");
       } else {
         const response = await axios.post(
           "http://34.93.221.166:3000/api/add_data_platform",
@@ -75,6 +77,7 @@ const Platform = () => {
             remark: "",
           }
         );
+        toastAlert("Successfully Add");
         setPlatformName("");
         getModalData();
       }
@@ -106,6 +109,7 @@ const Platform = () => {
       })
       .then((res) => {
         getModalData();
+        toastAlert("Successfully Update");
       });
   };
 

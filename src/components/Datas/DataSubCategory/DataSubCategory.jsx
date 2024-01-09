@@ -8,8 +8,10 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import Select from "react-select";
+import { useGlobalContext } from "../../../Context/Context";
 
 const DataSubCategory = () => {
+  const { toastAlert, toastError } = useGlobalContext();
   const [categoryData, setCategoryData] = useState([]);
   const [subCatName, setSubCatName] = useState("");
   const [modalData, setModalData] = useState([]);
@@ -44,7 +46,7 @@ const DataSubCategory = () => {
     },
     {
       name: "Category Name",
-      selector: (row) => row.cat_id.category_name,
+      selector: (row) => row.cat_id?.category_name,
       sortable: true,
     },
     {
@@ -63,8 +65,8 @@ const DataSubCategory = () => {
             <FaEdit />
           </button>
           <DeleteButton
-            endpoint="delete_asset_modal"
-            id={row.id}
+            endpoint="delete_data_sub_category"
+            id={row._id}
             getData={getModalData}
           />
         </>
@@ -74,16 +76,24 @@ const DataSubCategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_data_sub_category",
-        {
-          data_sub_cat_name: subCatName,
-          cat_id: categoryName,
-        }
+      const isModalExists = modalData.some(
+        (d) => d.data_sub_cat_name === subCatName
       );
-      setSubCatName("");
-      setCategoryName("");
-      getModalData();
+      if (isModalExists) {
+        alert("Category already Exists");
+      } else {
+        const response = await axios.post(
+          "http://34.93.221.166:3000/api/add_data_sub_category",
+          {
+            data_sub_cat_name: subCatName,
+            cat_id: categoryName,
+          }
+        );
+        toastAlert("Successfully Add");
+        setSubCatName("");
+        setCategoryName("");
+        getModalData();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -103,8 +113,7 @@ const DataSubCategory = () => {
   const handleBrandData = (row) => {
     setModalId(row._id);
     setSubCatNameUpdate(row.data_sub_cat_name);
-    setCategoryNameUpdate(row.cat_id.category_name);
-    console.log(row.cat_id.category_name, "ddddddddddddd");
+    setCategoryNameUpdate(row.category_name);
   };
   const handleModalUpdate = () => {
     axios
@@ -114,13 +123,16 @@ const DataSubCategory = () => {
         data_sub_cat_name: subCatNameUpdate,
       })
       .then((res) => {
+        toastAlert("Successfully Update");
         getModalData();
       });
   };
 
   useEffect(() => {
     const result = modalData.filter((d) => {
-      return d.sub_cat_name?.toLowerCase().match(search.toLocaleLowerCase());
+      return d.data_sub_cat_name
+        ?.toLowerCase()
+        .match(search.toLocaleLowerCase());
     });
     setModalFilter(result);
   }, [search]);
