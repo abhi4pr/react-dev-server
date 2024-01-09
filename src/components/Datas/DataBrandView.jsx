@@ -5,6 +5,9 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../AdminPanel/FormContainer";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import UserNav from "../Pantry/UserPanel/UserNav";
+import pdf from "./pdf-file.png";
+import sheets from "./sheets.png";
+import video from "./montage.png";
 
 const DataBrandView = () => {
   const [brand, setBrand] = useState("");
@@ -52,6 +55,31 @@ const DataBrandView = () => {
     e.preventDefault();
   };
 
+  function getFileIcon(data_type, data_image) {
+    switch (data_type) {
+      case "pdf":
+        return <img src={pdf} alt="PDF" style={{ width: "32%" }} />;
+      case "mp4":
+        return (
+          <>
+            <iframe
+              title="Video"
+              width="100%"
+              height="100%"
+              src={data_image}
+              frameBorder="0"
+              allowFullScreen
+            ></iframe>
+          </>
+        )
+      case "xls":
+      case "xlsx":
+        return <img src={sheets} alt="Excel" style={{ width: "32%" }} />;
+      default:
+        return <img src={data_image} alt="Excel" style={{ width: "100%" }} />;
+    }
+  }
+
   return (
     <>
       <div>
@@ -80,11 +108,10 @@ const DataBrandView = () => {
                     className="col-md-3 card"
                     style={{ margin: "0 0 10px 0" }}
                   >
-                    <img
-                      className="card-img-top"
-                      src={detail.logo_image}
-                      style={{ height: "220px" }}
-                    />
+
+                    <div>
+                      {getFileIcon(detail.data_type,detail.data_image)}
+                    </div>
                     <div className="card-body"></div>
                     <ul className="list-group list-group-flush">
                       <li className="list-group-item">
@@ -98,6 +125,9 @@ const DataBrandView = () => {
                       </li>
                       <li className="list-group-item">
                         Category - {detail.category_name}
+                      </li>
+                      <li className="list-group-item">
+                        Sub category - {detail.sub_category_name}
                       </li>
                     </ul>
                     <div className="card-body">

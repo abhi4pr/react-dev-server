@@ -54,12 +54,18 @@ const DataBrandUpdate = () => {
       .get(`http://34.93.221.166:3000/api/get_single_data/${id}`)
       .then((res) => {
         const fetchedData = res.data;
-        const { data_name, upload_logo, remarks, cat_name } = fetchedData;
+        const { data_name, upload_logo, remark, cat_name } = fetchedData;
         setBrand(data_name);
         setLogo(upload_logo);
-        setRemark(remarks);
+        // setRemark(remark);
         setCategory(cat_name);
         setBrandData(fetchedData);
+      });
+    
+      axios
+      .get("http://34.93.221.166:3000/api/get_all_data_categorys")
+      .then((res) => {
+        setCategoryData(res.data);
       });
 
     axios
@@ -103,6 +109,12 @@ const DataBrandUpdate = () => {
         .get(`http://34.93.221.166:3000/api/get_data_based_data_name/${brand}`)
         .then((res) => {
           setLogos(res.data);
+          setCategory(res.data[0].cat_id)
+          setDataSubCategory(res.data[0].sub_cat_id)
+          setPlateform(res.data[0].platform_id)
+          setContentType(res.data[0].content_type_id)
+          setDataBrand(res.data[0].brand_id)
+          setRemark(res.data[0].remark);
         });
     }
   };
@@ -111,12 +123,12 @@ const DataBrandUpdate = () => {
     getCombinedData();
   }, [brand]);
 
-  const removeImage = async (logo_id) => {
-    if (logo_id == id) {
-      setError("You can't delete default image, try to delete brand instead");
+  const removeImage = async (_id) => {
+    if (_id == _id) {
+      setError("You can't delete default data type, try to delete data instead");
     } else {
       var data = await axios.delete(
-        `http://34.93.221.166:3000/api/delete_logo/${logo_id}`,
+        `http://34.93.221.166:3000/api/delete_data/${_id}`,
         null
       );
       if (data) {
@@ -128,29 +140,31 @@ const DataBrandUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.put(`http://34.93.221.166:3000/api/update_logo_brand_new`, {
-      id: id,
-      brand_name: brand,
-      remarks: remark,
-      // cat_name: category,
-      Last_updated_by: loginUserId,
+    await axios.put(`http://34.93.221.166:3000/api/edit_data_new`, {
+      _id: _id,
+      data_name: brand,
+      remark: remark,
+      updated_by: loginUserId,
+      updated_at: new Date()
     });
 
     try {
       for (let i = 0; i < details.length; i++) {
         const formData = new FormData();
-        formData.append("id", id);
-        formData.append("brand_name", brand);
-        formData.append("upload_logo", details[0].file);
-        formData.append("image_type", details[0].image_type);
-        formData.append("size_in_mb", details[0].sizeInMB);
-        formData.append("size", details[0].size);
-        formData.append("remarks", remark);
-        formData.append("last_updated_by", loginUserId);
-        formData.append("logo_cat", selectedCategories[i]);
+        formData.append("data_name", brand);
+        formData.append("cat_id", category);
+        formData.append("sub_cat_id", dataSubCategory);
+        formData.append("platform_id", platform);
+        formData.append("brand_id", dataBrand);
+        formData.append("content_type_id", contentType);
+        formData.append("data_upload", details[i].file);
+        formData.append("data_type", details[i].fileType);
+        formData.append("size_in_mb", details[i].sizeInMB);
+        formData.append("remark", remark);
+        formData.append("created_by", loginUserId);
 
         await axios.post(
-          "http://34.93.221.166:3000/api/add_logo_brand",
+          "http://34.93.221.166:3000/api/add_data",
           formData,
           {
             headers: {
@@ -160,7 +174,7 @@ const DataBrandUpdate = () => {
         );
       }
       setIsFormSubmitted(true);
-      toastAlert("Logo images updated");
+      toastAlert("Data details updated");
       setBrand("");
       setLogo("");
       setImage("");
@@ -176,7 +190,9 @@ const DataBrandUpdate = () => {
     setImages(files);
 
     const details = files.map((file) => {
-      const { name } = file;
+      const { name, size } = file;
+      const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      const fileType = name.split(".").pop().toLowerCase();
 
       if (
         fileType === "jpg" ||
@@ -184,28 +200,28 @@ const DataBrandUpdate = () => {
         fileType === "png" ||
         fileType === "gif"
       ) {
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      return new Promise((resolve) => {
-        img.onload = () => {
-          const { naturalHeight, naturalWidth } = img;
-          const sizeInBytes = file.size;
-          const sizeInMB = (sizeInBytes / (1024 * 1024)).toFixed(2);
-          resolve({
-            name,
-            file,
-            image_type: name.split(".").pop(),
-            size: `${naturalHeight}x${naturalWidth}`,
-            sizeInMB: `${sizeInMB}`,
-          });
-        };
-      });
-    } else {
+        // It's an image
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        return new Promise((resolve) => {
+          img.onload = () => {
+            const { naturalHeight, naturalWidth } = img;
+            resolve({
+              name,
+              file,
+              fileType,
+              size: `${naturalHeight}x${naturalWidth}`,
+              sizeInMB: `${sizeInMB}`,
+            });
+          };
+        });
+      } else {
+        // For other file types like PDF, video, Excel
         return Promise.resolve({
           name,
           file,
           fileType,
-          size: "N/A", 
+          size: "N/A", // Size is not applicable in the same way as for images
           sizeInMB: `${sizeInMB}`,
         });
       }
@@ -372,21 +388,21 @@ const DataBrandUpdate = () => {
                       <div className="col summary_box brand_img_box">
                         <img
                           className="brandimg_icon"
-                          src={detail.logo_image}
+                          src={detail.data_image}
                         />
                       </div>
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Extension:</span>
-                          {detail.image_type}
+                          {detail.data_type}
                         </h4>
                       </div>
-                      <div className="col summary_box brand_img_box">
+                      {/* <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Resolution:</span>
                           {detail.size}
                         </h4>
-                      </div>
+                      </div> */}
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Size:</span>
@@ -397,49 +413,58 @@ const DataBrandUpdate = () => {
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Data Category:</span>
-                          {detail.cat_name}
+                          {detail.category_name}
                         </h4>
                       </div>
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Date:</span>
-                          {/* {detail.created_at.split("T")[0]} */}
+                          {detail.created_at.split("T")[0]}
                         </h4>
                       </div>
-                      <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                      {/* <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
                         <p>
                           {" "}
                           <MdCancel
-                            onClick={() => removeImage(detail.logo_id)}
+                            onClick={() => removeImage(detail._id)}
                             style={{ cursor: "pointer" }}
                           />
                         </p>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 ))}
                 {details.map((detail, index) => (
                   <div className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
-                      <div className="col summary_box brand_img_box">
-                        <img
-                          className="brandimg_icon"
-                          src={URL.createObjectURL(images[index])}
-                          alt={`Image ${index + 1}`}
-                        />
-                      </div>
+                    <div className="col summary_box brand_img_box col140">
+                  {detail.fileType === "jpg" ||
+                  detail.fileType === "jpeg" ||
+                  detail.fileType === "png" ||
+                  detail.fileType === "gif" ? (
+                    <img
+                      className="brandimg_icon"
+                      src={URL.createObjectURL(images[index])}
+                      alt={`Image ${index + 1}`}
+                    />
+                  ) : (
+                    <div className="file_icon">
+                      {renderFileIcon(detail.fileType)}
+                    </div>
+                  )}
+                </div>
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Extension:</span>
                           {detail.image_type}
                         </h4>
                       </div>
-                      <div className="col summary_box brand_img_box">
+                      {/* <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Resolution:</span>
                           {detail.size}
                         </h4>
-                      </div>
+                      </div> */}
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Size:</span>

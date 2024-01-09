@@ -216,7 +216,7 @@ const DataBrandOverview = () => {
                               <div className="summary_cardrow flex-column">
                                 <div className="summary_box text-center ml-auto mr-auto">
                                   <img
-                                    src={detail.data_upload}
+                                    src={detail.data_image}
                                     width="80px"
                                     height="80px"
                                   />
@@ -230,7 +230,7 @@ const DataBrandOverview = () => {
                                 <div className="summary_box col">
                                   <h4>
                                     <span>Category</span>
-                                    {detail.cat_id?.category_name}
+                                    {detail.category_name}
                                   </h4>
                                 </div>
                                 <div className="summary_box col">
