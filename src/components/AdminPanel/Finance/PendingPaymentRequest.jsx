@@ -25,9 +25,10 @@ export default function PendingPaymentRequest() {
   const [payMentProof, setPayMentProof] = useState("");
 
   const callApi = () => {
-    axios.get("http://34.93.221.166:3000/api/get_all_demo").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
+    axios.get("https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest").then((res) => {
+      console.log(res.data.body)
+      setData(res.data.body);
+      setFilterData(res.data.body);
     });
   };
 
@@ -109,7 +110,7 @@ export default function PendingPaymentRequest() {
       headerName: "Requested Date",
       width: 150,
       renderCell: (params) => {
-        return convertDateToDDMMYYYY(params.row.t10);
+        return convertDateToDDMMYYYY(params.row.request_date);
       },
     },
     {

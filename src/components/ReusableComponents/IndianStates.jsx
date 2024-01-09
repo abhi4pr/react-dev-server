@@ -22,7 +22,7 @@ const IndianStates = ({ onBlur,onChange, newValue }) => {
       <Select
         className=""
         options={options}
-        value={options.find((option) => option.value == newValue)}
+        value={options.find((option) => option.value == selectedState )}
         label={newValue}
         onChange={handleChange}
         isClearable

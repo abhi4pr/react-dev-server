@@ -382,7 +382,7 @@ const UserMaster = () => {
       selectedImage == "" ||
       selectedImage.length == 0
     ) {
-      return toastError("Profile Pic is Required");
+      return toastError("Avtar/Profile Image is Required");
     } else if (!gender || gender == "") {
       return toastError("Gender is Required");
     } else if (!nationality || nationality == "") {
@@ -423,9 +423,9 @@ const UserMaster = () => {
     // else if (!roles || roles == "") {
     //   return toastError("Roles Error is required");
     // }
-     else if (!email || email == "") {
-      return toastError("Official Email Error is required");
-    }
+    //  else if (!email || email == "") {
+    //   return toastError("Official Email Error is required");
+    // }
 
     if (jobType == "WFO" && sitting == "") {
       return toastError("Sitting Error is required");
@@ -500,6 +500,7 @@ const UserMaster = () => {
     );
 
     formData.append("cast_type", cast);
+    formData.append("digital_signature_image","")
     if (isValidcontact == true && validEmail == true) {
       try {
         const isLoginIdExists = usersData.some(
@@ -634,7 +635,7 @@ const UserMaster = () => {
         console.error("Failed to submit form", error);
       }
     } else {
-      if (contact.length !== 10) {
+      if (contact.length > 10) {
         if (isValidcontact == false)
           toastError("Enter Phone Number in Proper Format");
         // alert("Enter Phone Number in Proper Format");
@@ -956,7 +957,8 @@ const UserMaster = () => {
       <div className=" col-3">
         <FieldContainer
           className="pb-1"
-          label="Full Name *"
+          label="Full Name"
+          astric={true}
           fieldGrid={12}
           value={username}
           onChange={(e) => {
@@ -1280,7 +1282,8 @@ const UserMaster = () => {
       {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
       <div className="col-md-3">
         <FieldContainer
-          label="Personal Email *"
+          label="Personal Email"
+          astric={true}
           type="email"
           fieldGrid={12}
           required={false}
@@ -1318,12 +1321,13 @@ const UserMaster = () => {
         onChange={handleContactChange}
         onBlur={handleContentBlur}
       />
-      {(isContactTouched || contact.length >= 10) && !isValidcontact && (
+      {/* {(isContactTouched || contact.length >= 10) && !isValidcontact && (
         <p style={{ color: "red" }}>*Please enter a valid Number</p>
-      )}
+      )} */}
       <div className="col-3">
         <FieldContainer
-          label="Personal Contact *"
+          label="Personal Contact"
+          astric={true}
           type="number"
           fieldGrid={12}
           value={personalContact}
@@ -1333,7 +1337,7 @@ const UserMaster = () => {
         />
         {(isContactTouched1 || personalContact.length >= 10) &&
           !isValidcontact1 &&
-          !mandatoryFieldsEmpty.personalContact && (
+          mandatoryFieldsEmpty.personalContact && (
             <p style={{ color: "red" }}>*Please enter a valid Number</p>
           )}
         {mandatoryFieldsEmpty.personalContact && (
@@ -1342,7 +1346,8 @@ const UserMaster = () => {
       </div>
       <div className="col-3">
         <FieldContainer
-          label="Alternate Contact *"
+          label="Alternate Contact"
+          astric={true}
           type="number"
           fieldGrid={12}
           value={alternateContact}
@@ -1380,14 +1385,16 @@ const UserMaster = () => {
       <ContactNumberReact
         mandatoryFieldsEmpty={mandatoryFieldsEmpty}
         setMandatoryFieldsEmpty={setMandatoryFieldsEmpty}
-        label="Emergency Contact *"
+        label="Emergency Contact"
+        astric={true}
         parentComponentContact={emergencyContact}
         setParentComponentContact={setEmergencyContact}
       />
 
       <div className="col-3">
         <FieldContainer
-          label="Emergency Contact Person Name *"
+          label="Emergency Contact Person Name "
+          astric={true}
           fieldGrid={12}
           value={emergencyContactName}
           onChange={(e) =>{
@@ -1431,7 +1438,8 @@ const UserMaster = () => {
       </div>
       <div className="col-3">
         <FieldContainer
-          label="Emergency Contact Person Relation *"
+          label="Emergency Contact Person Relation"
+          astric={true}
           fieldGrid={12}
           value={emergencyContactRelation}
           onChange={(e) =>  {
@@ -1518,7 +1526,7 @@ const UserMaster = () => {
 
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <label>Login ID *</label>
+          <label>Login ID <sup style={{ color: "red" }}>*</sup></label>
           <div className="input-group">
             <input
               className="form-control"
@@ -1556,7 +1564,7 @@ const UserMaster = () => {
       </div>
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <label>Generate Password *</label>
+          <label>Generate Password <sup style={{ color: "red" }}>*</sup></label>
           <div className="input-group">
             <input
               type="text"
@@ -1748,7 +1756,8 @@ const UserMaster = () => {
       </div>
       <div className="form-group col-6">
         <FieldContainer
-          label="Bank Name *"
+          label="Bank Name "
+          astric={true}
           value={bankName}
           onChange={(e) => setBankName(e.target.value)}
           onBlur={() => {
@@ -1773,6 +1782,7 @@ const UserMaster = () => {
       <div className="form-group col-6">
         <FieldContainer
           label="Bank Account Number"
+          astric={true}
           value={bankAccountNumber}
           onChange={(e) => setBankAccountNumber(e.target.value)}
           onBlur={() => {
@@ -1796,6 +1806,7 @@ const UserMaster = () => {
       </div>
       <div className="form-group col-6">
         <FieldContainer
+          astric={true}
           label="IFSC"
           value={IFSC}
           onChange={(e) => setIFSC(e.target.value.toUpperCase())}
@@ -1992,7 +2003,7 @@ const UserMaster = () => {
             data-bs-toggle="modal"
             data-bs-target="#transferModal"
           >
-            Profile
+            Profile <sup style={{ color: "red" }}>*</sup>
           </button>
         </div>
       </div>
@@ -2148,7 +2159,7 @@ const UserMaster = () => {
 
       <div className="form-group col-3">
         <label className="form-label">
-          Caste <sup style={{ color: "red" }}>*</sup>
+          Caste
         </label>
         <Select
           className=""
@@ -2178,13 +2189,11 @@ const UserMaster = () => {
           }}
           required
         />
-        {mandatoryFieldsEmpty.cast && (
-          <p style={{ color: "red" }}>Please enter Caste</p>
-        )}
       </div>
       <div className="col-6">
         <FieldContainer
-          label="Nationality *"
+          label="Nationality"
+          astric={true}
           value={nationality}
           onChange={(e) => setNationality(e.target.value)}
           onBlur={() => {
@@ -2226,7 +2235,8 @@ const UserMaster = () => {
       {dateOfBirth !== "" && <FieldContainer label="Age" value={age} />}
       <div className="col-6">
         <FieldContainer
-          label="Father's Name *"
+          label="Father's Name"
+          astric={true}
           value={FatherName}
           onChange={(e) => setFatherName(e.target.value)}
           required={false}
@@ -2251,7 +2261,8 @@ const UserMaster = () => {
       </div>
       <div className="col-6">
         <FieldContainer
-          label="Mother's Name *"
+          label="Mother's Name"
+          astric={true}
           value={motherName}
           onChange={(e) => setMotherName(e.target.value)}
           onBlur={() => {
@@ -2378,7 +2389,8 @@ const UserMaster = () => {
       )}
       <div className="col-6">
         <FieldContainer
-          label="Address *"
+          label="Address"
+          astric={true}
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           onBlur={() => {
@@ -2403,7 +2415,8 @@ const UserMaster = () => {
       </div>
       <div className="col-6">
         <FieldContainer
-          label="City *"
+          label="City"
+          astric={true}
           value={city}
           onChange={(e) => setCity(e.target.value)}
           onBlur={() => {
@@ -2450,7 +2463,8 @@ const UserMaster = () => {
       </div>
       <div className="col-6">
         <FieldContainer
-          label="Pincode *"
+          label="Pincode"
+          astric={true}
           value={pincode}
           onChange={(e) => setPincode(e.target.value)}
           onBlur={() => {
