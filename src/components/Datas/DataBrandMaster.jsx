@@ -12,7 +12,7 @@ import video from "./montage.png";
 import Select from "react-select";
 
 const DataBrandMaster = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [subCatData, setSubCategoryData] = useState([]);
   const [fileDetails, setFileDetails] = useState([]);
   const [brand, setBrand] = useState("");
@@ -35,6 +35,8 @@ const DataBrandMaster = () => {
   const [dataBrandData, setDataBrandData] = useState([]);
   const [dataSubCategory, setDataSubCategory] = useState("");
   const [dataSubCategoryData, setDataSubCategoryData] = useState([]);
+  const [nerror, setNerror] = useState("")
+  const [isLoading, setIsLoading] = useState(false);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -100,8 +102,20 @@ const DataBrandMaster = () => {
   };
 
   const handleSubmit = async (e) => {
+    if(category == ''){
+      toastError("Category is required");
+    }else if(dataSubCategory == ''){
+      toastError("Sub category is required")
+    }else if(platform == ''){
+      toastError("Platform is required")
+    }else if(contentType == ''){
+      toastError("Content type is required")
+    }else if(dataBrand == ''){
+      toastError("Brand is required")
+    }
     e.preventDefault();
     try {
+      setIsLoading(true);
       for (let i = 0; i < details.length; i++) {
         const formData = new FormData();
         formData.append("data_name", brand);
@@ -133,6 +147,8 @@ const DataBrandMaster = () => {
       setRemark("");
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false); // Set loading state to false after API call completes
     }
   };
 
@@ -204,13 +220,13 @@ const DataBrandMaster = () => {
   return (
     <div style={{ width: "80%", margin: "0 0 0 10%" }}>
       <UserNav />
-      <FormContainer mainTitle="Data" title="Data" handleSubmit={handleSubmit}>
+      <FormContainer mainTitle="Data" title="Data" handleSubmit={handleSubmit} submitButton={false}>
         <FieldContainer
           label="Name *"
           type="text"
           value={brand}
           onChange={(e) => setBrand(e.target.value)}
-          // onBlur={handleContentBlur}
+          required={true}
         />
 
         <FieldContainer
@@ -220,6 +236,7 @@ const DataBrandMaster = () => {
           accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
           onChange={handleFileChange}
           fieldGrid={6}
+          required={true}
         />
 
         <div className="form-group col-3">
@@ -397,6 +414,9 @@ const DataBrandMaster = () => {
           required={false}
           onChange={(e) => setRemark(e.target.value)}
         />
+        <button type="submit" className="btn btn-primary" disabled={isLoading} style={{width:"20%", marginLeft:"1%"}}>
+          {isLoading ? "Please wait data uploading..." : "Submit"}
+        </button>
       </FormContainer>
     </div>
   );

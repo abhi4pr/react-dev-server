@@ -6,6 +6,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import imageIcon from "./image-icon.png";
+import DeleteButton from "../AdminPanel/DeleteButton";
 
 const DataBrandOverview = () => {
   const [search, setSearch] = useState("");
@@ -82,7 +83,7 @@ const DataBrandOverview = () => {
           (selectedCategory === "" || item.cat_id === selectedCategory) &&
           (selectedUser === "" || item.created_by === selectedUser) &&
           (selectedBrand === "" || item.brand_id === selectedBrand) &&
-          (selectedContent === "" || item.content_id === selectedContent) &&
+          (selectedContent === "" || item.content_type_id === selectedContent) &&
           (selectedPlatform === "" || item.platform_id === selectedPlatform)
       );
       setData(filteredData);
@@ -264,13 +265,18 @@ const DataBrandOverview = () => {
                                 <i className="bi bi-eye"></i>
                               </button>
                             </Link> */}
-                              <button
+                              <DeleteButton
+                                endpoint="delete_data_based_data"
+                                id={detail.data_name}
+                                getData={getData}
+                              />
+                              {/* <button
                                 className="btn btn-sm btn-outline-danger"
                                 title="Delete"
                                 onClick={() => deleteBrand(detail.data_name)}
                               >
                                 <i className="bi bi-trash3"></i>
-                              </button>
+                              </button> */}
                             </div>
                           </div>
                           <div className="summary_cardbody">

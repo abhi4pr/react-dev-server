@@ -73,19 +73,24 @@ const DataSubCategory = () => {
       ),
     },
   ];
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const isModalExists = modalData.some(
-        (d) => d.data_sub_cat_name === subCatName
+      const subCategoryExists = modalData.some(
+        (d) =>
+          d.data_sub_cat_name.toLowerCase() === subCatName.toLowerCase() &&
+          d.cat_id._id === categoryName
       );
-      if (isModalExists) {
-        alert("Category already Exists");
+      if (subCategoryExists) {
+        alert(
+          "Subcategory with the same name exists in the selected category."
+        );
       } else {
         const response = await axios.post(
           "http://34.93.221.166:3000/api/add_data_sub_category",
           {
-            data_sub_cat_name: subCatName,
+            data_sub_cat_name: subCatName,  
             cat_id: categoryName,
           }
         );
@@ -98,6 +103,7 @@ const DataSubCategory = () => {
       console.log(error);
     }
   };
+
   async function getModalData() {
     const res = await axios.get(
       "http://34.93.221.166:3000/api/get_all_data_Sub_categories"
@@ -113,7 +119,7 @@ const DataSubCategory = () => {
   const handleBrandData = (row) => {
     setModalId(row._id);
     setSubCatNameUpdate(row.data_sub_cat_name);
-    setCategoryNameUpdate(row.category_name);
+    setCategoryNameUpdate(row.cat_id._id);
   };
   const handleModalUpdate = () => {
     axios

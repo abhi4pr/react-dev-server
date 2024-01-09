@@ -137,7 +137,7 @@ const DataBrandUpdate = () => {
   }, [brand]);
 
   const removeImage = async (_id) => {
-    if (_id == _id) {
+    if (_id == id) {
       setError("You can't delete default data type, try to delete data instead");
     } else {
       var data = await axios.delete(
@@ -436,7 +436,7 @@ const DataBrandUpdate = () => {
                           {detail.created_at.split("T")[0]}
                         </h4>
                       </div>
-                      {/* <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                      <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
                         <p>
                           {" "}
                           <MdCancel
@@ -444,7 +444,7 @@ const DataBrandUpdate = () => {
                             style={{ cursor: "pointer" }}
                           />
                         </p>
-                      </div> */}
+                      </div>
                     </div>
                   </div>
                 ))}
