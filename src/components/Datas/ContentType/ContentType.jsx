@@ -8,8 +8,10 @@ import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useGlobalContext } from "../../../Context/Context";
 
 const ContentType = () => {
+  const { toastAlert, toastError } = useGlobalContext();
   const [contentType, setContentType] = useState("");
   const [modalData, setModalData] = useState([]);
   const [modalFilter, setModalFilter] = useState([]);
@@ -47,7 +49,7 @@ const ContentType = () => {
             <FaEdit />
           </button>
           <DeleteButton
-            endpoint="delete_asset_modal"
+            endpoint="delete_data_content_type"
             id={row._id}
             getData={getModalData}
           />
@@ -59,10 +61,10 @@ const ContentType = () => {
     e.preventDefault();
     try {
       const isModalExists = modalData.some(
-        (d) => d.asset_modal_name === contentType
+        (d) => d.content_name === contentType
       );
       if (isModalExists) {
-        alert("Brand already Exists");
+        alert("Content Type already Exists");
       } else {
         const response = await axios.post(
           "http://34.93.221.166:3000/api/add_data_content_type",
@@ -71,6 +73,7 @@ const ContentType = () => {
             remark: "",
           }
         );
+        toastAlert("Successfully Update");
         setContentType("");
         getModalData();
       }
@@ -102,6 +105,7 @@ const ContentType = () => {
       })
       .then((res) => {
         getModalData();
+        toastAlert("Successfully Update");
       });
   };
 

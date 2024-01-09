@@ -8,10 +8,10 @@ import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import Select from "react-select";
+import { useGlobalContext } from "../../../Context/Context";
 
 const DataBrand = () => {
-  const [subCatData, setSubCategoryData] = useState([]);
+  const { toastAlert, toastError } = useGlobalContext();
   const [subCatName, setSubCatName] = useState("");
   const [modalData, setModalData] = useState([]);
   const [modalFilter, setModalFilter] = useState([]);
@@ -51,7 +51,7 @@ const DataBrand = () => {
             <FaEdit />
           </button>
           <DeleteButton
-            endpoint="delete_asset_modal"
+            endpoint="delete_data_brand"
             id={row._id}
             getData={getModalData}
           />
@@ -62,14 +62,22 @@ const DataBrand = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_data_brand",
-        {
-          brand_name: dataBrandName,
-        }
+      const isModalExists = modalData.some(
+        (d) => d.brand_name === dataBrandName
       );
-      setDataBrandName("");
-      getModalData();
+      if (isModalExists) {
+        alert("Brand already Exists");
+      } else {
+        const response = await axios.post(
+          "http://34.93.221.166:3000/api/add_data_brand",
+          {
+            brand_name: dataBrandName,
+          }
+        );
+        toastAlert("Successfully Add");
+        setDataBrandName("");
+        getModalData();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -97,6 +105,7 @@ const DataBrand = () => {
         brand_name: dataBrandNameUpdate,
       })
       .then((res) => {
+        toastAlert("Successfully Update");
         getModalData();
       });
   };
