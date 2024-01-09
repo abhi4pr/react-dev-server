@@ -32,6 +32,8 @@ import MyTemplate5 from "../SalaryGeneration/Template5";
 import Modal from "react-modal";
 import DigitalSignature from "../../../DigitalSignature/DigitalSignature";
 import useInvoiceTemplateImages from "../Templates/Hooks/useInvoiceTemplateImages";
+import InvoicePDF from "../Templates/Component/InvoicePdfGenerator";
+import PreviewInvoice from "./PreviewInvoice";
 
 // const images = [
 //   { temp_id: 1, image: image1 },
@@ -79,24 +81,6 @@ const WFHSingleUser = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  const monthValue = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const yearValue = [
-    2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030,
-  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -185,25 +169,25 @@ const WFHSingleUser = () => {
     }
   }, [department, month, year]);
 
-  const handleAttendence = () => {
-    axios
-      .post("http://34.93.221.166:3000/api/add_attendance", {
-        dept: department,
-        user_id: userName.user_id,
-        noOfabsent: 0,
-        month: month,
-        year: year,
-      })
-      .then(() => {
-        setNoOfAbsent("");
-        toastAlert("Submitted success");
-        handleSubmit();
-      })
-      .catch((error) => {
-        console.error("Error submitting data:", error);
-        toastAlert("Failed to submit data");
-      });
-  };
+  // const handleAttendence = () => {
+  //   axios
+  //     .post("http://34.93.221.166:3000/api/add_attendance", {
+  //       dept: department,
+  //       user_id: userName.user_id,
+  //       noOfabsent: 0,
+  //       month: month,
+  //       year: year,
+  //     })
+  //     .then(() => {
+  //       setNoOfAbsent("");
+  //       toastAlert("Submitted success");
+  //       handleSubmit();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error submitting data:", error);
+  //       toastAlert("Failed to submit data");
+  //     });
+  // };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -320,22 +304,22 @@ const WFHSingleUser = () => {
   });
 
   //Send to finance
-  function handleSendToFinance(e, row) {
-    e.preventDefault();
-    axios.post(`http://34.93.221.166:3000/api/add_finance`, {
-      attendence_id: row.attendence_id,
-    });
+  // function handleSendToFinance(e, row) {
+  //   e.preventDefault();
+  //   axios.post(`http://34.93.221.166:3000/api/add_finance`, {
+  //     attendence_id: row.attendence_id,
+  //   });
 
-    axios
-      .put(`http://34.93.221.166:3000/api/update_salary`, {
-        attendence_id: row.attendence_id,
-        sendToFinance: 1,
-      })
-      .then(() => {
-        handleSubmit();
-      });
-    toastAlert("Sent To Finance");
-  }
+  //   axios
+  //     .put(`http://34.93.221.166:3000/api/update_salary`, {
+  //       attendence_id: row.attendence_id,
+  //       sendToFinance: 1,
+  //     })
+  //     .then(() => {
+  //       handleSubmit();
+  //     });
+  //   toastAlert("Sent To Finance");
+  // }
 
   //--------------------------------------------------------------------------------------------------------------------
 
@@ -508,6 +492,10 @@ const WFHSingleUser = () => {
       cell: (row) => row.toPay + " ₹",
     },
     {
+      name: "Status",
+      cell: (row) => row.attendence_status_flow,
+    },
+    {
       name: "Action",
       cell: (row) => (
         <>
@@ -542,18 +530,26 @@ const WFHSingleUser = () => {
               <FileOpenIcon />
             </button>
           )}
-          <button
-            className="btn btn-secondary"
-            onClick={() => setIsPreviewModalOpen(true)}
-          >
-            Preview Invoice
-          </button>
+          {!row.sendToFinance == 1 && (
+            <button
+              className="btn btn-secondary"
+              onClick={() => setIsPreviewModalOpen(true)}
+            >
+              Preview Invoice
+            </button>
+          )}
           <Modal
             isOpen={isPreviewModalOpen}
             onRequestClose={() => setIsPreviewModalOpen(false)}
             contentLabel="Preview Modal"
             appElement={document.getElementById("root")}
-          ></Modal>
+          >
+            <PreviewInvoice
+              data={row}
+              setIsPreviewModalOpen={setIsPreviewModalOpen}
+              handleSubmit={handleSubmit}
+            />
+          </Modal>
           {/* {!row?.sendToFinance && (
             <button
               title="Send to Finance"
@@ -573,9 +569,9 @@ const WFHSingleUser = () => {
               Paid
             </button>
           )}
-          {row.sendToFinance == 1 && row.status_ == 0 && (
+          {/* {row.sendToFinance == 1 && row.status_ == 0 && (
             <button className="btn btn-danger ml-2">Pending</button>
-          )}
+          )} */}
 
           {row?.invoice_template_no !== "0" && (
             <button
@@ -665,7 +661,9 @@ const WFHSingleUser = () => {
                     appElement={document.getElementById("root")}
                   >
                     <DigitalSignature userID={userID} closeModal={closeModal} />
-                    <button onClick={closeModal}>Close Modal</button>
+                    <button className="btn btn-secondary" onClick={closeModal}>
+                      Close Modal
+                    </button>
                   </Modal>
 
                   <Button

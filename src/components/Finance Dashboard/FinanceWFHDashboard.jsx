@@ -49,7 +49,7 @@ export default function FinanceWFHDashboard() {
   // const downloadSelectedInvoices = async (data) => {
   //   // console.log(data);
   //   const zip = new JSZip();
-    
+
   //   // console.log(data);
   //   // console.log(rowForPayment);
   //   for (const row of rowForPayment) {
@@ -78,10 +78,9 @@ export default function FinanceWFHDashboard() {
   //   });
   // };
 
-
   // const downloadSelectedInvoices = async (data) => {
   //   const zip = new JSZip();
-  
+
   //   for (const row of rowForPayment) {
   //     if (row?.invoice_template_no !== "0") {
   //       try {
@@ -99,13 +98,13 @@ export default function FinanceWFHDashboard() {
   //       }
   //     }
   //   }
-  
+
   //   zip.generateAsync({ type: "blob" }).then((content) => {
   //     const element = document.createElement("a");
   //     const url = URL.createObjectURL(content);
   //     element.href = url;
   //     element.download = "selected_invoices.zip";
-  
+
   //     document.body.appendChild(element);
   //     element.click();
   //     document.body.removeChild(element);
@@ -119,11 +118,9 @@ export default function FinanceWFHDashboard() {
       console.error("Error downloading invoices:", error);
       // Handle any errors related to downloading invoices here
     }
-  }
+  };
 
-  
-
-  const handleRowSelectionModelChange =async (rowIds) => {
+  const handleRowSelectionModelChange = async (rowIds) => {
     setRowSelectionModel(rowIds);
     let x = filterData.filter((item) => {
       return rowIds.includes(item.id);
@@ -235,6 +232,14 @@ export default function FinanceWFHDashboard() {
       },
     },
     {
+      headerName: "Status",
+      field: "attendence_status_flow",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.attendence_status_flow;
+      },
+    },
+    {
       headerName: "Action",
       field: "action",
       width: 150,
@@ -256,8 +261,8 @@ export default function FinanceWFHDashboard() {
                 title="Download Invoice"
                 type="button"
                 onClick={() => {
-                  console.log(params.row)
-                  generatePDF(params.row)}}
+                  generatePDF(params.row);
+                }}
               >
                 <CloudDownloadIcon />
               </button>
@@ -315,8 +320,6 @@ export default function FinanceWFHDashboard() {
 
   return (
     <div>
-      
-
       <FormContainer
         submitButton={false}
         mainTitle="Dashboard"
@@ -326,17 +329,18 @@ export default function FinanceWFHDashboard() {
         onAccordionButtonClick={handleAccordionButtonClick}
       >
         {invoice}
-       {rowForPayment.length>0&& <Button
-        variant="contained"
-        color="primary"
-        size="small"
-        sx={{width:"100px"}}
-        className="ml-3 mb-2"
-        onClick={handleDownloadInvoices}
-
-      >
-        Download 
-      </Button>}
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadInvoices}
+          >
+            Download
+          </Button>
+        )}
         {activeAccordionIndex === 0 && pending}
         {activeAccordionIndex === 1 && verified}
         {activeAccordionIndex === 2 && payoutReleased}

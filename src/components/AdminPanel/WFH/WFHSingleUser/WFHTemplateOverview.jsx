@@ -3,10 +3,12 @@ import useInvoiceTemplateImages from "../Templates/Hooks/useInvoiceTemplateImage
 import jwtDecode from "jwt-decode";
 import axios from "axios";
 import Modal from "react-modal";
+import { useGlobalContext } from "../../../../Context/Context";
 
 const templateImages = useInvoiceTemplateImages();
 
 const WFHTemplateOverview = () => {
+  const { toastAlert } = useGlobalContext();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
@@ -15,17 +17,21 @@ const WFHTemplateOverview = () => {
   const [previewImage, setPreviewImage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  function handleTemplateUpdate() {
+  async function handleTemplateUpdate() {
     const formData = new FormData();
 
     formData.append("user_id", loginUserId);
     formData.append("invoice_template_no", selectedTemplate);
-
-    axios.put(`http://34.93.221.166:3000/api/update_user`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    if (selectedTemplate) {
+      await axios.put(`http://34.93.221.166:3000/api/update_user`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      toastAlert("Template selected successfully");
+    } else {
+      alert("No Template Selected");
+    }
   }
 
   function openModal(image) {
