@@ -59,11 +59,6 @@ const DataBrandMaster = () => {
         setPlateformData(res.data);
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_Sub_categories")
-      .then((res) => {
-        setDataSubCategoryData(res.data);
-      });
-    axios
       .get("http://34.93.221.166:3000/api/get_all_data_content_types")
       .then((res) => {
         setContentTypeData(res.data);
@@ -74,6 +69,16 @@ const DataBrandMaster = () => {
         setDataBrandData(res.data);
       });
   }, []);
+
+  useEffect(()=>{
+    if(category){
+      axios
+      .get(`http://34.93.221.166:3000/api/get_single_data_from_sub_category/${category}`)
+      .then((res) => {
+        setDataSubCategoryData(res.data);
+      });
+    }
+  },[category])
 
   useEffect(() => {
     axios

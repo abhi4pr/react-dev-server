@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import FormContainer from "../AdminPanel/FormContainer";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import FieldContainer from "../AdminPanel/FieldContainer";
+import imageIcon from "./image-icon.png";
 
 const DataBrandOverview = () => {
   const [search, setSearch] = useState("");
@@ -13,6 +14,12 @@ const DataBrandOverview = () => {
   const [backupData, setBackupData] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [categoryData, setCategoryData] = useState([]);
+  const [brandData, setBrandData] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState("");
+  const [contentData, setContentData] = useState([]);
+  const [selectedContent, setSelectedContent] = useState("");
+  const [platformData, setPlatformData] = useState([]);
+  const [selectedPlatform, setSelectedPlatform] = useState("");
   const [countData, setCountData] = useState([]);
   const [employeeData, setEmployeeData] = useState([]);
 
@@ -35,12 +42,24 @@ const DataBrandOverview = () => {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
+      .get("http://34.93.221.166:3000/api/get_all_data_categorys")
       .then((res) => setCategoryData(res.data));
+
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_data_brands")
+      .then((res) => setBrandData(res.data));
 
     axios
       .get("http://34.93.221.166:3000/api/get_all_users")
       .then((res) => setEmployeeData(res.data.data));
+
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_data_platforms")
+      .then((res) => setPlatformData(res.data));
+    axios
+
+      .get("http://34.93.221.166:3000/api/get_all_data_content_types")
+      .then((res) => setContentData(res.data));
   }
 
   const getBrandCount = (brandName, data) => {
@@ -55,17 +74,20 @@ const DataBrandOverview = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedCategory === "" && selectedUser === "") {
+    if (selectedCategory === "" && selectedUser === "" && selectedBrand === "" && selectedContent === "" && selectedPlatform === "") {
       setData(backupData);
     } else {
       const filteredData = backupData.filter(
         (item) =>
-          (selectedCategory === "" || item.cat_id == selectedCategory) &&
-          (selectedUser === "" || item.created_by == selectedUser)
+          (selectedCategory === "" || item.cat_id === selectedCategory) &&
+          (selectedUser === "" || item.created_by === selectedUser) &&
+          (selectedBrand === "" || item.brand_id === selectedBrand) &&
+          (selectedContent === "" || item.content_id === selectedContent) &&
+          (selectedPlatform === "" || item.platform_id === selectedPlatform)
       );
       setData(filteredData);
     }
-  }, [selectedCategory, selectedUser]);
+  }, [selectedCategory, selectedUser, selectedBrand, selectedContent, selectedPlatform]);  
 
   const deleteBrand = async (brand_name) => {
     await axios
@@ -127,7 +149,7 @@ const DataBrandOverview = () => {
               <div className="card-body pb0 pb4">
                 <div className="row thm_form">
                   <FieldContainer
-                    label="Data category"
+                    label="Category"
                     Tag="select"
                     fieldGrid={4}
                     value={selectedCategory}
@@ -135,8 +157,50 @@ const DataBrandOverview = () => {
                   >
                     <option value="">Please select</option>
                     {categoryData.map((data) => (
-                      <option key={data.id} value={data.id}>
-                        {data.cat_name}
+                      <option key={data._id} value={data._id}>
+                        {data.category_name}
+                      </option>
+                    ))}
+                  </FieldContainer>
+                  <FieldContainer
+                    label="Brand"
+                    Tag="select"
+                    fieldGrid={4}
+                    value={selectedBrand}
+                    onChange={(e) => setSelectedBrand(e.target.value)}
+                  >
+                    <option value="">Please select</option>
+                    {brandData.map((data) => (
+                      <option key={data._id} value={data._id}>
+                        {data.brand_name}
+                      </option>
+                    ))}
+                  </FieldContainer>
+                  <FieldContainer
+                    label="Content type"
+                    Tag="select"
+                    fieldGrid={4}
+                    value={selectedContent}
+                    onChange={(e) => setSelectedContent(e.target.value)}
+                  >
+                    <option value="">Please select</option>
+                    {contentData.map((data) => (
+                      <option key={data._id} value={data._id}>
+                        {data.content_name}
+                      </option>
+                    ))}
+                  </FieldContainer>
+                  <FieldContainer
+                    label="Platform"
+                    Tag="select"
+                    fieldGrid={4}
+                    value={selectedPlatform}
+                    onChange={(e) => setSelectedPlatform(e.target.value)}
+                  >
+                    <option value="">Please select</option>
+                    {platformData.map((data) => (
+                      <option key={data._id} value={data._id}>
+                        {data.platform_name}
                       </option>
                     ))}
                   </FieldContainer>
@@ -173,9 +237,7 @@ const DataBrandOverview = () => {
               {data.length > 0 &&
                 data
                   .filter((detail) =>
-                    detail.data_name
-                      ?.toLowerCase()
-                      .includes(search.toLowerCase())
+                    detail.data_name?.toLowerCase().includes(search.toLowerCase()) || detail.data_type?.toLowerCase().includes(search.toLowerCase())
                   )
                   .map((detail) => {
                     return (
@@ -215,11 +277,18 @@ const DataBrandOverview = () => {
                             <Link to={`/data-brand-view/${detail._id}`}>
                               <div className="summary_cardrow flex-column">
                                 <div className="summary_box text-center ml-auto mr-auto">
-                                  <img
-                                    src={detail.data_image}
-                                    width="80px"
-                                    height="80px"
-                                  />
+                                  {(detail.data_type == 'jpg' || detail.data_type == 'png' || detail.data_type == 'jpeg') ? 
+                                    (<img
+                                      src={detail.data_image}
+                                      width="100%"
+                                      height="100%"
+                                    />): 
+                                    (<img
+                                      src={imageIcon}
+                                      width="80px"
+                                      height="80px"
+                                    />)
+                                  }
                                 </div>
                                 <div className="summary_box col">
                                   <h4>
@@ -231,6 +300,18 @@ const DataBrandOverview = () => {
                                   <h4>
                                     <span>Category</span>
                                     {detail.category_name}
+                                  </h4>
+                                </div>
+                                <div className="summary_box col">
+                                  <h4>
+                                    <span>Content type</span>
+                                    {detail.content_type_name}
+                                  </h4>
+                                </div>
+                                <div className="summary_box col">
+                                  <h4>
+                                    <span>Platform</span>
+                                    {detail.platform_name}
                                   </h4>
                                 </div>
                                 <div className="summary_box col">
@@ -248,7 +329,7 @@ const DataBrandOverview = () => {
                                 <div className="summary_box col">
                                   <h4>
                                     <span>Uploaded by</span>
-                                    {detail.created_by}
+                                    {detail.created_by_name}
                                   </h4>
                                 </div>
                               </div>

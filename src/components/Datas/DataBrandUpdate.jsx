@@ -75,11 +75,11 @@ const DataBrandUpdate = () => {
       .then((res) => {
         setPlateformData(res.data);
       });
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_data_Sub_categories")
-      .then((res) => {
-        setDataSubCategoryData(res.data);
-      });
+    // axios
+    //   .get("http://34.93.221.166:3000/api/get_all_data_Sub_categories")
+    //   .then((res) => {
+    //     setDataSubCategoryData(res.data);
+    //   });
     axios
       .get("http://34.93.221.166:3000/api/get_all_data_content_types")
       .then((res) => {
@@ -95,6 +95,16 @@ const DataBrandUpdate = () => {
     const formattedDate = formatDate(today);
     setCurrentDate(formattedDate);
   }, [id]);
+
+  useEffect(()=>{
+    if(category){
+      axios
+      .get(`http://34.93.221.166:3000/api/get_single_data_from_sub_category/${category}`)
+      .then((res) => {
+        setDataSubCategoryData(res.data);
+      });
+    }
+  },[category])
 
   const handleCategoryChange = (event, index) => {
     const { value } = event.target;
