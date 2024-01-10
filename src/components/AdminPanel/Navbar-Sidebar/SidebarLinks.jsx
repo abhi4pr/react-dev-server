@@ -79,6 +79,9 @@ const SidebarLinks = () => {
   const isWFHDHRPayrollManager = [38].some(
     (index) => contextData[index]?.view_value === 1
   );
+  const isAssetNotifierVisible = [40].some(
+    (index) => contextData[index]?.view_value === 1
+  );
 
   return (
     <>
@@ -231,6 +234,7 @@ const SidebarLinks = () => {
         </li>
       )}
 
+{isAssetNotifierVisible && (
       <li className="nav-item">
         <Link
           className="nav-link collapsed"
@@ -266,6 +270,7 @@ const SidebarLinks = () => {
           </div>
         </div>
       </li>
+)}
 
       {isWFHDHRPayrollManager && (
         <li className="nav-item">
@@ -409,7 +414,7 @@ const SidebarLinks = () => {
         </li>
       )}
 
-      {/* {isAssetNotifierVisible && ( */}
+      {isAssetNotifierVisible && (
       <li className="nav-item">
         <Link
           className="nav-link collapsed"
@@ -455,7 +460,7 @@ const SidebarLinks = () => {
           </div>
         </div>
       </li>
-      {/* )} */}
+      )} 
 
       {isOnboardingVisible && (
         <li className="nav-item">

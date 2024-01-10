@@ -7,6 +7,7 @@ import UserNav from "../Pantry/UserPanel/UserNav";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import imageIcon from "./image-icon.png";
 import DeleteButton from "../AdminPanel/DeleteButton";
+import jwtDecode from "jwt-decode";
 
 const DataBrandOverview = () => {
   const [search, setSearch] = useState("");
@@ -24,6 +25,11 @@ const DataBrandOverview = () => {
   const [countData, setCountData] = useState([]);
   const [employeeData, setEmployeeData] = useState([]);
 
+  const storedToken = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(storedToken);
+  const userID = decodedToken.id;
+  const RoleIDContext = decodedToken.role_id;
+
   async function getData() {
     await axios
       .get("http://34.93.221.166:3000/api/get_all_datas")
@@ -38,7 +44,11 @@ const DataBrandOverview = () => {
           }
           return false;
         });
-        setData(filteredData);
+        if (RoleIDContext == 2 || RoleIDContext == 1) {
+          setData(filteredData);
+        } else {
+          setData(filteredData.filter((d) => d.created_by === userID));
+        }
         setBackupData(filteredData);
       });
 
