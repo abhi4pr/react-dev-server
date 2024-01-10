@@ -7,7 +7,7 @@ import { Button } from "@mui/material";
 import { downloadSelectedInvoices } from "../AdminPanel/WFH/SalaryGeneration/ZipGenerator";
 import { generatePDF } from "../AdminPanel/WFH/SalaryGeneration/pdfGenerator";
 
-const accordionButtons = ["Pengin Verify", "Virified", "Payment Released"];
+const accordionButtons = ["Pending Verify", "Verified", "Payment Released"];
 
 export default function FinanceWFHDashboard() {
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
