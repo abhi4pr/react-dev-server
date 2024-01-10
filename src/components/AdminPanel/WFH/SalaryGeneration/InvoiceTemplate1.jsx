@@ -86,7 +86,8 @@ const InvoiceTemplate1 = ({ data }) => {
               <div className="invoiceBodyFooter_left">
                 <div className="signBox">
                   <img
-                    src={data?.signatureImageUrl}
+                    // src={data?.signatureImageUrl}
+                    src="https://t4.ftcdn.net/jpg/03/17/25/45/240_F_317254576_lKDALRrvGoBr7gQSa1k4kJBx7O2D15dc.jpg"
                     alt="signatures"
                     onError={handleImageError}
                   />

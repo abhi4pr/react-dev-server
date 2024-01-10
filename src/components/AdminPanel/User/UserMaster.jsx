@@ -320,6 +320,7 @@ const UserMaster = () => {
       });
   }, []);
   const handleSubmit = async (e) => {
+    console.log("clicked")
     e.preventDefault();
     if (!jobType) {
       return toastError("Job Type is Required");
@@ -406,7 +407,7 @@ const UserMaster = () => {
     if (jobType == "WFO" && sitting == "") {
       return toastError("Sitting Error is required");
     }
-
+console.log("come to 2")
     const formData = new FormData();
     // const formDataa = new FormData();
     formData.append("created_by", loginUserId);
@@ -470,8 +471,16 @@ const UserMaster = () => {
     formData.append("emergency_contact_relation2", emergencyContactRelation2);
 
     formData.append("cast_type", cast);
+<<<<<<< Updated upstream
     formData.append("digital_signature_image", "");
     if (isValidcontact == true && validEmail == true) {
+=======
+    formData.append("digital_signature_image","delete it");
+    formData.append("emergency_contact_relation1","  delete  it  ")
+    console.log(3)
+    if (personalEmail && personalContact ) {
+      console.log("mali")
+>>>>>>> Stashed changes
       try {
         const isLoginIdExists = usersData.some(
           (user) =>

@@ -12,9 +12,10 @@ export default function Discard() {
   const [toDate, setToDate] = useState("");
 
   const callApi = () => {
-    axios.get("http://34.93.221.166:3000/api/get_all_demo").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
+    axios.get("https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest").then((res) => {
+      console.log(res.data.body)
+      setData(res.data.body);
+      setFilterData(res.data.body);
     });
   };
 
@@ -77,70 +78,70 @@ export default function Discard() {
       },
     },
     {
-      field: "t10",
-      headerName: "Request Date",
+      field: "request_date",
+      headerName: "Requested Date",
       width: 150,
       renderCell: (params) => {
-        return convertDateToDDMMYYYY(params.row.t10);
+        return convertDateToDDMMYYYY(params.row.request_date);
       },
     },
     {
-      field: "t1",
+      field: "name",
       headerName: "Requested By",
       width: 150,
       renderCell: (params) => {
-        return params.row.t1;
+        return params.row.name;
       },
     },
     {
-      field: "t2",
+      field: "vendor_name",
       headerName: "Vendor Name",
-      width: 150,
+      // width: "auto",
+      width: 250,
       renderCell: (params) => {
-        return params.row.t2;
+        return params.row.vendor_name;
       },
     },
     {
-      field: "t3",
+      field: "remark_audit",
       headerName: "Remark",
       width: 150,
       renderCell: (params) => {
-        return params.row.t3;
+        return params.row.remark_audit;
       },
     },
     {
-      field: "t13",
+      field: "priority",
       headerName: "Priority",
       width: 150,
-      renderCell: (params) => {
-        return params.row.t13;
+        renderCell: (params) => {
+          return params.row.priority;
+        },
       },
-    },
-    {
-      field: "t4",
+      {
+      field: "request_amount",
       headerName: "Requested Amount",
       width: 150,
       renderCell: (params) => {
-        return <p> &#8377; {params.row.t4}</p>;
+        return <p> &#8377; {params.row.request_amount}</p>;
       },
     },
     {
-      field: "t5",
+      field: "outstandings",
       headerName: "OutStanding ",
       width: 150,
       renderCell: (params) => {
-        return <p> &#8377; {params.row.t5}</p>;
+        return <p> &#8377; {params.row.outstandings}</p>;
       },
     },
     {
-      field: "t11",
+      field: "ageing",
       headerName: "Ageing",
       width: 150,
       renderCell: (params) => {
-        return <p> {calculateDays(params.row.t10, new Date())} Days</p>;
+        return <p> {calculateDays(params.row.request_date, new Date())} Days</p>;
       },
     },
-
   ];
   return (
     <div>
@@ -209,7 +210,7 @@ export default function Discard() {
             clearSearchAriaLabel: "clear",
           },
         }}
-        getRowId={(row) => row._id}
+        getRowId={(row) => filterData.indexOf(row)}
       />
     </div>
   )

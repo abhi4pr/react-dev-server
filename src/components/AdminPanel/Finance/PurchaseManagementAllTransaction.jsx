@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
-import FormContainer from '../FormContainer'
-import { Button } from '@mui/material';
-import { DataGrid, GridToolbar } from '@mui/x-data-grid';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import FormContainer from "../FormContainer";
+import { Button } from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function PurchaseManagementAllTransaction() {
   const [search, setSearch] = useState("");
@@ -10,12 +11,18 @@ export default function PurchaseManagementAllTransaction() {
   const [filterData, setFilterData] = useState([]);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [vendorName, setVendorName] = useState("");
 
   const callApi = () => {
-    axios.get("http://34.93.221.166:3000/api/get_all_demo").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-    });
+    axios
+      .get(
+        "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
+      )
+      .then((res) => {
+        console.log(res.data.body);
+        setData(res.data.body);
+        setFilterData(res.data.body);
+      });
   };
 
   useEffect(() => {
@@ -45,20 +52,30 @@ export default function PurchaseManagementAllTransaction() {
     return diffDays;
   }
 
-
-
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
-      const date = new Date(item.t10);
+      const date = new Date(item.request_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
+
+      toDate1.setDate(toDate1.getDate() + 1);
       if (date >= fromDate1 && date <= toDate1) {
         return item;
       }
     });
-    setFilterData(filterData);
+    if (vendorName) {
+      console.log("vendorName", vendorName);
+      const filterData1 = filterData.filter((item) => {
+        if (item.vendor_name.toLowerCase().includes(vendorName.toLowerCase())) {
+          return item;
+        }
+      });
+      setFilterData(filterData1);
+    } else {
+      console.log("filterData", filterData);
+      setFilterData(filterData);
+    }
   };
-
   const handleClearDateFilter = () => {
     setFilterData(data);
     setFromDate("");
@@ -77,70 +94,72 @@ export default function PurchaseManagementAllTransaction() {
       },
     },
     {
-      field: "t10",
-      headerName: "Request Date",
+      field: "request_date",
+      headerName: "Requested Date",
       width: 150,
       renderCell: (params) => {
-        return convertDateToDDMMYYYY(params.row.t10);
+        return convertDateToDDMMYYYY(params.row.request_date);
       },
     },
     {
-      field: "t1",
+      field: "name",
       headerName: "Requested By",
       width: 150,
       renderCell: (params) => {
-        return params.row.t1;
+        return params.row.name;
       },
     },
     {
-      field: "t2",
+      field: "vendor_name",
       headerName: "Vendor Name",
-      width: 150,
+      // width: "auto",
+      width: 250,
       renderCell: (params) => {
-        return params.row.t2;
+        return params.row.vendor_name;
       },
     },
     {
-      field: "t3",
+      field: "remark_audit",
       headerName: "Remark",
       width: 150,
       renderCell: (params) => {
-        return params.row.t3;
+        return params.row.remark_audit;
       },
     },
     {
-      field: "t13",
+      field: "priority",
       headerName: "Priority",
       width: 150,
       renderCell: (params) => {
-        return params.row.t13;
+        return params.row.priority;
       },
     },
     {
-      field: "t4",
+      field: "request_amount",
       headerName: "Requested Amount",
       width: 150,
       renderCell: (params) => {
-        return <p> &#8377; {params.row.t4}</p>;
+        return <p> &#8377; {params.row.request_amount}</p>;
       },
     },
     {
-      field: "t5",
+      field: "outstandings",
       headerName: "OutStanding ",
       width: 150,
       renderCell: (params) => {
-        return <p> &#8377; {params.row.t5}</p>;
+        return <p> &#8377; {params.row.outstandings}</p>;
       },
     },
     {
-      field: "t11",
+      field: "ageing",
       headerName: "Ageing",
       width: 150,
       renderCell: (params) => {
-        return <p> {calculateDays(params.row.t10, new Date())} Days</p>;
+        return (
+          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
+        );
       },
     },
-
   ];
   return (
     <div>
@@ -148,8 +167,52 @@ export default function PurchaseManagementAllTransaction() {
         mainTitle="All Transaction"
         link="/admin/finance-pruchasemanagement-alltransaction"
       />
-         <div className="row">
-        <div className="col-md-4">
+      <div className="row">
+        <div className="card col-4">
+          <div className="card-header h4">Pending</div>
+          <div className="card-body"></div>
+        </div>{" "}
+        <div className="card col-4">
+          <div className="card-header h4">Done</div>
+          <div className="card-body"></div>
+        </div>{" "}
+        <div className="card col-4">
+          <div className="card-header h4">Discard</div>
+          <div className="card-body">
+            <p className="fs-6 lead ">
+              Total Requested Amount :-{" "}
+              {data.length > 0
+                ? data.reduce((total, currentItem) => {
+                    return total + currentItem.request_amount * 1;
+                  }, 0)
+                : ""}
+            </p>
+            <p className="fs-6 lead ">
+              {
+                <Link className="link-primary" to="/admin/finance-pruchasemanagement-discardpayment">
+                  Click Here
+                </Link>
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Vendor Name</label>
+            <input
+              value={vendorName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setVendorName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
           <div className="form-group">
             <label>From Date</label>
             <input
@@ -160,7 +223,7 @@ export default function PurchaseManagementAllTransaction() {
             />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group">
             <label>To Date</label>
             <input
@@ -173,7 +236,7 @@ export default function PurchaseManagementAllTransaction() {
             />
           </div>
         </div>
-        <div className="col-md-3 mt-4">
+        <div className="col-md-1 mt-4 me-2">
           <Button variant="contained" onClick={handleDateFilter}>
             <i className="fas fa-search"></i> Search
           </Button>
@@ -184,7 +247,7 @@ export default function PurchaseManagementAllTransaction() {
           </Button>
         </div>
       </div>
-        <DataGrid
+      <DataGrid
         rows={filterData}
         columns={columns}
         pageSize={5}
@@ -209,8 +272,8 @@ export default function PurchaseManagementAllTransaction() {
             clearSearchAriaLabel: "clear",
           },
         }}
-        getRowId={(row) => row._id}
+        getRowId={(row) => filterData.indexOf(row)}
       />
     </div>
-  )
+  );
 }
