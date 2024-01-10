@@ -197,6 +197,7 @@ import FinanceWFHDashboard from "../Finance Dashboard/FinanceWFHDashboard";
 import WFHTemplateOverview from "./WFH/WFHSingleUser/WFHTemplateOverview";
 import ViewEditDigiSignature from "./WFH/DigitalSignature/ViewEditDigiSignature";
 import PlancreationNew from "./RegisterCampaign/PlancreationNew";
+import PhasecreationNew from "./RegisterCampaign/PhasecreationNew";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -769,7 +770,7 @@ const Admin = () => {
                     element={<CreaterDashboard />}
                   />
                   <Route path="/planOverview/:id" element={<PlanOverview />} />
-                  <Route path="/phase/:id" element={<PhaseCreation />} />
+                  <Route path="/phase/:id" element={<PhasecreationNew />} />
                   <Route path="/planCreation/:id" element={<PlancreationNew />} />
                   <Route path="/createAssign/:id" element={<CreateAssign />} />
 

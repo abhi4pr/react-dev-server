@@ -39,7 +39,7 @@ let timer
 let text;
 let rejectedPages = []
 
-const PageDetailingNew = ({ pageName, data }) => {
+const PageDetailingNew = ({ pageName, data,setPhaseDataError,phaseInfo }) => {
 
     const [allPageData, setAllPageData] = useState([]);
     const [payload, setPayload] = useState([])
@@ -121,13 +121,28 @@ const PageDetailingNew = ({ pageName, data }) => {
 
     const getPageData = async () => {
         try {
-            const pageData = await axios.get(
-                `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
-            );
+            if (pageName == 'planCreation') {
 
-            setAllPageData(pageData.data.body);
-            setPlanPages(pageData.data.body)
-            setFilteredPages(pageData.data.body)
+                const pageData = await axios.get(
+                    `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
+                );
+                setAllPageData(pageData.data.body);
+                setPlanPages(pageData.data.body)
+                setFilteredPages(pageData.data.body)
+            } else if (pageName == 'phaseCreation') {
+                const pageD = await axios.get(
+                    `http://34.93.221.166:3000/api/campaignplan/${data.campaignId}`
+                )
+                const x = pageD.data.data.filter((page) => {
+                    return page.replacement_status == "inactive" || page.replacement_status == "replacement"
+                }).map(page => {
+                    return { ...page, postPerPage: 0,storyPerPage: 0}
+                })
+                setAllPageData(x);
+                setPlanPages(x)
+                setFilteredPages(x)
+            }
+
         } catch (error) {
 
         }
@@ -374,7 +389,7 @@ const PageDetailingNew = ({ pageName, data }) => {
             setSelectedRows([...selectedRows, ...newRows])
         }
 
-       setRadioSelected('all')
+        setRadioSelected('all')
         // x=selectedRows
         // setUnregisteredPages(rejectedPages)
 
@@ -508,9 +523,17 @@ const PageDetailingNew = ({ pageName, data }) => {
     const handlePostPerPageChange = (e, params, field) => {
 
         let updatedValue = e.target.value;
-        if (e.target.value > Number(params.row.postRemaining)) {
+        if(field=='post'){
 
-            updatedValue = params.row.postRemaining;
+            if (e.target.value > Number(params.row.postRemaining)) {
+    
+                updatedValue = params.row.postRemaining;
+            }
+        }else{
+            if (e.target.value > Number(params.row.storyRemaining)) {
+    
+                updatedValue = params.row.storyRemaining;
+            }
         }
 
         // Check if the input value is being set or cleared
@@ -544,23 +567,23 @@ const PageDetailingNew = ({ pageName, data }) => {
                     }
                 })
                 x = selectedRows
-               
+
                 setFilteredPages(filter)
-            }else{
+            } else {
                 x = selectedRows
-              
-                if(radioSelected!='unselected'){
+
+                if (radioSelected != 'unselected') {
 
                     setFilteredPages(updatedPages)
                 }
             }
 
-           
+
 
             setPayload(postperpage);
             setPlanPages(updatedPages);
 
-            if (setSearchField) {
+            if (searchField) {
                 const y = searchedPages.map((page) => page.p_id === params.row.p_id
                     ? field == 'post' ? { ...page, postPerPage: updatedValue, value: null } : { ...page, storyPerPage: updatedValue, value: null }
                     : page)
@@ -572,7 +595,7 @@ const PageDetailingNew = ({ pageName, data }) => {
         }
     };
 
-    console.log(payload)
+ 
 
     const submitPlan = async (e) => {
         if (pageName == "planCreation") {
@@ -591,49 +614,50 @@ const PageDetailingNew = ({ pageName, data }) => {
                 );
                 // console.log(result);
                 toastAlert("Plan Created SuccessFully");
-                // setTimeout(() => {
-                //     navigate("/admin/registered-campaign");
-                // }, 2000);
+                setTimeout(() => {
+                    navigate(`/admin/phase/${data.campaignId}`);
+                }, 2000);
             } catch (error) {
                 toastError("Plan not Created");
             }
         }
-        // if (pageName == "phaseCreation") {
-        //     // console.log("phase creation")
-        //     if (phaseInfo.phaseDataError === "") {
-        //         setPhaseDataError("Phase ID is Required");
-        //     }
-        //     const planName = data.campaignName + "plan";
-        //     e.preventDefault();
-        //     const finalPages = allPages.map((page) => {
-        //         return {
-        //             ...page,
-        //             postRemaining: page.postRemaining - page.postPerPage,
-        //         };
-        //     });
-        //     const newdata = {
-        //         planName,
-        //         campaignName: data.campaignName,
-        //         campaignId: data.campaignId,
-        //         pages: finalPages,
-        //         phaseName: phaseInfo.phaseName,
-        //         desciption: phaseInfo.description,
-        //         commitment: phaseInfo.commitment,
-        //     };
-        //     try {
-        //         const result = await axios.post(
-        //             "http://34.93.221.166:3000/api/campaignphase",
-        //             newdata
-        //         );
-        //         // console.log(result);
-        //         toastAlert("Plan Created SuccessFully");
-        //         setTimeout(() => {
-        //             navigate("/admin/registered-campaign");
-        //         }, 2000);
-        //     } catch (error) {
-        //         toastError("Plan not Created");
-        //     }
-        // }
+        if (pageName == "phaseCreation") {
+            // console.log("phase creation")
+            if (phaseInfo.phaseDataError === "") {
+                setPhaseDataError("Phase ID is Required");
+            }
+            const planName = data.campaignName + "plan";
+            e.preventDefault();
+            const finalPages = payload.map((page) => {
+                return {
+                    ...page,
+                    postRemaining: page.postRemaining - page.postPerPage,
+                    storyRemaining: page.storyRemaining - page.storyPerPage
+                };
+            });
+            const newdata = {
+                planName,
+                campaignName: data.campaignName,
+                campaignId: data.campaignId,
+                pages: finalPages,
+                phaseName: phaseInfo.phaseName,
+                desciption: phaseInfo.description,
+                commitment: phaseInfo.commitment,
+            };
+            try {
+                const result = await axios.post(
+                    "http://localhost:3000/api/campaignphase",
+                    newdata
+                );
+                // console.log(result);
+                toastAlert("phase Created SuccessFully");
+                setTimeout(() => {
+                    // navigate("/admin/registered-campaign");
+                }, 2000);
+            } catch (error) {
+                toastError("phase not Created");
+            }
+        }
     };
 
     const columnForPages = [
@@ -758,7 +782,7 @@ const PageDetailingNew = ({ pageName, data }) => {
                 );
             },
         },
-      
+
     ]
 
 
