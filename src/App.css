@@ -1,3 +1,6 @@
+.section {
+  padding: 0 !important;
+}
 .form-heading {
   position: relative;
   display: flex;
@@ -1061,4 +1064,20 @@ label.checkbox-inline.propscss {
   transform: scale(2.2); /* Increase the size to 120% of the original */
   transition: transform 0.3s ease; /* Add a smooth transition effect */
   z-index: 2;
+}
+
+.documentareaLight .document_box h2 {
+  color: var(--dark);
+}
+
+.docTableLight.docTable .table tbody td {
+  color: var(--dark);
+}
+
+.docTableLight .uploadDocBtn span {
+  color: var(--dark);
+}
+
+.docTableLight .uploadDocBtn:hover .docTableLight {
+  color: var(--info);
 }

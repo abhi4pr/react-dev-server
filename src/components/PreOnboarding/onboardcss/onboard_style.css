@@ -2040,7 +2040,7 @@ img {
 
 .warning_badges {
   display: flex;
-  flex-direction: column;
+  /* flex-direction: column; */
   align-items: center;
   justify-content: center;
   gap: 6px 8px;
@@ -2062,7 +2062,7 @@ img {
   padding: 6px 14px 6px;
   gap: 0px 4px;
   border-radius: 40px;
-  width: 94px;
+  min-width: 94px;
 }
 
 .warning_badges.reject h4 {
@@ -2207,12 +2207,23 @@ img {
   fill: #fff !important;
 }
 
+::-webkit-file-upload-button {
+  cursor: pointer;
+}
+
 .uploadDocBtn {
   position: relative;
 }
 
 .uploadDocBtn span {
+  transition: var(--transition);
   position: relative;
+  color: var(--white);
+  cursor: pointer;
+}
+
+.uploadDocBtn:hover span {
+  color: var(--info);
 }
 
 .uploadDocBtn input[type="file"] {
@@ -2313,6 +2324,34 @@ img {
 
 .reactour__helper.reactour__helper--is-open {
   border-radius: 15px;
+}
+
+.sidebar_itemboxCol {
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+}
+
+.sidebar_itemboxColIn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0px 20px;
+}
+
+.sidebar_iteminfo {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 6px 0px;
+  padding: 10px 0px 0px;
+}
+
+.sidebar_iteminfo h3 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0;
 }
 /* Responsive Start Here */
 

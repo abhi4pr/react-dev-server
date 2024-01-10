@@ -417,10 +417,10 @@ const UserUpdate = () => {
           emergency_contact2,
           emergency_contact_person_name1,
           emergency_contact_person_name2,
-          emergency_contact_person_relation1,
-          emergency_contact_person_relation2,
+          emergency_contact_relation1,
+          emergency_contact_relation2,
         } = fetchedData;
-        console.log(room_id)
+        console.log(room_id);
         setPanNo(pan_no);
         setUidNo(uid_no);
         setSpouseName(spouse_name);
@@ -487,8 +487,8 @@ const UserUpdate = () => {
         setEmergencyContact2(emergency_contact2);
         setEmergencyContactName(emergency_contact_person_name1);
         setEmergencyContactName2(emergency_contact_person_name2);
-        setEmergencyContactRelation(emergency_contact_person_relation1);
-        setEmergencyContactRelation2(emergency_contact_person_relation2);
+        setEmergencyContactRelation(emergency_contact_relation1);
+        setEmergencyContactRelation2(emergency_contact_relation2);
       });
 
     getOtherDocument();
@@ -611,8 +611,8 @@ const UserUpdate = () => {
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
     formData.append("user_contact_no", contact);
-    formData.append("sitting_id", jobType==="WFH"? 0 :sitting);
-    formData.append("room_id", roomId.room_id?roomId.room_id:roomId);
+    formData.append("sitting_id", jobType === "WFH" ? 0 : sitting);
+    formData.append("room_id", roomId.room_id ? roomId.room_id : roomId);
     // console.log("room id he yha", roomId);
     // formData.append("room_id", roomId);
     formData.append("dept_id", department);
@@ -659,6 +659,15 @@ const UserUpdate = () => {
     formData.append("tds_per", tdsPercentage);
     formData.append("pan_no", panNo);
     formData.append("uid_no", uidNo);
+
+    //Emergency Contact fields
+    formData.append("emergency_contact1", emergencyContact);
+    formData.append("emergency_contact_person_name1", emergencyContactName);
+    formData.append("emergency_contact_relation1", emergencyContactRelation);
+    formData.append("emergency_contact2", emergencyContact2);
+    formData.append("emergency_contact_person_name2", emergencyContactName2);
+    formData.append("emergency_contact_relation2", emergencyContactRelation2);
+
     // formData.append("spouse_name", spouseName);
     formData.append("sub_dept_id", subDepartment);
     formData.append("highest_qualification_name", higestQualification);
@@ -1084,7 +1093,7 @@ const UserUpdate = () => {
         value={username}
         onChange={(e) => setUserName(e.target.value)}
       />
-<div className="form-group col-3">
+      <div className="form-group col-3">
         <label className="form-label">
           Job Type <sup style={{ color: "red" }}>*</sup>
         </label>
@@ -2055,6 +2064,7 @@ const UserUpdate = () => {
         setDocumentData={setDocumentData}
         getDocuments={getDocuments}
         submitButton={false}
+        normalUserLayout={true}
       />
     </>
   );

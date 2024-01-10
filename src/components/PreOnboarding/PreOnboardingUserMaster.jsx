@@ -1200,29 +1200,38 @@ const PreOnboardingUserMaster = () => {
               </div>
 
               <div
-                className={`sidebar_itembox ${
+                className={`sidebar_itembox sidebar_itemboxCol ${
                   activeTab == 2 ? "sidebar_item_active" : ""
                 }`}
                 id="sidebarDocumentBox"
                 onClick={() => setActiveTab(2)}
               >
-                <div
-                  className={`progress-circle progressing p-${documentPercentage}`}
-                >
-                  <div className="progress-circle-border">
-                    <div className="left-half-circle" />
-                    <div className="right-half-circle" />
+                <div className="sidebar_itemboxColIn">
+                  <div
+                    className={`progress-circle progressing p-${documentPercentage}`}
+                  >
+                    <div className="progress-circle-border">
+                      <div className="left-half-circle" />
+                      <div className="right-half-circle" />
+                    </div>
+                    <div className="progress-circle-content">
+                      <i className="bi bi-file-earmark-text" />
+                    </div>
                   </div>
-                  <div className="progress-circle-content">
-                    <i className="bi bi-file-earmark-text" />
-                  </div>
+                  <h2 className="document_tab_name">Documents</h2>
+                  <h3>{documentPercentage}%</h3>
                 </div>
-                <h2 className="document_tab_name">Documents</h2>
-                <h3>{documentPercentage}%</h3>
-                <h3>Mandotary{showMandotaryPer}%</h3>
-                <h3>
-                  Non Mandotary{showNonMandotaryPer ? showNonMandotaryPer : 0}%
-                </h3>
+                <div className="sidebar_iteminfo">
+                  <h3>
+                    Mandotary <span>{showMandotaryPer}%</span>
+                  </h3>
+                  <h3>
+                    Non Mandotary{" "}
+                    <span>
+                      {showNonMandotaryPer ? showNonMandotaryPer : 0}%
+                    </span>
+                  </h3>
+                </div>
               </div>
 
               <div
