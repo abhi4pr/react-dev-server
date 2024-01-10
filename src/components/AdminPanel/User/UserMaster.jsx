@@ -321,7 +321,6 @@ const UserMaster = () => {
   }, []);
 
   const handleSubmit = async (e) => {
-
     e.preventDefault();
     if (!jobType) {
       return toastError("Job Type is Required");
@@ -466,10 +465,10 @@ const UserMaster = () => {
     formData.append("emergency_contact_relation2", emergencyContactRelation2);
 
     formData.append("cast_type", cast);
-    formData.append("digital_signature_image","delete it");
-    formData.append("emergency_contact_relation1","  delete  it  ")
+    formData.append("digital_signature_image", "");
+    // formData.append("emergency_contact_relation1", "delete it");
 
-    if (personalEmail && personalContact ) {
+    if (personalEmail && personalContact) {
       try {
         const isLoginIdExists = usersData.some(
           (user) =>
@@ -1245,7 +1244,7 @@ const UserMaster = () => {
       </div>
 
       <FieldContainer
-        label="Official Email"
+        label="Official Email *"
         type="email"
         fieldGrid={3}
         value={email}
@@ -1285,7 +1284,7 @@ const UserMaster = () => {
         )}
       </div>
       <FieldContainer
-        label="Official Contact"
+        label="Official Contact *"
         type="number"
         fieldGrid={3}
         value={contact}

@@ -81,24 +81,23 @@ const ObjectMaster = () => {
         </FieldContainer> */}
         <div className="form-group col-6">
           <label className="form-label">
-            Department  <sup style={{ color: "red" }}>*</sup>
+            Department <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-           options={deptData.map((option) => ({
-            value: option.dept_id,
-            label: `${option.dept_name}`,
-          }))}
-          value={{
-            value: selectedDepartment,
-            label:
-            deptData.find(
-                (user) => user.dept_id === selectedDepartment
-              )?.dept_name || "",
-          }}
-          onChange={(e) => {
-            setSelectedDepartment(e.value);
-          }}
-          required
+            options={deptData.map((option) => ({
+              value: option.dept_id,
+              label: `${option.dept_name}`,
+            }))}
+            value={{
+              value: selectedDepartment,
+              label:
+                deptData.find((user) => user.dept_id === selectedDepartment)
+                  ?.dept_name || "",
+            }}
+            onChange={(e) => {
+              setSelectedDepartment(e.value);
+            }}
+            required
           />
         </div>
       </FormContainer>
