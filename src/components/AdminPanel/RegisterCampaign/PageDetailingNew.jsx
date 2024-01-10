@@ -24,6 +24,7 @@ import {
 import axios from 'axios';
 
 let options = [];
+let pageNames = []
 const Follower_Count = [
     "<10k",
     "10k to 100k ",
@@ -34,6 +35,9 @@ const Follower_Count = [
 
 const page_health = ["Active", "nonActive"];
 let x;
+let timer
+let text;
+let rejectedPages = []
 
 const PageDetailingNew = ({ pageName, data }) => {
 
@@ -41,12 +45,20 @@ const PageDetailingNew = ({ pageName, data }) => {
     const [payload, setPayload] = useState([])
     const [filteredPages, setFilteredPages] = useState([])
     const [planPages, setPlanPages] = useState([])
+    const [realPages, setRealPages] = useState([])
 
     const [selectedRows, setSelectedRows] = useState([]);
     const [radioSelected, setRadioSelected] = useState('all')
 
     const [selectedCategory, setSelectedCategory] = useState([]);
     const [selectedFollower, setSelectedFollower] = useState(null)
+    const [searchedPages, setSearchedPages] = useState(null)
+
+    const [isModalOpenCP, setIsModalOpenCP] = useState(false);
+    const [unregisteredPages, setUnregisteredPages] = useState(null)
+
+    const [externalPPP, setExternalPPP] = useState(null)
+    const [searchField, setSearchField] = useState(false)
 
 
 
@@ -77,8 +89,33 @@ const PageDetailingNew = ({ pageName, data }) => {
     }, [selectedRows]);
 
     useEffect(() => {
-        filterHandler()
-    }, [radioSelected, selectedCategory,selectedFollower])
+        if (radioSelected != 'unregistered') {
+            setUnregisteredPages(null)
+            filterHandler()
+        } else {
+            setUnregisteredPages(rejectedPages)
+        }
+    }, [radioSelected, selectedCategory, selectedFollower])
+
+    useEffect(() => {
+        pageNames = []
+        for (const page of allPageData) {
+            // console.log(page)
+            let counter = false
+            payload.some(x => {
+                if (x.p_id == page.p_id) {
+                    counter = true
+                }
+            })
+            if (!counter) {
+                pageNames = [...pageNames, page.page_name]
+            }
+        }
+    }, [unregisteredPages])
+
+    useEffect(() => {
+
+    }, [externalPPP])
 
 
 
@@ -132,8 +169,7 @@ const PageDetailingNew = ({ pageName, data }) => {
 
 
     const filterHandler = () => {
-        // console.log(radioSelected)
-        const newSelectedRow = selectedRows
+
         const radioData = planPages?.filter(page => {
             if (radioSelected == 'all') {
                 return page
@@ -142,7 +178,7 @@ const PageDetailingNew = ({ pageName, data }) => {
                 if (selectedRows.includes(page.p_id)) {
                     return page
                 }
-            } else {
+            } else if (radioSelected == 'unselected') {
                 if (!selectedRows.includes(page.p_id)) {
                     return page
                 }
@@ -238,19 +274,343 @@ const PageDetailingNew = ({ pageName, data }) => {
             x = selectedRows
             setFilteredPages(radioData);
         } else if (selectedCategory?.length == 0 && selectedFollower) {
+            const data = radioData.filter(pages => {
+
+                if (selectedFollower == "<10k") {
+                    return Number(pages.follower_count) <= 10000;
+                } else if (selectedFollower == "10k to 100k ") {
+                    return (
+                        Number(pages.follower_count) <= 100000 &&
+                        Number(pages.follower_count) > 10000
+                    );
+                } else if (selectedFollower == "100k to 1M ") {
+                    return (
+                        Number(pages.follower_count) <= 1000000 &&
+                        Number(pages.follower_count) > 100000
+                    );
+                } else if (selectedFollower == "1M to 5M ") {
+                    return (
+                        Number(pages.follower_count) <= 5000000 &&
+                        Number(pages.follower_count) > 1000000
+                    );
+                } else if (selectedFollower == ">5M ") {
+                    return Number(pages.follower_count) > 5000000;
+                }
+            })
+            x = selectedRows
+            setFilteredPages(data);
         }
 
 
         // setFilteredPages(data)
     }
-    
-    console.log(selectedCategory)
-    console.log(selectedFollower)
+    const handleSearchChange = (e) => {
 
+        if (!e.target.value.length == 0) {
+            setSearchField(true)
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+                const searched = filteredPages.filter((page) => {
+                    return (
+                        page.page_name
+                            .toLowerCase()
+                            .includes(e.target.value.toLowerCase()) ||
+                        page.cat_name.toLowerCase().includes(e.target.value.toLowerCase())
+                    );
+                });
 
+                x = selectedRows
+                setSearchedPages(searched)
+            }, 500);
+        } else {
+            setSearchField(false)
+            setSearchedPages(null)
+            clearTimeout(timer);
+
+        }
+    }
+
+    //this useEffect is to insure that the selectedRows data does not lost during  reRendering
     useEffect(() => {
         setSelectedRows(x)
-    }, [filteredPages])
+    }, [filteredPages, searchedPages, unregisteredPages])
+
+    //copy paste logic starts here
+
+    const handleCP = () => {
+        setIsModalOpenCP(true);
+    };
+
+    const handleCloseCP = () => {
+        setIsModalOpenCP(false);
+    };
+
+
+
+    const handleInputChange = (e) => {
+        text = e.target.value;
+    };
+    const handleModalPageCP = () => {
+        const pageInfo = text.split(/\s+/);
+        // let rejectedPages=[]
+        const newRows = []
+        for (const text of pageInfo) {
+            let counter = false
+            allPageData.some(page => {
+                if (page.page_name == text) {
+                    counter = true
+                    if (!selectedRows.includes(page.p_id)) {
+
+                        newRows.push(page.p_id)
+                    }
+                }
+            })
+            if (!counter) {
+                let pid = allPageData.length + Math.floor(Math.random() * 1000) + 1;
+                rejectedPages = [...rejectedPages, { page_name: text, p_id: pid }]
+            }
+            console.log(newRows)
+            x = [...selectedRows, ...newRows]
+            setSelectedRows([...selectedRows, ...newRows])
+        }
+        // x=selectedRows
+        // setUnregisteredPages(rejectedPages)
+
+    };
+
+
+    const blue = {
+        100: "#DAECFF",
+        200: "#b6daff",
+        400: "#3399FF",
+        500: "#007FFF",
+        600: "#0072E5",
+        900: "#003A75",
+    };
+
+    const grey = {
+        50: "#F3F6F9",
+        100: "#E5EAF2",
+        200: "#DAE2ED",
+        300: "#C7D0DD",
+        400: "#B0B8C4",
+        500: "#9DA8B7",
+        600: "#6B7A90",
+        700: "#434D5B",
+        800: "#303740",
+        900: "#1C2025",
+    };
+
+    const Textarea = styled(BaseTextareaAutosize)(
+        ({ theme }) => `
+        width: 320px;
+        font-family: 'IBM Plex Sans', sans-serif;
+        font-size: 0.875rem;
+        font-weight: 400;
+        line-height: 1.5;
+        padding: 8px 12px;
+        border-radius: 8px;
+        color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
+        background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
+        border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]};
+        box-shadow: 0px 2px 2px ${theme.palette.mode === "dark" ? grey[900] : grey[50]
+            };
+    
+        &:hover {
+          border-color: ${blue[400]};
+        }
+    
+        &:focus {
+          border-color: ${blue[400]};
+          box-shadow: 0 0 0 3px ${theme.palette.mode === "dark" ? blue[600] : blue[200]
+            };
+        }
+    
+        // firefox
+        &:focus-visible {
+          outline: 0;
+        }
+      `
+    );
+
+
+    const pageReplacement = (e, params) => {
+        const toDelete = rejectedPages.filter(page => page.p_id != params.row.p_id);
+        rejectedPages = toDelete
+        x = selectedRows
+        setRadioSelected('selected')
+        setUnregisteredPages(rejectedPages)
+
+        const pageReplacement = allPageData.find((page) => {
+            return page.page_name == e.target.innerText;
+        });
+
+        setSelectedRows([...selectedRows, pageReplacement.p_id])
+
+
+
+    }
+    //copy paste logic ends here
+    // console.log(rejectedPages)
+    const handlePost = (e, field) => {
+        let updatedValue = e.target.value;
+
+        // if (e.target.value >= smallPostPerPage) {
+
+        //     updatedValue = smallPostPerPage
+        // }
+
+        const postperpage = payload.map((page) => {
+            if (field == 'post') {
+
+                return { ...page, postPerPage: updatedValue };
+            } else return { ...page, storyPerPage: updatedValue };
+        });
+
+        const newFilteredPages = planPages.map((page) => {
+            if (selectedRows.includes(page.p_id)) {
+                if (field == 'post') {
+
+                    return { ...page, postPerPage: updatedValue };
+                } else return { ...page, storyPerPage: updatedValue };
+            } else return page
+        })
+
+        x = selectedRows
+        setPayload(postperpage);
+        setPlanPages(newFilteredPages)
+
+        if (radioSelected == 'unselected') {
+            // const ne = newFilteredPages.filter(page => {
+            //     if (!selectedRows.includes(page.p_id)) {
+            //         return page
+            //     }
+            // })
+            // setFilteredPages(ne)
+        }
+        else if (radioSelected == 'selected') {
+            const ne = newFilteredPages.filter(page => {
+                if (selectedRows.includes(page.p_id)) {
+                    return page
+                }
+            })
+            setFilteredPages(ne)
+        } else setFilteredPages(newFilteredPages)
+
+
+
+    }
+
+    const handlePostPerPageChange = (e, params, field) => {
+
+        let updatedValue = e.target.value;
+        if (e.target.value > Number(params.row.postRemaining)) {
+
+            updatedValue = params.row.postRemaining;
+        }
+
+        // Check if the input value is being set or cleared
+        if (updatedValue != params.value || updatedValue == "") {
+            const updatedPages = planPages.map((page) => {
+                if (selectedRows.includes(page.p_id)) {
+                    if (field == 'post') {
+
+                        return { ...page, postPerPage: updatedValue, value: null };
+                    } else return { ...page, storyPerPage: updatedValue, value: null };
+                } else return page
+            }
+            );
+
+
+            const postperpage = payload.map((page) =>
+
+
+                page.p_id === params.row.p_id
+                    ? field == 'post' ? { ...page, postPerPage: updatedValue, value: null } : { ...page, storyPerPage: updatedValue, value: null }
+                    : page
+
+            );
+            console.log(postperpage)
+
+            x = selectedRows
+
+            setPayload(postperpage);
+            setPlanPages(updatedPages);
+            setFilteredPages(updatedPages)
+
+            if (setSearchField) {
+                const y = searchedPages.map((page) => page.p_id === params.row.p_id
+                    ? field == 'post' ? { ...page, postPerPage: updatedValue, value: null } : { ...page, storyPerPage: updatedValue, value: null }
+                    : page)
+
+                setSearchedPages(y)
+            }
+
+
+        }
+    };
+
+    const submitPlan = async (e) => {
+        if (pageName == "planCreation") {
+            const planName = data.campaignName + "plan";
+
+            const newdata = {
+                planName,
+                campaignName: data.campaignName,
+                campaignId: data.campaignId,
+                pages: payload,
+            };
+            try {
+                const result = await axios.post(
+                    "http://localhost:3000/api/campaignplan",
+                    newdata
+                );
+                // console.log(result);
+                toastAlert("Plan Created SuccessFully");
+                // setTimeout(() => {
+                //     navigate("/admin/registered-campaign");
+                // }, 2000);
+            } catch (error) {
+                toastError("Plan not Created");
+            }
+        }
+        // if (pageName == "phaseCreation") {
+        //     // console.log("phase creation")
+        //     if (phaseInfo.phaseDataError === "") {
+        //         setPhaseDataError("Phase ID is Required");
+        //     }
+        //     const planName = data.campaignName + "plan";
+        //     e.preventDefault();
+        //     const finalPages = allPages.map((page) => {
+        //         return {
+        //             ...page,
+        //             postRemaining: page.postRemaining - page.postPerPage,
+        //         };
+        //     });
+        //     const newdata = {
+        //         planName,
+        //         campaignName: data.campaignName,
+        //         campaignId: data.campaignId,
+        //         pages: finalPages,
+        //         phaseName: phaseInfo.phaseName,
+        //         desciption: phaseInfo.description,
+        //         commitment: phaseInfo.commitment,
+        //     };
+        //     try {
+        //         const result = await axios.post(
+        //             "http://34.93.221.166:3000/api/campaignphase",
+        //             newdata
+        //         );
+        //         // console.log(result);
+        //         toastAlert("Plan Created SuccessFully");
+        //         setTimeout(() => {
+        //             navigate("/admin/registered-campaign");
+        //         }, 2000);
+        //     } catch (error) {
+        //         toastError("Plan not Created");
+        //     }
+        // }
+    };
 
     const columnForPages = [
         {
@@ -267,19 +627,20 @@ const PageDetailingNew = ({ pageName, data }) => {
             headerName: "Pages",
             width: 150,
             editable: true,
-            renderCell: (params) => {
+            renderCell: (params, index) => {
                 // console.log(params)
-                return params?.row?.status == false ? (
+                return radioSelected == 'unregistered' ? (
                     <Autocomplete
                         id="combo-box-demo"
-                        options={options}
+                        options={pageNames}
                         getOptionLabel={(option) => option}
                         sx={{ width: 300 }}
-                        renderInput={(param) => (
-                            <TextField {...param} label={params.row.page_name} />
-                        )}
+                        renderInput={(param) => {
+                            return <TextField {...param} label={params.row.page_name} />
+                        }
+                        }
                         onChange={(e) =>
-                            pageReplacement(e, params.row, planPages.indexOf(params.row))
+                            pageReplacement(e, params)
                         }
                     />
                 ) : (
@@ -315,14 +676,15 @@ const PageDetailingNew = ({ pageName, data }) => {
                                 : params.value || ""
                         }
                         placeholder={params.row.postPerPage || ""}
-                    // onChange={(e) => handlePostPerPageChange(e, params)}
+                        onChange={(e) => handlePostPerPageChange(e, params, "post")}
                     />
                 );
             },
         },
+        pageName != "planCreation" &&
         {
             field: "remainingPages",
-            headerName: "remainingPages",
+            headerName: "remaining post",
             width: 150,
             renderCell: (params) => {
                 return (
@@ -336,18 +698,55 @@ const PageDetailingNew = ({ pageName, data }) => {
             },
         },
         {
-            field: "Action",
-            headerName: "Action",
+            field: "story_page",
+            headerName: "story / Page",
             width: 150,
-            editable: true,
-            //   renderCell: (params) => {
-            //     return (
-            //       <Button onClick={() => removePage(params)}>
-            //         <DeleteIcon />
-            //       </Button>
-            //     );
-            //   },
+
+            renderCell: (params) => {
+                return (
+                    <input
+                        style={{ width: "60%" }}
+                        type="number"
+                        value={
+                            params.row.storyPerPage !== null
+                                ? params.row.storyPerPage
+                                : params.value || ""
+                        }
+                        placeholder={params.row.storyPerPage || ""}
+                        onChange={(e) => handlePostPerPageChange(e, params, 'story')}
+                    />
+                );
+            },
         },
+        pageName != "planCreation" &&
+        {
+            field: "remainingStory",
+            headerName: "remaining story",
+            width: 150,
+            renderCell: (params) => {
+                return (
+                    <input
+                        style={{ width: "60%" }}
+                        type="number"
+                        disabled
+                        placeholder={params.row.storyRemaining}
+                    />
+                );
+            },
+        },
+        // {
+        //     field: "Action",
+        //     headerName: "Action",
+        //     width: 150,
+        //     editable: true,
+        //     //   renderCell: (params) => {
+        //     //     return (
+        //     //       <Button onClick={() => removePage(params)}>
+        //     //         <DeleteIcon />
+        //     //       </Button>
+        //     //     );
+        //     //   },
+        // },
     ]
 
 
@@ -367,8 +766,8 @@ const PageDetailingNew = ({ pageName, data }) => {
                         <FormControlLabel value="all" control={<Radio />} label="all" />
                         <FormControlLabel value="selected" control={<Radio />} label="selected" />
                         <FormControlLabel value="unselected" control={<Radio />} label="unselected" />
-                        {/* <FormControlLabel value="assigned" control={<Radio />} label="assigned" />
-                        <FormControlLabel value="rejected" control={<Radio />} label="rejected" /> */}
+                        <FormControlLabel value="unregistered" control={<Radio />} label="unregistered" />
+
 
                     </RadioGroup>
 
@@ -405,15 +804,13 @@ const PageDetailingNew = ({ pageName, data }) => {
                 <TextField
                     label="Search"
                     variant="outlined"
-                //   onChange={handleSearchChange}
+                    onChange={handleSearchChange}
                 />
                 <Box>
-                    <Button variant="contained" sx={{ m: 1 }}>
+                    <Button variant="contained" onClick={handleCP} sx={{ m: 1 }}>
                         Copy / paste
                     </Button>
-                    <Button variant="contained" sx={{ m: 1 }}>
-                        Add More Pages
-                    </Button>
+
                 </Box>
             </Paper>
             <Box sx={{ p: 2 }}>
@@ -422,17 +819,25 @@ const PageDetailingNew = ({ pageName, data }) => {
                     InputLabelProps={{ shrink: true }}
                     label="Post/pages"
                     variant="outlined"
-                // onChange={handlePost}
+                    onChange={(e) => handlePost(e, "post")}
+                />
+                <TextField sx={{ ml: 2 }}
+                    id="outlined-basic"
+                    InputLabelProps={{ shrink: true }}
+                    label="story/pages"
+                    variant="outlined"
+                    onChange={(e) => handlePost(e, "story")}
                 />
             </Box>
             <Paper sx={{ display: "flex", justifyContent: "space-between", p: 2 }}>
                 <Box sx={{ height: 700, width: "65%" }}>
                     <DataGrid
-                        rows={filteredPages || []}
+                        rows={unregisteredPages || searchedPages || filteredPages || []}
                         columns={columnForPages}
                         getRowId={(row) => row.p_id}
                         pageSizeOptions={[5]}
                         checkboxSelection
+                        disableRowSelectionOnClick
                         onRowSelectionModelChange={(row) => handleSelectionChange(row)}
                         rowSelectionModel={selectedRows?.map((row) => row)}
                         getRowClassName={(params) => {
@@ -448,9 +853,45 @@ const PageDetailingNew = ({ pageName, data }) => {
                             },
                         }}
                     />
+                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                        <Button
+                            variant="contained"
+                            sx={{ mt: 2, mb: 4 }}
+                            onClick={submitPlan}
+                        >
+                            submit
+                        </Button>{" "}
+                    </div>
                 </Box>
-
             </Paper>
+            {
+
+                //copy paste modal contents
+            }
+
+
+            <Dialog open={isModalOpenCP}>
+                <DialogTitle>Add Pages</DialogTitle>
+                <DialogContent>
+                    <Box sx={{ height: "100%" }}>
+                        <Textarea
+                            onChange={handleInputChange}
+                            style={{ color: "green", fontSize: "20px" }}
+                            aria-label="minimum height"
+                            minRows={6}
+                            placeholder="copy paste here..."
+                        />
+                    </Box>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseCP} color="primary">
+                        Cancel
+                    </Button>
+                    <Button color="primary" onClick={handleModalPageCP}>
+                        Add
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </>
     )
 }
