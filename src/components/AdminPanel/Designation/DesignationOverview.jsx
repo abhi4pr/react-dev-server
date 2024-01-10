@@ -9,22 +9,23 @@ import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
 
 const DesignationOverview = () => {
+  // State variables
   const [search, setSearch] = useState("");
   const [modalSearch, setModalSearch] = useState("");
-
   const [data, setData] = useState([]);
   const [filterdata, setFilterData] = useState([]);
-  const [contextData, setDatas] = useState([]);
+  const [contextData, setContextData] = useState([]);
   const [allUserDesignation, setAllUserDesignation] = useState([]);
-
   const [selectedRow, setSelectedRow] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserData, setSelectedUserData] = useState([]);
 
+  // Get user ID from JWT token
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
 
+  // Fetch user auth details and all users on initial load
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
@@ -32,7 +33,7 @@ const DesignationOverview = () => {
           `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
-          setDatas(res.data);
+          setContextData(res.data);
         });
     }
 
@@ -41,6 +42,7 @@ const DesignationOverview = () => {
     });
   }, [userID]);
 
+  // Fetch all designations data
   async function getData() {
     await axios
       .get("http://34.93.221.166:3000/api/get_all_designations")
@@ -54,13 +56,15 @@ const DesignationOverview = () => {
     getData();
   }, []);
 
+  // Filter data based on search input
   useEffect(() => {
     const result = data.filter((d) => {
-      return d.desi_name.toLowerCase().match(search.toLowerCase());
+      return d.desi_name.toLowerCase().includes(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
 
+  // Define columns for the DataTable component
   const columns = [
     {
       name: "S.No",
@@ -77,6 +81,16 @@ const DesignationOverview = () => {
       name: "Department Name",
       selector: (row) => row.department_name,
       sortable: true,
+    },
+    {
+      name: "Auth",
+      cell: (row) => (
+        <Link to={`/admin/desi-dept-auth/${row.desi_id}`}>
+          <button className="w-100 btn btn-outline-success btn-sm user-button">
+            Auth
+          </button>
+        </Link>
+      ),
     },
     {
       name: "Emp Count",
@@ -97,13 +111,11 @@ const DesignationOverview = () => {
       },
       sortable: true,
     },
-
     {
       name: "Remarks",
       selector: (row) => row.remark,
       sortable: true,
     },
-
     {
       name: "Action",
       cell: (row) => (
@@ -137,6 +149,7 @@ const DesignationOverview = () => {
     },
   ];
 
+  // Handle row click to open modal
   const handleRowClick = (row) => {
     setSelectedRow(row);
 
@@ -148,12 +161,14 @@ const DesignationOverview = () => {
     setIsModalOpen(true);
   };
 
+  // Close modal
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
   return (
     <>
+      {/* FormContainer for main title and link */}
       <FormContainer
         mainTitle="Designation"
         link="/admin/designation-master"
@@ -189,6 +204,7 @@ const DesignationOverview = () => {
         </div>
       </div>
 
+      {/* Modal for displaying user details */}
       <Modal
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}
@@ -210,7 +226,7 @@ const DesignationOverview = () => {
           <div>
             <div className="d-flex justify-content-between mb-4">
               <h5>Department: {selectedRow.department_name}</h5>
-              <h5>Designaiton: {selectedRow.desi_name}</h5>
+              <h5>Designation: {selectedRow.desi_name}</h5>
               <button className="btn btn-success " onClick={handleCloseModal}>
                 X
               </button>

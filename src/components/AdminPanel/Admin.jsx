@@ -198,6 +198,7 @@ import WFHTemplateOverview from "./WFH/WFHSingleUser/WFHTemplateOverview";
 import ViewEditDigiSignature from "./WFH/DigitalSignature/ViewEditDigiSignature";
 import PlancreationNew from "./RegisterCampaign/PlancreationNew";
 import PhasecreationNew from "./RegisterCampaign/PhasecreationNew";
+import DesiDeptAuth from "../AdminPanel/Designation/DesiDeptAuth";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -368,6 +369,11 @@ const Admin = () => {
                   <Route
                     path="/wfh-users-overview/:deptId"
                     element={<WFHUserOverview />}
+                  />
+                  {/* DesiDeptAuth Routing  */}
+                  <Route
+                    path="/desi-dept-auth/:id"
+                    element={<DesiDeptAuth />}
                   />
 
                   {/* <Route
@@ -771,7 +777,15 @@ const Admin = () => {
                   />
                   <Route path="/planOverview/:id" element={<PlanOverview />} />
                   <Route path="/phase/:id" element={<PhasecreationNew />} />
-                  <Route path="/planCreation/:id" element={<PlancreationNew />} />
+                  <Route
+                    path="/planCreation/:id"
+                    element={<PlancreationNew />}
+                  />
+                  <Route path="/phase/:id" element={<PhaseCreation />} />
+                  <Route
+                    path="/planCreation/:id"
+                    element={<PlancreationNew />}
+                  />
                   <Route path="/createAssign/:id" element={<CreateAssign />} />
 
                   <Route
