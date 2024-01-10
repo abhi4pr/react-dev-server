@@ -4,9 +4,11 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import Loader from "../Loader/Loader";
 const NewPages = ({ pages }) => {
     const navigate=useNavigate()
   const [camp, setCamp] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const fetchCampaignData = async () => {
     try {
       const response = await axios.get(
@@ -20,13 +22,17 @@ const NewPages = ({ pages }) => {
 
   useEffect(() => {
     fetchCampaignData();
+    setTimeout(() => {
+      setIsLoading(false);
+  }, 500);
   }, []);
-
+  if (isLoading) {
+    return <Loader message="Manager DashBoard..." />;
+}
 
 const handleVerification = (param)=>{
     
     navigate(`/admin/manager-dashboard/${param.row._id}`)
-    // console.log(param.row,"hello");
 }
 
   const columns = [

@@ -4,6 +4,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
+import { useGlobalContext } from "../../../../Context/Context";
+// useGlobalContext
 
 const style = {
   position: "absolute",
@@ -19,6 +21,8 @@ const style = {
 };
 
 const ReplacementList = ({ replacementData, hardRender }) => {
+    const { toastAlert, toastError } = useGlobalContext();
+
   const [replacementDetails, setReplacementDetails] = useState([]);
   const newData = replacementDetails?.newPages;
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -31,21 +35,29 @@ const ReplacementList = ({ replacementData, hardRender }) => {
 
   const replacementUpdate = async (status, id) => {
     getReplacementDetail(id);
-
+  
     const data = {
       status,
-      replacementRecord:replacementDetails,
+      replacementRecord: replacementDetails,
       approved_by: "123",
     };
-
+  
     const result = await axios.post(
       "http://34.93.221.166:3000/api/replacement/status",
       data
     );
     if (result.status == 200) {
+      if (status === "approved") {
+        toastAlert("Approval Successful!");
+      } else if (status === "rejected") {
+        toastAlert("Rejection Successful!"); 
+      }
       hardRender();
+    } else {
+      toastError("Operation Failed!"); 
     }
   };
+  
   const columns = [
     {
       field: "S.NO",
@@ -69,6 +81,20 @@ const ReplacementList = ({ replacementData, hardRender }) => {
       width: 180,
       sortable: true,
     },
+    // {
+    //   field: "Replacement",
+    //   headerName: "Replacement",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div>
+    //         <Button onClick={() => handleOpen(params)} variant="text">
+    //           <ModeCommentTwoToneIcon />
+    //         </Button>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       field: "Replacement",
       headerName: "Replacement",
@@ -76,7 +102,10 @@ const ReplacementList = ({ replacementData, hardRender }) => {
       renderCell: (params) => {
         return (
           <div>
-            <Button onClick={() => handleOpen(params)} variant="text">
+            <Button 
+              onMouseOver={() => handleOpen(params)} 
+              variant="text"
+            >
               <ModeCommentTwoToneIcon />
             </Button>
           </div>
