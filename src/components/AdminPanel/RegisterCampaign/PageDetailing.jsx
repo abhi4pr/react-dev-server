@@ -143,9 +143,9 @@ const PageDetaling = ({
             renderInput={(param) => (
               <TextField {...param} label={params.row.page_name} />
             )}
-            onChange={(e) =>
-              pageReplacement(e, params.row, allPages.indexOf(params.row))
-            }
+            // onChange={(e) =>
+            //   pageReplacement(e, params.row, allPages.indexOf(params.row))
+            // }
           />
         ) : (
           params.page_name
