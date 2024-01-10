@@ -46,7 +46,7 @@ import PreviewInvoice from "./PreviewInvoice";
 const images = useInvoiceTemplateImages();
 
 const WFHSingleUser = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [error, setError] = useState(null);
@@ -136,7 +136,7 @@ const WFHSingleUser = () => {
       })
       .catch((error) => {
         console.error("Error submitting data:", error);
-        toastAlert("Failed to submit data");
+        toastError("Failed to submit data");
       });
   };
 

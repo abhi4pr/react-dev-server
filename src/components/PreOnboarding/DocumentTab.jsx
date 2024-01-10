@@ -7,6 +7,7 @@ const DocumentTab = ({
   setDocumentData,
   getDocuments,
   submitButton = true,
+  normalUserLayout = false,
 }) => {
   const { toastAlert } = useGlobalContext();
 
@@ -29,7 +30,7 @@ const DocumentTab = ({
 
   const handleSubmit = async () => {
     try {
-      const mandatoryDocTypes = ["10th", "12th", "Graduation"];
+      const mandatoryDocTypes = ["10th", "12th"];
 
       const isMandatoryDocMissing = documentData.some(
         (doc) =>
@@ -76,11 +77,17 @@ const DocumentTab = ({
 
   return (
     <>
-      <div className="documentarea">
+      <div
+        className={`documentarea ${normalUserLayout && "documentareaLight"}`}
+      >
         <div className="document_box">
           <h2>Documents</h2>
 
-          <div className="docTable table-responsive">
+          <div
+            className={`docTable ${
+              normalUserLayout && "docTableLight"
+            } table-responsive`}
+          >
             <table className="table">
               <thead>
                 <tr>

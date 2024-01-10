@@ -321,30 +321,6 @@ const UserMaster = () => {
   }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (
-    //   !username ||
-    //   !gender ||
-    //   !designation ||
-    //   !department ||
-    //   !reportL1 ||
-    //   !roles ||
-    //   !personalEmail ||
-    //   // !speakingLanguage ||
-    //   !dateOfBirth ||
-    //   !maritialStatus ||
-    //   !joiningDate ||
-    //   !jobType ||
-    //   !status ||
-    //   !sitting ||
-    //   !personalContact ||
-    //   !loginId ||
-    //   !password ||
-    //   !dateOfBirth ||
-    //   !gender
-    // ) {
-    //   setError("Please select All required Fields");
-    //   return;
-    // }
     if (!jobType) {
       return toastError("Job Type is Required");
     } else if (!department || department == "") {
@@ -419,7 +395,7 @@ const UserMaster = () => {
       return toastError("Bank Account Number is Required");
     } else if (!username || username == "") {
       return toastError("User Name Error is required");
-    } 
+    }
     // else if (!roles || roles == "") {
     //   return toastError("Roles Error is required");
     // }
@@ -488,19 +464,13 @@ const UserMaster = () => {
     formData.append("alternate_contact", alternateContact);
     formData.append("emergency_contact1", emergencyContact);
     formData.append("emergency_contact_person_name1", emergencyContactName);
-    formData.append(
-      "emergency_contact_person_relation1",
-      emergencyContactRelation
-    );
+    formData.append("emergency_contact_relation1", emergencyContactRelation);
     formData.append("emergency_contact2", emergencyContact2);
     formData.append("emergency_contact_person_name2", emergencyContactName2);
-    formData.append(
-      "emergency_contact_person_relation2",
-      emergencyContactRelation2
-    );
+    formData.append("emergency_contact_relation2", emergencyContactRelation2);
 
     formData.append("cast_type", cast);
-    formData.append("digital_signature_image","")
+    formData.append("digital_signature_image", "");
     if (isValidcontact == true && validEmail == true) {
       try {
         const isLoginIdExists = usersData.some(
@@ -531,33 +501,37 @@ const UserMaster = () => {
               console.log(err);
             });
 
-          for (const elements of familyDetails) {
-            const response = axios.post(
-              "http://34.93.221.166:3000/api/add_family",
-              {
-                name: elements.Name,
-                DOB: elements.DOB,
-                relation: elements.Relation,
-                contact: elements.Contact,
-                occupation: elements.Occupation,
-                annual_income: elements.Income,
-              }
-            );
+          if (familyDetails[0].Name !== "") {
+            for (const elements of familyDetails) {
+              const response = axios.post(
+                "http://34.93.221.166:3000/api/add_family",
+                {
+                  name: elements.Name,
+                  DOB: elements.DOB,
+                  relation: elements.Relation,
+                  contact: elements.Contact,
+                  occupation: elements.Occupation,
+                  annual_income: elements.Income,
+                }
+              );
+            }
           }
 
-          for (const elements of educationDetails) {
-            const response = axios.post(
-              "http://34.93.221.166:3000/api/add_education",
-              {
-                title: elements.title,
-                institute_name: elements.universityInstitute,
-                from_year: elements.from,
-                to_year: elements.to,
-                percentage: elements.percentage,
-                stream: elements.stream,
-                specialization: elements.specialization,
-              }
-            );
+          if (educationDetails[0].title !== "") {
+            for (const elements of educationDetails) {
+              const response = axios.post(
+                "http://34.93.221.166:3000/api/add_education",
+                {
+                  title: elements.title,
+                  institute_name: elements.universityInstitute,
+                  from_year: elements.from,
+                  to_year: elements.to,
+                  percentage: elements.percentage,
+                  stream: elements.stream,
+                  specialization: elements.specialization,
+                }
+              );
+            }
           }
           if (reportL1 !== "") {
             axios
@@ -784,7 +758,7 @@ const UserMaster = () => {
 
   const generateLoginId = () => {
     const randomSuffix = Math.floor(Math.random() * 1000);
-    const userName =username.replace(/\s/g, "");
+    const userName = username.replace(/\s/g, "");
     const generatedLoginId = `${userName}@${randomSuffix}`;
     setLoginId(generatedLoginId);
     if (generatedLoginId.length > 0) {
@@ -965,7 +939,7 @@ const UserMaster = () => {
             const inputValue = e.target.value;
             // Validation for number presence
             const containsNumber = /\d/.test(inputValue);
-            
+
             if (!containsNumber) {
               setUserName(inputValue);
               if (inputValue !== "") {
@@ -1397,11 +1371,11 @@ const UserMaster = () => {
           astric={true}
           fieldGrid={12}
           value={emergencyContactName}
-          onChange={(e) =>{
+          onChange={(e) => {
             const inputValue = e.target.value;
             // Validation for number presence
             const containsNumber = /\d/.test(inputValue);
-            
+
             if (!containsNumber) {
               setEmergencyContactName(inputValue);
               if (inputValue === "") {
@@ -1442,11 +1416,11 @@ const UserMaster = () => {
           astric={true}
           fieldGrid={12}
           value={emergencyContactRelation}
-          onChange={(e) =>  {
+          onChange={(e) => {
             const inputValue = e.target.value;
             // Validation for number presence
             const containsNumber = /\d/.test(inputValue);
-            
+
             if (!containsNumber) {
               setEmergencyContactRelation(inputValue);
               if (inputValue === "") {
@@ -1493,11 +1467,11 @@ const UserMaster = () => {
         label="Emergency Contact 2 Person Name"
         fieldGrid={3}
         value={emergencyContactName2}
-        onChange={(e) =>{
+        onChange={(e) => {
           const inputValue = e.target.value;
           // Validation for number presence
           const containsNumber = /\d/.test(inputValue);
-          
+
           if (!containsNumber) {
             setEmergencyContactName2(inputValue);
           } else {
@@ -1515,18 +1489,21 @@ const UserMaster = () => {
           const inputValue = e.target.value;
           // Validation for number presence
           const containsNumber = /\d/.test(inputValue);
-          
+
           if (!containsNumber) {
             setEmergencyContactRelation2(inputValue);
           } else {
             // If the input contains a number, you can handle this scenario as needed
             // For instance, you may choose not to update the state or provide a message to the user
           }
-        }}      />
+        }}
+      />
 
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <label>Login ID <sup style={{ color: "red" }}>*</sup></label>
+          <label>
+            Login ID <sup style={{ color: "red" }}>*</sup>
+          </label>
           <div className="input-group">
             <input
               className="form-control"
@@ -1564,7 +1541,9 @@ const UserMaster = () => {
       </div>
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <label>Generate Password <sup style={{ color: "red" }}>*</sup></label>
+          <label>
+            Generate Password <sup style={{ color: "red" }}>*</sup>
+          </label>
           <div className="input-group">
             <input
               type="text"
@@ -2158,9 +2137,7 @@ const UserMaster = () => {
       </div>
 
       <div className="form-group col-3">
-        <label className="form-label">
-          Caste
-        </label>
+        <label className="form-label">Caste</label>
         <Select
           className=""
           options={castOption.map((option) => ({
