@@ -19,6 +19,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import Loader from "./Loader/Loader";
 
 let options = [];
 const Follower_Count = [
@@ -46,54 +47,60 @@ const CreateAssign = () => {
   const [loading, setLoading] = useState(false);
   const [selectedFollower, setSelectedFollower] = useState(null)
   const [radioSelected, setRadioSelected] = useState('all')
+   const [isLoading, setIsLoading] = useState(false);
+
 
   const categoryAutocompleteRef = useRef();
-
   const getPhaseData = async () => {
     try {
-      //1.check if preAssignment Exist for perticular phase
-      const isPreAss=await axios.post(
-        `http://localhost:3000/api/preassignment/phase`,{
-          phase_id:id
+      setIsLoading(true)
+      const loadingTimeout = setTimeout(() => setIsLoading(false), 3000);
+  
+      //1.check if preAssignment Exist for particular phase
+      const isPreAss = await axios.post(
+        `http://192.168.29.110:3000/api/preassignment/phase`, {
+          phase_id: id
         }
       );
-
-      if(isPreAss?.data?.data?.length>0){
-        const assignment=await axios.get(`http://localhost:3000/api/assignment/phase/${id}`)
-        const filter=assignment?.data?.data.filter((page)=>{
-          if(page.replacement_status=='pending' || page.replacement_status=="replacement" || page.replacement_status=="inactive"){
-            return page
-          }
+  
+      if (isPreAss?.data?.data?.length > 0) {
+        const assignment = await axios.get(`http://192.168.29.110:3000/api/assignment/phase/${id}`)
+        const filter = assignment?.data?.data.filter((page) => {
+          return page.replacement_status === 'pending' || page.replacement_status === "replacement" || page.replacement_status === "inactive";
         })
         setSinglePhaseData(filter);
         setFilteredPages(filter);
         setPayload(filter);
-      } else{
-        const createPreAssignment=await axios.post(
-          `http://localhost:3000/api/preassignment`,{
-          phase_id:id,
-          ass_by:"123"
-        }
-        )
-
-        console.log(createPreAssignment);
-          const filter=createPreAssignment?.data?.ass.filter((page)=>{
-          if(page.replacement_status=='pending' || page.replacement_status=="replacement" || page.replacement_status=="inactive"){
-            return page
+      } else {
+        const createPreAssignment = await axios.post(
+          `http://192.168.29.110:3000/api/preassignment`, {
+            phase_id: id,
+            ass_by: "123"
           }
+        )
+  
+        const filter = createPreAssignment?.data?.ass.filter((page) => {
+          return page.replacement_status === 'pending' || page.replacement_status === "replacement" || page.replacement_status === "inactive";
         })
         setSinglePhaseData(filter);
         setFilteredPages(filter);
         setPayload(filter);
       }
+  
+      const pageData = await axios.get(
+        `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
+      );
+      setAllPageData(pageData.data.body);
+  
+      clearTimeout(loadingTimeout);
+      setIsLoading(false);
+  
     } catch (error) {
       console.error("Error fetching phase data:", error);
+      setIsLoading(false);
     }
-    const pageData = await axios.get(
-      `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
-    );
-    setAllPageData(pageData.data.body);
   };
+  
 
   //getting all experties information 
 
@@ -567,8 +574,12 @@ const CreateAssign = () => {
     
   
   ];
-
-  return (
+     
+  if (isLoading) {
+    return <Loader  message="Auto Assignment in Progress..." />; 
+  }
+  
+ return (
     <>
       <div className="form-heading">
         <div className="form_heading_title">
@@ -722,7 +733,7 @@ const CreateAssign = () => {
       />
 
     </>
-  );
+  )
 };
 
 export default CreateAssign;

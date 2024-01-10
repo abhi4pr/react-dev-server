@@ -515,17 +515,17 @@ const PhaseCreation = () => {
       <Button
         variant="outlined"
         onClick={togglePageDetails}
-        sx={{ mt: 2, mb: 4 }}
+        sx={{ mt: 2, mb: 2 }}
       >
         {showPageDetails ? "Hide Page Details" : "Create New Phase"}
       </Button>
       {showPageDetails && (
         <>
-          <Typography variant="h6" sx={{ margin: "20px", fontWeight: "40px" }}>
+          <Typography variant="h6" sx={{  fontWeight: "40px" }}>
             Phase Details
           </Typography>
           <Paper>
-            <Box sx={{ p: 2, m: 2, display: "flex" }}>
+            <Box sx={{ pt:1, m: 2, display: "flex" }}>
               <TextField
                 label="Phase"
                 value={phaseData}
@@ -535,7 +535,7 @@ const PhaseCreation = () => {
                     setPhaseDataError("");
                   }
                 }}
-                sx={{ m: 2 }}
+                sx={{ mr: 1 }}
                 error={!!phaseDataError}
                 helperText={phaseDataError}
               />
@@ -544,7 +544,7 @@ const PhaseCreation = () => {
                 label="Description"
                 value={phaseDcripation}
                 onChange={(e) => setPhaseDcripation(e.target.value)}
-                sx={{ m: 2 }}
+                sx={{ mr: 1 }}
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
@@ -553,23 +553,23 @@ const PhaseCreation = () => {
                   fullWidth
                   value={startDate}
                   onChange={(e) => setStartDate(e.$d)}
-                  sx={{ m: 2 }}
-                />
+                  sx={{ mr: 1 }}
+                  />
                 <DatePicker
                   label="End Date *"
                   format="DD/MM/YY"
                   fullWidth
                   value={endDate}
                   onChange={(e) => setEndDate(e.$d)}
-                  sx={{ m: 2 }}
-                />
+                  sx={{ mr: 1 }}
+                  />
               </LocalizationProvider>
             </Box>
-            {console.log(campaignName[0].commitment, "camp name lalit")}
+            {/* {console.log(campaignName[0].commitment, "camp name lalit")} */}
             {campaignName?.map((cmp, index) => {
               return (
-                <Box sx={{ p: 2, m: 2, display: "flex" }} key={index}>
-                  <TextField disabled value={cmp?.commitment} sx={{ m: 2 }} />
+                <Box sx={{  display: "flex" }} key={index}>
+                  <TextField disabled value={cmp?.commitment} sx={{ml:2,mb:2}} label="Commitment" />
                   <TextField
                     label="Value"
                     type="number"
@@ -581,7 +581,7 @@ const PhaseCreation = () => {
                       });
                       setCampaignName(x);
                     }}
-                    sx={{ m: 2 }}
+                    sx={{ml:1,mb:2}}
                   />
                 </Box>
               );
@@ -593,7 +593,7 @@ const PhaseCreation = () => {
               multiple
               id="combo-box-demo"
               options={options}
-              sx={{ width: 200 }}
+              sx={{ width: 250,mr:1, ml:2 }}
               renderInput={(params) => (
                 <TextField {...params} label="Category" />
               )}
@@ -603,7 +603,7 @@ const PhaseCreation = () => {
               id="combo-box-demo"
               options={Follower_Count}
               getOptionLabel={(option) => option}
-              sx={{ width: 300 }}
+              sx={{ width: 250,mr:1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Follower Count" />
               )}
@@ -613,7 +613,7 @@ const PhaseCreation = () => {
               id="combo-box-demo"
               options={page_health}
               getOptionLabel={(option) => option}
-              sx={{ width: 300 }}
+              sx={{ width: 250,mr:1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Page health" />
               )}
@@ -622,9 +622,10 @@ const PhaseCreation = () => {
               label="Search"
               variant="outlined"
               onChange={handleSearchChange}
-              style={{ margin: "10px" }}
+              sx={{ width: 200,mr:1 }}
+
             />
-            <Button variant="outlined" onClick={handleClick}>
+            <Button variant="outlined" onClick={handleClick}  >
               Add More Pages
             </Button>
           </Paper>
