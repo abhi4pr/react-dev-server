@@ -373,8 +373,12 @@ const PageDetailingNew = ({ pageName, data }) => {
             x = [...selectedRows, ...newRows]
             setSelectedRows([...selectedRows, ...newRows])
         }
+
+       setRadioSelected('all')
         // x=selectedRows
         // setUnregisteredPages(rejectedPages)
+
+        setIsModalOpenCP(false)
 
     };
 
@@ -511,8 +515,8 @@ const PageDetailingNew = ({ pageName, data }) => {
 
         // Check if the input value is being set or cleared
         if (updatedValue != params.value || updatedValue == "") {
-            const updatedPages = planPages.map((page) => {
-                if (selectedRows.includes(page.p_id)) {
+            let updatedPages = planPages.map((page) => {
+                if (selectedRows.includes(page.p_id) && params.row.p_id == page.p_id) {
                     if (field == 'post') {
 
                         return { ...page, postPerPage: updatedValue, value: null };
@@ -520,6 +524,8 @@ const PageDetailingNew = ({ pageName, data }) => {
                 } else return page
             }
             );
+
+
 
 
             const postperpage = payload.map((page) =>
@@ -530,13 +536,29 @@ const PageDetailingNew = ({ pageName, data }) => {
                     : page
 
             );
-            console.log(postperpage)
 
-            x = selectedRows
+            if (radioSelected == 'selected') {
+                const filter = updatedPages.filter(page => {
+                    if (selectedRows.includes(page.p_id)) {
+                        return page
+                    }
+                })
+                x = selectedRows
+               
+                setFilteredPages(filter)
+            }else{
+                x = selectedRows
+              
+                if(radioSelected!='unselected'){
+
+                    setFilteredPages(updatedPages)
+                }
+            }
+
+           
 
             setPayload(postperpage);
             setPlanPages(updatedPages);
-            setFilteredPages(updatedPages)
 
             if (setSearchField) {
                 const y = searchedPages.map((page) => page.p_id === params.row.p_id
@@ -549,6 +571,8 @@ const PageDetailingNew = ({ pageName, data }) => {
 
         }
     };
+
+    console.log(payload)
 
     const submitPlan = async (e) => {
         if (pageName == "planCreation") {
@@ -734,19 +758,7 @@ const PageDetailingNew = ({ pageName, data }) => {
                 );
             },
         },
-        // {
-        //     field: "Action",
-        //     headerName: "Action",
-        //     width: 150,
-        //     editable: true,
-        //     //   renderCell: (params) => {
-        //     //     return (
-        //     //       <Button onClick={() => removePage(params)}>
-        //     //         <DeleteIcon />
-        //     //       </Button>
-        //     //     );
-        //     //   },
-        // },
+      
     ]
 
 
