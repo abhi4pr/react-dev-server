@@ -85,18 +85,18 @@ import ExecutionInventory from "../Execution/ExecutionInventory";
 import ExecutionPending from "../Execution/ExecutionPending";
 import OverviewIndex from "../Execution/overview/OverviewIndex";
 import ExecutionDetail from "../Execution/ExecutionDetail";
-import InstaAPIHome from "../InstaApi.jsx/InstaAPIHome";
-import InstaPageDashboard from "../InstaApi.jsx/InstaPageDashboard";
-import InstaPostDashboard from "../InstaApi.jsx/InstaPostDashboard";
-import InstaPageDetail from "../InstaApi.jsx/InstaPageDetail";
+// import InstaAPIHome from "../InstaApi.jsx/InstaAPIHome";
+// import InstaPageDashboard from "../InstaApi.jsx/InstaPageDashboard";
+// import InstaPostDashboard from "../InstaApi.jsx/InstaPostDashboard";
+// import InstaPageDetail from "../InstaApi.jsx/InstaPageDetail";
 // import ExecutionUpdate from "../Execution/ExecutionUpdate";
-import CronExpression from "../InstaApi.jsx/CronExpression";
-import InstaApiContext from "../InstaApi.jsx/InstaApiContext";
+// import CronExpression from "../InstaApi.jsx/CronExpression";
+// import InstaApiContext from "../InstaApi.jsx/InstaApiContext";
 import PreOnboardVerifyDetails from "./AdminPreOnboarding/PreOnboardVerifyDetails";
 import PreOnboardUserDetailsProfile from "./AdminPreOnboarding/PreOnboardUserDetailsProfile";
 import PreOnboardingOverview from "./AdminPreOnboarding/PreOnboardOverview";
 import OnboardExtendDateOverview from "./AdminPreOnboarding/OnboardExtendDateOverview";
-import AuditorTrack from "../InstaApi.jsx/Auditor/AuditorTrack";
+// import AuditorTrack from "../InstaApi.jsx/Auditor/AuditorTrack";
 import ExecutionDone from "../Execution/Done/ExecutionDone";
 import ExecutionAccepted from "../Execution/Accepted/ExecutionAccepted";
 import RegisterCampaign from "./RegisterCampaign/registerCampaign";
@@ -117,15 +117,15 @@ import BillingOverview from "./WFH/Billing/BillingOverview";
 import BillingMast from "./WFH/Billing/BillingMast";
 import BillingUpdate from "./WFH/Billing/BillingUpdate";
 // import InterpretorPage from "../InstaApi.jsx/Interpretor/InterpretorPage";
-import InterpretorPostDashboard from "../InstaApi.jsx/Interpretor/InterpretorPostDashboard";
-import InterpretorPageDashboard from "../InstaApi.jsx/Interpretor/InterpretorPageDashboard";
-import AdminPageView from "../InstaApi.jsx/InstaAdmin/AdminPageView";
-import AdminPostView from "../InstaApi.jsx/InstaAdmin/AdminPostView";
-import AuditorPageView from "../InstaApi.jsx/Auditor/AuditorPageView";
-import InterpretorContext from "../InstaApi.jsx/Interpretor/InterpretorContext";
+// import InterpretorPostDashboard from "../InstaApi.jsx/Interpretor/InterpretorPostDashboard";
+// import InterpretorPageDashboard from "../InstaApi.jsx/Interpretor/InterpretorPageDashboard";
+// import AdminPageView from "../InstaApi.jsx/InstaAdmin/AdminPageView";
+// import AdminPostView from "../InstaApi.jsx/InstaAdmin/AdminPostView";
+// import AuditorPageView from "../InstaApi.jsx/Auditor/AuditorPageView";
+// import InterpretorContext from "../InstaApi.jsx/Interpretor/InterpretorContext";
 import AccountsOverviewWFH from "./AccountsDepartment/AccountsOverviewWFH";
 import WFHSingleUser from "./WFH/WFHSingleUser/WFHSingleUser";
-import AnalyticsDashboard from "../InstaApi.jsx/Analytics/AnalyticsDashboard";
+// import AnalyticsDashboard from "../InstaApi.jsx/Analytics/AnalyticsDashboard";
 
 import ExecutionAll from "../Execution/ExecutionAll";
 import ExecutionOwn from "../Execution/ExecutionOwn";
@@ -892,7 +892,7 @@ const Admin = () => {
                   />
 
                   {/* -------------------Insta Api--------------------------- */}
-                  <Route
+                  {/* <Route
                     path="/instaapi"
                     element={
                       <InstaApiContext>
@@ -1002,7 +1002,7 @@ const Admin = () => {
                         </InterpretorContext>
                       </InstaApiContext>
                     }
-                  />
+                  /> */}
                 </Route>
               </Routes>
             </div>

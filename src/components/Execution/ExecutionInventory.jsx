@@ -19,8 +19,9 @@ import { DataGrid, GridColumnMenu, GridToolbar } from "@mui/x-data-grid";
 import { useEffect } from "react";
 import axios from "axios";
 import { useState } from "react";
-import CircularWithValueLabel from "../InstaApi.jsx/CircularWithValueLabel";
+// import CircularWithValueLabel from "../InstaApi.jsx/CircularWithValueLabel";
 import { useCallback } from "react";
+import ContentLoader from "react-content-loader";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -526,7 +527,18 @@ function ExecutionInventory() {
               unstable_ignoreValueFormatterDuringExport
             />
           ) : (
-            <CircularWithValueLabel />
+            // <CircularWithValueLabel />
+            <ContentLoader
+              width={2000}
+              height={700}
+              viewBox="0 30 2000 700"
+              backgroundColor="#f0f0f0"
+              foregroundColor="#dedede"
+            >
+              {/* <rect x="43" y="304" rx="4" ry="4" width="271" height="9" /> */}
+              {/* <rect x="44" y="323" rx="3" ry="3" width="119" height="6" /> */}
+              <rect x="42" y="77" rx="10" ry="10" width="1100" height="600" />
+            </ContentLoader>
           )}
         </Paper>
       </ThemeProvider>
