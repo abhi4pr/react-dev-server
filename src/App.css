@@ -1,3 +1,29 @@
+
+
+
+.summaryDetailingwebkit ul {
+  scrollbar-color: dark; /* For Firefox, you can use 'auto', 'dark', or 'light' */
+  
+}
+.summaryDetailingwebkit ul::-webkit-scrollbar-thumb {
+  background: rgb(252, 253, 253);
+  
+}
+
+.summaryDetailingwebkit ul:hover::-webkit-scrollbar-thumb {
+  background: #eadada; /* Thumb color when hovered */
+  
+  
+}
+.summaryDetailingwebkit ul::-webkit-scrollbar {
+  margin-top: 50px;
+  width: 10px; /* Vertical scrollbar width */
+  height: 5px; /* Horizontal scrollbar height */
+}
+
+
+
+
 .section {
   padding: 0 !important;
 }
