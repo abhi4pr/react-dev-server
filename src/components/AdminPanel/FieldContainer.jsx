@@ -17,9 +17,10 @@ const FieldContainer = ({
   placeholder,
   accept,
   max,
+  maxLength,
   name,
   min,
-  astric=false
+  astric = false,
 }) => {
   return (
     <div
@@ -30,7 +31,9 @@ const FieldContainer = ({
       }
     >
       <div className="form-group">
-        <label className="form-label">{label} {astric===true && <sup style={{ color: "red" }}>*</sup>}</label>
+        <label className="form-label">
+          {label} {astric === true && <sup style={{ color: "red" }}>*</sup>}
+        </label>
         <Tag
           step={step}
           className={Tag == "select" ? "form-select" : "form-control"}
@@ -46,6 +49,7 @@ const FieldContainer = ({
           accept={accept}
           placeholder={placeholder}
           max={max}
+          maxLength={maxLength}
           name={name}
           min={min}
           onBlur={onBlur}
