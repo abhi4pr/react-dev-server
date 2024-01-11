@@ -1004,7 +1004,7 @@ const SidebarLinks = () => {
                       className="collapse-item"
                       to="/admin/finance-alltransactions"
                     >
-                      All Transaction
+                      Dashboard
                     </Link>
                   </div>
                 </div>

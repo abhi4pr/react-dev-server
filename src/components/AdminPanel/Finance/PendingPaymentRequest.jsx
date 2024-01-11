@@ -11,6 +11,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import DiscardConfirmation from "./DiscardConfirmation";
 
 export default function PendingPaymentRequest() {
   const [search, setSearch] = useState("");
@@ -24,6 +25,7 @@ export default function PendingPaymentRequest() {
   const [payRemark, setPayRemark] = useState("");
   const [payMentProof, setPayMentProof] = useState("");
   const [vendorName, setVendorName] = useState("");
+  const [showDisCardModal,setShowDiscardModal]=useState(false)
 
   const callApi = () => {
     axios
@@ -65,11 +67,12 @@ export default function PendingPaymentRequest() {
   }
 
   const handleDiscardClick = (row) => {
-    axios
-      .delete(`http://34.93.221.166:3000/api/delete_demo/${row._id}`)
-      .then(() => {
-        callApi();
-      });
+setShowDiscardModal(true)
+    // axios
+    //   .delete(`http://34.93.221.166:3000/api/delete_demo/${row._id}`)
+    //   .then(() => {
+    //     callApi();
+    //   });
   };
 
   const handleDateFilter = () => {
@@ -77,26 +80,16 @@ export default function PendingPaymentRequest() {
       const date = new Date(item.request_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
-
       toDate1.setDate(toDate1.getDate() + 1);
-      if (date >= fromDate1 && date <= toDate1) {
+      if (
+        (date >= fromDate1 && date <= toDate1) ||
+        item.vendor_name.toLowerCase().includes(vendorName.toLowerCase())
+      ) {
         return item;
       }
     });
-    if (vendorName) {
-      console.log("vendorName", vendorName);
-      const filterData1 = filterData.filter((item) => {
-        if (item.vendor_name.toLowerCase().includes(vendorName.toLowerCase())) {
-          return item;
-        }
-      });
-      setFilterData(filterData1);
-    }else{
-      console.log("filterData", filterData)
-      setFilterData(filterData);
-    }
+    setFilterData(filterData);
   };
-
 
   const handleClosePayDialog = () => {
     setPayDialog(false);
@@ -106,6 +99,7 @@ export default function PendingPaymentRequest() {
     setFilterData(data);
     setFromDate("");
     setToDate("");
+    setVendorName("");
   };
 
   const handlePayClick = (row) => {
@@ -181,8 +175,8 @@ export default function PendingPaymentRequest() {
       },
     },
     {
-      field: "ageing",
-      headerName: "Ageing",
+      field: "aging",
+      headerName: "Aging",
       width: 150,
       renderCell: (params) => {
         return (
@@ -317,11 +311,12 @@ export default function PendingPaymentRequest() {
             />
             <TextField
               className="col-md-5 ml-2"
-              value={rowData.t2}
+              value={rowData.address}
               autoFocus
               margin="dense"
               id="name"
-              disabled
+              // disabled
+              readOnly
               label="Address"
               type="text"
               variant="outlined"
@@ -330,7 +325,7 @@ export default function PendingPaymentRequest() {
           <div className="row">
             <TextField
               className="col-md-6 me-3"
-              value={9109266387}
+              value={rowData.mob1}
               autoFocus
               margin="dense"
               // disabledreadOnly
@@ -341,10 +336,11 @@ export default function PendingPaymentRequest() {
             />
             <TextField
               className="col-md-5 ml-2"
-              value={"GRDEM8721E"}
+              value={rowData.pan}
               autoFocus
               margin="dense"
-              disabled
+              // disabled
+              readOnly
               label="Pan"
               type="text"
               variant="outlined"
@@ -353,11 +349,12 @@ export default function PendingPaymentRequest() {
           <div className="row">
             <TextField
               className="col-md-6 me-3"
-              value={"GST"}
+              value={rowData.gst}
               autoFocus
               margin="dense"
-              id="name"
-              disabled
+
+              // disabled
+              readOnly
               label="GST"
               type="text"
               variant="outlined"
@@ -367,7 +364,7 @@ export default function PendingPaymentRequest() {
               value={`₹${rowData.outstandings}`}
               autoFocus
               margin="dense"
-              id="GST"
+
               // disabled
               readOnly
               label="Outstanding"
@@ -378,11 +375,12 @@ export default function PendingPaymentRequest() {
           <div className="row">
             <TextField
               className="col-md-6 me-3"
-              value={`₹${rowData.t4}`}
+              value={`₹${rowData.request_amount}`}
               autoFocus
               margin="dense"
               id="name"
-              disabled
+              // disabled
+              readOnly
               label="Amount Requested"
               type="text"
               variant="outlined"
@@ -483,6 +481,8 @@ export default function PendingPaymentRequest() {
           </Button>
         </DialogActions>
       </Dialog>
+
+     {showDisCardModal && <DiscardConfirmation rowData={rowData} setShowDiscardModal={setShowDiscardModal} />}
     </div>
   );
 }

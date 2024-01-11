@@ -107,16 +107,16 @@ const handleCopyDetail = (detail) => {
     {
       name: <div style={{ whiteSpace: 'normal' }}>Payment View</div>,
       // selector: (row) => row.payment_approval_status,
-      cell: (row) => (
-        <div style={{ whiteSpace: "normal" }}>
-        {row.payment_approval_status === 0
-          ? "Pending"
-          : row.payment_approval_status === 1
-          ? "Approved"
-          : row.payment_approval_status === 2
-          ? "Rejected"
-          : ""}
-      </div>)
+      // cell: (row) => (
+      //   <div style={{ whiteSpace: "normal" }}>
+      //   {row.payment_approval_status === 0
+      //     ? "Pending"
+      //     : row.payment_approval_status === 1
+      //     ? "Approved"
+      //     : row.payment_approval_status === 2
+      //     ? "Rejected"
+      //     : ""}
+      // </div>)
     },
     {
       name: "Bank Name",
@@ -155,7 +155,17 @@ const handleCopyDetail = (detail) => {
     },
     {
       name: "Status",
-      selector: (row) => "Approved"
+      // selector: (row) => "Approved"
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal" }}>
+        {row.payment_approval_status === 0
+          ? "Pending"
+          : row.payment_approval_status === 1
+          ? "Approved"
+          : row.payment_approval_status === 2
+          ? "Rejected"
+          : ""}
+      </div>)
     },
     {
       name: "Action",
@@ -184,7 +194,77 @@ const handleCopyDetail = (detail) => {
           false
         }
       />
+      <div className="row">
+<div className="card col-4">
+  <div className="card-header fs-6 lead">Pending</div>
+  <div className="card-body">
+    <p className="fs-6 lead ">
+      Total Requested Amount :-{" "}
 
+      ₹ {
+      
+      datas.length > 0
+        ? datas.filter((item)=>item.payment_approval_status==0).reduce((total, currentItem) => {
+            return total + currentItem.payment_amount * 1;
+          }, 0)
+        : ""}
+    </p>
+    <p className="fs-6 lead ">
+      {
+        <Link className="link-primary" to="/admin/finance-pendingapproveupdate">
+          Click Here
+        </Link>
+      }
+    </p>
+  </div>
+</div>
+<div className="card col-4">
+  <div className="card-header fs-6 lead">Approved</div>
+  <div className="card-body">
+    <p className="fs-6 lead ">
+      Total Approver Amount :-{" "}
+
+      ₹ {
+      
+      datas.length > 0
+        ? datas.filter((item)=>item.payment_approval_status==1).reduce((total, currentItem) => {
+            return total + currentItem.payment_amount * 1;
+          }, 0)
+        : ""}
+    </p>
+    <p className="fs-6 lead ">
+      {
+        <Link className="link-primary" to="/admin/finance-pendingapproveupdate">
+          Click Here
+        </Link>
+      }
+    </p>
+  </div>
+</div>
+<div className="card col-4">
+  <div className="card-header fs-6 lead">Rejected</div>
+  <div className="card-body">
+    <p className="fs-6 lead ">
+      Total Rejected Amount :-{" "}
+
+      ₹ {
+      
+      datas.length > 0
+        ? datas.filter((item)=>item.payment_approval_status==2).reduce((total, currentItem) => {
+            return total + currentItem.payment_amount * 1;
+          }, 0)
+        : ""}
+    </p>
+    <p className="fs-6 lead ">
+      {
+        <Link className="link-primary" to="/admin/finance-pendingapproveupdate">
+          Click Here
+        </Link>
+      }
+    </p>
+  </div>
+</div>
+</div>
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
