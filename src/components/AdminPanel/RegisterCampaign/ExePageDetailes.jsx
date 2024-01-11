@@ -38,12 +38,14 @@ const ExePageDetailes = ({
   const [assignmentCommits, setAssignmentCommits] = useState([]);
   const [commitPayload, setCommitPayload] = useState([]);
   const [posts, setPosts] = useState([]);
+  const [story, setStory] = useState([]);
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
   const handleButtonClick = async (row) => {
     const postCount = row.postPerPage;
     setPosts(Array.from({ length: postCount }));
-
+    const storyCount = row.storyPerPage;
+    setStory(Array.from({ length: storyCount }));
     setAssignedData({
       ass_id: row.ass_id,
       campaignId: row.campaignId,
@@ -139,6 +141,11 @@ const ExePageDetailes = ({
     },
     {
       field: "postPerPage",
+      headerName: "Post",
+      width: 150,
+    },
+    {
+      field: "storyPerPage",
       headerName: "Post",
       width: 150,
     },
@@ -327,8 +334,7 @@ const ExePageDetailes = ({
       },
     },
   ];
-  const storyPost = 2;
-  const story = Array.from({ length: storyPost });
+  
   return (
     <>
       <DataGrid

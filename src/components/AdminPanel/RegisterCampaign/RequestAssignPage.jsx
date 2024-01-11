@@ -18,10 +18,11 @@ const RequestAssignPage = ({ data ,RequestAssign}) => {
     pageName: item?.ass_page?.page_name,
     post: item?.ass_page?.postPerPage,
     category: item?.ass_page?.cat_name,
+    story:item?.ass_page?.storyPerPage
   }));
 
-  function handleAccept(row) {
-    axios.post(`http://192.168.29.113:3000/api/preassignment/phase/update`, {
+  const handleAccept= async (row)=> {
+    const x=await axios.post(`http://192.168.29.113:3000/api/preassignment/phase/update`, {
       pre_ass_id: row.pre_ass_id,
       status: "accepted",
       phase_id: row.phase_id,
@@ -29,9 +30,8 @@ const RequestAssignPage = ({ data ,RequestAssign}) => {
     });
     RequestAssign()
   }
-
-  function handleReject(row) {
-    axios.post(`http://192.168.29.113:3000/api/preassignment/phase/update`, {
+const handleReject= async (row)=> {
+    const x=await axios.post(`http://192.168.29.113:3000/api/preassignment/phase/update`, {
       pre_ass_id: row.pre_ass_id,
       status: "rejected",
       phase_id: row.phase_id,
@@ -66,7 +66,7 @@ const RequestAssignPage = ({ data ,RequestAssign}) => {
       width: 150,
     },
     {
-      field: "",
+      field: "story",
       headerName: "Story/Page",
       width: 150,
     },
