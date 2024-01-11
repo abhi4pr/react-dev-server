@@ -10,6 +10,7 @@ export default function PaymentDone() {
   const [filterData, setFilterData] = useState([]);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [vendorName, setVendorName] = useState("");
 
   const callApi = () => {
     axios.get("https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest").then((res) => {
@@ -49,10 +50,11 @@ export default function PaymentDone() {
 
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
-      const date = new Date(item.t10);
+      const date = new Date(item.request_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
-      if (date >= fromDate1 && date <= toDate1) {
+      toDate1.setDate(toDate1.getDate() + 1);
+      if (date >= fromDate1 && date <= toDate1 || item.vendor_name.toLowerCase().includes(vendorName.toLowerCase())) {
         return item;
       }
     });
@@ -63,6 +65,7 @@ export default function PaymentDone() {
     setFilterData(data);
     setFromDate("");
     setToDate("");
+    setVendorName("");
   };
 
   const columns = [
@@ -134,8 +137,8 @@ export default function PaymentDone() {
       },
     },
     {
-      field: "ageing",
-      headerName: "Ageing",
+      field: "aging",
+      headerName: "Aging",
       width: 150,
       renderCell: (params) => {
         return <p> {calculateDays(params.row.request_date, new Date())} Days</p>;
@@ -149,8 +152,22 @@ export default function PaymentDone() {
         mainTitle="Payment Done"
         link="/admin/finance-pruchasemanagement-paymentdone"
       />
-       <div className="row">
-        <div className="col-md-4">
+        <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Vendor Name</label>
+            <input
+              value={vendorName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setVendorName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
           <div className="form-group">
             <label>From Date</label>
             <input
@@ -161,7 +178,7 @@ export default function PaymentDone() {
             />
           </div>
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <div className="form-group">
             <label>To Date</label>
             <input
@@ -174,7 +191,7 @@ export default function PaymentDone() {
             />
           </div>
         </div>
-        <div className="col-md-3 mt-4">
+        <div className="col-md-1 mt-4 me-2">
           <Button variant="contained" onClick={handleDateFilter}>
             <i className="fas fa-search"></i> Search
           </Button>

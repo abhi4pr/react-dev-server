@@ -102,7 +102,7 @@ const UserUpdate = () => {
   const [personalEmail, setPersonalEmail] = useState("");
   const [validEmail, setValidEmail] = useState(true);
 
-  const [contact, setContact] = useState("");
+  const [contact, setContact] = useState();
   const [personalContact, setPersonalContact] = useState();
   const [isValidcontact, setValidContact] = useState(true);
   const [isValidcontact1, setValidContact1] = useState(true);
@@ -196,12 +196,13 @@ const UserUpdate = () => {
   const [emergencyContact, setEmergencyContact] = useState("");
   const [emergencyContactName, setEmergencyContactName] = useState("");
   const [emergencyContactRelation, setEmergencyContactRelation] = useState("");
-  const [emergencyContact2, setEmergencyContact2] = useState("");
+  const [emergencyContact2, setEmergencyContact2] = useState();
   const [emergencyContactName2, setEmergencyContactName2] = useState("");
   const [emergencyContactRelation2, setEmergencyContactRelation2] =
     useState("");
 
   const [documentData, setDocumentData] = useState([]);
+  const [loading,setLoading]=useState(false)
 
   const [cast, setCast] = useState("");
   const { toastAlert, toastError } = useGlobalContext();
@@ -495,11 +496,11 @@ const UserUpdate = () => {
   }, [id]);
 
   const handleSubmit = async (e) => {
-    console.log(roomId, "room id");
+    // setLoading(true)
     e.preventDefault();
-    if (!jobType || jobType == "" || jobType.length === 0) {
+    if (!jobType) {
       return toastError("Job Type is Required");
-    } else if (!department || department == "" || department.length === 0) {
+    } else if (!department || department == "") {
       return toastError("Department is Required");
     } else if (
       !subDepartment ||
@@ -507,67 +508,39 @@ const UserUpdate = () => {
       subDepartment.length === 0
     ) {
       return toastError("Sub Department is Required");
-    } else if (!designation || designation == "" || designation.length == 0) {
+    } else if (!designation || designation == "") {
       return toastError("Designatoin is Required");
-    } else if (!reportL1 || reportL1 == "" || reportL1.length == 0) {
+    } else if (!reportL1 || reportL1 == "") {
       return toastError("Report L1 Is Required");
-    } else if (
-      !personalEmail ||
-      personalEmail == "" ||
-      personalEmail.length == 0
-    ) {
+    } else if (!personalEmail || personalEmail == "") {
       return toastError("Personal Email is Required");
-    } else if (
-      !personalContact ||
-      personalContact == "" ||
-      personalContact.length == 0
-    ) {
+    } else if (!personalContact || personalContact == "") {
       return toastError("Personal Contact is Required");
-    } else if (
-      !alternateContact ||
-      alternateContact == "" ||
-      alternateContact.length == 0
-    ) {
+    } else if (!alternateContact || alternateContact == "") {
       return toastError("Alternate Contact is Required");
-    } else if (
-      !emergencyContact ||
-      emergencyContact == "" ||
-      emergencyContact.length == 0
-    ) {
+    } else if (!emergencyContact || emergencyContact == "") {
       return toastError("Emergency Contact is Required");
-    } else if (
-      !emergencyContactName ||
-      emergencyContactName == "" ||
-      emergencyContactName.length == 0
-    ) {
+    } else if (!emergencyContactName || emergencyContactName == "") {
       return toastError("Emergency Contact Name is Required");
-    } else if (
-      !emergencyContactRelation ||
-      emergencyContactRelation == "" ||
-      emergencyContactRelation.length == 0
-    ) {
+    } else if (!emergencyContactRelation || emergencyContactRelation == "") {
       return toastError("Emergency Contact Relation is Required");
-    } else if (!loginId || loginId == "" || loginId.length == 0) {
+    } else if (!loginId || loginId == "") {
       return toastError("Login Id is Required");
-    } else if (!password || password == "" || password.length == 0) {
+    } else if (!password || password == "") {
       return toastError("Password is Required");
-    } else if (
-      !speakingLanguage ||
-      speakingLanguage == "" ||
-      speakingLanguage.length == 0
-    ) {
+    } else if (!speakingLanguage || speakingLanguage == "") {
       return toastError("Speaking Language is Required");
-    } else if (!gender || (gender == "" && gender.length == 0)) {
+    }else if (!gender || gender == "") {
       return toastError("Gender is Required");
-    } else if (!nationality || (nationality == "" && nationality.length == 0)) {
+    } else if (!nationality || nationality == "") {
       return toastError("Nationality is Required");
-    } else if (!dateOfBirth || (dateOfBirth == "" && dateOfBirth.length == 0)) {
+    } else if (!dateOfBirth || dateOfBirth == "") {
       return toastError("Date of Birth is Required");
-    } else if (!FatherName || (FatherName == "" && FatherName.length == 0)) {
+    } else if (!FatherName || FatherName == "") {
       return toastError("Father Name is Required");
-    } else if (!motherName || (motherName == "" && motherName.length == 0)) {
+    } else if (!motherName || motherName == "") {
       return toastError("Mother Name is Required");
-    } else if (!bloodGroup || (bloodGroup == "" && bloodGroup.length == 0)) {
+    } else if (!bloodGroup || bloodGroup == "") {
       return toastError("Blood Group is Required");
     } else if (
       !maritialStatus ||
@@ -585,17 +558,16 @@ const UserUpdate = () => {
       return toastError("Pincode is Required");
     } else if (!joiningDate || joiningDate == "") {
       return toastError("Joining Date is Required");
-    } else if (!userStatus || userStatus == "" || userStatus.length == 0) {
+    } else if (!userStatus || userStatus == "") {
       return toastError("Status is Required");
-    } else if (!bankName || bankName == "" || bankName.length == 0) {
+    } else if (!bankName || bankName == "") {
       return toastError("Bank Name is Required");
     } else if (!bankAccountNumber || bankAccountNumber == "") {
       return toastError("Bank Account Number is Required");
     } else if (!username || username == "") {
       return toastError("User Name Error is required");
-    } else if (!email || email == "") {
-      return toastError("Official Email Error is required");
     }
+
 
     if (jobType == "WFO" && sitting == "") {
       return toastError("Sitting Error is required");
@@ -610,7 +582,7 @@ const UserUpdate = () => {
     formData.append("user_email_id", email);
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
-    formData.append("user_contact_no", contact);
+    formData.append("user_contact_no", contact?contact:"");
     formData.append("sitting_id", jobType === "WFH" ? 0 : sitting);
     formData.append("room_id", roomId.room_id ? roomId.room_id : roomId);
     // console.log("room id he yha", roomId);
@@ -664,7 +636,7 @@ const UserUpdate = () => {
     formData.append("emergency_contact1", emergencyContact);
     formData.append("emergency_contact_person_name1", emergencyContactName);
     formData.append("emergency_contact_relation1", emergencyContactRelation);
-    formData.append("emergency_contact2", emergencyContact2);
+    formData.append("emergency_contact2", emergencyContact2?emergencyContact2:"");
     formData.append("emergency_contact_person_name2", emergencyContactName2);
     formData.append("emergency_contact_relation2", emergencyContactRelation2);
 
@@ -674,12 +646,21 @@ const UserUpdate = () => {
     formData.append("cast_type", cast);
     console.log("other doc");
     const formDataa = new FormData();
-    if (isValidcontact == true && validEmail == true) {
+    if (personalEmail && personalContact) {
+      setLoading(true)
+
       console.log("came to if");
       await axios.put(`http://34.93.221.166:3000/api/update_user`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
+      }).then((res)=>{
+        setLoading(false)
+        console.log(res.data);
+
+      }).catch(function(err){
+        setLoading(false)
+        console.log(err);
       });
 
       if (reportL1 !== "") {
@@ -1088,7 +1069,8 @@ const UserUpdate = () => {
   const genralFields = (
     <>
       <FieldContainer
-        label="Full Name *"
+        label="Full Name"
+        astric={true}
         fieldGrid={3}
         value={username}
         onChange={(e) => setUserName(e.target.value)}
@@ -1138,7 +1120,7 @@ const UserUpdate = () => {
 
       <div className="form-group col-3">
         <label className="form-label">
-          Cast <sup style={{ color: "red" }}>*</sup>
+          Cast 
         </label>
         <Select
           className=""
@@ -1180,7 +1162,7 @@ const UserUpdate = () => {
         />
       </div>
       <div className="form-group col-3">
-        <label className="form-label">Sub Department</label>
+        <label className="form-label">Sub Department <sup style={{ color: "red" }}>*</sup></label>
         <Select
           className=""
           options={subDepartmentData.map((option) => ({
@@ -1295,7 +1277,8 @@ const UserUpdate = () => {
       />
       {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
       <FieldContainer
-        label="Personal Email *"
+        label="Personal Email"
+        astric={true}
         type="email"
         fieldGrid={3}
         required={false}
@@ -1315,7 +1298,8 @@ const UserUpdate = () => {
         <p style={{ color: "red" }}>*Please enter a valid Number</p>
       )}
       <FieldContainer
-        label="Personal Contact *"
+        label="Personal Contact "
+        astric={true}
         type="number"
         fieldGrid={3}
         value={personalContact}
@@ -1328,6 +1312,7 @@ const UserUpdate = () => {
       )}
 
       <ContactNumberReact
+      astric={true}
         label="Alternate Contact"
         parentComponentContact={alternateContact}
         setParentComponentContact={setAlternateContact}
@@ -1335,12 +1320,14 @@ const UserUpdate = () => {
 
       <ContactNumberReact
         label="Emergency Contact1"
+        astric={true}
         parentComponentContact={emergencyContact}
         setParentComponentContact={setEmergencyContact}
       />
 
       <FieldContainer
         label="Emergency Contact 1 Person Name"
+        astric={true}
         fieldGrid={3}
         value={emergencyContactName}
         onChange={(e) => setEmergencyContactName(e.target.value)}
@@ -1348,6 +1335,7 @@ const UserUpdate = () => {
 
       <FieldContainer
         label="Emergency Contact 1 Person Relation"
+        astric={true}
         fieldGrid={3}
         value={emergencyContactRelation}
         onChange={(e) => setEmergencyContactRelation(e.target.value)}
@@ -1375,7 +1363,7 @@ const UserUpdate = () => {
 
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <label>Login ID *</label>
+          <label>Login ID <sup style={{ color: "red" }}>*</sup></label>
           <div className="input-group">
             <input
               className="form-control"
@@ -1396,7 +1384,7 @@ const UserUpdate = () => {
       </div>
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <label>Generate Password *</label>
+          <label>Generate Password <sup style={{ color: "red" }}>*</sup></label>
           <div className="input-group">
             <input
               type="text"
@@ -1469,26 +1457,7 @@ const UserUpdate = () => {
         />
       </div>
 
-      <div className="form-group col-3">
-        <label className="form-label">
-          Job Type <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={jobTypeData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: jobType,
-            label: `${jobType}`,
-          }}
-          onChange={(e) => {
-            setJobType(e.value);
-          }}
-          required
-        />
-      </div>
+     
       {jobType === "WFH" && (
         <>
           <FieldContainer
@@ -1564,16 +1533,19 @@ const UserUpdate = () => {
 
       <FieldContainer
         label="Bank Name"
+        astric={true}
         value={bankName}
         onChange={(e) => setBankName(e.target.value)}
       />
       <FieldContainer
         label="Bank Account Number"
+        astric={true}
         value={bankAccountNumber}
         onChange={(e) => setBankAccountNumber(e.target.value)}
       />
       <FieldContainer
         label="IFSC"
+        astric={true}
         value={IFSC}
         onChange={(e) => setIFSC(e.target.value.toUpperCase())}
       />
@@ -1760,7 +1732,7 @@ const UserUpdate = () => {
   const personalFields = (
     <>
       <div className="form-group col-3">
-        <label className="form-label">Spoken Languages</label>
+        <label className="form-label">Spoken Languages <sup style={{ color: "red" }}>*</sup></label>
         <Select
           isMulti
           name="langauages"
@@ -1795,6 +1767,7 @@ const UserUpdate = () => {
 
       <FieldContainer
         label="Nationality"
+        astric={true}
         value={nationality}
         onChange={(e) => setNationality(e.target.value)}
       />
@@ -1814,12 +1787,14 @@ const UserUpdate = () => {
       {dateOfBirth !== "" && <FieldContainer label="Age" value={age} />}
       <FieldContainer
         label="Father's Name"
+        astric={true}
         value={FatherName}
         required={false}
         onChange={(e) => setFatherName(e.target.value)}
       />
       <FieldContainer
         label="Mother's Name"
+        astric={true}
         value={motherName}
         required={false}
         onChange={(e) => setMotherName(e.target.value)}
@@ -1831,7 +1806,7 @@ const UserUpdate = () => {
         onChange={(e) => setHobbies(e.target.value)}
       />
       <div className="form-group col-6">
-        <label className="form-label">Blood Group</label>
+        <label className="form-label">Blood Group <sup style={{ color: "red" }}>*</sup></label>
         <Select
           className=""
           options={bloodGroupData.map((option) => ({
@@ -1889,12 +1864,14 @@ const UserUpdate = () => {
 
       <FieldContainer
         label="Address"
+        astric={true}
         value={address}
         onChange={(e) => setAddress(e.target.value)}
         required={false}
       />
       <FieldContainer
         label="City"
+        astric={true}
         value={city}
         onChange={(e) => setCity(e.target.value)}
         required={false}
@@ -1907,6 +1884,7 @@ const UserUpdate = () => {
       </div>
       <FieldContainer
         label="Pincode"
+        astric={true}
         value={pincode}
         onChange={(e) => setPincode(e.target.value)}
         required={false}
@@ -2077,6 +2055,7 @@ const UserUpdate = () => {
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
+        loading={loading}
       >
         {activeAccordionIndex === 0 && genralFields}
         {activeAccordionIndex === 1 && personalFields}

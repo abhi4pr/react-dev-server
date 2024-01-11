@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import statesAndUTs from "./IndianStatesAndUTs";
 
@@ -11,9 +11,14 @@ const IndianStates = ({ onBlur,onChange, newValue }) => {
   }));
 
   const handleChange = (selectedState) => {
+    console.log(selectedState);
     setSelectedState(selectedState);
     onChange(selectedState);
   };
+
+  useEffect(() => {
+    setSelectedState(newValue);
+  }, [newValue]);
   
 
   return (

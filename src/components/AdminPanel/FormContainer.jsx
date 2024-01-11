@@ -17,6 +17,7 @@ const FormContainer = ({
   activeAccordionIndex,
   onAccordionButtonClick,
   mainTitleRequired = true,
+  loading=false
 }) => {
   return (
     <>
@@ -95,11 +96,12 @@ const FormContainer = ({
                     {activeAccordionIndex === accordionButtons.length - 1 &&
                       submitButton && (
                         <button
-                          className="btn btn btn-success"
+                          className={`btn btn ${loading?"btn-danger":"btn-success"}`}
                           style={{ marginRight: "5px" }}
                           type="submit"
+                          disabled={loading}
                         >
-                          Submit
+                          {loading?"Submiting":"Submit"}
                         </button>
                       )}
                   </div>

@@ -57,29 +57,18 @@ export default function PurchaseManagementAllTransaction() {
       const date = new Date(item.request_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
-
       toDate1.setDate(toDate1.getDate() + 1);
-      if (date >= fromDate1 && date <= toDate1) {
+      if (date >= fromDate1 && date <= toDate1 || item.vendor_name.toLowerCase().includes(vendorName.toLowerCase())) {
         return item;
       }
     });
-    if (vendorName) {
-      console.log("vendorName", vendorName);
-      const filterData1 = filterData.filter((item) => {
-        if (item.vendor_name.toLowerCase().includes(vendorName.toLowerCase())) {
-          return item;
-        }
-      });
-      setFilterData(filterData1);
-    } else {
-      console.log("filterData", filterData);
-      setFilterData(filterData);
-    }
+    setFilterData(filterData);
   };
   const handleClearDateFilter = () => {
     setFilterData(data);
     setFromDate("");
     setToDate("");
+    setVendorName("");
   };
 
   const columns = [
@@ -151,8 +140,8 @@ export default function PurchaseManagementAllTransaction() {
       },
     },
     {
-      field: "ageing",
-      headerName: "Ageing",
+      field: "aging",
+      headerName: "Aging",
       width: 150,
       renderCell: (params) => {
         return (
@@ -170,12 +159,42 @@ export default function PurchaseManagementAllTransaction() {
       <div className="row">
         <div className="card col-4">
           <div className="card-header h4">Pending</div>
-          <div className="card-body"></div>
-        </div>{" "}
+          <div className="card-body">
+            <p className="fs-6 lead ">
+              Total Requested Amount :-{" "}
+              {data.length > 0
+                ? data.reduce((total, currentItem) => {
+                    return total + currentItem.request_amount * 1;
+                  }, 0)
+                : ""}
+            </p>
+            <p className="fs-6 lead ">
+              {
+                <Link className="link-primary" to="/admin/finance-pruchasemanagement-pendingpaymentrequest">
+                  Click Here
+                </Link>
+              }
+            </p>
+          </div>        </div>{" "}
         <div className="card col-4">
           <div className="card-header h4">Done</div>
-          <div className="card-body"></div>
-        </div>{" "}
+          <div className="card-body">
+            <p className="fs-6 lead ">
+              Total Requested Amount :-{" "}
+              {data.length > 0
+                ? data.reduce((total, currentItem) => {
+                    return total + currentItem.request_amount * 1;
+                  }, 0)
+                : ""}
+            </p>
+            <p className="fs-6 lead ">
+              {
+                <Link className="link-primary" to="/admin/finance-pruchasemanagement-paymentdone">
+                  Click Here
+                </Link>
+              }
+            </p>
+          </div>        </div>{" "}
         <div className="card col-4">
           <div className="card-header h4">Discard</div>
           <div className="card-body">
