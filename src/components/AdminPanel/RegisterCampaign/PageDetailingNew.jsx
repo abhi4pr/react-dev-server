@@ -613,7 +613,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             try {
                 setIsLoadingPlan(true)
                 const result = await axios.post(
-                    "http://192.168.29.113:3000/api/campaignplan",
+                    "http://34.93.221.166:3000/api/campaignplan",
                     newdata
                 );
                 // console.log(result);
@@ -655,7 +655,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             try {
                 setIsLoadingPhase(true)
                 const result = await axios.post(
-                    "http://192.168.29.113:3000/api/campaignphase",
+                    "http://34.93.221.166:3000/api/campaignphase",
                     newdata
                 );
                 // console.log(result);
