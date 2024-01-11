@@ -22,7 +22,7 @@ const RequestAssignPage = ({ data ,RequestAssign}) => {
   }));
 
   const handleAccept= async (row)=> {
-    const x=await axios.post(`http://192.168.29.113:3000/api/preassignment/phase/update`, {
+    const x=await axios.post(`http://34.93.221.166:3000/api/preassignment/phase/update`, {
       pre_ass_id: row.pre_ass_id,
       status: "accepted",
       phase_id: row.phase_id,
@@ -31,7 +31,7 @@ const RequestAssignPage = ({ data ,RequestAssign}) => {
     RequestAssign()
   }
 const handleReject= async (row)=> {
-    const x=await axios.post(`http://192.168.29.113:3000/api/preassignment/phase/update`, {
+    const x=await axios.post(`http://34.93.221.166:3000/api/preassignment/phase/update`, {
       pre_ass_id: row.pre_ass_id,
       status: "rejected",
       phase_id: row.phase_id,

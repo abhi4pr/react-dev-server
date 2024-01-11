@@ -58,13 +58,13 @@ const CreateAssign = () => {
 
       //1.check if preAssignment Exist for particular phase
       const isPreAss = await axios.post(
-        `http://localhost:3000/api/preassignment/phase`, {
+        `http://34.93.221.166:3000/api/preassignment/phase`, {
         phase_id: id
       }
       );
 
       if (isPreAss?.data?.data?.length > 0) {
-        const assignment = await axios.get(`http://localhost:3000/api/assignment/phase/${id}`)
+        const assignment = await axios.get(`http://34.93.221.166:3000/api/assignment/phase/${id}`)
         const filter = assignment?.data?.data.filter((page) => {
           return page.replacement_status === 'pending' || page.replacement_status === "replacement" || page.replacement_status === "inactive";
         })
@@ -77,7 +77,7 @@ const CreateAssign = () => {
         const loadingTimeout = setTimeout(() => setIsLoading(false), 3000);
 
         const createPreAssignment = await axios.post(
-          `http://localhost:3000/api/preassignment`, {
+          `http://34.93.221.166:3000/api/preassignment`, {
           phase_id: id,
           ass_by: "123"
         }
