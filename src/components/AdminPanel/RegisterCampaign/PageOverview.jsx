@@ -7,6 +7,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import ReplacePagesModal from "./ReplacePagesModal";
 import ReplacementRecord from "./ReplacementRecord";
+import millify from "millify";
 
 
 
@@ -56,10 +57,16 @@ const PageOverview = ({selectData,setrender,stage}) => {
             field: "follower_count",
             headerName: "Follower Count",
             width: 150,
+            valueFormatter: (params) => millify(params.value),
         },
         {
             field: "postPerPage",
-            headerName: "post / Page",
+            headerName: "post",
+            width: 150,
+        },
+        {
+            field: "storyPerPage",
+            headerName: "Story",
             width: 150,
         },
         {
