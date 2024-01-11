@@ -31,7 +31,7 @@ const ExcusionCampaign = () => {
   };
   const RequestAssign = async () => {
     const reqAss = await axios.get(
-      `http://localhost:3000/api/preassignment/6597d50d37c4ebe46bf05633`
+      `http://192.168.29.113:3000/api/preassignment/6597d50d37c4ebe46bf05633`
     );
     const data = reqAss?.data?.data.filter((item) => item.status == "pending");
     SetRequestAssign(data);
@@ -41,7 +41,7 @@ const ExcusionCampaign = () => {
   }, []);
   const getAssignment = async (id) => {
     const getData = await axios.get(
-      `http://localhost:3000/api/assignment/all/6597d50d37c4ebe46bf05633`
+      `http://192.168.29.113:3000/api/assignment/all/6597d50d37c4ebe46bf05633`
     );
     const assigned = getData?.data?.data.filter(
       (item) => item.ass_status == "assigned" || item.ass_status == "pending"

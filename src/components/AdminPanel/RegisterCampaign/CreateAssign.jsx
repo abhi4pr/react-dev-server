@@ -576,7 +576,7 @@ const CreateAssign = () => {
   ];
      
   if (isLoading) {
-    return <Loader  message="Auto Assignment in Progress..." />; 
+    return <Loader  message="Phase Creation in Progress..." />; 
   }
   
  return (

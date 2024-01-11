@@ -40,6 +40,7 @@
     "jszip": "^3.10.1",
     "jwt-decode": "^3.1.2",
     "mdb-react-ui-kit": "^6.2.0",
+    "millify": "^6.1.0",
     "next": "^13.4.19",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",

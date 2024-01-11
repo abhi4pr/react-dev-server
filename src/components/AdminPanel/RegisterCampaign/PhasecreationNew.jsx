@@ -194,6 +194,7 @@ const PhasecreationNew = () => {
             data={{ campaignName: cmpName, campaignId: id }}
             phaseInfo={{ "phaseName": phaseData, "description": phaseDcripation, "commitment": campaignName,phaseDataError: phaseDataError, }}
             setPhaseDataError={setPhaseDataError}
+            
           />
         </>
       )}
