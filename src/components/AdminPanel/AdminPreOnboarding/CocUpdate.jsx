@@ -139,6 +139,7 @@ const CocUpdate = () => {
           Tag="textarea"
           label="description"
           fieldGrid={4}
+          required={false}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
