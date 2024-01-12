@@ -6,6 +6,7 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import { Button } from "@mui/material";
 import { downloadSelectedInvoices } from "../AdminPanel/WFH/SalaryGeneration/ZipGenerator";
 import { generatePDF } from "../AdminPanel/WFH/SalaryGeneration/pdfGenerator";
+import { useGlobalContext } from "../../Context/Context";
 
 const accordionButtons = ["Pending Verify", "Verified", "Payment Released"];
 
@@ -16,11 +17,17 @@ export default function FinanceWFHDashboard() {
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [id, setId] = useState("");
-  const [dataRow, setDataRow] = useState({});
+  // const [dataRow, setDataRow] = useState({});
   const [amount, setAmount] = useState("");
   const [date, setDate] = useState("");
   const [rowForPayment, setRowForPayment] = useState([]);
   const [invoice, setInvoice] = useState("");
+  const [refrenceNumber, setRefrenceNumber] = useState(null);
+  const [screenshot, setScreenshot] = useState([]);
+  const [rowData, setDataRow] = useState(null);
+
+  const { toastAlert } = useGlobalContext();
+
 
   const getData = async () => {
     try {
@@ -38,78 +45,6 @@ export default function FinanceWFHDashboard() {
     getData();
   }, []);
 
-  // const handleRowSelectionModelChange = (rowIds) => {
-  //   setRowSelectionModel(rowIds);
-  //   let x = filterData.filter((item) => {
-  //     return rowIds.includes(item.id);
-  //   });
-  //   setRowForPayment(x);
-  // };
-
-  // const downloadSelectedInvoices = async (data) => {
-  //   // console.log(data);
-  //   const zip = new JSZip();
-
-  //   // console.log(data);
-  //   // console.log(rowForPayment);
-  //   for (const row of rowForPayment) {
-  //     // console.log(row.invoice_template_no)
-  //     console.log(row);
-  //     if (row?.invoice_template_no !== "0") {
-  //       // console.log(row);
-  //       const invoiceBlob =   generatePDF(row); // Assuming generatePDF returns a Blob
-  //       zip.file(`${await row.user_name}.pdf`,await invoiceBlob);
-  //       console.log(zip)
-  //     }
-  //   }
-
-  //    zip.generateAsync({ type: "blob" }).then((content) => {
-  //     // Triggering download
-  //     // console.log(content);
-  //     const element = document.createElement("a");
-  //     console.log(document)
-  //     const url = URL.createObjectURL(content);
-  //     element.href = url;
-  //     element.download = "test.zip";
-  //     document.body.appendChild(element);
-  //     // saveAs(content, "example.zip");
-  //     element.click();
-  //     document.body.removeChild(element);
-  //   });
-  // };
-
-  // const downloadSelectedInvoices = async (data) => {
-  //   const zip = new JSZip();
-
-  //   for (const row of rowForPayment) {
-  //     if (row?.invoice_template_no !== "0") {
-  //       try {
-  //         const invoiceBlob = await generatePDF(row);
-  //         setInvoice(invoiceBlob)
-
-  //         console.log(invoiceBlob,"invoiceBlob")
-  //         if (invoiceBlob) {
-  //           const fileName = `${row.user_name}_${row.month}_invoice.pdf`;
-  //           zip.file(fileName, invoiceBlob);
-  //         }
-  //       } catch (error) {
-  //         console.error("Error generating PDF:", error);
-  //         // Handle any errors in PDF generation here
-  //       }
-  //     }
-  //   }
-
-  //   zip.generateAsync({ type: "blob" }).then((content) => {
-  //     const element = document.createElement("a");
-  //     const url = URL.createObjectURL(content);
-  //     element.href = url;
-  //     element.download = "selected_invoices.zip";
-
-  //     document.body.appendChild(element);
-  //     element.click();
-  //     document.body.removeChild(element);
-  //   });
-  // };
 
   const handleDownloadInvoices = async () => {
     try {
@@ -157,13 +92,47 @@ export default function FinanceWFHDashboard() {
     setDate("");
   };
 
+
+  const openModal = () => {
+    setShowModal(true);
+  };
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  function handlePayOut(e) {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("amount", amount);
+    formData.append("status_", rowData.status_ === 0 ? 1 : 2);
+    formData.append("screenshot", screenshot);
+    formData.append("reference_no", refrenceNumber);
+    formData.append("pay_date", date);
+    formData.append("attendence_id", rowData.attendence_id);
+
+    axios
+      .put(`http://34.93.221.166:3000/api/edit_finance`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        setRefrenceNumber("");
+        setAmount("");
+        toastAlert("Paid");
+        setShowModal(false);
+        getData();
+      });
+  }
+
   const pendingColumns = [
     {
       field: "id",
       headerName: "S.No",
       width: 40,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex =activeAccordionIndex==0? filterData.filter((item) => item.status_ === 0).indexOf(params.row):activeAccordionIndex==1?filterData.filter((item) => item.status_ === 1).indexOf(params.row):filterData.filter((item) => item.status_ === 2).indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -246,14 +215,14 @@ export default function FinanceWFHDashboard() {
       renderCell: (params) => {
         return (
           <>
-            <button
+           {activeAccordionIndex!=2&& <button
               className="btn btn-primary"
               data-toggle="modal"
               data-target="#exampleModal"
               onClick={(e) => handlePay(params.row, e)}
             >
               Pay
-            </button>
+            </button>}
 
             {params.row?.invoice_template_no !== "0" && (
               <button
@@ -276,7 +245,7 @@ export default function FinanceWFHDashboard() {
   const pending = (
     <div>
       <DataGrid
-        rows={filterData}
+        rows={filterData.filter((item) => item.status_ === 0)}
         columns={pendingColumns}
         getRowId={(row) => row.id}
         initialState={{
@@ -308,15 +277,72 @@ export default function FinanceWFHDashboard() {
 
   const verified = (
     <div>
-      <h1>Verified</h1>
+      <DataGrid
+        rows={filterData.filter((item) => item.status_ === 1)}
+        columns={pendingColumns}
+        getRowId={(row) => row.id}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 50,
+            },
+          },
+        }}
+        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+        pageSizeOptions={[5, 25, 50, 100, 500]}
+        checkboxSelection
+        // disableRowSelectionOnClick
+        onRowSelectionModelChange={(rowIds) => {
+          handleRowSelectionModelChange(rowIds);
+          // console.log(rowIds);
+        }}
+        rowSelectionModel={rowSelectionModel}
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
+      />
     </div>
   );
 
   const payoutReleased = (
     <div>
-      <h1>Payout Released</h1>
+      {/* <h1>Payout Released</h1> */}
+      <DataGrid
+        rows={filterData.filter((item) => item.status_ === 2)}
+        columns={pendingColumns}
+        getRowId={(row) => row.id}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 50,
+            },
+          },
+        }}
+        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+        pageSizeOptions={[5, 25, 50, 100, 500]}
+        checkboxSelection
+        // disableRowSelectionOnClick
+        onRowSelectionModelChange={(rowIds) => {
+          handleRowSelectionModelChange(rowIds);
+          // console.log(rowIds);
+        }}
+        rowSelectionModel={rowSelectionModel}
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
+      />
     </div>
   );
+
+  
 
   return (
     <div>
@@ -345,6 +371,94 @@ export default function FinanceWFHDashboard() {
         {activeAccordionIndex === 1 && verified}
         {activeAccordionIndex === 2 && payoutReleased}
       </FormContainer>
+
+
+      {showModal && (
+        <div
+          className={`modal fade ${showModal ? "show" : ""}`}
+          tabIndex={-1}
+          role="dialog"
+          style={{ display: showModal ? "block" : "none" }}
+        >
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Pay
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  onClick={closeModal}
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <form onSubmit={handlePayOut}>
+                <div className="modal-body">
+                  <div className="form-group">
+                    <label className="col-form-label">Amount</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="recipient-name"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
+                    />
+                    <label className="col-form-label">Date</label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      id="recipient-name"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      min={`${new Date().getFullYear()}-${String(
+                        new Date().getMonth() + 1
+                      ).padStart(2, "0")}-01`}
+                    />
+                    <label className="col-form-label">Snapshot</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      id="recipient-name"
+                      onChange={(e) => setScreenshot(e.target.files[0])}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="col-form-label">RefrenceNumber</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="recipient-name"
+                      value={refrenceNumber}
+                      onChange={(e) => setRefrenceNumber(e.target.value)}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={closeModal}
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    // onClick={handlePayOut}
+                  >
+                    Pay
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

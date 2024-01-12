@@ -202,7 +202,8 @@ const UserUpdate = () => {
     useState("");
 
   const [documentData, setDocumentData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading,setLoading]=useState(false)
+  const [jobTypeData, setJobTypeData] = useState([]);
 
   const [cast, setCast] = useState("");
   const { toastAlert, toastError } = useGlobalContext();
@@ -215,7 +216,7 @@ const UserUpdate = () => {
     "Post Graduation",
     "Other",
   ];
-  const jobTypeData = ["WFO", "WFH"];
+  // const jobTypeData = ["WFO", "WFH"];
   const genderData = ["Male", "Female", "Other"];
   const bloodGroupData = [
     "A+ (A Positive)",
@@ -313,6 +314,9 @@ const UserUpdate = () => {
       .then((res) => {
         setDesignationData(res.data.data);
       });
+      axios.get('http://34.93.221.166:3000/api/get_all_job_types').then((res)=>{
+        setJobTypeData(res.data.data)
+      })
   }, []);
 
   useEffect(() => {
@@ -1086,8 +1090,8 @@ const UserUpdate = () => {
         <Select
           className=""
           options={jobTypeData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
+            value: `${option.job_type}`,
+            label: `${option.job_type}`,
           }))}
           value={{
             value: jobType,
