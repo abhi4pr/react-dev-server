@@ -2627,23 +2627,7 @@ const UserMaster = () => {
 
   return (
     <>
-      <FormContainer
-        mainTitle="User"
-        title="User Registration"
-        handleSubmit={handleSubmit}
-        accordionButtons={accordionButtons}
-        activeAccordionIndex={activeAccordionIndex}
-        onAccordionButtonClick={handleAccordionButtonClick}
-      >
-        {activeAccordionIndex === 0 && genralFields}
-        {activeAccordionIndex === 1 && personalFields}
-        {activeAccordionIndex === 2 && salaryFields}
-        {activeAccordionIndex === 3 && documentsFields}
-        {activeAccordionIndex === 4 && familyFields}
-        {activeAccordionIndex === 5 && educationFields}
-      </FormContainer>
-
-      {loader && (
+      {loader ? (
         <div className="loader">
           <div>
             <ul>
@@ -2681,7 +2665,23 @@ const UserMaster = () => {
           </div>
           <span>Loading</span>
         </div>
-      )}
+      ) : 
+      <FormContainer
+        mainTitle="User"
+        title="User Registration"
+        handleSubmit={handleSubmit}
+        accordionButtons={accordionButtons}
+        activeAccordionIndex={activeAccordionIndex}
+        onAccordionButtonClick={handleAccordionButtonClick}
+      >
+        {activeAccordionIndex === 0 && genralFields}
+        {activeAccordionIndex === 1 && personalFields}
+        {activeAccordionIndex === 2 && salaryFields}
+        {activeAccordionIndex === 3 && documentsFields}
+        {activeAccordionIndex === 4 && familyFields}
+        {activeAccordionIndex === 5 && educationFields}
+      </FormContainer>
+      }
     </>
   );
 };
