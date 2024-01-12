@@ -420,7 +420,7 @@ const UserMaster = () => {
     formData.append("user_login_password", password);
     formData.append("user_contact_no", contact);
     formData.append("sitting_id", sitting);
-    formData.append("room_id", jobType == "WFH" ? "1" : roomId.room_id);
+    formData.append("room_id",jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id);
     formData.append("dept_id", department);
     formData.append("job_type", jobType);
     formData.append("personal_number", personalContact);
