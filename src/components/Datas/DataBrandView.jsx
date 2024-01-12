@@ -71,7 +71,7 @@ const DataBrandView = () => {
               allowFullScreen
             ></iframe>
           </>
-        )
+        );
       case "xls":
       case "xlsx":
         return <img src={sheets} alt="Excel" style={{ width: "32%" }} />;
@@ -108,9 +108,8 @@ const DataBrandView = () => {
                     className="col-md-3 card"
                     style={{ margin: "0 0 10px 0" }}
                   >
-
                     <div>
-                      {getFileIcon(detail.data_type,detail.data_image)}
+                      {getFileIcon(detail.data_type, detail.data_image)}
                     </div>
                     <div className="card-body"></div>
                     <ul className="list-group list-group-flush">
