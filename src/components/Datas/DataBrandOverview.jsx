@@ -65,10 +65,10 @@ const DataBrandOverview = () => {
       .then((res) => setBrandData(res.data));
 
     axios
-      .get("http://192.168.29.116:3000/api/distinct_created_by")
+      .get("http://34.93.221.166:3000/api/distinct_created_by")
       .then((res) => setEmployeeData(res.data.data));
     axios
-      .get("http://192.168.29.116:3000/api/distinct_designed_by")
+      .get("http://34.93.221.166:3000/api/distinct_designed_by")
       .then((res) => setDesignedData(res.data.data));
 
     axios
