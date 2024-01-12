@@ -123,7 +123,7 @@ const CocMaster = () => {
         <FieldContainer
           Tag="textarea"
           label="description"
-          required={true}
+          required={false}
           fieldGrid={4}
           value={description}
           onChange={(e) => setDescription(e.target.value)}

@@ -368,7 +368,7 @@ const PreOnboardingUserMaster = () => {
               {item.sub_heading_sequence} {item.sub_heading}
             </h5>
             <p>
-              {item.sub_heading_sequence} {item.sub_heading_desc}
+              {item.sub_heading_desc}
             </p>
           </div>
         ))}
