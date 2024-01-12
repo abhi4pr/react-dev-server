@@ -17,9 +17,6 @@ const ContactNumberReact = ({
     setContact(parentComponentContact || "");
   }, [parentComponentContact]);
 
-  console.log(mandatoryFieldsEmpty?.personalContact,"Harshal");
-
-
   function validateContact(newContact) {
     return /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact);
   }

@@ -223,6 +223,7 @@ const UserMaster = () => {
     status: false,
     bankDetails: false,
   });
+  const [jobTypeData, setJobTypeData] = useState([])
 
   const [loading, setLoading] = useState(false);
 
@@ -234,7 +235,7 @@ const UserMaster = () => {
     "Post Graduation",
     "Other",
   ];
-  const jobTypeData = ["WFO", "WFH"];
+  // const jobTypeData = ["WFO", "WFH"];
   const tdsApplicableData = ["Yes", "No"];
   const statusData = ["Active", "Exit", "On Leave", "Resign"];
   const genderData = ["Male", "Female", "Other"];
@@ -320,6 +321,10 @@ const UserMaster = () => {
       .then((res) => {
         setDesignationData(res.data.data);
       });
+
+    axios.get('http://34.93.221.166:3000/api/get_all_job_types').then(res=>{
+      setJobTypeData(res.data.data)
+    })
   }, []);
 
   const handleSubmit = async (e) => {
@@ -973,8 +978,6 @@ const UserMaster = () => {
             }
           }}
           onBlur={() => {
-            console.log("onBlur called");
-            console.log(username);
             if (username === "") {
               setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
@@ -1002,8 +1005,8 @@ const UserMaster = () => {
         <Select
           className=""
           options={jobTypeData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
+            value: `${option.job_type}`,
+            label: `${option.job_type}`,
           }))}
           value={{
             value: jobType,
@@ -1102,7 +1105,7 @@ const UserMaster = () => {
               subDepartmentData === null ||
               subDepartmentData.length === 0
             ) {
-              console.log("onBlur called inside if");
+
               // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,subDepartment:true});
               return setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
@@ -1710,8 +1713,6 @@ const UserMaster = () => {
               const selectedOption = refrenceData.find(
                 (option) => option.sitting_id === Number(selectedSittingId)
               );
-              // console.log(selectedSittingId, "selectedSittingId")
-              // console.log(selectedOption.room_id, "selectedOption")
               setRoomId(selectedOption);
             }}
             required={true}
