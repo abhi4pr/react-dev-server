@@ -4,7 +4,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
-import { Button } from "antd";
+import Button from '@mui/material/Button';
 
 const RefundRequests = () => {
   const { toastAlert } = useGlobalContext();
@@ -56,8 +56,7 @@ const RefundRequests = () => {
     setIsFormSubmitted(true);
   };
 
-const handleClear = () => {
-
+  const handleClear = () => {
     setCustName("");
     setRefundAmount("");
     setRefundRequestFromDate("");
@@ -98,7 +97,6 @@ const handleClear = () => {
           );
         };
         const refundUpdateDate = (date, fromDate, toDate) => {
-
           const dateToCheck = new Date(date);
           const startDate = new Date(fromDate);
           const endDate = new Date(refundUpdateToDate);
@@ -143,7 +141,7 @@ const handleClear = () => {
         setFilterData(res.data.data);
       });
   }
-  
+
   function convertDateToDDMMYYYY(dateString) {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
@@ -188,7 +186,7 @@ const handleClear = () => {
       name: "Refund Request Date",
       // selector: (row) => row.creation_date,
       selector: (row) => {
-      return  <div>{convertDateToDDMMYYYY(row.creation_date)}</div>;
+        return <div>{convertDateToDDMMYYYY(row.creation_date)}</div>;
       },
     },
     {
@@ -365,12 +363,17 @@ const handleClear = () => {
         </div>
 
         <div className="col-2">
-          <Button type="primary" onClick={handleFilter} className="mt-4">
+          <Button type="primary" variant="contained" onClick={handleFilter} className="mt-2 mb-2">
             Search
           </Button>
         </div>
         <div className="col-2">
-          <Button type="error" varient="content" onClick={handleClear} className="mt-4">
+          <Button
+            variant="contained"
+            color="error"
+            onClick={handleClear}
+            className="mt-2 mb-2"
+          >
             clear
           </Button>
         </div>
