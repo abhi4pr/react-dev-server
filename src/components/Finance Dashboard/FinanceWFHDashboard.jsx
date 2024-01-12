@@ -244,6 +244,20 @@ export default function FinanceWFHDashboard() {
 
   const pending = (
     <div>
+      <div style={{height:"50px"}}>
+       {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadInvoices}
+          >
+            Download
+          </Button>
+        )}
+        </div>
       <DataGrid
         rows={filterData.filter((item) => item.status_ === 0)}
         columns={pendingColumns}
@@ -355,18 +369,7 @@ export default function FinanceWFHDashboard() {
         onAccordionButtonClick={handleAccordionButtonClick}
       >
         {invoice}
-        {rowForPayment.length > 0 && (
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            sx={{ width: "100px" }}
-            className="ml-3 mb-2"
-            onClick={handleDownloadInvoices}
-          >
-            Download
-          </Button>
-        )}
+       
         {activeAccordionIndex === 0 && pending}
         {activeAccordionIndex === 1 && verified}
         {activeAccordionIndex === 2 && payoutReleased}

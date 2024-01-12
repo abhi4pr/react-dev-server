@@ -1038,7 +1038,7 @@ const SidebarLinks = () => {
                       className="collapse-item"
                       to="/admin/finance-pendingrequests"
                     >
-                      All Refund Request
+                      Dashboard
                     </Link>
                   </div>
                 </div>
