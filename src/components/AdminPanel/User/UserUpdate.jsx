@@ -202,7 +202,7 @@ const UserUpdate = () => {
     useState("");
 
   const [documentData, setDocumentData] = useState([]);
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
 
   const [cast, setCast] = useState("");
   const { toastAlert, toastError } = useGlobalContext();
@@ -287,7 +287,7 @@ const UserUpdate = () => {
         getRoleData(res.data.data);
       })
       .catch((error) => {
-        // console.log(error);
+        console.log(error);
       });
 
     axios
@@ -530,7 +530,7 @@ const UserUpdate = () => {
       return toastError("Password is Required");
     } else if (!speakingLanguage || speakingLanguage == "") {
       return toastError("Speaking Language is Required");
-    }else if (!gender || gender == "") {
+    } else if (!gender || gender == "") {
       return toastError("Gender is Required");
     } else if (!nationality || nationality == "") {
       return toastError("Nationality is Required");
@@ -554,8 +554,8 @@ const UserUpdate = () => {
       return toastError("City is Required");
     } else if (!state || state == "") {
       return toastError("State/UT is Required");
-    } else if (!pincode || pincode == "") {
-      return toastError("Pincode is Required");
+    } else if (!pincode || pincode == "" || pincode.length !== 6) {
+      return toastError("Pincode should be 6 number long");
     } else if (!joiningDate || joiningDate == "") {
       return toastError("Joining Date is Required");
     } else if (!userStatus || userStatus == "") {
@@ -567,7 +567,6 @@ const UserUpdate = () => {
     } else if (!username || username == "") {
       return toastError("User Name Error is required");
     }
-
 
     if (jobType == "WFO" && sitting == "") {
       return toastError("Sitting Error is required");
@@ -582,7 +581,7 @@ const UserUpdate = () => {
     formData.append("user_email_id", email);
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
-    formData.append("user_contact_no", contact?contact:"");
+    formData.append("user_contact_no", contact ? contact : "");
     formData.append("sitting_id", jobType === "WFH" ? 0 : sitting);
     formData.append("room_id", roomId.room_id ? roomId.room_id : roomId);
     // console.log("room id he yha", roomId);
@@ -636,7 +635,10 @@ const UserUpdate = () => {
     formData.append("emergency_contact1", emergencyContact);
     formData.append("emergency_contact_person_name1", emergencyContactName);
     formData.append("emergency_contact_relation1", emergencyContactRelation);
-    formData.append("emergency_contact2", emergencyContact2?emergencyContact2:"");
+    formData.append(
+      "emergency_contact2",
+      emergencyContact2 ? emergencyContact2 : ""
+    );
     formData.append("emergency_contact_person_name2", emergencyContactName2);
     formData.append("emergency_contact_relation2", emergencyContactRelation2);
 
@@ -647,21 +649,23 @@ const UserUpdate = () => {
     console.log("other doc");
     const formDataa = new FormData();
     if (personalEmail && personalContact) {
-      setLoading(true)
+      setLoading(true);
 
       console.log("came to if");
-      await axios.put(`http://34.93.221.166:3000/api/update_user`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }).then((res)=>{
-        setLoading(false)
-        console.log(res.data);
-
-      }).catch(function(err){
-        setLoading(false)
-        console.log(err);
-      });
+      await axios
+        .put(`http://34.93.221.166:3000/api/update_user`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          setLoading(false);
+          console.log(res.data);
+        })
+        .catch(function (err) {
+          setLoading(false);
+          console.log(err);
+        });
 
       if (reportL1 !== "") {
         axios
@@ -1119,9 +1123,7 @@ const UserUpdate = () => {
       </div>
 
       <div className="form-group col-3">
-        <label className="form-label">
-          Cast 
-        </label>
+        <label className="form-label">Cast</label>
         <Select
           className=""
           options={castOption.map((option) => ({
@@ -1162,7 +1164,9 @@ const UserUpdate = () => {
         />
       </div>
       <div className="form-group col-3">
-        <label className="form-label">Sub Department <sup style={{ color: "red" }}>*</sup></label>
+        <label className="form-label">
+          Sub Department <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           className=""
           options={subDepartmentData.map((option) => ({
@@ -1312,7 +1316,7 @@ const UserUpdate = () => {
       )}
 
       <ContactNumberReact
-      astric={true}
+        astric={true}
         label="Alternate Contact"
         parentComponentContact={alternateContact}
         setParentComponentContact={setAlternateContact}
@@ -1363,7 +1367,9 @@ const UserUpdate = () => {
 
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <label>Login ID <sup style={{ color: "red" }}>*</sup></label>
+          <label>
+            Login ID <sup style={{ color: "red" }}>*</sup>
+          </label>
           <div className="input-group">
             <input
               className="form-control"
@@ -1384,7 +1390,9 @@ const UserUpdate = () => {
       </div>
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <label>Generate Password <sup style={{ color: "red" }}>*</sup></label>
+          <label>
+            Generate Password <sup style={{ color: "red" }}>*</sup>
+          </label>
           <div className="input-group">
             <input
               type="text"
@@ -1457,7 +1465,6 @@ const UserUpdate = () => {
         />
       </div>
 
-     
       {jobType === "WFH" && (
         <>
           <FieldContainer
@@ -1732,7 +1739,9 @@ const UserUpdate = () => {
   const personalFields = (
     <>
       <div className="form-group col-3">
-        <label className="form-label">Spoken Languages <sup style={{ color: "red" }}>*</sup></label>
+        <label className="form-label">
+          Spoken Languages <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           isMulti
           name="langauages"
@@ -1806,7 +1815,9 @@ const UserUpdate = () => {
         onChange={(e) => setHobbies(e.target.value)}
       />
       <div className="form-group col-6">
-        <label className="form-label">Blood Group <sup style={{ color: "red" }}>*</sup></label>
+        <label className="form-label">
+          Blood Group <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           className=""
           options={bloodGroupData.map((option) => ({
