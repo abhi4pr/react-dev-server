@@ -64,7 +64,7 @@ const CocMaster = () => {
           label="Display Sequence"
           type="number"
           fieldGrid={4}
-          required={true}
+          required={false}
           value={displaySeq}
           onChange={(e) => setDisplaySeq(e.target.value)}
         />
@@ -72,7 +72,7 @@ const CocMaster = () => {
         <FieldContainer
           label="Heading"
           fieldGrid={4}
-          required={true}
+          required={false}
           value={heading}
           onChange={(e)=> setHeading(e.target.value)}
         />
@@ -89,6 +89,7 @@ const CocMaster = () => {
           label="Sub Heading Sequence"
           type="number"
           fieldGrid={4}
+          required={false}
           value={subHeadingSeq}
           onChange={(e) => setSubHeadingSeq(e.target.value)}
         />

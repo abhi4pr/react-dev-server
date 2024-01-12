@@ -79,6 +79,7 @@ const CocUpdate = () => {
         <FieldContainer
           label="Display Sequence"
           type="number"
+          required={false}
           fieldGrid={4}
           value={displaySeq}
           onChange={(e) => setDisplaySeq(e.target.value)}
@@ -105,6 +106,7 @@ const CocUpdate = () => {
           type="number"
           disabled="true"
           fieldGrid={4}
+          required={false}
           value={subHeadingSeq}
           onChange={(e) => setSubHeadingSeq(e.target.value)}
         />
@@ -112,7 +114,7 @@ const CocUpdate = () => {
         <FieldContainer
           label="Remarks"
           fieldGrid={4}
-          // type="date"
+          required={false}
           value={remarks}
           onChange={(e) => setRemarks(e.target.value)}
         />
