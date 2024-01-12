@@ -18,19 +18,18 @@ const AssetVisibleToHr = () => {
   const accordionButtons = [
     "All",
     "Requested",
-    "Acknowledge",
-    "Submitted",
+    "Accept",
+    "Recovered",
     "Resolved",
   ];
 
+  useEffect(() => {}, []);
+
   const hardRender = () => {
-    getData();
+    return getData();
   };
   const tab1 = (
-    <HrVisibleToHrOverview
-      hrOverviewData={data.filter((d) => d.status == "All")}
-      hardRender={hardRender}
-    />
+    <HrVisibleToHrOverview hrOverviewData={data} hardRender={hardRender} />
   );
   const tab2 = (
     <HrVisibleToHrOverview
@@ -40,13 +39,13 @@ const AssetVisibleToHr = () => {
   );
   const tab3 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data.filter((d) => d.status == "Acknowledge")}
+      hrOverviewData={data.filter((d) => d.status == "Accept")}
       hardRender={hardRender}
     />
   );
   const tab4 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data.filter((d) => d.status == "Submitted")}
+      hrOverviewData={data.filter((d) => d.status == "Recovered")}
       hardRender={hardRender}
     />
   );
@@ -68,7 +67,7 @@ const AssetVisibleToHr = () => {
     setFilterData(result);
   }, [search]);
 
-  const getData = async () => {
+  async function getData() {
     try {
       const response = await axios.get(
         "http://34.93.221.166:3000/api/show_asset_hr_data"
@@ -78,7 +77,7 @@ const AssetVisibleToHr = () => {
     } catch (error) {
       console.log(error);
     }
-  };
+  }
 
   return (
     <>

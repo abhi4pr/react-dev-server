@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-
+import { FcDownload } from "react-icons/fc";
 import FormContainer from "../AdminPanel/FormContainer";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import imageIcon from "./image-icon.png";
 import DeleteButton from "../AdminPanel/DeleteButton";
 import jwtDecode from "jwt-decode";
+import Modal from "react-modal";
 
 const DataBrandOverview = () => {
   const [search, setSearch] = useState("");
@@ -24,6 +25,9 @@ const DataBrandOverview = () => {
   const [selectedPlatform, setSelectedPlatform] = useState("");
   const [countData, setCountData] = useState([]);
   const [employeeData, setEmployeeData] = useState([]);
+
+  const [designedData, setDesignedData] = useState([]);
+  const [designed, setDesigned] = useState("");
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -61,8 +65,11 @@ const DataBrandOverview = () => {
       .then((res) => setBrandData(res.data));
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_users")
+      .get("http://192.168.29.116:3000/api/distinct_created_by")
       .then((res) => setEmployeeData(res.data.data));
+    axios
+      .get("http://192.168.29.116:3000/api/distinct_designed_by")
+      .then((res) => setDesignedData(res.data.data));
 
     axios
       .get("http://34.93.221.166:3000/api/get_all_data_platforms")
@@ -85,20 +92,36 @@ const DataBrandOverview = () => {
   }, []);
 
   useEffect(() => {
-    if (selectedCategory === "" && selectedUser === "" && selectedBrand === "" && selectedContent === "" && selectedPlatform === "") {
+    if (
+      selectedCategory === "" &&
+      selectedUser === "" &&
+      selectedBrand === "" &&
+      selectedContent === "" &&
+      selectedPlatform === "" &&
+      designed === ""
+    ) {
       setData(backupData);
     } else {
       const filteredData = backupData.filter(
         (item) =>
           (selectedCategory === "" || item.cat_id === selectedCategory) &&
-          (selectedUser === "" || item.created_by === selectedUser) &&
+          (selectedUser === "" || item.created_by == selectedUser) &&
           (selectedBrand === "" || item.brand_id === selectedBrand) &&
-          (selectedContent === "" || item.content_type_id === selectedContent) &&
+          (designed === "" || item.designed_by == designed) &&
+          (selectedContent === "" ||
+            item.content_type_id === selectedContent) &&
           (selectedPlatform === "" || item.platform_id === selectedPlatform)
       );
       setData(filteredData);
     }
-  }, [selectedCategory, selectedUser, selectedBrand, selectedContent, selectedPlatform]);  
+  }, [
+    selectedCategory,
+    selectedUser,
+    selectedBrand,
+    selectedContent,
+    selectedPlatform,
+    designed,
+  ]);
 
   const deleteBrand = async (brand_name) => {
     await axios
@@ -111,6 +134,17 @@ const DataBrandOverview = () => {
       .catch((error) => {
         console.error("Error deleting brand:", error);
       });
+  };
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [enlargedImageUrl, setEnlargedImageUrl] = useState("");
+  const handleImageClick = (imageUrl) => {
+    setEnlargedImageUrl(imageUrl);
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEnlargedImageUrl("");
   };
 
   return (
@@ -216,15 +250,29 @@ const DataBrandOverview = () => {
                     ))}
                   </FieldContainer>
                   <FieldContainer
-                    label="Upload By"
+                    label="Created By"
                     Tag="select"
-                    fieldGrid={4}
+                    fieldGrid={2}
                     value={selectedUser}
                     onChange={(e) => setSelectedUser(e.target.value)}
                   >
                     <option value="">Please select</option>
                     {employeeData.map((data) => (
-                      <option key={data.user_id} value={data.user_id}>
+                      <option key={data._id} value={data._id}>
+                        {data.user_name}
+                      </option>
+                    ))}
+                  </FieldContainer>
+                  <FieldContainer
+                    label="Designed By"
+                    Tag="select"
+                    fieldGrid={2}
+                    value={designed}
+                    onChange={(e) => setDesigned(e.target.value)}
+                  >
+                    <option value="">Please select</option>
+                    {designedData.map((data) => (
+                      <option key={data._id} value={data._id}>
                         {data.user_name}
                       </option>
                     ))}
@@ -247,8 +295,14 @@ const DataBrandOverview = () => {
             <div className="summary_cards flex-row row">
               {data.length > 0 &&
                 data
-                  .filter((detail) =>
-                    detail.data_name?.toLowerCase().includes(search.toLowerCase()) || detail.data_type?.toLowerCase().includes(search.toLowerCase())
+                  .filter(
+                    (detail) =>
+                      detail.data_name
+                        ?.toLowerCase()
+                        .includes(search.toLowerCase()) ||
+                      detail.data_type
+                        ?.toLowerCase()
+                        .includes(search.toLowerCase())
                   )
                   .map((detail) => {
                     return (
@@ -259,6 +313,11 @@ const DataBrandOverview = () => {
                               <span>{detail.data_name}</span>
                             </h5>
                             <div className="summary_cardaction">
+                              <Link to={`/data-brand-view/${detail._id}`}>
+                                <button className="btn btn-warning btn-sm">
+                                  View
+                                </button>
+                              </Link>
                               <Link to={`/data-brand-update/${detail._id}`}>
                                 <button
                                   className="btn btn-sm btn-outline-primary"
@@ -267,14 +326,7 @@ const DataBrandOverview = () => {
                                   <i className="bi bi-pencil"></i>
                                 </button>
                               </Link>
-                              {/* <Link to={`/brand-view/${detail.logo_id}`}>
-                              <button
-                                className="btn btn-sm btn-outline-primary"
-                                title="View"
-                              >
-                                <i className="bi bi-eye"></i>
-                              </button>
-                            </Link> */}
+
                               <DeleteButton
                                 endpoint="delete_data_based_data"
                                 id={detail.data_name}
@@ -290,66 +342,83 @@ const DataBrandOverview = () => {
                             </div>
                           </div>
                           <div className="summary_cardbody">
-                            <Link to={`/data-brand-view/${detail._id}`}>
-                              <div className="summary_cardrow flex-column">
-                                <div className="summary_box text-center ml-auto mr-auto">
-                                  {(detail.data_type == 'jpg' || detail.data_type == 'png' || detail.data_type == 'jpeg') ? 
-                                    (<img
-                                      src={detail.data_image}
-                                      width="100%"
-                                      height="100%"
-                                    />): 
-                                    (<img
-                                      src={imageIcon}
-                                      width="80px"
-                                      height="80px"
-                                    />)
-                                  }
-                                </div>
-                                <div className="summary_box col">
-                                  <h4>
-                                    <span>Type</span>
-                                    {detail.data_type}
-                                  </h4>
-                                </div>
-                                <div className="summary_box col">
-                                  <h4>
-                                    <span>Category</span>
-                                    {detail.category_name}
-                                  </h4>
-                                </div>
-                                <div className="summary_box col">
-                                  <h4>
-                                    <span>Content type</span>
-                                    {detail.content_type_name}
-                                  </h4>
-                                </div>
-                                <div className="summary_box col">
-                                  <h4>
-                                    <span>Platform</span>
-                                    {detail.platform_name}
-                                  </h4>
-                                </div>
-                                <div className="summary_box col">
-                                  <h4>
-                                    <span>Date</span>
-                                    {detail.created_at.split("T")[0]}
-                                  </h4>
-                                </div>
-                                <div className="summary_box col">
-                                  <h4>
-                                    <span>Image count</span>
-                                    {getBrandCount(detail.data_name)}
-                                  </h4>
-                                </div>
-                                <div className="summary_box col">
-                                  <h4>
-                                    <span>Uploaded by</span>
-                                    {detail.created_by_name}
-                                  </h4>
-                                </div>
+                            <div className="d-flex">
+                              <div className="documentCard_download">
+                                <a href={detail.data_image} download>
+                                  <FcDownload />
+                                </a>
                               </div>
-                            </Link>
+                            </div>
+                            <div className="summary_cardrow flex-column">
+                              <div className="summary_box text-center ml-auto mr-auto">
+                                {detail.data_type == "jpg" ||
+                                detail.data_type == "png" ||
+                                detail.data_type == "jpeg" ? (
+                                  <img
+                                    onClick={() =>
+                                      handleImageClick(detail.data_image)
+                                    }
+                                    src={detail.data_image}
+                                    width="100%"
+                                    height="100%"
+                                  />
+                                ) : (
+                                  <img
+                                    src={imageIcon}
+                                    width="80px"
+                                    height="80px"
+                                  />
+                                )}
+                              </div>
+                              <div className="summary_box col">
+                                <h4>
+                                  <span>Type</span>
+                                  {detail.data_type}
+                                </h4>
+                              </div>
+                              <div className="summary_box col">
+                                <h4>
+                                  <span>Category</span>
+                                  {detail.category_name}
+                                </h4>
+                              </div>
+                              <div className="summary_box col">
+                                <h4>
+                                  <span>Content type</span>
+                                  {detail.content_type_name}
+                                </h4>
+                              </div>
+                              <div className="summary_box col">
+                                <h4>
+                                  <span>Platform</span>
+                                  {detail.platform_name}
+                                </h4>
+                              </div>
+                              <div className="summary_box col">
+                                <h4>
+                                  <span>Date</span>
+                                  {detail.created_at.split("T")[0]}
+                                </h4>
+                              </div>
+                              <div className="summary_box col">
+                                <h4>
+                                  <span>Image count</span>
+                                  {getBrandCount(detail.data_name)}
+                                </h4>
+                              </div>
+                              <div className="summary_box col">
+                                <h4>
+                                  <span>Uploaded by</span>
+                                  {detail.created_by_name}
+                                </h4>
+                              </div>
+                              <div className="summary_box col">
+                                <h4>
+                                  <span>Designed by</span>
+                                  {detail.designed_by_name}
+                                </h4>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -358,6 +427,26 @@ const DataBrandOverview = () => {
             </div>
           </div>
         </div>
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={handleCloseModal}
+          // style={{
+          //   content: {
+          //     top: "50%",
+          //     left: "50%",
+          //     right: "auto",
+          //     bottom: "auto",
+          //     // marginRight: "-50%",
+          //     transform: "translate(-50%, -50%)",
+          //   },
+          // }}
+        >
+          <img
+            src={enlargedImageUrl}
+            alt="Enlarged Image"
+            style={{ maxWidth: "100%", maxHeight: "100%" }}
+          />
+        </Modal>
       </div>
     </>
   );
