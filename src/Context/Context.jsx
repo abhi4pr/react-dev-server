@@ -31,22 +31,23 @@ const AppProvider = ({ children }) => {
     axios
       .get("http://34.93.221.166:3000/api/get_all_asset_category")
       .then((res) => {
-        setCategoryData(res.data.data.asset_categories);
+        setCategoryData(res?.data.data.asset_categories);
       });
   };
   async function getBrandData() {
     const res = await axios.get(
       "http://34.93.221.166:3000/api/get_all_asset_brands"
     );
-    setBrandDataContext(res.data.data);
+    setBrandDataContext(res?.data.data);
+    console.log(res.data.data, "universal");
   }
   async function getAssetData() {
     const res = await axios.get("http://34.93.221.166:3000/api/get_all_sims");
-    setAssetDataContext(res.data.data);
+    setAssetDataContext(res?.data.data);
   }
   async function getUserAPIData() {
     axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
-      setUsersContextData(res.data.data);
+      setUsersContextData(res?.data.data);
     });
   }
 

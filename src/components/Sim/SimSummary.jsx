@@ -53,7 +53,7 @@ const SimSummary = () => {
           <div className="container">
             <div className="action_heading">
               <div className="action_title">
-                <FormContainer mainTitle="Sim" link="/sim-master" />
+                <FormContainer mainTitle="Summary" link="/sim-master" />
               </div>
             </div>
             <div className="summary_cards">

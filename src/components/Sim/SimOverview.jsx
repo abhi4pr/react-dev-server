@@ -55,14 +55,15 @@ const SimOverview = () => {
   function getData() {
     axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
       const simAllData = res.data.data;
-      if (status != "") {
-        const AvailableData = simAllData.filter(
-          (data) => data.status.toLowerCase() == status
-        );
-        setData(AvailableData);
-        setFilterData(AvailableData);
-      } else if (selectedStatus !== "") {
-        const AvailableData = simAllData.filter(
+      // if (status != "") {
+      //   const AvailableData = simAllData?.filter(
+      //     (data) => data.status.toLowerCase() == status
+      //   );
+      //   setData(AvailableData);
+      //   setFilterData(AvailableData);
+      // } else
+      if (selectedStatus !== "") {
+        const AvailableData = simAllData?.filter(
           (data) => data.status == selectedStatus
         );
         setData(AvailableData);
@@ -80,7 +81,9 @@ const SimOverview = () => {
   // }
 
   useEffect(() => {
-    const MSD = userData.filter((data) => data.user_id == selectedUserTransfer);
+    const MSD = userData?.filter(
+      (data) => data.user_id == selectedUserTransfer
+    );
     setModalSelectedUserData(MSD);
   }, [selectedUserTransfer]);
 
@@ -152,16 +155,16 @@ const SimOverview = () => {
 
   useEffect(() => {
     if (modalData) {
-      const simAllocationTransfer = simallocationdata.filter(
-        (data) => data.sim_id == modalData.sim_id
+      const simAllocationTransfer = simallocationdata?.filter(
+        (data) => data.sim_id == modalData?.sim_id
       );
       setSimAllocationTransferData(simAllocationTransfer);
     }
   }, [modalData]);
 
   useEffect(() => {
-    if (simAllocationTransferData.length > 0) {
-      const commonUserId = userData.filter(
+    if (simAllocationTransferData?.length > 0) {
+      const commonUserId = userData?.filter(
         (data) => data.user_id == simAllocationTransferData[0].user_id
       );
       setParticularUserName(commonUserId[0]?.user_name);
@@ -250,11 +253,6 @@ const SimOverview = () => {
       ),
       sortable: true,
     },
-    // {
-    //   name: "Assets Name",
-    //   selector: (row) => row.assetsName,
-    //   sortable: true,
-    // },
     {
       name: "Asset ID",
       selector: (row) => row.asset_id,
@@ -406,7 +404,7 @@ const SimOverview = () => {
     setImageModalOpen(false);
   };
   useEffect(() => {
-    const result = data.filter((d) => {
+    const result = data?.filter((d) => {
       const categoryMatch = !category || d.category_id === category;
       const subcategoryMatch =
         !subcategory || d.sub_category_id === subcategory;
@@ -536,7 +534,7 @@ const SimOverview = () => {
                     <Select
                       options={[
                         { value: "", label: "All" },
-                        ...categoryDataContext.map((option) => ({
+                        ...categoryDataContext?.map((option) => ({
                           value: option.category_id,
                           label: option.category_name,
                         })),
@@ -547,7 +545,7 @@ const SimOverview = () => {
                           : {
                               value: category,
                               label:
-                                categoryDataContext.find(
+                                categoryDataContext?.find(
                                   (dept) => dept.category_id === category
                                 )?.category_name || "Select...",
                             }
@@ -572,7 +570,7 @@ const SimOverview = () => {
                       className=""
                       options={[
                         { value: "", label: "All" },
-                        ...subcategoryData.map((option) => ({
+                        ...subcategoryData?.map((option) => ({
                           value: option.sub_category_id,
                           label: `${option.sub_category_name}`,
                         })),
@@ -583,7 +581,7 @@ const SimOverview = () => {
                           : {
                               value: subcategory,
                               label:
-                                subcategoryData.find(
+                                subcategoryData?.find(
                                   (sub) => sub.sub_category_id === subcategory
                                 )?.sub_category_name || "Select...",
                             }
@@ -728,14 +726,14 @@ const SimOverview = () => {
                     </label>
                     <Select
                       className=""
-                      options={userData.map((option) => ({
+                      options={userData?.map((option) => ({
                         value: option.user_id,
                         label: `${option.user_name}`,
                       }))}
                       value={{
                         value: selectedUserTransfer,
                         label:
-                          userData.find(
+                          userData?.find(
                             (user) => user.user_id == selectedUserTransfer
                           )?.user_name || "",
                       }}
@@ -746,7 +744,7 @@ const SimOverview = () => {
                     />
                   </div>
                 </div>
-                {modalSelectedUserData.length > 0 && (
+                {modalSelectedUserData?.length > 0 && (
                   <div className="modal_formbx">
                     <ul>
                       <li>
@@ -846,14 +844,14 @@ const SimOverview = () => {
                     </label>
                     <Select
                       className=""
-                      options={userData.map((option) => ({
+                      options={userData?.map((option) => ({
                         value: option.user_id,
                         label: `${option.user_name}`,
                       }))}
                       value={{
                         value: selectedUserTransfer,
                         label:
-                          userData.find(
+                          userData?.find(
                             (user) => user.user_id == selectedUserTransfer
                           )?.user_name || "",
                       }}
@@ -865,7 +863,7 @@ const SimOverview = () => {
                   </div>
                 </div>
 
-                {modalSelectedUserData.length > 0 && (
+                {modalSelectedUserData?.length > 0 && (
                   <div className="modal_formbx">
                     <ul>
                       <li>
@@ -930,7 +928,7 @@ const SimOverview = () => {
           </div>
         </div>
 
-        {showAssetsImage.length > 0 && (
+        {showAssetsImage?.length > 0 && (
           <>
             <h2>Type : {showAssetsImage[0]?.type}</h2>
             <div className="summary_cards flex-row row">

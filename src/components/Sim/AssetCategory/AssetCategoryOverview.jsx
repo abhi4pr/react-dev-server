@@ -35,7 +35,7 @@ const AssetCategoryOverview = () => {
       const response = await axios.get(
         `http://34.93.221.166:3000/api/get_count_sub_category/${row}`
       );
-      setSubcategroycount(response.data.data.sub_categories);
+      setSubcategroycount(response.data.data?.sub_categories);
       setHandleOpenSubCat(true);
     } catch (error) {
       console.log(error, "sub cat api not working");
@@ -46,7 +46,7 @@ const AssetCategoryOverview = () => {
       const response = await axios.get(
         `http://34.93.221.166:3000/api/get_total_asset_in_category/${row}`
       );
-      setTotalAssets(response.data.data);
+      setTotalAssets(response?.data.data);
       seAssetModel(true);
     } catch (error) {
       console.log("total asset not working", error);
@@ -61,7 +61,7 @@ const AssetCategoryOverview = () => {
       const response = await axios.get(
         `http://34.93.221.166:3000/api/get_total_asset_in_category_allocated/${row}`
       );
-      setTotalAssets(response.data.data);
+      setTotalAssets(response?.data.data);
       seAssetModel(true);
     } catch (error) {
       console.log("total asset not working", error);
@@ -91,8 +91,8 @@ const AssetCategoryOverview = () => {
   };
 
   useEffect(() => {
-    const result = data.filter((d) => {
-      return d.category_name.toLowerCase().match(search.toLowerCase());
+    const result = data?.filter((d) => {
+      return d.category_name?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
@@ -103,8 +103,8 @@ const AssetCategoryOverview = () => {
         "http://34.93.221.166:3000/api/get_all_asset_category"
       );
 
-      setFilterData(response.data.data.asset_categories);
-      setData(response.data.data.asset_categories);
+      setFilterData(response.data.data?.asset_categories);
+      setData(response.data.data?.asset_categories);
     } catch (error) {
       toastAlert("Data not submitted", error.message);
       return null;
