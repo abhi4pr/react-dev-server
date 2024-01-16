@@ -423,7 +423,7 @@ const SalaryWFH = () => {
   const handleAttendance = async () => {
     try {
       const addAttendanceResponse = await axios.post(
-        "http://34.93.221.166:3000/api/add_attendance",
+        "http://192.168.29.117:3000/api/add_attendance",
         {
           dept: department,
           user_id: userName.user_id,
@@ -847,6 +847,10 @@ const SalaryWFH = () => {
     {
       name: "To Pay",
       cell: (row) => row.toPay + " ₹",
+    },
+    {
+      name: "Status",
+      cell: (row) => row.attendence_status_flow,
     },
     {
       name: "separation",

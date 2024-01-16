@@ -202,7 +202,7 @@ const UserUpdate = () => {
     useState("");
 
   const [documentData, setDocumentData] = useState([]);
-  const [loading,setLoading]=useState(false)
+  const [loading, setLoading] = useState(false);
   const [jobTypeData, setJobTypeData] = useState([]);
 
   const [cast, setCast] = useState("");
@@ -314,9 +314,9 @@ const UserUpdate = () => {
       .then((res) => {
         setDesignationData(res.data.data);
       });
-      axios.get('http://34.93.221.166:3000/api/get_all_job_types').then((res)=>{
-        setJobTypeData(res.data.data)
-      })
+    axios.get("http://34.93.221.166:3000/api/get_all_job_types").then((res) => {
+      setJobTypeData(res.data.data);
+    });
   }, []);
 
   useEffect(() => {
@@ -425,7 +425,6 @@ const UserUpdate = () => {
           emergency_contact_relation1,
           emergency_contact_relation2,
         } = fetchedData;
-        console.log(room_id);
         setPanNo(pan_no);
         setUidNo(uid_no);
         setSpouseName(spouse_name);
@@ -558,7 +557,7 @@ const UserUpdate = () => {
       return toastError("City is Required");
     } else if (!state || state == "") {
       return toastError("State/UT is Required");
-    } else if (!pincode || pincode == "" || pincode.length !== 6) {
+    } else if (!pincode || pincode == "") {
       return toastError("Pincode should be 6 number long");
     } else if (!joiningDate || joiningDate == "") {
       return toastError("Joining Date is Required");
@@ -576,7 +575,6 @@ const UserUpdate = () => {
       return toastError("Sitting Error is required");
     }
     const formData = new FormData();
-    console.log("came to submit");
     formData.append("user_status", userStatus);
     formData.append("user_id", id);
     formData.append("user_name", username);
@@ -586,8 +584,11 @@ const UserUpdate = () => {
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
     formData.append("user_contact_no", contact ? contact : "");
-    formData.append("sitting_id", jobType === "WFH" ? 0 : sitting);
-    formData.append("room_id", roomId.room_id ? roomId.room_id : roomId);
+    formData.append("sitting_id", jobType === "WFH" ? 0 : Number(sitting));
+    formData.append(
+      "room_id",
+      jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id
+    );
     // console.log("room id he yha", roomId);
     // formData.append("room_id", roomId);
     formData.append("dept_id", department);
@@ -650,12 +651,11 @@ const UserUpdate = () => {
     formData.append("sub_dept_id", subDepartment);
     formData.append("highest_qualification_name", higestQualification);
     formData.append("cast_type", cast);
-    console.log("other doc");
+
     const formDataa = new FormData();
     if (personalEmail && personalContact) {
       setLoading(true);
 
-      console.log("came to if");
       await axios
         .put(`http://34.93.221.166:3000/api/update_user`, formData, {
           headers: {
@@ -664,7 +664,6 @@ const UserUpdate = () => {
         })
         .then((res) => {
           setLoading(false);
-          console.log(res.data);
         })
         .catch(function (err) {
           setLoading(false);
@@ -741,7 +740,6 @@ const UserUpdate = () => {
             "http://34.93.221.166:3000/api/update_education",
             payload
           );
-          console.log(response.data);
         } catch (error) {
           console.error("Error Updating Education details:", error);
         }
@@ -852,7 +850,6 @@ const UserUpdate = () => {
       //     console.log("Failed to send email:", error);
       //   });
     } else {
-      console.log("came to else");
       if (contact.length !== 10) {
         if (isValidcontact == false)
           toastError("Enter Phone Number in Proper Format");
@@ -1044,15 +1041,10 @@ const UserUpdate = () => {
 
   const handleRemoveEducationDetails = async (index) => {
     const itemToRemove = educationDetails[index];
-    console.log(itemToRemove, "item to remove education");
     if (itemToRemove && itemToRemove.education_id) {
       try {
         await axios.delete(
           `http://34.93.221.166:3000/api/delete_education/${itemToRemove.education_id}`
-        );
-        console.log(
-          "Deleted Education detail from server:",
-          itemToRemove.education_id
         );
         toastAlert("Details Deleted");
       } catch (error) {
@@ -1469,7 +1461,7 @@ const UserUpdate = () => {
         />
       </div>
 
-      {jobType === "WFH" && (
+      {(jobType === "WFH" || jobType === "WFHD") && (
         <>
           <FieldContainer
             label="Salary"
@@ -1901,6 +1893,7 @@ const UserUpdate = () => {
         label="Pincode"
         astric={true}
         value={pincode}
+        maxLength={6}
         onChange={(e) => setPincode(e.target.value)}
         required={false}
       />

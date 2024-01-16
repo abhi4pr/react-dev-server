@@ -223,7 +223,7 @@ const UserMaster = () => {
     status: false,
     bankDetails: false,
   });
-  const [jobTypeData, setJobTypeData] = useState([])
+  const [jobTypeData, setJobTypeData] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
@@ -322,9 +322,9 @@ const UserMaster = () => {
         setDesignationData(res.data.data);
       });
 
-    axios.get('http://34.93.221.166:3000/api/get_all_job_types').then(res=>{
-      setJobTypeData(res.data.data)
-    })
+    axios.get("http://34.93.221.166:3000/api/get_all_job_types").then((res) => {
+      setJobTypeData(res.data.data);
+    });
   }, []);
 
   const handleSubmit = async (e) => {
@@ -420,7 +420,10 @@ const UserMaster = () => {
     formData.append("user_login_password", password);
     formData.append("user_contact_no", contact);
     formData.append("sitting_id", sitting);
-    formData.append("room_id",jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id);
+    formData.append(
+      "room_id",
+      jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id
+    );
     formData.append("dept_id", department);
     formData.append("job_type", jobType);
     formData.append("personal_number", personalContact);
@@ -1105,7 +1108,6 @@ const UserMaster = () => {
               subDepartmentData === null ||
               subDepartmentData.length === 0
             ) {
-
               // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,subDepartment:true});
               return setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
@@ -1647,7 +1649,7 @@ const UserMaster = () => {
         onChange={(e) => setReleavingDate(e.target.value)}
       /> */}
 
-      {jobType === "WFH" && (
+      {(jobType === "WFH" || jobType === "WFHD") && (
         <>
           <FieldContainer
             label="Salary"
