@@ -396,14 +396,29 @@ const DataBrandUpdate = () => {
               </div>
 
               <div className="summary_cards brand_img_list">
-                {logos && logos.map((detail) => (
-                  <div className="summary_card brand_img_item">
+                {logos && logos.map((detail,index) => (
+                  <div key={index} className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
                       <div className="col summary_box brand_img_box">
-                        <img
+                        {/* <img
                           className="brandimg_icon"
                           src={detail.data_image}
-                        />
+                        /> */}
+                        {detail.data_type === "jpg" ||
+                        detail.data_type === "jpeg" ||
+                        detail.data_type === "png" ||
+                        detail.data_type === "gif" ? (
+                          <img
+
+                            className="brandimg_icon"
+                            src={detail.data_image}
+                          />
+                        ) : (
+                          <div className="file_icon">
+                            {renderFileIcon(detail.data_type)}
+                          </div>
+                        )}
+                        
                       </div>
                       <div className="col summary_box brand_img_box">
                         <h4>
@@ -449,7 +464,7 @@ const DataBrandUpdate = () => {
                   </div>
                 ))}
                 {details.map((detail, index) => (
-                  <div className="summary_card brand_img_item">
+                  <div key={index} className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
                     <div className="col summary_box brand_img_box col140">
                   {detail.fileType === "jpg" ||

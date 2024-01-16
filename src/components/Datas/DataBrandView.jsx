@@ -103,8 +103,8 @@ const DataBrandView = () => {
               />
 
               <div className="row">
-                {logos.map((detail) => (
-                  <div
+                {logos.map((detail,index) => (
+                  <div key={index}
                     className="col-md-3 card"
                     style={{ margin: "0 0 10px 0" }}
                   >
@@ -144,9 +144,11 @@ const DataBrandView = () => {
                     <div className="card-body">
                       <button type="button" className="btn btn-success">
                         <a
-                          href={detail.data_image}
+                          href={detail.data_image_download}
                           target="_blank"
                           rel="noopener noreferrer"
+                          download={detail.data_image_download}
+
                         >
                           {" "}
                           Download{" "}

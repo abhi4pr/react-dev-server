@@ -6,9 +6,13 @@ import FormContainer from "../AdminPanel/FormContainer";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import imageIcon from "./image-icon.png";
+import pdf from "./pdf-file.png";
+import sheets from "./sheets.png";
+import video from "./montage.png";
 import DeleteButton from "../AdminPanel/DeleteButton";
 import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
+import { Slider } from "@mui/material";
 
 const DataBrandOverview = () => {
   const [search, setSearch] = useState("");
@@ -28,6 +32,56 @@ const DataBrandOverview = () => {
 
   const [designedData, setDesignedData] = useState([]);
   const [designed, setDesigned] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [enlargedFileType, setEnlargedFileType] = useState("");
+  const [enlargedFileUrl, setEnlargedFileUrl] = useState("");
+
+  const handleFileClick = (fileType, fileUrl) => {
+    setEnlargedFileType(fileType);
+    setEnlargedFileUrl(fileUrl);
+    setIsModalOpen(true);
+  };
+
+  const handleChange = (event, newValue) => {
+    setCountData(newValue);
+  };
+
+  const renderEnlargedContent = () => {
+    switch (enlargedFileType) {
+      case "image":
+        return (
+          <img
+            src={enlargedFileUrl}
+            alt="Enlarged Image"
+            style={{ maxWidth: "100%", maxHeight: "auto" }}
+          />
+        );
+      case "pdf":
+        return (
+          // <Document file={enlargedFileUrl}>
+          //   <Page pageNumber={1} />
+          // </Document>
+          <iframe
+            src={enlargedFileUrl}
+            title="file"
+            width="100%"
+            height="100%"
+          ></iframe>
+        );
+      case "video":
+        return (
+          <video src={enlargedFileUrl} controls width="50%" height="auto" />
+        );
+      default:
+        return null;
+    }
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEnlargedFileType("");
+    setEnlargedFileUrl("");
+  };
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -40,6 +94,7 @@ const DataBrandOverview = () => {
       .then((res) => {
         setCountData(res.data);
         const responseData = res.data;
+
         const uniqueBrandName = new Set();
         const filteredData = responseData.filter((item) => {
           if (!uniqueBrandName.has(item.data_name)) {
@@ -50,6 +105,7 @@ const DataBrandOverview = () => {
         });
         if (RoleIDContext == 2 || RoleIDContext == 1) {
           setData(filteredData);
+          console.log(filteredData);
         } else {
           setData(filteredData.filter((d) => d.created_by === userID));
         }
@@ -136,16 +192,16 @@ const DataBrandOverview = () => {
       });
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [enlargedImageUrl, setEnlargedImageUrl] = useState("");
-  const handleImageClick = (imageUrl) => {
-    setEnlargedImageUrl(imageUrl);
-    setIsModalOpen(true);
-  };
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setEnlargedImageUrl("");
-  };
+  // const handleImageClick = (imageUrl) => {
+  //   setEnlargedImageUrl(imageUrl);
+  //   setIsModalOpen(true);
+  // };
+  // const handleCloseModal = () => {
+  //   setIsModalOpen(false);
+  //   setEnlargedImageUrl("");
+  // };
 
   return (
     <>
@@ -304,9 +360,12 @@ const DataBrandOverview = () => {
                         ?.toLowerCase()
                         .includes(search.toLowerCase())
                   )
-                  .map((detail) => {
+                  .map((detail, index) => {
                     return (
-                      <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+                      <div
+                        key={index}
+                        className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12"
+                      >
                         <div className="summary_card">
                           <div className="summary_cardtitle">
                             <h5>
@@ -350,7 +409,7 @@ const DataBrandOverview = () => {
                               </div>
                             </div>
                             <div className="summary_cardrow flex-column">
-                              <div className="summary_box text-center ml-auto mr-auto">
+                              {/* <div className="summary_box text-center ml-auto mr-auto">
                                 {detail.data_type == "jpg" ||
                                 detail.data_type == "png" ||
                                 detail.data_type == "jpeg" ? (
@@ -369,7 +428,208 @@ const DataBrandOverview = () => {
                                     height="80px"
                                   />
                                 )}
+                              </div> */}
+                              <div className="summary_box text-center ml-auto mr-auto">
+                                {detail.data_type === "jpg" ||
+                                detail.data_type === "png" ||
+                                detail.data_type === "jpeg" ? (
+                                  // <img
+                                  //   onClick={() =>
+                                  //     handleFileClick(
+                                  //       "image",
+                                  //       detail.data_image
+                                  //     )
+                                  //   }
+                                  //   src={detail.data_image}
+                                  //   width="100%"
+                                  //   height="100%"
+                                  // />
+                                  // 'sasdf'
+
+                                  // <div
+                                  //   id="carouselExampleControls"
+                                  //   className="carousel slide"
+                                  //   data-ride="carousel"
+                                  // >
+                                  //   <div className="carousel-inner">
+                                  //     {countData
+                                  //       .filter(
+                                  //         (item) =>
+                                  //           item.data_name === detail.data_name
+                                  //       )
+                                  //       .map((filteredItem, index) => (
+                                  //         <div
+                                  //           key={index}
+                                  //           className={`carousel-item ${
+                                  //             index === 0 ? "active" : ""
+                                  //           }`}
+                                  //         >
+                                  //           <img
+                                  //             className="d-block w-100"
+                                  //             src={filteredItem.data_image}
+                                  //             alt={`Slide ${index + 1}`}
+                                  //           />
+                                  //         </div>
+                                  //       ))}
+                                  //   </div>
+
+                                  //   <a
+                                  //     className="carousel-control-prev"
+                                  //     href="#carouselExampleControls"
+                                  //     role="button"
+                                  //     data-slide="prev"
+                                  //   >
+                                  //     <span
+                                  //       className="carousel-control-prev-icon"
+                                  //       aria-hidden="true"
+                                  //     ></span>
+                                  //     <span className="sr-only">Previous</span>
+                                  //   </a>
+                                  //   <a
+                                  //     className="carousel-control-next"
+                                  //     href="#carouselExampleControls"
+                                  //     role="button"
+                                  //     data-slide="next"
+                                  //   >
+                                  //     <span
+                                  //       className="carousel-control-next-icon"
+                                  //       aria-hidden="true"
+                                  //     ></span>
+                                  //     <span className="sr-only">Next</span>
+                                  //   </a>
+                                  // </div>
+
+                                  <div
+                                    id={`carouselExampleControls_${index}`}
+                                    className="carousel slide"
+                                    data-ride="carousel"
+                                  >
+                                    <div className="carousel-inner">
+                                      {countData
+                                        .filter(
+                                          (item) =>
+                                           ( item.data_name === detail.data_name) 
+                                          //  && (item.data_type === "jpg" ||
+                                          //   item.data_type === "png" ||
+                                          //   item.data_type === "jpeg"
+                                          //  )
+                                        )
+                                        .map((filteredItem, index) => (
+                                          <div
+                                            key={index}
+                                            className={`carousel-item ${
+                                              index === 0 ? "active" : ""
+                                            }`}
+                                            data-interval="10000"
+                                          >
+                                            {
+                                              filteredItem.data_type === "jpg" ||
+                                              filteredItem.data_type === "png" ||
+                                              filteredItem.data_type === "jpeg" ? (
+
+                                              <img
+                                              onClick={() =>
+                                                handleFileClick(
+                                                  "image",
+                                                  filteredItem.data_image
+                                                )
+                                              }
+                                              className="d-block w-100"
+                                              src={filteredItem.data_image}
+                                              alt={`Slide ${index + 1}`}
+                                            />)
+                                            
+                                            : filteredItem.data_type === "pdf" ? (
+                                              
+                                              <img
+                                              onClick={() =>
+                                                handleFileClick(
+                                                  "pdf",
+                                                  filteredItem.data_image
+                                                )
+                                              }
+                                              className="d-block w-100"
+                                              src={pdf}
+                                              alt={`Slide ${index + 1}`}
+                                            />
+                                            ) : filteredItem.data_type === "mp4" ? (
+                                              <img
+                                              onClick={() =>
+                                                handleFileClick(
+                                                  "video",
+                                                  filteredItem.data_image
+                                                )
+                                              }
+                                              className="d-block w-100"
+                                              src={video}
+                                              alt={`Slide ${index + 1}`}
+                                            />
+                                            ) : (
+                                              <img
+                                              className="d-block w-100"
+                                              src={video}
+                                              alt={`Slide ${index + 1}`}
+                                            />
+                                            )
+                                            }
+                                          </div>
+                                        ))}
+                                    </div>
+                                    <button
+                                      className="carousel-control-prev"
+                                      type="button"
+                                      data-target={`#carouselExampleControls_${index}`}
+                                      data-slide="prev"
+                                    >
+                                      <span
+                                        className="carousel-control-prev-icon"
+                                        aria-hidden="true"
+                                      ></span>
+                                      <span className="sr-only">Previous</span>
+                                    </button>
+                                    <button
+                                      className="carousel-control-next"
+                                      type="button"
+                                      data-target={`#carouselExampleControls_${index}`}
+                                      data-slide="next"
+                                    >
+                                      <span
+                                        className="carousel-control-next-icon"
+                                        aria-hidden="true"
+                                      ></span>
+                                      <span className="sr-only">Next</span>
+                                    </button>
+                                  </div>
+                                ) : detail.data_type === "pdf" ? (
+                                  <img
+                                    onClick={() =>
+                                      handleFileClick("pdf", detail.data_image)
+                                    }
+                                    src={video}
+                                    width="80px"
+                                    height="80px"
+                                  />
+                                ) : detail.data_type === "mp4" ? (
+                                  <img
+                                    onClick={() =>
+                                      handleFileClick(
+                                        "video",
+                                        detail.data_image
+                                      )
+                                    }
+                                    src={video}
+                                    width="80px"
+                                    height="80px"
+                                  />
+                                ) : (
+                                  <img
+                                    src={video}
+                                    width="80px"
+                                    height="80px"
+                                  />
+                                )}
                               </div>
+
                               <div className="summary_box col">
                                 <h4>
                                   <span>Type</span>
@@ -427,25 +687,50 @@ const DataBrandOverview = () => {
             </div>
           </div>
         </div>
-        <Modal
+        {/* <Modal
           isOpen={isModalOpen}
           onRequestClose={handleCloseModal}
-          // style={{
-          //   content: {
-          //     top: "50%",
-          //     left: "50%",
-          //     right: "auto",
-          //     bottom: "auto",
-          //     // marginRight: "-50%",
-          //     transform: "translate(-50%, -50%)",
-          //   },
-          // }}
+          style={{
+            content: {
+              top: "50%",
+              left: "50%",
+              right: "auto",
+              bottom: "auto",
+              width: "50%",
+              // marginRight: "-50%",
+              transform: "translate(-50%, -50%)",
+            },
+          }}
         >
           <img
             src={enlargedImageUrl}
             alt="Enlarged Image"
-            style={{ maxWidth: "100%", maxHeight: "100%" }}
+            style={{ maxWidth: "100%", maxHeight: "atuo" }}
           />
+        </Modal> */}
+
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={handleCloseModal}
+          style={{
+            content: {
+              alignContent: "center",
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "center",
+              top: "50%",
+              left: "50%",
+              right: "auto",
+              bottom: "auto",
+              width: "50%",
+              height:[enlargedFileType === "pdf" ? "100vh" : "auto"],
+              
+              // marginRight: "-50%",
+              transform: "translate(-50%, -50%)",
+            },
+          }}
+        >
+          {renderEnlargedContent()}
         </Modal>
       </div>
     </>
