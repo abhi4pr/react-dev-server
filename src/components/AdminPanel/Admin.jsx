@@ -199,6 +199,7 @@ import ViewEditDigiSignature from "./WFH/DigitalSignature/ViewEditDigiSignature"
 import PlancreationNew from "./RegisterCampaign/PlancreationNew";
 import PhasecreationNew from "./RegisterCampaign/PhasecreationNew";
 import DesiDeptAuth from "../AdminPanel/Designation/DesiDeptAuth";
+import PlanDashboard from "./RegisterCampaign/PlanDashboard/PlanDashboard";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -744,6 +745,8 @@ const Admin = () => {
 
                   {/* Phase Dashboard here  */}
                   <Route path="/phase-dashboard" element={<PhaseDashboard />} />
+                  <Route path="/plan-dashboard/:id" element={<PlanDashboard />} />
+
                   <Route
                     path="/replacement-dashboard"
                     element={<ReplacementDashobard />}

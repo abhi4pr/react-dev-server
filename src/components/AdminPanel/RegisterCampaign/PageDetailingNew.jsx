@@ -28,7 +28,8 @@ import { useNavigate } from "react-router-dom";
 import SummrayDetailes from "./SummrayDetailes";
 import { useGlobalContext } from "../../../Context/Context";
 import Loader from "./Loader/Loader";
-
+import exportToCSV from "../../../utils/ExcelConverter";
+import generatePDF from "../../../utils/PdfConverter";
 let options = [];
 let pageNames = [];
 const Follower_Count = [
@@ -149,6 +150,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                 const pageD = await axios.get(
                     `http://34.93.221.166:3000/api/campaignplan/${data.campaignId}`
                 );
+                console.log(pageD.data.data);
                 const x = pageD.data.data
                     .filter((page) => {
                         return (
@@ -390,9 +392,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         }
 
         setRadioSelected("all");
-        // x=selectedRows
-        // setUnregisteredPages(rejectedPages)
-
         setIsModalOpenCP(false);
     };
 
@@ -471,19 +470,12 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     const handlePost = (e, field) => {
         let updatedValue = e.target.value;
 
-        // if (e.target.value >= smallPostPerPage) {
-
-        //     updatedValue = smallPostPerPage
-        // }
 
         const postperpage = payload.map((page) => {
             if (field == "post") {
                 return { ...page, postPerPage: updatedValue };
             } else return { ...page, storyPerPage: updatedValue };
         });
-
-        
-
 
             const newFilteredPages = planPages.map((page) => {
                 if (selectedRows.includes(page.p_id)) {
@@ -629,8 +621,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         }
         if (pageName == "phaseCreation") {
             
-
-            // console.log("phase creation")
             if (phaseInfo.phaseDataError === "") {
                 setPhaseDataError("Phase ID is Required");
             }
@@ -672,7 +662,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             }
         }
     };
-
     const columnForPages = [
         {
             field: "S.NO",
@@ -798,6 +787,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     if (isLoadingPlan) {
         return <Loader message="Plan creation in progress..." />;
     }
+    
     return (
         <>
             <Paper sx={{ marginTop: "2rem", padding: "1rem" }}>
@@ -891,6 +881,10 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                     variant="outlined"
                     onChange={(e) => handlePost(e, "story")}
                 />
+
+<Button onClick={() =>exportToCSV(payload)} variant="outlined" color="secondary"> Download Excel</Button>
+<Button onClick={() => generatePDF(payload)} variant="outlined" color="primary">Download PDF</Button>
+
             </Box>
             <Paper sx={{ display: "flex", justifyContent: "space-between", gap: 1.5 }}>
                 <Box sx={{ height: 700, width: "65%" }}>
