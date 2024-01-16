@@ -71,7 +71,7 @@ const AssetSingleUser = () => {
   }
   async function getNewAssetRequest() {
     const res = await axios.get(
-      `http://34.93.221.166:3000/api/assetrequest/${userID}`
+      `http://192.168.29.116:3000/api/get_allocated_asset_data_for_user_id/${userID}`
     );
     console.log(res.data.data, "reason hai");
     setNewAssetRequestData(res?.data.data);
@@ -83,119 +83,6 @@ const AssetSingleUser = () => {
     getNewAssetRequest();
   }, []);
 
-  // const columns = [
-  //   {
-  //     name: "S.No",
-  //     cell: (row, index) => <>{index + 1}</>,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Status",
-  //     selector: (row) => (
-  //       <>
-  //         {row.status === "Accept" ? (
-  //           <span className="badge badge-success">Accepted</span>
-  //         ) : row.status === "Recover" ? (
-  //           <span className="badge badge-warning">Recoverd</span>
-  //         ) : row.status === "Resolved" ? (
-  //           <span className="badge badge-success">Resolved</span>
-  //         ) : row.status === "Requested" ? (
-  //           <span className="badge badge-danger">Requested</span>
-  //         ) : null}
-  //       </>
-  //     ),
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Request By",
-  //     selector: (row) => row.req_by_name,
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Request Date",
-  //     selector: (row) => row.req_date?.split("T")?.[0],
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Priority",
-  //     selector: (row) => row.priority,
-  //     sortable: true,
-  //   },
-
-  //   {
-  //     name: "Asset Name",
-  //     selector: (row) => row.asset_name,
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Category",
-  //     selector: (row) => row.category_name,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Sub Category",
-  //     selector: (row) => row.sub_category_name,
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Brand",
-  //     selector: (row) => row.asset_brand_name,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Modal",
-  //     selector: (row) => row.asset_modal_name,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Vendor Name",
-  //     cell: (row) => (
-  //       <>
-  //         <button
-  //           className="btn btn-success btn-sm"
-  //           onClick={() => handleVendorDetails(row.vendor_id)}
-  //         >
-  //           {row.vendor_name}
-  //         </button>
-  //       </>
-  //     ),
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "img",
-  //     selector: (row) => (
-  //       <button
-  //         className="btn btn-outline-danger"
-  //         onClick={() => handleImageClick(row)}
-  //       >
-  //         <i className="bi bi-images"></i>
-  //       </button>
-  //     ),
-  //   },
-
-  //   {
-  //     name: "In Warranty",
-  //     selector: (row) => row.inWarranty,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Date Of Purchase",
-  //     selector: (row) => row.dateOfPurchase?.split("T")?.[0],
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Warranty Date",
-  //     selector: (row) => row.warrantyDate?.split("T")?.[0],
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  // ];
   useEffect(() => {
     const result = data.filter((d) => {
       return d.assetsName?.toLowerCase().match(search.toLocaleLowerCase());

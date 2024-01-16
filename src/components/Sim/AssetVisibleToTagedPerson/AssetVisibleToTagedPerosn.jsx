@@ -17,8 +17,8 @@ const AssetVisibleToTagedPerosn = () => {
   };
   const accordionButtons = ["Asset Repair Request", "New Asset Request"];
 
-  const tab1 = <TagedPersonOverview filterData={filterData} />;
-  const tab2 = <TagedPersonOverview filterData={filterData} />;
+  const tab1 = <TagedPersonOverview filterData={filterData} tabOne="tabOne" />;
+  const tab2 = <TagedPersonOverview filterData={filterData} tabTwo="tabTwo" />;
 
   useEffect(() => {
     getData();

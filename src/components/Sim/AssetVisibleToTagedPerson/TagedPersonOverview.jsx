@@ -1,7 +1,7 @@
 import DataTable from "react-data-table-component";
 
-const TagedPersonOverview = ({ filterData, hardRender }) => {
-  const columns = [
+const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
+  const columnsTab1 = [
     {
       name: "S.No",
       cell: (row, index) => <>{index + 1}</>,
@@ -57,6 +57,44 @@ const TagedPersonOverview = ({ filterData, hardRender }) => {
       sortable: true,
     },
   ];
+  const columnsTab2 = [
+    {
+      name: "S.No",
+      cell: (row, index) => <>{index + 1}</>,
+      width: "6%",
+      sortable: true,
+    },
+    {
+      name: "Request By",
+      selector: (row) => row.req_by_name,
+      sortable: true,
+      width: "150px",
+    },
+    {
+      name: "Request Date",
+      selector: (row) => row.req_date?.split("T")?.[0],
+      sortable: true,
+      width: "150px",
+    },
+    {
+      name: "Priority",
+      selector: (row) => row.priority,
+      sortable: true,
+    },
+    {
+      name: "Status",
+      selector: (row) => row.status,
+      sortable: true,
+    },
+    {
+      name: "Asset Name",
+      selector: (row) => row.asset_name,
+      sortable: true,
+      width: "14%",
+    },
+  ];
+
+  const activeColumns = tabOne ? columnsTab1 : columnsTab2;
 
   return (
     <>
@@ -65,7 +103,7 @@ const TagedPersonOverview = ({ filterData, hardRender }) => {
           <div className="data_tbl table-responsive">
             <DataTable
               title="Assets"
-              columns={columns}
+              columns={activeColumns}
               data={filterData}
               fixedHeader
               fixedHeaderScrollHeight="64vh"

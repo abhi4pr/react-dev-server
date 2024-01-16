@@ -30,6 +30,11 @@ const AssetSingleuserOverview = ({
   const [tagUser, setTagUser] = useState([]);
   const PriorityData = ["Low", "Medium", "High", "Urgent"];
 
+  // Return Asset
+  const [returnRemark, setReturnRemark] = useState("");
+  const [returnImage1, setReturnImage1] = useState(null);
+  const [returnImage2, setReturnImage2] = useState(null);
+
   async function getRepairReason() {
     const res = await axios.get(
       "http://34.93.221.166:3000/api/get_all_assetResons"
@@ -127,7 +132,13 @@ const AssetSingleuserOverview = ({
     {
       name: "Return",
       cell: (row) => (
-        <button type="button" className="btn btn-outline-primary btn-sm">
+        <button
+          type="button"
+          data-toggle="modal"
+          data-target="#return-asset-modal"
+          size="small"
+          className="btn btn-outline-primary btn-sm"
+        >
           Return Asset
         </button>
       ),
@@ -141,16 +152,17 @@ const AssetSingleuserOverview = ({
       width: "9%",
       sortable: true,
     },
+
     {
       name: "Asset Name",
-      selector: (row) => row.asset_name,
+      selector: (row) => row.assetsName,
       sortable: true,
     },
     {
       name: "Status",
       selector: (row) => (
         <>
-          {row.asset_request_status == "Requested" && (
+          {row.asset_request_asset_request_status == "Requested" && (
             <span className="badge badge-danger">Requested</span>
           )}
         </>
@@ -158,8 +170,19 @@ const AssetSingleuserOverview = ({
       sortable: true,
     },
     {
+      name: "Priority",
+      selector: (row) => row.asset_request_priority,
+      sortable: true,
+    },
+    {
+      name: "Detail",
+      selector: (row) => row.asset_request_detail,
+      sortable: true,
+    },
+
+    {
       name: "Taged Person",
-      selector: (row) => row.multi_tag,
+      selector: (row) => row.asset_request_multi_tag_name,
       sortable: true,
     },
   ];
@@ -172,7 +195,7 @@ const AssetSingleuserOverview = ({
 
   const handleNewAssetSubmit = () => {
     try {
-      axios.post("http://34.93.221.166:3000/api/assetrequest", {
+      axios.post("http://192.168.29.116:3000/api/assetrequest", {
         sim_id: assetsName,
         detail: problemDetailing,
         priority: priority,
@@ -494,6 +517,60 @@ const AssetSingleuserOverview = ({
                   Tag="textarea"
                   value={problemDetailing}
                   onChange={(e) => setProblemDetailing(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  data-dismiss="modal"
+                  className=" btn btn-primary ml-2"
+                  onClick={handleNewAssetSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Return asset modal */}
+      <div className="right-modal">
+        <div
+          className="modal fade right"
+          id="return-asset-modal"
+          tabIndex={-1}
+          role="dialog"
+        >
+          <div className="modal-dialog modal-sm" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <button type="button" className="close" data-dismiss="modal">
+                  <span aria-hidden="true" style={{ marginRight: "250px" }}>
+                    ×
+                  </span>
+                </button>
+                <h4 className="modal-title">Return Asset</h4>
+              </div>
+              <div className="modal-body">
+                <FieldContainer
+                  label="Return Remark"
+                  Tag="textarea"
+                  value={returnRemark}
+                  onChange={(e) => setReturnRemark(e.target.value)}
+                  required
+                />
+                <FieldContainer
+                  label="Image 1"
+                  type="file"
+                  fieldGrid={12}
+                  onChange={(e) => setReturnImage1(e.target.files[0])}
+                  required
+                />
+                <FieldContainer
+                  label="Image 2"
+                  type="file"
+                  fieldGrid={12}
+                  onChange={(e) => setReturnImage2(e.target.files[0])}
                   required
                 />
                 <button

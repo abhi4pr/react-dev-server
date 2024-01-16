@@ -195,6 +195,7 @@ const SidebarLinks = () => {
         </li>
       )}
 
+<<<<<<< Updated upstream
       <li className="nav-item">
         <a
           className="nav-link collapsed"
@@ -222,6 +223,106 @@ const SidebarLinks = () => {
               >
                 <i className="bi bi-person-gear" />
                 <span>WFHD Manager</span>
+=======
+      {isWFHDManager && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseFourdd"
+            aria-expanded="true"
+            aria-controls="collapseFourdd"
+          >
+            <i className="bi bi-person-gear" />
+            <span>WFHD Manager</span>
+          </Link>
+          <div
+            id="collapseFourdd"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              <Link className="collapse-item" to="/admin/user">
+                WFHD Register
+              </Link>
+
+              <Link className="collapse-item" to="/admin/wfhd-overview">
+                WFHD Overview
+              </Link>
+
+              <Link className="collapse-item" to="/admin/salaryWFH">
+                Payroll
+              </Link>
+
+              <Link className="collapse-item" to="/admin/attendence-mast">
+                Attendance
+              </Link>
+            </div>
+          </div>
+        </li>
+      )}
+
+      {isAssetNotifierVisible && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseFourdd"
+            aria-expanded="true"
+            aria-controls="collapseFourdd"
+          >
+            <i className="bi bi-person-gear" />
+            <span>WFH New Module</span>
+          </Link>
+          <div
+            id="collapseFourdd"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              <Link
+                className="collapse-item"
+                to="/admin/view-edit-digital-signature"
+              >
+                Digital Signature
+              </Link>
+
+              <Link className="collapse-item" to="/admin/wfh-template-overview">
+                Change/View Template
+              </Link>
+
+              <Link className="collapse-item" to="/admin/wfh-single-user">
+                Payout Summary
+              </Link>
+            </div>
+          </div>
+        </li>
+      )}
+
+      {isWFHDHRPayrollManager && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseFourcc"
+            aria-expanded="true"
+            aria-controls="collapseFourcc"
+          >
+            <i className="bi bi-person-gear" />
+            <span>HR/Payroll Manager</span>
+          </Link>
+          <div
+            id="collapseFourcc"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              <Link className="collapse-item" to="/admin/user">
+                WFHD Register
+>>>>>>> Stashed changes
               </Link>
               <div
                 id="collapseFourdd"
@@ -276,6 +377,7 @@ const SidebarLinks = () => {
                     Digital Signature
                   </Link>
 
+<<<<<<< Updated upstream
                   <Link
                     className="collapse-item"
                     to="/admin/wfh-template-overview"
@@ -497,6 +599,132 @@ const SidebarLinks = () => {
           )}
           {isOnboardingVisible && (
             <li className="nav-item">
+=======
+      {isAssetNotifierVisible && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseEight"
+            aria-expanded="true"
+            aria-controls="collapseEight"
+          >
+            <i className="bi bi-person-gear" />
+            <span>Asset Notifier</span>
+          </Link>
+          <div
+            id="collapseEight"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              {/* {contextData &&
+                contextData[5] &&
+                contextData[5].view_value === 1 && ( */}
+              <Link className="collapse-item" to="/admin/self-audit">
+                Audit asset
+              </Link>
+              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                Repair Request To HR
+              </Link>
+              <Link
+                className="collapse-item"
+                to="/admin/asset-visible-to-taged-person"
+              >
+                Repair Request To Taged Person
+              </Link>
+              {/* )} */}
+
+              {/* {contextData &&
+                contextData[8] &&
+                contextData[8].view_value === 1 && ( */}
+              {/* <Link className="collapse-item" to="/admin/hr-audit">
+                  Hr Audit
+                  </Link> */}
+              {/* )} */}
+            </div>
+          </div>
+        </li>
+      )}
+
+      {isOnboardingVisible && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseFive"
+            aria-expanded="true"
+            aria-controls="collapseFive"
+          >
+            <i className="bi bi-person-gear" />
+            <span>Org</span>
+          </Link>
+          <div
+            id="collapseFive"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              {contextData &&
+                contextData[18] &&
+                contextData[18].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pre-onboarding">
+                    Add Pre Onboarding
+                  </Link>
+                )}
+
+              {contextData && contextData[18]?.view_value == 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pre-onboarding-overview"
+                >
+                  Overview
+                </Link>
+              )}
+              {contextData && contextData[18]?.view_value == 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pre-onboard-extend-date-overview"
+                >
+                  Extend Date Overview
+                </Link>
+              )}
+              {contextData && contextData[18]?.view_value == 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pre-onboard-coc-master"
+                >
+                  Coc Master
+                </Link>
+              )}
+              {contextData && contextData[18]?.view_value == 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pre-onboard-coc-overview"
+                >
+                  Coc Overview
+                </Link>
+              )}
+              {contextData && contextData[18]?.view_value == 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pre-onboard-user-login-history"
+                >
+                  Login History
+                </Link>
+              )}
+              {contextData && contextData[18]?.view_value == 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pre-onboard-all-notifications"
+                >
+                  All Notifications
+                </Link>
+              )}
+
+>>>>>>> Stashed changes
               <Link
                 className="nav-link collapsed"
                 data-toggle="collapse"
