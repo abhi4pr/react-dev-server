@@ -467,8 +467,8 @@ export default function ExeUPdate() {
           )}
         </div>
         <h4  className="h3 text-center">Followers Bifurcation</h4>
-        <div className="row ">
-          <div className="card">
+        <div className="row">
+          <div className="card col-md-12 col-lg-3">
             <div className="card-body">
               <div className="col-md-3 col-lg-12  my-2">
                 <TextField
@@ -777,7 +777,7 @@ export default function ExeUPdate() {
             </div>
           </div>
 
-          <div className="card">
+          <div className="card col-md-12 col-lg-3">
             <div className="card-body">
               <label className="mt-3 h6">City</label>
               <Autocomplete
@@ -976,7 +976,7 @@ export default function ExeUPdate() {
             </div>
           </div>
 
-          <div className="card">
+          <div className="card col-md-12 col-lg-3">
             <div className="card-body">
               <label className="mt-3 h6">Country</label>
               <div>
@@ -1026,7 +1026,7 @@ export default function ExeUPdate() {
                   )}
                 />
                 <TextField
-                  style={{ width: "10%" }}
+                  // style={{ width: "10%" }}
                   className="mb-2"
                   value={country2Percentage}
                   onChange={(e) => {
@@ -1058,7 +1058,7 @@ export default function ExeUPdate() {
                   )}
                 />
                 <TextField
-                  style={{ width: "10%" }}
+                  // style={{ width: "10%" }}
                   className="mb-2"
                   type="number"
                   value={country3Percentage}
@@ -1185,7 +1185,7 @@ export default function ExeUPdate() {
             </div>
           </div>
 
-          <div>
+          <div className="col-md-12 col-lg-3">
             <div className="card">
               <div className="card-body">
                 <label className="h6 d-block">Age Group</label>

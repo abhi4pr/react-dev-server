@@ -195,357 +195,393 @@ const SidebarLinks = () => {
         </li>
       )}
 
-      {isWFHDManager && (
-        <li className="nav-item">
-          <Link
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseFourdd"
-            aria-expanded="true"
-            aria-controls="collapseFourdd"
-          >
-            <i className="bi bi-person-gear" />
-            <span>WFHD Manager</span>
-          </Link>
-          <div
-            id="collapseFourdd"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
-              <Link className="collapse-item" to="/admin/user">
-                WFHD Register
-              </Link>
-
-              <Link className="collapse-item" to="/admin/wfhd-overview">
-                WFHD Overview
-              </Link>
-
-              <Link className="collapse-item" to="/admin/salaryWFH">
-                Payroll
-              </Link>
-
-              <Link className="collapse-item" to="/admin/attendence-mast">
-                Attendance
-              </Link>
-            </div>
-          </div>
-        </li>
-      )}
-
-      {
-        <li className="nav-item">
-          <Link
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseFourdd"
-            aria-expanded="true"
-            aria-controls="collapseFourdd"
-          >
-            <i className="bi bi-person-gear" />
-            <span>WFH New Module</span>
-          </Link>
-          <div
-            id="collapseFourdd"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
+      <li className="nav-item">
+        <a
+          className="nav-link collapsed"
+          data-toggle="collapse"
+          data-target="#collapsInnerOneModify"
+          aria-expanded="true"
+          aria-controls="collapsInnerOneModify"
+        >
+          <i className="bi bi-person-gear" />
+          <span>HR</span>
+        </a>
+        <div
+          id="collapsInnerOneModify"
+          className="collapse"
+          aria-labelledby="headingTwo"
+        >
+          {isWFHDManager && (
+            <li className="nav-item">
               <Link
-                className="collapse-item"
-                to="/admin/view-edit-digital-signature"
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                data-target="#collapseFourdd"
+                aria-expanded="true"
+                aria-controls="collapseFourdd"
               >
-                Digital Signature
+                <i className="bi bi-person-gear" />
+                <span>WFHD Manager</span>
               </Link>
-
-              <Link className="collapse-item" to="/admin/wfh-template-overview">
-                Change/View Template
-              </Link>
-
-              <Link className="collapse-item" to="/admin/wfh-single-user">
-                Payout Summary
-              </Link>
-            </div>
-          </div>
-        </li>
-      }
-
-      {isWFHDHRPayrollManager && (
-        <li className="nav-item">
-          <Link
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseFourcc"
-            aria-expanded="true"
-            aria-controls="collapseFourcc"
-          >
-            <i className="bi bi-person-gear" />
-            <span>HR/Payroll Manager</span>
-          </Link>
-          <div
-            id="collapseFourcc"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
-              <Link className="collapse-item" to="/admin/user">
-                WFHD Register
-              </Link>
-
-              <Link className="collapse-item" to="/admin/wfhd-overview">
-                WFHD Overview
-              </Link>
-
-              <Link className="collapse-item" to="/admin/salaryWFH">
-                Salary Related Report
-              </Link>
-
-              <Link className="collapse-item" to="/admin/attendence-mast">
-                Payroll Payout Genration
-              </Link>
-            </div>
-          </div>
-        </li>
-      )}
-
-      {isWFHVisible && (
-        <li className="nav-item">
-          <Link
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseFour"
-            aria-expanded="true"
-            aria-controls="collapseFour"
-          >
-            <i className="bi bi-person-gear" />
-            <span>WFH</span>
-          </Link>
-          <div
-            id="collapseFour"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
-              <Link className="collapse-item" to="/admin/wfh-user-dashboard">
-                Dashboard
-              </Link>
-              {contextData &&
-                contextData[17] &&
-                contextData[17].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/billing-overview">
-                    Billing
+              <div
+                id="collapseFourdd"
+                className="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div className="bg-white collapse-inner">
+                  <Link className="collapse-item" to="/admin/user">
+                    WFHD Register
                   </Link>
-                )}
 
-              {contextData &&
-                contextData[17] &&
-                contextData[17].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/attendence-mast">
-                    Attendance
+                  <Link className="collapse-item" to="/admin/wfhd-overview">
+                    WFHD Overview
                   </Link>
-                )}
 
-              {contextData &&
-                contextData[36] &&
-                contextData[36].view_value === 1 && (
                   <Link className="collapse-item" to="/admin/salaryWFH">
                     Payroll
                   </Link>
-                )}
-              {contextData &&
-                contextData[36] &&
-                contextData[36].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/all-salary">
-                    Salary History
-                  </Link>
-                )}
-            </div>
-          </div>
-        </li>
-      )}
 
-      {isPantryManagementVisible && (
-        <li className="nav-item">
-          <Link
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseThree"
-            aria-expanded="true"
-            aria-controls="collapseThree"
-          >
-            <i className="bi bi-person-gear" />
-            <span>Pantry Management</span>
-          </Link>
-          <div
-            id="collapseThree"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
-              {contextData &&
-                contextData[5] &&
-                contextData[5].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/product-overview">
-                    Product
+                  <Link className="collapse-item" to="/admin/attendence-mast">
+                    Attendance
                   </Link>
-                )}
+                </div>
+              </div>
+            </li>
+          )}
 
-              {contextData &&
-                contextData[8] &&
-                contextData[8].view_value === 1 && (
-                  <Link className="collapse-item" to="/pantry-user">
-                    Pantry User
+          {isAssetNotifierVisible && (
+            <li className="nav-item">
+              <Link
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                data-target="#collapseFourdd"
+                aria-expanded="true"
+                aria-controls="collapseFourdd"
+              >
+                <i className="bi bi-person-gear" />
+                <span>WFH New Module</span>
+              </Link>
+              <div
+                id="collapseFourdd"
+                className="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div className="bg-white collapse-inner">
+                  <Link
+                    className="collapse-item"
+                    to="/admin/view-edit-digital-signature"
+                  >
+                    Digital Signature
                   </Link>
-                )}
-              {contextData &&
-                contextData[9] &&
-                contextData[9].view_value === 1 && (
-                  <Link className="collapse-item" to="/pantry-delivery">
-                    Pantry Delivery
-                  </Link>
-                )}
-            </div>
-          </div>
-        </li>
-      )}
 
-      {isAssetNotifierVisible && (
-        <li className="nav-item">
-          <Link
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseEight"
-            aria-expanded="true"
-            aria-controls="collapseEight"
-          >
-            <i className="bi bi-person-gear" />
-            <span>Asset Notifier</span>
-          </Link>
-          <div
-            id="collapseEight"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
-              {/* {contextData &&
+                  <Link
+                    className="collapse-item"
+                    to="/admin/wfh-template-overview"
+                  >
+                    Change/View Template
+                  </Link>
+
+                  <Link className="collapse-item" to="/admin/wfh-single-user">
+                    Payout Summary
+                  </Link>
+                </div>
+              </div>
+            </li>
+          )}
+
+          {isWFHDHRPayrollManager && (
+            <li className="nav-item">
+              <Link
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                data-target="#collapseFourcc"
+                aria-expanded="true"
+                aria-controls="collapseFourcc"
+              >
+                <i className="bi bi-person-gear" />
+                <span>HR/Payroll Manager</span>
+              </Link>
+              <div
+                id="collapseFourcc"
+                className="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div className="bg-white collapse-inner">
+                  <Link className="collapse-item" to="/admin/user">
+                    WFHD Register
+                  </Link>
+
+                  <Link className="collapse-item" to="/admin/wfhd-overview">
+                    WFHD Overview
+                  </Link>
+
+                  <Link className="collapse-item" to="/admin/salaryWFH">
+                    Salary Related Report
+                  </Link>
+
+                  <Link className="collapse-item" to="/admin/attendence-mast">
+                    Payroll Payout Genration
+                  </Link>
+                </div>
+              </div>
+            </li>
+          )}
+
+          {isWFHVisible && (
+            <li className="nav-item">
+              <Link
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                data-target="#collapseFour"
+                aria-expanded="true"
+                aria-controls="collapseFour"
+              >
+                <i className="bi bi-person-gear" />
+                <span>WFH</span>
+              </Link>
+              <div
+                id="collapseFour"
+                className="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div className="bg-white collapse-inner">
+                  <Link
+                    className="collapse-item"
+                    to="/admin/wfh-user-dashboard"
+                  >
+                    Dashboard
+                  </Link>
+                  {contextData &&
+                    contextData[17] &&
+                    contextData[17].view_value === 1 && (
+                      <Link
+                        className="collapse-item"
+                        to="/admin/billing-overview"
+                      >
+                        Billing
+                      </Link>
+                    )}
+
+                  {contextData &&
+                    contextData[17] &&
+                    contextData[17].view_value === 1 && (
+                      <Link
+                        className="collapse-item"
+                        to="/admin/attendence-mast"
+                      >
+                        Attendance
+                      </Link>
+                    )}
+
+                  {contextData &&
+                    contextData[36] &&
+                    contextData[36].view_value === 1 && (
+                      <Link className="collapse-item" to="/admin/salaryWFH">
+                        Payroll
+                      </Link>
+                    )}
+                  {contextData &&
+                    contextData[36] &&
+                    contextData[36].view_value === 1 && (
+                      <Link className="collapse-item" to="/admin/all-salary">
+                        Salary History
+                      </Link>
+                    )}
+                </div>
+              </div>
+            </li>
+          )}
+
+          {isPantryManagementVisible && (
+            <li className="nav-item">
+              <Link
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                data-target="#collapseThree"
+                aria-expanded="true"
+                aria-controls="collapseThree"
+              >
+                <i className="bi bi-person-gear" />
+                <span>Pantry Management</span>
+              </Link>
+              <div
+                id="collapseThree"
+                className="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div className="bg-white collapse-inner">
+                  {contextData &&
+                    contextData[5] &&
+                    contextData[5].view_value === 1 && (
+                      <Link
+                        className="collapse-item"
+                        to="/admin/product-overview"
+                      >
+                        Product
+                      </Link>
+                    )}
+
+                  {contextData &&
+                    contextData[8] &&
+                    contextData[8].view_value === 1 && (
+                      <Link className="collapse-item" to="/pantry-user">
+                        Pantry User
+                      </Link>
+                    )}
+                  {contextData &&
+                    contextData[9] &&
+                    contextData[9].view_value === 1 && (
+                      <Link className="collapse-item" to="/pantry-delivery">
+                        Pantry Delivery
+                      </Link>
+                    )}
+                </div>
+              </div>
+            </li>
+          )}
+
+          {isAssetNotifierVisible && (
+            <li className="nav-item">
+              <Link
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                data-target="#collapseEight"
+                aria-expanded="true"
+                aria-controls="collapseEight"
+              >
+                <i className="bi bi-person-gear" />
+                <span>Asset Notifier</span>
+              </Link>
+              <div
+                id="collapseEight"
+                className="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div className="bg-white collapse-inner">
+                  {/* {contextData &&
                 contextData[5] &&
                 contextData[5].view_value === 1 && ( */}
-              <Link className="collapse-item" to="/admin/self-audit">
-                Audit asset
-              </Link>
-              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                Repair Request To HR
-              </Link>
-              <Link
-                className="collapse-item"
-                to="/admin/asset-visible-to-taged-person"
-              >
-                Repair Request To Taged Person
-              </Link>
-              {/* )} */}
+                  <Link className="collapse-item" to="/admin/self-audit">
+                    Audit asset
+                  </Link>
+                  <Link
+                    className="collapse-item"
+                    to="/admin/asset-visible-to-hr"
+                  >
+                    Repair Request To HR
+                  </Link>
+                  <Link
+                    className="collapse-item"
+                    to="/admin/asset-visible-to-taged-person"
+                  >
+                    Repair Request To Taged Person
+                  </Link>
+                  {/* )} */}
 
-              {/* {contextData &&
+                  {/* {contextData &&
                 contextData[8] &&
                 contextData[8].view_value === 1 && ( */}
-              {/* <Link className="collapse-item" to="/admin/hr-audit">
+                  {/* <Link className="collapse-item" to="/admin/hr-audit">
                   Hr Audit
                   </Link> */}
-              {/* )} */}
-            </div>
-          </div>
-        </li>
-      )}
-
-      {isOnboardingVisible && (
-        <li className="nav-item">
-          <Link
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseFive"
-            aria-expanded="true"
-            aria-controls="collapseFive"
-          >
-            <i className="bi bi-person-gear" />
-            <span>Org</span>
-          </Link>
-          <div
-            id="collapseFive"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
-              {contextData &&
-                contextData[18] &&
-                contextData[18].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/pre-onboarding">
-                    Add Pre Onboarding
-                  </Link>
-                )}
-
-              {contextData && contextData[18]?.view_value == 1 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/pre-onboarding-overview"
-                >
-                  Overview
-                </Link>
-              )}
-              {contextData && contextData[18]?.view_value == 1 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/pre-onboard-extend-date-overview"
-                >
-                  Extend Date Overview
-                </Link>
-              )}
-              {contextData && contextData[18]?.view_value == 1 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/pre-onboard-coc-master"
-                >
-                  Coc Master
-                </Link>
-              )}
-              {contextData && contextData[18]?.view_value == 1 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/pre-onboard-coc-overview"
-                >
-                  Coc Overview
-                </Link>
-              )}
-              {contextData && contextData[18]?.view_value == 1 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/pre-onboard-user-login-history"
-                >
-                  Login History
-                </Link>
-              )}
-              {contextData && contextData[18]?.view_value == 1 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/pre-onboard-all-notifications"
-                >
-                  All Notifications
-                </Link>
-              )}
-
+                  {/* )} */}
+                </div>
+              </div>
+            </li>
+          )}
+          {isOnboardingVisible && (
+            <li className="nav-item">
               <Link
-                className="collapse-item"
-                to="/admin/preonboarding-documents-overview"
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                data-target="#collapseFive"
+                aria-expanded="true"
+                aria-controls="collapseFive"
               >
-                Documents
+                <i className="bi bi-person-gear" />
+                <span>Org</span>
               </Link>
+              <div
+                id="collapseFive"
+                className="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div className="bg-white collapse-inner">
+                  {contextData &&
+                    contextData[18] &&
+                    contextData[18].view_value === 1 && (
+                      <Link
+                        className="collapse-item"
+                        to="/admin/pre-onboarding"
+                      >
+                        Add Pre Onboarding
+                      </Link>
+                    )}
 
-              {/* {contextData &&
+                  {contextData && contextData[18]?.view_value == 1 && (
+                    <Link
+                      className="collapse-item"
+                      to="/admin/pre-onboarding-overview"
+                    >
+                      Overview
+                    </Link>
+                  )}
+                  {contextData && contextData[18]?.view_value == 1 && (
+                    <Link
+                      className="collapse-item"
+                      to="/admin/pre-onboard-extend-date-overview"
+                    >
+                      Extend Date Overview
+                    </Link>
+                  )}
+                  {contextData && contextData[18]?.view_value == 1 && (
+                    <Link
+                      className="collapse-item"
+                      to="/admin/pre-onboard-coc-master"
+                    >
+                      Coc Master
+                    </Link>
+                  )}
+                  {contextData && contextData[18]?.view_value == 1 && (
+                    <Link
+                      className="collapse-item"
+                      to="/admin/pre-onboard-coc-overview"
+                    >
+                      Coc Overview
+                    </Link>
+                  )}
+                  {contextData && contextData[18]?.view_value == 1 && (
+                    <Link
+                      className="collapse-item"
+                      to="/admin/pre-onboard-user-login-history"
+                    >
+                      Login History
+                    </Link>
+                  )}
+                  {contextData && contextData[18]?.view_value == 1 && (
+                    <Link
+                      className="collapse-item"
+                      to="/admin/pre-onboard-all-notifications"
+                    >
+                      All Notifications
+                    </Link>
+                  )}
+
+                  <Link
+                    className="collapse-item"
+                    to="/admin/preonboarding-documents-overview"
+                  >
+                    Documents
+                  </Link>
+
+                  {/* {contextData &&
                 contextData[20] &&
                 contextData[20].insert_value === 1 && (
                   <Link className="collapse-item" to="/admin/announcement-post">
@@ -559,11 +595,430 @@ const SidebarLinks = () => {
                     Announcement View
                   </Link>
                 )} */}
-            </div>
-          </div>
-        </li>
-      )}
+                </div>
+              </div>
+            </li>
+          )}
+        </div>
+      </li>
 
+      <li className="nav-item">
+        <a
+          className="nav-link collapsed"
+          data-toggle="collapse"
+          data-target="#collapsInnerOneModifyTwo"
+          aria-expanded="true"
+          aria-controls="collapsInnerOneModifyTwo"
+        >
+          <i className="bi bi-person-gear" />
+          <span>Operation</span>
+        </a>
+        <div
+          id="collapsInnerOneModifyTwo"
+          className="collapse"
+          aria-labelledby="headingTwoOne"
+        >
+          {contextData &&
+            contextData[34] &&
+            contextData[34].view_value === 1 && (
+              <li className="nav-item">
+                <a
+                  className="nav-link collapsed"
+                  data-toggle="collapse"
+                  data-target="#collapsInnerOneThree"
+                  aria-expanded="true"
+                  aria-controls="collapsInnerOneThree"
+                >
+                  <i className="bi bi-person-gear" />
+                  <span>Inventory</span>
+                </a>
+                <div
+                  id="collapsInnerOneThree"
+                  className="collapse"
+                  aria-labelledby="headingTwo"
+                >
+                  <div className="bg-white collapse-inner">
+                    {/* <Link className="collapse-item" to="/admin/exeinventory">
+                          Dashboard
+                        </Link> */}
+                    <Link className="collapse-item" to="/admin/cityMsater">
+                      City Mast
+                    </Link>{" "}
+                    <Link
+                      className="collapse-item"
+                      to="/admin/exeexecution/PagePerformanceAnalytics"
+                    >
+                      Analytics
+                    </Link>{" "}
+                    <Link
+                      to="/admin/exeexecution/dashboard"
+                      className="collapse-item"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/admin/exeexecution/PagePerformanceDashboard"
+                      className="collapse-item"
+                    >
+                      Page Performance Dashboard
+                    </Link>
+                    <Link
+                      className="collapse-item"
+                      to="/admin/exeexecution/allpagesdetail"
+                    >
+                      All Pages Detailed
+                    </Link>{" "}
+                    <Link
+                      to="/admin/exeexecution/dashboard"
+                      className="collapse-item"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      className="collapse-item"
+                      to="/admin/exeexecution/all"
+                    >
+                      All ({allCount})
+                    </Link>{" "}
+                    <Link
+                      className="collapse-item"
+                      to="/admin/exeexecution/own"
+                    >
+                      Own ({ownCount})
+                    </Link>{" "}
+                    <Link
+                      className="collapse-item"
+                      to="/admin/exeexecution/other"
+                    >
+                      Other ({otherCount})
+                    </Link>
+                  </div>
+                </div>
+              </li>
+            )}
+
+          {isExecutionVisible && (
+            <li className="nav-item">
+              <Link
+                className="nav-link collapsed"
+                data-toggle="collapse"
+                data-target="#collapseSeven"
+                aria-expanded="true"
+                aria-controls="collapseSeven"
+              >
+                <i className="bi bi-person-gear" />
+                <span>Plan & Operation</span>
+              </Link>
+              <div
+                id="collapseSeven"
+                className="collapse"
+                aria-labelledby="headingTwo"
+                data-parent="#accordionSidebar"
+              >
+                <div className="bg-white collapse-inner">
+                  {/* {contextData &&
+                contextData[24] &&
+                contextData[24].view_value === 1 &&
+                ""} */}
+
+                  {contextData &&
+                    contextData[24] &&
+                    contextData[24].view_value === 1 && (
+                      <li className="nav-item">
+                        <a
+                          className="nav-link collapsed"
+                          data-toggle="collapse"
+                          data-target="#collapsInnerOne"
+                          aria-expanded="true"
+                          aria-controls="collapsInnerOne"
+                        >
+                          {/* <i className="bi bi-person-gear" /> */}
+                          <span>Execution</span>
+                        </a>
+                        <div
+                          id="collapsInnerOne"
+                          className="collapse"
+                          aria-labelledby="headingTwo"
+                          // data-parent="#accordionSidebar"
+                        >
+                          <div className="bg-white collapse-inner">
+                            <Link
+                              className="collapse-item"
+                              to="/admin/execution"
+                            >
+                              Dashboard
+                            </Link>
+                            <Link
+                              className="collapse-item"
+                              to="/admin/exeexecution/pending"
+                            >
+                              Pending
+                            </Link>{" "}
+                            <Link
+                              className="collapse-item"
+                              to="/admin/exeexecution/done"
+                            >
+                              Executed
+                            </Link>{" "}
+                            {/* <Link
+                          className="collapse-item"
+                          to="/admin/exeexecution/accepted"
+                        >
+                          In Progress
+                        </Link>{" "} */}
+                            <Link
+                              className="collapse-item"
+                              to="/admin/exeexecution/rejected"
+                            >
+                              Rejected
+                            </Link>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+                  {contextData &&
+                    contextData[24] &&
+                    contextData[24].view_value === 1 && (
+                      <li className="nav-item">
+                        <Link
+                          className="nav-link collapsed"
+                          data-toggle="collapse"
+                          data-target="#collapsInnerTwo"
+                          aria-expanded="true"
+                          aria-controls="collapsInnerTwo"
+                        >
+                          <span>Register a Campaign</span>
+                        </Link>
+                        <div
+                          id="collapsInnerTwo"
+                          className="collapse"
+                          aria-labelledby="headingTwo"
+                          // data-parent="#accordionSidebar"
+                        >
+                          <div className="bg-white collapse-inner">
+                            <Link
+                              className="nav-link collapsed"
+                              data-toggle="collapse"
+                              data-target="#collapsInnerTwoFour"
+                              aria-expanded="true"
+                              aria-controls="collapsInnerTwoForu"
+                            >
+                              <span>Masters</span>
+                            </Link>
+                            <div
+                              id="collapsInnerTwoFour"
+                              className="collapse"
+                              aria-labelledby="headingTwoFour"
+                              // data-parent="#accordionSidebar"
+                            >
+                              <div className="bg-white collapse-inner">
+                              <Link
+                                className="collapse-item"
+                                to="/admin/register-campaign"
+                              >
+                                Add Campaign
+                              </Link>
+                              <Link
+                                className="collapse-item"
+                                to="/admin/experties-overview"
+                              >
+                                Experties
+                              </Link>
+
+                              <Link
+                                className="collapse-item"
+                                to="/admin/brandmaster"
+                              >
+                                Brand Master
+                              </Link>
+
+                              <Link
+                                className="collapse-item"
+                                to="/admin/contenttype"
+                              >
+                                Content Type Master
+                              </Link>
+                              <Link
+                                className="collapse-item"
+                                to="/admin/campaigncommitment"
+                              >
+                                Campaign Master
+                              </Link>
+
+                              <Link
+                                className="collapse-item"
+                                to="/admin/categorymaster"
+                              >
+                                Category Master
+                              </Link>
+                              <Link
+                                className="collapse-item"
+                                to="/admin/subcategory"
+                              >
+                                subcategory Master
+                              </Link>
+                              <Link
+                                className="collapse-item"
+                                to="/admin/contentcreater"
+                              >
+                                Commitment Master
+                              </Link>
+
+                              </div>
+                            </div>
+
+                            <>
+                              <Link
+                                className="collapse-item"
+                                to="/admin/manager-campaign"
+                              >
+                                Manager Campaign Dashboard
+                              </Link>
+
+                              <Link
+                                className="collapse-item"
+                                to="/admin/phase-dashboard"
+                              >
+                                Phase Dashboard
+                              </Link>
+                              <Link
+                                className="collapse-item"
+                                to="/admin/replacement-dashboard"
+                              >
+                                Replacement Dashboard
+                              </Link>
+                             
+                              <Link
+                                className="collapse-item"
+                                to="/admin/registered-campaign"
+                              >
+                                Registered Campaign
+                              </Link>
+
+                             
+                              {/* <Link
+                            className="collapse-item"
+                            to="/admin/planOverview"
+                          >
+                            Plan Overview
+                          </Link> */}
+                              {/* <Link
+                            className="collapse-item"
+                            to="/admin/phase"
+                          >
+                           PhaseCreation
+                          </Link> */}
+
+                              <Link
+                                className="collapse-item"
+                                to="/admin/checkPageFollowers"
+                              >
+                                Check Page Follower
+                              </Link>
+                              {/* <Link
+                            className="collapse-item"
+                            to="/admin/createAssign"
+                          >
+                            createAssign
+                          </Link> */}
+
+                              
+                            
+
+                            
+                            </>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+                  {contextData &&
+                    contextData[31] &&
+                    contextData[31].view_value === 1 && (
+                      <li className="nav-item">
+                        <Link
+                          className="nav-link collapsed"
+                          data-toggle="collapse"
+                          data-target="#collapsInnerTwo"
+                          aria-expanded="true"
+                          aria-controls="collapsInnerTwo"
+                        >
+                          <span>Content Creation </span>
+                        </Link>
+                        <div
+                          id="collapsInnerTwo"
+                          className="collapse"
+                          aria-labelledby="headingTwo"
+                          // data-parent="#accordionSidebar"
+                        >
+                          <div className="bg-white collapse-inner">
+                            <>
+                              {/* <Link
+                            className="collapse-item"
+                            to="/admin/register-campaign"
+                          >
+                            Add Campaign
+                          </Link>
+                          <Link
+                            className="collapse-item"
+                            to="/admin/registered-campaign"
+                          >
+                            Registered Campaign
+                          </Link> */}
+                              <Link
+                                className="collapse-item"
+                                to="/admin/createrdashboard"
+                              >
+                                Creater Dashborad
+                              </Link>
+                              <Link
+                                className="collapse-item"
+                                to="/admin/excusionCampaign"
+                              >
+                                Excusion Campaign
+                              </Link>
+                            </>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+                  {contextData &&
+                    contextData[32] &&
+                    contextData[32].view_value === 1 && (
+                      <li className="nav-item">
+                        <Link
+                          className="nav-link collapsed"
+                          data-toggle="collapse"
+                          data-target="#collapsInnerThree"
+                          aria-expanded="true"
+                          aria-controls="collapsInnerThree"
+                        >
+                          <span>Content Creation Admin</span>
+                        </Link>
+                        <div
+                          id="collapsInnerThree"
+                          className="collapse"
+                          aria-labelledby="headingTwo"
+                          // data-parent="#accordionSidebar"
+                        >
+                          <div className="bg-white collapse-inner">
+                            <>
+                              <Link
+                                className="collapse-item"
+                                to="/admin/campaign-admin"
+                              >
+                                Campaign Admin
+                              </Link>
+                            </>
+                          </div>
+                        </div>
+                      </li>
+                    )}
+                </div>
+              </div>
+            </li>
+          )}
+        </div>
+      </li>
       {/* {isLeadManagementVisible && (
         <li className="nav-item">
           <Link
@@ -594,364 +1049,6 @@ const SidebarLinks = () => {
           </div>
         </li>
       )} */}
-
-      {contextData && contextData[34] && contextData[34].view_value === 1 && (
-        <li className="nav-item">
-          <a
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapsInnerOne"
-            aria-expanded="true"
-            aria-controls="collapsInnerOne"
-          >
-            <i className="bi bi-person-gear" />
-            <span>Inventory</span>
-          </a>
-          <div
-            id="collapsInnerOne"
-            className="collapse"
-            aria-labelledby="headingTwo"
-          >
-            <div className="bg-white collapse-inner">
-              {/* <Link className="collapse-item" to="/admin/exeinventory">
-                          Dashboard
-                        </Link> */}
-              <Link className="collapse-item" to="/admin/cityMsater">
-                City Mast
-              </Link>{" "}
-              <Link
-                className="collapse-item"
-                to="/admin/exeexecution/PagePerformanceAnalytics"
-              >
-                Analytics
-              </Link>{" "}
-              <Link
-                to="/admin/exeexecution/dashboard"
-                className="collapse-item"
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/admin/exeexecution/PagePerformanceDashboard"
-                className="collapse-item"
-              >
-                Page Performance Dashboard
-              </Link>
-              <Link
-                className="collapse-item"
-                to="/admin/exeexecution/allpagesdetail"
-              >
-                All Pages Detailed
-              </Link>{" "}
-              <Link
-                to="/admin/exeexecution/dashboard"
-                className="collapse-item"
-              >
-                Dashboard
-              </Link>
-              <Link className="collapse-item" to="/admin/exeexecution/all">
-                All ({allCount})
-              </Link>{" "}
-              <Link className="collapse-item" to="/admin/exeexecution/own">
-                Own ({ownCount})
-              </Link>{" "}
-              <Link className="collapse-item" to="/admin/exeexecution/other">
-                Other ({otherCount})
-              </Link>
-            </div>
-          </div>
-        </li>
-      )}
-
-      {isExecutionVisible && (
-        <li className="nav-item">
-          <Link
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseSeven"
-            aria-expanded="true"
-            aria-controls="collapseSeven"
-          >
-            <i className="bi bi-person-gear" />
-            <span>Operation</span>
-          </Link>
-          <div
-            id="collapseSeven"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
-              {/* {contextData &&
-                contextData[24] &&
-                contextData[24].view_value === 1 &&
-                ""} */}
-
-              {contextData &&
-                contextData[24] &&
-                contextData[24].view_value === 1 && (
-                  <li className="nav-item">
-                    <a
-                      className="nav-link collapsed"
-                      data-toggle="collapse"
-                      data-target="#collapsInnerOne"
-                      aria-expanded="true"
-                      aria-controls="collapsInnerOne"
-                    >
-                      {/* <i className="bi bi-person-gear" /> */}
-                      <span>Execution</span>
-                    </a>
-                    <div
-                      id="collapsInnerOne"
-                      className="collapse"
-                      aria-labelledby="headingTwo"
-                      // data-parent="#accordionSidebar"
-                    >
-                      <div className="bg-white collapse-inner">
-                        <Link className="collapse-item" to="/admin/execution">
-                          Dashboard
-                        </Link>
-                        <Link
-                          className="collapse-item"
-                          to="/admin/exeexecution/pending"
-                        >
-                          Pending
-                        </Link>{" "}
-                        <Link
-                          className="collapse-item"
-                          to="/admin/exeexecution/done"
-                        >
-                          Executed
-                        </Link>{" "}
-                        {/* <Link
-                          className="collapse-item"
-                          to="/admin/exeexecution/accepted"
-                        >
-                          In Progress
-                        </Link>{" "} */}
-                        <Link
-                          className="collapse-item"
-                          to="/admin/exeexecution/rejected"
-                        >
-                          Rejected
-                        </Link>
-                      </div>
-                    </div>
-                  </li>
-                )}
-              {contextData &&
-                contextData[24] &&
-                contextData[24].view_value === 1 && (
-                  <li className="nav-item">
-                    <Link
-                      className="nav-link collapsed"
-                      data-toggle="collapse"
-                      data-target="#collapsInnerTwo"
-                      aria-expanded="true"
-                      aria-controls="collapsInnerTwo"
-                    >
-                      <span>Register a Campaign</span>
-                    </Link>
-                    <div
-                      id="collapsInnerTwo"
-                      className="collapse"
-                      aria-labelledby="headingTwo"
-                      // data-parent="#accordionSidebar"
-                    >
-                      <div className="bg-white collapse-inner">
-                        <>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/manager-campaign"
-                          >
-                            Manager Campaign Dashboard
-                          </Link>
-
-                          <Link
-                            className="collapse-item"
-                            to="/admin/phase-dashboard"
-                          >
-                            Phase Dashboard
-                          </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/replacement-dashboard"
-                          >
-                            Replacement Dashboard
-                          </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/register-campaign"
-                          >
-                            Add Campaign
-                          </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/registered-campaign"
-                          >
-                            Registered Campaign
-                          </Link>
-
-                          <Link
-                            className="collapse-item"
-                            to="/admin/experties-overview"
-                          >
-                            Experties
-                          </Link>
-                          {/* <Link
-                            className="collapse-item"
-                            to="/admin/planOverview"
-                          >
-                            Plan Overview
-                          </Link> */}
-                          {/* <Link
-                            className="collapse-item"
-                            to="/admin/phase"
-                          >
-                           PhaseCreation
-                          </Link> */}
-
-                          <Link
-                            className="collapse-item"
-                            to="/admin/checkPageFollowers"
-                          >
-                            Check Page Follower
-                          </Link>
-                          {/* <Link
-                            className="collapse-item"
-                            to="/admin/createAssign"
-                          >
-                            createAssign
-                          </Link> */}
-
-                          <Link
-                            className="collapse-item"
-                            to="/admin/brandmaster"
-                          >
-                            Brand Master
-                          </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/contenttype"
-                          >
-                            Content Type Master
-                          </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/campaigncommitment"
-                          >
-                            Campaign Master
-                          </Link>
-
-                          <Link
-                            className="collapse-item"
-                            to="/admin/categorymaster"
-                          >
-                            Category Master
-                          </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/subcategory"
-                          >
-                            subcategory Master
-                          </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/contentcreater"
-                          >
-                            Commitment Master
-                          </Link>
-                        </>
-                      </div>
-                    </div>
-                  </li>
-                )}
-              {contextData &&
-                contextData[31] &&
-                contextData[31].view_value === 1 && (
-                  <li className="nav-item">
-                    <Link
-                      className="nav-link collapsed"
-                      data-toggle="collapse"
-                      data-target="#collapsInnerTwo"
-                      aria-expanded="true"
-                      aria-controls="collapsInnerTwo"
-                    >
-                      <span>Content Creation </span>
-                    </Link>
-                    <div
-                      id="collapsInnerTwo"
-                      className="collapse"
-                      aria-labelledby="headingTwo"
-                      // data-parent="#accordionSidebar"
-                    >
-                      <div className="bg-white collapse-inner">
-                        <>
-                          {/* <Link
-                            className="collapse-item"
-                            to="/admin/register-campaign"
-                          >
-                            Add Campaign
-                          </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/registered-campaign"
-                          >
-                            Registered Campaign
-                          </Link> */}
-                          <Link
-                            className="collapse-item"
-                            to="/admin/createrdashboard"
-                          >
-                            Creater Dashborad
-                          </Link>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/excusionCampaign"
-                          >
-                            Excusion Campaign
-                          </Link>
-                        </>
-                      </div>
-                    </div>
-                  </li>
-                )}
-              {contextData &&
-                contextData[32] &&
-                contextData[32].view_value === 1 && (
-                  <li className="nav-item">
-                    <Link
-                      className="nav-link collapsed"
-                      data-toggle="collapse"
-                      data-target="#collapsInnerThree"
-                      aria-expanded="true"
-                      aria-controls="collapsInnerThree"
-                    >
-                      <span>Content Creation Admin</span>
-                    </Link>
-                    <div
-                      id="collapsInnerThree"
-                      className="collapse"
-                      aria-labelledby="headingTwo"
-                      // data-parent="#accordionSidebar"
-                    >
-                      <div className="bg-white collapse-inner">
-                        <>
-                          <Link
-                            className="collapse-item"
-                            to="/admin/campaign-admin"
-                          >
-                            Campaign Admin
-                          </Link>
-                        </>
-                      </div>
-                    </div>
-                  </li>
-                )}
-            </div>
-          </div>
-        </li>
-      )}
 
       {isUserManagementVisible && (
         <li className="nav-item">

@@ -4,7 +4,9 @@ import Logo from "../../../assets/logo.png";
 const SideBar = () => {
   return (
     <>
-      <ul className="navbar-nav sidebar shadow accordion" id="accordionSidebar">
+      <ul className="navbar-nav sidebar shadow accordion" id="accordionSidebar" style={{
+        overflowX:"scroll "
+      }} >
         <Link className="sidebar-brand">
           <div className="sidebar-brand-icon">
             <img src={Logo} alt="logo" width={40} height={40} />

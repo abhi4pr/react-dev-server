@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../AdminPanel/FormContainer";
 import FieldContainer from "../AdminPanel/FieldContainer";
@@ -10,6 +10,8 @@ import pdf from "./pdf-file.png";
 import sheets from "./sheets.png";
 import video from "./montage.png";
 import Select from "react-select";
+import ImgDialogBox from "./ImgDialogBox";
+import { Add, CloseTwoTone } from "@mui/icons-material";
 
 const DataBrandMaster = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -35,9 +37,15 @@ const DataBrandMaster = () => {
   const [dataBrandData, setDataBrandData] = useState([]);
   const [dataSubCategory, setDataSubCategory] = useState("");
   const [dataSubCategoryData, setDataSubCategoryData] = useState([]);
-  const [designedBy, setDesignedBy] = useState("")
-  const [employeeData, setEmployeeData] = useState([])
+  const [designedBy, setDesignedBy] = useState("");
+  const [employeeData, setEmployeeData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [openReviewDisalog, setOpenReviewDisalog] = useState({
+    open: false,
+    image: "",
+    detail: {},
+  });
+  const [files, setFiles] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -51,12 +59,10 @@ const DataBrandMaster = () => {
   };
 
   useEffect(() => {
-    axios
-    .get("http://34.93.221.166:3000/api/get_all_users")
-    .then((res) => {
+    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
       const allUsers = res.data.data;
-        const filteredUsers = allUsers.filter(user => user.dept_id == 49);
-        setEmployeeData(filteredUsers);
+      const filteredUsers = allUsers.filter((user) => user.dept_id == 49);
+      setEmployeeData(filteredUsers);
     });
 
     axios
@@ -76,15 +82,17 @@ const DataBrandMaster = () => {
       });
   }, []);
 
-  useEffect(()=>{
-    if(category){
+  useEffect(() => {
+    if (category) {
       axios
-      .get(`http://34.93.221.166:3000/api/get_single_data_from_sub_category/${category}`)
-      .then((res) => {
-        setDataSubCategoryData(res.data);
-      });
+        .get(
+          `http://34.93.221.166:3000/api/get_single_data_from_sub_category/${category}`
+        )
+        .then((res) => {
+          setDataSubCategoryData(res.data);
+        });
     }
-  },[category])
+  }, [category]);
 
   useEffect(() => {
     axios
@@ -105,23 +113,35 @@ const DataBrandMaster = () => {
     });
   };
 
+  useEffect(() => {
+    console.log(details);
+  }, [details]);
+
   const handleSubmit = async (e) => {
-    if(category == ''){
+    if (category == "") {
       toastError("Category is required");
-    }else if(dataSubCategory == ''){
-      toastError("Sub category is required")
-    }else if(platform == ''){
-      toastError("Platform is required")
-    }else if(contentType == ''){
-      toastError("Content type is required")
-    }else if(dataBrand == ''){
-      toastError("Brand is required")
-    }else if(designedBy == ''){
-      toastError("Designer is required")
+    } else if (dataSubCategory == "") {
+      toastError("Sub category is required");
+    } else if (platform == "") {
+      toastError("Platform is required");
+    } else if (contentType == "") {
+      toastError("Content type is required");
+    } else if (dataBrand == "") {
+      toastError("Brand is required");
+    } else if (designedBy == "") {
+      toastError("Designer is required");
     }
     e.preventDefault();
     try {
-      if(category && platform && contentType && dataBrand && brand && dataSubCategory && designedBy){
+      if (
+        category &&
+        platform &&
+        contentType &&
+        dataBrand &&
+        brand &&
+        dataSubCategory &&
+        designedBy
+      ) {
         setIsLoading(true);
       }
       for (let i = 0; i < details.length; i++) {
@@ -161,7 +181,14 @@ const DataBrandMaster = () => {
     }
   };
 
+  const delteRowData = (index) => {
+    const newDetails = [...details];
+    newDetails.splice(index, 1);
+    setDetails(newDetails);
+  };
+
   const handleFileChange = (event) => {
+    setFileDetails(prev=>[...prev, event.target.files]);
     const files = Array.from(event.target.files);
     setImages(files);
 
@@ -225,11 +252,16 @@ const DataBrandMaster = () => {
         return <i className="fa fa-file"></i>;
     }
   };
-  
+
   return (
     <div style={{ width: "80%", margin: "0 0 0 10%" }}>
       <UserNav />
-      <FormContainer mainTitle="Data" title="Data" handleSubmit={handleSubmit} submitButton={false}>
+      <FormContainer
+        mainTitle="Data"
+        title="Data"
+        handleSubmit={handleSubmit}
+        submitButton={false}
+      >
         <FieldContainer
           label="Name *"
           type="text"
@@ -269,6 +301,15 @@ const DataBrandMaster = () => {
             required
           />
         </div>
+        <div className="col-1 mt-4">
+          <Link
+            title="Add Category"
+            className="btn btn-sm btn-primary"
+            to="/data-brand-category"
+          >
+            <Add />
+          </Link>
+        </div>
         <div className="form-group col-3">
           <label className="form-label">
             Sub Category Name <sup style={{ color: "red" }}>*</sup>
@@ -281,15 +322,23 @@ const DataBrandMaster = () => {
             value={{
               value: dataSubCategory,
               label:
-                dataSubCategoryData.find(
-                  (user) => user._id === dataSubCategory
-                )?.data_sub_cat_name || "",
+                dataSubCategoryData.find((user) => user._id === dataSubCategory)
+                  ?.data_sub_cat_name || "",
             }}
             onChange={(e) => {
               setDataSubCategory(e.value);
             }}
             required
           />
+        </div>
+        <div className="col-1 mt-4">
+          <Link
+            title="Add Sub Category"
+            className="btn btn-sm btn-primary"
+            to="/data-brand-sub-category"
+          >
+            <Add />
+          </Link>
         </div>
         <div className="form-group col-3">
           <label className="form-label">
@@ -379,20 +428,38 @@ const DataBrandMaster = () => {
 
         <div className="summary_cards brand_img_list">
           {details.map((detail, index) => (
-            <div className="summary_card brand_img_item">
+            <div key={index} className="summary_card brand_img_item">
               <div className="summary_cardrow brand_img_row">
                 <div className="col summary_box brand_img_box col140">
                   {detail.fileType === "jpg" ||
                   detail.fileType === "jpeg" ||
                   detail.fileType === "png" ||
                   detail.fileType === "gif" ? (
-                    <img
-                      className="brandimg_icon"
-                      src={URL.createObjectURL(images[index])}
-                      alt={`Image ${index + 1}`}
-                    />
+                    images[index] && (
+                      <img
+                        onClick={() =>
+                          setOpenReviewDisalog({
+                            open: true,
+                            image: URL.createObjectURL(images[index]),
+                            detail: detail,
+                          })
+                        }
+                        className="brandimg_icon"
+                        src={URL.createObjectURL(images[index])}
+                        alt={`Image ${index + 1}`}
+                      />
+                    )
                   ) : (
-                    <div className="file_icon">
+                    <div
+                      className="file_icon"
+                      onClick={() =>
+                        setOpenReviewDisalog({
+                          open: true,
+                          image: URL.createObjectURL(images[index]),
+                          detail: detail,
+                        })
+                      }
+                    >
                       {renderFileIcon(detail.fileType)}
                     </div>
                   )}
@@ -416,6 +483,14 @@ const DataBrandMaster = () => {
                     {currentDate}
                   </h4>
                 </div>
+                <button
+                  onClick={() => {
+                    delteRowData(index);
+                  }}
+                  className="btn btn-sm btn-dengor me-2"
+                >
+                  <CloseTwoTone />
+                </button>
                 {/* <div className="col summary_box brand_img_box">
                   <FieldContainer
                     label={`Data Category`}
@@ -445,10 +520,21 @@ const DataBrandMaster = () => {
           required={false}
           onChange={(e) => setRemark(e.target.value)}
         />
-        <button type="submit" className="btn btn-primary" disabled={isLoading} style={{width:"20%", marginLeft:"1%"}}>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={isLoading}
+          style={{ width: "20%", marginLeft: "1%" }}
+        >
           {isLoading ? "Please wait data uploading..." : "Submit"}
         </button>
       </FormContainer>
+      {openReviewDisalog.open && (
+        <ImgDialogBox
+          openReviewDisalog={openReviewDisalog}
+          setOpenReviewDisalog={setOpenReviewDisalog}
+        />
+      )}{" "}
     </div>
   );
 };
