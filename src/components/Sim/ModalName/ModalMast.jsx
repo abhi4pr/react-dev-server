@@ -85,9 +85,9 @@ const ModalMast = () => {
       cell: (row) => (
         <button
           className="btn btn-outline-warning"
-          onClick={() => handleTotalasset(row.category_id)}
+          onClick={() => handleTotalasset(row._id)}
         >
-          {row.available_assets_count}
+          {row.total_available_asset}
         </button>
       ),
       sortable: true,
@@ -97,9 +97,9 @@ const ModalMast = () => {
       cell: (row) => (
         <button
           className="btn btn-outline-warning"
-          onClick={() => handleAllocatedAsset(row.category_id)}
+          onClick={() => handleAllocatedAsset(row._id)}
         >
-          {row.allocated_assets_count}
+          {row.total_allocated_asset}
         </button>
       ),
       sortable: true,

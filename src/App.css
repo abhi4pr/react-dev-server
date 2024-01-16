@@ -1,28 +1,61 @@
+/* MODAL FADE LEFT RIGHT BOTTOM */
+.right-modal .modal.fade:not(.in).left .modal-dialog {
+  -webkit-transform: translate3d(-25%, 0, 0);
+  transform: translate3d(-25%, 0, 0);
+}
+.right-modal .modal.fade:not(.in).right .modal-dialog {
+  -webkit-transform: translate3d(25%, 0, 0);
+  transform: translate3d(25%, 0, 0);
+}
+.right-modal .modal.fade:not(.in).bottom .modal-dialog {
+  -webkit-transform: translate3d(0, 25%, 0);
+  transform: translate3d(0, 25%, 0);
+}
 
+.right-modal .modal.right .modal-dialog {
+  position: absolute;
+  top: 0;
+  width: 303px;
+  right: 250px;
+  margin: 0px;
+}
 
+.right-modal .modal.left .modal-dialog {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+}
+.right-modal .modal-content {
+  margin-top: 0;
+  width: 160%;
+}
+
+.right-modal .modal.left .modal-dialog.modal-sm {
+  max-width: 300px;
+}
+
+.right-modal .modal.left .modal-content,
+.modal.right .modal-content {
+  min-height: 100vh;
+  border: 0;
+}
 
 .summaryDetailingwebkit ul {
   scrollbar-color: dark; /* For Firefox, you can use 'auto', 'dark', or 'light' */
-  
 }
 .summaryDetailingwebkit ul::-webkit-scrollbar-thumb {
   background: rgb(252, 253, 253);
-  
 }
 
 .summaryDetailingwebkit ul:hover::-webkit-scrollbar-thumb {
   background: #eadada; /* Thumb color when hovered */
-  
-  
 }
 .summaryDetailingwebkit ul::-webkit-scrollbar {
   margin-top: 50px;
   width: 10px; /* Vertical scrollbar width */
   height: 5px; /* Horizontal scrollbar height */
 }
-
-
-
 
 .section {
   padding: 0 !important;

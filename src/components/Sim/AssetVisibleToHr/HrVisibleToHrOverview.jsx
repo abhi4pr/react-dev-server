@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DataTable from "react-data-table-component";
 import Modal from "react-modal";
+import { FcDownload } from "react-icons/fc";
 import Swal from "sweetalert2";
 import axios from "axios";
 import FieldContainer from "../../AdminPanel/FieldContainer";
@@ -21,6 +22,17 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
 
   const [repairId, setRepairId] = useState(0);
   const [statusHere, setStatushere] = useState("");
+
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [enlargedImageUrl, setEnlargedImageUrl] = useState("");
+  const handleInvoiceImageClick = (imageUrl) => {
+    setEnlargedImageUrl(imageUrl);
+    setIsInvoiceModalOpen(true);
+  };
+  const handleInvoiceCloseModal = () => {
+    setIsInvoiceModalOpen(false);
+    setEnlargedImageUrl("");
+  };
 
   const [ImageModalOpen, setImageModalOpen] = useState(false);
   const [showAssetsImage, setShowAssetImages] = useState("");
@@ -118,7 +130,17 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     {
       name: "Status",
       selector: (row) => (
-        <span className="badge badge-success">{row.status}</span>
+        <>
+          {row.status === "Accept" ? (
+            <span className="badge badge-success">Accepted</span>
+          ) : row.status === "Recover" ? (
+            <span className="badge badge-warning">Recoverd</span>
+          ) : row.status === "Resolved" ? (
+            <span className="badge badge-success">Resolved</span>
+          ) : row.status === "Requested" ? (
+            <span className="badge badge-danger">Requested</span>
+          ) : null}
+        </>
       ),
       sortable: true,
     },
@@ -209,6 +231,35 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       name: "Warranty Date",
       selector: (row) => row.warrantyDate?.split("T")?.[0],
       sortable: true,
+      width: "150px",
+    },
+
+    {
+      name: "Invoice",
+      selector: (row) => (
+        <>
+          <img
+            onClick={() => handleInvoiceImageClick(row.invoiceCopy)}
+            style={{ width: "100px" }}
+            src={row.invoiceCopy}
+            alt="invoice copy"
+          />
+        </>
+      ),
+      sortable: true,
+    },
+    {
+      name: "invoice Download",
+      cell: (row) => (
+        <a
+          style={{ cursor: "pointer" }}
+          target=""
+          href={row.invoiceCopy}
+          download
+        >
+          <FcDownload style={{ fontSize: "25px" }} />
+        </a>
+      ),
       width: "150px",
     },
     hrOverviewData[0]?.status == "Requested" && {
@@ -339,21 +390,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       ),
       sortable: true,
       width: "350px",
-    },
-    {
-      name: "Invoice",
-      selector: (row) => (
-        <>
-          <a style={{ cursor: "pointer" }} href={row.invoiceCopy} download>
-            <img
-              style={{ width: "100px" }}
-              src={row.invoiceCopy}
-              alt="invoice copy"
-            />
-          </a>
-        </>
-      ),
-      sortable: true,
     },
   ];
   const handleVendorDetails = async (id) => {
@@ -740,6 +776,28 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             </div>
           </div>
         </>
+      </Modal>
+
+      {/* invoice modsal here  */}
+      <Modal
+        isOpen={isInvoiceModalOpen}
+        onRequestClose={handleInvoiceCloseModal}
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            // marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <img
+          src={enlargedImageUrl}
+          alt="Enlarged Image"
+          style={{ maxWidth: "100%", maxHeight: "100%" }}
+        />
       </Modal>
     </>
   );

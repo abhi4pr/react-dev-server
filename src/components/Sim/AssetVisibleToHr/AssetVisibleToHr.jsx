@@ -18,7 +18,7 @@ const AssetVisibleToHr = () => {
   const accordionButtons = [
     "All",
     "Requested",
-    "Accept",
+    "Accepted",
     "Recovered",
     "Resolved",
   ];

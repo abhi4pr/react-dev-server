@@ -73,7 +73,6 @@ const SimMaster = () => {
   const [modalData, setModalData] = useState([]);
   const [modalName, setModalName] = useState("");
   const [brandName, setBrandName] = useState("");
-  console.log(assetType, "asset type");
 
   // All Category , subcategory and vendor api here
   // const [categoryData, setCategoryData] = useState([]);
@@ -105,8 +104,8 @@ const SimMaster = () => {
     }
   };
   useEffect(() => {
-    const selectedSubcat = subcategoryData.filter(
-      (d) => d.sub_category_id === subCategory.sub_category_id
+    const selectedSubcat = subcategoryData?.filter(
+      (d) => d.sub_category_id === subCategory?.sub_category_id
     );
     if (selectedSubcat) {
       setInWarranty(selectedSubcat[0]?.inWarranty);
@@ -126,8 +125,8 @@ const SimMaster = () => {
   }
 
   useEffect(() => {
-    const selectedCategory = categoryDataContext.filter(
-      (d) => d.category_id === assetsCategory.category_id
+    const selectedCategory = categoryDataContext?.filter(
+      (d) => d.category_id === assetsCategory?.category_id
     );
     if (selectedCategory) {
       setSelfAuditPeriod(selectedCategory[0]?.selfAuditPeriod);
@@ -135,7 +134,7 @@ const SimMaster = () => {
       setHrSelfAuditPeriod(selectedCategory[0]?.hrAuditPeriod);
       setHrSelfAuditUnit(selectedCategory[0]?.hrAuditUnit);
     }
-  }, [assetsCategory.category_id, categoryDataContext]);
+  }, [assetsCategory?.category_id, categoryDataContext]);
   useEffect(() => {
     getModalData();
     // getBrandData();
@@ -270,7 +269,7 @@ const SimMaster = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={categoryDataContext.map((cat) => ({
+                  options={categoryDataContext?.map((cat) => ({
                     label: cat.category_name,
                     value: cat.category_id,
                   }))}
@@ -281,7 +280,6 @@ const SimMaster = () => {
                       label: newvalue.label,
                       category_id: newvalue.value,
                     });
-                    // console.log(newvalue, "there is new value");
                     if (assetsCategoryError) {
                       setAssetsCategoryError("");
                     }
@@ -303,7 +301,7 @@ const SimMaster = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={subcategoryData.map((sub) => ({
+                  options={subcategoryData?.map((sub) => ({
                     label: sub.sub_category_name,
                     value: sub.sub_category_id,
                   }))}
@@ -334,9 +332,9 @@ const SimMaster = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={getBrandDataContext.map((cat) => ({
+                  options={getBrandDataContext?.map((cat) => ({
                     label: cat.asset_brand_name,
-                    value: cat.asset_brand_id,
+                    value: cat._id,
                   }))}
                   onChange={(e, newvalue) => {
                     if (newvalue != null) {
@@ -371,9 +369,9 @@ const SimMaster = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={modalData.map((cat) => ({
+                  options={modalData?.map((cat) => ({
                     label: cat.asset_modal_name,
-                    value: cat.asset_modal_id,
+                    value: cat._id,
                   }))}
                   onChange={(e, newvalue) => {
                     if (newvalue != null) {
@@ -470,7 +468,7 @@ const SimMaster = () => {
                 <Autocomplete
                   disablePortal
                   id="combo-box-demo"
-                  options={vendorData.map((vendor) => ({
+                  options={vendorData?.map((vendor) => ({
                     label: vendor.vendor_name,
                     value: vendor.vendor_id,
                   }))}

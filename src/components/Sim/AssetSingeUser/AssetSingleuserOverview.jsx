@@ -1,23 +1,22 @@
-import React from "react";
-import FormContainer from "../../../components/AdminPanel/FormContainer";
-import FieldContainer from "../../../components/AdminPanel/FieldContainer";
-import DataTable from "react-data-table-component";
 import { useState, useEffect } from "react";
-import { useGlobalContext } from "../../../Context/Context";
-import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
+import DataTable from "react-data-table-component";
 import { Autocomplete, TextField } from "@mui/material";
 import Select from "react-select";
 import axios from "axios";
-import AssetSingleuserOverview from "./AssetSingleuserOverview";
+import FieldContainer from "../../AdminPanel/FieldContainer";
+import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
+import { useGlobalContext } from "../../../Context/Context";
 
-const AssetSingleUser = () => {
+const AssetSingleuserOverview = ({
+  filterData,
+  hardRender,
+  tab,
+  newAssetRequestData,
+  newRequestAPIRender,
+}) => {
   const { usersDataContext, getAssetDataContext, toastAlert } =
     useGlobalContext();
   const { userID } = useAPIGlobalContext();
-  const [search, setSearch] = useState("");
-  const [data, setData] = useState([]);
-  const [filterData, setFilterData] = useState("");
-
   const [reasonData, setReasonData] = useState([]);
   const [reason, setReason] = useState("");
   const [assetsName, setAssetName] = useState("");
@@ -29,189 +28,19 @@ const AssetSingleUser = () => {
   const [assetsImg4, setAssetsImg4] = useState(null);
   const [problemDetailing, setProblemDetailing] = useState("");
   const [tagUser, setTagUser] = useState([]);
-  const [newAssetRequestData, setNewAssetRequestData] = useState([]);
   const PriorityData = ["Low", "Medium", "High", "Urgent"];
 
-  // New tab
-  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
-  const handleAccordionButtonClick = (index) => {
-    setActiveAccordionIndex(index);
-  };
-  const accordionButtons = ["Assigned assets", "Asset requests"];
-
-  const newRequestAPIRender = () => {
-    return getNewAssetRequest() || getData();
-  };
-
-  const tab1 = <AssetSingleuserOverview filterData={filterData} tab="tab" />;
-  const tab2 = (
-    <AssetSingleuserOverview
-      newAssetRequestData={newAssetRequestData}
-      newRequestAPIRender={newRequestAPIRender}
-    />
-  );
-
-  const getData = async () => {
-    try {
-      const res = await axios.get(
-        `http://34.93.221.166:3000/api/get_allocated_asset_data_for_user_id/${userID}`
-      );
-      setData(res.data.data);
-      setFilterData(res.data.data);
-      console.log(res.data.data, "userAsset");
-    } catch (error) {
-      console.log(error);
-    }
-  };
   async function getRepairReason() {
     const res = await axios.get(
       "http://34.93.221.166:3000/api/get_all_assetResons"
     );
+
     setReasonData(res?.data.data);
-  }
-  async function getNewAssetRequest() {
-    const res = await axios.get(
-      `http://34.93.221.166:3000/api/assetrequest/${userID}`
-    );
-    console.log(res.data.data, "reason hai");
-    setNewAssetRequestData(res?.data.data);
   }
 
   useEffect(() => {
     getRepairReason();
-    getData();
-    getNewAssetRequest();
   }, []);
-
-  // const columns = [
-  //   {
-  //     name: "S.No",
-  //     cell: (row, index) => <>{index + 1}</>,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Status",
-  //     selector: (row) => (
-  //       <>
-  //         {row.status === "Accept" ? (
-  //           <span className="badge badge-success">Accepted</span>
-  //         ) : row.status === "Recover" ? (
-  //           <span className="badge badge-warning">Recoverd</span>
-  //         ) : row.status === "Resolved" ? (
-  //           <span className="badge badge-success">Resolved</span>
-  //         ) : row.status === "Requested" ? (
-  //           <span className="badge badge-danger">Requested</span>
-  //         ) : null}
-  //       </>
-  //     ),
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Request By",
-  //     selector: (row) => row.req_by_name,
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Request Date",
-  //     selector: (row) => row.req_date?.split("T")?.[0],
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Priority",
-  //     selector: (row) => row.priority,
-  //     sortable: true,
-  //   },
-
-  //   {
-  //     name: "Asset Name",
-  //     selector: (row) => row.asset_name,
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Category",
-  //     selector: (row) => row.category_name,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Sub Category",
-  //     selector: (row) => row.sub_category_name,
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Brand",
-  //     selector: (row) => row.asset_brand_name,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Modal",
-  //     selector: (row) => row.asset_modal_name,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Vendor Name",
-  //     cell: (row) => (
-  //       <>
-  //         <button
-  //           className="btn btn-success btn-sm"
-  //           onClick={() => handleVendorDetails(row.vendor_id)}
-  //         >
-  //           {row.vendor_name}
-  //         </button>
-  //       </>
-  //     ),
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "img",
-  //     selector: (row) => (
-  //       <button
-  //         className="btn btn-outline-danger"
-  //         onClick={() => handleImageClick(row)}
-  //       >
-  //         <i className="bi bi-images"></i>
-  //       </button>
-  //     ),
-  //   },
-
-  //   {
-  //     name: "In Warranty",
-  //     selector: (row) => row.inWarranty,
-  //     sortable: true,
-  //   },
-  //   {
-  //     name: "Date Of Purchase",
-  //     selector: (row) => row.dateOfPurchase?.split("T")?.[0],
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  //   {
-  //     name: "Warranty Date",
-  //     selector: (row) => row.warrantyDate?.split("T")?.[0],
-  //     sortable: true,
-  //     width: "150px",
-  //   },
-  // ];
-  useEffect(() => {
-    const result = data.filter((d) => {
-      return d.assetsName?.toLowerCase().match(search.toLocaleLowerCase());
-    });
-    setFilterData(result);
-  }, [search]);
-
-  const userMultiChangeHandler = (e, op) => {
-    setTagUser(op);
-  };
-
-  const handleRow = (row) => {
-    console.log(row.assetsName, "row is here");
-    setAssetName(row?.sim_id);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -251,59 +80,160 @@ const AssetSingleUser = () => {
       console.log(error);
     }
   };
-  useEffect(() => {
-    const currentDate = new Date().toISOString().slice(0, 16);
-    setRepairDate(currentDate);
-  }, []);
+
+  const columns = [
+    {
+      name: "S.No",
+      cell: (row, index) => <div>{index + 1}</div>,
+      width: "9%",
+      sortable: true,
+    },
+    {
+      name: "Asset Name",
+      selector: (row) => row.assetsName,
+      sortable: true,
+    },
+    {
+      name: "Category Name",
+      selector: (row) => row.category_name,
+      sortable: true,
+    },
+    {
+      name: "Sub-Category Name",
+      selector: (row) => row.sub_category_name,
+      sortable: true,
+    },
+    {
+      name: "Assigned Date",
+      selector: (row) => "hh",
+      sortable: true,
+    },
+
+    {
+      name: "Repair",
+      cell: (row) => (
+        <button
+          onClick={() => handleRow(row)}
+          className="btn btn-outline-warning btn-sm"
+          data-toggle="modal"
+          data-target="#exampleModal"
+          size="small"
+        >
+          Repair Request
+        </button>
+      ),
+      width: "180px",
+    },
+    {
+      name: "Return",
+      cell: (row) => (
+        <button type="button" className="btn btn-outline-primary btn-sm">
+          Return Asset
+        </button>
+      ),
+    },
+  ];
+
+  const NewAssetcolumns = [
+    {
+      name: "S.No",
+      cell: (row, index) => <div>{index + 1}</div>,
+      width: "9%",
+      sortable: true,
+    },
+    {
+      name: "Asset Name",
+      selector: (row) => row.asset_name,
+      sortable: true,
+    },
+    {
+      name: "Status",
+      selector: (row) => (
+        <>
+          {row.asset_request_status == "Requested" && (
+            <span className="badge badge-danger">Requested</span>
+          )}
+        </>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Taged Person",
+      selector: (row) => row.multi_tag,
+      sortable: true,
+    },
+  ];
+
+  //   New Asset Request Data Submit here
+
+  const userMultiChangeHandler = (e, op) => {
+    setTagUser(op);
+  };
+
+  const handleNewAssetSubmit = () => {
+    try {
+      axios.post("http://34.93.221.166:3000/api/assetrequest", {
+        sim_id: assetsName,
+        detail: problemDetailing,
+        priority: priority,
+        request_by: userID,
+        multi_tag: tagUser.map((user) => user.value),
+      });
+
+      toastAlert("Request Success");
+      newRequestAPIRender();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
-      <div className="action_heading">
-        <div className="action_title">
-          <FormContainer
-            submitButton={false}
-            mainTitle="Asset"
-            title=""
-            accordionButtons={accordionButtons}
-            activeAccordionIndex={activeAccordionIndex}
-            onAccordionButtonClick={handleAccordionButtonClick}
-          >
-            {activeAccordionIndex === 0 && tab1}
-            {activeAccordionIndex === 1 && tab2}
-          </FormContainer>
-        </div>
-      </div>
-
-      {/* old  */}
-      {/* <FormContainer
-        mainTitle="Asset"
-        link="/"
-        submitButton={false}
-        buttonAccess={false}
-      />
-      <div className="card">
-        <div className="data_tbl table-responsive">
-          <DataTable
-            title="Asset Details"
-            columns={columns}
-            data={filterData}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="36vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+      {tab ? (
+        <div className="page_height">
+          <div className="card mb-4">
+            <div className="data_tbl table-responsive">
+              <DataTable
+                title="Assets"
+                columns={columns}
+                data={filterData}
+                fixedHeader
+                fixedHeaderScrollHeight="64vh"
+                exportToCSV
+                highlightOnHover
+                subHeader
               />
-            }
-          />
+            </div>
+          </div>
         </div>
-      </div> */}
-
+      ) : (
+        <>
+          <button
+            type="button"
+            data-toggle="modal"
+            data-target="#sidebar-right"
+            size="small"
+            className="col-2 ml-3 mb-2 btn btn-outline-primary btn-sm"
+          >
+            New Asset Request
+          </button>
+          <div className="page_height">
+            <div className="card mb-4">
+              <div className="data_tbl table-responsive">
+                <DataTable
+                  title="Assets"
+                  columns={NewAssetcolumns}
+                  data={newAssetRequestData}
+                  fixedHeader
+                  fixedHeaderScrollHeight="40vh"
+                  exportToCSV
+                  highlightOnHover
+                  subHeader
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
       {/* Repair Requset Modal  */}
       <div
         className="modal fade"
@@ -483,8 +413,104 @@ const AssetSingleUser = () => {
           </div>
         </div>
       </div>
+
+      {/* Sidebar Right */}
+      <div className="right-modal">
+        <div
+          className="modal fade right"
+          id="sidebar-right"
+          tabIndex={-1}
+          role="dialog"
+        >
+          <div className="modal-dialog modal-sm" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <button type="button" className="close" data-dismiss="modal">
+                  <span aria-hidden="true" style={{ marginRight: "250px" }}>
+                    ×
+                  </span>
+                </button>
+                <h4 className="modal-title">Request New Asset</h4>
+              </div>
+              <div className="modal-body">
+                <div className="form-group col-12">
+                  <label className="form-label">
+                    Asset Name <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    options={getAssetDataContext.map((opt) => ({
+                      value: opt.sim_id,
+                      label: opt.assetsName,
+                    }))}
+                    value={{
+                      value: assetsName,
+                      label:
+                        getAssetDataContext.find(
+                          (user) => user.sim_id === assetsName
+                        )?.assetsName || "",
+                    }}
+                    onChange={(e) => {
+                      setAssetName(e.value);
+                    }}
+                    required
+                  />
+                </div>
+                <div className="form-group col-12">
+                  <label className="form-label">
+                    priority <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    className=""
+                    options={PriorityData.map((option) => ({
+                      value: `${option}`,
+                      label: `${option}`,
+                    }))}
+                    value={{
+                      value: priority,
+                      label: `${priority}`,
+                    }}
+                    onChange={(e) => {
+                      setPriority(e.value);
+                    }}
+                    required
+                  />
+                </div>
+                <div className="col-sm-12 col-lg-12 p-2">
+                  <Autocomplete
+                    multiple
+                    id="combo-box-demo"
+                    options={usersDataContext.map((d) => ({
+                      label: d.user_name,
+                      value: d.user_id,
+                    }))}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Tag" />
+                    )}
+                    onChange={userMultiChangeHandler}
+                  />
+                </div>
+                <FieldContainer
+                  label="Problem Detailing"
+                  Tag="textarea"
+                  value={problemDetailing}
+                  onChange={(e) => setProblemDetailing(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  data-dismiss="modal"
+                  className=" btn btn-primary ml-2"
+                  onClick={handleNewAssetSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 };
 
-export default AssetSingleUser;
+export default AssetSingleuserOverview;

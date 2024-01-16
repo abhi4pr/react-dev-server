@@ -280,9 +280,9 @@ const RepairRequest = () => {
           <button
             // style={{ marginRight: "200px", top: "90px" }}
             type="button"
-            className="btn btn-outline-primary btn-sm"
+            className="btn btn-outline-primary btn-sm mt-2 mb-2"
           >
-            Repair Request
+            Repair Reason
           </button>
         </Link>
         <div>

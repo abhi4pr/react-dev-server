@@ -79,14 +79,14 @@ const AssetSubCategoryMaster = () => {
               Category Name <sup style={{ color: "red" }}>*</sup>
             </label>
             <Select
-              options={categoryDataContext.map((opt) => ({
+              options={categoryDataContext?.map((opt) => ({
                 value: opt.category_id,
                 label: opt.category_name,
               }))}
               value={{
                 value: selectedCat,
                 label:
-                  categoryDataContext.find(
+                  categoryDataContext?.find(
                     (user) => user.category_id === selectedCat
                   )?.category_name || "",
               }}
