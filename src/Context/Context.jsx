@@ -39,7 +39,6 @@ const AppProvider = ({ children }) => {
       "http://34.93.221.166:3000/api/get_all_asset_brands"
     );
     setBrandDataContext(res?.data.data);
-    console.log(res.data.data, "universal");
   }
   async function getAssetData() {
     const res = await axios.get("http://34.93.221.166:3000/api/get_all_sims");
