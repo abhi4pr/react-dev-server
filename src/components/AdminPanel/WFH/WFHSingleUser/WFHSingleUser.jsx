@@ -7,11 +7,6 @@ import axios from "axios";
 import FormContainer from "../../FormContainer";
 import { useGlobalContext } from "../../../../Context/Context";
 import jwtDecode from "jwt-decode";
-// import image1 from "../SalaryGeneration/images/image1.png";
-// import image2 from "../SalaryGeneration/images/image2.png";
-// import image3 from "../SalaryGeneration/images/i3.png";
-// import image4 from "../SalaryGeneration/images/i4.png";
-// import image5 from "../SalaryGeneration/images/image5.png";
 import * as XLSX from "xlsx";
 import { generatePDF } from "../SalaryGeneration/pdfGenerator";
 import {
@@ -34,19 +29,14 @@ import DigitalSignature from "../../../DigitalSignature/DigitalSignature";
 import useInvoiceTemplateImages from "../Templates/Hooks/useInvoiceTemplateImages";
 import InvoicePDF from "../Templates/Component/InvoicePdfGenerator";
 import PreviewInvoice from "./PreviewInvoice";
-
-// const images = [
-//   { temp_id: 1, image: image1 },
-//   { temp_id: 2, image: image2 },
-//   { temp_id: 3, image: image3 },
-//   { temp_id: 4, image: image4 },
-//   { temp_id: 5, image: image5 },
-// ];
+import getDecodedToken from "../../../../utils/DecodedToken";
 
 const images = useInvoiceTemplateImages();
 
 const WFHSingleUser = () => {
   const { toastAlert, toastError } = useGlobalContext();
+  const tokenData = getDecodedToken("token");
+  console.log(tokenData);
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [error, setError] = useState(null);
@@ -530,7 +520,7 @@ const WFHSingleUser = () => {
               <FileOpenIcon />
             </button>
           )}
-          {!row.sendToFinance == 1 && (
+          {row.sendToFinance !== 1 && (
             <button
               className="btn btn-secondary"
               onClick={() => setIsPreviewModalOpen(true)}
@@ -543,6 +533,8 @@ const WFHSingleUser = () => {
             onRequestClose={() => setIsPreviewModalOpen(false)}
             contentLabel="Preview Modal"
             appElement={document.getElementById("root")}
+            shouldCloseOnOverlayClick={false}
+            shouldCloseOnEsc={false}
           >
             <PreviewInvoice
               data={row}

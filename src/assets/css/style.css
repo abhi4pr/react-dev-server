@@ -13525,6 +13525,10 @@ body.sidebar-toggled .sidebar_toggle .footer_cprgt {
   max-width: 12.5%;
 }
 
+.rdt_TableCell {
+  word-break: keep-all;
+}
+
 .data_tbl .btn-sm.user-button,
 .data_tbl .btn-sml.user-button {
   font-size: 14px;

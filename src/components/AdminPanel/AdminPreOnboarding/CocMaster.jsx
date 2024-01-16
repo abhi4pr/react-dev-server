@@ -7,7 +7,6 @@ import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 
 const CocMaster = () => {
-  
   const { toastAlert } = useGlobalContext();
   const [displaySeq, setDisplaySeq] = useState("");
   const [heading, setHeading] = useState("");
@@ -25,28 +24,28 @@ const CocMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-                
-      await axios.post("http://34.93.221.166:3000/api/add_coc",{
-        display_sequence: displaySeq,
-        heading: heading,
-        heading_desc: headingDesc,
-        sub_heading: subHeading,
-        sub_heading_desc: subHeadingDesc,
-        sub_heading_sequence: subHeadingSeq,
-        description: description,
-        remarks: remarks,
-        created_by: loginUserId
-      });
 
-      setDisplaySeq("");
-      setHeading("");
-      setSubHeading("");
-      setSubHeadingSeq("");
-      setDescription("");
-      setRemarks("");
+    await axios.post("http://34.93.221.166:3000/api/add_coc", {
+      display_sequence: displaySeq,
+      heading: heading,
+      heading_desc: headingDesc,
+      sub_heading: subHeading,
+      sub_heading_desc: subHeadingDesc,
+      sub_heading_sequence: subHeadingSeq,
+      description: description,
+      remarks: remarks,
+      created_by: loginUserId,
+    });
 
-      toastAlert("Coc created");
-      setIsFormSubmitted(true);
+    setDisplaySeq("");
+    setHeading("");
+    setSubHeading("");
+    setSubHeadingSeq("");
+    setDescription("");
+    setRemarks("");
+
+    toastAlert("Coc created");
+    setIsFormSubmitted(true);
   };
 
   if (isFormSubmitted) {
@@ -74,7 +73,7 @@ const CocMaster = () => {
           fieldGrid={4}
           required={false}
           value={heading}
-          onChange={(e)=> setHeading(e.target.value)}
+          onChange={(e) => setHeading(e.target.value)}
         />
 
         <FieldContainer
@@ -82,7 +81,7 @@ const CocMaster = () => {
           fieldGrid={4}
           value={subHeading}
           required={false}
-          onChange={(e)=> setSubHeading(e.target.value)}
+          onChange={(e) => setSubHeading(e.target.value)}
         />
 
         <FieldContainer
@@ -109,7 +108,7 @@ const CocMaster = () => {
           fieldGrid={4}
           required={false}
           value={headingDesc}
-          onChange={(e)=> setHeadingDesc(e.target.value)}
+          onChange={(e) => setHeadingDesc(e.target.value)}
         />
 
         <FieldContainer
@@ -118,7 +117,7 @@ const CocMaster = () => {
           fieldGrid={4}
           required={false}
           value={subHeadingDesc}
-          onChange={(e)=> setSubHeadingDesc(e.target.value)}
+          onChange={(e) => setSubHeadingDesc(e.target.value)}
         />
 
         <FieldContainer
@@ -129,7 +128,6 @@ const CocMaster = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-
       </FormContainer>
     </>
   );

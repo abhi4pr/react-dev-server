@@ -239,46 +239,45 @@ function Dashboard() {
           {contextData &&
             contextData[17] &&
             contextData[17].view_value === 1 && (
-          <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-            <Link className="collapse-item" to="/admin/wfh-single-user">
-              <div className="d_infocard card shadow">
-                <div className="card-body">
-                  <div className="d_infocard_txt">
-                    {/* <h3>WFH</h3> */}
+              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+                <Link className="collapse-item" to="/admin/wfh-single-user">
+                  <div className="d_infocard card shadow">
+                    <div className="card-body">
+                      <div className="d_infocard_txt">
+                        {/* <h3>WFH</h3> */}
 
-                    <h2>WFH Single User</h2>
+                        <h2>WFH Single User</h2>
+                      </div>
+                      <div className="d_infocard_icon">
+                        <span>
+                          <FaProductHunt />
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="d_infocard_icon">
-                    <span>
-                      <FaProductHunt />
-                    </span>
-                  </div>
-                </div>
+                </Link>
               </div>
-            </Link>
-          </div>
-           )} 
+            )}
           {contextData &&
             contextData[40] &&
             contextData[40].view_value === 1 && (
-          <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-            <Link className="collapse-item" to="/admin/asset-single-user">
-              <div className="d_infocard card shadow">
-                <div className="card-body">
-                  <div className="d_infocard_txt">
-
-                    <h2>Asset Single User</h2>
+              <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+                <Link className="collapse-item" to="/admin/asset-single-user">
+                  <div className="d_infocard card shadow">
+                    <div className="card-body">
+                      <div className="d_infocard_txt">
+                        <h2>Asset Single User</h2>
+                      </div>
+                      <div className="d_infocard_icon">
+                        <span>
+                          <FaProductHunt />
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <div className="d_infocard_icon">
-                    <span>
-                      <FaProductHunt />
-                    </span>
-                  </div>
-                </div>
+                </Link>
               </div>
-            </Link>
-          </div>
-          )}
+            )}
           {loginUserData.department_name == "Accounts" && (
             <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <div className="d_infocard card shadow">
@@ -299,6 +298,7 @@ function Dashboard() {
               </div>
             </div>
           )}
+
           {loginUserData.department_name == "Accounts" && (
             <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <div className="d_infocard card shadow">
