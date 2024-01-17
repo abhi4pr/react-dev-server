@@ -108,7 +108,7 @@ const AssetVisibleToHr = () => {
     />
   );
   const getNewAssetData = () => {
-    axios.get("http://192.168.29.116:3000/api/assetrequest").then((res) => {
+    axios.get("http://34.93.221.166:3000/api/assetrequest").then((res) => {
       setNewAsseRequesttData(res.data.data);
     });
   };

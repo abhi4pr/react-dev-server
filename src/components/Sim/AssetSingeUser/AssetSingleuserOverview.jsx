@@ -195,7 +195,7 @@ const AssetSingleuserOverview = ({
 
   const handleNewAssetSubmit = () => {
     try {
-      axios.post("http://192.168.29.116:3000/api/assetrequest", {
+      axios.post("http://34.93.221.166:3000/api/assetrequest", {
         sim_id: assetsName,
         detail: problemDetailing,
         priority: priority,

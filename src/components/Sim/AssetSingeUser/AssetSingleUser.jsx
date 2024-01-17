@@ -71,7 +71,7 @@ const AssetSingleUser = () => {
   }
   async function getNewAssetRequest() {
     const res = await axios.get(
-      `http://192.168.29.116:3000/api/get_allocated_asset_data_for_user_id/${userID}`
+      `http://34.93.221.166:3000/api/get_allocated_asset_data_for_user_id/${userID}`
     );
     console.log(res.data.data, "reason hai");
     setNewAssetRequestData(res?.data.data);

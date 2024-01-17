@@ -10,7 +10,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   const handleStatusUpdate = (row, status) => {
     console.log(row, status, "status cheqe");
     try {
-      axios.put("http://192.168.29.116:3000/api/assetrequest", {
+      axios.put("http://34.93.221.166:3000/api/assetrequest", {
         _id: row._id,
         asset_request_status: status,
         request_by: userID,
