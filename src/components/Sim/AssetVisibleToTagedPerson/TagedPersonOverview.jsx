@@ -25,9 +25,26 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
       selector: (row) => row.priority,
       sortable: true,
     },
+    // {
+    //   name: "Status",
+    //   selector: (row) => row.status,
+    //   sortable: true,
+    // },
     {
       name: "Status",
-      selector: (row) => row.status,
+      selector: (row) => (
+        <>
+          {row?.asset_repair_request_status === "Requested" ? (
+            <span className="badge badge-danger">Requested</span>
+          ) : row.asset_repair_request_status === "Accept" ? (
+            <span className="badge badge-success">Approved</span>
+          ) : row.asset_repair_request_status === "Rejected" ? (
+            <span className="badge badge-warning">Rejected</span>
+          ) : row.asset_repair_request_status === "Recover" ? (
+            <span className="badge badge-warning">Recoverd</span>
+          ) : null}
+        </>
+      ),
       sortable: true,
     },
     {
@@ -68,13 +85,11 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
       name: "Request By",
       selector: (row) => row.req_by_name,
       sortable: true,
-      width: "150px",
     },
     {
       name: "Request Date",
       selector: (row) => row.req_date?.split("T")?.[0],
       sortable: true,
-      width: "150px",
     },
     {
       name: "Priority",
@@ -82,15 +97,24 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
       sortable: true,
     },
     {
-      name: "Status",
-      selector: (row) => row.status,
-      sortable: true,
-    },
-    {
       name: "Asset Name",
       selector: (row) => row.asset_name,
       sortable: true,
-      width: "14%",
+    },
+    {
+      name: "Status",
+      selector: (row) => (
+        <>
+          {row?.asset_request_asset_request_status === "Requested" ? (
+            <span className="badge badge-danger">Requested</span>
+          ) : row.asset_request_asset_request_status === "Approved" ? (
+            <span className="badge badge-success">Approved</span>
+          ) : row.asset_request_asset_request_status === "Rejected" ? (
+            <span className="badge badge-warning">Rejected</span>
+          ) : null}
+        </>
+      ),
+      sortable: true,
     },
   ];
 

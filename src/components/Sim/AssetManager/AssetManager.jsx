@@ -2,6 +2,7 @@ import DataTable from "react-data-table-component";
 import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import { useGlobalContext } from "../../../Context/Context";
 import axios from "axios";
+import FormContainer from "../../AdminPanel/FormContainer";
 
 const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   const { userID } = useAPIGlobalContext();
@@ -82,7 +83,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       sortable: true,
     },
 
-    newAssetData[0].asset_request_status == "Requested" && {
+    {
       name: "Actions",
       cell: (row) => (
         <>
@@ -93,7 +94,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
             size="small"
             variant="contained"
             color="primary"
-            onClick={() => handleStatusUpdate(row, "Approved")}
+            onClick={() => handleStatusUpdate(row, "Approved By Manager")}
             className="btn btn-success btn-sm ml-2"
           >
             Approval
@@ -106,7 +107,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
             variant="contained"
             color="primary"
             className="btn btn-danger btn-sm ml-2"
-            onClick={() => handleStatusUpdate(row, "Rejected")}
+            onClick={() => handleStatusUpdate(row, "Rejected By Manager")}
           >
             Reject
           </button>
@@ -118,22 +119,24 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
 
   return (
     <>
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title="New Asset Request Overview"
-              columns={columns}
-              data={newAssetData}
-              fixedHeader
-              fixedHeaderScrollHeight="50vh"
-              exportToCSV
-              highlightOnHover
-              subHeader
-            />
+      <FormContainer submitButton={false} mainTitle="Asset Manager">
+        <div className="page_height">
+          <div className="card mb-4">
+            <div className="data_tbl table-responsive">
+              <DataTable
+                title="Manager Login and show"
+                columns={columns}
+                data={newAssetData}
+                fixedHeader
+                fixedHeaderScrollHeight="50vh"
+                exportToCSV
+                highlightOnHover
+                subHeader
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </FormContainer>
     </>
   );
 };

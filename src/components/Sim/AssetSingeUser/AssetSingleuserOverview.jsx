@@ -6,6 +6,7 @@ import axios from "axios";
 import FieldContainer from "../../AdminPanel/FieldContainer";
 import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import { useGlobalContext } from "../../../Context/Context";
+import DateISOtoNormal from "../../../utils/DateISOtoNormal";
 
 const AssetSingleuserOverview = ({
   filterData,
@@ -85,6 +86,29 @@ const AssetSingleuserOverview = ({
       console.log(error);
     }
   };
+  const [assetId, setAssetId] = useState(0);
+  const handleReturnAsset = (row) => {
+    setAssetId(row.sim_id);
+  };
+  const handleAssetReturn = () => {
+    try {
+      const formData = new FormData();
+      formData.append("sim_id", assetId);
+      formData.append("asset_return_remark", returnRemark);
+      formData.append("return_asset_image_1", returnImage1);
+      formData.append("return_asset_image_2", returnImage2);
+      formData.append("asset_return_by", userID);
+
+      const response = axios.post(
+        "http://34.93.221.166:3000/api/assetreturn",
+        formData
+      );
+
+      toastAlert("Requested Success");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const columns = [
     {
@@ -108,10 +132,24 @@ const AssetSingleuserOverview = ({
       selector: (row) => row.sub_category_name,
       sortable: true,
     },
+
     {
-      name: "Assigned Date",
-      selector: (row) => "hh",
+      name: "Assigned Duration",
+      selector: (row) => row.submitted_at,
       sortable: true,
+      cell: (row) => {
+        // Get the assigned date from the row
+        const assignedDate = new Date(row.submitted_at);
+
+        // Get the current date
+        const currentDate = new Date();
+
+        // Calculate the difference in days
+        const timeDifference = currentDate - assignedDate;
+        const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
+
+        return <div>{daysDifference} days</div>;
+      },
     },
 
     {
@@ -138,6 +176,7 @@ const AssetSingleuserOverview = ({
           data-target="#return-asset-modal"
           size="small"
           className="btn btn-outline-primary btn-sm"
+          onClick={() => handleReturnAsset(row)}
         >
           Return Asset
         </button>
@@ -158,13 +197,28 @@ const AssetSingleuserOverview = ({
       selector: (row) => row.assetsName,
       sortable: true,
     },
+    // {
+    //   name: "Status",
+    //   selector: (row) => (
+    //     <>
+    //       {row.asset_request_asset_request_status == "Requested" && (
+    //         <span className="badge badge-danger">Requested</span>
+    //       )}
+    //     </>
+    //   ),
+    //   sortable: true,
+    // },
     {
       name: "Status",
       selector: (row) => (
         <>
-          {row.asset_request_asset_request_status == "Requested" && (
+          {row?.asset_request_asset_request_status === "Requested" ? (
             <span className="badge badge-danger">Requested</span>
-          )}
+          ) : row.asset_request_asset_request_status === "Approved" ? (
+            <span className="badge badge-success">Assigned</span>
+          ) : row.asset_request_asset_request_status === "Rejected" ? (
+            <span className="badge badge-warning">Rejected</span>
+          ) : null}
         </>
       ),
       sortable: true,
@@ -209,6 +263,7 @@ const AssetSingleuserOverview = ({
       console.log(error);
     }
   };
+
   return (
     <>
       {tab ? (
@@ -577,7 +632,7 @@ const AssetSingleuserOverview = ({
                   type="button"
                   data-dismiss="modal"
                   className=" btn btn-primary ml-2"
-                  onClick={handleNewAssetSubmit}
+                  onClick={handleAssetReturn}
                 >
                   Submit
                 </button>

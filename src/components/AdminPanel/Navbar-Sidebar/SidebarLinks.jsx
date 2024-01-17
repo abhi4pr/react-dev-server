@@ -470,31 +470,70 @@ const SidebarLinks = () => {
                   <Link className="collapse-item" to="/admin/self-audit">
                     Audit asset
                   </Link>
-                  <Link
-                    className="collapse-item"
-                    to="/admin/asset-visible-to-hr"
-                  >
-                    Repair Request To HR
-                  </Link>
-                  <Link
-                    className="collapse-item"
-                    to="/admin/asset-visible-to-taged-person"
-                  >
-                    Repair Request To Taged Person
-                  </Link>
-                  {/* )} */}
-
-                  {/* {contextData &&
-                contextData[8] &&
-                contextData[8].view_value === 1 && ( */}
-                  {/* <Link className="collapse-item" to="/admin/hr-audit">
-                  Hr Audit
-                  </Link> */}
-                  {/* )} */}
                 </div>
               </div>
             </li>
           )}
+
+          {/* Asset Managerment Routing  */}
+          {/* {isAssetNotifierVisible && ( */}
+          <li className="nav-item">
+            <Link
+              className="nav-link collapsed"
+              data-toggle="collapse"
+              data-target="#assets"
+              aria-expanded="true"
+              aria-controls="assets"
+            >
+              <i className="bi bi-person-gear" />
+              <span>Assets</span>
+            </Link>
+            <div
+              id="assets"
+              className="collapse"
+              aria-labelledby="headingTwo"
+              data-parent="#accordionSidebar"
+            >
+              <div className="bg-white collapse-inner">
+                <Link className="collapse-item" to="/admin/asset-single-user">
+                  Asset Single User
+                </Link>
+                {contextData &&
+                  contextData[15] &&
+                  contextData[15].view_value === 1 && (
+                    <Link className="collapse-item" to="/sim-overview">
+                      Asset
+                    </Link>
+                  )}
+
+                {contextData &&
+                  contextData[40] &&
+                  contextData[40].view_value === 1 && (
+                    <Link
+                      className="collapse-item"
+                      to="/admin/asset-visible-to-hr"
+                    >
+                      Asset Request HR
+                    </Link>
+                  )}
+                <Link
+                  className="collapse-item"
+                  to="/admin/asset-visible-to-taged-person"
+                >
+                  Tagged Asset
+                </Link>
+                {contextData &&
+                  contextData[41] &&
+                  contextData[41].view_value === 1 && (
+                    <Link className="collapse-item" to="/admin/asset-manager">
+                      Asset Manager Login
+                    </Link>
+                  )}
+              </div>
+            </div>
+          </li>
+          {/* )} */}
+
           {isOnboardingVisible && (
             <li className="nav-item">
               <Link
