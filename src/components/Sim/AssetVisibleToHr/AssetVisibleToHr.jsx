@@ -5,6 +5,7 @@ import HrVisibleToHrOverview from "./HrVisibleToHrOverview";
 import axios from "axios";
 import Modal from "react-modal";
 import NewAssetRequestOverview from "./NewAssetRequestOverview";
+import DateISOtoNormal from "../../../utils/DateISOtoNormal";
 
 const AssetVisibleToHr = () => {
   const [filterData, setFilterData] = useState([]);
@@ -12,17 +13,23 @@ const AssetVisibleToHr = () => {
   const [search, setSearch] = useState("");
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [newAsseRequesttData, setNewAsseRequesttData] = useState([]);
+  const [returnAssetData, setReturnAssetData] = useState([]);
 
   // Parent Toggle Button section start------------------------------------------------
   const handleAccordionButtonClickParent = (index) => {
     setActiveAccordionIndexParent(index);
   };
-  const accordionButtonsParent = ["Repair Asset Request", "New Asset Request"];
+  const accordionButtonsParent = [
+    "Repair Asset Request",
+    "New Asset Request",
+    "Return Asset",
+  ];
   const [activeAccordionIndexParent, setActiveAccordionIndexParent] =
     useState(0);
 
   const isButton1Active = activeAccordionIndexParent === 0;
   const isButton2Active = activeAccordionIndexParent === 1;
+  const isButton3Active = activeAccordionIndexParent === 2;
 
   const accordionButtons1 = ["All", "Requested", "Assigned", "Rejected"];
 
@@ -97,7 +104,7 @@ const AssetVisibleToHr = () => {
   );
   const tab4 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data.filter((d) => d.status == "Recovered")}
+      hrOverviewData={data.filter((d) => d.status == "Recover")}
       hardRender={hardRender}
     />
   );
@@ -112,9 +119,16 @@ const AssetVisibleToHr = () => {
       setNewAsseRequesttData(res.data.data);
     });
   };
+
+  const getReturnAssetData = () => {
+    axios.get("http://34.93.221.166:3000/api/assetreturn").then((res) => {
+      setReturnAssetData(res.data.assetReturnRequests);
+    });
+  };
   useEffect(() => {
     getData();
     getNewAssetData();
+    getReturnAssetData();
   }, []);
 
   useEffect(() => {
@@ -135,6 +149,25 @@ const AssetVisibleToHr = () => {
       console.log(error);
     }
   }
+
+  const returnDataColumns = [
+    {
+      name: "Return By",
+      selector: (row) => row.asset_return_remark,
+    },
+    {
+      name: "Return Remark",
+      selector: (row) => row.asset_return_remark,
+    },
+    {
+      name: "Asset Name",
+      selector: (row) => DateISOtoNormal(row.return_asset_data_time),
+    },
+    {
+      name: "Return Date",
+      selector: (row) => DateISOtoNormal(row.return_asset_data_time),
+    },
+  ];
 
   return (
     <>
@@ -179,6 +212,24 @@ const AssetVisibleToHr = () => {
               {activeAccordionIndex1 === 2 && newAssetTab3}
               {activeAccordionIndex1 === 3 && newAssetTab4}
             </FormContainer>
+          )}
+          {isButton3Active && (
+            <div className="page_height">
+              <div className="card mb-4">
+                <div className="data_tbl table-responsive">
+                  <DataTable
+                    title="Asset Return Request"
+                    columns={returnDataColumns}
+                    data={returnAssetData}
+                    fixedHeader
+                    fixedHeaderScrollHeight="64vh"
+                    exportToCSV
+                    highlightOnHover
+                    subHeader
+                  />
+                </div>
+              </div>
+            </div>
           )}
         </div>
       </div>

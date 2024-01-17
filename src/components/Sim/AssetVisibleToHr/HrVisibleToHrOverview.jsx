@@ -117,7 +117,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         setRecoveryRemark("");
         setScrapRemark("");
         hardRender();
-        // toastAlert("Update Success");
+        toastAlert("Request Success");
       });
   };
 
@@ -358,7 +358,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       sortable: true,
       width: "350px",
     },
-    hrOverviewData[0]?.status == "Recovered" && {
+    hrOverviewData[0]?.status == "Recover" && {
       name: "Actions",
       cell: (row) => (
         <>
