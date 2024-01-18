@@ -205,8 +205,8 @@ const SimUpdate = () => {
     formData.append("assetsOtherID", assetsOtherID);
     formData.append("s_type", assetType);
 
-    formData.append("asset_modal_id", modalName.asset_modal_id);
-    formData.append("asset_brand_id", brandName.asset_brand_id);
+    formData.append("asset_modal_id", modalName);
+    formData.append("asset_brand_id", brandName);
 
     formData.append("warrantyDate", Date(warrantyDate));
     formData.append("inWarranty", inWarranty);
@@ -342,20 +342,16 @@ const SimUpdate = () => {
                   id="combo-box-demo"
                   options={brandData.map((cat) => ({
                     label: cat.asset_brand_name,
-                    value: cat.asset_brand_id,
+                    value: cat._id,
                   }))}
                   value={
-                    brandData?.find(
-                      (brand) => brand.asset_brand_id === brandName
-                    )?.asset_brand_name || ""
+                    brandData?.find((brand) => brand._id === brandName)
+                      ?.asset_brand_name || ""
                   }
                   onChange={(e, newvalue) => {
-                    if (newvalue != null) {
-                      setBrandName((pre) => ({
-                        label: newvalue.label,
-                        asset_brand_id: newvalue.value,
-                      }));
-                    }
+                    // if (newvalue != null) {
+                    setBrandName(newvalue.value);
+                    // }
                   }}
                   renderInput={(params) => (
                     <TextField {...params} label="Brand Name" />
@@ -383,18 +379,14 @@ const SimUpdate = () => {
                   id="combo-box-demo"
                   options={modalData?.map((cat) => ({
                     label: cat?.asset_modal_name,
-                    value: cat?.asset_modal_id,
+                    value: cat?._id,
                   }))}
                   value={
-                    modalData?.find(
-                      (modal) => modal.asset_modal_id === modalName
-                    )?.asset_modal_name || ""
+                    modalData?.find((modal) => modal._id === modalName)
+                      ?.asset_modal_name || ""
                   }
                   onChange={(e, newvalue) => {
-                    setModalName((pre) => ({
-                      label: newvalue.label,
-                      asset_modal_id: newvalue.value,
-                    }));
+                    setModalName(newvalue.value);
                   }}
                   renderInput={(params) => (
                     <TextField {...params} label="Add Modal" />

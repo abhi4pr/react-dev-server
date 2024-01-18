@@ -95,7 +95,7 @@ const RoleOverView = () => {
                 </button>
               </Link>
             )}
-          {contextData &&
+          {/* {contextData &&
             contextData[4] &&
             contextData[4].delete_flag_value === 1 && (
               <DeleteButton
@@ -103,7 +103,7 @@ const RoleOverView = () => {
                 id={row.role_id}
                 getData={getData}
               />
-            )}
+            )} */}
         </>
       ),
     },
