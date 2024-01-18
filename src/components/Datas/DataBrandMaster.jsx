@@ -35,7 +35,8 @@ const DataBrandMaster = () => {
   const [contentTypeData, setContentTypeData] = useState([]);
   const [dataBrand, setDataBrand] = useState("");
   const [dataBrandData, setDataBrandData] = useState([]);
-  const [dataSubCategory, setDataSubCategory] = useState("");
+  // const [dataSubCategory, setDataSubCategory] = useState([]);
+  const [dataSubCategory, setDataSubCategory] = useState([]);
   const [dataSubCategoryData, setDataSubCategoryData] = useState([]);
   const [designedBy, setDesignedBy] = useState("");
   const [employeeData, setEmployeeData] = useState([]);
@@ -145,9 +146,11 @@ const DataBrandMaster = () => {
         setIsLoading(true);
       }
       for (let i = 0; i < details.length; i++) {
+        console.log(dataSubCategory);
         const formData = new FormData();
         formData.append("data_name", brand);
         formData.append("cat_id", category);
+        // formData.append("sub_cat_id", dataSubCategory.map(e=>e));
         formData.append("sub_cat_id", dataSubCategory);
         formData.append("platform_id", platform);
         formData.append("brand_id", dataBrand);
@@ -314,7 +317,24 @@ const DataBrandMaster = () => {
           <label className="form-label">
             Sub Category Name <sup style={{ color: "red" }}>*</sup>
           </label>
-          <Select
+          {/* <Select
+    options={dataSubCategoryData.map((opt) => ({
+        value: opt._id,
+        label: opt.data_sub_cat_name,
+    }))}
+    isMulti={true}
+    value={
+        dataSubCategoryData
+            .filter(opt => dataSubCategory.includes(opt._id))
+            .map(opt => ({ value: opt._id, label: opt.data_sub_cat_name }))
+    }
+    onChange={(selectedOptions) => {
+        setDataSubCategory(selectedOptions.map(opt => opt.value));
+    }}
+    required
+/> */}
+
+<Select
             options={dataSubCategoryData.map((opt) => ({
               value: opt._id,
               label: opt.data_sub_cat_name,
@@ -330,6 +350,7 @@ const DataBrandMaster = () => {
             }}
             required
           />
+
         </div>
         <div className="col-1 mt-4">
           <Link

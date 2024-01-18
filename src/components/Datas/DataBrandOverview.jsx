@@ -12,7 +12,7 @@ import video from "./montage.png";
 import DeleteButton from "../AdminPanel/DeleteButton";
 import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
-import { Slider } from "@mui/material";
+import { Autocomplete, Slider, TextField } from "@mui/material";
 
 const DataBrandOverview = () => {
   const [search, setSearch] = useState("");
@@ -105,7 +105,6 @@ const DataBrandOverview = () => {
         });
         if (RoleIDContext == 2 || RoleIDContext == 1) {
           setData(filteredData);
-          console.log(filteredData);
         } else {
           setData(filteredData.filter((d) => d.created_by === userID));
         }
@@ -214,6 +213,11 @@ const DataBrandOverview = () => {
                 <FormContainer mainTitle="Data" link="/data-brand-master" />
               </div>
               <div className="action_btns">
+                <Link to="/data-brand-dashboard">
+                  <button type="button" className="btn btn-primary btn-sm">
+                    Dashboard
+                  </button>
+                </Link>{" "}
                 <Link to="/data-content-type">
                   <button type="button" className="btn btn-primary btn-sm">
                     Content Type
@@ -249,7 +253,7 @@ const DataBrandOverview = () => {
             <div className="card mb-4">
               <div className="card-body pb0 pb4">
                 <div className="row thm_form">
-                  <FieldContainer
+                  {/* <FieldContainer
                     label="Category"
                     Tag="select"
                     fieldGrid={4}
@@ -262,8 +266,24 @@ const DataBrandOverview = () => {
                         {data.category_name}
                       </option>
                     ))}
-                  </FieldContainer>
-                  <FieldContainer
+                  </FieldContainer> */}
+
+                  <Autocomplete
+                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
+                    id="combo-box-demo"
+                    options={categoryData}
+                    getOptionLabel={(option) => option.category_name}
+                    style={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Category"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(e, value) => setSelectedCategory(value?._id)}
+                  />
+                  {/* <FieldContainer
                     label="Brand"
                     Tag="select"
                     fieldGrid={4}
@@ -276,8 +296,20 @@ const DataBrandOverview = () => {
                         {data.brand_name}
                       </option>
                     ))}
-                  </FieldContainer>
-                  <FieldContainer
+                  </FieldContainer> */}
+                  <Autocomplete
+                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
+                    id="combo-box-demo"
+                    options={brandData}
+                    getOptionLabel={(option) => option.brand_name}
+                    style={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Brand" variant="outlined" />
+                    )}
+                    onChange={(e, value) => setSelectedBrand(value?._id)}
+                  />
+
+                  {/* <FieldContainer
                     label="Content type"
                     Tag="select"
                     fieldGrid={4}
@@ -290,8 +322,24 @@ const DataBrandOverview = () => {
                         {data.content_name}
                       </option>
                     ))}
-                  </FieldContainer>
-                  <FieldContainer
+                  </FieldContainer> */}
+                  <Autocomplete
+                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
+                    id="combo-box-demo"
+                    options={contentData}
+                    getOptionLabel={(option) => option.content_name}
+                    style={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Content Type"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(e, value) => setSelectedContent(value?._id)}
+                  />
+
+                  {/* <FieldContainer
                     label="Platform"
                     Tag="select"
                     fieldGrid={4}
@@ -304,8 +352,24 @@ const DataBrandOverview = () => {
                         {data.platform_name}
                       </option>
                     ))}
-                  </FieldContainer>
-                  <FieldContainer
+                  </FieldContainer> */}
+                  <Autocomplete
+                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-2"
+                    id="combo-box-demo"
+                    options={platformData}
+                    getOptionLabel={(option) => option.platform_name}
+                    style={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Platform"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(e, value) => setSelectedPlatform(value?._id)}
+                  />
+
+                  {/* <FieldContainer
                     label="Created By"
                     Tag="select"
                     fieldGrid={2}
@@ -318,8 +382,23 @@ const DataBrandOverview = () => {
                         {data.user_name}
                       </option>
                     ))}
-                  </FieldContainer>
-                  <FieldContainer
+                  </FieldContainer> */}
+                  <Autocomplete
+                    id="combo-box-demo"
+                    className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-2"
+                    options={employeeData}
+                    getOptionLabel={(option) => option.user_name}
+                    style={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Created By"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(e, value) => setSelectedUser(value?._id)}
+                  />
+                  {/* <FieldContainer
                     label="Designed By"
                     Tag="select"
                     fieldGrid={2}
@@ -332,9 +411,25 @@ const DataBrandOverview = () => {
                         {data.user_name}
                       </option>
                     ))}
-                  </FieldContainer>
+                  </FieldContainer> */}
+                  <Autocomplete
+                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-2"
+                    id="combo-box-demo" 
+                    options={designedData}
+                    getOptionLabel={(option) => option.user_name}
+                    style={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Designed By"
+                        variant="outlined"
+                      />
+                    )}
+                    onChange={(e, value) => setDesigned(value?._id)}
+                  />
+
                   <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-                    <div className="form-group">
+                    {/* <div className="form-group">
                       <label className="form-label">Search</label>
                       <input
                         className="form-control"
@@ -343,7 +438,15 @@ const DataBrandOverview = () => {
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search by brand name"
                       />
-                    </div>
+                    </div> */}
+                    <TextField
+                      id="outlined-basic"
+                      label="Search"
+                      variant="outlined"
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      placeholder="Search by brand name"
+                    />
                   </div>
                 </div>
               </div>
@@ -377,7 +480,7 @@ const DataBrandOverview = () => {
                                   View
                                 </button>
                               </Link>
-                              <Link to={`/data-brand-update/${detail._id}`}>
+                              <Link to={`/data-brand-update/${detail.data_id}`}>
                                 <button
                                   className="btn btn-sm btn-outline-primary"
                                   title="Edit"

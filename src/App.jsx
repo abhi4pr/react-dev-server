@@ -58,6 +58,7 @@ import DataSubCategory from "./components/Datas/DataSubCategory/DataSubCategory"
 import Platform from "./components/Datas/Platform/Platform";
 import ContentType from "./components/Datas/ContentType/ContentType";
 import DataBrand from "./components/Datas/DataBrand/DataBrand";
+import Dashboard from "./components/Datas/Dashboard";
 
 function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -174,6 +175,7 @@ function App() {
           <Route path="/brand-update/:id" element={<BrandUpdate />} />
           <Route path="/brand-view/:id" element={<BrandView />} />
 
+          <Route path="/data-brand-dashboard" element={<Dashboard />} />
           <Route path="/data-brand-master" element={<DataBrandMaster />} />
           <Route path="/data-brand-overview" element={<DataBrandOverview />} />
           <Route path="/data-brand-update/:id" element={<DataBrandUpdate />} />
