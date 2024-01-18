@@ -79,10 +79,12 @@ const UserWiseResponsibility = () => {
   }
 
   function getDatas() {
-    axios.get(`http://34.93.221.166:3000/api/userbyjobres/${id}`).then((res) => {
-      setData(res.data);
-      setFilterData(res.data);
-    });
+    axios
+      .get(`http://34.93.221.166:3000/api/userbyjobres/${id}`)
+      .then((res) => {
+        setData(res.data);
+        setFilterData(res.data);
+      });
   }
   useEffect(() => {
     getData();

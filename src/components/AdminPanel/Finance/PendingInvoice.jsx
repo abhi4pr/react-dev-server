@@ -21,41 +21,55 @@ const PendingInvoice = () => {
 
   const handleReject = async (row) => {
     const formData = new FormData();
-      formData.append("loggedin_user_id",36)
-      formData.append("sale_booking_id",row.sale_booking_id)
+    formData.append("loggedin_user_id", 36);
+    formData.append("sale_booking_id", row.sale_booking_id);
 
-      await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=invoice_reject", formData ,{
-        headers:{
-          "Content-Type":"multipart/form-data"
-        }
-      });
+    await axios.post(
+      "https://production.sales.creativefuel.io/webservices/RestController.php?view=invoice_reject",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-      toastAlert("Data updated");
-      setIsFormSubmitted(true);
+    toastAlert("Data updated");
+    setIsFormSubmitted(true);
   };
 
-  const handleImageUpload = async(row, fileData) => {
+  const handleImageUpload = async (row, fileData) => {
     const formData = new FormData();
-      formData.append("loggedin_user_id",36)
-      formData.append("sale_booking_id",row.sale_booking_id)
-      formData.append("invoiceFormSubmit",1)
-      formData.append("invoice",fileData)
+    formData.append("loggedin_user_id", 36);
+    formData.append("sale_booking_id", row.sale_booking_id);
+    formData.append("invoiceFormSubmit", 1);
+    formData.append("invoice", fileData);
 
-      await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=invoice_upload_file", formData,{
-        headers:{
-          "Content-Type": "multipart/form-data"
-        }
-      })
-  }
+    await axios.post(
+      "https://production.sales.creativefuel.io/webservices/RestController.php?view=invoice_upload_file",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+  };
 
   function getData() {
-    axios.post("http://34.93.221.166:3000/api/add_php_pending_invoice_data_in_node").then((res)=>{
-      console.log('data save in local success')
-    })
-    axios.get("http://34.93.221.166:3000/api/get_all_php_pending_invoice_data").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-    });
+    axios
+      .post(
+        "http://34.93.221.166:3000/api/add_php_pending_invoice_data_in_node"
+      )
+      .then((res) => {
+        console.log("data save in local success");
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_php_pending_invoice_data")
+      .then((res) => {
+        setData(res.data.data);
+        setFilterData(res.data.data);
+      });
   }
 
   const convertDateToDDMMYYYY = (dateString) => {
@@ -66,8 +80,6 @@ const PendingInvoice = () => {
     const formattedDate = `${day}/${month}/${year}`;
     return formattedDate;
   };
-
-
 
   useEffect(() => {
     getData();
@@ -106,10 +118,12 @@ const PendingInvoice = () => {
       // selector: (row) => row.cust_name,
       cell: (row) => (
         <>
-        <Link className="text-primary"
-         to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
-          {row.cust_name}
-        </Link>
+          <Link
+            className="text-primary"
+            to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}
+          >
+            {row.cust_name}
+          </Link>
         </>
       ),
       width: "15%",
@@ -124,14 +138,26 @@ const PendingInvoice = () => {
       selector: (row) => (
         <div>
           <form>
-            <input type="file" name="upload_image" onChange={(e)=>handleImageUpload(row,e.target.files[0])} />
-            <button type="submit" value="upload">Upload</button>
+            <input
+              type="file"
+              name="upload_image"
+              onChange={(e) => handleImageUpload(row, e.target.files[0])}
+            />
+            <button type="submit" value="upload">
+              Upload
+            </button>
           </form>
-          <br/>
-          <button type="button" className="btn btn-success" onClick={()=>handleReject(row)}>Reject</button>
+          <br />
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={() => handleReject(row)}
+          >
+            Reject
+          </button>
         </div>
-    ),
-    width: "13%",
+      ),
+      width: "13%",
     },
     {
       name: "Base Amount",

@@ -15,12 +15,12 @@ const PlanOverview = () => {
 
   const param = useParams();
   const id = param.id;
-  
+
   const getSelectPage = async () => {
     const newPlan = await axios.get(
       `http://34.93.221.166:3000/api/campaignplan/${id}`
     );
-console.log(newPlan,"dfsldfksdl");
+    console.log(newPlan, "dfsldfksdl");
     const x = newPlan.data.data.filter((page) => {
       if (
         page.replacement_status == "pending" ||

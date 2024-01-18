@@ -508,7 +508,7 @@ const DataBrandOverview = () => {
                                       {countData
                                         .filter(
                                           (item) =>
-                                           ( item.data_name === detail.data_name) 
+                                            item.data_name === detail.data_name
                                           //  && (item.data_type === "jpg" ||
                                           //   item.data_type === "png" ||
                                           //   item.data_type === "jpeg"
@@ -522,56 +522,54 @@ const DataBrandOverview = () => {
                                             }`}
                                             data-interval="10000"
                                           >
-                                            {
-                                              filteredItem.data_type === "jpg" ||
-                                              filteredItem.data_type === "png" ||
-                                              filteredItem.data_type === "jpeg" ? (
-
+                                            {filteredItem.data_type === "jpg" ||
+                                            filteredItem.data_type === "png" ||
+                                            filteredItem.data_type ===
+                                              "jpeg" ? (
                                               <img
-                                              onClick={() =>
-                                                handleFileClick(
-                                                  "image",
-                                                  filteredItem.data_image
-                                                )
-                                              }
-                                              className="d-block w-100"
-                                              src={filteredItem.data_image}
-                                              alt={`Slide ${index + 1}`}
-                                            />)
-                                            
-                                            : filteredItem.data_type === "pdf" ? (
-                                              
+                                                onClick={() =>
+                                                  handleFileClick(
+                                                    "image",
+                                                    filteredItem.data_image
+                                                  )
+                                                }
+                                                className="d-block w-100"
+                                                src={filteredItem.data_image}
+                                                alt={`Slide ${index + 1}`}
+                                              />
+                                            ) : filteredItem.data_type ===
+                                              "pdf" ? (
                                               <img
-                                              onClick={() =>
-                                                handleFileClick(
-                                                  "pdf",
-                                                  filteredItem.data_image
-                                                )
-                                              }
-                                              className="d-block w-100"
-                                              src={pdf}
-                                              alt={`Slide ${index + 1}`}
-                                            />
-                                            ) : filteredItem.data_type === "mp4" ? (
+                                                onClick={() =>
+                                                  handleFileClick(
+                                                    "pdf",
+                                                    filteredItem.data_image
+                                                  )
+                                                }
+                                                className="d-block w-100"
+                                                src={pdf}
+                                                alt={`Slide ${index + 1}`}
+                                              />
+                                            ) : filteredItem.data_type ===
+                                              "mp4" ? (
                                               <img
-                                              onClick={() =>
-                                                handleFileClick(
-                                                  "video",
-                                                  filteredItem.data_image
-                                                )
-                                              }
-                                              className="d-block w-100"
-                                              src={video}
-                                              alt={`Slide ${index + 1}`}
-                                            />
+                                                onClick={() =>
+                                                  handleFileClick(
+                                                    "video",
+                                                    filteredItem.data_image
+                                                  )
+                                                }
+                                                className="d-block w-100"
+                                                src={video}
+                                                alt={`Slide ${index + 1}`}
+                                              />
                                             ) : (
                                               <img
-                                              className="d-block w-100"
-                                              src={video}
-                                              alt={`Slide ${index + 1}`}
-                                            />
-                                            )
-                                            }
+                                                className="d-block w-100"
+                                                src={video}
+                                                alt={`Slide ${index + 1}`}
+                                              />
+                                            )}
                                           </div>
                                         ))}
                                     </div>
@@ -622,11 +620,7 @@ const DataBrandOverview = () => {
                                     height="80px"
                                   />
                                 ) : (
-                                  <img
-                                    src={video}
-                                    width="80px"
-                                    height="80px"
-                                  />
+                                  <img src={video} width="80px" height="80px" />
                                 )}
                               </div>
 
@@ -723,8 +717,8 @@ const DataBrandOverview = () => {
               right: "auto",
               bottom: "auto",
               width: "50%",
-              height:[enlargedFileType === "pdf" ? "100vh" : "auto"],
-              
+              height: [enlargedFileType === "pdf" ? "100vh" : "auto"],
+
               // marginRight: "-50%",
               transform: "translate(-50%, -50%)",
             },

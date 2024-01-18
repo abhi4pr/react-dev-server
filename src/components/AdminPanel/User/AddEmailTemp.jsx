@@ -50,23 +50,17 @@ const AddEmailTemp = () => {
           {`{{sitting_area}}`} for user sitting area, use {`{{sitting_ref}}`}{" "}
           for user sitting reference number, use {`{{user_contact}}`} for user
           contact, use {`{{user_reportTo}}`} for user report to whom, use{" "}
-          {`{{asset_name}}`} for asset name, use {`{{user_joining_date}}`} for user joining date.
+          {`{{asset_name}}`} for asset name, use {`{{user_joining_date}}`} for
+          user joining date.
         </strong>
       </div>
 
       <div class="alert alert-danger">
         <strong>
-          email template id for :- 
-          user joining before 0 days = 0,
-          user joining before 1 days = 1,
-          user joining before 2 days = 2,
-          user joining before 3 days = 3,
-          assset auto mail = 4,
-          pantry order = 5,
-          onboarding user = 6,
-          report to manager = 7,
-          other emails = 8,
-          forget password = 9
+          email template id for :- user joining before 0 days = 0, user joining
+          before 1 days = 1, user joining before 2 days = 2, user joining before
+          3 days = 3, assset auto mail = 4, pantry order = 5, onboarding user =
+          6, report to manager = 7, other emails = 8, forget password = 9
         </strong>
       </div>
 
@@ -105,7 +99,7 @@ const AddEmailTemp = () => {
           fieldGrid={6}
           required={true}
           value={emailSub}
-          onChange={(e)=> setEmailSub(e.target.value)}
+          onChange={(e) => setEmailSub(e.target.value)}
         />
 
         <ReactQuill

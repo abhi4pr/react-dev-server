@@ -22,7 +22,9 @@ const DesignationUpdate = () => {
   useEffect(() => {
     const fetchDepartmentData = async () => {
       try {
-        const response = await axios.get("http://34.93.221.166:3000/api/get_all_departments");
+        const response = await axios.get(
+          "http://34.93.221.166:3000/api/get_all_departments"
+        );
         const departmentOptions = response.data.map((dept) => ({
           value: dept.dept_id,
           label: dept.dept_name,
@@ -36,7 +38,9 @@ const DesignationUpdate = () => {
 
     const fetchDesignationData = async () => {
       try {
-        const response = await axios.get(`http://34.93.221.166:3000/api/get_single_designation/${desi_id}`);
+        const response = await axios.get(
+          `http://34.93.221.166:3000/api/get_single_designation/${desi_id}`
+        );
         setDesignationData(response.data.data);
       } catch (error) {
         console.error("Error fetching designation: ", error);
@@ -53,7 +57,10 @@ const DesignationUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put("http://34.93.221.166:3000/api/update_designation", designationData);
+      await axios.put(
+        "http://34.93.221.166:3000/api/update_designation",
+        designationData
+      );
       toastAlert("Updated success");
       setIsFormSubmitted(true);
     } catch (error) {
@@ -79,7 +86,9 @@ const DesignationUpdate = () => {
       <FieldContainer
         label="Designation Name"
         value={designationData.desi_name}
-        onChange={(e) => setDesignationData({ ...designationData, desi_name: e.target.value })}
+        onChange={(e) =>
+          setDesignationData({ ...designationData, desi_name: e.target.value })
+        }
       />
       <div className="form-group col-6">
         <label className="form-label">
@@ -87,9 +96,14 @@ const DesignationUpdate = () => {
         </label>
         <Select
           options={departmentOptions}
-          value={departmentOptions.find(option => option.value === designationData.dept_id)}
+          value={departmentOptions.find(
+            (option) => option.value === designationData.dept_id
+          )}
           onChange={(selectedOption) =>
-            setDesignationData({ ...designationData, dept_id: selectedOption ? selectedOption.value : "" })
+            setDesignationData({
+              ...designationData,
+              dept_id: selectedOption ? selectedOption.value : "",
+            })
           }
         />
       </div>
@@ -98,7 +112,9 @@ const DesignationUpdate = () => {
         required={false}
         value={designationData.remark}
         Tag="textarea"
-        onChange={(e) => setDesignationData({ ...designationData, remark: e.target.value })}
+        onChange={(e) =>
+          setDesignationData({ ...designationData, remark: e.target.value })
+        }
       />
     </FormContainer>
   );

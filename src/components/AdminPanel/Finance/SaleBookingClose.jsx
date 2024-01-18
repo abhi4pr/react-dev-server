@@ -19,55 +19,70 @@ const SaleBookingClose = () => {
   const loginUserId = decodedToken.id;
 
   const handleVerify = async (row) => {
-    
     const formData = new FormData();
-    formData.append("loggedin_user_id",36)
-    formData.append("close_booking",1)
-    formData.append("tds_status",1)
-    formData.append("sale_booking_id",row.sale_booking_id)
+    formData.append("loggedin_user_id", 36);
+    formData.append("close_booking", 1);
+    formData.append("tds_status", 1);
+    formData.append("sale_booking_id", row.sale_booking_id);
 
-    await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=close_booking", formData, {
-      headers:{
-        "application-type":"multipart/form-data"
+    await axios.post(
+      "https://production.sales.creativefuel.io/webservices/RestController.php?view=close_booking",
+      formData,
+      {
+        headers: {
+          "application-type": "multipart/form-data",
+        },
       }
-    });
+    );
 
     toastAlert("Data Updated");
     setIsFormSubmitted(true);
   };
 
   function getData() {
-    axios.post("http://34.93.221.166:3000/api/add_php_sale_booking_tds_data_in_node").then((res)=>{
-      console.log('data save in local success')
-    })
-    axios.get("http://34.93.221.166:3000/api/get_all_php_sale_booking_tds_data").then((res) => {
-      const allData = res.data.data;
-      const filteredData = allData.filter((item) => item.show_fstatus == 'Open');
-      setData(allData);
-      setFilterData(filteredData);
-    });
+    axios
+      .post(
+        "http://34.93.221.166:3000/api/add_php_sale_booking_tds_data_in_node"
+      )
+      .then((res) => {
+        console.log("data save in local success");
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_php_sale_booking_tds_data")
+      .then((res) => {
+        const allData = res.data.data;
+        const filteredData = allData.filter(
+          (item) => item.show_fstatus == "Open"
+        );
+        setData(allData);
+        setFilterData(filteredData);
+      });
   }
 
   const aboutClose = () => {
     const allData = datas;
-    const filteredData = allData.filter((item) => item.show_fstatus == 'About To Close');
+    const filteredData = allData.filter(
+      (item) => item.show_fstatus == "About To Close"
+    );
     setData(allData);
     setFilterData(filteredData);
-  }
+  };
 
   const open = () => {
     const allData = datas;
-    const filteredData = allData.filter((item) => item.show_fstatus == 'Open');
+    const filteredData = allData.filter((item) => item.show_fstatus == "Open");
     setData(allData);
     setFilterData(filteredData);
-  }
+  };
 
   const close = () => {
     const allData = datas;
-    const filteredData = allData.filter((item) => item.show_fstatus == 'Closed Link');
+    const filteredData = allData.filter(
+      (item) => item.show_fstatus == "Closed Link"
+    );
     setData(allData);
     setFilterData(filteredData);
-  }
+  };
 
   useEffect(() => {
     getData();
@@ -138,9 +153,8 @@ const SaleBookingClose = () => {
     },
     {
       name: "Action",
-      selector: (row) => 
-      {
-        return row.show_fstatus === 'About To Close' ? (
+      selector: (row) => {
+        return row.show_fstatus === "About To Close" ? (
           <button
             className="btn btn-sm btn-outline-info"
             onClick={() => handleVerify(row)}
@@ -167,9 +181,15 @@ const SaleBookingClose = () => {
         }
       />
 
-      <button className="btn btn-success" onClick={open}>Open</button>
-      <button className="btn btn-warning" onClick={close}>Closed</button>
-      <button className="btn btn-primary" onClick={aboutClose}>About to close</button>
+      <button className="btn btn-success" onClick={open}>
+        Open
+      </button>
+      <button className="btn btn-warning" onClick={close}>
+        Closed
+      </button>
+      <button className="btn btn-primary" onClick={aboutClose}>
+        About to close
+      </button>
 
       <div className="card">
         <div className="data_tbl table-responsive">

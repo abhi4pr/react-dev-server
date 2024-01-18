@@ -122,11 +122,11 @@ export default function ExeUPdate() {
   const [ageImgSrc, setAgeImgSrc] = useState(null);
   const [reachImgSrc, setReachImgSrc] = useState(null);
   const [reachImg, setReachImg] = useState(null);
-  const [storyViewDate, setStoryViewDate] = useState('');
+  const [storyViewDate, setStoryViewDate] = useState("");
 
   const navigate = useNavigate();
   const saveStats = async (e) => {
-    console.log(storyViewDate)
+    console.log(storyViewDate);
     e.preventDefault();
 
     const formData = new FormData();
@@ -180,14 +180,18 @@ export default function ExeUPdate() {
     formData.append("percentage_country5_name", country5Percentage);
     formData.append("country_image_upload", countryImg);
     formData.append("user_id", userID);
-    formData.append("story_view_date", storyViewDate );
+    formData.append("story_view_date", storyViewDate);
 
     axios
-      .put(`http://34.93.221.166:3000/api/edit_exe_ip_count_history`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .put(
+        `http://34.93.221.166:3000/api/edit_exe_ip_count_history`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then(() => {
         navigate("/admin/exeexecution/all");
         toastAlert("Form Submitted success");
@@ -225,7 +229,11 @@ export default function ExeUPdate() {
         setEndDate(data.end_date);
         setEndDate(dayjs(new Date(data.end_date?.split("T")[0])));
         setStartDate(dayjs(new Date(data.start_date?.split("T")[0])));
-        setStoryViewDate(data.story_view_date!=null?dayjs(new Date(data.story_view_date?.split("T")[0])):"");
+        setStoryViewDate(
+          data.story_view_date != null
+            ? dayjs(new Date(data.story_view_date?.split("T")[0]))
+            : ""
+        );
         setEngagement(data.engagement);
         // setEngagementImg(data.engagement_upload_image_url);
         setEngagementImgSrc(data.engagement_upload_image_url);
@@ -280,10 +288,10 @@ export default function ExeUPdate() {
 
   useEffect(() => {
     setCountryList(Country.getAllCountries());
-    axios.get('http://34.93.221.166:3000/api/get_all_cities').then((res) => {
+    axios.get("http://34.93.221.166:3000/api/get_all_cities").then((res) => {
       console.log(res.data.data);
       setCityList(res.data.data.map((city) => city.city_name));
-  });
+    });
     // setCityList([
     //   ...new Set(City.getCitiesOfCountry("IN").map((city) => city.name)),
     // ]);
@@ -466,7 +474,7 @@ export default function ExeUPdate() {
             />
           )}
         </div>
-        <h4  className="h3 text-center">Followers Bifurcation</h4>
+        <h4 className="h3 text-center">Followers Bifurcation</h4>
         <div className="row">
           <div className="card col-md-12 col-lg-3">
             <div className="card-body">
@@ -712,17 +720,17 @@ export default function ExeUPdate() {
                   />
                 </Button>
                 <div className="my-2 d-block ">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    className="my-1"
-                    label="Story View Date"
-                    format="DD/MM/YY"
-                    value={storyViewDate}
-                    onChange={(newValue) => {
-                      handleStoryViewDateChange(newValue);
-                    }}
-                  />
-                </LocalizationProvider>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      className="my-1"
+                      label="Story View Date"
+                      format="DD/MM/YY"
+                      value={storyViewDate}
+                      onChange={(newValue) => {
+                        handleStoryViewDateChange(newValue);
+                      }}
+                    />
+                  </LocalizationProvider>
                 </div>
                 <div>
                   {storyViewImgSrc && (

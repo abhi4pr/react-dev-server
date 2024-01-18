@@ -13,10 +13,12 @@ const LogoCategoryOverview = () => {
   // const [contextData, setDatas] = useState([]);
 
   async function getData() {
-    await axios.get("http://34.93.221.166:3000/api/get_all_logo_categories").then((res) => {
-      setData(res.data);
-      setFilterData(res.data);
-    });
+    await axios
+      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
+      .then((res) => {
+        setData(res.data);
+        setFilterData(res.data);
+      });
   }
   useEffect(() => {
     getData();

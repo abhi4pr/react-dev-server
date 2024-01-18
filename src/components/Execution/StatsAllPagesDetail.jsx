@@ -17,7 +17,7 @@ export default function StatsAllPagesDetail() {
   const [phpData, setPhpData] = useState([]);
   const [rowData, setRowData] = useState([]);
   const [openDeleteHistoryConFirmation, setOpenDeleteHistoryConFirmation] =
-  useState(false);
+    useState(false);
   const [updatePercentage, setSetUpdatePercentage] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [copiedData, setCopiedData] = useState("");
@@ -30,25 +30,22 @@ export default function StatsAllPagesDetail() {
         setAllPagesDetail(res.data.data);
       });
   };
-  
+
   useEffect(() => {
     const formData = new URLSearchParams();
     formData.append("loggedin_user_id", 36);
-setLoading(true);
+    setLoading(true);
     axios
-      .get(
-        "http://34.93.221.166:3000/api/get_all_purchase_data",
-      ).then((res) => {
+      .get("http://34.93.221.166:3000/api/get_all_purchase_data")
+      .then((res) => {
         setLoading(false);
         setPhpData(res.data.result);
         let tempdata = res.data.result.filter((ele) => {
           return ele.platform.toLowerCase() == "instagram";
         });
-
-       
       });
     apiCall();
-      axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
       setAllUsers(res.data.data);
     });
   }, []);
@@ -65,7 +62,7 @@ setLoading(true);
   const handleCloseDeleteHistoryConFirmation = () => {
     setOpenDeleteHistoryConFirmation(false);
   };
- 
+
   function CustomColumnMenu(props) {
     return (
       <GridColumnMenu
@@ -86,20 +83,22 @@ setLoading(true);
       },
     },
     {
-      field:"platform",
-      headerName:"Platform",
-      width:150,
+      field: "platform",
+      headerName: "Platform",
+      width: 150,
       renderCell: (params) => {
         return (
           <div>
             {params.row?.p_id ? (
-              <>{phpData.filter((e) => e.p_id == params.row.p_id)[0]?.platform}</>
+              <>
+                {phpData.filter((e) => e.p_id == params.row.p_id)[0]?.platform}
+              </>
             ) : (
               ""
             )}
           </div>
         );
-      }
+      },
     },
     {
       field: "page_name",
@@ -109,52 +108,69 @@ setLoading(true);
         return (
           <div>
             {params.row?.p_id ? (
-              <>{phpData.filter((e) => e.p_id == params.row.p_id)[0]?.page_name}</>
+              <>
+                {phpData.filter((e) => e.p_id == params.row.p_id)[0]?.page_name}
+              </>
             ) : (
               ""
             )}
           </div>
         );
-      }
+      },
     },
     {
-      field:"followers",
-      headerName:"Followers Count",
-      width:150,
+      field: "followers",
+      headerName: "Followers Count",
+      width: 150,
       renderCell: (params) => {
         return (
           <div>
             {params.row?.p_id ? (
-              <>{phpData.filter((e) => e.p_id == params.row.p_id)[0]?.follower_count}</>
+              <>
+                {
+                  phpData.filter((e) => e.p_id == params.row.p_id)[0]
+                    ?.follower_count
+                }
+              </>
             ) : (
               ""
             )}
           </div>
         );
-      }
-    },
-      {
-        field:"acc_cat",
-        headerName:"Account Category",
-        width:150,
-        renderCell: (params) => {
-          return (
-            <div>
-              {params.row?.p_id ? (
-                <>{phpData?.filter((e) => e.p_id == params?.row.p_id)[0]?.cat_name}</>
-              ) : (
-                ""
-              )}
-            </div>
-          );
-        }
       },
+    },
+    {
+      field: "acc_cat",
+      headerName: "Account Category",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.p_id ? (
+              <>
+                {
+                  phpData?.filter((e) => e.p_id == params?.row.p_id)[0]
+                    ?.cat_name
+                }
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
     {
       field: "Update percentage",
       width: 150,
       headerName: "Stats Update %",
       renderCell: (params) => {
-        return Math.round(+phpData?.filter(e=>e.p_id==params?.row.p_id)[0]?.totalPercentage) + "%";
+        return (
+          Math.round(
+            +phpData?.filter((e) => e.p_id == params?.row.p_id)[0]
+              ?.totalPercentage
+          ) + "%"
+        );
       },
     },
     {
@@ -184,77 +200,82 @@ setLoading(true);
         return (
           <div>
             {params.row?.user_id ? (
-              <>{allUsers.filter((e) => e.user_id == params.row.user_id)[0]?.user_name}</>
+              <>
+                {
+                  allUsers.filter((e) => e.user_id == params.row.user_id)[0]
+                    ?.user_name
+                }
+              </>
             ) : (
               ""
             )}
           </div>
         );
-      }
+      },
     },
     {
-        field: "reach",
-        headerName: "Reach",
-        width: 150,
-        renderCell: (params) => {
-          return (
-            <div>
-              {params.row?.reach ? (
-                <>
-                  {params.row.reach} {params.row.percentage_reach}&nbsp;
-                  {params.row.reach_upload_image_url && (
-                    <a
-                      key="reach"
-                      href={params.row.reach_upload_image_url}
-                      title="Reach Impression Image"
-                      download
-                    >
-                      <InsertPhotoTwoToneIcon
-                        variant="contained"
-                        color="primary"
-                      />
-                    </a>
-                  )}
-                </>
-              ) : (
-                ""
-              )}
-            </div>
-          );
-        },
+      field: "reach",
+      headerName: "Reach",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.reach ? (
+              <>
+                {params.row.reach} {params.row.percentage_reach}&nbsp;
+                {params.row.reach_upload_image_url && (
+                  <a
+                    key="reach"
+                    href={params.row.reach_upload_image_url}
+                    title="Reach Impression Image"
+                    download
+                  >
+                    <InsertPhotoTwoToneIcon
+                      variant="contained"
+                      color="primary"
+                    />
+                  </a>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
       },
-      {
-        field: "impression",
-        headerName: "Impression",
-        width: 150,
-        renderCell: (params) => {
-          return (
-            <div>
-              {params.row?.impression ? (
-                <>
-                  {params.row.impression} {params.row.percentage_impression}
-                  &nbsp;
-                  {params.row.impression_upload_image_url && (
-                    <a
-                      key="reach"
-                      href={params.row.impression_upload_image_url}
-                      title="Reach Impression Image"
-                      download
-                    >
-                      <InsertPhotoTwoToneIcon
-                        variant="contained"
-                        color="primary"
-                      />
-                    </a>
-                  )}
-                </>
-              ) : (
-                ""
-              )}
-            </div>
-          );
-        },
+    },
+    {
+      field: "impression",
+      headerName: "Impression",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.impression ? (
+              <>
+                {params.row.impression} {params.row.percentage_impression}
+                &nbsp;
+                {params.row.impression_upload_image_url && (
+                  <a
+                    key="reach"
+                    href={params.row.impression_upload_image_url}
+                    title="Reach Impression Image"
+                    download
+                  >
+                    <InsertPhotoTwoToneIcon
+                      variant="contained"
+                      color="primary"
+                    />
+                  </a>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
       },
+    },
     {
       field: "engagement",
       headerName: "Engagement",
@@ -537,25 +558,33 @@ setLoading(true);
       },
     },
     {
-        field: "story_view_date",
-        headerName: "Story View Date",
-        width: 150,
-        renderCell: (params) => {
-          return (
-            <div>
-              {params.row?.story_view_date ? (
-                <>
-                  {new Date(params.row.story_view_date).toISOString().substr(8, 2)}/
-                  {new Date(params.row.story_view_date).toISOString().substr(5, 2)}/
-                  {new Date(params.row.story_view_date).toISOString().substr(2, 2)}
-                </>
-              ) : (
-                ""
-              )}
-            </div>
-          );
-        },
+      field: "story_view_date",
+      headerName: "Story View Date",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.story_view_date ? (
+              <>
+                {new Date(params.row.story_view_date)
+                  .toISOString()
+                  .substr(8, 2)}
+                /
+                {new Date(params.row.story_view_date)
+                  .toISOString()
+                  .substr(5, 2)}
+                /
+                {new Date(params.row.story_view_date)
+                  .toISOString()
+                  .substr(2, 2)}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
       },
+    },
     {
       field: "end_date",
       headerName: "End Date",
@@ -607,14 +636,14 @@ setLoading(true);
     //   },
     // },
   ];
-  const SkeletonLoading =()=>  {
-    return <ContentLoader
+  const SkeletonLoading = () => {
+    return (
+      <ContentLoader
         width={1200}
         height={400}
         viewBox="0 0 1200 400"
         backgroundColor="#f3f3f3"
         foregroundColor="#ecebeb"
-        
       >
         <rect x="27" y="139" rx="4" ry="4" width="20" height="20" />
         <rect x="67" y="140" rx="10" ry="10" width="85" height="19" />
@@ -623,7 +652,7 @@ setLoading(true);
         <rect x="523" y="141" rx="10" ry="10" width="169" height="19" />
         <rect x="731" y="139" rx="10" ry="10" width="85" height="19" />
         <rect x="852" y="138" rx="10" ry="10" width="85" height="19" />
-  
+
         <rect x="26" y="196" rx="4" ry="4" width="20" height="20" />
         <rect x="66" y="197" rx="10" ry="10" width="85" height="19" />
         <rect x="187" y="198" rx="10" ry="10" width="169" height="19" />
@@ -631,7 +660,7 @@ setLoading(true);
         <rect x="522" y="198" rx="10" ry="10" width="169" height="19" />
         <rect x="730" y="196" rx="10" ry="10" width="85" height="19" />
         <rect x="851" y="195" rx="10" ry="10" width="85" height="19" />
-  
+
         <rect x="26" y="258" rx="4" ry="4" width="20" height="20" />
         <rect x="66" y="259" rx="10" ry="10" width="85" height="19" />
         <rect x="187" y="260" rx="10" ry="10" width="169" height="19" />
@@ -639,7 +668,7 @@ setLoading(true);
         <rect x="522" y="260" rx="10" ry="10" width="169" height="19" />
         <rect x="730" y="258" rx="10" ry="10" width="85" height="19" />
         <rect x="851" y="257" rx="10" ry="10" width="85" height="19" />
-  
+
         <rect x="26" y="316" rx="4" ry="4" width="20" height="20" />
         <rect x="66" y="317" rx="10" ry="10" width="85" height="19" />
         <rect x="187" y="318" rx="10" ry="10" width="169" height="19" />
@@ -647,7 +676,7 @@ setLoading(true);
         <rect x="522" y="318" rx="10" ry="10" width="169" height="19" />
         <rect x="730" y="316" rx="10" ry="10" width="85" height="19" />
         <rect x="851" y="315" rx="10" ry="10" width="85" height="19" />
-  
+
         <rect x="26" y="379" rx="4" ry="4" width="20" height="20" />
         <rect x="66" y="380" rx="10" ry="10" width="85" height="19" />
         <rect x="187" y="381" rx="10" ry="10" width="169" height="19" />
@@ -655,47 +684,50 @@ setLoading(true);
         <rect x="522" y="381" rx="10" ry="10" width="169" height="19" />
         <rect x="730" y="379" rx="10" ry="10" width="85" height="19" />
         <rect x="851" y="378" rx="10" ry="10" width="85" height="19" />
-  
+
         <rect x="978" y="138" rx="10" ry="10" width="169" height="19" />
         <rect x="977" y="195" rx="10" ry="10" width="169" height="19" />
         <rect x="977" y="257" rx="10" ry="10" width="169" height="19" />
         <rect x="977" y="315" rx="10" ry="10" width="169" height="19" />
         <rect x="977" y="378" rx="10" ry="10" width="169" height="19" />
-  
+
         <circle cx="37" cy="97" r="11" />
         <rect x="26" y="23" rx="5" ry="5" width="153" height="30" />
         <circle cx="77" cy="96" r="11" />
-      </ContentLoader>;
-    };
+      </ContentLoader>
+    );
+  };
 
   return (
     <div>
       <div style={{ width: "100%", margin: "0 0 0 0" }}>
         <FormContainer mainTitle="All Pages Detailed" link="/ip-master" />
-       {!loading && <DataGrid
-          rows={allPagesDetail}
-          columns={columns}
-          // pageSize={10}
-          getRowId={(row) => row._id}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 50,
+        {!loading && (
+          <DataGrid
+            rows={allPagesDetail}
+            columns={columns}
+            // pageSize={10}
+            getRowId={(row) => row._id}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 50,
+                },
               },
-            },
-          }}
-          slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-          pageSizeOptions={[5, 25, 50, 100, 500]}
-          checkboxSelection
-          disableRowSelectionOnClick
-          onRowSelectionModelChange={(newRowSelectionModel) => {
-            setRowSelectionModel(newRowSelectionModel);
-          }}
-          rowSelectionModel={rowSelectionModel}
-          onClipboardCopy={(copiedString) => setCopiedData(copiedString)}
-          unstable_ignoreValueFormatterDuringExport
-        />}
-        {loading && <SkeletonLoading/>}
+            }}
+            slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+            pageSizeOptions={[5, 25, 50, 100, 500]}
+            checkboxSelection
+            disableRowSelectionOnClick
+            onRowSelectionModelChange={(newRowSelectionModel) => {
+              setRowSelectionModel(newRowSelectionModel);
+            }}
+            rowSelectionModel={rowSelectionModel}
+            onClipboardCopy={(copiedString) => setCopiedData(copiedString)}
+            unstable_ignoreValueFormatterDuringExport
+          />
+        )}
+        {loading && <SkeletonLoading />}
       </div>
       <DeleteHistoryConfirmation
         handleCloseDeleteHistoryConFirmation={

@@ -17,7 +17,6 @@ import { useGlobalContext } from "../../../Context/Context";
 import DeleteCity from "./DeleteCity";
 import EditCity from "./EditCity";
 
-
 export default function CityMaster() {
   const [city, setCity] = useState([]);
   const [row, setRow] = useState([]);
@@ -152,7 +151,6 @@ export default function CityMaster() {
       });
   };
 
-
   return (
     <>
       <FormContainer mainTitle="City Master" link="/ip-master" />
@@ -191,18 +189,18 @@ export default function CityMaster() {
         toastAlert={toastAlert}
         callApi={callApi}
       />
-      {openEditCity &&
-      <EditCity
-        handleCloseEditCityName={handleCloseEditCityName}
-        openEditCity={openEditCity}
-        callApi={callApi}
-        editCityName={editCityName}
-        handleEditCity={handleEditCity}
-        rowData={rowData}
-        toastAlert={toastAlert}
-        handleSaveEditCityName={handleSaveEditCityName}
-      />
-      }
+      {openEditCity && (
+        <EditCity
+          handleCloseEditCityName={handleCloseEditCityName}
+          openEditCity={openEditCity}
+          callApi={callApi}
+          editCityName={editCityName}
+          handleEditCity={handleEditCity}
+          rowData={rowData}
+          toastAlert={toastAlert}
+          handleSaveEditCityName={handleSaveEditCityName}
+        />
+      )}
     </>
   );
 }

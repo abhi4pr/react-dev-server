@@ -22,11 +22,13 @@ const LogoCategoryUpdate = () => {
   useEffect(() => {
     if (id) {
       console.log(id);
-      axios.get(`http://34.93.221.166:3000/api/get_single_category/${id}`).then((res)=>{
-        const fetchedData = res.data;
-        setCategoryName(fetchedData.cat_name)
-        setRemark(fetchedData.remark)
-      });
+      axios
+        .get(`http://34.93.221.166:3000/api/get_single_category/${id}`)
+        .then((res) => {
+          const fetchedData = res.data;
+          setCategoryName(fetchedData.cat_name);
+          setRemark(fetchedData.remark);
+        });
     }
   }, []);
   const handleSubmit = (e) => {

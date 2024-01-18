@@ -661,25 +661,26 @@ const AdminPreOnboarding = () => {
         </div>
 
         <div className="form-group col-3">
-        <label className="form-label">
-          Role <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          options={roledata.map((option) => ({
-            value: option.role_id,
-            label: option.Role_name,
-          }))}
-          value={{
-            value: roles,
-            label:
-              roledata.find((role) => role.role_id === roles)?.Role_name || "",
-          }}
-          onChange={(e) => {
-            console.log(e.value);
-            setRoles(e.value);
-          }}
-        ></Select>
-      </div>
+          <label className="form-label">
+            Role <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={roledata.map((option) => ({
+              value: option.role_id,
+              label: option.Role_name,
+            }))}
+            value={{
+              value: roles,
+              label:
+                roledata.find((role) => role.role_id === roles)?.Role_name ||
+                "",
+            }}
+            onChange={(e) => {
+              console.log(e.value);
+              setRoles(e.value);
+            }}
+          ></Select>
+        </div>
 
         <FieldContainer
           type="date"

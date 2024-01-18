@@ -87,7 +87,8 @@ export default function ExeHistory() {
             {params.row?.user_id ? (
               <>
                 {
-                  allUsers.filter((e) => e.user_id == params.row.user_id)[0]?.user_name
+                  allUsers.filter((e) => e.user_id == params.row.user_id)[0]
+                    ?.user_name
                 }
               </>
             ) : (

@@ -56,7 +56,9 @@ const DigitalSignature = ({
   return (
     <>
       <h1>Digital Signature</h1>
-      <div style={{ border: "2px solid black", height: "60vh" }}>
+      <div
+        style={{ border: "2px solid black", height: "200px", width: "500px" }}
+      >
         <SignatureCanvas
           ref={(data) => setSignature(data)}
           canvasProps={{ width: 500, height: 200, className: "sigCanvas" }}

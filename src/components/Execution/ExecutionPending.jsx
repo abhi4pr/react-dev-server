@@ -176,10 +176,15 @@ function ExecutionPending() {
       headerName: "Start Date",
       width: 200,
       renderCell: (params) => {
-        if (!params.row.start_date || params.row.start_date === "0000-00-00 00:00:00" || params.row.start_date === null || params.row.start_date === undefined) {
+        if (
+          !params.row.start_date ||
+          params.row.start_date === "0000-00-00 00:00:00" ||
+          params.row.start_date === null ||
+          params.row.start_date === undefined
+        ) {
           return " ";
         }
-    
+
         const startDate = new Date(params.row.start_date);
         const dateOptions = {
           year: "numeric",
@@ -192,10 +197,16 @@ function ExecutionPending() {
           second: "2-digit",
           hour12: false,
         };
-    
-        const formattedDate = startDate.toLocaleDateString("en-GB", dateOptions);
-        const formattedTime =  startDate.toISOString().split('T')[1].substring(0, 8);
-    
+
+        const formattedDate = startDate.toLocaleDateString(
+          "en-GB",
+          dateOptions
+        );
+        const formattedTime = startDate
+          .toISOString()
+          .split("T")[1]
+          .substring(0, 8);
+
         return (
           <div>
             <span>{formattedDate}</span> &nbsp;
@@ -204,7 +215,7 @@ function ExecutionPending() {
         );
       },
     },
-    
+
     {
       field: "end_date",
       headerName: "End Date",
@@ -222,10 +233,16 @@ function ExecutionPending() {
           second: "2-digit",
           hour12: false,
         };
-    
-        const formattedDate = startDate.toLocaleDateString("en-GB", dateOptions);
-        const formattedTime =  startDate.toISOString().split('T')[1].substring(0, 8);
-    
+
+        const formattedDate = startDate.toLocaleDateString(
+          "en-GB",
+          dateOptions
+        );
+        const formattedTime = startDate
+          .toISOString()
+          .split("T")[1]
+          .substring(0, 8);
+
         return (
           <div>
             <span>{formattedDate}</span> &nbsp;

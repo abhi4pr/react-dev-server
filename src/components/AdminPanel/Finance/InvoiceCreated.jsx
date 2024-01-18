@@ -34,13 +34,19 @@ const InvoiceCreated = () => {
   };
 
   function getData() {
-    axios.post("http://34.93.221.166:3000/api/add_php_pending_invoice_data_in_node").then((res)=>{
-      console.log('data save in local success')
-    })
-    axios.get("http://34.93.221.166:3000/api/get_all_php_pending_invoice_data").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-    });
+    axios
+      .post(
+        "http://34.93.221.166:3000/api/add_php_pending_invoice_data_in_node"
+      )
+      .then((res) => {
+        console.log("data save in local success");
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_php_pending_invoice_data")
+      .then((res) => {
+        setData(res.data.data);
+        setFilterData(res.data.data);
+      });
   }
 
   useEffect(() => {

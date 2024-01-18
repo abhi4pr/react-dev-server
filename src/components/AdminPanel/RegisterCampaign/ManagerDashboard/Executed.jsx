@@ -4,7 +4,7 @@ import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Modal, Paper, Typography, Button } from "@mui/material";
 import axios from "axios";
 
-const Executed = ({ executed,forceRender }) => {
+const Executed = ({ executed, forceRender }) => {
   console.log(executed, "new data");
   const [open2, setOpen2] = useState(false);
   const [executedCommit, setExecutedCommit] = useState([]);
@@ -118,9 +118,9 @@ const Executed = ({ executed,forceRender }) => {
         ass_status: "verified",
       }
     );
-    alert('verified successfully')
-    setOpen2(false)
-    forceRender()
+    alert("verified successfully");
+    setOpen2(false);
+    forceRender();
   };
   const handleReject = async () => {
     const response = await axios.post(
@@ -131,9 +131,9 @@ const Executed = ({ executed,forceRender }) => {
         ass_status: "rejected",
       }
     );
-    alert('rejected successfully');
-    setOpen2(false)
-    forceRender()
+    alert("rejected successfully");
+    setOpen2(false);
+    forceRender();
   };
   return (
     <>
@@ -145,16 +145,9 @@ const Executed = ({ executed,forceRender }) => {
         pageSize={5}
       />
       <>
-        <Modal
-          open={open2}
-          onClose={handleClose2}
-        >
+        <Modal open={open2} onClose={handleClose2}>
           <Box sx={style}>
-            <Typography
-              variant="h6"
-              component="h2"
-              sx={{ padding: "2px" }}
-            >
+            <Typography variant="h6" component="h2" sx={{ padding: "2px" }}>
               Commits
             </Typography>
 

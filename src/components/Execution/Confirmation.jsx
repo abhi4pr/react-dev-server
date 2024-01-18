@@ -151,7 +151,6 @@ const Confirmation = ({
       setOpen(false);
       setConfirmation(false);
     } else if (status == 1) {
-
       const currentDateTime = new Date(getCurrentDateTime());
       const start_date = new Date(data.start_date_);
       const end_date = currentDateTime;
@@ -189,12 +188,14 @@ const Confirmation = ({
       //   execution_remark: remark ? remark : "Done",
       //   execution_status: 3,
       // };
-      console.log(value, "value")
+      console.log(value, "value");
       const payload1 = {
         loggedin_user_id: userID,
         sale_booking_execution_id: data.sale_booking_execution_id,
-        execution_date_time: new Date(value).toISOString().split('T')[0],
-        execution_time:new Date(value).toLocaleTimeString('en-GB', { hour12: false }),
+        execution_date_time: new Date(value).toISOString().split("T")[0],
+        execution_time: new Date(value).toLocaleTimeString("en-GB", {
+          hour12: false,
+        }),
         execution_remark: remark ? remark : "Done",
         execution_status: 3,
       };

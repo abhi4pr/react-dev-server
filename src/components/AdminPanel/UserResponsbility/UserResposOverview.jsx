@@ -18,18 +18,24 @@ const UserResposOverview = () => {
   const userID = decodedToken.id;
   useEffect(() => {
     if (userID && contextData.length === 0) {
-      axios.get(`http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`).then((res) => {
-        setDatas(res.data);
-      });
+      axios
+        .get(
+          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+        )
+        .then((res) => {
+          setDatas(res.data);
+        });
     }
   }, [userID]);
 
   const getData = async () => {
-  await axios.get("http://34.93.221.166:3000/api/get_all_jobresponsibilitys").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-    });
-  }
+    await axios
+      .get("http://34.93.221.166:3000/api/get_all_jobresponsibilitys")
+      .then((res) => {
+        setData(res.data.data);
+        setFilterData(res.data.data);
+      });
+  };
   useEffect(() => {
     getData();
   }, []);

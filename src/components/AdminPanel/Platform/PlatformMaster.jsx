@@ -24,7 +24,7 @@ const PlatformMaster = () => {
       .post("http://34.93.221.166:3000/api/platform", {
         name: platformName,
         remark: remark,
-        created_by: userID
+        created_by: userID,
       })
       .then(() => {
         setPlatformName("");

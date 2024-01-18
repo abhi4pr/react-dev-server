@@ -35,7 +35,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 function ExecutionOwn() {
-  const {toastAlert}=useGlobalContext()
+  const { toastAlert } = useGlobalContext();
   const [rows, setRows] = useState([]);
   const [pagemode, setPagemode] = useState(1);
   const [alldata, setAlldata] = useState([]);
@@ -71,7 +71,7 @@ function ExecutionOwn() {
 
   const navigate = useNavigate();
 
-  const handleCloseExeModal=()=>{
+  const handleCloseExeModal = () => {
     setQuater("");
     setStatesFor(null);
     setStartDate(null);
@@ -82,7 +82,7 @@ function ExecutionOwn() {
     setStoryView(0);
     setDemoFile();
     setRowData({});
-  }
+  };
 
   const dropdownStaticData = [
     "Daily",
@@ -238,37 +238,37 @@ function ExecutionOwn() {
     setRows(ftrdata);
     setPagemode(id);
   };
-  
+
   const handleStartDateChange = (newValue) => {
-  const date = new Date(newValue.$d);
+    const date = new Date(newValue.$d);
 
-  // Adjusting for the local time zone offset
-  const offset = date.getTimezoneOffset();
-  date.setMinutes(date.getMinutes() - offset);
+    // Adjusting for the local time zone offset
+    const offset = date.getTimezoneOffset();
+    date.setMinutes(date.getMinutes() - offset);
 
-  // Getting ISO string after adjustment
-  const isoDate = date.toISOString();
+    // Getting ISO string after adjustment
+    const isoDate = date.toISOString();
 
-  console.log(isoDate);
-  console.log(isoDate.replace("Z", "+00:00"));
+    console.log(isoDate);
+    console.log(isoDate.replace("Z", "+00:00"));
 
-  setStartDate(newValue);
-};
-const handleEndDateChange = (newValue) => {
-  const date = new Date(newValue.$d);
+    setStartDate(newValue);
+  };
+  const handleEndDateChange = (newValue) => {
+    const date = new Date(newValue.$d);
 
-  // Adjusting for the local time zone offset
-  const offset = date.getTimezoneOffset();
-  date.setMinutes(date.getMinutes() - offset);
+    // Adjusting for the local time zone offset
+    const offset = date.getTimezoneOffset();
+    date.setMinutes(date.getMinutes() - offset);
 
-  // Getting ISO string after adjustment
-  const isoDate = date.toISOString();
+    // Getting ISO string after adjustment
+    const isoDate = date.toISOString();
 
-  console.log(isoDate);
-  console.log(isoDate.replace("Z", "+00:00"));
+    console.log(isoDate);
+    console.log(isoDate.replace("Z", "+00:00"));
 
-  setEndDate(newValue);
-};
+    setEndDate(newValue);
+  };
 
   const handleHistoryRowClick = (row) => {
     console.log(row.p_id);
@@ -383,7 +383,7 @@ const handleEndDateChange = (newValue) => {
           headerName: "Subscribers",
           // width: 150,
         },
-   
+
     contextData && {
       headerName: "Update",
       renderCell: (params) => {
@@ -424,7 +424,7 @@ const handleEndDateChange = (newValue) => {
 
   const saveStats = async (e) => {
     e.preventDefault();
-    console.log("save stats")
+    console.log("save stats");
     const formData = new FormData();
     formData.append("p_id", rowData.p_id);
     formData.append("reach", reach);
@@ -437,31 +437,28 @@ const handleEndDateChange = (newValue) => {
     formData.append("end_date", endDate);
     formData.append("stats_for", statesFor);
 
-   
-        axios
-          .post(`http://34.93.221.166:3000/api/add_exe_pid_history`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((res) => {
-            setQuater("");
-            setStatesFor(null);
-            setStartDate(null);
-            setEndDate(null);
-            setReach(0);
-            setImpression(0);
-            setEngagement(0);
-            setStoryView(0);
-            setDemoFile();
-            setRowData({});
+    axios
+      .post(`http://34.93.221.166:3000/api/add_exe_pid_history`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        setQuater("");
+        setStatesFor(null);
+        setStartDate(null);
+        setEndDate(null);
+        setReach(0);
+        setImpression(0);
+        setEngagement(0);
+        setStoryView(0);
+        setDemoFile();
+        setRowData({});
 
-            // toast("Form Submitted success");
-            toastAlert("Form Submitted success");
-          });
-    
+        // toast("Form Submitted success");
+        toastAlert("Form Submitted success");
+      });
   };
-
 
   function CustomColumnMenu(props) {
     return (
@@ -693,7 +690,12 @@ const handleEndDateChange = (newValue) => {
           >
             <div className="modal-header">
               <h4 className="modal-title">Page Name :- {rowData.page_name}</h4>
-              <button type="button" className="close" onClick={handleCloseExeModal} data-dismiss="modal">
+              <button
+                type="button"
+                className="close"
+                onClick={handleCloseExeModal}
+                data-dismiss="modal"
+              >
                 &times;
               </button>
             </div>
@@ -739,7 +741,6 @@ const handleEndDateChange = (newValue) => {
                       onChange={(newValue) => {
                         handleStartDateChange(newValue);
                         statesFor == "Daily" ? setEndDate(newValue) : "";
-                        
                       }}
                     />
                   </LocalizationProvider>
@@ -754,7 +755,9 @@ const handleEndDateChange = (newValue) => {
                       label="End Date *"
                       format="DD/MM/YY"
                       value={endDate}
-                      onChange={(newValue) => {handleEndDateChange(newValue)}}
+                      onChange={(newValue) => {
+                        handleEndDateChange(newValue);
+                      }}
                     />
                   </LocalizationProvider>
                 )}
@@ -769,7 +772,6 @@ const handleEndDateChange = (newValue) => {
                     value?.length > 0
                       ? setQuaterIsValid(true)
                       : setQuaterIsValid(false);
-
                   }}
                   value={quater}
                   sx={{ width: 300 }}
@@ -796,7 +798,6 @@ const handleEndDateChange = (newValue) => {
                         ? setReachValidation(true)
                         : setReachValidation(false),
                         setReach(e.target.value);
-                        
                     }}
                     error={!reachValidation}
                     helperText={
@@ -815,7 +816,7 @@ const handleEndDateChange = (newValue) => {
                         ? setImpressionValidation(true)
                         : setImpressionValidation(false),
                         setImpression(e.target.value);
-                        handleSaveButtonValidation()
+                      handleSaveButtonValidation();
                     }}
                     error={!impressionValidation}
                     helperText={
@@ -837,7 +838,7 @@ const handleEndDateChange = (newValue) => {
                         ? setEngagementValidation(true)
                         : setEndDateIsValid(false),
                         setEngagement(e.target.value);
-                        handleSaveButtonValidation()
+                      handleSaveButtonValidation();
                     }}
                     error={!engagementValidation}
                     helperText={
@@ -856,7 +857,7 @@ const handleEndDateChange = (newValue) => {
                         ? setStoryViewValidation(true)
                         : setStoryViewValidation(false),
                         setStoryView(e.target.value);
-                        handleSaveButtonValidation()
+                      handleSaveButtonValidation();
                     }}
                     error={!storyViewValidation}
                     helperText={
@@ -891,7 +892,16 @@ const handleEndDateChange = (newValue) => {
                 type="button"
                 className="btn btn-success"
                 data-dismiss="modal"
-                disabled={!impression || !reach || !engagement || !statesFor || !storyView || statesFor=="Quarterly"? !quater : !startDate || !endDate}
+                disabled={
+                  !impression ||
+                  !reach ||
+                  !engagement ||
+                  !statesFor ||
+                  !storyView ||
+                  statesFor == "Quarterly"
+                    ? !quater
+                    : !startDate || !endDate
+                }
               >
                 Save
               </button>

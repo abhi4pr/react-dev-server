@@ -27,7 +27,6 @@ import MyTemplate5 from "../SalaryGeneration/Template5";
 import Modal from "react-modal";
 import DigitalSignature from "../../../DigitalSignature/DigitalSignature";
 import useInvoiceTemplateImages from "../Templates/Hooks/useInvoiceTemplateImages";
-import InvoicePDF from "../Templates/Component/InvoicePdfGenerator";
 import PreviewInvoice from "./PreviewInvoice";
 import getDecodedToken from "../../../../utils/DecodedToken";
 
@@ -35,8 +34,6 @@ const images = useInvoiceTemplateImages();
 
 const WFHSingleUser = () => {
   const { toastAlert, toastError } = useGlobalContext();
-  const tokenData = getDecodedToken("token");
-  console.log(tokenData);
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [error, setError] = useState(null);
@@ -71,6 +68,15 @@ const WFHSingleUser = () => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  const digitalSignatureImageExists = decodedToken?.digital_signature_image;
+  useEffect(() => {
+    if (digitalSignatureImageExists == "") {
+      setIsModalOpen(true);
+    } else {
+      setIsModalOpen(false);
+    }
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -533,8 +539,6 @@ const WFHSingleUser = () => {
             onRequestClose={() => setIsPreviewModalOpen(false)}
             contentLabel="Preview Modal"
             appElement={document.getElementById("root")}
-            shouldCloseOnOverlayClick={false}
-            shouldCloseOnEsc={false}
           >
             <PreviewInvoice
               data={row}
@@ -651,11 +655,10 @@ const WFHSingleUser = () => {
                     onRequestClose={closeModal}
                     contentLabel="Example Modal"
                     appElement={document.getElementById("root")}
+                    shouldCloseOnOverlayClick={false}
+                    shouldCloseOnEsc={false}
                   >
                     <DigitalSignature userID={userID} closeModal={closeModal} />
-                    <button className="btn btn-secondary" onClick={closeModal}>
-                      Close Modal
-                    </button>
                   </Modal>
 
                   <Button

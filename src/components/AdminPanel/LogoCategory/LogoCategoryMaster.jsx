@@ -21,13 +21,12 @@ const LogoCategoryMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    await axios
-      .post("http://34.93.221.166:3000/api/add_logo_category", {
-        cat_name: categoryName,
-        remark: remark,
-        created_by: loginUserID,
-      })
-      
+    await axios.post("http://34.93.221.166:3000/api/add_logo_category", {
+      cat_name: categoryName,
+      remark: remark,
+      created_by: loginUserID,
+    });
+
     setCategoryName("");
     setRemark("");
 

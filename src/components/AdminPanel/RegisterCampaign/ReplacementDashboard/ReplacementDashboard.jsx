@@ -5,45 +5,44 @@ import axios from "axios";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Button, Modal } from "@mui/material";
 import ReplacementList from "./replacementList";
-import {
-  Autocomplete,
-
-} from "@mui/material";
+import { Autocomplete } from "@mui/material";
 
 const ReplacementDashboard = () => {
-
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [replacementData, setReplacementData] = useState([]);
   const [allCampaigns, setAllCampaigns] = useState([]);
   const [singleCampaign, setSingleCampaign] = useState(null);
 
-
   const getReplacementData = async () => {
     try {
+      const replace = await axios.get(
+        "http://34.93.221.166:3000/api/replacement/plan"
+      );
+      setReplacementData(replace?.data?.data);
 
-      const replace = await axios.get('http://34.93.221.166:3000/api/replacement/plan')
-      setReplacementData(replace?.data?.data)
-
-      const getCampaigns = await axios.get('http://34.93.221.166:3000/api/exe_campaign')
-      setAllCampaigns(getCampaigns?.data?.data)
-
+      const getCampaigns = await axios.get(
+        "http://34.93.221.166:3000/api/exe_campaign"
+      );
+      setAllCampaigns(getCampaigns?.data?.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
     if (singleCampaign) {
-      const data = replacementData.filter(pages => pages.campaignId = singleCampaign)
-      setReplacementData(data)
+      const data = replacementData.filter(
+        (pages) => (pages.campaignId = singleCampaign)
+      );
+      setReplacementData(data);
     }
-  }, [singleCampaign])
+  }, [singleCampaign]);
 
   const handleCampaignSelect = (id) => {
-    setSingleCampaign(id)
-  }
-  console.log(replacementData)
-  console.log(allCampaigns)
+    setSingleCampaign(id);
+  };
+  console.log(replacementData);
+  console.log(allCampaigns);
 
   // const ExpertiesData = async () => {
   //   const Experties = await axios.get(
@@ -54,23 +53,35 @@ const ReplacementDashboard = () => {
   // };
   useEffect(() => {
     // ExpertiesData();
-    getReplacementData()
+    getReplacementData();
   }, []);
 
   const hardRender = () => {
     getReplacementData();
-  }
+  };
   const tab1 = (
-    <ReplacementList replacementData={replacementData.filter(page => page.replacement_status == 'pending')} hardRender={hardRender} />
-
+    <ReplacementList
+      replacementData={replacementData.filter(
+        (page) => page.replacement_status == "pending"
+      )}
+      hardRender={hardRender}
+    />
   );
   const tab2 = (
-    <ReplacementList replacementData={replacementData.filter(page => page.replacement_status == "approved")} hardRender={hardRender} />
+    <ReplacementList
+      replacementData={replacementData.filter(
+        (page) => page.replacement_status == "approved"
+      )}
+      hardRender={hardRender}
+    />
   );
   const tab3 = (
-    <ReplacementList replacementData={replacementData.filter(page => page.replacement_status == 'rejected')} />
+    <ReplacementList
+      replacementData={replacementData.filter(
+        (page) => page.replacement_status == "rejected"
+      )}
+    />
   );
-
 
   const handleAccordionButtonClick = (index) => {
     setActiveAccordionIndex(index);

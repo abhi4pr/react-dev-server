@@ -10,16 +10,18 @@ import { useGlobalContext } from "../../Context/Context";
 
 const IpHistory = () => {
   // const { data } = useGlobalContext();
-  const {id} = useParams();
+  const { id } = useParams();
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterdata, setFilterData] = useState([]);
 
   function getData() {
-    axios.get(`http://34.93.221.166:3000/api/dataofiphistory/${id}`).then((res) => {
-      setData(res.data);
-      setFilterData(res.data);
-    });
+    axios
+      .get(`http://34.93.221.166:3000/api/dataofiphistory/${id}`)
+      .then((res) => {
+        setData(res.data);
+        setFilterData(res.data);
+      });
   }
   useEffect(() => {
     getData();
@@ -42,7 +44,7 @@ const IpHistory = () => {
     {
       name: "IP Name",
       selector: (row) => row.ip_name,
-      sortable: true
+      sortable: true,
     },
     {
       name: "Followers",
@@ -59,8 +61,8 @@ const IpHistory = () => {
     },
     {
       name: "Last Updated at",
-      selector: (row) => new Date(row.last_updated_at).toLocaleDateString()
-    }
+      selector: (row) => new Date(row.last_updated_at).toLocaleDateString(),
+    },
     // {
     //   name: "Action",
     //   cell: (row) => (

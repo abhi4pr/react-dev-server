@@ -5,13 +5,11 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import RequestAssignPage from "./RequestAssignPage";
 
-
 const ExcusionCampaign = () => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
-  
-  console.log(decodedToken);
 
+  console.log(decodedToken);
 
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [assignmentData, setAssignmentData] = useState([]);
@@ -29,9 +27,9 @@ const ExcusionCampaign = () => {
     getAssignment(expert.data.data.exp_id);
     console.log(expert);
   };
-  useEffect(()=>{
-    getExpertee()
-  },[activeAccordionIndex])
+  useEffect(() => {
+    getExpertee();
+  }, [activeAccordionIndex]);
   const RequestAssign = async () => {
     const reqAss = await axios.get(
       `http://34.93.221.166:3000/api/preassignment/${decodedToken.id}`
@@ -76,11 +74,7 @@ const ExcusionCampaign = () => {
   };
 
   const tab1 = (
-    <RequestAssignPage
-      data={requestAssign}
-      RequestAssign={RequestAssign}
-
-    />
+    <RequestAssignPage data={requestAssign} RequestAssign={RequestAssign} />
   );
 
   const tab2 = (

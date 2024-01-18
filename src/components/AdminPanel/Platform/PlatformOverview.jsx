@@ -80,7 +80,11 @@ const PlatformOverview = () => {
       <button
         type="button"
         className="btn btn-primary"
-        style={{ float: "right", margin: "-65px 5px 0 0", position:"relative"}}
+        style={{
+          float: "right",
+          margin: "-65px 5px 0 0",
+          position: "relative",
+        }}
       >
         <Link to="/admin/platform-master">Add New</Link>
       </button>

@@ -33,7 +33,7 @@ const ResponsibilityMast = () => {
       toastAlert("Form submission failed");
     }
   };
-  
+
   if (isFormSubmitted) {
     return <Navigate to="/admin/responsibility-overview" />;
   }

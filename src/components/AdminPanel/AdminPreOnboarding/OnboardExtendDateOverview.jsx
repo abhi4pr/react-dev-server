@@ -87,7 +87,7 @@ const OnboardExtendDateOverview = () => {
           email: "lalit@creativefuel.io",
           subject: "Extend Date Status",
           text: status,
-          attachment: ""
+          attachment: "",
         });
         whatsappApi.callWhatsAPI(
           "CF_Extend_status_update",

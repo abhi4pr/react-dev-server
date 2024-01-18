@@ -286,7 +286,7 @@ const Attendence = () => {
     } else {
       const updatedRow = { ...newRow, isNew: false };
       axios
-        .post("http://192.168.29.117:3000/api/add_attendance", {
+        .post("http://34.93.221.166:3000/api/add_attendance", {
           dept: updatedRow.dept,
           user_id: updatedRow.user_id,
           noOfabsent: updatedRow.noOfabsent,
@@ -549,7 +549,7 @@ const Attendence = () => {
           {filterData.length > 0 && (
             <DataGrid
               rows={filterData}
-              getRowId={(row) => row.attendence_id}
+              getRowId={(row) => row._id}
               columns={columns}
               slots={{
                 toolbar: GridToolbar,

@@ -4,7 +4,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
-import Button from '@mui/material/Button';
+import Button from "@mui/material/Button";
 
 const RefundRequests = () => {
   const { toastAlert } = useGlobalContext();
@@ -363,7 +363,12 @@ const RefundRequests = () => {
         </div>
 
         <div className="col-2">
-          <Button type="primary" variant="contained" onClick={handleFilter} className="mt-2 mb-2">
+          <Button
+            type="primary"
+            variant="contained"
+            onClick={handleFilter}
+            className="mt-2 mb-2"
+          >
             Search
           </Button>
         </div>

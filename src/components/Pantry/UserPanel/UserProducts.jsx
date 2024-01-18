@@ -40,7 +40,9 @@ const UserProducts = ({ handleCartAddition, cartItems, handleSitting }) => {
   // Single User Product Data
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_orderreqshistory/${userId}`)
+      .get(
+        `http://34.93.221.166:3000/api/get_single_orderreqshistory/${userId}`
+      )
       .then((res) => {
         setOldUserProduct(res.data);
       });

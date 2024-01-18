@@ -153,11 +153,15 @@ const UserView = () => {
     formData.append("onboard_status", fetchedAlreadyData.onboard_status);
 
     try {
-      await axios.put("http://34.93.221.166:3000/api/update_usernew", fromData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await axios.put(
+        "http://34.93.221.166:3000/api/update_usernew",
+        fromData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
     } catch (error) {
       console.log("Failed on Submit form", error);
     }

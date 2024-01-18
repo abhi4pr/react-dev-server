@@ -2,7 +2,14 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
-import { Box, Modal, Paper, Typography, Button, TextField } from "@mui/material";
+import {
+  Box,
+  Modal,
+  Paper,
+  Typography,
+  Button,
+  TextField,
+} from "@mui/material";
 
 const Pending = ({ pending }) => {
   const [open2, setOpen2] = useState(false);
@@ -110,7 +117,6 @@ const Pending = ({ pending }) => {
   ];
   return (
     <>
-
       <DataGrid
         rows={pending}
         columns={columns}

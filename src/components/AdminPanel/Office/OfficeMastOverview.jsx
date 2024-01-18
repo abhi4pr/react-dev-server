@@ -30,8 +30,10 @@ const OfficeMastOverview = () => {
 
   async function getData() {
     try {
-      const res = await axios.get("http://34.93.221.166:3000/api/get_all_rooms");
-      
+      const res = await axios.get(
+        "http://34.93.221.166:3000/api/get_all_rooms"
+      );
+
       setData(res.data.data);
       setFilterData(res.data.data);
     } catch (error) {

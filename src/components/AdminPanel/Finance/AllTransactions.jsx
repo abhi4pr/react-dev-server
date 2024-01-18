@@ -55,19 +55,19 @@ const AllTransactions = () => {
           const startDate = new Date(fromDate);
           const endDate = new Date(toDate);
           return (
-            dateToCheck.getTime() >= startDate.getTime() &&
-            dateToCheck.getTime() <= endDate.getTime()|| !fromDate || !toDate
+            (dateToCheck.getTime() >= startDate.getTime() &&
+              dateToCheck.getTime() <= endDate.getTime()) ||
+            !fromDate ||
+            !toDate
           );
         };
-
 
         return (
           matchesUser &&
           matchesCust &&
           matchesAmount &&
           matchesMode &&
-          matchesStatus
-          &&
+          matchesStatus &&
           dateMatch(d.payment_date, fromDate, toDate)
         );
       });
@@ -462,7 +462,7 @@ const AllTransactions = () => {
               <div className="form-group">
                 <label>From Date</label>
                 <input
-                value={fromDate}
+                  value={fromDate}
                   className="form-control"
                   type="date"
                   onChange={(e) => setFromDate(e.target.value)}
@@ -473,7 +473,7 @@ const AllTransactions = () => {
               <div className="form-group">
                 <label>To Date</label>
                 <input
-                value={toDate}
+                  value={toDate}
                   className="form-control"
                   type="date"
                   onChange={(e) => setToDate(e.target.value)}

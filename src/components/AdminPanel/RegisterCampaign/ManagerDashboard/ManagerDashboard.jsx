@@ -6,11 +6,11 @@ import Pending from "./Pending";
 import Executed from "./Executed";
 import Verified from "./Verified";
 import Rejected from "./Rejected";
-import  {useParams}  from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const ManagerDashboard = () => {
-  const param =useParams()
-  const Cid = param.id
+  const param = useParams();
+  const Cid = param.id;
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [pending, setPending] = useState([]);
   const [executedData, setExecutedData] = useState([]);
@@ -71,15 +71,21 @@ const ManagerDashboard = () => {
   const filteredRejected = rejectedData.filter((item) =>
     item.exp_name.toLowerCase().includes(filterData.toLowerCase())
   );
-  
-    const forceRender=()=>{
-      Assigndata()
-    }
+
+  const forceRender = () => {
+    Assigndata();
+  };
 
   const tab1 = <Pending pending={filteredPending} forceRender={forceRender} />;
-  const tab2 = <Executed executed={filteredExecuted} forceRender={forceRender} />;
-  const tab3 = <Verified verified={filteredVerified} forceRender={forceRender} />;
-  const tab4 = <Rejected rejected={filteredRejected} forceRender={forceRender} />;
+  const tab2 = (
+    <Executed executed={filteredExecuted} forceRender={forceRender} />
+  );
+  const tab3 = (
+    <Verified verified={filteredVerified} forceRender={forceRender} />
+  );
+  const tab4 = (
+    <Rejected rejected={filteredRejected} forceRender={forceRender} />
+  );
 
   const accordionButtons = ["Pending", "Executed", "Verified", "Rejected"];
 

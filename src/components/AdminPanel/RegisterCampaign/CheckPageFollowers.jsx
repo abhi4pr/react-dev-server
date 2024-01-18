@@ -1,37 +1,36 @@
 import { useEffect, useRef, useState } from "react";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Paper, Button, Box,Typography } from "@mui/material";
+import { Paper, Button, Box, Typography } from "@mui/material";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import axios from "axios";
 
-
-export default function CheckPageFollowers() { 
+export default function CheckPageFollowers() {
   const [gridRows, setGridRows] = useState([]);
-  const [followerData, setFollowerData] = useState([])
+  const [followerData, setFollowerData] = useState([]);
   console.log(followerData, "---->followerData");
 
-
-// Interagation of followerData api ----- ** start ** ------------------
+  // Interagation of followerData api ----- ** start ** ------------------
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/getallprojectx`).then((response) => {
-      const data = response.data;
-      console.log(data,"<--------");
-      if (gridRows.length > 0) {
-        const filteredData = [];
-        for (const item of data) {
-          for (const gridRow of gridRows) { 
-            if (gridRow.page_name === item.page_name) {
-              filteredData.push(item);
-              break;
+    axios
+      .get(`http://34.93.221.166:3000/api/getallprojectx`)
+      .then((response) => {
+        const data = response.data;
+        console.log(data, "<--------");
+        if (gridRows.length > 0) {
+          const filteredData = [];
+          for (const item of data) {
+            for (const gridRow of gridRows) {
+              if (gridRow.page_name === item.page_name) {
+                filteredData.push(item);
+                break;
+              }
             }
           }
+          console.log(filteredData, "filteredData meeee");
+          setFollowerData(filteredData);
         }
-        console.log(filteredData, "filteredData meeee");
-        setFollowerData(filteredData);
-      }
-    });
-
+      });
   }, [gridRows]);
   // Interagation of followerData api ----- ** End ** ------------------
   const addSerialNumber = (rows) => {
@@ -40,7 +39,7 @@ export default function CheckPageFollowers() {
       S_No: index + 1,
     }));
   };
-//  ------------------
+  //  ------------------
 
   const columns = [
     {
@@ -59,7 +58,6 @@ export default function CheckPageFollowers() {
       width: 150,
     },
   ];
-
 
   // upload file --********* start *******************---
   const fileInputRef = useRef(null);
@@ -85,13 +83,9 @@ export default function CheckPageFollowers() {
   };
   // upload file --* End*--------------
 
-
   // Template file --*************** start*---
   const createExcelTemplate = () => {
-    const headers = [
-      "S_No",
-      "page_name",
-    ];
+    const headers = ["S_No", "page_name"];
     const data = [];
 
     const ws = XLSX.utils.json_to_sheet(data, { header: headers });
@@ -107,7 +101,7 @@ export default function CheckPageFollowers() {
 
     saveAs(blob, "template.xlsx");
   };
-  
+
   const s2ab = (s) => {
     const buf = new ArrayBuffer(s.length);
     const view = new Uint8Array(buf);
@@ -121,11 +115,10 @@ export default function CheckPageFollowers() {
   return (
     <Paper sx={{ height: 400, width: "100%" }}>
       <div
-       className="form_heading_title"
+        className="form_heading_title"
         style={{
           display: "flex",
           justifyContent: "right",
-         
         }}
       >
         <Box style={{ flexGrow: 1 }}>
@@ -182,34 +175,19 @@ export default function CheckPageFollowers() {
   );
 }
 
+//     const handleAddRecordClick = async () => {
+//      try {
+//        const newRecordData = {
+//          content_type: "add Content Type",
 
+//        };
 
+//        const response = await axios.post("http://34.93.221.166:3000/api/content",
+//        newRecordData);
+//        const newRecord = response.data;
 
-
-
-
-
-
-
-
-
-
-
-
-
- //     const handleAddRecordClick = async () => {
-    //      try {
-    //        const newRecordData = {
-    //          content_type: "add Content Type",
-             
-    //        };
-       
-    //        const response = await axios.post("http://34.93.221.166:3000/api/content",
-    //        newRecordData);
-    //        const newRecord = response.data;
-    
-    //        setRows((prevRows) => [...prevRows, newRecord]);
-    //      } catch (error) {
-    //        console.error("Error adding record:", error);
-    //      }
-    //    };
+//        setRows((prevRows) => [...prevRows, newRecord]);
+//      } catch (error) {
+//        console.error("Error adding record:", error);
+//      }
+//    };

@@ -15,7 +15,7 @@ const ContentApprover = () => {
   const [subCategory, setSubCategory] = useState("");
   const [content, setContent] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-  const [platformData, setPlatFormData] = useState([])
+  const [platformData, setPlatFormData] = useState([]);
   const [reason, setReason] = useState("");
   const [status, setStatus] = useState("");
   const [caption, setCaption] = useState("");
@@ -26,23 +26,25 @@ const ContentApprover = () => {
   const userID = decodedToken.id;
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/content_upload/${id}`).then((res) => {
-      const fetchedData = res.data[0];
-      setPageName(fetchedData.pageName);
-      setContentName(fetchedData.contentName);
-      setCategory(fetchedData.category);
-      setSubCategory(fetchedData.subCategory);
-      setContent(fetchedData.content);
-      setReason(fetchedData.reason);
-      setStatus(fetchedData.status);
-    });
+    axios
+      .get(`http://34.93.221.166:3000/api/content_upload/${id}`)
+      .then((res) => {
+        const fetchedData = res.data[0];
+        setPageName(fetchedData.pageName);
+        setContentName(fetchedData.contentName);
+        setCategory(fetchedData.category);
+        setSubCategory(fetchedData.subCategory);
+        setContent(fetchedData.content);
+        setReason(fetchedData.reason);
+        setStatus(fetchedData.status);
+      });
 
     axios
       .get("http://34.93.221.166:3000/api/alldataofIptype")
-      .then((res) => setIpTypeData(res.data))
+      .then((res) => setIpTypeData(res.data));
   }, []);
-  
-  const handleSubmit = async(e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -58,9 +60,9 @@ const ContentApprover = () => {
 
     await axios.put("http://34.93.221.166:3000/api/content_upload", formData, {
       headers: {
-        "Content-Type": "multipart/form-data"
-      }
-    })
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     toastAlert("Form Submitted success");
     setIsFormSubmitted(true);
@@ -70,94 +72,89 @@ const ContentApprover = () => {
     return <Navigate to="/content-approve-overview" />;
   }
   return (
-
     <>
       <UserNav />
       <div className="section section_padding sec_bg h100vh">
         <div className="container">
           <div className="card mb-4">
             <div className="card-header">
-              <div className="tabbtn_header_two">
-               
-              </div>
+              <div className="tabbtn_header_two"></div>
             </div>
             <div className="card-body pb0 pb4 thm_form">
               <form method="POST" className="row" onSubmit={handleSubmit}>
-                
-                  <>
-                    <FieldContainer
-                      label="Page Name *"
-                      value={pageName}
-                      required={true}
-                      onChange={(e) => setPageName(e.target.value)}
-                    />
-                    <FieldContainer
-                      label="Content Name *"
-                      required={true}
-                      value={contentName}
-                      onChange={(e) => setContentName(e.target.value)}
-                    />
+                <>
+                  <FieldContainer
+                    label="Page Name *"
+                    value={pageName}
+                    required={true}
+                    onChange={(e) => setPageName(e.target.value)}
+                  />
+                  <FieldContainer
+                    label="Content Name *"
+                    required={true}
+                    value={contentName}
+                    onChange={(e) => setContentName(e.target.value)}
+                  />
 
-                    <FieldContainer
-                      label="Category"
-                      Tag="select"
-                      value={category}
-                      required={false}
-                      onChange={(e) => setCategory(e.target.value)}
-                    >
-                      <option value="">Please select</option>
-                      {ipTypeData.map((data) => (
-                        <option key={data.id} value={data.id}>
-                          {data.name}
-                        </option>
-                      ))}
-                    </FieldContainer>
+                  <FieldContainer
+                    label="Category"
+                    Tag="select"
+                    value={category}
+                    required={false}
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    <option value="">Please select</option>
+                    {ipTypeData.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.name}
+                      </option>
+                    ))}
+                  </FieldContainer>
 
-                    <FieldContainer
-                      label="Sub Category"
-                      Tag="select"
-                      value={subCategory}
-                      required={false}
-                      onChange={(e) => setSubCategory(e.target.value)}
-                    >
-                      <option value="">Please select</option>
-                      {platformData.map((data) => (
-                        <option key={data.id} value={data.id}>
-                          {data.name}
-                        </option>
-                      ))}
-                    </FieldContainer>
+                  <FieldContainer
+                    label="Sub Category"
+                    Tag="select"
+                    value={subCategory}
+                    required={false}
+                    onChange={(e) => setSubCategory(e.target.value)}
+                  >
+                    <option value="">Please select</option>
+                    {platformData.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.name}
+                      </option>
+                    ))}
+                  </FieldContainer>
 
-                    <FieldContainer
-                      label="Content *"
-                      type="file"
-                      value={content}
-                      onChange={(e) => setContent(e.target.files[0])}
-                    />
+                  <FieldContainer
+                    label="Content *"
+                    type="file"
+                    value={content}
+                    onChange={(e) => setContent(e.target.files[0])}
+                  />
 
-                    <FieldContainer
-                      label="Status *"
-                      Tag="select"
-                      value={status}
-                      onChange={(e) => setStatus(e.target.value)}
-                    >
-                      <option value="">Please select</option>
-                      <option value="0">Reject</option>
-                      <option value="1">Approve</option>
-                      <option value="2">Change</option>
-                    </FieldContainer>
-                    <FieldContainer
-                      label="Reason"
-                      value={reason}
-                      onChange={(e)=> setReason(e.target.value)}
-                    />
-                    <FieldContainer
-                      label="Caption"
-                      value={caption}
-                      onChange={(e)=> setCaption(e.target.value)}
-                    />
-                  </>
-
+                  <FieldContainer
+                    label="Status *"
+                    Tag="select"
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                  >
+                    <option value="">Please select</option>
+                    <option value="0">Reject</option>
+                    <option value="1">Approve</option>
+                    <option value="2">Change</option>
+                  </FieldContainer>
+                  <FieldContainer
+                    label="Reason"
+                    value={reason}
+                    onChange={(e) => setReason(e.target.value)}
+                  />
+                  <FieldContainer
+                    label="Caption"
+                    value={caption}
+                    onChange={(e) => setCaption(e.target.value)}
+                  />
+                </>
               </form>
             </div>
           </div>

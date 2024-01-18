@@ -10,7 +10,6 @@ import DataTable from "react-data-table-component";
 import { useGlobalContext } from "../../../Context/Context";
 
 const CocOverview = () => {
-  
   const { toastAlert } = useGlobalContext();
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
@@ -86,11 +85,7 @@ const CocOverview = () => {
             </button>
           </Link>
 
-          <DeleteButton
-            endpoint="delete_coc"
-            id={row._id}
-            getData={getData}
-          />
+          <DeleteButton endpoint="delete_coc" id={row._id} getData={getData} />
         </>
       ),
       allowOverflow: true,
@@ -105,33 +100,31 @@ const CocOverview = () => {
         title="Coc Creation"
         // handleSubmit={handleSubmit}
       >
-      
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title="Pre Onboard User"
-              columns={columns}
-              data={filterdata}
-              fixedHeader
-              // pagination
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
-            />
+        <div className="page_height">
+          <div className="card mb-4">
+            <div className="data_tbl table-responsive">
+              <DataTable
+                title="Pre Onboard User"
+                columns={columns}
+                data={filterdata}
+                fixedHeader
+                // pagination
+                fixedHeaderScrollHeight="64vh"
+                highlightOnHover
+                subHeader
+                subHeaderComponent={
+                  <input
+                    type="text"
+                    placeholder="Search here"
+                    className="w-50 form-control "
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                }
+              />
+            </div>
           </div>
         </div>
-      </div>
-
       </FormContainer>
     </>
   );

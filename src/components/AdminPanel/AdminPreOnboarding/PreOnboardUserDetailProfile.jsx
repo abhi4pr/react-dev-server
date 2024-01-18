@@ -42,7 +42,7 @@ const PreOnboardUserDetailsProfile = () => {
   const handleAccordionButtonClick = (index) => {
     setActiveAccordionIndex(index);
   };
-  
+
   const accordionButtons = ["Genral", "Professional", "Documents"];
 
   const tab1 = (

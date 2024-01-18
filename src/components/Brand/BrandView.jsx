@@ -27,27 +27,26 @@ const BrandView = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/get_single_logo_data/${id}`).then((res) => {
-      const fetchedData = res.data;
-      const { 
-        brand_name,
-        upload_logo,
-        remark,
-        cat_name
-      } = fetchedData;
-      setBrand(brand_name);
-      setLogo(upload_logo);
-      setRemark(remark);
-      setCategory(cat_name);
-      setBrandData(fetchedData);
-    });
+    axios
+      .get(`http://34.93.221.166:3000/api/get_single_logo_data/${id}`)
+      .then((res) => {
+        const fetchedData = res.data;
+        const { brand_name, upload_logo, remark, cat_name } = fetchedData;
+        setBrand(brand_name);
+        setLogo(upload_logo);
+        setRemark(remark);
+        setCategory(cat_name);
+        setBrandData(fetchedData);
+      });
   }, [id]);
 
   useEffect(() => {
-    if(brand){
-      axios.get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`).then((res) => {
-        setLogos(res.data);
-      });
+    if (brand) {
+      axios
+        .get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`)
+        .then((res) => {
+          setLogos(res.data);
+        });
     }
   }, [brand]);
 
@@ -78,26 +77,46 @@ const BrandView = () => {
               />
 
               <div className="row">
-                {logos.map((detail)=>(
-                  <div className="col-md-3 card" style={{margin:"0 0 10px 0"}}>
-                    <img className="card-img-top" src={detail.logo_image} style={{height:"220px"}} />
-                    <div className="card-body">      
-                    </div>
+                {logos.map((detail) => (
+                  <div
+                    className="col-md-3 card"
+                    style={{ margin: "0 0 10px 0" }}
+                  >
+                    <img
+                      className="card-img-top"
+                      src={detail.logo_image}
+                      style={{ height: "220px" }}
+                    />
+                    <div className="card-body"></div>
                     <ul className="list-group list-group-flush">
-                      <li className="list-group-item">Extension - {detail.image_type}</li>
-                      <li className="list-group-item">Resolution - {detail.size}</li>
-                      <li className="list-group-item">Size - {detail.size_in_mb}</li>
-                      <li className="list-group-item">Category - {detail.cat_name}</li>
+                      <li className="list-group-item">
+                        Extension - {detail.image_type}
+                      </li>
+                      <li className="list-group-item">
+                        Resolution - {detail.size}
+                      </li>
+                      <li className="list-group-item">
+                        Size - {detail.size_in_mb}
+                      </li>
+                      <li className="list-group-item">
+                        Category - {detail.cat_name}
+                      </li>
                     </ul>
                     <div className="card-body">
                       <button type="button" className="btn btn-success">
-                        <a href={detail.logo_image} target="_blank" rel="noopener noreferrer" > {" "} Download{" "} </a>
+                        <a
+                          href={detail.logo_image}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {" "}
+                          Download{" "}
+                        </a>
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
-
             </FormContainer>
           </div>
         </div>

@@ -19,15 +19,21 @@ const RoleOverView = () => {
   const userID = decodedToken.id;
   useEffect(() => {
     if (userID && contextData.length === 0) {
-      axios.get( `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`).then((res) => {
-        setDatas(res.data);
-      });
+      axios
+        .get(
+          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+        )
+        .then((res) => {
+          setDatas(res.data);
+        });
     }
   }, [userID]);
 
   async function getData() {
     try {
-      const response = await axios.get("http://34.93.221.166:3000/api/get_all_roles");
+      const response = await axios.get(
+        "http://34.93.221.166:3000/api/get_all_roles"
+      );
       setData(response.data.data);
       setFilterData(response.data.data);
       console.log(response.data.data);
@@ -35,7 +41,6 @@ const RoleOverView = () => {
       console.error("An error occurred:", error);
     }
   }
-  
 
   const columns = [
     {

@@ -9,7 +9,6 @@ import DataTable from "react-data-table-component";
 import { useGlobalContext } from "../../../Context/Context";
 
 const EmailTempOverview = () => {
-  
   const { toastAlert } = useGlobalContext();
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
@@ -93,47 +92,45 @@ const EmailTempOverview = () => {
         title=""
         submitButton={false}
       >
-      
-      <button
-        type="button"
-        className="btn btn-success"
-        style={{
-          float: "right",
-          margin: "-4% 0% 2% 89%",
-          position: "relative",
-          width: "10%",
-          height: "10%"
-        }}
-      >
-        <Link to="/admin/email-template">Add Email Template</Link>
-      </button>
+        <button
+          type="button"
+          className="btn btn-success"
+          style={{
+            float: "right",
+            margin: "-4% 0% 2% 89%",
+            position: "relative",
+            width: "10%",
+            height: "10%",
+          }}
+        >
+          <Link to="/admin/email-template">Add Email Template</Link>
+        </button>
 
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title="Email Temp Overview"
-              columns={columns}
-              data={filterdata}
-              fixedHeader
-              // pagination
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
-            />
+        <div className="page_height">
+          <div className="card mb-4">
+            <div className="data_tbl table-responsive">
+              <DataTable
+                title="Email Temp Overview"
+                columns={columns}
+                data={filterdata}
+                fixedHeader
+                // pagination
+                fixedHeaderScrollHeight="64vh"
+                highlightOnHover
+                subHeader
+                subHeaderComponent={
+                  <input
+                    type="text"
+                    placeholder="Search here"
+                    className="w-50 form-control "
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                }
+              />
+            </div>
           </div>
         </div>
-      </div>
-
       </FormContainer>
     </>
   );

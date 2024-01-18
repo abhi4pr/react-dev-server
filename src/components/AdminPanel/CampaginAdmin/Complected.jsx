@@ -69,11 +69,13 @@ export default function Complected() {
 
         setCommits(data);
       });
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((response) => {
-      const data = response.data.data.filter((e) => e.dept_id == 13);
-      console.log(data);
-      setAssignToList(data);
-    });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_users")
+      .then((response) => {
+        const data = response.data.data.filter((e) => e.dept_id == 13);
+        console.log(data);
+        setAssignToList(data);
+      });
   }, []);
 
   const columns = [

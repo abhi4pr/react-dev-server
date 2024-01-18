@@ -137,7 +137,7 @@ const SimAllocationOverview = () => {
       selector: (row) => row.sub_category_name,
       sortable: true,
     },
-    
+
     // {
     // name: "Allocated Date",
     // width: "10%",
