@@ -122,7 +122,7 @@ const AssetVisibleToHr = () => {
 
   const getReturnAssetData = () => {
     axios.get("http://34.93.221.166:3000/api/assetreturn").then((res) => {
-      setReturnAssetData(res.data.assetReturnRequests);
+      setReturnAssetData(res.data.singleAssetReturnRequest);
     });
   };
   useEffect(() => {
@@ -153,19 +153,19 @@ const AssetVisibleToHr = () => {
   const returnDataColumns = [
     {
       name: "Return By",
-      selector: (row) => row.asset_return_remark,
-    },
-    {
-      name: "Return Remark",
-      selector: (row) => row.asset_return_remark,
+      selector: (row) => row.asset_return_by_name,
     },
     {
       name: "Asset Name",
-      selector: (row) => DateISOtoNormal(row.return_asset_data_time),
+      selector: (row) => row.assetName,
     },
     {
       name: "Return Date",
       selector: (row) => DateISOtoNormal(row.return_asset_data_time),
+    },
+    {
+      name: "Return Remark",
+      selector: (row) => row.asset_return_remark,
     },
   ];
 

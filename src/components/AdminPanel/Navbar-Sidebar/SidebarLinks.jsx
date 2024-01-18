@@ -12,6 +12,7 @@ const SidebarLinks = () => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
+  const RoleId = decodedToken.role_id;
 
   useEffect(() => {
     if (userID && contextData.length === 0) {
@@ -522,13 +523,15 @@ const SidebarLinks = () => {
                 >
                   Tagged Asset
                 </Link>
-                {contextData &&
+                {/* {contextData &&
                   contextData[41] &&
-                  contextData[41].view_value === 1 && (
-                    <Link className="collapse-item" to="/admin/asset-manager">
-                      Asset Manager Login
-                    </Link>
-                  )}
+                  contextData[41].view_value === 1 && ( */}
+                {/* {RoleId == 2 && ( */}
+                <Link className="collapse-item" to="/admin/asset-manager">
+                  Asset Manager Login
+                </Link>
+                {/* )} */}
+                {/* )} */}
               </div>
             </div>
           </li>
