@@ -43,31 +43,33 @@ const IpUpdate = () => {
   const userID = decodedToken.id;
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/dataofipregis/${id}`).then((res) => {
-      const fetchedData = res.data[0];
-      setIpType(fetchedData.ip_type);
-      setPlatform(fetchedData.platform);
-      setIPname(fetchedData.ip_name);
-      setPassword(fetchedData.password);
-      setBackupCode(fetchedData.backup_code);
-      setContactNo(fetchedData.contact_no);
-      setEmail(fetchedData.email);
-      setEmailPass(fetchedData.email_pass);
-      setRecoveryEmail(fetchedData.recovery_email);
-      setRecoveryContact(fetchedData.recovery_contact);
-      setAllocatedTo(fetchedData.allocated_to_primary);
-      setl1(fetchedData.report_L1);
-      setl2(fetchedData.report_L2);
-      setl3(fetchedData.report_L3);
-      setl1Name(fetchedData.report_L1_user_name);
-      setl2Name(fetchedData.report_L2_user_name);
-      setl3Name(fetchedData.report_L3_user_name);
-      setPostCount(fetchedData.post_count);
-      setFollowers(fetchedData.followers);
-      setDaysReach(fetchedData.days_reach);
-      setCreatedAt(fetchedData.created_at);
-      setCreatedBy(fetchedData.created_by);
-    });
+    axios
+      .get(`http://34.93.221.166:3000/api/dataofipregis/${id}`)
+      .then((res) => {
+        const fetchedData = res.data[0];
+        setIpType(fetchedData.ip_type);
+        setPlatform(fetchedData.platform);
+        setIPname(fetchedData.ip_name);
+        setPassword(fetchedData.password);
+        setBackupCode(fetchedData.backup_code);
+        setContactNo(fetchedData.contact_no);
+        setEmail(fetchedData.email);
+        setEmailPass(fetchedData.email_pass);
+        setRecoveryEmail(fetchedData.recovery_email);
+        setRecoveryContact(fetchedData.recovery_contact);
+        setAllocatedTo(fetchedData.allocated_to_primary);
+        setl1(fetchedData.report_L1);
+        setl2(fetchedData.report_L2);
+        setl3(fetchedData.report_L3);
+        setl1Name(fetchedData.report_L1_user_name);
+        setl2Name(fetchedData.report_L2_user_name);
+        setl3Name(fetchedData.report_L3_user_name);
+        setPostCount(fetchedData.post_count);
+        setFollowers(fetchedData.followers);
+        setDaysReach(fetchedData.days_reach);
+        setCreatedAt(fetchedData.created_at);
+        setCreatedBy(fetchedData.created_by);
+      });
 
     axios
       .get("http://34.93.221.166:3000/api/get_all_users")

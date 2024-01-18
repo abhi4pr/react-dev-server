@@ -28,7 +28,6 @@ import Accordioan from "./Accordioan";
 import { useNavigate } from "react-router-dom";
 import PageOverview from "./PageOverview";
 
-
 let options = [];
 let timer;
 
@@ -40,7 +39,6 @@ const Follower_Count = [
   ">5M ",
 ];
 const page_health = ["Active", "nonActive"];
-
 
 const PhaseCreation = () => {
   const navigate = useNavigate();
@@ -69,11 +67,10 @@ const PhaseCreation = () => {
   console.log(allPhaseData, "zzzzz");
   const [showPageDetails, setShowPageDetails] = useState(false);
 
-  const [payload, setPayload] = useState([])
+  const [payload, setPayload] = useState([]);
 
   const [postpage, setPostPage] = useState(0);
   const [render, setRender] = useState(false);
-
 
   //fetching data for the single plan
   const getPageData = async () => {
@@ -81,11 +78,16 @@ const PhaseCreation = () => {
       `http://34.93.221.166:3000/api/campaignplan/${id}`
     );
 
-    const x = pageD.data.data.filter((page) => {
-      return page.replacement_status == "inactive" || page.replacement_status == "replacement"
-    }).map(page => {
-      return { ...page, postPerPage: 0 }
-    })
+    const x = pageD.data.data
+      .filter((page) => {
+        return (
+          page.replacement_status == "inactive" ||
+          page.replacement_status == "replacement"
+        );
+      })
+      .map((page) => {
+        return { ...page, postPerPage: 0 };
+      });
     setFilteredPages(x);
     setActualPlanData(x);
     setPayload(x);
@@ -124,8 +126,8 @@ const PhaseCreation = () => {
     });
   };
   const renderHard = () => {
-    getPhaseData()
-  }
+    getPhaseData();
+  };
   //whenever a pageData is available call categoryset function
   useEffect(() => {
     if (allPageData?.length > 0) {
@@ -133,7 +135,7 @@ const PhaseCreation = () => {
     }
   }, [allPageData]);
 
-  console.log(allPhaseData)
+  console.log(allPhaseData);
   //useEffect for category selection change events
   useEffect(() => {
     if (selectedCategory.length > 0 && selectedFollower) {
@@ -209,15 +211,15 @@ const PhaseCreation = () => {
       });
       //to set the filtered page
       setFilteredPages(page);
-      setPayload(page)
+      setPayload(page);
     } else if (selectedCategory.length > 0 && !selectedFollower) {
       //in case category is present but follower count is not selected
       const page = actualPlanData.filter((pages) => {
         return selectedCategory.includes(pages.cat_name);
       });
-      console.log(page)
+      console.log(page);
       setFilteredPages(page);
-      setPayload(page)
+      setPayload(page);
       // setSelectedFollower(null)
     } else if (selectedCategory.length == 0 && !selectedFollower) {
       setFilteredPages(actualPlanData);
@@ -227,8 +229,6 @@ const PhaseCreation = () => {
       setPayload(filterdPages);
     }
   }, [selectedCategory]);
-
-
 
   useEffect(() => {
     //
@@ -327,7 +327,6 @@ const PhaseCreation = () => {
     setSelectedFollower(op);
   };
 
-
   const handleSearchChange = (e) => {
     if (!e.target.value.length == 0) {
       clearTimeout(timer);
@@ -342,14 +341,12 @@ const PhaseCreation = () => {
         });
 
         setSearched(true);
-        setFilteredPages(searched)
+        setFilteredPages(searched);
       }, 500);
     } else {
-
       setSearched(false);
-      setFilteredPages(payload)
+      setFilteredPages(payload);
       clearTimeout(timer);
-
     }
   };
 
@@ -403,7 +400,6 @@ const PhaseCreation = () => {
   // useEffect(()=>{
   //   setModalSearchPage
   // },[selectedRows])
-
 
   const columns = [
     {
@@ -464,12 +460,11 @@ const PhaseCreation = () => {
     setShowPageDetails(!showPageDetails);
   };
 
-
-  const payloadChangeOnSearchChangeInPageDetailing = (pl,up) => {
-    console.log(pl)
-    setPayload([...pl])
-    setFilteredPages(up)
-  }
+  const payloadChangeOnSearchChangeInPageDetailing = (pl, up) => {
+    console.log(pl);
+    setPayload([...pl]);
+    setFilteredPages(up);
+  };
 
   return (
     <>
@@ -481,10 +476,17 @@ const PhaseCreation = () => {
       {/* } */}
 
       {/* add Accordion for show phase------------------- */}
-      <Paper >
+      <Paper>
         {allPhaseData?.map((item, index) => (
           <Paper key={index}>
-            <Link to={`/admin/createAssign/${item.phase_id}`} style={{ margin: "2px", display: "flex", justifyContent: "flex-end" }}>
+            <Link
+              to={`/admin/createAssign/${item.phase_id}`}
+              style={{
+                margin: "2px",
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
               <Button variant="contained" color="primary" size="small">
                 Create Assignment
               </Button>
@@ -496,15 +498,19 @@ const PhaseCreation = () => {
             >
               <AccordionSummary
                 expandIcon={<GridExpandMoreIcon />}
-              // aria-controls={`panel${index}bh-content`}
-              // id={`panel${index}bh-header`}
+                // aria-controls={`panel${index}bh-content`}
+                // id={`panel${index}bh-header`}
               >
                 <Typography>{`Phase ${index + 1}`}</Typography>
               </AccordionSummary>
               <AccordionDetails>
                 {/* <Accordioan data={item} /> */}
                 {console.log(item)}
-                <PageOverview selectData={item.pages} stage={"phase"} setRender={renderHard} />
+                <PageOverview
+                  selectData={item.pages}
+                  stage={"phase"}
+                  setRender={renderHard}
+                />
               </AccordionDetails>
             </Accordion>
           </Paper>
@@ -521,11 +527,11 @@ const PhaseCreation = () => {
       </Button>
       {showPageDetails && (
         <>
-          <Typography variant="h6" sx={{  fontWeight: "40px" }}>
+          <Typography variant="h6" sx={{ fontWeight: "40px" }}>
             Phase Details
           </Typography>
           <Paper>
-            <Box sx={{ pt:1, m: 2, display: "flex" }}>
+            <Box sx={{ pt: 1, m: 2, display: "flex" }}>
               <TextField
                 label="Phase"
                 value={phaseData}
@@ -554,7 +560,7 @@ const PhaseCreation = () => {
                   value={startDate}
                   onChange={(e) => setStartDate(e.$d)}
                   sx={{ mr: 1 }}
-                  />
+                />
                 <DatePicker
                   label="End Date *"
                   format="DD/MM/YY"
@@ -562,14 +568,19 @@ const PhaseCreation = () => {
                   value={endDate}
                   onChange={(e) => setEndDate(e.$d)}
                   sx={{ mr: 1 }}
-                  />
+                />
               </LocalizationProvider>
             </Box>
             {/* {console.log(campaignName[0].commitment, "camp name lalit")} */}
             {campaignName?.map((cmp, index) => {
               return (
-                <Box sx={{  display: "flex" }} key={index}>
-                  <TextField disabled value={cmp?.commitment} sx={{ml:2,mb:2}} label="Commitment" />
+                <Box sx={{ display: "flex" }} key={index}>
+                  <TextField
+                    disabled
+                    value={cmp?.commitment}
+                    sx={{ ml: 2, mb: 2 }}
+                    label="Commitment"
+                  />
                   <TextField
                     label="Value"
                     type="number"
@@ -581,7 +592,7 @@ const PhaseCreation = () => {
                       });
                       setCampaignName(x);
                     }}
-                    sx={{ml:1,mb:2}}
+                    sx={{ ml: 1, mb: 2 }}
                   />
                 </Box>
               );
@@ -593,7 +604,7 @@ const PhaseCreation = () => {
               multiple
               id="combo-box-demo"
               options={options}
-              sx={{ width: 250,mr:1, ml:2 }}
+              sx={{ width: 250, mr: 1, ml: 2 }}
               renderInput={(params) => (
                 <TextField {...params} label="Category" />
               )}
@@ -603,7 +614,7 @@ const PhaseCreation = () => {
               id="combo-box-demo"
               options={Follower_Count}
               getOptionLabel={(option) => option}
-              sx={{ width: 250,mr:1 }}
+              sx={{ width: 250, mr: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Follower Count" />
               )}
@@ -613,7 +624,7 @@ const PhaseCreation = () => {
               id="combo-box-demo"
               options={page_health}
               getOptionLabel={(option) => option}
-              sx={{ width: 250,mr:1 }}
+              sx={{ width: 250, mr: 1 }}
               renderInput={(params) => (
                 <TextField {...params} label="Page health" />
               )}
@@ -622,10 +633,9 @@ const PhaseCreation = () => {
               label="Search"
               variant="outlined"
               onChange={handleSearchChange}
-              sx={{ width: 200,mr:1 }}
-
+              sx={{ width: 200, mr: 1 }}
             />
-            <Button variant="outlined" onClick={handleClick}  >
+            <Button variant="outlined" onClick={handleClick}>
               Add More Pages
             </Button>
           </Paper>

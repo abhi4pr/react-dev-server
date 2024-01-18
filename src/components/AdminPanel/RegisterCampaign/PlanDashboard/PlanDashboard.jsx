@@ -1,11 +1,11 @@
 import axios from "axios";
 import CampaignDetailes from "../CampaignDetailes";
 import { Link, useParams } from "react-router-dom";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 
 const PlanDashboard = () => {
   const { id } = useParams();
-  const [planData,setPlanData] = useState([])
+  const [planData, setPlanData] = useState([]);
   const totalCount = planData.reduce(
     (sum, current) => sum + Number(current.follower_count),
     0
@@ -14,13 +14,13 @@ const PlanDashboard = () => {
     (sum, current) => sum + Number(current.postPerPage),
     0
   );
-  const totalPages = planData.length
-  console.log(totalCount,totalPost);
+  const totalPages = planData.length;
+  console.log(totalCount, totalPost);
   const getSelectPage = async () => {
     const newPlan = await axios.get(
       `http://34.93.221.166:3000/api/campaignplan/${id}`
     );
-   setPlanData(newPlan.data.data);
+    setPlanData(newPlan.data.data);
   };
 
   useEffect(() => {
@@ -41,15 +41,15 @@ const PlanDashboard = () => {
               {totalPost}
               {/* total post */}
             </div>
-            <div className="data-card__label">Total No.of Post in Campgain plan</div>
+            <div className="data-card__label">
+              Total No.of Post in Campgain plan
+            </div>
             <div className="data-card__color is-green"></div>
           </div>
         </Link>
         <Link>
           <div className="data-card is-hoverable">
-            <div className="data-card__val">
-             {totalPages}
-            </div>
+            <div className="data-card__val">{totalPages}</div>
             <div className="data-card__label">Total No of Pages</div>
             <div className="data-card__color is-green"></div>
           </div>

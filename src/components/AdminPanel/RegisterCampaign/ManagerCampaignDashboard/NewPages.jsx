@@ -3,10 +3,10 @@ import { Button } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
+import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
 import Loader from "../Loader/Loader";
 const NewPages = ({ pages }) => {
-    const navigate=useNavigate()
+  const navigate = useNavigate();
   const [camp, setCamp] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const fetchCampaignData = async () => {
@@ -24,16 +24,15 @@ const NewPages = ({ pages }) => {
     fetchCampaignData();
     setTimeout(() => {
       setIsLoading(false);
-  }, 500);
+    }, 500);
   }, []);
   if (isLoading) {
     return <Loader message="Manager DashBoard..." />;
-}
+  }
 
-const handleVerification = (param)=>{
-    
-    navigate(`/admin/manager-dashboard/${param.row._id}`)
-}
+  const handleVerification = (param) => {
+    navigate(`/admin/manager-dashboard/${param.row._id}`);
+  };
 
   const columns = [
     {
@@ -46,15 +45,15 @@ const handleVerification = (param)=>{
       },
     },
     {
-        field: "exeCmpId",
-        headerName: "Campaign Name",
-        width: 170,
-        renderCell: (params) => {
-          return camp.filter((e) => {
-            return e.exeCmpId == params.row.exeCmpId;
-          })[0]?.exeCmpName;
-        },
+      field: "exeCmpId",
+      headerName: "Campaign Name",
+      width: 170,
+      renderCell: (params) => {
+        return camp.filter((e) => {
+          return e.exeCmpId == params.row.exeCmpId;
+        })[0]?.exeCmpName;
       },
+    },
     //   {
     //     field: "brand_id",
     //     headerName: "Brand Name",
@@ -65,7 +64,7 @@ const handleVerification = (param)=>{
     //       })[0]?.brand_name;
     //     },
     //   },
-   
+
     {
       field: "detailing",
       headerName: "Detailing",
@@ -84,8 +83,13 @@ const handleVerification = (param)=>{
       renderCell: (params) => {
         return (
           <div>
-            <Button onClick={() => handleVerification(params)} variant="text" color="secondary" title="Move to Manager Dashborad">
-                <ArrowCircleRightOutlinedIcon sx={{fontSize:"30px"}}/>
+            <Button
+              onClick={() => handleVerification(params)}
+              variant="text"
+              color="secondary"
+              title="Move to Manager Dashborad"
+            >
+              <ArrowCircleRightOutlinedIcon sx={{ fontSize: "30px" }} />
             </Button>
           </div>
         );

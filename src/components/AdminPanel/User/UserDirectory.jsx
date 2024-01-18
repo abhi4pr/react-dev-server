@@ -9,7 +9,7 @@ import Select from "react-select";
 const UserOverview = () => {
   const [search, setSearch] = useState("");
   const [datas, setDatas] = useState([]);
-  const [backupData, setBackupData] = useState([])
+  const [backupData, setBackupData] = useState([]);
   const [contextData, setData] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [departmentData, setDepartmentData] = useState([]);
@@ -20,9 +20,11 @@ const UserOverview = () => {
 
   useEffect(() => {
     if (userID && contextData.length === 0) {
-      axios.get(`http://34.93.221.166:3000/api/userauth/${userID}`).then((res) => {
-        setData(res.data);
-      });
+      axios
+        .get(`http://34.93.221.166:3000/api/userauth/${userID}`)
+        .then((res) => {
+          setData(res.data);
+        });
     }
   }, [userID]);
 
@@ -32,9 +34,11 @@ const UserOverview = () => {
       setBackupData(res.data.data);
     });
 
-    axios.get("http://34.93.221.166:3000/api/get_all_departments").then((res) => {
-      setDepartmentData(res.data)
-    });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .then((res) => {
+        setDepartmentData(res.data);
+      });
   }
   useEffect(() => {
     getData();
@@ -44,7 +48,9 @@ const UserOverview = () => {
     if (selectedDepartment === "") {
       setDatas(backupData);
     } else {
-      const filteredData = backupData.filter((item) => item.dept_id == selectedDepartment);
+      const filteredData = backupData.filter(
+        (item) => item.dept_id == selectedDepartment
+      );
       setDatas(filteredData);
     }
   }, [selectedDepartment]);
@@ -73,7 +79,7 @@ const UserOverview = () => {
           <div className="row thm_form">
             <div className="form-group col-6">
               <label className="form-label">
-                Department  <sup style={{ color: "red" }}>*</sup>
+                Department <sup style={{ color: "red" }}>*</sup>
               </label>
               <Select
                 options={departmentData.map((option) => ({
@@ -112,69 +118,71 @@ const UserOverview = () => {
         {datas.length > 0 &&
           datas
             .filter((detail) =>
-              detail.user_name
-                .toLowerCase()
-                .includes(search.toLowerCase())
+              detail.user_name.toLowerCase().includes(search.toLowerCase())
             )
             .map((detail) => {
-              return (<>
-                <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-                  <div className="summary_card">
-                    <div className="summary_cardtitle">
-                      <h5>
-                        <span>{detail.user_name}</span>
-                      </h5>
-                      <div className="summary_cardaction">
-                        <Link to={`/admin/user-single/${detail.user_id}`}>
-                          <button
-                            className="btn btn-sm btn-outline-primary"
-                            title="Short View"
-                          >
-                            <BsFillEyeFill />
-                          </button>
-                        </Link>
+              return (
+                <>
+                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
+                    <div className="summary_card">
+                      <div className="summary_cardtitle">
+                        <h5>
+                          <span>{detail.user_name}</span>
+                        </h5>
+                        <div className="summary_cardaction">
+                          <Link to={`/admin/user-single/${detail.user_id}`}>
+                            <button
+                              className="btn btn-sm btn-outline-primary"
+                              title="Short View"
+                            >
+                              <BsFillEyeFill />
+                            </button>
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                    <div className="summary_cardbody">
-                      <div className="summary_cardrow flex-column">
-                        <div className="summary_box text-center ml-auto mr-auto">
-                          <img src={detail.image} width="80px" height="80px" style={{ borderRadius: "50%" }} />
+                      <div className="summary_cardbody">
+                        <div className="summary_cardrow flex-column">
+                          <div className="summary_box text-center ml-auto mr-auto">
+                            <img
+                              src={detail.image}
+                              width="80px"
+                              height="80px"
+                              style={{ borderRadius: "50%" }}
+                            />
+                          </div>
+                          <div className="summary_box col">
+                            <h3>{detail.user_name}</h3>
+                          </div>
+                          <div className="summary_box col">
+                            <h4>
+                              {/* <span>Type</span> */}
+                              {detail.designation_name}
+                            </h4>
+                          </div>
+                          <div className="summary_box col">
+                            <h4>
+                              <span>Department:</span>
+                              {detail.department_name}
+                            </h4>
+                          </div>
+                          <div className="summary_box col">
+                            <h4>
+                              <span>Location:</span>
+                              {detail.job_type}
+                            </h4>
+                          </div>
+                          <div className="summary_box col">
+                            <h4>
+                              <span>Email:</span>
+                              {detail.user_email_id}
+                            </h4>
+                          </div>
                         </div>
-                        <div className="summary_box col">
-                          <h3>
-                            {detail.user_name}
-                          </h3>
-                        </div>
-                        <div className="summary_box col">
-                          <h4>
-                            {/* <span>Type</span> */}
-                            {detail.designation_name}
-                          </h4>
-                        </div>
-                        <div className="summary_box col">
-                          <h4>
-                            <span>Department:</span>
-                            {detail.department_name}
-                          </h4>
-                        </div>
-                        <div className="summary_box col">
-                          <h4>
-                            <span>Location:</span>
-                            {detail.job_type}
-                          </h4>
-                        </div>
-                        <div className="summary_box col">
-                          <h4>
-                            <span>Email:</span>
-                            {detail.user_email_id}
-                          </h4>
-                        </div>
-
                       </div>
                     </div>
                   </div>
-                </div>
-              </>);
+                </>
+              );
             })}
       </div>
     </>

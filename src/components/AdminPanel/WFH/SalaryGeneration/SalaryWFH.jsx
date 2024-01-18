@@ -329,27 +329,6 @@ const SalaryWFH = () => {
       });
   }
 
-  const handleSubmit = () => {
-    setFilterData([]);
-    const payload = {
-      dept_id: department,
-      month: month,
-      year: Number(year),
-    };
-    axios
-      .post(
-        "http://34.93.221.166:3000/api/get_salary_by_id_month_year",
-        payload
-      )
-      .then((res) => {
-        setFilterData(res.data.data);
-        setData(res.data.data);
-      })
-      .catch((error) => {
-        console.error("Error submitting data:", error);
-      });
-  };
-
   function handleInvoiceNumber(data) {
     const formData = new FormData();
 
@@ -422,17 +401,14 @@ const SalaryWFH = () => {
 
   const handleAttendance = async () => {
     try {
-      const addAttendanceResponse = await axios.post(
-        "http://192.168.29.117:3000/api/add_attendance",
-        {
-          dept: department,
-          user_id: userName.user_id,
-          noOfabsent: 0,
-          month: month,
-          year: year,
-        }
-      );
-      const updateAttendanceStatusResponse = await axios.put(
+      await axios.post("http://34.93.221.166:3000/api/add_attendance", {
+        dept: department,
+        user_id: userName.user_id,
+        noOfabsent: 0,
+        month: month,
+        year: year,
+      });
+      await axios.put(
         "http://34.93.221.166:3000/api/update_attendence_status",
         {
           month: month,
@@ -442,8 +418,27 @@ const SalaryWFH = () => {
       );
 
       setNoOfAbsent("");
-      toastAlert("Submitted success");
       handleSubmit();
+      toastAlert("Submitted success");
+    } catch (error) {
+      console.error("Error submitting data:", error);
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setFilterData([]);
+      const res = await axios.post(
+        "http://34.93.221.166:3000/api/get_salary_by_id_month_year",
+        {
+          dept_id: department,
+          month: month,
+          year: Number(year),
+        }
+      );
+      console.log("salary api");
+      setFilterData(res.data.data);
+      setData(res.data.data);
     } catch (error) {
       console.error("Error submitting data:", error);
     }

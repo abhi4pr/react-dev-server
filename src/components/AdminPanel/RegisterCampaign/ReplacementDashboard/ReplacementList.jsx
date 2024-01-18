@@ -21,7 +21,7 @@ const style = {
 };
 
 const ReplacementList = ({ replacementData, hardRender }) => {
-    const { toastAlert, toastError } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
 
   const [replacementDetails, setReplacementDetails] = useState([]);
   const newData = replacementDetails?.newPages;
@@ -35,13 +35,13 @@ const ReplacementList = ({ replacementData, hardRender }) => {
 
   const replacementUpdate = async (status, id) => {
     getReplacementDetail(id);
-  
+
     const data = {
       status,
       replacementRecord: replacementDetails,
       approved_by: "123",
     };
-  
+
     const result = await axios.post(
       "http://34.93.221.166:3000/api/replacement/status",
       data
@@ -50,14 +50,14 @@ const ReplacementList = ({ replacementData, hardRender }) => {
       if (status === "approved") {
         toastAlert("Approval Successful!");
       } else if (status === "rejected") {
-        toastAlert("Rejection Successful!"); 
+        toastAlert("Rejection Successful!");
       }
       hardRender();
     } else {
-      toastError("Operation Failed!"); 
+      toastError("Operation Failed!");
     }
   };
-  
+
   const columns = [
     {
       field: "S.NO",
@@ -102,10 +102,7 @@ const ReplacementList = ({ replacementData, hardRender }) => {
       renderCell: (params) => {
         return (
           <div>
-            <Button 
-              onMouseOver={() => handleOpen(params)} 
-              variant="text"
-            >
+            <Button onMouseOver={() => handleOpen(params)} variant="text">
               <ModeCommentTwoToneIcon />
             </Button>
           </div>

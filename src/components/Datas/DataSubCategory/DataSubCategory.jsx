@@ -73,9 +73,9 @@ const DataSubCategory = () => {
       ),
     },
   ];
-  
+
   const handleSubmit = async (e) => {
-    if(categoryName == ''){
+    if (categoryName == "") {
       toastError("Category is required");
     }
     e.preventDefault();
@@ -93,7 +93,7 @@ const DataSubCategory = () => {
         const response = await axios.post(
           "http://34.93.221.166:3000/api/add_data_sub_category",
           {
-            data_sub_cat_name: subCatName,  
+            data_sub_cat_name: subCatName,
             cat_id: categoryName,
           }
         );

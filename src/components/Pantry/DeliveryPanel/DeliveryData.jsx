@@ -45,12 +45,9 @@ const DeliveryData = () => {
         if (res.data && res.data.length > 0) {
           setDeliveryData(res.data);
         } else {
-
         }
       })
-      .catch((error) => {
-
-      });
+      .catch((error) => {});
   }
 
   useEffect(() => {
@@ -60,13 +57,10 @@ const DeliveryData = () => {
 
   useEffect(() => {
     getData();
-    axios
-
-      .get(`http://34.93.221.166:3000/api/get_delivery_user`)
-      .then((res) => {
-        setDeliveryBoyData(res.data);
-        // console.log(res.data);
-      });
+    axios.get(`http://34.93.221.166:3000/api/get_delivery_user`).then((res) => {
+      setDeliveryBoyData(res.data);
+      // console.log(res.data);
+    });
   }, []);
 
   const handleOrderCompleted = (

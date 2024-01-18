@@ -14,10 +14,12 @@ const ContentOverview = () => {
   const [filterdata, setFilterData] = useState([]);
 
   async function getData() {
-    await axios.get("http://34.93.221.166:3000/api/content_upload").then((res) => {
-      setData(res.data);
-      setFilterData(res.data);
-    });
+    await axios
+      .get("http://34.93.221.166:3000/api/content_upload")
+      .then((res) => {
+        setData(res.data);
+        setFilterData(res.data);
+      });
   }
 
   useEffect(() => {
@@ -66,7 +68,11 @@ const ContentOverview = () => {
       name: "Content",
       selector: (row) => {
         return (
-          <img className="tbl_prdct_img" src={row.content} style={{height:"90px",width:"90px"}} />
+          <img
+            className="tbl_prdct_img"
+            src={row.content}
+            style={{ height: "90px", width: "90px" }}
+          />
         );
       },
       sortable: true,

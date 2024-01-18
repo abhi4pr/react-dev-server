@@ -25,48 +25,50 @@ const CocUpdate = () => {
   const loginUserId = decodedToken.id;
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/get_single_coc/${id}`).then((res) => {
-      const fetchedData = res.data.data;
-      setDisplaySeq(fetchedData.display_sequence);
-      setHeading(fetchedData.heading);
-      setSubHeading(fetchedData.sub_heading);
-      setSubHeadingSeq(fetchedData.sub_heading_sequence);
-      setDescription(fetchedData.description);
-      setHeadingDesc(fetchedData.heading_desc);
-      setSubHeadingDesc(fetchedData.sub_heading_desc);
-      setRemarks(fetchedData.remarks);
-    });
-  }, []);  
+    axios
+      .get(`http://34.93.221.166:3000/api/get_single_coc/${id}`)
+      .then((res) => {
+        const fetchedData = res.data.data;
+        setDisplaySeq(fetchedData.display_sequence);
+        setHeading(fetchedData.heading);
+        setSubHeading(fetchedData.sub_heading);
+        setSubHeadingSeq(fetchedData.sub_heading_sequence);
+        setDescription(fetchedData.description);
+        setHeadingDesc(fetchedData.heading_desc);
+        setSubHeadingDesc(fetchedData.sub_heading_desc);
+        setRemarks(fetchedData.remarks);
+      });
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-                
-      await axios.put(`http://34.93.221.166:3000/api/update_coc/`,{
-        _id: id,
-        display_sequence: displaySeq,
-        heading: heading,
-        heading_desc: headingDesc,
-        sub_heading: subHeading,
-        sub_heading_desc: subHeadingDesc,
-        sub_heading_sequence: subHeadingSeq,
-        description: description,
-        remarks: remarks,
-        updated_by: loginUserId
-      });
 
-      setDisplaySeq("");
-      setHeading("");
-      setSubHeading("");
-      setSubHeadingSeq("");
-      setDescription("");
-      setRemarks("");
+    await axios.put(`http://34.93.221.166:3000/api/update_coc/`, {
+      _id: id,
+      display_sequence: displaySeq,
+      heading: heading,
+      heading_desc: headingDesc,
+      sub_heading: subHeading,
+      sub_heading_desc: subHeadingDesc,
+      sub_heading_sequence: subHeadingSeq,
+      description: description,
+      remarks: remarks,
+      updated_by: loginUserId,
+    });
 
-      toastAlert("Coc created");
-      setIsFormSubmitted(true);
+    setDisplaySeq("");
+    setHeading("");
+    setSubHeading("");
+    setSubHeadingSeq("");
+    setDescription("");
+    setRemarks("");
+
+    toastAlert("Coc created");
+    setIsFormSubmitted(true);
   };
 
   if (isFormSubmitted) {
-    return <Navigate to="/admin/pre-onboard-coc-overview" />
+    return <Navigate to="/admin/pre-onboard-coc-overview" />;
   }
 
   return (
@@ -90,7 +92,7 @@ const CocUpdate = () => {
           fieldGrid={4}
           required={false}
           value={heading}
-          onChange={(e)=> setHeading(e.target.value)}
+          onChange={(e) => setHeading(e.target.value)}
         />
 
         <FieldContainer
@@ -98,7 +100,7 @@ const CocUpdate = () => {
           fieldGrid={4}
           value={subHeading}
           required={false}
-          onChange={(e)=> setSubHeading(e.target.value)}
+          onChange={(e) => setSubHeading(e.target.value)}
         />
 
         <FieldContainer
@@ -125,7 +127,7 @@ const CocUpdate = () => {
           fieldGrid={4}
           required={false}
           value={headingDesc}
-          onChange={(e)=> setHeadingDesc(e.target.value)}
+          onChange={(e) => setHeadingDesc(e.target.value)}
         />
 
         <FieldContainer
@@ -134,7 +136,7 @@ const CocUpdate = () => {
           fieldGrid={4}
           required={false}
           value={subHeadingDesc}
-          onChange={(e)=> setSubHeadingDesc(e.target.value)}
+          onChange={(e) => setSubHeadingDesc(e.target.value)}
         />
 
         <FieldContainer
@@ -145,7 +147,6 @@ const CocUpdate = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
-
       </FormContainer>
     </>
   );

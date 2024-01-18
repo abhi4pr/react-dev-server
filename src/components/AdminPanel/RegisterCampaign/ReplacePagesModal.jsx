@@ -20,7 +20,13 @@ const style = {
   p: 4,
 };
 
-const ReplacePagesModal = ({ open, handleClose, selection, planData, stage }) => {
+const ReplacePagesModal = ({
+  open,
+  handleClose,
+  selection,
+  planData,
+  stage,
+}) => {
   const [remainingPages, setRemainingPages] = useState([]);
   const [selectedPages, setSelectedPages] = useState([]);
   const [postPages, setPostpages] = useState([]);
@@ -29,7 +35,8 @@ const ReplacePagesModal = ({ open, handleClose, selection, planData, stage }) =>
       `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
     );
     const remainingData = pageData?.data?.body.filter(
-      (item) => !planData.some((selectedItem) => selectedItem.p_id === item.p_id)
+      (item) =>
+        !planData.some((selectedItem) => selectedItem.p_id === item.p_id)
     );
     setRemainingPages(remainingData);
   };
@@ -50,25 +57,27 @@ const ReplacePagesModal = ({ open, handleClose, selection, planData, stage }) =>
       follower_count: page.follower_count,
       page_link: page.page_link,
       p_id: page.p_id,
-      vendor_id: page.vendor_id
+      vendor_id: page.vendor_id,
     }));
     const result = await axios.post(
-      "http://34.93.221.166:3000/api/replacement/plan", {
-      campaignName: selection?.campaignName,
-      campaignId: selection?.campaignId,
-      replacement_request_by: "12345",
-      pages: pagesData,
-      replacement_stage: stage,
-      oldPage_id: selection?.p_id,
-      planName: selection?.planName,
-      newPage_id: pagesData.map(page => page.p_id)    }
-    )
+      "http://34.93.221.166:3000/api/replacement/plan",
+      {
+        campaignName: selection?.campaignName,
+        campaignId: selection?.campaignId,
+        replacement_request_by: "12345",
+        pages: pagesData,
+        replacement_stage: stage,
+        oldPage_id: selection?.p_id,
+        planName: selection?.planName,
+        newPage_id: pagesData.map((page) => page.p_id),
+      }
+    );
     console.log(result);
     handleClose();
   };
   const handlepagesChange = (index, value) => {
     const updatedpages = [...postPages];
-    updatedpages[index] = value
+    updatedpages[index] = value;
     setPostpages(updatedpages);
   };
 

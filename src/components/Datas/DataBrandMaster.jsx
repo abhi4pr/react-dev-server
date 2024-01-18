@@ -188,7 +188,7 @@ const DataBrandMaster = () => {
   };
 
   const handleFileChange = (event) => {
-    setFileDetails(prev=>[...prev, event.target.files]);
+    setFileDetails((prev) => [...prev, event.target.files]);
     const files = Array.from(event.target.files);
     setImages(files);
 

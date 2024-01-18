@@ -152,24 +152,33 @@ export default function ExecutionDone() {
           second: "2-digit",
           hour12: false,
         };
-    
-        const formattedDate = startDate.toLocaleDateString("en-GB", dateOptions);
-        const formattedTime =startDate.toISOString().split('T')[1].substring(0, 8);
 
-        if(params.row.start_date == "0000-00-00 00:00:00" || params.row.start_date == null || params.row.start_date == undefined){
-          return " "
-        }else{
-    
+        const formattedDate = startDate.toLocaleDateString(
+          "en-GB",
+          dateOptions
+        );
+        const formattedTime = startDate
+          .toISOString()
+          .split("T")[1]
+          .substring(0, 8);
+
+        if (
+          params.row.start_date == "0000-00-00 00:00:00" ||
+          params.row.start_date == null ||
+          params.row.start_date == undefined
+        ) {
+          return " ";
+        } else {
           return (
             <div>
-                <span>{formattedDate}</span> &nbsp;
-                <span>{formattedTime}</span>
-              </div>
-            );
-          }
-          },
+              <span>{formattedDate}</span> &nbsp;
+              <span>{formattedTime}</span>
+            </div>
+          );
+        }
+      },
     },
-    
+
     {
       field: "end_date",
       headerName: "End Date",
@@ -187,10 +196,16 @@ export default function ExecutionDone() {
           second: "2-digit",
           hour12: false,
         };
-    
-        const formattedDate = startDate.toLocaleDateString("en-GB", dateOptions);
-        const formattedTime = startDate.toISOString().split('T')[1].substring(0, 8);
-    
+
+        const formattedDate = startDate.toLocaleDateString(
+          "en-GB",
+          dateOptions
+        );
+        const formattedTime = startDate
+          .toISOString()
+          .split("T")[1]
+          .substring(0, 8);
+
         return (
           <div>
             <span>{formattedDate}</span> &nbsp;
@@ -264,52 +279,52 @@ export default function ExecutionDone() {
       },
     },
 
-  
-    contextData ?{
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      width: 300,
-      cellClassName: "actions",
-      getActions: (params) => {
-        const { id } = params;
-        return [ 
-          <GridActionsCellItem
-            key={id}
-            icon={<PointOfSaleTwoToneIcon />}
-            onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
-            color="inherit"
-          />,
-          <Link key={id} to={`/admin/exeexecution/${id}`}>
-            <GridActionsCellItem
-              icon={<ListAltOutlinedIcon />}
-              label="Delete"
-              color="inherit"
-            />
-          </Link>,
-        ];
-      },
-    }:{
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      width: 300,
-      cellClassName: "actions",
-      getActions: (params) => {
-        const { id } = params;
-        return [
-          <Link key={id} to={`/admin/exeexecution/${id}`}>
-            <GridActionsCellItem
-              icon={<ListAltOutlinedIcon />}
-              label="Delete"
-              color="inherit"
-            />
-          </Link>,
-        ];
-      },
-    },
+    contextData
+      ? {
+          field: "actions",
+          type: "actions",
+          headerName: "Actions",
+          width: 300,
+          cellClassName: "actions",
+          getActions: (params) => {
+            const { id } = params;
+            return [
+              <GridActionsCellItem
+                key={id}
+                icon={<PointOfSaleTwoToneIcon />}
+                onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
+                color="inherit"
+              />,
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <GridActionsCellItem
+                  icon={<ListAltOutlinedIcon />}
+                  label="Delete"
+                  color="inherit"
+                />
+              </Link>,
+            ];
+          },
+        }
+      : {
+          field: "actions",
+          type: "actions",
+          headerName: "Actions",
+          width: 300,
+          cellClassName: "actions",
+          getActions: (params) => {
+            const { id } = params;
+            return [
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <GridActionsCellItem
+                  icon={<ListAltOutlinedIcon />}
+                  label="Delete"
+                  color="inherit"
+                />
+              </Link>,
+            ];
+          },
+        },
   ];
-
 
   return (
     <div>

@@ -25,7 +25,7 @@ export default function PendingPaymentRequest() {
   const [payRemark, setPayRemark] = useState("");
   const [payMentProof, setPayMentProof] = useState("");
   const [vendorName, setVendorName] = useState("");
-  const [showDisCardModal,setShowDiscardModal]=useState(false)
+  const [showDisCardModal, setShowDiscardModal] = useState(false);
 
   const callApi = () => {
     axios
@@ -67,7 +67,7 @@ export default function PendingPaymentRequest() {
   }
 
   const handleDiscardClick = (row) => {
-setShowDiscardModal(true)
+    setShowDiscardModal(true);
     // axios
     //   .delete(`http://34.93.221.166:3000/api/delete_demo/${row._id}`)
     //   .then(() => {
@@ -352,7 +352,6 @@ setShowDiscardModal(true)
               value={rowData.gst}
               autoFocus
               margin="dense"
-
               // disabled
               readOnly
               label="GST"
@@ -364,7 +363,6 @@ setShowDiscardModal(true)
               value={`₹${rowData.outstandings}`}
               autoFocus
               margin="dense"
-
               // disabled
               readOnly
               label="Outstanding"
@@ -482,7 +480,12 @@ setShowDiscardModal(true)
         </DialogActions>
       </Dialog>
 
-     {showDisCardModal && <DiscardConfirmation rowData={rowData} setShowDiscardModal={setShowDiscardModal} />}
+      {showDisCardModal && (
+        <DiscardConfirmation
+          rowData={rowData}
+          setShowDiscardModal={setShowDiscardModal}
+        />
+      )}
     </div>
   );
 }

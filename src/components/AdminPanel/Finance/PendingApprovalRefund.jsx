@@ -66,7 +66,7 @@ const PendingApprovalRefund = () => {
     setIsFormSubmitted(true);
   };
 
-  const uploadImage = async (e, row,index) => {
+  const uploadImage = async (e, row, index) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -75,17 +75,19 @@ const PendingApprovalRefund = () => {
     formData.append("sale_booking_id", row.sale_booking_id);
     formData.append("refund_files", refundImage[index]);
 
-    await axios.post(
-      "https://production.sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    ).then((res) => {
-      res.status === 200 && refundImage.splice(index, 1); // Remove the image from the array
-    });
+    await axios
+      .post(
+        "https://production.sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        res.status === 200 && refundImage.splice(index, 1); // Remove the image from the array
+      });
 
     toastAlert("Data updated");
     setIsFormSubmitted(true);
@@ -149,7 +151,7 @@ const PendingApprovalRefund = () => {
             disabled={!refundImage[index] ? true : false}
             onClick={(e) => {
               setSingleRow(row);
-              uploadImage(e, row,index);
+              uploadImage(e, row, index);
             }}
           />
         </form>

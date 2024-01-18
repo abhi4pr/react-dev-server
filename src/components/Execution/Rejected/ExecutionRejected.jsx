@@ -10,7 +10,6 @@ import { Button } from "@mui/material";
 import PaymentDetailDailog from "../PaymentDetailDailog";
 import PointOfSaleTwoToneIcon from "@mui/icons-material/PointOfSaleTwoTone";
 
-
 export default function ExecutionRejected() {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -39,7 +38,7 @@ export default function ExecutionRejected() {
             `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
           )
           .then((res) => {
-            console.log("this is res data", res.data)
+            console.log("this is res data", res.data);
             if (res.data[26].view_value == 1) {
               setContextData(true);
               console.log("this is trye value");
@@ -75,7 +74,7 @@ export default function ExecutionRejected() {
   });
   useEffect(() => {
     fetchData();
-    console.log(contextData, "this is context data" ,  userID, "this is user id")
+    console.log(contextData, "this is context data", userID, "this is user id");
   }, []);
 
   const columns = [
@@ -137,49 +136,51 @@ export default function ExecutionRejected() {
       width: 110,
     },
 
-   contextData ?{
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      width: 300,
-      cellClassName: "actions",
-      getActions: (params) => {
-        const { id } = params;
-        return [ 
-          <GridActionsCellItem
-            key={id}
-            icon={<PointOfSaleTwoToneIcon />}
-            onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
-            color="inherit"
-          />,
-          <Link key={id} to={`/admin/exeexecution/${id}`}>
-            <GridActionsCellItem
-              icon={<ListAltOutlinedIcon />}
-              label="Delete"
-              color="inherit"
-            />
-          </Link>,
-        ];
-      },
-    }:{
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      width: 300,
-      cellClassName: "actions",
-      getActions: (params) => {
-        const { id } = params;
-        return [
-          <Link key={id} to={`/admin/exeexecution/${id}`}>
-            <GridActionsCellItem
-              icon={<ListAltOutlinedIcon />}
-              label="Delete"
-              color="inherit"
-            />
-          </Link>,
-        ];
-      },
-    },
+    contextData
+      ? {
+          field: "actions",
+          type: "actions",
+          headerName: "Actions",
+          width: 300,
+          cellClassName: "actions",
+          getActions: (params) => {
+            const { id } = params;
+            return [
+              <GridActionsCellItem
+                key={id}
+                icon={<PointOfSaleTwoToneIcon />}
+                onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
+                color="inherit"
+              />,
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <GridActionsCellItem
+                  icon={<ListAltOutlinedIcon />}
+                  label="Delete"
+                  color="inherit"
+                />
+              </Link>,
+            ];
+          },
+        }
+      : {
+          field: "actions",
+          type: "actions",
+          headerName: "Actions",
+          width: 300,
+          cellClassName: "actions",
+          getActions: (params) => {
+            const { id } = params;
+            return [
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <GridActionsCellItem
+                  icon={<ListAltOutlinedIcon />}
+                  label="Delete"
+                  color="inherit"
+                />
+              </Link>,
+            ];
+          },
+        },
   ];
 
   return (

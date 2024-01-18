@@ -15,41 +15,51 @@ const IncentivePayment = () => {
   const [accountNo, setAccountNo] = useState("");
   const [remarks, setRemarks] = useState("");
   const [paymentRef, setPaymentRef] = useState("");
-  const [selectedData, setSelectedData] = useState({})
+  const [selectedData, setSelectedData] = useState({});
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  const handleSubmit = async() => {
+  const handleSubmit = async () => {
     // e.preventDefault();
 
     const formData = new FormData();
-    formData.append("loggedin_user_id",36);
-    formData.append("incentive_request_id",selectedData.incentive_request_id);
-    formData.append("account_number",accountNo);
-    formData.append("remarks",remarks);
-    formData.append("payment_ref_no",paymentRef);
-    
-    await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=release_incentive_submit", formData, {
+    formData.append("loggedin_user_id", 36);
+    formData.append("incentive_request_id", selectedData.incentive_request_id);
+    formData.append("account_number", accountNo);
+    formData.append("remarks", remarks);
+    formData.append("payment_ref_no", paymentRef);
+
+    await axios.post(
+      "https://production.sales.creativefuel.io/webservices/RestController.php?view=release_incentive_submit",
+      formData,
+      {
         headers: {
           "Content-Type": "multipart/form-data",
         },
-      });
-      setImageModalOpen(false)
+      }
+    );
+    setImageModalOpen(false);
 
     toastAlert("Data updated");
     setIsFormSubmitted(true);
   };
 
   function getData() {
-    axios.post("http://34.93.221.166:3000/api/add_php_payment_incentive_data_in_node").then((res)=>{
-      console.log('data save in local success')
-    })
-    axios.get("http://34.93.221.166:3000/api/get_all_php_payment_incentive_data").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-    });
+    axios
+      .post(
+        "http://34.93.221.166:3000/api/add_php_payment_incentive_data_in_node"
+      )
+      .then((res) => {
+        console.log("data save in local success");
+      });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_php_payment_incentive_data")
+      .then((res) => {
+        setData(res.data.data);
+        setFilterData(res.data.data);
+      });
   }
 
   useEffect(() => {
@@ -81,20 +91,19 @@ const IncentivePayment = () => {
 
     {
       name: "Status",
-      selector: (row) => 
-      {
+      selector: (row) => {
         return row.finance_status == 0 ? (
           <button
             className="btn btn-sm btn-outline-info"
             data-toggle="modal"
             data-target="#incentiveModal"
-            onClick={(e)=>setSelectedData(row)}
+            onClick={(e) => setSelectedData(row)}
           >
             Complete Release
           </button>
         ) : (
           <span>{row.finance_status}</span>
-        ) 
+        );
       },
     },
   ];
@@ -116,45 +125,57 @@ const IncentivePayment = () => {
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <button type="button" class="close" data-dismiss="modal">
+                &times;
+              </button>
               <h4 class="modal-title"></h4>
             </div>
             <div class="modal-body">
-            <form onSubmit={handleSubmit}>
-              <label>Last 4 digit of account Number</label>
-              <input
-                type="number"
-                className="form-control"
-                id="images"
-                name="images"
-                value={accountNo}
-                onChange={(e)=>setAccountNo(e.target.value)}
-                required
-              />
-              <label>Payment ref number</label>
-              <input
-                type="number"
-                className="form-control"
-                id="images"
-                name="images"
-                value={accountNo}
-                onChange={(e)=>setPaymentRef(e.target.value)}
-                required
-              />
-              <label>Remarks</label>
-              <input 
-                type="text"
-                className="form-control"
-                value={remarks}
-                onChange={(e)=>setRemarks(e.target.value)}
-              />
-              <button type="submit" className="btn btn-primary" style={{marginTop:"15px"}}>
-                Submit
-              </button>
-            </form>
+              <form onSubmit={handleSubmit}>
+                <label>Last 4 digit of account Number</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  value={accountNo}
+                  onChange={(e) => setAccountNo(e.target.value)}
+                  required
+                />
+                <label>Payment ref number</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  value={accountNo}
+                  onChange={(e) => setPaymentRef(e.target.value)}
+                  required
+                />
+                <label>Remarks</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                />
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  style={{ marginTop: "15px" }}
+                >
+                  Submit
+                </button>
+              </form>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button
+                type="button"
+                class="btn btn-default"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>

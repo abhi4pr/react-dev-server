@@ -24,7 +24,7 @@ const setFollowersDataY = {
     "Oct",
     "Nov",
     "Dec",
-  ],  
+  ],
   datasets: [
     {
       label: "# of Followers",
@@ -247,26 +247,28 @@ const IpGraph = () => {
       year: currentYear,
     };
 
-    axios.post("http://34.93.221.166:3000/api/show_stats", payload).then((res) => {
-      setStatsData(res.data.data);
+    axios
+      .post("http://34.93.221.166:3000/api/show_stats", payload)
+      .then((res) => {
+        setStatsData(res.data.data);
 
-      $("#donutChart").remove();
-      $(".uuuuu").append('<canvas id="donutChart"><canvas>');
+        $("#donutChart").remove();
+        $(".uuuuu").append('<canvas id="donutChart"><canvas>');
 
-      setStatsDataGraph.datasets[0].backgroundColor = ["red", "blue"];
-      setStatsDataGraph.datasets[0].borderColor = ["red", "blue"];
-      setStatsDataGraph.labels = ["followers", "non-followers"];
-      setStatsDataGraph.datasets[0].data = [
-        res.data.data[0]?.followerss,
-        res.data.data[0]?.non_followerss,
-      ];
+        setStatsDataGraph.datasets[0].backgroundColor = ["red", "blue"];
+        setStatsDataGraph.datasets[0].borderColor = ["red", "blue"];
+        setStatsDataGraph.labels = ["followers", "non-followers"];
+        setStatsDataGraph.datasets[0].data = [
+          res.data.data[0]?.followerss,
+          res.data.data[0]?.non_followerss,
+        ];
 
-      var ctx = document.getElementById("donutChart");
-      var myChart = new Chart(ctx, {
-        type: "doughnut",
-        data: setStatsDataGraph,
+        var ctx = document.getElementById("donutChart");
+        var myChart = new Chart(ctx, {
+          type: "doughnut",
+          data: setStatsDataGraph,
+        });
       });
-    });
   }, []);
 
   const showStatsConst = () => {
@@ -276,26 +278,28 @@ const IpGraph = () => {
       year: statsYear,
     };
 
-    axios.post("http://34.93.221.166:3000/api/show_stats", payload).then((res) => {
-      setStatsData(res.data.data);
+    axios
+      .post("http://34.93.221.166:3000/api/show_stats", payload)
+      .then((res) => {
+        setStatsData(res.data.data);
 
-      $("#donutChart").remove();
-      $(".uuuuu").append('<canvas id="donutChart"><canvas>');
+        $("#donutChart").remove();
+        $(".uuuuu").append('<canvas id="donutChart"><canvas>');
 
-      setStatsDataGraph.datasets[0].backgroundColor = ["red", "blue"];
-      setStatsDataGraph.datasets[0].borderColor = ["red", "blue"];
-      setStatsDataGraph.labels = ["followers", "non-followers"];
-      setStatsDataGraph.datasets[0].data = [
-        res.data.data[0]?.followerss,
-        res.data.data[0]?.non_followerss,
-      ];
+        setStatsDataGraph.datasets[0].backgroundColor = ["red", "blue"];
+        setStatsDataGraph.datasets[0].borderColor = ["red", "blue"];
+        setStatsDataGraph.labels = ["followers", "non-followers"];
+        setStatsDataGraph.datasets[0].data = [
+          res.data.data[0]?.followerss,
+          res.data.data[0]?.non_followerss,
+        ];
 
-      var ctx = document.getElementById("donutChart");
-      var myChart = new Chart(ctx, {
-        type: "doughnut",
-        data: setStatsDataGraph,
+        var ctx = document.getElementById("donutChart");
+        var myChart = new Chart(ctx, {
+          type: "doughnut",
+          data: setStatsDataGraph,
+        });
       });
-    });
   };
 
   const response_page = [

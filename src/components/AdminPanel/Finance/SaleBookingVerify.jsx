@@ -23,17 +23,21 @@ const SaleBookingVerify = () => {
 
   const handleSubmit = async (e, row) => {
     e.preventDefault();
-    const formData = new FormData()
-    formData.append("loggedin_user_id",36)
-    formData.append("sale_booking_id",row.sale_booking_id)
-    formData.append("verified_amount",balAmount)
-    formData.append("verified_remark",remark)
+    const formData = new FormData();
+    formData.append("loggedin_user_id", 36);
+    formData.append("sale_booking_id", row.sale_booking_id);
+    formData.append("verified_amount", balAmount);
+    formData.append("verified_remark", remark);
 
-    await axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=verifybooking", formData, {
-      headers:{
-        "application-type":"multipart/form-data"
+    await axios.post(
+      "https://production.sales.creativefuel.io/webservices/RestController.php?view=verifybooking",
+      formData,
+      {
+        headers: {
+          "application-type": "multipart/form-data",
+        },
       }
-    });
+    );
 
     toastAlert("Data Updated");
     setIsFormSubmitted(true);
@@ -48,13 +52,21 @@ const SaleBookingVerify = () => {
   };
 
   function getData() {
-    axios.post("http://34.93.221.166:3000/api/add_php_sale_booking_tds_verification_data_in_node").then((res)=>{
-      console.log('data save in local success')
-    })
-    axios.get("http://34.93.221.166:3000/api/get_all_php_sale_booking_tds_verification_data").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-    });
+    axios
+      .post(
+        "http://34.93.221.166:3000/api/add_php_sale_booking_tds_verification_data_in_node"
+      )
+      .then((res) => {
+        console.log("data save in local success");
+      });
+    axios
+      .get(
+        "http://34.93.221.166:3000/api/get_all_php_sale_booking_tds_verification_data"
+      )
+      .then((res) => {
+        setData(res.data.data);
+        setFilterData(res.data.data);
+      });
   }
 
   const convertDateToDDMMYYYY = (date) => {
@@ -64,7 +76,7 @@ const SaleBookingVerify = () => {
     const year = dateObj.getFullYear();
     const output = day + "/" + month + "/" + year;
     return output;
-  }
+  };
 
   useEffect(() => {
     getData();
@@ -95,7 +107,7 @@ const SaleBookingVerify = () => {
     {
       name: "Booking Date",
       // selector: (row) => row.sale_booking_date,
-      cell : (row) => convertDateToDDMMYYYY(row.sale_booking_date)
+      cell: (row) => convertDateToDDMMYYYY(row.sale_booking_date),
     },
     {
       name: "Campaign Amount",
@@ -123,8 +135,11 @@ const SaleBookingVerify = () => {
     },
     {
       name: "Refund Balance Amount",
-      
-      cell: (row) =>{console.log(row);return row.balance_refund_amount},
+
+      cell: (row) => {
+        console.log(row);
+        return row.balance_refund_amount;
+      },
       width: "10%",
     },
     {
@@ -184,7 +199,7 @@ const SaleBookingVerify = () => {
           />
         </div>
       </div>
-      
+
       <Modal
         isOpen={ImageModalOpen}
         onRequestClose={handleCloseImageModal}
@@ -211,46 +226,44 @@ const SaleBookingVerify = () => {
             >
               X
             </button>
-          </div>               
-        </div> 
+          </div>
+        </div>
         <div className="row">
           <div className="col-md-12 ">
             <form onSubmit={handleSubmit}>
-              
-            <div className="form-group col-12"></div>
+              <div className="form-group col-12"></div>
 
-            <div className="form-group">
-              <label htmlFor="images">Amount:</label>
-              <input
-                type="number"
-                className="form-control"
-                id="images"
-                name="images"
-                value={balAmount}
-                onChange={(e)=>setBalAmount(e.target.value)}
-                required
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="images">Amount:</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  value={balAmount}
+                  onChange={(e) => setBalAmount(e.target.value)}
+                  required
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="images">Remark:</label>
-              <input
-                type="text"
-                className="form-control"
-                id="images"
-                name="images"
-                value={remark}
-                onChange={(e)=>setRemark(e.target.value)}
-              />
-            </div>
+              <div className="form-group">
+                <label htmlFor="images">Remark:</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  value={remark}
+                  onChange={(e) => setRemark(e.target.value)}
+                />
+              </div>
 
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </form>
+              <button type="submit" className="btn btn-primary">
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-
       </Modal>
     </>
   );

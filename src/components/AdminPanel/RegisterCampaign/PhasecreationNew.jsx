@@ -217,7 +217,15 @@ const PhasecreationNew = () => {
           <PageDetailingNew
             pageName={"phaseCreation"}
             data={{ campaignName: cmpName, campaignId: id }}
-            phaseInfo={{ "phaseName": phaseData, "description": phaseDcripation, "commitment": campaignName,phaseDataError: phaseDataError,getPhaseData,setExpanded,setShowPageDetails }}
+            phaseInfo={{
+              phaseName: phaseData,
+              description: phaseDcripation,
+              commitment: campaignName,
+              phaseDataError: phaseDataError,
+              getPhaseData,
+              setExpanded,
+              setShowPageDetails,
+            }}
             setPhaseDataError={setPhaseDataError}
           />
         </>

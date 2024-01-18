@@ -30,7 +30,7 @@ const PageDetaling = ({
   phaseInfo,
   setPhaseDataError,
   payload,
-  payloadChange
+  payloadChange,
   // setPostPage,
   // postpage,
 }) => {
@@ -41,18 +41,18 @@ const PageDetaling = ({
   const [openDialog, setOpenDialog] = useState(false);
   const [deletingPageId, setDeletingPageId] = useState(null);
   const [remainingPages, setRemainingPages] = useState([]);
-  const [smallPostPerPage, setSmallPostPerPage] = useState(Number.MAX_SAFE_INTEGER)
+  const [smallPostPerPage, setSmallPostPerPage] = useState(
+    Number.MAX_SAFE_INTEGER
+  );
 
-  console.log(pages)
+  console.log(pages);
 
   useEffect(() => {
     if (pages?.length > 0) {
       const addPost = pages.map((page) => {
         if (!page.postPerPage) {
-
           return { ...page, postPerPage: 0 };
-
-        } else return page
+        } else return page;
       });
       setAllPages([...addPost]);
       const differenceArray = realPageData?.filter((element) => {
@@ -63,23 +63,21 @@ const PageDetaling = ({
       });
       setRemainingPages(differenceArray);
     }
-  }, [pages])
+  }, [pages]);
 
-  useEffect(()=>{
-    if(pageName=='phaseCreation')
-    {
-
-      let smallest=Number.MAX_SAFE_INTEGER
-      console.log(pages)
-      pages.forEach((page)=>{
-        if(Number(page.postRemaining)<smallest){
-          smallest=Number(page.postRemaining)
+  useEffect(() => {
+    if (pageName == "phaseCreation") {
+      let smallest = Number.MAX_SAFE_INTEGER;
+      console.log(pages);
+      pages.forEach((page) => {
+        if (Number(page.postRemaining) < smallest) {
+          smallest = Number(page.postRemaining);
         }
-      })
+      });
       // console.log(smallest)
-      setSmallPostPerPage(smallest)
+      setSmallPostPerPage(smallest);
     }
-  },[pages])
+  }, [pages]);
 
   const pageReplacement = (e, params, index) => {
     // console.log(e.target.innerText,params,index)
@@ -95,10 +93,8 @@ const PageDetaling = ({
   };
 
   const handlePostPerPageChange = (e, params) => {
-
     let updatedValue = e.target.value;
     if (e.target.value > Number(params.row.postRemaining)) {
-
       updatedValue = params.row.postRemaining;
     }
 
@@ -109,25 +105,23 @@ const PageDetaling = ({
           ? { ...page, postPerPage: updatedValue, value: null }
           : page
       );
-      console.log(updatedPages)
+      console.log(updatedPages);
       setAllPages(updatedPages);
-      const x = payload.map(page => {
+      const x = payload.map((page) => {
         if (page.p_id === params.row.p_id) {
-          return { ...page, postPerPage: updatedValue }
-        }
-        else return page
-      })
-      if (pageName == 'planCreation') {
-
+          return { ...page, postPerPage: updatedValue };
+        } else return page;
+      });
+      if (pageName == "planCreation") {
       }
       // console.log(x)
-      payloadChange(x, updatedPages)
+      payloadChange(x, updatedPages);
       // setFilteredPages(x)
     }
   };
   // console.log(payload)
-  console.log(pages)
-  console.log(allPages)
+  console.log(pages);
+  console.log(allPages);
   const columns = [
     {
       field: "S.NO",
@@ -248,18 +242,17 @@ const PageDetaling = ({
   };
   const handlePost = (e) => {
     let updatedValue = e.target.value;
-    console.log(smallPostPerPage)
+    console.log(smallPostPerPage);
     if (e.target.value >= smallPostPerPage) {
-
-      updatedValue = smallPostPerPage
+      updatedValue = smallPostPerPage;
     }
-    
+
     const postperpage = allPages.map((page) => {
-      return { ...page, postPerPage: updatedValue};
+      return { ...page, postPerPage: updatedValue };
     });
 
     setAllPages(postperpage);
-    payloadChange(postperpage,postperpage);
+    payloadChange(postperpage, postperpage);
     // payloadChange(postperpage);
     // setPostPage(Number(e.target.value));
   };

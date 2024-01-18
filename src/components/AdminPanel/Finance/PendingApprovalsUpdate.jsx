@@ -130,7 +130,13 @@ const PendingApprovalUpdate = () => {
       // selector: (row) => row.payment_time,
       cell: (row) => (
         <div style={{ whiteSpace: "normal" }}>
-          <img src={row.payment_screenshot?`https://salesdev.we-fit.in/${row.payment_screenshot}`:""}  />
+          <img
+            src={
+              row.payment_screenshot
+                ? `https://salesdev.we-fit.in/${row.payment_screenshot}`
+                : ""
+            }
+          />
         </div>
       ),
       width: "150px",

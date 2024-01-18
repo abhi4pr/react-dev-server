@@ -65,14 +65,13 @@ export default function ExecutionAccepted() {
       }
       const formData = new URLSearchParams();
       formData.append("loggedin_user_id", 36);
-      
+
       const response = axios
         .get("http://44.211.225.140:8000/executionSummary", {
           loggedin_user_id: 52,
         })
         .then((res) => {
           setData(res.data.filter((ele) => ele.execution_status == "2"));
-          
         });
     } catch (error) {
       console.error("Error fetching data:", error);

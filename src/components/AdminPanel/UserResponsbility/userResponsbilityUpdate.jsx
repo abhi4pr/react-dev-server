@@ -28,9 +28,11 @@ const UserResponsbilityUpdate = () => {
     });
   }, []);
   useEffect(() => {
-    axios.get("http://34.93.221.166:3000/api/get_all_responsibilitys").then((res) => {
-      setResponsibilityData(res.data);
-    });
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_responsibilitys")
+      .then((res) => {
+        setResponsibilityData(res.data);
+      });
   }, []);
 
   useEffect(() => {
@@ -58,14 +60,14 @@ const UserResponsbilityUpdate = () => {
     e.preventDefault();
     setError("");
     for (const element of todos) {
-      console.log(userName, "userid")
+      console.log(userName, "userid");
       axios
-      .put(`http://34.93.221.166:3000/api/update_jobresponsibility`, {
-        Job_res_id: Number(id),
-        user_id: Number(userName),
-        job_responsi: element.responsbility,
-        description: element.description,
-      })
+        .put(`http://34.93.221.166:3000/api/update_jobresponsibility`, {
+          Job_res_id: Number(id),
+          user_id: Number(userName),
+          job_responsi: element.responsbility,
+          description: element.description,
+        })
         .then(() => {
           setUserName("");
           setResponsibility("");
@@ -86,7 +88,6 @@ const UserResponsbilityUpdate = () => {
     return <Navigate to="/admin/user-respons-overivew" />;
   }
   const handleAddTodo = () => {
-    
     if (responsbility.trim() === "" || description.trim() === "") {
       return;
     }
@@ -141,22 +142,23 @@ const UserResponsbilityUpdate = () => {
           value={responsbility}
           onChange={(e) => setResponsibility(e.target.value)}
         />
-       <div className="">
+        <div className="">
           <div className="form-group">
             <label className="form-label">
-            Description <sup style={{ color: "red" }}>*</sup>
+              Description <sup style={{ color: "red" }}>*</sup>
             </label>
             <Select
               className=""
               options={responsibilityData.map((option) => ({
                 value: option.description,
-                label: `${option.description }`,
+                label: `${option.description}`,
               }))}
               value={{
                 value: description,
                 label:
-                responsibilityData.find((user) => user.description === description)
-                    ?.description || "",
+                  responsibilityData.find(
+                    (user) => user.description === description
+                  )?.description || "",
               }}
               onChange={(e) => {
                 setDescription(e.value);

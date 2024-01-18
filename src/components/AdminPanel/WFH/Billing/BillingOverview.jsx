@@ -58,7 +58,10 @@ const BillingOverview = () => {
     {
       name: "WFH Employees Count",
       selector: (row) => (
-        <Link className="text-primary" to={`/admin/wfh-users-overview/${row.dept_id}`}>
+        <Link
+          className="text-primary"
+          to={`/admin/wfh-users-overview/${row.dept_id}`}
+        >
           {row.wfhUserCount}
         </Link>
       ),

@@ -60,16 +60,23 @@ const CocHistory = () => {
       sortable: true,
     },
     {
-        name: "Updated By",
-        selector: (row) => row.updated_by,
-        sortable: true,
+      name: "Updated By",
+      selector: (row) => row.updated_by,
+      sortable: true,
     },
     {
-        name: "Updated Date",
-        selector: (row) =>{return  <div>{new Date(row.updated_date).toISOString().substr(8, 2)}/{new Date(row.updated_date).toISOString().substr(5, 2)}/{new Date(row.updated_date).toISOString().substr(2, 2)}</div> },
-        sortable: true,
-        
-    }
+      name: "Updated Date",
+      selector: (row) => {
+        return (
+          <div>
+            {new Date(row.updated_date).toISOString().substr(8, 2)}/
+            {new Date(row.updated_date).toISOString().substr(5, 2)}/
+            {new Date(row.updated_date).toISOString().substr(2, 2)}
+          </div>
+        );
+      },
+      sortable: true,
+    },
   ];
 
   return (
@@ -79,33 +86,31 @@ const CocHistory = () => {
         title="Coc History"
         // handleSubmit={handleSubmit}
       >
-      
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title="Pre Onboard User"
-              columns={columns}
-              data={filterdata}
-              fixedHeader
-              // pagination
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
-            />
+        <div className="page_height">
+          <div className="card mb-4">
+            <div className="data_tbl table-responsive">
+              <DataTable
+                title="Pre Onboard User"
+                columns={columns}
+                data={filterdata}
+                fixedHeader
+                // pagination
+                fixedHeaderScrollHeight="64vh"
+                highlightOnHover
+                subHeader
+                subHeaderComponent={
+                  <input
+                    type="text"
+                    placeholder="Search here"
+                    className="w-50 form-control "
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                }
+              />
+            </div>
           </div>
         </div>
-      </div>
-
       </FormContainer>
     </>
   );

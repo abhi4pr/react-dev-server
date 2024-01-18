@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const RequestAssignPage = ({ data ,RequestAssign}) => {
+const RequestAssignPage = ({ data, RequestAssign }) => {
   console.log(data[0]?.ass_page?.campaignName, "reuset");
   const processedData = data.map((item) => ({
     ...item,
@@ -18,27 +18,33 @@ const RequestAssignPage = ({ data ,RequestAssign}) => {
     pageName: item?.ass_page?.page_name,
     post: item?.ass_page?.postPerPage,
     category: item?.ass_page?.cat_name,
-    story:item?.ass_page?.storyPerPage
+    story: item?.ass_page?.storyPerPage,
   }));
 
-  const handleAccept= async (row)=> {
-    const x=await axios.post(`http://34.93.221.166:3000/api/preassignment/phase/update`, {
-      pre_ass_id: row.pre_ass_id,
-      status: "accepted",
-      phase_id: row.phase_id,
-      p_id: row.ass_page.p_id,
-    });
-    RequestAssign()
-  }
-const handleReject= async (row)=> {
-    const x=await axios.post(`http://34.93.221.166:3000/api/preassignment/phase/update`, {
-      pre_ass_id: row.pre_ass_id,
-      status: "rejected",
-      phase_id: row.phase_id,
-      p_id: row.ass_page.p_id,
-    });
-    RequestAssign()
-  }
+  const handleAccept = async (row) => {
+    const x = await axios.post(
+      `http://34.93.221.166:3000/api/preassignment/phase/update`,
+      {
+        pre_ass_id: row.pre_ass_id,
+        status: "accepted",
+        phase_id: row.phase_id,
+        p_id: row.ass_page.p_id,
+      }
+    );
+    RequestAssign();
+  };
+  const handleReject = async (row) => {
+    const x = await axios.post(
+      `http://34.93.221.166:3000/api/preassignment/phase/update`,
+      {
+        pre_ass_id: row.pre_ass_id,
+        status: "rejected",
+        phase_id: row.phase_id,
+        p_id: row.ass_page.p_id,
+      }
+    );
+    RequestAssign();
+  };
 
   const columns = [
     {

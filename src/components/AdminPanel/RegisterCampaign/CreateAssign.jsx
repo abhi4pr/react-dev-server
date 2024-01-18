@@ -14,11 +14,11 @@ import CampaignDetailes from "./CampaignDetailes";
 import Assigned from "./Assigned";
 
 //imports for radio button
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormLabel from "@mui/material/FormLabel";
 import Loader from "./Loader/Loader";
 import millify from "millify";
 
@@ -40,52 +40,60 @@ const CreateAssign = () => {
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [singlePhaseData, setSinglePhaseData] = useState([]);
   const [filteredPages, setFilteredPages] = useState([]);
-  const [payload, setPayload] = useState([])
+  const [payload, setPayload] = useState([]);
   const [expertiseData, setExpertiseData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [campaignId, setcampaignId] = useState("");
   const [externalExpert, setExternalExpert] = useState();
   const [loading, setLoading] = useState(false);
-  const [selectedFollower, setSelectedFollower] = useState(null)
-  const [radioSelected, setRadioSelected] = useState('all')
+  const [selectedFollower, setSelectedFollower] = useState(null);
+  const [radioSelected, setRadioSelected] = useState("all");
   const [isLoading, setIsLoading] = useState(false);
-
 
   const categoryAutocompleteRef = useRef();
   const getPhaseData = async () => {
     try {
-
-
       //1.check if preAssignment Exist for particular phase
       const isPreAss = await axios.post(
-        `http://34.93.221.166:3000/api/preassignment/phase`, {
-        phase_id: id
-      }
+        `http://34.93.221.166:3000/api/preassignment/phase`,
+        {
+          phase_id: id,
+        }
       );
 
       if (isPreAss?.data?.data?.length > 0) {
-        const assignment = await axios.get(`http://34.93.221.166:3000/api/assignment/phase/${id}`)
+        const assignment = await axios.get(
+          `http://34.93.221.166:3000/api/assignment/phase/${id}`
+        );
         const filter = assignment?.data?.data.filter((page) => {
-          return page.replacement_status === 'pending' || page.replacement_status === "replacement" || page.replacement_status === "inactive";
-        })
+          return (
+            page.replacement_status === "pending" ||
+            page.replacement_status === "replacement" ||
+            page.replacement_status === "inactive"
+          );
+        });
         setSinglePhaseData(filter);
         setFilteredPages(filter);
         setPayload(filter);
       } else {
-
-        setIsLoading(true)
+        setIsLoading(true);
         const loadingTimeout = setTimeout(() => setIsLoading(false), 3000);
 
         const createPreAssignment = await axios.post(
-          `http://34.93.221.166:3000/api/preassignment`, {
-          phase_id: id,
-          ass_by: "123"
-        }
-        )
+          `http://34.93.221.166:3000/api/preassignment`,
+          {
+            phase_id: id,
+            ass_by: "123",
+          }
+        );
 
         const filter = createPreAssignment?.data?.ass.filter((page) => {
-          return page.replacement_status === 'pending' || page.replacement_status === "replacement" || page.replacement_status === "inactive";
-        })
+          return (
+            page.replacement_status === "pending" ||
+            page.replacement_status === "replacement" ||
+            page.replacement_status === "inactive"
+          );
+        });
         setSinglePhaseData(filter);
         setFilteredPages(filter);
         setPayload(filter);
@@ -98,15 +106,13 @@ const CreateAssign = () => {
 
       clearTimeout(loadingTimeout);
       setIsLoading(false);
-
     } catch (error) {
       console.error("Error fetching phase data:", error);
       setIsLoading(false);
     }
   };
 
-
-  //getting all experties information 
+  //getting all experties information
 
   const ExpertiseDa = async () => {
     try {
@@ -123,8 +129,11 @@ const CreateAssign = () => {
   //submiting the assignment
   const handleSubmitAssign = async () => {
     try {
-      const createAssignment = await axios.post(`http://34.93.221.166:3000/api/assignment/bulk`, { pages: payload });
-      alert("assignment created successfully")
+      const createAssignment = await axios.post(
+        `http://34.93.221.166:3000/api/assignment/bulk`,
+        { pages: payload }
+      );
+      alert("assignment created successfully");
       // navigate("/admin/excusionCampaign");
     } catch (error) {
       console.error(error);
@@ -157,16 +166,14 @@ const CreateAssign = () => {
       }
     });
   };
-  //once single phase 
+  //once single phase
   useEffect(() => {
     if (singlePhaseData.length > 0) {
       categorySet();
     }
   }, [singlePhaseData]);
 
-
   const categoryChangeHandler = (e, op) => {
-
     setSelectedCategory(op);
   };
 
@@ -256,26 +263,24 @@ const CreateAssign = () => {
       setFilteredPages(radioData);
     } else if (selectedCategory.length == 0 && selectedFollower) {
     }
-  }
+  };
   useEffect(() => {
-
-    const radioData = payload?.filter(page => {
-      if (radioSelected == 'all') {
-        return page
-      } else if (radioSelected == 'rejected') {
-        if (page.preAssignedTo.length == 0 && page.rejected_by.length > 0) return page
-
-      } else if (radioSelected == 'unassigned') {
-        return page.preAssignedTo.length == 0 && page.rejected_by.length == 0
-      } else if (radioSelected == 'pending') {
-        return page.ass_status == 'unassigned'
+    const radioData = payload?.filter((page) => {
+      if (radioSelected == "all") {
+        return page;
+      } else if (radioSelected == "rejected") {
+        if (page.preAssignedTo.length == 0 && page.rejected_by.length > 0)
+          return page;
+      } else if (radioSelected == "unassigned") {
+        return page.preAssignedTo.length == 0 && page.rejected_by.length == 0;
+      } else if (radioSelected == "pending") {
+        return page.ass_status == "unassigned";
       } else {
-
-        return page.ass_status == radioSelected
+        return page.ass_status == radioSelected;
       }
-    })
+    });
 
-    categorySelector(radioData)
+    categorySelector(radioData);
   }, [selectedCategory]);
 
   const followerSelector = (radioData) => {
@@ -354,67 +359,71 @@ const CreateAssign = () => {
         setFilteredPages(page);
       } else setFilteredPages(radioData);
     }
-  }
+  };
   useEffect(() => {
-    const radioData = payload?.filter(page => {
-      if (radioSelected == 'all') {
-        return page
-      } else if (radioSelected == 'rejected') {
-        if (page.preAssignedTo.length == 0 && page.rejected_by.length > 0) return page
-
-      } else if (radioSelected == 'unassigned') {
-        return page.preAssignedTo.length == 0 && page.rejected_by.length == 0
-      } else if (radioSelected == 'pending') {
-        return page.ass_status == 'unassigned'
+    const radioData = payload?.filter((page) => {
+      if (radioSelected == "all") {
+        return page;
+      } else if (radioSelected == "rejected") {
+        if (page.preAssignedTo.length == 0 && page.rejected_by.length > 0)
+          return page;
+      } else if (radioSelected == "unassigned") {
+        return page.preAssignedTo.length == 0 && page.rejected_by.length == 0;
+      } else if (radioSelected == "pending") {
+        return page.ass_status == "unassigned";
       } else {
-
-        return page.ass_status == radioSelected
+        return page.ass_status == radioSelected;
       }
-    })
+    });
 
-    followerSelector(radioData)
-
+    followerSelector(radioData);
   }, [selectedFollower]);
 
-
   const handleSelectionChange = (selectedIds) => {
-    console.log(selectedIds)
+    console.log(selectedIds);
     setSelectedRows(selectedIds);
   };
 
-
   const handleExternalExpertChange = (event, newValue) => {
     // console.log(newValue)
-    setLoading(true)
-    const data = payload.map(page => {
+    setLoading(true);
+    const data = payload.map((page) => {
       if (selectedRows.includes(page.p_id)) {
         return {
-          ...page, ass_to: newValue.all._id, exp_name: newValue.label,
-          expert: newValue ? { label: newValue.label, value: newValue.value } : null
-        }
-      } else return page
-    })
+          ...page,
+          ass_to: newValue.all._id,
+          exp_name: newValue.label,
+          expert: newValue
+            ? { label: newValue.label, value: newValue.value }
+            : null,
+        };
+      } else return page;
+    });
 
-    setPayload(data)
-    setFilteredPages([])
-    setExternalExpert(newValue)
+    setPayload(data);
+    setFilteredPages([]);
+    setExternalExpert(newValue);
     // setSelectedRows([])
 
-    setLoading(false)
-
+    setLoading(false);
   };
 
   console.log(filteredPages);
   const handleExpertsChange = (event, newValue, params) => {
     console.log(event, newValue, params);
-    const data = payload.map(page => {
+    const data = payload.map((page) => {
       if (page.p_id == params.row.p_id) {
-        return { ...page, ass_to: newValue.all._id, exp_name: newValue.label, ass_status: newValue == null ? 'unassigned' : 'assigned' }
-      } else return page
-    })
+        return {
+          ...page,
+          ass_to: newValue.all._id,
+          exp_name: newValue.label,
+          ass_status: newValue == null ? "unassigned" : "assigned",
+        };
+      } else return page;
+    });
 
-    console.log(data)
-    setPayload(data)
+    console.log(data);
+    setPayload(data);
   };
   const followerChangeHandler = (e, op) => {
     setSelectedFollower(op);
@@ -430,35 +439,32 @@ const CreateAssign = () => {
 
   const assignModalfn = (newPayload) => {
     setPayload(newPayload);
-  }
-  console.log(payload)
+  };
+  console.log(payload);
   const handleRadioChange = (e) => {
-    setRadioSelected(e.target.value)
+    setRadioSelected(e.target.value);
 
-    setSelectedCategory([])
-    setSelectedFollower(null)
+    setSelectedCategory([]);
+    setSelectedFollower(null);
 
-
-    const data = payload?.filter(page => {
-      if (e.target.value == 'all') {
-
-
-        return page
-      } else if (e.target.value == 'rejected') {
-        if (page.preAssignedTo.length == 0 && page.rejected_by.length > 0) return page
-
-      } else if (e.target.value == 'unassigned') {
-        return page.preAssignedTo.length == 0 && page.rejected_by.length == 0
-      } else if (e.target.value == 'pending') {
-        return page.ass_status == 'unassigned'
+    const data = payload?.filter((page) => {
+      if (e.target.value == "all") {
+        return page;
+      } else if (e.target.value == "rejected") {
+        if (page.preAssignedTo.length == 0 && page.rejected_by.length > 0)
+          return page;
+      } else if (e.target.value == "unassigned") {
+        return page.preAssignedTo.length == 0 && page.rejected_by.length == 0;
+      } else if (e.target.value == "pending") {
+        return page.ass_status == "unassigned";
       } else {
-        console.log("first")
+        console.log("first");
 
-        return page.ass_status == e.target.value
+        return page.ass_status == e.target.value;
       }
-    })
-    setFilteredPages(data)
-  }
+    });
+    setFilteredPages(data);
+  };
   const columns = [
     {
       field: "S.NO",
@@ -504,13 +510,17 @@ const CreateAssign = () => {
       width: 150,
       editable: true,
       renderCell: (params) => {
-
-        return <div>{params.row?.ass_to?.exp_name ? params.row?.ass_to?.exp_name : "unassigned"}</div>;
+        return (
+          <div>
+            {params.row?.ass_to?.exp_name
+              ? params.row?.ass_to?.exp_name
+              : "unassigned"}
+          </div>
+        );
       },
     },
 
-    radioSelected != "rejected" &&
-    {
+    radioSelected != "rejected" && {
       field: "preAssignedTo",
       headerName: "preAssignedTo",
       renderCell: (params) => (
@@ -529,32 +539,35 @@ const CreateAssign = () => {
       ),
       width: 150,
     },
-    (radioSelected == "rejected" || radioSelected == "unassigned") &&
-    {
+    (radioSelected == "rejected" || radioSelected == "unassigned") && {
       field: "expert",
       headerName: "Experts",
       width: 190,
       renderCell: (params) => {
         return (
-          !loading &&
-          <Autocomplete
-            value={params.row.expert ? params.row.expert?.label : params.row.exp_name}
-            // value={ params.row?.expert?.label}
-            isOptionEqualToValue={(option, value) => {
-              option.value === value.value && option.value == value.label;
-            }}
-            options={expertiseData.map((user) => ({
-              label: user.exp_name,
-              value: user.exp_id,
-              all: user
-            }))}
-            onChange={(event, newValue) =>
-              handleExpertsChange(event, newValue, params)
-            }
-            renderInput={(params) => <TextField {...params} />}
-            fullWidth
-          />
-
+          !loading && (
+            <Autocomplete
+              value={
+                params.row.expert
+                  ? params.row.expert?.label
+                  : params.row.exp_name
+              }
+              // value={ params.row?.expert?.label}
+              isOptionEqualToValue={(option, value) => {
+                option.value === value.value && option.value == value.label;
+              }}
+              options={expertiseData.map((user) => ({
+                label: user.exp_name,
+                value: user.exp_id,
+                all: user,
+              }))}
+              onChange={(event, newValue) =>
+                handleExpertsChange(event, newValue, params)
+              }
+              renderInput={(params) => <TextField {...params} />}
+              fullWidth
+            />
+          )
         );
       },
     },
@@ -577,8 +590,6 @@ const CreateAssign = () => {
       ),
       width: 150,
     },
-
-
   ];
 
   if (isLoading) {
@@ -656,11 +667,26 @@ const CreateAssign = () => {
           onChange={handleRadioChange}
         >
           <FormControlLabel value="all" control={<Radio />} label="all" />
-          <FormControlLabel value="pending" control={<Radio />} label="pending" />
-          <FormControlLabel value="unassigned" control={<Radio />} label="unassigned" />
-          <FormControlLabel value="assigned" control={<Radio />} label="assigned" />
-          <FormControlLabel value="rejected" control={<Radio />} label="rejected" />
-
+          <FormControlLabel
+            value="pending"
+            control={<Radio />}
+            label="pending"
+          />
+          <FormControlLabel
+            value="unassigned"
+            control={<Radio />}
+            label="unassigned"
+          />
+          <FormControlLabel
+            value="assigned"
+            control={<Radio />}
+            label="assigned"
+          />
+          <FormControlLabel
+            value="rejected"
+            control={<Radio />}
+            label="rejected"
+          />
         </RadioGroup>
       </FormControl>
       <Box sx={{ display: "flex", m: 2 }}>
@@ -670,7 +696,7 @@ const CreateAssign = () => {
             options={expertiseData.map((user) => ({
               label: user.exp_name,
               value: user.exp_id,
-              all: user
+              all: user,
             }))}
             onChange={handleExternalExpertChange}
             renderInput={(params) => (
@@ -680,7 +706,6 @@ const CreateAssign = () => {
           />
         </div>
         <div className="col-sm-12 col-lg-3">
-
           <Autocomplete
             multiple
             id="combo-box-demo"
@@ -712,7 +737,6 @@ const CreateAssign = () => {
         </Box> */}
       </Box>
 
-
       <Box sx={{ height: loading ? 100 : 500, width: "100%" }}>
         {!loading && (
           <DataGrid
@@ -737,9 +761,8 @@ const CreateAssign = () => {
         data={payload}
         assignModalfn={assignModalfn}
       />
-
     </>
-  )
+  );
 };
 
 export default CreateAssign;

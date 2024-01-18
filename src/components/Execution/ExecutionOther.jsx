@@ -35,7 +35,7 @@ const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 function ExecutionOther() {
-  const {toastAlert}=useGlobalContext()
+  const { toastAlert } = useGlobalContext();
   const [rows, setRows] = useState([]);
   const [pagemode, setPagemode] = useState(1);
   const [alldata, setAlldata] = useState([]);
@@ -70,7 +70,6 @@ function ExecutionOther() {
   const userID = decodedToken.id;
 
   const navigate = useNavigate();
-
 
   const dropdownStaticData = [
     "Daily",
@@ -123,18 +122,18 @@ function ExecutionOther() {
         setRows(tempdata);
         // console.log('after',alldata);
       });
-      if (userID && contextData == false) {
-        axios
-          .get(
-            `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
-          )
-          .then((res) => {
-            if (res.data[33].view_value == 1) {
-              setContextData(true);
-              setAlert(res.data);
-            }
-          });
-      }
+    if (userID && contextData == false) {
+      axios
+        .get(
+          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+        )
+        .then((res) => {
+          if (res.data[33].view_value == 1) {
+            setContextData(true);
+            setAlert(res.data);
+          }
+        });
+    }
   }, []);
   const converttoclipboard = (copydata) => {
     const copyData = copydata
@@ -373,7 +372,7 @@ function ExecutionOther() {
           headerName: "Subscribers",
           // width: 150,
         },
-  
+
     contextData && {
       headerName: "Update",
       renderCell: (params) => {
@@ -414,7 +413,7 @@ function ExecutionOther() {
 
   const saveStats = async (e) => {
     e.preventDefault();
-    console.log("save stats")
+    console.log("save stats");
     const formData = new FormData();
     formData.append("p_id", rowData.p_id);
     formData.append("reach", reach);
@@ -427,29 +426,27 @@ function ExecutionOther() {
     formData.append("end_date", endDate);
     formData.append("stats_for", statesFor);
 
-   
-        axios
-          .post(`http://34.93.221.166:3000/api/add_exe_pid_history`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then((res) => {
-            setQuater("");
-            setStatesFor(null);
-            setStartDate(null);
-            setEndDate(null);
-            setReach(0);
-            setImpression(0);
-            setEngagement(0);
-            setStoryView(0);
-            setDemoFile();
-            setRowData({});
+    axios
+      .post(`http://34.93.221.166:3000/api/add_exe_pid_history`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        setQuater("");
+        setStatesFor(null);
+        setStartDate(null);
+        setEndDate(null);
+        setReach(0);
+        setImpression(0);
+        setEngagement(0);
+        setStoryView(0);
+        setDemoFile();
+        setRowData({});
 
-            // toast("Form Submitted success");
-            toastAlert("Form Submitted success");
-          });
-    
+        // toast("Form Submitted success");
+        toastAlert("Form Submitted success");
+      });
   };
 
   function CustomColumnMenu(props) {
@@ -731,7 +728,7 @@ function ExecutionOther() {
                       onChange={(newValue) => {
                         handleStartDateChange(newValue);
                         statesFor == "Daily" ? setEndDate(newValue) : "";
-                        handleSaveButtonValidation()
+                        handleSaveButtonValidation();
                       }}
                     />
                   </LocalizationProvider>
@@ -746,7 +743,10 @@ function ExecutionOther() {
                       label="End Date *"
                       format="DD/MM/YY"
                       value={endDate}
-                      onChange={(newValue) => {handleSaveButtonValidation(),handleEndDateChange(newValue)}}
+                      onChange={(newValue) => {
+                        handleSaveButtonValidation(),
+                          handleEndDateChange(newValue);
+                      }}
                     />
                   </LocalizationProvider>
                 )}
@@ -761,7 +761,7 @@ function ExecutionOther() {
                     value?.length > 0
                       ? setQuaterIsValid(true)
                       : setQuaterIsValid(false);
-                      handleSaveButtonValidation()
+                    handleSaveButtonValidation();
                   }}
                   value={quater}
                   sx={{ width: 300 }}
@@ -788,7 +788,7 @@ function ExecutionOther() {
                         ? setReachValidation(true)
                         : setReachValidation(false),
                         setReach(e.target.value);
-                        handleSaveButtonValidation()
+                      handleSaveButtonValidation();
                     }}
                     error={!reachValidation}
                     helperText={
@@ -807,7 +807,7 @@ function ExecutionOther() {
                         ? setImpressionValidation(true)
                         : setImpressionValidation(false),
                         setImpression(e.target.value);
-                        handleSaveButtonValidation()
+                      handleSaveButtonValidation();
                     }}
                     error={!impressionValidation}
                     helperText={
@@ -829,7 +829,7 @@ function ExecutionOther() {
                         ? setEngagementValidation(true)
                         : setEndDateIsValid(false),
                         setEngagement(e.target.value);
-                        handleSaveButtonValidation()
+                      handleSaveButtonValidation();
                     }}
                     error={!engagementValidation}
                     helperText={
@@ -848,7 +848,7 @@ function ExecutionOther() {
                         ? setStoryViewValidation(true)
                         : setStoryViewValidation(false),
                         setStoryView(e.target.value);
-                        handleSaveButtonValidation()
+                      handleSaveButtonValidation();
                     }}
                     error={!storyViewValidation}
                     helperText={
@@ -882,8 +882,16 @@ function ExecutionOther() {
                 className="btn btn-success"
                 onClick={saveStats}
                 data-dismiss="modal"
-
-                disabled={!impression || !reach || !engagement || !statesFor || !storyView || statesFor=="Quarterly"? !quater : !startDate || !endDate}
+                disabled={
+                  !impression ||
+                  !reach ||
+                  !engagement ||
+                  !statesFor ||
+                  !storyView ||
+                  statesFor == "Quarterly"
+                    ? !quater
+                    : !startDate || !endDate
+                }
               >
                 Save
               </button>

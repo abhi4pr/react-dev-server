@@ -28,7 +28,6 @@ export default function FinanceWFHDashboard() {
 
   const { toastAlert } = useGlobalContext();
 
-
   const getData = async () => {
     try {
       axios.get(`http://34.93.221.166:3000/api/get_finances`).then((res) => {
@@ -44,7 +43,6 @@ export default function FinanceWFHDashboard() {
   useEffect(() => {
     getData();
   }, []);
-
 
   const handleDownloadInvoices = async () => {
     try {
@@ -92,7 +90,6 @@ export default function FinanceWFHDashboard() {
     setDate("");
   };
 
-
   const openModal = () => {
     setShowModal(true);
   };
@@ -132,7 +129,18 @@ export default function FinanceWFHDashboard() {
       headerName: "S.No",
       width: 40,
       renderCell: (params) => {
-        const rowIndex =activeAccordionIndex==0? filterData.filter((item) => item.status_ === 0).indexOf(params.row):activeAccordionIndex==1?filterData.filter((item) => item.status_ === 1).indexOf(params.row):filterData.filter((item) => item.status_ === 2).indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? filterData
+                .filter((item) => item.status_ === 0)
+                .indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? filterData
+                .filter((item) => item.status_ === 1)
+                .indexOf(params.row)
+            : filterData
+                .filter((item) => item.status_ === 2)
+                .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -215,14 +223,16 @@ export default function FinanceWFHDashboard() {
       renderCell: (params) => {
         return (
           <>
-           {activeAccordionIndex!=2&& <button
-              className="btn btn-primary"
-              data-toggle="modal"
-              data-target="#exampleModal"
-              onClick={(e) => handlePay(params.row, e)}
-            >
-              Pay
-            </button>}
+            {activeAccordionIndex != 2 && (
+              <button
+                className="btn btn-primary"
+                data-toggle="modal"
+                data-target="#exampleModal"
+                onClick={(e) => handlePay(params.row, e)}
+              >
+                Pay
+              </button>
+            )}
 
             {params.row?.invoice_template_no !== "0" && (
               <button
@@ -244,8 +254,8 @@ export default function FinanceWFHDashboard() {
 
   const pending = (
     <div>
-      <div style={{height:"50px"}}>
-       {rowForPayment.length > 0 && (
+      <div style={{ height: "50px" }}>
+        {rowForPayment.length > 0 && (
           <Button
             variant="contained"
             color="primary"
@@ -257,7 +267,7 @@ export default function FinanceWFHDashboard() {
             Download
           </Button>
         )}
-        </div>
+      </div>
       <DataGrid
         rows={filterData.filter((item) => item.status_ === 0)}
         columns={pendingColumns}
@@ -356,8 +366,6 @@ export default function FinanceWFHDashboard() {
     </div>
   );
 
-  
-
   return (
     <div>
       <FormContainer
@@ -369,12 +377,11 @@ export default function FinanceWFHDashboard() {
         onAccordionButtonClick={handleAccordionButtonClick}
       >
         {invoice}
-       
+
         {activeAccordionIndex === 0 && pending}
         {activeAccordionIndex === 1 && verified}
         {activeAccordionIndex === 2 && payoutReleased}
       </FormContainer>
-
 
       {showModal && (
         <div

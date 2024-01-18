@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
@@ -22,40 +21,43 @@ export const SelfAudit = () => {
   const [image2, setImage2] = useState(null);
   const [image3, setImage3] = useState(null);
   const [image4, setImage4] = useState(null);
-//   const [showAssetsImage , setShowAssetImages] = useState([])
-const typeData = ["Hr", "User"];
-
+  //   const [showAssetsImage , setShowAssetImages] = useState([])
+  const typeData = ["Hr", "User"];
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
 
-//
-  const handleSubmit = async(e) => {
+  //
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    formData.append("img1",image1 );
+    formData.append("img1", image1);
     formData.append("img2", image2);
     formData.append("img3", image3);
     formData.append("img4", image4);
     formData.append("sim_id", sim_id);
-    formData.append("uploaded_by",userID );
+    formData.append("uploaded_by", userID);
     formData.append("type", type);
-    await axios.post("http://34.93.221.166:3000/api/add_assets_images", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          setImageModalOpen(false)
+    await axios.post(
+      "http://34.93.221.166:3000/api/add_assets_images",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+    setImageModalOpen(false);
   };
-//
+  //
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    const formattedDate = date.toISOString().split('T')[0]; // Extracts the YYYY-MM-DD part
+    const formattedDate = date.toISOString().split("T")[0]; // Extracts the YYYY-MM-DD part
     return formattedDate;
   };
-  
+
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
@@ -68,7 +70,7 @@ const typeData = ["Hr", "User"];
     }
   }, [userID]);
   const handleImageClick = (row) => {
-    setSimId(row.sim_id)
+    setSimId(row.sim_id);
     setImageModalOpen(true);
   };
   const handleCloseImageModal = () => {
@@ -91,7 +93,7 @@ const typeData = ["Hr", "User"];
         d.assetsName?.toLowerCase().match(search.toLowerCase()) ||
         d.sub_category_name?.toLowerCase().match(search.toLowerCase()) ||
         d.category_name?.toLowerCase().match(search.toLowerCase()) ||
-        d.vendor_name?.toLowerCase().match(search.toLowerCase()) 
+        d.vendor_name?.toLowerCase().match(search.toLowerCase())
       );
     });
     setFilterData(result);
@@ -123,20 +125,20 @@ const typeData = ["Hr", "User"];
     },
     {
       name: "Date of Purchase",
-      selector: (row) =>row.dateOfPurchase ? formatDate(row.dateOfPurchase) : ""
+      selector: (row) =>
+        row.dateOfPurchase ? formatDate(row.dateOfPurchase) : "",
     },
     {
-        name: "Action",
-        selector: (row) => (
-          <button
-            className="btn btn-outline-success"
-            onClick={() => handleImageClick(row)}
-          >
-            Verify
-          </button>
-        ),
-      },
-   
+      name: "Action",
+      selector: (row) => (
+        <button
+          className="btn btn-outline-success"
+          onClick={() => handleImageClick(row)}
+        >
+          Verify
+        </button>
+      ),
+    },
   ];
 
   return (
@@ -201,104 +203,99 @@ const typeData = ["Hr", "User"];
             >
               X
             </button>
-          </div>               
-        </div> 
-      <div className="row">
-        <div className="col-md-12 ">
-          <form onSubmit={handleSubmit}>
-            
-          <div className="form-group col-12">
-        <label className="form-label">
-          Type <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={typeData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: type,
-            label: `${type}`,
-          }}
-          onChange={(e) => {
-            setType(e.value);
-          }}
-          required
-        />
-      </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-12 ">
+            <form onSubmit={handleSubmit}>
+              <div className="form-group col-12">
+                <label className="form-label">
+                  Type <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  className=""
+                  options={typeData.map((option) => ({
+                    value: `${option}`,
+                    label: `${option}`,
+                  }))}
+                  value={{
+                    value: type,
+                    label: `${type}`,
+                  }}
+                  onChange={(e) => {
+                    setType(e.value);
+                  }}
+                  required
+                />
+              </div>
 
-            {/* images */}
-            <div className="form-group">
-              <label htmlFor="images">Image First</label>
-              <input
-                type="file"
-                className="form-control"
-                id="images"
-                name="images"
-                onChange={(e) => {
+              {/* images */}
+              <div className="form-group">
+                <label htmlFor="images">Image First</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  onChange={(e) => {
                     setImage1(e.target.files[0]);
                   }}
-                accept="image/*"
-                required
-              />
-            </div>
+                  accept="image/*"
+                  required
+                />
+              </div>
 
-            {/* images */}
-            <div className="form-group">
-              <label htmlFor="images">Image Secound</label>
-              <input
-                type="file"
-                className="form-control"
-                id="images"
-                name="images"
-                onChange={(e) => {
+              {/* images */}
+              <div className="form-group">
+                <label htmlFor="images">Image Secound</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  onChange={(e) => {
                     setImage2(e.target.files[0]);
                   }}
-                accept="image/*"
-             
-              />
-            </div>
+                  accept="image/*"
+                />
+              </div>
 
-            {/* images */}
-            <div className="form-group">
-              <label htmlFor="images">Image Third</label>
-              <input
-                type="file"
-                className="form-control"
-                id="images"
-                name="images"
-                onChange={(e) => {
+              {/* images */}
+              <div className="form-group">
+                <label htmlFor="images">Image Third</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  onChange={(e) => {
                     setImage3(e.target.files[0]);
                   }}
-                accept="image/*"
-               
-              />
-            </div>
+                  accept="image/*"
+                />
+              </div>
 
-            {/* images */}
-            <div className="form-group">
-              <label htmlFor="images">Image Four</label>
-              <input
-                type="file"
-                className="form-control"
-                id="images"
-                name="images"
-                onChange={(e) => {
+              {/* images */}
+              <div className="form-group">
+                <label htmlFor="images">Image Four</label>
+                <input
+                  type="file"
+                  className="form-control"
+                  id="images"
+                  name="images"
+                  onChange={(e) => {
                     setImage4(e.target.files[0]);
                   }}
-                accept="image/*"
-                
-              />
-            </div>
+                  accept="image/*"
+                />
+              </div>
 
-            <button type="submit" className="btn btn-primary">
-              Submit
-            </button>
-          </form>
+              <button type="submit" className="btn btn-primary">
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-
       </Modal>
     </>
   );

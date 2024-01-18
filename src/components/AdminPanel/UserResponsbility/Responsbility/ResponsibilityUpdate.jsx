@@ -18,21 +18,26 @@ const ResponsibilityUpdate = () => {
   const userId = decodedToken.id;
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/get_single_responsibility/${id}`).then((res) => {
-      const fetchedData = res.data;
-      setResponsibility(fetchedData.respo_name);
-      setDescription(fetchedData.description);
-    });
+    axios
+      .get(`http://34.93.221.166:3000/api/get_single_responsibility/${id}`)
+      .then((res) => {
+        const fetchedData = res.data;
+        setResponsibility(fetchedData.respo_name);
+        setDescription(fetchedData.description);
+      });
   }, [id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`http://34.93.221.166:3000/api/edit_responsibility/${id}`, {
-        respo_name: responsibility,
-        description: description,
-        Last_updated_by: userId,
-      });
+      await axios.put(
+        `http://34.93.221.166:3000/api/edit_responsibility/${id}`,
+        {
+          respo_name: responsibility,
+          description: description,
+          Last_updated_by: userId,
+        }
+      );
       toastAlert("Form submitted");
       setIsFormSubmitted(true);
     } catch (error) {
@@ -40,7 +45,6 @@ const ResponsibilityUpdate = () => {
       toastAlert("Form submission failed");
     }
   };
-  
 
   if (isFormSubmitted) {
     return <Navigate to="/admin/responsibility-overview" />;

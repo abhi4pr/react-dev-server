@@ -47,7 +47,7 @@ const PreOnboardVerifyDetails = () => {
       width: "5%",
       sortable: true,
     },
-    
+
     {
       name: "User Name",
       selector: (row) => (
@@ -94,7 +94,7 @@ const PreOnboardVerifyDetails = () => {
       name: "Status",
       selector: (row) => row.user_status,
       width: "4%",
-      
+
       cell: (row) => (
         <>
           {row.user_status === "Active" ? (

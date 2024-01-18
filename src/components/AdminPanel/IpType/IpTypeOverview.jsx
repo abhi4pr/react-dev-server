@@ -57,11 +57,7 @@ const AccessTypeOverview = () => {
             </button>
           </Link>
 
-          <DeleteButton
-            endpoint="Iptypedelete"
-            id={row.id}
-            getData={getData}
-          />
+          <DeleteButton endpoint="Iptypedelete" id={row.id} getData={getData} />
         </>
       ),
       allowOverflow: true,
@@ -75,17 +71,20 @@ const AccessTypeOverview = () => {
         mainTitle="IP Type overview"
         link="/admin/accesstype-master"
         buttonAccess={""}
-
       />
 
       <button
         type="button"
         className="btn btn-primary"
-        style={{ float: "right", margin: "-65px 5px 0 0", position:"relative"}}
+        style={{
+          float: "right",
+          margin: "-65px 5px 0 0",
+          position: "relative",
+        }}
       >
         <Link to="/admin/iptype-master">Add New</Link>
       </button>
-      
+
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable

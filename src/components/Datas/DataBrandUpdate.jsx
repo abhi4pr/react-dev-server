@@ -15,7 +15,7 @@ import Select from "react-select";
 const DataBrandUpdate = () => {
   const { toastAlert } = useGlobalContext();
   const [brand, setBrand] = useState("");
-  const[brandName, setBrandName] = useState("")
+  const [brandName, setBrandName] = useState("");
   const [logo, setLogo] = useState([]);
   const [logos, setLogos] = useState([]);
   const [image, setImage] = useState("");
@@ -63,8 +63,8 @@ const DataBrandUpdate = () => {
         // setCategory(cat_name);
         // setBrandData(fetchedData);
       });
-    
-      axios
+
+    axios
       .get("http://34.93.221.166:3000/api/get_all_data_categorys")
       .then((res) => {
         setCategoryData(res.data.simcWithSubCategoryCount);
@@ -96,15 +96,17 @@ const DataBrandUpdate = () => {
     setCurrentDate(formattedDate);
   }, [id]);
 
-  useEffect(()=>{
-    if(category){
+  useEffect(() => {
+    if (category) {
       axios
-      .get(`http://34.93.221.166:3000/api/get_single_data_from_sub_category/${category}`)
-      .then((res) => {
-        setDataSubCategoryData(res.data);
-      });
+        .get(
+          `http://34.93.221.166:3000/api/get_single_data_from_sub_category/${category}`
+        )
+        .then((res) => {
+          setDataSubCategoryData(res.data);
+        });
     }
-  },[category])
+  }, [category]);
 
   const handleCategoryChange = (event, index) => {
     const { value } = event.target;
@@ -122,11 +124,11 @@ const DataBrandUpdate = () => {
         .then((res) => {
           setLogos(res.data);
 
-          setCategory(res.data[0]?.cat_id)
-          setDataSubCategory(res.data[0]?.sub_cat_id)
-          setPlateform(res.data[0]?.platform_id)
-          setContentType(res.data[0]?.content_type_id)
-          setDataBrand(res.data[0]?.brand_id)
+          setCategory(res.data[0]?.cat_id);
+          setDataSubCategory(res.data[0]?.sub_cat_id);
+          setPlateform(res.data[0]?.platform_id);
+          setContentType(res.data[0]?.content_type_id);
+          setDataBrand(res.data[0]?.brand_id);
           setRemark(res.data[0]?.remark);
         });
     }
@@ -138,7 +140,9 @@ const DataBrandUpdate = () => {
 
   const removeImage = async (_id) => {
     if (_id == id) {
-      setError("You can't delete default data type, try to delete data instead");
+      setError(
+        "You can't delete default data type, try to delete data instead"
+      );
     } else {
       var data = await axios.delete(
         `http://34.93.221.166:3000/api/delete_data/${_id}`,
@@ -158,7 +162,7 @@ const DataBrandUpdate = () => {
       data_name: brandName,
       remark: remark,
       updated_by: loginUserId,
-      updated_at: new Date()
+      updated_at: new Date(),
     });
 
     try {
@@ -176,15 +180,11 @@ const DataBrandUpdate = () => {
         formData.append("remark", remark);
         formData.append("created_by", loginUserId);
 
-        await axios.post(
-          "http://34.93.221.166:3000/api/add_data",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        await axios.post("http://34.93.221.166:3000/api/add_data", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
       }
       setIsFormSubmitted(true);
       toastAlert("Data details updated");
@@ -269,7 +269,11 @@ const DataBrandUpdate = () => {
         <UserNav />
         <div className="section section_padding sec_bg h100vh">
           <div className="container">
-            <FormContainer mainTitle="Data" title="Data" handleSubmit={handleSubmit}>
+            <FormContainer
+              mainTitle="Data"
+              title="Data"
+              handleSubmit={handleSubmit}
+            >
               <FieldContainer
                 label="Name *"
                 type="text"
@@ -396,92 +400,91 @@ const DataBrandUpdate = () => {
               </div>
 
               <div className="summary_cards brand_img_list">
-                {logos && logos.map((detail,index) => (
-                  <div key={index} className="summary_card brand_img_item">
-                    <div className="summary_cardrow brand_img_row">
-                      <div className="col summary_box brand_img_box">
-                        {/* <img
+                {logos &&
+                  logos.map((detail, index) => (
+                    <div key={index} className="summary_card brand_img_item">
+                      <div className="summary_cardrow brand_img_row">
+                        <div className="col summary_box brand_img_box">
+                          {/* <img
                           className="brandimg_icon"
                           src={detail.data_image}
                         /> */}
-                        {detail.data_type === "jpg" ||
-                        detail.data_type === "jpeg" ||
-                        detail.data_type === "png" ||
-                        detail.data_type === "gif" ? (
-                          <img
-
-                            className="brandimg_icon"
-                            src={detail.data_image}
-                          />
-                        ) : (
-                          <div className="file_icon">
-                            {renderFileIcon(detail.data_type)}
-                          </div>
-                        )}
-                        
-                      </div>
-                      <div className="col summary_box brand_img_box">
-                        <h4>
-                          <span>Extension:</span>
-                          {detail.data_type}
-                        </h4>
-                      </div>
-                      {/* <div className="col summary_box brand_img_box">
+                          {detail.data_type === "jpg" ||
+                          detail.data_type === "jpeg" ||
+                          detail.data_type === "png" ||
+                          detail.data_type === "gif" ? (
+                            <img
+                              className="brandimg_icon"
+                              src={detail.data_image}
+                            />
+                          ) : (
+                            <div className="file_icon">
+                              {renderFileIcon(detail.data_type)}
+                            </div>
+                          )}
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Extension:</span>
+                            {detail.data_type}
+                          </h4>
+                        </div>
+                        {/* <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Resolution:</span>
                           {detail.size}
                         </h4>
                       </div> */}
-                      <div className="col summary_box brand_img_box">
-                        <h4>
-                          <span>Size:</span>
-                          {detail.size_in_mb}
-                          {"MB"}
-                        </h4>
-                      </div>
-                      <div className="col summary_box brand_img_box">
-                        <h4>
-                          <span>Data Category:</span>
-                          {detail.category_name}
-                        </h4>
-                      </div>
-                      <div className="col summary_box brand_img_box">
-                        <h4>
-                          <span>Date:</span>
-                          {detail.created_at.split("T")[0]}
-                        </h4>
-                      </div>
-                      <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
-                        <p>
-                          {" "}
-                          <MdCancel
-                            onClick={() => removeImage(detail._id)}
-                            style={{ cursor: "pointer" }}
-                          />
-                        </p>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Size:</span>
+                            {detail.size_in_mb}
+                            {"MB"}
+                          </h4>
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Data Category:</span>
+                            {detail.category_name}
+                          </h4>
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Date:</span>
+                            {detail.created_at.split("T")[0]}
+                          </h4>
+                        </div>
+                        <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                          <p>
+                            {" "}
+                            <MdCancel
+                              onClick={() => removeImage(detail._id)}
+                              style={{ cursor: "pointer" }}
+                            />
+                          </p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
                 {details.map((detail, index) => (
                   <div key={index} className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
-                    <div className="col summary_box brand_img_box col140">
-                  {detail.fileType === "jpg" ||
-                  detail.fileType === "jpeg" ||
-                  detail.fileType === "png" ||
-                  detail.fileType === "gif" ? (
-                    <img
-                      className="brandimg_icon"
-                      src={URL.createObjectURL(images[index])}
-                      alt={`Image ${index + 1}`}
-                    />
-                  ) : (
-                    <div className="file_icon">
-                      {renderFileIcon(detail.fileType)}
-                    </div>
-                  )}
-                </div>
+                      <div className="col summary_box brand_img_box col140">
+                        {detail.fileType === "jpg" ||
+                        detail.fileType === "jpeg" ||
+                        detail.fileType === "png" ||
+                        detail.fileType === "gif" ? (
+                          <img
+                            className="brandimg_icon"
+                            src={URL.createObjectURL(images[index])}
+                            alt={`Image ${index + 1}`}
+                          />
+                        ) : (
+                          <div className="file_icon">
+                            {renderFileIcon(detail.fileType)}
+                          </div>
+                        )}
+                      </div>
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Extension:</span>
