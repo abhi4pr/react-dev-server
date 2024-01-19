@@ -1,3 +1,11 @@
+/* sidebar menu color */
+
+.sidebar .nav-item.active .nav-link {
+  color: #6f737c !important;
+  background-image: none !important;
+  transition: none !important;
+}
+
 /* MODAL FADE LEFT RIGHT BOTTOM */
 .right-modal .modal.fade:not(.in).left .modal-dialog {
   -webkit-transform: translate3d(-25%, 0, 0);

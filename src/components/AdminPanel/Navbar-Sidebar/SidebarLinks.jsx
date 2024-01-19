@@ -256,15 +256,15 @@ const SidebarLinks = () => {
               <Link
                 className="nav-link collapsed"
                 data-toggle="collapse"
-                data-target="#collapseFourdd"
+                data-target="#collapseFourddnm"
                 aria-expanded="true"
-                aria-controls="collapseFourdd"
+                aria-controls="collapseFourddnm"
               >
                 <i className="bi bi-person-gear" />
                 <span>WFH New Module</span>
               </Link>
               <div
-                id="collapseFourdd"
+                id="collapseFourddnm"
                 className="collapse"
                 aria-labelledby="headingTwo"
                 data-parent="#accordionSidebar"
