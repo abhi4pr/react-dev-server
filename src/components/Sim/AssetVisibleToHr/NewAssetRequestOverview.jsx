@@ -82,7 +82,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       sortable: true,
     },
 
-    newAssetData[0].asset_request_status == "Requested" && {
+    newAssetData[0]?.asset_request_status == "Requested" && {
       name: "Actions",
       cell: (row) => (
         <>

@@ -6,8 +6,10 @@ import axios from "axios";
 import Modal from "react-modal";
 import NewAssetRequestOverview from "./NewAssetRequestOverview";
 import DateISOtoNormal from "../../../utils/DateISOtoNormal";
+import { useGlobalContext } from "../../../Context/Context";
 
 const AssetVisibleToHr = () => {
+  const { toastAlert } = useGlobalContext();
   const [filterData, setFilterData] = useState([]);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
@@ -150,6 +152,20 @@ const AssetVisibleToHr = () => {
     }
   }
 
+  const handleReturnAsset = (row) => {
+    try {
+      axios.put("http://34.93.221.166:3000/api/update_sim", {
+        id: row.sim_id,
+        status: "Available",
+      });
+
+      toastAlert("Status Update");
+      getReturnAssetData();
+    } catch (error) {
+      console.log("", error);
+    }
+  };
+
   const returnDataColumns = [
     {
       name: "Return By",
@@ -166,6 +182,18 @@ const AssetVisibleToHr = () => {
     {
       name: "Return Remark",
       selector: (row) => row.asset_return_remark,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <button
+          className="btn btn-outline-warning btn-sm"
+          onClick={() => handleReturnAsset(row)}
+          title="return status approve and this asset status available"
+        >
+          Return Asset Approve
+        </button>
+      ),
     },
   ];
 

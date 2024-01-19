@@ -29,10 +29,10 @@ const SimUpdate = () => {
   const [hrselfAuditUnit, setHrSelfAuditUnit] = useState("");
 
   const [imageType, setImageType] = useState("HR");
-  const [assetsImg1, setAssetsImg1] = useState(null);
-  const [assetsImg2, setAssetsImg2] = useState(null);
-  const [assetsImg3, setAssetsImg3] = useState(null);
-  const [assetsImg4, setAssetsImg4] = useState(null);
+  const [assetsImg1, setAssetsImg1] = useState("");
+  const [assetsImg2, setAssetsImg2] = useState("");
+  const [assetsImg3, setAssetsImg3] = useState("");
+  const [assetsImg4, setAssetsImg4] = useState("");
 
   const [assetsValue, setAssetsValue] = useState("");
   const [assetsCurrentValue, setAssetsCurrentValue] = useState("");
@@ -45,7 +45,7 @@ const SimUpdate = () => {
   const [vendorData, setVendorData] = useState([]);
 
   const [finacialType, setFinacialType] = useState("");
-  const [depreciation, setDescription] = useState("");
+  const [depreciation, setDescription] = useState(0);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -88,7 +88,6 @@ const SimUpdate = () => {
         });
     }
   };
-  console.log(subCategory, "set");
   useEffect(() => {
     const selectedSubcat = subcategoryData.filter(
       (d) => d.sub_category_id === subCategory
@@ -234,7 +233,7 @@ const SimUpdate = () => {
       );
       const imageData = new FormData();
       imageData.append("sim_id", id);
-      imageData.append("uploaded_by", 90);
+      imageData.append("uploaded_by", loginUserId);
       imageData.append("type", imageType);
       imageData.append("img1", assetsImg1);
       imageData.append("img2", assetsImg2);
