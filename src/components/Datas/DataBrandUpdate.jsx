@@ -317,7 +317,7 @@ const DataBrandUpdate = () => {
         // formData.append("remark", remark);
 
         await axios
-          .put("http://192.168.29.150:3000/api/update_data", {
+          .put("http://34.93.221.166:3000/api/update_data", {
             data_id: id,
             data_name: brandName,
             remark: remark,
@@ -354,7 +354,7 @@ const DataBrandUpdate = () => {
           console.log(formData, "formdata");
           await axios
             .post(
-              "http://192.168.29.150:3000/api/add_data",
+              "http://34.93.221.166:3000/api/add_data",
               formData ,
               {
                 headers: {
