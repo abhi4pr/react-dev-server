@@ -873,6 +873,30 @@ const SidebarLinks = () => {
                                 >
                                   Brand Master
                                 </Link>
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/overview/agency"
+                                >
+                                  Agency Master
+                                </Link>
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/overview/industry"
+                                >
+                                  indusrty Master
+                                </Link>
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/overview/goal"
+                                >
+                                  Goal Master
+                                </Link>
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/overview/service"
+                                >
+                                  Service Master
+                                </Link>
 
                                 <Link
                                   className="collapse-item"

@@ -203,6 +203,14 @@ import PlancreationNew from "./RegisterCampaign/PlancreationNew";
 import PhasecreationNew from "./RegisterCampaign/PhasecreationNew";
 import DesiDeptAuth from "../AdminPanel/Designation/DesiDeptAuth";
 import PlanDashboard from "./RegisterCampaign/PlanDashboard/PlanDashboard";
+import CreateAgency from "./RegisterCampaign/Masters/CreateAgency";
+import CreateGoal from "./RegisterCampaign/Masters/CreateGoal";
+import CreateIndustry from "./RegisterCampaign/Masters/CreateIndustry";
+import AgencyOverview from "./RegisterCampaign/Masters/AgencyOverview";
+import GoalOverview from "./RegisterCampaign/Masters/GoalOverview";
+import IndustryOverview from "./RegisterCampaign/Masters/IndustryOverview";
+import CreateService from "./RegisterCampaign/Masters/CreateService";
+import ServicesOverview from "./RegisterCampaign/Masters/ServicesOverview";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -803,6 +811,22 @@ const Admin = () => {
                     element={<CheckPageFollowers />}
                   />
                   <Route path="/brandmaster" element={<BrandMaster />} />
+                  <Route path="/agency" element={<CreateAgency />} />
+                  <Route path="/goal" element={<CreateGoal />} />
+                  <Route path="/industry" element={<CreateIndustry />} />
+                  <Route path="/service" element={<CreateService />} />
+
+                  <Route path="/overview/agency" element={<AgencyOverview />} />
+                  <Route path="/overview/goal" element={<GoalOverview />} />
+                  <Route
+                    path="/overview/industry"
+                    element={<IndustryOverview />}
+                  />
+                  <Route
+                    path="/overview/service"
+                    element={<ServicesOverview />}
+                  />
+
                   <Route path="/contenttype" element={<ContentType />} />
                   <Route
                     path="/campaigncommitment"
