@@ -251,7 +251,7 @@ const SidebarLinks = () => {
             </li>
           )}
 
-          {isAssetNotifierVisible && (
+          {
             <li className="nav-item">
               <Link
                 className="nav-link collapsed"
@@ -290,7 +290,7 @@ const SidebarLinks = () => {
                 </div>
               </div>
             </li>
-          )}
+          }
 
           {isWFHDHRPayrollManager && (
             <li className="nav-item">

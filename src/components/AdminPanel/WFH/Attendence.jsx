@@ -243,11 +243,11 @@ const Attendence = () => {
         setFilterData(res.data.data);
       })
       .catch(() => {
-        setFilterData("");
+        setFilterData([]);
         department &&
           selectedMonth &&
           selectedYear &&
-          toastAlert("Failed to submit data");
+          toastError("Not Data Exist");
       });
   };
 
@@ -316,7 +316,7 @@ const Attendence = () => {
     {
       field: "user_name",
       headerName: "Employee Name",
-      width: 150,
+      width: 200,
       type: "text",
     },
     {
