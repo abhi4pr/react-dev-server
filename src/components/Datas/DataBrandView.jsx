@@ -21,7 +21,7 @@ const DataBrandView = () => {
   const [images, setImages] = useState([]);
   const [details, setDetails] = useState([]);
   const [category, setCategory] = useState("");
-
+  
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
@@ -29,10 +29,12 @@ const DataBrandView = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_data/${id}`)
+      .get(`http://34.93.221.166:3000/api/get_data_based_data_name/${id}`)
       .then((res) => {
-        const fetchedData = res.data;
+        const fetchedData = res.data[0];
         const { data_name, upload_logo, remark, cat_name } = fetchedData;
+        // console.log(fetchedData);
+        console.log(data_name);
         setBrand(data_name);
         setLogo(upload_logo);
         setRemark(remark);
@@ -44,11 +46,13 @@ const DataBrandView = () => {
   useEffect(() => {
     if (brand) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_data_based_data_name/${brand}`)
+        .get(`http://34.93.221.166:3000/api/get_data_based_data_name_new/${brand}`)
         .then((res) => {
+          console.log(res.data);
           setLogos(res.data);
         });
     }
+    console.log(brand);
   }, [brand]);
 
   const handleSubmit = async (e) => {
