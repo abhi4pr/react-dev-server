@@ -475,7 +475,7 @@ const DataBrandOverview = () => {
                               <span>{detail.data_name}</span>
                             </h5>
                             <div className="summary_cardaction">
-                              <Link to={`/data-brand-view/${detail._id}`}>
+                              <Link to={`/data-brand-view/${detail.data_id}`}>
                                 <button className="btn btn-warning btn-sm">
                                   View
                                 </button>
@@ -506,7 +506,7 @@ const DataBrandOverview = () => {
                           <div className="summary_cardbody">
                             <div className="d-flex">
                               <div className="documentCard_download">
-                                <a href={detail.data_image} download>
+                                <a href={detail.data_image} target="_bank" download>
                                   <FcDownload />
                                 </a>
                               </div>

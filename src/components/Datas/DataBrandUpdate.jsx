@@ -22,6 +22,7 @@ const DataBrandUpdate = () => {
   const [fileDetails, setFileDetails] = useState([]);
   const { toastAlert, toastError } = useGlobalContext();
   const [brand, setBrand] = useState("");
+  const [permanentBrand, setPermanentBrand] = useState("");
   const [brandName, setBrandName] = useState("");
   const [logo, setLogo] = useState([]);
   const [logos, setLogos] = useState([]);
@@ -70,6 +71,7 @@ const DataBrandUpdate = () => {
         })
         .map((detail, index) => {
           setFileDetails(detail);
+          console.log(detail);
           return detail;
         });
     });
@@ -87,6 +89,7 @@ const DataBrandUpdate = () => {
         const { data_name, data_id, upload_logo, remark, cat_name } =
           fetchedData;
         setBrand(data_name);
+        setPermanentBrand(data_name);
         setDataId(data_id);
         setBrandName(data_name);
         // setLogo(upload_logo);
@@ -191,7 +194,14 @@ const DataBrandUpdate = () => {
     getCombinedData();
   }, [brand]);
 
-  const removeImage = async (_id) => {
+  const removeImage = async (_id,data_id) => {
+    console.log(id,"id",data_id,"data_id")
+    if(id==data_id){
+      toastError(
+        "You can't delete default data type, try to delete data instead"
+      );
+      return;
+    }
     if (_id == id) {
       setError(
         "You can't delete default data type, try to delete data instead"
@@ -206,6 +216,13 @@ const DataBrandUpdate = () => {
       }
     }
   };
+
+  const removeAddedImage = async (index) => {
+    const newDetails = [...details];
+    newDetails.splice(index, 1);
+    setDetails(newDetails);
+
+  }
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
   //   console.log(dataSubCategory, "subcat");
@@ -261,7 +278,7 @@ const DataBrandUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(images[0])
+    console.log(images[0]);
     // return;
     if (category == "") {
       toastError("Category is required");
@@ -276,7 +293,6 @@ const DataBrandUpdate = () => {
     }
 
     try {
-      console.log(logos, "details");
       if (
         category &&
         platform &&
@@ -287,38 +303,70 @@ const DataBrandUpdate = () => {
       ) {
         setIsLoading(true);
       }
-      for (let i = 0; i < details.length; i++) {
-        console.log(dataSubCategory);
-        const formData = new FormData();
-        formData.append("data_id", id);
-        formData.append("data_name", brandName);
-        formData.append("cat_id", category);
-        // formData.append("sub_cat_id", dataSubCategory.map(e=>e));
-        formData.append("sub_cat_id", dataSubCategory);
-        formData.append("platform_id", platform);
-        formData.append("brand_id", dataBrand);
-        formData.append("content_type_id", contentType);
-        formData.append("data_upload", images[i]);
-        console.log(details[i].data_image, "lalit ");
-        formData.append("data_type", details[i].fileType);
-        // formData.append("size", details[i].size);
-        formData.append("size_in_mb", details[i].sizeInMB);
-        formData.append("remark", remark);
-        // formData.append("created_by", userID);
-        // formData.append("designed_by", designedBy);
-        console.log(formData, "formdata");
+      console.log(details.length, "befoer img");
+      if (details.length == 0) {
+        // const formData = new FormData();
+        // formData.append("data_id", id);
+        // formData.append("data_name", brandName);
+        // formData.append("cat_id", category);
+        // formData.append("sub_cat_id", dataSubCategory);
+        // formData.append("platform_id", platform);
+        // formData.append("brand_id", dataBrand);
+        // formData.append("content_type_id", contentType);
+
+        // formData.append("remark", remark);
+
         await axios
-          .put("http://34.93.221.166:3000/api/update_data", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
+          .put("http://192.168.29.150:3000/api/update_data", {
+            data_id: id,
+            data_name: brandName,
+            remark: remark,
+            cat_id: category,
+            sub_cat_id: dataSubCategory,
+            platform_id: platform,
+            brand_id: dataBrand,
+            content_type_id: contentType,
           })
-          .then((res) => {
-            console.log(res, "res");
-          })
+          .then((res) => {})
           .catch((err) => {
             console.log(err, "err");
           });
+      } else {
+        for (let i = 0; i < details.length; i++) {
+          console.log("come in loop");
+          const formData = new FormData();
+          formData.append("data_id", id);
+          formData.append("data_name", brandName);
+          formData.append("remark", remark);
+          formData.append("data_type", details[i].fileType);
+          formData.append("size_in_mb", details[i].sizeInMB);
+          formData.append("cat_id", category);
+          formData.append("sub_cat_id", dataSubCategory);
+          formData.append("platform_id", platform);
+          formData.append("brand_id", dataBrand);
+          formData.append("content_type_id", contentType);
+          formData.append("data_upload", images[i]);
+
+          // formData.append("sub_cat_id", dataSubCategory.map(e=>e));
+          // formData.append("size", details[i].size);
+          // formData.append("created_by", userID);
+          // formData.append("designed_by", designedBy);
+          console.log(formData, "formdata");
+          await axios
+            .post(
+              "http://192.168.29.150:3000/api/add_data",
+              formData ,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+            .then((res) => {})
+            .catch((err) => {
+              console.log(err, "err");
+            });
+        }
       }
 
       setIsFormSubmitted(true);
@@ -556,15 +604,15 @@ const DataBrandUpdate = () => {
               </div>
 
               <div className="summary_cards brand_img_list">
-                {logos &&
+                {logos.length > 0 &&
                   logos?.map((detail, index) => (
                     <div key={index} className="summary_card brand_img_item">
                       <div className="summary_cardrow brand_img_row">
                         <div className="col summary_box brand_img_box">
                           <img
-                          className="brandimg_icon"
-                          src={detail.data_image}
-                        />
+                            className="brandimg_icon"
+                            src={detail.data_image}
+                          />
                           {/* {detail.data_type === "jpg" ||
                           detail.data_type === "jpeg" ||
                           detail.data_type === "png" ||
@@ -635,7 +683,7 @@ const DataBrandUpdate = () => {
                           <p>
                             {" "}
                             <MdCancel
-                              onClick={() => removeImage(detail._id)}
+                              onClick={() => removeImage(detail._id,detail.data_id)}
                               style={{ cursor: "pointer" }}
                             />
                           </p>
@@ -689,8 +737,6 @@ const DataBrandUpdate = () => {
 
                 ))} */}
 
-                
-
                 {details.map((detail, index) => (
                   <div key={index} className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
@@ -701,7 +747,7 @@ const DataBrandUpdate = () => {
                         detail.fileType === "gif" ? (
                           <img
                             className="brandimg_icon"
-                            src={URL.createObjectURL(images[index])}
+                            src={images[index]?URL.createObjectURL(images[index]):""}
                             alt={`Image ${index + 1}`}
                           />
                         ) : (
@@ -751,6 +797,16 @@ const DataBrandUpdate = () => {
                           ))}
                         </FieldContainer>
                       </div> */}
+                                              <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+
+                       <p>
+                            {" "}
+                            <MdCancel
+                              onClick={() => removeAddedImage(index)}
+                              style={{ cursor: "pointer" }}
+                            />
+                          </p>
+                          </div>
                     </div>
                   </div>
                 ))}
