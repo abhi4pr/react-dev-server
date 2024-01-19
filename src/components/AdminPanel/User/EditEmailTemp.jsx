@@ -6,6 +6,7 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import TextEditor from "../../ReusableComponents/TextEditor";
 
 const EditEmailTemp = () => {
   const { id } = useParams();
@@ -68,7 +69,6 @@ const EditEmailTemp = () => {
           value={emailFor}
           onChange={(e) => setEmailFor(e.target.value)}
         />
-
         <FieldContainer
           label="Email Template Id"
           type="number"
@@ -77,7 +77,6 @@ const EditEmailTemp = () => {
           required={true}
           onChange={(e) => setEmailForId(e.target.value)}
         />
-
         <FieldContainer
           label="Remarks"
           fieldGrid={6}
@@ -85,7 +84,6 @@ const EditEmailTemp = () => {
           required={false}
           onChange={(e) => setRemarks(e.target.value)}
         />
-
         <FieldContainer
           label="Email Subject"
           fieldGrid={6}
@@ -93,8 +91,7 @@ const EditEmailTemp = () => {
           value={emailSub}
           onChange={(e) => setEmailSub(e.target.value)}
         />
-
-        <ReactQuill
+        {/* <ReactQuill
           theme="snow"
           value={emailContent}
           onChange={setEmailContent}
@@ -131,7 +128,9 @@ const EditEmailTemp = () => {
             "background",
           ]}
           style={{ marginBottom: "5%" }}
-        />
+        /> */}
+
+        <TextEditor value={emailContent} onChange={setEmailContent} />
       </FormContainer>
     </>
   );
