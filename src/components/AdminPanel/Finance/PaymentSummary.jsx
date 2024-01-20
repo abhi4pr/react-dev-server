@@ -23,7 +23,7 @@ const PaymentSummary = () => {
     formData.append("loggedin_user_id",36)
     formData.append("cust_id",id)
 
-    axios.post("https://production.sales.creativefuel.io/webservices/RestController.php?view=sales-customer_purchase_finance_approval", formData, {
+    axios.post("https://salesdev.we-fit.in/webservices/RestController.php?view=sales-customer_purchase_finance_approval", formData, {
       headers:{
         "Content-Type":"multipart/form-data"
       }
@@ -84,7 +84,18 @@ const PaymentSummary = () => {
     },
     {
       name: "Status",
-      selector: (row) => row.payment_approval_status,
+      // selector: (row) => row.payment_approval_status,
+      cell: (row) => (
+        <div>
+          {row.payment_approval_status === "1" ? (
+            <span className="badge bg-success">Approved</span>
+          ) : row.payment_approval_status === "2" ? (
+            <span className="badge bg-danger">Rejected</span>
+          ) : (
+            <span className="badge bg-warning">Pending</span>
+          )}
+        </div>)
+
     }
   ];
 

@@ -12,12 +12,44 @@ export default function PaymentDone() {
   const [toDate, setToDate] = useState("");
   const [vendorName, setVendorName] = useState("");
 
+  // const callApi = () => {
+  //   axios
+  //     .get("http://34.93.221.166:3000/api/phpvendorpaymentrequest")
+  //     .then((res) => {
+  //       let filterData = res.data.modifiedData.filter((item) => {
+  //         if (item.status == 0) {
+  //           return item;
+  //         }
+  //       });
+  //       console.log(filterData);
+  //       setData(filterData);
+  //       setFilterData(filterData);
+  //     });
+  // };
+
+
   const callApi = () => {
-    axios.get("https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest").then((res) => {
-      setData(res.data.body);
-      setFilterData(res.data.body);
-    });
+    axios
+      .get("http://34.93.221.166:3000/api/phpvendorpaymentrequest")
+      .then((res) => {
+        console.log(res.data.modifiedData);
+        const x = res.data.modifiedData;
+
+        axios
+          .get(
+            "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
+          )
+          .then((res) => {
+            let y = res.data.body.filter((item) => {
+              return !x.some((item2) => (item2.status == 1)&&( item.request_id == item2.request_id));
+            });
+            console.log(y,'y')
+            setData(y);
+            setFilterData(y);
+          });
+      });
   };
+  
 
   useEffect(() => {
     callApi();
