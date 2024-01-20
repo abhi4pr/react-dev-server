@@ -6,6 +6,8 @@ import { styled } from "@mui/system";
 import { DataGrid } from "@mui/x-data-grid";
 import DeleteIcon from "@mui/icons-material/Delete";
 import millify from "millify";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import { SiMicrosoftexcel } from "react-icons/si";
 import {
   Paper,
   TextField,
@@ -875,27 +877,31 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           variant="outlined"
           onChange={(e) => handlePost(e, "story")}
         />
-
-        <Button
-          onClick={() => exportToCSV(payload)}
-          variant="outlined"
-          color="secondary"
-        >
-          {" "}
-          Download Excel
-        </Button>
-        <Button
-          onClick={() => generatePDF(payload)}
-          variant="outlined"
-          color="primary"
-        >
-          Download PDF
-        </Button>
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            onClick={() => exportToCSV(payload)}
+            variant="text"
+            color="success"
+            sx={{ fontSize: "30px" }}
+            title="Download Excel"
+          >
+            <SiMicrosoftexcel />
+          </Button>
+          <Button
+            onClick={() => generatePDF(payload)}
+            variant="text"
+            color="error"
+            title="Download Pdf"
+            sx={{ mr: 3 }}
+          >
+            <PictureAsPdfIcon sx={{ fontSize: "35px" }} />
+          </Button>
+        </Box>
       </Box>
       <Paper
         sx={{ display: "flex", justifyContent: "space-between", gap: 1.5 }}
       >
-        <Box sx={{ height: 700, width: "65%" }}>
+        <Box sx={{ height: 700, width: "63%" }}>
           <DataGrid
             rows={unregisteredPages || searchedPages || filteredPages || []}
             columns={columnForPages}
