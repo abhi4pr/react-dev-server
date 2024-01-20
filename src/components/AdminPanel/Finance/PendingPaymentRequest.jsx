@@ -12,8 +12,12 @@ import {
   TextField,
 } from "@mui/material";
 import DiscardConfirmation from "./DiscardConfirmation";
+import jwtDecode from "jwt-decode";
 
 export default function PendingPaymentRequest() {
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const userID = decodedToken.id;
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -26,15 +30,25 @@ export default function PendingPaymentRequest() {
   const [payMentProof, setPayMentProof] = useState("");
   const [vendorName, setVendorName] = useState("");
   const [showDisCardModal, setShowDiscardModal] = useState(false);
-
+  const [paymentAmout, setPaymentAmount] = useState("");
   const callApi = () => {
     axios
-      .get(
-        "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
-      )
+      .get("http://34.93.221.166:3000/api/phpvendorpaymentrequest")
       .then((res) => {
-        setData(res.data.body);
-        setFilterData(res.data.body);
+        console.log(res.data.modifiedData);
+        const x = res.data.modifiedData;
+
+        axios
+          .get(
+            "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
+          )
+          .then((res) => {
+            let y = res.data.body.filter((item) => {
+              return !x.some((item2) => item.request_id == item2.request_id);
+            });
+            setData(y);
+            setFilterData(y);
+          });
       });
   };
 
@@ -66,7 +80,48 @@ export default function PendingPaymentRequest() {
     return diffDays;
   }
 
+  const handlePayVendorClick = () => {
+    const formData = new FormData();
+    formData.append("request_id", rowData.request_id);
+    formData.append("vendor_id", 0); //request_by will be Change Soon
+    // formData.append("request_id", rowData.request_id);
+    formData.append("request_by", 0); //request_by will be Change Soon
+    formData.append("request_amount", rowData.request_amount);
+    formData.append("priority", rowData.priority);
+    formData.append("status", 0); //status will be Change Soon
+    formData.append("evidence", payMentProof);
+    formData.append("payment_mode", paymentMode);
+    formData.append("payment_amount", paymentAmout);
+    formData.append("payment_by", userID);
+    formData.append("remark_finance", payRemark);
+    formData.append("invc_no", rowData.invc_no);
+    formData.append("invc_Date", rowData.invc_Date);
+    formData.append("invc_remark", rowData.invc_remark);
+    // formData.append("invc_image", payMentProof);//invc_no will be Change Soon
+    formData.append("remark_audit", rowData.remark_audit);
+    formData.append("outstandings", rowData.outstandings);
+    formData.append("vendor_name", rowData.vendor_name);  
+    formData.append("name", rowData.name);
+    formData.append("request_date", rowData.request_date);
+
+    axios
+      .post("http://34.93.221.166:3000/api/phpvendorpaymentrequest", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setPaymentMode("");
+        setPayRemark("");
+        setPayMentProof("");
+        setPayDialog(false);
+        setPaymentAmount("");
+        callApi();
+      });
+  };
   const handleDiscardClick = (row) => {
+    setRowData(row);
     setShowDiscardModal(true);
     // axios
     //   .delete(`http://34.93.221.166:3000/api/delete_demo/${row._id}`)
@@ -93,6 +148,10 @@ export default function PendingPaymentRequest() {
 
   const handleClosePayDialog = () => {
     setPayDialog(false);
+    setPaymentMode("");
+    setPayRemark("");
+    setPayMentProof("");
+    setPaymentAmount("");
   };
 
   const handleClearDateFilter = () => {
@@ -116,6 +175,23 @@ export default function PendingPaymentRequest() {
         const rowIndex = filterData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
+    },
+    {
+field: "invc_img",
+headerName: "Invoice Image",
+renderCell: (params) => {
+  return (
+    <img
+    //this will change soon
+      src={`https://production.we-fit.in/uploads/payment_proof/${params.row.invc_img}`}
+      alt="img"
+      style={{ width: "100px", height: "100px" }}
+    />
+
+  );
+},
+width: 250,
+
     },
     {
       field: "request_date",
@@ -437,11 +513,29 @@ export default function PendingPaymentRequest() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Payment Mode"
+                  label="Payment Mode *"
                   placeholder="Payment Mode"
                 />
               )}
             />
+            <TextField
+              onChange={(e) => {
+                const currentValue = e.target.value;
+                if (/^\d+$/.test(currentValue) || currentValue === "") {
+                  setPaymentAmount(currentValue);
+                }
+              }}
+              className="mt-3"
+              autoFocus
+              type="number"
+              margin="dense"
+              id="name"
+              label="Amount *"
+              variant="outlined"
+              fullWidth
+              value={paymentAmout}
+            />
+
             <TextField
               onChange={(e) => setPayRemark(e.target.value)}
               multiline
@@ -453,6 +547,7 @@ export default function PendingPaymentRequest() {
               type="text"
               variant="outlined"
               fullWidth
+              value={payRemark}
             />
             <TextField
               onChange={(e) => setPayMentProof(e.target.files[0])}
@@ -460,7 +555,7 @@ export default function PendingPaymentRequest() {
               autoFocus
               margin="dense"
               id="name"
-              label="Payment Proof/ScreenShot"
+              label="Payment Proof/ScreenShot *"
               type="file"
               variant="outlined"
               fullWidth
@@ -473,7 +568,8 @@ export default function PendingPaymentRequest() {
             variant="contained"
             className="mx-2"
             fullWidth
-            onClick={handleClosePayDialog}
+            onClick={handlePayVendorClick}
+            disabled={!paymentMode || !payMentProof || !paymentAmout}
           >
             Pay Vendor
           </Button>
@@ -484,6 +580,8 @@ export default function PendingPaymentRequest() {
         <DiscardConfirmation
           rowData={rowData}
           setShowDiscardModal={setShowDiscardModal}
+          userID={userID}
+          callApi={callApi}
         />
       )}
     </div>
