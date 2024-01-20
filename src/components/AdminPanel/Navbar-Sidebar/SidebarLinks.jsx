@@ -251,20 +251,20 @@ const SidebarLinks = () => {
             </li>
           )}
 
-          {isAssetNotifierVisible && (
+          {
             <li className="nav-item">
               <Link
                 className="nav-link collapsed"
                 data-toggle="collapse"
-                data-target="#collapseFourdd"
+                data-target="#collapseFourddnm"
                 aria-expanded="true"
-                aria-controls="collapseFourdd"
+                aria-controls="collapseFourddnm"
               >
                 <i className="bi bi-person-gear" />
                 <span>WFH New Module</span>
               </Link>
               <div
-                id="collapseFourdd"
+                id="collapseFourddnm"
                 className="collapse"
                 aria-labelledby="headingTwo"
                 data-parent="#accordionSidebar"
@@ -290,7 +290,7 @@ const SidebarLinks = () => {
                 </div>
               </div>
             </li>
-          )}
+          }
 
           {isWFHDHRPayrollManager && (
             <li className="nav-item">
@@ -872,6 +872,30 @@ const SidebarLinks = () => {
                                   to="/admin/brandmaster"
                                 >
                                   Brand Master
+                                </Link>
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/overview/agency"
+                                >
+                                  Agency Master
+                                </Link>
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/overview/industry"
+                                >
+                                  indusrty Master
+                                </Link>
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/overview/goal"
+                                >
+                                  Goal Master
+                                </Link>
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/overview/service"
+                                >
+                                  Service Master
                                 </Link>
 
                                 <Link

@@ -53,6 +53,7 @@ import IndianCitiesMui from "../ReusableComponents/IndianCitiesMui";
 import GuardianFields from "./GuardianFields";
 import FamilyFields from "./FamilyFieldsTest";
 import EducationFields from "./EducationFields";
+import CocTabPreonboarding from "./CocTabPreonboarding";
 
 const LanguageList = ["English", "Hindi", "Other"];
 
@@ -323,13 +324,23 @@ const PreOnboardingUserMaster = () => {
     // console.log(City.getCitiesOfState("IN", "CT"));
   }, []);
 
+  // const fetchCOCData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "http://34.93.221.166:3000/api/get_all_cocs"
+  //     );
+  //     const data = response.data;
+  //     setCocData(data.data);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
   const fetchCOCData = async () => {
     try {
-      const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_cocs"
-      );
-      const data = response.data;
-      setCocData(data.data);
+      const response = await axios.get("http://192.168.29.150:3000/api/newcoc");
+      const data = response.data.data[1].coc_content;
+      setCocData(data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -346,34 +357,34 @@ const PreOnboardingUserMaster = () => {
   }, [id]);
 
   // Step 1: Group data by display_sequence
-  const groupedData = cocData?.reduce((result, item) => {
-    const displaySequence = item.display_sequence;
-    if (!result[displaySequence]) {
-      result[displaySequence] = [];
-    }
-    result[displaySequence].push(item);
-    return result;
-  }, {});
+  // const groupedData = cocData?.reduce((result, item) => {
+  //   const displaySequence = item.display_sequence;
+  //   if (!result[displaySequence]) {
+  //     result[displaySequence] = [];
+  //   }
+  //   result[displaySequence].push(item);
+  //   return result;
+  // }, {});
   // Step 2: Render the list
-  const renderList = () => {
-    return Object.entries(groupedData).map(([displaySequence, items]) => (
-      <div className="thm_textbx" key={displaySequence}>
-        <h3>
-          {displaySequence} {items[0].heading}
-        </h3>
-        <p> {items[0].heading_desc}</p>
-        {items.map((item, index) => (
-          <div className="thm_textbx" key={index}>
-            <h5>
-              {item.sub_heading_sequence} {item.sub_heading}
-            </h5>
-            <p>{item.sub_heading_desc}</p>
-          </div>
-        ))}
-        <p> {items[0].description}</p>
-      </div>
-    ));
-  };
+  // const renderList = () => {
+  //   return Object.entries(groupedData).map(([displaySequence, items]) => (
+  //     <div className="thm_textbx" key={displaySequence}>
+  //       <h3>
+  //         {displaySequence} {items[0].heading}
+  //       </h3>
+  //       <p> {items[0].heading_desc}</p>
+  //       {items.map((item, index) => (
+  //         <div className="thm_textbx" key={index}>
+  //           <h5>
+  //             {item.sub_heading_sequence} {item.sub_heading}
+  //           </h5>
+  //           <p>{item.sub_heading_desc}</p>
+  //         </div>
+  //       ))}
+  //       <p> {items[0].description}</p>
+  //     </div>
+  //   ));
+  // };
 
   const openReadyToOnboardModal = () => {
     setReadyToOnboard(true);
@@ -1851,7 +1862,8 @@ const PreOnboardingUserMaster = () => {
                 {/* Document Screen End */}
 
                 {/* Policy Screen Start */}
-                {activeTab == 3 && (
+
+                {/* {activeTab == 3 && (
                   <div className="policyarea">
                     <div className="thm_texthead">
                       <h2 className="text-center">Code of Conduct</h2>
@@ -1895,7 +1907,7 @@ const PreOnboardingUserMaster = () => {
                             </button>
                           </>
                         }
-                        {/* <div className="thm_textbx">
+                         <div className="thm_textbx">
                           <h3>A. Cyber security and digital devices</h3>
                           <p>
                             This section deals with all things digital at work.
@@ -1914,12 +1926,17 @@ const PreOnboardingUserMaster = () => {
                             Also, we expect you to temporarily halt personal
                             activities that slow down our internet connection.
                           </p>
-                        </div> */}
+                        </div> 
                       </div>
                       <div className="ml-auto mr-auto text-center"></div>
                     </div>
-                  </div>
-                )}
+                  </div>c
+                )} */}
+
+                {/* COC SCREEN */}
+                {activeTab == 3 && <CocTabPreonboarding cocData={cocData} />}
+                {/* COC SCREEN */}
+
                 {/* Policy Screen End */}
 
                 {/* FAQ Screen Start */}

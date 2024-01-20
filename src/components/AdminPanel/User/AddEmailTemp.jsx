@@ -6,8 +6,11 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { useGlobalContext } from "../../../Context/Context";
+import TextEditor from "../../ReusableComponents/TextEditor";
 
 const AddEmailTemp = () => {
+  const { toastAlert } = useGlobalContext();
   const [emailFor, setEmailFor] = useState("");
   const [emailForId, setEmailForId] = useState("");
   const [emailContent, setEmailContent] = useState("");
@@ -102,7 +105,7 @@ const AddEmailTemp = () => {
           onChange={(e) => setEmailSub(e.target.value)}
         />
 
-        <ReactQuill
+        {/* <ReactQuill
           theme="snow"
           value={emailContent}
           onChange={setEmailContent}
@@ -139,7 +142,9 @@ const AddEmailTemp = () => {
             "background",
           ]}
           style={{ marginBottom: "5%" }}
-        />
+        /> */}
+
+        <TextEditor value={emailContent} onChange={setEmailContent} />
       </FormContainer>
     </>
   );

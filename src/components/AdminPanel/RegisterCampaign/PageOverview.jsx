@@ -9,11 +9,14 @@ import ReplacePagesModal from "./ReplacePagesModal";
 import ReplacementRecord from "./ReplacementRecord";
 import millify from "millify";
 import exportToCSV from "../../../utils/ExcelConverter";
-import  generatePdf  from "../../../utils/PdfConverter";
+import generatePdf from "../../../utils/PdfConverter";
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import { SiMicrosoftexcel } from "react-icons/si";
 
-const PageOverview = ({ selectData, setrender, stage,id }) => {
+
+const PageOverview = ({ selectData, setrender, stage, id }) => {
   console.log(selectData);
-  const naviagte=useNavigate()
+  const naviagte = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRecordOpen, setIsRecordOpen] = useState(false);
   const [selection, setSelections] = useState();
@@ -140,16 +143,43 @@ const PageOverview = ({ selectData, setrender, stage,id }) => {
     generatePdf(realData);
   };
   const handlePlanDashboard = () => {
-    naviagte(`/admin/plan-dashboard/${id}`)
+    naviagte(`/admin/plan-dashboard/${id}`);
   };
 
   return (
     <div>
       <Paper>
         <Box sx={{ height: 400, width: "100%", mt: 2 }}>
-          <Button onClick={handleExportClick} variant="outlined" color="secondary"> Download Excel</Button>
-          <Button onClick={handleDownloadPdf} variant="outlined" color="primary">Download PDF</Button>
-          <Button onClick={handlePlanDashboard} variant="outlined" color="primary">Go to Plan Dashboard</Button>
+          <Paper sx={{display:"flex",mb:2,justifyContent:"flex-end"}}>
+            <Button
+              onClick={handleExportClick}
+              variant="text"
+              color="success"
+              sx={{fontSize:"30px"}}
+              title="Download Excel"
+
+            >
+             <SiMicrosoftexcel />
+            </Button>
+            <Button
+              onClick={handleDownloadPdf}
+              variant="text"
+              color="error"
+              title="Download Pdf"
+              sx={{mr:3}}
+            >
+              <PictureAsPdfIcon sx={{fontSize:"40px"}} />
+            </Button>
+            <Button
+              onClick={handlePlanDashboard}
+              variant="outlined"
+              color="secondary"
+              sx={{mr:3}}
+
+            >
+               Plan Dashboard
+            </Button>
+          </Paper>
 
           <DataGrid
             rows={realData}

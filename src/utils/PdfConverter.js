@@ -23,13 +23,16 @@ const generatePDF = (pages) => {
     tableRows.push(pageData);
   });
   
-  doc.text(`Total Follower Count: ${totalFollowerCount}`, 10, 10);
-  doc.text(`Total Pages: ${totalPages}`, 10, 20);
-  doc.text(`Total Post Count: ${totalPost}`, 10, 30);
-  doc.text(`Total Story Count: ${totalStory}`, 10, 40);
+  // Styling for the text elements
+  doc.setFont("helvetica");
+  doc.setFontSize(14); 
+  doc.setTextColor(0, 0, 0); // Set text color to black
+
+  // Add total counts in one line with styling
+  doc.text(`Total Follower: ${totalFollowerCount} | Total Pages: ${totalPages} | Total Post: ${totalPost} | Total Story: ${totalStory}`, 10, 10);
 
   doc.autoTable({
-    startY: 50,
+    startY: 30, // Adjust the starting position for the table
     head: [tableColumn],
     body: tableRows,
   });
@@ -37,4 +40,4 @@ const generatePDF = (pages) => {
   doc.save(`page_details_report_${new Date().getTime()}.pdf`);
 };
 
-export default generatePDF
+export default generatePDF;
