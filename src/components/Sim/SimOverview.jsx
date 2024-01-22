@@ -262,6 +262,7 @@ const SimOverview = () => {
       name: "Allocated To",
       selector: (row) => row.allocated_username,
       sortable: true,
+      width: "150px",
     },
     {
       name: "Duration",

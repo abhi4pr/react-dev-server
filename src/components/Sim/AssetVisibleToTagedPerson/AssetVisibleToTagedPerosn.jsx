@@ -9,6 +9,7 @@ const AssetVisibleToTagedPerosn = () => {
   const [filterData, setFilterData] = useState([]);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
+  const [newAssetRequestData, setNewassetData] = useState([]);
 
   // New tab
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
@@ -18,10 +19,13 @@ const AssetVisibleToTagedPerosn = () => {
   const accordionButtons = ["Asset Repair Request", "New Asset Request"];
 
   const tab1 = <TagedPersonOverview filterData={filterData} tabOne="tabOne" />;
-  const tab2 = <TagedPersonOverview filterData={filterData} tabTwo="tabTwo" />;
+  const tab2 = (
+    <TagedPersonOverview filterData={newAssetRequestData} tabTwo="tabTwo" />
+  );
 
   useEffect(() => {
     getData();
+    getNewAssetData();
   }, []);
 
   useEffect(() => {
@@ -38,6 +42,17 @@ const AssetVisibleToTagedPerosn = () => {
       );
       setFilterData(response.data.data);
       setData(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getNewAssetData = async () => {
+    try {
+      const response = await axios.get(
+        `http://34.93.221.166:3000/api/show_new_asset_user_data/${userID}`
+      );
+      setNewassetData(response.data.data);
+      console.log(response.data.data, "data");
     } catch (error) {
       console.log(error);
     }

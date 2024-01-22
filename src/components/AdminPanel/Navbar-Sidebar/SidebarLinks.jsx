@@ -497,13 +497,13 @@ const SidebarLinks = () => {
             >
               <div className="bg-white collapse-inner">
                 <Link className="collapse-item" to="/admin/asset-single-user">
-                  Asset Single User
+                  Asset
                 </Link>
                 {contextData &&
                   contextData[15] &&
                   contextData[15].view_value === 1 && (
                     <Link className="collapse-item" to="/sim-overview">
-                      Asset
+                      Asset Management
                     </Link>
                   )}
 
@@ -521,14 +521,14 @@ const SidebarLinks = () => {
                   className="collapse-item"
                   to="/admin/asset-visible-to-taged-person"
                 >
-                  Tagged Asset
+                  Requested Asset
                 </Link>
                 {/* {contextData &&
                   contextData[41] &&
                   contextData[41].view_value === 1 && ( */}
                 {/* {RoleId == 2 && ( */}
                 <Link className="collapse-item" to="/admin/asset-manager">
-                  Asset Manager Login
+                  Asset Request Approvel
                 </Link>
                 {/* )} */}
                 {/* )} */}

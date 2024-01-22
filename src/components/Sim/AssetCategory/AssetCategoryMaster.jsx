@@ -44,15 +44,15 @@ const AssetCategoryMaster = () => {
       setCategoryName("");
       setDescription("");
       if (response.status == 200) {
-        navigate("/asset/asset-category-overview");
+        navigate("/asset-category-overview");
       }
-      // setIsFormSubmitted(true);
+      setIsFormSubmitted(true);
     } catch (error) {
       toastAlert(error.mesaage);
     }
   };
   // if (isFormSubmitted) {
-  //   return <Navigate to="/asset/asset-category-overview" />;
+  //   return <Navigate to="/asset-category-overview" />;
   // }
   return (
     <>

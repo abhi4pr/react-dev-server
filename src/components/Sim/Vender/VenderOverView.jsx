@@ -19,7 +19,7 @@ const VenderOverView = () => {
   }, []);
 
   useEffect(() => {
-    const result = data.filter((d) => {
+    const result = data?.filter((d) => {
       return d.vendor_name.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
@@ -32,7 +32,6 @@ const VenderOverView = () => {
       );
       setFilterData(response.data);
       setData(response.data);
-      console.log(response.data, "jgdfuigjdf");
     } catch (error) {
       toastAlert("Data not submitted", error.message);
       return null;

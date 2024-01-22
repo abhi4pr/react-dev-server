@@ -47,7 +47,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       name: "Status",
       selector: (row) => (
         <>
-          {row?.asset_request_status === "Requested" ? (
+          {row?.asset_request_status === "ApprovedByManager" ? (
             <span className="badge badge-danger">Requested</span>
           ) : row.asset_request_status === "Approved" ? (
             <span className="badge badge-success">Assigned</span>
@@ -82,7 +82,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       sortable: true,
     },
 
-    newAssetData[0].asset_request_status == "Requested" && {
+    newAssetData[0]?.asset_request_status == "ApprovedByManager" && {
       name: "Actions",
       cell: (row) => (
         <>
