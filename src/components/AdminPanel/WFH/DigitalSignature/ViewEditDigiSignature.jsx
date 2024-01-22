@@ -20,7 +20,7 @@ const ViewEditDigiSignature = () => {
 
   const gettingData = async () => {
     const response = await axios.get(
-      `http://34.93.221.166:3000/api/get_single_user/${loginUserId}`
+      `http://192.168.29.68:3000/api/get_single_user/${loginUserId}`
     );
     const DSImage = await response?.data?.digital_signature_image_url;
     setDigitalSignatureImage(DSImage);

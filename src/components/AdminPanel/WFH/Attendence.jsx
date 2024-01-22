@@ -289,6 +289,7 @@ const Attendence = () => {
         .post("http://34.93.221.166:3000/api/add_attendance", {
           dept: updatedRow.dept,
           user_id: updatedRow.user_id,
+          attendence_id: updatedRow.attendence_id,
           noOfabsent: updatedRow.noOfabsent,
           salary_deduction: Number(updatedRow.salary_deduction),
           month: selectedMonth,
