@@ -47,6 +47,7 @@ const WFHSingleUser = () => {
   const [departmentWise, setDepartmentWise] = useState([]);
   const [selectedTemplate, setSelectedTempate] = useState("");
   const [templateState, setTemplateState] = useState(null);
+  const [getDigitalSignImage, SetgetDigitalSignImage] = useState("");
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -69,15 +70,31 @@ const WFHSingleUser = () => {
     setIsModalOpen(false);
   };
 
-  const digitalSignatureImageExists = decodedToken?.digital_signature_image;
+  // const digitalSignatureImageExists = decodedToken?.digital_signature_image;
   useEffect(() => {
-    console.log(digitalSignatureImageExists, "digital singnature exists");
-    if (digitalSignatureImageExists) {
-      setIsModalOpen(true);
-    } else {
-      setIsModalOpen(false);
-    }
-  }, []);
+    axios
+      .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
+      .then((res) => {
+        const getDigitalSignImage = res.data.digital_signature_image;
+  
+        if (!getDigitalSignImage) {
+          setIsModalOpen(true);
+        } else {
+          const imageUrl = "https://storage.cloud.google.com/node-dev-server-bucket/";
+  
+          if (getDigitalSignImage.startsWith(imageUrl)) {
+            const imageName = getDigitalSignImage.substring(imageUrl.length);
+            if (imageName.trim() === "") {
+              setIsModalOpen(true);
+            } else {
+              setIsModalOpen(false);
+            }
+          } else {
+            setIsModalOpen(false);
+          }
+        }
+      });
+  }, [userID]);
 
   useEffect(() => {
     const fetchData = async () => {
