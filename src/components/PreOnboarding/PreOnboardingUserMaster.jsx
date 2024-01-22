@@ -338,7 +338,7 @@ const PreOnboardingUserMaster = () => {
 
   const fetchCOCData = async () => {
     try {
-      const response = await axios.get("http://192.168.29.150:3000/api/newcoc");
+      const response = await axios.get("http://34.93.221.166:3000/api/newcoc");
       const data = response.data.data[1].coc_content;
       setCocData(data);
     } catch (error) {

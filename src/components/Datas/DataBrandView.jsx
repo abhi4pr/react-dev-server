@@ -29,7 +29,7 @@ const DataBrandView = () => {
 
   useEffect(() => {
     axios
-      .get(`http://192.168.29.150:3000/api/get_data_based_data_name/${id}`)
+      .get(`http://34.93.221.166:3000/api/get_data_based_data_name/${id}`)
       .then((res) => {
         const fetchedData = res.data[0];
         const { data_name, upload_logo, remark, cat_name } = fetchedData;
@@ -46,7 +46,7 @@ const DataBrandView = () => {
   useEffect(() => {
     if (brand) {
       axios
-        .get(`http://192.168.29.150:3000/api/get_data_based_data_name_new/${brand}`)
+        .get(`http://34.93.221.166:3000/api/get_data_based_data_name_new/${brand}`)
         .then((res) => {
           console.log(res.data);
           setLogos(res.data);

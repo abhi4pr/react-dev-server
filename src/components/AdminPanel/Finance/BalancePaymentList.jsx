@@ -14,6 +14,8 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
+import { get } from "jquery";
+import { set } from "date-fns";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -25,7 +27,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const BalancePaymentList = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert,toastError } = useGlobalContext();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [datas, setData] = useState([]);
   const [search, setSearch] = useState("");
@@ -40,6 +42,7 @@ const BalancePaymentList = () => {
   const [paymentMode, setPaymentMode] = useState("");
   const [singleRow, setSingleRow] = useState({});
   const [dropdownData, setDropDownData] = useState([]);
+  const [paidAmount, setPaidAmount] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -50,23 +53,48 @@ const BalancePaymentList = () => {
 
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
-    formData.append("sale_booking_id", singleRow.sale_booking_id);
+    formData.append("sale_booking_id", +singleRow.sale_booking_id);
     formData.append("payment_update_id", singleRow.payment_update_id);
     formData.append("payment_ref_no", paymentRefNo);
-    formData.append("payment_detail_id", paymentDetails);
+    formData.append("payment_detail_id", paymentDetails.value);
     formData.append("payment_screenshot", paymentRefImg);
-    formData.append("payment_type", paymentType);
-    formData.append("payment_mode", paymentMode);
+    formData.append("payment_type", paymentType.label);
+    formData.append("payment_mode", paymentMode.label);
+    formData.append("paid_amount", paidAmount);
 
-    await axios.post(
-      "https://production.sales.creativefuel.io/webservices/RestController.php?view=balance_payment_update",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    await axios
+      .post(
+        "https://salesdev.we-fit.in/webservices/RestController.php?view=balance_payment_update",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then(() => {
+        axios
+          .put(
+            "http://34.93.221.166:3000/api/balance_payment_list_update",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then(() => {
+            console.log("data save in local success");
+            getData();
+            setBalAmount("");
+            setPaymentRefNo("");
+            setPaymentRefImg("");
+            setPaymentType({ label: "", value: "" });
+            setPaymentDetails("");
+            setPaymentMode("");
+            setPaidAmount([]);
+          });
+      });
     setImageModalOpen(false);
 
     toastAlert("Data updated");
@@ -80,11 +108,21 @@ const BalancePaymentList = () => {
       .then((res) => {
         console.log("data save in local success");
       });
+    const formData = new FormData();
+    formData.append("loggedin_user_id", 36);
     axios
-      .get("http://34.93.221.166:3000/api/get_all_php_payment_bal_data")
+      .post(
+        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-balance_payment_list",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
+        setData(res.data.body);
+        setFilterData(res.data.body);
       });
   }
 
@@ -92,11 +130,15 @@ const BalancePaymentList = () => {
     getData();
   }, []);
 
+  const handlePaidAmountChange = (e) => {
+    // setPaidAmount(e.target.value);
+  };
+
   const getDropdownData = async () => {
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     const response = await axios.post(
-      "https://production.sales.creativefuel.io/webservices/RestController.php?view=sales-payment_account_list",
+      "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-payment_account_list",
       formData,
       {
         headers: {
@@ -106,6 +148,7 @@ const BalancePaymentList = () => {
     );
     const responseData = response.data.body;
     setDropDownData(responseData);
+    console.log(responseData, "dropdown data");
   };
 
   useEffect(() => {
@@ -129,6 +172,13 @@ const BalancePaymentList = () => {
 
   const handleCloseImageModal = () => {
     setImageModalOpen(false);
+    setBalAmount("");
+    setPaymentRefNo("");
+    setPaymentRefImg("");
+    setPaymentType({ label: "", value: "" });
+    setPaymentDetails("");
+    setPaymentMode("");
+    setPaidAmount([]);
   };
 
   useEffect(() => {
@@ -142,7 +192,7 @@ const BalancePaymentList = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "6%",
+      width: "7%",
       sortable: true,
     },
     {
@@ -152,7 +202,7 @@ const BalancePaymentList = () => {
     },
     {
       name: "Sales Executive Name",
-      selector: (row) => row.sales_exe_name,
+      selector: (row) => row.username,
     },
     {
       name: "Sale Booking Date",
@@ -209,7 +259,7 @@ const BalancePaymentList = () => {
             columns={columns}
             data={filterData}
             fixedHeader
-            pagination
+            // pagination
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
             subHeader
@@ -320,7 +370,7 @@ const BalancePaymentList = () => {
               )}
             /> */}
 
-      <Autocomplete
+      {/* <Autocomplete
         className="my-2"
         id="combo-box-demo"
         // value={row.statusDropdown}
@@ -334,7 +384,7 @@ const BalancePaymentList = () => {
         renderInput={(params) => (
           <TextField {...params} label="Status" variant="outlined" />
         )}
-      />
+      /> */}
 
       {/* <Autocomplete
           className="my-2"
@@ -454,11 +504,47 @@ const BalancePaymentList = () => {
               <option value="partial">partial</option>
             </select>
             </div> */}
+                <TextField
+                  variant="outlined"
+                  label="Paid Amount *"
+                  value={paidAmount}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    if (!isNaN(inputValue)) {
+                      const parsedValue = parseFloat(inputValue);
+                      if (parsedValue <= balAmount) {
+                        setPaidAmount(parsedValue);
+                        setPaymentType(parsedValue === balAmount ? { label: "Full", value: "full" } : { label: "Partial", value: "partial" });
+                      } else {
+                        toastError("Paid amount should be less than or equal to the balance amount");
+                      }
+                    } else {
+                      // Handle non-numeric input
+                      toastError("Please enter a valid numeric value");
+                    }
+                  }}
+                  
+                />
 
+                {/* <div className="form-group">
+  <label htmlFor="paidAmount">Paid Amount</label>
+  <input
+    // type="number"
+    className="form-control"
+    id="paidAmount"
+    name="paidAmount"
+
+    value={paidAmount}
+    onChange={handlePaidAmountChange}
+    required
+  />
+</div> */}
                 <Autocomplete
                   className="my-2"
                   id="combo-box-demo"
                   value={paymentType}
+                  // disabled
+                  readOnly
                   options={[
                     { label: "Full", value: "full" },
                     { label: "Partial", value: "partial" },
@@ -488,16 +574,18 @@ const BalancePaymentList = () => {
                   id="combo-box-demo"
                   // value={row.statusDropdown}
                   options={dropdownData.map((item) => ({
-                    title: item.title,
+                    label: item.title,
                     value: item.id,
                   }))}
                   style={{ width: 180, zIndex: 1, position: "relative" }}
-                  onChange={(e, value) => setPaymentDetails(value)}
+                  onChange={(e, value) => {
+                    setPaymentDetails(value), console.log(value);
+                  }}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Payment Details"
+                      label="Payment Details *"
                       variant="outlined"
                     />
                   )}
@@ -525,7 +613,7 @@ const BalancePaymentList = () => {
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Payment Mode"
+                      label="Payment Mode *"
                       variant="outlined"
                     />
                   )}
@@ -539,8 +627,10 @@ const BalancePaymentList = () => {
           </div>
         </DialogContent>
         <DialogActions>
-          <Button autoFocus onClick={handleCloseImageModal}>
-            Save changes
+          <Button
+          disabled={paidAmount === 0 || paidAmount === "" || paymentDetails === "" || paymentMode === ""}
+          autoFocus onClick={handleSubmit}>
+            Save 
           </Button>
         </DialogActions>
       </BootstrapDialog>

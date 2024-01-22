@@ -4,6 +4,8 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
+import { get } from "jquery";
+import { set } from "date-fns";
 
 const PendingApprovalRefund = () => {
   const { toastAlert } = useGlobalContext();
@@ -21,20 +23,37 @@ const PendingApprovalRefund = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
+  const handleFileChange = (e, index) => {
+    const newRefundImage = [...refundImage]; // Creating a new array
+    newRefundImage[index] = e.target.files[0]; // Updating the specific index
+    setRefundImage(newRefundImage); // Setting the new array as the state
+    setImageChanged(!imageChanged); // Toggle the state to trigger re-render
+  };
+
+  const convertDateToDDMMYYYY = (date) => {
+    const d = new Date(date);
+    const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
+    const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
+    const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
+    return `${da}-${mo}-${ye}`;
+  };
+
   function getData() {
     axios
       .post("http://34.93.221.166:3000/api/add_php_payment_refund_data_in_node")
       .then((res) => {
         console.log("data save in local success");
       });
-    axios
-      .get(
-        "http://34.93.221.166:3000/api/get_all_php_payment_refund_data_pending"
-      )
-      .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
-      });
+    setTimeout(() => {
+      axios
+        .get(
+          "http://34.93.221.166:3000/api/get_all_php_payment_refund_data_pending"
+        )
+        .then((res) => {
+          setData(res.data.data);
+          setFilterData(res.data.data);
+        });
+    }, 1000);
   }
 
   useEffect(() => {
@@ -52,15 +71,19 @@ const PendingApprovalRefund = () => {
     formData.append("refund_reason", "");
     formData.append("refund_finance_approval", 1);
 
-    await axios.post(
-      "https://production.sales.creativefuel.io/webservices/RestController.php?view=refund_finance_approval",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    await axios
+      .post(
+        "https://salesdev.we-fit.in/webservices/RestController.php?view=refund_finance_approval",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then(() => {
+        getData();
+      });
 
     toastAlert("Data updated");
     setIsFormSubmitted(true);
@@ -77,7 +100,7 @@ const PendingApprovalRefund = () => {
 
     await axios
       .post(
-        "https://production.sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file",
+        "https://salesdev.we-fit.in/webservices/RestController.php?view=refund_payment_upload_file",
         formData,
         {
           headers: {
@@ -111,22 +134,39 @@ const PendingApprovalRefund = () => {
       name: "Customer Name",
       selector: (row) => row.cust_name,
       sortable: true,
+      width: "20%",
     },
     {
       name: "Refund Amount",
       selector: (row) => row.refund_amount,
+      width: "15%",
     },
     {
       name: "Refund Request Reason",
       selector: (row) => row.finance_refund_reason,
+      width: "20%",
     },
     {
       name: "Refund Request Date",
-      selector: (row) => row.creation_date,
+      // selector: (row) => row.creation_date,
+      width: "15%",
+      cell: (row) => (
+        <div>
+          {row.creation_date ? convertDateToDDMMYYYY(row.creation_date) : ""}
+        </div>
+      ),
     },
     {
       name: "Refund Updated Date",
-      selector: (row) => row.last_updated_date,
+      // selector: (row) => row.last_updated_date,
+      cell: (row) => (
+        <div>
+          {row.last_updated_date
+            ? convertDateToDDMMYYYY(row.last_updated_date)
+            : ""}
+        </div>
+      ),
+      width: "15%",
     },
 
     {
@@ -137,10 +177,12 @@ const PendingApprovalRefund = () => {
             type="file"
             name="refund_image"
             onChange={(e) => {
-              refundImage.splice(index, 1, e.target.files[0]);
-              console.log(index);
-              console.log(refundImage);
-              setImageChanged(!imageChanged); // Toggle the state to trigger re-render
+              // refundImage.splice(index, 1, e.target.files[0]);
+              // console.log(index);
+              // console.log(refundImage);
+              // setRefundImage(refundImage);
+              // setImageChanged(!imageChanged); // Toggle the state to trigger re-render
+              handleFileChange(e, index);
             }}
           />
           <br />
@@ -156,6 +198,7 @@ const PendingApprovalRefund = () => {
           />
         </form>
       ),
+      width: "250px",
     },
 
     {
@@ -171,7 +214,7 @@ const PendingApprovalRefund = () => {
           <option value="2">Rejected</option>
         </select>
       ),
-      width: "7%",
+      width: "200px",
     },
   ];
 

@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { useNavigate, Link } from "react-router-dom";
+import { get } from "jquery";
 
 const PendingInvoice = () => {
   const navigate = useNavigate();
@@ -24,15 +25,27 @@ const PendingInvoice = () => {
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_id", row.sale_booking_id);
 
-    await axios.post(
-      "https://production.sales.creativefuel.io/webservices/RestController.php?view=invoice_reject",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    await axios
+      .post(
+        "https://salesdev.we-fit.in/webservices/RestController.php?view=invoice_reject",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then(() => {
+        axios
+        .put("http://34.93.221.166:3000/api/pending_invoice_update", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(() => { 
+          getData();
+        });
+      });
 
     toastAlert("Data updated");
     setIsFormSubmitted(true);
@@ -45,15 +58,28 @@ const PendingInvoice = () => {
     formData.append("invoiceFormSubmit", 1);
     formData.append("invoice", fileData);
 
-    await axios.post(
-      "https://production.sales.creativefuel.io/webservices/RestController.php?view=invoice_upload_file",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    await axios
+      .post(
+        "https://salesdev.we-fit.in/webservices/RestController.php?view=invoice_upload_file",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then(() => {
+        axios
+          .put("http://34.93.221.166:3000/api/pending_invoice_update", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then(() => {
+            console.log("data save in local success");
+            getData();
+          });
+      });
   };
 
   function getData() {
@@ -64,11 +90,21 @@ const PendingInvoice = () => {
       .then((res) => {
         console.log("data save in local success");
       });
+    const formData = new FormData();
+    formData.append("loggedin_user_id", 36);
     axios
-      .get("http://34.93.221.166:3000/api/get_all_php_pending_invoice_data")
+      .post(
+        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-pending_invoice_creation_list",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
+        setData(res.data.body);
+        setFilterData(res.data.body);
       });
   }
 
@@ -101,12 +137,14 @@ const PendingInvoice = () => {
     },
     {
       name: "Sales Person name",
-      selector: (row) => row.sub_category_name,
+      selector: (row) => row.sales_person_username,
+      width: "15%",
     },
     {
       name: "Requested On Date",
       // selector: (row) => row.sale_booking_date,
       cell: (row) => convertDateToDDMMYYYY(row.sale_booking_date),
+      width: "15%",
     },
     {
       name: "Sale Booking Description",
@@ -134,7 +172,12 @@ const PendingInvoice = () => {
       width: "13%",
     },
     {
-      name: "Upload Invioce",
+      name: "Invoice Type",
+      selector: (row) => row.invoice_type,
+      width: "15%",
+    },
+    {
+      name: "Upload Invoice",
       selector: (row) => (
         <div>
           <form>
@@ -143,9 +186,9 @@ const PendingInvoice = () => {
               name="upload_image"
               onChange={(e) => handleImageUpload(row, e.target.files[0])}
             />
-            <button type="submit" value="upload">
+            {/* <button type="submit" value="upload">
               Upload
-            </button>
+            </button> */}
           </form>
           <br />
           <button
@@ -157,15 +200,27 @@ const PendingInvoice = () => {
           </button>
         </div>
       ),
-      width: "13%",
+      width: "20%",
+    },
+    {
+      name: "Invoice Particular Name",
+      selector: (row) => row.invoice_particular_name,
+      width: "15%",
+    },
+    {
+      name: "Invoice Type",
+      selector: (row) => row.invoice_type_name,
+      width: "15%",
     },
     {
       name: "Base Amount",
       selector: (row) => row.base_amount,
+      width: "9%",
     },
     {
       name: "GST Amount",
       selector: (row) => row.gst_amount,
+      width: "9%",
     },
     {
       name: "Net Amount",

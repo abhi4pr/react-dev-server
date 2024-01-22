@@ -53,7 +53,7 @@ const PendingApprovalUpdate = () => {
     toastAlert("Data updated");
     setIsFormSubmitted(true);
   };
-
+  
   function getData() {
     axios
       .post("http://34.93.221.166:3000/api/add_php_finance_data_in_node")
@@ -83,7 +83,7 @@ const PendingApprovalUpdate = () => {
 
   useEffect(() => {
     const result = datas.filter((d) => {
-      return d.assetsName?.toLowerCase().match(search.toLowerCase());
+      return d.user_name?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
@@ -287,7 +287,7 @@ const PendingApprovalUpdate = () => {
             title="Pending Approval"
             columns={columns}
             data={[...filterData].reverse()}
-            keyField="id"
+            keyField="_id"
             fixedHeader
             pagination
             fixedHeaderScrollHeight="64vh"

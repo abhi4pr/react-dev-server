@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios, { all } from "axios";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
+import { tr } from "date-fns/locale";
 
 const SaleBookingClose = () => {
   const { toastAlert } = useGlobalContext();
@@ -13,6 +14,8 @@ const SaleBookingClose = () => {
   const [search, setSearch] = useState("");
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [tdsStatus, setTdsStatus] = useState(0);
+  const [aboutToClose, setAboutToClose] = useState(false);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -26,7 +29,7 @@ const SaleBookingClose = () => {
     formData.append("sale_booking_id", row.sale_booking_id);
 
     await axios.post(
-      "https://production.sales.creativefuel.io/webservices/RestController.php?view=close_booking",
+      "https://salesdev.we-fit.in/webservices/RestController.php?view=close_booking",
       formData,
       {
         headers: {
@@ -34,7 +37,7 @@ const SaleBookingClose = () => {
         },
       }
     );
-
+getData()
     toastAlert("Data Updated");
     setIsFormSubmitted(true);
   };
@@ -47,41 +50,60 @@ const SaleBookingClose = () => {
       .then((res) => {
         console.log("data save in local success");
       });
+      let formData = new FormData();
+      formData.append("loggedin_user_id", 36);
+      formData.append("tds_status", tdsStatus);
+      {aboutToClose&&formData.append("about_to_close", 1);}
+
     axios
-      .get("http://34.93.221.166:3000/api/get_all_php_sale_booking_tds_data")
+      .post("https://salesdev.we-fit.in/webservices/RestController.php?view=sales-sale_booking_for_tds",formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        })
       .then((res) => {
-        const allData = res.data.data;
-        const filteredData = allData.filter(
-          (item) => item.show_fstatus == "Open"
-        );
+        const allData = res.data.body;
+        // const filteredData = allData.filter(
+        //   (item) => item.show_fstatus == "Open"
+        // );
         setData(allData);
-        setFilterData(filteredData);
+        setFilterData(allData);
       });
   }
 
+  useEffect(() => {
+    getData();
+  }, [tdsStatus,aboutToClose]);
+
   const aboutClose = () => {
-    const allData = datas;
-    const filteredData = allData.filter(
-      (item) => item.show_fstatus == "About To Close"
-    );
-    setData(allData);
-    setFilterData(filteredData);
+    // const allData = datas;
+    // const filteredData = allData.filter(
+    //   (item) => item.show_fstatus == "About To Close"
+    // );
+    // setData(allData);
+    // setFilterData(filteredData);
+    setTdsStatus(0);
+    setAboutToClose(true);
   };
 
   const open = () => {
     const allData = datas;
-    const filteredData = allData.filter((item) => item.show_fstatus == "Open");
-    setData(allData);
-    setFilterData(filteredData);
+    // const filteredData = allData.filter((item) => item.show_fstatus == "Open");
+    // setData(allData);
+    // setFilterData(filteredData);
+    setTdsStatus(0)
+setAboutToClose(false)
   };
 
   const close = () => {
-    const allData = datas;
-    const filteredData = allData.filter(
-      (item) => item.show_fstatus == "Closed Link"
-    );
-    setData(allData);
-    setFilterData(filteredData);
+    // const allData = datas;
+    // const filteredData = allData.filter(
+    //   (item) => item.show_fstatus == "Closed Link"
+    // );
+    // setData(allData);
+    // setFilterData(filteredData);
+    setTdsStatus(1);  
+    setAboutToClose(false)
   };
 
   useEffect(() => {
@@ -99,7 +121,7 @@ const SaleBookingClose = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "4%",
+      width: "6%",
       sortable: true,
     },
     {
@@ -154,7 +176,8 @@ const SaleBookingClose = () => {
     {
       name: "Action",
       selector: (row) => {
-        return row.show_fstatus === "About To Close" ? (
+        // return row.show_fstatus === "About To Close" ? (
+        return tdsStatus === 0 && aboutToClose==true ? (
           <button
             className="btn btn-sm btn-outline-info"
             onClick={() => handleVerify(row)}
