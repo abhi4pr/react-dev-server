@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
+import ImageView from "./ImageView";
 
 const InvoiceCreated = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const InvoiceCreated = () => {
   const [search, setSearch] = useState("");
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [viewImgSrc, setViewImgSrc] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -41,11 +44,21 @@ const InvoiceCreated = () => {
       .then((res) => {
         console.log("data save in local success");
       });
+    let formData = new FormData();
+    formData.append("loggedin_user_id", 36);
     axios
-      .get("http://34.93.221.166:3000/api/get_all_php_pending_invoice_data")
+      .post(
+        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-invoice_created_list",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
+        setData(res.data.body);
+        setFilterData(res.data.body);
       });
   }
 
@@ -81,15 +94,37 @@ const InvoiceCreated = () => {
     },
     {
       name: "Download Invoice",
-      selector: (row) => row.vendor_name,
+      cell: (row) => (
+        <a
+          className="btn btn-primary"
+          href={`https://salesdev.we-fit.in/${row.invoice}`}
+          target="_blank"
+          rel="noreferrer"
+          download // Add the 'download' attribute to trigger the download
+        >
+          Download
+        </a>
+      ),
     },
     {
       name: "View Invoice",
-      selector: (row) => row.vendor_name,
+      // selector: (row) => row.vendor_name,
+      cell: (row) => (
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            setOpenImageDialog(true);
+            setViewImgSrc(`https://salesdev.we-fit.in/${row.invoice}`);
+          }}
+        >
+          View
+        </button>
+      ),
     },
     {
       name: "Remark",
-      selector: (row) => row.remarks,
+      selector: (row) => row.invoice_remark,
+      width: "250px",
     },
   ];
 
@@ -129,6 +164,12 @@ const InvoiceCreated = () => {
           />
         </div>
       </div>
+      {openImageDialog && (
+        <ImageView
+          viewImgSrc={viewImgSrc}
+          setViewImgDialog={setOpenImageDialog}
+        />
+      )}
     </>
   );
 };

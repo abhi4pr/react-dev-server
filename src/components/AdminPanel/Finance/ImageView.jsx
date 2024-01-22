@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import {
   Dialog,
@@ -21,6 +21,13 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export default function ImageView({viewImgSrc,setViewImgDialog}) {
   const [open, setOpen] = React.useState(true);
+  const [isPDF, setIsPDF] = React.useState(false);
+
+useEffect(() => {
+ let verify= viewImgSrc.split(".").pop().toLowerCase() === "pdf" 
+  setIsPDF(verify)
+}
+, [viewImgSrc]);
 
   const handleClose = () => {
     setViewImgDialog(false);
@@ -36,7 +43,7 @@ export default function ImageView({viewImgSrc,setViewImgDialog}) {
         open={open}
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-            Image View
+            View
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -50,8 +57,22 @@ export default function ImageView({viewImgSrc,setViewImgDialog}) {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent dividers>
-            <img src={viewImgSrc} alt="img"  />
+        <DialogContent dividers 
+        // sx={{width:"50vw",height:"auto"}}
+        > 
+            {!isPDF?<img src={viewImgSrc} alt="img"  />:<div style={
+              {width:"100%",height:"80vh"}
+
+            }><iframe
+            src={viewImgSrc}
+            title="file"
+            width="100%"
+            height="100%"
+            >
+            </iframe>
+            </div>
+            }
+            
         </DialogContent>
       </BootstrapDialog>
     </div>

@@ -44,7 +44,7 @@ export default function DiscardConfirmation({
         request_by: rowData.request_by,
         request_amount: rowData.request_amount,
         priority: rowData.priority,
-        status: 1,
+        status: 2,
         payment_by: userID,
         remark_finance: discardRemark,
         invc_no: rowData.invc_no,

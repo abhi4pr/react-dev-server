@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import axios from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import pdf from "./pdf-file.png";
 import {
   Autocomplete,
   Button,
@@ -13,8 +14,14 @@ import {
 } from "@mui/material";
 import DiscardConfirmation from "./DiscardConfirmation";
 import jwtDecode from "jwt-decode";
+import ImageView from "./ImageView";
+import { useGlobalContext } from "../../../Context/Context";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 export default function PendingPaymentRequest() {
+  const { toastAlert, toastError } = useGlobalContext();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
@@ -31,11 +38,22 @@ export default function PendingPaymentRequest() {
   const [vendorName, setVendorName] = useState("");
   const [showDisCardModal, setShowDiscardModal] = useState(false);
   const [paymentAmout, setPaymentAmount] = useState("");
+  const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [viewImgSrc, setViewImgSrc] = useState("");
+  const [paymentDate, setPaymentDate] = useState("");
+  const [userName, setUserName] = useState("");
+
   const callApi = () => {
+    axios
+      .get(`http://34.93.221.166:3000/api/addPhpVendorPaymentRequest`)
+      .then((res) => {
+        console.log(res);
+      });
+
     axios
       .get("http://34.93.221.166:3000/api/phpvendorpaymentrequest")
       .then((res) => {
-        console.log(res.data.modifiedData);
+        console.log(res.data.modifiedData, "node");
         const x = res.data.modifiedData;
 
         axios
@@ -43,12 +61,19 @@ export default function PendingPaymentRequest() {
             "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
           )
           .then((res) => {
+            console.log(res.data.body, "php");
             let y = res.data.body.filter((item) => {
               return !x.some((item2) => item.request_id == item2.request_id);
             });
             setData(y);
             setFilterData(y);
           });
+      });
+
+    axios
+      .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
+      .then((res) => {
+        setUserName(res.data.user_name);
       });
   };
 
@@ -83,12 +108,11 @@ export default function PendingPaymentRequest() {
   const handlePayVendorClick = () => {
     const formData = new FormData();
     formData.append("request_id", rowData.request_id);
-    formData.append("vendor_id", 0); //request_by will be Change Soon
-    // formData.append("request_id", rowData.request_id);
-    formData.append("request_by", 0); //request_by will be Change Soon
+    formData.append("vendor_id", rowData.vendor_id);
+    formData.append("request_by", rowData.request_by);
     formData.append("request_amount", rowData.request_amount);
     formData.append("priority", rowData.priority);
-    formData.append("status", 0); //status will be Change Soon
+    formData.append("status", 1); //status will be Change Soon
     formData.append("evidence", payMentProof);
     formData.append("payment_mode", paymentMode);
     formData.append("payment_amount", paymentAmout);
@@ -100,9 +124,10 @@ export default function PendingPaymentRequest() {
     // formData.append("invc_image", payMentProof);//invc_no will be Change Soon
     formData.append("remark_audit", rowData.remark_audit);
     formData.append("outstandings", rowData.outstandings);
-    formData.append("vendor_name", rowData.vendor_name);  
+    formData.append("vendor_name", rowData.vendor_name);
     formData.append("name", rowData.name);
     formData.append("request_date", rowData.request_date);
+    formData.append("payment_date", paymentDate);
 
     axios
       .post("http://34.93.221.166:3000/api/phpvendorpaymentrequest", formData, {
@@ -111,6 +136,29 @@ export default function PendingPaymentRequest() {
         },
       })
       .then((res) => {
+        const phpFormData = new FormData();
+        phpFormData.append("request_id", rowData.request_id);
+        phpFormData.append("payment_amount", paymentAmout);
+        phpFormData.append("payment_date", paymentDate);
+        phpFormData.append("payment_by", userName);
+        phpFormData.append("evidence", payMentProof);
+        phpFormData.append("finance_remark", payRemark);
+        phpFormData.append("status", 1);
+        phpFormData.append("payment_mode", paymentMode);
+        axios
+          .post(
+              "https://production.we-fit.in/webservices/RestController.php?view=updatePaymentrequestNew",
+            phpFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then((res) => {
+            console.log(res);
+            toastAlert("Payment Done Successfully");
+          });
         console.log(res);
         setPaymentMode("");
         setPayRemark("");
@@ -120,6 +168,8 @@ export default function PendingPaymentRequest() {
         callApi();
       });
   };
+  //req_id , paymeent_amou ,paydate , payby, screenshot , finance remark
+
   const handleDiscardClick = (row) => {
     setRowData(row);
     setShowDiscardModal(true);
@@ -177,21 +227,41 @@ export default function PendingPaymentRequest() {
       },
     },
     {
-field: "invc_img",
-headerName: "Invoice Image",
-renderCell: (params) => {
-  return (
-    <img
-    //this will change soon
-      src={`https://production.we-fit.in/uploads/payment_proof/${params.row.invc_img}`}
-      alt="img"
-      style={{ width: "100px", height: "100px" }}
-    />
+      field: "invc_img",
+      headerName: "Invoice Image",
+      renderCell: (params) => {
+        // Extract file extension and check if it's a PDF
+        const fileExtension = params.row.invc_img
+          .split(".")
+          .pop()
+          .toLowerCase();
+        const isPdf = fileExtension === "pdf";
 
-  );
-},
-width: 250,
+        const imgUrl = `https://production.we-fit.in/uploads/payment_proof/${params.row.invc_img}`;
 
+        return isPdf ? (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={pdf}
+            style={{ width: "100px", height: "100px" }}
+            title="PDF Preview"
+          />
+        ) : (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={imgUrl}
+            alt="Invoice"
+            style={{ width: "100px", height: "100px" }}
+          />
+        );
+      },
+      width: 250,
     },
     {
       field: "request_date",
@@ -520,9 +590,18 @@ width: 250,
             />
             <TextField
               onChange={(e) => {
+                rowData.request_amount;
+
                 const currentValue = e.target.value;
                 if (/^\d+$/.test(currentValue) || currentValue === "") {
-                  setPaymentAmount(currentValue);
+                  // setPaymentAmount(currentValue);
+                  if (currentValue <= +rowData.request_amount) {
+                    setPaymentAmount(currentValue);
+                  } else {
+                    toastError(
+                      "Payment Amount should be less than or equal to Requested Amount"
+                    );
+                  }
                 }
               }}
               className="mt-3"
@@ -535,6 +614,30 @@ width: 250,
               fullWidth
               value={paymentAmout}
             />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                format="DD/MM/YYYY"
+                className="mt-3"
+                defaultValue={dayjs()}
+                autoFocus
+                label="Payment Date "
+                onChange={(newValue) => {
+                  setPaymentDate(
+                    newValue.add(5, "hours").add(30, "minutes").$d.toGMTString()
+                  );
+                  console.log(
+                    new Date(
+                      newValue
+                        .add(5, "hours")
+                        .add(30, "minutes")
+                        .$d.toGMTString()
+                    )
+                  );
+                }}
+                disableFuture
+                views={["year", "month", "day"]}
+              />
+            </LocalizationProvider>
 
             <TextField
               onChange={(e) => setPayRemark(e.target.value)}
@@ -553,9 +656,9 @@ width: 250,
               onChange={(e) => setPayMentProof(e.target.files[0])}
               className="mt-3"
               autoFocus
-              margin="dense"
-              id="name"
-              label="Payment Proof/ScreenShot *"
+              // margin="dense"
+              // id="name"
+              label="Payment Proof/ScreenShot"
               type="file"
               variant="outlined"
               fullWidth
@@ -569,7 +672,7 @@ width: 250,
             className="mx-2"
             fullWidth
             onClick={handlePayVendorClick}
-            disabled={!paymentMode || !payMentProof || !paymentAmout}
+            disabled={!paymentMode || !paymentAmout}
           >
             Pay Vendor
           </Button>
@@ -582,6 +685,12 @@ width: 250,
           setShowDiscardModal={setShowDiscardModal}
           userID={userID}
           callApi={callApi}
+        />
+      )}
+      {openImageDialog && (
+        <ImageView
+          viewImgSrc={viewImgSrc}
+          setViewImgDialog={setOpenImageDialog}
         />
       )}
     </div>

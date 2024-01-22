@@ -65,8 +65,8 @@ function Dashboard() {
     axios.get("http://34.93.221.166:3000/api/get_logo_data").then((res) => {
       getLogoBrandData(res.data);
     });
-    axios.get("http://34.93.221.166:3000/api/get_all_datas").then((res) => {
-      setAllData(res.data);
+    axios.get("http://34.93.221.166:3000/api/total_count_data").then((res) => {
+      setAllData(res.data.distinctDataNamesCount);
     });
     axios
       .get("http://34.93.221.166:3000/api/get_all_instapages")
@@ -84,7 +84,7 @@ function Dashboard() {
   const AllSimData = allsimData.length;
   const AllLogoBrandData = logoBrandData.length;
   const AllIntellectualProperty = IntellectualProperty.length;
-  const AllData = allData.length;
+  const AllData = allData;
   return (
     <>
       <div>

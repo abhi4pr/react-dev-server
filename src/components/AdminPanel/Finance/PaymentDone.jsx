@@ -3,6 +3,7 @@ import FormContainer from '../FormContainer'
 import { DataGrid, GridToolbar } from '@mui/x-data-grid'
 import { Button } from '@mui/material';
 import axios from 'axios';
+import ImageView from './ImageView';
 
 export default function PaymentDone() {
   const [search, setSearch] = useState("");
@@ -11,6 +12,8 @@ export default function PaymentDone() {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [vendorName, setVendorName] = useState("");
+  const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [viewImgSrc, setViewImgSrc] = useState("");
 
   // const callApi = () => {
   //   axios
@@ -32,7 +35,7 @@ export default function PaymentDone() {
     axios
       .get("http://34.93.221.166:3000/api/phpvendorpaymentrequest")
       .then((res) => {
-        console.log(res.data.modifiedData);
+        console.log(res.data.modifiedData,"node js");
         const x = res.data.modifiedData;
 
         axios
@@ -40,12 +43,27 @@ export default function PaymentDone() {
             "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
           )
           .then((res) => {
-            let y = res.data.body.filter((item) => {
-              return !x.some((item2) => (item2.status == 1)&&( item.request_id == item2.request_id));
-            });
-            console.log(y,'y')
-            setData(y);
-            setFilterData(y);
+            // let y = res.data.body.filter((item) => {
+            //   return !x.some((item2) => (item2.status == 2)&&( item.request_id == item2.request_id));
+            // });
+            // console.log(y,'y')
+            // setData(y);
+            // setFilterData(y);
+          let y=  x.filter((item) => {
+              if (item.status == 1) {
+                return item;
+              }
+
+            }
+          )
+          let u= 
+          res.data.body.filter((item) => {
+            return y.some((item2) => item.request_id == item2.request_id);
+          })
+          console.log(u,'u')
+            setData(u);
+            setFilterData(u);
+
           });
       });
   };
@@ -110,6 +128,41 @@ export default function PaymentDone() {
         const rowIndex = filterData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
+    },
+    {
+      field:"invc_img",
+      headerName:"Invoice Image",
+      renderCell: (params) => {
+        // Extract file extension and check if it's a PDF
+        const fileExtension = params.row.invc_img.split(".").pop().toLowerCase();
+        const isPdf = fileExtension === "pdf";
+    
+        const imgUrl = `https://production.we-fit.in/uploads/payment_proof/${params.row.invc_img}`;
+    console.log(params.row.invc_img?imgUrl:"no image")
+        return (
+          isPdf ? 
+            <iframe
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={imgUrl}
+              style={{ width: "100px", height: "100px" }}
+              title="PDF Preview"
+            />
+          :
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={imgUrl}
+              alt="Invoice"
+              style={{ width: "100px", height: "100px" }}
+            />
+        );
+      },
+      width: 250,
     },
     {
       field: "request_date",
@@ -261,6 +314,8 @@ export default function PaymentDone() {
         }}
         getRowId={(row) => filterData.indexOf(row)}
       />
+           {openImageDialog&& <ImageView viewImgSrc={viewImgSrc} setViewImgDialog={setOpenImageDialog}/>}
+
     </div>
   )
 }
