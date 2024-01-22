@@ -6,7 +6,7 @@ import { useGlobalContext } from "../../../../Context/Context";
 
 const CreateMaster = ({ name, data }) => {
   const { toastAlert, toastError } = useGlobalContext();
-  const url = "http://192.168.29.114:3000/api/";
+  const url = "http://34.93.221.166:3000/api/";
   const navigate = useNavigate();
   const [payload, setPayload] = useState({});
   const handleSubmit = async () => {

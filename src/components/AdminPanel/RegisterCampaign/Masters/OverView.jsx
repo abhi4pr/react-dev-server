@@ -42,22 +42,22 @@ const OverView = ({ name, data, hardReload }) => {
     try {
       if (name == "agency") {
         await axios.delete(
-          `http://192.168.29.114:3000/api/agency/${deleteParams.row._id}`
+          `http://34.93.221.166:3000/api/agency/${deleteParams.row._id}`
         );
       }
       if (name == "goal") {
         await axios.delete(
-          `http://192.168.29.114:3000/api/goal/${deleteParams.row._id}`
+          `http://34.93.221.166:3000/api/goal/${deleteParams.row._id}`
         );
       }
       if (name == "industry") {
         await axios.delete(
-          `http://192.168.29.114:3000/api/industry/${deleteParams.row._id}`
+          `http://34.93.221.166:3000/api/industry/${deleteParams.row._id}`
         );
       }
       if (name == "service") {
         await axios.delete(
-          `http://192.168.29.114:3000/api/services/${deleteParams.row._id}`
+          `http://34.93.221.166:3000/api/services/${deleteParams.row._id}`
         );
       }
 
@@ -133,25 +133,25 @@ const OverView = ({ name, data, hardReload }) => {
     try {
       if (name == "agency") {
         const data = await axios.put(
-          `http://192.168.29.114:3000/api/agency/${currentRow._id}`,
+          `http://34.93.221.166:3000/api/agency/${currentRow._id}`,
           updatePayload
         );
       }
       if (name == "goal") {
         const data = await axios.put(
-          `http://192.168.29.114:3000/api/goal/${currentRow._id}`,
+          `http://34.93.221.166:3000/api/goal/${currentRow._id}`,
           updatePayload
         );
       }
       if (name == "industry") {
         const data = await axios.put(
-          `http://192.168.29.114:3000/api/industry/${currentRow._id}`,
+          `http://34.93.221.166:3000/api/industry/${currentRow._id}`,
           updatePayload
         );
       }
       if (name == "service") {
         const data = await axios.put(
-          `http://192.168.29.114:3000/api/services/${currentRow._id}`,
+          `http://34.93.221.166:3000/api/services/${currentRow._id}`,
           updatePayload
         );
       }

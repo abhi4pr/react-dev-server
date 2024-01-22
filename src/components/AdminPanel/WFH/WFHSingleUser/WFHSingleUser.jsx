@@ -47,7 +47,7 @@ const WFHSingleUser = () => {
   const [departmentWise, setDepartmentWise] = useState([]);
   const [selectedTemplate, setSelectedTempate] = useState("");
   const [templateState, setTemplateState] = useState(null);
-  const [getDigitalSignImage, SetgetDigitalSignImage] = useState("");
+  // const [getDigitalSignImage, SetgetDigitalSignImage] = useState("");
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -80,7 +80,7 @@ const WFHSingleUser = () => {
         if (!getDigitalSignImage) {
           setIsModalOpen(true);
         } else {
-          const imageUrl = "https://storage.cloud.google.com/node-dev-server-bucket/";
+          const imageUrl = "";
   
           if (getDigitalSignImage.startsWith(imageUrl)) {
             const imageName = getDigitalSignImage.substring(imageUrl.length);

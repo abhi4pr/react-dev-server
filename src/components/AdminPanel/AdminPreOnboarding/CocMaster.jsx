@@ -55,7 +55,7 @@ const CocMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://192.168.29.150:3000/api/newcoc", {
+      await axios.post("http://34.93.221.166:3000/api/newcoc", {
         coc_content: cocContent,
         created_by: loginUserId,
       });

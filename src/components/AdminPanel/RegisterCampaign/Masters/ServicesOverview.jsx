@@ -6,7 +6,7 @@ const ServicesOverview = () => {
 
     const [serviceData,setServiceData]=useState([])
     const getServiceInfo=async ()=>{
-        const data=await axios.get('http://192.168.29.114:3000/api/services')
+        const data=await axios.get('http://34.93.221.166:3000/api/services')
         setServiceData(data.data.result)
     }
 
