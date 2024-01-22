@@ -241,7 +241,7 @@ const AllTransactions = () => {
     },
     {
       name: "Remarks",
-      selector: (row) => row.remarks,
+      selector: (row) => row.payment_update_remarks,
       width: "8%",
     },
     {

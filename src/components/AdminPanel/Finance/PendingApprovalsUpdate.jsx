@@ -6,6 +6,8 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { Autocomplete, TextField } from "@mui/material";
+import { get } from "jquery";
+import ImageView from "./ImageView";
 
 const PendingApprovalUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -15,6 +17,8 @@ const PendingApprovalUpdate = () => {
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [status, setStatus] = useState("");
+  const [viewImgSrc, setViewImgSrc] = useState("");
+  const [viewImgDialog, setViewImgDialog] = useState(false);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -29,16 +33,22 @@ const PendingApprovalUpdate = () => {
     formData.append("payment_approval_status", selectedStatus);
     formData.append("sale_booking_id", row.sale_booking_id);
     formData.append("action_reason", "");
+    formData.append("change_payment_update_status", 1);
 
-    await axios.post(
-      "https://production.sales.creativefuel.io/webservices/RestController.php?view=change_payment_update_status",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+    await axios
+      .post(
+        "https://salesdev.we-fit.in/webservices/RestController.php?view=change_payment_update_status",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res);
+        getData();
+      });
 
     toastAlert("Data updated");
     setIsFormSubmitted(true);
@@ -81,7 +91,9 @@ const PendingApprovalUpdate = () => {
     {
       name: "S.No",
       cell: (row, index) => (
-        <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...filterData].reverse().indexOf(row) + 1}</div>
       ),
       width: "80px",
       sortable: true,
@@ -129,7 +141,17 @@ const PendingApprovalUpdate = () => {
       name: <div style={{ whiteSpace: "normal" }}>Screenshot</div>,
       // selector: (row) => row.payment_time,
       cell: (row) => (
-        <div style={{ whiteSpace: "normal" }}>
+        <div
+          onClick={() => {
+            setViewImgSrc(
+              row.payment_screenshot
+                ? `https://salesdev.we-fit.in/${row.payment_screenshot}`
+                : ""
+            ),
+              setViewImgDialog(true);
+          }}
+          style={{ whiteSpace: "normal" }}
+        >
           <img
             src={
               row.payment_screenshot
@@ -186,7 +208,7 @@ const PendingApprovalUpdate = () => {
     },
     {
       name: "Remarks",
-      selector: (row) => row.remarks,
+      selector: (row) => row.payment_update_remarks,
       width: "200px",
     },
     {
@@ -208,12 +230,12 @@ const PendingApprovalUpdate = () => {
           value={row.statusDropdown}
           options={[
             { label: "Approved", value: 1 },
-            { label: "Rejected", value: 0 },
+            { label: "Rejected", value: 2 },
           ]}
           getOptionLabel={(option) => option.label}
-          onChange={(e) => {
-            handleStatusChange(row, e.target.value),
-              console.log(e.target.value);
+          onChange={(event, newValue) => {
+            handleStatusChange(row, newValue.value),
+              console.log(newValue.value);
           }}
           style={{ width: 180 }}
           renderInput={(params) => (
@@ -249,7 +271,7 @@ const PendingApprovalUpdate = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Pending approval for update"
+        mainTitle="Pending Approval "
         link="/admin/finance-alltransaction"
         buttonAccess={
           contextData &&
@@ -262,9 +284,10 @@ const PendingApprovalUpdate = () => {
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
-            title="Pending approval for update"
+            title="Pending Approval"
             columns={columns}
-            data={filterData}
+            data={[...filterData].reverse()}
+            keyField="id"
             fixedHeader
             pagination
             fixedHeaderScrollHeight="64vh"
@@ -281,6 +304,12 @@ const PendingApprovalUpdate = () => {
             }
           />
         </div>
+        {viewImgDialog && (
+          <ImageView
+            viewImgSrc={viewImgSrc}
+            setViewImgDialog={setViewImgDialog}
+          />
+        )}
       </div>
     </>
   );

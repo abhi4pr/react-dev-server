@@ -11,6 +11,8 @@ import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
 import React from "react";
+import axios from "axios";
+import { set } from "date-fns";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -21,11 +23,48 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function DiscardConfirmation({ rowData, setShowDiscardModal }) {
+export default function DiscardConfirmation({
+  rowData,
+  setShowDiscardModal,
+  userID,
+  callApi,
+}) {
   console.log(rowData);
   const [open, setOpen] = React.useState(true);
+  const [discardRemark, setDiscardRemark] = React.useState("");
   const handleClose = () => {
     setShowDiscardModal(false);
+  };
+
+  const handleConfirm = () => {
+    axios
+      .post("http://34.93.221.166:3000/api/phpvendorpaymentrequest", {
+        request_id: rowData.request_id,
+        vendor_id: rowData.vendor_id,
+        request_by: rowData.request_by,
+        request_amount: rowData.request_amount,
+        priority: rowData.priority,
+        status: 1,
+        payment_by: userID,
+        remark_finance: discardRemark,
+        invc_no: rowData.invc_no,
+        invc_remark: rowData.invc_remark,
+        outstandings: rowData.outstandings,
+        invc_Date: rowData.invc_Date,
+        vendor_name: rowData.vendor_name,
+        name: rowData.name,
+        request_date: rowData.request_date,
+
+      })
+      .then((res) => {
+        console.log(res);
+        callApi();
+        setShowDiscardModal(false);
+        setDiscardRemark("");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -51,7 +90,13 @@ export default function DiscardConfirmation({ rowData, setShowDiscardModal }) {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          <TextField multiline label="Reason for Discard" fullWidth />
+          <TextField
+            multiline
+            label="Reason for Discard"
+            value={discardRemark}
+            onChange={(e) => setDiscardRemark(e.target.value)}
+            fullWidth
+          />
         </DialogContent>
         <DialogActions>
           <Button
@@ -66,7 +111,7 @@ export default function DiscardConfirmation({ rowData, setShowDiscardModal }) {
             variant="contained"
             color="error"
             autoFocus
-            onClick={handleClose}
+            onClick={handleConfirm}
           >
             Yes
           </Button>
