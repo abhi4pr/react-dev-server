@@ -1380,6 +1380,35 @@ const SidebarLinks = () => {
 
       {/* )} */}
 
+      <li className="nav-item">
+        <Link
+          className="nav-link collapsed"
+          data-toggle="collapse"
+          data-target="#taskmanagement"
+          aria-expanded="true"
+          aria-controls="taskmanagement"
+        >
+          <span>Task Management</span>
+        </Link>
+        <div
+          id="taskmanagement"
+          className="collapse"
+          aria-labelledby="headingTwo"
+          // data-parent="#accordionSidebar"
+        >
+          <div className="bg-white collapse-inner">
+            <>
+              <Link
+                className="collapse-item"
+                to="/admin/task-status-dept-wise-overview"
+              >
+                Task Status
+              </Link>
+            </>
+          </div>
+        </div>
+      </li>
+
       {/* {isInstaApiVisible && (
         <li className="nav-item">
           <Link

@@ -71,7 +71,8 @@ const WFHSingleUser = () => {
 
   const digitalSignatureImageExists = decodedToken?.digital_signature_image;
   useEffect(() => {
-    if (digitalSignatureImageExists == "") {
+    console.log(digitalSignatureImageExists, "digital singnature exists");
+    if (digitalSignatureImageExists) {
       setIsModalOpen(true);
     } else {
       setIsModalOpen(false);

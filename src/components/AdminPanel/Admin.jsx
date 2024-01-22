@@ -211,6 +211,9 @@ import GoalOverview from "./RegisterCampaign/Masters/GoalOverview";
 import IndustryOverview from "./RegisterCampaign/Masters/IndustryOverview";
 import CreateService from "./RegisterCampaign/Masters/CreateService";
 import ServicesOverview from "./RegisterCampaign/Masters/ServicesOverview";
+import TaskStatusDeptWiseMaster from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseMaster";
+import TaskStatusDeptWiseOverview from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseOverview";
+import TaskStatusDeptWiseUpdate from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseUpdate";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -239,7 +242,6 @@ const Admin = () => {
               <Routes>
                 <Route path="/" element={<NavSideBar />}>
                   <Route path="/" element={<Dashboard />} />
-
                   <Route path="/all-pending-order" element={<PendingOrder />} />
                   <Route path="/transfer-req" element={<TransferReq />} />
                   <Route path="/all-order" element={<AllOrder />} />
@@ -256,13 +258,11 @@ const Admin = () => {
                     path="/dashboard_department_wise_user/:id"
                     element={<UserWiseDashboard />}
                   />
-
                   <Route path="/kra/:id" element={<KRA />} />
                   <Route
                     path="/user-wise-responsibility/:id"
                     element={<UserWiseResponsibility />}
                   />
-
                   {contextData &&
                     contextData[10] &&
                     contextData[10].view_value === 1 && (
@@ -323,7 +323,6 @@ const Admin = () => {
                         />
                       </>
                     )}
-
                   {/* Attendence  */}
                   <Route
                     path="/salary-dashboard/:id"
@@ -343,7 +342,6 @@ const Admin = () => {
                     element={<AttendanceOverview />}
                   />
                   <Route path="/attendence-mast" element={<Attendence />} />
-
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
                   <Route path="/all-salary" element={<WFHAllSalary />} />
@@ -357,7 +355,6 @@ const Admin = () => {
                     path="/accounts-finance-dashboard"
                     element={<FinanceWFHDashboard />}
                   />
-
                   <Route path="/wfh-single-user" element={<WFHSingleUser />} />
                   <Route
                     path="/wfh-template-overview"
@@ -371,13 +368,11 @@ const Admin = () => {
                     path="/wfh-user-dashboard"
                     element={<DashboardWFHUser />}
                   />
-
                   <Route
                     path="/wfh-dashboard-overview/:id"
                     element={<DashboardWFHCardDetails />}
                   />
                   <Route path="/wfhd-overview" element={<WFHDOverview />} />
-
                   <Route
                     path="/wfh-users-overview/:deptId"
                     element={<WFHUserOverview />}
@@ -387,7 +382,6 @@ const Admin = () => {
                     path="/desi-dept-auth/:id"
                     element={<DesiDeptAuth />}
                   />
-
                   {/* <Route
                     path="/wfh-user-dashboard"
                     element={<DashboardWFHUser />}
@@ -400,7 +394,6 @@ const Admin = () => {
                     path="/wfh-incomplete-user-overview"
                     element={<IncompleteProfileUsers />}
                   />
-
                   {contextData &&
                     contextData[1] &&
                     contextData[1].view_value === 1 && (
@@ -419,7 +412,6 @@ const Admin = () => {
                         />
                       </>
                     )}
-
                   {contextData &&
                     contextData[2] &&
                     contextData[2].view_value === 1 && (
@@ -544,7 +536,6 @@ const Admin = () => {
                         />
                       </>
                     )}
-
                   <Route
                     path="/responsibility-master"
                     element={<ResponsibilityMast />}
@@ -553,12 +544,10 @@ const Admin = () => {
                     path="/responsibility-overview"
                     element={<ResponsiblityOverview />}
                   />
-
                   <Route
                     path="/responsibility-update/:id"
                     element={<ResponsibilityUpdate />}
                   />
-
                   <Route
                     path="/logo-category-master"
                     element={<LogoCategoryMaster />}
@@ -571,9 +560,7 @@ const Admin = () => {
                     path="/logo-category-update/:id"
                     element={<LogoCategoryUpdate />}
                   />
-
                   <Route path="/pantry-home" element={<PantryHome />} />
-
                   <Route path="/iptype-master" element={<IpTypeMaster />} />
                   <Route path="/iptype-overview" element={<IpTypeOverview />} />
                   <Route path="/iptype-update/:id" element={<IpTypeUpdate />} />
@@ -747,21 +734,18 @@ const Admin = () => {
                     path="/register-campaign"
                     element={<RegisterCampaign />}
                   />
-
                   {/* HOBBIES */}
                   <Route path="/hobbies/:id" element={<Hobbies />} />
                   <Route
                     path="hobbies-overview"
                     element={<HobbiesOverview />}
                   />
-
                   {/* Phase Dashboard here  */}
                   <Route path="/phase-dashboard" element={<PhaseDashboard />} />
                   <Route
                     path="/plan-dashboard/:id"
                     element={<PlanDashboard />}
                   />
-
                   <Route
                     path="/replacement-dashboard"
                     element={<ReplacementDashobard />}
@@ -783,7 +767,6 @@ const Admin = () => {
                     path="/expeties-update/:id"
                     element={<ExpertiesUpdate />}
                   />
-
                   <Route
                     path="/registered-campaign"
                     element={<RegisteredCampaign />}
@@ -805,7 +788,6 @@ const Admin = () => {
                     element={<PlancreationNew />}
                   />
                   <Route path="/createAssign/:id" element={<CreateAssign />} />
-
                   <Route
                     path="/checkPageFollowers"
                     element={<CheckPageFollowers />}
@@ -815,7 +797,6 @@ const Admin = () => {
                   <Route path="/goal" element={<CreateGoal />} />
                   <Route path="/industry" element={<CreateIndustry />} />
                   <Route path="/service" element={<CreateService />} />
-
                   <Route path="/overview/agency" element={<AgencyOverview />} />
                   <Route path="/overview/goal" element={<GoalOverview />} />
                   <Route
@@ -826,7 +807,6 @@ const Admin = () => {
                     path="/overview/service"
                     element={<ServicesOverview />}
                   />
-
                   <Route path="/contenttype" element={<ContentType />} />
                   <Route
                     path="/campaigncommitment"
@@ -834,13 +814,11 @@ const Admin = () => {
                   />
                   <Route path="/categorymaster" element={<CategoryMaster />} />
                   <Route path="/subcategory" element={<SubCategoryMaster />} />
-
                   <Route path="/contentcreater" element={<ContentCreater />} />
                   <Route
                     path="/excusionCampaign"
                     element={<ExcusionCampaign />}
                   />
-
                   {/* ----------------------lead source routes -----------------------------*/}
                   <Route
                     path="/exploreleads"
@@ -866,7 +844,6 @@ const Admin = () => {
                       </LeadApp>
                     }
                   />
-
                   <Route
                     path="/:id"
                     element={
@@ -875,10 +852,8 @@ const Admin = () => {
                       </LeadApp>
                     }
                   />
-
                   {/* ------------------------Job Type ----------------------------- */}
                   <Route path="/jobType" element={<JobTypeMaster />} />
-
                   {/*------------------------ Execution --------------------------------*/}
                   <Route path="/cityMsater" element={<CityMaster />} />
                   <Route
@@ -934,12 +909,10 @@ const Admin = () => {
                       // </LeadApp>
                     }
                   />
-
                   <Route
                     path="/exeexecution/:id"
                     element={<ExecutionDetail />}
                   />
-
                   {/* -------------------Insta Api--------------------------- */}
                   {/* <Route
                     path="/instaapi"
@@ -1052,6 +1025,22 @@ const Admin = () => {
                       </InstaApiContext>
                     }
                   /> */}
+
+                  {/* TASK MANAGEMENT */}
+
+                  <Route
+                    path="/task-status-dept-wise-master"
+                    element={<TaskStatusDeptWiseMaster />}
+                  />
+                  <Route
+                    path="/task-status-dept-wise-overview"
+                    element={<TaskStatusDeptWiseOverview />}
+                  />
+                  <Route
+                    path="/task-status-update-dept-wise/:id"
+                    element={<TaskStatusDeptWiseUpdate />}
+                  />
+                  {/* TASK MANAGEMENT */}
                 </Route>
               </Routes>
             </div>
