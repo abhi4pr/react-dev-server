@@ -50,7 +50,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     setStatushere(status);
   };
   const handleAcceptUpdate = (row, status) => {
-    console.log(repairId, "hai yha");
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",

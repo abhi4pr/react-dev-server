@@ -101,21 +101,21 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
       selector: (row) => row.asset_name,
       sortable: true,
     },
-    {
-      name: "Status",
-      selector: (row) => (
-        <>
-          {row?.asset_request_asset_request_status === "Requested" ? (
-            <span className="badge badge-danger">Requested</span>
-          ) : row.asset_request_asset_request_status === "Approved" ? (
-            <span className="badge badge-success">Approved</span>
-          ) : row.asset_request_asset_request_status === "Rejected" ? (
-            <span className="badge badge-warning">Rejected</span>
-          ) : null}
-        </>
-      ),
-      sortable: true,
-    },
+    // {
+    //   name: "Status",
+    //   selector: (row) => (
+    //     <>
+    //       {row?.asset_new_request_status === "Requested" ? (
+    //         <span className="badge badge-danger">Requested</span>
+    //       ) : row.asset_new_request_status === "Approved" ? (
+    //         <span className="badge badge-success">Approved</span>
+    //       ) : row.asset_new_request_status === "Rejected" ? (
+    //         <span className="badge badge-warning">Rejected</span>
+    //       ) : null}
+    //     </>
+    //   ),
+    //   sortable: true,
+    // },
   ];
 
   const activeColumns = tabOne ? columnsTab1 : columnsTab2;

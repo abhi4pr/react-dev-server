@@ -40,12 +40,18 @@ const AssetVisibleToHr = () => {
   };
 
   const newAssetTab1 = (
-    <NewAssetRequestOverview newAssetData={newAsseRequesttData} />
+    <NewAssetRequestOverview
+      newAssetData={newAsseRequesttData.filter(
+        (d) =>
+          d.asset_request_status !== "Requested" &&
+          d.asset_request_status !== "RejectedByManager"
+      )}
+    />
   );
   const newAssetTab2 = (
     <NewAssetRequestOverview
       newAssetData={newAsseRequesttData.filter(
-        (d) => d.asset_request_status == "Requested"
+        (d) => d.asset_request_status == "ApprovedByManager"
       )}
       handleRelodenewData={handleRelodenewData}
     />

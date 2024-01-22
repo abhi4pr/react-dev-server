@@ -51,7 +51,7 @@ const DigitalSignature = ({
         }
 
         axios
-          .put(`http://192.168.29.68:3000/api/update_user`, formData, {
+          .put(`http://34.93.221.166:3000/api/update_user`, formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },

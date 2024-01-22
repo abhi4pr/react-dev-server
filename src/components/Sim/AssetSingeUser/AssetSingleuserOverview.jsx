@@ -6,7 +6,6 @@ import axios from "axios";
 import FieldContainer from "../../AdminPanel/FieldContainer";
 import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import { useGlobalContext } from "../../../Context/Context";
-import DateISOtoNormal from "../../../utils/DateISOtoNormal";
 
 const AssetSingleuserOverview = ({
   filterData,
@@ -109,6 +108,9 @@ const AssetSingleuserOverview = ({
       console.log(error);
     }
   };
+  const handleRow = (row) => {
+    setAssetName(row.assetsName);
+  };
 
   const columns = [
     {
@@ -197,17 +199,7 @@ const AssetSingleuserOverview = ({
       selector: (row) => row.assetsName,
       sortable: true,
     },
-    // {
-    //   name: "Status",
-    //   selector: (row) => (
-    //     <>
-    //       {row.asset_request_asset_request_status == "Requested" && (
-    //         <span className="badge badge-danger">Requested</span>
-    //       )}
-    //     </>
-    //   ),
-    //   sortable: true,
-    // },
+
     {
       name: "Status",
       selector: (row) => (
@@ -218,6 +210,10 @@ const AssetSingleuserOverview = ({
             <span className="badge badge-success">Assigned</span>
           ) : row.asset_request_asset_request_status === "Rejected" ? (
             <span className="badge badge-warning">Rejected</span>
+          ) : row.asset_request_asset_request_status === "ApprovedByManager" ? (
+            <span className="badge badge-warning">Approve By Manager</span>
+          ) : row.asset_request_asset_request_status === "RejectedByManager" ? (
+            <span className="badge badge-warning">Reject By Manager</span>
           ) : null}
         </>
       ),
@@ -353,29 +349,15 @@ const AssetSingleuserOverview = ({
                   onChange={(e) => setRepairDate(e.target.value)}
                   required
                 />
+                <FieldContainer
+                  fieldGrid={4}
+                  label="Asset Name"
+                  value={assetsName}
+                  onChange={(e) => setAssetName(e.target.value)}
+                  required
+                  disabled
+                />
 
-                <div className="form-group col-4">
-                  <label className="form-label">
-                    Asset Name <sup style={{ color: "red" }}>*</sup>
-                  </label>
-                  <Select
-                    options={getAssetDataContext.map((opt) => ({
-                      value: opt.sim_id,
-                      label: opt.assetsName,
-                    }))}
-                    value={{
-                      value: assetsName,
-                      label:
-                        getAssetDataContext.find(
-                          (user) => user.sim_id === assetsName
-                        )?.assetsName || "",
-                    }}
-                    onChange={(e) => {
-                      setAssetName(e.value);
-                    }}
-                    required
-                  />
-                </div>
                 <div className="form-group col-4">
                   <label className="form-label">
                     Reason <sup style={{ color: "red" }}>*</sup>
@@ -568,7 +550,7 @@ const AssetSingleuserOverview = ({
                   />
                 </div>
                 <FieldContainer
-                  label="Problem Detailing"
+                  label="Asset Detailing"
                   Tag="textarea"
                   value={problemDetailing}
                   onChange={(e) => setProblemDetailing(e.target.value)}
