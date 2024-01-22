@@ -11,6 +11,14 @@ const SalarySummary = () => {
 
   const [userCount, setUserCount] = useState([]);
   const [handleOpenUser, setHandleOpenUser] = useState(false);
+
+  const handleOpenSubCat = () => {
+    setHandleOpenUser(true);
+  };
+  const handleCloseSubCat = () => {
+    setHandleOpenUser(false);
+  };
+
   const handleUserModal = async (row) => {
     try {
       const response = await axios.post(
@@ -21,15 +29,13 @@ const SalarySummary = () => {
           year: row.year,
         }
       );
-      console.log(response.data.data, "response here");
+      console.log(response.data.data);
+
       setUserCount(response.data.data);
-      setHandleOpenUser(true);
+      handleOpenSubCat();
     } catch (error) {
       console.log(error, "sub cat api not working");
     }
-  };
-  const handleCloseSubCat = () => {
-    setHandleOpenUser(false);
   };
 
   const getData = async () => {
@@ -130,6 +136,19 @@ const SalarySummary = () => {
     },
   ];
 
+  const SubCatColumns = [
+    {
+      name: "S.No",
+      cell: (row, index) => <div>{index + 1}</div>,
+      width: "10%",
+    },
+    {
+      name: "User Name",
+      width: "50%",
+      selector: (row) => row.user_name,
+    },
+  ];
+
   return (
     <>
       <div>
@@ -159,6 +178,8 @@ const SalarySummary = () => {
         <Modal
           isOpen={handleOpenUser}
           onRequestClose={handleCloseSubCat}
+          contentLabel="Example Modal"
+          appElement={document.getElementById("root")}
           style={{
             content: {
               width: "60%",
@@ -172,48 +193,21 @@ const SalarySummary = () => {
             },
           }}
         >
-          {/* {selectedRow && ( */}
-          <div>
-            <div className="d-flex justify-content-between mb-2">
-              {/* <h2>Department: {selectedRow.dept_name}</h2> */}
-
-              <button
-                className="btn btn-success float-left"
-                onClick={handleCloseSubCat}
-              >
-                X
-              </button>
-            </div>
-            <h1></h1>
-            <DataTable
-              columns={[
-                {
-                  name: "S.No",
-                  cell: (row, index) => <div>{index + 1}</div>,
-                  width: "10%",
-                },
-                {
-                  name: "User Name",
-                  width: "50%",
-                  selector: "user_name",
-                },
-                // { name: "Category Name", selector: "category_name" },
-              ]}
-              data={userCount}
-              highlightOnHover
-              subHeader
-              // subHeaderComponent={
-              //   <input
-              //     type="text"
-              //     placeholder="Search..."
-              //     className="w-50 form-control"
-              //     value={modalSearch}
-              //     onChange={(e) => setModalSearch(e.target.value)}
-              //   />
-              // }
-            />
-          </div>
-          {/* )} */}
+          <DataTable
+            columns={SubCatColumns}
+            data={userCount}
+            highlightOnHover
+            subHeader
+            // subHeaderComponent={
+            //   <input
+            //     type="text"
+            //     placeholder="Search..."
+            //     className="w-50 form-control"
+            //     value={modalSearch}
+            //     onChange={(e) => setModalSearch(e.target.value)}
+            //   />
+            // }
+          />
         </Modal>
       </div>
     </>
