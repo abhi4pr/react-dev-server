@@ -214,6 +214,7 @@ import ServicesOverview from "./RegisterCampaign/Masters/ServicesOverview";
 import TaskStatusDeptWiseMaster from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseMaster";
 import TaskStatusDeptWiseOverview from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseOverview";
 import TaskStatusDeptWiseUpdate from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseUpdate";
+import DisputeOverview from "./WFH/Dispute/DisputeOverview";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -381,6 +382,10 @@ const Admin = () => {
                   <Route
                     path="/desi-dept-auth/:id"
                     element={<DesiDeptAuth />}
+                  />
+                  <Route
+                    path="/dispute-overview"
+                    element={<DisputeOverview />}
                   />
                   {/* <Route
                     path="/wfh-user-dashboard"

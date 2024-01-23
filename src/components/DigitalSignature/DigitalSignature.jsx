@@ -18,9 +18,9 @@ const DigitalSignature = ({
     signature.clear();
   };
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     const canvas = signature.getTrimmedCanvas();
-    canvas.toBlob((blob) => {
+    canvas.toBlob(async (blob) => {
       if (blob) {
         const formData = new FormData();
         formData.append("user_id", userID);
@@ -50,18 +50,31 @@ const DigitalSignature = ({
             formData.append("offer_later_status", offerLetterStatus);
         }
 
-        axios
-          .put(`http://34.93.221.166:3000/api/update_user`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          })
-          .then(() => {
-            closeModal();
-            gettingData();
-            toastAlert("Submitted");
-          });
-        signature.clear();
+        try {
+          // Perform the PUT API call and await its completion
+          await axios.put(
+            `http://34.93.221.166:3000/api/update_user`,
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          // Once the PUT API call is successful, continue with other actions
+          closeModal();
+          toastAlert("Submitted");
+          signature.clear();
+
+          // Delay the execution of gettingData by 3 seconds
+          setTimeout(async () => {
+            await gettingData();
+          }, 3000); // 3000 milliseconds = 3 seconds
+        } catch (error) {
+          console.error("Error in PUT API", error);
+          // Handle the error appropriately, if needed
+        }
       }
     }, "image/png");
   };
