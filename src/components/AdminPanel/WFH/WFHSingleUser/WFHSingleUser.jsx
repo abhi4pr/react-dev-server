@@ -76,12 +76,16 @@ const WFHSingleUser = () => {
       .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
       .then((res) => {
         const getDigitalSignImage = res.data.digital_signature_image;
-  
+
         if (!getDigitalSignImage) {
           setIsModalOpen(true);
         } else {
           const imageUrl = "";
+<<<<<<< Updated upstream
   
+=======
+
+>>>>>>> Stashed changes
           if (getDigitalSignImage.startsWith(imageUrl)) {
             const imageName = getDigitalSignImage.substring(imageUrl.length);
             if (imageName.trim() === "") {
