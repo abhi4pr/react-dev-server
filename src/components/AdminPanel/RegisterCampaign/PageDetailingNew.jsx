@@ -32,6 +32,8 @@ import { useGlobalContext } from "../../../Context/Context";
 import Loader from "./Loader/Loader";
 import exportToCSV from "../../../utils/ExcelConverter";
 import generatePDF from "../../../utils/PdfConverter";
+
+import * as XLSX from 'xlsx';
 let options = [];
 let pageNames = [];
 const Follower_Count = [
@@ -74,6 +76,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
   const [externalPPP, setExternalPPP] = useState(null);
   const [searchField, setSearchField] = useState(false);
 
+  const [excelUpload, setExcelUpload] = useState(false)
+
   useEffect(() => {
     getPageData();
   }, []);
@@ -85,18 +89,32 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
   }, [allPageData]);
 
   useEffect(() => {
-    if (selectedRows.length == 0) {
-      setPayload([]);
-    } else {
-      const data = planPages.filter((page) => {
-        if (selectedRows.includes(page.p_id)) {
-          return page;
-        }
-      });
+    if (!excelUpload) {
 
-      setPayload(data);
+      if (selectedRows.length == 0) {
+        setPayload([]);
+      } else {
+        const data = planPages.filter((page) => {
+          if (selectedRows.includes(page.p_id)) {
+            return page;
+          }
+        });
+
+        setPayload(data);
+      }
     }
   }, [selectedRows]);
+
+  useEffect(() => {
+    if (excelUpload) {
+      let rows = []
+      payload.map(item => {
+        rows.push(item.p_id)
+        return
+      })
+      setSelectedRows(rows)
+    }
+  }, [payload])
 
   useEffect(() => {
     if (radioSelected != "unregistered") {
@@ -123,7 +141,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     }
   }, [unregisteredPages]);
 
-  useEffect(() => {}, [externalPPP]);
+  useEffect(() => { }, [externalPPP]);
 
   const resetToInitialState = () => {
     setPayload([]);
@@ -166,7 +184,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         setPlanPages(x);
         setFilteredPages(x);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const categorySet = () => {
@@ -429,12 +447,10 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         border-radius: 8px;
         color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
         background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-        border: 1px solid ${
-          theme.palette.mode === "dark" ? grey[700] : grey[200]
-        };
-        box-shadow: 0px 2px 2px ${
-          theme.palette.mode === "dark" ? grey[900] : grey[50]
-        };
+        border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]
+      };
+        box-shadow: 0px 2px 2px ${theme.palette.mode === "dark" ? grey[900] : grey[50]
+      };
     
         &:hover {
           border-color: ${blue[400]};
@@ -442,9 +458,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     
         &:focus {
           border-color: ${blue[400]};
-          box-shadow: 0 0 0 3px ${
-            theme.palette.mode === "dark" ? blue[600] : blue[200]
-          };
+          box-shadow: 0 0 0 3px ${theme.palette.mode === "dark" ? blue[600] : blue[200]
+      };
         }
     
         // firefox
@@ -777,6 +792,106 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       },
     },
   ];
+
+  console.log(selectedRows)
+  const [excelData, setExcelData] = useState([]);
+  //   const handleFile=(file)=>{
+
+  //     const reader = new FileReader();
+  //     setExcelUpload(true)
+  //     reader.onload = (e) => {
+  //       const data = new Uint8Array(e.target.result);
+  //       const workbook = XLSX.read(data, { type: 'array' });
+  //       const sheetName = workbook.SheetNames[0]; // Assuming the data is in the first sheet
+  //       const sheet = workbook.Sheets[sheetName];
+  //       const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+  //       let forLoad=[]
+  //       let forFilter=[]
+  //       let rows=[]
+  //       const newData=allPageData?.forEach((item)=>{
+  //         let flag
+  //         if(jsonData.some(page=>{
+  //           flag=page
+  //           return page[1]==item.page_name
+  //         })){
+  //             rows.push(item.p_id)
+  //           forLoad.push({...item,postPerPage:flag[5],storyPerPage:flag[6]}) 
+  //           forFilter.push({...item,postPerPage:flag[5],storyPerPage:flag[6]}) 
+  //         }else {
+  //           forFilter.push(item)
+  //         }
+  //       })
+
+  //       setPayload(forLoad);
+  //       x=rows
+  //       setFilteredPages(forFilter)
+  //       setPlanPages(forFilter)
+  //       // setSelectedRows(rows)
+  //   }
+  //   reader.readAsArrayBuffer(file);
+  // }
+  const handleFile = (file) => {
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const data = new Uint8Array(e.target.result);
+      const workbook = XLSX.read(data, { type: 'array' });
+      const sheetNames = workbook.SheetNames;
+
+      // Combine data from all sheets except the first one
+      const combinedData = combineSheets(workbook, sheetNames.slice(1))
+        .filter((arr) => arr.length > 0)
+        .map((arr) => JSON.stringify(arr))
+        .filter((value, index, self) => self.indexOf(value) === index)
+        .map((str) => JSON.parse(str));
+
+      setExcelData(combinedData);
+      let forLoad = []
+      let forFilter = []
+      let rows = []
+      const newData = allPageData?.forEach((item) => {
+        let flag
+        if (combinedData.some(page => {
+          flag = page
+          return page[1].charAt(0).toLowerCase() + page[1].slice(1) == item.page_name
+        })) {
+          rows.push(item.p_id)
+          forLoad.push({ ...item, postPerPage: flag[4], storyPerPage: flag[6] })
+          forFilter.push({ ...item, postPerPage: flag[4], storyPerPage: flag[6] })
+        } else {
+          forFilter.push(item)
+        }
+      })
+
+      setPayload(forLoad);
+      x = rows
+      setFilteredPages(forFilter)
+      setPlanPages(forFilter)
+    };
+
+    reader.readAsArrayBuffer(file);
+  }
+
+  const combineSheets = (workbook, sheetNames) => {
+    const combinedData = [];
+    sheetNames.forEach((sheetName) => {
+      const sheet = workbook.Sheets[sheetName];
+      const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+      combinedData.push(...jsonData);
+    });
+    return combinedData;
+  };
+  console.log(payload)
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    console.log(file)
+    if (file) {
+      handleFile(file);
+    }
+  };
+  console.log(excelData)
   if (isLoadingPhase) {
     return <Loader message="Phase creation in progress..." />;
   }
@@ -859,6 +974,10 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           <Button variant="contained" onClick={handleCP} sx={{ m: 1 }}>
             Copy / paste
           </Button>
+
+
+          <input type="file" id="fileInput" onChange={handleFileInputChange} />
+
         </Box>
       </Paper>
       <Box sx={{ p: 2 }}>
