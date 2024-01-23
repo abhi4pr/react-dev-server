@@ -81,11 +81,7 @@ const WFHSingleUser = () => {
           setIsModalOpen(true);
         } else {
           const imageUrl = "";
-<<<<<<< Updated upstream
-  
-=======
 
->>>>>>> Stashed changes
           if (getDigitalSignImage.startsWith(imageUrl)) {
             const imageName = getDigitalSignImage.substring(imageUrl.length);
             if (imageName.trim() === "") {

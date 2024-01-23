@@ -8,10 +8,6 @@ const DisputeReason = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
   const { toastAlert } = useGlobalContext();
   const [disputeReason, setDisputeReason] = useState("");
   const { attendence_id, month, year } = data;
-<<<<<<< Updated upstream
-=======
-  console.log(data, "month uererffsd");
->>>>>>> Stashed changes
 
   const d = new Date();
   const currentDate = DateISOtoNormal(d.toISOString());
