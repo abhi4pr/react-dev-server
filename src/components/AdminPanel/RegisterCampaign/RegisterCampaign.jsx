@@ -1,22 +1,28 @@
 import {
-  Autocomplete,
   Button,
+  TextField,
+  Autocomplete,
   FormControl,
   Paper,
-  TextField,
+  Box,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import AddPage from "./AddPage";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import dayjs from "dayjs";
-
+import { useGlobalContext } from "../../../Context/Context";
 import { useNavigate } from "react-router-dom";
 
 export default function RegisterCampaign() {
+
+  const { toastAlert, toastError } = useGlobalContext();
+
+  const [showPageDetails, setShowPageDetails] = useState(false);
   const [campaignDetailing, setCampaignDetailing] = useState("");
   const [showBrandName, setShowBrandName] = useState([]);
   const [xlxsData, setXlxsData] = useState([]);
@@ -24,6 +30,20 @@ export default function RegisterCampaign() {
   const [showAlert, setShowAlert] = useState(false);
   const [campignData, setCampignData] = useState([{}]);
   const [campaign, setCampaign] = useState();
+  const [campaignAmount, setCampaignAmount] = useState("");
+  const [industry, setIndustry] = useState([]);
+  const [selectedIndustry, setSelectedIndustry] = useState("");
+  const [goal, setGoal] = useState([]);
+  const [selectedGoal, setSelectedGoal] = useState("");
+  const [hashtag, setHashtag] = useState("");
+  const [caption, setCaption] = useState("");
+  const [selectedAgency, setSelectedAgency] = useState("");
+  const [agencyList, setAgencyList] = useState([]);
+
+  const togglePageDetails = () => {
+    setShowPageDetails(!showPageDetails);
+  };
+
   const navigate = useNavigate();
   const createExcel = () => {
     const ws = XLSX.utils.json_to_sheet(xlxsData);
@@ -38,11 +58,7 @@ export default function RegisterCampaign() {
   const handleSubmit = (e) => {
     e.preventDefault();
     let hasError = false;
-
-    // Validation for Brand Name
     if (!brandName) {
-      // Handle the case when Brand Name is not selected
-      // You can display an error message or take other actions here
       hasError = true;
     }
 
@@ -50,25 +66,18 @@ export default function RegisterCampaign() {
       hasError = true;
     }
 
-    // Validation for Date Time
     if (!selectedDate) {
-      // Handle the case when Date Time is not selected
-      // You can display an error message or take other actions here
       hasError = true;
     }
 
-    // Validation for Commitment
     const hasEmptyCommitment = fields.some(
       (field) => !field.selectValue || !field.textValue
     );
     if (hasEmptyCommitment) {
-      // Handle the case when Commitment is not selected or Value is empty
-      // You can display an error message or take other actions here
       hasError = true;
     }
 
     if (hasError) {
-      // If there are validation errors, set showAlert to true to display the alert
       setShowAlert(true);
       return;
     }
@@ -86,11 +95,16 @@ export default function RegisterCampaign() {
     form.append("detailing", campaignDetailing);
     form.append("status", 0);
     form.append("stage", 0);
+    form.append("captions", caption);
+    form.append("hashtags", hashtag);
+    form.append("agency", selectedAgency);
+    form.append("industry", selectedIndustry);
+    form.append("goal", selectedGoal);
+
     console.log(form, "<--------------------this is form");
     axios
-      .post("http://34.93.221.166:3000/api/register_campaign", form)
+      .post("http://192.168.29.149:3000/api/register_campaign", form)
       .then(() => {
-        // Reset form fields on successful submission
         setBrandName([]);
         setSelectedDate(null);
         setFields([{ selectValue: "", textValue: "" }]);
@@ -99,7 +113,8 @@ export default function RegisterCampaign() {
         setBrandName([]);
         setFields([]);
         navigate("/admin/registered-campaign");
-      })
+        toastAlert("Campaign Regrister Successfully")   
+         })
       .catch((err) => {
         console.log(err);
       });
@@ -135,16 +150,12 @@ export default function RegisterCampaign() {
   const handleTextChange = (event, index) => {
     const updatedFields = [...fields];
     const inputValue = event.target.value;
-
-    // Use a regular expression to check if inputValue is a valid number
     const isNumeric = /^[0-9]+$/.test(inputValue);
 
     if (isNumeric) {
       updatedFields[index].textValue = inputValue;
       setFields(updatedFields);
     } else {
-      // Handle the case when inputValue is not a valid number
-      // You can display an error message or take other actions here
     }
   };
 
@@ -193,7 +204,50 @@ export default function RegisterCampaign() {
       .catch((err) => {
         console.log(err);
       });
+    axios
+      .get("http://192.168.29.149:3000/api/agency")
+      .then((response) => {
+        const data = response.data.result;
+        console.log(data, "<----agency");
+        setAgencyList(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios
+      .get("http://192.168.29.149:3000/api/goal")
+      .then((response) => {
+        const data = response.data.result;
+        console.log(data, "<----goal");
+        setGoal(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios
+      .get("http://192.168.29.149:3000/api/industry")
+      .then((response) => {
+        const data = response.data.result;
+        console.log(data, "<----industry");
+        setIndustry(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }, []);
+
+  const handleHashtagChange = (event) => {
+    setHashtag(event.target.value);
+  };
+  const handleAgencyChange = (event, newValue) => {
+    setSelectedAgency(newValue);
+  };
+  const handleGoalChange = (event, newValue) => {
+    setSelectedGoal(newValue);
+  };
+  const handleIndusrtyChange = (event, newValue) => {
+    setSelectedIndustry(newValue);
+  };
 
   return (
     <div>
@@ -202,7 +256,7 @@ export default function RegisterCampaign() {
           <h2 className="form-heading">Register a Campaign</h2>
         </div>
       </div>
-      <div style={{ height: "50px" }}>
+      <div style={{ height: "30px" }}>
         {/* Alert to display when there are validation errors */}
         {showAlert && (
           <div className="alert alert-danger" role="alert">
@@ -211,171 +265,260 @@ export default function RegisterCampaign() {
         )}
       </div>
       <div>
-        <div className="card ">
-          <div className="card-body ">
-            <div className="d-flex">
-              <Paper
-                sx={{ padding: "10px", width: "100vw", marginBottom: "20px" }}
-              >
-                <div>
-                  <FormControl sx={{ width: 300, marginRight: "10px" }}>
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={showBrandName.map((option) => option.brand_name)}
-                      sx={{ width: 300 }}
-                      require={true}
-                      value={
-                        showBrandName.filter((e) => brandName == e.brand_id)[0]
-                          ?.brand_name
-                      }
-                      renderInput={(params) => (
-                        <TextField {...params} label="Brand Name *" />
-                      )}
-                      onSelect={handleChange}
-                    />
-                  </FormControl>
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DateTimePicker
-                      label="Date Time *"
-                      value={selectedDate}
-                      required
-                      onChange={(newValue) => handleDateChange(newValue)}
-                    />
-                  </LocalizationProvider>
-                  <FormControl sx={{ width: 300, marginLeft: "10px" }}>
-                    <Autocomplete
-                      disablePortal
-                      id="combo-box-demo"
-                      options={campignData.map((option) => ({
-                        label: option.exeCmpName,
-                        value: option.exeCmpId,
-                      }))}
-                      sx={{ width: 300 }}
-                      require={true}
-                      value={campaign?.label}
-                      onChange={(e, newValue) => setCampaign(newValue)}
-                      renderInput={(params) => (
-                        <TextField {...params} label="Campaing *" />
-                      )}
-                    />
-                  </FormControl>
-                </div>
-                <TextField
-                  sx={{ width: "49%", mt: 2 }}
-                  id="outlined-multiline-static"
-                  label="Campaing Detailing"
-                  multiline
-                  rows={4}
-                  value={campaignDetailing}
-                  onChange={(e) => setCampaignDetailing(e.target.value)}
-                  variant="outlined"
+        <Paper sx={{}}>
+          <Box>
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", m: 1 }}
+            >
+              <Autocomplete
+                disablePortal
+                options={showBrandName.map((option) => option.brand_name)}
+                sx={{ width: 300, mt: 2 }}
+                require={true}
+                value={
+                  showBrandName.filter((e) => brandName == e.brand_id)[0]
+                    ?.brand_name
+                }
+                renderInput={(params) => (
+                  <TextField {...params} label="Brand Name *" />
+                )}
+                onSelect={handleChange}
+              />
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={campignData.map((option) => ({
+                  label: option.exeCmpName,
+                  value: option.exeCmpId,
+                }))}
+                sx={{ width: 300, mt: 2 }}
+                require={true}
+                value={campaign?.label}
+                onChange={(e, newValue) => setCampaign(newValue)}
+                renderInput={(params) => (
+                  <TextField {...params} label="Campaing *" />
+                )}
+              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <MobileDateTimePicker
+                  label="Date *"
+                  value={selectedDate}
+                  required
+                  sx={{ width: 300, mt: 2 }}
+                  onChange={(newValue) => handleDateChange(newValue)}
+                  showTimePicker={false}
                 />
-              </Paper>
-            </div>
+              </LocalizationProvider>
+
+              <Autocomplete
+                disablePortal
+                id="agency-dropdown"
+                options={
+                  industry?.length > 0 && industry.map((option) => option.name)
+                }
+                sx={{ width: 300,mt: 2 }}
+                value={selectedIndustry}
+                onChange={handleIndusrtyChange}
+                renderInput={(params) => (
+                  <TextField {...params} label="Industry *" />
+                )}
+              />
+            </Box>
+          </Box>
+
+          <Box>
+            <Box sx={{ display: "flex", justifyContent: "space-around" }}>
+              <Autocomplete
+                disablePortal
+                id="agency-dropdown"
+                options={
+                  agencyList?.length > 0 &&
+                  agencyList.map((option) => option.name)
+                }
+                sx={{ width: 400,mt:1 }}
+                value={selectedAgency}
+                onChange={handleAgencyChange}
+                renderInput={(params) => (
+                  <TextField {...params} label="Agency *" />
+                )}
+              />
+
+              <Autocomplete
+                disablePortal
+                id="agency-dropdown"
+                options={
+                  goal?.length > 0 &&
+                  goal.map((option) => option.name)
+                }
+                sx={{ width: 400,mt:1 }}
+                value={selectedGoal}
+                onChange={handleGoalChange}
+                renderInput={(params) => (
+                  <TextField {...params} label="Goal *" />
+                )}
+              />
+
+              <TextField
+                label="Hashtag"
+                value={hashtag}
+                onChange={handleHashtagChange}
+                sx={{ width: 400, mt:1}}
+                variant="outlined"
+              />
+
+              {/* <TextField
+                label="Campaign Amount"
+                value={campaignAmount}
+                onChange={(e) => setCampaignAmount(e.target.value)}
+                type="number"
+                sx={{ width: "300px", marginLeft: "10px" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputProps={{
+                  min: 0,
+                }}
+              /> */}
+            </Box>
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "space-around", mb: 1 }}>
+            <TextField
+              label="Campaign Detailing"
+              fullWidth
+              multiline
+              value={campaignDetailing}
+              onChange={(e) => setCampaignDetailing(e.target.value)}
+              sx={{ mt:2,mr:1,ml:1 }}
+            />
+
+            <TextField
+              label="Caption"
+              value={caption}
+              multiline
+              onChange={(e) => setCaption(e.target.value)}
+              fullWidth
+              variant="outlined"
+              sx={{ mt: 2,mr:1 }}
+            />
+          </Box>
+          <>
             {fields.length > 0 && (
-              <Paper sx={{ padding: "10px", marginBottom: "10px" }}>
-                <FormControl>
-                  {fields.map((field, index) => (
-                    <div key={index} className="mt-2 mb-2 d-flex">
-                      <FormControl sx={{ width: "300px", marginRight: "10px" }}>
-                        <Autocomplete
-                          required
-                          disablePortal
-                          value={
-                            campaignList.filter(
-                              (e) => e.cmtName == field.selectValue
-                            )[0]?.cmtName
-                          }
-                          onChange={(event, newValue) => {
-                            handleSelectChange(
-                              {
-                                target: {
-                                  value: campaignList.filter(
-                                    (e) => e.cmtName == newValue
-                                  )[0].cmtId,
-                                },
-                              },
-                              index
-                            ),
-                              console.log(
-                                campaignList.filter(
+              <FormControl sx={{ mr: 1, ml: 1 }}>
+                {fields.map((field, index) => (
+                  <div key={index} className="mt-2 mb-2 d-flex">
+                    <FormControl sx={{ width: "900px", marginRight: "10px" }}>
+                      <Autocomplete
+                        required
+                        disablePortal
+                        value={
+                          campaignList.filter(
+                            (e) => e.cmtName == field.selectValue
+                          )[0]?.cmtName
+                        }
+                        onChange={(event, newValue) => {
+                          handleSelectChange(
+                            {
+                              target: {
+                                value: campaignList.filter(
                                   (e) => e.cmtName == newValue
                                 )[0].cmtId,
-                                "field.selectValue"
-                              );
-                          }}
-                          options={campaignList
-                            .filter(
-                              (e) =>
-                                !fields
-                                  .map((e) => e.selectValue)
-                                  .includes(e.cmtId)
-                            )
-                            .map((option) => option.cmtName)}
-                          renderInput={(params) => (
-                            <TextField {...params} label="Commitment *" />
-                          )}
-                        />
-                      </FormControl>
-                      <TextField
-                        required
-                        label="Value"
-                        value={field.textValue}
-                        type="number"
-                        onChange={(event) => handleTextChange(event, index)}
+                              },
+                            },
+                            index
+                          ),
+                            console.log(
+                              campaignList.filter(
+                                (e) => e.cmtName == newValue
+                              )[0].cmtId,
+                              "field.selectValue"
+                            );
+                        }}
+                        options={campaignList
+                          .filter(
+                            (e) =>
+                              !fields
+                                .map((e) => e.selectValue)
+                                .includes(e.cmtId)
+                          )
+                          .map((option) => option.cmtName)}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Commitment *" />
+                        )}
                       />
-                      <Button onClick={(e) => handleRemoveField(e, index)}>
-                        <i className="fas fa-close"></i>
-                      </Button>
-                    </div>
-                  ))}
-                </FormControl>
-              </Paper>
+                    </FormControl>
+
+                    <TextField
+                      required
+                      label="Value"
+                      value={field.textValue}
+                      type="number"
+                      fullWidth
+                      onChange={(event) => handleTextChange(event, index)}
+                    />
+                    <Button onClick={(e) => handleRemoveField(e, index)}>
+                      <i className="fas fa-close"></i>
+                    </Button>
+                  </div>
+                ))}
+              </FormControl>
             )}
-            <div className="d-flex justify-content-between">
-              <div>
-                {commitmentOptions.filter(
-                  (e) => !fields.map((e) => e.selectValue).includes(e)
-                ).length > 0 && (
-                  <Button
-                    variant="outlined"
-                    sx={{ marginBottom: "10px", marginRight: "10px" }}
-                    color="primary"
-                    onClick={handleAddField}
-                  >
-                    Add Row
-                  </Button>
-                )}
-              </div>
-            </div>
+          </>
+        </Paper>
+
+        <div className="d-flex justify-content-between">
+          <div>
+            {commitmentOptions.filter(
+              (e) => !fields.map((e) => e.selectValue).includes(e)
+            ).length > 0 && (
+              <Button
+                variant="outlined"
+                sx={{ mt: 2 }}
+                color="secondary"
+                onClick={handleAddField}
+              >
+                Add Row
+              </Button>
+            )}
+            <Button
+              variant="outlined"
+              onClick={togglePageDetails}
+              sx={{ mt: 2, ml: 2 }}
+            >
+              {showPageDetails ? " Remove Excel " : " Fetch Excel"}
+            </Button>
           </div>
         </div>
+
         <br />
       </div>
-      <AddPage setXlxsData={setXlxsData} />
 
-      <div className="d-flex mt-3 ms-4">
-        <Button
-          onClick={(e) => {
-            handleSubmit(e);
-            // e.preventDefault();
-            console.log(
-              brandName,
-              JSON.stringify(fields),
-              selectedDate,
-              brandName,
-              xlxsData
-            );
-          }}
-          sx={{ marginBottom: "10px", marginRight: "10px" }}
-          variant="contained"
-          size="small"
-          color="primary"
-        >
-          Register
-        </Button>
-      </div>
+      {showPageDetails && <AddPage setXlxsData={setXlxsData} />}
+
+      <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
+  <Button
+    onClick={(e) => {
+      handleSubmit(e);
+    }}
+    variant="outlined"
+    size="large"
+    color="secondary"
+    sx={{
+      mt: 2,
+      borderColor: "primary",
+      fontWeight: 'bold',
+      textTransform: 'none',
+      transition: 'all 0.5s ease-in-out',
+      '&:hover': {
+        backgroundColor: "primary.light",
+        borderColor: "primary.dark",
+        transform: 'scale(1.05)',
+      },
+    }}
+  >
+    Register
+  </Button>
+</Box>
+
     </div>
   );
 }
