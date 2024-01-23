@@ -8,7 +8,7 @@ const CreateAgency = () => {
         name={'Agency'}
         data={[
             {label:"Name",payload:"name"},{label:"Mobile",payload:"mobile"},{label:"Alternate Mobile",payload:"alternateMobile"},
-            {label:"City",payload:"city"}, {label:"Instagram",payload:"instagram"}, {label:"Email",payload:"email"}, {label:"Remark",payload:"remark"}
+            {label:"City",payload:"city"}, {label:"Username",payload:"instagram"}, {label:"Email",payload:"email"}, {label:"Remark",payload:"remark"}
         ]}
       />
     </>

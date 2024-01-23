@@ -20,7 +20,9 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useGlobalContext } from "../../../Context/Context";
 export default function CampaignCommitment() {
+  const { toastAlert, toastError } = useGlobalContext();
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -32,13 +34,13 @@ export default function CampaignCommitment() {
     useState(false);
   const [itemToDeleteId, setItemToDeleteId] = useState(null);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [reload, setReload] = useState(false);
   const [postData, setPostData] = useState({
     exeCmpName: "",
     exeHashTag: "",
     exeRemark: "",
   });
-  console.log(rows);
+  const url = "http://34.93.135.33:8080/api/exe_campaign";
   function EditToolbar() {
     const handleClick = () => {
       setIsModalOpen(true);
@@ -60,6 +62,7 @@ export default function CampaignCommitment() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
+    console.log(name.exeCmpName, "exeCmpName");
     setPostData({
       ...postData,
       [name]: value,
@@ -68,46 +71,41 @@ export default function CampaignCommitment() {
 
   const handleSave = (e) => {
     e.preventDefault();
-    if (!postData.exeCmpName || !postData.exeHashTag || !postData.exeRemark) {
-      setErrorMessage("* fields are required.");
+    if (!postData.exeCmpName) {
+      setErrorMessage("* Campaign Name required");
       return;
+    } else {
+      setErrorMessage(" ");
     }
     axios
-      .post("http://34.93.221.166:3000/api/exe_campaign", postData)
+      .post(url, postData)
       .then((response) => {
-        setIsModalOpen(false);
-        getData();
-        console.log("Data saved:", response.data);
+        if (response.data.success === false) {
+          toastError(response.data.message);
+        } else {
+          toastAlert("Add successfully");
+        }
+        setReload(!reload);
+        setPostData("");
       })
       .catch((error) => {
         console.error("Error saving data:", error);
+        toastError("Add Properly");
       });
     setIsModalOpen(false);
   };
 
   // get api ========>
   const getData = () => {
-    axios.get("http://34.93.221.166:3000/api/exe_campaign").then((res) => {
-      console.log(res.data.data, "yyyyyyyyyyyyyy");
-      const data = res.data.data;
-      const uniqueCmtNames = new Set();
-      const uniqueRows = data.filter((row) => {
-        if (uniqueCmtNames.has(row.exeCmpName)) {
-          console.log(
-            "Brand name already exists. Duplicate values are not allowed."
-          );
-          return false;
-        } else {
-          uniqueCmtNames.add(row.exeCmpName);
-          return true;
-        }
-      });
-      setRows(uniqueRows);
+    axios.get(url).then((res) => {
+      const newData = res.data.data;
+      const sortedData = newData.sort((a, b) => b.exeCmpId - a.exeCmpId);
+      setRows(sortedData);
     });
   };
   useEffect(() => {
     getData();
-  }, []);
+  }, [reload]);
 
   const handleRowEditStop = (params, event) => {
     if (params.reason === GridRowEditStopReasons.rowFocusOut) {
@@ -116,8 +114,12 @@ export default function CampaignCommitment() {
   };
   // put api =============>
   const handlePutData = () => {
+    if (!editData.exeCmpName) {
+      toastError("Please fill required fields.");
+      return;
+    }
     axios
-      .put(`http://34.93.221.166:3000/api/exe_campaign`, {
+      .put(url, {
         exeCmpId: editData.exeCmpId,
         exeCmpName: editData.exeCmpName,
         exeHashTag: editData.exeHashTag,
@@ -126,10 +128,15 @@ export default function CampaignCommitment() {
       .then((res) => {
         console.log(res.data);
         setIsPutOpen(true);
+        if (res.data.success === false) {
+          toastError(res.data.message);
+        } else {
+          toastAlert("Update successfully");
+        }
       })
       .then(() => {
         setIsPutOpen(false);
-        getData();
+        setReload(!reload);
       });
     console.log("put data");
   };
@@ -147,27 +154,20 @@ export default function CampaignCommitment() {
   const handleConfirmDelete = () => {
     if (itemToDeleteId) {
       axios
-        .delete(`http://34.93.221.166:3000/api/exe_campaign/${itemToDeleteId}`)
+        .delete(`${url}/${itemToDeleteId}`)
         .then(() => {
-          getData();
           console.log("Data deleted successfully");
         })
         .catch((error) => {
           console.error("Error deleting data:", error);
         })
         .finally(() => {
+          setReload(!reload);
           setIsDeleteConfirmationOpen(false);
           setItemToDeleteId(null);
         });
     }
   };
-
-  const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
-
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
@@ -187,6 +187,7 @@ export default function CampaignCommitment() {
       field: "exeCmpName",
       headerName: "Campaign Name",
       width: 180,
+      require: true,
     },
 
     {
@@ -234,10 +235,6 @@ export default function CampaignCommitment() {
     setFilteredRows(filtered);
   };
 
-  // useEffect(() => {
-  //   getData();
-  // }, []);
-
   useEffect(() => {
     filterRows();
   }, [searchInput, rows]);
@@ -260,18 +257,7 @@ export default function CampaignCommitment() {
         style={{ marginBottom: "10px" }}
       />
 
-      <Box
-        sx={{
-          height: 500,
-          width: "100%",
-          "& .actions": {
-            color: "text.secondary",
-          },
-          "& .textPrimary": {
-            color: "text.primary",
-          },
-        }}
-      >
+      <Box>
         <DataGrid
           rows={filteredRows}
           columns={columns}
@@ -280,7 +266,6 @@ export default function CampaignCommitment() {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
           slots={{
             toolbar: EditToolbar,
           }}
@@ -295,18 +280,15 @@ export default function CampaignCommitment() {
         <DialogTitle>Add Record</DialogTitle>
         <DialogContent>
           <Box
-            component="form"
             sx={{
-              "& .MuiTextField-root": { m: 1, width: "25ch" },
+              "& .MuiTextField-root": { m: 1 },
             }}
-            noValidate
-            autoComplete="off"
           >
             <div>
               <>
                 <TextField
                   id="outlined-password-input"
-                  label="Campaign Name"
+                  label=" * Campaign Name"
                   name="exeCmpName"
                   type="text"
                   value={postData.exeCmpName}
@@ -319,23 +301,14 @@ export default function CampaignCommitment() {
                 )}
               </>
 
-              <>
-                <TextField
-                  id="outlined-password-input"
-                  label="Hash Tag"
-                  name="exeHashTag"
-                  type="text"
-                  value={postData.exeHashTag}
-                  onChange={handleChange}
-                />
-
-                {errorMessage && (
-                  <div style={{ color: "red", marginBottom: "10px" }}>
-                    {errorMessage}
-                  </div>
-                )}
-              </>
-
+              <TextField
+                id="outlined-password-input"
+                label="Hash Tag"
+                name="exeHashTag"
+                type="text"
+                value={postData.exeHashTag}
+                onChange={handleChange}
+              />
               <>
                 <TextField
                   id="outlined-password-input"
@@ -345,11 +318,6 @@ export default function CampaignCommitment() {
                   value={postData.exeRemark}
                   onChange={handleChange}
                 />
-                {errorMessage && (
-                  <div style={{ color: "red", marginBottom: "10px" }}>
-                    {errorMessage}
-                  </div>
-                )}
               </>
             </div>
           </Box>
@@ -369,17 +337,14 @@ export default function CampaignCommitment() {
         <DialogTitle>Edit Record</DialogTitle>
         <DialogContent>
           <Box
-            component="form"
             sx={{
-              "& .MuiTextField-root": { m: 1, width: "25ch" },
+              "& .MuiTextField-root": { m: 1 },
             }}
-            noValidate
-            autoComplete="off"
           >
             <div>
               <TextField
                 id="outlined-password-input"
-                label="Campaign Name"
+                label="* Campaign Name"
                 name="exeCmpName"
                 type="text"
                 value={editData.exeCmpName}
@@ -435,7 +400,7 @@ export default function CampaignCommitment() {
           open={isDeleteConfirmationOpen}
           onClose={() => setIsDeleteConfirmationOpen(false)}
         >
-          <DialogTitle>Delete Confirmation</DialogTitle>
+          <DialogTitle color="error">Delete Confirmation</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Are you sure you want to delete this item?
@@ -445,10 +410,15 @@ export default function CampaignCommitment() {
             <Button
               onClick={() => setIsDeleteConfirmationOpen(false)}
               color="primary"
+              variant="outlined"
             >
               Cancel
             </Button>
-            <Button onClick={handleConfirmDelete} color="primary">
+            <Button
+              onClick={handleConfirmDelete}
+              color="error"
+              variant="outlined"
+            >
               Delete
             </Button>
           </DialogActions>
