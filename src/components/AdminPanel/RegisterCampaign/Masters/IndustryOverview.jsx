@@ -19,7 +19,7 @@ const IndustryOverview = () => {
   return (
     <div>
         
-      <OverView name={"industry"} data={industryData} hardReload={hardReload}/>
+      <OverView name={"Industry"} data={industryData} hardReload={hardReload}/>
     </div>
   )
 }

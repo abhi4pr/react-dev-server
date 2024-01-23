@@ -890,7 +890,7 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/overview/industry"
                                 >
-                                  indusrty Master
+                                  Indusrty Master
                                 </Link>
                                 <Link
                                   className="collapse-item"
@@ -928,7 +928,7 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/subcategory"
                                 >
-                                  subcategory Master
+                                  Subcategory Master
                                 </Link>
                                 <Link
                                   className="collapse-item"

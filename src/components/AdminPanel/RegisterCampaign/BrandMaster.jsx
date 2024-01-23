@@ -21,24 +21,27 @@ import {
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useGlobalContext } from "../../../Context/Context";
 
 export default function BrandMaster() {
+  const { toastAlert, toastError } = useGlobalContext();
+  const [reload, setReload] = useState(false);
   const [SubCategoryString, setSubCategoryString] = useState();
+  console.log(SubCategoryString);
   const [subcategoryOptions, setSubCategoryOptions] = useState([]);
-  console.log(SubCategoryString, "SubCategoryString");
   const [categoryOptions, setCategoryOptions] = useState([]);
-  // const [majorOptions, setMajorOptions] = useState([]);
-  const [majorString, setMajorString] = useState([]);
-
   const [rows, setRows] = useState([]);
-  const [rowModesModel, setRowModesModel] = useState({});
+  // const [rowModesModel, setRowModesModel] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPutOpen, setIsPutOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filteredRows, setFilteredRows] = useState([]);
   const [editData, setEditData] = useState([]);
-  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errBrandName, setErrBrandName] = useState();
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [itemToDeleteId, setItemToDeleteId] = useState(null);
   const [postData, setPostData] = useState({
     brand_name: "",
     category_id: "",
@@ -47,7 +50,6 @@ export default function BrandMaster() {
     whatsapp: "",
     major_category: "",
   });
-
   const majorcategoryoption = [
     { major_cat_id: 1, major_cat_name: "Brands" },
     { major_cat_id: 2, major_cat_name: "Normal" },
@@ -56,15 +58,9 @@ export default function BrandMaster() {
     { major_cat_id: 5, major_cat_name: "Entertainment" },
   ];
 
-  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
-    useState(false);
-  const [itemToDeleteId, setItemToDeleteId] = useState(null);
-
-  //-----------------------
+  const brandURL = "http://34.93.135.33:8080/api/";
   const handleClose = () => {
     setIsModalOpen(false);
-    // setCategoryString();
-    // setSubCategoryString();
   };
 
   function EditToolbar() {
@@ -84,35 +80,18 @@ export default function BrandMaster() {
       </GridToolbarContainer>
     );
   }
-  // const [brad, setbrad] = useState();
-  // post data =========>
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    // // Reset the error state
-    // setError("");
-
-    // const isBrandNameValid = /^[A-Za-z\s]+$/.test(value);
-    // const isBrandNameNotEmpty = value.trim() !== "";
-    // const isIgusernameValid = /^[A-Za-z0-9]+$/.test(value);
-    // const isWhatsappValid = /^[A-Za-z\s]+$/.test(value);
-
-    // if (name === "brand_name") {
-    //   if (!isBrandNameValid) {
-    //     setbrad("Brand name should only contain letters.");
-    //   } else if (!isBrandNameNotEmpty) {
-    //     setbrad("Brand name is required.");
-    //   }
-    // } else if (name === "igusername") {
-    //   if (!isIgusernameValid) {
-    //     setError("IG username should only contain letters and numbers.");
-    //   }
-    // } else if (name === "whatsapp") {
-    //   if (!isWhatsappValid) {
-    //     setError("WhatsApp should only contain numbers.");
-    //   }
-    // }
-
+    if (name === "brand_name") {
+      if (!value === "") {
+        setErrBrandName("Brand should not be blank.");
+      } else if (!/^[a-zA-Z\s]+$/.test(value)) {
+        setErrBrandName("Brand should be characters.");
+      } else {
+        setErrBrandName(" ");
+      }
+    }
     setPostData({
       ...postData,
       [name]: value,
@@ -121,84 +100,55 @@ export default function BrandMaster() {
 
   const handleSave = (e) => {
     e.preventDefault();
-    for (const key in postData) {
-      if (postData[key] === "") {
-        setError(`* All fields required`);
-        return;
-      }
+    if (
+      !postData.brand_name ||
+      !postData.category_id ||
+      !postData.sub_category_id ||
+      !postData.major_category
+    ) {
+      toastError(" * Please fill in all required fields ");
+    } else {
+      axios
+        .post(`${brandURL}/add_brand`, postData)
+        .then((response) => {
+          response.data.message
+            ? toastError(response.data.message)
+            : toastAlert("Add Successfully");
+          setPostData("");
+          setReload(!reload);
+        })
+        .catch((error) => {
+          console.error("Error saving data:", error);
+          toastError("Error adding data. Please try again later.");
+        });
+      setIsModalOpen(false);
     }
-    setError("");
-
-    axios
-      .post("http://34.93.221.166:3000/api/add_brand", postData)
-      .then((response) => {
-        console.log(response.data, "Data saved:");
-        setIsModalOpen(false);
-        getData();
-        // setPostData({
-        //   brand_name: "",
-        //   category_id: "",
-        //   sub_category_id: "",
-        //   igusername: "",
-        //   whatsapp: "",
-        //   major_category: "",
-        // });
-      })
-      .catch((error) => {
-        console.error("Error saving data:", error);
-      });
-    setIsModalOpen(false);
-    setPostData("");
   };
 
   // get api ------
   const getData = () => {
-    axios.get("http://34.93.221.166:3000/api/get_brands").then((res) => {
+    axios.get(`${brandURL}/get_brands`).then((res) => {
       const newData = res.data.data;
       const sortedData = newData.sort((a, b) => b.brand_id - a.brand_id);
-
       setRows(sortedData);
     });
   };
 
   const categoryData = () => {
-    axios.get("http://34.93.221.166:3000/api/projectxCategory").then((res) => {
+    axios.get("http://34.93.135.33:8080/api/projectxCategory").then((res) => {
       console.log(res.data.data, "-------> cat data");
       setCategoryOptions(res.data.data);
     });
   };
-  const subCategoryData = () => {
-    console.log("calling the subcategory data");
-    axios
-      .get("http://34.93.221.166:3000/api/projectxSubCategory")
-      .then((res) => {
-        console.log(res.data.data, "-------> subcat data");
-        const filteredData = res.data.data.filter((item) => {
-          return item.category_id == postData.category_id;
-        });
-        const x = filteredData.filter((item) => {
-          return item.sub_category_id == postData.sub_category_id;
-        })[0].sub_category_id;
-        console.log(x, "filteredData meeee");
-        // setSubCategoryOptions(filteredData);
-      });
-  };
-  console.log(rows);
   useEffect(() => {
     getData();
     categoryData();
-    // subCategoryData()
-  }, []);
-
-  useEffect(() => {
-    console.log("postData.category_id", postData.category_id);
-    subCategoryData();
-  }, [postData?.category_id, postData]);
+  }, [reload]);
 
   const subCategoryDataOnEdit = () => {
     console.log("calling the subcategory data on Edit");
     axios
-      .get("http://34.93.221.166:3000/api/projectxSubCategory")
+      .get("http://34.93.135.33:8080/api/projectxSubCategory")
       .then((res) => {
         console.log(res.data.data, "-------> subcat data");
         const filteredData = res.data.data.filter((item) => {
@@ -211,36 +161,52 @@ export default function BrandMaster() {
   };
 
   useEffect(() => {
-    console.log("postData.category_id", postData.category_id);
     subCategoryDataOnEdit();
   }, [postData.category_id, postData]);
   // put api ------
   const handlePutData = () => {
+    const onlyCharacters = /^[A-Za-z]+$/;
+    if (
+      !editData.brand_name ||
+      !editData.category_id ||
+      !editData.sub_category_id ||
+      !editData.major_category
+    ) {
+      toastError("Please fill required fields.");
+      return;
+    }
+    if (!onlyCharacters.test(editData.brand_name)) {
+      toastError("Brand name should contain only characters.");
+      return;
+    }
+
     axios
-      .put(`http://34.93.221.166:3000/api/edit_brand`, {
+      .put(`${brandURL}/edit_brand`, {
         brand_id: editData.brand_id,
         brand_name: editData.brand_name,
         category_id: editData.category_id,
         sub_category_id: editData.sub_category_id,
+        major_category: editData.major_category,
         igusername: editData.igusername,
         whatsapp: editData.whatsapp,
-        // user_id: editData.user_id,
-        // updated_at: editData.updated_at,
       })
       .then((res) => {
-        console.log(res.data);
+        if (res.data.success === false) {
+          toastError(res.data.message);
+        } else {
+          toastAlert("Update successfully");
+        }
         setIsPutOpen(true);
       })
       .then(() => {
         setIsPutOpen(false);
-        getData();
+        setReload(!reload);
       });
-    console.log("put data");
   };
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/projectxSubCategory")
+      .get("http://34.93.135.33:8080/api/projectxSubCategory")
       .then((res) => {
         console.log(res.data.data, "-------> subcat data");
         const filteredData = res.data.data.filter((item) => {
@@ -255,14 +221,7 @@ export default function BrandMaster() {
   const handleEditClick = (id, row) => () => {
     setLoading(true);
     setEditData(row);
-    // console.log(row);
-    // console.log(
-    //   subcategoryOptions.find(
-    //     (option) => option.sub_category_id == row.sub_category_id
-    //   )
-    // );
     setIsPutOpen(true);
-
     setPostData(row);
   };
 
@@ -280,29 +239,23 @@ export default function BrandMaster() {
   const handleConfirmDelete = () => {
     if (itemToDeleteId) {
       axios
-        .delete(`http://34.93.221.166:3000/api/delete_brand/${itemToDeleteId}`)
+        .delete(`${brandURL}/delete_brand/${itemToDeleteId}`)
         .then(() => {
           getData();
           console.log("Data deleted successfully");
         })
-        .catch((error) => {
-          console.error("Error deleting data:", error);
-        })
+        // .catch((error) => {
+        //   console.error("Error deleting data:", error);
+        // })
         .finally(() => {
           setIsDeleteConfirmationOpen(false);
           setItemToDeleteId(null);
         });
     }
   };
-
-  const processRowUpdate = (newRow) => {
-    const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
-  };
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    setRowModesModel(newRowModesModel);
+  const handleCancle = () => {
+    setIsPutOpen(false);
+    setReload(!reload);
   };
 
   const columns = [
@@ -320,7 +273,13 @@ export default function BrandMaster() {
       field: "brand_name",
       headerName: "Brand",
       width: 180,
-    },
+      renderCell: (params) => {
+        const brand_name = params.row.brand_name; 
+        const BrandName = brand_name.charAt(0).toUpperCase() + brand_name.slice(1);
+        return BrandName;
+      }
+    }
+,    
     {
       field: "projectx_category_name",
       headerName: "Category",
@@ -363,14 +322,14 @@ export default function BrandMaster() {
             label="Edit"
             className="textPrimary"
             onClick={handleEditClick(id, row)}
-            color="success"
+            color="primary"
           />,
           // eslint-disable-next-line react/jsx-key
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteClick(id)}
-            color="inherit"
+            sx={{ color: "red" }}
           />,
         ];
       },
@@ -405,26 +364,12 @@ export default function BrandMaster() {
         onChange={(e) => setSearchInput(e.target.value)}
         style={{ marginBottom: "10px" }}
       />
-      <Box
-        sx={{
-          height: 500,
-          width: "100%",
-          "& .actions": {
-            color: "text.secondary",
-          },
-          "& .textPrimary": {
-            color: "text.primary",
-          },
-        }}
-      >
+      <Box>
         <DataGrid
           rows={filteredRows}
           columns={columns}
           editMode="row"
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
           getRowId={(row) => row.brand_id}
           slots={{
             toolbar: EditToolbar,
@@ -437,67 +382,52 @@ export default function BrandMaster() {
         <DialogTitle>Add Record</DialogTitle>
         <DialogContent>
           <Box
-            component="form"
             sx={{
-              "& .MuiTextField-root": { m: 1, width: "25ch" },
+              "& .MuiTextField-root": { m: 1 },
             }}
-            noValidate
-            autoComplete="off"
           >
             <div>
               <>
                 <TextField
                   id="outlined-password-input"
-                  label="Brand"
+                  label="  * Brand"
                   name="brand_name"
                   type="text"
                   value={postData.brand_name}
                   onChange={handleChange}
+                  sx={{ width: "100%" }}
                 />
-                {error && <div style={{ color: "red" }}>{error}</div>}
+                <span style={{ color: "red" }}>{errBrandName}</span>
               </>
-              <>
-                <Autocomplete
-                  id="combo-box-demo"
-                  // value={majorString}
-                  options={majorcategoryoption.map((item) => ({
-                    label: item.major_cat_name,
-                    value: item.major_cat_id,
-                  }))}
-                  style={{ width: 300 }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Major Category" />
-                  )}
-                  onChange={(event, newValue) => {
-                    console.log(newValue.value);
-                    if (newValue) {
-                      setPostData({
-                        ...postData,
-                        major_category: newValue.label,
-                      });
-                      // setMajorString(newValue.label);
-                    } else {
-                      setPostData({
-                        ...postData,
-                        major_cat_id: "",
-                      });
-                    }
-                  }}
-                />
+              <Autocomplete
+                id="combo-box-demo"
+                options={majorcategoryoption.map((item) => ({
+                  label: item.major_cat_name,
+                  value: item.major_cat_id,
+                }))}
+                renderInput={(params) => (
+                  <TextField {...params} label="  * Major Category" />
+                )}
+                onChange={(event, newValue) => {
+                  console.log(newValue.value);
+                  if (newValue) {
+                    setPostData({
+                      ...postData,
+                      major_category: newValue.label,
+                    });
+                  }
+                }}
+              />
 
-                {error && <div style={{ color: "red" }}>{error}</div>}
-              </>
               <>
                 <Autocomplete
                   disablePortal
-                  id="combo-box-demo"
                   options={categoryOptions.map((option) => ({
                     label: option.category_name,
                     value: option.category_id,
                   }))}
-                  sx={{ width: 300 }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Category" />
+                    <TextField {...params} label="  * Category" />
                   )}
                   onChange={(event, newValue) => {
                     console.log(newValue.value);
@@ -507,20 +437,16 @@ export default function BrandMaster() {
                     });
                   }}
                 />
-
-                {error && <div style={{ color: "red" }}>{error}</div>}
               </>
               <>
                 <Autocomplete
                   disablePortal
-                  id="combo-box-demo"
                   options={subcategoryOptions.map((item) => ({
                     label: item.sub_category_name,
                     value: item.sub_category_id,
                   }))}
-                  sx={{ width: 300 }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Subcategory" />
+                    <TextField {...params} label="  * Subcategory" />
                   )}
                   onChange={(event, newValue) => {
                     console.log(newValue.value);
@@ -530,37 +456,29 @@ export default function BrandMaster() {
                         sub_category_id: newValue.value,
                       });
                       setSubCategoryString(newValue.label);
-                    } else {
-                      setPostData({
-                        ...postData,
-                        sub_category_id: "",
-                      });
                     }
                   }}
                 />
-                {error && <div style={{ color: "red" }}>{error}</div>}
               </>
               <>
                 <TextField
-                  id="outlined-password-input"
                   label="Igusername"
                   name="igusername"
                   type="text"
                   value={postData.igusername}
                   onChange={handleChange}
+                  sx={{ width: "100%" }}
                 />
-                {error && <div style={{ color: "red" }}>{error}</div>}
               </>
               <>
                 <TextField
-                  id="outlined-password-input"
                   label="Whatsapp"
                   name="whatsapp"
                   type="text"
                   value={postData.whatsapp}
                   onChange={handleChange}
+                  sx={{ width: "100%" }}
                 />
-                {error && <div style={{ color: "red" }}>{error}</div>}
               </>
             </div>
           </Box>
@@ -580,20 +498,17 @@ export default function BrandMaster() {
         <DialogTitle>Edit Record</DialogTitle>
         <DialogContent>
           <Box
-            component="form"
             sx={{
-              "& .MuiTextField-root": { m: 1, width: "25ch" },
+              "& .MuiTextField-root": { m: 1 },
             }}
-            noValidate
-            autoComplete="off"
           >
             {!loading && (
               <div>
                 <TextField
-                  id="outlined-password-input"
                   label="Brand"
                   name="brand_name"
                   type="text"
+                  sx={{ width: "100%" }}
                   value={editData.brand_name}
                   onChange={(e) =>
                     setEditData((prev) => ({
@@ -609,7 +524,6 @@ export default function BrandMaster() {
                     label: item.category_name,
                     value: item.category_id,
                   }))}
-                  sx={{ width: 300 }}
                   value={
                     categoryOptions.find(
                       (option) => option.category_id == editData.category_id
@@ -638,7 +552,6 @@ export default function BrandMaster() {
                       );
                     })?.sub_category_name
                   }
-                  sx={{ width: 300 }}
                   renderInput={(params) => (
                     <TextField {...params} label="Sub Category" />
                   )}
@@ -653,7 +566,6 @@ export default function BrandMaster() {
                   disablePortal
                   options={majorcategoryoption}
                   getOptionLabel={(option) => option.major_cat_name}
-                  sx={{ width: 300 }}
                   renderInput={(params) => (
                     <TextField {...params} label="Major Category" />
                   )}
@@ -670,7 +582,6 @@ export default function BrandMaster() {
                 />
 
                 <TextField
-                  id="outlined-password-input"
                   label="Iguser Name"
                   name="igusername"
                   type="text"
@@ -683,7 +594,6 @@ export default function BrandMaster() {
                   }
                 />
                 <TextField
-                  id="outlined-password-input"
                   label="Whatsapp"
                   name="whatsapp"
                   type="text"
@@ -700,7 +610,7 @@ export default function BrandMaster() {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setIsPutOpen(false)} color="primary">
+          <Button onClick={handleCancle} color="primary">
             Cancel
           </Button>
           <Button onClick={handlePutData} color="primary">
@@ -722,10 +632,11 @@ export default function BrandMaster() {
           <Button
             onClick={() => setIsDeleteConfirmationOpen(false)}
             color="primary"
+            variant="outlined"
           >
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="primary">
+          <Button onClick={handleConfirmDelete} color="error" variant="outlined">
             Delete
           </Button>
         </DialogActions>

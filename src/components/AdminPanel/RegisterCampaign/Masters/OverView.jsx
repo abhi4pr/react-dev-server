@@ -16,13 +16,17 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../../Context/Context";
 
+
+
+
 let fieldInRows = [];
 const OverView = ({ name, data, hardReload }) => {
   const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
   const [columns, setColumns] = useState([]);
   const [isPutOpen, setIsPutOpen] = useState(false);
-
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteParams, setDeleteParams] = useState({});
   const [updatePayload, setUpdatePayload] = useState({});
   const [currentRow, setCurrentRow] = useState({});
 
@@ -30,38 +34,39 @@ const OverView = ({ name, data, hardReload }) => {
     setCurrentRow(params.row);
     setIsPutOpen(true);
   };
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [deleteParams, setDeleteParams] = useState({});
 
   const deleteHandler = (params) => {
     setDeleteParams(params);
     setIsDeleteDialogOpen(true);
   };
-
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
   const confirmDelete = async () => {
     try {
-      if (name == "agency") {
+      if (name == "Agency") {
         await axios.delete(
           `http://34.93.221.166:3000/api/agency/${deleteParams.row._id}`
         );
       }
-      if (name == "goal") {
+      if (name == "Goal") {
         await axios.delete(
           `http://34.93.221.166:3000/api/goal/${deleteParams.row._id}`
         );
       }
-      if (name == "industry") {
+      if (name == "Industry") {
         await axios.delete(
           `http://34.93.221.166:3000/api/industry/${deleteParams.row._id}`
         );
       }
-      if (name == "service") {
+      if (name == "Service") {
         await axios.delete(
           `http://34.93.221.166:3000/api/services/${deleteParams.row._id}`
         );
       }
 
       hardReload();
+      toastAlert(`${name} Delete Successfully`)
       setIsDeleteDialogOpen(false);
     } catch (error) {}
   };
@@ -72,8 +77,8 @@ const OverView = ({ name, data, hardReload }) => {
       if (key == "_id" || key == "__v") continue;
       const y = {
         field: key,
-        headerName: key,
-        width: 100,
+        headerName: capitalizeFirstLetter(key),
+        width: 180,
       };
       fieldInRows.push(key);
       val.push(y);
@@ -131,25 +136,25 @@ const OverView = ({ name, data, hardReload }) => {
 
   const handleUpdatePayload = async () => {
     try {
-      if (name == "agency") {
+      if (name == "Agency") {
         const data = await axios.put(
           `http://34.93.221.166:3000/api/agency/${currentRow._id}`,
           updatePayload
         );
       }
-      if (name == "goal") {
+      if (name == "Goal") {
         const data = await axios.put(
           `http://34.93.221.166:3000/api/goal/${currentRow._id}`,
           updatePayload
         );
       }
-      if (name == "industry") {
+      if (name == "Industry") {
         const data = await axios.put(
           `http://34.93.221.166:3000/api/industry/${currentRow._id}`,
           updatePayload
         );
       }
-      if (name == "service") {
+      if (name == "Service") {
         const data = await axios.put(
           `http://34.93.221.166:3000/api/services/${currentRow._id}`,
           updatePayload

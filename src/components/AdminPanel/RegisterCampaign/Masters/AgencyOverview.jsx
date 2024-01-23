@@ -18,7 +18,7 @@ const AgencyOverview = () => {
     },[])
   return (
     <div>
-      <OverView name={"agency"} data={agencyData} hardReload={hardReload}/>
+      <OverView name={"Agency"} data={agencyData} hardReload={hardReload}/>
     </div>
   )
 }

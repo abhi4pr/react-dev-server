@@ -18,7 +18,7 @@ const ServicesOverview = () => {
     },[])
   return (
     <div>
-      <OverView name={"service"} data={serviceData} hardReload={hardReload}/>
+      <OverView name={"Service"} data={serviceData} hardReload={hardReload}/>
     </div>
   )
 }
