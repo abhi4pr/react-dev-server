@@ -103,7 +103,7 @@ export default function RegisterCampaign() {
 
     console.log(form, "<--------------------this is form");
     axios
-      .post("http://192.168.29.149:3000/api/register_campaign", form)
+      .post("http://34.93.221.166:3000/api/register_campaign", form)
       .then(() => {
         setBrandName([]);
         setSelectedDate(null);
@@ -205,7 +205,7 @@ export default function RegisterCampaign() {
         console.log(err);
       });
     axios
-      .get("http://192.168.29.149:3000/api/agency")
+      .get("http://34.93.221.166:3000/api/agency")
       .then((response) => {
         const data = response.data.result;
         console.log(data, "<----agency");
@@ -215,7 +215,7 @@ export default function RegisterCampaign() {
         console.log(err);
       });
     axios
-      .get("http://192.168.29.149:3000/api/goal")
+      .get("http://34.93.221.166:3000/api/goal")
       .then((response) => {
         const data = response.data.result;
         console.log(data, "<----goal");
@@ -225,7 +225,7 @@ export default function RegisterCampaign() {
         console.log(err);
       });
     axios
-      .get("http://192.168.29.149:3000/api/industry")
+      .get("http://34.93.221.166:3000/api/industry")
       .then((response) => {
         const data = response.data.result;
         console.log(data, "<----industry");
