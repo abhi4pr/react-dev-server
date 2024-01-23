@@ -499,24 +499,28 @@ const SidebarLinks = () => {
                 <Link className="collapse-item" to="/admin/asset-single-user">
                   Asset
                 </Link>
-                {contextData &&
+                {/* {contextData &&
                   contextData[15] &&
-                  contextData[15].view_value === 1 && (
-                    <Link className="collapse-item" to="/sim-overview">
-                      Asset Management
-                    </Link>
-                  )}
+                contextData[15].view_value === 1 && ( */}
+                {RoleId == 5 && (
+                  <Link className="collapse-item" to="/sim-overview">
+                    Asset Management
+                  </Link>
+                )}
+                {/* )} */}
 
-                {contextData &&
+                {/* {contextData &&
                   contextData[40] &&
-                  contextData[40].view_value === 1 && (
-                    <Link
-                      className="collapse-item"
-                      to="/admin/asset-visible-to-hr"
-                    >
-                      Asset Request HR
-                    </Link>
-                  )}
+                  contextData[40].view_value === 1 && ( */}
+                {RoleId == 5 && (
+                  <Link
+                    className="collapse-item"
+                    to="/admin/asset-visible-to-hr"
+                  >
+                    Asset Request HR
+                  </Link>
+                )}
+                {/* )} */}
                 <Link
                   className="collapse-item"
                   to="/admin/asset-visible-to-taged-person"
@@ -526,11 +530,11 @@ const SidebarLinks = () => {
                 {/* {contextData &&
                   contextData[41] &&
                   contextData[41].view_value === 1 && ( */}
-                {/* {RoleId == 2 && ( */}
-                <Link className="collapse-item" to="/admin/asset-manager">
-                  Asset Request Approvel
-                </Link>
-                {/* )} */}
+                {RoleId == 2 && (
+                  <Link className="collapse-item" to="/admin/asset-manager">
+                    Asset Request Approvel
+                  </Link>
+                )}
                 {/* )} */}
               </div>
             </div>

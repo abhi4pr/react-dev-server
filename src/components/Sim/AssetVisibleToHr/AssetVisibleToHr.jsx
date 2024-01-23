@@ -40,18 +40,14 @@ const AssetVisibleToHr = () => {
   };
 
   const newAssetTab1 = (
-    <NewAssetRequestOverview
-      newAssetData={newAsseRequesttData.filter(
-        (d) =>
-          d.asset_request_status !== "Requested" &&
-          d.asset_request_status !== "RejectedByManager"
-      )}
-    />
+    <NewAssetRequestOverview newAssetData={newAsseRequesttData} />
   );
   const newAssetTab2 = (
     <NewAssetRequestOverview
       newAssetData={newAsseRequesttData.filter(
-        (d) => d.asset_request_status == "ApprovedByManager"
+        (d) =>
+          d.asset_request_status == "ApprovedByManager" ||
+          d.asset_request_status == "Requested"
       )}
       handleRelodenewData={handleRelodenewData}
     />
@@ -112,7 +108,7 @@ const AssetVisibleToHr = () => {
   );
   const tab4 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data.filter((d) => d.status == "Recover")}
+      hrOverviewData={data.filter((d) => d.status == "Recovered")}
       hardRender={hardRender}
     />
   );
