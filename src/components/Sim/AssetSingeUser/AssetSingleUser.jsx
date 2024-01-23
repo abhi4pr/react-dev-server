@@ -58,7 +58,6 @@ const AssetSingleUser = () => {
       );
       setData(res.data.data);
       setFilterData(res.data.data);
-      console.log(res.data.data, "userAsset");
     } catch (error) {
       console.log(error);
     }
@@ -71,10 +70,10 @@ const AssetSingleUser = () => {
   }
   async function getNewAssetRequest() {
     const res = await axios.get(
-      `http://34.93.221.166:3000/api/get_allocated_asset_data_for_user_id/${userID}`
+      `http://34.93.221.166:3000/api/assetrequest/${userID}`
     );
-    console.log(res.data.data, "reason hai");
-    setNewAssetRequestData(res?.data.data);
+    console.log(res.data, "reason hai");
+    setNewAssetRequestData(res?.data);
   }
 
   useEffect(() => {
@@ -95,7 +94,6 @@ const AssetSingleUser = () => {
   };
 
   const handleRow = (row) => {
-    console.log(row.assetsName, "row is here");
     setAssetName(row?.sim_id);
   };
 
@@ -123,6 +121,7 @@ const AssetSingleUser = () => {
         "http://34.93.221.166:3000/api/add_repair_request",
         formData
       );
+      toastAlert("Success");
       setAssetName("");
       setRepairDate("");
       setPriority("");
@@ -133,7 +132,6 @@ const AssetSingleUser = () => {
       getRepairRequest("");
       setProblemDetailing("");
       setTagUser([]);
-      toastAlert("Success");
     } catch (error) {
       console.log(error);
     }
@@ -159,37 +157,6 @@ const AssetSingleUser = () => {
           </FormContainer>
         </div>
       </div>
-
-      {/* old  */}
-      {/* <FormContainer
-        mainTitle="Asset"
-        link="/"
-        submitButton={false}
-        buttonAccess={false}
-      />
-      <div className="card">
-        <div className="data_tbl table-responsive">
-          <DataTable
-            title="Asset Details"
-            columns={columns}
-            data={filterData}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="36vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
-          />
-        </div>
-      </div> */}
 
       {/* Repair Requset Modal  */}
       <div
@@ -230,7 +197,7 @@ const AssetSingleUser = () => {
                   type="datetime-local"
                   value={repairDate}
                   onChange={(e) => setRepairDate(e.target.value)}
-                  required
+                  required={true}
                 />
 
                 <div className="form-group col-4">

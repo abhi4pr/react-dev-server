@@ -132,7 +132,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         <>
           {row.status === "Accept" ? (
             <span className="badge badge-success">Accepted</span>
-          ) : row.status === "Recover" ? (
+          ) : row.status === "Recovered" ? (
             <span className="badge badge-warning">Recoverd</span>
           ) : row.status === "Resolved" ? (
             <span className="badge badge-success">Resolved</span>
@@ -357,7 +357,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       sortable: true,
       width: "350px",
     },
-    hrOverviewData[0]?.status == "Recover" && {
+    hrOverviewData[0]?.status == "Recovered" && {
       name: "Actions",
       cell: (row) => (
         <>

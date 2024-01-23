@@ -34,6 +34,8 @@ const AssetSingleuserOverview = ({
   const [returnRemark, setReturnRemark] = useState("");
   const [returnImage1, setReturnImage1] = useState(null);
   const [returnImage2, setReturnImage2] = useState(null);
+  const [assetSubCategroyData, setAssetSubCategoryData] = useState([]);
+  const [repairAssetId, setRepairAssetId] = useState("");
 
   async function getRepairReason() {
     const res = await axios.get(
@@ -43,7 +45,21 @@ const AssetSingleuserOverview = ({
     setReasonData(res?.data.data);
   }
 
+  const getAssetSubCategory = async () => {
+    try {
+      const response = await axios.get(
+        "http://34.93.221.166:3000/api/get_all_asset_sub_category"
+      );
+
+      setAssetSubCategoryData(response.data.data);
+    } catch (error) {
+      toastAlert("Data not submitted", error.message);
+      return null;
+    }
+  };
+
   useEffect(() => {
+    getAssetSubCategory();
     getRepairReason();
   }, []);
   const handleSubmit = async (e) => {
@@ -54,7 +70,7 @@ const AssetSingleuserOverview = ({
       formData.append("status", "Requested");
       formData.append("req_by", userID);
       formData.append("asset_reason_id", reason);
-      formData.append("sim_id", assetsName);
+      formData.append("sim_id", repairAssetId);
       formData.append("priority", priority);
       formData.append(
         "multi_tag",
@@ -89,6 +105,7 @@ const AssetSingleuserOverview = ({
   const handleReturnAsset = (row) => {
     setAssetId(row.sim_id);
   };
+
   const handleAssetReturn = () => {
     try {
       const formData = new FormData();
@@ -110,6 +127,8 @@ const AssetSingleuserOverview = ({
   };
   const handleRow = (row) => {
     setAssetName(row.assetsName);
+    setRepairAssetId(row.sim_id);
+    console.log(row.assetsName, "name hai");
   };
 
   const columns = [
@@ -162,7 +181,8 @@ const AssetSingleuserOverview = ({
           className="btn btn-outline-warning btn-sm"
           data-toggle="modal"
           data-target="#exampleModal"
-          size="small"
+          // size="small"
+          type="button"
         >
           Repair Request
         </button>
@@ -196,7 +216,7 @@ const AssetSingleuserOverview = ({
 
     {
       name: "Asset Name",
-      selector: (row) => row.assetsName,
+      selector: (row) => row.sub_category_name,
       sortable: true,
     },
 
@@ -204,15 +224,15 @@ const AssetSingleuserOverview = ({
       name: "Status",
       selector: (row) => (
         <>
-          {row?.asset_request_asset_request_status === "Requested" ? (
+          {row?.asset_request_status === "Requested" ? (
             <span className="badge badge-danger">Requested</span>
-          ) : row.asset_request_asset_request_status === "Approved" ? (
+          ) : row.asset_request_status === "Approved" ? (
             <span className="badge badge-success">Assigned</span>
-          ) : row.asset_request_asset_request_status === "Rejected" ? (
+          ) : row.asset_request_status === "Rejected" ? (
             <span className="badge badge-warning">Rejected</span>
-          ) : row.asset_request_asset_request_status === "ApprovedByManager" ? (
+          ) : row.asset_request_status === "ApprovedByManager" ? (
             <span className="badge badge-warning">Approve By Manager</span>
-          ) : row.asset_request_asset_request_status === "RejectedByManager" ? (
+          ) : row.asset_request_status === "RejectedByManager" ? (
             <span className="badge badge-warning">Reject By Manager</span>
           ) : null}
         </>
@@ -221,18 +241,18 @@ const AssetSingleuserOverview = ({
     },
     {
       name: "Priority",
-      selector: (row) => row.asset_request_priority,
+      selector: (row) => row.priority,
       sortable: true,
     },
     {
       name: "Detail",
-      selector: (row) => row.asset_request_detail,
+      selector: (row) => row.detail,
       sortable: true,
     },
 
     {
       name: "Taged Person",
-      selector: (row) => row.asset_request_multi_tag_name,
+      selector: (row) => row.multi_tag_name,
       sortable: true,
     },
   ];
@@ -246,7 +266,7 @@ const AssetSingleuserOverview = ({
   const handleNewAssetSubmit = () => {
     try {
       axios.post("http://34.93.221.166:3000/api/assetrequest", {
-        sim_id: assetsName,
+        sub_category_id: assetsName,
         detail: problemDetailing,
         priority: priority,
         request_by: userID,
@@ -498,16 +518,16 @@ const AssetSingleuserOverview = ({
                     Asset Name <sup style={{ color: "red" }}>*</sup>
                   </label>
                   <Select
-                    options={getAssetDataContext.map((opt) => ({
-                      value: opt.sim_id,
-                      label: opt.assetsName,
+                    options={assetSubCategroyData.map((opt) => ({
+                      value: opt.sub_category_id,
+                      label: opt.sub_category_name,
                     }))}
                     value={{
                       value: assetsName,
                       label:
-                        getAssetDataContext.find(
-                          (user) => user.sim_id === assetsName
-                        )?.assetsName || "",
+                        assetSubCategroyData.find(
+                          (user) => user.sub_category_id === assetsName
+                        )?.sub_category_name || "",
                     }}
                     onChange={(e) => {
                       setAssetName(e.value);

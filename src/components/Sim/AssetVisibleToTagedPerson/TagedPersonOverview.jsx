@@ -27,26 +27,21 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
     },
     // {
     //   name: "Status",
-    //   selector: (row) => row.status,
+    //   selector: (row) => (
+    //     <>
+    //       {row?.asset_repair_request_status === "Requested" ? (
+    //         <span className="badge badge-danger">Requested</span>
+    //       ) : row.asset_repair_request_status === "Accept" ? (
+    //         <span className="badge badge-success">Approved</span>
+    //       ) : row.asset_repair_request_status === "Rejected" ? (
+    //         <span className="badge badge-warning">Rejected</span>
+    //       ) : row.asset_repair_request_status === "Recover" ? (
+    //         <span className="badge badge-warning">Recoverd</span>
+    //       ) : null}
+    //     </>
+    //   ),
     //   sortable: true,
     // },
-    {
-      name: "Status",
-      selector: (row) => (
-        <>
-          {row?.asset_repair_request_status === "Requested" ? (
-            <span className="badge badge-danger">Requested</span>
-          ) : row.asset_repair_request_status === "Accept" ? (
-            <span className="badge badge-success">Approved</span>
-          ) : row.asset_repair_request_status === "Rejected" ? (
-            <span className="badge badge-warning">Rejected</span>
-          ) : row.asset_repair_request_status === "Recover" ? (
-            <span className="badge badge-warning">Recoverd</span>
-          ) : null}
-        </>
-      ),
-      sortable: true,
-    },
     {
       name: "Asset Name",
       selector: (row) => row.asset_name,
