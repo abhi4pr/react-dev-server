@@ -292,7 +292,7 @@ export default function RegisteredCampaign() {
   };
   useEffect(() => {
     axios
-      .get("http://192.168.29.149:3000/api/register_campaign")
+      .get("http://34.93.221.166:3000/api/register_campaign")
       .then((response) => {
         // console.log(response.data.data, "response");
         SetLoadTable1(true);
