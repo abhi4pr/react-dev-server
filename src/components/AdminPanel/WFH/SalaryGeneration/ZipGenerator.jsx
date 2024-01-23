@@ -19,7 +19,7 @@ export const generatePDF = async (rowData) => {
     return null;
   }
 
-  const signatureImageUrl = `http://34.93.221.166:3000/uploads/${rowData?.digital_signature_image}`;
+  const signatureImageUrl = rowData?.digital_signature_image_url;
 
   const dataWithImage = {
     ...rowData,

@@ -124,6 +124,7 @@ const Attendence = () => {
       event.defaultMuiPrevented = true;
     }
   };
+
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
@@ -280,7 +281,7 @@ const Attendence = () => {
   };
 
   const processRowUpdate = (newRow) => {
-    if (newRow.noOfabsent > 30) {
+    if (newRow.noOfabsent < 0 || newRow.noOfabsent > newRow.present_days) {
       toastError("Absent days cannot be greater than 30.");
       return null;
     } else {
@@ -372,13 +373,14 @@ const Attendence = () => {
       editable: true,
     },
     {
-      field: "present",
+      field: "present_days",
       headerName: "Present Days ",
       type: "number",
-      valueGetter: (params) => 30 - Number(params.row.noOfabsent),
+      valueGetter: (params) =>
+        Number(params.row.present_days) - Number(params.row.noOfabsent),
     },
     {
-      field: "total_salary",
+      field: "month_salary",
       headerName: "Total Salary",
       width: 150,
       type: "text",

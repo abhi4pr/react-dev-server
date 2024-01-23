@@ -7,7 +7,7 @@ import axios from "axios";
 const ViewEditDigiSignature = () => {
   const token = getDecodedToken();
   const loginUserId = token.id;
-  const [digitalSingatureImage, setDigitalSignatureImage] = useState("");
+  const [digitalSignatureImage, setDigitalSignatureImage] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -19,26 +19,35 @@ const ViewEditDigiSignature = () => {
   };
 
   const gettingData = async () => {
-    const response = await axios.get(
-      `http://34.93.221.166:3000/api/get_single_user/${loginUserId}`
-    );
-    const DSImage = await response?.data?.digital_signature_image_url;
-    setDigitalSignatureImage(DSImage);
+    try {
+      const response = await axios.get(
+        `http://34.93.221.166:3000/api/get_single_user/${loginUserId}`
+      );
+      const DSImage = await response?.data?.digital_signature_image_url;
+      setDigitalSignatureImage(DSImage);
+    } catch (error) {
+      console.error("Error fetching digital signature image", error);
+    }
   };
 
   useEffect(() => {
     gettingData();
   }, [loginUserId]);
 
+  console.log("Image here", digitalSignatureImage);
   return (
     <>
       <div>
         Your Digital Signature is:
-        <img
-          src={digitalSingatureImage}
-          alt="Digital Signature Preview"
-          style={{ maxWidth: "600px", height: "300px" }}
-        />
+        {digitalSignatureImage ? (
+          <img
+            src={digitalSignatureImage}
+            alt="Digital Signature Preview"
+            style={{ maxWidth: "600px", height: "300px" }}
+          />
+        ) : (
+          <div>Loading...</div>
+        )}
       </div>
 
       <button className="btn btn-primary mr-3" onClick={openModal}>

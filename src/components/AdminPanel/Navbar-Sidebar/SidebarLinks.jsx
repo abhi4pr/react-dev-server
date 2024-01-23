@@ -287,6 +287,9 @@ const SidebarLinks = () => {
                   <Link className="collapse-item" to="/admin/wfh-single-user">
                     Payout Summary
                   </Link>
+                  <Link className="collapse-item" to="/admin/dispute-overview">
+                    Dispute Summary
+                  </Link>
                 </div>
               </div>
             </li>

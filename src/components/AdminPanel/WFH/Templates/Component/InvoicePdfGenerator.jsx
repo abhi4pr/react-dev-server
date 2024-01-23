@@ -17,8 +17,11 @@ const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
 
     e.preventDefault();
 
+    console.log("data for attendance ", data);
     await axios.put(`http://34.93.221.166:3000/api/update_attendance`, {
       attendence_id: data.attendence_id,
+      month: data.month,
+      year: data.year,
       attendence_status_flow: "Pending for invoice verification",
     });
 
