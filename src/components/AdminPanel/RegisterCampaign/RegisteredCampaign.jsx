@@ -292,7 +292,7 @@ export default function RegisteredCampaign() {
   };
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/register_campaign")
+      .get("http://192.168.29.149:3000/api/register_campaign")
       .then((response) => {
         // console.log(response.data.data, "response");
         SetLoadTable1(true);
@@ -436,6 +436,31 @@ export default function RegisteredCampaign() {
         });
         return formattedDate;
       },
+    },
+    {
+      field: "agency",
+      headerName: "Agency",
+      width: 200,
+    },
+    {
+      field: "goal",
+      headerName: "Goal",
+      width: 200,
+    },
+    {
+      field: "industry",
+      headerName: "Industry",
+      width: 200,
+    },
+    {
+      field: "hashtags",
+      headerName: "Hashtag",
+      width: 200,
+    },
+    {
+      field: "captions",
+      headerName: "Captions",
+      width: 200,
     },
     {
       field: "detailing",
