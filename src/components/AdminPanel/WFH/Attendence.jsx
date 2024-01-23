@@ -292,7 +292,7 @@ const Attendence = () => {
           attendence_id: updatedRow.attendence_id,
           dept: updatedRow.dept,
           user_id: updatedRow.user_id,
-          attendence_id: updatedRow.attendence_id,
+          // attendence_id: updatedRow.attendence_id,
           noOfabsent: updatedRow.noOfabsent,
           salary_deduction: Number(updatedRow.salary_deduction),
           month: selectedMonth,

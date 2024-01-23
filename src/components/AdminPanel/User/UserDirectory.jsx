@@ -144,7 +144,7 @@ const UserOverview = () => {
                         <div className="summary_cardrow flex-column">
                           <div className="summary_box text-center ml-auto mr-auto">
                             <img
-                              src={detail.image}
+                              src={detail.image_url}
                               width="80px"
                               height="80px"
                               style={{ borderRadius: "50%" }}
