@@ -169,8 +169,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         const pageD = await axios.get(
           `http://34.93.221.166:3000/api/campaignplan/${data.campaignId}`
         );
-        console.log(pageD.data.data);
-        const x = pageD.data.data
+     
+        let newPageData = pageD.data.data
           .filter((page) => {
             return (
               page.replacement_status == "inactive" ||
@@ -180,9 +180,20 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           .map((page) => {
             return { ...page, postPerPage: 0, storyPerPage: 0 };
           });
-        setAllPageData(x);
-        setPlanPages(x);
-        setFilteredPages(x);
+          console.log(phaseInfo.assignAll)
+        if(phaseInfo.assignAll){
+          let row=[]
+          newPageData=newPageData.map(page=>{
+            row.push(page.p_id)
+            return {...page,postPerPage:page.postRemaining,storyPerPage:page.storyRemaining,postRemaining:0,storyRemaining:0}
+          })
+          x=row
+          setSelectedRows(row)
+          setPayload(newPageData)
+        }
+        setAllPageData(newPageData);
+        setPlanPages(newPageData);
+        setFilteredPages(newPageData);
       }
     } catch (error) { }
   };
@@ -858,8 +869,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           return page[1].charAt(0).toLowerCase() + page[1].slice(1) == item.page_name
         })) {
           rows.push(item.p_id)
-          forLoad.push({ ...item, postPerPage: flag[4], storyPerPage: flag[6] })
-          forFilter.push({ ...item, postPerPage: flag[4], storyPerPage: flag[6] })
+          forLoad.push({ ...item, postPerPage: flag[4] || 0, storyPerPage: flag[6] ||0 })
+          forFilter.push({ ...item, postPerPage: flag[4] || 0, storyPerPage: flag[6] || 0 })
         } else {
           forFilter.push(item)
         }

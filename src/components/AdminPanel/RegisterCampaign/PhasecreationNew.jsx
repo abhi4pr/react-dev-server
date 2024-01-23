@@ -44,6 +44,7 @@ const PhasecreationNew = () => {
   const [allPhaseData, setAllPhaseData] = useState([]);
   const [showPageDetails, setShowPageDetails] = useState(false);
   const [expanded, setExpanded] = useState(false);
+  const [assignAll, setAssignAll] = useState(false)
 
   useEffect(() => {
     getPhaseData();
@@ -56,6 +57,7 @@ const PhasecreationNew = () => {
     setAllPhaseData(data?.data?.result);
   };
 
+
   const getCampaignName = (detail, cmp) => {
     setCmpName(cmp);
     setCampaignName(detail);
@@ -63,6 +65,9 @@ const PhasecreationNew = () => {
 
   const togglePageDetails = () => {
     setShowPageDetails(!showPageDetails);
+    if (allPhaseData.length == 0) {
+      setAssignAll(true)
+    }
   };
 
   const handleChange = (panel) => (event, isExpanded) => {
@@ -93,6 +98,12 @@ const PhasecreationNew = () => {
               <Button variant="contained" color="primary" size="small">
                 Create Assignment
               </Button>
+              {
+                allPhaseData.length == 0 &&
+                <Button variant="contained" color="primary" size="small">
+                  assign all
+                </Button>
+              }
             </Link>
             <Accordion
               key={index}
@@ -101,8 +112,8 @@ const PhasecreationNew = () => {
             >
               <AccordionSummary
                 expandIcon={<GridExpandMoreIcon />}
-                // aria-controls={`panel${index}bh-content`}
-                // id={`panel${index}bh-header`}
+              // aria-controls={`panel${index}bh-content`}
+              // id={`panel${index}bh-header`}
               >
                 <Typography>{`Phase ${index + 1}`}</Typography>
               </AccordionSummary>
@@ -128,6 +139,14 @@ const PhasecreationNew = () => {
       >
         {showPageDetails ? "Hide Page Details" : "Create New Phase"}
       </Button>
+
+      {
+        allPhaseData.length == 0 &&
+        <Button variant="outlined" onClick={togglePageDetails}
+          sx={{ m: 2, mb: 2 }}>
+          assign all
+        </Button>
+      }
 
       {showPageDetails && (
         <>
@@ -225,6 +244,7 @@ const PhasecreationNew = () => {
               getPhaseData,
               setExpanded,
               setShowPageDetails,
+              assignAll
             }}
             setPhaseDataError={setPhaseDataError}
           />
