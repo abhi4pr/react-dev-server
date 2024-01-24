@@ -40,7 +40,7 @@ export default function CampaignCommitment() {
     exeHashTag: "",
     exeRemark: "",
   });
-  const url = "http://34.93.135.33:8080/api/exe_campaign";
+  const url = "http://34.93.221.166:3000/api/exe_campaign";
   function EditToolbar() {
     const handleClick = () => {
       setIsModalOpen(true);

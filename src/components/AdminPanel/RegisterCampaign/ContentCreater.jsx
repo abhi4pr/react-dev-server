@@ -80,7 +80,7 @@ export default function CampaignCommitment() {
       return;
     }
     axios
-      .post("http://34.93.135.33:8080/api/add_commitment", postData)
+      .post("http://34.93.221.166:3000/api/add_commitment", postData)
       .then((response) => {
         setIsModalOpen(false);
         setPostData("");
@@ -102,7 +102,7 @@ export default function CampaignCommitment() {
   // get api ========>
   const getData = () => {
     axios
-      .get("http://34.93.135.33:8080/api/get_all_commitments")
+      .get("http://34.93.221.166:3000/api/get_all_commitments")
       .then((res) => {
         const data = res.data.data;
         const uniqueCmtNames = new Set();
@@ -136,7 +136,7 @@ export default function CampaignCommitment() {
   const handlePutData = () => {
     if (editData.cmtName !== "") {
       axios
-        .put(`http://34.93.135.33:8080/api/update_commitment`, {
+        .put(`http://34.93.221.166:3000/api/update_commitment`, {
           cmtId: editData.cmtId,
           cmtName: editData.cmtName,
         })
@@ -174,7 +174,7 @@ export default function CampaignCommitment() {
     if (itemToDeleteId) {
       axios
         .delete(
-          `http://34.93.135.33:8080/api/delete_commitment/${itemToDeleteId}`
+          `http://34.93.221.166:3000/api/delete_commitment/${itemToDeleteId}`
         )
         .then(() => {
           setReload(!reload);
