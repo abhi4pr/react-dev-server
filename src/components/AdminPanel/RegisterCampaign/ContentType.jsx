@@ -39,7 +39,7 @@ export default function ContentType() {
   const [postData, setPostData] = useState({
     content_type: "",
   });
-  const url = "http://34.93.135.33:8080/api/content";
+  const url = "http://34.93.221.166:3000/api/content";
 
   function EditToolbar() {
     const handleClick = () => {

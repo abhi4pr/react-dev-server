@@ -481,22 +481,22 @@ export default function RegisteredCampaign() {
         );
       },
     },
-    {
-      field: "download_excel_file",
-      headerName: "Excel Action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <div>
-            <a href={params.row.download_excel_file} download="excel.xlsx">
-              <Button variant="text">
-                <DownloadTwoToneIcon />
-              </Button>
-            </a>
-          </div>
-        );
-      },
-    },
+    // {
+    //   field: "download_excel_file",
+    //   headerName: "Excel Action",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div>
+    //         <a href={params.row.download_excel_file} download="excel.xlsx">
+    //           <Button variant="text">
+    //             <DownloadTwoToneIcon />
+    //           </Button>
+    //         </a>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       field: "send_for_content_creation",
       headerName: "Content Creation",
@@ -537,7 +537,7 @@ export default function RegisteredCampaign() {
       renderCell: (params) => {
         return (
           <div>
-            <Button type="button" onClick={() => handleDeleteRow(params)}>
+            <Button type="button" color="error" onClick={() => handleDeleteRow(params)}>
               <DeleteIcon />
             </Button>
           </div>

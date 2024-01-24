@@ -58,7 +58,7 @@ export default function BrandMaster() {
     { major_cat_id: 5, major_cat_name: "Entertainment" },
   ];
 
-  const brandURL = "http://34.93.135.33:8080/api/";
+  const brandURL = "http://34.93.221.166:3000/api/";
   const handleClose = () => {
     setIsModalOpen(false);
   };

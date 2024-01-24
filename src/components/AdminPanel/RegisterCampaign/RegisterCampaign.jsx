@@ -479,20 +479,20 @@ export default function RegisterCampaign() {
                 Add Row
               </Button>
             )}
-            <Button
+            {/* <Button
               variant="outlined"
               onClick={togglePageDetails}
               sx={{ mt: 2, ml: 2 }}
             >
               {showPageDetails ? " Remove Excel " : " Fetch Excel"}
-            </Button>
+            </Button> */}
           </div>
         </div>
 
         <br />
       </div>
 
-      {showPageDetails && <AddPage setXlxsData={setXlxsData} />}
+      {/* {showPageDetails && <AddPage setXlxsData={setXlxsData} />} */}
 
       <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
   <Button
@@ -503,13 +503,13 @@ export default function RegisterCampaign() {
     size="large"
     color="secondary"
     sx={{
-      mt: 2,
-      borderColor: "primary",
+      mt: 1,
+      borderColor: "red",
       fontWeight: 'bold',
       textTransform: 'none',
       transition: 'all 0.5s ease-in-out',
       '&:hover': {
-        backgroundColor: "primary.light",
+        backgroundColor: "white",
         borderColor: "primary.dark",
         transform: 'scale(1.05)',
       },
