@@ -127,7 +127,7 @@ const ExcusionCampaign = () => {
     "Requested Assign",
     "Assignment",
     // "Pending Excuation",
-    "Excuted",
+    "Executed",
     "Verified",
     "Rejected",
   ];
@@ -135,8 +135,8 @@ const ExcusionCampaign = () => {
     <div>
       <FormContainer
         submitButton={false}
-        mainTitle="Excusion Campaign"
-        title="Excusion Campaign"
+        mainTitle="Execution Campaign"
+        title="Execution Campaign"
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}

@@ -1040,7 +1040,7 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/excusionCampaign"
                               >
-                                Excusion Campaign
+                                Execution Campaign
                               </Link>
                             </>
                           </div>

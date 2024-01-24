@@ -2,24 +2,26 @@ import axios from "axios";
 import CampaignDetailes from "../CampaignDetailes";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "../PhaseDashboard/phasedashboard.scss"
+import "../PhaseDashboard/phasedashboard.scss";
 const PlanDashboard = () => {
-  const [planData, setPlanData] = useState([])
+  const [planData, setPlanData] = useState([]);
   console.log(planData, "planDashboardData");
   const { id } = useParams();
   const planDash = async () => {
     const planDashboardData = await axios.post(
       `http://34.93.221.166:3000/api/operation_plan_dashboard`,
-      {campaignId:id}
-
+      { campaignId: id }
     );
-   setPlanData(planDashboardData?.data?.data);
+    setPlanData(planDashboardData?.data?.data);
   };
 
   useEffect(() => {
     planDash();
-  
   }, []);
+  let percentageString = planData.verified_percentage;
+  let verifiedPercent = Math.floor(percentageString);
+  let percent = planData.execution_done_percentage;
+  let executionPercent = Math.floor(percent);
   return (
     <>
       <div className="form-heading">
@@ -58,9 +60,7 @@ const PlanDashboard = () => {
         </div>
         <div className="data-card is-hoverable">
           <div className="data-card__val">
-            { planData?.executed_execution_total},
-           [{planData?.execution_done_percentage}%]
-            
+            {planData?.executed_execution_total}, [{executionPercent}%]
           </div>
           {/* <div className="">20%</div> */}
           <div className="data-card__label">Execution Total & Percentage</div>
@@ -68,30 +68,23 @@ const PlanDashboard = () => {
         </div>
         <div className="data-card is-hoverable">
           <div className="data-card__val">
-            {planData.verified_execution_total} , [
-            {planData.verified_percentage}%]
+            {planData.verified_execution_total} , [{verifiedPercent}%]
           </div>
           <div className="data-card__label">verified Post & %</div>
           <div className="data-card__color is-orange"></div>
         </div>
         <div className="data-card is-hoverable">
-          <div className="data-card__val">
-         {planData.page_assigned}
-          </div>
+          <div className="data-card__val">{planData.page_assigned}</div>
           <div className="data-card__label">Assigned page</div>
           <div className="data-card__color is-orange"></div>
         </div>
         <div className="data-card is-hoverable">
           <Link to="/admin/experties-overview">
-            <div className="data-card__val">
-              {planData?.total_executers}
-           
-            </div>
+            <div className="data-card__val">{planData?.total_executers}</div>
             <div className="data-card__label">Total Executer Count</div>
             <div className="data-card__color is-red"></div>
           </Link>
         </div>
-        
 
         <div className="data-card is-hoverable">
           <div className="data-card__val">
@@ -102,30 +95,33 @@ const PlanDashboard = () => {
           <div className="data-card__color is-red"></div>
         </div>
         <div className="data-card is-hoverable">
-          <div className="data-card__val">{planData.category_wise_page_count[0].count}</div>
+          <div className="data-card__val">
+            cate
+            {/* {planData.category_wise_page_count[0]?.count} */}
+          </div>
           <div className="data-card__label">Category Wise Post Count & %</div>
           <div className="data-card__color is-red"></div>
         </div>
-       
+
         <div className="data-card is-hoverable">
-          <div className="data-card__val percentage">{planData.plateform_wise_page_count[0]?.count}</div>
+          <div className="data-card__val percentage">
+            {/* plateform_wise_page */}
+            {/* {planData.plateform_wise_page_count[0]?.count} */}
+          </div>
           <div className="data-card__label">Platform Wise Post Count & %</div>
           <div className="data-card__color is-green"></div>
         </div>
-       
+
         <div className="data-card is-hoverable">
           <div className="data-card__val">
             {planData?.total_no_of_assign_pages}
-           
           </div>
           <div className="data-card__label">Total No of Assigned Page</div>
           <div className="data-card__color is-orange"></div>
         </div>
         <div className="data-card is-hoverable">
           <div className="data-card__val">
-            {planData?.total_data_for_assignment_model
-}
-           
+            {planData?.total_data_for_assignment_model}
           </div>
           <div className="data-card__label">Total No of Assigned Model</div>
           <div className="data-card__color is-orange"></div>
