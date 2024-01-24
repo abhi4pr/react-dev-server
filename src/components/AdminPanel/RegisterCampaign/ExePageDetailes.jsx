@@ -39,8 +39,11 @@ const ExePageDetailes = ({
   const [commitPayload, setCommitPayload] = useState([]);
   const [posts, setPosts] = useState([]);
   const [story, setStory] = useState([]);
+  const[ass_id,setAss_id]=useState(null)
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
+
+
   const handleButtonClick = async (row) => {
     const postCount = row.postPerPage;
     setPosts(Array.from({ length: postCount }));
@@ -50,9 +53,25 @@ const ExePageDetailes = ({
       ass_id: row.ass_id,
       campaignId: row.campaignId,
       phase_id: row.phase_id,
+      execute:false
     });
+    setAss_id(row.ass_id)
     setOpen(true);
   };
+  
+  const finalExecute=async()=>{
+    const response = await axios.post(
+      "http://192.168.29.110:3000/api/assignment/commit",
+      {
+        ass_id: ass_id,
+      
+        execute:true
+      }
+    );
+    alert("executed successfully");
+    getAssignment();
+    setOpen(false);
+  }
 
   const handleUpdate = async (params) => {
     const response = await axios.get(
@@ -112,7 +131,7 @@ const ExePageDetailes = ({
 
   const handleAssignedSubmit = async () => {
     const response = await axios.post(
-      "http://34.93.221.166:3000/api/assignment/commit",
+      "http://192.168.29.110:3000/api/assignment/commit",
       assignedData
     );
     alert("submitted successfully");
@@ -412,6 +431,9 @@ const ExePageDetailes = ({
                   </div>
                 ))}
               </Box>
+              <Button onClick={finalExecute}>
+                execute
+              </Button>
             </Box>
           </Box>
         </Modal>

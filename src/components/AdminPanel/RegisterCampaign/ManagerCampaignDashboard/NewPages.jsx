@@ -49,7 +49,7 @@ const NewPages = ({ pages }) => {
       headerName: "Campaign Name",
       width: 170,
       renderCell: (params) => {
-        return camp.filter((e) => {
+        return camp?.filter((e) => {
           return e.exeCmpId == params.row.exeCmpId;
         })[0]?.exeCmpName;
       },
