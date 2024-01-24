@@ -23,10 +23,11 @@ const ManagerDashboard = () => {
       const response = await axios.get(
         `http://34.93.221.166:3000/api/assignment/campaign/${Cid}`
       );
-
+      
+    
       const assigned = response.data?.data?.filter(
-        (item) =>
-          item.ass_status === "assigned" || item.ass_status === "pending"
+        (item) =>  item.ass_status === "assigned" || item.ass_status === "pending"
+         
       );
       const executed = response.data?.data?.filter(
         (item) => item.ass_status === "executed"
@@ -47,6 +48,7 @@ const ManagerDashboard = () => {
     }
   };
 
+
   useEffect(() => {
     Assigndata();
   }, []);
@@ -59,32 +61,34 @@ const ManagerDashboard = () => {
     setfilterData(event.target.value);
   };
 
-  const filteredPending = pending.filter((item) =>
-    item.exp_name.toLowerCase().includes(filterData.toLowerCase())
-  );
-  const filteredExecuted = executedData.filter((item) =>
-    item.exp_name.toLowerCase().includes(filterData.toLowerCase())
-  );
-  const filteredVerified = verifiedData.filter((item) =>
-    item.exp_name.toLowerCase().includes(filterData.toLowerCase())
-  );
-  const filteredRejected = rejectedData.filter((item) =>
-    item.exp_name.toLowerCase().includes(filterData.toLowerCase())
-  );
+  // const filteredPending = pending?.filter((item) =>
+  //   item?.exp_name?.toLowerCase().includes(filterData?.toLowerCase())
+  // );
+  // const filteredExecuted = executedData?.filter((item) =>
+  //   item?.exp_name?.toLowerCase().includes(filterData?.toLowerCase())
+  // );
+  // const filteredVerified = verifiedData?.filter((item) =>
+  //   item?.exp_name?.toLowerCase().includes(filterData?.toLowerCase())
+  // );
+  // const filteredRejected = rejectedData?.filter((item) =>
+  //   item?.exp_name?.toLowerCase().includes(filterData?.toLowerCase())
+  // );
+
+  // console.log(filteredPending)
 
   const forceRender = () => {
     Assigndata();
   };
 
-  const tab1 = <Pending pending={filteredPending} forceRender={forceRender} />;
+  const tab1 = <Pending pending={pending} forceRender={forceRender} />;
   const tab2 = (
-    <Executed executed={filteredExecuted} forceRender={forceRender} />
+    <Executed executed={executedData} forceRender={forceRender} />
   );
   const tab3 = (
-    <Verified verified={filteredVerified} forceRender={forceRender} />
+    <Verified verified={verifiedData} forceRender={forceRender} />
   );
   const tab4 = (
-    <Rejected rejected={filteredRejected} forceRender={forceRender} />
+    <Rejected rejected={rejectedData} forceRender={forceRender} />
   );
 
   const accordionButtons = ["Pending", "Executed", "Verified", "Rejected"];

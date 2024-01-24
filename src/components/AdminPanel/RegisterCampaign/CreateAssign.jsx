@@ -130,10 +130,12 @@ const CreateAssign = () => {
   const handleSubmitAssign = async () => {
     try {
       const createAssignment = await axios.post(
-        `http://34.93.221.166:3000/api/assignment/bulk`,
+        `http://192.168.29.110:3000/api/assignment/bulk`,
         { pages: payload }
       );
       alert("assignment created successfully");
+      getPhaseData()
+      setRadioSelected('all')
       // navigate("/admin/excusionCampaign");
     } catch (error) {
       console.error(error);
@@ -454,11 +456,11 @@ const CreateAssign = () => {
         if (page.preAssignedTo.length == 0 && page.rejected_by.length > 0)
           return page;
       } else if (e.target.value == "unassigned") {
-        return page.preAssignedTo.length == 0 && page.rejected_by.length == 0;
+        console.log("first");
+        return page.ass_status=="unassigned" && page.preAssignedTo.length == 0 && page.rejected_by.length == 0  ;
       } else if (e.target.value == "pending") {
         return page.ass_status == "unassigned";
       } else {
-        console.log("first");
 
         return page.ass_status == e.target.value;
       }
