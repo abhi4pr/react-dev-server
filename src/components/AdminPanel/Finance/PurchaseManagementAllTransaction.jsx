@@ -5,6 +5,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import ImageView from "./ImageView";
+import pdf from "./pdf-file.png";
 
 export default function PurchaseManagementAllTransaction() {
   const [search, setSearch] = useState("");
@@ -15,27 +16,33 @@ export default function PurchaseManagementAllTransaction() {
   const [vendorName, setVendorName] = useState("");
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [viewImgSrc, setViewImgSrc] = useState("");
+  const [actionFieldData, setActionFieldData] = useState([]);
 
   const callApi = () => {
     axios
       .get("http://34.93.221.166:3000/api/phpvendorpaymentrequest")
       .then((res) => {
+        console.log(res.data.modifiedData.length, "node l js");
         console.log(res.data.modifiedData, "node js");
         const x = res.data.modifiedData;
+        setActionFieldData(x);
+
 
         axios
           .get(
             "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
           )
           .then((res) => {
-            let y = res.data.body.filter((item) => {
-              return x.some((item2) =>( item.request_id == item2.request_id));
-            });
-            console.log(res.data.body.filter((item) => {
-              return x.some((item2) =>( item.request_id == item2.request_id));
-            }),'y')
+            // let y = res.data.body.filter((item) => {
+            //   return x.some((item2) =>( item.request_id == item2.request_id));
+            // });
+            // console.log(res.data.body.filter((item) => {
+            //   return x.some((item2) =>( item.request_id == item2.request_id));
+            // }),'y')
+            let y = res.data.body
             setData(y);
             setFilterData(y);
+            // console.log(y, "y");
             // let y = x;
 
             // let u = res.data.body.filter((item) => {
@@ -122,15 +129,24 @@ export default function PurchaseManagementAllTransaction() {
         const imgUrl = `https://production.we-fit.in/uploads/payment_proof/${params.row.invc_img}`;
         // console.log(params.row.invc_img ? imgUrl : "no image");
         return isPdf ? (
-          <iframe
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            src={imgUrl}
-            style={{ width: "100px", height: "100px" }}
-            title="PDF Preview"
-          />
+          // <iframe
+          //   onClick={() => {
+          //     setOpenImageDialog(true);
+          //     setViewImgSrc(imgUrl);
+          //   }}
+          //   src={imgUrl}
+          //   style={{ width: "100px", height: "100px" }}
+          //   title="PDF Preview"
+          // />
+          <img
+          src={pdf}
+          alt="pdf"
+          onClick={() => {
+            setOpenImageDialog(true);
+            setViewImgSrc(imgUrl);
+          }}
+          style={{ width: "100px", height: "100px" }}
+        />
         ) : (
           <img
             onClick={() => {
@@ -217,16 +233,26 @@ export default function PurchaseManagementAllTransaction() {
       headerName: "Status",
       width: 150,
       renderCell: (params) => {
-        // console.log(params.row.status);
-        return params.row.status == 1 ? (
-          <p>Paid</p>
-        ) : params.row.status == 2 ? (
-          <p>Discarded</p>
-        ) : (
-          <p>Pending</p>
-        );
+        const matchingItems = actionFieldData.filter((item) => item.request_id == params.row.request_id);
+    console.log(matchingItems, "matchingItems");
+        if (matchingItems.length > 0) {
+          return matchingItems.map((item, index) => (
+            <p key={index}>
+              {item.status == 0 ? (
+                "Pending"
+              ) : item.status == 2 ? (
+                "Discarded"
+              ) : (
+                "Paid"
+              )}
+            </p>
+          ));
+        } else {
+          return "Pending"; // Default value if no matching item is found
+        }
       },
-    },
+    }
+    
   ];
   return (
     <div>

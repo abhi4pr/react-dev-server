@@ -8,6 +8,8 @@ import DataTable from "react-data-table-component";
 import { Autocomplete, TextField } from "@mui/material";
 import { get } from "jquery";
 import ImageView from "./ImageView";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+
 
 const PendingApprovalUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -23,6 +25,12 @@ const PendingApprovalUpdate = () => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
+
+  const handleCopyDetail = (detail) => {
+    navigator.clipboard.writeText(detail);
+    toastAlert("Detail copied");
+  };
+
 
   const handleStatusChange = async (row, selectedStatus) => {
     setStatus(selectedStatus);
@@ -196,11 +204,21 @@ const PendingApprovalUpdate = () => {
     },
     {
       name: "Bank Detail",
-      selector: (row) => (
-        <div style={{ whiteSpace: "normal" }}> {row.detail} </div>
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {row.detail}
+          <button 
+            className="btn btn-secondary ml-2" 
+            onClick={() => handleCopyDetail(row.detail)}
+          >
+            <ContentCopyIcon/> 
+ {/* or any other icon */}
+          </button>
+        </div>
       ),
       width: "250px",
-    },
+    }
+,    
     {
       name: <div style={{ whiteSpace: "normal" }}>Reference No</div>,
       selector: (row) => row.payment_ref_no,

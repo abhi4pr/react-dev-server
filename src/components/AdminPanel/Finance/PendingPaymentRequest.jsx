@@ -19,6 +19,8 @@ import { useGlobalContext } from "../../../Context/Context";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function PendingPaymentRequest() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -147,7 +149,7 @@ export default function PendingPaymentRequest() {
         phpFormData.append("payment_mode", paymentMode);
         axios
           .post(
-              "https://production.we-fit.in/webservices/RestController.php?view=updatePaymentrequestNew",
+            "https://production.we-fit.in/webservices/RestController.php?view=updatePaymentrequestNew",
             phpFormData,
             {
               headers: {
@@ -441,6 +443,16 @@ export default function PendingPaymentRequest() {
       {/*Dialog Box */}
       <Dialog open={payDialog} onClose={handleClosePayDialog}>
         <DialogTitle>vendor Payment</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClosePayDialog}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        ><CloseIcon /></IconButton>
         <DialogContent>
           <div className="row">
             <TextField
@@ -652,17 +664,15 @@ export default function PendingPaymentRequest() {
               fullWidth
               value={payRemark}
             />
-            <TextField
-              onChange={(e) => setPayMentProof(e.target.files[0])}
-              className="mt-3"
-              autoFocus
-              // margin="dense"
-              // id="name"
-              label="Payment Proof/ScreenShot"
-              type="file"
-              variant="outlined"
-              fullWidth
-            />
+            <div className="form-group mt-3">
+              <label htmlFor="paymentProof">Payment Proof/ScreenShot</label>
+              <input
+                type="file"
+                className="form-control"
+                id="paymentProof"
+                onChange={(e) => setPayMentProof(e.target.files[0])}
+              />
+            </div>
           </div>
         </DialogContent>
         <DialogActions>

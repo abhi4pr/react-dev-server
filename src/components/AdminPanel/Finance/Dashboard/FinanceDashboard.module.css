@@ -1,0 +1,134 @@
+.customCard {
+    background-color: #0b074ae0;
+    color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    height: 230px;
+    /* overflow-y: scroll; */
+    overflow-y:auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+
+
+  }
+  
+  .cardSolidPrimary {
+    /* Additional styles for primary card, if any */
+  }
+  
+  .invertedColors {
+    /* Styles for inverted color theme */
+  }
+  
+  .cardContent {
+    display: flex;
+    align-items: center;
+  }
+  
+  .horizontal {
+    /* Styles for horizontal layout */
+  }
+  
+  .circularProgress {
+    position: relative;
+    width: 100px;
+    height: 10px;
+  }
+  
+  .progressValue {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2em;
+  }
+  
+  .content .bodyMd {
+    margin: 0;
+    font-size: 1em;
+  }
+  
+  .content .h1 {
+    font-size: 2em;
+    font-weight: bold;
+  }
+  
+  .detailsLink {
+    color: #fff;
+    text-decoration: underline;
+  }
+  
+  .cardActions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .buttonSoft {
+    background-color: #f8f9fa;
+    color: #007bff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.8em;
+  }
+  
+  .buttonSolid {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.8em;
+  }
+    .tdsIcon {
+      margin-bottom: 122px;
+
+      /* position: relative;
+      width: 100px;
+      height: 100px; */
+    }
+
+  /* .buttonAlign {
+    margin-bottom: 25% !important;
+  }
+
+  .buttonAlignIncentive {
+    margin-bottom: 20.7%;
+  }.buttonAlignIncentive2 {
+    margin-bottom: 15.7%;
+  }
+
+  .buttonAlignIncentiveIcon {
+    margin-bottom:15.7%;
+  } */
+
+/* This styles the entire scrollbar (vertical and horizontal) */
+::-webkit-scrollbar {
+    width: 5px;  /* width of the entire scrollbar */
+    height: 12px; /* height of the horizontal scrollbar */
+    margin-left: 30px;
+    padding-left: 10px;
+}
+
+/* This styles the track (or progress bar) of the scrollbar */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* color of the tracking area */
+    margin-left: 30px;
+    padding-left: 10px;
+}
+
+/* This styles the handle (or thumb) of the scrollbar */
+::-webkit-scrollbar-thumb {
+    background: transparent; /* scrollbar handle color */
+    border-radius: 6px; /* roundness of the scrollbar handle */
+    margin-left: 30px;
+    padding-left: 10px;
+}
+
+/* Changes the color of the scrollbar thumb when hovering over it */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* color of the scrollbar handle on hover */
+}
