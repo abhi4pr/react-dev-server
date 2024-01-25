@@ -22,7 +22,7 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
-
+import { toolbarStyles } from "./CampaignCommitment";
 export default function BrandMaster() {
   const { toastAlert, toastError } = useGlobalContext();
   const [reload, setReload] = useState(false);
@@ -68,14 +68,13 @@ export default function BrandMaster() {
       setIsModalOpen(true);
     };
     return (
-      <GridToolbarContainer>
+      <GridToolbarContainer style={toolbarStyles}>
         <Button
-          color="primary"
+          color="error"
           variant="outlined"
-          startIcon={<AddIcon />}
           onClick={handleClick}
         >
-          Add record
+          create brand
         </Button>
       </GridToolbarContainer>
     );
@@ -287,18 +286,18 @@ export default function BrandMaster() {
     },
     {
       field: "projectx_subcategory_name",
-      headerName: "Sub Category",
+      headerName: "SubCategory",
       width: 180,
     },
     {
       field: "major_category",
-      headerName: "Major category",
+      headerName: "Major Category",
       width: 180,
     },
 
     {
       field: "igusername",
-      headerName: "ig user name",
+      headerName: "User Name",
       width: 180,
     },
     {
@@ -505,7 +504,7 @@ export default function BrandMaster() {
             {!loading && (
               <div>
                 <TextField
-                  label="Brand"
+                  label="Brand *"
                   name="brand_name"
                   type="text"
                   sx={{ width: "100%" }}
@@ -530,7 +529,7 @@ export default function BrandMaster() {
                     )?.category_name
                   }
                   renderInput={(params) => (
-                    <TextField {...params} label=" Category" />
+                    <TextField {...params} label=" Category *" />
                   )}
                   onChange={(event, newValue) => {
                     setEditData((prev) => ({
@@ -553,7 +552,7 @@ export default function BrandMaster() {
                     })?.sub_category_name
                   }
                   renderInput={(params) => (
-                    <TextField {...params} label="Sub Category" />
+                    <TextField {...params} label="Sub Category *" />
                   )}
                   onChange={(event, newValue) => {
                     setEditData((prev) => ({
@@ -567,7 +566,7 @@ export default function BrandMaster() {
                   options={majorcategoryoption}
                   getOptionLabel={(option) => option.major_cat_name}
                   renderInput={(params) => (
-                    <TextField {...params} label="Major Category" />
+                    <TextField {...params} label="Major Category *" />
                   )}
                   value={majorcategoryoption.find(
                     (option) =>

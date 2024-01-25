@@ -21,6 +21,10 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
+export const toolbarStyles = {
+  display: 'flex',
+  justifyContent: 'flex-end', 
+};
 export default function CampaignCommitment() {
   const { toastAlert, toastError } = useGlobalContext();
   const [rows, setRows] = useState([]);
@@ -37,23 +41,23 @@ export default function CampaignCommitment() {
   const [reload, setReload] = useState(false);
   const [postData, setPostData] = useState({
     exeCmpName: "",
-    exeHashTag: "",
+    // exeHashTag: "",
     exeRemark: "",
   });
   const url = "http://34.93.221.166:3000/api/exe_campaign";
+
   function EditToolbar() {
     const handleClick = () => {
       setIsModalOpen(true);
     };
     return (
-      <GridToolbarContainer>
+      <GridToolbarContainer style={toolbarStyles}>
         <Button
-          color="primary"
+          color="error"
           variant="outlined"
-          startIcon={<AddIcon />}
           onClick={handleClick}
         >
-          Add record
+          create campaign
         </Button>
       </GridToolbarContainer>
     );
@@ -122,7 +126,7 @@ export default function CampaignCommitment() {
       .put(url, {
         exeCmpId: editData.exeCmpId,
         exeCmpName: editData.exeCmpName,
-        exeHashTag: editData.exeHashTag,
+        // exeHashTag: editData.exeHashTag,
         exeRemark: editData.exeRemark,
       })
       .then((res) => {
@@ -188,13 +192,18 @@ export default function CampaignCommitment() {
       headerName: "Campaign Name",
       width: 180,
       require: true,
+      renderCell: (params) => {
+        const name = params.value;
+        const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+        return <div>{capitalized}</div>;
+      },
     },
 
-    {
-      field: "exeHashTag",
-      headerName: "Hash Tag",
-      width: 180,
-    },
+    // {
+    //   field: "exeHashTag",
+    //   headerName: "Hash Tag",
+    //   width: 180,
+    // },
     {
       field: "exeRemark",
       headerName: "Remark",
@@ -215,14 +224,14 @@ export default function CampaignCommitment() {
             label="Edit"
             className="textPrimary"
             onClick={handleEditClick(id, row)}
-            color="inherit"
+            color="primary"
           />,
           // eslint-disable-next-line react/jsx-key
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteClick(id)}
-            color="inherit"
+            color="error"
           />,
         ];
       },
@@ -300,7 +309,7 @@ export default function CampaignCommitment() {
                   </div>
                 )}
               </>
-
+{/* 
               <TextField
                 id="outlined-password-input"
                 label="Hash Tag"
@@ -308,7 +317,7 @@ export default function CampaignCommitment() {
                 type="text"
                 value={postData.exeHashTag}
                 onChange={handleChange}
-              />
+              /> */}
               <>
                 <TextField
                   id="outlined-password-input"
@@ -356,7 +365,7 @@ export default function CampaignCommitment() {
                 }
               />
 
-              <TextField
+              {/* <TextField
                 id="outlined-password-input"
                 label="Hash Tag"
                 name="exeHashTag"
@@ -368,7 +377,7 @@ export default function CampaignCommitment() {
                     exeHashTag: e.target.value,
                   }))
                 }
-              />
+              /> */}
 
               <TextField
                 id="outlined-password-input"

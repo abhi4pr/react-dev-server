@@ -5,7 +5,7 @@ const CreateGoal = () => {
   return (
     <>
       <CreateMaster name={"Goal"}
-      data ={[{label:"name",payload:"name"},
+      data ={[{label: "Name", payload: "name", validation: /\S/, required: true},
       {label:"description",payload:"description"}
       ]}/>
     </>

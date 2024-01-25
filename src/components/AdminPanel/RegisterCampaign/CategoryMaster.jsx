@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { toolbarStyles } from "./CampaignCommitment";
 
 export default function CategoryMaster() {
   const [rows, setRows] = useState([]);
@@ -42,14 +43,9 @@ export default function CategoryMaster() {
       setIsModalOpen(true);
     };
     return (
-      <GridToolbarContainer>
-        <Button
-          color="primary"
-          variant="outlined"
-          startIcon={<AddIcon />}
-          onClick={handleClick}
-        >
-          Add record
+      <GridToolbarContainer style={toolbarStyles}>
+        <Button color="error" variant="outlined" onClick={handleClick}>
+          create category{" "}
         </Button>
       </GridToolbarContainer>
     );
@@ -181,12 +177,17 @@ export default function CategoryMaster() {
       field: "category_name",
       headerName: "Category Name",
       width: 180,
+      require: true,
+      renderCell: (params) => {
+        const name = params.value;
+        const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+        return <div>{capitalized}</div>;
+      },
     },
-
     {
       field: "actions",
       type: "actions",
-      headerName: "Actions",
+      headerName: "Action",
       width: 100,
       cellClassName: "actions",
       getActions: (params) => {
@@ -198,14 +199,14 @@ export default function CategoryMaster() {
             label="Edit"
             className="textPrimary"
             onClick={handleEditClick(id, row)}
-            color="inherit"
+            color="primary"
           />,
           // eslint-disable-next-line react/jsx-key
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteClick(id)}
-            color="inherit"
+            color="error"
           />,
         ];
       },
@@ -381,10 +382,15 @@ export default function CategoryMaster() {
           <Button
             onClick={() => setIsDeleteConfirmationOpen(false)}
             color="primary"
+            variant="outlined"
           >
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="primary">
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="outlined"
+          >
             Delete
           </Button>
         </DialogActions>

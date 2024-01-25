@@ -253,7 +253,7 @@ export default function RegisterCampaign() {
     <div>
       <div>
         <div className="form_heading_title">
-          <h2 className="form-heading">Register a Campaign</h2>
+          <h2 className="form-heading">Register Campaign</h2>
         </div>
       </div>
       <div style={{ height: "30px" }}>
@@ -296,7 +296,7 @@ export default function RegisterCampaign() {
                 value={campaign?.label}
                 onChange={(e, newValue) => setCampaign(newValue)}
                 renderInput={(params) => (
-                  <TextField {...params} label="Campaing *" />
+                  <TextField {...params} label="Campaign *" />
                 )}
               />
               <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -359,7 +359,7 @@ export default function RegisterCampaign() {
               />
 
               <TextField
-                label="Hashtag"
+                label="Hashtag *"
                 value={hashtag}
                 onChange={handleHashtagChange}
                 sx={{ width: 400, mt:1}}
@@ -383,7 +383,7 @@ export default function RegisterCampaign() {
           </Box>
           <Box sx={{ display: "flex", justifyContent: "space-around", mb: 1 }}>
             <TextField
-              label="Campaign Detailing"
+              label="Campaign Detail"
               fullWidth
               multiline
               value={campaignDetailing}

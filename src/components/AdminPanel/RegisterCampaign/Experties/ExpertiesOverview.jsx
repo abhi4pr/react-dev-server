@@ -150,7 +150,7 @@ const ExpertiesOverview = () => {
   return (
     <div>
       <FormContainer
-        mainTitle="Expertise Overview"
+        mainTitle="Expert Overview"
         link="/admin/experties"
         buttonAccess={true}
       />

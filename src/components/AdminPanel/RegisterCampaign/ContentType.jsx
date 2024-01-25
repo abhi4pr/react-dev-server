@@ -21,6 +21,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
+import { toolbarStyles } from "./CampaignCommitment";
 
 export default function ContentType() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -33,7 +34,8 @@ export default function ContentType() {
   const [searchInput, setSearchInput] = useState("");
   const [filteredRows, setFilteredRows] = useState([]);
   const [isPutOpen, setIsPutOpen] = useState(false);
-  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
   const [itemToDeleteId, setItemToDeleteId] = useState(null);
   const [reload, setReload] = useState(false);
   const [postData, setPostData] = useState({
@@ -46,14 +48,14 @@ export default function ContentType() {
       setIsModalOpen(true);
     };
     return (
-      <GridToolbarContainer>
+      <GridToolbarContainer style={toolbarStyles}>
         <Button
-          color="primary"
+          color="error"
           variant="outlined"
           startIcon={<AddIcon />}
           onClick={handleClick}
         >
-          Add record
+          create content
         </Button>
       </GridToolbarContainer>
     );
@@ -74,7 +76,7 @@ export default function ContentType() {
       [name]: value,
     });
   };
-  
+
   const handleSave = (e) => {
     e.preventDefault();
     if (!postData.content_type) {
@@ -90,7 +92,7 @@ export default function ContentType() {
         } else {
           toastAlert("Add successfully");
         }
-        setPostData("")
+        setPostData("");
         setReload(!reload);
         console.log("Data saved:", response.data);
       })
@@ -122,11 +124,9 @@ export default function ContentType() {
   };
   // put api =============>
   const handlePutData = () => {
-    if (
-      !editData.content_type 
-    ) {
+    if (!editData.content_type) {
       toastError("Please fill required fields.");
-      return; 
+      return;
     }
     axios
       .put(url, {
@@ -200,12 +200,17 @@ export default function ContentType() {
       field: "content_type",
       headerName: "Content",
       width: 180,
+      require: true,
+      renderCell: (params) => {
+        const name = params.value;
+        const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+        return <div>{capitalized}</div>;
+      },
     },
-
     {
       field: "actions",
       type: "actions",
-      headerName: "Actions",
+      headerName: "Action",
       width: 100,
       cellClassName: "actions",
       getActions: (params) => {
@@ -217,14 +222,14 @@ export default function ContentType() {
             label="Edit"
             className="textPrimary"
             onClick={handleEditClick(id, row)}
-            color="inherit"
+            color="primary"
           />,
           // eslint-disable-next-line react/jsx-key
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
             onClick={handleDeleteClick(id)}
-            color="inherit"
+            color="error"
           />,
         ];
       },
@@ -367,10 +372,15 @@ export default function ContentType() {
           <Button
             onClick={() => setIsDeleteConfirmationOpen(false)}
             color="primary"
+            variant="outlined"
           >
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="primary">
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="outlined"
+          >
             Delete
           </Button>
         </DialogActions>
