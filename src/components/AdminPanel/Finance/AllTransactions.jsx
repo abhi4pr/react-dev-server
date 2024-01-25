@@ -5,7 +5,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
-import { Autocomplete, Button } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 const AllTransactions = () => {
@@ -23,6 +23,7 @@ const AllTransactions = () => {
   const [status, setStatus] = useState();
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [paymetMethod, setPaymetMethod] = useState([]);
 
   const handleFilter = () => {
     const result = datas
@@ -42,7 +43,8 @@ const AllTransactions = () => {
         const matchesAmount =
           !paymentAmount ||
           (d.payment_amount &&
-            d.payment_amount.toString().includes(paymentAmount));
+            d.payment_amount.toString() === paymentAmount.toString());
+
         const matchesMode =
           !paymentMode ||
           (d.payment_mode &&
@@ -98,8 +100,20 @@ const AllTransactions = () => {
         setData(res.data.data);
         setFilterData(res.data.data);
       });
-  }
 
+    axios
+      .get("http://34.93.221.166:3000/api/get_all_php_payment_acc_data")
+      .then((res) => {
+        setPaymetMethod(res.data.data);
+        // let x =res.data.data.map(e=>{
+        //   setPaymetMethod(prev=>[...prev,{payment_type:e.payment_type}])
+        // })
+        // console.log(res.data.data)
+        // console.log(res.data.data.map(e=>{
+        //  return e.payment_type})
+        // )
+      });
+  }
   function convertDateToDDMMYYYY(dateString) {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
@@ -414,7 +428,7 @@ const AllTransactions = () => {
             <div className="col-md-2">
               <div className="form-group">
                 <label>Payment Mode</label>
-                <input
+                {/* <input
                   value={paymentMode}
                   type="text"
                   placeholder="Request By"
@@ -422,7 +436,44 @@ const AllTransactions = () => {
                   onChange={(e) => {
                     setPaymetMode(e.target.value);
                   }}
-                />
+                /> */}
+
+                {/* <select className="form-select" onChange={e=>setPaymetMode(e.target.value)}  >
+                  <option value="">Select Payment Mode</option>
+                  {paymetMethod.map((item,index)=>{
+                    return <option key={index} value={item.title}>{item.title}</option>
+                  })}
+                </select> */}
+               <Autocomplete
+  value={paymentMode}
+  onChange={(event, newValue) => {
+    setPaymetMode(newValue);
+  }}
+  options={paymetMethod.map((option) => option.payment_type)}
+  getOptionLabel={(option) => (option ? option : "")}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      placeholder="Select Payment Mode"
+      variant="outlined"
+      InputProps={{
+        ...params.InputProps,
+        className: "form-control", // Apply Bootstrap's form-control class
+      }}
+      // Applying inline styles to match Bootstrap's form-control as closely as possible
+      style={{
+        borderRadius: '0.25rem',
+        transition: 'border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+        '&:focus': {
+          borderColor: '#80bdff',
+          boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+        }
+      }}
+    />
+  )}
+/>
+
+
               </div>
             </div>
             <div className="col-md-2">

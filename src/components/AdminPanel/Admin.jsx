@@ -151,7 +151,6 @@ import ExecutionDashboard from "../Execution/ExecutionDashboard";
 import AllTransactions from "./Finance/AllTransactions";
 import ApprovalInvoice from "./Finance/ApprovalInvoice";
 import BalancePaymentList from "./Finance/BalancePaymentList";
-import FinanceDashboard from "./Finance/FinanceDashboard";
 import IncentivePayment from "./Finance/IncentivePayment";
 import PaymentMode from "./Finance/PaymentMode";
 import PendingApprovalRefund from "./Finance/PendingApprovalRefund";
@@ -215,6 +214,8 @@ import TaskStatusDeptWiseMaster from "../TaskManagement/Pages/TaskStatusDeptWise
 import TaskStatusDeptWiseOverview from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseOverview";
 import TaskStatusDeptWiseUpdate from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseUpdate";
 import DisputeOverview from "./WFH/Dispute/DisputeOverview";
+import FinanceDashboard from "./Finance/Dashboard/FinanceDashboard";
+import SalesExecutiveIncentiveRequestReleaseList from "./Finance/SalesExecutiveIncentiveRequestReleaseList";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -611,10 +612,6 @@ const Admin = () => {
                     element={<BalancePaymentList />}
                   />
                   <Route
-                    path="/finance-dashboard"
-                    element={<FinanceDashboard />}
-                  />
-                  <Route
                     path="/finance-incentivepayment"
                     element={<IncentivePayment />}
                   />
@@ -666,6 +663,11 @@ const Admin = () => {
                     path="/finance-pruchasemanagement-paymentdone"
                     element={<PaymentDone />}
                   />
+                  <Route
+                    path="/finance-dashboard"
+                    element={<FinanceDashboard />}
+                  />
+                  <Route path="/Incentive-Request-Released-List/:incentive_request_id" element={<SalesExecutiveIncentiveRequestReleaseList />} />
                   <Route
                     path="/finance-pruchasemanagement-alltransaction"
                     element={<PurchaseManagementAllTransaction />}
