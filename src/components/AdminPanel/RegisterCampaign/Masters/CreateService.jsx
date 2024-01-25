@@ -5,8 +5,8 @@ const CreateService = () => {
   return (
     <>
       <CreateMaster name={"Service"}
-      data ={[{label:"name",payload:"name"},
-      {label:"description",payload:"description"}
+      data ={[{label: "Name", payload: "name", validation: /\S/, required: true},
+      {label:"Description",payload:"description"}
       ]}/>
     </>
   );

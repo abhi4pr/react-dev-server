@@ -9,7 +9,33 @@ const CreateMaster = ({ name, data }) => {
   const url = "http://34.93.221.166:3000/api/";
   const navigate = useNavigate();
   const [payload, setPayload] = useState({});
+  const [errors, setErrors] = useState({});
+
+  const validateField = (field, value) => {
+    if (field.required && (!value || !/\S/.test(value))) {
+      return `Required`;
+    }
+    if (field.validation && !field.validation.test(value)) {
+      return `Invalid format`;
+    }
+    return "";
+  };
+  const changeHandler = (e) => {
+
+    setPayload({ ...payload, [e.target.name]: e.target.value });
+    const error = validateField(field, e.target.value);
+    setErrors({ ...errors, [e.target.name]: error });
+  };
+
+
   const handleSubmit = async () => {
+    for (let field of data) {
+      if ((field.required && !payload[field.payload]) ||
+          (field.validation && !field.validation.test(payload[field.payload]))) {
+        toastError(`Invalid ${field.label}`);
+        return;
+      }
+    }
     try {
       let result;
       if (name === "Agency") {
@@ -36,10 +62,7 @@ const CreateMaster = ({ name, data }) => {
     }
   };
 
-  const changeHandler = (e) => {
-    setPayload({ ...payload, [e.target.name]: e.target.value });
-  };
-
+ 
   console.log(payload);
   return (
     <>
@@ -58,7 +81,10 @@ const CreateMaster = ({ name, data }) => {
                 <TextField
                   name={field.payload}
                   onChange={changeHandler}
-                  label={field.label}
+                  label={
+                    field.required ? `${field.label} *` : field.label
+                  }                  error={!!errors[field.payload]}
+                helperText={errors[field.payload]}
                   sx={{ mt: 0.5 }}
                   fullWidth
                 />

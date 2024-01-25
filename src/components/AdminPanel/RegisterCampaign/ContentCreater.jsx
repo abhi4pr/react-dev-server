@@ -21,6 +21,7 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
+import { toolbarStyles } from "./CampaignCommitment";
 
 export default function CampaignCommitment() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -45,14 +46,13 @@ export default function CampaignCommitment() {
       setIsModalOpen(true);
     };
     return (
-      <GridToolbarContainer>
+      <GridToolbarContainer style={toolbarStyles}>
         <Button
-          color="primary"
+          color="error"
           variant="outlined"
-          startIcon={<AddIcon />}
           onClick={handleClick}
         >
-          Add record
+         create commitment
         </Button>
       </GridToolbarContainer>
     );

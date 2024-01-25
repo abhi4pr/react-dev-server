@@ -61,10 +61,10 @@ const ExePageDetailes = ({
   
   const finalExecute=async()=>{
     const response = await axios.post(
-      "http://192.168.29.110:3000/api/assignment/commit",
+      "http://192.168.29.114:3000/api/assignment/commit",
       {
         ass_id: ass_id,
-      
+
         execute:true
       }
     );

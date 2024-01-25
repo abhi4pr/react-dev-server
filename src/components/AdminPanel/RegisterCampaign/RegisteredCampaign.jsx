@@ -459,12 +459,12 @@ export default function RegisteredCampaign() {
     },
     {
       field: "captions",
-      headerName: "Captions",
+      headerName: "Caption",
       width: 200,
     },
     {
       field: "detailing",
-      headerName: "Details",
+      headerName: "Detail",
       width: 200,
     },
     {

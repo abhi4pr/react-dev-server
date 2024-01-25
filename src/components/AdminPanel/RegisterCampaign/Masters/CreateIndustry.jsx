@@ -5,7 +5,7 @@ const CreateIndustry = () => {
   return (
     <div>
        <CreateMaster name={"Industry"}
-      data ={[{label:"name",payload:"name"},
+      data ={[{label: "Name", payload: "name", validation: /\S/, required: true},
       {label:"description",payload:"description"}
       ]}/>
     </div>

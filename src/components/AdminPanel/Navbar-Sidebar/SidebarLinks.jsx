@@ -871,7 +871,7 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/experties-overview"
                                 >
-                                  Experties
+                                  Expert
                                 </Link>
 
                                 <Link
@@ -1034,7 +1034,7 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/createrdashboard"
                               >
-                                Creater Dashborad
+                                Creator Dashborad
                               </Link>
                               <Link
                                 className="collapse-item"

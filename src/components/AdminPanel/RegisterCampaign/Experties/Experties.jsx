@@ -114,7 +114,7 @@ const Experties = () => {
     <>
       <div>
         <div className="form_heading_title">
-          <h2 className="form-heading">Experties</h2>
+          <h2 className="form-heading">Expert</h2>
         </div>
       </div>
 

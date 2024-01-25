@@ -67,6 +67,17 @@ const SummaryDetails = ({ payload }) => {
 
   const columns = [
     {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = filteredData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+   
+    {
       field: "page_name",
       headerName: "Pages",
       width: 150,
@@ -182,7 +193,7 @@ const SummaryDetails = ({ payload }) => {
                       variant="outlined"
                       color="secondary"
                     >
-                      {catName}: {count}
+                      {catName} : {count}
                     </Button>
                   </Box>
                 ))}
@@ -196,7 +207,7 @@ const SummaryDetails = ({ payload }) => {
             <Typography>Total Stories: {totalStoryPerPage}</Typography>
           </Box>
           <DataGrid
-            rows={filteredData}
+            rows={filteredData ||payload}
             columns={columns}
             getRowId={(row) => row.p_id}
             pageSizeOptions={[5]}
