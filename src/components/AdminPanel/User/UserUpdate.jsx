@@ -1119,7 +1119,7 @@ const UserUpdate = () => {
       </div>
 
       <div className="form-group col-3">
-        <label className="form-label">Cast</label>
+        <label className="form-label">Category</label>
         <Select
           className=""
           options={castOption.map((option) => ({

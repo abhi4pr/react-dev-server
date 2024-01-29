@@ -51,7 +51,7 @@ const ViewEditDigiSignature = () => {
       </div>
 
       <button className="btn btn-primary mr-3" onClick={openModal}>
-        Add New Digital Signature
+        Update your digital signature
       </button>
       <Modal
         isOpen={isModalOpen}
