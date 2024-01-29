@@ -257,7 +257,7 @@ function Dashboard() {
                 </div>
               </div>
             )}
-          {contextData &&
+          {/* {contextData &&
             contextData[17] &&
             contextData[17].view_value === 1 && (
               <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
@@ -265,8 +265,6 @@ function Dashboard() {
                   <div className="d_infocard card shadow">
                     <div className="card-body">
                       <div className="d_infocard_txt">
-                        {/* <h3>WFH</h3> */}
-
                         <h2>WFH Single User</h2>
                       </div>
                       <div className="d_infocard_icon">
@@ -278,7 +276,7 @@ function Dashboard() {
                   </div>
                 </Link>
               </div>
-            )}
+            )} */}
 
           {loginUserData.department_name == "Accounts" && (
             <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">

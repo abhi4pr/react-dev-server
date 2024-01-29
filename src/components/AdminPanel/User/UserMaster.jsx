@@ -634,6 +634,7 @@ const UserMaster = () => {
           // toastAlert("User Registerd");
           // setIsFormSubmitted(true);
           setFamilyDetails([initialFamilyDetailsGroup]);
+          setEducationDetails([initialEducationDetailsGroup]);
         }
       } catch (error) {
         console.error("Failed to submit form", error);
@@ -2162,7 +2163,7 @@ const UserMaster = () => {
       </div>
 
       <div className="form-group col-3">
-        <label className="form-label">Caste</label>
+        <label className="form-label">Category</label>
         <Select
           className=""
           options={castOption.map((option) => ({
@@ -2611,6 +2612,7 @@ const UserMaster = () => {
         <div className="col-12">
           <button
             onClick={handleAddEducationDetails}
+            variant="contained"
             className="btn btn-outline-primary me-2"
           >
             Add More Education Details

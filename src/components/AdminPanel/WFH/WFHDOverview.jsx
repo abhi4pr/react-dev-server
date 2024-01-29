@@ -41,8 +41,13 @@ const WFHDOverview = () => {
       const matchesDesiName = d.desi_name
         ?.toLowerCase()
         .includes(lowerCaseSearch);
+      const matchesJobType = d.job_type
+        ?.toLowerCase()
+        .includes(lowerCaseSearch);
 
-      return matchesUserName || matchesDeptName || matchesDesiName;
+      return (
+        matchesUserName || matchesDeptName || matchesDesiName || matchesJobType
+      );
     });
 
     setAllWFHDData(result);
@@ -88,6 +93,14 @@ const WFHDOverview = () => {
       cell: (row) => row.user_login_id,
     },
     {
+      name: "Personal Contact Number",
+      cell: (row) => row.PersonalNumber,
+    },
+    {
+      name: "Alternate Contact Number",
+      cell: (row) => row.alternate_contact,
+    },
+    {
       name: "Department",
       cell: (row) => row.department_name,
       width: "120px",
@@ -115,11 +128,11 @@ const WFHDOverview = () => {
   return (
     <>
       <div>
-        <FormContainer mainTitle="WFHD Overivew" link={"/admin/"} />
+        <FormContainer mainTitle="Payout Overivew" link={"/admin/"} />
         <div className="card">
           <div className="data_tbl table-responsive">
             <DataTable
-              title="All WFHD Users"
+              title="Payout Users"
               columns={columns}
               data={allWFHDData}
               fixedHeader

@@ -805,6 +805,15 @@ const UserOverview = () => {
                     options={jobTypeOptions}
                   />
                 </div>
+                <div className="form-group col-3">
+                  <FieldContainer
+                    fieldGrid={12}
+                    label="Search"
+                    placeholder="Search Here"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
 

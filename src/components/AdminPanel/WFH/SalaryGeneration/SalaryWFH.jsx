@@ -612,7 +612,11 @@ const SalaryWFH = () => {
             <Text style={styles.tableCell}>{item.dept_name}</Text>
             <Text style={styles.tableCell}>{item.designation_name}</Text>
             <Text style={styles.tableCell}>
-              {item.joining_date.split("T")[0].split("-").reverse().join("-")}
+              {item.joining_date
+                ?.split("T")[0]
+                ?.split("-")
+                ?.reverse()
+                ?.join("-")}
             </Text>
             <Text style={styles.tableCell}>30</Text>
             <Text style={styles.tableCell}>{item.month}</Text>
@@ -680,7 +684,7 @@ const SalaryWFH = () => {
       .then((res) => setSeparationReasonGet(res.data));
   }
 
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date()?.toISOString()?.split("T")[0];
   function handleSeparationDataPost() {
     axios.post("http://34.93.221.166:3000/api/add_separation", {
       user_id: separationUserID,
