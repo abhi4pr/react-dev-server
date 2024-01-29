@@ -628,13 +628,11 @@ const UserMaster = () => {
             });
 
           whatsappApi.callWhatsAPI(
-            "Preonboarding Register",
+            "user_register",
             JSON.stringify(personalContact),
             username,
-            [username, loginId, password, "http://jarviscloud.in/"]
+            [username, loginId, password, "https://jarvis.work/"]
           );
-          // toastAlert("User Registerd");
-          // setIsFormSubmitted(true);
           setFamilyDetails([initialFamilyDetailsGroup]);
           setEducationDetails([initialEducationDetailsGroup]);
         }

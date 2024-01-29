@@ -32,6 +32,10 @@ const AssetSingleUser = () => {
   const [newAssetRequestData, setNewAssetRequestData] = useState([]);
   const PriorityData = ["Low", "Medium", "High", "Urgent"];
 
+  const hardRender = () => {
+    getNewAssetRequest();
+  };
+
   // New tab
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const handleAccordionButtonClick = (index) => {
@@ -48,6 +52,7 @@ const AssetSingleUser = () => {
     <AssetSingleuserOverview
       newAssetRequestData={newAssetRequestData}
       newRequestAPIRender={newRequestAPIRender}
+      hardRender={hardRender}
     />
   );
 
@@ -68,11 +73,11 @@ const AssetSingleUser = () => {
     );
     setReasonData(res?.data.data);
   }
+
   async function getNewAssetRequest() {
     const res = await axios.get(
       `http://34.93.221.166:3000/api/assetrequest/${userID}`
     );
-    console.log(res.data, "reason hai");
     setNewAssetRequestData(res?.data);
   }
 
@@ -121,6 +126,7 @@ const AssetSingleUser = () => {
         "http://34.93.221.166:3000/api/add_repair_request",
         formData
       );
+
       toastAlert("Success");
       setAssetName("");
       setRepairDate("");

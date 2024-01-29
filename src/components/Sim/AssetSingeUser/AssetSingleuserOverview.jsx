@@ -14,7 +14,7 @@ const AssetSingleuserOverview = ({
   newAssetRequestData,
   newRequestAPIRender,
 }) => {
-  const { usersDataContext, getAssetDataContext, toastAlert } =
+  const { usersDataContext, getAssetDataContext, toastAlert, toastError } =
     useGlobalContext();
   const { userID } = useAPIGlobalContext();
   const [reasonData, setReasonData] = useState([]);
@@ -36,6 +36,9 @@ const AssetSingleuserOverview = ({
   const [returnImage2, setReturnImage2] = useState(null);
   const [assetSubCategroyData, setAssetSubCategoryData] = useState([]);
   const [repairAssetId, setRepairAssetId] = useState("");
+
+  const [newAssetID, setNewAssetID] = useState(0);
+  const [isEditMode, setIsEditMode] = useState(false);
 
   async function getRepairReason() {
     const res = await axios.get(
@@ -128,7 +131,17 @@ const AssetSingleuserOverview = ({
   const handleRow = (row) => {
     setAssetName(row.assetsName);
     setRepairAssetId(row.sim_id);
-    console.log(row.assetsName, "name hai");
+  };
+  const handleDeleteNewAsset = (id) => {
+    try {
+      const response = axios.delete(
+        `http://34.93.221.166:3000/api/assetreturn/${id}`
+      );
+      toastAlert("Delete Success");
+    } catch (error) {
+      toastError("Error");
+      console.log(error);
+    }
   };
 
   const columns = [
@@ -246,14 +259,62 @@ const AssetSingleuserOverview = ({
     },
     {
       name: "Detail",
-      selector: (row) => row.detail,
+      cell: (row) => (
+        <div style={{ maxHeight: "100px", overflowY: "auto" }}>
+          {row.detail}
+        </div>
+      ),
       sortable: true,
+      width: "300px",
     },
 
     {
       name: "Taged Person",
       selector: (row) => row.multi_tag_name,
       sortable: true,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        // <button
+        //   class="btn btn-secondary dropdown-toggle"
+        //   data-toggle="dropdown"
+        //   aria-haspopup="true"
+        //   aria-expanded="false"
+        // >
+        //   <i class="fa-solid fa-ellipsis"></i>
+        // </button>
+        <div class="btn-group">
+          <button
+            type="button"
+            class="btn btn-secondary "
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
+          <div className="dropdown-menu dropdown-menu-right">
+            <button
+              onClick={() => handleUpdateNewAssetRow(row)}
+              class="dropdown-item"
+              type="button"
+              data-toggle="modal"
+              data-target="#sidebar-right"
+              size="small"
+            >
+              Edit
+            </button>
+            <button
+              className="dropdown-item"
+              type="button"
+              onClick={() => handleDeleteNewAsset(row._id)}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
+      ),
     },
   ];
 
@@ -274,6 +335,34 @@ const AssetSingleuserOverview = ({
       });
 
       toastAlert("Request Success");
+      hardRender();
+      newRequestAPIRender();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUpdateNewAssetRow = (row) => {
+    console.log(row, "subcategory id");
+    setIsEditMode(true);
+    setNewAssetID(row._id);
+    setAssetName(row.sub_category_id);
+    setProblemDetailing(row.detail);
+    setPriority(row.priority);
+  };
+  const handleNewAssetUpdate = () => {
+    try {
+      axios.put("http://34.93.221.166:3000/api/assetrequest", {
+        _id: newAssetID,
+        sub_category_id: assetsName,
+        detail: problemDetailing,
+        priority: priority,
+        request_by: userID,
+        multi_tag: tagUser.map((user) => user.value),
+      });
+
+      toastAlert("Request Success");
+      hardRender();
       newRequestAPIRender();
     } catch (error) {
       console.log(error);
@@ -307,9 +396,14 @@ const AssetSingleuserOverview = ({
             data-target="#sidebar-right"
             size="small"
             className="col-2 ml-3 mb-2 btn btn-outline-primary btn-sm"
+            onClick={() => {
+              setIsEditMode(false);
+              // Additional logic if needed
+            }}
           >
             New Asset Request
           </button>
+
           <div className="page_height">
             <div className="card mb-4">
               <div className="data_tbl table-responsive">
@@ -318,7 +412,7 @@ const AssetSingleuserOverview = ({
                   columns={NewAssetcolumns}
                   data={newAssetRequestData}
                   fixedHeader
-                  fixedHeaderScrollHeight="40vh"
+                  fixedHeaderScrollHeight="50vh"
                   exportToCSV
                   highlightOnHover
                   subHeader
@@ -494,7 +588,7 @@ const AssetSingleuserOverview = ({
         </div>
       </div>
 
-      {/* Sidebar Right */}
+      {/* Sidebar Right new asset */}
       <div className="right-modal">
         <div
           className="modal fade right"
@@ -510,7 +604,7 @@ const AssetSingleuserOverview = ({
                     ×
                   </span>
                 </button>
-                <h4 className="modal-title">Request New Asset</h4>
+                <h4 className="modal-title">Asset Request</h4>
               </div>
               <div className="modal-body">
                 <div className="form-group col-12">
@@ -576,14 +670,25 @@ const AssetSingleuserOverview = ({
                   onChange={(e) => setProblemDetailing(e.target.value)}
                   required
                 />
-                <button
-                  type="button"
-                  data-dismiss="modal"
-                  className=" btn btn-primary ml-2"
-                  onClick={handleNewAssetSubmit}
-                >
-                  Submit
-                </button>
+                {isEditMode ? (
+                  <button
+                    type="button"
+                    data-dismiss="modal"
+                    className="btn btn-primary ml-2"
+                    onClick={handleNewAssetUpdate}
+                  >
+                    Update
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    data-dismiss="modal"
+                    className="btn btn-primary ml-2"
+                    onClick={handleNewAssetSubmit}
+                  >
+                    Submit
+                  </button>
+                )}
               </div>
             </div>
           </div>

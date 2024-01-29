@@ -42,11 +42,13 @@ const AssetSubCategoryOverview = () => {
   const [totalAssets, setTotalAssets] = useState([]);
   const [assetModal, seAssetModel] = useState(false);
   const handleTotalasset = async (row) => {
+    console.log("id : ", row);
     try {
       const response = await axios.get(
         `http://34.93.221.166:3000/api/get_total_asset_in_category/${row}`
       );
       setTotalAssets(response.data.data);
+      console.log(response.data.data, "data sub cat");
       seAssetModel(true);
     } catch (error) {
       console.log("total asset not working", error);
@@ -62,6 +64,7 @@ const AssetSubCategoryOverview = () => {
         `http://34.93.221.166:3000/api/get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response.data.data);
+      console.log(response.data, "sub categoy");
       seAssetModel(true);
     } catch (error) {
       console.log("total asset not working", error);
@@ -166,6 +169,12 @@ const AssetSubCategoryOverview = () => {
                   type="button"
                   className="btn btn-outline-primary btn-sm"
                 >
+                  <Link to="/admin/asset-dashboard">Dashboard</Link>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm"
+                >
                   <Link to="/asset/subCategory">Add</Link>
                 </button>
               </div>
@@ -238,12 +247,15 @@ const AssetSubCategoryOverview = () => {
                 cell: (row, index) => <div>{index + 1}</div>,
                 width: "10%",
               },
-              { name: "Asset Name", selector: "assetsName" },
-              { name: "Category Name", selector: "category_name" },
-              { name: "Subcategory Name", selector: "sub_category_name" },
-              { name: "Status", selector: "status" },
-              { name: "Asset Type", selector: "asset_type" },
-              { name: "Asset ID", selector: "asset_id" },
+              { name: "Asset Name", selector: (row) => row.assetsName },
+              { name: "Category Name", selector: (row) => row.category_name },
+              {
+                name: "Subcategory Name",
+                selector: (row) => row.sub_category_name,
+              },
+              { name: "Status", selector: (row) => row.status },
+              { name: "Asset Type", selector: (row) => row.asset_type },
+              { name: "Asset ID", selector: (row) => row.asset_id },
             ]}
             data={totalAssets}
             highlightOnHover

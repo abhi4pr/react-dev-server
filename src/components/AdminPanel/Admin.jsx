@@ -214,8 +214,12 @@ import TaskStatusDeptWiseMaster from "../TaskManagement/Pages/TaskStatusDeptWise
 import TaskStatusDeptWiseOverview from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseOverview";
 import TaskStatusDeptWiseUpdate from "../TaskManagement/Pages/TaskStatusDeptWise/TaskStatusDeptWiseUpdate";
 import DisputeOverview from "./WFH/Dispute/DisputeOverview";
+<<<<<<< Updated upstream
 import FinanceDashboard from "./Finance/Dashboard/FinanceDashboard";
 import SalesExecutiveIncentiveRequestReleaseList from "./Finance/SalesExecutiveIncentiveRequestReleaseList";
+=======
+import AssetDashboard from "../Sim/AssetDashboard";
+>>>>>>> Stashed changes
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -491,6 +495,11 @@ const Admin = () => {
                     contextData[5] &&
                     contextData[5].view_value === 1 && ( */}
                   <>
+                    <Route
+                      path="/asset-dashboard"
+                      element={<AssetDashboard />}
+                    />
+
                     <Route path="/self-audit" element={<SelfAudit />} />
 
                     {/* Asset Section  */}

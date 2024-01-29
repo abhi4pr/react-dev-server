@@ -133,14 +133,25 @@ const VenderMaster = () => {
             />
           </div>
           <FieldContainer
-            label="Contect"
+            label="Contact"
             value={vendorContact}
-            onChange={(e) => setVendorContact(e.target.value)}
+            type="number"
+            required={true}
+            onChange={(e) => {
+              if (e.target.value.length <= 10) {
+                setVendorContact(e.target.value);
+              }
+            }}
           />
           <FieldContainer
-            label="Secondary Contect"
+            label="Secondary Contact"
+            type="number"
             value={secondaryContact}
-            onChange={(e) => setSecondaryContact(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 10) {
+                setSecondaryContact(e.target.value);
+              }
+            }}
           />
           <FieldContainer
             label="Secondary Peroson Name"
@@ -149,6 +160,7 @@ const VenderMaster = () => {
           />
           <FieldContainer
             label="Email"
+            required={true}
             value={vendorEmail}
             onChange={(e) => setVendorEmail(e.target.value)}
           />

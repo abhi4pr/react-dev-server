@@ -24,7 +24,7 @@ const AssetCategoryUpdate = () => {
   const [hrselfAuditPeriod, setHrSelfAuditPeriod] = useState("");
   const [hrselfAuditUnit, setHrSelfAuditUnit] = useState("");
 
-  const Unit = ["Month", "Days", "Year"];
+  const Unit = ["Month(s)", "Day(s)", "Year(s)"];
 
   useEffect(() => {
     getData();
@@ -55,7 +55,7 @@ const AssetCategoryUpdate = () => {
           description: description,
           selfAuditPeriod: selfAuditPeriod,
           selfAuditUnit: selfAuditUnit,
-          hrselfAuditPeriod: hrselfAuditPeriod,
+          hrAuditPeriod: hrselfAuditPeriod,
           hrAuditUnit: hrselfAuditUnit,
           last_updated_by: loginUserId,
         }

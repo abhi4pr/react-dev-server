@@ -44,7 +44,7 @@ const AssetVisibleToHr = () => {
   );
   const newAssetTab2 = (
     <NewAssetRequestOverview
-      newAssetData={newAsseRequesttData.filter(
+      newAssetData={newAsseRequesttData?.filter(
         (d) =>
           d.asset_request_status == "ApprovedByManager" ||
           d.asset_request_status == "Requested"
@@ -54,7 +54,7 @@ const AssetVisibleToHr = () => {
   );
   const newAssetTab3 = (
     <NewAssetRequestOverview
-      newAssetData={newAsseRequesttData.filter(
+      newAssetData={newAsseRequesttData?.filter(
         (d) => d.asset_request_status == "Approved"
       )}
       handleRelodenewData={handleRelodenewData}
@@ -62,7 +62,7 @@ const AssetVisibleToHr = () => {
   );
   const newAssetTab4 = (
     <NewAssetRequestOverview
-      newAssetData={newAsseRequesttData.filter(
+      newAssetData={newAsseRequesttData?.filter(
         (d) => d.asset_request_status == "Rejected"
       )}
       handleRelodenewData={handleRelodenewData}
@@ -96,25 +96,25 @@ const AssetVisibleToHr = () => {
   );
   const tab2 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data.filter((d) => d.status == "Requested")}
+      hrOverviewData={data?.filter((d) => d.status == "Requested")}
       hardRender={hardRender}
     />
   );
   const tab3 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data.filter((d) => d.status == "Accept")}
+      hrOverviewData={data?.filter((d) => d.status == "Accept")}
       hardRender={hardRender}
     />
   );
   const tab4 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data.filter((d) => d.status == "Recovered")}
+      hrOverviewData={data?.filter((d) => d.status == "Recovered")}
       hardRender={hardRender}
     />
   );
   const tab5 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data.filter((d) => d.status == "Resolved")}
+      hrOverviewData={data?.filter((d) => d.status == "Resolved")}
       hardRender={hardRender}
     />
   );
@@ -136,8 +136,8 @@ const AssetVisibleToHr = () => {
   }, []);
 
   useEffect(() => {
-    const result = data.filter((d) => {
-      return d.asset_name.toLowerCase().match(search.toLowerCase());
+    const result = data?.filter((d) => {
+      return d?.asset_name?.toLowerCase()?.match(search?.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
@@ -182,19 +182,22 @@ const AssetVisibleToHr = () => {
       selector: (row) => DateISOtoNormal(row.return_asset_data_time),
     },
     {
-      name: "Return Remark",
+      name: "Remark",
       selector: (row) => row.asset_return_remark,
     },
     {
       name: "Action",
       cell: (row) => (
-        <button
-          className="btn btn-outline-warning btn-sm"
-          onClick={() => handleReturnAsset(row)}
-          title="return status approve and this asset status available"
-        >
-          Return Asset Approve
-        </button>
+        <>
+          <button
+            className="btn btn-outline-success  btn-sm"
+            // onClick={() => handleReturnAsset(row)}
+
+            // title="return status approve and this asset status available"
+          >
+            Recover
+          </button>
+        </>
       ),
     },
   ];
