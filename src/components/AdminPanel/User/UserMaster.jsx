@@ -573,6 +573,7 @@ const UserMaster = () => {
                 login_id: loginId,
                 name: username,
                 password: password,
+                status: "reportTo"
               })
               .then((res) => {
                 // console.log("Email sent successfully:", res.data);
@@ -617,6 +618,7 @@ const UserMaster = () => {
               login_id: loginId,
               name: username,
               password: password,
+              status: "onboarded"
             })
             .then((res) => {
               // console.log("Email sent successfully:", res.data);

@@ -523,7 +523,7 @@ const Attendence = () => {
 
           <h6>
             <span style={{ color: "green" }}>
-              Active : {activeusers.length}
+              Active : {activeusers?.length}
             </span>
           </h6>
         </div>
@@ -551,7 +551,7 @@ const Attendence = () => {
 
       <div className="card">
         <div className="data_tbl table-responsive footer_none">
-          {filterData.length > 0 && (
+          {filterData?.length > 0 && (
             <DataGrid
               rows={filterData}
               getRowId={(row) => row._id}

@@ -139,7 +139,7 @@ const SalaryWFH = () => {
           "http://34.93.221.166:3000/api/get_all_wfh_users"
         );
         const data = res.data.data;
-        setAllWFHUsers(data.length);
+        setAllWFHUsers(data?.length);
         const filteredUser = data.filter((d) => d.dept_id === department);
         const filteredActive = data.filter(
           (d) => d.dept_id === department && d.user_status
@@ -989,7 +989,7 @@ const SalaryWFH = () => {
                 {data.month} <span>{data.year}</span>
               </h2>
               <h3>
-                {data.deptCount}/{departmentdata.length}
+                {data.deptCount}/{departmentdata?.length}
               </h3>
               <h3>
                 {data?.atdGenerated == 1 ? (
