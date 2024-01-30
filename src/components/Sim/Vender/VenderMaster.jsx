@@ -25,14 +25,7 @@ const VenderMaster = () => {
   const [secondaryPersonName, setSecondaryPersonName] = useState("");
 
   const [type, setType] = useState("");
-  // const Type = [
-  //   "Current Asset",
-  //   "Fixed Asset",
-  //   "Tangible Asset",
-  //   "Intangible Asset",
-  //   "Operating Asset",
-  //   "Non Operating Asset",
-  // ];
+
   const Type = ["Sales", "Service", "Both"];
   // const [categoryData, setCategoryData] = useState([]);
   // const getCategoryData = () => {
@@ -82,6 +75,19 @@ const VenderMaster = () => {
   const categoryChangeHandler = (e, op) => {
     setSelectedCategory(op);
   };
+
+  // Filter the options to exclude the selected categories
+  const filteredCategoryOptions = categoryDataContext
+    .filter(
+      (category) =>
+        !selectedCategory.find(
+          (selected) => selected.value === category.category_id
+        )
+    )
+    .map((category) => ({
+      label: category.category_name,
+      value: category.category_id,
+    }));
   return (
     <>
       <UserNav />
@@ -121,15 +127,14 @@ const VenderMaster = () => {
             <Autocomplete
               multiple
               id="combo-box-demo"
-              options={categoryDataContext.map((d) => ({
-                label: d.category_name,
-                value: d.category_id,
-              }))}
+              options={filteredCategoryOptions}
+              getOptionLabel={(option) => option.label}
               InputLabelProps={{ shrink: true }}
               renderInput={(params) => (
                 <TextField {...params} label="Vendor Category" />
               )}
               onChange={categoryChangeHandler}
+              value={selectedCategory}
             />
           </div>
           <FieldContainer

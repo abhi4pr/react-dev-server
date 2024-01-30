@@ -9,6 +9,9 @@ import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 
+import { PieChart } from "@mui/x-charts/PieChart";
+import { BarChart } from "@mui/x-charts/BarChart";
+
 const AssetDashboard = () => {
   const { categoryDataContext } = useGlobalContext();
 
@@ -30,20 +33,45 @@ const AssetDashboard = () => {
   const [category, setCategory] = useState("");
   const [subcategoryData, setSubCategoryData] = useState([]);
   const [subcategory, setSubCategory] = useState("");
+  const [newAssetRequest, setNewAssetRequest] = useState([]);
+  const [returnAssetData, setReturnAssetData] = useState([]);
 
-  // const isAllocation = simData.filter((d) => d.status);
+  async function getNewAssetData() {
+    try {
+      const response = await axios.get(
+        "http://34.93.221.166:3000/api/assetrequest"
+      );
+      setNewAssetRequest(
+        response.data.data?.filter((d) => d.asset_request_status == "Requested")
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  // const [categoryData, setCategoryData] = useState([]);
-  // const getCategoryData = () => {
-  //   axios
-  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
-  //     .then((res) => {
-  //       setCategoryData(res.data);
-  //     });
-  // };
-  // useEffect(() => {
-  //   getCategoryData();
-  // }, []);
+  const [repairRequestData, setRepairRequestData] = useState([]);
+  async function getRepariRequestData() {
+    try {
+      const response = await axios.get(
+        "http://34.93.221.166:3000/api/show_asset_hr_data"
+      );
+      setRepairRequestData(
+        response.data.data?.filter((d) => d.status == "Requested")
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  const getReturnAssetData = () => {
+    axios.get("http://34.93.221.166:3000/api/assetreturn").then((res) => {
+      setReturnAssetData(res.data.singleAssetReturnRequest);
+    });
+  };
+  useEffect(() => {
+    getNewAssetData();
+    getRepariRequestData();
+    getReturnAssetData();
+  }, []);
 
   const getSubCategoryData = () => {
     if (category) {
@@ -54,7 +82,7 @@ const AssetDashboard = () => {
         .then((res) => {
           setSubCategoryData(res.data);
           const filtersubcat = subcategory
-            ? res.data.filter((item) => item.sub_category_id === subcategory)
+            ? res.data?.filter((item) => item.sub_category_id === subcategory)
             : res.data;
           setDepartmentData(filtersubcat);
         });
@@ -84,7 +112,7 @@ const AssetDashboard = () => {
         setDepartmentData(res.data.data);
 
         const filteredDatas = category
-          ? res.data.data.filter((item) => item.category_id === category)
+          ? res.data.data?.filter((item) => item.category_id === category)
           : res.data.data;
         setDepartmentData(filteredDatas);
       });
@@ -120,11 +148,80 @@ const AssetDashboard = () => {
               />
             </div>
           </div>
+          <div className="asset_chart">
+            <div className="chart_container">
+              <PieChart
+                series={[
+                  {
+                    data: [
+                      {
+                        id: 0,
+                        value: availableObjects.length,
+                        label: "Available",
+                        color: "rgb(184, 0, 216)",
+                      },
+                      {
+                        id: 1,
+                        value: allocatedObjects.length,
+                        label: "Allocated",
+                      },
+                    ],
+                    innerRadius: 0,
+                    cornerRadius: 5,
+                    highlightScope: { faded: "global", highlighted: "item" },
+                    faded: {
+                      innerRadius: 30,
+                      additionalRadius: -30,
+                      color: "gray",
+                    },
+                  },
+                ]}
+                height={200}
+              />
+              <h5 style={{ fontWeight: "bold" }}>
+                Total Asset - {simData.length}
+              </h5>
+            </div>
+
+            <div className="chart_container ml-5">
+              <BarChart
+                xAxis={[
+                  {
+                    scaleType: "band",
+                    data: [
+                      "New Asset Request",
+                      "Repair Request",
+                      "Return Asset Request",
+                    ],
+                  },
+                ]}
+                series={[
+                  {
+                    data: [
+                      newAssetRequest.length,
+                      repairRequestData.length,
+                      returnAssetData.length,
+                    ],
+                  },
+                  { data: [] },
+                  // { data: [2, 5, 6] },
+                ]}
+                width={600}
+                height={300}
+              />
+            </div>
+          </div>
 
           <div className="row">
             <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <Link to="/sim-overview">
-                <div className="d_infocard card shadow">
+                <div
+                  className="d_infocard card shadow p-1"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(240deg, #fc8ebe 0%, #fce5c3 100%)",
+                  }}
+                >
                   <div className="card-body">
                     <div className="d_infocard_txt">
                       <h2>Total</h2>
@@ -139,7 +236,13 @@ const AssetDashboard = () => {
 
             <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <Link to="/sim-overview">
-                <div className="d_infocard card shadow">
+                <div
+                  className="d_infocard card shadow p-1"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(240deg, rgb(124, 136, 224) 0%, #c3f4fc 100%)",
+                  }}
+                >
                   <div className="card-body">
                     <div className="d_infocard_txt">
                       <h2>Available</h2>
@@ -153,7 +256,13 @@ const AssetDashboard = () => {
             </div>
 
             <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <div className="d_infocard card shadow">
+              <div
+                className="d_infocard card shadow p-1"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(240deg, #97e7d1 0%, #ecfcc3 100%)",
+                }}
+              >
                 <Link to="/sim-overview">
                   <div className="card-body">
                     <div className="d_infocard_txt">
