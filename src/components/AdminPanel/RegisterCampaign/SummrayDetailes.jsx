@@ -4,7 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import millify from "millify";
 import * as XLSX from 'xlsx';
 
-const SummaryDetails = ({ payload }) => {
+const SummaryDetails = ({ payload,campName }) => {
   const [summaryData, setSummaryData] = useState({
     total: 0,
     totalPost: 0,
@@ -138,7 +138,7 @@ const SummaryDetails = ({ payload }) => {
       const catWorksheet = XLSX.utils.json_to_sheet(catData);
       XLSX.utils.book_append_sheet(workbook, catWorksheet, catName);
     });
-      XLSX.writeFile(workbook, "SummaryDetails.xlsx");
+      XLSX.writeFile(workbook, `${campName}.xlsx`);
   };
   
   
