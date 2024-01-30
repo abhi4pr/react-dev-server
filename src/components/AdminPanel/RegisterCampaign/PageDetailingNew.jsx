@@ -215,7 +215,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       if (!options.includes(data?.cat_name)) {
         if(data.cat_name!=null){
 
-          options.push(data.cat_name);
+          options.push(data.cat_name)
         }
       }
 
