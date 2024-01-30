@@ -45,6 +45,8 @@ const PhasecreationNew = () => {
   const [showPageDetails, setShowPageDetails] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [assignAll, setAssignAll] = useState(false)
+  const [stopCreate, setStopCreate] = useState(false)
+  const [campaignData,setCampaignData]=useState({})
 
   useEffect(() => {
     getPhaseData();
@@ -54,21 +56,58 @@ const PhasecreationNew = () => {
     const data = await axios.get(
       `http://34.93.221.166:3000/api/campaignphase/${id}`
     );
+    const pageD = await axios.get(
+      `http://34.93.221.166:3000/api/campaignplan/${id}`
+    );
     setAllPhaseData(data?.data?.result);
+    setAllPageData(pageD?.data?.data)
   };
 
 
-  const getCampaignName = (detail, cmp) => {
+  const getCampaignName = (detail, cmp,cmpData) => {
+  
     setCmpName(cmp);
-    setCampaignName(detail);
+    if(assignAll){
+      const det=detail.map((item)=>{
+        return {...item,value:item.max}
+      })
+      setCampaignName(det);
+    }else  setCampaignName(detail);
+   
+    setCampaignData(cmpData)
   };
 
   const togglePageDetails = () => {
     setShowPageDetails(!showPageDetails);
-    if (allPhaseData.length == 0) {
-      setAssignAll(true)
-    }
+    setAssignAll(false)
   };
+
+  const handleAllAssign = () => {
+    setShowPageDetails(!showPageDetails)
+    setAssignAll(true)
+  }
+
+  console.log(allPhaseData)
+  useEffect(() => {
+
+
+    if (allPhaseData.length > 0) {
+      let flag = false
+      allPageData.forEach((page) => {
+        if (page.postRemaining > 0 || page.storyRemaining > 0) {
+          flag = true
+
+        }
+      })
+
+     
+      if (flag == true) {
+        setStopCreate(false)
+      } else setStopCreate(true)
+    }
+
+  }, [allPageData])
+
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -98,12 +137,12 @@ const PhasecreationNew = () => {
               <Button variant="contained" color="primary" size="small">
                 Create Assignment
               </Button>
-              {
+              {/* {
                 allPhaseData.length == 0 &&
                 <Button variant="contained" color="primary" size="small">
                   assign all
                 </Button>
-              }
+              } */}
             </Link>
             <Accordion
               key={index}
@@ -132,21 +171,23 @@ const PhasecreationNew = () => {
       </Paper>
       {/* add Accordion for show end phase------------------- */}
 
-      <Button
-        variant="outlined"
-        onClick={togglePageDetails}
-        sx={{ mt: 2, mb: 2 }}
-      >
-        {showPageDetails ? "Hide Page Details" : "Create New Phase"}
-      </Button>
-
       {
-        allPhaseData.length == 0 &&
-        <Button variant="outlined" onClick={togglePageDetails}
-          sx={{ m: 2, mb: 2 }}>
-          assign all
-        </Button>
+        !stopCreate && <>
+          <Button
+            variant="outlined"
+            onClick={togglePageDetails}
+            sx={{ mt: 2, mb: 2 }}
+          >
+            {showPageDetails ? "Hide Page Details" : "Create New Phase"}
+          </Button>
+
+
+          <Button variant="outlined" onClick={handleAllAssign}
+            sx={{ m: 2, mb: 2 }}>
+            create final phase
+          </Button></>
       }
+
 
       {showPageDetails && (
         <>
@@ -203,6 +244,7 @@ const PhasecreationNew = () => {
             </Box>
 
             {campaignName?.map((cmp, index) => {
+              
               return (
                 <Box
                   sx={{ display: "flex", justifyContent: "space-around" }}
@@ -217,11 +259,17 @@ const PhasecreationNew = () => {
                   <TextField
                     label="Value"
                     type="number"
+                    value={assignAll ? cmp?.max:cmp.value}
+                    disabled={assignAll ?true :false}
                     onChange={(e) => {
+                      if(e.target.value>Number(cmp?.max)){
+                        e.target.value=cmp?.max
+                      }
                       let x = [...campaignName];
                       x.splice(index, 1, {
                         commitment: cmp?.commitment,
                         value: Number(e.target.value),
+                        max:cmp?.max
                       });
                       setCampaignName(x);
                     }}

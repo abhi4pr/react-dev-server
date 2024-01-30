@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 let commInfo = [];
+
 // eslint-disable-next-line react/prop-types
 const CampaignDetailes = ({
   cid,
@@ -16,7 +17,6 @@ const CampaignDetailes = ({
   const [commitData, setCommitData] = useState([]);
   const [commitmentCompleteData, setCommitmentCompleteData] = useState([]);
 
-  // console.log(campaignData, "cmpdata");
   const getData = async () => {
     try {
       const res = await axios.get(
@@ -29,7 +29,7 @@ const CampaignDetailes = ({
   };
 
   // console.log(cid, "mycid");
-  // console.log(commitData)
+  // console.log(campaignData)
   const getBrandInfo = async () => {
     const brand = await axios.get(`http://34.93.221.166:3000/api/get_brands`);
     const myBrand = brand.data.data.find(
@@ -64,8 +64,8 @@ const CampaignDetailes = ({
     setCommitData(myComm);
     // console.log(myComm);
     let data = [];
-    myComm.forEach((x) => {
-      data.push({ commitment: x.cmtName, value: "0" });
+    myComm.forEach((x,index) => {
+      data.push({ commitment: x.cmtName, value: "0",max:campaignData?.commitment[index]?.textValue });
     });
 
     setCommitmentCompleteData(data);
@@ -73,7 +73,7 @@ const CampaignDetailes = ({
 
   useEffect(() => {
     if (commitmentCompleteData.length > 0 && getCampaign) {
-      getCampaign(commitmentCompleteData, cmpName.exeCmpName);
+      getCampaign(commitmentCompleteData, cmpName.exeCmpName,campaignData);
     }
   }, [commitmentCompleteData, cmpName]);
 
@@ -101,7 +101,7 @@ const CampaignDetailes = ({
                 readOnly: true,
               }}
               fullWidth
-              value={brandData.brand_name}
+              value={brandData?.brand_name}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -127,30 +127,32 @@ const CampaignDetailes = ({
             />
           </Grid>
           {commitData.length > 0 &&
-            commitData.map((comm, index) => (
-              <>
-                <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
-                  <TextField
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    fullWidth
-                    label="Commitment"
-                    value={comm.cmtName}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
-                  <TextField
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    fullWidth
-                    label="value"
-                    value={campaignData?.commitment[index]?.textValue}
-                  />
-                </Grid>
-              </>
-            ))}
+            commitData.map((comm, index) => {
+              // commitForValidate.push()
+              return  <>
+              <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
+                <TextField
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  fullWidth
+                  label="Commitment"
+                  value={comm.cmtName}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6} sx={{ mb: 2 }}>
+               
+                <TextField
+                  InputProps={{
+                    readOnly: true,
+                  }}
+                  fullWidth
+                  label="value"
+                  value={campaignData?.commitment[index]?.textValue}
+                />
+              </Grid>
+            </>
+            })}
         </Grid>
       </Paper>
     </>
