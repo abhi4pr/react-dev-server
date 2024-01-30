@@ -478,48 +478,6 @@ const SidebarLinks = () => {
               </li>
             )}
 
-<<<<<<< Updated upstream
-            {/* Asset Managerment Routing  */}
-            {isAssetNotifierVisible && (
-              <li className="nav-item">
-                <Link
-                  className="nav-link collapsed"
-                  data-toggle="collapse"
-                  data-target="#assets"
-                  aria-expanded="true"
-                  aria-controls="assets"
-                >
-                  <i className="bi bi-person-gear" />
-                  <span>Assets</span>
-                </Link>
-                <div
-                  id="assets"
-                  className="collapse"
-                  aria-labelledby="headingTwo"
-                  data-parent="#accordionSidebar"
-                >
-                  <div className="bg-white collapse-inner">
-                    <Link
-                      className="collapse-item"
-                      to="/admin/asset-single-user"
-                    >
-                      Asset
-                    </Link>
-                    {/* {contextData &&
-                  contextData[15] &&
-                contextData[15].view_value === 1 && ( */}
-                    {RoleId == 5 && (
-                      <Link className="collapse-item" to="/sim-overview">
-                        Asset Management
-                      </Link>
-                    )}
-                    {/* )} */}
-
-                    {/* {contextData &&
-                  contextData[40] &&
-                  contextData[40].view_value === 1 && ( */}
-                    {RoleId == 5 && (
-=======
           {/* Asset Managerment Routing  */}
           {/* {isAssetNotifierVisible && ( */}
           <li className="nav-item">
@@ -595,7 +553,6 @@ const SidebarLinks = () => {
                   {contextData &&
                     contextData[18] &&
                     contextData[18].view_value === 1 && (
->>>>>>> Stashed changes
                       <Link
                         className="collapse-item"
                         to="/admin/asset-visible-to-hr"
