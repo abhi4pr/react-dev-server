@@ -132,6 +132,12 @@ const VenderOverView = () => {
                   type="button"
                   className="btn btn-outline-primary btn-sm"
                 >
+                  <Link to="/admin/asset-dashboard">Dashboard</Link>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm"
+                >
                   <Link to="/vendorMaster">Add</Link>
                 </button>
               </div>

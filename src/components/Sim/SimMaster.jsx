@@ -501,6 +501,7 @@ const SimMaster = () => {
                   id="outlined-basic"
                   InputLabelProps={{ shrink: true }}
                   label="Invoice Copy"
+                  // accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
                   type="file"
                   onChange={(e) => setInvoiceCopy(e.target.files[0])}
                 />

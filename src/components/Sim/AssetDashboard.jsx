@@ -9,7 +9,7 @@ import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import Select from "react-select";
 
-const SimDashboard = () => {
+const AssetDashboard = () => {
   const { categoryDataContext } = useGlobalContext();
 
   const [simData, setSimData] = useState([]);
@@ -110,9 +110,8 @@ const SimDashboard = () => {
 
   return (
     <div>
-      <UserNav />
       <div className="section section_padding sec_bg h100vh">
-        <div className="container">
+        <div className="">
           <div className="action_heading">
             <div className="action_title">
               <FormContainer
@@ -366,4 +365,4 @@ const SimDashboard = () => {
   );
 };
 
-export default SimDashboard;
+export default AssetDashboard;

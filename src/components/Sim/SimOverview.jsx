@@ -251,6 +251,7 @@ const SimOverview = () => {
           {row.assetsName}
         </Link>
       ),
+      width: "150px",
       sortable: true,
     },
     {
@@ -307,11 +308,16 @@ const SimOverview = () => {
       selector: (row) => (
         <>
           <a style={{ cursor: "pointer" }} href={row.invoiceCopy_url} download>
-            <img
+            {/* <img
               style={{ width: "100px" }}
               src={row.invoiceCopy_url}
               alt="invoice copy"
-            />
+            /> */}
+            <i
+              class="fa fa-download"
+              aria-hidden="true"
+              style={{ fontSize: "25px", color: "blue" }}
+            ></i>
           </a>
         </>
       ),
@@ -422,7 +428,7 @@ const SimOverview = () => {
         <UserNav />
 
         <div className="section section_padding sec_bg h100vh">
-          <div className="container">
+          <div className="container mt-2">
             <div className="action_heading">
               <div className="action_title">
                 <FormContainer
@@ -940,11 +946,17 @@ const SimOverview = () => {
                     <div className="summary_cardrow flex-column">
                       <div className="summary_box text-center ml-auto mr-auto"></div>
                       <div className="summary_box col">
-                        <img
-                          src={showAssetsImage[0]?.img1_url}
-                          width="80px"
-                          height="80px"
-                        />
+                        <a
+                          style={{ cursor: "pointer" }}
+                          href={showAssetsImage[0]?.img1_url}
+                          download
+                        >
+                          <img
+                            src={showAssetsImage[0]?.img1_url}
+                            width="80px"
+                            height="80px"
+                          />
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -957,11 +969,17 @@ const SimOverview = () => {
                     <div className="summary_cardrow flex-column">
                       <div className="summary_box text-center ml-auto mr-auto"></div>
                       <div className="summary_box col">
-                        <img
-                          src={showAssetsImage[0]?.img2_url}
-                          width="80px"
-                          height="80px"
-                        />
+                        <a
+                          style={{ cursor: "pointer" }}
+                          href={showAssetsImage[0]?.img2_url}
+                          download
+                        >
+                          <img
+                            src={showAssetsImage[0]?.img2_url}
+                            width="80px"
+                            height="80px"
+                          />
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -974,11 +992,17 @@ const SimOverview = () => {
                     <div className="summary_cardrow flex-column">
                       <div className="summary_box text-center ml-auto mr-auto"></div>
                       <div className="summary_box col">
-                        <img
-                          src={showAssetsImage[0]?.img3_url}
-                          width="80px"
-                          height="80px"
-                        />
+                        <a
+                          style={{ cursor: "pointer" }}
+                          href={showAssetsImage[0]?.img3_url}
+                          download
+                        >
+                          <img
+                            src={showAssetsImage[0]?.img3_url}
+                            width="80px"
+                            height="80px"
+                          />
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -991,11 +1015,17 @@ const SimOverview = () => {
                     <div className="summary_cardrow flex-column">
                       <div className="summary_box text-center ml-auto mr-auto"></div>
                       <div className="summary_box col">
-                        <img
-                          src={showAssetsImage[0]?.img4_url}
-                          width="80px"
-                          height="80px"
-                        />
+                        <a
+                          style={{ cursor: "pointer" }}
+                          href={showAssetsImage[0]?.img4_url}
+                          download
+                        >
+                          <img
+                            src={showAssetsImage[0]?.img4_url}
+                            width="80px"
+                            height="80px"
+                          />
+                        </a>
                       </div>
                     </div>
                   </div>

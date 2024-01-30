@@ -112,7 +112,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     axios
       .put("http://34.93.221.166:3000/api/update_repair_request", formData)
       .then((res) => {
-        // getRepairRequest();
         setRecoveryRemark("");
         setScrapRemark("");
         hardRender();
@@ -293,7 +292,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             onClick={() => handleStatusUpdate(row, "Resolved")}
             className="btn btn-warning btn-sm ml-2"
           >
-            Resolved
+            Resolve
           </button>
           <button
             type="button"
