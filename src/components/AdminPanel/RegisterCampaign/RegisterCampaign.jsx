@@ -39,7 +39,8 @@ export default function RegisterCampaign() {
   const [caption, setCaption] = useState("");
   const [selectedAgency, setSelectedAgency] = useState("");
   const [agencyList, setAgencyList] = useState([]);
-
+  //const [service, setService] = useState([]);
+  const [selectedService, setSelectedService] = useState("");
   const togglePageDetails = () => {
     setShowPageDetails(!showPageDetails);
   };
@@ -100,6 +101,7 @@ export default function RegisterCampaign() {
     form.append("agency", selectedAgency);
     form.append("industry", selectedIndustry);
     form.append("goal", selectedGoal);
+    //form.append("service", selectedService);
 
     console.log(form, "<--------------------this is form");
     axios

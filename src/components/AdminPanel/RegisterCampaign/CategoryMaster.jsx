@@ -21,8 +21,11 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { toolbarStyles } from "./CampaignCommitment";
+import { useGlobalContext } from "../../../Context/Context";
+
 
 export default function CategoryMaster() {
+  const { toastAlert, toastError } = useGlobalContext();
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -38,6 +41,7 @@ export default function CategoryMaster() {
     // brand_id: "",
   });
 
+  
   function EditToolbar() {
     const handleClick = () => {
       setIsModalOpen(true);
@@ -65,12 +69,18 @@ export default function CategoryMaster() {
     axios
       .post("http://34.93.221.166:3000/api/projectxCategory", postData)
       .then((response) => {
+        if (response.data.success === false) {
+          toastError(response.data.message);
+        } else {
+          toastAlert("Add successfully");
+        }
         setIsModalOpen(false);
         getData();
         console.log("Data saved:", response.data);
       })
       .catch((error) => {
         console.error("Error saving data:", error);
+        toastError("Add Properly");
       });
     setIsModalOpen(false);
     setPostData("");
@@ -106,10 +116,17 @@ export default function CategoryMaster() {
       .then((res) => {
         console.log(res.data);
         setIsPutOpen(true);
+        if (res.data.success === false) {
+          toastError(res.data.message);
+        } else {
+          toastAlert("Update successfully");
+        }
       })
+      
       .then(() => {
         setIsPutOpen(false);
         getData();
+        setReload(!reload);
       });
     console.log("put data");
   };

@@ -28,6 +28,7 @@ export default function CityMaster() {
   const [rowData, setRowData] = useState({});
   const [openDeleteCityName, setOpenDeleteCityName] = React.useState(false);
 
+
   const handleClickOpenDeleteCityName = (row) => {
     setOpenDeleteCityName(true);
     setRowData(row);
@@ -77,7 +78,17 @@ export default function CityMaster() {
     callApi();
   }, []);
   const cityColumns = [
-    { field: "city_name", headerName: "City Name", width: 300 },
+    {
+      field: "city_name",
+      headerName: "City Name",
+      width: 180,
+      require: true,
+      renderCell: (params) => {
+        const name = params.value;
+        const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+        return <div>{capitalized}</div>;
+      },
+    },
     {
       field: "actions",
       headerName: "Actions",

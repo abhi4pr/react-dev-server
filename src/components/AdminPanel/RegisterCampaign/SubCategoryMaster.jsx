@@ -22,8 +22,11 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toolbarStyles } from "./CampaignCommitment";
+import { useGlobalContext } from "../../../Context/Context";
+
 
 export default function SubCategoryMaster() {
+  const { toastAlert, toastError } = useGlobalContext();
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -72,6 +75,11 @@ export default function SubCategoryMaster() {
     axios
       .post("http://34.93.221.166:3000/api/projectxSubCategory", postData)
       .then((response) => {
+        if (response.data.success === false) {
+          toastError(response.data.message);
+        } else {
+          toastAlert("Add successfully");
+        }
         postData.sub_category_name = "";
         console.log("Data saved:", response.data);
         setIsModalOpen(false);
@@ -79,6 +87,8 @@ export default function SubCategoryMaster() {
       })
       .catch((error) => {
         console.error("Error saving data:", error);
+        toastError("Add Properly");
+
       });
     setIsModalOpen(false);
   };
@@ -116,10 +126,17 @@ export default function SubCategoryMaster() {
       .then((res) => {
         console.log(res.data);
         setIsPutOpen(true);
+        if (res.data.success === false) {
+          toastError(res.data.message);
+        } else {
+          toastAlert("Update successfully");
+        }
       })
+      
       .then(() => {
         setIsPutOpen(false);
         getData();
+        setReload(!reload);
       });
     console.log("put data");
   };
