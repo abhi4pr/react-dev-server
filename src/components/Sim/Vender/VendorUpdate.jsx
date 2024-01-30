@@ -28,6 +28,7 @@ const VendorUpdate = () => {
   const [type, setType] = useState("");
 
   const Type = ["Self", "Service", "Both"];
+  const [filteredCategories, setFilteredCategories] = useState([]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -54,16 +55,25 @@ const VendorUpdate = () => {
       .then((res) => {
         const response = res.data.data;
 
-        setSelectedCategory(
+        const selectedCategories =
           categoryDataContext.length > 0
-            ? res.data.data.vendor_category?.map((category) => ({
-                label: categoryDataContext?.filter((e) => {
-                  return e.category_id == category;
-                })[0]?.category_name,
+            ? response.vendor_category?.map((category) => ({
+                label: categoryDataContext.find(
+                  (e) => e.category_id == category
+                )?.category_name,
                 value: category ? +category : "",
               }))
-            : []
+            : [];
+
+        setSelectedCategory(selectedCategories);
+
+        const availableCategories = categoryDataContext.filter(
+          (category) =>
+            !selectedCategories.find(
+              (selected) => selected.value === category.category_id
+            )
         );
+        setFilteredCategories(availableCategories);
 
         setVendorName(response.vendor_name);
         setVendorContact(response.vendor_contact_no);
@@ -118,9 +128,17 @@ const VendorUpdate = () => {
       toastAlert(error.message);
     }
   };
+  // const categoryChangeHandler = (e, op) => {
+  //   setSelectedCategory(op);
+  // };
   const categoryChangeHandler = (e, op) => {
-    // console.log(selectedCategory);
     setSelectedCategory(op);
+
+    const newFilteredCategories = categoryDataContext.filter(
+      (category) =>
+        !op.find((selected) => selected.value === category.category_id)
+    );
+    setFilteredCategories(newFilteredCategories);
   };
 
   return (
@@ -163,10 +181,10 @@ const VendorUpdate = () => {
             <Autocomplete
               multiple
               id="combo-box-demo"
-              value={selectedCategory.length > 0 ? selectedCategory : []}
-              options={categoryDataContext?.map((d) => ({
-                label: d?.category_name,
-                value: d?.category_id,
+              value={selectedCategory}
+              options={filteredCategories.map((d) => ({
+                label: d.category_name,
+                value: d.category_id,
               }))}
               InputLabelProps={{ shrink: true }}
               renderInput={(params) => (

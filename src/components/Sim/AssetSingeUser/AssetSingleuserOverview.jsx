@@ -135,8 +135,10 @@ const AssetSingleuserOverview = ({
   const handleDeleteNewAsset = (id) => {
     try {
       const response = axios.delete(
-        `http://34.93.221.166:3000/api/assetreturn/${id}`
+        `http://34.93.221.166:3000/api/assetrequest/${id}`
       );
+      newRequestAPIRender();
+      hardRender();
       toastAlert("Delete Success");
     } catch (error) {
       toastError("Error");

@@ -72,6 +72,8 @@ const UserMaster = () => {
 
   const [activeTab, setActiveTab] = useState(1);
 
+  const [reportL1Email, setReportL1Email] = useState([]);
+
   const [jobType, setJobType] = useState("");
   const [roles, setRoles] = useState("");
   const [reportL1, setReportL1] = useState("");
@@ -327,6 +329,16 @@ const UserMaster = () => {
     });
   }, []);
 
+  const allUserData = () => {
+    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+      const reportl1Email = res.data.data?.filter((d) => d.user_id == reportL1);
+      setReportL1Email(reportl1Email[0].user_email_id);
+    });
+  };
+  useEffect(() => {
+    allUserData();
+  }, [reportL1]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!jobType) {
@@ -573,7 +585,8 @@ const UserMaster = () => {
                 login_id: loginId,
                 name: username,
                 password: password,
-                status: "reportTo"
+                status: "reportTo",
+                name2: reportL1Email,
               })
               .then((res) => {
                 // console.log("Email sent successfully:", res.data);
@@ -618,7 +631,7 @@ const UserMaster = () => {
               login_id: loginId,
               name: username,
               password: password,
-              status: "onboarded"
+              status: "onboarded",
             })
             .then((res) => {
               // console.log("Email sent successfully:", res.data);

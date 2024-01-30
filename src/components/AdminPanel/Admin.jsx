@@ -673,7 +673,10 @@ const Admin = () => {
                     path="/finance-dashboard"
                     element={<FinanceDashboard />}
                   />
-                  <Route path="/Incentive-Request-Released-List/:incentive_request_id" element={<SalesExecutiveIncentiveRequestReleaseList />} />
+                  <Route
+                    path="/Incentive-Request-Released-List/:incentive_request_id"
+                    element={<SalesExecutiveIncentiveRequestReleaseList />}
+                  />
                   <Route
                     path="/finance-pruchasemanagement-alltransaction"
                     element={<PurchaseManagementAllTransaction />}
