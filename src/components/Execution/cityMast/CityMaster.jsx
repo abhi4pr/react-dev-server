@@ -78,6 +78,17 @@ export default function CityMaster() {
     callApi();
   }, []);
   const cityColumns = [
+
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = row.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
     {
       field: "city_name",
       headerName: "City Name",

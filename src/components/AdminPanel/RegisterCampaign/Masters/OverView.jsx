@@ -33,8 +33,8 @@ const OverView = ({ name, data, hardReload }) => {
   const updateHandler = (params) => {
     setCurrentRow(params.row);
     setIsPutOpen(true);
-  };
-
+    // window.location.reload(); // Full page reload
+}
   const deleteHandler = (params) => {
     setDeleteParams(params);
     setIsDeleteDialogOpen(true);
@@ -71,6 +71,7 @@ const OverView = ({ name, data, hardReload }) => {
     } catch (error) {}
   };
   const floodColumn = () => {
+    fieldInRows=[]
     const x = data[0];
     let val = [];
     for (const key in x) {
@@ -160,9 +161,10 @@ const OverView = ({ name, data, hardReload }) => {
           updatePayload
         );
       }
+      fieldInRows = []
       setUpdatePayload({});
       setIsPutOpen(false);
-      hardReload();
+      // hardReload();
       toastAlert("Update Successfully");
 
     } catch (error) {}
@@ -219,8 +221,8 @@ const OverView = ({ name, data, hardReload }) => {
         <DialogActions>
           <Button
             onClick={() => {
-              setIsPutOpen(false);
               setUpdatePayload({});
+              setIsPutOpen(false);
             }}
             color="error"
             variant="outlined"
