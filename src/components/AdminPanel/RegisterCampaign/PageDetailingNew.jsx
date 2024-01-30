@@ -212,9 +212,13 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
   const categorySet = () => {
     allPageData.forEach((data) => {
-      if (!options.includes(data.cat_name)) {
-        options.push(data.cat_name);
+      if (!options.includes(data?.cat_name)) {
+        if(data.cat_name!=null){
+
+          options.push(data.cat_name)
+        }
       }
+
     });
   };
 
@@ -711,6 +715,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       }
     }
   };
+
   const columnForPages = [
     {
       field: "S.NO",
@@ -906,6 +911,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     return <Loader message="Plan creation in progress..." />;
   }
 
+  console.log(options)
+
   return (
     <>
       <Paper sx={{ marginTop: "2rem", padding: "1rem" }}>
@@ -948,7 +955,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         <Autocomplete
           multiple
           id="combo-box-demo"
-          options={options}
+          options={options?options:[]}
           sx={{ width: 200 }}
           renderInput={(params) => <TextField {...params} label="Category" />}
           onChange={categoryChangeHandler}
