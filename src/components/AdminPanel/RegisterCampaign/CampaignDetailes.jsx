@@ -101,7 +101,7 @@ const CampaignDetailes = ({
                 readOnly: true,
               }}
               fullWidth
-              value={brandData.brand_name}
+              value={brandData?.brand_name}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>

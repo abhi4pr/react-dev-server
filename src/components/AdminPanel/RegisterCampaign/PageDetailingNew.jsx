@@ -51,6 +51,8 @@ let text;
 let rejectedPages = [];
 
 const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
+  const campValue=data?.campaignName
+  
   const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
 
@@ -1063,7 +1065,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             </Button>{" "}
           </div>
         </Box>
-        <SummrayDetailes payload={payload} />
+        <SummrayDetailes payload={payload} campName={campValue}/>
       </Paper>
       {
         //copy paste modal contents
