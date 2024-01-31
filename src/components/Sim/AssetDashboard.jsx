@@ -1,3 +1,4 @@
+import { baseUrl } from "../../utils/config";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import FormContainer from "../AdminPanel/FormContainer";
@@ -38,9 +39,7 @@ const AssetDashboard = () => {
 
   async function getNewAssetData() {
     try {
-      const response = await axios.get(
-        "http://34.93.221.166:3000/api/assetrequest"
-      );
+      const response = await axios.get(`${baseUrl}assetrequest`);
       setNewAssetRequest(
         response.data.data?.filter((d) => d.asset_request_status == "Requested")
       );
@@ -52,9 +51,7 @@ const AssetDashboard = () => {
   const [repairRequestData, setRepairRequestData] = useState([]);
   async function getRepariRequestData() {
     try {
-      const response = await axios.get(
-        "http://34.93.221.166:3000/api/show_asset_hr_data"
-      );
+      const response = await axios.get(`${baseUrl}show_asset_hr_data`);
       setRepairRequestData(
         response.data.data?.filter((d) => d.status == "Requested")
       );
@@ -63,7 +60,7 @@ const AssetDashboard = () => {
     }
   }
   const getReturnAssetData = () => {
-    axios.get("http://34.93.221.166:3000/api/assetreturn").then((res) => {
+    axios.get(`${baseUrl}assetreturn`).then((res) => {
       setReturnAssetData(res.data.singleAssetReturnRequest);
     });
   };
@@ -76,9 +73,7 @@ const AssetDashboard = () => {
   const getSubCategoryData = () => {
     if (category) {
       axios
-        .get(
-          `http://34.93.221.166:3000/api/get_single_asset_sub_category/${category}`
-        )
+        .get(`${baseUrl}get_single_asset_sub_category/${category}`)
         .then((res) => {
           setSubCategoryData(res.data);
           const filtersubcat = subcategory
@@ -93,7 +88,7 @@ const AssetDashboard = () => {
   }, [category]);
 
   function getData() {
-    axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
+    axios.get(`${baseUrl}get_all_sims`).then((res) => {
       setSimData(res.data.data);
 
       const availableObjects = res.data.data.filter(
@@ -106,16 +101,14 @@ const AssetDashboard = () => {
       );
       setAllocatedCount(allocatedObjects);
     });
-    axios
-      .get("http://34.93.221.166:3000/api/get_asset_department_count")
-      .then((res) => {
-        setDepartmentData(res.data.data);
+    axios.get(`${baseUrl}get_asset_department_count`).then((res) => {
+      setDepartmentData(res.data.data);
 
-        const filteredDatas = category
-          ? res.data.data?.filter((item) => item.category_id === category)
-          : res.data.data;
-        setDepartmentData(filteredDatas);
-      });
+      const filteredDatas = category
+        ? res.data.data?.filter((item) => item.category_id === category)
+        : res.data.data;
+      setDepartmentData(filteredDatas);
+    });
   }
 
   useEffect(() => {
@@ -124,11 +117,9 @@ const AssetDashboard = () => {
 
   const handleRowClick = (row) => {
     setSelectedRow(row);
-    axios
-      .get(`http://34.93.221.166:3000/api/get_asset_users_of_dept/${row}`)
-      .then((res) => {
-        setSelectedUserData(res.data.data);
-      });
+    axios.get(`${baseUrl}get_asset_users_of_dept/${row}`).then((res) => {
+      setSelectedUserData(res.data.data);
+    });
     setIsModalOpen(true);
   };
 
