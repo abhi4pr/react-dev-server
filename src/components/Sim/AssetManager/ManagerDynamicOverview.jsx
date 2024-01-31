@@ -1,6 +1,8 @@
 import DataTable from "react-data-table-component";
 import DateISOtoNormal from "../../../utils/DateISOtoNormal";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
+import axios from "axios";
+import { useGlobalContext } from "../../../Context/Context";
 
 const ManagerDynamicOverview = ({
   filterData,
@@ -9,18 +11,33 @@ const ManagerDynamicOverview = ({
   tabTwo,
   tabThree,
 }) => {
+  const { toastAlert } = useGlobalContext();
+
   const handleStatusUpdate = (row, status) => {
-    console.log(row, status, "status cheqe");
     try {
-      axios.put(baseUrl+"assetrequest", {
+      axios.put(baseUrl + "assetrequest", {
         _id: row.asset_request_id,
         asset_request_status: status,
-        request_by: userID,
+        // request_by: userID,
       });
 
       toastAlert("Request Success");
-      getManagerData();
-      newRequestAPIRender();
+      hardRender();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRepairStatusUpdate = (row, status) => {
+    try {
+      axios.put("http://34.93.221.166:3000/api/update_repair_request", {
+        repair_id: row.repair_id,
+        status: status,
+        // request_by: userID,
+      });
+
+      toastAlert("Request Success");
+      hardRender();
     } catch (error) {
       console.log(error);
     }
@@ -43,12 +60,14 @@ const ManagerDynamicOverview = ({
       name: "Status",
       selector: (row) => (
         <>
-          {row?.asset_new_request_status === "Requested" ? (
+          {row?.asset_repair_request_status === "Requested" ? (
             <span className="badge badge-danger">Requested</span>
-          ) : row.asset_new_request_status === "Approved" ? (
+          ) : row.asset_repair_request_status === "Approved" ? (
             <span className="badge badge-success">Assigned</span>
-          ) : row.asset_new_request_status === "Rejected" ? (
+          ) : row.asset_repair_request_status === "Rejected" ? (
             <span className="badge badge-warning">Rejected</span>
+          ) : row.asset_repair_request_status === "ApprovedByManager" ? (
+            <span className="badge badge-warning">Approve By Manager</span>
           ) : null}
         </>
       ),
@@ -69,7 +88,46 @@ const ManagerDynamicOverview = ({
 
     {
       name: "Detail",
-      selector: (row) => row.detail,
+      selector: (row) => row.problem_detailing,
+      sortable: true,
+    },
+    {
+      name: "Request Date",
+      selector: (row) => row.repair_request_date_time?.split("T")?.[0],
+      sortable: true,
+    },
+
+    {
+      name: "Actions",
+      cell: (row) => (
+        <>
+          <button
+            type="button"
+            data-toggle="modal"
+            data-target="#resolvedModal"
+            size="small"
+            variant="contained"
+            color="primary"
+            onClick={() => handleRepairStatusUpdate(row, "ApprovedByManager")}
+            className="btn btn-success btn-sm ml-2"
+          >
+            Approval
+          </button>
+        </>
+      ),
+      sortable: true,
+    },
+  ];
+  const columnsTab2 = [
+    {
+      name: "S.No",
+      cell: (row, index) => <>{index + 1}</>,
+      width: "6%",
+      sortable: true,
+    },
+    {
+      name: "Request By",
+      selector: (row) => row.req_by_name,
       sortable: true,
     },
     {
@@ -77,7 +135,35 @@ const ManagerDynamicOverview = ({
       selector: (row) => row.req_date?.split("T")?.[0],
       sortable: true,
     },
-
+    {
+      name: "Status",
+      selector: (row) => (
+        <>
+          {row?.asset_new_request_status === "Requested" ? (
+            <span className="badge badge-danger">Requested</span>
+          ) : row.asset_new_request_status === "Approved" ? (
+            <span className="badge badge-success">Assigned</span>
+          ) : row.asset_new_request_status === "Rejected" ? (
+            <span className="badge badge-warning">Rejected</span>
+          ) : row.asset_new_request_status === "ApprovedByManager" ? (
+            <span className="badge badge-warning">Approve By Manager</span>
+          ) : row.asset_new_request_status === "RejectedByManager" ? (
+            <span className="badge badge-warning">Reject By Manager</span>
+          ) : null}
+        </>
+      ),
+      sortable: true,
+    },
+    {
+      name: "Priority",
+      selector: (row) => row.priority,
+      sortable: true,
+    },
+    {
+      name: "Asset Name",
+      selector: (row) => row.sub_category_name,
+      sortable: true,
+    },
     {
       name: "Actions",
       cell: (row) => (
@@ -108,34 +194,6 @@ const ManagerDynamicOverview = ({
           </button>
         </>
       ),
-      sortable: true,
-    },
-  ];
-  const columnsTab2 = [
-    {
-      name: "S.No",
-      cell: (row, index) => <>{index + 1}</>,
-      width: "6%",
-      sortable: true,
-    },
-    {
-      name: "Request By",
-      selector: (row) => row.req_by_name,
-      sortable: true,
-    },
-    {
-      name: "Request Date",
-      selector: (row) => row.req_date?.split("T")?.[0],
-      sortable: true,
-    },
-    {
-      name: "Priority",
-      selector: (row) => row.priority,
-      sortable: true,
-    },
-    {
-      name: "Asset Name",
-      selector: (row) => row.asset_name,
       sortable: true,
     },
   ];

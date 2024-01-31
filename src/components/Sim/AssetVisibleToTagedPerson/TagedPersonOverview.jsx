@@ -93,7 +93,8 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
     },
     {
       name: "Asset Name",
-      selector: (row) => row.asset_name,
+      selector: (row) => row.sub_category_name,
+      // selector: (row) => row.asset_name,
       sortable: true,
     },
     // {

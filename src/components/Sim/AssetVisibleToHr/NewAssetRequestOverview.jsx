@@ -20,17 +20,13 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   const handleStatusUpdate = (row, status) => {
     setAssetStatus(status);
     setRow(row);
+    console.log(row, "row here");
   };
 
   const getAllAssetData = async () => {
     try {
       const res = await axios.get(baseUrl+"get_all_sims");
       setSelectedAsset(res.data.data.filter((d) => d.sim_id == assetsName));
-
-      console.log(
-        res.data.data.filter((d) => d.sim_id == assetsName),
-        "selected asset"
-      );
     } catch {}
   };
 
@@ -50,16 +46,15 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   }, []);
 
   const handleRejectStatus = async (row, status) => {
+    console.log(row, "row dekhna hai");
     try {
       await axios.put(baseUrl+"assetrequest", {
         _id: row._id,
         asset_request_status: status,
-        request_by: userID,
       });
 
       handleRelodenewData();
       toastAlert("Request Success");
-      newRequestAPIRender();
     } catch (error) {
       console.log(error);
     }
@@ -69,13 +64,15 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       await axios.put(baseUrl+"assetrequest", {
         _id: row._id,
         asset_request_status: assetStatus,
-        request_by: userID,
+        request_by: row.request_by,
       });
 
       await axios.post(baseUrl+"add_sim_allocation", {
         user_id: row.request_by,
         status: "Allocated",
         sim_id: assetsName,
+        // sub_category_id: row.sub_category_id,
+        // category_id: row.category_id,
         created_by: userID,
       });
 
@@ -86,7 +83,6 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
 
       handleRelodenewData();
       toastAlert("Request Success");
-      newRequestAPIRender();
     } catch (error) {
       console.log(error);
     }
@@ -147,41 +143,41 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       sortable: true,
     },
     {
-      name: "Request Time",
+      name: "Request Date",
       selector: (row) => row.date_and_time_of_asset_request?.split("T")?.[0],
       sortable: true,
     },
 
-    newAssetData[0]?.asset_request_status === "ApprovedByManager" ||
-      (newAssetData[0]?.asset_request_status === "Requested" && {
-        name: "Actions",
-        cell: (row) => (
-          <>
-            <button
-              type="button"
-              data-toggle="modal"
-              data-target="#sidebar-right"
-              size="small"
-              onClick={() => handleStatusUpdate(row, "Approved")}
-              className="btn btn-success btn-sm ml-2"
-            >
-              Assigne
-            </button>
-            <button
-              type="button"
-              data-toggle="modal"
-              data-target="#exampleModal1"
-              size="small"
-              variant="contained"
-              color="primary"
-              className="btn btn-danger btn-sm ml-2"
-              onClick={() => handleRejectStatus(row, "Rejected")}
-            >
-              Reject
-            </button>
-          </>
-        ),
-      }),
+    (newAssetData[0]?.asset_request_status === "ApprovedByManager" ||
+      newAssetData[0]?.asset_request_status === "Requested") && {
+      name: "Actions",
+      cell: (row) => (
+        <>
+          <button
+            type="button"
+            data-toggle="modal"
+            data-target="#sidebar-right"
+            size="small"
+            onClick={() => handleStatusUpdate(row, "Approved")}
+            className="btn btn-success btn-sm ml-2"
+          >
+            Assigne
+          </button>
+          <button
+            type="button"
+            data-toggle="modal"
+            data-target="#exampleModal1"
+            size="small"
+            variant="contained"
+            color="primary"
+            className="btn btn-danger btn-sm ml-2"
+            onClick={() => handleRejectStatus(row, "Rejected")}
+          >
+            Reject
+          </button>
+        </>
+      ),
+    },
   ];
 
   return (

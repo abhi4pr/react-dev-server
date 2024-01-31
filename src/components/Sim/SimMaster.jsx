@@ -14,6 +14,7 @@ const SimMaster = () => {
   const [assetsName, setAssetsName] = useState("");
 
   const [assetsID, setAssetsID] = useState("");
+
   const [assetsIDError, setAssetsIDError] = useState(""); // Define the error state
 
   const [assetsOtherID, setAssetsOtherID] = useState("");

@@ -268,7 +268,7 @@ const SimOverview = () => {
     },
     {
       name: "Duration",
-      selector: (row) => row.date_difference + "" + "days",
+      selector: (row) => row.date_difference + " " + " Days",
       sortable: true,
     },
     {
@@ -443,7 +443,7 @@ const SimOverview = () => {
                   type="button"
                   className={"btn btn-outline-primary btn-sm"}
                 >
-                  <Link to="/sim-dashboard">Dashboard</Link>
+                  <Link to="/admin/asset-dashboard">Dashboard</Link>
                 </button>
 
                 {/* There is masters  */}
