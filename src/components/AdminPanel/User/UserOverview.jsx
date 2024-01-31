@@ -258,6 +258,7 @@ const UserOverview = () => {
     { value: "ALL", label: "All" },
     { value: "WFO", label: "WFO" },
     { value: "WFH", label: "WFH" },
+    { value: "WFHD", label: "WFHD" },
   ];
 
   const columns = [

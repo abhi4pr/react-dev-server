@@ -103,7 +103,6 @@ const DisputeOverview = () => {
         baseUrl+"get_all_disputes"
       );
       const responseFinal = response.data;
-      console.log(responseFinal);
       setData(responseFinal);
       setFilterData(responseFinal);
       toastAlert("Data Fetched Successfully");
