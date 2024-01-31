@@ -333,7 +333,7 @@ const UserMaster = () => {
   const allUserData = () => {
     axios.get(baseUrl+"get_all_users").then((res) => {
       const reportl1Email = res.data.data?.filter((d) => d.user_id == reportL1);
-      setReportL1Email(reportl1Email[0].user_email_id);
+      setReportL1Email(reportl1Email[0]?.user_email_id);
     });
   };
   useEffect(() => {
@@ -2543,18 +2543,18 @@ const UserMaster = () => {
                       onChange={(e) => handleFamilyDetailsChange(index, e)}
                     />
                   );
-                case "Relation":
-                  return (
-                    <DropdownFieldContainer
-                      key={key}
-                      fieldGrid={3}
-                      name={key}
-                      label={key}
-                      value={detail[key]}
-                      // options={}
-                      onChange={(e) => handleFamilyDetailsChange(index, e)}
-                    />
-                  );
+                // case "Relation":
+                //   return (
+                //     <DropdownFieldContainer
+                //       key={key}
+                //       fieldGrid={3}
+                //       name={key}
+                //       label={key}
+                //       value={detail[key]}
+                //       // options={}
+                //       onChange={(e) => handleFamilyDetailsChange(index, e)}
+                //     />
+                //   );
                 default:
                   return (
                     <FieldContainer

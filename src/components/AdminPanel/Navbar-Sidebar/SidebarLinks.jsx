@@ -9,6 +9,7 @@ const SidebarLinks = () => {
   const [allCount, setAllCount] = useState();
   const [ownCount, setOwnCount] = useState();
   const [otherCount, setOtherCount] = useState();
+  const [jobType, setJobtype] = useState("");
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -23,6 +24,11 @@ const SidebarLinks = () => {
         )
         .then((res) => {
           setData(res.data);
+        });
+      axios
+        .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
+        .then((res) => {
+          setJobtype(res.data.job_type);
         });
     }
   }, [userID]);
@@ -84,6 +90,8 @@ const SidebarLinks = () => {
   const isAssetNotifierVisible = [40].some(
     (index) => contextData[index]?.view_value === 1
   );
+
+  // const isWFHDuser  = [].some(index=>context )
 
   return (
     <>
@@ -200,43 +208,50 @@ const SidebarLinks = () => {
       )}
       {/* USER MANAGEMENT */}
 
-      {/* PAYOUT USER */}
-      <li className="nav-item">
-        <Link
-          className="nav-link collapsed"
-          data-toggle="collapse"
-          data-target="#collapseFourddnm"
-          aria-expanded="true"
-          aria-controls="collapseFourddnm"
-        >
-          <i className="bi bi-person-gear" />
-          <span>My Info</span>
-        </Link>
-        <div
-          id="collapseFourddnm"
-          className="collapse"
-          aria-labelledby="headingTwo"
-          data-parent="#accordionSidebar"
-        >
-          <div className="bg-white collapse-inner">
-            <Link
-              className="collapse-item"
-              to="/admin/view-edit-digital-signature"
-            >
-              Digital Signature
-            </Link>
+      {/*WFHD USER */}
+      {jobType == "WFHD" && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseFourddnm"
+            aria-expanded="true"
+            aria-controls="collapseFourddnm"
+          >
+            <i className="bi bi-person-gear" />
+            <span>My Info</span>
+          </Link>
 
-            <Link className="collapse-item" to="/admin/wfh-template-overview">
-              Change/View Template
-            </Link>
+          <div
+            id="collapseFourddnm"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              <Link
+                className="collapse-item"
+                to="/admin/view-edit-digital-signature"
+              >
+                Digital Signature
+              </Link>
 
-            <Link className="collapse-item" to="/admin/wfh-single-user">
-              Payout Summary
-            </Link>
+              <Link className="collapse-item" to="/admin/wfh-template-overview">
+                Change/View Template
+              </Link>
+
+              <Link className="collapse-item" to="/admin/wfh-single-user">
+                Payout Summary
+              </Link>
+
+              <Link className="collapse-item" to="/admin/dispute-overview">
+                Dispute Summary
+              </Link>
+            </div>
           </div>
-        </div>
-      </li>
-      {/* PAYOUT USER */}
+        </li>
+      )}
+      {/* WFHD USER */}
 
       {/* PAYOUT HR MANAGER ACCOUNTS */}
       {isWFHDManager && (

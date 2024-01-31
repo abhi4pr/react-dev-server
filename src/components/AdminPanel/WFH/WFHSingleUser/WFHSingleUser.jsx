@@ -29,7 +29,8 @@ import DigitalSignature from "../../../DigitalSignature/DigitalSignature";
 import useInvoiceTemplateImages from "../Templates/Hooks/useInvoiceTemplateImages";
 import PreviewInvoice from "./PreviewInvoice";
 import getDecodedToken from "../../../../utils/DecodedToken";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
+import WFHTemplateOverview from "./WFHTemplateOverview";
 
 const images = useInvoiceTemplateImages();
 
@@ -62,6 +63,7 @@ const WFHSingleUser = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
+  const [isTemaplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -71,30 +73,36 @@ const WFHSingleUser = () => {
     setIsModalOpen(false);
   };
 
+  const openTemplateModal = () => {
+    setIsTemplateModalOpen(true);
+  };
+
+  const closeTemplateModal = () => {
+    setIsTemplateModalOpen(false);
+  };
+
   // const digitalSignatureImageExists = decodedToken?.digital_signature_image;
   useEffect(() => {
-    axios
-      .get(`${baseUrl}`+`get_single_user/${userID}`)
-      .then((res) => {
-        const getDigitalSignImage = res.data.digital_signature_image_url;
+    axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
+      const getDigitalSignImage = res.data.digital_signature_image_url;
 
-        if (!getDigitalSignImage) {
-          setIsModalOpen(true);
-        } else {
-          const imageUrl = "";
+      if (!getDigitalSignImage) {
+        setIsModalOpen(true);
+      } else {
+        const imageUrl = "";
 
-          if (getDigitalSignImage.startsWith(imageUrl)) {
-            const imageName = getDigitalSignImage.substring(imageUrl.length);
-            if (imageName.trim() === "") {
-              setIsModalOpen(true);
-            } else {
-              setIsModalOpen(false);
-            }
+        if (getDigitalSignImage.startsWith(imageUrl)) {
+          const imageName = getDigitalSignImage.substring(imageUrl.length);
+          if (imageName.trim() === "") {
+            setIsModalOpen(true);
           } else {
             setIsModalOpen(false);
           }
+        } else {
+          setIsModalOpen(false);
         }
-      });
+      }
+    });
   }, [userID]);
 
   // useEffect(() => {
@@ -116,9 +124,7 @@ const WFHSingleUser = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          baseUrl+"get_all_wfh_users"
-        );
+        const res = await axios.get(baseUrl + "get_all_wfh_users");
         const data = res.data.data;
         const filteredUser = data.filter((d) => d.dept_id === department);
         if (filteredUser.length > 0) {
@@ -135,20 +141,18 @@ const WFHSingleUser = () => {
   }, [department]);
 
   useEffect(() => {
-    axios
-      .get(baseUrl+"all_departments_of_wfh")
-      .then((res) => {
-        getDepartmentData(res.data.data);
-      });
+    axios.get(baseUrl + "all_departments_of_wfh").then((res) => {
+      getDepartmentData(res.data.data);
+    });
   }, []);
 
   useEffect(() => {
-    axios.get(`${baseUrl}`+`get_all_users`).then((res) => {
+    axios.get(`${baseUrl}` + `get_all_users`).then((res) => {
       getUsersData(res.data.data);
     });
     if (department) {
       axios
-        .get(`${baseUrl}`+`get_user_by_deptid/${department}`)
+        .get(`${baseUrl}` + `get_user_by_deptid/${department}`)
         .then((res) => {
           setDepartmentWise(res.data);
         });
@@ -157,7 +161,7 @@ const WFHSingleUser = () => {
 
   const handleSubmit = () => {
     axios
-      .post(baseUrl+"get_attendance_by_userid", {
+      .post(baseUrl + "get_attendance_by_userid", {
         user_id: userID,
       })
       .then((res) => {
@@ -177,7 +181,7 @@ const WFHSingleUser = () => {
     formData.append("user_id", data.user_id);
     formData.append("invoice_template_no", selectedTemplate);
 
-    axios.put(`${baseUrl}`+`update_user`, formData, {
+    axios.put(`${baseUrl}` + `update_user`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -696,6 +700,19 @@ const WFHSingleUser = () => {
                     <DigitalSignature userID={userID} closeModal={closeModal} />
                   </Modal>
 
+                  <Modal
+                    isOpen={isTemaplateModalOpen}
+                    onRequestClose={closeTemplateModal}
+                    contentLabel="Template Modal"
+                    appElement={document.getElementById("root")}
+                    shouldCloseOnOverlayClick={false}
+                    shouldCloseOnEsc={false}
+                  >
+                    <WFHTemplateOverview
+                      closeTemplateModal={closeTemplateModal}
+                    />
+                  </Modal>
+
                   <Button
                     sx={{ marginRight: "10px" }}
                     size="medium"
@@ -863,7 +880,7 @@ const WFHSingleUser = () => {
                 ScreenShot :
                 {rowDataModal?.screenshot ? (
                   <img
-                    src={`${baseUrl}`+`uploads/${rowDataModal?.screenshot}`}
+                    src={`${baseUrl}` + `uploads/${rowDataModal?.screenshot}`}
                   />
                 ) : (
                   "Null"

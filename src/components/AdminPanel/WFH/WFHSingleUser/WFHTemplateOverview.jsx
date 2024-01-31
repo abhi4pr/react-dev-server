@@ -8,7 +8,7 @@ import {baseUrl} from '../../../../utils/config'
 
 const templateImages = useInvoiceTemplateImages();
 
-const WFHTemplateOverview = () => {
+const WFHTemplateOverview = ({ closeTemplateModal }) => {
   const { toastAlert } = useGlobalContext();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -30,6 +30,7 @@ const WFHTemplateOverview = () => {
         },
       });
       toastAlert("Template selected successfully");
+      if (closeTemplateModal) closeTemplateModal();
     } else {
       alert("No Template Selected");
     }
