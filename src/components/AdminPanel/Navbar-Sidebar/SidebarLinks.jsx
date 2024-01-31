@@ -478,181 +478,10 @@ const SidebarLinks = () => {
               </li>
             )}
 
-<<<<<<< Updated upstream
-          {/* Asset Managerment Routing  */}
-          {/* {isAssetNotifierVisible && ( */}
-          <li className="nav-item">
-            <Link
-              className="nav-link collapsed"
-              data-toggle="collapse"
-              data-target="#assets"
-              aria-expanded="true"
-              aria-controls="assets"
-            >
-              <i className="bi bi-person-gear" />
-              <span>Assets</span>
-            </Link>
-            <div
-              id="assets"
-              className="collapse"
-              aria-labelledby="headingTwo"
-              data-parent="#accordionSidebar"
-            >
-              <div className="bg-white collapse-inner">
-                <Link className="collapse-item" to="/admin/asset-dashboard">
-                  Dashboard
-                </Link>
-                <Link className="collapse-item" to="/admin/asset-single-user">
-                  My Asset
-                </Link>
-                {/* {RoleId == 5 && ( */}
-                <Link className="collapse-item" to="/sim-overview">
-                  Asset Management
-                </Link>
-                {/* // )} */}
-                {/* {RoleId == 5 && ( */}
-                <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                  Asset's Request
-                </Link>
-                {/* )} */}
-                {/* )} */}
-                <Link
-                  className="collapse-item"
-                  to="/admin/asset-visible-to-taged-person"
-                >
-                  Tagged Asset
-                </Link>
-                {/* {RoleId == 2 && ( */}
-                <Link className="collapse-item" to="/admin/asset-manager">
-                  Asset Request Approvel
-                </Link>
-                {/* // )} */}
-              </div>
-            </div>
-          </li>
-          {/* )} */}
-
-          {isOnboardingVisible && (
-=======
             {/* Asset Managerment Routing  */}
             {/* {isAssetNotifierVisible && ( */}
->>>>>>> Stashed changes
-            <li className="nav-item">
-              <Link
-                className="nav-link collapsed"
-                data-toggle="collapse"
-                data-target="#assets"
-                aria-expanded="true"
-                aria-controls="assets"
-              >
-                <i className="bi bi-person-gear" />
-                <span>Assets</span>
-              </Link>
-              <div
-                id="assets"
-                className="collapse"
-                aria-labelledby="headingTwo"
-                data-parent="#accordionSidebar"
-              >
-                <div className="bg-white collapse-inner">
-<<<<<<< Updated upstream
-                  {contextData &&
-                    contextData[18] &&
-                    contextData[18].view_value === 1 && (
-                      <Link
-                        className="collapse-item"
-                        to="/admin/asset-visible-to-hr"
-                      >
-                        Asset Request HR
-                      </Link>
-                    )}
-=======
-                  <Link className="collapse-item" to="/admin/asset-dashboard">
-                    Dashboard
-                  </Link>
-                  <Link className="collapse-item" to="/admin/asset-single-user">
-                    My Asset
-                  </Link>
-                  {/* {RoleId == 5 && ( */}
-                  <Link className="collapse-item" to="/sim-overview">
-                    Asset Management
-                  </Link>
-                  {/* // )} */}
-                  {/* {RoleId == 5 && ( */}
-                  <Link
-                    className="collapse-item"
-                    to="/admin/asset-visible-to-hr"
-                  >
-                    Asset's Request
-                  </Link>
-                  {/* )} */}
-                  {/* )} */}
-                  <Link
-                    className="collapse-item"
-                    to="/admin/asset-visible-to-taged-person"
-                  >
-                    Tagged Asset
-                  </Link>
-                  {/* {RoleId == 2 && ( */}
-                  <Link className="collapse-item" to="/admin/asset-manager">
-                    Asset Request Approvel
-                  </Link>
-                  {/* // )} */}
-                </div>
-              </div>
-            </li>
-            {/* )} */}
 
-            {isOnboardingVisible && (
-              <li className="nav-item">
-                <Link
-                  className="nav-link collapsed"
-                  data-toggle="collapse"
-                  data-target="#collapseFive"
-                  aria-expanded="true"
-                  aria-controls="collapseFive"
-                >
-                  <i className="bi bi-person-gear" />
-                  <span>Org</span>
-                </Link>
-                <div
-                  id="collapseFive"
-                  className="collapse"
-                  aria-labelledby="headingTwo"
-                  data-parent="#accordionSidebar"
-                >
-                  <div className="bg-white collapse-inner">
-                    {contextData &&
-                      contextData[18] &&
-                      contextData[18].view_value === 1 && (
-                        <Link
-                          className="collapse-item"
-                          to="/admin/asset-visible-to-hr"
-                        >
-                          Asset Request HR
-                        </Link>
-                      )}
->>>>>>> Stashed changes
-                    {/* )} */}
-                    <Link
-                      className="collapse-item"
-                      to="/admin/asset-visible-to-taged-person"
-                    >
-                      Requested Asset
-                    </Link>
-                    {/* {contextData &&
-                  contextData[41] &&
-                  contextData[41].view_value === 1 && ( */}
-                    {RoleId == 2 && (
-                      <Link className="collapse-item" to="/admin/asset-manager">
-                        Asset Request Approvel
-                      </Link>
-                    )}
-                    {/* )} */}
-                  </div>
-                </div>
-              </li>
-            )}
+            {/* )} */}
 
             {isOnboardingVisible && (
               <li className="nav-item">
@@ -1581,8 +1410,60 @@ const SidebarLinks = () => {
           </div>
         </li>
       )}
+
       {/* )} */}
       {/* FINANCE */}
+
+      {/* Asset Management here  */}
+      <li className="nav-item">
+        <Link
+          className="nav-link collapsed"
+          data-toggle="collapse"
+          data-target="#assets"
+          aria-expanded="true"
+          aria-controls="assets"
+        >
+          <i className="bi bi-person-gear" />
+          <span>Assets</span>
+        </Link>
+        <div
+          id="assets"
+          className="collapse"
+          aria-labelledby="headingTwo"
+          data-parent="#accordionSidebar"
+        >
+          <div className="bg-white collapse-inner">
+            <Link className="collapse-item" to="/admin/asset-dashboard">
+              Dashboard
+            </Link>
+            <Link className="collapse-item" to="/admin/asset-single-user">
+              My Asset
+            </Link>
+            {/* {RoleId == 5 && ( */}
+            <Link className="collapse-item" to="/sim-overview">
+              Asset Management
+            </Link>
+            {/* // )} */}
+            {/* {RoleId == 5 && ( */}
+            <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+              Asset's Request
+            </Link>
+            {/* )} */}
+            {/* )} */}
+            <Link
+              className="collapse-item"
+              to="/admin/asset-visible-to-taged-person"
+            >
+              Tagged Asset
+            </Link>
+            {/* {RoleId == 2 && ( */}
+            <Link className="collapse-item" to="/admin/asset-manager">
+              Asset Request Approvel
+            </Link>
+            {/* // )} */}
+          </div>
+        </div>
+      </li>
 
       <li className="nav-item">
         <Link
