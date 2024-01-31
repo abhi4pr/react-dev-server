@@ -30,7 +30,7 @@ const UserOverview = () => {
   const [desiOrgData, setDesiOrgData] = useState([]);
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [designationFilter, setDesignationFilter] = useState("");
-  const [jobType, setJobType] = useState("");
+  const [jobType, setJobType] = useState("ALL");
   const [transferResponsibilityData, setTransferResponsibilityData] = useState(
     []
   );
@@ -241,6 +241,7 @@ const UserOverview = () => {
 
   useEffect(() => {
     const result = datas.filter((d) => {
+      console.log("each data", d.user_designation, designationFilter);
       const departmentMatch =
         !departmentFilter || d.dept_id === departmentFilter;
       const designationMatch =
@@ -248,6 +249,7 @@ const UserOverview = () => {
       const jobtypeMatch = jobType === "ALL" || d.job_type === jobType;
       return departmentMatch && designationMatch && jobtypeMatch;
     });
+    console.log("result", result);
     setFilterData(result);
   }, [departmentFilter, designationFilter, jobType]);
 

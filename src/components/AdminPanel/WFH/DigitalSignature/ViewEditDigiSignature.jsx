@@ -34,7 +34,6 @@ const ViewEditDigiSignature = () => {
     gettingData();
   }, [loginUserId]);
 
-  console.log("Image here", digitalSignatureImage);
   return (
     <>
       <div>

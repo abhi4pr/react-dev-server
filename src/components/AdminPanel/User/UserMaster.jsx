@@ -56,13 +56,13 @@ const initialFamilyDetailsGroup = {
 };
 
 const initialEducationDetailsGroup = {
-  title: "",
-  universityInstitute: "",
-  from: "",
-  to: "",
-  percentage: "",
-  stream: "",
-  specialization: "",
+  Title: "",
+  Institute: "",
+  From: "",
+  To: "",
+  Percentage: "",
+  Stream: "",
+  Specialization: "",
 };
 
 const UserMaster = () => {
@@ -559,22 +559,23 @@ const UserMaster = () => {
             }
           }
 
-          if (educationDetails[0].title !== "") {
+          if (educationDetails[0].Title !== "") {
             for (const elements of educationDetails) {
               const response = axios.post(
                 "http://34.93.221.166:3000/api/add_education",
                 {
-                  title: elements.title,
-                  institute_name: elements.universityInstitute,
-                  from_year: elements.from,
-                  to_year: elements.to,
-                  percentage: elements.percentage,
-                  stream: elements.stream,
-                  specialization: elements.specialization,
+                  title: elements.Title,
+                  institute_name: elements.Institute,
+                  from_year: elements.From,
+                  to_year: elements.To,
+                  percentage: elements.Percentage,
+                  stream: elements.Stream,
+                  specialization: elements.Specialization,
                 }
               );
             }
           }
+
           if (reportL1 !== "") {
             axios
               .post("http://34.93.221.166:3000/api/add_send_user_mail", {
@@ -937,7 +938,8 @@ const UserMaster = () => {
   }
 
   //EducationDetailsAdd
-  const handleAddEducationDetails = () => {
+  const handleAddEducationDetails = (e) => {
+    e.preventDefault;
     setEducationDetails([
       ...educationDetails,
       { ...initialEducationDetailsGroup },
@@ -2526,28 +2528,45 @@ const UserMaster = () => {
       {familyDetails.map((detail, index) => (
         <div key={index} mb={2}>
           <div className="row">
-            {Object.keys(detail).map((key) =>
-              key === "DOB" ? (
-                <FieldContainer
-                  key={key}
-                  fieldGrid={3}
-                  type="date"
-                  name={key}
-                  label="Date of Birth"
-                  value={detail[key]}
-                  onChange={(e) => handleFamilyDetailsChange(index, e)}
-                />
-              ) : (
-                <FieldContainer
-                  key={key}
-                  fieldGrid={3}
-                  name={key}
-                  label={key}
-                  value={detail[key]}
-                  onChange={(e) => handleFamilyDetailsChange(index, e)}
-                />
-              )
-            )}
+            {Object.keys(detail).map((key) => {
+              switch (key) {
+                case "DOB":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      type="date"
+                      name={key}
+                      label="Date of Birth"
+                      value={detail[key]}
+                      onChange={(e) => handleFamilyDetailsChange(index, e)}
+                    />
+                  );
+                case "Relation":
+                  return (
+                    <DropdownFieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      name={key}
+                      label={key}
+                      value={detail[key]}
+                      // options={}
+                      onChange={(e) => handleFamilyDetailsChange(index, e)}
+                    />
+                  );
+                default:
+                  return (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      name={key}
+                      label={key}
+                      value={detail[key]}
+                      onChange={(e) => handleFamilyDetailsChange(index, e)}
+                    />
+                  );
+              }
+            })}
             {familyDetails.length > 1 && (
               <IconButton onClick={() => handleRemoveFamilyDetails(index)}>
                 <DeleteIcon />
@@ -2556,6 +2575,7 @@ const UserMaster = () => {
           </div>
         </div>
       ))}
+
       <div className="row">
         <div className="col-12">
           <button
@@ -2590,7 +2610,7 @@ const UserMaster = () => {
         <div key={index} mb={2}>
           <div className="row">
             {Object.keys(detail).map((key) =>
-              key === "from" || key === "to" ? (
+              key === "From" || key === "To" ? (
                 <FieldContainer
                   key={key}
                   fieldGrid={3}
@@ -2624,7 +2644,7 @@ const UserMaster = () => {
       <div className="row">
         <div className="col-12">
           <button
-            onClick={handleAddEducationDetails}
+            onClick={(e) => handleAddEducationDetails(e)}
             variant="contained"
             className="btn btn-outline-primary me-2"
           >
