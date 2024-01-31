@@ -138,9 +138,12 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             <span className="badge badge-success">Resolved</span>
           ) : row.status === "Requested" ? (
             <span className="badge badge-danger">Requested</span>
+          ) : row.status === "ApprovedByManager" ? (
+            <span className="badge badge-warning">Approve By Manager</span>
           ) : null}
         </>
       ),
+      width: "170px",
       sortable: true,
     },
     {
@@ -261,7 +264,8 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       ),
       width: "150px",
     },
-    hrOverviewData[0]?.status == "Requested" && {
+    (hrOverviewData[0]?.status == "Requested" ||
+      hrOverviewData[0]?.status == "ApprovedByManager") && {
       name: "Actions",
       cell: (row) => (
         <>

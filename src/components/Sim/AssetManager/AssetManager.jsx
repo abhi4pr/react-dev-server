@@ -13,6 +13,7 @@ const NewAssetRequestOverview = () => {
   const { toastAlert } = useGlobalContext();
 
   const [assetReturnData, setReturnAssetData] = useState([]);
+  const [repairRequestData, setRepairRequestData] = useState([]);
 
   // New tab
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
@@ -24,25 +25,42 @@ const NewAssetRequestOverview = () => {
     "New Asset Request",
     "Return Asset",
   ];
+  const hardRender = () => {
+    getManagerData();
+  };
 
   const tab1 = (
-    <ManagerDynamicOverview filterData={managerData} tabOne="tabOne" />
+    <ManagerDynamicOverview filterData={repairRequestData} tabOne="tabOne" />
   );
   const tab2 = (
-    <ManagerDynamicOverview filterData={managerData} tabTwo="tabTwo" />
+    <ManagerDynamicOverview
+      filterData={managerData}
+      hardRender={hardRender}
+      tabTwo="tabTwo"
+    />
   );
   const tab3 = (
     <ManagerDynamicOverview filterData={assetReturnData} tabThree="tabThree" />
   );
+  const getRepairRequestData = () => {
+    axios
+      .get(
+        `http://34.93.221.166:3000/api/show_repair_request_asset_data_to_reportL1/${userID}`
+      )
+      .then((res) => {
+        setRepairRequestData(res.data.data);
+      });
+  };
 
   const getManagerData = async () => {
     try {
       const response = await axios.get(
         `${baseUrl}`+`show_asset_user_data_report/${userID}`
       );
-      const data = response.data.data.filter(
-        (d) => d.asset_new_request_status == "Requested"
-      );
+      const data = response.data.data;
+      // .filter(
+      //   (d) => d.asset_new_request_status == "Requested"
+      // );
       setManagerData(data);
     } catch (error) {
       console.log(error);
@@ -57,8 +75,10 @@ const NewAssetRequestOverview = () => {
   useEffect(() => {
     getManagerData();
     getReturnAssetData();
+    getRepairRequestData();
   }, []);
 
+<<<<<<< Updated upstream
   // const handleStatusUpdate = (row, status) => {
   //   console.log(row, status, "status cheqe");
   //   try {
@@ -162,6 +182,8 @@ const NewAssetRequestOverview = () => {
   //   },
   // ];
 
+=======
+>>>>>>> Stashed changes
   return (
     <>
       <div className="action_heading">

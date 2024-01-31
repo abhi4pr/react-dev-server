@@ -155,17 +155,23 @@ const AssetSingleuserOverview = ({
       sortable: true,
     },
     {
+      name: "Asset ID",
+      selector: (row) => row.sim_id,
+      sortable: true,
+    },
+    {
       name: "Asset Name",
       selector: (row) => row.assetsName,
       sortable: true,
     },
     {
-      name: "Category Name",
+      name: "Asset Category",
       selector: (row) => row.category_name,
       sortable: true,
     },
+
     {
-      name: "Sub-Category Name",
+      name: "Asset SubCategory",
       selector: (row) => row.sub_category_name,
       sortable: true,
     },
@@ -177,16 +183,38 @@ const AssetSingleuserOverview = ({
       cell: (row) => {
         // Get the assigned date from the row
         const assignedDate = new Date(row.submitted_at);
+        const finalDate = assignedDate.getDate();
 
         // Get the current date
         const currentDate = new Date();
+        const finalCurrentDate = currentDate.getDate();
 
         // Calculate the difference in days
-        const timeDifference = currentDate - assignedDate;
+        const timeDifference = finalCurrentDate - finalDate;
         const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
 
         return <div>{daysDifference} days</div>;
       },
+    },
+    {
+      name: "Repair Status",
+      selector: (row) => (
+        <>
+          {row.asset_repair_request_status === "Accept" ? (
+            <span className="badge badge-success">Accepted</span>
+          ) : row.asset_repair_request_status === "Recovered" ? (
+            <span className="badge badge-warning">Recoverd</span>
+          ) : row.asset_repair_request_status === "Resolved" ? (
+            <span className="badge badge-success">Resolved</span>
+          ) : row.asset_repair_request_status === "Requested" ? (
+            <span className="badge badge-danger">Requested</span>
+          ) : row.asset_repair_request_status === "ApprovedByManager" ? (
+            <span className="badge badge-warning">Approve By Manager</span>
+          ) : null}
+        </>
+      ),
+      width: "170px",
+      sortable: true,
     },
 
     {
@@ -273,20 +301,12 @@ const AssetSingleuserOverview = ({
 
     {
       name: "Taged Person",
-      selector: (row) => row.multi_tag_name,
+      selector: (row) => row.multi_tag_names,
       sortable: true,
     },
     {
       name: "Action",
       cell: (row) => (
-        // <button
-        //   class="btn btn-secondary dropdown-toggle"
-        //   data-toggle="dropdown"
-        //   aria-haspopup="true"
-        //   aria-expanded="false"
-        // >
-        //   <i class="fa-solid fa-ellipsis"></i>
-        // </button>
         <div class="btn-group">
           <button
             type="button"

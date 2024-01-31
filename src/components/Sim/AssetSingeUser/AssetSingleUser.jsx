@@ -79,7 +79,9 @@ const AssetSingleUser = () => {
     const res = await axios.get(
       `${baseUrl}`+`assetrequest/${userID}`
     );
-    setNewAssetRequestData(res?.data);
+    setNewAssetRequestData(
+      res?.data.filter((d) => d.asset_request_status !== "Approved")
+    );
   }
 
   useEffect(() => {

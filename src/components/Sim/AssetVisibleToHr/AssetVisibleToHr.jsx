@@ -97,7 +97,9 @@ const AssetVisibleToHr = () => {
   );
   const tab2 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data?.filter((d) => d.status == "Requested")}
+      hrOverviewData={data?.filter(
+        (d) => d.status == "Requested" || d.status == "ApprovedByManager"
+      )}
       hardRender={hardRender}
     />
   );

@@ -270,7 +270,7 @@ const AssetDashboard = () => {
           </div>
           <hr className="mb-3" />
           <div className="row">
-            <div className="form-group col-3">
+            <div className="form-group col-2">
               <label className="form-label">
                 Department Name<sup style={{ color: "red" }}>*</sup>
               </label>
@@ -301,7 +301,7 @@ const AssetDashboard = () => {
                 }}
               />
             </div>
-            <div className="form-group col-3">
+            <div className="form-group col-2">
               <label className="form-label">
                 Category <sup style={{ color: "red" }}>*</sup>
               </label>
@@ -335,7 +335,7 @@ const AssetDashboard = () => {
                 }}
               />
             </div>
-            <div className="form-group col-3">
+            <div className="form-group col-2">
               <label className="form-label">
                 Sub Category <sup style={{ color: "red" }}>*</sup>
               </label>
@@ -385,8 +385,9 @@ const AssetDashboard = () => {
                     >
                       <div className="card-body">
                         <div className="d_infocard_txt">
-                          <h3>{item.dept_name}</h3>
-                          <h3>cat -{item.category_name}</h3>
+                          <h3>Deparmtent -{item.dept_name}</h3>
+                          <h3>category -{item.category_name}</h3>
+                          {/* <h3>category -{item.category_name}</h3> */}
                           {/* <h3>subcat -{item.sub_category_name}</h3> */}
                         </div>
                         <div className="d_infocard_icon">
