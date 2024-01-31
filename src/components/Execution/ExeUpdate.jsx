@@ -28,6 +28,7 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { set } from "date-fns";
 import CloseTwoToneIcon from "@mui/icons-material/CloseTwoTone";
 import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../utils/config'
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -184,7 +185,7 @@ export default function ExeUPdate() {
 
     axios
       .put(
-        `http://34.93.221.166:3000/api/edit_exe_ip_count_history`,
+        `${baseUrl}`+`edit_exe_ip_count_history`,
         formData,
         {
           headers: {
@@ -201,7 +202,7 @@ export default function ExeUPdate() {
   const apiCall = () => {
     axios
       .get(
-        `http://34.93.221.166:3000/api/get_exe_ip_count_history/${location.state}`
+        `${baseUrl}`+`get_exe_ip_count_history/${location.state}`
       )
       .then((res) => {
         let data = res.data.data.filter((e) => {
@@ -288,7 +289,7 @@ export default function ExeUPdate() {
 
   useEffect(() => {
     setCountryList(Country.getAllCountries());
-    axios.get("http://34.93.221.166:3000/api/get_all_cities").then((res) => {
+    axios.get(baseUrl+"get_all_cities").then((res) => {
       console.log(res.data.data);
       setCityList(res.data.data.map((city) => city.city_name));
     });

@@ -5,6 +5,7 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../../Context/Context";
 import { Navigate } from "react-router-dom";
+import {baseUrl} from '../../../../utils/config'
 
 const ResponsibilityMast = () => {
   const { toastAlert } = useGlobalContext();
@@ -19,7 +20,7 @@ const ResponsibilityMast = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://34.93.221.166:3000/api/add_responsibility", {
+      await axios.post(baseUrl+"add_responsibility", {
         respo_name: responsibility,
         description: description,
         created_by: userId,

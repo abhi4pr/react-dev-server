@@ -23,7 +23,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toolbarStyles } from "./CampaignCommitment";
 import { useGlobalContext } from "../../../Context/Context";
-
+import { baseUrl } from "../../../utils/config";
 
 export default function SubCategoryMaster() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -73,7 +73,7 @@ export default function SubCategoryMaster() {
   const handleSave = (e) => {
     e.preventDefault();
     axios
-      .post("http://34.93.221.166:3000/api/projectxSubCategory", postData)
+      .post(baseUrl+"projectxSubCategory", postData)
       .then((response) => {
         if (response.data.success === false) {
           toastError(response.data.message);
@@ -98,7 +98,7 @@ export default function SubCategoryMaster() {
   // get api ------
   const getData = () => {
     axios
-      .get("http://34.93.221.166:3000/api/projectxSubCategory")
+      .get(baseUrl+"projectxSubCategory")
       .then((res) => {
         console.log(res.data);
         const sortedData = res.data.data.sort(
@@ -108,7 +108,7 @@ export default function SubCategoryMaster() {
       });
   };
   useEffect(() => {
-    axios.get("http://34.93.221.166:3000/api/projectxCategory").then((res) => {
+    axios.get(baseUrl+"projectxCategory").then((res) => {
       console.log(res.data.data);
       setCategory(res.data.data);
     });
@@ -118,7 +118,7 @@ export default function SubCategoryMaster() {
   // put api ------
   const handlePutData = () => {
     axios
-      .put(`http://34.93.221.166:3000/api/projectxSubCategory`, {
+      .put(`${baseUrl}`+`projectxSubCategory`, {
         sub_category_id: editData.sub_category_id,
         sub_category_name: editData.sub_category_name,
         category_id: editData.category_id,
@@ -162,7 +162,7 @@ export default function SubCategoryMaster() {
     if (itemToDeleteId) {
       axios
         .delete(
-          `http://34.93.221.166:3000/api/projectxSubCategory/${itemToDeleteId}`
+          `${baseUrl}`+`projectxSubCategory/${itemToDeleteId}`
         )
         .then(() => {
           getData();

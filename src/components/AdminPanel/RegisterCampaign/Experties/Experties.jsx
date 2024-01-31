@@ -9,6 +9,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useGlobalContext } from "../../../../Context/Context";
+import {baseUrl} from '../../../../utils/config'
+
 let options = [];
 let plateformvar = [];
 
@@ -41,7 +43,7 @@ const Experties = () => {
 
   const getAllUsers = async () => {
     const alluser = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_users"
+      baseUrl+"get_all_users"
     );
     setGetUserData(alluser.data.data);
   };
@@ -92,7 +94,7 @@ const Experties = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/expertise",
+        baseUrl+"expertise",
         {
           exp_name: expertiesusername.label,
           user_id: expertiesusername.user_id,

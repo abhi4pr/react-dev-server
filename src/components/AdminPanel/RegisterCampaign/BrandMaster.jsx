@@ -23,6 +23,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import { toolbarStyles } from "./CampaignCommitment";
+import {baseUrl} from '../../../utils/config'
+
 export default function BrandMaster() {
   const { toastAlert, toastError } = useGlobalContext();
   const [reload, setReload] = useState(false);
@@ -58,7 +60,7 @@ export default function BrandMaster() {
     { major_cat_id: 5, major_cat_name: "Entertainment" },
   ];
 
-  const brandURL = "http://34.93.221.166:3000/api/";
+  const brandURL = baseUrl+"";
   const handleClose = () => {
     setIsModalOpen(false);
   };
@@ -134,7 +136,7 @@ export default function BrandMaster() {
   };
 
   const categoryData = () => {
-    axios.get("http://34.93.135.33:8080/api/projectxCategory").then((res) => {
+    axios.get(baseUrl+"projectxCategory").then((res) => {
       console.log(res.data.data, "-------> cat data");
       setCategoryOptions(res.data.data);
     });
@@ -147,7 +149,7 @@ export default function BrandMaster() {
   const subCategoryDataOnEdit = () => {
     console.log("calling the subcategory data on Edit");
     axios
-      .get("http://34.93.135.33:8080/api/projectxSubCategory")
+      .get(baseUrl+"projectxSubCategory")
       .then((res) => {
         console.log(res.data.data, "-------> subcat data");
         const filteredData = res.data.data.filter((item) => {
@@ -205,7 +207,7 @@ export default function BrandMaster() {
 
   useEffect(() => {
     axios
-      .get("http://34.93.135.33:8080/api/projectxSubCategory")
+      .get(baseUrl+"projectxSubCategory")
       .then((res) => {
         console.log(res.data.data, "-------> subcat data");
         const filteredData = res.data.data.filter((item) => {

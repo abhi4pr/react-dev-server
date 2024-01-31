@@ -6,6 +6,7 @@ import { FaEdit } from "react-icons/fa";
 import FormContainer from "../FormContainer";
 import DeleteButton from "../DeleteButton";
 import jwtDecode from "jwt-decode";
+import { baseUrl } from "../../../utils/config";
 
 const RoleOverView = () => {
   const [search, setSearch] = useState("");
@@ -20,7 +21,7 @@ const RoleOverView = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -31,7 +32,7 @@ const RoleOverView = () => {
   async function getData() {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_roles"
+        baseUrl+"get_all_roles"
       );
       setData(response.data.data);
       setFilterData(response.data.data);

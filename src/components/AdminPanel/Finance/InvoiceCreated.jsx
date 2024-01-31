@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import ImageView from "./ImageView";
+import { baseUrl } from "../../../utils/config";
 
 const InvoiceCreated = () => {
   const navigate = useNavigate();
@@ -28,7 +29,7 @@ const InvoiceCreated = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post("http://34.93.221.166:3000/api/", {
+    await axios.post(baseUrl+"", {
       display_sequence: displaySeq,
     });
 
@@ -39,7 +40,7 @@ const InvoiceCreated = () => {
   function getData() {
     axios
       .post(
-        "http://34.93.221.166:3000/api/add_php_pending_invoice_data_in_node"
+        baseUrl+"add_php_pending_invoice_data_in_node"
       )
       .then((res) => {
         console.log("data save in local success");

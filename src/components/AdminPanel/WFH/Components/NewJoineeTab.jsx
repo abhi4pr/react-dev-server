@@ -1,5 +1,6 @@
 import React from "react";
 import { calculateDaysElapsed } from "../helpers/DaysElapsed";
+import {baseUrl} from '../../../../utils/config'
 
 const NewJoineeTab = ({ newJoinee }) => {
   return (
@@ -7,7 +8,7 @@ const NewJoineeTab = ({ newJoinee }) => {
       {newJoinee?.map((item) => (
         <li key={item.user_id}>
           <img
-            src={`http://34.93.221.166:3000//api/${item.image}`}
+            src={`${baseUrl}`+`${item.image}`}
             alt="user Image"
           />
           {item.user_name}

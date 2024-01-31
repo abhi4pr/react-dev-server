@@ -7,6 +7,7 @@ import FormContainer from "../../AdminPanel/FormContainer";
 import FieldContainer from "../../AdminPanel/FieldContainer";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { baseUrl } from "../../../utils/config";
 
 const AssetSubCategoryMaster = () => {
   const { toastAlert, categoryDataContext } = useGlobalContext();
@@ -23,7 +24,7 @@ const AssetSubCategoryMaster = () => {
   // const [categoryName, setCategoryName] = useState([]);
   // useEffect(() => {
   //   axios
-  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .get(baseUrl+"get_all_asset_category")
   //     .then((res) => {
   //       setCategoryName(res.data);
   //     })
@@ -36,7 +37,7 @@ const AssetSubCategoryMaster = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_asset_sub_category",
+        baseUrl+"add_asset_sub_category",
         {
           sub_category_name: subCategoryName,
           category_id: selectedCat,

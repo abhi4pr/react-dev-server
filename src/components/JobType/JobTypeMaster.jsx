@@ -7,6 +7,7 @@ import UserNav from "../Pantry/UserPanel/UserNav";
 import FormContainer from "../AdminPanel/FormContainer";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import DeleteButton from "../AdminPanel/DeleteButton";
+import { baseUrl } from "../../utils/config";
 
 const JobTypeMaster = () => {
   const [jobTypeName, setJobTypeName] = useState("");
@@ -77,7 +78,7 @@ const JobTypeMaster = () => {
         alert("Brand already Exists");
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_job_type",
+          baseUrl+"add_job_type",
           {
             job_type: jobTypeName,
             job_type_description: description,
@@ -94,7 +95,7 @@ const JobTypeMaster = () => {
 
   async function getJobTypeData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_job_types"
+      baseUrl+"get_all_job_types"
     );
     setJobTypeData(res.data.data);
     setJobTypeFilter(res.data.data);
@@ -112,7 +113,7 @@ const JobTypeMaster = () => {
 
   const handleJobTypeUpdate = () => {
     axios
-      .put("http://34.93.221.166:3000/api/update_job_type", {
+      .put(baseUrl+"update_job_type", {
         _id: jobTypeID,
         job_type: jobTypeNameUpdate,
         job_type_description: jobTypeDescriptionUpdate,

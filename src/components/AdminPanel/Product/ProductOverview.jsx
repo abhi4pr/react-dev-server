@@ -7,6 +7,7 @@ import FormContainer from "../FormContainer";
 import Modal from "react-modal";
 import DeleteButton from "../DeleteButton";
 import jwtDecode from "jwt-decode";
+import { baseUrl } from "../../../utils/config";
 
 const ProductOverview = () => {
   const [search, setSearch] = useState("");
@@ -23,7 +24,7 @@ const ProductOverview = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -36,7 +37,7 @@ const ProductOverview = () => {
   }, []);
 
   function getData() {
-    axios.get("http://34.93.221.166:3000/api/get_all_products").then((res) => {
+    axios.get(baseUrl+"get_all_products").then((res) => {
       setData(res.data);
       setFilterData(res.data);
     });

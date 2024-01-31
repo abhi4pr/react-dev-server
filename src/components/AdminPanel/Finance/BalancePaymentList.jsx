@@ -16,6 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import { get } from "jquery";
 import { set } from "date-fns";
+import {baseUrl} from '../../../utils/config'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -75,7 +76,7 @@ const BalancePaymentList = () => {
       .then(() => {
         axios
           .put(
-            "http://34.93.221.166:3000/api/balance_payment_list_update",
+            baseUrl+"balance_payment_list_update",
             formData,
             {
               headers: {
@@ -104,7 +105,7 @@ const BalancePaymentList = () => {
 
   function getData() {
     axios
-      .post("http://34.93.221.166:3000/api/add_php_payment_bal_data_in_node")
+      .post(baseUrl+"add_php_payment_bal_data_in_node")
       .then((res) => {
         console.log("data save in local success");
       });

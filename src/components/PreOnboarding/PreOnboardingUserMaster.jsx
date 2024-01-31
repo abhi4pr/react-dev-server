@@ -54,6 +54,7 @@ import GuardianFields from "./GuardianFields";
 import FamilyFields from "./FamilyFieldsTest";
 import EducationFields from "./EducationFields";
 import CocTabPreonboarding from "./CocTabPreonboarding";
+import { baseUrl } from "../../utils/config";
 
 const LanguageList = ["English", "Hindi", "Other"];
 
@@ -327,7 +328,7 @@ const PreOnboardingUserMaster = () => {
   // const fetchCOCData = async () => {
   //   try {
   //     const response = await axios.get(
-  //       "http://34.93.221.166:3000/api/get_all_cocs"
+  //       baseUrl+"get_all_cocs"
   //     );
   //     const data = response.data;
   //     setCocData(data.data);
@@ -338,7 +339,7 @@ const PreOnboardingUserMaster = () => {
 
   const fetchCOCData = async () => {
     try {
-      const response = await axios.get("http://34.93.221.166:3000/api/newcoc");
+      const response = await axios.get(baseUrl+"newcoc");
       const data = response.data.data[1].coc_content;
       setCocData(data);
     } catch (error) {
@@ -349,7 +350,7 @@ const PreOnboardingUserMaster = () => {
   useEffect(() => {
     async function getGuardian() {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_single_guardian/${id}`
+        `${baseUrl}`+`get_single_guardian/${id}`
       );
       setGuardianDetails(response.data.data);
     }
@@ -426,7 +427,7 @@ const PreOnboardingUserMaster = () => {
 
   const getDocuments = async () => {
     const response = await axios.post(
-      "http://34.93.221.166:3000/api/get_user_doc",
+      baseUrl+"get_user_doc",
       {
         user_id: id,
       }
@@ -475,7 +476,7 @@ const PreOnboardingUserMaster = () => {
 
   const gettingData = () => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_user/${id}`)
+      .get(`${baseUrl}`+`get_single_user/${id}`)
       .then((res) => {
         const fetchedData = res.data;
 
@@ -695,7 +696,7 @@ const PreOnboardingUserMaster = () => {
     formData.append("document_percentage_mandatory", showMandotaryPer);
     formData.append("document_percentage_non_mandatory", showNonMandotaryPer);
     await axios
-      .put(`http://34.93.221.166:3000/api/update_user`, formData, {
+      .put(`${baseUrl}`+`update_user`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -728,7 +729,7 @@ const PreOnboardingUserMaster = () => {
 
       try {
         const response = await axios.put(
-          "http://34.93.221.166:3000/api/update_guardian",
+          baseUrl+"update_guardian",
           payload
         );
       } catch (error) {
@@ -753,7 +754,7 @@ const PreOnboardingUserMaster = () => {
       }
       try {
         const response = await axios.put(
-          "http://34.93.221.166:3000/api/update_family",
+          baseUrl+"update_family",
           payload
         );
       } catch (error) {
@@ -779,7 +780,7 @@ const PreOnboardingUserMaster = () => {
       }
       try {
         const response = await axios.put(
-          "http://34.93.221.166:3000/api/update_education",
+          baseUrl+"update_education",
           payload
         );
         console.log(response.data);
@@ -790,7 +791,7 @@ const PreOnboardingUserMaster = () => {
 
     // After update send mail
     axios
-      .post("http://34.93.221.166:3000/api/add_send_user_mail", {
+      .post(baseUrl+"add_send_user_mail", {
         email: "lalit@creativefuel.io",
         subject: "User Pre Onboarding",
         text: "Pre Onboarding Data Update Successfully",
@@ -815,10 +816,10 @@ const PreOnboardingUserMaster = () => {
   useEffect(() => {
     async function getDetails() {
       const familyDataResponse = await axios.get(
-        `http://34.93.221.166:3000/api/get_single_family/${id}`
+        `${baseUrl}`+`get_single_family/${id}`
       );
       const educationDataResponse = await axios.get(
-        `http://34.93.221.166:3000/api/get_single_education/${id}`
+        `${baseUrl}`+`get_single_education/${id}`
       );
       setFamilyDetails(familyDataResponse.data.data);
       setEducationDetails(educationDataResponse.data.data);
@@ -849,7 +850,7 @@ const PreOnboardingUserMaster = () => {
     if (itemToRemove && itemToRemove.guardian_id) {
       try {
         await axios.delete(
-          `http://34.93.221.166:3000/api/delete_guardian/${itemToRemove.guardian_id}`
+          `${baseUrl}`+`delete_guardian/${itemToRemove.guardian_id}`
         );
       } catch (error) {
         console.error("Error Deleting Guardian", error);
@@ -883,7 +884,7 @@ const PreOnboardingUserMaster = () => {
     if (itemToRemove && itemToRemove.family_id) {
       try {
         await axios.delete(
-          `http://34.93.221.166:3000/api/delete_family/${itemToRemove.family_id}`
+          `${baseUrl}`+`delete_family/${itemToRemove.family_id}`
         );
         toastAlert("Details Deleted");
       } catch (error) {
@@ -920,7 +921,7 @@ const PreOnboardingUserMaster = () => {
     if (itemToRemove && itemToRemove.education_id) {
       try {
         await axios.delete(
-          `http://34.93.221.166:3000/api/delete_education/${itemToRemove.education_id}`
+          `${baseUrl}`+`delete_education/${itemToRemove.education_id}`
         );
         console.log(
           "Deleted Education detail from server:",
@@ -959,7 +960,7 @@ const PreOnboardingUserMaster = () => {
   const handleLogOut = async (e) => {
     e.preventDefault();
 
-    await axios.post("http://34.93.221.166:3000/api/log_out", {
+    await axios.post(baseUrl+"log_out", {
       user_id: id,
     });
 
@@ -1077,7 +1078,7 @@ const PreOnboardingUserMaster = () => {
     formData.append("nick_name", nickName);
     formData.append("profileflag", 1);
 
-    await axios.put(`http://34.93.221.166:3000/api/update_user`, formData, {
+    await axios.put(`${baseUrl}`+`update_user`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -1091,7 +1092,7 @@ const PreOnboardingUserMaster = () => {
     formData.append("user_id", id);
     formData.append("coc_flag", true);
 
-    await axios.put(`http://34.93.221.166:3000/api/update_user`, formData, {
+    await axios.put(`${baseUrl}`+`update_user`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -1101,7 +1102,7 @@ const PreOnboardingUserMaster = () => {
   };
 
   const handleGetOnboard = async () => {
-    await axios.put(`http://34.93.221.166:3000/api/update_user`, {
+    await axios.put(`${baseUrl}`+`update_user`, {
       user_id: id,
       showOnboardingModal: false,
     });

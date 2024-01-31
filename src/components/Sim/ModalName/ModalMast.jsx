@@ -11,6 +11,7 @@ import Select from "react-select";
 import { useGlobalContext } from "../../../Context/Context";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
+import { baseUrl } from "../../../utils/config";
 
 const ModalMast = () => {
   const { getBrandDataContext } = useGlobalContext();
@@ -27,7 +28,7 @@ const ModalMast = () => {
   // const [brandData, setBrandData] = useState([]);
   // async function getBrandData() {
   //   const res = await axios.get(
-  //     "http://34.93.221.166:3000/api/get_all_asset_brands"
+  //     baseUrl+"get_all_asset_brands"
   //   );
   //   setBrandData(res.data.data);
   // }
@@ -40,7 +41,7 @@ const ModalMast = () => {
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_total_asset_in_category/${row}`
+        `${baseUrl}`+`get_total_asset_in_category/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -55,7 +56,7 @@ const ModalMast = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}`+`get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -139,7 +140,7 @@ const ModalMast = () => {
         alert("Brand already Exists");
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_asset_modal",
+          baseUrl+"add_asset_modal",
           {
             asset_modal_name: modalName,
             asset_brand_id: brandName,
@@ -155,7 +156,7 @@ const ModalMast = () => {
   };
   async function getModalData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_asset_modals"
+      baseUrl+"get_all_asset_modals"
     );
     setModalData(res.data);
     setModalFilter(res.data);
@@ -174,7 +175,7 @@ const ModalMast = () => {
   const handleModalUpdate = () => {
     console.log(modalId, "id");
     axios
-      .put("http://34.93.221.166:3000/api/update_asset_modal", {
+      .put(baseUrl+"update_asset_modal", {
         asset_modal_id: modalId,
         asset_brand_id: brandNameUpdate,
         asset_modal_name: modalNameUpdate,

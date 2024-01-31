@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useGlobalContext } from "../../../Context/Context";
 import Modal from "react-modal";
+import { baseUrl } from "../../../utils/config";
 
 const RepairReason = () => {
   const { categoryDataContext, toastAlert } = useGlobalContext();
@@ -30,7 +31,7 @@ const RepairReason = () => {
   // const [brandData, setBrandData] = useState([]);
   // async function getBrandData() {
   //   const res = await axios.get(
-  //     "http://34.93.221.166:3000/api/get_all_asset_brands"
+  //     baseUrl+"get_all_asset_brands"
   //   );
   //   setBrandData(res.data.data);
   // }
@@ -42,7 +43,7 @@ const RepairReason = () => {
   const handleTotalRequest = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_all_repair_request_by_asset_reasonId/${row}`
+        `${baseUrl}`+`get_all_repair_request_by_asset_reasonId/${row}`
       );
       setTotalRepariData(response.data.data);
       console.log(response.data.data, "new data");
@@ -59,7 +60,7 @@ const RepairReason = () => {
     if (categoryName) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_asset_sub_category/${categoryName}`
+          `${baseUrl}`+`get_single_asset_sub_category/${categoryName}`
         )
         .then((res) => {
           setSubCategoryData(res.data);
@@ -137,7 +138,7 @@ const RepairReason = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_asset_reason",
+        baseUrl+"add_asset_reason",
         {
           reason: reason,
           category_id: categoryName,
@@ -155,7 +156,7 @@ const RepairReason = () => {
   };
   async function getRepairReason() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_assetResons"
+      baseUrl+"get_all_assetResons"
     );
     setModalData(res?.data.data);
     setModalFilter(res?.data.data);
@@ -178,7 +179,7 @@ const RepairReason = () => {
   const handleModalUpdate = () => {
     console.log(repairId, "id");
     axios
-      .put("http://34.93.221.166:3000/api/update_asset_reason", {
+      .put(baseUrl+"update_asset_reason", {
         asset_reason_id: repairId,
         category_id: categoryNameUpdate,
         sub_category_id: subCategoryNameUpdate,

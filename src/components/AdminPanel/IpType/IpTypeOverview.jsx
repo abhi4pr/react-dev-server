@@ -5,6 +5,7 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import DeleteButton from "../DeleteButton";
 import FormContainer from "../FormContainer";
+import { baseUrl } from "../../../utils/config";
 
 const AccessTypeOverview = () => {
   const [search, setSearch] = useState("");
@@ -12,7 +13,7 @@ const AccessTypeOverview = () => {
   const [filterData, setFilterData] = useState([]);
 
   function getData() {
-    axios.get("http://34.93.221.166:3000/api/alldataofIptype").then((res) => {
+    axios.get(baseUrl+"alldataofIptype").then((res) => {
       setData(res.data);
       setFilterData(res.data);
     });

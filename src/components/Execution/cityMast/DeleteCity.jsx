@@ -10,6 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import { TextField } from "@mui/material";
 import axios from "axios";
+import {baseUrl} from '../../../utils/config'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -29,7 +30,7 @@ export default function DeleteCity({
 }) {
   const handleDeleteCityName = (rowData) => {
     axios
-      .delete(`http://34.93.221.166:3000/api/delete_city/${rowData._id}`)
+      .delete(`${baseUrl}`+`delete_city/${rowData._id}`)
       .then((res) => {
         console.log(res);
         if (res.data.success) {

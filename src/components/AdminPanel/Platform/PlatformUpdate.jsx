@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../../utils/config'
 
 const PlatformUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -23,7 +24,7 @@ const PlatformUpdate = () => {
     setError("");
 
     axios
-      .put(`http://34.93.221.166:3000/api/platformupdate/`, {
+      .put(`${baseUrl}`+`platformupdate/`, {
         id: Number(id),
         name: platformName,
         remark: remark,
@@ -44,7 +45,7 @@ const PlatformUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/dataofplatform/${id}`)
+      .get(`${baseUrl}`+`dataofplatform/${id}`)
       .then((res) => {
         const fetchedData = res.data[0];
         const { name, remark } = fetchedData;

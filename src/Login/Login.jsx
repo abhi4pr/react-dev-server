@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import loginlogo from "../assets/img/logo/logo_login1.png";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../Context/Context";
+import { baseUrl } from "../utils/config";
 
 const Login = () => {
   const { toastError } = useGlobalContext();
@@ -17,7 +18,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://34.93.221.166:3000/api/login_user", {
+      .post(baseUrl+"login_user", {
         user_login_id: email,
         user_login_password: password,
       })

@@ -1,6 +1,8 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import LeadHeader from "./LeadHeader";
+import {baseUrl} from '../../utils/config'
+
 export const UserContext = createContext();
 
 function LeadApp({ children }) {
@@ -15,10 +17,10 @@ function LeadApp({ children }) {
     (async () => {
       try {
         const leadres = await axios.get(
-          "http://34.93.221.166:3000/api/get_all_leads"
+          baseUrl+"get_all_leads"
         );
         const userres = await axios.get(
-          "http://34.93.221.166:3000/api/get_all_users"
+          baseUrl+"get_all_users"
         );
         ftrse = [];
         leadres.data.map((ele) => {

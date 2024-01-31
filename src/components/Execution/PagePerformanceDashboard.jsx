@@ -5,6 +5,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import { DataGrid } from "@mui/x-data-grid";
 import { Autocomplete, TextField } from "@mui/material";
 import PerformanceGraphDialog from "./PerformanceGraphDialog";
+import {baseUrl} from '../../utils/config'
 
 const FilterDataOptions = [
   "Highest",
@@ -43,7 +44,7 @@ export default function PagePerformanceDashboard() {
 
   const callApi = () => {
     axios
-      .post("http://34.93.135.33:8080/api/page_health_dashboard", {
+      .post(baseUrl+"page_health_dashboard", {
         intervalFlag: intervalFlag.value,
       })
       .then((res) => {

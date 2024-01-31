@@ -6,6 +6,7 @@ import classes from "./forgetPassword.module.css";
 import SendIcon from "@mui/icons-material/Send";
 import loginlogo from "../../assets/img/logo/logo_login1.png";
 import { Link } from "react-router-dom";
+import {baseUrl} from '../../utils/config'
 
 export default function ForgetPassword() {
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ export default function ForgetPassword() {
       return;
     } else {
       axios
-        .post("http://34.93.221.166:3000/api/forgot_pass", {
+        .post(baseUrl+"forgot_pass", {
           user_email_id: email,
         })
         .then((res) => {

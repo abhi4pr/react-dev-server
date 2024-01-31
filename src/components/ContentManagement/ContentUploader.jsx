@@ -6,6 +6,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
+import {baseUrl} from '../../utils/config'
 
 const ContentUploader = () => {
   const { toastAlert } = useGlobalContext();
@@ -24,7 +25,7 @@ const ContentUploader = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/alldataofIptype")
+      .get(baseUrl+"alldataofIptype")
       .then((res) => setIpTypeData(res.data));
   }, []);
 
@@ -39,7 +40,7 @@ const ContentUploader = () => {
     formData.append("content", content);
     formData.append("user_id", userID);
 
-    await axios.post("http://34.93.221.166:3000/api/content_upload", formData, {
+    await axios.post(baseUrl+"content_upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

@@ -12,6 +12,7 @@ import { GridToolbar } from "@mui/x-data-grid";
 import ExecutionUpdate from "./ExecutionUpdate";
 import PaymentDetailDailog from "./PaymentDetailDailog";
 import PointOfSaleTwoToneIcon from "@mui/icons-material/PointOfSaleTwoTone";
+import { baseUrl } from "../../utils/config";
 
 function ExecutionPending() {
   const [snackbar, setSnackbar] = useState(null);
@@ -69,7 +70,7 @@ function ExecutionPending() {
       if (userID && contextData == false) {
         axios
           .get(
-            `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+            `${baseUrl}`+`get_single_user_auth_detail/${userID}`
           )
           .then((res) => {
             if (res.data[26].view_value == 1) {
@@ -79,18 +80,19 @@ function ExecutionPending() {
           });
       }
       const response = axios
-        .get("http://34.93.221.166:3000/api/get_exe_sum")
+        .get(baseUrl+"get_exe_sum")
         .then((res) => {
           setData(
             res.data.filter(
-              (ele) => ele.execution_status == 0 || ele.execution_status == 2
+              (ele) => ele.execution_status == 1
+              // (ele) => ele.execution_status == 0 || ele.execution_status == 2
             )
           );
         });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    axios.post("http://34.93.221.166:3000/api/exe_sum_post", {
+    axios.post(baseUrl+"exe_sum_post", {
       loggedin_user_id: 52,
     });
   };
@@ -134,7 +136,8 @@ function ExecutionPending() {
       headerName: "Status",
       width: 150,
       renderCell: (params) => {
-        if (params.row.execution_status == "0") {
+        if (params.row.execution_status == "1") {
+        // if (params.row.execution_status == "0") {
           return (
             <Button
               size="small"
@@ -327,7 +330,8 @@ function ExecutionPending() {
             const { id, row } = params; // Destructure the id and row from params
             const executionStatus = row.execution_status; // Get the execution_status
 
-            if (executionStatus == "0") {
+            if (executionStatus == 1) {
+            // if (executionStatus == "0") {
               // Show Accept and Reject buttons when execution_status is "0"
               return [
                 // <Button key={id}><PointOfSaleTwoToneIcon/></Button>,

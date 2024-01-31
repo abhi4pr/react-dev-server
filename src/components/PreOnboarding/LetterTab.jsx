@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import DigitalSignature from "../DigitalSignature/DigitalSignature";
 import { TextField } from "@mui/material";
 import { FcDownload } from "react-icons/fc";
+import { baseUrl } from "../../utils/config";
 
 const LetterTab = ({ allUserData, gettingData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,7 +24,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
     formData.append("offer_later_reject_reason", reason);
 
     axios
-      .put(`http://34.93.221.166:3000/api/update_user`, formData, {
+      .put(`${baseUrl}`+`update_user`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

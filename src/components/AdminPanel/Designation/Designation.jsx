@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import { Navigate } from "react-router-dom";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
 import Select from "react-select";
+import { baseUrl } from "../../../utils/config";
 
 const Designation = () => {
   const { toastAlert } = useGlobalContext();
@@ -18,7 +19,7 @@ const Designation = () => {
 
   // useEffect(() => {
   //   axios
-  //     .get("http://34.93.221.166:3000/api/get_all_departments")
+  //     .get(baseUrl+"get_all_departments")
   //     .then((res) => {
   //       getDepartmentData(res.data).catch((error) => console.log(error));
   //     });
@@ -27,7 +28,7 @@ const Designation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://34.93.221.166:3000/api/add_designation", {
+      await axios.post(baseUrl+"add_designation", {
         desi_name: designationName,
         dept_id: departmentName,
         remark: remark,

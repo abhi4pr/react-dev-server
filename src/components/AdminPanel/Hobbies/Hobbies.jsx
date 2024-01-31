@@ -4,6 +4,7 @@ import FieldContainer from "../FieldContainer";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import { useNavigate, useParams } from "react-router-dom";
+import {baseUrl} from '../../../utils/config'
 
 const Hobbies = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const Hobbies = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_single_hobby/${id}`
+        `${baseUrl}`+`get_single_hobby/${id}`
       );
       const hobbyName = response.data.data.hobby_name;
       setHobby(hobbyName);
@@ -32,14 +33,14 @@ const Hobbies = () => {
     try {
       if (id == 0) {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_hobby",
+          baseUrl+"add_hobby",
           {
             hobby_name: hobby,
           }
         );
       } else {
         const response = await axios.put(
-          `http://34.93.221.166:3000/api/update_hobby`,
+          `${baseUrl}`+`update_hobby`,
           {
             hobby_id: id,
             hobby_name: hobby,

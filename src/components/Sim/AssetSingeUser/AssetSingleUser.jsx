@@ -9,6 +9,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import Select from "react-select";
 import axios from "axios";
 import AssetSingleuserOverview from "./AssetSingleuserOverview";
+import { baseUrl } from "../../../utils/config";
 
 const AssetSingleUser = () => {
   const { usersDataContext, getAssetDataContext, toastAlert } =
@@ -59,7 +60,7 @@ const AssetSingleUser = () => {
   const getData = async () => {
     try {
       const res = await axios.get(
-        `http://34.93.221.166:3000/api/get_allocated_asset_data_for_user_id/${userID}`
+        `${baseUrl}`+`get_allocated_asset_data_for_user_id/${userID}`
       );
       setData(res.data.data);
       setFilterData(res.data.data);
@@ -69,14 +70,14 @@ const AssetSingleUser = () => {
   };
   async function getRepairReason() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_assetResons"
+      baseUrl+"get_all_assetResons"
     );
     setReasonData(res?.data.data);
   }
 
   async function getNewAssetRequest() {
     const res = await axios.get(
-      `http://34.93.221.166:3000/api/assetrequest/${userID}`
+      `${baseUrl}`+`assetrequest/${userID}`
     );
     setNewAssetRequestData(res?.data);
   }
@@ -123,7 +124,7 @@ const AssetSingleUser = () => {
       formData.append("problem_detailing", problemDetailing);
 
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_repair_request",
+        baseUrl+"add_repair_request",
         formData
       );
 

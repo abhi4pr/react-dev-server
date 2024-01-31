@@ -23,6 +23,7 @@ import { generatePDF } from "./pdfGenerator";
 import { useLocation, Link } from "react-router-dom";
 import FieldContainer from "../../FieldContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
+import { baseUrl } from "../../../../utils/config";
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -137,7 +138,7 @@ const SalaryWFH = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "http://34.93.221.166:3000/api/get_all_wfh_users"
+          baseUrl+"get_all_wfh_users"
         );
         const data = res.data.data;
         setAllWFHUsers(data?.length);
@@ -162,7 +163,7 @@ const SalaryWFH = () => {
 
   function gettingSliderData() {
     axios
-      .get("http://34.93.221.166:3000/api/get_month_year_data")
+      .get(baseUrl+"get_month_year_data")
       .then((res) => {
         setCompletedYearsMonths(res.data.data);
       });
@@ -170,7 +171,7 @@ const SalaryWFH = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/all_departments_of_wfh")
+      .get(baseUrl+"all_departments_of_wfh")
       .then((res) => {
         if (RoleIDContext === 1 || RoleIDContext === 5) {
           getDepartmentData(res.data.data);
@@ -186,12 +187,12 @@ const SalaryWFH = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/get_all_users`).then((res) => {
+    axios.get(`${baseUrl}`+`get_all_users`).then((res) => {
       getUsersData(res.data.data);
     });
     if (department) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_user_by_deptid/${department}`)
+        .get(`${baseUrl}`+`get_user_by_deptid/${department}`)
         .then((res) => {
           setDepartmentWise(res.data);
         });
@@ -302,7 +303,7 @@ const SalaryWFH = () => {
   const handleMonthYearData = async () => {
     try {
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/get_salary_by_month_year",
+        baseUrl+"get_salary_by_month_year",
         {
           month: month,
           year: Number(year),
@@ -318,7 +319,7 @@ const SalaryWFH = () => {
   //Create all Department Salary
   function handleAllDepartmentSalary() {
     axios
-      .post("http://34.93.221.166:3000/api/save_all_depts_attendance", {
+      .post(baseUrl+"save_all_depts_attendance", {
         month: month,
         year: year,
       })
@@ -337,7 +338,7 @@ const SalaryWFH = () => {
     formData.append("invoice_template_no", selectedTemplate);
 
     axios
-      .put(`http://34.93.221.166:3000/api/update_user`, formData, {
+      .put(`${baseUrl}`+`update_user`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -360,11 +361,11 @@ const SalaryWFH = () => {
 
     if (department || month || year !== "") {
       axios
-        .get("http://34.93.221.166:3000/api/get_total_salary")
+        .get(baseUrl+"get_total_salary")
         .then((res) => setCard2Data(res.data.data[0]));
 
       axios
-        .post("http://34.93.221.166:3000/api/left_employees", {
+        .post(baseUrl+"left_employees", {
           dept_id: department,
           month: month,
           year: year,
@@ -373,7 +374,7 @@ const SalaryWFH = () => {
     }
 
     axios
-      .post("http://34.93.221.166:3000/api/new_joiners", {
+      .post(baseUrl+"new_joiners", {
         dept_id: department,
         month: month,
         year: year,
@@ -381,7 +382,7 @@ const SalaryWFH = () => {
       .then((res) => setNewJoineeCount(res.data));
 
     axios
-      .post("http://34.93.221.166:3000/api/check_salary_status", {
+      .post(baseUrl+"check_salary_status", {
         month: month,
         year: year,
         dept: department,
@@ -393,7 +394,7 @@ const SalaryWFH = () => {
 
   function gettingDepartmentSalaryExists() {
     axios
-      .post("http://34.93.221.166:3000/api/get_distinct_depts", {
+      .post(baseUrl+"get_distinct_depts", {
         month: month,
         year: year,
       })
@@ -402,7 +403,7 @@ const SalaryWFH = () => {
 
   const handleAttendance = async () => {
     try {
-      await axios.post("http://34.93.221.166:3000/api/add_attendance", {
+      await axios.post(baseUrl+"add_attendance", {
         dept: department,
         user_id: userName.user_id,
         noOfabsent: 0,
@@ -410,7 +411,7 @@ const SalaryWFH = () => {
         year: year,
       });
       await axios.put(
-        "http://34.93.221.166:3000/api/update_attendence_status",
+        baseUrl+"update_attendence_status",
         {
           month: month,
           year: Number(year),
@@ -430,7 +431,7 @@ const SalaryWFH = () => {
     try {
       setFilterData([]);
       const res = await axios.post(
-        "http://34.93.221.166:3000/api/get_salary_by_id_month_year",
+        baseUrl+"get_salary_by_id_month_year",
         {
           dept_id: department,
           month: month,
@@ -555,12 +556,12 @@ const SalaryWFH = () => {
   //Send to finance
   function handleSendToFinance(e, row) {
     e.preventDefault();
-    axios.post(`http://34.93.221.166:3000/api/add_finance`, {
+    axios.post(`${baseUrl}`+`add_finance`, {
       attendence_id: row.attendence_id,
     });
 
     axios
-      .put(`http://34.93.221.166:3000/api/update_salary`, {
+      .put(`${baseUrl}`+`update_salary`, {
         attendence_id: row.attendence_id,
         sendToFinance: 1,
       })
@@ -681,13 +682,13 @@ const SalaryWFH = () => {
     setUserName(username);
     setUserContact(user_contact_no);
     axios
-      .get("http://34.93.221.166:3000/api/get_all_reasons")
+      .get(baseUrl+"get_all_reasons")
       .then((res) => setSeparationReasonGet(res.data));
   }
 
   const today = new Date()?.toISOString()?.split("T")[0];
   function handleSeparationDataPost() {
-    axios.post("http://34.93.221.166:3000/api/add_separation", {
+    axios.post(baseUrl+"add_separation", {
       user_id: separationUserID,
       status: separationStatus,
       created_by: userID,

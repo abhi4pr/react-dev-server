@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import OverView from './OverView'
 import axios from 'axios'
+import {baseUrl} from '../../../../utils/config'
 
 const AgencyOverview = () => {
 
     const [agencyData,setAgencyData]=useState([])
     const getAgencyInfo=async ()=>{
-        const data=await axios.get('http://34.93.221.166:3000/api/agency')
+        const data=await axios.get(baseUrl+'agency')
         setAgencyData(data.data.result)
     }
 

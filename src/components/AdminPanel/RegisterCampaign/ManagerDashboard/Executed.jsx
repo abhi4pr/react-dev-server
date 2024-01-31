@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Modal, Paper, Typography, Button } from "@mui/material";
 import axios from "axios";
+import {baseUrl} from '../../../../utils/config'
 
 const Executed = ({ executed, forceRender }) => {
   console.log(executed, "new data");
@@ -12,8 +13,8 @@ const Executed = ({ executed, forceRender }) => {
     const _id = params.row.ass_id;
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/assignment/commit/single/${_id}`
-        // `http://34.93.221.166:3000/api/assignment/commit/single/2`
+        `${baseUrl}`+`assignment/commit/single/${_id}`
+        // `${baseUrl}`+`assignment/commit/single/2`
       );
       setExecutedCommit(response.data.data);
       setOpen2(true);
@@ -111,7 +112,7 @@ const Executed = ({ executed, forceRender }) => {
   const handleVerified = async () => {
     // console.log(executed[0]?.ass_id, executed[0]?.campaignId);
     const response = await axios.post(
-      `http://34.93.221.166:3000/api/assignment/status`,
+      `${baseUrl}`+`assignment/status`,
       {
         ass_id: executed[0]?.ass_id,
         campaignId: executed[0]?.campaignId,
@@ -124,7 +125,7 @@ const Executed = ({ executed, forceRender }) => {
   };
   const handleReject = async () => {
     const response = await axios.post(
-      `http://34.93.221.166:3000/api/assignment/status`,
+      `${baseUrl}`+`assignment/status`,
       {
         ass_id: executed[0]?.ass_id,
         campaignId: executed[0]?.campaignId,

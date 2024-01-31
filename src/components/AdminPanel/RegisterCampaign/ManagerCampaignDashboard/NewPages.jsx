@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
 import Loader from "../Loader/Loader";
+import {baseUrl} from '../../../../utils/config'
+
 const NewPages = ({ pages }) => {
   const navigate = useNavigate();
   const [camp, setCamp] = useState([]);
@@ -12,7 +14,7 @@ const NewPages = ({ pages }) => {
   const fetchCampaignData = async () => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/exe_campaign`
+        `${baseUrl}`+`exe_campaign`
       );
       setCamp(response?.data?.data);
     } catch (error) {

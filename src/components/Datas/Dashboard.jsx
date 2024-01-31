@@ -4,6 +4,7 @@ import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
+import {baseUrl} from '../../utils/config'
 
 export default function Dashboard() {
   const [categoryData, setCategoryData] = useState([]);
@@ -16,29 +17,29 @@ export default function Dashboard() {
 
   const callApi = () => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_categorys")
+      .get(baseUrl+"get_all_data_categorys")
       .then((res) => setCategoryData(res.data.simcWithSubCategoryCount));
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_brands")
+      .get(baseUrl+"get_all_data_brands")
       .then((res) => setBrandData(res.data));
 
     axios
-      .get("http://34.93.221.166:3000/api/distinct_created_by")
+      .get(baseUrl+"distinct_created_by")
       .then((res) => setEmployeeData(res.data.data));
     axios
-      .get("http://34.93.221.166:3000/api/distinct_designed_by")
+      .get(baseUrl+"distinct_designed_by")
       .then((res) => setDesignedData(res.data.data));
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_platforms")
+      .get(baseUrl+"get_all_data_platforms")
       .then((res) => setPlatformData(res.data));
     axios
 
-      .get("http://34.93.221.166:3000/api/get_all_data_content_types")
+      .get(baseUrl+"get_all_data_content_types")
       .then((res) => setContentData(res.data));
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_Sub_categories")
+      .get(baseUrl+"get_all_data_Sub_categories")
       .then((res) => setSubCategoryData(res.data));
   };
 

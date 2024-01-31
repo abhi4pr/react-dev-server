@@ -4,6 +4,7 @@ import { FcDownload } from "react-icons/fc";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import ApproveReject from "./ApproveReject";
 import Tab4DocumentCard from "./Tab4DocumentCard";
+import {baseUrl} from '../../../utils/config'
 
 const UserSingleTab4 = ({ user, id, getData }) => {
   const whatsappApi = WhatsappAPI();
@@ -64,7 +65,7 @@ const UserSingleTab4 = ({ user, id, getData }) => {
 
     axios({
       method: "put",
-      url: "http://34.93.221.166:3000/api/update_user",
+      url: baseUrl+"update_user",
       data: formData,
     }).then(() => {
       if (emptyState) emptyState("");
@@ -79,7 +80,7 @@ const UserSingleTab4 = ({ user, id, getData }) => {
       .then(() => {
         e.preventDefault();
         axios
-          .post("http://34.93.221.166:3000/api/add_send_user_mail", {
+          .post(baseUrl+"add_send_user_mail", {
             email: fetchedData[0].user_email_id,
             subject: "User Onboard",
             text: "Your Some Document is not clear Plzz Upload Again",

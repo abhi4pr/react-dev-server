@@ -39,6 +39,7 @@ import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContactNumberReact from "../../ReusableComponents/ContactNumberReact";
 import { set } from "date-fns";
+import {baseUrl} from '../../../utils/config'
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -291,46 +292,46 @@ const UserMaster = () => {
     if (department) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_subdept_from_dept/${department}`
+          `${baseUrl}`+`get_subdept_from_dept/${department}`
         )
         .then((res) => setSubDepartmentData(res.data));
     }
   }, [department]);
 
   useEffect(() => {
-    axios.get("http://34.93.221.166:3000/api/get_all_roles").then((res) => {
+    axios.get(baseUrl+"get_all_roles").then((res) => {
       getRoleData(res.data.data);
     });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => {
         getDepartmentData(res.data);
       });
 
-    axios.get("http://34.93.221.166:3000/api/not_alloc_sitting").then((res) => {
+    axios.get(baseUrl+"not_alloc_sitting").then((res) => {
       getRefrenceData(res.data.data);
     });
 
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+    axios.get(baseUrl+"get_all_users").then((res) => {
       getUsersData(res.data.data);
       const userSitting = res.data.data.map((user) => user.sitting_id);
       setAllUsersSittings(userSitting);
     });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_designations")
+      .get(baseUrl+"get_all_designations")
       .then((res) => {
         setDesignationData(res.data.data);
       });
 
-    axios.get("http://34.93.221.166:3000/api/get_all_job_types").then((res) => {
+    axios.get(baseUrl+"get_all_job_types").then((res) => {
       setJobTypeData(res.data.data);
     });
   }, []);
 
   const allUserData = () => {
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+    axios.get(baseUrl+"get_all_users").then((res) => {
       const reportl1Email = res.data.data?.filter((d) => d.user_id == reportL1);
       setReportL1Email(reportl1Email[0].user_email_id);
     });
@@ -522,7 +523,7 @@ const UserMaster = () => {
         } else {
           setLoading(true);
           axios
-            .post("http://34.93.221.166:3000/api/add_user", formData, {
+            .post(baseUrl+"add_user", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
@@ -546,7 +547,7 @@ const UserMaster = () => {
           if (familyDetails[0].Name !== "") {
             for (const elements of familyDetails) {
               const response = axios.post(
-                "http://34.93.221.166:3000/api/add_family",
+                baseUrl+"add_family",
                 {
                   name: elements.Name,
                   DOB: elements.DOB,
@@ -562,7 +563,7 @@ const UserMaster = () => {
           if (educationDetails[0].Title !== "") {
             for (const elements of educationDetails) {
               const response = axios.post(
-                "http://34.93.221.166:3000/api/add_education",
+                baseUrl+"add_education",
                 {
                   title: elements.Title,
                   institute_name: elements.Institute,
@@ -578,7 +579,7 @@ const UserMaster = () => {
 
           if (reportL1 !== "") {
             axios
-              .post("http://34.93.221.166:3000/api/add_send_user_mail", {
+              .post(baseUrl+"add_send_user_mail", {
                 email: email,
                 subject: "User Registration",
                 text: "A new user has been registered.",
@@ -613,7 +614,7 @@ const UserMaster = () => {
             // formData.append("remark", "remark");
 
             axios.post(
-              "http://34.93.221.166:3000/api/add_user_other_field",
+              baseUrl+"add_user_other_field",
               { field_name: elements.name, field_value: elements.file },
               {
                 headers: {
@@ -624,7 +625,7 @@ const UserMaster = () => {
           }
 
           axios
-            .post("http://34.93.221.166:3000/api/add_send_user_mail", {
+            .post(baseUrl+"add_send_user_mail", {
               email: email,
               subject: "User Registration",
               text: "A new user has been registered.",

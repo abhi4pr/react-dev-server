@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { tr } from "date-fns/locale";
+import {baseUrl} from '../../../utils/config'
 
 const SaleBookingClose = () => {
   const { toastAlert } = useGlobalContext();
@@ -45,7 +46,7 @@ getData()
   function getData() {
     axios
       .post(
-        "http://34.93.221.166:3000/api/add_php_sale_booking_tds_data_in_node"
+        baseUrl+"add_php_sale_booking_tds_data_in_node"
       )
       .then((res) => {
         console.log("data save in local success");

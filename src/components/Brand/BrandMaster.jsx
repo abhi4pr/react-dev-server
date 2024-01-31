@@ -6,6 +6,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
+import {baseUrl} from '../../utils/config'
 
 const BrandMaster = () => {
   const { toastAlert } = useGlobalContext();
@@ -35,7 +36,7 @@ const BrandMaster = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
+      .get(baseUrl+"get_all_logo_categories")
       .then((res) => setCategoryData(res.data));
 
     const today = new Date();
@@ -67,7 +68,7 @@ const BrandMaster = () => {
         formData.append("logo_cat", selectedCategories[i]);
 
         await axios.post(
-          "http://34.93.221.166:3000/api/add_logo_brand",
+          baseUrl+"add_logo_brand",
           formData,
           {
             headers: {

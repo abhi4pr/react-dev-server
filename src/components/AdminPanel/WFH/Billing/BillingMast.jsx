@@ -5,6 +5,7 @@ import { Navigate } from "react-router-dom";
 import { useGlobalContext } from "../../../../Context/Context";
 import FieldContainer from "../../FieldContainer";
 import FormContainer from "../../FormContainer";
+import {baseUrl} from '../../../../utils/config'
 
 const BillingMast = () => {
   const { toastAlert } = useGlobalContext();
@@ -20,10 +21,10 @@ const BillingMast = () => {
     async function fetchData() {
       try {
         const assignedDepartmentResponse = await axios.get(
-          "http://34.93.221.166:3000/api/get_all_billingheaders"
+          baseUrl+"get_all_billingheaders"
         );
         const wfhDepartmentsResponse = await axios.get(
-          "http://34.93.221.166:3000/api/dept_with_wfh"
+          baseUrl+"dept_with_wfh"
         );
 
         const assignedDepartments = assignedDepartmentResponse.data.result;
@@ -68,7 +69,7 @@ const BillingMast = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://34.93.221.166:3000/api/add_billingheader", {
+      .post(baseUrl+"add_billingheader", {
         billing_header_name: bilingName,
         dept_id: department,
       })

@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../../utils/config'
 
 const AccessTypeMaster = () => {
   const { toastAlert } = useGlobalContext();
@@ -21,7 +22,7 @@ const AccessTypeMaster = () => {
     e.preventDefault();
     setError("");
     axios
-      .post("http://34.93.221.166:3000/api/Iptype", {
+      .post(baseUrl+"Iptype", {
         name: accessTypeName,
         remark: remark,
         created_by: userID,

@@ -7,6 +7,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import DeleteButton from "../AdminPanel/DeleteButton";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import { CgPassword } from "react-icons/cg";
+import { baseUrl } from "../../utils/config";
 
 const IpOverview = () => {
   // const { data } = useGlobalContext();
@@ -43,7 +44,7 @@ const IpOverview = () => {
 
   async function getData() {
     await axios
-      .get("http://34.93.221.166:3000/api/get_all_instapages")
+      .get(baseUrl+"get_all_instapages")
       .then((res) => {
         setData(res.data);
         setFilterData(res.data);

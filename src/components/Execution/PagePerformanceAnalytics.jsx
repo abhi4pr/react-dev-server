@@ -6,6 +6,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import FormContainer from "../AdminPanel/FormContainer";
+import {baseUrl} from '../../utils/config'
 
 const viewInOptions = ["Millions", "Thousands", "Default"];
 
@@ -46,7 +47,7 @@ export default function PagePerformanceAnalytics() {
 
   const callApi = () => {
     axios
-      .post("http://34.93.135.33:8080/api/page_health_dashboard", {
+      .post(baseUrl+"page_health_dashboard", {
         intervalFlag: intervalFlag.value,
       })
       .then((res) => {
@@ -640,7 +641,7 @@ export default function PagePerformanceAnalytics() {
     const startDay = startDateObject.getDate().toString().padStart(2, "0");
     const startFormattedDate = `${startYear}-${startMonth}-${startDay}`;
     axios
-      .post("http://34.93.135.33:8080/api/page_health_dashboard", {
+      .post(baseUrl+"page_health_dashboard", {
         startDate: startFormattedDate,
         endDate: endFormattedDate,
       })

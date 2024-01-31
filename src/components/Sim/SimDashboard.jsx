@@ -8,6 +8,7 @@ import Modal from "react-modal";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import Select from "react-select";
+import { baseUrl } from "../../utils/config";
 
 const SimDashboard = () => {
   const { categoryDataContext } = useGlobalContext();
@@ -36,7 +37,7 @@ const SimDashboard = () => {
   // const [categoryData, setCategoryData] = useState([]);
   // const getCategoryData = () => {
   //   axios
-  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .get(baseUrl+"get_all_asset_category")
   //     .then((res) => {
   //       setCategoryData(res.data);
   //     });
@@ -49,7 +50,7 @@ const SimDashboard = () => {
     if (category) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_asset_sub_category/${category}`
+          `${baseUrl}`+`get_single_asset_sub_category/${category}`
         )
         .then((res) => {
           setSubCategoryData(res.data);
@@ -65,7 +66,7 @@ const SimDashboard = () => {
   }, [category]);
 
   function getData() {
-    axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
+    axios.get(baseUrl+"get_all_sims").then((res) => {
       setSimData(res.data.data);
 
       const availableObjects = res.data.data.filter(
@@ -79,7 +80,7 @@ const SimDashboard = () => {
       setAllocatedCount(allocatedObjects);
     });
     axios
-      .get("http://34.93.221.166:3000/api/get_asset_department_count")
+      .get(baseUrl+"get_asset_department_count")
       .then((res) => {
         setDepartmentData(res.data.data);
 
@@ -97,7 +98,7 @@ const SimDashboard = () => {
   const handleRowClick = (row) => {
     setSelectedRow(row);
     axios
-      .get(`http://34.93.221.166:3000/api/get_asset_users_of_dept/${row}`)
+      .get(`${baseUrl}`+`get_asset_users_of_dept/${row}`)
       .then((res) => {
         setSelectedUserData(res.data.data);
       });

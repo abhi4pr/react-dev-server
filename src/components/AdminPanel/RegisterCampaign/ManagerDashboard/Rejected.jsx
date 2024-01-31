@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Modal, Paper, Typography, Button } from "@mui/material";
+import {baseUrl} from '../../../../utils/config'
 
 const Rejected = ({ rejected }) => {
   const [open2, setOpen2] = useState(false);
@@ -11,8 +12,8 @@ const Rejected = ({ rejected }) => {
     const _id = params.row.ass_id;
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/assignment/commit/single/${_id}`
-        // `http://34.93.221.166:3000/api/assignment/commit/single/2`
+        `${baseUrl}`+`assignment/commit/single/${_id}`
+        // `${baseUrl}`+`assignment/commit/single/2`
       );
       setPendingCommit(response.data.data);
       setOpen2(true);

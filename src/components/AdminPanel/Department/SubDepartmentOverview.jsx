@@ -7,6 +7,7 @@ import DeleteButton from "../DeleteButton";
 import FormContainer from "../FormContainer";
 import Modal from "react-modal";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
+import { baseUrl } from "../../../utils/config";
 
 export default function SubDepartmentOverview() {
   const { contextData } = useAPIGlobalContext();
@@ -20,13 +21,14 @@ export default function SubDepartmentOverview() {
   const [filterSubDepartmentData, setFilterSubDepartmentData] = useState([]);
   const [departmentData, setDepartmentData] = useState([]);
   const [subDepartmentData, setSubDeparmentData] = useState([]);
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
   function getData() {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_sub_departments")
+      .get(baseUrl+"get_all_sub_departments")
       .then((res) => {
         setData(res.data);
         setFilterData(res.data);
@@ -34,7 +36,7 @@ export default function SubDepartmentOverview() {
   }
   function getSubDepartmentData(dept_id) {
     axios
-      .get(`http://34.93.221.166:3000/api/get_subdept_from_dept"/${dept_id}`)
+      .get(`${baseUrl}`+`get_subdept_from_dept"/${dept_id}`)
       .then((res) => {
         setSubDeparmentData(res.data);
       });
@@ -42,7 +44,7 @@ export default function SubDepartmentOverview() {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => {
         setDepartmentData(res.data);
       });

@@ -17,6 +17,7 @@ import * as XLSX from "xlsx";
 import dayjs from "dayjs";
 import { useGlobalContext } from "../../../Context/Context";
 import { useNavigate } from "react-router-dom";
+import { baseUrl } from "../../../utils/config";
 
 export default function RegisterCampaign() {
 
@@ -105,7 +106,7 @@ export default function RegisterCampaign() {
 
     console.log(form, "<--------------------this is form");
     axios
-      .post("http://34.93.221.166:3000/api/register_campaign", form)
+      .post(baseUrl+"register_campaign", form)
       .then(() => {
         setBrandName([]);
         setSelectedDate(null);
@@ -178,7 +179,7 @@ export default function RegisterCampaign() {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_brands")
+      .get(baseUrl+"get_brands")
       .then((response) => {
         const data = response.data.data;
         setShowBrandName(data);
@@ -188,7 +189,7 @@ export default function RegisterCampaign() {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_commitments")
+      .get(baseUrl+"get_all_commitments")
       .then((response) => {
         setCampignList(response.data.data);
       })
@@ -197,7 +198,7 @@ export default function RegisterCampaign() {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/exe_campaign")
+      .get(baseUrl+"exe_campaign")
       .then((response) => {
         const data = response.data.data;
         console.log(data, "<----data");
@@ -207,7 +208,7 @@ export default function RegisterCampaign() {
         console.log(err);
       });
     axios
-      .get("http://34.93.221.166:3000/api/agency")
+      .get(baseUrl+"agency")
       .then((response) => {
         const data = response.data.result;
         console.log(data, "<----agency");
@@ -217,7 +218,7 @@ export default function RegisterCampaign() {
         console.log(err);
       });
     axios
-      .get("http://34.93.221.166:3000/api/goal")
+      .get(baseUrl+"goal")
       .then((response) => {
         const data = response.data.result;
         console.log(data, "<----goal");
@@ -227,7 +228,7 @@ export default function RegisterCampaign() {
         console.log(err);
       });
     axios
-      .get("http://34.93.221.166:3000/api/industry")
+      .get(baseUrl+"industry")
       .then((response) => {
         const data = response.data.result;
         console.log(data, "<----industry");

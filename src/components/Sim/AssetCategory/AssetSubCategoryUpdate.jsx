@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
 import Select from "react-select";
+import { baseUrl } from "../../../utils/config";
 
 const AssetSubCategoryUpdate = () => {
   const { id } = useParams();
@@ -22,14 +23,14 @@ const AssetSubCategoryUpdate = () => {
   // const [categories, setCategories] = useState([]);
   // useEffect(() => {
   //   axios
-  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .get(baseUrl+"get_all_asset_category")
   //     .then((res) => setCategories(res.data))
   //     .catch((error) => console.error("Error fetching categories:", error));
   // }, []);
 
   const getData = () => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_asset_cat/${id}`)
+      .get(`${baseUrl}`+`get_single_asset_cat/${id}`)
       .then((res) => {
         const response = res.data.data;
         console.log(response[0], "lalit is here");
@@ -52,7 +53,7 @@ const AssetSubCategoryUpdate = () => {
       const loginUserId = decodedToken ? decodedToken.id : null;
 
       const response = await axios.put(
-        "http://34.93.221.166:3000/api/update_asset_sub_category",
+        baseUrl+"update_asset_sub_category",
         {
           category_id: selectedCat,
           sub_category_id: id,

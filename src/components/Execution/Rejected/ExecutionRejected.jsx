@@ -9,6 +9,7 @@ import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import { Button } from "@mui/material";
 import PaymentDetailDailog from "../PaymentDetailDailog";
 import PointOfSaleTwoToneIcon from "@mui/icons-material/PointOfSaleTwoTone";
+import {baseUrl} from '../../../utils/config'
 
 export default function ExecutionRejected() {
   const storedToken = sessionStorage.getItem("token");
@@ -35,7 +36,7 @@ export default function ExecutionRejected() {
       if (userID && contextData == false) {
         axios
           .get(
-            `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+            `${baseUrl}`+`get_single_user_auth_detail/${userID}`
           )
           .then((res) => {
             console.log("this is res data", res.data);
@@ -51,7 +52,7 @@ export default function ExecutionRejected() {
       console.log(formData);
       axios
         .get(
-          "http://34.93.221.166:3000/api/get_exe_sum"
+          baseUrl+"get_exe_sum"
           // formData
         )
         .then((res) => {
@@ -60,7 +61,7 @@ export default function ExecutionRejected() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    axios.post("http://34.93.221.166:3000/api/exe_sum_post", {
+    axios.post(baseUrl+"exe_sum_post", {
       loggedin_user_id: 52,
     });
   };

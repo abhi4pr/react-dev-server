@@ -8,6 +8,7 @@ import jwtDecode from "jwt-decode";
 import axios from "axios";
 import Select from "react-select";
 import { Autocomplete, TextField } from "@mui/material";
+import { baseUrl } from "../../../utils/config";
 
 const VendorUpdate = () => {
   const { id } = useParams();
@@ -39,7 +40,7 @@ const VendorUpdate = () => {
   // const [categoryData, setCategoryData] = useState([]);
   // const getCategoryData = () => {
   //   axios
-  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .get(baseUrl+"get_all_asset_category")
   //     .then((res) => {
   //       console.log(res.data, "category");
   //       setCategoryData(res.data);
@@ -51,7 +52,7 @@ const VendorUpdate = () => {
 
   const getData = () => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_vendor/${id}`)
+      .get(`${baseUrl}`+`get_single_vendor/${id}`)
       .then((res) => {
         const response = res.data.data;
 
@@ -99,7 +100,7 @@ const VendorUpdate = () => {
     e.preventDefault();
     try {
       const response = await axios.put(
-        "http://34.93.221.166:3000/api/update_vendor",
+        baseUrl+"update_vendor",
         {
           vendor_id: id,
           vendor_name: vendorName,

@@ -13,6 +13,7 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import ClearIcon from "@mui/icons-material/Clear";
+import { baseUrl } from "../../../utils/config";
 
 const Attendence = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -59,7 +60,7 @@ const Attendence = () => {
 
   function gettingSliderData() {
     axios
-      .get("http://34.93.221.166:3000/api/get_month_year_data")
+      .get(baseUrl+"get_month_year_data")
       .then((res) => {
         setCompletedYearsMonths(res.data.data);
       });
@@ -67,7 +68,7 @@ const Attendence = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/all_departments_of_wfh")
+      .get(baseUrl+"all_departments_of_wfh")
       .then((res) => {
         if (RoleIDContext == 1 || RoleIDContext == 5) {
           getDepartmentData(res.data.data);
@@ -85,7 +86,7 @@ const Attendence = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "http://34.93.221.166:3000/api/get_all_wfh_users"
+          baseUrl+"get_all_wfh_users"
         );
         const data = res.data.data;
         const filteredUser = data.filter((d) => d.dept_id === department);
@@ -156,7 +157,7 @@ const Attendence = () => {
 
   const handleAttendence = () => {
     axios
-      .post("http://34.93.221.166:3000/api/add_attendance", {
+      .post(baseUrl+"add_attendance", {
         dept: department,
         user_id: userName.user_id,
         noOfabsent: 0,
@@ -175,7 +176,7 @@ const Attendence = () => {
 
   function handleAllDepartmentAttendance() {
     axios
-      .post("http://34.93.221.166:3000/api/save_all_depts_attendance", {
+      .post(baseUrl+"save_all_depts_attendance", {
         month: selectedMonth,
         year: selectedYear,
       })
@@ -205,7 +206,7 @@ const Attendence = () => {
 
   function gettingDepartmentSalaryExists() {
     axios
-      .post("http://34.93.221.166:3000/api/get_distinct_depts", {
+      .post(baseUrl+"get_distinct_depts", {
         month: selectedMonth,
         year: selectedYear,
       })
@@ -219,7 +220,7 @@ const Attendence = () => {
   };
 
   useEffect(() => {
-    axios.get("http://34.93.221.166:3000/api/get_all_wfh_users").then((res) => {
+    axios.get(baseUrl+"get_all_wfh_users").then((res) => {
       const data = res.data.data;
       const filteredUser = data.filter(
         (d) => d.dept_id === department && d.user_status
@@ -236,7 +237,7 @@ const Attendence = () => {
     };
     axios
       .post(
-        "http://34.93.221.166:3000/api/get_salary_by_id_month_year",
+        baseUrl+"get_salary_by_id_month_year",
         payload
       )
       .then((res) => {
@@ -262,7 +263,7 @@ const Attendence = () => {
   useEffect(() => {
     if (department) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_wfh_user/${department}`)
+        .get(`${baseUrl}`+`get_wfh_user/${department}`)
         .then((res) => {
           getUsersData(res.data);
         });
@@ -272,7 +273,7 @@ const Attendence = () => {
   const handleCreateSalary = (e) => {
     e.preventDefault();
     axios
-      .put("http://34.93.221.166:3000/api/update_attendence_status", {
+      .put(baseUrl+"update_attendence_status", {
         month: selectedMonth,
         year: Number(selectedYear),
         dept: department,
@@ -288,7 +289,7 @@ const Attendence = () => {
       const updatedRow = { ...newRow, isNew: false };
       // console.log(updatedRow, "update row");
       axios
-        .post("http://34.93.221.166:3000/api/add_attendance", {
+        .post(baseUrl+"add_attendance", {
           attendence_id: updatedRow.attendence_id,
           dept: updatedRow.dept,
           user_id: updatedRow.user_id,

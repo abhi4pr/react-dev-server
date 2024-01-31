@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import imageTest1 from "../../../assets/img/product/Avtrar1.png";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import DoneIcon from "@mui/icons-material/Done";
+import {baseUrl} from '../../../utils/config'
 
 const Navbar = () => {
   const [count, setCount] = useState(0);
@@ -24,7 +25,7 @@ const Navbar = () => {
 
   useEffect(() => {
     axios
-      .post("http://34.93.221.166:3000/api/login_user_data", {
+      .post(baseUrl+"login_user_data", {
         user_id: loginUserId,
       })
       .then((res) => setLoginUserData(res.data));
@@ -32,7 +33,7 @@ const Navbar = () => {
 
   const fetchData = async () => {
     await axios
-      .get("http://34.93.221.166:3000/api/get_all_unreden_notifications")
+      .get(baseUrl+"get_all_unreden_notifications")
       .then((res) => {
         setNotificationData(res.data.data);
         setCount(res.data.data.length);
@@ -50,7 +51,7 @@ const Navbar = () => {
 
   const NotificationsOff = async (_id) => {
     // e.preventDefault();
-    await axios.put(`http://34.93.221.166:3000/api/update_notification/`, {
+    await axios.put(`${baseUrl}`+`update_notification/`, {
       _id: _id,
       readen: true,
     });

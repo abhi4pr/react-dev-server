@@ -10,6 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../../AdminPanel/DeleteButton";
 import Modal from "react-modal";
 import Select from "react-select";
+import { baseUrl } from "../../../utils/config";
 
 const AssetCategoryOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -39,7 +40,7 @@ const AssetCategoryOverview = () => {
   const handleSubCategroy = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_count_sub_category/${row}`
+        `${baseUrl}`+`get_count_sub_category/${row}`
       );
       setSubcategroycount(response.data.data?.sub_categories);
       setHandleOpenSubCat(true);
@@ -50,7 +51,7 @@ const AssetCategoryOverview = () => {
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_total_asset_in_category/${row}`
+        `${baseUrl}`+`get_total_asset_in_category/${row}`
       );
       setTotalAssets(response?.data.data);
       seAssetModel(true);
@@ -65,7 +66,7 @@ const AssetCategoryOverview = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}`+`get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response?.data.data);
       seAssetModel(true);
@@ -77,7 +78,7 @@ const AssetCategoryOverview = () => {
   const getSubCategoryData = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_asset_sub_category"
+        baseUrl+"get_all_asset_sub_category"
       );
       setSubCategoryData(response.data.data);
     } catch (error) {
@@ -100,7 +101,7 @@ const AssetCategoryOverview = () => {
         alert("Sub Category already Exists");
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_asset_sub_category",
+          baseUrl+"add_asset_sub_category",
           {
             sub_category_name: subCategoryName,
             category_id: catId,
@@ -130,7 +131,7 @@ const AssetCategoryOverview = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_asset_category"
+        baseUrl+"get_all_asset_category"
       );
 
       setFilterData(response.data.data?.asset_categories);

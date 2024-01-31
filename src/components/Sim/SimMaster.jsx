@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
+import { baseUrl } from "../../utils/config";
 
 const SimMaster = () => {
   const { toastAlert, toastError, categoryDataContext, getBrandDataContext } =
@@ -78,7 +79,7 @@ const SimMaster = () => {
   // const [categoryData, setCategoryData] = useState([]);
   // const getAllCategory = () => {
   //   axios
-  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .get(baseUrl+"get_all_asset_category")
   //     .then((res) => {
   //       setCategoryData(res.data);
   //     });
@@ -87,7 +88,7 @@ const SimMaster = () => {
   // const [brandData, setBrandData] = useState([]);
   // async function getBrandData() {
   //   const res = await axios.get(
-  //     "http://34.93.221.166:3000/api/get_all_asset_brands"
+  //     baseUrl+"get_all_asset_brands"
   //   );
   //   setBrandData(res.data.data);
   // }
@@ -96,7 +97,7 @@ const SimMaster = () => {
     if (assetsCategory.category_id) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_asset_sub_category/${assetsCategory.category_id}`
+          `${baseUrl}`+`get_single_asset_sub_category/${assetsCategory.category_id}`
         )
         .then((res) => {
           setSubCategoryData(res.data);
@@ -113,13 +114,13 @@ const SimMaster = () => {
   }, [subCategory.sub_category_id, subcategoryData]);
 
   const getAllVendor = () => {
-    axios.get("http://34.93.221.166:3000/api/get_all_vendor").then((res) => {
+    axios.get(baseUrl+"get_all_vendor").then((res) => {
       setVendorData(res.data);
     });
   };
   async function getModalData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_asset_modals"
+      baseUrl+"get_all_asset_modals"
     );
     setModalData(res.data);
   }
@@ -189,7 +190,7 @@ const SimMaster = () => {
 
       //There is asssets post data api
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_sim",
+        baseUrl+"add_sim",
         formData
       );
 
@@ -204,7 +205,7 @@ const SimMaster = () => {
       imageData.append("img3", assetsImg3);
       imageData.append("img4", assetsImg4);
       await axios.post(
-        "http://34.93.221.166:3000/api/add_assets_images",
+        baseUrl+"add_assets_images",
         imageData
       );
 

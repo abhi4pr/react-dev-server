@@ -4,6 +4,8 @@ import DataTable from "react-data-table-component";
 import { Navigate, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
+
 const UserAuthDetail = () => {
   const { toastAlert } = useGlobalContext();
   const token = sessionStorage.getItem("token");
@@ -21,7 +23,7 @@ const UserAuthDetail = () => {
   }, []);
   function getData() {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_user_auth_detail/${id}`)
+      .get(`${baseUrl}`+`get_single_user_auth_detail/${id}`)
       .then((res) => {
         setData(res.data);
         setFilterData(res.data);
@@ -105,7 +107,7 @@ const UserAuthDetail = () => {
   ];
   function postData() {
     for (const element of filterData) {
-      axios.put("http://34.93.221.166:3000/api/update_user_auth", {
+      axios.put(baseUrl+"update_user_auth", {
         auth_id: element.auth_id,
         Juser_id: Number(id),
         obj_id: element.obj_id,

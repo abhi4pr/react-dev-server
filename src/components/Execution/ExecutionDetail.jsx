@@ -15,6 +15,7 @@ import { useState } from "react";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 import { set } from "date-fns";
+import {baseUrl} from '../../utils/config'
 
 function ExecutionDetail() {
   const { id } = useParams();
@@ -24,10 +25,7 @@ function ExecutionDetail() {
   useEffect(() => {
     // Fetch data when the component mounts
     axios
-      .get(
-        `
-        http://34.93.221.166:3000/api/get_exe_sum`
-      )
+      .get(`${baseUrl}`+`get_exe_sum`)
       .then((res) => {
         // console.log(
         //   res.data

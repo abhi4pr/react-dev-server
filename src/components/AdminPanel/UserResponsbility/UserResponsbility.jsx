@@ -7,6 +7,7 @@ import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import Select from "react-select";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
+import {baseUrl} from '../../../utils/config'
 
 const UserResponsbility = () => {
   const whatsappApi = WhatsappAPI();
@@ -29,7 +30,7 @@ const UserResponsbility = () => {
   const loginUser = decodedToken.id;
 
   function getUserCompleteData() {
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+    axios.get(baseUrl+"get_all_users").then((res) => {
       const data = res.data.data;
       getUserData(data);
       setUserContact(
@@ -54,7 +55,7 @@ const UserResponsbility = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_responsibilitys")
+      .get(baseUrl+"get_all_responsibilitys")
       .then((res) => {
         setResponsibilityData(res.data);
       });
@@ -64,7 +65,7 @@ const UserResponsbility = () => {
     e.preventDefault();
     setError("");
     for (const element of todos) {
-      await axios.post("http://34.93.221.166:3000/api/add_job_responsibility", {
+      await axios.post(baseUrl+"add_job_responsibility", {
         user_id: userName,
         job_responsi: element.responsibility,
         description: element.description,

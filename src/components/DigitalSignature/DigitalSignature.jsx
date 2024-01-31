@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
+import {baseUrl} from '../../utils/config'
 
 const DigitalSignature = ({
   userID,
@@ -52,7 +53,7 @@ const DigitalSignature = ({
 
         try {
           await axios.put(
-            `http://34.93.221.166:3000/api/update_user`,
+            `${baseUrl}`+`update_user`,
             formData,
             {
               headers: {

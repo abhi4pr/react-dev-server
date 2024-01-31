@@ -7,6 +7,7 @@ import FormContainer from "../FormContainer";
 import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
 import Select from "react-select";
+import {baseUrl} from '../../../utils/config'
 
 export const SelfAudit = () => {
   const [search, setSearch] = useState("");
@@ -40,7 +41,7 @@ export const SelfAudit = () => {
     formData.append("uploaded_by", userID);
     formData.append("type", type);
     await axios.post(
-      "http://34.93.221.166:3000/api/add_assets_images",
+      baseUrl+"add_assets_images",
       formData,
       {
         headers: {
@@ -62,7 +63,7 @@ export const SelfAudit = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -77,7 +78,7 @@ export const SelfAudit = () => {
     setImageModalOpen(false);
   };
   function getData() {
-    axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
+    axios.get(baseUrl+"get_all_sims").then((res) => {
       setData(res.data.data);
       setFilterData(res.data.data);
     });

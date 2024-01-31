@@ -31,6 +31,7 @@ import MyTemplate3 from "./Template3";
 import MyTemplate4 from "./Template4";
 import MyTemplate5 from "./Template5";
 // import DateFormattingComponent from "../../../DateFormater/DateFormared";
+import {baseUrl} from '../../../../utils/config'
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -87,7 +88,7 @@ const Backup_WFHSalary = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "http://34.93.221.166:3000/api/get_all_wfh_users"
+          baseUrl+"get_all_wfh_users"
         );
         const data = res.data.data;
         const filteredUser = data.filter((d) => d.dept_id === department);
@@ -107,19 +108,19 @@ const Backup_WFHSalary = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => {
         getDepartmentData(res.data);
       });
   }, []);
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/get_all_users`).then((res) => {
+    axios.get(`${baseUrl}`+`get_all_users`).then((res) => {
       getUsersData(res.data.data);
     });
     if (department) {
       axios
-        .get(`http://34.93.221.166:3000/api/getuserdeptwise/${department}`)
+        .get(`${baseUrl}`+`getuserdeptwise/${department}`)
         .then((res) => {
           setDepartmentWise(res.data);
         });
@@ -142,7 +143,7 @@ const Backup_WFHSalary = () => {
     };
     axios
       .post(
-        "http://34.93.221.166:3000/api/get_salary_by_id_month_year",
+        baseUrl+"get_salary_by_id_month_year",
         payload
       )
       .then((res) => {
@@ -160,7 +161,7 @@ const Backup_WFHSalary = () => {
     formData.append("id", data.user_id);
     formData.append("invoice_template_no", selectedTemplate);
 
-    axios.put(`http://34.93.221.166:3000/api/userupdate`, formData, {
+    axios.put(`${baseUrl}`+`userupdate`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -182,7 +183,7 @@ const Backup_WFHSalary = () => {
 
   const handleAttendence = () => {
     axios
-      .post("http://34.93.221.166:3000/api/attendencemastpost", {
+      .post(baseUrl+"attendencemastpost", {
         dept: department,
         user_id: userName.user_id,
         noOfabsent: 0,
@@ -328,11 +329,11 @@ const Backup_WFHSalary = () => {
   //Send to finance
   function handleSendToFinance(e, row) {
     e.preventDefault();
-    axios.post(`http://34.93.221.166:3000/api/finance`, {
+    axios.post(`${baseUrl}`+`finance`, {
       attendence_id: row.attendence_id,
     });
 
-    axios.put(`http://34.93.221.166:3000/api/updatesalary`, {
+    axios.put(`${baseUrl}`+`updatesalary`, {
       attendence_id: row.attendence_id,
       sendToFinance: 1,
     });
@@ -874,7 +875,7 @@ const Backup_WFHSalary = () => {
               <div>
                 ScreenSort :
                 <img
-                  src={`${"http://34.93.221.166:3000/api/user_images/"}${
+                  src={`${baseUrl+"user_images/"}${
                     rowDataModal?.screenshot
                   }`}
                   alt="Snap"

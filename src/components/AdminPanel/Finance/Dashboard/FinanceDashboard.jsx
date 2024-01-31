@@ -13,6 +13,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import InfoIcon from '@mui/icons-material/Info';
+import {baseUrl} from '../../../../utils/config'
 
 const filterOptions = [
   "Today",
@@ -74,7 +75,7 @@ const handleResetClick = () => {
 
   const callApi = () => {
     axios
-      .get("http://34.93.221.166:3000/api/phpvendorpaymentrequest")
+      .get(baseUrl+"phpvendorpaymentrequest")
       .then((res) => {
         const x = res.data.modifiedData;
 
@@ -97,26 +98,26 @@ const handleResetClick = () => {
       });
 
     axios
-      .post("http://34.93.221.166:3000/api/add_php_finance_data_in_node")
+      .post(baseUrl+"add_php_finance_data_in_node")
       .then(() => {
         console.log("data save in local success");
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_php_finance_data_pending")
+      .get(baseUrl+"get_all_php_finance_data_pending")
       .then((res) => {
         setFilterPendingForApprovalData(res.data.data);
         setPendingForApprovalData(res.data.data);
       });
 
     axios
-      .post("http://34.93.221.166:3000/api/add_php_payment_refund_data_in_node")
+      .post(baseUrl+"add_php_payment_refund_data_in_node")
       .then(() => {
         console.log("data save in local success");
       });
     setTimeout(() => {
       axios
         .get(
-          "http://34.93.221.166:3000/api/get_all_php_payment_refund_data_pending"
+          baseUrl+"get_all_php_payment_refund_data_pending"
         )
         .then((res) => {
           setFilterRefundReqData(res.data.data);
@@ -125,7 +126,7 @@ const handleResetClick = () => {
     }, 1000);
 
     axios
-      .post("http://34.93.221.166:3000/api/add_php_payment_bal_data_in_node")
+      .post(baseUrl+"add_php_payment_bal_data_in_node")
       .then(() => {
         console.log("data save in local success");
       });
@@ -149,7 +150,7 @@ const handleResetClick = () => {
 
     axios
       .post(
-        "http://34.93.221.166:3000/api/add_php_pending_invoice_data_in_node"
+        baseUrl+"add_php_pending_invoice_data_in_node"
       )
       .then(() => {
         console.log("data save in local success");
@@ -173,7 +174,7 @@ const handleResetClick = () => {
 
     axios
       .post(
-        "http://34.93.221.166:3000/api/add_php_sale_booking_tds_data_in_node"
+        baseUrl+"add_php_sale_booking_tds_data_in_node"
       )
       .then(() => {
         console.log("data save in local success");
@@ -240,7 +241,7 @@ const handleResetClick = () => {
       });
 
       try {
-        axios.get(`http://34.93.221.166:3000/api/get_finances`).then((res) => {
+        axios.get(`${baseUrl}`+`get_finances`).then((res) => {
           const response = res.data;
           setFilterPayoutData(response);
           setPayoutData(response);
@@ -252,7 +253,7 @@ const handleResetClick = () => {
 
       axios
       .post(
-        "http://34.93.221.166:3000/api/add_php_payment_incentive_data_in_node"
+        baseUrl+"add_php_payment_incentive_data_in_node"
       )
       .then(() => {
         console.log("data save in local success");

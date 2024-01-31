@@ -3,13 +3,15 @@ import CampaignDetailes from "../CampaignDetailes";
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../PhaseDashboard/phasedashboard.scss";
+import { baseUrl } from "../../../../utils/config";
+
 const PlanDashboard = () => {
   const [planData, setPlanData] = useState([]);
   console.log(planData, "planDashboardData");
   const { id } = useParams();
   const planDash = async () => {
     const planDashboardData = await axios.post(
-      `http://34.93.221.166:3000/api/operation_plan_dashboard`,
+      `${baseUrl}`+`operation_plan_dashboard`,
       { campaignId: id }
     );
     setPlanData(planDashboardData?.data?.data);

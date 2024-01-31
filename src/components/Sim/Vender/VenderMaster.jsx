@@ -8,6 +8,7 @@ import UserNav from "../../Pantry/UserPanel/UserNav";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { Autocomplete, TextField } from "@mui/material";
+import { baseUrl } from "../../../utils/config";
 
 const VenderMaster = () => {
   const { toastAlert, categoryDataContext } = useGlobalContext();
@@ -30,7 +31,7 @@ const VenderMaster = () => {
   // const [categoryData, setCategoryData] = useState([]);
   // const getCategoryData = () => {
   //   axios
-  //     .get("http://34.93.221.166:3000/api/get_all_asset_category")
+  //     .get(baseUrl+"get_all_asset_category")
   //     .then((res) => {
   //       setCategoryData(res.data);
   //     });
@@ -43,7 +44,7 @@ const VenderMaster = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_vendor",
+        baseUrl+"add_vendor",
         {
           vendor_name: vendorName,
           vendor_type: type,

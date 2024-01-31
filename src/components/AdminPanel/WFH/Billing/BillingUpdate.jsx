@@ -5,6 +5,7 @@ import Select from "react-select";
 import { useEffect } from "react";
 import axios from "axios";
 import { Navigate, useParams } from "react-router-dom";
+import {baseUrl} from '../../../../utils/config'
 
 const BillingUpdate = () => {
   const { id } = useParams();
@@ -15,13 +16,13 @@ const BillingUpdate = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => {
         getDepartmentData(res.data);
       });
 
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_billingheader/${id}`)
+      .get(`${baseUrl}`+`get_single_billingheader/${id}`)
       .then((res) => {
         const fetchData = res.data;
 
@@ -33,7 +34,7 @@ const BillingUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.put("http://34.93.221.166:3000/api/update_billingheader", {
+    await axios.put(baseUrl+"update_billingheader", {
       billingheader_id: id,
       billing_header_name: bilingName,
       dept_id: department,

@@ -5,6 +5,7 @@ import { useGlobalContext } from "../../../../Context/Context";
 import Select from "react-select";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {baseUrl} from '../../../../utils/config'
 
 const selectOptions = [
   {
@@ -45,7 +46,7 @@ const PreonboardingDocuments = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://34.93.221.166:3000/api/add_doc", {
+      .post(baseUrl+"add_doc", {
         doc_type: documentType,
         priority: priority,
         period: Number(period),

@@ -32,8 +32,9 @@ import { useGlobalContext } from "../../../Context/Context";
 import Loader from "./Loader/Loader";
 import exportToCSV from "../../../utils/ExcelConverter";
 import generatePDF from "../../../utils/PdfConverter";
-
 import * as XLSX from 'xlsx';
+import {baseUrl} from '../../../utils/config'
+
 let options = [];
 let pageNames = [];
 const Follower_Count = [
@@ -177,7 +178,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         setFilteredPages(pageData.data.body);
       } else if (pageName == "phaseCreation") {
         const pageD = await axios.get(
-          `http://34.93.221.166:3000/api/campaignplan/${data.campaignId}`
+          `${baseUrl}`+`campaignplan/${data.campaignId}`
         );
 
         let newPageData = pageD.data.data
@@ -659,7 +660,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       try {
         setIsLoadingPlan(true);
         const result = await axios.post(
-          "http://34.93.221.166:3000/api/campaignplan",
+          baseUrl+"campaignplan",
           newdata
         );
 
@@ -698,7 +699,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       try {
         setIsLoadingPhase(true);
         const result = await axios.post(
-          "http://34.93.221.166:3000/api/campaignphase",
+          baseUrl+"campaignphase",
           newdata
         );
 

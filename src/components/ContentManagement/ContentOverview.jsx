@@ -6,6 +6,7 @@ import { FaEdit } from "react-icons/fa";
 import FormContainer from "../AdminPanel/FormContainer";
 import DeleteButton from "../AdminPanel/DeleteButton";
 import UserNav from "../Pantry/UserPanel/UserNav";
+import { baseUrl } from "../../utils/config";
 
 const ContentOverview = () => {
   // const { data } = useGlobalContext();
@@ -15,7 +16,7 @@ const ContentOverview = () => {
 
   async function getData() {
     await axios
-      .get("http://34.93.221.166:3000/api/content_upload")
+      .get(baseUrl+"content_upload")
       .then((res) => {
         setData(res.data);
         setFilterData(res.data);

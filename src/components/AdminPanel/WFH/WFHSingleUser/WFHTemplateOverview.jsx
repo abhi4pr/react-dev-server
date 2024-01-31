@@ -4,6 +4,7 @@ import jwtDecode from "jwt-decode";
 import axios from "axios";
 import Modal from "react-modal";
 import { useGlobalContext } from "../../../../Context/Context";
+import {baseUrl} from '../../../../utils/config'
 
 const templateImages = useInvoiceTemplateImages();
 
@@ -23,7 +24,7 @@ const WFHTemplateOverview = () => {
     formData.append("user_id", loginUserId);
     formData.append("invoice_template_no", selectedTemplate);
     if (selectedTemplate) {
-      await axios.put(`http://34.93.221.166:3000/api/update_user`, formData, {
+      await axios.put(`${baseUrl}`+`update_user`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

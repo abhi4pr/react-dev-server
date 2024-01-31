@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { BsFillEyeFill } from "react-icons/bs";
 import Select from "react-select";
+import {baseUrl} from '../../../utils/config'
 
 const UserOverview = () => {
   const [search, setSearch] = useState("");
@@ -21,7 +22,7 @@ const UserOverview = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(`http://34.93.221.166:3000/api/userauth/${userID}`)
+        .get(`${baseUrl}`+`userauth/${userID}`)
         .then((res) => {
           setData(res.data);
         });
@@ -29,13 +30,13 @@ const UserOverview = () => {
   }, [userID]);
 
   function getData() {
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+    axios.get(baseUrl+"get_all_users").then((res) => {
       setDatas(res.data.data);
       setBackupData(res.data.data);
     });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => {
         setDepartmentData(res.data);
       });

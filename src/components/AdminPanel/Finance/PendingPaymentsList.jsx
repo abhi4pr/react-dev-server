@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
+import {baseUrl} from '../../../utils/config'
 
 const PendingPaymentsList = () => {
   const { toastAlert } = useGlobalContext();
@@ -24,7 +25,7 @@ const PendingPaymentsList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post("http://34.93.221.166:3000/api/", {
+    await axios.post(baseUrl+"", {
       display_sequence: displaySeq,
     });
 
@@ -33,7 +34,7 @@ const PendingPaymentsList = () => {
   };
 
   function getData() {
-    axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
+    axios.get(baseUrl+"get_all_sims").then((res) => {
       setData(res.data.data);
       setFilterData(res.data.data);
     });

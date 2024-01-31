@@ -9,6 +9,7 @@ import FormContainer from "../../AdminPanel/FormContainer";
 import UserNav from "../../Pantry/UserPanel/UserNav";
 import { FaEdit } from "react-icons/fa";
 import Modal from "react-modal";
+import { baseUrl } from "../../../utils/config";
 
 const AssetSubCategoryOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -19,7 +20,7 @@ const AssetSubCategoryOverview = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_asset_sub_category"
+        baseUrl+"get_all_asset_sub_category"
       );
       setFilterData(response.data.data);
       setData(response.data.data);
@@ -45,7 +46,7 @@ const AssetSubCategoryOverview = () => {
     console.log("id : ", row);
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_total_asset_in_category/${row}`
+        `${baseUrl}`+`get_total_asset_in_category/${row}`
       );
       setTotalAssets(response.data.data);
       console.log(response.data.data, "data sub cat");
@@ -61,7 +62,7 @@ const AssetSubCategoryOverview = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}`+`get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response.data.data);
       console.log(response.data, "sub categoy");

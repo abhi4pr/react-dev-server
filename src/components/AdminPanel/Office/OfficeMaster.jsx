@@ -5,6 +5,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 const OfficeMast = () => {
   const { toastAlert } = useGlobalContext();
@@ -21,7 +22,7 @@ const OfficeMast = () => {
   const loginUserId = decodedToken.id;
 
   useEffect(() => {
-    axios.get("http://34.93.221.166:3000/api/get_all_rooms").then((res) => {
+    axios.get(baseUrl+"get_all_rooms").then((res) => {
       setOfficeData(res.data.data);
     });
   }, []);
@@ -40,7 +41,7 @@ const OfficeMast = () => {
       if (isLoginIdExists) {
         alert("this Room No already exists");
       } else {
-        await axios.post("http://34.93.221.166:3000/api/add_room", formData, {
+        await axios.post(baseUrl+"add_room", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

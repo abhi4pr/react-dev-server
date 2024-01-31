@@ -10,6 +10,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { set } from "date-fns";
 import { ContactlessOutlined } from "@mui/icons-material";
+import {baseUrl} from '../../../utils/config'
 
 const LoginHistory = () => {
   const { toastAlert } = useGlobalContext();
@@ -38,7 +39,7 @@ const LoginHistory = () => {
 
   async function getData() {
     await axios
-      .get("http://34.93.221.166:3000/api/get_all_login_history")
+      .get(baseUrl+"get_all_login_history")
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);

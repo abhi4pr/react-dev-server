@@ -7,6 +7,7 @@ import axios from "axios";
 import FieldContainer from "../../AdminPanel/FieldContainer";
 import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import { useGlobalContext } from "../../../Context/Context";
+import { baseUrl } from "../../../utils/config";
 
 const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const { userID } = useAPIGlobalContext();
@@ -82,7 +83,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
 
           axios
             .put(
-              "http://34.93.221.166:3000/api/update_repair_request",
+              baseUrl+"update_repair_request",
               formData
             )
             .then((res) => {
@@ -110,7 +111,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     formData.append("recovery_by", userID);
 
     axios
-      .put("http://34.93.221.166:3000/api/update_repair_request", formData)
+      .put(baseUrl+"update_repair_request", formData)
       .then((res) => {
         setRecoveryRemark("");
         setScrapRemark("");
@@ -393,7 +394,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const handleVendorDetails = async (id) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_single_vendor/${id}`
+        `${baseUrl}`+`get_single_vendor/${id}`
       );
       setVendorData([response.data.data]);
       console.log([response.data.data], "data jere");

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FcDownload } from "react-icons/fc";
 import ApproveReject from "./ApproveReject";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 const DocumentTabUserSingle = (id) => {
   const { toastAlert } = useGlobalContext();
@@ -13,7 +14,7 @@ const DocumentTabUserSingle = (id) => {
   const getDocuments = async () => {
     try {
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/get_user_doc",
+        baseUrl+"get_user_doc",
         {
           user_id: id.id,
         }
@@ -42,7 +43,7 @@ const DocumentTabUserSingle = (id) => {
 
       console.log(payload);
       const response = await axios.put(
-        "http://34.93.221.166:3000/api/update_user_doc",
+        baseUrl+"update_user_doc",
         payload
       );
       toastAlert("Approved");

@@ -22,6 +22,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 import { toolbarStyles } from "./CampaignCommitment";
+import { baseUrl } from "../../../utils/config";
 
 export default function CampaignCommitment() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -80,7 +81,7 @@ export default function CampaignCommitment() {
       return;
     }
     axios
-      .post("http://34.93.221.166:3000/api/add_commitment", postData)
+      .post(baseUrl+"add_commitment", postData)
       .then((response) => {
         setIsModalOpen(false);
         setPostData("");
@@ -102,7 +103,7 @@ export default function CampaignCommitment() {
   // get api ========>
   const getData = () => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_commitments")
+      .get(baseUrl+"get_all_commitments")
       .then((res) => {
         const data = res.data.data;
         const uniqueCmtNames = new Set();
@@ -136,7 +137,7 @@ export default function CampaignCommitment() {
   const handlePutData = () => {
     if (editData.cmtName !== "") {
       axios
-        .put(`http://34.93.221.166:3000/api/update_commitment`, {
+        .put(`${baseUrl}`+`update_commitment`, {
           cmtId: editData.cmtId,
           cmtName: editData.cmtName,
         })
@@ -174,7 +175,7 @@ export default function CampaignCommitment() {
     if (itemToDeleteId) {
       axios
         .delete(
-          `http://34.93.221.166:3000/api/delete_commitment/${itemToDeleteId}`
+          `${baseUrl}`+`delete_commitment/${itemToDeleteId}`
         )
         .then(() => {
           setReload(!reload);

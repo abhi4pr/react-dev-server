@@ -7,6 +7,7 @@ import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckIcon from "@mui/icons-material/Check";
+import {baseUrl} from '../../../utils/config'
 
 const OnboardExtendDateOverview = () => {
   const whatsappApi = WhatsappAPI();
@@ -36,7 +37,7 @@ const OnboardExtendDateOverview = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -47,7 +48,7 @@ const OnboardExtendDateOverview = () => {
   async function getData() {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_users"
+        baseUrl+"get_all_users"
       );
       const data = response.data.data.filter(
         (item) => item.joining_date_extend_status == "Requested"
@@ -77,13 +78,13 @@ const OnboardExtendDateOverview = () => {
       formData.append("joining_date_reject_reason", rejectReason);
     }
     axios
-      .put("http://34.93.221.166:3000/api/update_user", formData, {
+      .put(baseUrl+"update_user", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
       .then(() => {
-        axios.post("http://34.93.221.166:3000/api/add_send_user_mail", {
+        axios.post(baseUrl+"add_send_user_mail", {
           email: "lalit@creativefuel.io",
           subject: "Extend Date Status",
           text: status,

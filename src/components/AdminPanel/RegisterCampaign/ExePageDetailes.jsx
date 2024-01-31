@@ -9,6 +9,7 @@ import {
   TextField,
   Paper,
 } from "@mui/material";
+import {baseUrl} from '../../../utils/config'
 
 const style = {
   position: "absolute",
@@ -61,7 +62,7 @@ const ExePageDetailes = ({
   
   const finalExecute=async()=>{
     const response = await axios.post(
-      "http://34.93.221.166:3000/api/assignment/commit",
+      baseUrl+"assignment/commit",
       {
         ass_id: ass_id,
 
@@ -75,12 +76,12 @@ const ExePageDetailes = ({
 
   const handleUpdate = async (params) => {
     const response = await axios.get(
-      `http://34.93.221.166:3000/api/campaignphase/singlephase/${params.row.phase_id}`
+      `${baseUrl}`+`campaignphase/singlephase/${params.row.phase_id}`
     );
     setSinglePhase(response?.data?.data?.commitment);
 
     const assCommit = await axios.get(
-      `http://34.93.221.166:3000/api/assignment/commit/single/${params.row.ass_id}`
+      `${baseUrl}`+`assignment/commit/single/${params.row.ass_id}`
     );
     setAssignmentCommits(assCommit.data.data);
     setCommitPayload(assCommit.data.data);
@@ -106,7 +107,7 @@ const ExePageDetailes = ({
   const handleExecute = async (params) => {
     console.log(params);
     const response = await axios.post(
-      "http://34.93.221.166:3000/api/assignment/status",
+      baseUrl+"assignment/status",
       {
         ass_id: params.row.ass_id,
         campaignId: params.row.campaignId,
@@ -122,7 +123,7 @@ const ExePageDetailes = ({
       (commit) => commit.comm_id == params.comm_id
     );
     const response = await axios.put(
-      `http://34.93.221.166:3000/api/assignment/commit/single/${params.comm_id}`,
+      `${baseUrl}`+`assignment/commit/single/${params.comm_id}`,
       payload
     );
     alert("updated successfully");
@@ -131,7 +132,7 @@ const ExePageDetailes = ({
 
   const handleAssignedSubmit = async () => {
     const response = await axios.post(
-      "http://34.93.221.166:3000/api/assignment/commit",
+      baseUrl+"assignment/commit",
       assignedData
     );
     alert("submitted successfully");

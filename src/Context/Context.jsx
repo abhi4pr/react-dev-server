@@ -2,6 +2,7 @@ import { createContext, useEffect, useContext, useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
+import {baseUrl} from '../utils/config'
 
 const AppContext = createContext();
 const AppProvider = ({ children }) => {
@@ -29,23 +30,23 @@ const AppProvider = ({ children }) => {
 
   const getAllCategoryContextFunction = () => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_category")
+      .get(baseUrl+"get_all_asset_category")
       .then((res) => {
         setCategoryData(res?.data.data.asset_categories);
       });
   };
   async function getBrandData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_asset_brands"
+      baseUrl+"get_all_asset_brands"
     );
     setBrandDataContext(res?.data.data);
   }
   async function getAssetData() {
-    const res = await axios.get("http://34.93.221.166:3000/api/get_all_sims");
+    const res = await axios.get(baseUrl+"get_all_sims");
     setAssetDataContext(res?.data.data);
   }
   async function getUserAPIData() {
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+    axios.get(baseUrl+"get_all_users").then((res) => {
       setUsersContextData(res?.data.data);
     });
   }

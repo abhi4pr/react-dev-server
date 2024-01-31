@@ -170,7 +170,7 @@
 //   useEffect(() => {
 //     setCountryList(Country.getAllCountries());
 
-//     axios.get("http://34.93.221.166:3000/api/get_all_cities").then((res) => {
+//     axios.get(baseUrl+"get_all_cities").then((res) => {
 //       setCityListTemp(res.data.data.map((city) => city.city_name));
 //       setCityList(res.data.data.map((city) => city.city_name));
 //     });
@@ -324,7 +324,7 @@
 
 //         for (let i = 0; i < tempdata.length; i++) {
 //           axios
-//             .post(`http://34.93.221.166:3000/api/get_percentage`, {
+//             .post(`${baseUrl}`+`get_percentage`, {
 //               p_id: tempdata[i].p_id,
 //             })
 //             .then((res) => {
@@ -337,7 +337,7 @@
 //         for (let i = 0; i < tempdata.length; i++) {
 //           axios
 //             .get(
-//               `http://34.93.221.166:3000/api/get_stats_update_flag/${tempdata[i].p_id}`
+//               `${baseUrl}`+`get_stats_update_flag/${tempdata[i].p_id}`
 //             )
 //             .then((res) => {
 //               if (res.status == 200) {
@@ -353,7 +353,7 @@
 //     if (userID && contextData == false) {
 //       axios
 //         .get(
-//           `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+//           `${baseUrl}`+`get_single_user_auth_detail/${userID}`
 //         )
 //         .then((res) => {
 //           if (res.data[33].view_value == 1) {
@@ -475,7 +475,7 @@
 
 //   const handleUpdateRowClick = (row) => {
 //     axios
-//       .get(`http://34.93.221.166:3000/api/get_exe_ip_count_history/${row.p_id}`)
+//       .get(`${baseUrl}`+`get_exe_ip_count_history/${row.p_id}`)
 //       .then((res) => {
 //         let data = res.data.data.filter((e) => {
 //           return e.isDeleted !== true;
@@ -790,7 +790,7 @@
 //     formData.append("user_id", userID);
 
 //     axios
-//       .post(`http://34.93.221.166:3000/api/add_exe_pid_history`, formData, {
+//       .post(`${baseUrl}`+`add_exe_pid_history`, formData, {
 //         headers: {
 //           "Content-Type": "multipart/form-data",
 //         },
@@ -2351,7 +2351,7 @@ function ExecutionAll() {
     setCountryList(Country.getAllCountries());
     setCountryListTemp(Country.getAllCountries());
 
-    axios.get("http://34.93.221.166:3000/api/get_all_cities").then((res) => {
+    axios.get(baseUrl+"get_all_cities").then((res) => {
       setCityListTemp(res.data.data.map((city) => city.city_name));
       setCityList(res.data.data.map((city) => city.city_name));
     });
@@ -2501,7 +2501,7 @@ function ExecutionAll() {
   const callDataForLoad = () => {
     setLoading(true);
     axios
-      .get("http://34.93.221.166:3000/api/get_all_purchase_data")
+      .get(baseUrl+"get_all_purchase_data")
       .then((res) => {
         setLoading(false);
 
@@ -2514,7 +2514,7 @@ function ExecutionAll() {
 
         // for (let i = 0; i < tempdata.length; i++) {
         //   axios
-        //     .post(`http://34.93.221.166:3000/api/get_percentage`, {
+        //     .post(`${baseUrl}`+`get_percentage`, {
         //       p_id: tempdata[i].p_id,
         //     })
         //     .then((res) => {
@@ -2527,7 +2527,7 @@ function ExecutionAll() {
         // for (let i = 0; i < tempdata.length; i++) {
         //   axios
         //     .get(
-        //       `http://34.93.221.166:3000/api/get_stats_update_flag/${tempdata[i].p_id}`
+        //       `${baseUrl}`+`get_stats_update_flag/${tempdata[i].p_id}`
         //     )
         //     .then((res) => {
         //       if (res.status == 200) {
@@ -2543,7 +2543,7 @@ function ExecutionAll() {
     if (userID && contextData == false) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           if (res.data[33].view_value == 1) {
@@ -2665,7 +2665,7 @@ function ExecutionAll() {
 
   const handleUpdateRowClick = async (row) => {
     await axios
-      .get(`http://34.93.221.166:3000/api/get_exe_ip_count_history/${row.p_id}`)
+      .get(`${baseUrl}`+`get_exe_ip_count_history/${row.p_id}`)
       .then((res) => {
         let data = res.data.data.filter((e) => {
           return e.isDeleted !== true;
@@ -2966,7 +2966,7 @@ function ExecutionAll() {
     formData.append("user_id", userID);
 
     axios
-      .post(`http://34.93.221.166:3000/api/add_exe_pid_history`, formData, {
+      .post(`${baseUrl}`+`add_exe_pid_history`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

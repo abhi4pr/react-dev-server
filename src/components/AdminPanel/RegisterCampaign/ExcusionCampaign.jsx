@@ -4,6 +4,7 @@ import ExePageDetailes from "./ExePageDetailes";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import RequestAssignPage from "./RequestAssignPage";
+import {baseUrl} from '../../../utils/config'
 
 const ExcusionCampaign = () => {
   const storedToken = sessionStorage.getItem("token");
@@ -22,7 +23,7 @@ const ExcusionCampaign = () => {
 
   const getExpertee = async () => {
     const expert = await axios.get(
-      `http://34.93.221.166:3000/api/expertise/user/${decodedToken.id}`
+      `${baseUrl}`+`expertise/user/${decodedToken.id}`
     );
     getAssignment(expert.data.data.exp_id);
     console.log(expert);
@@ -32,7 +33,7 @@ const ExcusionCampaign = () => {
   }, [activeAccordionIndex]);
   const RequestAssign = async () => {
     const reqAss = await axios.get(
-      `http://34.93.221.166:3000/api/preassignment/${decodedToken.id}`
+      `${baseUrl}`+`preassignment/${decodedToken.id}`
     );
     const data = reqAss?.data?.data.filter((item) => item.status == "pending");
     SetRequestAssign(data);
@@ -42,7 +43,7 @@ const ExcusionCampaign = () => {
   }, []);
   const getAssignment = async (id) => {
     const getData = await axios.get(
-      `http://34.93.221.166:3000/api/assignment/all/${decodedToken.id}`
+      `${baseUrl}`+`assignment/all/${decodedToken.id}`
     );
     const assigned = getData?.data?.data.filter(
       (item) => item.ass_status == "assigned" || item.ass_status == "pending"

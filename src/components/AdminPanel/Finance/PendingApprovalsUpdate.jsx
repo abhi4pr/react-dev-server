@@ -9,7 +9,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { get } from "jquery";
 import ImageView from "./ImageView";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-
+import {baseUrl} from '../../../utils/config'
 
 const PendingApprovalUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -64,12 +64,12 @@ const PendingApprovalUpdate = () => {
   
   function getData() {
     axios
-      .post("http://34.93.221.166:3000/api/add_php_finance_data_in_node")
+      .post(baseUrl+"add_php_finance_data_in_node")
       .then((res) => {
         console.log("data save in local success");
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_php_finance_data_pending")
+      .get(baseUrl+"get_all_php_finance_data_pending")
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);

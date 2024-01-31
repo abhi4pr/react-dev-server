@@ -21,6 +21,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { baseUrl } from "../../../utils/config";
 
 export default function PendingPaymentRequest() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -47,13 +48,13 @@ export default function PendingPaymentRequest() {
 
   const callApi = () => {
     axios
-      .get(`http://34.93.221.166:3000/api/addPhpVendorPaymentRequest`)
+      .get(`${baseUrl}`+`addPhpVendorPaymentRequest`)
       .then((res) => {
         console.log(res);
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/phpvendorpaymentrequest")
+      .get(baseUrl+"phpvendorpaymentrequest")
       .then((res) => {
         console.log(res.data.modifiedData, "node");
         const x = res.data.modifiedData;
@@ -73,7 +74,7 @@ export default function PendingPaymentRequest() {
       });
 
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
+      .get(`${baseUrl}`+`get_single_user/${userID}`)
       .then((res) => {
         setUserName(res.data.user_name);
       });
@@ -132,7 +133,7 @@ export default function PendingPaymentRequest() {
     formData.append("payment_date", paymentDate);
 
     axios
-      .post("http://34.93.221.166:3000/api/phpvendorpaymentrequest", formData, {
+      .post(baseUrl+"phpvendorpaymentrequest", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -176,7 +177,7 @@ export default function PendingPaymentRequest() {
     setRowData(row);
     setShowDiscardModal(true);
     // axios
-    //   .delete(`http://34.93.221.166:3000/api/delete_demo/${row._id}`)
+    //   .delete(`${baseUrl}`+`delete_demo/${row._id}`)
     //   .then(() => {
     //     callApi();
     //   });

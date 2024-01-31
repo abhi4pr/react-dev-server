@@ -8,6 +8,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useGlobalContext } from "../../../Context/Context";
 import TextEditor from "../../ReusableComponents/TextEditor";
+import {baseUrl} from '../../../utils/config'
 
 const AddEmailTemp = () => {
   const { toastAlert } = useGlobalContext();
@@ -25,7 +26,7 @@ const AddEmailTemp = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post("http://34.93.221.166:3000/api/add_email_content", {
+    await axios.post(baseUrl+"add_email_content", {
       email_for: emailFor,
       email_for_id: emailForId,
       email_content: emailContent,

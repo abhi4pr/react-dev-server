@@ -27,6 +27,7 @@ import Accordioan from "./Accordioan";
 import { useNavigate } from "react-router-dom";
 import PageOverview from "./PageOverview";
 import PageDetailingNew from "./PageDetailingNew";
+import { baseUrl } from "../../../utils/config";
 
 const PhasecreationNew = () => {
   const param = useParams();
@@ -54,10 +55,10 @@ const PhasecreationNew = () => {
 
   const getPhaseData = async () => {
     const data = await axios.get(
-      `http://34.93.221.166:3000/api/campaignphase/${id}`
+      `${baseUrl}`+`campaignphase/${id}`
     );
     const pageD = await axios.get(
-      `http://34.93.221.166:3000/api/campaignplan/${id}`
+      `${baseUrl}`+`campaignplan/${id}`
     );
     setAllPhaseData(data?.data?.result);
     setAllPageData(pageD?.data?.data)

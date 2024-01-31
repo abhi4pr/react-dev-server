@@ -30,6 +30,7 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../Context/Context";
+import {baseUrl} from '../../utils/config'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -138,7 +139,7 @@ function ExecutionOwn() {
     if (userID && contextData == false) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           if (res.data[33].view_value == 1) {
@@ -438,7 +439,7 @@ function ExecutionOwn() {
     formData.append("stats_for", statesFor);
 
     axios
-      .post(`http://34.93.221.166:3000/api/add_exe_pid_history`, formData, {
+      .post(`${baseUrl}`+`add_exe_pid_history`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -3,10 +3,11 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../../../Context/Context";
+import {baseUrl} from '../../../../utils/config'
 
 const CreateMaster = ({ name, data }) => {
   const { toastAlert, toastError } = useGlobalContext();
-  const url = "http://34.93.221.166:3000/api/";
+  const url = baseUrl+"";
   const navigate = useNavigate();
   const [payload, setPayload] = useState({});
   const [errors, setErrors] = useState({});

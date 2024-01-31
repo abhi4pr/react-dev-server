@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
+import { baseUrl } from "../../utils/config";
 
 const SimUpdate = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -72,7 +73,7 @@ const SimUpdate = () => {
   // All Category , subcategory and vendor api here
   const getAllCategory = () => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_asset_category")
+      .get(baseUrl+"get_all_asset_category")
       .then((res) => {
         setCategoryData(res.data.data.asset_categories);
       });
@@ -81,7 +82,7 @@ const SimUpdate = () => {
     if (assetsCategory) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_asset_sub_category/${assetsCategory}`
+          `${baseUrl}`+`get_single_asset_sub_category/${assetsCategory}`
         )
         .then((res) => {
           setSubCategoryData(res.data);
@@ -97,20 +98,20 @@ const SimUpdate = () => {
     }
   }, [subCategory, subcategoryData]);
   const getAllVendor = () => {
-    axios.get("http://34.93.221.166:3000/api/get_all_vendor").then((res) => {
+    axios.get(baseUrl+"get_all_vendor").then((res) => {
       setVendorData(res.data);
     });
   };
 
   async function getModalData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_asset_modals"
+      baseUrl+"get_all_asset_modals"
     );
     setModalData(res.data);
   }
   async function getBrandData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_asset_brands"
+      baseUrl+"get_all_asset_brands"
     );
     setBrandData(res.data.data);
   }
@@ -139,7 +140,7 @@ const SimUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_sim/${id}`)
+      .get(`${baseUrl}`+`get_single_sim/${id}`)
       .then((res) => {
         const fetchedData = res.data.data;
         //if (fetchedData.length > 0) {
@@ -228,7 +229,7 @@ const SimUpdate = () => {
 
     try {
       const response = await axios.put(
-        "http://34.93.221.166:3000/api/update_sim",
+        baseUrl+"update_sim",
         formData
       );
       const imageData = new FormData();
@@ -240,7 +241,7 @@ const SimUpdate = () => {
       imageData.append("img3", assetsImg3);
       imageData.append("img4", assetsImg4);
       axios.put(
-        "http://34.93.221.166:3000/api/update_assets_images",
+        baseUrl+"update_assets_images",
         imageData
       );
 

@@ -6,6 +6,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
+import {baseUrl} from '../../utils/config'
 
 const IpMaster = () => {
   const { toastAlert } = useGlobalContext();
@@ -38,21 +39,21 @@ const IpMaster = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_users")
+      .get(baseUrl+"get_all_users")
       .then((res) => setUserData(res.data.data));
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_platforms")
+      .get(baseUrl+"get_all_platforms")
       .then((res) => setPlatFormData(res.data));
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_iptypes")
+      .get(baseUrl+"get_all_iptypes")
       .then((res) => setIpTypeData(res.data));
   }, []);
 
   const handleSelectChange = (e) => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_user/${e.target.value}`)
+      .get(`${baseUrl}`+`get_single_user/${e.target.value}`)
       .then((res) => setSingleUser(res.data));
   };
 
@@ -65,13 +66,13 @@ const IpMaster = () => {
     let intervalId;
 
     try {
-      const apiUrl = "http://34.93.221.166:3000/api/instagram";
+      const apiUrl = baseUrl+"instagram";
       const response = await axios.post(apiUrl, { IPName: IPName });
       const dataRequestId = response.data.data_request_id;
 
       intervalId = setInterval(async () => {
         try {
-          const secondApiUrl = `http://34.93.221.166:3000/api/instagram2/${dataRequestId}`;
+          const secondApiUrl = `${baseUrl}`+`instagram2/${dataRequestId}`;
           const secondApiResponse = await axios.get(secondApiUrl);
           const followers =
             secondApiResponse.data.response_entries[0].followers;
@@ -103,7 +104,7 @@ const IpMaster = () => {
       return;
     }
 
-    await axios.post("http://34.93.221.166:3000/api/add_instapage", {
+    await axios.post(baseUrl+"add_instapage", {
       ip_type: Number(IPType),
       platform: Number(platform),
       ip_name: IPName,

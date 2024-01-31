@@ -6,6 +6,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
+import {baseUrl} from '../../utils/config'
 
 const ContentApprover = () => {
   const { toastAlert } = useGlobalContext();
@@ -27,7 +28,7 @@ const ContentApprover = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/content_upload/${id}`)
+      .get(`${baseUrl}`+`content_upload/${id}`)
       .then((res) => {
         const fetchedData = res.data[0];
         setPageName(fetchedData.pageName);
@@ -40,7 +41,7 @@ const ContentApprover = () => {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/alldataofIptype")
+      .get(baseUrl+"alldataofIptype")
       .then((res) => setIpTypeData(res.data));
   }, []);
 
@@ -58,7 +59,7 @@ const ContentApprover = () => {
     formData.append("status", status);
     formData.append("caption", caption);
 
-    await axios.put("http://34.93.221.166:3000/api/content_upload", formData, {
+    await axios.put(baseUrl+"content_upload", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

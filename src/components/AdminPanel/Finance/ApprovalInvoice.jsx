@@ -5,6 +5,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 const ApprovalInvoice = () => {
   const { toastAlert } = useGlobalContext();
@@ -20,7 +21,7 @@ const ApprovalInvoice = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post("http://34.93.221.166:3000/api/", {
+    await axios.post(baseUrl+"", {
       display_sequence: displaySeq,
     });
 

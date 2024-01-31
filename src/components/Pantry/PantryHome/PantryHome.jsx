@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BsBoxes } from "react-icons/bs";
 // import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../../utils/config'
 
 const PantryHome = () => {
   const [allOrderData, setAllOrderData] = useState([]);
@@ -16,7 +17,7 @@ const PantryHome = () => {
   // const userId = decodedToken.id;
   // useEffect(() => {
   //   if (userId && contextData.length === 0) {
-  //     axios.get(`http://34.93.221.166:3000/api/get_single_user_auth_detail/${userId}`).then((res) => {
+  //     axios.get(`${baseUrl}`+`get_single_user_auth_detail/${userId}`).then((res) => {
   //       setDatas(res.data);
   //     });
   //   }
@@ -41,7 +42,7 @@ const PantryHome = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_orderreqdata")
+      .get(baseUrl+"get_all_orderreqdata")
       .then((res) => {
         setAllOrderData(res.data.data);
       });
@@ -58,7 +59,7 @@ const PantryHome = () => {
 
   const allOrderCount = allOrderData?.length;
   useEffect(() => {
-    axios.get("http://34.93.221.166:3000/api/get_all_transreq").then((res) => {
+    axios.get(baseUrl+"get_all_transreq").then((res) => {
       setTransferReq(res.data.data);
     });
   }, []);

@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../../utils/config'
 
 const LogoCategoryMaster = () => {
   const { toastAlert } = useGlobalContext();
@@ -21,7 +22,7 @@ const LogoCategoryMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    await axios.post("http://34.93.221.166:3000/api/add_logo_category", {
+    await axios.post(baseUrl+"add_logo_category", {
       cat_name: categoryName,
       remark: remark,
       created_by: loginUserID,

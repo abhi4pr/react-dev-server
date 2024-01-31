@@ -7,6 +7,7 @@ import jwtDecode from "jwt-decode";
 import DeleteButton from "../../DeleteButton";
 import FormContainer from "../../FormContainer";
 import Modal from "react-modal";
+import { baseUrl } from "../../../../utils/config";
 
 const ResponsiblityOverview = () => {
   const [search, setSearch] = useState("");
@@ -26,7 +27,7 @@ const ResponsiblityOverview = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -36,7 +37,7 @@ const ResponsiblityOverview = () => {
 
   function getData() {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_responsibilitys")
+      .get(baseUrl+"get_all_responsibilitys")
       .then((res) => {
         setData(res.data);
         setFilterData(res.data);
@@ -59,7 +60,7 @@ const ResponsiblityOverview = () => {
   useEffect(() => {
     getData();
     axios
-      .get("http://34.93.221.166:3000/api/get_all_jobresponsibilitys")
+      .get(baseUrl+"get_all_jobresponsibilitys")
       .then((res) => {
         setAllResponsibility(res.data.data);
       });

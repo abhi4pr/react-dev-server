@@ -21,6 +21,8 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
+
 export const toolbarStyles = {
   display: 'flex',
   justifyContent: 'flex-end', 
@@ -44,7 +46,7 @@ export default function CampaignCommitment() {
     // exeHashTag: "",
     exeRemark: "",
   });
-  const url = "http://34.93.221.166:3000/api/exe_campaign";
+  const url = baseUrl+"exe_campaign";
 
   function EditToolbar() {
     const handleClick = () => {

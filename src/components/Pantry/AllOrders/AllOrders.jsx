@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
-
 import "../PendingOrder/PendingOrder.css";
+import {baseUrl} from '../../../utils/config'
 
 const AllOrder = () => {
   const [search, setSearch] = useState("");
@@ -11,7 +11,7 @@ const AllOrder = () => {
 
   function getData() {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_orderreqdata")
+      .get(baseUrl+"get_all_orderreqdata")
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);

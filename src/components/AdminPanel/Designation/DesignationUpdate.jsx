@@ -5,6 +5,7 @@ import { Navigate, useParams } from "react-router-dom";
 import { useGlobalContext } from "../../../Context/Context";
 import FieldContainer from "../FieldContainer";
 import FormContainer from "../FormContainer";
+import {baseUrl} from '../../../utils/config'
 
 const DesignationUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -23,7 +24,7 @@ const DesignationUpdate = () => {
     const fetchDepartmentData = async () => {
       try {
         const response = await axios.get(
-          "http://34.93.221.166:3000/api/get_all_departments"
+          baseUrl+"get_all_departments"
         );
         const departmentOptions = response.data.map((dept) => ({
           value: dept.dept_id,
@@ -39,7 +40,7 @@ const DesignationUpdate = () => {
     const fetchDesignationData = async () => {
       try {
         const response = await axios.get(
-          `http://34.93.221.166:3000/api/get_single_designation/${desi_id}`
+          `${baseUrl}`+`get_single_designation/${desi_id}`
         );
         setDesignationData(response.data.data);
       } catch (error) {
@@ -58,7 +59,7 @@ const DesignationUpdate = () => {
     e.preventDefault();
     try {
       await axios.put(
-        "http://34.93.221.166:3000/api/update_designation",
+        baseUrl+"update_designation",
         designationData
       );
       toastAlert("Updated success");

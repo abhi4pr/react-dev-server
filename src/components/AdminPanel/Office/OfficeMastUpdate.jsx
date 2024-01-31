@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 function OfficeMastUpdate() {
   const { toastAlert } = useGlobalContext();
@@ -21,7 +22,7 @@ function OfficeMastUpdate() {
     formData.append("remarks", remark);
     formData.append("created_by", createdby);
 
-    await axios.put(`http://34.93.221.166:3000/api/update_room`, formData, {
+    await axios.put(`${baseUrl}`+`update_room`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

@@ -8,6 +8,7 @@ import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import ReplacePagesModal from "./ReplacePagesModal";
 import CampaignDetailes from "./CampaignDetailes";
 import PageOverview from "./PageOverview";
+import { baseUrl } from "../../../utils/config";
 
 const PlanOverview = () => {
   const [selectData, setSelectData] = useState([]);
@@ -18,7 +19,7 @@ const PlanOverview = () => {
 
   const getSelectPage = async () => {
     const newPlan = await axios.get(
-      `http://34.93.221.166:3000/api/campaignplan/${id}`
+      `${baseUrl}`+`campaignplan/${id}`
     );
     console.log(newPlan, "dfsldfksdl");
     const x = newPlan.data.data.filter((page) => {

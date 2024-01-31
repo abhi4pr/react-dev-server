@@ -4,6 +4,7 @@ import Logo from "../../../assets/img/logo/logo.png";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import FieldContainer from "../FieldContainer";
+import {baseUrl} from '../../../utils/config'
 
 const UserView = () => {
   const { id } = useParams();
@@ -57,7 +58,7 @@ const UserView = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_user/${id}`)
+      .get(`${baseUrl}`+`get_single_user/${id}`)
       .then((res) => {
         const fetchedData = res.data;
         setFetchedAlreadyData(res.data);
@@ -154,7 +155,7 @@ const UserView = () => {
 
     try {
       await axios.put(
-        "http://34.93.221.166:3000/api/update_usernew",
+        baseUrl+"update_usernew",
         fromData,
         {
           headers: {

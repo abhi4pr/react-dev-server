@@ -13,6 +13,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import Modal from "react-modal";
 import { Link } from "react-router-dom";
 import jwtDecode from "jwt-decode";
+import { baseUrl } from "../../../utils/config";
 
 const RepairRequest = () => {
   const { toastAlert, getAssetDataContext, usersDataContext } =
@@ -56,7 +57,7 @@ const RepairRequest = () => {
   const [reasonData, setReasonData] = useState([]);
   async function getRepairReason() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_assetResons"
+      baseUrl+"get_all_assetResons"
     );
     console.log(res.data.data, "reason");
     setReasonData(res?.data.data);
@@ -165,7 +166,7 @@ const RepairRequest = () => {
       formData.append("problem_detailing", problemDetailing);
 
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_repair_request",
+        baseUrl+"add_repair_request",
         formData
       );
       setAssetName("");
@@ -185,7 +186,7 @@ const RepairRequest = () => {
   };
   async function getRepairRequest() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_repair_request"
+      baseUrl+"get_all_repair_request"
     );
     setModalData(res?.data.data);
     setrepairRequestFilter(res?.data.data);
@@ -237,7 +238,7 @@ const RepairRequest = () => {
     formData.append("img4", assetsImg4Update);
     formData.append("problem_detailing", problemDetailingUpdate);
     axios
-      .put("http://34.93.221.166:3000/api/update_repair_request", formData)
+      .put(baseUrl+"update_repair_request", formData)
       .then((res) => {
         getRepairRequest();
         toastAlert("Update Success");

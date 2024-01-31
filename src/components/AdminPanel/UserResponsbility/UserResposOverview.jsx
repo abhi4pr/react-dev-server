@@ -6,6 +6,7 @@ import { FaEdit } from "react-icons/fa";
 import FormContainer from "../FormContainer";
 import DeleteButton from "../DeleteButton";
 import jwtDecode from "jwt-decode";
+import { baseUrl } from "../../../utils/config";
 
 const UserResposOverview = () => {
   const [search, setSearch] = useState("");
@@ -20,7 +21,7 @@ const UserResposOverview = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -30,7 +31,7 @@ const UserResposOverview = () => {
 
   const getData = async () => {
     await axios
-      .get("http://34.93.221.166:3000/api/get_all_jobresponsibilitys")
+      .get(baseUrl+"get_all_jobresponsibilitys")
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);

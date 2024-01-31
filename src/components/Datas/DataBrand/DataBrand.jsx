@@ -9,6 +9,7 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../Context/Context";
+import { baseUrl } from "../../../utils/config";
 
 const DataBrand = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -69,7 +70,7 @@ const DataBrand = () => {
         alert("Brand already Exists");
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_data_brand",
+          baseUrl+"add_data_brand",
           {
             brand_name: dataBrandName,
           }
@@ -84,7 +85,7 @@ const DataBrand = () => {
   };
   async function getModalData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_data_brands"
+      baseUrl+"get_all_data_brands"
     );
     setModalData(res.data);
     setModalFilter(res.data);
@@ -100,7 +101,7 @@ const DataBrand = () => {
   };
   const handleModalUpdate = () => {
     axios
-      .put("http://34.93.221.166:3000/api/update_data_brand", {
+      .put(baseUrl+"update_data_brand", {
         _id: modalId,
         brand_name: dataBrandNameUpdate,
       })

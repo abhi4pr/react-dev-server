@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../../../Context/Context";
 import FormContainer from "../../../AdminPanel/FormContainer";
 import Select from "react-select";
 import FieldContainer from "../../../AdminPanel/FieldContainer";
+import {baseUrl} from '../../../../utils/config'
 
 const TaskStatusDeptWiseUpdate = () => {
   const { id } = useParams();
@@ -22,7 +23,7 @@ const TaskStatusDeptWiseUpdate = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => {
         setDepartmentData(res.data);
       });
@@ -30,7 +31,7 @@ const TaskStatusDeptWiseUpdate = () => {
 
   const getData = async () => {
     const response = await axios.get(
-      `http://34.93.221.166:3000/api/deptwisestatus/${id}`
+      `${baseUrl}`+`deptwisestatus/${id}`
     );
     const finalResponse = response.data;
     setSelectedDepartmentID(finalResponse.dept_id);
@@ -44,7 +45,7 @@ const TaskStatusDeptWiseUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put("http://34.93.221.166:3000/api/deptwisestatus", {
+      await axios.put(baseUrl+"deptwisestatus", {
         _id: id,
         dept_id: selectedDepartmentID,
         status: status,

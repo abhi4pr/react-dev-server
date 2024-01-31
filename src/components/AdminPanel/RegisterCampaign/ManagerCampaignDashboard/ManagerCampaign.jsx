@@ -3,6 +3,7 @@ import FormContainer from "../../FormContainer";
 import axios from "axios";
 import { data } from "jquery";
 import NewPages from "./NewPages";
+import {baseUrl} from '../../../../utils/config'
 
 const ManagerCampaign = () => {
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
@@ -11,7 +12,7 @@ const ManagerCampaign = () => {
   const Assigndata = async () => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/register_campaign`
+        `${baseUrl}`+`register_campaign`
       );
       console.log(response?.data?.data, "new camp data");
       setNewPages(response?.data?.data);

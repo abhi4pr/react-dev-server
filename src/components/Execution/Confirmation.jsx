@@ -9,6 +9,8 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../utils/config'
+
 const Confirmation = ({
   confirmation,
   setSnackbar,
@@ -58,7 +60,7 @@ const Confirmation = ({
         execution_status: 2,
       };
       axios
-        .put(`http://34.93.221.166:3000/api/edit_exe_sum`, payload)
+        .put(`${baseUrl}`+`edit_exe_sum`, payload)
         .then((res) => {
           console.log(res);
           setReload((preVal) => !preVal);
@@ -110,7 +112,7 @@ const Confirmation = ({
         end_date: new Date(),
       };
       axios
-        .put(`http://34.93.221.166:3000/api/edit_exe_sum`, payload)
+        .put(`${baseUrl}`+`edit_exe_sum`, payload)
         .then((res) => {
           console.log(res);
           setReload((preVal) => !preVal);
@@ -169,7 +171,7 @@ const Confirmation = ({
         execution_time: hoursDifference.toFixed(2),
       };
       axios
-        .put(`http://34.93.221.166:3000/api/edit_exe_sum`, payload)
+        .put(`${baseUrl}`+`edit_exe_sum`, payload)
         .then((res) => {
           console.log(res);
           setReload((preVal) => !preVal);

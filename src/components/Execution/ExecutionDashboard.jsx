@@ -11,6 +11,7 @@ import { GridColumnMenu } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import ContentLoader from "react-content-loader";
+import {baseUrl} from '../../utils/config'
 
 export default function ExecutionDashboard() {
   const [contextData, setContextData] = useState(false);
@@ -58,7 +59,7 @@ export default function ExecutionDashboard() {
     formData.append("loggedin_user_id", 36);
     setLoading(true);
     axios
-      .get("http://34.93.221.166:3000/api/get_all_purchase_data")
+      .get(baseUrl+"get_all_purchase_data")
       .then((res) => {
         setAlldata(res.data.result);
         let tempdata = res.data.result.filter((ele) => {
@@ -79,7 +80,7 @@ export default function ExecutionDashboard() {
     if (userID && contextData == false) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           if (res.data[33].view_value == 1) {
@@ -105,7 +106,7 @@ export default function ExecutionDashboard() {
 
   const handleUpdateRowClick = (row) => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_exe_ip_count_history/${row.p_id}`)
+      .get(`${baseUrl}`+`get_exe_ip_count_history/${row.p_id}`)
       .then((res) => {
         let data = res.data.data.filter((e) => {
           return e.isDeleted !== true;

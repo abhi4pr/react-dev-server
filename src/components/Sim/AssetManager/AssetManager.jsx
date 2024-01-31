@@ -5,6 +5,7 @@ import axios from "axios";
 import FormContainer from "../../AdminPanel/FormContainer";
 import { useEffect, useState } from "react";
 import ManagerDynamicOverview from "./ManagerDynamicOverview";
+import { baseUrl } from "../../../utils/config";
 
 const NewAssetRequestOverview = () => {
   const { userID } = useAPIGlobalContext();
@@ -37,7 +38,7 @@ const NewAssetRequestOverview = () => {
   const getManagerData = async () => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/show_asset_user_data_report/${userID}`
+        `${baseUrl}`+`show_asset_user_data_report/${userID}`
       );
       const data = response.data.data.filter(
         (d) => d.asset_new_request_status == "Requested"
@@ -48,7 +49,7 @@ const NewAssetRequestOverview = () => {
     }
   };
   const getReturnAssetData = () => {
-    axios.get("http://34.93.221.166:3000/api/assetreturn").then((res) => {
+    axios.get(baseUrl+"assetreturn").then((res) => {
       setReturnAssetData(res.data.singleAssetReturnRequest);
     });
   };
@@ -61,7 +62,7 @@ const NewAssetRequestOverview = () => {
   // const handleStatusUpdate = (row, status) => {
   //   console.log(row, status, "status cheqe");
   //   try {
-  //     axios.put("http://34.93.221.166:3000/api/assetrequest", {
+  //     axios.put(baseUrl+"assetrequest", {
   //       _id: row.asset_request_id,
   //       asset_request_status: status,
   //       request_by: userID,

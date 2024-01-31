@@ -22,6 +22,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 import { toolbarStyles } from "./CampaignCommitment";
+import { baseUrl } from "../../../utils/config";
 
 export default function ContentType() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -41,7 +42,7 @@ export default function ContentType() {
   const [postData, setPostData] = useState({
     content_type: "",
   });
-  const url = "http://34.93.221.166:3000/api/content";
+  const url = baseUrl+"content";
 
   function EditToolbar() {
     const handleClick = () => {

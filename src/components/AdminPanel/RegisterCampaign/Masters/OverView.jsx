@@ -15,9 +15,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../../Context/Context";
-
-
-
+import {baseUrl} from '../../../../utils/config'
 
 let fieldInRows = [];
 const OverView = ({ name, data, hardReload }) => {
@@ -46,22 +44,22 @@ const OverView = ({ name, data, hardReload }) => {
     try {
       if (name == "Agency") {
         await axios.delete(
-          `http://34.93.221.166:3000/api/agency/${deleteParams.row._id}`
+          `${baseUrl}`+`agency/${deleteParams.row._id}`
         );
       }
       if (name == "Goal") {
         await axios.delete(
-          `http://34.93.221.166:3000/api/goal/${deleteParams.row._id}`
+          `${baseUrl}`+`goal/${deleteParams.row._id}`
         );
       }
       if (name == "Industry") {
         await axios.delete(
-          `http://34.93.221.166:3000/api/industry/${deleteParams.row._id}`
+          `${baseUrl}`+`industry/${deleteParams.row._id}`
         );
       }
       if (name == "Service") {
         await axios.delete(
-          `http://34.93.221.166:3000/api/services/${deleteParams.row._id}`
+          `${baseUrl}`+`services/${deleteParams.row._id}`
         );
       }
 
@@ -139,25 +137,25 @@ const OverView = ({ name, data, hardReload }) => {
     try {
       if (name == "Agency") {
         const data = await axios.put(
-          `http://34.93.221.166:3000/api/agency/${currentRow._id}`,
+          `${baseUrl}`+`agency/${currentRow._id}`,
           updatePayload
         );
       }
       if (name == "Goal") {
         const data = await axios.put(
-          `http://34.93.221.166:3000/api/goal/${currentRow._id}`,
+          `${baseUrl}`+`goal/${currentRow._id}`,
           updatePayload
         );
       }
       if (name == "Industry") {
         const data = await axios.put(
-          `http://34.93.221.166:3000/api/industry/${currentRow._id}`,
+          `${baseUrl}`+`industry/${currentRow._id}`,
           updatePayload
         );
       }
       if (name == "Service") {
         const data = await axios.put(
-          `http://34.93.221.166:3000/api/services/${currentRow._id}`,
+          `${baseUrl}`+`services/${currentRow._id}`,
           updatePayload
         );
       }

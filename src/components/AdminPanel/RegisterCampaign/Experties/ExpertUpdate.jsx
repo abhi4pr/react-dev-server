@@ -8,6 +8,7 @@ import {
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
+import {baseUrl} from '../../../../utils/config'
 
 let options = [];
 let plateformvar = [];
@@ -43,13 +44,13 @@ const ExpertiesUpdate = () => {
 
   const getAllUsers = async () => {
     const alluser = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_users"
+      baseUrl+"get_all_users"
     );
     setGetUserData(alluser.data.data);
   };
   const ExsingleData = async () => {
     const singledata = await axios.get(
-      `http://34.93.221.166:3000/api/expertise/${id}`
+      `${baseUrl}`+`expertise/${id}`
     );
     const fetcheData = singledata?.data.data;
     console.log(fetcheData, "single data ");
@@ -102,7 +103,7 @@ const ExpertiesUpdate = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `http://34.93.221.166:3000/api/expertise/${expertiesusername.user_id}`,
+        `${baseUrl}`+`expertise/${expertiesusername.user_id}`,
         {
           user_id: expertiesusername.user_id,
           area_of_expertise: {

@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import Button from "@mui/material/Button";
 import ImageView from "./ImageView";
+import {baseUrl} from '../../../utils/config'
 
 const RefundRequests = () => {
   const { toastAlert } = useGlobalContext();
@@ -168,13 +169,13 @@ const RefundRequests = () => {
 
   function getData() {
     axios
-      .post("http://34.93.221.166:3000/api/add_php_payment_refund_data_in_node")
+      .post(baseUrl+"add_php_payment_refund_data_in_node")
       .then((res) => {
         console.log("data save in local success");
       });
     setTimeout(() => {
       axios
-        .get("http://34.93.221.166:3000/api/get_all_php_payment_refund_data")
+        .get(baseUrl+"get_all_php_payment_refund_data")
         .then((res) => {
           setData(res.data.data);
           setFilterData(res.data.data);

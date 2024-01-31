@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../../Context/Context";
 import FormContainer from "../../FormContainer";
 import DataTable from "react-data-table-component";
+import {baseUrl} from '../../../../utils/config'
 
 const DisputeOverview = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -99,7 +100,7 @@ const DisputeOverview = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_disputes"
+        baseUrl+"get_all_disputes"
       );
       const responseFinal = response.data;
       console.log(responseFinal);

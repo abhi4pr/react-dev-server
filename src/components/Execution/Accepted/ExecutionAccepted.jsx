@@ -10,6 +10,7 @@ import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import Confirmation from "../Confirmation";
 import ExecutionUpdate from "../ExecutionUpdate";
+import { baseUrl } from "../../../utils/config";
 
 export default function ExecutionAccepted() {
   const storedToken = sessionStorage.getItem("token");
@@ -53,7 +54,7 @@ export default function ExecutionAccepted() {
       if (userID && contextData == false) {
         axios
           .get(
-            `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+            `${baseUrl}`+`get_single_user_auth_detail/${userID}`
           )
           .then((res) => {
             if (res.data[26].view_value == 1) {
@@ -70,7 +71,7 @@ export default function ExecutionAccepted() {
       // formData.append("pendingorcomplete", "pending");
       console.log(formData);
       const response = axios
-        .get("http://34.93.221.166:3000/api/get_exe_sum")
+        .get(baseUrl+"get_exe_sum")
         .then((res) => {
           setData(res.data.filter((ele) => ele.execution_status == "2"));
           // console.log()
@@ -80,7 +81,7 @@ export default function ExecutionAccepted() {
       console.error("Error fetching data:", error);
       // setLoading(false);
     }
-    axios.post("http://34.93.221.166:3000/api/exe_sum_post", {
+    axios.post(baseUrl+"exe_sum_post", {
       loggedin_user_id: 52,
     });
   };

@@ -1,5 +1,6 @@
 import DataTable from "react-data-table-component";
 import DateISOtoNormal from "../../../utils/DateISOtoNormal";
+import {baseUrl} from '../../../utils/config'
 
 const ManagerDynamicOverview = ({
   filterData,
@@ -11,7 +12,7 @@ const ManagerDynamicOverview = ({
   const handleStatusUpdate = (row, status) => {
     console.log(row, status, "status cheqe");
     try {
-      axios.put("http://34.93.221.166:3000/api/assetrequest", {
+      axios.put(baseUrl+"assetrequest", {
         _id: row.asset_request_id,
         asset_request_status: status,
         request_by: userID,

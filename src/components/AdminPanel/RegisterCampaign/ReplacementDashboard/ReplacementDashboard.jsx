@@ -6,6 +6,7 @@ import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Button, Modal } from "@mui/material";
 import ReplacementList from "./replacementList";
 import { Autocomplete } from "@mui/material";
+import {baseUrl} from '../../../../utils/config'
 
 const ReplacementDashboard = () => {
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
@@ -16,12 +17,12 @@ const ReplacementDashboard = () => {
   const getReplacementData = async () => {
     try {
       const replace = await axios.get(
-        "http://34.93.221.166:3000/api/replacement/plan"
+        baseUrl+"replacement/plan"
       );
       setReplacementData(replace?.data?.data);
 
       const getCampaigns = await axios.get(
-        "http://34.93.221.166:3000/api/exe_campaign"
+        baseUrl+"exe_campaign"
       );
       setAllCampaigns(getCampaigns?.data?.data);
     } catch (error) {
@@ -46,7 +47,7 @@ const ReplacementDashboard = () => {
 
   // const ExpertiesData = async () => {
   //   const Experties = await axios.get(
-  //     "http://34.93.221.166:3000/api/expertise"
+  //     baseUrl+"expertise"
   //   );
 
   //   // setReplacementData(Experties?.data?.data);

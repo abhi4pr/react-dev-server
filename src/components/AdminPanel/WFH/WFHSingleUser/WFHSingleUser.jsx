@@ -29,6 +29,7 @@ import DigitalSignature from "../../../DigitalSignature/DigitalSignature";
 import useInvoiceTemplateImages from "../Templates/Hooks/useInvoiceTemplateImages";
 import PreviewInvoice from "./PreviewInvoice";
 import getDecodedToken from "../../../../utils/DecodedToken";
+import {baseUrl} from '../../../../utils/config'
 
 const images = useInvoiceTemplateImages();
 
@@ -73,7 +74,7 @@ const WFHSingleUser = () => {
   // const digitalSignatureImageExists = decodedToken?.digital_signature_image;
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
+      .get(`${baseUrl}`+`get_single_user/${userID}`)
       .then((res) => {
         const getDigitalSignImage = res.data.digital_signature_image_url;
 
@@ -98,7 +99,7 @@ const WFHSingleUser = () => {
 
   // useEffect(() => {
   //   axios
-  //     .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
+  //     .get(`${baseUrl}`+`get_single_user/${userID}`)
   //     .then((res) => {
   //       const digitalSignImageUrl = res.data.digital_signature_image_url;
 
@@ -116,7 +117,7 @@ const WFHSingleUser = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(
-          "http://34.93.221.166:3000/api/get_all_wfh_users"
+          baseUrl+"get_all_wfh_users"
         );
         const data = res.data.data;
         const filteredUser = data.filter((d) => d.dept_id === department);
@@ -135,19 +136,19 @@ const WFHSingleUser = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/all_departments_of_wfh")
+      .get(baseUrl+"all_departments_of_wfh")
       .then((res) => {
         getDepartmentData(res.data.data);
       });
   }, []);
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/get_all_users`).then((res) => {
+    axios.get(`${baseUrl}`+`get_all_users`).then((res) => {
       getUsersData(res.data.data);
     });
     if (department) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_user_by_deptid/${department}`)
+        .get(`${baseUrl}`+`get_user_by_deptid/${department}`)
         .then((res) => {
           setDepartmentWise(res.data);
         });
@@ -156,7 +157,7 @@ const WFHSingleUser = () => {
 
   const handleSubmit = () => {
     axios
-      .post("http://34.93.221.166:3000/api/get_attendance_by_userid", {
+      .post(baseUrl+"get_attendance_by_userid", {
         user_id: userID,
       })
       .then((res) => {
@@ -176,7 +177,7 @@ const WFHSingleUser = () => {
     formData.append("user_id", data.user_id);
     formData.append("invoice_template_no", selectedTemplate);
 
-    axios.put(`http://34.93.221.166:3000/api/update_user`, formData, {
+    axios.put(`${baseUrl}`+`update_user`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -201,7 +202,7 @@ const WFHSingleUser = () => {
 
   // const handleAttendence = () => {
   //   axios
-  //     .post("http://34.93.221.166:3000/api/add_attendance", {
+  //     .post(baseUrl+"add_attendance", {
   //       dept: department,
   //       user_id: userName.user_id,
   //       noOfabsent: 0,
@@ -336,12 +337,12 @@ const WFHSingleUser = () => {
   //Send to finance
   // function handleSendToFinance(e, row) {
   //   e.preventDefault();
-  //   axios.post(`http://34.93.221.166:3000/api/add_finance`, {
+  //   axios.post(`${baseUrl}`+`add_finance`, {
   //     attendence_id: row.attendence_id,
   //   });
 
   //   axios
-  //     .put(`http://34.93.221.166:3000/api/update_salary`, {
+  //     .put(`${baseUrl}`+`update_salary`, {
   //       attendence_id: row.attendence_id,
   //       sendToFinance: 1,
   //     })
@@ -862,7 +863,7 @@ const WFHSingleUser = () => {
                 ScreenShot :
                 {rowDataModal?.screenshot ? (
                   <img
-                    src={`http://34.93.221.166:3000/api/uploads/${rowDataModal?.screenshot}`}
+                    src={`${baseUrl}`+`uploads/${rowDataModal?.screenshot}`}
                   />
                 ) : (
                   "Null"

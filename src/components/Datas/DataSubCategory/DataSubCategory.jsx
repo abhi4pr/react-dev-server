@@ -9,6 +9,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useGlobalContext } from "../../../Context/Context";
+import { baseUrl } from "../../../utils/config";
 
 const DataSubCategory = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -26,7 +27,7 @@ const DataSubCategory = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_categorys")
+      .get(baseUrl+"get_all_data_categorys")
       .then((res) => {
         setCategoryData(res.data.simcWithSubCategoryCount);
       });
@@ -91,7 +92,7 @@ const DataSubCategory = () => {
         );
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_data_sub_category",
+          baseUrl+"add_data_sub_category",
           {
             data_sub_cat_name: subCatName,
             cat_id: categoryName,
@@ -109,7 +110,7 @@ const DataSubCategory = () => {
 
   async function getModalData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_data_Sub_categories"
+      baseUrl+"get_all_data_Sub_categories"
     );
     setModalData(res.data);
     setModalFilter(res.data);
@@ -126,7 +127,7 @@ const DataSubCategory = () => {
   };
   const handleModalUpdate = () => {
     axios
-      .put("http://34.93.221.166:3000/api/update_data_sub_category", {
+      .put(baseUrl+"update_data_sub_category", {
         _id: modalId,
         cat_id: categoryNameUpdate,
         data_sub_cat_name: subCatNameUpdate,

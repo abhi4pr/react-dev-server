@@ -4,6 +4,7 @@ import FormContainer from "../FormContainer";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import DeleteButton from "../DeleteButton";
+import { baseUrl } from "../../../utils/config";
 
 const HobbiesOverview = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const HobbiesOverview = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_hobbies"
+        baseUrl+"get_all_hobbies"
       );
       const data = response.data.data;
       setHobbiesData(data);

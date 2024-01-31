@@ -9,6 +9,7 @@ import Swal from "sweetalert2";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Button, Modal } from "@mui/material";
+import {baseUrl} from '../../../../utils/config'
 
 // var desturctureData;
 const ExpertiesOverview = () => {
@@ -30,7 +31,7 @@ const ExpertiesOverview = () => {
 
   const ExpertiesData = async () => {
     const Experties = await axios.get(
-      "http://34.93.221.166:3000/api/expertise"
+      baseUrl+"expertise"
     );
     const setexdata = Experties.data.data;
     setGetExpertiesData(setexdata);
@@ -74,7 +75,7 @@ const ExpertiesOverview = () => {
       .then((result) => {
         if (result.isConfirmed) {
           axios
-            .delete(`http://34.93.221.166:3000/api/expertise/${userId}`)
+            .delete(`${baseUrl}`+`expertise/${userId}`)
             .then(() => {
               // Check if no error occurred and then show the success alert
               swalWithBootstrapButtons.fire(

@@ -5,6 +5,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import DataTable from "react-data-table-component";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 const CocHistory = () => {
   const { id } = useParams();
@@ -19,7 +20,7 @@ const CocHistory = () => {
 
   async function getData() {
     await axios
-      .get(`http://34.93.221.166:3000/api/get_coc_history/${id}`)
+      .get(`${baseUrl}`+`get_coc_history/${id}`)
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);

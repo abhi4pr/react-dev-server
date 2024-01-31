@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
 import Select from "react-select";
+import {baseUrl} from '../../../utils/config'
 
 export default function SubDepartmentUpdate() {
   const { toastAlert } = useGlobalContext();
@@ -21,13 +22,13 @@ export default function SubDepartmentUpdate() {
 
   function getData() {
     // axios
-    //   .get("http://34.93.221.166:3000/api/get_all_departments")
+    //   .get(baseUrl+"get_all_departments")
     //   .then((res) => {
     //     setDepartmentData(res.data);
     //   });
 
     axios
-      .get(`http://34.93.221.166:3000/api/get_subdept_from_id/${id}`)
+      .get(`${baseUrl}`+`get_subdept_from_id/${id}`)
       .then((res) => {
         console.log(res.data.dept_id, "yha deta hai");
         setDeptId(res.data.dept_id);
@@ -42,7 +43,7 @@ export default function SubDepartmentUpdate() {
   async function handleSubmit(e) {
     e.preventDefault();
     // sub_dept_name, dept_id, remark, last_updated_by {target by id}
-    await axios.put(`http://34.93.221.166:3000/api/update_sub_department`, {
+    await axios.put(`${baseUrl}`+`update_sub_department`, {
       id: Number(id),
       sub_dept_name: subDepartmentName,
       dept_id: Number(deptId),

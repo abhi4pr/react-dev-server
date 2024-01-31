@@ -3,8 +3,9 @@ import { TextField } from "@mui/material";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
 import WhatsappAPI from "../WhatsappAPI/WhatsappAPI";
+import {baseUrl} from '../../utils/config'
 
-const url = "http://34.93.221.166:3000/api/";
+const url = baseUrl+"";
 
 const ExtendJoining = ({
   gettingData,

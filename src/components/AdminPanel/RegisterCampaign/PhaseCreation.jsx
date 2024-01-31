@@ -27,6 +27,7 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Accordioan from "./Accordioan";
 import { useNavigate } from "react-router-dom";
 import PageOverview from "./PageOverview";
+import { baseUrl } from "../../../utils/config";
 
 let options = [];
 let timer;
@@ -75,7 +76,7 @@ const PhaseCreation = () => {
   //fetching data for the single plan
   const getPageData = async () => {
     const pageD = await axios.get(
-      `http://34.93.221.166:3000/api/campaignplan/${id}`
+      `${baseUrl}`+`campaignplan/${id}`
     );
 
     const x = pageD.data.data
@@ -100,7 +101,7 @@ const PhaseCreation = () => {
 
   const getPhaseData = async () => {
     const data = await axios.get(
-      `http://34.93.221.166:3000/api/campaignphase/${id}`
+      `${baseUrl}`+`campaignphase/${id}`
     );
     setAllPhaseData(data?.data?.result);
   };

@@ -10,6 +10,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import Select from "react-select";
 import { useGlobalContext } from "../../../Context/Context";
+import { baseUrl } from "../../../utils/config";
 
 const Platform = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -71,7 +72,7 @@ const Platform = () => {
         alert("Platform already Exists");
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_data_platform",
+          baseUrl+"add_data_platform",
           {
             platform_name: platformName,
             remark: "",
@@ -87,7 +88,7 @@ const Platform = () => {
   };
   async function getModalData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_data_platforms"
+      baseUrl+"get_all_data_platforms"
     );
     setModalData(res.data);
     setModalFilter(res.data);
@@ -103,7 +104,7 @@ const Platform = () => {
   };
   const handleModalUpdate = () => {
     axios
-      .put("http://34.93.221.166:3000/api/update_data_platform", {
+      .put(baseUrl+"update_data_platform", {
         _id: modalId,
         platform_name: platformNameUpdate,
       })

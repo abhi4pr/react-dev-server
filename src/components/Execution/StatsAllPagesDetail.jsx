@@ -10,6 +10,7 @@ import InsertPhotoTwoToneIcon from "@mui/icons-material/InsertPhotoTwoTone";
 import OndemandVideoTwoToneIcon from "@mui/icons-material/OndemandVideoTwoTone";
 import DeleteHistoryConfirmation from "./DeleteHistoryConfirmation";
 import ContentLoader from "react-content-loader";
+import { baseUrl } from "../../utils/config";
 
 export default function StatsAllPagesDetail() {
   const [allPagesDetail, setAllPagesDetail] = useState([]);
@@ -24,7 +25,7 @@ export default function StatsAllPagesDetail() {
   const [loading, setLoading] = useState(false);
   const apiCall = () => {
     axios
-      .get("http://34.93.221.166:3000/api/get_distinct_count_history")
+      .get(baseUrl+"get_distinct_count_history")
       .then((res) => {
         console.log(res.data);
         setAllPagesDetail(res.data.data);
@@ -36,7 +37,7 @@ export default function StatsAllPagesDetail() {
     formData.append("loggedin_user_id", 36);
     setLoading(true);
     axios
-      .get("http://34.93.221.166:3000/api/get_all_purchase_data")
+      .get(baseUrl+"get_all_purchase_data")
       .then((res) => {
         setLoading(false);
         setPhpData(res.data.result);
@@ -45,7 +46,7 @@ export default function StatsAllPagesDetail() {
         });
       });
     apiCall();
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+    axios.get(baseUrl+"get_all_users").then((res) => {
       setAllUsers(res.data.data);
     });
   }, []);

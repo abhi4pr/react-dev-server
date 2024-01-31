@@ -15,6 +15,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import { useTheme } from "@mui/material/styles";
 import AlertDialog from "./AlertDialog";
 import axios from "axios";
+import {baseUrl} from '../../../utils/config'
 
 export default function BulkUpload({ setUpload }) {
   const { datalead } = useContext(UserContext);
@@ -95,7 +96,7 @@ export default function BulkUpload({ setUpload }) {
     const uniqueData = [];
     for (let i = 0; i < bulklead.length; i++) {
       try {
-        axios.post("http://34.93.221.166:3000/api/leadmastpost", {
+        axios.post(baseUrl+"leadmastpost", {
           lead_name: bulklead[i].lead_name,
           mobile_no: bulklead[i].mobile_no,
           alternate_mobile_no: bulklead[i].alternate_mobile_no,

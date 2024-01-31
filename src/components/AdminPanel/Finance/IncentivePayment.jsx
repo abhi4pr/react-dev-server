@@ -8,6 +8,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import $ from "jquery";
 import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
+import {baseUrl} from '../../../utils/config'
 
 const IncentivePayment = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -62,7 +63,7 @@ const IncentivePayment = () => {
   function getData() {
     axios
       .post(
-        "http://34.93.221.166:3000/api/add_php_payment_incentive_data_in_node"
+        baseUrl+"add_php_payment_incentive_data_in_node"
       )
       .then(() => {
         console.log("data save in local success");

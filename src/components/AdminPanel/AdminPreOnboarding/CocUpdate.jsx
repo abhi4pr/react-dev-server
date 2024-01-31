@@ -6,6 +6,7 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 const CocUpdate = () => {
   const { id } = useParams();
@@ -26,7 +27,7 @@ const CocUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_coc/${id}`)
+      .get(`${baseUrl}`+`get_single_coc/${id}`)
       .then((res) => {
         const fetchedData = res.data.data;
         setDisplaySeq(fetchedData.display_sequence);
@@ -43,7 +44,7 @@ const CocUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.put(`http://34.93.221.166:3000/api/update_coc/`, {
+    await axios.put(`${baseUrl}`+`update_coc/`, {
       _id: id,
       display_sequence: displaySeq,
       heading: heading,

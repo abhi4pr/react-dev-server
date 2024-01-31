@@ -5,6 +5,7 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../../Context/Context";
 import { Navigate, useParams } from "react-router-dom";
+import {baseUrl} from '../../../../utils/config'
 
 const ResponsibilityUpdate = () => {
   const { id } = useParams();
@@ -19,7 +20,7 @@ const ResponsibilityUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_responsibility/${id}`)
+      .get(`${baseUrl}`+`get_single_responsibility/${id}`)
       .then((res) => {
         const fetchedData = res.data;
         setResponsibility(fetchedData.respo_name);
@@ -31,7 +32,7 @@ const ResponsibilityUpdate = () => {
     e.preventDefault();
     try {
       await axios.put(
-        `http://34.93.221.166:3000/api/edit_responsibility/${id}`,
+        `${baseUrl}`+`edit_responsibility/${id}`,
         {
           respo_name: responsibility,
           description: description,

@@ -4,6 +4,7 @@ import FormContainer from "../FormContainer";
 import DataTable from "react-data-table-component";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import { set } from "date-fns";
+import {baseUrl} from '../../../utils/config'
 
 const WFHAllSalary = () => {
   const [allSalaryData, setAllSalaryData] = useState([]);
@@ -17,14 +18,14 @@ const WFHAllSalary = () => {
 
   const getData = async () => {
     const response = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_attendance_data"
+      baseUrl+"get_all_attendance_data"
     );
     setAllSalaryData(response.data.data);
     setMasterDataList(response.data.data);
     setSavedData(response.data.data);
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => {
         setDepartmentList(res.data);
       });

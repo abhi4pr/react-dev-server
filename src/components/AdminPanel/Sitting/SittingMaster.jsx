@@ -5,6 +5,8 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../../utils/config'
+
 const SittingMaster = () => {
   const { toastAlert } = useGlobalContext();
   const [sittingRefrenceNum, setSittingRefNum] = useState("");
@@ -22,7 +24,7 @@ const SittingMaster = () => {
     e.preventDefault();
     setError("");
     axios
-      .post("http://34.93.221.166:3000/api/add_sitting", {
+      .post(baseUrl+"add_sitting", {
         sitting_ref_no: sittingRefrenceNum,
         room_id: Number(roomId),
         sitting_area: sittingArea,
@@ -44,7 +46,7 @@ const SittingMaster = () => {
   };
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_rooms")
+      .get(baseUrl+"get_all_rooms")
       .then((res) => {
         getRoomData(res.data.data);
       })

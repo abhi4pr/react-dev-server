@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 function RoleMastUpdate() {
   const { toastAlert } = useGlobalContext();
@@ -19,7 +20,7 @@ function RoleMastUpdate() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://34.93.221.166:3000/api/update_role`, {
+    axios.put(`${baseUrl}`+`update_role`, {
       role_id: id,
       role_name: role_name,
       remark: remark,

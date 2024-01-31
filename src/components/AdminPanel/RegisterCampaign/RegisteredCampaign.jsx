@@ -24,6 +24,7 @@ import DownloadTwoToneIcon from "@mui/icons-material/DownloadTwoTone";
 import { useEffect } from "react";
 import axios from "axios";
 import { Page } from "@react-pdf/renderer";
+import {baseUrl} from '../../../utils/config'
 
 export default function RegisteredCampaign() {
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ export default function RegisteredCampaign() {
 
   const handleDeleteRowConfirm = () => {
     axios
-      .delete(`http://34.93.221.166:3000/api/register_campaign/${deleteRowId}`)
+      .delete(`${baseUrl}`+`register_campaign/${deleteRowId}`)
       .then((res) => {
         console.log(res);
         setReload(!reload);
@@ -217,14 +218,14 @@ export default function RegisteredCampaign() {
 
         try {
           const response = await axios
-            .post("http://34.93.221.166:3000/api/contentSectionReg", formData, {
+            .post(baseUrl+"contentSectionReg", formData, {
               headers: {
                 "Content-Type": "multipart/form-data", // Important for file uploads
               },
             })
             .then((response) => {
               axios
-                .put("http://34.93.221.166:3000/api/register_campaign", {
+                .put(baseUrl+"register_campaign", {
                   register_campaign_id: campaignId,
                   status: 1,
                 })
@@ -292,7 +293,7 @@ export default function RegisteredCampaign() {
   };
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/register_campaign")
+      .get(baseUrl+"register_campaign")
       .then((response) => {
         // console.log(response.data.data, "response");
         SetLoadTable1(true);
@@ -318,7 +319,7 @@ export default function RegisteredCampaign() {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_brands")
+      .get(baseUrl+"get_brands")
       .then((response) => {
         console.log(response.data.data, "response");
         setBrandName(response.data.data);
@@ -328,19 +329,19 @@ export default function RegisteredCampaign() {
         console.log(err);
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_commitments")
+      .get(baseUrl+"get_all_commitments")
       .then((response) => {
         const data = response.data.data;
         console.log(data, "<--------");
 
         setCommits(data);
       });
-    axios.get("http://34.93.221.166:3000/api/content").then((response) => {
+    axios.get(baseUrl+"content").then((response) => {
       setContentTypeList(response.data.data);
     });
 
     axios
-      .get("http://34.93.221.166:3000/api/exe_campaign")
+      .get(baseUrl+"exe_campaign")
       .then((response) => {
         const data = response.data.data;
         console.log(data, "<----data");
@@ -352,7 +353,7 @@ export default function RegisteredCampaign() {
   }, []);
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/register_campaign")
+      .get(baseUrl+"register_campaign")
       .then((response) => {
         console.log(response.data.data, "response");
         SetLoadTable1(true);
@@ -378,7 +379,7 @@ export default function RegisteredCampaign() {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_brands")
+      .get(baseUrl+"get_brands")
       .then((response) => {
         console.log(response.data.data, "response");
         setBrandName(response.data.data);
@@ -989,7 +990,7 @@ const PlanCreationComponent = ({ row, handlePlan, handleShowPlan }) => {
     const fetchData = async () => {
       try {
         const newData = await axios.get(
-          `http://34.93.221.166:3000/api/campaignplan/${row._id}`
+          `${baseUrl}`+`campaignplan/${row._id}`
         );
         setPlanData(newData);
       } catch (error) {
@@ -1023,7 +1024,7 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
     const fetchData = async () => {
       try {
         const newData = await axios.get(
-          `http://34.93.221.166:3000/api/campaignplan/${rowId}`
+          `${baseUrl}`+`campaignplan/${rowId}`
         );
         setPlanData(newData);
       } catch (error) {

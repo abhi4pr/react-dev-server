@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../../utils/config'
 
 const AccessTypeUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -23,7 +24,7 @@ const AccessTypeUpdate = () => {
     setError("");
 
     axios
-      .put(`http://34.93.221.166:3000/api/Iptypeupdate/`, {
+      .put(`${baseUrl}`+`Iptypeupdate/`, {
         id: Number(id),
         name: accessTypeName,
         remark: remark,
@@ -43,7 +44,7 @@ const AccessTypeUpdate = () => {
   };
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/Iptypedata/${id}`).then((res) => {
+    axios.get(`${baseUrl}`+`Iptypedata/${id}`).then((res) => {
       const fetchedData = res.data;
       const { name, remark } = fetchedData;
       setAccessTypeName(name);

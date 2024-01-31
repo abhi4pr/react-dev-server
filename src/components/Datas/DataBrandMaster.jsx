@@ -12,6 +12,7 @@ import video from "./montage.png";
 import Select from "react-select";
 import ImgDialogBox from "./ImgDialogBox";
 import { Add, CloseTwoTone } from "@mui/icons-material";
+import {baseUrl} from '../../utils/config'
 
 const DataBrandMaster = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -60,24 +61,24 @@ const DataBrandMaster = () => {
   };
 
   useEffect(() => {
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+    axios.get(baseUrl+"get_all_users").then((res) => {
       const allUsers = res.data.data;
       const filteredUsers = allUsers.filter((user) => user.dept_id == 49);
       setEmployeeData(filteredUsers);
     });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_platforms")
+      .get(baseUrl+"get_all_data_platforms")
       .then((res) => {
         setPlateformData(res.data);
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_content_types")
+      .get(baseUrl+"get_all_data_content_types")
       .then((res) => {
         setContentTypeData(res.data);
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_brands")
+      .get(baseUrl+"get_all_data_brands")
       .then((res) => {
         setDataBrandData(res.data);
       });
@@ -87,7 +88,7 @@ const DataBrandMaster = () => {
     if (category) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_data_from_sub_category/${category}`
+          `${baseUrl}`+`get_single_data_from_sub_category/${category}`
         )
         .then((res) => {
           setDataSubCategoryData(res.data);
@@ -97,7 +98,7 @@ const DataBrandMaster = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_categorys")
+      .get(baseUrl+"get_all_data_categorys")
       .then((res) => setCategoryData(res.data.simcWithSubCategoryCount));
 
     const today = new Date();
@@ -163,7 +164,7 @@ const DataBrandMaster = () => {
         formData.append("created_by", userID);
         formData.append("designed_by", designedBy);
 
-        await axios.post("http://34.93.221.166:3000/api/add_data", formData, {
+        await axios.post(baseUrl+"add_data", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

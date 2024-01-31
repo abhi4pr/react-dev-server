@@ -3,13 +3,14 @@ import FormContainer from "../AdminPanel/FormContainer";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { baseUrl } from "../../utils/config";
 
 const SingleAssetUserDetails = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const getData = () => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_sim/${id}`)
+      .get(`${baseUrl}`+`get_single_sim/${id}`)
       .then((res) => {
         const fetchedData = res.data.data;
         setData(fetchedData);

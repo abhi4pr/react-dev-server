@@ -5,6 +5,7 @@ import axios from "axios";
 import Select from "react-select";
 import { useEffect, useState } from "react";
 import "./newAssetCard.css";
+import { baseUrl } from "../../../utils/config";
 
 const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   // const { getAssetDataContext } = useGlobalContext();
@@ -23,7 +24,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
 
   const getAllAssetData = async () => {
     try {
-      const res = await axios.get("http://34.93.221.166:3000/api/get_all_sims");
+      const res = await axios.get(baseUrl+"get_all_sims");
       setSelectedAsset(res.data.data.filter((d) => d.sim_id == assetsName));
 
       console.log(
@@ -40,7 +41,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
 
   async function getShowAssetWithStatus() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/show_asset_with_status"
+      baseUrl+"show_asset_with_status"
     );
     setAssetData(res?.data.data);
   }
@@ -50,7 +51,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
 
   const handleRejectStatus = async (row, status) => {
     try {
-      await axios.put("http://34.93.221.166:3000/api/assetrequest", {
+      await axios.put(baseUrl+"assetrequest", {
         _id: row._id,
         asset_request_status: status,
         request_by: userID,
@@ -65,20 +66,20 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   };
   const handleAssignedSubmit = async () => {
     try {
-      await axios.put("http://34.93.221.166:3000/api/assetrequest", {
+      await axios.put(baseUrl+"assetrequest", {
         _id: row._id,
         asset_request_status: assetStatus,
         request_by: userID,
       });
 
-      await axios.post("http://34.93.221.166:3000/api/add_sim_allocation", {
+      await axios.post(baseUrl+"add_sim_allocation", {
         user_id: row.request_by,
         status: "Allocated",
         sim_id: assetsName,
         created_by: userID,
       });
 
-      await axios.put("http://34.93.221.166:3000/api/update_sim", {
+      await axios.put(baseUrl+"update_sim", {
         id: assetsName,
         status: "Allocated",
       });

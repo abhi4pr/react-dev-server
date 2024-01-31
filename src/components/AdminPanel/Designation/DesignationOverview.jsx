@@ -7,6 +7,7 @@ import DeleteButton from "../DeleteButton";
 import FormContainer from "../FormContainer";
 import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
+import { baseUrl } from "../../../utils/config";
 
 const DesignationOverview = () => {
   // State variables
@@ -30,14 +31,14 @@ const DesignationOverview = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setContextData(res.data);
         });
     }
 
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
+    axios.get(baseUrl+"get_all_users").then((res) => {
       setAllUserDesignation(res.data.data);
     });
   }, [userID]);
@@ -45,7 +46,7 @@ const DesignationOverview = () => {
   // Fetch all designations data
   async function getData() {
     await axios
-      .get("http://34.93.221.166:3000/api/get_all_designations")
+      .get(baseUrl+"get_all_designations")
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);

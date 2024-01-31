@@ -9,6 +9,7 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Swal from "sweetalert2";
+import {baseUrl} from '../../../utils/config'
 
 const IncompleteProfileUsers = () => {
   const storedToken = sessionStorage.getItem("token");
@@ -27,7 +28,7 @@ const IncompleteProfileUsers = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setData(res.data);
@@ -38,7 +39,7 @@ const IncompleteProfileUsers = () => {
   async function getData() {
     try {
       const res = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_percentage"
+        baseUrl+"get_all_percentage"
       );
 
       const data = res.data.incompleteUsersDetails;
@@ -72,7 +73,7 @@ const IncompleteProfileUsers = () => {
       .then((result) => {
         if (result.isConfirmed) {
           axios
-            .delete(`http://34.93.221.166:3000/api/delete_user/${userId}`)
+            .delete(`${baseUrl}`+`delete_user/${userId}`)
             .then(() => {
               swalWithBootstrapButtons.fire(
                 "Deleted!",

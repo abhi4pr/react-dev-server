@@ -4,6 +4,7 @@ import DataTable from "react-data-table-component";
 import CountdownTimer from "./CountdownTimer";
 import { useGlobalContext } from "../../../Context/Context";
 import Modal from "react-modal";
+import {baseUrl} from '../../../utils/config'
 
 let orderLength = 0;
 
@@ -31,7 +32,7 @@ const PendingOrder = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((data) => {
         setDepartmentName(data.data);
       });
@@ -39,7 +40,7 @@ const PendingOrder = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_delivery_boy`)
+      .get(`${baseUrl}`+`get_delivery_boy`)
       .then((res) => setAllDeliveryBoy(res.data.results));
   }, []);
 
@@ -50,7 +51,7 @@ const PendingOrder = () => {
       return;
     } else {
       axios
-        .put("http://34.93.221.166:3000/api/update_orderrequest", {
+        .put(baseUrl+"update_orderrequest", {
           product_id: row.product_id,
           order_req_id: row.Order_req_id,
           order_quantity: row.Order_quantity,
@@ -79,7 +80,7 @@ const PendingOrder = () => {
 
   function handleGetOrderData() {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_orderreqdata")
+      .get(baseUrl+"get_all_orderreqdata")
       .then((res) => {
         const data = res.data.data
           .filter((res) => res.Status === "pending")
@@ -111,7 +112,7 @@ const PendingOrder = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`http://34.93.221.166:3000/api/get_delivery_user`).then((res) => {
+    axios.get(`${baseUrl}`+`get_delivery_user`).then((res) => {
       setDeliveryBoyData(res.data);
     });
   }, []);
@@ -120,7 +121,7 @@ const PendingOrder = () => {
     // console.log("selectedRow", selectedRow);
     if (remarks.length > 2) {
       axios
-        .put("http://34.93.221.166:3000/api/update_orderrequest", {
+        .put(baseUrl+"update_orderrequest", {
           product_id: selectedRow.product_id,
           order_req_id: selectedRow.Order_req_id,
           order_quantity: selectedRow.Order_quantity,
@@ -150,7 +151,7 @@ const PendingOrder = () => {
   const handleTransfer = (e) => {
     e.preventDefault();
     axios
-      .post("http://34.93.221.166:3000/api/add_transreq", {
+      .post(baseUrl+"add_transreq", {
         from_id: orderRequestTransfer[1],
         to_id: transferTo,
         reason: reason,

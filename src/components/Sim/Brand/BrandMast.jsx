@@ -9,6 +9,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
+import { baseUrl } from "../../../utils/config";
 
 const BrandMast = () => {
   const [brandName, setBrandName] = useState("");
@@ -26,7 +27,7 @@ const BrandMast = () => {
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_total_asset_in_category/${row}`
+        `${baseUrl}`+`get_total_asset_in_category/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -41,7 +42,7 @@ const BrandMast = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}`+`get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -130,7 +131,7 @@ const BrandMast = () => {
         alert("Brand already Exists");
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_asset_brand",
+          baseUrl+"add_asset_brand",
           {
             asset_brand_name: brandName,
           }
@@ -144,7 +145,7 @@ const BrandMast = () => {
   };
   async function getBrandData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_asset_brands"
+      baseUrl+"get_all_asset_brands"
     );
     setBrandData(res.data.data);
     setBrnadFilter(res.data.data);
@@ -160,7 +161,7 @@ const BrandMast = () => {
   };
   const handleBrandUpdate = () => {
     axios
-      .put("http://34.93.221.166:3000/api/update_asset_brand", {
+      .put(baseUrl+"update_asset_brand", {
         asset_brand_id: brandId,
         asset_brand_name: brandNameUpdate,
       })

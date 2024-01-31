@@ -3,6 +3,7 @@ import axios from "axios";
 import FormContainer from "../../FormContainer";
 import DataTable from "react-data-table-component";
 import Modal from "react-modal";
+import {baseUrl} from '../../../../utils/config'
 
 const SalarySummary = () => {
   const [allSalaryData, setAllSalaryData] = useState([]);
@@ -22,7 +23,7 @@ const SalarySummary = () => {
   const handleUserModal = async (row) => {
     try {
       const response = await axios.post(
-        `http://34.93.221.166:3000/api/get_users_count_by_dept`,
+        `${baseUrl}`+`get_users_count_by_dept`,
         {
           dept_id: row.dept_id,
           month: row.month,
@@ -40,7 +41,7 @@ const SalarySummary = () => {
 
   const getData = async () => {
     const response = await axios.get(
-      "http://34.93.221.166:3000/api/get_salary_calculation_data"
+      baseUrl+"get_salary_calculation_data"
     );
     setAllSalaryData(response.data.data);
     setSavedData(response.data.data);

@@ -6,6 +6,8 @@ import DeleteButton from "../AdminPanel/DeleteButton";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../Context/Context";
+import { baseUrl } from "../../utils/config";
+
 const SimAllocationOverview = () => {
   const { toastAlert } = useGlobalContext();
   const [search, setSearch] = useState("");
@@ -23,7 +25,7 @@ const SimAllocationOverview = () => {
 
   function getData() {
     axios
-      .get("http://34.93.221.166:3000/api/alldataofsimallocment")
+      .get(baseUrl+"alldataofsimallocment")
       .then((res) => {
         const filteredData = res.data.data.filter(
           (check) => check.submitted_at == null || check.status == "Allocated"
@@ -46,7 +48,7 @@ const SimAllocationOverview = () => {
   const getSimData = (row) => {
     // console.log(row , "row yha hai")
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_sim/${row.sim_id}`)
+      .get(`${baseUrl}`+`get_single_sim/${row.sim_id}`)
       .then((res) => {
         const particularSimData = res.data;
         setSimInfo(particularSimData);
@@ -54,7 +56,7 @@ const SimAllocationOverview = () => {
 
     axios
       .get(
-        `http://34.93.221.166:3000/api/get_allocation_by_alloid/${row.allo_id}`
+        `${baseUrl}`+`get_allocation_by_alloid/${row.allo_id}`
       )
       .then((res) => {
         const fetchedData = res.data.data;
@@ -74,7 +76,7 @@ const SimAllocationOverview = () => {
     const currentReason = reason[row.sim_id];
     const currSubDate = subDate[row.sim_id];
     if (currSubDate && currentReason) {
-      axios.put("http://34.93.221.166:3000/api/update_allocationsim", {
+      axios.put(baseUrl+"update_allocationsim", {
         sim_id: row.sim_id,
         allo_id: simData.allo_id,
         user_id: simData.user_id,
@@ -87,7 +89,7 @@ const SimAllocationOverview = () => {
       });
 
       axios
-        .put("http://34.93.221.166:3000/api/update_sim", {
+        .put(baseUrl+"update_sim", {
           id: row.sim_id,
           mobilenumber: row.mobileNo,
           sim_no: row.simNo,

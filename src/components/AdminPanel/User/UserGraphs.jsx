@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { BarChart } from "@mui/x-charts/BarChart";
 import FieldContainer from "../FieldContainer";
+import {baseUrl} from '../../../utils/config'
 
 const UserGraphs = () => {
   const [graphData, setGraphData] = useState([]);
@@ -11,7 +12,7 @@ const UserGraphs = () => {
 
   useEffect(() => {
     axios
-      .post("http://34.93.221.166:3000/api/get_user_graph_data", {
+      .post(baseUrl+"get_user_graph_data", {
         caseType: "gender",
       })
       .then((res) => {
@@ -23,7 +24,7 @@ const UserGraphs = () => {
     const newFilter = e.target ? e.target.value : e;
     setSelectedFilter(newFilter);
     await axios
-      .post("http://34.93.221.166:3000/api/get_user_graph_data", {
+      .post(baseUrl+"get_user_graph_data", {
         caseType: e.target.value,
       })
       .then((res) => {

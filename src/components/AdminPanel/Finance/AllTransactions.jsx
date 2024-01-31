@@ -7,6 +7,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import {baseUrl} from '../../../utils/config'
 
 const AllTransactions = () => {
   const { toastAlert } = useGlobalContext();
@@ -90,19 +91,19 @@ const AllTransactions = () => {
 
   function getData() {
     axios
-      .post("http://34.93.221.166:3000/api/add_php_payment_acc_data_in_node")
+      .post(baseUrl+"add_php_payment_acc_data_in_node")
       .then((res) => {
         console.log("data save in local success");
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_php_finance_data")
+      .get(baseUrl+"get_all_php_finance_data")
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_php_payment_acc_data")
+      .get(baseUrl+"get_all_php_payment_acc_data")
       .then((res) => {
         setPaymetMethod(res.data.data);
         // let x =res.data.data.map(e=>{

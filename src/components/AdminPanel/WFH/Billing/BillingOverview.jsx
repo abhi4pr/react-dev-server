@@ -7,6 +7,7 @@ import jwtDecode from "jwt-decode";
 import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../../DeleteButton";
+import { baseUrl } from "../../../../utils/config";
 
 const BillingOverview = () => {
   const [search, setSearch] = useState("");
@@ -22,7 +23,7 @@ const BillingOverview = () => {
 
   const getData = () => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_billingheaders")
+      .get(baseUrl+"get_all_billingheaders")
       .then((res) => {
         setBillData(res.data.result);
         setFilterData(res.data.result);
@@ -33,7 +34,7 @@ const BillingOverview = () => {
     if (userID && contextData?.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);

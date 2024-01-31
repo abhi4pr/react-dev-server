@@ -13,6 +13,7 @@ import Dialog from "@mui/material/Dialog";
 import React from "react";
 import axios from "axios";
 import { set } from "date-fns";
+import {baseUrl} from '../../../utils/config'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -38,7 +39,7 @@ export default function DiscardConfirmation({
 
   const handleConfirm = () => {
     axios
-      .post("http://34.93.221.166:3000/api/phpvendorpaymentrequest", {
+      .post(baseUrl+"phpvendorpaymentrequest", {
         request_id: rowData.request_id,
         vendor_id: rowData.vendor_id,
         request_by: rowData.request_by,

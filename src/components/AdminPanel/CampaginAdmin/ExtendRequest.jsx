@@ -17,6 +17,7 @@ import CallToActionTwoToneIcon from "@mui/icons-material/CallToActionTwoTone";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { set } from "date-fns";
+import {baseUrl} from '../../../utils/config'
 
 export default function ExtendRequest({ ReloadMain }) {
   const [showDateError, setShowDateError] = useState(false);
@@ -68,7 +69,7 @@ export default function ExtendRequest({ ReloadMain }) {
       setShowDateError(false);
       console.log(reAssignModalData.register_campaign_id);
       axios
-        .put("http://34.93.221.166:3000/api/contentSectionReg", {
+        .put(baseUrl+"contentSectionReg", {
           content_section_id: reAssignModalData.content_section_id,
           creator_dt: selectedDate,
           stage: 3,
@@ -95,7 +96,7 @@ export default function ExtendRequest({ ReloadMain }) {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/contentSectionReg")
+      .get(baseUrl+"contentSectionReg")
       .then((response) => {
         // console.log(response.data.data);
         const data = response.data.data.filter(
@@ -106,7 +107,7 @@ export default function ExtendRequest({ ReloadMain }) {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_brands")
+      .get(baseUrl+"get_brands")
       .then((response) => {
         setBrandName(response.data.data);
         // setTable1Data2(true);
@@ -115,16 +116,16 @@ export default function ExtendRequest({ ReloadMain }) {
         console.log(err);
       });
 
-    axios.get("http://34.93.221.166:3000/api/content").then((response) => {
+    axios.get(baseUrl+"content").then((response) => {
       setContentTypeList(response.data.data);
     });
-    axios.get("http://34.93.221.166:3000/api/campaign").then((response) => {
+    axios.get(baseUrl+"campaign").then((response) => {
       const data = response.data;
 
       setCommits(data);
     });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_users")
+      .get(baseUrl+"get_all_users")
       .then((response) => {
         const data = response.data.data.filter((e) => e.dept_id == 13);
         console.log(data);

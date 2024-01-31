@@ -5,7 +5,7 @@ import axios from "axios";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import { useGlobalContext } from "../../../../Context/Context";
-// useGlobalContext
+import {baseUrl} from '../../../../utils/config'
 
 const style = {
   position: "absolute",
@@ -28,7 +28,7 @@ const ReplacementList = ({ replacementData, hardRender }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const getReplacementDetail = async (id) => {
     const x = await axios.get(
-      `http://34.93.221.166:3000/api/replacement/${id}`
+      `${baseUrl}`+`replacement/${id}`
     );
     setReplacementDetails(x.data.data);
   };
@@ -43,7 +43,7 @@ const ReplacementList = ({ replacementData, hardRender }) => {
     };
 
     const result = await axios.post(
-      "http://34.93.221.166:3000/api/replacement/status",
+      baseUrl+"replacement/status",
       data
     );
     if (result.status == 200) {

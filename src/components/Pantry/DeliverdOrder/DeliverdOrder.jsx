@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
+import {baseUrl} from '../../../utils/config'
 
 const DeliverdOrder = () => {
   const [search, setSearch] = useState("");
@@ -9,7 +10,7 @@ const DeliverdOrder = () => {
 
   function getData() {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_orderreqdata")
+      .get(baseUrl+"get_all_orderreqdata")
       .then((res) => {
         setData(res.data.data.filter((res) => res.Status === "Delivered"));
         setFilterData(

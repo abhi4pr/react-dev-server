@@ -12,6 +12,7 @@ import sheets from "./sheets.png";
 import video from "./montage.png";
 import Select from "react-select";
 import { de } from "date-fns/locale";
+import {baseUrl} from '../../utils/config'
 
 const DataBrandUpdate = () => {
   const [openReviewDisalog, setOpenReviewDisalog] = useState({
@@ -63,7 +64,7 @@ const DataBrandUpdate = () => {
   };
 
   const callAbvApi = async () => {
-    axios.get("http://34.93.221.166:3000/api/get_all_datas").then((res) => {
+    axios.get(baseUrl+"get_all_datas").then((res) => {
       setAllData(res.data);
       res.data
         .filter((detail) => {
@@ -83,7 +84,7 @@ const DataBrandUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_data/${id}`)
+      .get(`${baseUrl}`+`get_single_data/${id}`)
       .then((res) => {
         const fetchedData = res.data;
         const { data_name, data_id, upload_logo, remark, cat_name } =
@@ -99,28 +100,28 @@ const DataBrandUpdate = () => {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_categorys")
+      .get(baseUrl+"get_all_data_categorys")
       .then((res) => {
         setCategoryData(res.data.simcWithSubCategoryCount);
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_platforms")
+      .get(baseUrl+"get_all_data_platforms")
       .then((res) => {
         setPlateformData(res.data);
       });
     // axios
-    //   .get("http://34.93.221.166:3000/api/get_all_data_Sub_categories")
+    //   .get(baseUrl+"get_all_data_Sub_categories")
     //   .then((res) => {
     //     setDataSubCategoryData(res.data);
     //   });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_content_types")
+      .get(baseUrl+"get_all_data_content_types")
       .then((res) => {
         setContentTypeData(res.data);
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_data_brands")
+      .get(baseUrl+"get_all_data_brands")
       .then((res) => {
         setDataBrandData(res.data);
       });
@@ -134,7 +135,7 @@ const DataBrandUpdate = () => {
     if (category) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_data_from_sub_category/${category}`
+          `${baseUrl}`+`get_single_data_from_sub_category/${category}`
         )
         .then((res) => {
           setDataSubCategoryData(res.data);
@@ -154,7 +155,7 @@ const DataBrandUpdate = () => {
   const getCombinedData = async () => {
     if (dataId) {
       // axios
-      //   .get(`http://34.93.221.166:3000/api/get_data_based_data_name/${dataId}`)
+      //   .get(`${baseUrl}`+`get_data_based_data_name/${dataId}`)
       //   .then((res) => {
       //     setLogos(prev=>res.data);
 
@@ -171,7 +172,7 @@ const DataBrandUpdate = () => {
       //   });
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_data_based_data_name_new/${brandName}`
+          `${baseUrl}`+`get_data_based_data_name_new/${brandName}`
         )
         .then((res) => {
           setLogos((prev) => res.data);
@@ -208,7 +209,7 @@ const DataBrandUpdate = () => {
       );
     } else {
       var data = await axios.delete(
-        `http://34.93.221.166:3000/api/delete_data/${_id}`,
+        `${baseUrl}`+`delete_data/${_id}`,
         null
       );
       if (data) {
@@ -228,7 +229,7 @@ const DataBrandUpdate = () => {
   //   console.log(dataSubCategory, "subcat");
   //   // return;
 
-  //   await axios.put(`http://34.93.221.166:3000/api/update_data`, {
+  //   await axios.put(`${baseUrl}`+`update_data`, {
   //     data_id: +id,
   //     data_name: brandName,
   //     brand_id: dataBrand,
@@ -258,7 +259,7 @@ const DataBrandUpdate = () => {
   //       formData.append("remark", remark);
   //       formData.append("created_by", loginUserId);
 
-  //       await axios.post("http://34.93.221.166:3000/api/add_data", formData, {
+  //       await axios.post(baseUrl+"add_data", formData, {
   //         headers: {
   //           "Content-Type": "multipart/form-data",
   //         },
@@ -317,7 +318,7 @@ const DataBrandUpdate = () => {
         // formData.append("remark", remark);
 
         await axios
-          .put("http://34.93.221.166:3000/api/update_data", {
+          .put(baseUrl+"update_data", {
             data_id: id,
             data_name: brandName,
             remark: remark,
@@ -354,7 +355,7 @@ const DataBrandUpdate = () => {
           console.log(formData, "formdata");
           await axios
             .post(
-              "http://34.93.221.166:3000/api/add_data",
+              baseUrl+"add_data",
               formData ,
               {
                 headers: {

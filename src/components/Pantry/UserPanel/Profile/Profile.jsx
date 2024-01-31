@@ -3,6 +3,7 @@ import jwtDecode from "jwt-decode";
 import { useEffect, useState } from "react";
 import UserNav from "../UserNav";
 import imageTest1 from "../../../../assets/img/product/Avtrar1.png";
+import { baseUrl } from "../../../../utils/config";
 
 const Profile = () => {
   const [selectedResponsibilityId, setSelectedResponsibilityId] =
@@ -18,7 +19,7 @@ const Profile = () => {
 
   function handleGetData() {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_user/${loginUserId}`)
+      .get(`${baseUrl}`+`get_single_user/${loginUserId}`)
       .then((res) => {
         setUserData(res.data);
         // console.log(res.data, "user data");
@@ -27,7 +28,7 @@ const Profile = () => {
 
   function responsibilityAPI() {
     axios
-      .post(`http://34.93.221.166:3000/api/get_user_job_responsibility`, {
+      .post(`${baseUrl}`+`get_user_job_responsibility`, {
         user_id: Number(loginUserId),
       })
       .then((res) => {
@@ -45,8 +46,8 @@ const Profile = () => {
     formData.append("id", loginUserId);
     formData.append("image", profileUpdate);
     axios
-      // .put("http://34.93.221.166:3000/api/update_user", formData, {
-      .put("http://34.93.221.166:3000/api/userimageupdate", formData, {
+      // .put(baseUrl+"update_user", formData, {
+      .put(baseUrl+"userimageupdate", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

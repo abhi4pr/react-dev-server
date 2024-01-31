@@ -3,6 +3,7 @@ import FormContainer from "../../AdminPanel/FormContainer";
 import axios from "axios";
 import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import TagedPersonOverview from "./TagedPersonOverview";
+import { baseUrl } from "../../../utils/config";
 
 const AssetVisibleToTagedPerosn = () => {
   const { userID } = useAPIGlobalContext();
@@ -38,7 +39,7 @@ const AssetVisibleToTagedPerosn = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/show_asset_user_data/${userID}`
+        `${baseUrl}`+`show_asset_user_data/${userID}`
       );
       setFilterData(response.data.data);
       setData(response.data.data);
@@ -49,7 +50,7 @@ const AssetVisibleToTagedPerosn = () => {
   const getNewAssetData = async () => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/show_new_asset_user_data/${userID}`
+        `${baseUrl}`+`show_new_asset_user_data/${userID}`
       );
       setNewassetData(response.data.data);
       console.log(response.data.data, "data");

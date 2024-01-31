@@ -9,6 +9,7 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../Context/Context";
+import { baseUrl } from "../../../utils/config";
 
 const ContentType = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -67,7 +68,7 @@ const ContentType = () => {
         alert("Content Type already Exists");
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_data_content_type",
+          baseUrl+"add_data_content_type",
           {
             content_name: contentType,
             remark: "",
@@ -83,7 +84,7 @@ const ContentType = () => {
   };
   async function getModalData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_data_content_types"
+      baseUrl+"get_all_data_content_types"
     );
     setModalData(res.data);
     setModalFilter(res.data);
@@ -99,7 +100,7 @@ const ContentType = () => {
   };
   const handleModalUpdate = () => {
     axios
-      .put("http://34.93.221.166:3000/api/update_data_content_type", {
+      .put(baseUrl+"update_data_content_type", {
         _id: modalId,
         content_name: contentTypeUpdate,
       })

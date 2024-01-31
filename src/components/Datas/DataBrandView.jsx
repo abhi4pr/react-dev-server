@@ -8,6 +8,7 @@ import UserNav from "../Pantry/UserPanel/UserNav";
 import pdf from "./pdf-file.png";
 import sheets from "./sheets.png";
 import video from "./montage.png";
+import {baseUrl} from '../../utils/config'
 
 const DataBrandView = () => {
   const [brand, setBrand] = useState("");
@@ -29,7 +30,7 @@ const DataBrandView = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_data_based_data_name/${id}`)
+      .get(`${baseUrl}`+`get_data_based_data_name/${id}`)
       .then((res) => {
         const fetchedData = res.data[0];
         const { data_name, upload_logo, remark, cat_name } = fetchedData;
@@ -46,7 +47,7 @@ const DataBrandView = () => {
   useEffect(() => {
     if (brand) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_data_based_data_name_new/${brand}`)
+        .get(`${baseUrl}`+`get_data_based_data_name_new/${brand}`)
         .then((res) => {
           console.log(res.data);
           setLogos(res.data);

@@ -7,6 +7,7 @@ import DownloadTwoToneIcon from "@mui/icons-material/DownloadTwoTone";
 import SourceIcon from "@mui/icons-material/Source";
 import { useState } from "react";
 import { SnippetFolderTwoTone } from "@mui/icons-material";
+import {baseUrl} from '../../../utils/config'
 
 export default function Complected() {
   const [showData, setShowData] = useState([]);
@@ -39,7 +40,7 @@ export default function Complected() {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/contentSectionReg")
+      .get(baseUrl+"contentSectionReg")
       .then((response) => {
         // console.log(response.data.data);
         const data = response.data.data.filter(
@@ -50,7 +51,7 @@ export default function Complected() {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_brands")
+      .get(baseUrl+"get_brands")
       .then((response) => {
         setBrandName(response.data.data);
         // setTable1Data2(true);
@@ -59,18 +60,18 @@ export default function Complected() {
         console.log(err);
       });
 
-    axios.get("http://34.93.221.166:3000/api/content").then((response) => {
+    axios.get(baseUrl+"content").then((response) => {
       setContentTypeList(response.data.data);
     });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_commitments")
+      .get(baseUrl+"get_all_commitments")
       .then((response) => {
         const data = response.data.data;
 
         setCommits(data);
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_users")
+      .get(baseUrl+"get_all_users")
       .then((response) => {
         const data = response.data.data.filter((e) => e.dept_id == 13);
         console.log(data);

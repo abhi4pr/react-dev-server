@@ -6,6 +6,7 @@ import axios from "axios";
 import FieldContainer from "../../AdminPanel/FieldContainer";
 import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import { useGlobalContext } from "../../../Context/Context";
+import { baseUrl } from "../../../utils/config";
 
 const AssetSingleuserOverview = ({
   filterData,
@@ -42,7 +43,7 @@ const AssetSingleuserOverview = ({
 
   async function getRepairReason() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_assetResons"
+      baseUrl+"get_all_assetResons"
     );
 
     setReasonData(res?.data.data);
@@ -51,7 +52,7 @@ const AssetSingleuserOverview = ({
   const getAssetSubCategory = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_asset_sub_category"
+        baseUrl+"get_all_asset_sub_category"
       );
 
       setAssetSubCategoryData(response.data.data);
@@ -86,7 +87,7 @@ const AssetSingleuserOverview = ({
       formData.append("problem_detailing", problemDetailing);
 
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_repair_request",
+        baseUrl+"add_repair_request",
         formData
       );
       setAssetName("");
@@ -119,7 +120,7 @@ const AssetSingleuserOverview = ({
       formData.append("asset_return_by", userID);
 
       const response = axios.post(
-        "http://34.93.221.166:3000/api/assetreturn",
+        baseUrl+"assetreturn",
         formData
       );
 
@@ -135,7 +136,7 @@ const AssetSingleuserOverview = ({
   const handleDeleteNewAsset = (id) => {
     try {
       const response = axios.delete(
-        `http://34.93.221.166:3000/api/assetrequest/${id}`
+        `${baseUrl}`+`assetrequest/${id}`
       );
       newRequestAPIRender();
       hardRender();
@@ -328,7 +329,7 @@ const AssetSingleuserOverview = ({
 
   const handleNewAssetSubmit = () => {
     try {
-      axios.post("http://34.93.221.166:3000/api/assetrequest", {
+      axios.post(baseUrl+"assetrequest", {
         sub_category_id: assetsName,
         detail: problemDetailing,
         priority: priority,
@@ -354,7 +355,7 @@ const AssetSingleuserOverview = ({
   };
   const handleNewAssetUpdate = () => {
     try {
-      axios.put("http://34.93.221.166:3000/api/assetrequest", {
+      axios.put(baseUrl+"assetrequest", {
         _id: newAssetID,
         sub_category_id: assetsName,
         detail: problemDetailing,

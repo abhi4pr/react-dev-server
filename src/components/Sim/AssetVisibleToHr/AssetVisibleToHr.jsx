@@ -7,6 +7,7 @@ import Modal from "react-modal";
 import NewAssetRequestOverview from "./NewAssetRequestOverview";
 import DateISOtoNormal from "../../../utils/DateISOtoNormal";
 import { useGlobalContext } from "../../../Context/Context";
+import { baseUrl } from "../../../utils/config";
 
 const AssetVisibleToHr = () => {
   const { toastAlert } = useGlobalContext();
@@ -119,13 +120,13 @@ const AssetVisibleToHr = () => {
     />
   );
   const getNewAssetData = () => {
-    axios.get("http://34.93.221.166:3000/api/assetrequest").then((res) => {
+    axios.get(baseUrl+"assetrequest").then((res) => {
       setNewAsseRequesttData(res.data.data);
     });
   };
 
   const getReturnAssetData = () => {
-    axios.get("http://34.93.221.166:3000/api/assetreturn").then((res) => {
+    axios.get(baseUrl+"assetreturn").then((res) => {
       setReturnAssetData(res.data.singleAssetReturnRequest);
     });
   };
@@ -145,7 +146,7 @@ const AssetVisibleToHr = () => {
   async function getData() {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/show_asset_hr_data"
+        baseUrl+"show_asset_hr_data"
       );
       setFilterData(response.data.data);
       setData(response.data.data);
@@ -156,7 +157,7 @@ const AssetVisibleToHr = () => {
 
   const handleReturnAsset = (row) => {
     try {
-      axios.put("http://34.93.221.166:3000/api/update_sim", {
+      axios.put(baseUrl+"update_sim", {
         id: row.sim_id,
         status: "Available",
       });

@@ -13,6 +13,7 @@ import {
 } from "@react-pdf/renderer";
 import * as XLSX from "xlsx";
 import FormContainer from "../FormContainer";
+import {baseUrl} from '../../../utils/config'
 
 const DashboardWFHCardDetails = () => {
   const { id } = useParams();
@@ -21,7 +22,7 @@ const DashboardWFHCardDetails = () => {
   const [search, setSearch] = useState("");
   const getData = () => {
     axios
-      .post("http://34.93.221.166:3000/api/dept_id_with_wfh", {
+      .post(baseUrl+"dept_id_with_wfh", {
         dept_id: id,
       })
       .then((res) => {

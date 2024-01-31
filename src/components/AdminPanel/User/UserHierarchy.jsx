@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FieldContainer from "../FieldContainer";
+import {baseUrl} from '../../../utils/config'
 
 const UserHierarchy = () => {
   const [data, setData] = useState([]);
@@ -10,7 +11,7 @@ const UserHierarchy = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_users")
+      .get(baseUrl+"get_all_users")
       .then((res) => {
         setData(res.data.data);
         setAllUserData(res.data.data);
@@ -22,7 +23,7 @@ const UserHierarchy = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => {
         setDepartmentData(res.data);
       });
@@ -33,7 +34,7 @@ const UserHierarchy = () => {
       setData(allUserData);
     } else {
       axios
-        .post("http://34.93.221.166:3000/api/l1l2l3usersbydept", {
+        .post(baseUrl+"l1l2l3usersbydept", {
           dept_id: selectedDepartment,
         })
         .then((res) => {

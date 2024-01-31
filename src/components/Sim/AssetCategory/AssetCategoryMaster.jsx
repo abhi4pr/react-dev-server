@@ -7,6 +7,7 @@ import axios from "axios";
 import UserNav from "../../Pantry/UserPanel/UserNav";
 import { Navigate, useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { baseUrl } from "../../../utils/config";
 
 const AssetCategoryMaster = () => {
   const { toastAlert } = useGlobalContext();
@@ -29,7 +30,7 @@ const AssetCategoryMaster = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_asset_category"
+        baseUrl+"get_all_asset_category"
       );
 
       setCategoryData(response.data.data?.asset_categories);
@@ -53,7 +54,7 @@ const AssetCategoryMaster = () => {
         alert("Category already Exists");
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_asset_category",
+          baseUrl+"add_asset_category",
           {
             category_name: categoryName,
             description: description,

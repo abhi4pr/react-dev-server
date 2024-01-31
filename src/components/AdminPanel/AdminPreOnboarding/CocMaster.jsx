@@ -7,6 +7,7 @@ import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import TextEditor from "../../ReusableComponents/TextEditor";
 import { axisClasses } from "@mui/x-charts";
+import { baseUrl } from "../../../utils/config";
 
 const CocMaster = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -29,7 +30,7 @@ const CocMaster = () => {
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
 
-  //   await axios.post("http://34.93.221.166:3000/api/add_coc", {
+  //   await axios.post(baseUrl+"add_coc", {
   //     display_sequence: displaySeq,
   //     heading: heading,
   //     heading_desc: headingDesc,
@@ -55,7 +56,7 @@ const CocMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://34.93.221.166:3000/api/newcoc", {
+      await axios.post(baseUrl+"newcoc", {
         coc_content: cocContent,
         created_by: loginUserId,
       });

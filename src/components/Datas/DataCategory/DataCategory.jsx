@@ -11,6 +11,7 @@ import { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 import Modal from "react-modal";
 import Select from "react-select";
+import { baseUrl } from "../../../utils/config";
 
 const DataCategory = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -30,7 +31,7 @@ const DataCategory = () => {
   const handleSubCategroy = async (row) => {
     try {
       const response = await axios.get(
-        `http://34.93.221.166:3000/api/get_data_sub_category_from_categoryid/${row}`
+        `${baseUrl}`+`get_data_sub_category_from_categoryid/${row}`
       );
       console.log(response, "responsne ere");
       setSubcategroycount(response.data.data.sub_categories);
@@ -44,7 +45,7 @@ const DataCategory = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://34.93.221.166:3000/api/add_data_sub_category",
+        baseUrl+"add_data_sub_category",
         {
           data_sub_cat_name: subCatName,
           cat_id: categoryNameSub,
@@ -132,7 +133,7 @@ const DataCategory = () => {
         alert("Category already Exists");
       } else {
         const response = await axios.post(
-          "http://34.93.221.166:3000/api/add_data_category",
+          baseUrl+"add_data_category",
           {
             category_name: categoryName,
           }
@@ -147,7 +148,7 @@ const DataCategory = () => {
   };
   async function getModalData() {
     const res = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_data_categorys"
+      baseUrl+"get_all_data_categorys"
     );
     setModalData(res.data.simcWithSubCategoryCount);
     setModalFilter(res.data.simcWithSubCategoryCount);
@@ -163,7 +164,7 @@ const DataCategory = () => {
   };
   const handleModalUpdate = () => {
     axios
-      .put("http://34.93.221.166:3000/api/update_data_category", {
+      .put(baseUrl+"update_data_category", {
         _id: modalId,
         category_name: categoryNameUpdate,
       })

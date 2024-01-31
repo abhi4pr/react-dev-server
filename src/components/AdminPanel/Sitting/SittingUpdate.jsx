@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../../utils/config'
 
 const SittingUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -26,7 +27,7 @@ const SittingUpdate = () => {
     setError("");
 
     axios
-      .put(`http://34.93.221.166:3000/api/update_sitting`, {
+      .put(`${baseUrl}`+`update_sitting`, {
         sitting_id: id,
         sitting_ref_no: sittingRefrenceNum,
         sitting_area: sittingArea,
@@ -51,7 +52,7 @@ const SittingUpdate = () => {
 
   useEffect(() => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_rooms")
+      .get(baseUrl+"get_all_rooms")
       .then((res) => {
         setRoomData(res.data.data);
       })

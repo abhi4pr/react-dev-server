@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import CampaignDetailes from "../CampaignDetailes";
 import { Link } from "react-router-dom";
+import { baseUrl } from "../../../../utils/config";
 
 const PhaseDashboard = () => {
   const [allPhaseData, setAllPhaseData] = useState([]);
@@ -11,7 +12,7 @@ const PhaseDashboard = () => {
   var planId;
   const phaseData = async () => {
     const phase = await axios.get(
-      `http://34.93.221.166:3000/api/campaignphase/singlephase/${44}`
+      `${baseUrl}`+`campaignphase/singlephase/${44}`
     );
     const setsinglephasedata = phase.data.data.pages[0].campaignId;
     console.log(phase.data.data.pages[0]._id, "singledasta");
@@ -20,7 +21,7 @@ const PhaseDashboard = () => {
     setSinglePhaseData(setsinglephasedata);
 
     const getallphase = await axios.get(
-      `http://34.93.221.166:3000/api/campaignphase/${setsinglephasedata}`
+      `${baseUrl}`+`campaignphase/${setsinglephasedata}`
     );
 
     const response = await getallphase.data.result.filter(
@@ -32,7 +33,7 @@ const PhaseDashboard = () => {
 
   const phaseDash = async () => {
     const phaseDashboardData = await axios.post(
-      `http://34.93.221.166:3000/api/operation_phase_dashboard`,
+      `${baseUrl}`+`operation_phase_dashboard`,
       {
         phase_id: "44",
       }

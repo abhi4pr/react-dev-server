@@ -6,6 +6,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
+import {baseUrl} from '../../utils/config'
 
 const BrandView = () => {
   const { toastAlert } = useGlobalContext();
@@ -28,7 +29,7 @@ const BrandView = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_logo_data/${id}`)
+      .get(`${baseUrl}`+`get_single_logo_data/${id}`)
       .then((res) => {
         const fetchedData = res.data;
         const { brand_name, upload_logo, remark, cat_name } = fetchedData;
@@ -43,7 +44,7 @@ const BrandView = () => {
   useEffect(() => {
     if (brand) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`)
+        .get(`${baseUrl}`+`get_logo_data_for_brand/${brand}`)
         .then((res) => {
           setLogos(res.data);
         });

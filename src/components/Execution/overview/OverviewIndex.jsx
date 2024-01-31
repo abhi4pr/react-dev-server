@@ -34,7 +34,7 @@ const OverviewIndex = () => {
       const responseArray = [];
 
       axios
-        .get("http://34.93.221.166:3000/api/get_exe_sum", {
+        .get(baseUrl+"get_exe_sum", {
           loggedin_user_id: 52,
         })
         .then((response) => {
@@ -70,7 +70,7 @@ const OverviewIndex = () => {
       //   }
       // }
 
-      axios.get("http://34.93.221.166:3000/api/execution_graph").then((res) => {
+      axios.get(baseUrl+"execution_graph").then((res) => {
         console.log(res.data, "this is response");
         setCounts(res.data);
         console.log(

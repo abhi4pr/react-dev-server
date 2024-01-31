@@ -16,6 +16,7 @@ import ContactNumberReact from "../../ReusableComponents/ContactNumberReact";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DocumentTab from "../../PreOnboarding/DocumentTab";
+import {baseUrl} from '../../../utils/config'
 
 const castOption = ["General", "OBC", "SC", "ST"];
 const colourOptions = [
@@ -273,7 +274,7 @@ const UserUpdate = () => {
     if (department) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_subdept_from_dept/${department}`
+          `${baseUrl}`+`get_subdept_from_dept/${department}`
         )
         .then((res) => setSubDepartmentData(res.data));
     }
@@ -290,31 +291,31 @@ const UserUpdate = () => {
   useEffect(() => {
     const GetAllData = async () => {
       const AllRolesResposne = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_roles"
+        baseUrl+"get_all_roles"
       );
 
       const AllDepartmentResponse = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_departments"
+        baseUrl+"get_all_departments"
       );
 
       const RemainingSittingResponse = await axios.get(
-        "http://34.93.221.166:3000/api/not_alloc_sitting"
+        baseUrl+"not_alloc_sitting"
       );
 
       const AllSittingsResponse = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_sittings"
+        baseUrl+"get_all_sittings"
       );
 
       const AllUsersResponse = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_users"
+        baseUrl+"get_all_users"
       );
 
       const AllDesiResponse = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_designations"
+        baseUrl+"get_all_designations"
       );
 
       const AllJobTypesResponse = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_job_types"
+        baseUrl+"get_all_job_types"
       );
 
       getRoleData(AllRolesResposne.data.data);
@@ -331,10 +332,10 @@ const UserUpdate = () => {
   useEffect(() => {
     async function getDetails() {
       const familyDataResponse = await axios.get(
-        `http://34.93.221.166:3000/api/get_single_family/${id}`
+        `${baseUrl}`+`get_single_family/${id}`
       );
       const educationDataResponse = await axios.get(
-        `http://34.93.221.166:3000/api/get_single_education/${id}`
+        `${baseUrl}`+`get_single_education/${id}`
       );
       setFamilyDetails(familyDataResponse.data.data);
       setEducationDetails(educationDataResponse.data.data);
@@ -344,7 +345,7 @@ const UserUpdate = () => {
 
   function getOtherDocument() {
     axios
-      .get(`http://34.93.221.166:3000/api/get_user_other_fields/${id}`)
+      .get(`${baseUrl}`+`get_user_other_fields/${id}`)
       .then((res) => {
         setOtherDocuments(res.data.data);
       });
@@ -352,7 +353,7 @@ const UserUpdate = () => {
 
   async function getDocuments() {
     const response = await axios.post(
-      "http://34.93.221.166:3000/api/get_user_doc",
+      baseUrl+"get_user_doc",
       {
         user_id: id,
       }
@@ -366,7 +367,7 @@ const UserUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_user/${id}`)
+      .get(`${baseUrl}`+`get_single_user/${id}`)
       .then((res) => {
         const fetchedData = res.data;
         const {
@@ -685,7 +686,7 @@ const UserUpdate = () => {
       setLoading(true);
 
       await axios
-        .put(`http://34.93.221.166:3000/api/update_user`, formData, {
+        .put(`${baseUrl}`+`update_user`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -700,7 +701,7 @@ const UserUpdate = () => {
 
       if (reportL1 !== "") {
         axios
-          .post("http://34.93.221.166:3000/api/add_send_user_mail", {
+          .post(baseUrl+"add_send_user_mail", {
             email: email,
             subject: "User Registration",
             text: "A new user has been registered.",
@@ -740,7 +741,7 @@ const UserUpdate = () => {
         }
         try {
           const response = await axios.put(
-            "http://34.93.221.166:3000/api/update_family",
+            baseUrl+"update_family",
             payload
           );
         } catch (error) {
@@ -765,7 +766,7 @@ const UserUpdate = () => {
         }
         try {
           const response = await axios.put(
-            "http://34.93.221.166:3000/api/update_education",
+            baseUrl+"update_education",
             payload
           );
         } catch (error) {
@@ -798,7 +799,7 @@ const UserUpdate = () => {
                 : document.status
             );
             const response = await axios.put(
-              "http://34.93.221.166:3000/api/update_user_doc",
+              baseUrl+"update_user_doc",
               formData,
               {
                 headers: {
@@ -839,7 +840,7 @@ const UserUpdate = () => {
         formDataa.append("lastupdated_by", loginUserId);
         formDataa.append("field_value", element.field_value);
         axios.put(
-          `http://34.93.221.166:3000/api/updateuserotherfielddata/${id}`,
+          `${baseUrl}`+`updateuserotherfielddata/${id}`,
           // {
           //   id:element.id,
           //   field_name: element.field_name,
@@ -862,7 +863,7 @@ const UserUpdate = () => {
       // console.log(uid, "yha uid hai put ke bad");
       // console.log(panUpload, "pan hai yha");
       // axios
-      //   .post("http://34.93.221.166:3000/api/add_send_user_mail", {
+      //   .post(baseUrl+"add_send_user_mail", {
       //     email: email,
       //     subject: "User Registration",
       //     text: "A new user has been registered.",
@@ -1036,7 +1037,7 @@ const UserUpdate = () => {
     if (itemToRemove && itemToRemove.family_id) {
       try {
         await axios.delete(
-          `http://34.93.221.166:3000/api/delete_family/${itemToRemove.family_id}`
+          `${baseUrl}`+`delete_family/${itemToRemove.family_id}`
         );
         toastAlert("Details Deleted");
       } catch (error) {
@@ -1072,7 +1073,7 @@ const UserUpdate = () => {
     if (itemToRemove && itemToRemove.education_id) {
       try {
         await axios.delete(
-          `http://34.93.221.166:3000/api/delete_education/${itemToRemove.education_id}`
+          `${baseUrl}`+`delete_education/${itemToRemove.education_id}`
         );
         toastAlert("Details Deleted");
       } catch (error) {

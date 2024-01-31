@@ -16,6 +16,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
+import {baseUrl} from '../../../utils/config'
 
 const UserOverview = () => {
   const whatsappApi = WhatsappAPI();
@@ -66,7 +67,7 @@ const UserOverview = () => {
 
   const KRAAPI = (userId) => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_kra/${userId}`)
+      .get(`${baseUrl}`+`get_single_kra/${userId}`)
       .then((res) => {
         setKRIData(res.data);
       });
@@ -82,13 +83,13 @@ const UserOverview = () => {
     setUserName(username);
     setUserContact(user_contact_no);
     axios
-      .get("http://34.93.221.166:3000/api/get_all_reasons")
+      .get(baseUrl+"get_all_reasons")
       .then((res) => setSeparationReasonGet(res.data));
   }
   const today = new Date().toISOString().split("T")[0];
 
   function handleSeparationDataPost() {
-    axios.post("http://34.93.221.166:3000/api/add_separation", {
+    axios.post(baseUrl+"add_separation", {
       user_id: separationUserID,
       status: separationStatus,
       created_by: userID,
@@ -109,7 +110,7 @@ const UserOverview = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setData(res.data);
@@ -120,7 +121,7 @@ const UserOverview = () => {
   // Admin Login from User
   const handleLogin = (user_id, user_login_id, user_login_password) => {
     axios
-      .post("http://34.93.221.166:3000/api/login_user", {
+      .post(baseUrl+"login_user", {
         user_id: user_id,
         user_login_id: user_login_id,
         user_login_password: user_login_password,
@@ -142,7 +143,7 @@ const UserOverview = () => {
   async function getData() {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/get_all_users"
+        baseUrl+"get_all_users"
       );
       const data = response.data.data;
       setDatas(data);
@@ -157,7 +158,7 @@ const UserOverview = () => {
 
   const departmentAPI = () => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => {
         setDepartmentData(res.data);
         getData();
@@ -166,7 +167,7 @@ const UserOverview = () => {
 
   const designationAPI = () => {
     axios
-      .get("http://34.93.221.166:3000/api/get_all_designations")
+      .get(baseUrl+"get_all_designations")
       .then((res) => {
         setDesiOrgData(res.data.data);
       });
@@ -194,7 +195,7 @@ const UserOverview = () => {
       .then((result) => {
         if (result.isConfirmed) {
           axios
-            .delete(`http://34.93.221.166:3000/api/delete_user/${userId}`)
+            .delete(`${baseUrl}`+`delete_user/${userId}`)
             .then(() => {
               // Check if no error occurred and then show the success alert
               swalWithBootstrapButtons.fire(
@@ -483,7 +484,7 @@ const UserOverview = () => {
 
   const handleTransfer = (userId) => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_kra/${userId}`)
+      .get(`${baseUrl}`+`get_single_kra/${userId}`)
       .then((res) => {
         setTransferResponsibilityData(res.data);
       });
@@ -520,13 +521,13 @@ const UserOverview = () => {
         Job_res_id: element.Job_res_id,
       };
       axios
-        .post("http://34.93.221.166:3000/api/add_kra", requestData)
+        .post(baseUrl+"add_kra", requestData)
         .then(() => {
           setRemark("");
           setTransferTo("");
           toastAlert("KRA Transfer Successfully");
           const MailUser = transferToUser.find((d) => d.user_id == transferTo);
-          axios.post("http://34.93.221.166:3000/api/add_send_user_mail", {
+          axios.post(baseUrl+"add_send_user_mail", {
             email: MailUser.user_email_id,
             subject: "User Registration",
             text: "You Have Assign New KRA",

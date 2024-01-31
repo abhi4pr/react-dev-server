@@ -9,6 +9,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import DeleteButton from "../AdminPanel/DeleteButton";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import FieldContainer from "../AdminPanel/FieldContainer";
+import { baseUrl } from "../../utils/config";
 
 const BrandOverviewOld = () => {
   // const { data } = useGlobalContext();
@@ -22,7 +23,7 @@ const BrandOverviewOld = () => {
   const [countData, setCountData] = useState([]);
 
   function getData() {
-    axios.get("http://34.93.221.166:3000/api/logodata").then((res) => {
+    axios.get(baseUrl+"logodata").then((res) => {
       setCountData(res.data);
       const responseData = res.data;
       const uniqueBrandName = new Set();
@@ -38,11 +39,11 @@ const BrandOverviewOld = () => {
     });
 
     axios
-      .get("http://34.93.221.166:3000/api/alllogocat")
+      .get(baseUrl+"alllogocat")
       .then((res) => setCategoryData(res.data));
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_users")
+      .get(baseUrl+"get_all_users")
       .then((res) => setEmployeeData(res.data.data));
   }
 

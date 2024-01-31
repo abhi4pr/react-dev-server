@@ -8,6 +8,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { Button } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import {baseUrl} from '../../../utils/config'
 
 const PaymentMode = () => {
   const { toastAlert } = useGlobalContext();
@@ -27,7 +28,7 @@ const PaymentMode = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post("http://34.93.221.166:3000/api/", {
+    await axios.post(baseUrl+"", {
       display_sequence: displaySeq,
     });
 
@@ -37,12 +38,12 @@ const PaymentMode = () => {
 
   function getData() {
     axios
-      .post("http://34.93.221.166:3000/api/add_php_payment_acc_data_in_node")
+      .post(baseUrl+"add_php_payment_acc_data_in_node")
       .then((res) => {
         console.log("data save in local success");
       });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_php_payment_acc_data")
+      .get(baseUrl+"get_all_php_payment_acc_data")
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);

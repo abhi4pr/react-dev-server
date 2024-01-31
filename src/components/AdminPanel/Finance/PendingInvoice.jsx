@@ -6,6 +6,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { useNavigate, Link } from "react-router-dom";
 import { get } from "jquery";
+import {baseUrl} from '../../../utils/config'
 
 const PendingInvoice = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const PendingInvoice = () => {
       )
       .then(() => {
         axios
-        .put("http://34.93.221.166:3000/api/pending_invoice_update", formData, {
+        .put(baseUrl+"pending_invoice_update", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -70,7 +71,7 @@ const PendingInvoice = () => {
       )
       .then(() => {
         axios
-          .put("http://34.93.221.166:3000/api/pending_invoice_update", formData, {
+          .put(baseUrl+"pending_invoice_update", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -85,7 +86,7 @@ const PendingInvoice = () => {
   function getData() {
     axios
       .post(
-        "http://34.93.221.166:3000/api/add_php_pending_invoice_data_in_node"
+        baseUrl+"add_php_pending_invoice_data_in_node"
       )
       .then((res) => {
         console.log("data save in local success");

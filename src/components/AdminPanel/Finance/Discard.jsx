@@ -4,6 +4,7 @@ import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import { Button } from '@mui/material';
 import axios from 'axios';
 import ImageView from './ImageView';
+import {baseUrl} from '../../../utils/config'
 
 export default function Discard() {
   const [search, setSearch] = useState("");
@@ -17,7 +18,7 @@ export default function Discard() {
 
   const callApi = () => {
     axios
-      .get("http://34.93.221.166:3000/api/phpvendorpaymentrequest")
+      .get(baseUrl+"phpvendorpaymentrequest")
       .then((res) => {
         console.log(res.data.modifiedData,"node js");
         const x = res.data.modifiedData;

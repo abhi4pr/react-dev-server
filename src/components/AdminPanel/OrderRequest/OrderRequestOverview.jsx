@@ -13,7 +13,7 @@
 //   const [filterdata, setFilterData] = useState([]);
 
 //   function getData() {
-//     axios.get("http://34.93.221.166:3000/api/allorderrequest").then((res) => {
+//     axios.get(baseUrl+"allorderrequest").then((res) => {
 //       setData(res.data);
 //       setFilterData(res.data);
 //       console.log(res.data);
@@ -50,7 +50,7 @@
 //             "success"
 //           );
 //           axios
-//             .delete(`http://34.93.221.166:3000/api/userdelete/${user_id}`)
+//             .delete(`${baseUrl}`+`userdelete/${user_id}`)
 //             .then(() => {
 //               getData();
 //             });

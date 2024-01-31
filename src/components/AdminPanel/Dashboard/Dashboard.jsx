@@ -7,6 +7,7 @@ import { FaProductHunt } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import {baseUrl} from '../../../utils/config'
 
 function Dashboard() {
   const [renderCount, setRenderCount] = useState(0);
@@ -42,7 +43,7 @@ function Dashboard() {
     if (userId && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userId}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userId}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -50,7 +51,7 @@ function Dashboard() {
     }
     if (userId) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_single_user/${userId}`)
+        .get(`${baseUrl}`+`get_single_user/${userId}`)
         .then((res) => {
           setLoginUserData(res.data);
         });
@@ -59,21 +60,21 @@ function Dashboard() {
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
-    axios.get("http://34.93.221.166:3000/api/get_all_sims").then((res) => {
+    axios.get(baseUrl+"get_all_sims").then((res) => {
       getAllSimData(res.data.data);
     });
-    axios.get("http://34.93.221.166:3000/api/get_logo_data").then((res) => {
+    axios.get(baseUrl+"get_logo_data").then((res) => {
       getLogoBrandData(res.data);
     });
-    axios.get("http://34.93.221.166:3000/api/total_count_data").then((res) => {
+    axios.get(baseUrl+"total_count_data").then((res) => {
       setAllData(res.data.distinctDataNamesCount);
     });
     axios
-      .get("http://34.93.221.166:3000/api/get_all_instapages")
+      .get(baseUrl+"get_all_instapages")
       .then((res) => {
         getIntellectualProperty(res.data);
       });
-    axios.get("http://34.93.221.166:3000/api/get_finances").then((res) => {
+    axios.get(baseUrl+"get_finances").then((res) => {
       const response = res?.data;
       setAccountsPendingPaymentsCount(
         response?.filter((item) => item?.status_ == 0)

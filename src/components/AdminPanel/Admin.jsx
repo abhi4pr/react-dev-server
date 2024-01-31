@@ -217,6 +217,7 @@ import DisputeOverview from "./WFH/Dispute/DisputeOverview";
 import FinanceDashboard from "./Finance/Dashboard/FinanceDashboard";
 import SalesExecutiveIncentiveRequestReleaseList from "./Finance/SalesExecutiveIncentiveRequestReleaseList";
 import AssetDashboard from "../Sim/AssetDashboard";
+import { baseUrl } from "../../utils/config";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -228,7 +229,7 @@ const Admin = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setData(res.data);

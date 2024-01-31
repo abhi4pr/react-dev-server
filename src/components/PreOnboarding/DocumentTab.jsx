@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
+import {baseUrl} from '../../utils/config'
 
 const DocumentTab = ({
   documentData,
@@ -55,7 +56,7 @@ const DocumentTab = ({
                 : document.status
             );
             const response = await axios.put(
-              "http://34.93.221.166:3000/api/update_user_doc",
+              baseUrl+"update_user_doc",
               formData,
               {
                 headers: {

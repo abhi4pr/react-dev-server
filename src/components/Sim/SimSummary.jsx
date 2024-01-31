@@ -5,6 +5,7 @@ import UserNav from "../Pantry/UserPanel/UserNav";
 import { useParams } from "react-router";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../Context/Context";
+import { baseUrl } from "../../utils/config";
 
 const SimSummary = () => {
   const { toastAlert } = useGlobalContext();
@@ -17,7 +18,7 @@ const SimSummary = () => {
 
   function getData() {
     axios
-      .get(`http://34.93.221.166:3000/api/get_allocation_data_by_id/${id}`)
+      .get(`${baseUrl}`+`get_allocation_data_by_id/${id}`)
       .then((res) => setShowInfo(res.data));
   }
 
@@ -28,7 +29,7 @@ const SimSummary = () => {
   function handleDelete(e, sum) {
     e.preventDefault();
     axios
-      .put("http://34.93.221.166:3000/api/update_allocationsim", {
+      .put(baseUrl+"update_allocationsim", {
         sim_id: sum.sim_id,
         allo_id: sum.allo_id,
         user_id: sum.user_id,

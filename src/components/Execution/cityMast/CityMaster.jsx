@@ -16,6 +16,7 @@ import { TextField } from "@mui/material";
 import { useGlobalContext } from "../../../Context/Context";
 import DeleteCity from "./DeleteCity";
 import EditCity from "./EditCity";
+import {baseUrl} from '../../../utils/config'
 
 export default function CityMaster() {
   const [city, setCity] = useState([]);
@@ -38,7 +39,7 @@ export default function CityMaster() {
   };
   const handleSaveEditCityName = () => {
     axios
-      .put("http://34.93.221.166:3000/api/update_city", {
+      .put(baseUrl+"update_city", {
         _id: rowData._id,
         city_name: editCityName,
       })
@@ -67,7 +68,7 @@ export default function CityMaster() {
   };
 
   const callApi = () => {
-    axios.get("http://34.93.221.166:3000/api/get_all_cities").then((res) => {
+    axios.get(baseUrl+"get_all_cities").then((res) => {
       console.log(res);
       setCity(res.data.data);
       setRow(res.data.data);
@@ -133,7 +134,7 @@ export default function CityMaster() {
 
   // const handleSaveEditCityName = () => {
   //   axios
-  //     .put("http://34.93.221.166:3000/api/update_city", {
+  //     .put(baseUrl+"update_city", {
   //       _id: rowData._id,
   //       city_name: editCityName,
   //     })
@@ -161,7 +162,7 @@ export default function CityMaster() {
 
   const handleClickAddCity = () => {
     axios
-      .post("http://34.93.221.166:3000/api/add_city", { city_name: addCity })
+      .post(baseUrl+"add_city", { city_name: addCity })
       .then((res) => {
         if (res.status === 200) {
           toastAlert(`${addCity} added successfully`);

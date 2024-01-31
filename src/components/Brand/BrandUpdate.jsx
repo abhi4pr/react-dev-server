@@ -7,6 +7,7 @@ import FieldContainer from "../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import { MdCancel } from "react-icons/md";
+import {baseUrl} from '../../utils/config'
 
 const BrandUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -40,7 +41,7 @@ const BrandUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_logo_data/${id}`)
+      .get(`${baseUrl}`+`get_single_logo_data/${id}`)
       .then((res) => {
         const fetchedData = res.data;
         const { brand_name, upload_logo, remarks, cat_name } = fetchedData;
@@ -52,7 +53,7 @@ const BrandUpdate = () => {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
+      .get(baseUrl+"get_all_logo_categories")
       .then((res) => setCategoryData(res.data));
 
     const today = new Date();
@@ -72,7 +73,7 @@ const BrandUpdate = () => {
   const getCombinedData = async () => {
     if (brand) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_logo_data_for_brand/${brand}`)
+        .get(`${baseUrl}`+`get_logo_data_for_brand/${brand}`)
         .then((res) => {
           setLogos(res.data);
         });
@@ -88,7 +89,7 @@ const BrandUpdate = () => {
       setError("You can't delete default image, try to delete brand instead");
     } else {
       var data = await axios.delete(
-        `http://34.93.221.166:3000/api/delete_logo/${logo_id}`,
+        `${baseUrl}`+`delete_logo/${logo_id}`,
         null
       );
       if (data) {
@@ -100,7 +101,7 @@ const BrandUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.put(`http://34.93.221.166:3000/api/update_logo_brand_new`, {
+    await axios.put(`${baseUrl}`+`update_logo_brand_new`, {
       id: id,
       brand_name: brand,
       remarks: remark,
@@ -122,7 +123,7 @@ const BrandUpdate = () => {
         formData.append("logo_cat", selectedCategories[i]);
 
         await axios.post(
-          "http://34.93.221.166:3000/api/add_logo_brand",
+          baseUrl+"add_logo_brand",
           formData,
           {
             headers: {

@@ -3,6 +3,7 @@ import axios from "axios";
 import FormContainer from "../FormContainer";
 import DataTable from "react-data-table-component";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
+import { baseUrl } from "../../../utils/config";
 
 const WFHDOverview = () => {
   const { ContextDept, RoleIDContext } = useAPIGlobalContext();
@@ -12,7 +13,7 @@ const WFHDOverview = () => {
 
   const getData = async () => {
     const response = await axios.get(
-      "http://34.93.221.166:3000/api/get_all_wfh_users"
+      baseUrl+"get_all_wfh_users"
     );
     if (RoleIDContext == 1 || RoleIDContext == 5) {
       setAllWFHDData(response.data.data);

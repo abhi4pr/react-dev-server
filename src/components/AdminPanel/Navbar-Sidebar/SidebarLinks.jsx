@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
+import {baseUrl} from '../../../utils/config'
 
 const SidebarLinks = () => {
   const [contextData, setData] = useState([]);
@@ -18,7 +19,7 @@ const SidebarLinks = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `http://34.93.221.166:3000/api/get_single_user_auth_detail/${userID}`
+          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setData(res.data);

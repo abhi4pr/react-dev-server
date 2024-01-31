@@ -6,6 +6,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 function ObjectUpdate() {
   const { id } = useParams();
@@ -22,7 +23,7 @@ function ObjectUpdate() {
   const userId = decodedToken.id;
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/objdata/${id}`)
+      .get(`${baseUrl}`+`objdata/${id}`)
       .then((res) => {
         const data = res.data.data;
         setObjData(data);
@@ -32,12 +33,12 @@ function ObjectUpdate() {
       })
       .catch((error) => console.error(error));
     axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
+      .get(baseUrl+"get_all_departments")
       .then((res) => setDeptData(res.data));
   }, [id]);
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.put(`http://34.93.221.166:3000/api/obj_update`, {
+    axios.put(`${baseUrl}`+`obj_update`, {
       obj_id: id,
       soft_name: softwareName,
       obj_name: objectName,

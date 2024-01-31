@@ -35,7 +35,7 @@ export default CreateAgency;
 //   const [remark, setRemark] = useState("");
 
 // const handleSubmit=  async()=>{
-//  await axios.post("http://34.93.221.166:3000/api/agency",{
+//  await axios.post(baseUrl+"agency",{
 //     name:name,
 //     mobile:mobileNumber,
 //     alternateMobile:alternateNumber,

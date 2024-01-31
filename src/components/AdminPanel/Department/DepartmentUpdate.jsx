@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 const DepartmentUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -24,7 +25,7 @@ const DepartmentUpdate = () => {
     setError("");
 
     await axios
-      .put(`http://34.93.221.166:3000/api/update_department`, {
+      .put(`${baseUrl}`+`update_department`, {
         dept_id: id,
         dept_name: departmentName,
         short_name: shortName,

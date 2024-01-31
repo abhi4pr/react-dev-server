@@ -5,6 +5,7 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import DeleteButton from "../DeleteButton";
 import FormContainer from "../FormContainer";
+import { baseUrl } from "../../../utils/config";
 
 const LogoCategoryOverview = () => {
   const [search, setSearch] = useState("");
@@ -14,7 +15,7 @@ const LogoCategoryOverview = () => {
 
   async function getData() {
     await axios
-      .get("http://34.93.221.166:3000/api/get_all_logo_categories")
+      .get(baseUrl+"get_all_logo_categories")
       .then((res) => {
         setData(res.data);
         setFilterData(res.data);

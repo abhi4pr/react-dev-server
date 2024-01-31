@@ -4,8 +4,8 @@ import { Navigate } from "react-router-dom";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import jwtDecode from "jwt-decode";
-
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 const DepartmentMaster = () => {
   const { toastAlert } = useGlobalContext();
@@ -24,7 +24,7 @@ const DepartmentMaster = () => {
     e.preventDefault();
     setError("");
     await axios
-      .post("http://34.93.221.166:3000/api/add_department", {
+      .post(baseUrl+"add_department", {
         dept_name: departmentName,
         short_name: shortName,
         remark: remark,

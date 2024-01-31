@@ -6,6 +6,7 @@ import FormContainer from "../AdminPanel/FormContainer";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
+import {baseUrl} from '../../utils/config'
 
 const IpUpdate = () => {
   const { id } = useParams();
@@ -44,7 +45,7 @@ const IpUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`http://34.93.221.166:3000/api/dataofipregis/${id}`)
+      .get(`${baseUrl}`+`dataofipregis/${id}`)
       .then((res) => {
         const fetchedData = res.data[0];
         setIpType(fetchedData.ip_type);
@@ -72,21 +73,21 @@ const IpUpdate = () => {
       });
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_users")
+      .get(baseUrl+"get_all_users")
       .then((res) => setUserData(res.data.data));
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_platforms")
+      .get(baseUrl+"get_all_platforms")
       .then((res) => setPlatFormData(res.data));
 
     axios
-      .get("http://34.93.221.166:3000/api/get_all_iptypes")
+      .get(baseUrl+"get_all_iptypes")
       .then((res) => setIpTypeData(res.data));
   }, []);
 
   const handleSelectChange = (e) => {
     axios
-      .get(`http://34.93.221.166:3000/api/get_single_user/${e.target.value}`)
+      .get(`${baseUrl}`+`get_single_user/${e.target.value}`)
       .then((res) => {
         setl1(res.data.Report_L1);
         setl2(res.data.Report_L2);
@@ -111,7 +112,7 @@ const IpUpdate = () => {
       .padStart(3, "0")}`;
 
     e.preventDefault();
-    axios.put("http://34.93.221.166:3000/api/ipregiupdate", {
+    axios.put(baseUrl+"ipregiupdate", {
       id: Number(id),
       ip_type: Number(ipType),
       platform: Number(platform),

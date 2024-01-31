@@ -4,6 +4,7 @@ import { Navigate } from "react-router-dom";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
+import {baseUrl} from '../../../utils/config'
 
 const ProductUpdate = () => {
   // const [categoryNames, setCategoryNames] = useState({});
@@ -49,7 +50,7 @@ const ProductUpdate = () => {
 
     // formData.append("Opening_stock_date", openingStockDate);
 
-    axios.put("http://34.93.221.166:3000/api/update_productupdate", formData, {
+    axios.put(baseUrl+"update_productupdate", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -64,7 +65,7 @@ const ProductUpdate = () => {
       };
 
       try {
-        axios.post(`http://34.93.221.166:3000/api/add_proppost`, payload, {
+        axios.post(`${baseUrl}`+`add_proppost`, payload, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -91,10 +92,10 @@ const ProductUpdate = () => {
 
   const removeProp = async (propid) => {
     var data = await axios
-      .delete(`http://34.93.221.166:3000/api/delete_propdelete/${propid}`, null)
+      .delete(`${baseUrl}`+`delete_propdelete/${propid}`, null)
       .then((crash) => {
         axios
-          .get(`http://34.93.221.166:3000/api/get_single_productdata/${id}`)
+          .get(`${baseUrl}`+`get_single_productdata/${id}`)
           .then((res) => {
             setInputFields(res.data.Product_Prop);
           });
@@ -132,7 +133,7 @@ const ProductUpdate = () => {
   useEffect(() => {
     if (localStorage.getItem("product_id")) {
       axios
-        .get(`http://34.93.221.166:3000/api/get_single_productdata/${id}`)
+        .get(`${baseUrl}`+`get_single_productdata/${id}`)
         .then((res) => {
           setInputFields(res.data.Product_Prop);
         });

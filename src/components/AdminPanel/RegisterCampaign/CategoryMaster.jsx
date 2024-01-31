@@ -22,7 +22,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { toolbarStyles } from "./CampaignCommitment";
 import { useGlobalContext } from "../../../Context/Context";
-
+import { baseUrl } from "../../../utils/config";
 
 export default function CategoryMaster() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -67,7 +67,7 @@ export default function CategoryMaster() {
   const handleSave = (e) => {
     e.preventDefault();
     axios
-      .post("http://34.93.221.166:3000/api/projectxCategory", postData)
+      .post(baseUrl+"projectxCategory", postData)
       .then((response) => {
         if (response.data.success === false) {
           toastError(response.data.message);
@@ -88,7 +88,7 @@ export default function CategoryMaster() {
 
   // get api ========>
   const getData = () => {
-    axios.get("http://34.93.221.166:3000/api/projectxCategory").then((res) => {
+    axios.get(baseUrl+"projectxCategory").then((res) => {
       console.log(res.data.data);
       const sortedData = res.data.data.sort(
         (a, b) => b.category_id - a.category_id
@@ -108,7 +108,7 @@ export default function CategoryMaster() {
   // put api =============>
   const handlePutData = () => {
     axios
-      .put(`http://34.93.221.166:3000/api/projectxCategory`, {
+      .put(`${baseUrl}`+`projectxCategory`, {
         id: editData.category_id,
         category_name: editData.category_name,
         // brand_id: editData.brand_id,
@@ -138,7 +138,7 @@ export default function CategoryMaster() {
 
   // delete ======>
   // const handleDeleteClick = (id) => () => {
-  //   axios.delete(`http://34.93.221.166:3000/api/projectxCategory/${id}`).then((res) => {
+  //   axios.delete(`${baseUrl}`+`projectxCategory/${id}`).then((res) => {
   //     getData();
   //     console.log("re data ", res.data);
   //   });
@@ -153,7 +153,7 @@ export default function CategoryMaster() {
     if (itemToDeleteId) {
       axios
         .delete(
-          `http://34.93.221.166:3000/api/projectxCategory/${itemToDeleteId}`
+          `${baseUrl}`+`projectxCategory/${itemToDeleteId}`
         )
         .then(() => {
           getData();

@@ -7,6 +7,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
 import Select from "react-select";
+import {baseUrl} from '../../../utils/config'
 
 export default function SubDepartmentMaster() {
   const { DepartmentContext } = useAPIGlobalContext();
@@ -22,7 +23,7 @@ export default function SubDepartmentMaster() {
 
   // const [departmentdata, getDepartmentData] = useState([]);
   // useEffect(() => {
-  //   axios.get("http://34.93.221.166:3000/api/get_all_departments").then((res) => {
+  //   axios.get(baseUrl+"get_all_departments").then((res) => {
   //     getDepartmentData(res.data).catch((error) => console.log(error));
   //   });
   // }, []);
@@ -30,7 +31,7 @@ export default function SubDepartmentMaster() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://34.93.221.166:3000/api/add_sub_department", {
+      await axios.post(baseUrl+"add_sub_department", {
         sub_dept_name: subDepartmentName,
         dept_id: departmentName,
         remark: remark,

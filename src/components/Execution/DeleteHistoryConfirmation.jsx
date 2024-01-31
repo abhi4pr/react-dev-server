@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
+import {baseUrl} from '../../utils/config'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -30,7 +31,7 @@ export default function DeleteHistoryConfirmation(props) {
   const handleDeleteConfirmation = () => {
     axios
       .delete(
-        `http://34.93.221.166:3000/api/delete_exe_ip_count_history/${rowData._id}`
+        `${baseUrl}`+`delete_exe_ip_count_history/${rowData._id}`
       )
       .then((res) => {
         if (res.data.isDeleted) {

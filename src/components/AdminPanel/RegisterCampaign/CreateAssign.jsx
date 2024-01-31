@@ -21,6 +21,7 @@ import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import Loader from "./Loader/Loader";
 import millify from "millify";
+import { baseUrl } from "../../../utils/config";
 
 let options = [];
 const Follower_Count = [
@@ -55,7 +56,7 @@ const CreateAssign = () => {
     try {
       //1.check if preAssignment Exist for particular phase
       const isPreAss = await axios.post(
-        `http://34.93.221.166:3000/api/preassignment/phase`,
+        `${baseUrl}`+`preassignment/phase`,
         {
           phase_id: id,
         }
@@ -63,7 +64,7 @@ const CreateAssign = () => {
 
       if (isPreAss?.data?.data?.length > 0) {
         const assignment = await axios.get(
-          `http://34.93.221.166:3000/api/assignment/phase/${id}`
+          `${baseUrl}`+`assignment/phase/${id}`
         );
         const filter = assignment?.data?.data.filter((page) => {
           return (
@@ -80,7 +81,7 @@ const CreateAssign = () => {
         const loadingTimeout = setTimeout(() => setIsLoading(false), 3000);
 
         const createPreAssignment = await axios.post(
-          `http://34.93.221.166:3000/api/preassignment`,
+          `${baseUrl}`+`preassignment`,
           {
             phase_id: id,
             ass_by: "123",
@@ -117,7 +118,7 @@ const CreateAssign = () => {
   const ExpertiseDa = async () => {
     try {
       const response = await axios.get(
-        "http://34.93.221.166:3000/api/expertise"
+        baseUrl+"expertise"
       );
       const res = response.data.data;
       setExpertiseData(res);
@@ -130,7 +131,7 @@ const CreateAssign = () => {
   const handleSubmitAssign = async () => {
     try {
       const createAssignment = await axios.post(
-        `http://34.93.221.166:3000/api/assignment/bulk`,
+        `${baseUrl}`+`assignment/bulk`,
         { pages: payload }
       );
       alert("assignment created successfully");
