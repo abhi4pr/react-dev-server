@@ -1,11 +1,8 @@
 import DataTable from "react-data-table-component";
 import DateISOtoNormal from "../../../utils/DateISOtoNormal";
-<<<<<<< Updated upstream
-import {baseUrl} from '../../../utils/config'
-=======
+import { baseUrl } from "../../../utils/config";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
->>>>>>> Stashed changes
 
 const ManagerDynamicOverview = ({
   filterData,
@@ -18,7 +15,7 @@ const ManagerDynamicOverview = ({
 
   const handleStatusUpdate = (row, status) => {
     try {
-      axios.put(baseUrl+"assetrequest", {
+      axios.put(baseUrl + "assetrequest", {
         _id: row.asset_request_id,
         asset_request_status: status,
         // request_by: userID,
