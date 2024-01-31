@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Paper, Typography, Button, Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import millify from "millify";
+
 import * as XLSX from 'xlsx';
 
 const SummaryDetails = ({ payload,campName }) => {
@@ -29,7 +29,7 @@ const SummaryDetails = ({ payload,campName }) => {
       (sum, current) => sum + Number(current.follower_count),
       0
     );
-    const total = millify(totalCount);
+    const total = formatNumber(totalCount);
     const totalPost = payload.reduce(
       (sum, current) => sum + Number(current.postPerPage),
       0
@@ -42,13 +42,17 @@ const SummaryDetails = ({ payload,campName }) => {
 
     setSummaryData({ total, totalPost, lent, totalStory });
   }, [payload]);
-
+  console.log(typeof(5))
   const handleSelectedRowData = (catName) => {
     const filteredRows = payload.filter((e) => e.cat_name === catName);
     setFilteredData(filteredRows);
 
     const totalFollowers = filteredRows.reduce(
-      (sum, current) => sum + Number(current.follower_count),
+      (sum, current) => {
+        if(typeof(current)!=number){
+          return sum
+        }
+        return sum + BigInt(current.follower_count)},
       0
     );
     const totalPosts = filteredRows.reduce(
@@ -60,9 +64,24 @@ const SummaryDetails = ({ payload,campName }) => {
       0
     );
 
-    setTotalFollowerCount(millify(totalFollowers));
-    setTotalPostPerPage(millify(totalPosts));
-    setStoryPerPage(millify(totalStory));
+    setTotalFollowerCount(formatNumber(BigInt(totalFollowers)));
+    setTotalPostPerPage(formatNumber(totalPosts));
+    setStoryPerPage(formatNumber(totalStory));
+  };
+
+
+  const formatNumber = (value) => {
+
+   console.log(value)
+    if (value >= 1000000) {
+      return `${(value / 1000000).toFixed(2)}M`;
+    } else if (value >= 1000) {
+      return `${(value / 1000).toFixed(2)}k`;
+    }else if (value>=10000000){
+      return `${(value / 1000000).toFixed(2)}M`;
+    } else {
+      return value.toString();
+    }
   };
 
   const columns = [
@@ -168,10 +187,10 @@ const SummaryDetails = ({ payload,campName }) => {
                 Followers: {summaryData.total}
               </Typography>
               <Typography variant="6">
-                Posts: {summaryData.totalPost}
+                Posts: {summaryData.totalPost || 0}
               </Typography>
               <Typography variant="6">
-                Story: {summaryData.totalStory}
+                Story: {summaryData.totalStory|| 0}
               </Typography>
             </Box>
           </Paper>

@@ -61,7 +61,7 @@ const ExePageDetailes = ({
   
   const finalExecute=async()=>{
     const response = await axios.post(
-      "http://192.168.29.114:3000/api/assignment/commit",
+      "http://34.93.221.166:3000/api/assignment/commit",
       {
         ass_id: ass_id,
 
@@ -131,7 +131,7 @@ const ExePageDetailes = ({
 
   const handleAssignedSubmit = async () => {
     const response = await axios.post(
-      "http://192.168.29.110:3000/api/assignment/commit",
+      "http://34.93.221.166:3000/api/assignment/commit",
       assignedData
     );
     alert("submitted successfully");

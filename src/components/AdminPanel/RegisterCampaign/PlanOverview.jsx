@@ -27,8 +27,8 @@ const PlanOverview = () => {
         page.replacement_status == "replacement" ||
         page.replacement_status == "inactive"
       ) {
-        return page;
       }
+      return page;
     });
     setSelectData(x);
   };
