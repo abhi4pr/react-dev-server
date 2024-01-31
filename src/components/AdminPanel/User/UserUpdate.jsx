@@ -116,7 +116,9 @@ const UserUpdate = () => {
   const [incomingPassword, setIncomingPassword] = useState("");
 
   const [jobType, setJobType] = useState("");
-  const [sitting, setSitting] = useState("");
+  const [sitting, setSitting] = useState();
+  const [sittingValue, setSittingValue] = useState({});
+
   const [roomId, setRoomId] = useState("");
   const [refrenceData, setRefrenceData] = useState([]);
 
@@ -268,9 +270,13 @@ const UserUpdate = () => {
   // }, [sitting, refrenceData, roomId]);
 
   useEffect(() => {
-    axios
-      .get(`http://34.93.221.166:3000/api/get_subdept_from_dept/${department}`)
-      .then((res) => setSubDepartmentData(res.data));
+    if (department) {
+      axios
+        .get(
+          `http://34.93.221.166:3000/api/get_subdept_from_dept/${department}`
+        )
+        .then((res) => setSubDepartmentData(res.data));
+    }
   }, [department]);
 
   useEffect(() => {
@@ -282,41 +288,44 @@ const UserUpdate = () => {
   }, [tdsApplicable]);
 
   useEffect(() => {
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_roles")
-      .then((res) => {
-        getRoleData(res.data.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    const GetAllData = async () => {
+      const AllRolesResposne = await axios.get(
+        "http://34.93.221.166:3000/api/get_all_roles"
+      );
 
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_departments")
-      .then((res) => {
-        getDepartmentData(res.data);
-      });
+      const AllDepartmentResponse = await axios.get(
+        "http://34.93.221.166:3000/api/get_all_departments"
+      );
 
-    axios.get("http://34.93.221.166:3000/api/not_alloc_sitting").then((res) => {
-      setRefrenceData(res.data.data);
-    });
+      const RemainingSittingResponse = await axios.get(
+        "http://34.93.221.166:3000/api/not_alloc_sitting"
+      );
 
-    axios.get("http://34.93.221.166:3000/api/get_all_sittings").then((res) => {
-      setDefaultSeatData(res.data.data);
-    });
+      const AllSittingsResponse = await axios.get(
+        "http://34.93.221.166:3000/api/get_all_sittings"
+      );
 
-    axios.get("http://34.93.221.166:3000/api/get_all_users").then((res) => {
-      getUsersData(res.data.data);
-    });
+      const AllUsersResponse = await axios.get(
+        "http://34.93.221.166:3000/api/get_all_users"
+      );
 
-    axios
-      .get("http://34.93.221.166:3000/api/get_all_designations")
-      .then((res) => {
-        setDesignationData(res.data.data);
-      });
-    axios.get("http://34.93.221.166:3000/api/get_all_job_types").then((res) => {
-      setJobTypeData(res.data.data);
-    });
+      const AllDesiResponse = await axios.get(
+        "http://34.93.221.166:3000/api/get_all_designations"
+      );
+
+      const AllJobTypesResponse = await axios.get(
+        "http://34.93.221.166:3000/api/get_all_job_types"
+      );
+
+      getRoleData(AllRolesResposne.data.data);
+      getDepartmentData(AllDepartmentResponse.data);
+      setJobTypeData(AllJobTypesResponse.data.data);
+      setDesignationData(AllDesiResponse.data.data);
+      getUsersData(AllUsersResponse.data.data);
+      setDefaultSeatData(AllSittingsResponse.data.data);
+      setRefrenceData(RemainingSittingResponse.data.data);
+    };
+    GetAllData();
   }, []);
 
   useEffect(() => {
@@ -360,7 +369,6 @@ const UserUpdate = () => {
       .get(`http://34.93.221.166:3000/api/get_single_user/${id}`)
       .then((res) => {
         const fetchedData = res.data;
-
         const {
           user_name,
           role_id,
@@ -460,8 +468,8 @@ const UserUpdate = () => {
         setSalary(salary);
         let lang = SpokenLanguages.split(",");
         let modifiedLang = lang
-          .filter((item) => item.trim() !== "")
-          .map((item) => ({ value: item, label: item }));
+          ?.filter((item) => item.trim() !== "")
+          ?.map((item) => ({ value: item, label: item }));
         setTempLanguage(modifiedLang);
         setGender(Gender);
         setNationality(Nationality);
@@ -497,6 +505,26 @@ const UserUpdate = () => {
 
     getOtherDocument();
   }, [id]);
+
+  useEffect(() => {
+    const InitialSitting = defaultSeatData?.find(
+      (object) => object.sitting_id == sitting
+    );
+
+    setRefrenceData((prev) => [InitialSitting, ...prev]);
+  }, [defaultSeatData]);
+
+  useEffect(() => {
+    const SelectedSitting = refrenceData?.find(
+      (object) => object?.sitting_id == sitting
+    );
+    const updatedSitting = {
+      value: SelectedSitting?.sitting_id,
+      label: `${SelectedSitting?.sitting_ref_no} | ${SelectedSitting?.sitting_area}`,
+    };
+
+    setSittingValue(updatedSitting);
+  }, [sitting, refrenceData]);
 
   const handleSubmit = async (e) => {
     // setLoading(true)
@@ -1081,7 +1109,7 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={jobTypeData.map((option) => ({
+          options={jobTypeData?.map((option) => ({
             value: `${option.job_type}`,
             label: `${option.job_type}`,
           }))}
@@ -1101,14 +1129,14 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={designationData.map((option) => ({
+          options={designationData?.map((option) => ({
             value: option.desi_id,
             label: `${option.desi_name}`,
           }))}
           value={{
             value: designation,
             label:
-              designationData.find((user) => user.desi_id == designation)
+              designationData?.find((user) => user.desi_id == designation)
                 ?.desi_name || "",
           }}
           onChange={(e) => {
@@ -1122,7 +1150,7 @@ const UserUpdate = () => {
         <label className="form-label">Category</label>
         <Select
           className=""
-          options={castOption.map((option) => ({
+          options={castOption?.map((option) => ({
             value: option,
             label: `${option}`,
           }))}
@@ -1143,7 +1171,7 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={departmentdata.map((option) => ({
+          options={departmentdata?.map((option) => ({
             value: option.dept_id,
             label: `${option.dept_name}`,
           }))}
@@ -1165,7 +1193,7 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={subDepartmentData.map((option) => ({
+          options={subDepartmentData?.map((option) => ({
             value: option.id,
             label: `${option.sub_dept_name}`,
           }))}
@@ -1188,7 +1216,7 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={usersData.map((option) => ({
+          options={usersData?.map((option) => ({
             value: option.user_id,
             label: `${option.user_name}`,
           }))}
@@ -1209,7 +1237,7 @@ const UserUpdate = () => {
         <label className="form-label">Report L2</label>
         <Select
           className=""
-          options={usersData.map((option) => ({
+          options={usersData?.map((option) => ({
             value: option.user_id,
             label: `${option.user_name}`,
           }))}
@@ -1230,7 +1258,7 @@ const UserUpdate = () => {
         <label className="form-label">Report L3</label>
         <Select
           className=""
-          options={usersData.map((option) => ({
+          options={usersData?.map((option) => ({
             value: option.user_id,
             label: `${option.user_name}`,
           }))}
@@ -1414,16 +1442,11 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={refrenceData.map((option) => ({
+          options={refrenceData?.map((option) => ({
             value: `${option?.sitting_id}`,
             label: `${option?.sitting_ref_no} | ${option?.sitting_area}`,
           }))}
-          value={{
-            value: `${sitting ? sitting : ""}`,
-            label: `${roomId?.sitting_ref_no} ${roomId ? "|" : ""} ${
-              roomId?.sitting_area
-            }`,
-          }}
+          value={sittingValue}
           onChange={(e) => {
             const selectedSittingId = e.value;
             setSitting(selectedSittingId);
@@ -1476,7 +1499,7 @@ const UserUpdate = () => {
             </label>
             <Select
               className=""
-              options={tdsApplicableData.map((option) => ({
+              options={tdsApplicableData?.map((option) => ({
                 value: `${option}`,
                 label: `${option}`,
               }))}
@@ -1510,7 +1533,7 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={statusData.map((option) => ({
+          options={statusData?.map((option) => ({
             value: `${option}`,
             label: `${option}`,
           }))}
@@ -1635,7 +1658,7 @@ const UserUpdate = () => {
         <label className="form-label">Higest Qualification</label>
         <Select
           className=""
-          options={higestQualificationData.map((option) => ({
+          options={higestQualificationData?.map((option) => ({
             value: `${option}`,
             label: `${option}`,
           }))}
@@ -1708,7 +1731,7 @@ const UserUpdate = () => {
       {otherDocuments && (
         <div>
           <h3>Other Documents</h3>
-          {otherDocuments.map((item, index) => {
+          {otherDocuments?.map((item, index) => {
             return (
               <div key={index} className="d-flex ">
                 <input
@@ -1755,7 +1778,7 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={genderData.map((option) => ({
+          options={genderData?.map((option) => ({
             value: `${option}`,
             label: `${option}`,
           }))}
@@ -1816,7 +1839,7 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={bloodGroupData.map((option) => ({
+          options={bloodGroupData?.map((option) => ({
             value: `${option}`,
             label: `${option}`,
           }))}
@@ -1836,7 +1859,7 @@ const UserUpdate = () => {
         </label>
         <Select
           className=""
-          options={maritialStatusData.map((option) => ({
+          options={maritialStatusData?.map((option) => ({
             value: `${option}`,
             label: `${option}`,
           }))}
@@ -1920,7 +1943,7 @@ const UserUpdate = () => {
       {familyDetails?.map((detail, index) => (
         <div key={index} mb={2}>
           <div className="row">
-            {Object.keys(detail).map((key) => {
+            {Object.keys(detail)?.map((key) => {
               if (familyDisplayFields.includes(key)) {
                 return key === "DOB" ? (
                   <FieldContainer
@@ -1992,7 +2015,7 @@ const UserUpdate = () => {
       {educationDetails?.map((detail, index) => (
         <div key={index} mb={2}>
           <div className="row">
-            {educationDispalyFields.map((key) => {
+            {educationDispalyFields?.map((key) => {
               return key === "from_year" || key === "to_year" ? (
                 <FieldContainer
                   key={key}

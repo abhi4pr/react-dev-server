@@ -96,6 +96,22 @@ const WFHSingleUser = () => {
       });
   }, [userID]);
 
+  // useEffect(() => {
+  //   axios
+  //     .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
+  //     .then((res) => {
+  //       const digitalSignImageUrl = res.data.digital_signature_image_url;
+
+  //       const shouldOpenModal =
+  //         !digitalSignImageUrl || digitalSignImageUrl.trim() === "";
+
+  //       setIsModalOpen(shouldOpenModal);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching user data:", error);
+  //     });
+  // }, [userID]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {

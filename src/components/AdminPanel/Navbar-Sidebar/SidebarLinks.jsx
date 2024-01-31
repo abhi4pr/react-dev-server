@@ -232,9 +232,6 @@ const SidebarLinks = () => {
             <Link className="collapse-item" to="/admin/wfh-single-user">
               Payout Summary
             </Link>
-            <Link className="collapse-item" to="/admin/dispute-overview">
-              Dispute Summary
-            </Link>
           </div>
         </div>
       </li>
@@ -258,7 +255,7 @@ const SidebarLinks = () => {
             className="collapse"
             aria-labelledby="headingTwo"
           >
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link
                 className="nav-link collapsed"
                 data-toggle="collapse"
@@ -292,7 +289,7 @@ const SidebarLinks = () => {
                   </Link>
                 </div>
               </div>
-            </li>
+            </li> */}
 
             {isWFHDHRPayrollManager && (
               <li className="nav-item">
@@ -327,6 +324,12 @@ const SidebarLinks = () => {
 
                     <Link className="collapse-item" to="/admin/attendence-mast">
                       Attendance Summary
+                    </Link>
+                    <Link
+                      className="collapse-item"
+                      to="/admin/dispute-overview"
+                    >
+                      Dispute Summary
                     </Link>
                   </div>
                 </div>

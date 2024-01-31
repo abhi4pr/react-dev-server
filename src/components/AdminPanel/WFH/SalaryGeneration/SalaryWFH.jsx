@@ -22,6 +22,7 @@ import { Button } from "@mui/material";
 import { generatePDF } from "./pdfGenerator";
 import { useLocation, Link } from "react-router-dom";
 import FieldContainer from "../../FieldContainer";
+import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -881,7 +882,7 @@ const SalaryWFH = () => {
       "Employee Name": row.user_name,
       Department: row.dept_name,
       Designation: row.designation_name,
-      DOJ: row.joining_date,
+      DOJ: DateISOtoNormal(row.joining_date),
       "Work Days": 26,
       Month: row.month,
       salary: row.salary + " ₹",
