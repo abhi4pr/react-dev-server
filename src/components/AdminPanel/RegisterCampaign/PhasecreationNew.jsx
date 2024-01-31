@@ -87,14 +87,14 @@ const PhasecreationNew = () => {
     setAssignAll(true)
   }
 
-  console.log(allPhaseData)
+  console.log(allPageData)
   useEffect(() => {
 
 
     if (allPhaseData.length > 0) {
       let flag = false
       allPageData.forEach((page) => {
-        if (page.postRemaining > 0 || page.storyRemaining > 0) {
+        if (Number(page.postRemaining) > 0 || Number(page.storyRemaining) > 0) {
           flag = true
 
         }
@@ -116,6 +116,8 @@ const PhasecreationNew = () => {
   const renderHard = () => {
     getPhaseData();
   };
+
+  console.log(stopCreate)
   return (
     <>
       <div className="form_heading_title">

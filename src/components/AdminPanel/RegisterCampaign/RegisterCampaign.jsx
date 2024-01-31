@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import AddPage from "./AddPage";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
 import axios from "axios";
 import * as XLSX from "xlsx";
 import dayjs from "dayjs";

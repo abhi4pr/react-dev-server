@@ -130,7 +130,7 @@ const CreateAssign = () => {
   const handleSubmitAssign = async () => {
     try {
       const createAssignment = await axios.post(
-        `http://192.168.29.110:3000/api/assignment/bulk`,
+        `http://34.93.221.166:3000/api/assignment/bulk`,
         { pages: payload }
       );
       alert("assignment created successfully");

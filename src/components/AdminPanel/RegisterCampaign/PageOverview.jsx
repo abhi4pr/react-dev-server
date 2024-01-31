@@ -27,14 +27,18 @@ const PageOverview = ({ selectData, setrender, stage, id }) => {
       if (
         page.replacement_status == "pending" ||
         page.replacement_status == "replacement" ||
-        page.replacement_status == "inactive"
+        page.replacement_status == "inactive" 
+       
       ) {
         return page;
       }
     });
 
+
     setRealData(data);
   }, [selectData]);
+
+  console.log(realData)
 
   const columns = [
     {

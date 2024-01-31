@@ -55,7 +55,10 @@ const Experties = () => {
   const categorySet = () => {
     allPageData?.forEach((data) => {
       if (!options.includes(data.cat_name)) {
-        options.push(data.cat_name);
+        if(data.cat_name!=null){
+
+          options.push(data.cat_name);
+        }
       }
     });
   };
