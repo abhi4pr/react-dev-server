@@ -8,15 +8,25 @@ import NewAssetRequestOverview from "./NewAssetRequestOverview";
 import DateISOtoNormal from "../../../utils/DateISOtoNormal";
 import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
+import FieldContainer from "../../AdminPanel/FieldContainer";
+import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 
 const AssetVisibleToHr = () => {
   const { toastAlert } = useGlobalContext();
+  const { userID } = useAPIGlobalContext();
   const [filterData, setFilterData] = useState([]);
   const [data, setData] = useState([]);
   const [search, setSearch] = useState("");
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [newAsseRequesttData, setNewAsseRequesttData] = useState([]);
   const [returnAssetData, setReturnAssetData] = useState([]);
+
+  // Return Recover Asset
+  const [id, setID] = useState(0);
+  const [reoverStatus, setRecoverStatus] = useState("");
+  const [returnRecoverRemark, setReturnRecoverRemark] = useState("");
+  const [returnRecoverImg1, setReturnRecoverImg1] = useState(null);
+  const [returnRecoverImg2, setReturnRecoverImg2] = useState(null);
 
   // Parent Toggle Button section start------------------------------------------------
   const handleAccordionButtonClickParent = (index) => {
@@ -122,13 +132,13 @@ const AssetVisibleToHr = () => {
     />
   );
   const getNewAssetData = () => {
-    axios.get(baseUrl+"assetrequest").then((res) => {
+    axios.get(baseUrl + "assetrequest").then((res) => {
       setNewAsseRequesttData(res.data.data);
     });
   };
 
   const getReturnAssetData = () => {
-    axios.get(baseUrl+"assetreturn").then((res) => {
+    axios.get(baseUrl + "assetreturn").then((res) => {
       setReturnAssetData(res.data.singleAssetReturnRequest);
     });
   };
@@ -147,9 +157,7 @@ const AssetVisibleToHr = () => {
 
   async function getData() {
     try {
-      const response = await axios.get(
-        baseUrl+"show_asset_hr_data"
-      );
+      const response = await axios.get(baseUrl + "show_asset_hr_data");
       setFilterData(response.data.data);
       setData(response.data.data);
     } catch (error) {
@@ -157,17 +165,51 @@ const AssetVisibleToHr = () => {
     }
   }
 
-  const handleReturnAsset = (row) => {
+  const handleReturnAssetRecover = (row, status) => {
+    setID(row._id);
+    setRecoverStatus(status);
+    console.log(row, "row hai yha");
+  };
+  const handleRecoverAssetSubmit = () => {
     try {
-      axios.put(baseUrl+"update_sim", {
-        id: row.sim_id,
+      const formData = new FormData();
+      formData.append("_id", id);
+      formData.append("asset_return_recover_by_remark", returnRecoverRemark);
+      formData.append("recover_asset_image_1", returnRecoverImg1);
+      formData.append("recover_asset_image_2", returnRecoverImg2);
+      formData.append("asset_return_recover_by", userID);
+      formData.append("asset_return_status", reoverStatus);
+
+      const response = axios.put(baseUrl + "assetreturn", formData);
+
+      axios.put(baseUrl + "update_allocationsim", {
+        sim_id: row.sim_id,
+        allo_id: simData.allo_id,
         status: "Available",
+        submitted_by: userID,
+        submitted_at: currSubDate,
       });
 
-      toastAlert("Status Update");
-      getReturnAssetData();
+      axios
+        .put(baseUrl + "update_sim", {
+          id: row.sim_id,
+          status: "Available",
+        })
+        .then(() => {
+          toastAlert("Form Submitted success");
+          setIsFormSubmitted(true);
+          getData();
+        })
+        .catch((error) => {
+          // console.error(error);
+        });
+
+      toastAlert("Requested Success");
+      setReturnRecoverRemark("");
+      setReturnRecoverImg1("");
+      setReturnRecoverImg2("");
     } catch (error) {
-      console.log("", error);
+      console.log(error);
     }
   };
 
@@ -189,14 +231,29 @@ const AssetVisibleToHr = () => {
       selector: (row) => row.asset_return_remark,
     },
     {
+      name: "Status",
+      selector: (row) => (
+        <>
+          {row?.asset_return_status === "RecovedByHR" ? (
+            <span className="badge badge-success">Recover By HR</span>
+          ) : row.asset_return_status === "ApprovedByManager" ? (
+            <span className="badge badge-warning">Approve By Manager</span>
+          ) : null}
+        </>
+      ),
+      sortable: true,
+    },
+    {
       name: "Action",
       cell: (row) => (
         <>
           <button
-            className="btn btn-outline-success  btn-sm"
-            // onClick={() => handleReturnAsset(row)}
-
-            // title="return status approve and this asset status available"
+            type="button"
+            data-toggle="modal"
+            data-target="#return-asset-modal"
+            size="small"
+            className="btn btn-outline-primary btn-sm"
+            onClick={() => handleReturnAssetRecover(row, "RecovedByHR")}
           >
             Recover
           </button>
@@ -267,6 +324,60 @@ const AssetVisibleToHr = () => {
               </div>
             </div>
           )}
+        </div>
+      </div>
+
+      {/* Return Asset Recover modal */}
+      <div className="right-modal">
+        <div
+          className="modal fade right"
+          id="return-asset-modal"
+          tabIndex={-1}
+          role="dialog"
+        >
+          <div className="modal-dialog modal-sm" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <button type="button" className="close" data-dismiss="modal">
+                  <span aria-hidden="true" style={{ marginRight: "250px" }}>
+                    ×
+                  </span>
+                </button>
+                <h4 className="modal-title">Recover Asset</h4>
+              </div>
+              <div className="modal-body">
+                <FieldContainer
+                  label="Recover Remark"
+                  Tag="textarea"
+                  value={returnRecoverRemark}
+                  onChange={(e) => setReturnRecoverRemark(e.target.value)}
+                  required
+                />
+                <FieldContainer
+                  label="Image 1"
+                  type="file"
+                  fieldGrid={12}
+                  onChange={(e) => setReturnRecoverImg1(e.target.files[0])}
+                  required
+                />
+                <FieldContainer
+                  label="Image 2"
+                  type="file"
+                  fieldGrid={12}
+                  onChange={(e) => setReturnRecoverImg2(e.target.files[0])}
+                  required
+                />
+                <button
+                  type="button"
+                  data-dismiss="modal"
+                  className=" btn btn-primary ml-2"
+                  onClick={handleRecoverAssetSubmit}
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

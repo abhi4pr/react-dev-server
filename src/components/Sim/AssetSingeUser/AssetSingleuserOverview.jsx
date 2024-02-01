@@ -40,20 +40,17 @@ const AssetSingleuserOverview = ({
 
   const [newAssetID, setNewAssetID] = useState(0);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [assetId, setAssetId] = useState(0);
 
   async function getRepairReason() {
-    const res = await axios.get(
-      baseUrl+"get_all_assetResons"
-    );
+    const res = await axios.get(baseUrl + "get_all_assetResons");
 
     setReasonData(res?.data.data);
   }
 
   const getAssetSubCategory = async () => {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_asset_sub_category"
-      );
+      const response = await axios.get(baseUrl + "get_all_asset_sub_category");
 
       setAssetSubCategoryData(response.data.data);
     } catch (error) {
@@ -87,7 +84,7 @@ const AssetSingleuserOverview = ({
       formData.append("problem_detailing", problemDetailing);
 
       const response = await axios.post(
-        baseUrl+"add_repair_request",
+        baseUrl + "add_repair_request",
         formData
       );
       setAssetName("");
@@ -105,7 +102,6 @@ const AssetSingleuserOverview = ({
       console.log(error);
     }
   };
-  const [assetId, setAssetId] = useState(0);
   const handleReturnAsset = (row) => {
     setAssetId(row.sim_id);
   };
@@ -119,10 +115,7 @@ const AssetSingleuserOverview = ({
       formData.append("return_asset_image_2", returnImage2);
       formData.append("asset_return_by", userID);
 
-      const response = axios.post(
-        baseUrl+"assetreturn",
-        formData
-      );
+      const response = axios.post(baseUrl + "assetreturn", formData);
 
       toastAlert("Requested Success");
     } catch (error) {
@@ -135,9 +128,7 @@ const AssetSingleuserOverview = ({
   };
   const handleDeleteNewAsset = (id) => {
     try {
-      const response = axios.delete(
-        `${baseUrl}`+`assetrequest/${id}`
-      );
+      const response = axios.delete(`${baseUrl}` + `assetrequest/${id}`);
       newRequestAPIRender();
       hardRender();
       toastAlert("Delete Success");
@@ -183,14 +174,12 @@ const AssetSingleuserOverview = ({
       cell: (row) => {
         // Get the assigned date from the row
         const assignedDate = new Date(row.submitted_at);
-        const finalDate = assignedDate.getDate();
 
         // Get the current date
         const currentDate = new Date();
-        const finalCurrentDate = currentDate.getDate();
 
         // Calculate the difference in days
-        const timeDifference = finalCurrentDate - finalDate;
+        const timeDifference = currentDate - assignedDate;
         const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
 
         return <div>{daysDifference} days</div>;
@@ -349,7 +338,7 @@ const AssetSingleuserOverview = ({
 
   const handleNewAssetSubmit = () => {
     try {
-      axios.post(baseUrl+"assetrequest", {
+      axios.post(baseUrl + "assetrequest", {
         sub_category_id: assetsName,
         detail: problemDetailing,
         priority: priority,
@@ -375,7 +364,7 @@ const AssetSingleuserOverview = ({
   };
   const handleNewAssetUpdate = () => {
     try {
-      axios.put(baseUrl+"assetrequest", {
+      axios.put(baseUrl + "assetrequest", {
         _id: newAssetID,
         sub_category_id: assetsName,
         detail: problemDetailing,

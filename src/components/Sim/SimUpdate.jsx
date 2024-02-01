@@ -72,18 +72,14 @@ const SimUpdate = () => {
 
   // All Category , subcategory and vendor api here
   const getAllCategory = () => {
-    axios
-      .get(baseUrl+"get_all_asset_category")
-      .then((res) => {
-        setCategoryData(res.data.data.asset_categories);
-      });
+    axios.get(baseUrl + "get_all_asset_category").then((res) => {
+      setCategoryData(res.data.data.asset_categories);
+    });
   };
   const getAllSubCategory = () => {
     if (assetsCategory) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_asset_sub_category/${assetsCategory}`
-        )
+        .get(`${baseUrl}` + `get_single_asset_sub_category/${assetsCategory}`)
         .then((res) => {
           setSubCategoryData(res.data);
         });
@@ -98,21 +94,17 @@ const SimUpdate = () => {
     }
   }, [subCategory, subcategoryData]);
   const getAllVendor = () => {
-    axios.get(baseUrl+"get_all_vendor").then((res) => {
+    axios.get(baseUrl + "get_all_vendor").then((res) => {
       setVendorData(res.data);
     });
   };
 
   async function getModalData() {
-    const res = await axios.get(
-      baseUrl+"get_all_asset_modals"
-    );
+    const res = await axios.get(baseUrl + "get_all_asset_modals");
     setModalData(res.data);
   }
   async function getBrandData() {
-    const res = await axios.get(
-      baseUrl+"get_all_asset_brands"
-    );
+    const res = await axios.get(baseUrl + "get_all_asset_brands");
     setBrandData(res.data.data);
   }
   useEffect(() => {
@@ -139,60 +131,58 @@ const SimUpdate = () => {
   }, [assetsCategory]);
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}`+`get_single_sim/${id}`)
-      .then((res) => {
-        const fetchedData = res.data.data;
-        //if (fetchedData.length > 0) {
+    axios.get(`${baseUrl}` + `get_single_sim/${id}`).then((res) => {
+      const fetchedData = res.data.data;
+      //if (fetchedData.length > 0) {
 
-        const {
-          sim_no,
-          s_type,
-          assetsName,
-          assetsOtherID,
-          category_id,
-          sub_category_id,
-          vendor_id,
-          inWarranty,
-          warrantyDate,
-          asset_brand_id,
-          asset_modal_id,
-          // selfAuditPeriod,
-          // selfAuditUnit,
-          // hrAuditPeriod,
-          // hrAuditUnit,
-          assetsValue,
-          assetsCurrentValue,
-          dateOfPurchase,
-          asset_financial_type,
-          depreciation_percentage,
-          Remarks,
-        } = fetchedData;
-        setAssetsName(assetsName);
-        setAssetsID(sim_no);
+      const {
+        sim_no,
+        s_type,
+        assetsName,
+        assetsOtherID,
+        category_id,
+        sub_category_id,
+        vendor_id,
+        inWarranty,
+        warrantyDate,
+        asset_brand_id,
+        asset_modal_id,
+        // selfAuditPeriod,
+        // selfAuditUnit,
+        // hrAuditPeriod,
+        // hrAuditUnit,
+        assetsValue,
+        assetsCurrentValue,
+        dateOfPurchase,
+        asset_financial_type,
+        depreciation_percentage,
+        Remarks,
+      } = fetchedData;
+      setAssetsName(assetsName);
+      setAssetsID(sim_no);
 
-        setModalName(asset_modal_id);
-        setBrandName(asset_brand_id);
+      setModalName(asset_modal_id);
+      setBrandName(asset_brand_id);
 
-        setAssetsOtherID(assetsOtherID);
-        setAssetType(s_type);
-        setAssetsCategory(category_id);
-        setSubCategory(sub_category_id);
-        setVendorName(vendor_id);
-        setInWarranty(inWarranty);
-        setWarrantyDate(warrantyDate?.split("T")?.[0]);
-        setDateOfPurchase(dateOfPurchase?.split("T")?.[0]);
-        // setSelfAuditPeriod(selfAuditPeriod);
-        // setSelfAuditUnit(selfAuditUnit);
-        // setHrSelfAuditPeriod(hrAuditPeriod);
-        // setHrSelfAuditUnit(hrAuditUnit);
-        setAssetsValue(assetsValue);
-        setAssetsCurrentValue(assetsCurrentValue);
-        setFinacialType(asset_financial_type);
-        setDescription(depreciation_percentage);
-        setRemark(Remarks);
-        // setSimData(fetchedData);
-      });
+      setAssetsOtherID(assetsOtherID);
+      setAssetType(s_type);
+      setAssetsCategory(category_id);
+      setSubCategory(sub_category_id);
+      setVendorName(vendor_id);
+      setInWarranty(inWarranty);
+      setWarrantyDate(warrantyDate?.split("T")?.[0]);
+      setDateOfPurchase(dateOfPurchase?.split("T")?.[0]);
+      // setSelfAuditPeriod(selfAuditPeriod);
+      // setSelfAuditUnit(selfAuditUnit);
+      // setHrSelfAuditPeriod(hrAuditPeriod);
+      // setHrSelfAuditUnit(hrAuditUnit);
+      setAssetsValue(assetsValue);
+      setAssetsCurrentValue(assetsCurrentValue);
+      setFinacialType(asset_financial_type);
+      setDescription(depreciation_percentage);
+      setRemark(Remarks);
+      // setSimData(fetchedData);
+    });
   }, [id]);
 
   const handleSubmit = async (e) => {
@@ -222,16 +212,13 @@ const SimUpdate = () => {
     formData.append("assetsValue", Number(assetsValue));
     formData.append("assetsCurrentValue", Number(assetsCurrentValue));
     formData.append("asset_financial_type", finacialType);
-    formData.append("depreciation_percentage", depreciation);
+    formData.append("depreciation_percentage", Number(depreciation));
     formData.append("remark", remark);
     formData.append("created_by", loginUserId);
     formData.append("status", "Available");
 
     try {
-      const response = await axios.put(
-        baseUrl+"update_sim",
-        formData
-      );
+      const response = await axios.put(baseUrl + "update_sim", formData);
       const imageData = new FormData();
       imageData.append("sim_id", id);
       imageData.append("uploaded_by", loginUserId);
@@ -240,10 +227,7 @@ const SimUpdate = () => {
       imageData.append("img2", assetsImg2);
       imageData.append("img3", assetsImg3);
       imageData.append("img4", assetsImg4);
-      axios.put(
-        baseUrl+"update_assets_images",
-        imageData
-      );
+      axios.put(baseUrl + "update_assets_images", imageData);
 
       if (response.status === 200) {
         toastAlert("Form Submitted successfully");

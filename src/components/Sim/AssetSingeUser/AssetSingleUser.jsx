@@ -60,7 +60,7 @@ const AssetSingleUser = () => {
   const getData = async () => {
     try {
       const res = await axios.get(
-        `${baseUrl}`+`get_allocated_asset_data_for_user_id/${userID}`
+        `${baseUrl}` + `get_allocated_asset_data_for_user_id/${userID}`
       );
       setData(res.data.data);
       setFilterData(res.data.data);
@@ -69,16 +69,12 @@ const AssetSingleUser = () => {
     }
   };
   async function getRepairReason() {
-    const res = await axios.get(
-      baseUrl+"get_all_assetResons"
-    );
+    const res = await axios.get(baseUrl + "get_all_assetResons");
     setReasonData(res?.data.data);
   }
 
   async function getNewAssetRequest() {
-    const res = await axios.get(
-      `${baseUrl}`+`assetrequest/${userID}`
-    );
+    const res = await axios.get(`${baseUrl}` + `assetrequest/${userID}`);
     setNewAssetRequestData(
       res?.data.filter((d) => d.asset_request_status !== "Approved")
     );
@@ -126,7 +122,7 @@ const AssetSingleUser = () => {
       formData.append("problem_detailing", problemDetailing);
 
       const response = await axios.post(
-        baseUrl+"add_repair_request",
+        baseUrl + "add_repair_request",
         formData
       );
 
@@ -138,7 +134,6 @@ const AssetSingleUser = () => {
       setAssetsImg2("");
       setAssetsImg3("");
       setAssetsImg4("");
-      getRepairRequest("");
       setProblemDetailing("");
       setTagUser([]);
     } catch (error) {
