@@ -81,16 +81,11 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
           formData.append("recovery_by", userID);
           formData.append("accept_by", userID);
 
-          axios
-            .put(
-              baseUrl+"update_repair_request",
-              formData
-            )
-            .then((res) => {
-              // getRepairRequest();
-              toastAlert("Update Success");
-              hardRender();
-            });
+          axios.put(baseUrl + "update_repair_request", formData).then((res) => {
+            // getRepairRequest();
+            toastAlert("Update Success");
+            hardRender();
+          });
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire(
             "Cancelled",
@@ -110,14 +105,12 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     formData.append("recovery_image_upload2", recoveryImg2);
     formData.append("recovery_by", userID);
 
-    axios
-      .put(baseUrl+"update_repair_request", formData)
-      .then((res) => {
-        setRecoveryRemark("");
-        setScrapRemark("");
-        hardRender();
-        toastAlert("Request Success");
-      });
+    axios.put(baseUrl + "update_repair_request", formData).then(() => {
+      setRecoveryRemark("");
+      setScrapRemark("");
+      hardRender();
+      toastAlert("Request Success");
+    });
   };
 
   const columns = [
@@ -280,7 +273,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-toggle="modal"
             data-target="#exampleModal1"
             size="small"
-            variant="contained"
             color="primary"
             className="btn btn-primary btn-sm ml-2"
             onClick={() => handleStatusUpdate(row, "Recover")}
@@ -292,7 +284,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-toggle="modal"
             data-target="#resolvedModal"
             size="small"
-            variant="contained"
             color="primary"
             onClick={() => handleStatusUpdate(row, "Resolved")}
             className="btn btn-warning btn-sm ml-2"
@@ -304,7 +295,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-toggle="modal"
             data-target="#scrapModal"
             size="small"
-            variant="contained"
             color="primary"
             onClick={() => handleStatusUpdate(row)}
             className="btn btn-danger btn-sm ml-2"
@@ -325,7 +315,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-toggle="modal"
             data-target="#exampleModal1"
             size="small"
-            variant="contained"
             color="primary"
             className="btn btn-primary btn-sm ml-2"
             onClick={() => handleStatusUpdate(row, "Recovered")}
@@ -337,7 +326,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-toggle="modal"
             data-target="#resolvedModal"
             size="small"
-            variant="contained"
             color="primary"
             onClick={() => handleStatusUpdate(row, "Resolved")}
             className="btn btn-warning btn-sm ml-2"
@@ -349,7 +337,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-toggle="modal"
             data-target="#scrapModal"
             size="small"
-            variant="contained"
             color="primary"
             onClick={() => handleStatusUpdate(row)}
             className="btn btn-danger btn-sm ml-2"
@@ -370,7 +357,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-toggle="modal"
             data-target="#resolvedModal"
             size="small"
-            variant="contained"
             color="primary"
             onClick={() => handleStatusUpdate(row, "Resolved")}
             className="btn btn-warning btn-sm ml-2"
@@ -382,7 +368,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-toggle="modal"
             data-target="#scrapModal"
             size="small"
-            variant="contained"
             color="primary"
             onClick={() => handleStatusUpdate(row)}
             className="btn btn-danger btn-sm ml-2"
@@ -398,7 +383,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const handleVendorDetails = async (id) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_single_vendor/${id}`
+        `${baseUrl}` + `get_single_vendor/${id}`
       );
       setVendorData([response.data.data]);
       console.log([response.data.data], "data jere");
@@ -458,8 +443,9 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
               <h3>Vendor Information</h3>
             </div>
           </div>
-          {vendorData.map((d) => (
+          {vendorData.map((d, index) => (
             <div
+              key={index}
               className="card"
               style={{
                 backgroundColor: "#fff",

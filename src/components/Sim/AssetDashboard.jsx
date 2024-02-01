@@ -1,10 +1,8 @@
+import "./assetDashbaord.css";
 import { baseUrl } from "../../utils/config";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FormContainer from "../AdminPanel/FormContainer";
-import UserNav from "../Pantry/UserPanel/UserNav";
-import jwtDecode from "jwt-decode";
-import { useGlobalContext } from "../../Context/Context";
 import Modal from "react-modal";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
@@ -14,8 +12,6 @@ import { PieChart } from "@mui/x-charts/PieChart";
 import { BarChart } from "@mui/x-charts/BarChart";
 
 const AssetDashboard = () => {
-  const { categoryDataContext } = useGlobalContext();
-
   const [simData, setSimData] = useState([]);
   const [availableObjects, setAvailableCount] = useState([]);
   const [allocatedObjects, setAllocatedCount] = useState([]);
@@ -27,15 +23,15 @@ const AssetDashboard = () => {
   const [selectedUserData, setSelectedUserData] = useState([]);
   const [modalSearch, setModalSearch] = useState("");
 
-  const token = sessionStorage.getItem("token");
-  const decodedToken = jwtDecode(token);
-  // const userID = decodedToken.id;
-
   const [category, setCategory] = useState("");
   const [subcategoryData, setSubCategoryData] = useState([]);
   const [subcategory, setSubCategory] = useState("");
   const [newAssetRequest, setNewAssetRequest] = useState([]);
   const [returnAssetData, setReturnAssetData] = useState([]);
+  const [repairRequestData, setRepairRequestData] = useState([]);
+
+  const [categoryData, setCategoryData] = useState([]);
+  const [filterCategoryData, setFilterCategoryData] = useState([]);
 
   async function getNewAssetData() {
     try {
@@ -48,7 +44,16 @@ const AssetDashboard = () => {
     }
   }
 
-  const [repairRequestData, setRepairRequestData] = useState([]);
+  const getAllAssetCategory = () => {
+    axios.get(baseUrl + "get_all_asset_category").then((res) => {
+      setCategoryData(res?.data.data.asset_categories);
+      setFilterCategoryData(res?.data.data.asset_categories);
+    });
+  };
+  useEffect(() => {
+    getAllAssetCategory();
+  }, []);
+
   async function getRepariRequestData() {
     try {
       const response = await axios.get(`${baseUrl}show_asset_hr_data`);
@@ -308,7 +313,7 @@ const AssetDashboard = () => {
               <Select
                 options={[
                   { value: "", label: "All" },
-                  ...categoryDataContext.map((option) => ({
+                  ...filterCategoryData.map((option) => ({
                     value: option.category_id,
                     label: option.category_name,
                   })),
@@ -319,7 +324,7 @@ const AssetDashboard = () => {
                     : {
                         value: category,
                         label:
-                          categoryDataContext.find(
+                          filterCategoryData.find(
                             (dept) => dept.category_id === category
                           )?.category_name || "Select...",
                       }
@@ -378,7 +383,10 @@ const AssetDashboard = () => {
                 departmentFilter === item.dept_id
               ) {
                 return (
-                  <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+                  <div
+                    key={item.dept_id}
+                    className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col"
+                  >
                     <div
                       className="d_infocard card shadow"
                       onClick={() => handleRowClick(item.dept_id)}
@@ -387,8 +395,6 @@ const AssetDashboard = () => {
                         <div className="d_infocard_txt">
                           <h3>Deparmtent -{item.dept_name}</h3>
                           <h3>category -{item.category_name}</h3>
-                          {/* <h3>category -{item.category_name}</h3> */}
-                          {/* <h3>subcat -{item.sub_category_name}</h3> */}
                         </div>
                         <div className="d_infocard_icon">
                           <span>{item.count}</span>

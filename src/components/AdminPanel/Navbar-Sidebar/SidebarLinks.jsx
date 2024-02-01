@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const SidebarLinks = () => {
   const [contextData, setData] = useState([]);
@@ -19,9 +19,7 @@ const SidebarLinks = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setData(res.data);
         });
@@ -1452,23 +1450,24 @@ const SidebarLinks = () => {
           data-parent="#accordionSidebar"
         >
           <div className="bg-white collapse-inner">
-            <Link className="collapse-item" to="/admin/asset-dashboard">
-              Dashboard
-            </Link>
+            {RoleId == 5 && (
+              <Link className="collapse-item" to="/admin/asset-dashboard">
+                Dashboard
+              </Link>
+            )}
             <Link className="collapse-item" to="/admin/asset-single-user">
               My Asset
             </Link>
-            {/* {RoleId == 5 && ( */}
-            <Link className="collapse-item" to="/sim-overview">
-              Asset Management
-            </Link>
-            {/* // )} */}
-            {/* {RoleId == 5 && ( */}
-            <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-              Asset's Request
-            </Link>
-            {/* )} */}
-            {/* )} */}
+            {RoleId == 5 && (
+              <Link className="collapse-item" to="/sim-overview">
+                Asset Management
+              </Link>
+            )}
+            {RoleId == 5 && (
+              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                Asset's Request
+              </Link>
+            )}
             <Link
               className="collapse-item"
               to="/admin/asset-visible-to-taged-person"
@@ -1479,7 +1478,7 @@ const SidebarLinks = () => {
             <Link className="collapse-item" to="/admin/asset-manager">
               Asset Request Approvel
             </Link>
-            {/* // )} */}
+            {/* )} */}
           </div>
         </div>
       </li>
