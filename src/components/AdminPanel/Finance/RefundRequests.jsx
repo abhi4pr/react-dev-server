@@ -46,7 +46,7 @@ const RefundRequests = () => {
 
     await axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=refund_payment_upload_file",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file",
         formData,
         {
           headers: {
@@ -82,7 +82,7 @@ const RefundRequests = () => {
 
     await axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=refund_finance_approval",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=refund_finance_approval",
         formData,
         {
           headers: {
@@ -282,7 +282,7 @@ const RefundRequests = () => {
           className="btn btn-primary"
           onClick={() => {
             setOpenImageDialog(true);
-            setViewImgSrc(`https://salesdev.we-fit.in/${row.refund_files}`);
+            setViewImgSrc(`https://sales.creativefuel.io/${row.refund_files}`);
           }}
         >
           View

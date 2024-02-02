@@ -17,7 +17,7 @@ export default function SalesExecutiveIncentiveRequestReleaseList() {
 const formData = new FormData();
 formData.append("loggedin_user_id", 36);
 formData.append("incentive_request_id", incentive_request_id);
-    axios.post('https://salesdev.we-fit.in/webservices/RestController.php?view=sales-incentive_released_request_list',formData,{
+    axios.post('https://sales.creativefuel.io/webservices/RestController.php?view=sales-incentive_released_request_list',formData,{
         headers: {
         "Content-Type": "multipart/form-data",
       },

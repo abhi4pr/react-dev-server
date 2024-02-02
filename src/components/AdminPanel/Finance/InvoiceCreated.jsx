@@ -49,7 +49,7 @@ const InvoiceCreated = () => {
     formData.append("loggedin_user_id", 36);
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-invoice_created_list",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-invoice_created_list",
         formData,
         {
           headers: {
@@ -98,7 +98,7 @@ const InvoiceCreated = () => {
       cell: (row) => (
         <a
           className="btn btn-primary"
-          href={`https://salesdev.we-fit.in/${row.invoice}`}
+          href={`https://sales.creativefuel.io/${row.invoice}`}
           target="_blank"
           rel="noreferrer"
           download // Add the 'download' attribute to trigger the download
@@ -115,7 +115,7 @@ const InvoiceCreated = () => {
           className="btn btn-primary"
           onClick={() => {
             setOpenImageDialog(true);
-            setViewImgSrc(`https://salesdev.we-fit.in/${row.invoice}`);
+            setViewImgSrc(`https://sales.creativefuel.io/${row.invoice}`);
           }}
         >
           View

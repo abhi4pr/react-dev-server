@@ -24,7 +24,7 @@ const SidebarLinks = () => {
           setData(res.data);
         });
       axios
-        .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
+        .get(`${baseUrl}`+`get_single_user/${userID}`)
         .then((res) => {
           setJobtype(res.data.job_type);
         });

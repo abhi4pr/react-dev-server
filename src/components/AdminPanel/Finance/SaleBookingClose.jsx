@@ -30,7 +30,7 @@ const SaleBookingClose = () => {
     formData.append("sale_booking_id", row.sale_booking_id);
 
     await axios.post(
-      "https://salesdev.we-fit.in/webservices/RestController.php?view=close_booking",
+      "https://sales.creativefuel.io/webservices/RestController.php?view=close_booking",
       formData,
       {
         headers: {
@@ -57,7 +57,7 @@ getData()
       {aboutToClose&&formData.append("about_to_close", 1);}
 
     axios
-      .post("https://salesdev.we-fit.in/webservices/RestController.php?view=sales-sale_booking_for_tds",formData, {
+      .post("https://sales.creativefuel.io/webservices/RestController.php?view=sales-sale_booking_for_tds",formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

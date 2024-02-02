@@ -276,13 +276,12 @@ export default function RegisterCampaign() {
     try {
       let response;
       if (master == "Campaign") {
-        response = await axios.post(
-          `http://192.168.29.109:3000/api/exe_campaign`,
+        response = await axios.post(`${baseUrl}`+`exe_campaign`,
           masterPayload
         );
       } else if (master == "Brand") {
         response = await axios.post(
-          `http://192.168.29.109:3000/api/add_brand`,
+          `${baseUrl}`+`add_brand`,
           masterPayload
         );
       }

@@ -42,7 +42,7 @@ const IncentivePayment = () => {
 
     await axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=release_incentive_submit",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=release_incentive_submit",
         formData,
         {
           headers: {
@@ -72,7 +72,7 @@ const IncentivePayment = () => {
     formData.append("loggedin_user_id", 36);
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-incentive_request_list",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-incentive_request_list",
         formData,
         {
           headers: {
@@ -126,7 +126,7 @@ const IncentivePayment = () => {
           to={`/admin/Incentive-Request-Released-List/${row.incentive_request_id}`}
           className="link-primary"
         >
-          {row.released_amount.toLocaleString("en-IN")}
+          {row.released_amount?.toLocaleString("en-IN")}
         </Link>
       ),
     },

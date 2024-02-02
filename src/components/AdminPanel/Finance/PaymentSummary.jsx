@@ -23,7 +23,7 @@ const PaymentSummary = () => {
     formData.append("loggedin_user_id",36)
     formData.append("cust_id",id)
 
-    axios.post("https://salesdev.we-fit.in/webservices/RestController.php?view=sales-customer_purchase_finance_approval", formData, {
+    axios.post("https://sales.creativefuel.io/webservices/RestController.php?view=sales-customer_purchase_finance_approval", formData, {
       headers:{
         "Content-Type":"multipart/form-data"
       }

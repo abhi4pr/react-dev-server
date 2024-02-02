@@ -10,6 +10,7 @@ import { get } from "jquery";
 import ImageView from "./ImageView";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {baseUrl} from '../../../utils/config'
+import pdfImg from "./pdf-file.png";
 
 const PendingApprovalUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -45,7 +46,7 @@ const PendingApprovalUpdate = () => {
 
     await axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=change_payment_update_status",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=change_payment_update_status",
         formData,
         {
           headers: {
@@ -68,12 +69,14 @@ const PendingApprovalUpdate = () => {
       .then((res) => {
         console.log("data save in local success");
       });
+      setTimeout(() => {
     axios
       .get(baseUrl+"get_all_php_finance_data_pending")
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);
       });
+    }, 1000);
   }
 
   function convertDateToDDMMYYYY(dateString) {
@@ -153,7 +156,7 @@ const PendingApprovalUpdate = () => {
           onClick={() => {
             setViewImgSrc(
               row.payment_screenshot
-                ? `https://salesdev.we-fit.in/${row.payment_screenshot}`
+                ? `https://sales.creativefuel.io/${row.payment_screenshot}`
                 : ""
             ),
               setViewImgDialog(true);
@@ -161,11 +164,11 @@ const PendingApprovalUpdate = () => {
           style={{ whiteSpace: "normal" }}
         >
           <img
-            src={
-              row.payment_screenshot
-                ? `https://salesdev.we-fit.in/${row.payment_screenshot}`
-                : ""
-            }
+            src={row.payment_screenshot.includes(".pdf") ? pdfImg : `https://sales.creativefuel.io/${row.payment_screenshot}`}
+            //   row.payment_screenshot
+            //     ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+            //     : ""
+            // }
           />
         </div>
       ),

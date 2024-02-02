@@ -5,8 +5,11 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { useNavigate, Link } from "react-router-dom";
-import { get } from "jquery";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
+import { TextField } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import dayjs from "dayjs";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const PendingInvoice = () => {
   const navigate = useNavigate();
@@ -16,6 +19,9 @@ const PendingInvoice = () => {
   const [search, setSearch] = useState("");
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [partyName, setPartyName] = useState("");
+  const [inoiceNum, setInoiceNum] = useState("");
+  const [date, setDate] = useState(dayjs());
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -28,7 +34,7 @@ const PendingInvoice = () => {
 
     await axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=invoice_reject",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_reject",
         formData,
         {
           headers: {
@@ -38,14 +44,17 @@ const PendingInvoice = () => {
       )
       .then(() => {
         axios
-        .put(baseUrl+"pending_invoice_update", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(() => { 
-          getData();
-        });
+          .put(baseUrl + "pending_invoice_update", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then(() => {
+            getData();
+            setDate(dayjs());
+            setInoiceNum("");
+            setPartyName("");
+          });
       });
 
     toastAlert("Data updated");
@@ -58,10 +67,16 @@ const PendingInvoice = () => {
     formData.append("sale_booking_id", row.sale_booking_id);
     formData.append("invoiceFormSubmit", 1);
     formData.append("invoice", fileData);
+    formData.append("invoice_mnj_number", inoiceNum);
+    formData.append(
+      "invoice_mnj_date",
+      new Date(date.$d).toISOString().split("T")[0]
+    );
+    formData.append("party_mnj_name", partyName);
 
     await axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=invoice_upload_file",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_upload_file",
         formData,
         {
           headers: {
@@ -70,8 +85,9 @@ const PendingInvoice = () => {
         }
       )
       .then(() => {
+        toastAlert("Data updated");
         axios
-          .put(baseUrl+"pending_invoice_update", formData, {
+          .put(baseUrl + "pending_invoice_update", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -84,18 +100,14 @@ const PendingInvoice = () => {
   };
 
   function getData() {
-    axios
-      .post(
-        baseUrl+"add_php_pending_invoice_data_in_node"
-      )
-      .then((res) => {
-        console.log("data save in local success");
-      });
+    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then((res) => {
+      console.log("data save in local success");
+    });
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-pending_invoice_creation_list",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-pending_invoice_creation_list",
         formData,
         {
           headers: {
@@ -133,19 +145,19 @@ const PendingInvoice = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "9%",
+      width: "5%",
       sortable: true,
     },
     {
       name: "Sales Person name",
       selector: (row) => row.sales_person_username,
-      width: "15%",
+      width: "10%",
     },
     {
       name: "Requested On Date",
       // selector: (row) => row.sale_booking_date,
       cell: (row) => convertDateToDDMMYYYY(row.sale_booking_date),
-      width: "15%",
+      width: "12%",
     },
     {
       name: "Sale Booking Description",
@@ -167,22 +179,70 @@ const PendingInvoice = () => {
       ),
       width: "15%",
     },
+
     {
-      name: "Invoice particular",
-      selector: (row) => row.invoice_particular_name,
-      width: "13%",
-    },
-    {
-      name: "Invoice Type",
-      selector: (row) => row.invoice_type,
+      name: "Input",
+      selector: (row, index) => (
+        <div className="mt-2">
+          <TextField
+            key={row.sale_booking_id}
+            className="d-block"
+            type="text"
+            name="input"
+            label="Invoice No."
+            sx={{
+              marginBottom: "1px",
+              "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+                padding: "12px ",
+              },
+            }}
+            onChange={(e) => setInoiceNum(e.target.value)}
+          />
+          {/* //invoice num , date , party name */}
+          <div>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                key={row.sale_booking_id}
+                sx={{
+                  "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
+                    padding: "10px",
+                  },
+                }}
+                defaultValue={dayjs()}
+                onChange={(e) => {
+                  setDate(e),
+                    console.log(new Date(e.$d).toISOString().split("T")[0]);
+                }}
+              />
+            </LocalizationProvider>
+          </div>
+          <div>
+            <TextField
+              key={row.sale_booking_id}
+              
+              type="text"
+              name="input"
+              label="Party Name"
+              sx={{
+                marginBottom: "1px",
+                "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+                  padding: "12px ",
+                },
+              }}
+              onChange={(e) => setPartyName(e.target.value)}
+            />
+          </div>
+        </div>
+      ),
       width: "15%",
     },
     {
       name: "Upload Invoice",
-      selector: (row) => (
-        <div>
+      selector: (row, index) => (
+        <div key={row.sale_booking_id}>
           <form>
             <input
+              key={index}
               type="file"
               name="upload_image"
               onChange={(e) => handleImageUpload(row, e.target.files[0])}

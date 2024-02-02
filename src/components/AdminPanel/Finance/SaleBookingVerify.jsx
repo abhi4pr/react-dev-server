@@ -33,7 +33,7 @@ const SaleBookingVerify = () => {
     formData.append("verified_amount", balAmount);
     formData.append("verified_remark", remark);
     await axios.post(
-      "https://salesdev.we-fit.in/webservices/RestController.php?view=verifybooking",
+      "https://sales.creativefuel.io/webservices/RestController.php?view=verifybooking",
       formData,
       {
         headers: {
@@ -73,7 +73,7 @@ const SaleBookingVerify = () => {
     formData.append("loggedin_user_id", 36);
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-sale_booking_tds_verification",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-sale_booking_tds_verification",
         formData,
         {
           headers: {
