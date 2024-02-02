@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
-import { Paper, Button, Box } from "@mui/material";
+import { Paper, Button, Box, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
 import ReplacePagesModal from "./ReplacePagesModal";
@@ -10,17 +10,34 @@ import ReplacementRecord from "./ReplacementRecord";
 import millify from "millify";
 import exportToCSV from "../../../utils/ExcelConverter";
 import generatePdf from "../../../utils/PdfConverter";
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import { SiMicrosoftexcel } from "react-icons/si";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
+import { useGlobalContext } from "../../../Context/Context";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
 
-
-const PageOverview = ({ selectData, setrender, stage, id }) => {
-  console.log(selectData);
+const PageOverview = ({ selectData, setrender, stage, id ,phase_id}) => {
+  const { toastAlert, toastError } = useGlobalContext();
   const naviagte = useNavigate();
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isRecordOpen, setIsRecordOpen] = useState(false);
   const [selection, setSelections] = useState();
   const [realData, setRealData] = useState([]);
+  const [updatePayload,setUpdatePayload]=useState({campaignId:id})
+  const handleDeletePlanData = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleDeleteDialogClose = () => {
+    setOpenDeleteDialog(false);
+  };
 
   useEffect(() => {
     const data = selectData.filter((page) => {
@@ -38,8 +55,61 @@ const PageOverview = ({ selectData, setrender, stage, id }) => {
     setRealData(data);
   }, [selectData]);
 
-  console.log(realData)
+  const handleDeleteSinglePlan = async (params) => {
+    const pageName = params.row?.page_name;
+    if(params.row.isExecuted){
+      toastError("Cant delete page , it is already executed");
+    }else{
+      if(stage=='plan'){
 
+        const deleteData = await axios.post(
+          `http://192.168.1.13:3000/api/campaignplan/singleplan`,
+          { page: params.row, deletion_requested_by: "test" }
+        );
+        toastAlert(` Delete ${pageName} Page Successfully `);
+        setrender();
+      }else if(stage=='phase'){
+        const deleteData = await axios.post(
+          `http://192.168.1.13:3000/api/campaignphase/singlephase`,
+          { page: params.row, deletion_requested_by: "test" }
+        );
+        toastAlert(` Delete ${pageName} Page Successfully `);
+        setrender();
+      }
+    }
+  };
+
+  
+  
+  
+const handleInputChange=(e,params)=>{
+
+  if(params.field=="postPerPage"){
+    setUpdatePayload({...updatePayload,postPerPage:Number(e.target.value),p_id:params.row.p_id})
+  }else if(params.field=="storyPerPage"){
+    setUpdatePayload({...updatePayload,storyPerPage:Number(e.target.value),p_id:params.row.p_id})
+  }
+  
+}
+
+const updateSinglePlan=async ()=>{
+  if(stage=="plan"){
+    try {
+      const response=await axios.put(`http://192.168.1.13:3000/api/updateplan`,updatePayload)
+      console.log(response)
+      toastAlert(response.data.message)
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }else{
+    alert("update not implement here")
+  }
+  
+
+} 
+
+console.log(updatePayload)
   const columns = [
     {
       field: "S.NO",
@@ -70,24 +140,57 @@ const PageOverview = ({ selectData, setrender, stage, id }) => {
     },
     {
       field: "postPerPage",
-      headerName: "post",
+      headerName: "Post",
       width: 150,
+      renderCell: (params) => {
+        
+        
+        return (
+          <TextField
+            defaultValue={params?.row?.postPerPage} 
+            onChange={(e)=>handleInputChange(e,params)} 
+          />
+        );
+      },
     },
     {
       field: "storyPerPage",
-      headerName: "Story",
+      headerName: "story",
       width: 150,
+      renderCell: (params) => {
+
+        
+        return (
+          <TextField
+            defaultValue={params?.row?.storyPerPage} 
+            onChange={(e)=>handleInputChange(e,params)} 
+          />
+        );
+      },
     },
+
+    // {
+    //   field: "storyPerPage",
+    //   headerName: "Story",
+    //   width: 150,
+    //   editable:true
+
+    // },
     {
       field: "Action",
       headerName: "Action",
       width: 150,
       editable: true,
-      renderCell: () => {
+      renderCell: (params) => {
         return (
-          <Button>
+          <>
+          <Button onClick={() => updateSinglePlan(params)} color="primary">
+          <BorderColorIcon />
+          </Button>
+          <Button onClick={() => handleDeleteSinglePlan(params)} color="error">
             <DeleteIcon />
           </Button>
+          </>
         );
       },
     },
@@ -150,39 +253,85 @@ const PageOverview = ({ selectData, setrender, stage, id }) => {
     naviagte(`/admin/plan-dashboard/${id}`);
   };
 
+  const handleDeletePlan = async () => {
+    if (stage == 'plan') {
+      handleDeleteDialogClose();
+      const deleteData = await axios.delete(
+        `http://192.168.1.13:3000/api/campaignplan/bulk/${id}`
+      );
+      naviagte("/admin/registered-campaign");
+      toastAlert("Plan Delete Successfully !!");
+    } else {
+      handleDeleteDialogClose();
+      const deleteData = await axios.delete(
+        `http://192.168.1.13:3000/api/campaignphase/bulk/${phase_id}`
+      );
+      // naviagte("/admin/registered-campaign");
+      toastAlert("Phase Delete Successfully !!");
+      setrender()
+    }
+  };
+
+
+  const handleEditPlanData = () => {
+    // axios.put()
+  }
+
   return (
     <div>
       <Paper>
         <Box sx={{ height: 400, width: "100%", mt: 2 }}>
-          <Paper sx={{display:"flex",mb:2,justifyContent:"flex-end"}}>
-            <Button
-              onClick={handleExportClick}
-              variant="text"
-              color="success"
-              sx={{fontSize:"30px"}}
-              title="Download Excel"
+          <Paper
+            sx={{ display: "flex", mb: 2, justifyContent: "space-between" }}
+          >
+            <Box>
+              {" "}
+              <Button
+                onClick={handleExportClick}
+                variant="text"
+                color="success"
+                sx={{ fontSize: "30px" }}
+                title="Download Excel"
+              >
+                <SiMicrosoftexcel />
+              </Button>
+              <Button
+                onClick={handleDownloadPdf}
+                variant="text"
+                color="error"
+                title="Download Pdf"
+                sx={{ mr: 3 }}
+              >
+                <PictureAsPdfIcon sx={{ fontSize: "40px" }} />
+              </Button>
+              <Button
+                onClick={handlePlanDashboard}
+                variant="outlined"
+                color="secondary"
+                sx={{ mr: 3 }}
+              >
+                Plan Dashboard
+              </Button>
+            </Box>
+            <Box>
+              <Button
+                variant="outlined"
+                onClick={handleEditPlanData}
+                color="success"
+                sx={{ mt: 1, mr: 1 }}
+              >
+                Edit
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={handleDeletePlanData}
+                color="error"
+                sx={{ mt: 1, mr: 1 }}
+              >
+                Delete
+              </Button>
 
-            >
-             <SiMicrosoftexcel />
-            </Button>
-            <Button
-              onClick={handleDownloadPdf}
-              variant="text"
-              color="error"
-              title="Download Pdf"
-              sx={{mr:3}}
-            >
-              <PictureAsPdfIcon sx={{fontSize:"40px"}} />
-            </Button>
-            <Button
-              onClick={handlePlanDashboard}
-              variant="outlined"
-              color="secondary"
-              sx={{mr:3}}
-
-            >
-               Plan Dashboard
-            </Button>
+            </Box>
           </Paper>
 
           <DataGrid
@@ -221,6 +370,31 @@ const PageOverview = ({ selectData, setrender, stage, id }) => {
           />
         </Box>
       </Paper>
+      <>
+        <Dialog
+          open={openDeleteDialog}
+          onClose={handleDeleteDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title" color="secondary">
+            Confirm Deletion
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {`Are you sure you want to delete this ${stage}?`}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteDialogClose} variant="outlined">
+              Cancel
+            </Button>
+            <Button onClick={handleDeletePlan} variant="outlined" color="error">
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </div>
   );
 };

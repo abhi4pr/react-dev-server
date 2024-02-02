@@ -173,6 +173,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         const pageData = await axios.get(
           `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
         );
+
+        
         setAllPageData(pageData.data.body);
         setPlanPages(pageData.data.body);
         setFilteredPages(pageData.data.body);
@@ -657,20 +659,23 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         campaignId: data.campaignId,
         pages: payload,
       };
+      let result
       try {
         setIsLoadingPlan(true);
-        const result = await axios.post(
+         result = await axios.post(
           baseUrl+"campaignplan",
           newdata
         );
-
+          alert(result.data.message)
         setIsLoadingPlan(false);
         toastAlert("Plan Created SuccessFully");
         setTimeout(() => {
           navigate(`/admin/phase/${data.campaignId}`);
         }, 2000);
       } catch (error) {
-        toastError("Plan not Created");
+        console.log()
+        toastError(`Plan not Created `);
+        toastError(`${error?.response?.data?.message}`);
         setIsLoadingPlan(false);
       }
     }

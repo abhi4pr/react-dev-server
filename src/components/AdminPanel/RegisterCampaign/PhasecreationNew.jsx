@@ -28,11 +28,13 @@ import { useNavigate } from "react-router-dom";
 import PageOverview from "./PageOverview";
 import PageDetailingNew from "./PageDetailingNew";
 import { baseUrl } from "../../../utils/config";
+import { useGlobalContext } from "../../../Context/Context";
 
 const PhasecreationNew = () => {
   const param = useParams();
   const id = param.id;
-
+  const { toastAlert, toastError } = useGlobalContext();
+  const naviagte = useNavigate();
   const [allPageData, setAllPageData] = useState([]);
   const [phaseData, setPhaseData] = useState("");
   const [phaseDataError, setPhaseDataError] = useState("");
@@ -45,70 +47,58 @@ const PhasecreationNew = () => {
   const [allPhaseData, setAllPhaseData] = useState([]);
   const [showPageDetails, setShowPageDetails] = useState(false);
   const [expanded, setExpanded] = useState(false);
-  const [assignAll, setAssignAll] = useState(false)
-  const [stopCreate, setStopCreate] = useState(false)
-  const [campaignData,setCampaignData]=useState({})
+  const [assignAll, setAssignAll] = useState(false);
+  const [stopCreate, setStopCreate] = useState(false);
+  const [campaignData, setCampaignData] = useState({});
 
   useEffect(() => {
     getPhaseData();
   }, []);
 
   const getPhaseData = async () => {
-    const data = await axios.get(
-      `${baseUrl}`+`campaignphase/${id}`
-    );
-    const pageD = await axios.get(
-      `${baseUrl}`+`campaignplan/${id}`
-    );
+    const data = await axios.get(`${baseUrl}` + `campaignphase/${id}`);
+    const pageD = await axios.get(`${baseUrl}` + `campaignplan/${id}`);
     setAllPhaseData(data?.data?.result);
-    setAllPageData(pageD?.data?.data)
+    setAllPageData(pageD?.data?.data);
   };
 
-
-  const getCampaignName = (detail, cmp,cmpData) => {
-  
+  const getCampaignName = (detail, cmp, cmpData) => {
     setCmpName(cmp);
-    if(assignAll){
-      const det=detail.map((item)=>{
-        return {...item,value:item.max}
-      })
+    if (assignAll) {
+      const det = detail.map((item) => {
+        return { ...item, value: item.max };
+      });
       setCampaignName(det);
-    }else  setCampaignName(detail);
-   
-    setCampaignData(cmpData)
+    } else setCampaignName(detail);
+
+    setCampaignData(cmpData);
   };
 
   const togglePageDetails = () => {
     setShowPageDetails(!showPageDetails);
-    setAssignAll(false)
+    setAssignAll(false);
   };
 
   const handleAllAssign = () => {
-    setShowPageDetails(!showPageDetails)
-    setAssignAll(true)
-  }
+    setShowPageDetails(!showPageDetails);
+    setAssignAll(true);
+  };
 
-  console.log(allPageData)
+  console.log(allPageData);
   useEffect(() => {
-
-
     if (allPhaseData.length > 0) {
-      let flag = false
+      let flag = false;
       allPageData.forEach((page) => {
         if (Number(page.postRemaining) > 0 || Number(page.storyRemaining) > 0) {
-          flag = true
-
+          flag = true;
         }
-      })
+      });
 
-     
       if (flag == true) {
-        setStopCreate(false)
-      } else setStopCreate(true)
+        setStopCreate(false);
+      } else setStopCreate(true);
     }
-
-  }, [allPageData])
-
+  }, [allPageData]);
 
   const handleChange = (panel) => (event, isExpanded) => {
     setExpanded(isExpanded ? panel : false);
@@ -117,8 +107,11 @@ const PhasecreationNew = () => {
   const renderHard = () => {
     getPhaseData();
   };
+  const handlePlanDashboard = () => {
+    naviagte(`/admin/planOverview/${id}`);
+  };
 
-  console.log(stopCreate)
+  console.log(stopCreate);
   return (
     <>
       <div className="form_heading_title">
@@ -154,8 +147,8 @@ const PhasecreationNew = () => {
             >
               <AccordionSummary
                 expandIcon={<GridExpandMoreIcon />}
-              // aria-controls={`panel${index}bh-content`}
-              // id={`panel${index}bh-header`}
+                // aria-controls={`panel${index}bh-content`}
+                // id={`panel${index}bh-header`}
               >
                 <Typography>{`Phase ${index + 1}`}</Typography>
               </AccordionSummary>
@@ -166,6 +159,7 @@ const PhasecreationNew = () => {
                   selectData={item.pages}
                   stage={"phase"}
                   setRender={renderHard}
+                  phase_id={item.phase_id}
                 />
               </AccordionDetails>
             </Accordion>
@@ -174,8 +168,8 @@ const PhasecreationNew = () => {
       </Paper>
       {/* add Accordion for show end phase------------------- */}
 
-      {
-        !stopCreate && <>
+      {!stopCreate && (
+        <>
           <Button
             variant="outlined"
             onClick={togglePageDetails}
@@ -184,13 +178,19 @@ const PhasecreationNew = () => {
             {showPageDetails ? "Hide Page Details" : "Create New Phase"}
           </Button>
 
-
-          <Button variant="outlined" onClick={handleAllAssign}
-            sx={{ m: 2, mb: 2 }}>
+          <Button
+            variant="outlined"
+            onClick={handleAllAssign}
+            sx={{ m: 2, mb: 2 }}
+          >
             create final phase
-          </Button></>
-      }
+          </Button>
 
+          <Button variant="outlined"  onClick={handlePlanDashboard}sx={{ m: 2, mb: 2 }}>
+            Plan Overview
+          </Button>
+        </>
+      )}
 
       {showPageDetails && (
         <>
@@ -247,7 +247,6 @@ const PhasecreationNew = () => {
             </Box>
 
             {campaignName?.map((cmp, index) => {
-              
               return (
                 <Box
                   sx={{ display: "flex", justifyContent: "space-around" }}
@@ -262,17 +261,17 @@ const PhasecreationNew = () => {
                   <TextField
                     label="Value"
                     type="number"
-                    value={assignAll ? cmp?.max:cmp.value}
-                    disabled={assignAll ?true :false}
+                    value={assignAll ? cmp?.max : cmp.value}
+                    disabled={assignAll ? true : false}
                     onChange={(e) => {
-                      if(e.target.value>Number(cmp?.max)){
-                        e.target.value=cmp?.max
+                      if (e.target.value > Number(cmp?.max)) {
+                        e.target.value = cmp?.max;
                       }
                       let x = [...campaignName];
                       x.splice(index, 1, {
                         commitment: cmp?.commitment,
                         value: Number(e.target.value),
-                        max:cmp?.max
+                        max: cmp?.max,
                       });
                       setCampaignName(x);
                     }}
@@ -295,7 +294,7 @@ const PhasecreationNew = () => {
               getPhaseData,
               setExpanded,
               setShowPageDetails,
-              assignAll
+              assignAll,
             }}
             setPhaseDataError={setPhaseDataError}
           />

@@ -24,9 +24,9 @@ const PlanOverview = () => {
     console.log(newPlan, "dfsldfksdl");
     const x = newPlan.data.data.filter((page) => {
       if (
-        page.replacement_status == "pending" ||
+       ( page.replacement_status == "pending" ||
         page.replacement_status == "replacement" ||
-        page.replacement_status == "inactive"
+        page.replacement_status == "inactive") && (page.delete_status=='inactive')
       ) {
       }
       return page;
