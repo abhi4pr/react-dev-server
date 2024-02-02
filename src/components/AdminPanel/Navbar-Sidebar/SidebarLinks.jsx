@@ -24,7 +24,7 @@ const SidebarLinks = () => {
           setData(res.data);
         });
       axios
-        .get(`http://34.93.221.166:3000/api/get_single_user/${userID}`)
+        .get(`${baseUrl}`+`get_single_user/${userID}`)
         .then((res) => {
           setJobtype(res.data.job_type);
         });
@@ -88,6 +88,12 @@ const SidebarLinks = () => {
   const isAssetNotifierVisible = [40].some(
     (index) => contextData[index]?.view_value === 1
   );
+  const isTaskManagment = [43].some(
+    (index) => contextData[index]?.view_value === 1
+  )
+  const isPHPFinance = [44].some(
+    (index) => contextData[index]?.view_value === 1
+  )
 
   // const isWFHDuser  = [].some(index=>context )
 
@@ -1078,7 +1084,7 @@ const SidebarLinks = () => {
       {/* OPERATIONS */}
 
       {/* FINANCE */}
-      {isUserManagementVisible && (
+      {isPHPFinance && (
         <li className="nav-item">
           <Link
             className="nav-link collapsed"
@@ -1483,6 +1489,8 @@ const SidebarLinks = () => {
         </div>
       </li>
 
+
+{isTaskManagment &&(
       <li className="nav-item">
         <Link
           className="nav-link collapsed"
@@ -1491,6 +1499,7 @@ const SidebarLinks = () => {
           aria-expanded="true"
           aria-controls="taskmanagement"
         >
+          <i className="bi bi-person-gear" /> 
           <span>Task Management</span>
         </Link>
         <div
@@ -1511,6 +1520,7 @@ const SidebarLinks = () => {
           </div>
         </div>
       </li>
+      )}
 
       {/* {isInstaApiVisible && (
         <li className="nav-item">

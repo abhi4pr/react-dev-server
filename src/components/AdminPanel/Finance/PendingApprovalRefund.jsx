@@ -74,7 +74,7 @@ const PendingApprovalRefund = () => {
 
     await axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=refund_finance_approval",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=refund_finance_approval",
         formData,
         {
           headers: {
@@ -97,11 +97,11 @@ const PendingApprovalRefund = () => {
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_refund_id", row.sale_booking_refund_id);
     formData.append("sale_booking_id", row.sale_booking_id);
-    formData.append("refund_files", refundImage[index]);
+    formData.append("refund_files",  e.target.files[0]);
 
     await axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=refund_payment_upload_file",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=refund_payment_upload_file",
         formData,
         {
           headers: {
@@ -175,6 +175,7 @@ const PendingApprovalRefund = () => {
       selector: (row, index) => (
         <form method="POST" encType="multipart/form-data" action="">
           <input
+            key={index}
             type="file"
             name="refund_image"
             onChange={(e) => {
@@ -184,10 +185,11 @@ const PendingApprovalRefund = () => {
               // setRefundImage(refundImage);
               // setImageChanged(!imageChanged); // Toggle the state to trigger re-render
               handleFileChange(e, index);
+              uploadImage(e, row, index)
             }}
           />
           <br />
-          <input
+          {/* <input
             key={index}
             type="submit"
             value="upload"
@@ -196,7 +198,7 @@ const PendingApprovalRefund = () => {
               setSingleRow(row);
               uploadImage(e, row, index);
             }}
-          />
+          /> */}
         </form>
       ),
       width: "250px",
@@ -204,8 +206,9 @@ const PendingApprovalRefund = () => {
 
     {
       name: "Action",
-      selector: (row) => (
+      selector: (row,index) => (
         <select
+        key={index}
           className="form-control"
           value={row.statusDropdown}
           onChange={(e) => handleStatusChange(row, e.target.value)}

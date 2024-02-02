@@ -134,7 +134,7 @@ const handleResetClick = () => {
     formData.append("loggedin_user_id", 36);
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-balance_payment_list",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-balance_payment_list",
         formData,
         {
           headers: {
@@ -159,7 +159,7 @@ const handleResetClick = () => {
     formDataa.append("loggedin_user_id", 36);
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-pending_invoice_creation_list",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-pending_invoice_creation_list",
         formDataa,
         {
           headers: {
@@ -186,7 +186,7 @@ const handleResetClick = () => {
 
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-sale_booking_for_tds",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-sale_booking_for_tds",
         formDataSalesbookingAboutToClose,
         {
           headers: {
@@ -206,7 +206,7 @@ const handleResetClick = () => {
 
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-sale_booking_for_tds",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-sale_booking_for_tds",
         formDataSalesbookingOpen,
         {
           headers: {
@@ -226,7 +226,7 @@ const handleResetClick = () => {
 
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-sale_booking_for_tds",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-sale_booking_for_tds",
         formDataSalesbookingClose,
         {
           headers: {
@@ -262,7 +262,7 @@ const handleResetClick = () => {
     formDataIncentive.append("loggedin_user_id", 36);
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-incentive_request_list",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-incentive_request_list",
         formData,
         {
           headers: {

@@ -21,6 +21,7 @@ import {
 } from "@mui/material";
 import { useGlobalContext } from "../../../Context/Context";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
+import { baseUrl } from "../../../utils/config";
 
 const PageOverview = ({ selectData, setrender, stage, id ,phase_id}) => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -63,14 +64,14 @@ const PageOverview = ({ selectData, setrender, stage, id ,phase_id}) => {
       if(stage=='plan'){
 
         const deleteData = await axios.post(
-          `http://192.168.1.13:3000/api/campaignplan/singleplan`,
+          `${baseUrl}`+`campaignplan/singleplan`,
           { page: params.row, deletion_requested_by: "test" }
         );
         toastAlert(` Delete ${pageName} Page Successfully `);
         setrender();
       }else if(stage=='phase'){
         const deleteData = await axios.post(
-          `http://192.168.1.13:3000/api/campaignphase/singlephase`,
+          `${baseUrl}`+`campaignphase/singlephase`,
           { page: params.row, deletion_requested_by: "test" }
         );
         toastAlert(` Delete ${pageName} Page Successfully `);
@@ -95,7 +96,7 @@ const handleInputChange=(e,params)=>{
 const updateSinglePlan=async ()=>{
   if(stage=="plan"){
     try {
-      const response=await axios.put(`http://192.168.1.13:3000/api/updateplan`,updatePayload)
+      const response=await axios.put(`${baseUrl}`+`updateplan`,updatePayload)
       console.log(response)
       toastAlert(response.data.message)
     }
@@ -257,14 +258,14 @@ console.log(updatePayload)
     if (stage == 'plan') {
       handleDeleteDialogClose();
       const deleteData = await axios.delete(
-        `http://192.168.1.13:3000/api/campaignplan/bulk/${id}`
+        `${baseUrl}`+`campaignplan/bulk/${id}`
       );
       naviagte("/admin/registered-campaign");
       toastAlert("Plan Delete Successfully !!");
     } else {
       handleDeleteDialogClose();
       const deleteData = await axios.delete(
-        `http://192.168.1.13:3000/api/campaignphase/bulk/${phase_id}`
+        `${baseUrl}`+`campaignphase/bulk/${phase_id}`
       );
       // naviagte("/admin/registered-campaign");
       toastAlert("Phase Delete Successfully !!");

@@ -8,6 +8,8 @@ import DataTable from "react-data-table-component";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import {baseUrl} from '../../../utils/config'
+import ImageView from "./ImageView";
+import pdfImg from "./pdf-file.png";
 
 const AllTransactions = () => {
   const { toastAlert } = useGlobalContext();
@@ -25,6 +27,8 @@ const AllTransactions = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [paymetMethod, setPaymetMethod] = useState([]);
+  const [viewImgSrc, setViewImgSrc] = useState("");
+  const [viewImgDialog, setViewImgDialog] = useState(false);
 
   const handleFilter = () => {
     const result = datas
@@ -222,13 +226,49 @@ const AllTransactions = () => {
       name: "Screenshot",
       cell: (row) => (
         <div style={{ whiteSpace: "normal" }}>
-          <img
+          {row.payment_screenshot.includes(".pdf") ? (
+            <img src={pdfImg} onClick={() => {
+              setViewImgSrc(
+                row.payment_screenshot
+                  ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+                  : ""
+              ),
+                setViewImgDialog(true);
+            }} />
+          ) : 
+            <img
+              onClick={() => {
+                setViewImgSrc(
+                  row.payment_screenshot
+                    ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+                    : ""
+                ),
+                  setViewImgDialog(true);
+              }}
+              src={
+                row.payment_screenshot
+                  ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+                  : ""
+              }
+            />
+          
+
+          }
+          {/* <img
+            onClick={() => {
+              setViewImgSrc(
+                row.payment_screenshot
+                  ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+                  : ""
+              ),
+                setViewImgDialog(true);
+            }}
             src={
               row.payment_screenshot
-                ? `https://salesdev.we-fit.in/${row.payment_screenshot}`
+                ? `https://sales.creativefuel.io/${row.payment_screenshot}`
                 : ""
             }
-          />
+          /> */}
         </div>
       ),
     },
@@ -575,6 +615,12 @@ const AllTransactions = () => {
           />
         </div>
       </div>
+      {viewImgDialog && (
+          <ImageView
+            viewImgSrc={viewImgSrc}
+            setViewImgDialog={setViewImgDialog}
+          />
+        )}
     </>
   );
 };

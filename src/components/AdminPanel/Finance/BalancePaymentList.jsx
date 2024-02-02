@@ -4,7 +4,6 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
-import Modal from "react-modal";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
@@ -13,10 +12,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import Typography from "@mui/material/Typography";
-import { get } from "jquery";
-import { set } from "date-fns";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
+import pdfImg from "./pdf-file.png";
+import ImageView from "./ImageView";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -28,7 +26,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 const BalancePaymentList = () => {
-  const { toastAlert,toastError } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [datas, setData] = useState([]);
   const [search, setSearch] = useState("");
@@ -44,6 +42,8 @@ const BalancePaymentList = () => {
   const [singleRow, setSingleRow] = useState({});
   const [dropdownData, setDropDownData] = useState([]);
   const [paidAmount, setPaidAmount] = useState([]);
+  const [viewImgSrc, setViewImgSrc] = useState("");
+  const [viewImgDialog, setViewImgDialog] = useState(false);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -65,7 +65,7 @@ const BalancePaymentList = () => {
 
     await axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=balance_payment_update",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=balance_payment_update",
         formData,
         {
           headers: {
@@ -75,15 +75,11 @@ const BalancePaymentList = () => {
       )
       .then(() => {
         axios
-          .put(
-            baseUrl+"balance_payment_list_update",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          )
+          .put(baseUrl + "balance_payment_list_update", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
           .then(() => {
             console.log("data save in local success");
             getData();
@@ -104,16 +100,14 @@ const BalancePaymentList = () => {
   };
 
   function getData() {
-    axios
-      .post(baseUrl+"add_php_payment_bal_data_in_node")
-      .then((res) => {
-        console.log("data save in local success");
-      });
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then((res) => {
+      console.log("data save in local success");
+    });
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
       .post(
-        "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-balance_payment_list",
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-balance_payment_list",
         formData,
         {
           headers: {
@@ -139,7 +133,7 @@ const BalancePaymentList = () => {
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     const response = await axios.post(
-      "https://salesdev.we-fit.in/webservices/RestController.php?view=sales-payment_account_list",
+      "https://sales.creativefuel.io/webservices/RestController.php?view=sales-payment_account_list",
       formData,
       {
         headers: {
@@ -220,13 +214,49 @@ const BalancePaymentList = () => {
     },
     {
       name: "Paid Amount",
-      selector: (row) => row.total_paid_amount,
+      // selector: (row) => row.total_paid_amount,
+      cell: (row) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {row.total_paid_amount ? row.total_paid_amount : 0}
+        </div>
+      ),
     },
     {
       name: "Balance Amount",
       selector: (row) => row.campaign_amount - row.total_paid_amount,
     },
-
+    {
+      name: "Screen Shot",
+      cell: (row) =>
+        row.invoice ? (
+          row.invoice.includes(".pdf") ? (
+            <img src={pdfImg} onClick={() => {
+              setViewImgSrc(
+                row.invoice
+                  ? `https://sales.creativefuel.io/${row.invoice}`
+                  : ""
+              ),
+                setViewImgDialog(true);
+            }}  />
+          ) : (
+            <img
+            onClick={() => {
+              setViewImgSrc(
+                row.invoice
+                  ? `https://sales.creativefuel.io/${row.invoice}`
+                  : ""
+              ),
+                setViewImgDialog(true);
+            }}
+              src={`https://sales.creativefuel.io/${row.invoice}`}
+              alt="payment screenshot"
+              style={{ width: "50px", height: "50px" }}
+            />
+          )
+        ) : (
+          "No Image"
+        ),
+    },
     {
       name: "Status",
       cell: (row) => (
@@ -469,6 +499,7 @@ const BalancePaymentList = () => {
                     id="images"
                     name="images"
                     value={balAmount}
+                    readOnly
                     onChange={(e) => setBalAmount(e.target.value)}
                     required
                   />
@@ -511,20 +542,26 @@ const BalancePaymentList = () => {
                   value={paidAmount}
                   onChange={(e) => {
                     const inputValue = e.target.value;
-                    if (!isNaN(inputValue)) {
+                    if (!isNaN(inputValue) && inputValue !== "") {
                       const parsedValue = parseFloat(inputValue);
                       if (parsedValue <= balAmount) {
                         setPaidAmount(parsedValue);
-                        setPaymentType(parsedValue === balAmount ? { label: "Full", value: "full" } : { label: "Partial", value: "partial" });
+                        setPaymentType(
+                          parsedValue === balAmount
+                            ? { label: "Full", value: "full" }
+                            : { label: "Partial", value: "partial" }
+                        );
                       } else {
-                        toastError("Paid amount should be less than or equal to the balance amount");
+                        toastError(
+                          "Paid amount should be less than or equal to the balance amount"
+                        );
                       }
                     } else {
                       // Handle non-numeric input
                       toastError("Please enter a valid numeric value");
+                      setPaidAmount("");
                     }
                   }}
-                  
                 />
 
                 {/* <div className="form-group">
@@ -629,12 +666,26 @@ const BalancePaymentList = () => {
         </DialogContent>
         <DialogActions>
           <Button
-          disabled={paidAmount === 0 || paidAmount === "" || paymentDetails === "" || paymentMode === ""}
-          autoFocus onClick={handleSubmit}>
-            Save 
+            disabled={
+              paidAmount === 0 ||
+              paidAmount === "" ||
+              paymentDetails === "" ||
+              paymentMode === ""
+            }
+            autoFocus
+            onClick={handleSubmit}
+          >
+            Save
           </Button>
         </DialogActions>
       </BootstrapDialog>
+
+      {viewImgDialog && (
+          <ImageView
+            viewImgSrc={viewImgSrc}
+            setViewImgDialog={setViewImgDialog}
+          />
+        )}
     </>
   );
 };

@@ -48,6 +48,19 @@ const DataBrandMaster = () => {
     detail: {},
   });
   const [files, setFiles] = useState([]);
+  const [dateOfCompletion, setDateOfCompletion] = useState("");
+  const [dateOfReport, setDateOfReport] = useState("");
+  const [compignPurpose, setCompignPurpose] = useState("");
+  const [NumOfPost, setNumOfPost] = useState("");
+  const [NumOfReach, setNumOfReach] = useState("NA");
+  const [NumOfImpression, setNumOfImpression] = useState("NA");
+  const [NumOfEngagement, setNumOfEngagement] = useState("NA");
+  const [NumOfViews, setNumOfViews] = useState("NA");
+  const [NumOfStoryViews, setNumOfStoryViews] = useState("NA");
+  const [OperationRemark, setOperationRemark] = useState("NA");
+  const [brandCategory, setBrandCategory] = useState([]);
+  const [brandSubCategory, setBrandSubCategory] = useState("");
+  const [brandCat, setBrandCat] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -82,6 +95,21 @@ const DataBrandMaster = () => {
       .then((res) => {
         setDataBrandData(res.data);
       });
+    axios
+      .get(baseUrl+"brandCategory")
+      .then((res) => {
+        console.log(res.data.data, "brandCategory");
+        setBrandCategory(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    // axios
+    // .get("http://34.93.221.166:3000/api/brandCategory")
+    // .then((res) => {
+    //   console.log(res.data,"brandCategory")
+    //   setDataBrandData(res.data.data);
+    // });
   }, []);
 
   useEffect(() => {
@@ -112,6 +140,85 @@ const DataBrandMaster = () => {
       const updatedCategories = [...prevCategories];
       updatedCategories[index] = value;
       return updatedCategories;
+    });
+  };
+
+  const HandleNAFileChangeOnChange = (e) => {
+    const value = e.target.value;
+    console.log(value);
+
+    // Allow only empty string, 'NA', or a valid number
+    if (value === "" || value === "NA" || /^\d+$/.test(value)) {
+      return value;
+    } else if (
+      value.length === 3 &&
+      value.includes("NA") &&
+      typeof +value.split("NA")[1] === "number"
+    ) {
+      // If the input is neither empty, 'NA', nor a valid number, set it to 'NA'
+
+      return value.split("NA")[1];
+    } else if (!value.includes("NA")) {
+      return "NA";
+    } else if (value.length === 0) {
+      return "";
+    }
+  };
+
+  const handleNaFileChangeOnBlur = (e) => {
+    if (e.target.value === "") {
+      return "NA";
+    } else if (isNaN(Number(e.target.value))) {
+      // If the value is not a valid number, set it to 'NA'
+      return "NA";
+    }
+  };
+
+  const handleFileChange = (event) => {
+    setFileDetails((prev) => [...prev, event.target.files]);
+    const files = Array.from(event.target.files);
+    setImages(files);
+
+    const details = files.map((file) => {
+      const { name, size } = file;
+      const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      const fileType = name.split(".").pop().toLowerCase();
+
+      if (
+        fileType === "jpg" ||
+        fileType === "jpeg" ||
+        fileType === "png" ||
+        fileType === "gif"
+      ) {
+        // It's an image
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        return new Promise((resolve) => {
+          img.onload = () => {
+            const { naturalHeight, naturalWidth } = img;
+            resolve({
+              name,
+              file,
+              fileType,
+              size: `${naturalHeight}x${naturalWidth}`,
+              sizeInMB: `${sizeInMB}`,
+            });
+          };
+        });
+      } else {
+        // For other file types like PDF, video, Excel
+        return Promise.resolve({
+          name,
+          file,
+          fileType,
+          size: "N/A", // Size is not applicable in the same way as for images
+          sizeInMB: `${sizeInMB}`,
+        });
+      }
+    });
+
+    Promise.all(details).then((detailsArray) => {
+      setDetails(detailsArray);
     });
   };
 
@@ -191,54 +298,6 @@ const DataBrandMaster = () => {
     setDetails(newDetails);
   };
 
-  const handleFileChange = (event) => {
-    setFileDetails((prev) => [...prev, event.target.files]);
-    const files = Array.from(event.target.files);
-    setImages(files);
-
-    const details = files.map((file) => {
-      const { name, size } = file;
-      const sizeInMB = (size / (1024 * 1024)).toFixed(2);
-      const fileType = name.split(".").pop().toLowerCase();
-
-      if (
-        fileType === "jpg" ||
-        fileType === "jpeg" ||
-        fileType === "png" ||
-        fileType === "gif"
-      ) {
-        // It's an image
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        return new Promise((resolve) => {
-          img.onload = () => {
-            const { naturalHeight, naturalWidth } = img;
-            resolve({
-              name,
-              file,
-              fileType,
-              size: `${naturalHeight}x${naturalWidth}`,
-              sizeInMB: `${sizeInMB}`,
-            });
-          };
-        });
-      } else {
-        // For other file types like PDF, video, Excel
-        return Promise.resolve({
-          name,
-          file,
-          fileType,
-          size: "N/A", // Size is not applicable in the same way as for images
-          sizeInMB: `${sizeInMB}`,
-        });
-      }
-    });
-
-    Promise.all(details).then((detailsArray) => {
-      setDetails(detailsArray);
-    });
-  };
-
   if (isFormSubmitted) {
     return <Navigate to="/data-brand-overview" />;
   }
@@ -266,6 +325,27 @@ const DataBrandMaster = () => {
         handleSubmit={handleSubmit}
         submitButton={false}
       >
+        <div className="form-group col-6  ">
+          <label className="form-label">
+            Content Type <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={contentTypeData.map((opt) => ({
+              value: opt._id,
+              label: opt.content_name,
+            }))}
+            value={{
+              value: contentType,
+              label:
+                contentTypeData.find((user) => user._id === contentType)
+                  ?.content_name || "",
+            }}
+            onChange={(e) => {
+              setContentType(e.value);
+            }}
+            required
+          />
+        </div>
         <FieldContainer
           label="Name *"
           type="text"
@@ -335,7 +415,7 @@ const DataBrandMaster = () => {
     required
 /> */}
 
-<Select
+          <Select
             options={dataSubCategoryData.map((opt) => ({
               value: opt._id,
               label: opt.data_sub_cat_name,
@@ -351,7 +431,6 @@ const DataBrandMaster = () => {
             }}
             required
           />
-
         </div>
         <div className="col-1 mt-4">
           <Link
@@ -383,27 +462,7 @@ const DataBrandMaster = () => {
             required
           />
         </div>
-        <div className="form-group col-3">
-          <label className="form-label">
-            Content Type <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={contentTypeData.map((opt) => ({
-              value: opt._id,
-              label: opt.content_name,
-            }))}
-            value={{
-              value: contentType,
-              label:
-                contentTypeData.find((user) => user._id === contentType)
-                  ?.content_name || "",
-            }}
-            onChange={(e) => {
-              setContentType(e.value);
-            }}
-            required
-          />
-        </div>
+        
         <div className="form-group col-3">
           <label className="form-label">
             Brand <sup style={{ color: "red" }}>*</sup>
@@ -447,6 +506,184 @@ const DataBrandMaster = () => {
             required
           />
         </div>
+        {contentType == '65a663ccef8a81593f418836' &&<><div className="form-group col-3">
+          <label className="form-label">Date of Completion</label>
+          <input
+            type="date"
+            className="form-control"
+            value={dateOfCompletion}
+            onChange={(e) => setDateOfCompletion(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group col-3">
+          <label className="form-label">Date of Report</label>
+          <input
+            type="date"
+            className="form-control"
+            value={dateOfReport}
+            onChange={(e) => setDateOfReport(e.target.value)}
+          />
+        </div>
+        <div className="form-group col-3">
+          <label className="form-label">Brnad Category</label>
+          <Select
+            options={brandCategory.map((opt) => ({
+              value: opt.brandCategory_id,
+              label: opt.brandCategory_name,
+            }))}
+            value={{
+              value: brandCat,
+              label:
+                brandCategory.find(
+                  (brand) => brand.brandCategory_id == brandCat
+                )?.brandCategory_name || "",
+            }}
+            onChange={(e) => {
+              setBrandCat(e.value);
+              console.log(e.value);
+            }}
+            required
+          />
+        </div>
+        <div className="form-group col-3">
+          <label className="form-label">Brnad Sub Category</label>
+          <Select
+            options={employeeData.map((opt) => ({
+              value: opt.user_id,
+              label: opt.user_name,
+            }))}
+            value={{
+              value: designedBy,
+              label:
+                employeeData.find((user) => user.user_id === designedBy)
+                  ?.user_name || "",
+            }}
+            onChange={(e) => {
+              setDesignedBy(e.value);
+            }}
+            required
+          />
+        </div>
+
+        <div className="form-group col-3">
+          <label className="form-label">Campaign Purpose</label>
+
+          <input
+            className="form-control"
+            value={compignPurpose}
+            onChange={(e) => setCompignPurpose(e.target.value)}
+          />
+        </div>
+
+        <div className="form-group col-3">
+          <label className="form-label">Number Of Post</label>
+          <input
+  className="form-control"
+  value={NumOfPost}
+  onChange={(e) => {
+    console.log(e.target.value);
+    if (!isNaN(Number(e.target.value))) {
+      setNumOfPost(e.target.value);
+    }
+  }}
+/>
+
+        </div>
+
+        <div className="form-group col-3">
+          <label className="form-label">Number Of Reach</label>
+          <input
+            className="form-control"
+            value={NumOfReach}
+            onChange={(e) => {
+              setNumOfReach(HandleNAFileChangeOnChange(e));
+              // const value = e.target.value;
+              // console.log(value);
+
+              // // Allow only empty string, 'NA', or a valid number
+              // if (value === "" || value === "NA" || /^\d+$/.test(value)) {
+              //   setNumOfReach(value);
+              // } else if (
+              //   value.length === 3 &&
+              //   value.includes("NA") &&
+              //   typeof +value.split("NA")[1] === "number"
+              // ) {
+              //   // If the input is neither empty, 'NA', nor a valid number, set it to 'NA'
+
+              //   setNumOfReach(value.split("NA")[1]);
+              // } else if (!value.includes("NA")) {
+              //   setNumOfReach("NA");
+              // } else if (value.length === 0) {
+              //   setNumOfReach("");
+              // }
+            }}
+            onBlur={(e) => {
+              setNumOfReach(handleNaFileChangeOnBlur(e));
+              // if (e.target.value === "") {
+              //   setNumOfReach("NA");
+              // } else if (isNaN(Number(e.target.value))) {
+              //   // If the value is not a valid number, set it to 'NA'
+              //   setNumOfReach("NA");
+              // }
+            }}
+          />
+        </div>
+        <div className="form-group col-3">
+          <label className="form-label">Number Of Impression</label>
+          <input
+            className="form-control"
+            value={NumOfImpression}
+            onChange={(e) => setNumOfImpression(HandleNAFileChangeOnChange(e))}
+            onBlur={(e) => {
+              setNumOfImpression(handleNaFileChangeOnBlur(e));
+            }}
+          />
+        </div>
+        <div className="form-group col-3">
+          <label className="form-label">Number Of Engagement</label>
+          <input
+            className="form-control"
+            value={NumOfEngagement}
+            onChange={(e) => setNumOfEngagement(HandleNAFileChangeOnChange(e))}
+            onBlur={(e) => {
+              setNumOfEngagement(handleNaFileChangeOnBlur(e));
+            }}
+          />
+        </div>
+        <div className="form-group col-3">
+          <label className="form-label">Number Of views</label>
+          <input
+            className="form-control"
+            value={NumOfViews}
+            onChange={(e) => setNumOfViews(HandleNAFileChangeOnChange(e))}
+            onBlur={(e) => {
+              setNumOfViews(handleNaFileChangeOnBlur(e));
+            }}
+          />
+        </div>
+        <div className="form-group col-3">
+          <label className="form-label">Number Of Story Views</label>
+          <input
+            className="form-control"
+            value={NumOfStoryViews}
+            onChange={(e) => setNumOfStoryViews(HandleNAFileChangeOnChange(e))}
+            onBlur={(e) => {
+              setNumOfStoryViews(handleNaFileChangeOnBlur(e));
+            }}
+          />
+        </div>
+        <div className="form-group col-3">
+          <label className="form-label">Operation Remark</label>
+          <input
+            className="form-control"
+            value={OperationRemark}
+            onChange={(e) => setOperationRemark(HandleNAFileChangeOnChange(e))}
+            onBlur={(e) => {
+              setOperationRemark(handleNaFileChangeOnBlur(e));
+            }}
+          />
+        </div></>}
 
         <div className="summary_cards brand_img_list">
           {details.map((detail, index) => (
