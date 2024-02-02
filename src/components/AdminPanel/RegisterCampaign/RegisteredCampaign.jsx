@@ -79,7 +79,7 @@ export default function RegisteredCampaign() {
       "params.row.register_campaign_id"
     );
     setDeleteRowModal(true);
-    setDeleteRowId(params.row.register_campaign_id);
+    setDeleteRowId(params.row._id);
   };
 
   const handleOpen = (params) => {
