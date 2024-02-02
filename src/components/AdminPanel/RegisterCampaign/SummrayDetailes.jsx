@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Paper, Typography, Button, Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import millify from "millify";
+import * as XLSX from "xlsx";
+import { SiMicrosoftexcel } from "react-icons/si";
 
-import * as XLSX from 'xlsx';
-
-const SummaryDetails = ({ payload,campName }) => {
+const SummaryDetails = ({ payload, campName }) => {
   const [summaryData, setSummaryData] = useState({
     total: 0,
     totalPost: 0,
@@ -21,7 +22,8 @@ const SummaryDetails = ({ payload,campName }) => {
     const updatedCatNameLengths = {};
     payload.forEach((entry) => {
       const catName = entry.cat_name;
-      updatedCatNameLengths[catName] = (updatedCatNameLengths[catName] || 0) + 1;
+      updatedCatNameLengths[catName] =
+        (updatedCatNameLengths[catName] || 0) + 1;
     });
     setCatNameLengths(updatedCatNameLengths);
 
@@ -95,7 +97,7 @@ const SummaryDetails = ({ payload,campName }) => {
         return <div>{rowIndex + 1}</div>;
       },
     },
-   
+
     {
       field: "page_name",
       headerName: "Pages",
@@ -123,48 +125,65 @@ const SummaryDetails = ({ payload,campName }) => {
 
   const downloadExcel = () => {
     const workbook = XLSX.utils.book_new();
-    
     const overviewData = [
-      ['Proposal'], 
-      ['Sno.', 'Description', 'Platform', 'Count', 'Deliverables', 'Cost'], // Headers
-      [1, 'Pages', 'Instagram', summaryData.totalPost, '', ''], // Data for Pages
-      [2, 'Followers', '', summaryData.total, '', ''], // Data for Followers
-      [3, 'Story per Page', '', summaryData.totalStory, '', ''], // Data for Story per Page
-      ['', '', '', '', 'Total', summaryData.lent] 
+      ["", "", "", "Summary"],
+      ["Sno.", "Description",  "Count","Platform", "Deliverables", "Cost"], 
+      [1, "Post",  summaryData.totalPost, "", ""], 
+      [2, "Followers",  summaryData.total, "", ""], 
+      [3, "Story ",  summaryData.totalStory, "", ""], 
+      ["", "Total", summaryData.lent], 
     ];
-  
+
     const overviewWorksheet = XLSX.utils.aoa_to_sheet(overviewData);
-  
-  
-    const titleCellRef = XLSX.utils.encode_cell({ r: 0, c: 0 });
-    overviewWorksheet[titleCellRef].s = {
-      font: { sz: 18, bold: true },
-      alignment: { horizontal: 'center' },
-      fill: { fgColor: { rgb: '000000' } }
-    };
+
+    overviewWorksheet["!cols"] = [
+      { wch: 10 },
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 },
+      { wch: 15 },
+    ];
     XLSX.utils.book_append_sheet(workbook, overviewWorksheet, "Overview");
-      Object.keys(catNameLengths).forEach(catName => {
+    Object.keys(catNameLengths).forEach((catName) => {
       const catData = payload
-        .filter(item => item.cat_name === catName)
-        .map((item,index) => ({
-          "sno":index+1,
-          "Page": item.page_name,
-          "Link": item.page_link,
-          "Followers": item.follower_count,
-          "Post per Page": item.postPerPage,
-          "Story per Page": item.storyPerPage
+        .filter((item) => item.cat_name === catName)
+        .map((item, index) => ({
+          sno: index + 1,
+          Page: item.page_name,
+          Link: {
+            t: "s",
+            v: item.page_link,
+            l: {
+              Target: item.page_link,
+              
+              Tooltip: "Click to open link",
+            },
+          },
+          Followers: item.follower_count,
+          "Post ": item.postPerPage,
+          "Story ": item.storyPerPage,
         }));
+
       const catWorksheet = XLSX.utils.json_to_sheet(catData);
+      catWorksheet["!cols"] = [
+        { wch: 10 },
+        { wch: 20 },
+        { wch: 40 },
+        { wch: 15 },
+        { wch: 8 },
+        { wch: 8 },
+      ];
+
       XLSX.utils.book_append_sheet(workbook, catWorksheet, catName);
     });
-      XLSX.writeFile(workbook, `${campName}.xlsx`);
+    XLSX.writeFile(workbook, `${campName}.xlsx`);
   };
-  
+
   
 
   return (
     <>
-    
       {payload?.length > 0 && (
         <Box sx={{ height: 500, width: "35%" }}>
           <Paper elevation={12} sx={{ mb: 4, height: "150px", width: "100%" }}>
@@ -174,13 +193,31 @@ const SummaryDetails = ({ payload,campName }) => {
             >
               Summary
             </Typography>
-            <Box sx={{ m:2 }}>
-            <Button onClick={downloadExcel} variant="contained" color="primary">
-               Excel
-            </Button>
-          </Box>
+            <Box>
+              <Button
+                onClick={downloadExcel}
+                variant="text"
+                color="success"
+                title="Download Excel"
+                sx={{fontSize:"25px"}}
+              >
+                <SiMicrosoftexcel />
+              </Button>
+              {/* <Button
+                onMouseEnter={downloadExcel} 
+                variant="contained"
+                color="primary"
+              >
+                Excel
+              </Button> */}
+            </Box>
             <Box
-              sx={{ display: "flex", justifyContent: "space-around", gap: 1,mt:2 }}
+              sx={{
+                display: "flex",
+                justifyContent: "space-around",
+                gap: 1,
+                mt: 2,
+              }}
             >
               <Typography variant="6"> Pages: {summaryData.lent}</Typography>
               <Typography variant="6">
@@ -226,13 +263,11 @@ const SummaryDetails = ({ payload,campName }) => {
             <Typography>Total Stories: {totalStoryPerPage}</Typography>
           </Box>
           <DataGrid
-            rows={filteredData ||payload}
+            rows={filteredData || payload}
             columns={columns}
             getRowId={(row) => row.p_id}
             pageSizeOptions={[5]}
           />
-
-         
         </Box>
       )}
     </>
