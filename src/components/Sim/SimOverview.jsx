@@ -54,7 +54,7 @@ const SimOverview = () => {
   ];
 
   function getData() {
-    axios.get(baseUrl+"get_all_sims").then((res) => {
+    axios.get(baseUrl + "get_all_sims").then((res) => {
       const simAllData = res.data.data;
       // if (status != "") {
       //   const AvailableData = simAllData?.filter(
@@ -105,9 +105,7 @@ const SimOverview = () => {
   const getSubCategoryData = () => {
     if (category) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_asset_sub_category/${category}`
-        )
+        .get(`${baseUrl}` + `get_single_asset_sub_category/${category}`)
         .then((res) => {
           setSubCategoryData(res.data);
         });
@@ -123,13 +121,11 @@ const SimOverview = () => {
   }, [selectedStatus]);
 
   useEffect(() => {
-    axios
-      .get(baseUrl+"get_all_allocations")
-      .then((res) => {
-        setSimAllocationData(res.data.data);
-      });
+    axios.get(baseUrl + "get_all_allocations").then((res) => {
+      setSimAllocationData(res.data.data);
+    });
 
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       setUserData(res.data.data);
     });
   }, []);
@@ -146,12 +142,9 @@ const SimOverview = () => {
   }, [search]);
 
   function handleParticularSimData(simId) {
-    axios
-      .get(`${baseUrl}`+`get_single_sim/${simId}`)
-      .then((res) => {
-        setModalData(res.data.data);
-        // console.log(res.data.data , "there is data")
-      });
+    axios.get(`${baseUrl}` + `get_single_sim/${simId}`).then((res) => {
+      setModalData(res.data.data);
+    });
   }
 
   useEffect(() => {
@@ -176,7 +169,7 @@ const SimOverview = () => {
     if (selectedUserTransfer != "") {
       const currDate = new Date().toISOString();
       const dateString = currDate.replace("T", " ").replace("Z", "");
-      axios.put(baseUrl+"update_allocationsim", {
+      axios.put(baseUrl + "update_allocationsim", {
         sim_id: simAllocationTransferData[0].sim_id,
         allo_id: simAllocationTransferData[0].allo_id,
         user_id: simAllocationTransferData[0].user_id,
@@ -188,7 +181,7 @@ const SimOverview = () => {
         submitted_at: dateString,
       });
 
-      axios.post(baseUrl+"add_sim_allocation", {
+      axios.post(baseUrl + "add_sim_allocation", {
         user_id: Number(selectedUserTransfer),
         sim_id: Number(simAllocationTransferData[0].sim_id),
         // dept_id: Number(modalSelectedUserData[0].dept_id),
@@ -202,7 +195,7 @@ const SimOverview = () => {
 
   const handleSimAllocation = async () => {
     if (selectedUserTransfer !== "") {
-      await axios.post(baseUrl+"add_sim_allocation", {
+      await axios.post(baseUrl + "add_sim_allocation", {
         user_id: Number(selectedUserTransfer),
         status: "Allocated",
         sim_id: Number(modalData.sim_id),
@@ -212,7 +205,7 @@ const SimOverview = () => {
       });
 
       await axios
-        .put(baseUrl+"update_sim", {
+        .put(baseUrl + "update_sim", {
           id: modalData.sim_id,
           mobilenumber: modalData.mobileNumber,
           sim_no: modalData.sim_no,
@@ -372,6 +365,7 @@ const SimOverview = () => {
           {selectedStatus == "Available" && (
             <button
               type="button"
+              title="Allocation"
               className="btn btn-outline-primary btn-sm user-button"
               data-toggle="modal"
               data-target="#AllocationModal"
@@ -400,7 +394,7 @@ const SimOverview = () => {
 
   const handleImageClick = (row) => {
     axios
-      .post(`${baseUrl}`+`get_single_assets_image`, {
+      .post(`${baseUrl}` + `get_single_assets_image`, {
         sim_id: row,
       })
       .then((res) => {

@@ -87,6 +87,8 @@ const AssetSingleuserOverview = ({
         baseUrl + "add_repair_request",
         formData
       );
+
+      hardRender();
       setAssetName("");
       setRepairDate("");
       setPriority("");
@@ -94,7 +96,6 @@ const AssetSingleuserOverview = ({
       setAssetsImg2("");
       setAssetsImg3("");
       setAssetsImg4("");
-      getRepairRequest("");
       setProblemDetailing("");
       setTagUser([]);
       toastAlert("Success");
@@ -106,17 +107,19 @@ const AssetSingleuserOverview = ({
     setAssetId(row.sim_id);
   };
 
-  const handleAssetReturn = () => {
+  const handleAssetReturn = async () => {
     try {
       const formData = new FormData();
       formData.append("sim_id", assetId);
       formData.append("asset_return_remark", returnRemark);
       formData.append("return_asset_image_1", returnImage1);
       formData.append("return_asset_image_2", returnImage2);
+      formData.append("asset_return_status", "Pending");
       formData.append("asset_return_by", userID);
 
-      const response = axios.post(baseUrl + "assetreturn", formData);
+      await axios.post(baseUrl + "assetreturn", formData);
 
+      hardRender();
       toastAlert("Requested Success");
     } catch (error) {
       console.log(error);
@@ -129,7 +132,7 @@ const AssetSingleuserOverview = ({
   const handleDeleteNewAsset = (id) => {
     try {
       const response = axios.delete(`${baseUrl}` + `assetrequest/${id}`);
-      newRequestAPIRender();
+
       hardRender();
       toastAlert("Delete Success");
     } catch (error) {
@@ -185,26 +188,6 @@ const AssetSingleuserOverview = ({
         return <div>{daysDifference} days</div>;
       },
     },
-    {
-      name: "Repair Status",
-      selector: (row) => (
-        <>
-          {row.asset_repair_request_status === "Accept" ? (
-            <span className="badge badge-success">Accepted</span>
-          ) : row.asset_repair_request_status === "Recovered" ? (
-            <span className="badge badge-warning">Recoverd</span>
-          ) : row.asset_repair_request_status === "Resolved" ? (
-            <span className="badge badge-success">Resolved</span>
-          ) : row.asset_repair_request_status === "Requested" ? (
-            <span className="badge badge-danger">Requested</span>
-          ) : row.asset_repair_request_status === "ApprovedByManager" ? (
-            <span className="badge badge-warning">Approve By Manager</span>
-          ) : null}
-        </>
-      ),
-      width: "170px",
-      sortable: true,
-    },
 
     {
       name: "Repair",
@@ -236,6 +219,42 @@ const AssetSingleuserOverview = ({
           Return Asset
         </button>
       ),
+    },
+    {
+      name: "Repair Status",
+      selector: (row) => (
+        <>
+          {row.asset_repair_request_status === "Accept" ? (
+            <span className="badge badge-success">Accepted</span>
+          ) : row.asset_repair_request_status === "Recover" ? (
+            <span className="badge badge-warning">Recoverd</span>
+          ) : row.asset_repair_request_status === "Resolved" ? (
+            <span className="badge badge-success">Resolved</span>
+          ) : row.asset_repair_request_status === "Requested" ? (
+            <span className="badge badge-danger">Requested</span>
+          ) : row.asset_repair_request_status === "ApprovedByManager" ? (
+            <span className="badge badge-warning">Approve By Manager</span>
+          ) : (
+            "N/A"
+          )}
+        </>
+      ),
+      width: "170px",
+      sortable: true,
+    },
+    {
+      name: "Return Status",
+      selector: (row) => (
+        <>
+          {row.asset_return_status === "Pending" ? (
+            <span className="badge badge-warning">Pending</span>
+          ) : (
+            "N/A"
+          )}
+        </>
+      ),
+      width: "170px",
+      sortable: true,
     },
   ];
 
@@ -348,7 +367,6 @@ const AssetSingleuserOverview = ({
 
       toastAlert("Request Success");
       hardRender();
-      newRequestAPIRender();
     } catch (error) {
       console.log(error);
     }
@@ -375,7 +393,6 @@ const AssetSingleuserOverview = ({
 
       toastAlert("Request Success");
       hardRender();
-      newRequestAPIRender();
     } catch (error) {
       console.log(error);
     }

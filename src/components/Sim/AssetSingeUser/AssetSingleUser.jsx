@@ -17,7 +17,7 @@ const AssetSingleUser = () => {
   const { userID } = useAPIGlobalContext();
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
-  const [filterData, setFilterData] = useState("");
+  const [filterData, setFilterData] = useState([]);
 
   const [reasonData, setReasonData] = useState([]);
   const [reason, setReason] = useState("");
@@ -35,6 +35,7 @@ const AssetSingleUser = () => {
 
   const hardRender = () => {
     getNewAssetRequest();
+    getData();
   };
 
   // New tab
@@ -44,15 +45,20 @@ const AssetSingleUser = () => {
   };
   const accordionButtons = ["Assigned assets", "Asset requests"];
 
-  const newRequestAPIRender = () => {
-    return getNewAssetRequest() || getData();
-  };
-
-  const tab1 = <AssetSingleuserOverview filterData={filterData} tab="tab" />;
+  const tab1 = (
+    <AssetSingleuserOverview
+      filterData={filterData?.filter(
+        (d) =>
+          d.asset_return_status !== "RecovedByHR" ||
+          d.asset_return_status !== "ApprovedByManager"
+      )}
+      hardRender={hardRender}
+      tab="tab"
+    />
+  );
   const tab2 = (
     <AssetSingleuserOverview
       newAssetRequestData={newAssetRequestData}
-      newRequestAPIRender={newRequestAPIRender}
       hardRender={hardRender}
     />
   );
@@ -103,42 +109,43 @@ const AssetSingleUser = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const formData = new FormData();
-      formData.append("repair_request_date_time", repairDate);
-      formData.append("status", "Requested");
-      formData.append("req_by", userID);
-      formData.append("asset_reason_id", reason);
-      formData.append("sim_id", assetsName);
-      formData.append("priority", priority);
-      formData.append(
-        "multi_tag",
-        tagUser.map((user) => user.value)
-      );
-      formData.append("img1", assetsImg1);
-      formData.append("img2", assetsImg2);
-      formData.append("img3", assetsImg3);
-      formData.append("img4", assetsImg4);
-      formData.append("problem_detailing", problemDetailing);
+    // try {
+    const formData = new FormData();
+    formData.append("repair_request_date_time", repairDate);
+    formData.append("status", "Requested");
+    formData.append("req_by", userID);
+    formData.append("asset_reason_id", reason);
+    formData.append("sim_id", assetsName);
+    formData.append("priority", priority);
+    formData.append(
+      "multi_tag",
+      tagUser.map((user) => user.value)
+      // tagUser.map((user) => Number(user.value)).join(",")
+    );
 
-      const response = await axios.post(
-        baseUrl + "add_repair_request",
-        formData
-      );
+    formData.append("img1", assetsImg1);
+    formData.append("img2", assetsImg2);
+    formData.append("img3", assetsImg3);
+    formData.append("img4", assetsImg4);
+    formData.append("status", "Requested");
 
-      toastAlert("Success");
-      setAssetName("");
-      setRepairDate("");
-      setPriority("");
-      setAssetsImg1("");
-      setAssetsImg2("");
-      setAssetsImg3("");
-      setAssetsImg4("");
-      setProblemDetailing("");
-      setTagUser([]);
-    } catch (error) {
-      console.log(error);
-    }
+    formData.append("problem_detailing", problemDetailing);
+
+    console.log("bbbbbbb", formData);
+    const response = await axios.post(baseUrl + "add_repair_request", formData);
+
+    toastAlert("Success");
+    setAssetName("");
+    setRepairDate("");
+    setPriority("");
+    setAssetsImg1("");
+    setAssetsImg2("");
+    setAssetsImg3("");
+    setAssetsImg4("");
+    setProblemDetailing("");
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
   useEffect(() => {
     const currentDate = new Date().toISOString().slice(0, 16);

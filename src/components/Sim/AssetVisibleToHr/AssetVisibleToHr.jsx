@@ -22,7 +22,7 @@ const AssetVisibleToHr = () => {
   const [returnAssetData, setReturnAssetData] = useState([]);
 
   // Return Recover Asset
-  const [id, setID] = useState(0);
+  const [returnRow, setReturnRow] = useState(0);
   const [reoverStatus, setRecoverStatus] = useState("");
   const [returnRecoverRemark, setReturnRecoverRemark] = useState("");
   const [returnRecoverImg1, setReturnRecoverImg1] = useState(null);
@@ -100,7 +100,9 @@ const AssetVisibleToHr = () => {
   };
 
   const hardRender = () => {
-    return getData();
+    getData();
+    getNewAssetData();
+    getReturnAssetData();
   };
   const tab1 = (
     <HrVisibleToHrOverview hrOverviewData={data} hardRender={hardRender} />
@@ -121,7 +123,7 @@ const AssetVisibleToHr = () => {
   );
   const tab4 = (
     <HrVisibleToHrOverview
-      hrOverviewData={data?.filter((d) => d.status == "Recovered")}
+      hrOverviewData={data?.filter((d) => d.status == "Recover")}
       hardRender={hardRender}
     />
   );
@@ -166,45 +168,37 @@ const AssetVisibleToHr = () => {
   }
 
   const handleReturnAssetRecover = (row, status) => {
-    setID(row._id);
+    setReturnRow(row);
     setRecoverStatus(status);
     console.log(row, "row hai yha");
   };
-  const handleRecoverAssetSubmit = () => {
+  const handleRecoverAssetSubmit = async () => {
+    console.log(returnRow.sim_id, returnRow.allo_id, "yah tow id hai");
     try {
       const formData = new FormData();
-      formData.append("_id", id);
+      formData.append("_id", returnRow._id);
       formData.append("asset_return_recover_by_remark", returnRecoverRemark);
       formData.append("recover_asset_image_1", returnRecoverImg1);
       formData.append("recover_asset_image_2", returnRecoverImg2);
       formData.append("asset_return_recover_by", userID);
       formData.append("asset_return_status", reoverStatus);
 
-      const response = axios.put(baseUrl + "assetreturn", formData);
+      await axios.put(baseUrl + "assetreturn", formData);
 
-      axios.put(baseUrl + "update_allocationsim", {
-        sim_id: row.sim_id,
-        allo_id: simData.allo_id,
+      await axios.put(baseUrl + "update_allocationsim", {
+        sim_id: returnRow.sim_id,
+        allo_id: returnRow.allo_id,
         status: "Available",
         submitted_by: userID,
-        submitted_at: currSubDate,
       });
 
-      axios
-        .put(baseUrl + "update_sim", {
-          id: row.sim_id,
-          status: "Available",
-        })
-        .then(() => {
-          toastAlert("Form Submitted success");
-          setIsFormSubmitted(true);
-          getData();
-        })
-        .catch((error) => {
-          // console.error(error);
-        });
+      await axios.put(baseUrl + "update_sim", {
+        id: returnRow.sim_id,
+        status: "Available",
+      });
 
       toastAlert("Requested Success");
+      getReturnAssetData();
       setReturnRecoverRemark("");
       setReturnRecoverImg1("");
       setReturnRecoverImg2("");
@@ -236,9 +230,11 @@ const AssetVisibleToHr = () => {
         <>
           {row?.asset_return_status === "RecovedByHR" ? (
             <span className="badge badge-success">Recover By HR</span>
-          ) : row.asset_return_status === "ApprovedByManager" ? (
-            <span className="badge badge-warning">Approve By Manager</span>
-          ) : null}
+          ) : row.asset_return_status === "RecoverdByManager" ? (
+            <span className="badge badge-warning">Recovered By Manager</span>
+          ) : (
+            "N/A"
+          )}
         </>
       ),
       sortable: true,

@@ -125,7 +125,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         <>
           {row.status === "Accept" ? (
             <span className="badge badge-success">Accepted</span>
-          ) : row.status === "Recovered" ? (
+          ) : row.status === "Recover" ? (
             <span className="badge badge-warning">Recoverd</span>
           ) : row.status === "Resolved" ? (
             <span className="badge badge-success">Resolved</span>

@@ -34,8 +34,8 @@ const ManagerDynamicOverview = ({
         asset_request_status: status,
       });
 
-      toastAlert("Request Success");
       hardRender();
+      toastAlert("Request Success");
     } catch (error) {
       console.log(error);
     }
@@ -59,7 +59,7 @@ const ManagerDynamicOverview = ({
     setID(row._id);
     setRecoverStatus(status);
   };
-  const handleAssetReturnRecoverSubmit = () => {
+  const handleAssetReturnRecoverSubmit = async () => {
     try {
       const formData = new FormData();
       formData.append("_id", id);
@@ -69,8 +69,9 @@ const ManagerDynamicOverview = ({
       formData.append("asset_return_recover_by", userID);
       formData.append("asset_return_status", reoverStatus);
 
-      const response = axios.post(baseUrl + "assetreturn", formData);
+      await axios.post(baseUrl + "assetreturn", formData);
 
+      hardRender();
       toastAlert("Requested Success");
       setReturnRecoverRemark("");
       setReturnRecoverImg1("");
@@ -102,7 +103,7 @@ const ManagerDynamicOverview = ({
           ) : row.asset_repair_request_status === "Accept" ? (
             <span className="badge badge-success">Accept</span>
           ) : row.asset_repair_request_status === "Rejected" ? (
-            <span className="badge badge-warning">Rejected</span>
+            <span className="badge badge-danger">Rejected</span>
           ) : row.asset_repair_request_status === "ApprovedByManager" ? (
             <span className="badge badge-warning">Approve By Manager</span>
           ) : null}
@@ -184,7 +185,7 @@ const ManagerDynamicOverview = ({
           ) : row.asset_new_request_status === "ApprovedByManager" ? (
             <span className="badge badge-warning">Approve By Manager</span>
           ) : row.asset_new_request_status === "RejectedByManager" ? (
-            <span className="badge badge-warning">Reject By Manager</span>
+            <span className="badge badge-danger">Reject By Manager</span>
           ) : null}
         </>
       ),
@@ -266,9 +267,13 @@ const ManagerDynamicOverview = ({
         <>
           {row?.asset_return_status === "RecovedByHR" ? (
             <span className="badge badge-success">Recoved By HR</span>
-          ) : row.asset_return_status === "ApprovedByManager" ? (
-            <span className="badge badge-warning">Approve By Manager</span>
-          ) : null}
+          ) : row.asset_return_status === "RecoverdByManager" ? (
+            <span className="badge badge-warning">Recovered By Manager</span>
+          ) : row.asset_return_status === "Pending" ? (
+            <span className="badge badge-danger">Pending</span>
+          ) : (
+            "N/A"
+          )}
         </>
       ),
       sortable: true,

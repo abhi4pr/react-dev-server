@@ -25,7 +25,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
 
   const getAllAssetData = async () => {
     try {
-      const res = await axios.get(baseUrl+"get_all_sims");
+      const res = await axios.get(baseUrl + "get_all_sims");
       setSelectedAsset(res.data.data.filter((d) => d.sim_id == assetsName));
     } catch {}
   };
@@ -36,9 +36,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   // const text = getAssetDataContext.filter((d) => d.sim_id === assetsName);
 
   async function getShowAssetWithStatus() {
-    const res = await axios.get(
-      baseUrl+"show_asset_with_status"
-    );
+    const res = await axios.get(baseUrl + "show_asset_with_status");
     setAssetData(res?.data.data);
   }
   useEffect(() => {
@@ -48,7 +46,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   const handleRejectStatus = async (row, status) => {
     console.log(row, "row dekhna hai");
     try {
-      await axios.put(baseUrl+"assetrequest", {
+      await axios.put(baseUrl + "assetrequest", {
         _id: row._id,
         asset_request_status: status,
       });
@@ -61,13 +59,13 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   };
   const handleAssignedSubmit = async () => {
     try {
-      await axios.put(baseUrl+"assetrequest", {
+      await axios.put(baseUrl + "assetrequest", {
         _id: row._id,
         asset_request_status: assetStatus,
         request_by: row.request_by,
       });
 
-      await axios.post(baseUrl+"add_sim_allocation", {
+      await axios.post(baseUrl + "add_sim_allocation", {
         user_id: row.request_by,
         status: "Allocated",
         sim_id: assetsName,
@@ -76,7 +74,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
         created_by: userID,
       });
 
-      await axios.put(baseUrl+"update_sim", {
+      await axios.put(baseUrl + "update_sim", {
         id: assetsName,
         status: "Allocated",
       });
@@ -109,11 +107,11 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
           ) : row.asset_request_status === "Approved" ? (
             <span className="badge badge-success">Assigned</span>
           ) : row.asset_request_status === "RejectedByManager" ? (
-            <span className="badge badge-warning">RejectedByManager</span>
+            <span className="badge badge-danger">RejectedByManager</span>
           ) : row.asset_request_status === "Requested" ? (
             <span className="badge badge-danger">Requested</span>
           ) : row.asset_request_status === "Rejected" ? (
-            <span className="badge badge-warning">Rejected</span>
+            <span className="badge badge-danger">Rejected</span>
           ) : null}
         </>
       ),
