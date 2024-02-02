@@ -27,10 +27,16 @@ const NewAssetRequestOverview = () => {
   ];
   const hardRender = () => {
     getManagerData();
+    getReturnAssetData();
+    getRepairRequestData();
   };
 
   const tab1 = (
-    <ManagerDynamicOverview filterData={repairRequestData} tabOne="tabOne" />
+    <ManagerDynamicOverview
+      filterData={repairRequestData}
+      hardRender={hardRender}
+      tabOne="tabOne"
+    />
   );
   const tab2 = (
     <ManagerDynamicOverview
@@ -40,7 +46,11 @@ const NewAssetRequestOverview = () => {
     />
   );
   const tab3 = (
-    <ManagerDynamicOverview filterData={assetReturnData} tabThree="tabThree" />
+    <ManagerDynamicOverview
+      filterData={assetReturnData}
+      hardRender={hardRender}
+      tabThree="tabThree"
+    />
   );
   const getRepairRequestData = () => {
     axios

@@ -1474,11 +1474,11 @@ const SidebarLinks = () => {
             >
               Tagged Asset
             </Link>
-            {/* {RoleId == 2 && ( */}
-            <Link className="collapse-item" to="/admin/asset-manager">
-              Asset Request Approvel
-            </Link>
-            {/* )} */}
+            {RoleId == 2 && (
+              <Link className="collapse-item" to="/admin/asset-manager">
+                Asset Request Approvel
+              </Link>
+            )}
           </div>
         </div>
       </li>
