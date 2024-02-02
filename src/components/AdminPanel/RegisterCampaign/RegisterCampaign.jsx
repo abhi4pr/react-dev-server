@@ -3,15 +3,20 @@ import {
   TextField,
   Autocomplete,
   FormControl,
-  Paper,
   Box,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Paper,
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
 import AddPage from "./AddPage";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import dayjs from "dayjs";
@@ -20,9 +25,8 @@ import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 
 export default function RegisterCampaign() {
-
   const { toastAlert, toastError } = useGlobalContext();
-
+  const [openModal, setOpenModal] = useState(false);
   const [showPageDetails, setShowPageDetails] = useState(false);
   const [campaignDetailing, setCampaignDetailing] = useState("");
   const [showBrandName, setShowBrandName] = useState([]);
@@ -40,8 +44,13 @@ export default function RegisterCampaign() {
   const [caption, setCaption] = useState("");
   const [selectedAgency, setSelectedAgency] = useState("");
   const [agencyList, setAgencyList] = useState([]);
+  const [master, setMaster] = useState(null);
+  const [masterPayload, setMasterPayload] = useState({});
   //const [service, setService] = useState([]);
   const [selectedService, setSelectedService] = useState("");
+  const [isModelOpen, setIsModelOpen] = useState(false);
+  const [brandName, setBrandName] = useState("");
+
   const togglePageDetails = () => {
     setShowPageDetails(!showPageDetails);
   };
@@ -116,8 +125,8 @@ export default function RegisterCampaign() {
         setBrandName([]);
         setFields([]);
         navigate("/admin/registered-campaign");
-        toastAlert("Campaign Regrister Successfully")   
-         })
+        toastAlert("Campaign Regrister Successfully");
+      })
       .catch((err) => {
         console.log(err);
       });
@@ -162,12 +171,12 @@ export default function RegisterCampaign() {
     }
   };
 
-  const [brandName, setBrandName] = useState([]);
+  const [brandList, setBrandList] = useState([]);
   const [campaignList, setCampignList] = useState([]);
   const handleChange = (event) => {
     setBrandName(
       showBrandName.filter((e) => event.target.value == e.brand_name)[0]
-        .brand_id
+        ?.brand_id
     );
   };
 
@@ -177,7 +186,7 @@ export default function RegisterCampaign() {
     setSelectedDate(date);
   };
 
-  useEffect(() => {
+  const getAllData = () => {
     axios
       .get(baseUrl+"get_brands")
       .then((response) => {
@@ -237,6 +246,9 @@ export default function RegisterCampaign() {
       .catch((err) => {
         console.log(err);
       });
+  };
+  useEffect(() => {
+    getAllData();
   }, []);
 
   const handleHashtagChange = (event) => {
@@ -250,6 +262,49 @@ export default function RegisterCampaign() {
   };
   const handleIndusrtyChange = (event, newValue) => {
     setSelectedIndustry(newValue);
+  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [campaignName, setCampaignName] = useState("");
+  const [remark, setRemark] = useState("");
+
+  const addCampaignData = () => {
+    setMaster("Campaign");
+    setIsModalOpen(true);
+  };
+
+  const handleSave = async () => {
+    try {
+      let response;
+      if (master == "Campaign") {
+        response = await axios.post(
+          `http://192.168.29.109:3000/api/exe_campaign`,
+          masterPayload
+        );
+      } else if (master == "Brand") {
+        response = await axios.post(
+          `http://192.168.29.109:3000/api/add_brand`,
+          masterPayload
+        );
+      }
+
+      if (response.data.success === false) {
+        toastError(response.data.message);
+      } else {
+        toastAlert("Added successfully");
+        setMaster(null);
+        setMasterPayload({});
+        getAllData()
+        setIsModalOpen(false);
+      }
+    } catch (error) {
+      console.error("Error saving data:", error);
+      toastError("Add Properly");
+    }
+  };
+
+  const addBrandData = () => {
+    setMaster("Brand");
+    setIsModalOpen(true);
   };
 
   return (
@@ -287,6 +342,42 @@ export default function RegisterCampaign() {
                 )}
                 onSelect={handleChange}
               />
+              <Button onClick={addBrandData}>Add</Button>
+
+              {/* <Modal
+                open={openModal}
+                onClose={() => setOpenModal(false)}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    width: 400,
+                    bgcolor: "background.paper",
+                    border: "2px solid #000",
+                    boxShadow: 24,
+                    p: 4,
+                  }}
+                >
+                  <h2 id="modal-modal-title">Add Brand Name</h2>
+                  <TextField
+                    fullWidth
+                    label="Brand Name"
+                  />
+                  <Button onClick={() => setOpenModal(false)}>Close</Button>
+                  <Button
+                    title="Add Brand Name"
+                    onClick={() => setOpenModal(true)}
+                  >
+                    Add
+                  </Button>
+                </Box>
+              </Modal> */}
+
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
@@ -302,6 +393,8 @@ export default function RegisterCampaign() {
                   <TextField {...params} label="Campaign *" />
                 )}
               />
+              <Button onClick={addCampaignData}>Add</Button>
+
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <MobileDateTimePicker
                   label="Date *"
@@ -319,7 +412,7 @@ export default function RegisterCampaign() {
                 options={
                   industry?.length > 0 && industry.map((option) => option.name)
                 }
-                sx={{ width: 300,mt: 2 }}
+                sx={{ width: 300, mt: 2 }}
                 value={selectedIndustry}
                 onChange={handleIndusrtyChange}
                 renderInput={(params) => (
@@ -338,7 +431,7 @@ export default function RegisterCampaign() {
                   agencyList?.length > 0 &&
                   agencyList.map((option) => option.name)
                 }
-                sx={{ width: 400,mt:1 }}
+                sx={{ width: 400, mt: 1 }}
                 value={selectedAgency}
                 onChange={handleAgencyChange}
                 renderInput={(params) => (
@@ -349,11 +442,8 @@ export default function RegisterCampaign() {
               <Autocomplete
                 disablePortal
                 id="agency-dropdown"
-                options={
-                  goal?.length > 0 &&
-                  goal.map((option) => option.name)
-                }
-                sx={{ width: 400,mt:1 }}
+                options={goal?.length > 0 && goal.map((option) => option.name)}
+                sx={{ width: 400, mt: 1 }}
                 value={selectedGoal}
                 onChange={handleGoalChange}
                 renderInput={(params) => (
@@ -365,7 +455,7 @@ export default function RegisterCampaign() {
                 label="Hashtag *"
                 value={hashtag}
                 onChange={handleHashtagChange}
-                sx={{ width: 400, mt:1}}
+                sx={{ width: 400, mt: 1 }}
                 variant="outlined"
               />
 
@@ -391,7 +481,7 @@ export default function RegisterCampaign() {
               multiline
               value={campaignDetailing}
               onChange={(e) => setCampaignDetailing(e.target.value)}
-              sx={{ mt:2,mr:1,ml:1 }}
+              sx={{ mt: 2, mr: 1, ml: 1 }}
             />
 
             <TextField
@@ -401,7 +491,7 @@ export default function RegisterCampaign() {
               onChange={(e) => setCaption(e.target.value)}
               fullWidth
               variant="outlined"
-              sx={{ mt: 2,mr:1 }}
+              sx={{ mt: 2, mr: 1 }}
             />
           </Box>
           <>
@@ -498,30 +588,93 @@ export default function RegisterCampaign() {
       {/* {showPageDetails && <AddPage setXlxsData={setXlxsData} />} */}
 
       <Box sx={{ display: "flex", justifyContent: "flex-start" }}>
-  <Button
-    onClick={(e) => {
-      handleSubmit(e);
-    }}
-    variant="outlined"
-    size="large"
-    color="secondary"
-    sx={{
-      mt: 1,
-      borderColor: "red",
-      fontWeight: 'bold',
-      textTransform: 'none',
-      transition: 'all 0.5s ease-in-out',
-      '&:hover': {
-        backgroundColor: "white",
-        borderColor: "primary.dark",
-        transform: 'scale(1.05)',
-      },
-    }}
-  >
-    Register
-  </Button>
-</Box>
-
+        <Button
+          onClick={(e) => {
+            handleSubmit(e);
+          }}
+          variant="outlined"
+          size="large"
+          color="secondary"
+          sx={{
+            mt: 1,
+            borderColor: "red",
+            fontWeight: "bold",
+            textTransform: "none",
+            transition: "all 0.5s ease-in-out",
+            "&:hover": {
+              backgroundColor: "white",
+              borderColor: "primary.dark",
+              transform: "scale(1.05)",
+            },
+          }}
+        >
+          Register
+        </Button>
+      </Box>
+      <>
+        <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <DialogTitle>{`Add ${master}`}</DialogTitle>
+          <DialogContent>
+            <Box
+              sx={{
+                "& .MuiTextField-root": { m: 1 },
+              }}
+            >
+              <div>
+                <>
+                  <TextField
+                    id="outlined-password-input"
+                    label={` *${master} Name`}
+                    name="exeCmpName"
+                    type="text"
+                    // value={campaignName}
+                    onChange={(e) => {
+                      if (master == "Brand") {
+                        setMasterPayload({
+                          ...masterPayload,
+                          brand_name: e.target.value,
+                        });
+                      } else if (master == "Campaign") {
+                        setMasterPayload({
+                          ...masterPayload,
+                          exeCmpName: e.target.value,
+                        });
+                      }
+                    }}
+                  />
+                </>
+                <>
+                  <TextField
+                    id="outlined-password-input"
+                    label="Remark"
+                    name="exeRemark"
+                    type="text"
+                    // value={remark}
+                    onChange={(e) => {
+                      if (master == "Brand") {
+                        // setMasterPayload({...masterPayload,brand_name:[e.target.value]})
+                      } else if (master == "Campaign") {
+                        setMasterPayload({
+                          ...masterPayload,
+                          exeRemark: e.target.value,
+                        });
+                      }
+                    }}
+                  />
+                </>
+              </div>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setIsModalOpen(false)} color="primary">
+              Cancel
+            </Button>
+            <Button onClick={handleSave} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </div>
   );
 }
