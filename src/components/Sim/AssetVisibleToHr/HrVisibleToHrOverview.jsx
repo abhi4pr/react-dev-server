@@ -70,7 +70,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         reverseButtons: true,
       })
       .then((result) => {
-        if (result) {
+        if (result.isConfirmed) {
           const formData = new FormData();
           formData.append("repair_id", row.repair_id);
           formData.append("status", status);
@@ -82,9 +82,8 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
           formData.append("accept_by", userID);
 
           axios.put(baseUrl + "update_repair_request", formData).then((res) => {
-            // getRepairRequest();
-            toastAlert("Update Success");
             hardRender();
+            toastAlert("Update Success");
           });
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           swalWithBootstrapButtons.fire(

@@ -98,7 +98,8 @@ const SimMaster = () => {
     if (assetsCategory.category_id) {
       axios
         .get(
-          `${baseUrl}`+`get_single_asset_sub_category/${assetsCategory.category_id}`
+          `${baseUrl}` +
+            `get_single_asset_sub_category/${assetsCategory.category_id}`
         )
         .then((res) => {
           setSubCategoryData(res.data);
@@ -115,14 +116,12 @@ const SimMaster = () => {
   }, [subCategory.sub_category_id, subcategoryData]);
 
   const getAllVendor = () => {
-    axios.get(baseUrl+"get_all_vendor").then((res) => {
+    axios.get(baseUrl + "get_all_vendor").then((res) => {
       setVendorData(res.data);
     });
   };
   async function getModalData() {
-    const res = await axios.get(
-      baseUrl+"get_all_asset_modals"
-    );
+    const res = await axios.get(baseUrl + "get_all_asset_modals");
     setModalData(res.data);
   }
 
@@ -190,10 +189,7 @@ const SimMaster = () => {
       formData.append("status", "Available");
 
       //There is asssets post data api
-      const response = await axios.post(
-        baseUrl+"add_sim",
-        formData
-      );
+      const response = await axios.post(baseUrl + "add_sim", formData);
 
       const responseSimID = await response.data.simv.sim_id;
 
@@ -205,10 +201,7 @@ const SimMaster = () => {
       imageData.append("img2", assetsImg2);
       imageData.append("img3", assetsImg3);
       imageData.append("img4", assetsImg4);
-      await axios.post(
-        baseUrl+"add_assets_images",
-        imageData
-      );
+      await axios.post(baseUrl + "add_assets_images", imageData);
 
       toastAlert("Form Submitted success");
       setIsFormSubmitted(true);
@@ -244,7 +237,7 @@ const SimMaster = () => {
           </Link>
           <Link to="/modal-mast">
             <button type="button" className="btn btn-outline-primary btn-sm">
-              Add Modal
+              Add Model
             </button>
           </Link>
         </div>
