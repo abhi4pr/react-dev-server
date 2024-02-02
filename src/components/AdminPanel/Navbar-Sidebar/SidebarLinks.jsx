@@ -23,11 +23,9 @@ const SidebarLinks = () => {
         .then((res) => {
           setData(res.data);
         });
-      axios
-        .get(`${baseUrl}`+`get_single_user/${userID}`)
-        .then((res) => {
-          setJobtype(res.data.job_type);
-        });
+      axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
+        setJobtype(res.data.job_type);
+      });
     }
   }, [userID]);
 
@@ -90,12 +88,10 @@ const SidebarLinks = () => {
   );
   const isTaskManagment = [43].some(
     (index) => contextData[index]?.view_value === 1
-  )
+  );
   const isPHPFinance = [44].some(
     (index) => contextData[index]?.view_value === 1
-  )
-
-  // const isWFHDuser  = [].some(index=>context )
+  );
 
   return (
     <>
@@ -248,7 +244,11 @@ const SidebarLinks = () => {
                 Payout Summary
               </Link>
 
-              <Link className="collapse-item" to="/admin/dispute-overview">
+              <Link
+                className="collapse-item"
+                to="/admin/dispute-overview"
+                state={{ id: userID }}
+              >
                 Dispute Summary
               </Link>
             </div>
@@ -257,8 +257,8 @@ const SidebarLinks = () => {
       )}
       {/* WFHD USER */}
 
-      {/* PAYOUT HR MANAGER ACCOUNTS */}
-      {isWFHDManager && (
+      {/* PAYOUT HR / MANAGER ACCOUNTS */}
+      {(isWFHDManager || isWFHDHRPayrollManager) && (
         <li className="nav-item">
           <a
             className="nav-link collapsed"
@@ -268,159 +268,53 @@ const SidebarLinks = () => {
             aria-controls="collapsInnerOneModify"
           >
             <i className="bi bi-person-gear" />
-            <span>Payout</span>
+            <span>HR</span>
           </a>
           <div
             id="collapsInnerOneModify"
             className="collapse"
             aria-labelledby="headingTwo"
           >
-            {/* <li className="nav-item">
+            <li className="nav-item">
               <Link
                 className="nav-link collapsed"
                 data-toggle="collapse"
-                data-target="#collapseFourdd"
+                data-target="#collapseFourcc"
                 aria-expanded="true"
-                aria-controls="collapseFourdd"
+                aria-controls="collapseFourcc"
               >
                 <i className="bi bi-person-gear" />
                 <span>Payout</span>
               </Link>
               <div
-                id="collapseFourdd"
+                id="collapseFourcc"
                 className="collapse"
                 aria-labelledby="headingTwo"
                 data-parent="#accordionSidebar"
               >
                 <div className="bg-white collapse-inner">
                   <Link className="collapse-item" to="/admin/user">
-                    Employee Registration
+                    Payout Employee Registration
                   </Link>
 
                   <Link className="collapse-item" to="/admin/wfhd-overview">
-                    Overview
+                    WFHD Overview
                   </Link>
 
-                  <Link className="collapse-item" to="/admin/attendence-mast">
-                    Attendance
-                  </Link>
-                  <Link className="collapse-item" to="/admin/salaryWFH">
-                    Payroll
-                  </Link>
-                </div>
-              </div>
-            </li> */}
-
-            {isWFHDHRPayrollManager && (
-              <li className="nav-item">
-                <Link
-                  className="nav-link collapsed"
-                  data-toggle="collapse"
-                  data-target="#collapseFourcc"
-                  aria-expanded="true"
-                  aria-controls="collapseFourcc"
-                >
-                  <i className="bi bi-person-gear" />
-                  <span>Payout</span>
-                </Link>
-                <div
-                  id="collapseFourcc"
-                  className="collapse"
-                  aria-labelledby="headingTwo"
-                  data-parent="#accordionSidebar"
-                >
-                  <div className="bg-white collapse-inner">
-                    <Link className="collapse-item" to="/admin/user">
-                      Payout Employee Registration
-                    </Link>
-
-                    <Link className="collapse-item" to="/admin/wfhd-overview">
-                      WFHD Overview
-                    </Link>
-
+                  {!isWFHDManager && (
                     <Link className="collapse-item" to="/admin/salaryWFH">
                       Payout Summary
                     </Link>
-
-                    <Link className="collapse-item" to="/admin/attendence-mast">
-                      Attendance Summary
-                    </Link>
-                    <Link
-                      className="collapse-item"
-                      to="/admin/dispute-overview"
-                    >
-                      Dispute Summary
-                    </Link>
-                  </div>
-                </div>
-              </li>
-            )}
-
-            {/* {isWFHVisible && (
-            <li className="nav-item">
-              <Link
-                className="nav-link collapsed"
-                data-toggle="collapse"
-                data-target="#collapseFour"
-                aria-expanded="true"
-                aria-controls="collapseFour"
-              >
-                <i className="bi bi-person-gear" />
-                <span>WFH</span>
-              </Link>
-              <div
-                id="collapseFour"
-                className="collapse"
-                aria-labelledby="headingTwo"
-                data-parent="#accordionSidebar"
-              >
-                <div className="bg-white collapse-inner">
-                  <Link
-                    className="collapse-item"
-                    to="/admin/wfh-user-dashboard"
-                  >
-                    Dashboard
+                  )}
+                  <Link className="collapse-item" to="/admin/attendence-mast">
+                    Attendance Summary
                   </Link>
-                  {contextData &&
-                    contextData[17] &&
-                    contextData[17].view_value === 1 && (
-                      <Link
-                        className="collapse-item"
-                        to="/admin/billing-overview"
-                      >
-                        Billing
-                      </Link>
-                    )}
-
-                  {contextData &&
-                    contextData[17] &&
-                    contextData[17].view_value === 1 && (
-                      <Link
-                        className="collapse-item"
-                        to="/admin/attendence-mast"
-                      >
-                        Attendance
-                      </Link>
-                    )}
-
-                  {contextData &&
-                    contextData[36] &&
-                    contextData[36].view_value === 1 && (
-                      <Link className="collapse-item" to="/admin/salaryWFH">
-                        Payroll
-                      </Link>
-                    )}
-                  {contextData &&
-                    contextData[36] &&
-                    contextData[36].view_value === 1 && (
-                      <Link className="collapse-item" to="/admin/all-salary">
-                        Salary History
-                      </Link>
-                    )}
+                  <Link className="collapse-item" to="/admin/dispute-overview">
+                    Dispute Summary
+                  </Link>
                 </div>
               </div>
             </li>
-          )} */}
 
             {isPantryManagementVisible && (
               <li className="nav-item">
@@ -503,9 +397,9 @@ const SidebarLinks = () => {
 
             {/* Asset Managerment Routing  */}
             {/* {isAssetNotifierVisible && ( */}
-
             {/* )} */}
 
+            {/* PREONBOARDING START*/}
             {isOnboardingVisible && (
               <li className="nav-item">
                 <Link
@@ -610,10 +504,12 @@ const SidebarLinks = () => {
                 </div>
               </li>
             )}
+            {/* PREOBOARDING END*/}
           </div>
         </li>
       )}
-      {/* PAYOUT HR MANAGER ACCOUNTS */}
+
+      {/* PAYOUT HR / MANAGER ACCOUNTS  END*/}
 
       {/* OPERATIONS */}
       <li className="nav-item">
@@ -1050,7 +946,6 @@ const SidebarLinks = () => {
           )}
         </div>
       </li>
-
       {/* {isLeadManagementVisible && (
         <li className="nav-item">
           <Link
@@ -1080,7 +975,7 @@ const SidebarLinks = () => {
             </div>
           </div>
         </li>
-      )} */}
+      )}  */}
       {/* OPERATIONS */}
 
       {/* FINANCE */}
@@ -1434,7 +1329,6 @@ const SidebarLinks = () => {
         </li>
       )}
 
-      {/* )} */}
       {/* FINANCE */}
 
       {/* Asset Management here  */}
@@ -1489,37 +1383,36 @@ const SidebarLinks = () => {
         </div>
       </li>
 
-
-{isTaskManagment &&(
-      <li className="nav-item">
-        <Link
-          className="nav-link collapsed"
-          data-toggle="collapse"
-          data-target="#taskmanagement"
-          aria-expanded="true"
-          aria-controls="taskmanagement"
-        >
-          <i className="bi bi-person-gear" /> 
-          <span>Task Management</span>
-        </Link>
-        <div
-          id="taskmanagement"
-          className="collapse"
-          aria-labelledby="headingTwo"
-          // data-parent="#accordionSidebar"
-        >
-          <div className="bg-white collapse-inner">
-            <>
-              <Link
-                className="collapse-item"
-                to="/admin/task-status-dept-wise-overview"
-              >
-                Task Status
-              </Link>
-            </>
+      {isTaskManagment && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#taskmanagement"
+            aria-expanded="true"
+            aria-controls="taskmanagement"
+          >
+            <i className="bi bi-person-gear" />
+            <span>Task Management</span>
+          </Link>
+          <div
+            id="taskmanagement"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            // data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              <>
+                <Link
+                  className="collapse-item"
+                  to="/admin/task-status-dept-wise-overview"
+                >
+                  Task Status
+                </Link>
+              </>
+            </div>
           </div>
-        </div>
-      </li>
+        </li>
       )}
 
       {/* {isInstaApiVisible && (

@@ -3,9 +3,16 @@ import React, { useState, useEffect } from "react";
 import { useGlobalContext } from "../../../../Context/Context";
 import FormContainer from "../../FormContainer";
 import DataTable from "react-data-table-component";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
+import { useLocation } from "react-router-dom";
+import getDecodedToken from "../../../../utils/DecodedToken";
 
 const DisputeOverview = () => {
+  const location = useLocation();
+  const { id } = location.state || "";
+  const token = getDecodedToken();
+  const loginUserRole = token.role_id;
+  const loginUserDept = token.dept_id;
   const { toastAlert, toastError } = useGlobalContext();
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -69,7 +76,6 @@ const DisputeOverview = () => {
         },
       },
     },
-
     {
       name: "Net Salary",
       cell: (row) => row.net_salary + " ₹",
@@ -95,16 +101,40 @@ const DisputeOverview = () => {
       name: "Reason",
       cell: (row) => row.disputed_reason,
     },
+    (!id || loginUserRole == 2) && {
+      name: "Actions",
+      cell: (row) => (
+        <>
+          <button
+            className="btn btn-primary"
+            onClick={(e) => handleResolveReject(row, e)}
+          >
+            Resolve
+          </button>
+          <button
+            className="btn btn-danger"
+            onClick={(e) => handleResolveReject(row, e)}
+          >
+            Reject
+          </button>
+        </>
+      ),
+    },
   ];
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_disputes"
-      );
-      const responseFinal = response.data;
-      setData(responseFinal);
-      setFilterData(responseFinal);
+      const url = `${baseUrl}get_all_disputes${id ? "/" + id : ""}`;
+
+      const response = await axios.get(url);
+      let data = response.data;
+
+      if (id && loginUserRole == 2) {
+        data = data.filter((item) => item.dept === loginUserDept);
+      }
+
+      setData(data);
+      setFilterData(data);
       toastAlert("Data Fetched Successfully");
     } catch (error) {
       toastError("Error getting data");
@@ -114,6 +144,18 @@ const DisputeOverview = () => {
   useState(() => {
     getData();
   }, []);
+
+  async function handleResolveReject(row, e) {
+    e.preventDefault();
+    await axios.put(`${baseUrl}` + `update_attendance`, {
+      attendence_id: row.attendence_id,
+      month: row.month,
+      year: row.year,
+      attendence_status_flow: "Pending for invoice verification",
+    });
+    getData();
+    toastAlert("Successful");
+  }
 
   useEffect(() => {
     const result = data?.filter((d) => {

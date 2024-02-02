@@ -16,7 +16,9 @@ import ContactNumberReact from "../../ReusableComponents/ContactNumberReact";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DocumentTab from "../../PreOnboarding/DocumentTab";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
+import OccupationList from "../../../assets/js/OccupationList";
+import familyRelationList from "../../../assets/js/familyRelationList";
 
 const castOption = ["General", "OBC", "SC", "ST"];
 const colourOptions = [
@@ -28,28 +30,28 @@ const colourOptions = [
 const initialFamilyDetailsGroup = {
   name: "",
   DOB: "",
+  relation: "",
   contact: "",
   occupation: "",
   annual_income: "",
-  relation: "",
 };
 
 const familyDisplayFields = [
   "name",
   "DOB",
+  "relation",
   "contact",
   "occupation",
-  "relation",
   "annual_income",
 ];
 
 const familyFieldLabels = {
   name: "Full Name",
   DOB: "Date of Birth",
+  relation: "Relationship",
   contact: "Contact Number",
   occupation: "Occupation",
   annual_income: "Annual Income",
-  relation: "Relationship",
 };
 
 const initialEducationDetailsGroup = {
@@ -211,6 +213,8 @@ const UserUpdate = () => {
   const [cast, setCast] = useState("");
   const { toastAlert, toastError } = useGlobalContext();
 
+  const [familyValidationErrors, setFamilyValidationErrors] = useState({});
+
   const higestQualificationData = [
     "10th",
     "12th",
@@ -273,9 +277,7 @@ const UserUpdate = () => {
   useEffect(() => {
     if (department) {
       axios
-        .get(
-          `${baseUrl}`+`get_subdept_from_dept/${department}`
-        )
+        .get(`${baseUrl}` + `get_subdept_from_dept/${department}`)
         .then((res) => setSubDepartmentData(res.data));
     }
   }, [department]);
@@ -290,32 +292,24 @@ const UserUpdate = () => {
 
   useEffect(() => {
     const GetAllData = async () => {
-      const AllRolesResposne = await axios.get(
-        baseUrl+"get_all_roles"
-      );
+      const AllRolesResposne = await axios.get(baseUrl + "get_all_roles");
 
       const AllDepartmentResponse = await axios.get(
-        baseUrl+"get_all_departments"
+        baseUrl + "get_all_departments"
       );
 
       const RemainingSittingResponse = await axios.get(
-        baseUrl+"not_alloc_sitting"
+        baseUrl + "not_alloc_sitting"
       );
 
-      const AllSittingsResponse = await axios.get(
-        baseUrl+"get_all_sittings"
-      );
+      const AllSittingsResponse = await axios.get(baseUrl + "get_all_sittings");
 
-      const AllUsersResponse = await axios.get(
-        baseUrl+"get_all_users"
-      );
+      const AllUsersResponse = await axios.get(baseUrl + "get_all_users");
 
-      const AllDesiResponse = await axios.get(
-        baseUrl+"get_all_designations"
-      );
+      const AllDesiResponse = await axios.get(baseUrl + "get_all_designations");
 
       const AllJobTypesResponse = await axios.get(
-        baseUrl+"get_all_job_types"
+        baseUrl + "get_all_job_types"
       );
 
       getRoleData(AllRolesResposne.data.data);
@@ -332,10 +326,10 @@ const UserUpdate = () => {
   useEffect(() => {
     async function getDetails() {
       const familyDataResponse = await axios.get(
-        `${baseUrl}`+`get_single_family/${id}`
+        `${baseUrl}` + `get_single_family/${id}`
       );
       const educationDataResponse = await axios.get(
-        `${baseUrl}`+`get_single_education/${id}`
+        `${baseUrl}` + `get_single_education/${id}`
       );
       setFamilyDetails(familyDataResponse.data.data);
       setEducationDetails(educationDataResponse.data.data);
@@ -344,20 +338,15 @@ const UserUpdate = () => {
   }, [id]);
 
   function getOtherDocument() {
-    axios
-      .get(`${baseUrl}`+`get_user_other_fields/${id}`)
-      .then((res) => {
-        setOtherDocuments(res.data.data);
-      });
+    axios.get(`${baseUrl}` + `get_user_other_fields/${id}`).then((res) => {
+      setOtherDocuments(res.data.data);
+    });
   }
 
   async function getDocuments() {
-    const response = await axios.post(
-      baseUrl+"get_user_doc",
-      {
-        user_id: id,
-      }
-    );
+    const response = await axios.post(baseUrl + "get_user_doc", {
+      user_id: id,
+    });
     setDocumentData(response.data.data);
   }
 
@@ -366,143 +355,141 @@ const UserUpdate = () => {
   }, [id]);
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}`+`get_single_user/${id}`)
-      .then((res) => {
-        const fetchedData = res.data;
-        const {
-          user_name,
-          role_id,
-          user_email_id,
-          user_contact_no,
-          user_login_id,
-          user_login_password,
-          sitting_id,
-          room_id,
-          dept_id,
-          job_type,
-          Report_L1,
-          Report_L2,
-          Report_L3,
-          PersonalEmail,
-          PersonalNumber,
-          user_designation,
-          UID,
-          pan,
-          highest_upload,
-          other_upload,
-          joining_date,
-          releaving_date,
-          salary,
-          SpokenLanguages,
-          Gender,
-          Nationality,
-          DOB,
-          user_status,
-          Age,
-          fatherName,
-          motherName,
-          Hobbies,
-          BloodGroup,
-          MartialStatus,
-          DateOfMarriage,
-          tbs_applicable,
-          tds_per,
-          pan_no,
-          uid_no,
-          spouse_name,
-          sub_dept_id,
-          highest_qualification_name,
-          uid_url,
-          pan_url,
-          highest_upload_url,
-          other_upload_url,
-          bank_name,
-          ifsc_code,
-          beneficiary,
-          account_no,
-          permanent_city,
-          permanent_address,
-          permanent_state,
-          permanent_pin_code,
-          cast_type,
-          alternate_contact,
-          emergency_contact1,
-          emergency_contact2,
-          emergency_contact_person_name1,
-          emergency_contact_person_name2,
-          emergency_contact_relation1,
-          emergency_contact_relation2,
-        } = fetchedData;
-        setPanNo(pan_no);
-        setUidNo(uid_no);
-        setSpouseName(spouse_name);
-        setUserName(user_name);
-        setUserStatus(user_status);
-        setIncomingUserStatus(user_status);
-        setEmail(user_email_id);
-        setLoginId(user_login_id);
-        setContact(user_contact_no);
-        setPassword(user_login_password);
-        setIncomingPassword(user_login_password);
-        setRoles(role_id);
-        setDepartment(dept_id);
-        setSitting(sitting_id);
-        setRoomId(room_id);
-        setPersonalContact(PersonalNumber);
-        setPersonalEmail(PersonalEmail);
-        setJobType(job_type);
-        setReportL1(Report_L1);
-        setReportL2(Report_L2);
-        setReportL3(Report_L3);
-        setDesignation(user_designation);
-        setUID(UID);
-        setUidImage(uid_url);
-        setPanUpload(pan);
-        setPanImage(pan_url);
-        setHighestUpload(highest_upload);
-        setHighestQualificationImage(highest_upload_url);
-        setOtherUpload(other_upload);
-        setOtherImage(other_upload_url);
-        setJoiningDate(joining_date?.split("T")?.[0]);
-        setReleavingDate(releaving_date?.split("T")?.[0]);
-        setSalary(salary);
-        let lang = SpokenLanguages.split(",");
-        let modifiedLang = lang
-          ?.filter((item) => item.trim() !== "")
-          ?.map((item) => ({ value: item, label: item }));
-        setTempLanguage(modifiedLang);
-        setGender(Gender);
-        setNationality(Nationality);
-        setDateOfBirth(DOB.split("T")?.[0]);
-        setAge(Age);
-        setFatherName(fatherName);
-        setMotherName(motherName);
-        setHobbies(Hobbies);
-        setBloodGroup(BloodGroup);
-        setMaritialStatus(MartialStatus);
-        setDateOfMarraige(DateOfMarriage?.split("T")?.[0]);
-        setTdsApplicable(tbs_applicable);
-        setTdsPercentage(tds_per);
-        setSubDeparment(sub_dept_id);
-        setHigestQualification(highest_qualification_name);
-        setBankName(bank_name);
-        setIFSC(ifsc_code);
-        setBeneficiary(beneficiary);
-        setBankAccountNumber(account_no);
-        setCity(permanent_city);
-        setAddress(permanent_address);
-        setState(permanent_state);
-        setPincode(permanent_pin_code);
-        setCast(cast_type);
-        setAlternateContact(alternate_contact);
-        setEmergencyContact(emergency_contact1);
-        setEmergencyContact2(emergency_contact2);
-        setEmergencyContactName(emergency_contact_person_name1);
-        setEmergencyContactName2(emergency_contact_person_name2);
-        setEmergencyContactRelation(emergency_contact_relation1);
-        setEmergencyContactRelation2(emergency_contact_relation2);
-      });
+    axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
+      const fetchedData = res.data;
+      const {
+        user_name,
+        role_id,
+        user_email_id,
+        user_contact_no,
+        user_login_id,
+        user_login_password,
+        sitting_id,
+        room_id,
+        dept_id,
+        job_type,
+        Report_L1,
+        Report_L2,
+        Report_L3,
+        PersonalEmail,
+        PersonalNumber,
+        user_designation,
+        UID,
+        pan,
+        highest_upload,
+        other_upload,
+        joining_date,
+        releaving_date,
+        salary,
+        SpokenLanguages,
+        Gender,
+        Nationality,
+        DOB,
+        user_status,
+        Age,
+        fatherName,
+        motherName,
+        Hobbies,
+        BloodGroup,
+        MartialStatus,
+        DateOfMarriage,
+        tbs_applicable,
+        tds_per,
+        pan_no,
+        uid_no,
+        spouse_name,
+        sub_dept_id,
+        highest_qualification_name,
+        uid_url,
+        pan_url,
+        highest_upload_url,
+        other_upload_url,
+        bank_name,
+        ifsc_code,
+        beneficiary,
+        account_no,
+        permanent_city,
+        permanent_address,
+        permanent_state,
+        permanent_pin_code,
+        cast_type,
+        alternate_contact,
+        emergency_contact1,
+        emergency_contact2,
+        emergency_contact_person_name1,
+        emergency_contact_person_name2,
+        emergency_contact_relation1,
+        emergency_contact_relation2,
+      } = fetchedData;
+      setPanNo(pan_no);
+      setUidNo(uid_no);
+      setSpouseName(spouse_name);
+      setUserName(user_name);
+      setUserStatus(user_status);
+      setIncomingUserStatus(user_status);
+      setEmail(user_email_id);
+      setLoginId(user_login_id);
+      setContact(user_contact_no);
+      setPassword(user_login_password);
+      setIncomingPassword(user_login_password);
+      setRoles(role_id);
+      setDepartment(dept_id);
+      setSitting(sitting_id);
+      setRoomId(room_id);
+      setPersonalContact(PersonalNumber);
+      setPersonalEmail(PersonalEmail);
+      setJobType(job_type);
+      setReportL1(Report_L1);
+      setReportL2(Report_L2);
+      setReportL3(Report_L3);
+      setDesignation(user_designation);
+      setUID(UID);
+      setUidImage(uid_url);
+      setPanUpload(pan);
+      setPanImage(pan_url);
+      setHighestUpload(highest_upload);
+      setHighestQualificationImage(highest_upload_url);
+      setOtherUpload(other_upload);
+      setOtherImage(other_upload_url);
+      setJoiningDate(joining_date?.split("T")?.[0]);
+      setReleavingDate(releaving_date?.split("T")?.[0]);
+      setSalary(salary);
+      let lang = SpokenLanguages.split(",");
+      let modifiedLang = lang
+        ?.filter((item) => item.trim() !== "")
+        ?.map((item) => ({ value: item, label: item }));
+      setTempLanguage(modifiedLang);
+      setGender(Gender);
+      setNationality(Nationality);
+      setDateOfBirth(DOB.split("T")?.[0]);
+      setAge(Age);
+      setFatherName(fatherName);
+      setMotherName(motherName);
+      setHobbies(Hobbies);
+      setBloodGroup(BloodGroup);
+      setMaritialStatus(MartialStatus);
+      setDateOfMarraige(DateOfMarriage?.split("T")?.[0]);
+      setTdsApplicable(tbs_applicable);
+      setTdsPercentage(tds_per);
+      setSubDeparment(sub_dept_id);
+      setHigestQualification(highest_qualification_name);
+      setBankName(bank_name);
+      setIFSC(ifsc_code);
+      setBeneficiary(beneficiary);
+      setBankAccountNumber(account_no);
+      setCity(permanent_city);
+      setAddress(permanent_address);
+      setState(permanent_state);
+      setPincode(permanent_pin_code);
+      setCast(cast_type);
+      setAlternateContact(alternate_contact);
+      setEmergencyContact(emergency_contact1);
+      setEmergencyContact2(emergency_contact2);
+      setEmergencyContactName(emergency_contact_person_name1);
+      setEmergencyContactName2(emergency_contact_person_name2);
+      setEmergencyContactRelation(emergency_contact_relation1);
+      setEmergencyContactRelation2(emergency_contact_relation2);
+    });
 
     getOtherDocument();
   }, [id]);
@@ -616,9 +603,9 @@ const UserUpdate = () => {
     formData.append("sitting_id", jobType === "WFH" ? 0 : Number(sitting));
     formData.append(
       "room_id",
-      jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id
+      jobType === "WFH" || jobType === "WFHD" ? "1" : roomId
     );
-    // console.log("room id he yha", roomId);
+    console.log("room id he yha", roomId);
     // formData.append("room_id", roomId);
     formData.append("dept_id", department);
     formData.append("job_type", jobType);
@@ -686,7 +673,7 @@ const UserUpdate = () => {
       setLoading(true);
 
       await axios
-        .put(`${baseUrl}`+`update_user`, formData, {
+        .put(`${baseUrl}` + `update_user`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -701,7 +688,7 @@ const UserUpdate = () => {
 
       if (reportL1 !== "") {
         axios
-          .post(baseUrl+"add_send_user_mail", {
+          .post(baseUrl + "add_send_user_mail", {
             email: email,
             subject: "User Registration",
             text: "A new user has been registered.",
@@ -740,10 +727,7 @@ const UserUpdate = () => {
           payload.family_id = elements.family_id;
         }
         try {
-          const response = await axios.put(
-            baseUrl+"update_family",
-            payload
-          );
+          const response = await axios.put(baseUrl + "update_family", payload);
         } catch (error) {
           console.error("Error updating family details:", error);
         }
@@ -766,7 +750,7 @@ const UserUpdate = () => {
         }
         try {
           const response = await axios.put(
-            baseUrl+"update_education",
+            baseUrl + "update_education",
             payload
           );
         } catch (error) {
@@ -799,7 +783,7 @@ const UserUpdate = () => {
                 : document.status
             );
             const response = await axios.put(
-              baseUrl+"update_user_doc",
+              baseUrl + "update_user_doc",
               formData,
               {
                 headers: {
@@ -840,7 +824,7 @@ const UserUpdate = () => {
         formDataa.append("lastupdated_by", loginUserId);
         formDataa.append("field_value", element.field_value);
         axios.put(
-          `${baseUrl}`+`updateuserotherfielddata/${id}`,
+          `${baseUrl}` + `updateuserotherfielddata/${id}`,
           // {
           //   id:element.id,
           //   field_name: element.field_name,
@@ -1023,21 +1007,29 @@ const UserUpdate = () => {
   };
 
   const handleFamilyDetailsChange = (index, event) => {
-    const updatedFamilyDetails = familyDetails?.map((detail, idx) => {
-      if (idx === index) {
-        return { ...detail, [event.target.name]: event.target.value };
-      }
-      return detail;
-    });
-    setFamilyDetails(updatedFamilyDetails);
-  };
+    const { name, value } = event.target;
+    const updatedDetails = [...familyDetails];
+    updatedDetails[index] = { ...updatedDetails[index], [name]: value };
 
+    const errors = { ...familyValidationErrors };
+    if (name === "contact") {
+      if (!/^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(value)) {
+        errors[`${name}-${index}`] =
+          "Invalid contact number. Please enter a valid phone number.";
+      } else {
+        delete errors[`${name}-${index}`];
+      }
+    }
+
+    setFamilyDetails(updatedDetails);
+    setFamilyValidationErrors(errors);
+  };
   const handleRemoveFamilyDetails = async (index) => {
     const itemToRemove = familyDetails[index];
     if (itemToRemove && itemToRemove.family_id) {
       try {
         await axios.delete(
-          `${baseUrl}`+`delete_family/${itemToRemove.family_id}`
+          `${baseUrl}` + `delete_family/${itemToRemove.family_id}`
         );
         toastAlert("Details Deleted");
       } catch (error) {
@@ -1073,7 +1065,7 @@ const UserUpdate = () => {
     if (itemToRemove && itemToRemove.education_id) {
       try {
         await axios.delete(
-          `${baseUrl}`+`delete_education/${itemToRemove.education_id}`
+          `${baseUrl}` + `delete_education/${itemToRemove.education_id}`
         );
         toastAlert("Details Deleted");
       } catch (error) {
@@ -1945,33 +1937,125 @@ const UserUpdate = () => {
         <div key={index} mb={2}>
           <div className="row">
             {Object.keys(detail)?.map((key) => {
-              if (familyDisplayFields.includes(key)) {
-                return key === "DOB" ? (
-                  <FieldContainer
-                    key={key}
-                    fieldGrid={3}
-                    type="date"
-                    name={key}
-                    label="Date of Birth"
-                    value={
-                      key === "DOB" && detail[key]
-                        ? detail[key].split("T")[0]
-                        : detail[key]
-                    }
-                    onChange={(e) => handleFamilyDetailsChange(index, e)}
-                  />
-                ) : (
-                  <FieldContainer
-                    key={key}
-                    fieldGrid={3}
-                    name={key}
-                    label={familyFieldLabels[key]}
-                    value={detail[key]}
-                    onChange={(e) => handleFamilyDetailsChange(index, e)}
-                  />
-                );
+              switch (key) {
+                case "DOB":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      type="date"
+                      name={key}
+                      label="Date of Birth"
+                      value={
+                        detail[key] ? detail[key].split("T")[0] : detail[key]
+                      }
+                      onChange={(e) => handleFamilyDetailsChange(index, e)}
+                    />
+                  );
+
+                case "relation":
+                  return (
+                    <div className="form-group col-3">
+                      <label className="form-label">
+                        Relation <sup style={{ color: "red" }}>*</sup>
+                      </label>
+                      <Select
+                        className="basic-single"
+                        classNamePrefix="select"
+                        name={key}
+                        value={familyRelationList.find(
+                          (option) => option.value === detail[key]
+                        )}
+                        onChange={(selectedOption) =>
+                          handleFamilyDetailsChange(index, {
+                            target: {
+                              name: key,
+                              value: selectedOption ? selectedOption.value : "",
+                            },
+                          })
+                        }
+                        options={familyRelationList}
+                        isClearable={true}
+                        isSearchable={true}
+                      />
+                    </div>
+                  );
+
+                case "occupation":
+                  return (
+                    <div className="form-group col-3">
+                      <label className="form-label">
+                        Occupation <sup style={{ color: "red" }}>*</sup>
+                      </label>
+                      <Select
+                        className="basic-single"
+                        classNamePrefix="select"
+                        name={key}
+                        value={OccupationList.find(
+                          (option) => option.value === detail[key]
+                        )}
+                        onChange={(selectedOption) =>
+                          handleFamilyDetailsChange(index, {
+                            target: {
+                              name: key,
+                              value: selectedOption ? selectedOption.value : "",
+                            },
+                          })
+                        }
+                        options={OccupationList}
+                        isClearable={true}
+                        isSearchable={true}
+                      />
+                    </div>
+                  );
+
+                case "contact":
+                  return (
+                    <>
+                      <FieldContainer
+                        key={key}
+                        fieldGrid={3}
+                        name={key}
+                        label={familyFieldLabels[key]}
+                        value={detail[key]}
+                        onChange={(e) => handleFamilyDetailsChange(index, e)}
+                      />
+                      {familyValidationErrors[`contact-${index}`] && (
+                        <span style={{ color: "red" }}>
+                          {familyValidationErrors[`contact-${index}`]}
+                        </span>
+                      )}
+                    </>
+                  );
+
+                case "annual_income":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      type="number"
+                      fieldGrid={3}
+                      name={key}
+                      label={familyFieldLabels[key]}
+                      placeholder={familyFieldLabels[key]}
+                      value={detail[key]}
+                      onChange={(e) => handleFamilyDetailsChange(index, e)}
+                    />
+                  );
+
+                default:
+                  if (familyDisplayFields.includes(key)) {
+                    return (
+                      <FieldContainer
+                        key={key}
+                        fieldGrid={3}
+                        name={key}
+                        label={familyFieldLabels[key]}
+                        value={detail[key]}
+                        onChange={(e) => handleFamilyDetailsChange(index, e)}
+                      />
+                    );
+                  }
               }
-              return null;
             })}
             {familyDetails?.length > 1 && (
               <IconButton onClick={() => handleRemoveFamilyDetails(index)}>
