@@ -686,6 +686,7 @@ const SidebarLinks = () => {
                         </div>
                       </li>
                     )}
+
                   {contextData &&
                     contextData[24] &&
                     contextData[24].view_value === 1 && (
@@ -856,6 +857,22 @@ const SidebarLinks = () => {
                             </>
                           </div>
                         </div>
+                      </li>
+                    )}
+                  {contextData &&
+                    contextData[45] &&
+                    contextData[45].view_value === 1 && (
+                      <li className="nav-item">
+                        <Link
+                          className="nav-link collapsed"
+                          to="/admin/create-plan"
+                          // data-toggle="collapse"
+                          // data-target="#collapsInnerThree"
+                          // aria-expanded="true"
+                          // aria-controls="collapsInnerThree"
+                        >
+                          <span>Create Plan  </span>
+                        </Link>
                       </li>
                     )}
                   {contextData &&

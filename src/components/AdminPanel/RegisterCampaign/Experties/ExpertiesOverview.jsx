@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Button, Modal } from "@mui/material";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
 
 // var desturctureData;
 const ExpertiesOverview = () => {
@@ -30,10 +30,9 @@ const ExpertiesOverview = () => {
   const handleClose2 = () => setOpen2(false);
 
   const ExpertiesData = async () => {
-    const Experties = await axios.get(
-      baseUrl+"expertise"
-    );
+    const Experties = await axios.get(baseUrl + "expertise");
     const setexdata = Experties.data.data;
+    console.log(setexdata[0].area_of_expertise?.category.length, "expert data");
     setGetExpertiesData(setexdata);
   };
 
@@ -75,7 +74,7 @@ const ExpertiesOverview = () => {
       .then((result) => {
         if (result.isConfirmed) {
           axios
-            .delete(`${baseUrl}`+`expertise/${userId}`)
+            .delete(`${baseUrl}` + `expertise/${userId}`)
             .then(() => {
               // Check if no error occurred and then show the success alert
               swalWithBootstrapButtons.fire(
@@ -125,6 +124,25 @@ const ExpertiesOverview = () => {
             </Button>
           </div>
         );
+      },
+    },
+    {
+      field: "categoryCount",
+      headerName: "Category Count",
+      width: 150,
+      renderCell: (params) => {
+        const categoryCount =
+          params.row.area_of_expertise?.category.length || 0;
+        return <div>{categoryCount}</div>;
+      },
+    },
+    {
+      field: "plateCount",
+      headerName: "Platform Count",
+      width: 150,
+      renderCell: (params) => {
+        const plateCount = params.row.area_of_expertise?.platform.length || 0;
+        return <div>{plateCount}</div>;
       },
     },
 
