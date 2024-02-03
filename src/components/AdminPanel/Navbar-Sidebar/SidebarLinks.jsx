@@ -92,11 +92,8 @@ const SidebarLinks = () => {
   const isPHPFinance = [44].some(
     (index) => contextData[index]?.view_value === 1
   );
-<<<<<<< Updated upstream
-=======
 
   // const isWFHDuser  = [].some(index=>context )
->>>>>>> Stashed changes
 
   return (
     <>
@@ -876,7 +873,7 @@ const SidebarLinks = () => {
                           // aria-expanded="true"
                           // aria-controls="collapsInnerThree"
                         >
-                          <span>Create Plan  </span>
+                          <span>Create Plan </span>
                         </Link>
                       </li>
                     )}
@@ -1372,35 +1369,35 @@ const SidebarLinks = () => {
           data-parent="#accordionSidebar"
         >
           <div className="bg-white collapse-inner">
-            {/* {RoleId == 5 && ( */}
-            <Link className="collapse-item" to="/admin/asset-dashboard">
-              Dashboard
-            </Link>
-            {/* )} */}
+            {RoleId == 5 && (
+              <Link className="collapse-item" to="/admin/asset-dashboard">
+                Dashboard
+              </Link>
+            )}
             <Link className="collapse-item" to="/admin/asset-single-user">
               My Asset
             </Link>
-            {/* {RoleId == 5 && ( */}
-            <Link className="collapse-item" to="/sim-overview">
-              Asset Management
-            </Link>
-            {/* )} */}
-            {/* {RoleId == 5 && ( */}
-            <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-              Asset's Request
-            </Link>
-            {/* )} */}
+            {RoleId == 5 && (
+              <Link className="collapse-item" to="/sim-overview">
+                Asset Management
+              </Link>
+            )}
+            {RoleId == 5 && (
+              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                Asset's Request
+              </Link>
+            )}
             <Link
               className="collapse-item"
               to="/admin/asset-visible-to-taged-person"
             >
               Tagged Asset
             </Link>
-            {/* {RoleId == 2 && ( */}
-            <Link className="collapse-item" to="/admin/asset-manager">
-              Asset Request Approvel
-            </Link>
-            {/* )} */}
+            {RoleId == 2 && (
+              <Link className="collapse-item" to="/admin/asset-manager">
+                Asset Request Approvel
+              </Link>
+            )}
           </div>
         </div>
       </li>
