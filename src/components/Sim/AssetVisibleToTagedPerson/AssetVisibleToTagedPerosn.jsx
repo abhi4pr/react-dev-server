@@ -39,7 +39,7 @@ const AssetVisibleToTagedPerosn = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`show_asset_user_data/${userID}`
+        `${baseUrl}` + `show_asset_repair_request_data_to_user/${userID}`
       );
       setFilterData(response.data.data);
       setData(response.data.data);
@@ -50,7 +50,7 @@ const AssetVisibleToTagedPerosn = () => {
   const getNewAssetData = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`show_new_asset_user_data/${userID}`
+        `${baseUrl}` + `show_new_asset_user_data/${userID}`
       );
       setNewassetData(response.data.data);
       console.log(response.data.data, "data");

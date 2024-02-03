@@ -377,7 +377,7 @@ const SimMaster = () => {
                     }
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Add Modal" />
+                    <TextField {...params} label="Add Model" />
                   )}
                 />
               </div>

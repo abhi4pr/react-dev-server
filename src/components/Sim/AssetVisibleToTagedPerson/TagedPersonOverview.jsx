@@ -12,36 +12,27 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
       name: "Request By",
       selector: (row) => row.req_by_name,
       sortable: true,
-      width: "150px",
     },
     {
       name: "Request Date",
-      selector: (row) => row.req_date?.split("T")?.[0],
+      selector: (row) => {
+        const date = new Date(row.repair_request_date_time);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}-${String(date.getDate()).padStart(2, "0")} ${String(
+          date.getHours()
+        ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+      },
       sortable: true,
-      width: "150px",
     },
+
     {
       name: "Priority",
       selector: (row) => row.priority,
       sortable: true,
     },
-    // {
-    //   name: "Status",
-    //   selector: (row) => (
-    //     <>
-    //       {row?.asset_repair_request_status === "Requested" ? (
-    //         <span className="badge badge-danger">Requested</span>
-    //       ) : row.asset_repair_request_status === "Accept" ? (
-    //         <span className="badge badge-success">Approved</span>
-    //       ) : row.asset_repair_request_status === "Rejected" ? (
-    //         <span className="badge badge-warning">Rejected</span>
-    //       ) : row.asset_repair_request_status === "Recover" ? (
-    //         <span className="badge badge-warning">Recoverd</span>
-    //       ) : null}
-    //     </>
-    //   ),
-    //   sortable: true,
-    // },
+
     {
       name: "Asset Name",
       selector: (row) => row.asset_name,
@@ -50,22 +41,12 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
     },
     {
       name: "Category",
-      selector: (row) => row.category_name,
+      selector: (row) => row.asset_category_name,
       sortable: true,
     },
     {
       name: "Sub Category",
-      selector: (row) => row.sub_category_name,
-      sortable: true,
-    },
-    {
-      name: "Brand",
-      selector: (row) => row.asset_brand_name,
-      sortable: true,
-    },
-    {
-      name: "Modal",
-      selector: (row) => row.asset_modal_name,
+      selector: (row) => row.asset_sub_category_name,
       sortable: true,
     },
   ];

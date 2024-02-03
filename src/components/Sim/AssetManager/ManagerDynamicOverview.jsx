@@ -27,10 +27,10 @@ const ManagerDynamicOverview = ({
 
   console.log(filterData, "firlter data");
 
-  const handleStatusUpdate = (row, status) => {
+  const handleStatusUpdate = async (row, status) => {
     try {
-      axios.put(baseUrl + "assetrequest", {
-        _id: row.asset_request_id,
+      await axios.put(baseUrl + "assetrequest", {
+        _id: row._id,
         asset_request_status: status,
       });
 
@@ -41,9 +41,9 @@ const ManagerDynamicOverview = ({
     }
   };
 
-  const handleRepairStatusUpdate = (row, status) => {
+  const handleRepairStatusUpdate = async (row, status) => {
     try {
-      axios.put(`${baseUrl}update_repair_request`, {
+      await axios.put(`${baseUrl}update_repair_request`, {
         repair_id: row.repair_id,
         status: status,
       });
@@ -69,7 +69,7 @@ const ManagerDynamicOverview = ({
       formData.append("asset_return_recover_by", userID);
       formData.append("asset_return_status", reoverStatus);
 
-      await axios.post(baseUrl + "assetreturn", formData);
+      await axios.put(baseUrl + "assetreturn", formData);
 
       hardRender();
       toastAlert("Requested Success");
@@ -278,7 +278,8 @@ const ManagerDynamicOverview = ({
       ),
       sortable: true,
     },
-    {
+    // console.log(filterData.asset_return_status == "RecovedByHR", "fsfafasfsd"),
+    filterData?.asset_return_status !== "RecovedByHR" && {
       name: "Return",
       cell: (row) => (
         <button

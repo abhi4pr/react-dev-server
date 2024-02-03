@@ -147,10 +147,6 @@ const SimUpdate = () => {
         warrantyDate,
         asset_brand_id,
         asset_modal_id,
-        // selfAuditPeriod,
-        // selfAuditUnit,
-        // hrAuditPeriod,
-        // hrAuditUnit,
         assetsValue,
         assetsCurrentValue,
         dateOfPurchase,
@@ -198,9 +194,9 @@ const SimUpdate = () => {
     formData.append("asset_modal_id", modalName);
     formData.append("asset_brand_id", brandName);
 
-    formData.append("warrantyDate", Date(warrantyDate));
+    formData.append("warrantyDate", warrantyDate);
     formData.append("inWarranty", inWarranty);
-    formData.append("dateOfPurchase", Date(dateOfPurchase));
+    formData.append("dateOfPurchase", dateOfPurchase);
     formData.append("category_id", assetsCategory);
     formData.append("sub_category_id", subCategory);
     formData.append("vendor_id", vendorName);

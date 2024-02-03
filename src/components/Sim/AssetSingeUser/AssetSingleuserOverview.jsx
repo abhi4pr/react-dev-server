@@ -7,6 +7,7 @@ import FieldContainer from "../../AdminPanel/FieldContainer";
 import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
+import Swal from "sweetalert2";
 
 const AssetSingleuserOverview = ({
   filterData,
@@ -83,10 +84,7 @@ const AssetSingleuserOverview = ({
       formData.append("img4", assetsImg4);
       formData.append("problem_detailing", problemDetailing);
 
-      const response = await axios.post(
-        baseUrl + "add_repair_request",
-        formData
-      );
+      await axios.post(baseUrl + "add_repair_request", formData);
 
       hardRender();
       setAssetName("");
@@ -130,15 +128,48 @@ const AssetSingleuserOverview = ({
     setRepairAssetId(row.sim_id);
   };
   const handleDeleteNewAsset = (id) => {
-    try {
-      const response = axios.delete(`${baseUrl}` + `assetrequest/${id}`);
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: "btn btn-success",
+        cancelButton: "btn btn-danger",
+      },
+      buttonsStyling: false,
+    });
 
-      hardRender();
-      toastAlert("Delete Success");
-    } catch (error) {
-      toastError("Error");
-      console.log(error);
-    }
+    swalWithBootstrapButtons
+      .fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
+        reverseButtons: true,
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          axios
+            .delete(`${baseUrl}` + `assetrequest/${id}`)
+            .then(() => {
+              // Check if no error occurred and then show the success alert
+              swalWithBootstrapButtons.fire(
+                "Deleted!",
+                "Your file has been deleted.",
+                "success"
+              );
+
+              hardRender();
+            })
+            .catch(() => {
+              showErrorAlert();
+            });
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          swalWithBootstrapButtons.fire(
+            "Cancelled",
+            "Your imaginary file is safe :)"
+          );
+        }
+      });
   };
 
   const columns = [
@@ -188,38 +219,6 @@ const AssetSingleuserOverview = ({
         return <div>{daysDifference} days</div>;
       },
     },
-
-    {
-      name: "Repair",
-      cell: (row) => (
-        <button
-          onClick={() => handleRow(row)}
-          className="btn btn-outline-warning btn-sm"
-          data-toggle="modal"
-          data-target="#exampleModal"
-          // size="small"
-          type="button"
-        >
-          Repair Request
-        </button>
-      ),
-      width: "180px",
-    },
-    {
-      name: "Return",
-      cell: (row) => (
-        <button
-          type="button"
-          data-toggle="modal"
-          data-target="#return-asset-modal"
-          size="small"
-          className="btn btn-outline-primary btn-sm"
-          onClick={() => handleReturnAsset(row)}
-        >
-          Return Asset
-        </button>
-      ),
-    },
     {
       name: "Repair Status",
       selector: (row) => (
@@ -255,6 +254,38 @@ const AssetSingleuserOverview = ({
       ),
       width: "170px",
       sortable: true,
+    },
+
+    {
+      name: "Repair",
+      cell: (row) => (
+        <button
+          onClick={() => handleRow(row)}
+          className="btn btn-outline-warning btn-sm"
+          data-toggle="modal"
+          data-target="#exampleModal"
+          // size="small"
+          type="button"
+        >
+          Repair Request
+        </button>
+      ),
+      width: "180px",
+    },
+    {
+      name: "Return",
+      cell: (row) => (
+        <button
+          type="button"
+          data-toggle="modal"
+          data-target="#return-asset-modal"
+          size="small"
+          className="btn btn-outline-primary btn-sm"
+          onClick={() => handleReturnAsset(row)}
+        >
+          Return Asset
+        </button>
+      ),
     },
   ];
 
@@ -309,7 +340,7 @@ const AssetSingleuserOverview = ({
 
     {
       name: "Taged Person",
-      selector: (row) => row.multi_tag_names,
+      selector: (row) => row.multi_tag_names.join(", "),
       sortable: true,
     },
     {
@@ -355,9 +386,9 @@ const AssetSingleuserOverview = ({
     setTagUser(op);
   };
 
-  const handleNewAssetSubmit = () => {
+  const handleNewAssetSubmit = async () => {
     try {
-      axios.post(baseUrl + "assetrequest", {
+      await axios.post(baseUrl + "assetrequest", {
         sub_category_id: assetsName,
         detail: problemDetailing,
         priority: priority,
@@ -365,8 +396,8 @@ const AssetSingleuserOverview = ({
         multi_tag: tagUser.map((user) => user.value),
       });
 
-      toastAlert("Request Success");
       hardRender();
+      toastAlert("Request Success");
     } catch (error) {
       console.log(error);
     }

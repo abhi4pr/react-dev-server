@@ -50,7 +50,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     setRepairId(row.repair_id);
     setStatushere(status);
   };
-  const handleAcceptUpdate = (row, status) => {
+  const handleAcceptUpdate = async (row, status) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
         confirmButton: "btn btn-success",
@@ -59,42 +59,47 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       buttonsStyling: false,
     });
 
-    swalWithBootstrapButtons
-      .fire({
-        title: "Are you sure?",
-        text: "You won't Accept This",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Yes, Accept it!",
-        cancelButtonText: "No, cancel!",
-        reverseButtons: true,
-      })
-      .then((result) => {
-        if (result.isConfirmed) {
-          const formData = new FormData();
-          formData.append("repair_id", row.repair_id);
-          formData.append("status", status);
-          formData.append("recovery_remark", recoveryRemark);
-          formData.append("scrap_remark", scrapRemark);
-          formData.append("recovery_image_upload1", recoveryImg1);
-          formData.append("recovery_image_upload2", recoveryImg2);
-          formData.append("recovery_by", userID);
-          formData.append("accept_by", userID);
+    const result = await swalWithBootstrapButtons.fire({
+      title: "Are you sure?",
+      text: "You won't Accept This",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Accept it!",
+      cancelButtonText: "No, cancel!",
+      reverseButtons: true,
+    });
 
-          axios.put(baseUrl + "update_repair_request", formData).then((res) => {
-            hardRender();
-            toastAlert("Update Success");
-          });
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          swalWithBootstrapButtons.fire(
-            "Cancelled",
-            "Your imaginary file is safe :)"
-          );
-        }
-      });
+    if (result.isConfirmed) {
+      const formData = new FormData();
+      formData.append("repair_id", row.repair_id);
+      formData.append("status", status);
+      formData.append("recovery_remark", recoveryRemark);
+      formData.append("scrap_remark", scrapRemark);
+      formData.append("recovery_image_upload1", recoveryImg1);
+      formData.append("recovery_image_upload2", recoveryImg2);
+      formData.append("recovery_by", userID);
+      formData.append("accept_by", userID);
+
+      try {
+        const res = await axios.put(
+          baseUrl + "update_repair_request",
+          formData
+        );
+        hardRender(); // Make sure hardRender is defined or replace it with the correct function to update the UI
+        toastAlert("Update Success"); // Ensure toastAlert is defined or replace it with the correct function for notifications
+      } catch (error) {
+        console.error("Failed to update repair request:", error);
+        // Handle the error, perhaps show a notification to the user
+      }
+    } else if (result.dismiss === Swal.DismissReason.cancel) {
+      swalWithBootstrapButtons.fire(
+        "Cancelled",
+        "Your imaginary file is safe :)"
+      );
+    }
   };
 
-  const handleStatusSubmit = () => {
+  const handleStatusSubmit = async () => {
     const formData = new FormData();
     formData.append("repair_id", repairId);
     formData.append("status", statusHere);
@@ -104,11 +109,11 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     formData.append("recovery_image_upload2", recoveryImg2);
     formData.append("recovery_by", userID);
 
-    axios.put(baseUrl + "update_repair_request", formData).then(() => {
-      setRecoveryRemark("");
-      setScrapRemark("");
+    await axios.put(baseUrl + "update_repair_request", formData).then(() => {
       hardRender();
       toastAlert("Request Success");
+      setRecoveryRemark("");
+      setScrapRemark("");
     });
   };
 
@@ -316,7 +321,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             size="small"
             color="primary"
             className="btn btn-primary btn-sm ml-2"
-            onClick={() => handleStatusUpdate(row, "Recovered")}
+            onClick={() => handleStatusUpdate(row, "Recover")}
           >
             Recover
           </button>
@@ -347,7 +352,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       sortable: true,
       width: "350px",
     },
-    hrOverviewData[0]?.status == "Recovered" && {
+    hrOverviewData[0]?.status == "Recover" && {
       name: "Actions",
       cell: (row) => (
         <>
