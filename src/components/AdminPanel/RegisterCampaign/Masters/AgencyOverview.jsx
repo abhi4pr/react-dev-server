@@ -8,7 +8,7 @@ const AgencyOverview = () => {
     const [agencyData,setAgencyData]=useState([])
     const getAgencyInfo=async ()=>{
         const data=await axios.get(baseUrl+'agency')
-        setAgencyData(data.data.result)
+        setAgencyData(data?.data?.result)
     }
 
     const hardReload=()=>{

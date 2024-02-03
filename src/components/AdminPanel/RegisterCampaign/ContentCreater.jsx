@@ -216,7 +216,14 @@ export default function CampaignCommitment() {
       field: "cmtName",
       headerName: "Commitment",
       width: 180,
+      require: true,
+      renderCell: (params) => {
+        const name = params.value;
+        const capitalized = name.charAt(0).toUpperCase() + name.slice(1);
+        return <div>{capitalized}</div>;
+      },
     },
+
     {
       field: "actions",
       type: "actions",

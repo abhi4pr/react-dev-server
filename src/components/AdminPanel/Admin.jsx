@@ -218,6 +218,7 @@ import FinanceDashboard from "./Finance/Dashboard/FinanceDashboard";
 import SalesExecutiveIncentiveRequestReleaseList from "./Finance/SalesExecutiveIncentiveRequestReleaseList";
 import AssetDashboard from "../Sim/AssetDashboard";
 import { baseUrl } from "../../utils/config";
+import CreatePlan from "./RegisterCampaign/Plan/CreatePlan";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -763,6 +764,10 @@ const Admin = () => {
                   <Route
                     path="/register-campaign"
                     element={<RegisterCampaign />}
+                  />
+                     <Route
+                    path="/create-plan"
+                    element={<CreatePlan />}
                   />
                   {/* HOBBIES */}
                   <Route path="/hobbies/:id" element={<Hobbies />} />

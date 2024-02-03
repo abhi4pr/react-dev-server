@@ -219,7 +219,7 @@ export default function RegisterCampaign() {
     axios
       .get(baseUrl+"agency")
       .then((response) => {
-        const data = response.data.result;
+        const data = response?.data?.result;
         console.log(data, "<----agency");
         setAgencyList(data);
       })
@@ -428,7 +428,7 @@ export default function RegisterCampaign() {
                 id="agency-dropdown"
                 options={
                   agencyList?.length > 0 &&
-                  agencyList.map((option) => option.name)
+                  agencyList?.map((option) => option?.name)
                 }
                 sx={{ width: 400, mt: 1 }}
                 value={selectedAgency}
@@ -441,7 +441,7 @@ export default function RegisterCampaign() {
               <Autocomplete
                 disablePortal
                 id="agency-dropdown"
-                options={goal?.length > 0 && goal.map((option) => option.name)}
+                options={goal?.length > 0 && goal?.map((option) => option?.name)}
                 sx={{ width: 400, mt: 1 }}
                 value={selectedGoal}
                 onChange={handleGoalChange}

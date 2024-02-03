@@ -305,6 +305,7 @@ export default function RegisteredCampaign() {
           .sort((a, b) => b.register_campaign_id - a.register_campaign_id);
 
         // console.log(table1Data);
+        console.log(table1Data,"new data");
         setTable1Data(table1Data);
         setTable2Data(
           response.data.data
