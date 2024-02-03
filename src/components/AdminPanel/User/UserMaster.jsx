@@ -38,8 +38,9 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ContactNumberReact from "../../ReusableComponents/ContactNumberReact";
-import { set } from "date-fns";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
+import familyRelationList from "../../../assets/js/familyRelationList";
+import OccupationList from "../../../assets/js/OccupationList";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -70,8 +71,6 @@ const UserMaster = () => {
   const whatsappApi = WhatsappAPI();
   const { toastAlert, toastError } = useGlobalContext();
   const [username, setUserName] = useState("");
-
-  const [activeTab, setActiveTab] = useState(1);
 
   const [reportL1Email, setReportL1Email] = useState([]);
 
@@ -195,6 +194,9 @@ const UserMaster = () => {
   const [validEmergencyContact, setValidEmergencyContact] = useState(false);
   const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
   const [cast, setCast] = useState("");
+
+  const [familyValidationErrors, setFamilyValidationErrors] = useState({});
+
   const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState({
     fullName: false,
     department: false,
@@ -291,47 +293,41 @@ const UserMaster = () => {
   useEffect(() => {
     if (department) {
       axios
-        .get(
-          `${baseUrl}`+`get_subdept_from_dept/${department}`
-        )
+        .get(`${baseUrl}` + `get_subdept_from_dept/${department}`)
         .then((res) => setSubDepartmentData(res.data));
     }
   }, [department]);
 
   useEffect(() => {
-    axios.get(baseUrl+"get_all_roles").then((res) => {
+    axios.get(baseUrl + "get_all_roles").then((res) => {
       getRoleData(res.data.data);
     });
 
-    axios
-      .get(baseUrl+"get_all_departments")
-      .then((res) => {
-        getDepartmentData(res.data);
-      });
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      getDepartmentData(res.data);
+    });
 
-    axios.get(baseUrl+"not_alloc_sitting").then((res) => {
+    axios.get(baseUrl + "not_alloc_sitting").then((res) => {
       getRefrenceData(res.data.data);
     });
 
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       getUsersData(res.data.data);
       const userSitting = res.data.data.map((user) => user.sitting_id);
       setAllUsersSittings(userSitting);
     });
 
-    axios
-      .get(baseUrl+"get_all_designations")
-      .then((res) => {
-        setDesignationData(res.data.data);
-      });
+    axios.get(baseUrl + "get_all_designations").then((res) => {
+      setDesignationData(res.data.data);
+    });
 
-    axios.get(baseUrl+"get_all_job_types").then((res) => {
+    axios.get(baseUrl + "get_all_job_types").then((res) => {
       setJobTypeData(res.data.data);
     });
   }, []);
 
   const allUserData = () => {
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       const reportl1Email = res.data.data?.filter((d) => d.user_id == reportL1);
       setReportL1Email(reportl1Email[0]?.user_email_id);
     });
@@ -523,7 +519,7 @@ const UserMaster = () => {
         } else {
           setLoading(true);
           axios
-            .post(baseUrl+"add_user", formData, {
+            .post(baseUrl + "add_user", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
@@ -546,40 +542,34 @@ const UserMaster = () => {
 
           if (familyDetails[0].Name !== "") {
             for (const elements of familyDetails) {
-              const response = axios.post(
-                baseUrl+"add_family",
-                {
-                  name: elements.Name,
-                  DOB: elements.DOB,
-                  relation: elements.Relation,
-                  contact: elements.Contact,
-                  occupation: elements.Occupation,
-                  annual_income: elements.Income,
-                }
-              );
+              const response = axios.post(baseUrl + "add_family", {
+                name: elements.Name,
+                DOB: elements.DOB,
+                relation: elements.Relation,
+                contact: elements.Contact,
+                occupation: elements.Occupation,
+                annual_income: elements.Income,
+              });
             }
           }
 
           if (educationDetails[0].Title !== "") {
             for (const elements of educationDetails) {
-              const response = axios.post(
-                baseUrl+"add_education",
-                {
-                  title: elements.Title,
-                  institute_name: elements.Institute,
-                  from_year: elements.From,
-                  to_year: elements.To,
-                  percentage: elements.Percentage,
-                  stream: elements.Stream,
-                  specialization: elements.Specialization,
-                }
-              );
+              const response = axios.post(baseUrl + "add_education", {
+                title: elements.Title,
+                institute_name: elements.Institute,
+                from_year: elements.From,
+                to_year: elements.To,
+                percentage: elements.Percentage,
+                stream: elements.Stream,
+                specialization: elements.Specialization,
+              });
             }
           }
 
           if (reportL1 !== "") {
             axios
-              .post(baseUrl+"add_send_user_mail", {
+              .post(baseUrl + "add_send_user_mail", {
                 email: email,
                 subject: "User Registration",
                 text: "A new user has been registered.",
@@ -614,7 +604,7 @@ const UserMaster = () => {
             // formData.append("remark", "remark");
 
             axios.post(
-              baseUrl+"add_user_other_field",
+              baseUrl + "add_user_other_field",
               { field_name: elements.name, field_value: elements.file },
               {
                 headers: {
@@ -625,7 +615,7 @@ const UserMaster = () => {
           }
 
           axios
-            .post(baseUrl+"add_send_user_mail", {
+            .post(baseUrl + "add_send_user_mail", {
               email: email,
               subject: "User Registration",
               text: "A new user has been registered.",
@@ -920,13 +910,23 @@ const UserMaster = () => {
   };
 
   const handleFamilyDetailsChange = (index, event) => {
-    const updatedFamilyDetails = familyDetails.map((detail, idx) => {
-      if (idx === index) {
-        return { ...detail, [event.target.name]: event.target.value };
+    const { name, value } = event.target;
+    const updatedDetails = [...familyDetails];
+    updatedDetails[index] = { ...updatedDetails[index], [name]: value };
+
+    const errors = { ...familyValidationErrors };
+
+    if (name === "Contact") {
+      if (!/^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(value)) {
+        errors[`${name}-${index}`] =
+          "Invalid contact number. Please enter a valid phone number.";
+      } else {
+        delete errors[`${name}-${index}`];
       }
-      return detail;
-    });
-    setFamilyDetails(updatedFamilyDetails);
+    }
+
+    setFamilyDetails(updatedDetails);
+    setFamilyValidationErrors(errors);
   };
 
   const handleRemoveFamilyDetails = (index) => {
@@ -1150,7 +1150,6 @@ const UserMaster = () => {
           Designation <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
-          className=""
           options={designationData.map((option) => ({
             value: option.desi_id,
             label: `${option.desi_name}`,
@@ -2543,18 +2542,93 @@ const UserMaster = () => {
                       onChange={(e) => handleFamilyDetailsChange(index, e)}
                     />
                   );
-                // case "Relation":
-                //   return (
-                //     <DropdownFieldContainer
-                //       key={key}
-                //       fieldGrid={3}
-                //       name={key}
-                //       label={key}
-                //       value={detail[key]}
-                //       // options={}
-                //       onChange={(e) => handleFamilyDetailsChange(index, e)}
-                //     />
-                //   );
+                case "Relation":
+                  return (
+                    <div className="form-group col-3">
+                      <label className="form-label">
+                        Relation <sup style={{ color: "red" }}>*</sup>
+                      </label>
+                      <Select
+                        label="Relation"
+                        placeholder="Select Relation"
+                        className=""
+                        options={familyRelationList}
+                        name={key}
+                        value={
+                          familyRelationList.find(
+                            (option) => option.value === detail.Relation
+                          ) || null
+                        }
+                        onChange={(selectedOption) =>
+                          handleFamilyDetailsChange(index, {
+                            target: {
+                              name: key,
+                              value: selectedOption ? selectedOption.value : "",
+                            },
+                          })
+                        }
+                        isClearable={true}
+                        isSearchable={true}
+                      />
+                    </div>
+                  );
+                case "Occupation":
+                  return (
+                    <div className="form-group col-3">
+                      <label className="form-label">
+                        Occupation <sup style={{ color: "red" }}>*</sup>
+                      </label>
+                      <Select
+                        label="Occupation"
+                        placeholder="Select Occupation"
+                        className=""
+                        options={OccupationList}
+                        name={key}
+                        value={
+                          OccupationList.find(
+                            (option) => option.value === detail.Occupation
+                          ) || null
+                        }
+                        onChange={(selectedOption) =>
+                          handleFamilyDetailsChange(
+                            index,
+                            {
+                              target: {
+                                name: key,
+                                value: selectedOption
+                                  ? selectedOption.value
+                                  : "",
+                              },
+                            },
+                            true
+                          )
+                        }
+                        isClearable={true}
+                        isSearchable={true}
+                      />
+                    </div>
+                  );
+
+                case "Contact":
+                  return (
+                    <>
+                      <FieldContainer
+                        key={key}
+                        fieldGrid={3}
+                        name={key}
+                        label={key}
+                        placeholder={key}
+                        value={detail[key]}
+                        onChange={(e) => handleFamilyDetailsChange(index, e)}
+                      />
+                      {familyValidationErrors[`Contact-${index}`] && (
+                        <span style={{ color: "red" }}>
+                          {familyValidationErrors[`Contact-${index}`]}
+                        </span>
+                      )}
+                    </>
+                  );
+
                 default:
                   return (
                     <FieldContainer
@@ -2562,6 +2636,7 @@ const UserMaster = () => {
                       fieldGrid={3}
                       name={key}
                       label={key}
+                      placeholder={key}
                       value={detail[key]}
                       onChange={(e) => handleFamilyDetailsChange(index, e)}
                     />

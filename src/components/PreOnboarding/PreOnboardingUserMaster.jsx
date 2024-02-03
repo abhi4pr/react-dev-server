@@ -40,6 +40,8 @@ import imageTest28 from "../../assets/img/product/Avtar28.png";
 import imageTest29 from "../../assets/img/product/Avtar29.png";
 import imageTest30 from "../../assets/img/product/Avtar30.png";
 
+import rocketVideoLink from "../../assets/video/Rocket_Blast.mp4";
+
 import Modal from "react-modal";
 import ExtendJoining from "./ExtendJoining";
 import IndianStatesMui from "../ReusableComponents/IndianStatesMui";
@@ -48,13 +50,14 @@ import ContactNumber from "../ReusableComponents/ContactNumber";
 import DocumentTab from "./DocumentTab";
 import FAQTab from "./FAQTab";
 import ReadyToOnboardContent from "./ReadyToOnboardContent";
-import { City, State } from "country-state-city";
+// import { City, State } from "country-state-city";
 import IndianCitiesMui from "../ReusableComponents/IndianCitiesMui";
 import GuardianFields from "./GuardianFields";
 import FamilyFields from "./FamilyFieldsTest";
 import EducationFields from "./EducationFields";
 import CocTabPreonboarding from "./CocTabPreonboarding";
 import { baseUrl } from "../../utils/config";
+import { set } from "date-fns";
 
 const LanguageList = ["English", "Hindi", "Other"];
 
@@ -152,6 +155,7 @@ const educationFieldLabels = {
 };
 
 const PreOnboardingUserMaster = () => {
+  const [isShowRocket, setIsShowRocket] = useState(true);
   const [isTourOpen, setIsTourOpen] = useState(false);
   const whatsappApi = WhatsappAPI();
   const navigate = useNavigate();
@@ -339,7 +343,7 @@ const PreOnboardingUserMaster = () => {
 
   const fetchCOCData = async () => {
     try {
-      const response = await axios.get(baseUrl+"newcoc");
+      const response = await axios.get(baseUrl + "newcoc");
       const data = response.data.data[1].coc_content;
       setCocData(data);
     } catch (error) {
@@ -350,7 +354,7 @@ const PreOnboardingUserMaster = () => {
   useEffect(() => {
     async function getGuardian() {
       const response = await axios.get(
-        `${baseUrl}`+`get_single_guardian/${id}`
+        `${baseUrl}` + `get_single_guardian/${id}`
       );
       setGuardianDetails(response.data.data);
     }
@@ -386,6 +390,14 @@ const PreOnboardingUserMaster = () => {
   //     </div>
   //   ));
   // };
+
+  const openRocket = () => {
+    setIsShowRocket(true);
+  };
+
+  const closeRocket = () => {
+    setIsShowRocket(false);
+  };
 
   const openReadyToOnboardModal = () => {
     setReadyToOnboard(true);
@@ -426,12 +438,9 @@ const PreOnboardingUserMaster = () => {
   };
 
   const getDocuments = async () => {
-    const response = await axios.post(
-      baseUrl+"get_user_doc",
-      {
-        user_id: id,
-      }
-    );
+    const response = await axios.post(baseUrl + "get_user_doc", {
+      user_id: id,
+    });
     setDocumentData(response.data.data);
   };
 
@@ -475,139 +484,140 @@ const PreOnboardingUserMaster = () => {
   }, [getDocuments]);
 
   const gettingData = () => {
-    axios
-      .get(`${baseUrl}`+`get_single_user/${id}`)
-      .then((res) => {
-        const fetchedData = res.data;
+    axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
+      const fetchedData = res.data;
 
-        const {
-          user_name,
-          user_email_id,
-          PersonalEmail,
-          user_contact_no,
-          PersonalNumber,
-          fatherName,
-          motherName,
-          Hobbies,
-          Gender,
-          BloodGroup,
-          Nationality,
-          SpokenLanguages,
-          user_login_id,
-          user_login_password,
-          joining_date,
-          DOB,
-          MartialStatus,
-          DateOfMarriage,
-          spouse_name,
-          tenth_marksheet_validate,
-          twelveth_marksheet_validate,
-          UG_Marksheet_validate,
-          uid_validate,
-          pan_validate,
-          passport_validate,
-          pre_expe_letter_validate,
-          pre_off_letter_validate,
-          pre_relieving_letter_validate,
-          bankPassBook_Cheque_validate,
-          permanent_address,
-          permanent_city,
-          permanent_state,
-          permanent_pin_code,
-          current_address,
-          current_city,
-          current_state,
-          current_pin_code,
-          emergency_contact,
-          profileflag,
-          image_url,
-          nick_name,
-          showOnboardingModal,
-          image,
-          coc_flag,
-        } = fetchedData;
-        setAllUserData(fetchedData);
-        setUserName(user_name);
-        setEmail(user_email_id);
-        setPersonalEmail(PersonalEmail);
-        setContact(user_contact_no);
-        setPersonalContact(PersonalNumber);
-        setPersonalEmail(PersonalEmail);
-        setFatherName(fatherName);
-        setMotherName(motherName);
-        setHobbies(Hobbies);
-        setGender(Gender);
-        setBloodGroup(BloodGroup);
-        {
-          Nationality && setNationality(Nationality);
-        }
-        setBackendSpeakingLanguage(SpokenLanguages);
-        setLoginId(user_login_id);
-        setPassword(user_login_password);
+      const {
+        user_name,
+        user_email_id,
+        PersonalEmail,
+        user_contact_no,
+        PersonalNumber,
+        fatherName,
+        motherName,
+        Hobbies,
+        Gender,
+        BloodGroup,
+        Nationality,
+        SpokenLanguages,
+        user_login_id,
+        user_login_password,
+        joining_date,
+        DOB,
+        MartialStatus,
+        DateOfMarriage,
+        spouse_name,
+        tenth_marksheet_validate,
+        twelveth_marksheet_validate,
+        UG_Marksheet_validate,
+        uid_validate,
+        pan_validate,
+        passport_validate,
+        pre_expe_letter_validate,
+        pre_off_letter_validate,
+        pre_relieving_letter_validate,
+        bankPassBook_Cheque_validate,
+        permanent_address,
+        permanent_city,
+        permanent_state,
+        permanent_pin_code,
+        current_address,
+        current_city,
+        current_state,
+        current_pin_code,
+        emergency_contact,
+        image_url,
+        nick_name,
+        showOnboardingModal,
+        image,
+        coc_flag,
+        show_rocket,
+      } = fetchedData;
+      setAllUserData(fetchedData);
+      setUserName(user_name);
+      setEmail(user_email_id);
+      setPersonalEmail(PersonalEmail);
+      setContact(user_contact_no);
+      setPersonalContact(PersonalNumber);
+      setPersonalEmail(PersonalEmail);
+      setFatherName(fatherName);
+      setMotherName(motherName);
+      setHobbies(Hobbies);
+      setGender(Gender);
+      setBloodGroup(BloodGroup);
+      {
+        Nationality && setNationality(Nationality);
+      }
+      setBackendSpeakingLanguage(SpokenLanguages);
+      setLoginId(user_login_id);
+      setPassword(user_login_password);
 
-        setJoiningDate(
-          joining_date?.split("T")[0].split("-").reverse().join("-")
-        );
-        setDaysLeftToJoining(joining_date);
-        setMaritialStatus(MartialStatus);
-        setDateOfBirth(DOB?.split("T")?.[0]);
-        setDateOfMarraige(DateOfMarriage);
-        setSpouseName(spouse_name);
-        {
-          tenth_marksheet_validate !== "" &&
-            setXMarksheetValidation(tenth_marksheet_validate);
-        }
-        {
-          twelveth_marksheet_validate !== "" &&
-            setXIIMarksheetValidation(twelveth_marksheet_validate);
-        }
-        {
-          UG_Marksheet_validate !== "" &&
-            setUnderGraduationDocValidation(UG_Marksheet_validate);
-        }
-        {
-          uid_validate !== "" && setUIDValidation(uid_validate);
-        }
-        {
-          pan_validate !== "" && setPanUploadValidation(pan_validate);
-        }
-        {
-          passport_validate !== "" && setPassportValidation(passport_validate);
-        }
-        {
-          pre_expe_letter_validate !== "" &&
-            setExperienceDocValidation(pre_expe_letter_validate);
-        }
-        {
-          pre_off_letter_validate !== "" &&
-            setPreviousOfferLetterValidation(pre_off_letter_validate);
-        }
-        {
-          pre_relieving_letter_validate !== "" &&
-            setPreviousRelievingLetterValidation(pre_relieving_letter_validate);
-        }
-        {
-          bankPassBook_Cheque_validate !== "" &&
-            setPassbookChequeValidation(bankPassBook_Cheque_validate);
-        }
-        setPermanentAddress(permanent_address);
-        setPermanentCity(permanent_city);
-        setPermanentState(permanent_state);
-        setPermanentPincode(permanent_pin_code);
-        setCurrentAddress(current_address);
-        setcurrentCity(current_city);
-        setcurrentState(current_state);
-        setcurrentPincode(current_pin_code);
-        setEmergencyContact(emergency_contact);
-        setGetProfile(image_url);
-        setGetNickName(nick_name);
-        {
-          showOnboardingModal
-            ? openReadyToOnboardModal()
-            : !image && setShowImageSelector(true);
-        }
-        setCocFlag(coc_flag);
-      });
+      setJoiningDate(
+        joining_date?.split("T")[0].split("-").reverse().join("-")
+      );
+      setDaysLeftToJoining(joining_date);
+      setMaritialStatus(MartialStatus);
+      setDateOfBirth(DOB?.split("T")?.[0]);
+      setDateOfMarraige(DateOfMarriage);
+      setSpouseName(spouse_name);
+      {
+        tenth_marksheet_validate !== "" &&
+          setXMarksheetValidation(tenth_marksheet_validate);
+      }
+      {
+        twelveth_marksheet_validate !== "" &&
+          setXIIMarksheetValidation(twelveth_marksheet_validate);
+      }
+      {
+        UG_Marksheet_validate !== "" &&
+          setUnderGraduationDocValidation(UG_Marksheet_validate);
+      }
+      {
+        uid_validate !== "" && setUIDValidation(uid_validate);
+      }
+      {
+        pan_validate !== "" && setPanUploadValidation(pan_validate);
+      }
+      {
+        passport_validate !== "" && setPassportValidation(passport_validate);
+      }
+      {
+        pre_expe_letter_validate !== "" &&
+          setExperienceDocValidation(pre_expe_letter_validate);
+      }
+      {
+        pre_off_letter_validate !== "" &&
+          setPreviousOfferLetterValidation(pre_off_letter_validate);
+      }
+      {
+        pre_relieving_letter_validate !== "" &&
+          setPreviousRelievingLetterValidation(pre_relieving_letter_validate);
+      }
+      {
+        bankPassBook_Cheque_validate !== "" &&
+          setPassbookChequeValidation(bankPassBook_Cheque_validate);
+      }
+      setPermanentAddress(permanent_address);
+      setPermanentCity(permanent_city);
+      setPermanentState(permanent_state);
+      setPermanentPincode(permanent_pin_code);
+      setCurrentAddress(current_address);
+      setcurrentCity(current_city);
+      setcurrentState(current_state);
+      setcurrentPincode(current_pin_code);
+      setEmergencyContact(emergency_contact);
+      setGetProfile(image_url);
+      setGetNickName(nick_name);
+      {
+        showOnboardingModal
+          ? openReadyToOnboardModal()
+          : !image && setShowImageSelector(true);
+      }
+      setCocFlag(coc_flag);
+      {
+        !show_rocket && closeRocket();
+      }
+    });
   };
   useEffect(() => {
     gettingData();
@@ -696,7 +706,7 @@ const PreOnboardingUserMaster = () => {
     formData.append("document_percentage_mandatory", showMandotaryPer);
     formData.append("document_percentage_non_mandatory", showNonMandotaryPer);
     await axios
-      .put(`${baseUrl}`+`update_user`, formData, {
+      .put(`${baseUrl}` + `update_user`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -728,10 +738,7 @@ const PreOnboardingUserMaster = () => {
       }
 
       try {
-        const response = await axios.put(
-          baseUrl+"update_guardian",
-          payload
-        );
+        const response = await axios.put(baseUrl + "update_guardian", payload);
       } catch (error) {
         console.error("Error Update/Creating Guardian", error);
       }
@@ -753,10 +760,7 @@ const PreOnboardingUserMaster = () => {
         payload.family_id = elements.family_id;
       }
       try {
-        const response = await axios.put(
-          baseUrl+"update_family",
-          payload
-        );
+        const response = await axios.put(baseUrl + "update_family", payload);
       } catch (error) {
         console.error("Error updating family details:", error);
       }
@@ -779,10 +783,7 @@ const PreOnboardingUserMaster = () => {
         payload.education_id = elements.education_id;
       }
       try {
-        const response = await axios.put(
-          baseUrl+"update_education",
-          payload
-        );
+        const response = await axios.put(baseUrl + "update_education", payload);
         console.log(response.data);
       } catch (error) {
         console.error("Error Updating Education details:", error);
@@ -791,7 +792,7 @@ const PreOnboardingUserMaster = () => {
 
     // After update send mail
     axios
-      .post(baseUrl+"add_send_user_mail", {
+      .post(baseUrl + "add_send_user_mail", {
         email: "lalit@creativefuel.io",
         subject: "User Pre Onboarding",
         text: "Pre Onboarding Data Update Successfully",
@@ -813,13 +814,21 @@ const PreOnboardingUserMaster = () => {
     toastAlert("User Update");
   };
 
+  // useEffect(() => {
+  //   if (isShowRocket) {
+  //     setTimeout(() => {
+  //       setIsShowRocket(false);
+  //     }, 3000);
+  //   }
+  // }, [isShowRocket]);
+
   useEffect(() => {
     async function getDetails() {
       const familyDataResponse = await axios.get(
-        `${baseUrl}`+`get_single_family/${id}`
+        `${baseUrl}` + `get_single_family/${id}`
       );
       const educationDataResponse = await axios.get(
-        `${baseUrl}`+`get_single_education/${id}`
+        `${baseUrl}` + `get_single_education/${id}`
       );
       setFamilyDetails(familyDataResponse.data.data);
       setEducationDetails(educationDataResponse.data.data);
@@ -850,7 +859,7 @@ const PreOnboardingUserMaster = () => {
     if (itemToRemove && itemToRemove.guardian_id) {
       try {
         await axios.delete(
-          `${baseUrl}`+`delete_guardian/${itemToRemove.guardian_id}`
+          `${baseUrl}` + `delete_guardian/${itemToRemove.guardian_id}`
         );
       } catch (error) {
         console.error("Error Deleting Guardian", error);
@@ -884,7 +893,7 @@ const PreOnboardingUserMaster = () => {
     if (itemToRemove && itemToRemove.family_id) {
       try {
         await axios.delete(
-          `${baseUrl}`+`delete_family/${itemToRemove.family_id}`
+          `${baseUrl}` + `delete_family/${itemToRemove.family_id}`
         );
         toastAlert("Details Deleted");
       } catch (error) {
@@ -921,7 +930,7 @@ const PreOnboardingUserMaster = () => {
     if (itemToRemove && itemToRemove.education_id) {
       try {
         await axios.delete(
-          `${baseUrl}`+`delete_education/${itemToRemove.education_id}`
+          `${baseUrl}` + `delete_education/${itemToRemove.education_id}`
         );
         console.log(
           "Deleted Education detail from server:",
@@ -960,7 +969,7 @@ const PreOnboardingUserMaster = () => {
   const handleLogOut = async (e) => {
     e.preventDefault();
 
-    await axios.post(baseUrl+"log_out", {
+    await axios.post(baseUrl + "log_out", {
       user_id: id,
     });
 
@@ -1078,7 +1087,7 @@ const PreOnboardingUserMaster = () => {
     formData.append("nick_name", nickName);
     formData.append("profileflag", 1);
 
-    await axios.put(`${baseUrl}`+`update_user`, formData, {
+    await axios.put(`${baseUrl}` + `update_user`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -1092,7 +1101,7 @@ const PreOnboardingUserMaster = () => {
     formData.append("user_id", id);
     formData.append("coc_flag", true);
 
-    await axios.put(`${baseUrl}`+`update_user`, formData, {
+    await axios.put(`${baseUrl}` + `update_user`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -1102,9 +1111,10 @@ const PreOnboardingUserMaster = () => {
   };
 
   const handleGetOnboard = async () => {
-    await axios.put(`${baseUrl}`+`update_user`, {
+    await axios.put(`${baseUrl}` + `update_user`, {
       user_id: id,
       showOnboardingModal: false,
+      show_rocket: false,
     });
   };
 
@@ -1136,6 +1146,33 @@ const PreOnboardingUserMaster = () => {
     },
   ];
 
+  if (isShowRocket) {
+    return (
+      <>
+        {isShowRocket && (
+          <Modal
+            className="loaderRocket"
+            isOpen={openRocket}
+            onRequestClose={closeRocket}
+            contentLabel="Rocket Modal"
+            appElement={document.getElementById("root")}
+            shouldCloseOnOverlayClick={false}
+          >
+            <video
+              width="100%"
+              height="100%"
+              autoPlay
+              playsInline
+              onEnded={closeRocket}
+            >
+              <source src={rocketVideoLink} type="video/mp4" />
+            </video>
+          </Modal>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
       <Tour
@@ -1150,7 +1187,7 @@ const PreOnboardingUserMaster = () => {
         className="Ready to Onboard"
         isOpen={readyToOnboardModal}
         onRequestClose={closeReadyToOnboardModal}
-        contentLabel="Rocket Modal"
+        contentLabel="I am ready modal"
         appElement={document.getElementById("root")}
         style={{
           overlay: {
@@ -1862,6 +1899,10 @@ const PreOnboardingUserMaster = () => {
                 )}
                 {/* Document Screen End */}
 
+                {/* COC SCREEN */}
+                {activeTab == 3 && <CocTabPreonboarding cocData={cocData} />}
+                {/* COC SCREEN */}
+
                 {/* Policy Screen Start */}
 
                 {/* {activeTab == 3 && (
@@ -1933,10 +1974,6 @@ const PreOnboardingUserMaster = () => {
                     </div>
                   </div>c
                 )} */}
-
-                {/* COC SCREEN */}
-                {activeTab == 3 && <CocTabPreonboarding cocData={cocData} />}
-                {/* COC SCREEN */}
 
                 {/* Policy Screen End */}
 

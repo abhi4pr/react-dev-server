@@ -228,9 +228,7 @@ const Admin = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setData(res.data);
         });
@@ -282,51 +280,65 @@ const Admin = () => {
                       </>
                     )}
                   <Route path="/designation-master" element={<Designation />} />
-                  {contextData &&
-                    contextData[0] &&
-                    contextData[0].view_value === 1 && (
-                      <>
-                        <Route path="/user" element={<UserMaster />} />
-                        <Route
-                          path="/user-overview"
-                          element={<UserOverview />}
-                        />
-                        <Route
-                          path="/user-update/:id"
-                          element={<UserUpdate />}
-                        />
-                        <Route path="/user_view/:id" element={<UserView />} />
-                        <Route
-                          path="/user-auth-detail/:id"
-                          element={<UserAuthDetail />}
-                        />
-                        <Route
-                          path="/user-directory"
-                          element={<UserDirectory />}
-                        />
-                        <Route
-                          path="/user-hierarchy"
-                          element={<UserHierarchy />}
-                        />
-                        <Route
-                          path="/user-single/:id"
-                          element={<UserSingle />}
-                        />
-                        <Route path="/user-graph" element={<UserGraphs />} />
-                        <Route
-                          path="/email-template"
-                          element={<AddEmailTemp />}
-                        />
-                        <Route
-                          path="/email-template-overview"
-                          element={<EmailTempOverview />}
-                        />
-                        <Route
-                          path="/email-template-update/:id"
-                          element={<EditEmailTemp />}
-                        />
-                      </>
+
+                  <>
+                    {((contextData &&
+                      contextData[0] &&
+                      contextData[0].view_value === 1) ||
+                      (contextData &&
+                        contextData[37] &&
+                        contextData[37].view_value === 1) ||
+                      (contextData &&
+                        contextData[38] &&
+                        contextData[38].view_value === 1)) && (
+                      <Route path="/user" element={<UserMaster />} />
                     )}
+                    {contextData &&
+                      contextData[0] &&
+                      contextData[0].view_value === 1 && (
+                        <>
+                          <Route
+                            path="/user-overview"
+                            element={<UserOverview />}
+                          />
+                          <Route
+                            path="/user-update/:id"
+                            element={<UserUpdate />}
+                          />
+                          <Route path="/user_view/:id" element={<UserView />} />
+                          <Route
+                            path="/user-auth-detail/:id"
+                            element={<UserAuthDetail />}
+                          />
+                          <Route
+                            path="/user-directory"
+                            element={<UserDirectory />}
+                          />
+                          <Route
+                            path="/user-hierarchy"
+                            element={<UserHierarchy />}
+                          />
+                          <Route
+                            path="/user-single/:id"
+                            element={<UserSingle />}
+                          />
+                          <Route path="/user-graph" element={<UserGraphs />} />
+                          <Route
+                            path="/email-template"
+                            element={<AddEmailTemp />}
+                          />
+                          <Route
+                            path="/email-template-overview"
+                            element={<EmailTempOverview />}
+                          />
+                          <Route
+                            path="/email-template-update/:id"
+                            element={<EditEmailTemp />}
+                          />
+                        </>
+                      )}
+                  </>
+
                   {/* Attendence  */}
                   <Route
                     path="/salary-dashboard/:id"

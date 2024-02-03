@@ -56,7 +56,7 @@ const CocMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(baseUrl+"newcoc", {
+      await axios.post(baseUrl + "newcoc", {
         coc_content: cocContent,
         created_by: loginUserId,
       });
@@ -153,8 +153,16 @@ const CocMaster = () => {
 
   return (
     <>
-      <FormContainer title="Coc Creation" handleSubmit={handleSubmit}>
+      <FormContainer
+        title="Coc Creation"
+        mainTitle="COC"
+        handleSubmit={handleSubmit}
+      >
         <TextEditor value={cocContent} onChange={setCocContent} />
+
+        <div style={{ border: "solid" }}>
+          <div dangerouslySetInnerHTML={{ __html: cocContent }}></div>
+        </div>
       </FormContainer>
     </>
   );

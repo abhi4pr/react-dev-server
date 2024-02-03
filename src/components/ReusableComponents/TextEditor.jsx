@@ -5,6 +5,7 @@ const modules = {
   toolbar: [
     [{ header: [1, 2, false] }],
     ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ align: [] }],
     [{ color: [] }, { background: [] }],
     [
       { list: "ordered" },
@@ -33,6 +34,7 @@ const formats = [
   "image",
   "color",
   "background",
+  "align",
 ];
 
 const TextEditor = ({ value, onChange }) => {
