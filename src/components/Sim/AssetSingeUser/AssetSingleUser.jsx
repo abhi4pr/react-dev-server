@@ -110,39 +110,41 @@ const AssetSingleUser = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-    const formData = new FormData();
-    formData.append("repair_request_date_time", repairDate);
-    formData.append("status", "Requested");
-    formData.append("req_by", userID);
-    formData.append("asset_reason_id", reason);
-    formData.append("sim_id", assetsName);
-    formData.append("priority", priority);
-    formData.append(
-      "multi_tag",
-      tagUser.map((user) => user.value)
-      // tagUser.map((user) => Number(user.value)).join(",")
-    );
+      const formData = new FormData();
+      formData.append("repair_request_date_time", repairDate);
+      formData.append("status", "Requested");
+      formData.append("req_by", userID);
+      formData.append("asset_reason_id", reason);
+      formData.append("sim_id", assetsName);
+      formData.append("priority", priority);
+      formData.append(
+        "multi_tag",
+        tagUser.map((user) => user.value)
+        // tagUser.map((user) => Number(user.value)).join(",")
+      );
 
-    formData.append("img1", assetsImg1);
-    formData.append("img2", assetsImg2);
-    formData.append("img3", assetsImg3);
-    formData.append("img4", assetsImg4);
-    formData.append("status", "Requested");
+      formData.append("img1", assetsImg1);
+      formData.append("img2", assetsImg2);
+      formData.append("img3", assetsImg3);
+      formData.append("img4", assetsImg4);
+      formData.append("status", "Requested");
 
-    formData.append("problem_detailing", problemDetailing);
+      formData.append("problem_detailing", problemDetailing);
 
-    console.log("bbbbbbb", formData);
-    const response = await axios.post(baseUrl + "add_repair_request", formData);
+      const response = await axios.post(
+        baseUrl + "add_repair_request",
+        formData
+      );
 
-    toastAlert("Success");
-    setAssetName("");
-    setRepairDate("");
-    setPriority("");
-    setAssetsImg1("");
-    setAssetsImg2("");
-    setAssetsImg3("");
-    setAssetsImg4("");
-    setProblemDetailing("");
+      toastAlert("Success");
+      setAssetName("");
+      setRepairDate("");
+      setPriority("");
+      setAssetsImg1("");
+      setAssetsImg2("");
+      setAssetsImg3("");
+      setAssetsImg4("");
+      setProblemDetailing("");
     } catch (error) {
       console.log(error);
     }

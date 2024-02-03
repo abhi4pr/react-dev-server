@@ -93,6 +93,8 @@ const SidebarLinks = () => {
     (index) => contextData[index]?.view_value === 1
   );
 
+  // const isWFHDuser  = [].some(index=>context )
+
   return (
     <>
       <li className="nav-item nav-item-single active">
@@ -871,7 +873,7 @@ const SidebarLinks = () => {
                           // aria-expanded="true"
                           // aria-controls="collapsInnerThree"
                         >
-                          <span>Create Plan  </span>
+                          <span>Create Plan </span>
                         </Link>
                       </li>
                     )}

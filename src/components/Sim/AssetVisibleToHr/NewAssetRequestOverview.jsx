@@ -8,7 +8,6 @@ import "./newAssetCard.css";
 import { baseUrl } from "../../../utils/config";
 
 const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
-  // const { getAssetDataContext } = useGlobalContext();
   const { userID } = useAPIGlobalContext();
   const { toastAlert } = useGlobalContext();
   const [assetsName, setAssetName] = useState("");
@@ -44,7 +43,6 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   }, []);
 
   const handleRejectStatus = async (row, status) => {
-    console.log(row, "row dekhna hai");
     try {
       await axios.put(baseUrl + "assetrequest", {
         _id: row._id,

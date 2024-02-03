@@ -47,11 +47,16 @@ const AssetVisibleToHr = () => {
   const accordionButtons1 = ["All", "Requested", "Assigned", "Rejected"];
 
   const handleRelodenewData = () => {
+    getData();
     getNewAssetData();
+    getReturnAssetData();
   };
 
   const newAssetTab1 = (
-    <NewAssetRequestOverview newAssetData={newAsseRequesttData} />
+    <NewAssetRequestOverview
+      newAssetData={newAsseRequesttData}
+      handleRelodenewData={handleRelodenewData}
+    />
   );
   const newAssetTab2 = (
     <NewAssetRequestOverview
@@ -141,7 +146,12 @@ const AssetVisibleToHr = () => {
 
   const getReturnAssetData = () => {
     axios.get(baseUrl + "assetreturn").then((res) => {
-      setReturnAssetData(res.data.singleAssetReturnRequest);
+      setReturnAssetData(
+        // res.data.singleAssetReturnRequest.filter(
+        //   (d) => d.asset_return_status !== "RecovedByHR"
+        // )
+        res.data.singleAssetReturnRequest
+      );
     });
   };
   useEffect(() => {
@@ -170,7 +180,7 @@ const AssetVisibleToHr = () => {
   const handleReturnAssetRecover = (row, status) => {
     setReturnRow(row);
     setRecoverStatus(status);
-    console.log(row, "row hai yha");
+    console.log(row, "row hai yha -------------");
   };
   const handleRecoverAssetSubmit = async () => {
     console.log(returnRow.sim_id, returnRow.allo_id, "yah tow id hai");
@@ -185,20 +195,23 @@ const AssetVisibleToHr = () => {
 
       await axios.put(baseUrl + "assetreturn", formData);
 
-      await axios.put(baseUrl + "update_allocationsim", {
-        sim_id: returnRow.sim_id,
-        allo_id: returnRow.allo_id,
-        status: "Available",
-        submitted_by: userID,
-      });
-
       await axios.put(baseUrl + "update_sim", {
         id: returnRow.sim_id,
         status: "Available",
       });
 
+      await axios.put(baseUrl + "update_allocationsim", {
+        sim_id: returnRow.sim_id,
+        allo_id: returnRow.allo_id,
+        status: "Available",
+        submitted_by: userID,
+        Last_updated_by: userID,
+        Reason: returnRecoverRemark,
+        submitted_at: returnRow.asset_return_recovered_date_time,
+      });
+
       toastAlert("Requested Success");
-      getReturnAssetData();
+      hardRender();
       setReturnRecoverRemark("");
       setReturnRecoverImg1("");
       setReturnRecoverImg2("");
@@ -214,7 +227,7 @@ const AssetVisibleToHr = () => {
     },
     {
       name: "Asset Name",
-      selector: (row) => row.assetName,
+      selector: (row) => row.asset_name,
     },
     {
       name: "Return Date",
