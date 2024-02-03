@@ -51,71 +51,65 @@ const VendorUpdate = () => {
   // }, []);
 
   const getData = () => {
-    axios
-      .get(`${baseUrl}`+`get_single_vendor/${id}`)
-      .then((res) => {
-        const response = res.data.data;
+    axios.get(`${baseUrl}` + `get_single_vendor/${id}`).then((res) => {
+      const response = res.data.data;
 
-        const selectedCategories =
-          categoryDataContext.length > 0
-            ? response.vendor_category?.map((category) => ({
-                label: categoryDataContext.find(
-                  (e) => e.category_id == category
-                )?.category_name,
-                value: category ? +category : "",
-              }))
-            : [];
+      const selectedCategories =
+        categoryDataContext.length > 0
+          ? response.vendor_category?.map((category) => ({
+              label: categoryDataContext.find((e) => e.category_id == category)
+                ?.category_name,
+              value: category ? +category : "",
+            }))
+          : [];
 
-        setSelectedCategory(selectedCategories);
+      setSelectedCategory(selectedCategories);
 
-        const availableCategories = categoryDataContext.filter(
-          (category) =>
-            !selectedCategories.find(
-              (selected) => selected.value === category.category_id
-            )
-        );
-        setFilteredCategories(availableCategories);
+      const availableCategories = categoryDataContext.filter(
+        (category) =>
+          !selectedCategories.find(
+            (selected) => selected.value === category.category_id
+          )
+      );
+      setFilteredCategories(availableCategories);
 
-        setVendorName(response.vendor_name);
-        setVendorContact(response.vendor_contact_no);
-        setVendorEmail(response.vendor_email_id);
-        setVendorAddress(response.vendor_address);
-        setDescription(response.description);
-        setSecondaryContact(response.secondary_contact_no);
-        setSecondaryPersonName(response.secondary_person_name);
-        setType(response.vendor_type);
+      setVendorName(response.vendor_name);
+      setVendorContact(response.vendor_contact_no);
+      setVendorEmail(response.vendor_email_id);
+      setVendorAddress(response.vendor_address);
+      setDescription(response.description);
+      setSecondaryContact(response.secondary_contact_no);
+      setSecondaryPersonName(response.secondary_person_name);
+      setType(response.vendor_type);
 
-        // console.log(
-        //   response.vendor_category?.map((category) => ({
-        //     label: categoryData?.filter((e) => {
-        //       return e.category_id == category;
-        //     })[0]?.category_name,
-        //     value: +category,
-        //   }))
-        // );
-      });
+      // console.log(
+      //   response.vendor_category?.map((category) => ({
+      //     label: categoryData?.filter((e) => {
+      //       return e.category_id == category;
+      //     })[0]?.category_name,
+      //     value: +category,
+      //   }))
+      // );
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
-        baseUrl+"update_vendor",
-        {
-          vendor_id: id,
-          vendor_name: vendorName,
-          vendor_contact_no: vendorContact,
-          vendor_email_id: vendorEmail,
-          vendor_address: vendorAddress,
-          description: description,
-          created_by: loginUserId,
-          last_updated_by: loginUserId,
-          secondary_contact_no: secondaryContact,
-          secondary_person_name: secondaryPersonName,
-          vendor_type: type,
-          vendor_category: selectedCategory.map((category) => category.value),
-        }
-      );
+      const response = await axios.put(baseUrl + "update_vendor", {
+        vendor_id: id,
+        vendor_name: vendorName,
+        vendor_contact_no: vendorContact,
+        vendor_email_id: vendorEmail,
+        vendor_address: vendorAddress,
+        description: description,
+        created_by: loginUserId,
+        last_updated_by: loginUserId,
+        secondary_contact_no: secondaryContact,
+        secondary_person_name: secondaryPersonName,
+        vendor_type: type,
+        vendor_category: selectedCategory.map((category) => category.value),
+      });
       toastAlert("Data Updated Successfully");
       setVendorName("");
       setDescription("");
@@ -195,24 +189,34 @@ const VendorUpdate = () => {
             />
           </div>
           <FieldContainer
-            label="Secondary Contect"
+            label="Contact"
+            value={vendorContact}
+            onChange={(e) => {
+              if (e.target.value.length <= 10) {
+                setVendorContact(e.target.value);
+              }
+            }}
+          />
+          <FieldContainer
+            label="Secondary Contact"
             value={secondaryContact}
-            onChange={(e) => setSecondaryContact(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length <= 10) {
+                setSecondaryContact(e.target.value);
+              }
+            }}
           />
           <FieldContainer
             label="Secondary Peroson Name"
             value={secondaryPersonName}
             onChange={(e) => setSecondaryPersonName(e.target.value)}
           />
-          <FieldContainer
-            label="Contect"
-            value={vendorContact}
-            onChange={(e) => setVendorContact(e.target.value)}
-          />
+
           <FieldContainer
             label="Email"
             value={vendorEmail}
             onChange={(e) => setVendorEmail(e.target.value)}
+            required={false}
           />
           <FieldContainer
             label="Address"

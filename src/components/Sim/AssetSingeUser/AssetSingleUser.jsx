@@ -109,7 +109,7 @@ const AssetSingleUser = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // try {
+    try {
     const formData = new FormData();
     formData.append("repair_request_date_time", repairDate);
     formData.append("status", "Requested");
@@ -143,9 +143,9 @@ const AssetSingleUser = () => {
     setAssetsImg3("");
     setAssetsImg4("");
     setProblemDetailing("");
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     const currentDate = new Date().toISOString().slice(0, 16);

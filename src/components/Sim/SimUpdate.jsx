@@ -373,7 +373,7 @@ const SimUpdate = () => {
                     setModalName(newvalue.value);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Add Modal" />
+                    <TextField {...params} label="Add Model" />
                   )}
                 />
               </div>
