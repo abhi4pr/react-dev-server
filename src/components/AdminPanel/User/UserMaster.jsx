@@ -42,6 +42,7 @@ import { baseUrl } from "../../../utils/config";
 import familyRelationList from "../../../assets/js/familyRelationList";
 import OccupationList from "../../../assets/js/OccupationList";
 import IndianBankList from "../../../assets/js/IndianBankList";
+import IndianCitiesReact from "../../ReusableComponents/IndianCitiesReact";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -138,6 +139,7 @@ const UserMaster = () => {
   const [dateOfMarraige, setDateOfMarraige] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
+  const [cityData, setCityData] = useState([]);
   const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
   const [error, setError] = useState("");
@@ -324,6 +326,10 @@ const UserMaster = () => {
     axios.get(baseUrl + "get_all_job_types").then((res) => {
       setJobTypeData(res.data.data);
     });
+
+    axios.get(baseUrl + "get_all_cities").then((res) => {
+      setCityData(res.data.data);
+    });
   }, []);
 
   const allUserData = () => {
@@ -460,7 +466,7 @@ const UserMaster = () => {
     formData.append("MartialStatus", maritialStatus);
     formData.append("DateofMarriage", dateOfMarraige);
     formData.append("permanent_address", address);
-    formData.append("permanent_city", city);
+    formData.append("permanent_city", city?.value ? city.value : "");
     formData.append("permanent_state", state);
     formData.append("permanent_pin_code", Number(pincode));
     formData.append("user_status", status);
@@ -2422,7 +2428,7 @@ const UserMaster = () => {
           <p style={{ color: "red" }}>Please enter Address</p>
         )}
       </div>
-      <div className="col-6">
+      {/* <div className="col-6">
         <FieldContainer
           label="City"
           astric={true}
@@ -2447,7 +2453,42 @@ const UserMaster = () => {
         {mandatoryFieldsEmpty.city && (
           <p style={{ color: "red" }}>Please enter City</p>
         )}
+      </div> */}
+
+      <div className="form-group col-6">
+        <label className="form-label">
+          City <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          options={cityData.map((city) => ({
+            value: city.city_name,
+            label: city.city_name,
+          }))}
+          onChange={setCity}
+          onBlur={() => {
+            if (city === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,city:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                city: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                city: false,
+              });
+            }
+          }}
+          required={true}
+          value={city}
+          placeholder="Select a city..."
+          isClearable
+        />
+        {mandatoryFieldsEmpty.city && (
+          <p style={{ color: "red" }}>Please enter City</p>
+        )}
       </div>
+
       <div className="form-group col-6">
         <IndianStates
           onBlur={() => {
@@ -2536,9 +2577,7 @@ const UserMaster = () => {
                 case "Relation":
                   return (
                     <div className="form-group col-3">
-                      <label className="form-label">
-                        Relation <sup style={{ color: "red" }}>*</sup>
-                      </label>
+                      <label className="form-label">Relation</label>
                       <Select
                         label="Relation"
                         placeholder="Select Relation"
@@ -2566,9 +2605,7 @@ const UserMaster = () => {
                 case "Occupation":
                   return (
                     <div className="form-group col-3">
-                      <label className="form-label">
-                        Occupation <sup style={{ color: "red" }}>*</sup>
-                      </label>
+                      <label className="form-label">Occupation</label>
                       <Select
                         label="Occupation"
                         placeholder="Select Occupation"
