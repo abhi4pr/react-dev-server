@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Navigate } from "react-router-dom";
 import { useGlobalContext } from "../../../Context/Context";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 function OfficeMastUpdate() {
   const { toastAlert } = useGlobalContext();
@@ -22,7 +22,7 @@ function OfficeMastUpdate() {
     formData.append("remarks", remark);
     formData.append("created_by", createdby);
 
-    await axios.put(`${baseUrl}`+`update_room`, formData, {
+    await axios.put(`${baseUrl}` + `update_room`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -102,7 +102,7 @@ function OfficeMastUpdate() {
                 </div>
               </div>
 
-              <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+              {/* <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                 <div className="form-group">
                   <label className="form-label">Created BY</label>
                   <input
@@ -115,7 +115,7 @@ function OfficeMastUpdate() {
                     onChange={(e) => setCreatedBy(e.target.value)}
                   />
                 </div>
-              </div>
+              </div> */}
 
               <div className="col-12 ">
                 <button

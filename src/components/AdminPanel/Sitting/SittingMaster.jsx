@@ -5,7 +5,7 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const SittingMaster = () => {
   const { toastAlert } = useGlobalContext();
@@ -24,7 +24,7 @@ const SittingMaster = () => {
     e.preventDefault();
     setError("");
     axios
-      .post(baseUrl+"add_sitting", {
+      .post(baseUrl + "add_sitting", {
         sitting_ref_no: sittingRefrenceNum,
         room_id: Number(roomId),
         sitting_area: sittingArea,
@@ -40,13 +40,12 @@ const SittingMaster = () => {
         setIsFormSubmited(true);
       })
       .catch((error) => {
-        setError("An Error has Occurred while submitting the form");
-        console.log(error);
+        alert(error.response.data.message);
       });
   };
   useEffect(() => {
     axios
-      .get(baseUrl+"get_all_rooms")
+      .get(baseUrl + "get_all_rooms")
       .then((res) => {
         getRoomData(res.data.data);
       })
