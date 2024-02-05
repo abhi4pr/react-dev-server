@@ -1,6 +1,6 @@
 import React from "react";
 import DateFormattingComponent from "../../DateFormator/DateFormared";
-const UserSingleTab1 = ({ user }) => {
+const UserSingleTab1 = ({ user, roomId }) => {
   return (
     <>
       <div className="profileInfo_area">
@@ -143,18 +143,16 @@ const UserSingleTab1 = ({ user }) => {
           </div>
         </div>
         <div className="row profileInfo_row">
-          {user.MartialStatus === "Married" && (
-            <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-              <div className="profileInfo_box">
-                <h3>Seat Number</h3>
-                <h4>
-                  {roomId?.Sitting_ref_no ? roomId?.Sitting_ref_no : "NA"}{" "}
-                  {roomId?.Sitting_ref_no ? "|" : ""}{" "}
-                  {roomId?.Sitting_area ? roomId?.Sitting_area : "NA"}
-                </h4>
-              </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Seat Number</h3>
+              <h4>
+                {roomId?.Sitting_ref_no ? roomId?.Sitting_ref_no : "NA"}{" "}
+                {roomId?.Sitting_ref_no ? "|" : ""}{" "}
+                {roomId?.Sitting_area ? roomId?.Sitting_area : "NA"}
+              </h4>
             </div>
-          )}
+          </div>
           {user.MartialStatus === "Married" && (
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
               <div className="profileInfo_box">
@@ -197,6 +195,8 @@ const UserSingleTab1 = ({ user }) => {
               <h4>{user.alternate_contact ? user.alternate_contact : "NA"}</h4>
             </div>
           </div>
+        </div>
+        <div className="row profileInfo_row">
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
             {" "}
             <div className="profileInfo_box">

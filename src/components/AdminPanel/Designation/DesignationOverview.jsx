@@ -30,27 +30,23 @@ const DesignationOverview = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setContextData(res.data);
         });
     }
 
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       setAllUserDesignation(res.data.data);
     });
   }, [userID]);
 
   // Fetch all designations data
   async function getData() {
-    await axios
-      .get(baseUrl+"get_all_designations")
-      .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
-      });
+    await axios.get(baseUrl + "get_all_designations").then((res) => {
+      setData(res.data.data);
+      setFilterData(res.data.data);
+    });
   }
 
   useEffect(() => {
@@ -240,10 +236,13 @@ const DesignationOverview = () => {
                   cell: (row, index) => <div>{index + 1}</div>,
                   width: "10%",
                 },
-                { name: "Name", selector: "user_name" },
-                { name: "Email", selector: "user_email_id" },
-                { name: "Contact", selector: "user_contact_no" },
-                { name: "Report L1", selector: "Report_L1" },
+                { name: "Name", selector: (row) => row.user_name },
+                { name: "Email", selector: (row) => row.user_email_id },
+                { name: "Contact", selector: (row) => row.user_contact_no },
+                {
+                  name: "Report L1",
+                  selector: (row) => (row ? row.Report_L1N : "NA"),
+                },
               ]}
               data={selectedUserData.filter((user) =>
                 user.user_name.toLowerCase().includes(modalSearch.toLowerCase())

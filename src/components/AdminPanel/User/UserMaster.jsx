@@ -134,6 +134,7 @@ const UserMaster = () => {
   const [FatherName, setFatherName] = useState("");
   const [motherName, setMotherName] = useState("");
   const [hobbies, setHobbies] = useState("");
+  const [hobbiesData, setHobbiesData] = useState([]);
   const [bloodGroup, setBloodGroup] = useState("");
   const [maritialStatus, setMaritialStatus] = useState("");
   const [dateOfMarraige, setDateOfMarraige] = useState("");
@@ -329,6 +330,9 @@ const UserMaster = () => {
 
     axios.get(baseUrl + "get_all_cities").then((res) => {
       setCityData(res.data.data);
+    });
+    axios.get(baseUrl + "get_all_hobbies").then((res) => {
+      setHobbiesData(res.data.data);
     });
   }, []);
 
@@ -2300,12 +2304,34 @@ const UserMaster = () => {
           <p style={{ color: "red" }}>Please enter Mother's Name</p>
         )}
       </div>
-      <FieldContainer
+      {/* <FieldContainer
         label="Hobbies"
         value={hobbies}
         onChange={(e) => setHobbies(e.target.value)}
         required={false}
-      />
+      /> */}
+
+      <div className="form-group col-6">
+        <label className="form-label">Hobbies</label>
+        <Select
+          options={hobbiesData.map((option) => ({
+            value: option.hobby_id,
+            label: option.hobby_name,
+          }))}
+          value={
+            hobbies
+              ? hobbiesData
+                  .filter((option) => option.hobby_id === Number(hobbies))
+                  .map((option) => ({
+                    value: option.hobby_id,
+                    label: option.hobby_name,
+                  }))[0]
+              : null
+          }
+          onChange={(e) => setHobbies(e ? e.value : null)}
+          isClearable={true}
+        />
+      </div>
       <div className="form-group col-6">
         <label className="form-label">
           Blood Group <sup style={{ color: "red" }}>*</sup>
@@ -2514,10 +2540,16 @@ const UserMaster = () => {
       <div className="col-6">
         <FieldContainer
           label="Pincode"
+          type="number"
           astric={true}
           maxLength={6}
           value={pincode}
-          onChange={(e) => setPincode(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d{0,6}$/.test(value)) {
+              setPincode(value);
+            }
+          }}
           onBlur={() => {
             if (pincode === "") {
               // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,pincode:true});
@@ -2643,6 +2675,7 @@ const UserMaster = () => {
                       <FieldContainer
                         key={key}
                         fieldGrid={3}
+                        type="number"
                         name={key}
                         label={key}
                         placeholder={key}
@@ -2655,6 +2688,20 @@ const UserMaster = () => {
                         </span>
                       )}
                     </>
+                  );
+
+                case "Income":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      type="number"
+                      fieldGrid={3}
+                      name={key}
+                      label={key}
+                      placeholder={key}
+                      value={detail[key]}
+                      onChange={(e) => handleFamilyDetailsChange(index, e)}
+                    />
                   );
 
                 default:

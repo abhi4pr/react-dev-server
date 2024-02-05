@@ -156,6 +156,7 @@ const UserUpdate = () => {
   const [FatherName, setFatherName] = useState("");
   const [motherName, setMotherName] = useState("");
   const [hobbies, setHobbies] = useState("");
+  const [hobbiesData, setHobbiesData] = useState([]);
   const [bloodGroup, setBloodGroup] = useState("");
   const [maritialStatus, setMaritialStatus] = useState("");
   const [dateOfMarraige, setDateOfMarraige] = useState("");
@@ -344,6 +345,12 @@ const UserUpdate = () => {
     });
   }
 
+  async function getHobbiesData() {
+    axios.get(baseUrl + "get_all_hobbies").then((res) => {
+      setHobbiesData(res.data.data);
+    });
+  }
+
   async function getCitiesData() {
     axios.get(baseUrl + "get_all_cities").then((res) => {
       setCityData(res.data.data);
@@ -360,6 +367,7 @@ const UserUpdate = () => {
   useEffect(() => {
     getCitiesData();
     getDocuments();
+    getHobbiesData();
   }, [id]);
 
   useEffect(() => {
@@ -1828,12 +1836,35 @@ const UserUpdate = () => {
         required={false}
         onChange={(e) => setMotherName(e.target.value)}
       />
-      <FieldContainer
+      {/* <FieldContainer
         label="Hobbies"
         value={hobbies}
         required={false}
         onChange={(e) => setHobbies(e.target.value)}
-      />
+      /> */}
+
+      <div className="form-group col-6">
+        <label className="form-label">Hobbies</label>
+        <Select
+          options={hobbiesData.map((option) => ({
+            value: option.hobby_id,
+            label: option.hobby_name,
+          }))}
+          value={
+            hobbies
+              ? hobbiesData
+                  .filter((option) => option.hobby_id === Number(hobbies))
+                  .map((option) => ({
+                    value: option.hobby_id,
+                    label: option.hobby_name,
+                  }))[0]
+              : null
+          }
+          onChange={(e) => setHobbies(e ? e.value : null)}
+          isClearable={true}
+        />
+      </div>
+
       <div className="form-group col-6">
         <label className="form-label">
           Blood Group <sup style={{ color: "red" }}>*</sup>
@@ -1931,10 +1962,16 @@ const UserUpdate = () => {
       </div>
       <FieldContainer
         label="Pincode"
+        type="number"
         astric={true}
         value={pincode}
         maxLength={6}
-        onChange={(e) => setPincode(e.target.value)}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (/^\d{0,6}$/.test(value)) {
+            setPincode(value);
+          }
+        }}
         required={false}
       />
 
@@ -2038,6 +2075,7 @@ const UserUpdate = () => {
                     <>
                       <FieldContainer
                         key={key}
+                        type="number"
                         fieldGrid={3}
                         name={key}
                         label={familyFieldLabels[key]}
