@@ -206,6 +206,21 @@ const AssetDashboard = () => {
                 height={300}
               />
             </div>
+
+            {/* ----------------------------------------------- */}
+
+            <div
+              className="panel panel-default bootcards-summary p-3"
+              style={{
+                background: "ligh",
+                borderRadius: "50px",
+              }}
+            >
+              <Link>
+                <i className="fa fa-3x fa-bar-chart"></i>
+                <h4>Asset Summary</h4>
+              </Link>
+            </div>
           </div>
 
           <div className="row">

@@ -6,7 +6,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { useGlobalContext } from "../../../Context/Context";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const Reason = () => {
   const token = sessionStorage.getItem("token");
@@ -20,7 +20,7 @@ const Reason = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      await axios.post(baseUrl+"add_reason", {
+      await axios.post(baseUrl + "add_reason", {
         created_by: loginUserID,
         reason: reason,
         remark: remark,
@@ -36,9 +36,7 @@ const Reason = () => {
 
   async function getData() {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_reasons"
-      );
+      const response = await axios.get(baseUrl + "get_all_reasons");
       setData(response.data);
     } catch (error) {
       toastAlert("An error occurred:", error);
@@ -83,6 +81,7 @@ const Reason = () => {
           label="Remark"
           value={remark}
           onChange={(e) => setRemark(e.target.value)}
+          required={false}
         />
       </FormContainer>
       <div className="card">

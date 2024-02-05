@@ -4,7 +4,7 @@ import FieldContainer from "../FieldContainer";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import { useNavigate, useParams } from "react-router-dom";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const Hobbies = () => {
   const navigate = useNavigate();
@@ -18,9 +18,7 @@ const Hobbies = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        `${baseUrl}`+`get_single_hobby/${id}`
-      );
+      const response = await axios.get(`${baseUrl}` + `get_single_hobby/${id}`);
       const hobbyName = response.data.data.hobby_name;
       setHobby(hobbyName);
     } catch (error) {
@@ -32,26 +30,21 @@ const Hobbies = () => {
     e.preventDefault();
     try {
       if (id == 0) {
-        const response = await axios.post(
-          baseUrl+"add_hobby",
-          {
-            hobby_name: hobby,
-          }
-        );
+        const response = await axios.post(baseUrl + "add_hobby", {
+          hobby_name: hobby,
+        });
       } else {
-        const response = await axios.put(
-          `${baseUrl}`+`update_hobby`,
-          {
-            hobby_id: id,
-            hobby_name: hobby,
-          }
-        );
+        const response = await axios.put(`${baseUrl}` + `update_hobby`, {
+          hobby_id: id,
+          hobby_name: hobby,
+        });
       }
       toastAlert("Submited Succesfully");
       setHobby("");
       navigate("/admin/hobbies-overview");
     } catch (error) {
       console.error(error);
+      alert(error.response.data.message);
     }
   };
   return (

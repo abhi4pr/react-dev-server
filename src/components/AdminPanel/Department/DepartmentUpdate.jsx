@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const DepartmentUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -25,12 +25,12 @@ const DepartmentUpdate = () => {
     setError("");
 
     await axios
-      .put(`${baseUrl}`+`update_department`, {
+      .put(`${baseUrl}` + `update_department`, {
         dept_id: id,
         dept_name: departmentName,
         short_name: shortName,
         remark: remark,
-        created_by: createdBy,
+        Created_by: createdBy,
       })
       .then(() => {
         setDepartmentName("");
@@ -49,7 +49,8 @@ const DepartmentUpdate = () => {
     setDepartmentName(localStorage.getItem("dept_name"));
     setRemark(localStorage.getItem("Remarks"));
     setCreationDate(localStorage.getItem("Creation_date").substring(0, 10));
-    setCreatedBy(localStorage.getItem("created_by"));
+    // setCreatedBy(localStorage.getItem("Created_by"));
+    setCreatedBy(localStorage.getItem("created_by_name"));
     setLastUpdatedBy(localStorage.getItem("Last_updated_by"));
     setLastUpdatedDate(
       localStorage.getItem("Last_updated_date").substring(0, 10)
