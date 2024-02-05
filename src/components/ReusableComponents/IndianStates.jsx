@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Select from "react-select";
 import statesAndUTs from "./IndianStatesAndUTs";
 
-const IndianStates = ({ onBlur,onChange, newValue }) => {
+const IndianStates = ({ onBlur, onChange, newValue }) => {
   const [selectedState, setSelectedState] = useState(null);
 
   const options = statesAndUTs.map((state) => ({
@@ -11,7 +11,6 @@ const IndianStates = ({ onBlur,onChange, newValue }) => {
   }));
 
   const handleChange = (selectedState) => {
-    console.log(selectedState);
     setSelectedState(selectedState);
     onChange(selectedState);
   };
@@ -19,15 +18,16 @@ const IndianStates = ({ onBlur,onChange, newValue }) => {
   useEffect(() => {
     setSelectedState(newValue);
   }, [newValue]);
-  
 
   return (
     <>
-      <label className="form-label">States and UT <sup style={{ color: "red" }}>*</sup></label>
+      <label className="form-label">
+        States and UT <sup style={{ color: "red" }}>*</sup>
+      </label>
       <Select
         className=""
         options={options}
-        value={options.find((option) => option.value == selectedState )}
+        value={options.find((option) => option.value == selectedState)}
         label={newValue}
         onChange={handleChange}
         isClearable

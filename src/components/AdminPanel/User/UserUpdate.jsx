@@ -161,6 +161,7 @@ const UserUpdate = () => {
   const [dateOfMarraige, setDateOfMarraige] = useState("");
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
+  const [cityData, setCityData] = useState([]);
   const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
   const [error, setError] = useState("");
@@ -343,6 +344,12 @@ const UserUpdate = () => {
     });
   }
 
+  async function getCitiesData() {
+    axios.get(baseUrl + "get_all_cities").then((res) => {
+      setCityData(res.data.data);
+    });
+  }
+
   async function getDocuments() {
     const response = await axios.post(baseUrl + "get_user_doc", {
       user_id: id,
@@ -351,6 +358,7 @@ const UserUpdate = () => {
   }
 
   useEffect(() => {
+    getCitiesData();
     getDocuments();
   }, [id]);
 
@@ -1892,13 +1900,29 @@ const UserUpdate = () => {
         onChange={(e) => setAddress(e.target.value)}
         required={false}
       />
-      <FieldContainer
-        label="City"
-        astric={true}
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        required={false}
-      />
+
+      <div className="form-group col-6">
+        <label className="form-label">
+          City <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          options={cityData.map((city) => ({
+            value: city.city_name,
+            label: city.city_name,
+          }))}
+          onChange={setCity}
+          required={true}
+          value={{
+            value: city,
+            label:
+              cityData.find((gotCity) => gotCity.city_name == city)
+                ?.city_name || "",
+          }}
+          placeholder="Select a city..."
+          isClearable
+        />
+      </div>
+
       <div className="form-group col-6">
         <IndianStates
           newValue={state}
