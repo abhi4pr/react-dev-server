@@ -14,6 +14,10 @@ import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
 import { Autocomplete, Slider, TextField } from "@mui/material";
 import { baseUrl } from "../../utils/config";
+import { de } from "date-fns/locale";
+import ExpendModal from "./ExpendModal";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 const DataBrandOverview = () => {
   const [search, setSearch] = useState("");
@@ -36,11 +40,22 @@ const DataBrandOverview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [enlargedFileType, setEnlargedFileType] = useState("");
   const [enlargedFileUrl, setEnlargedFileUrl] = useState("");
+  const [rowData, setRowData] = useState([{}]);
+  const [expendModalOpen, setExpendModalOpen] = useState(false);
+  const [modalIndex, setModalIndex] = useState();
+  const [brandCategory, setBrandCategory] = useState([]);
+  const [brandSubCatData, setBrandSubCatData] = useState([]);
 
   const handleFileClick = (fileType, fileUrl) => {
     setEnlargedFileType(fileType);
     setEnlargedFileUrl(fileUrl);
     setIsModalOpen(true);
+  };
+
+  const HandleExpen = (detail, index) => {
+    setRowData(detail);
+    setExpendModalOpen(!expendModalOpen);
+    setModalIndex(index);
   };
 
   const handleChange = (event, newValue) => {
@@ -89,6 +104,15 @@ const DataBrandOverview = () => {
   const userID = decodedToken.id;
   const RoleIDContext = decodedToken.role_id;
 
+  const dateConvert = (date) => {
+    const dateObj = new Date(date);
+    const month = dateObj.getMonth() + 1;
+    const day = dateObj.getDate();
+    const year = dateObj.getFullYear();
+    const newDate = day + "/" + month + "/" + year;
+    return newDate;
+  };
+
   async function getData() {
     await axios
       .get(baseUrl+"get_all_datas")
@@ -113,27 +137,39 @@ const DataBrandOverview = () => {
       });
 
     axios
-      .get(baseUrl+"get_all_data_categorys")
+      .get(baseUrl + "get_all_data_categorys")
       .then((res) => setCategoryData(res.data.simcWithSubCategoryCount));
 
     axios
-      .get(baseUrl+"get_all_data_brands")
+      .get(baseUrl + "get_all_data_brands")
       .then((res) => setBrandData(res.data));
 
     axios
-      .get(baseUrl+"distinct_created_by")
+      .get(baseUrl + "distinct_created_by")
       .then((res) => setEmployeeData(res.data.data));
     axios
-      .get(baseUrl+"distinct_designed_by")
+      .get(baseUrl + "distinct_designed_by")
       .then((res) => setDesignedData(res.data.data));
 
     axios
-      .get(baseUrl+"get_all_data_platforms")
+      .get(baseUrl + "get_all_data_platforms")
       .then((res) => setPlatformData(res.data));
     axios
 
-      .get(baseUrl+"get_all_data_content_types")
+      .get(baseUrl + "get_all_data_content_types")
       .then((res) => setContentData(res.data));
+
+    axios
+      .get(baseUrl + "projectxCategory")
+      .then((res) => {
+        setBrandCategory(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios.get(baseUrl + "projectxSubCategory").then((res) => {
+      setBrandSubCatData(res.data.data);
+    });
   }
 
   const getBrandCount = (brandName, data) => {
@@ -181,9 +217,7 @@ const DataBrandOverview = () => {
 
   const deleteBrand = async (brand_name) => {
     await axios
-      .delete(
-        `${baseUrl}`+`delete_data_based_data/${brand_name}`
-      )
+      .delete(`${baseUrl}` + `delete_data_based_data/${brand_name}`)
       .then((res) => {
         getData();
       })
@@ -270,7 +304,7 @@ const DataBrandOverview = () => {
                   </FieldContainer> */}
 
                   <Autocomplete
-                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
+                    className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
                     id="combo-box-demo"
                     options={categoryData}
                     getOptionLabel={(option) => option.category_name}
@@ -299,7 +333,7 @@ const DataBrandOverview = () => {
                     ))}
                   </FieldContainer> */}
                   <Autocomplete
-                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
+                    className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
                     id="combo-box-demo"
                     options={brandData}
                     getOptionLabel={(option) => option.brand_name}
@@ -325,7 +359,7 @@ const DataBrandOverview = () => {
                     ))}
                   </FieldContainer> */}
                   <Autocomplete
-                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
+                    className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
                     id="combo-box-demo"
                     options={contentData}
                     getOptionLabel={(option) => option.content_name}
@@ -355,7 +389,7 @@ const DataBrandOverview = () => {
                     ))}
                   </FieldContainer> */}
                   <Autocomplete
-                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-2"
+                    className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-2"
                     id="combo-box-demo"
                     options={platformData}
                     getOptionLabel={(option) => option.platform_name}
@@ -414,8 +448,8 @@ const DataBrandOverview = () => {
                     ))}
                   </FieldContainer> */}
                   <Autocomplete
-                  className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-2"
-                    id="combo-box-demo" 
+                    className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-2"
+                    id="combo-box-demo"
                     options={designedData}
                     getOptionLabel={(option) => option.user_name}
                     style={{ width: 300 }}
@@ -507,7 +541,11 @@ const DataBrandOverview = () => {
                           <div className="summary_cardbody">
                             <div className="d-flex">
                               <div className="documentCard_download">
-                                <a href={detail.data_image} target="_bank" download>
+                                <a
+                                  href={detail.data_image}
+                                  target="_bank"
+                                  download
+                                >
                                   <FcDownload />
                                 </a>
                               </div>
@@ -776,6 +814,124 @@ const DataBrandOverview = () => {
                                   {detail.designed_by_name}
                                 </h4>
                               </div>
+                              <div
+                                style={{
+                                  height:
+                                    expendModalOpen && modalIndex === index
+                                      ? "auto"
+                                      : "50px",
+                                }}
+                              >
+                                {detail.content_type_id ==
+                                  "65a663ccef8a81593f418836" && (
+                                  <>
+                                    <div className="text-center">
+                                      <h4
+                                        onClick={() =>
+                                          HandleExpen(detail, index)
+                                        }
+                                      >
+                                        {expendModalOpen &&
+                                        modalIndex === index ? (
+                                          <ExpandLessIcon />
+                                        ) : (
+                                          <ExpandMoreIcon />
+                                        )}
+                                      </h4>
+                                    </div>
+                                    {expendModalOpen && modalIndex == index && (
+                                      <>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Campaign Purpose</span>
+                                            {detail.campaign_purpose}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span> Number Of Post</span>
+                                            {detail.number_of_post}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Numbar of Reach</span>
+                                            {detail.number_of_reach}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Number Of Impression</span>
+                                            {detail.number_of_impression}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Number Of Engagement</span>
+                                            {detail.number_of_engagement}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Number Of Views</span>
+                                            {detail.number_of_views}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Number Of Story Views</span>
+                                            {detail.number_of_story_views}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Operation Remark</span>
+                                            {detail.operation_remark}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Date Of Report</span>
+                                            {dateConvert(detail.date_of_report)}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Date Of Completion</span>
+                                            {dateConvert(
+                                              detail.date_of_completion
+                                            )}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Brand Category </span>
+                                            {
+                                              brandCategory.filter(
+                                                (e) =>
+                                                  e.category_id ==
+                                                  detail.brand_category_id
+                                              )[0]?.category_name
+                                            }
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Brand Sub Category</span>
+                                            {
+                                              brandSubCatData?.filter(
+                                                (e) =>
+                                                  e.sub_category_id ==
+                                                  detail.brand_sub_category_id
+                                              )[0]?.sub_category_name
+                                            }
+                                          </h4>
+                                        </div>
+                                      </>
+                                    )}
+                                  </>
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -831,6 +987,11 @@ const DataBrandOverview = () => {
           {renderEnlargedContent()}
         </Modal>
       </div>
+      <ExpendModal
+        open={expendModalOpen}
+        setOpen={setExpendModalOpen}
+        rowData={rowData}
+      />
     </>
   );
 };

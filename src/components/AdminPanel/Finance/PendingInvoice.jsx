@@ -203,6 +203,7 @@ const PendingInvoice = () => {
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 key={row.sale_booking_id}
+                format="DD/MM/YYYY"
                 sx={{
                   "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
                     padding: "10px",
@@ -210,8 +211,7 @@ const PendingInvoice = () => {
                 }}
                 defaultValue={dayjs()}
                 onChange={(e) => {
-                  setDate(e),
-                    console.log(new Date(e.$d).toISOString().split("T")[0]);
+                  setDate(e)
                 }}
               />
             </LocalizationProvider>

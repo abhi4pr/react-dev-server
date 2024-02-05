@@ -43,7 +43,7 @@ export default function PendingPaymentRequest() {
   const [paymentAmout, setPaymentAmount] = useState("");
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [viewImgSrc, setViewImgSrc] = useState("");
-  const [paymentDate, setPaymentDate] = useState("");
+  const [paymentDate, setPaymentDate] = useState(dayjs(new Date()).add(5, "hours").add(30, "minutes").$d.toGMTString());
   const [userName, setUserName] = useState("");
 
   const callApi = () => {
@@ -61,7 +61,7 @@ export default function PendingPaymentRequest() {
 
         axios
           .get(
-            "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
+            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
           )
           .then((res) => {
             console.log(res.data.body, "php");
@@ -131,6 +131,7 @@ export default function PendingPaymentRequest() {
     formData.append("name", rowData.name);
     formData.append("request_date", rowData.request_date);
     formData.append("payment_date", paymentDate);
+    console.log(new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " "));
 
     axios
       .post(baseUrl+"phpvendorpaymentrequest", formData, {
@@ -142,7 +143,7 @@ export default function PendingPaymentRequest() {
         const phpFormData = new FormData();
         phpFormData.append("request_id", rowData.request_id);
         phpFormData.append("payment_amount", paymentAmout);
-        phpFormData.append("payment_date", paymentDate);
+        phpFormData.append("payment_date", new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " "))
         phpFormData.append("payment_by", userName);
         phpFormData.append("evidence", payMentProof);
         phpFormData.append("finance_remark", payRemark);
@@ -150,7 +151,7 @@ export default function PendingPaymentRequest() {
         phpFormData.append("payment_mode", paymentMode);
         axios
           .post(
-            "https://production.we-fit.in/webservices/RestController.php?view=updatePaymentrequestNew",
+            "https://purchase.creativefuel.io/webservices/RestController.php?view=updatePaymentrequestNew",
             phpFormData,
             {
               headers: {
@@ -240,7 +241,7 @@ export default function PendingPaymentRequest() {
           .toLowerCase();
         const isPdf = fileExtension === "pdf";
 
-        const imgUrl = `https://production.we-fit.in/uploads/payment_proof/${params.row.invc_img}`;
+        const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
 
         return isPdf ? (
           <img

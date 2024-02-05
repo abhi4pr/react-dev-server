@@ -55,13 +55,37 @@ const BalancePaymentList = () => {
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_id", +singleRow.sale_booking_id);
-    formData.append("payment_update_id", singleRow.payment_update_id);
+    formData.append("payment_update_id", "");
     formData.append("payment_ref_no", paymentRefNo);
     formData.append("payment_detail_id", paymentDetails.value);
     formData.append("payment_screenshot", paymentRefImg);
     formData.append("payment_type", paymentType.label);
     formData.append("payment_mode", paymentMode.label);
     formData.append("paid_amount", paidAmount);
+
+
+//     // sale_booking_id:161
+//     payment_update_id:
+//     payment_ref_no:Axispo444385821
+//     payment_detail_id:43
+//     loggedin_user_id:36
+//     paid_amount:54000
+//     payment_type:Partial
+//     payment_mode:Others
+//     payment_screenshot
+
+
+
+
+
+//     sale_booking_id:161
+// payment_update_id:
+// payment_ref_no:Axispo444385821
+// payment_detail_id:43
+// loggedin_user_id:36
+// paid_amount:54000
+// payment_type:Partial
+// payment_mode:Others
 
     await axios
       .post(

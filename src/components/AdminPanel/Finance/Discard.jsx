@@ -25,7 +25,7 @@ export default function Discard() {
 
         axios
           .get(
-            "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
+            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
           )
           .then((res) => {
             // let y = res.data.body.filter((item) => {
@@ -120,7 +120,7 @@ export default function Discard() {
         const fileExtension = params.row.invc_img.split(".").pop().toLowerCase();
         const isPdf = fileExtension === "pdf";
     
-        const imgUrl = `https://production.we-fit.in/uploads/payment_proof/${params.row.invc_img}`;
+        const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
     console.log(params.row.invc_img?imgUrl:"no image")
         return (
           isPdf ? 

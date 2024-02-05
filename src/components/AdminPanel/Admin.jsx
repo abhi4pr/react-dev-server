@@ -219,6 +219,7 @@ import SalesExecutiveIncentiveRequestReleaseList from "./Finance/SalesExecutiveI
 import AssetDashboard from "../Sim/AssetDashboard";
 import { baseUrl } from "../../utils/config";
 import CreatePlan from "./RegisterCampaign/Plan/CreatePlan";
+import EmailEvent from "./User/EmailEvent/EmailEvent";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -336,6 +337,11 @@ const Admin = () => {
                             path="/email-template-update/:id"
                             element={<EditEmailTemp />}
                           />
+                          <Route
+                            path="/email-events"
+                            element={<EmailEvent />}
+                          />
+
                         </>
                       )}
                   </>

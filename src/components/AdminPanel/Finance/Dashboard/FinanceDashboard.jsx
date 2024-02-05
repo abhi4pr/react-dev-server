@@ -81,7 +81,7 @@ const handleResetClick = () => {
 
         axios
           .get(
-            "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
+            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
           )
           .then((res) => {
             let y = x.filter((item) => {
@@ -563,7 +563,7 @@ const handleResetClick = () => {
                 <h5 className={classes.bodyMd}>Total Payout  Pending:</h5>
                 <br />
                 <span className={classes.h1}>&#8377;{payoutData.map(e=>e.toPay).reduce((prev, next) => prev + next, 0)
-                    .toLocaleString("en-IN")}</span>
+                   ?payoutData.map(e=>e.toPay).reduce((prev, next) => prev + next, 0).toLocaleString("en-IN"):0}</span>
                 <Link to="#" className={classes.detailsLink}>
                   View Details
                 </Link>

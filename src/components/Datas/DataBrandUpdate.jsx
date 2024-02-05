@@ -11,8 +11,7 @@ import pdf from "./pdf-file.png";
 import sheets from "./sheets.png";
 import video from "./montage.png";
 import Select from "react-select";
-import { de } from "date-fns/locale";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
 const DataBrandUpdate = () => {
   const [openReviewDisalog, setOpenReviewDisalog] = useState({
@@ -50,6 +49,20 @@ const DataBrandUpdate = () => {
   const [dataId, setDataId] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [allData, setAllData] = useState([]);
+  const [brandCategory, setBrandCategory] = useState([]);
+  const [brandSubCatData, setBrandSubCatData] = useState([]);
+  const [dateOfCompletion, setDateOfCompletion] = useState("");
+  const [dateOfReport, setDateOfReport] = useState("");
+  const [brandCat, setBrandCat] = useState("");
+  const [brandSubCategory, setBrandSubCategory] = useState("");
+  const [compignPurpose, setCompignPurpose] = useState("");
+  const [NumOfPost, setNumOfPost] = useState("");
+  const [NumOfReach, setNumOfReach] = useState("");
+  const [NumOfImpression, setNumOfImpression] = useState("");
+  const [NumOfEngagement, setNumOfEngagement] = useState("");
+  const [NumOfViews, setNumOfViews] = useState("");
+  const [NumOfStoryViews, setNumOfStoryViews] = useState("");
+  const [OperationRemark, setOperationRemark] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -72,7 +85,6 @@ const DataBrandUpdate = () => {
         })
         .map((detail, index) => {
           setFileDetails(detail);
-          console.log(detail);
           return detail;
         });
     });
@@ -82,61 +94,121 @@ const DataBrandUpdate = () => {
     callAbvApi();
   }, [logos]);
 
+  const HandleNAFileChangeOnChange = (e) => {
+    const value = e.target.value;
+
+    // Allow only empty string, 'NA', or a valid number
+    if (value === "" || value === "NA" || /^\d+$/.test(value)) {
+      return value;
+    } else if (
+      value.length === 3 &&
+      value.includes("NA") &&
+      typeof +value.split("NA")[1] === "number"
+    ) {
+      // If the input is neither empty, 'NA', nor a valid number, set it to 'NA'
+
+      return value.split("NA")[1];
+    } else if (!value.includes("NA")) {
+      return "NA";
+    } else if (value.length === 0) {
+      return "";
+    }
+  };
+
+  const handleNaFileChangeOnBlur = (e) => {
+    if (e.target.value === "") {
+      return "NA";
+    } else if (isNaN(Number(e.target.value))) {
+      // If the value is not a valid number, set it to 'NA'
+      return "NA";
+    }
+    return e.target.value;
+  };
+
   useEffect(() => {
     axios
       .get(`${baseUrl}`+`get_single_data/${id}`)
       .then((res) => {
         const fetchedData = res.data;
-        const { data_name, data_id, upload_logo, remark, cat_name } =
-          fetchedData;
+        const {
+          data_name,
+          data_id,
+          date_of_completion,
+          date_of_report,
+          brand_category_id,
+          brand_sub_category_id,
+          campaign_purpose,
+          number_of_post,
+          number_of_reach,
+          number_of_impression,
+          number_of_engagement,
+          number_of_views,
+          operation_remark,
+          number_of_story_views,
+        } = fetchedData;
+        setDateOfCompletion(date_of_completion);
+        setDateOfReport(date_of_report);
+        setBrandCat(brand_category_id);
+        setBrandSubCategory(brand_sub_category_id);
+        setCompignPurpose(campaign_purpose);
+        setNumOfPost(number_of_post);
+        setNumOfReach(number_of_reach);
+        setNumOfImpression(number_of_impression);
+        setNumOfEngagement(number_of_engagement);
+        setNumOfViews(number_of_views);
+        setOperationRemark(operation_remark);
+        setNumOfStoryViews(number_of_story_views);
         setBrand(data_name);
         setPermanentBrand(data_name);
         setDataId(data_id);
         setBrandName(data_name);
+
         // setLogo(upload_logo);
         // setRemark(remark);
         // setCategory(cat_name);
         // setBrandData(fetchedData);
       });
 
-    axios
-      .get(baseUrl+"get_all_data_categorys")
-      .then((res) => {
-        setCategoryData(res.data.simcWithSubCategoryCount);
-      });
+    axios.get(baseUrl + "get_all_data_categorys").then((res) => {
+      setCategoryData(res.data.simcWithSubCategoryCount);
+    });
 
-    axios
-      .get(baseUrl+"get_all_data_platforms")
-      .then((res) => {
-        setPlateformData(res.data);
-      });
+    axios.get(baseUrl + "get_all_data_platforms").then((res) => {
+      setPlateformData(res.data);
+    });
     // axios
     //   .get(baseUrl+"get_all_data_Sub_categories")
     //   .then((res) => {
     //     setDataSubCategoryData(res.data);
     //   });
-    axios
-      .get(baseUrl+"get_all_data_content_types")
-      .then((res) => {
-        setContentTypeData(res.data);
-      });
-    axios
-      .get(baseUrl+"get_all_data_brands")
-      .then((res) => {
-        setDataBrandData(res.data);
-      });
+    axios.get(baseUrl + "get_all_data_content_types").then((res) => {
+      setContentTypeData(res.data);
+    });
+    axios.get(baseUrl + "get_all_data_brands").then((res) => {
+      setDataBrandData(res.data);
+    });
 
     const today = new Date();
     const formattedDate = formatDate(today);
     setCurrentDate(formattedDate);
+    axios
+      .get(baseUrl + "projectxCategory")
+      .then((res) => {
+
+        setBrandCategory(res.data.data);
+      })
+      .catch((err) => {
+
+      });
+    axios.get(baseUrl + "projectxSubCategory").then((res) => {
+      setBrandSubCatData(res.data.data);
+    });
   }, [id]);
 
   useEffect(() => {
     if (category) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_data_from_sub_category/${category}`
-        )
+        .get(`${baseUrl}` + `get_single_data_from_sub_category/${category}`)
         .then((res) => {
           setDataSubCategoryData(res.data);
         });
@@ -171,9 +243,7 @@ const DataBrandUpdate = () => {
       //     setRemark(res.data[0]?.remark);
       //   });
       axios
-        .get(
-          `${baseUrl}`+`get_data_based_data_name_new/${brandName}`
-        )
+        .get(`${baseUrl}` + `get_data_based_data_name_new/${brandName}`)
         .then((res) => {
           setLogos((prev) => res.data);
 
@@ -195,9 +265,8 @@ const DataBrandUpdate = () => {
     getCombinedData();
   }, [brand]);
 
-  const removeImage = async (_id,data_id) => {
-    console.log(id,"id",data_id,"data_id")
-    if(id==data_id){
+  const removeImage = async (_id, data_id) => {
+    if (id == data_id) {
       toastError(
         "You can't delete default data type, try to delete data instead"
       );
@@ -208,10 +277,7 @@ const DataBrandUpdate = () => {
         "You can't delete default data type, try to delete data instead"
       );
     } else {
-      var data = await axios.delete(
-        `${baseUrl}`+`delete_data/${_id}`,
-        null
-      );
+      var data = await axios.delete(`${baseUrl}` + `delete_data/${_id}`, null);
       if (data) {
         getCombinedData();
       }
@@ -222,8 +288,7 @@ const DataBrandUpdate = () => {
     const newDetails = [...details];
     newDetails.splice(index, 1);
     setDetails(newDetails);
-
-  }
+  };
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
   //   console.log(dataSubCategory, "subcat");
@@ -279,7 +344,6 @@ const DataBrandUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(images[0]);
     // return;
     if (category == "") {
       toastError("Category is required");
@@ -291,6 +355,46 @@ const DataBrandUpdate = () => {
       toastError("Content type is required");
     } else if (dataBrand == "") {
       toastError("Brand is required");
+    }
+    if (contentType == "65a663ccef8a81593f418836") {
+      if (dateOfCompletion == "") {
+        toastError("Date of completion is required");
+        return;
+      } else if (dateOfReport == "") {
+        toastError("Date of report is required");
+        return;
+      } else if (brandCat == "") {
+        toastError("Brand category is required");
+        return;
+      } else if (brandSubCategory == "") {
+        toastError("Brand sub category is required");
+        return;
+      } else if (compignPurpose == "") {
+        toastError("Campaign purpose is required");
+        return;
+
+      } else if (NumOfPost == "") {
+        toastError("Number of post is required");
+        return;
+      } else if (NumOfReach == "") {
+        toastError("Number of reach is required");
+        return;
+      } else if (NumOfImpression == "") {
+        toastError("Number of impression is required");
+        return;
+      } else if (NumOfEngagement == "") {
+        toastError("Number of engagement is required");
+        return;
+      } else if (NumOfViews == "") {
+        toastError("Number of views is required");
+        return;
+      } else if (NumOfStoryViews == "") {
+        toastError("Number of story views is required");
+        return;
+      } else if (OperationRemark == "") {
+        toastError("Operation remark is required");
+        return;
+      }
     }
 
     try {
@@ -304,7 +408,6 @@ const DataBrandUpdate = () => {
       ) {
         setIsLoading(true);
       }
-      console.log(details.length, "befoer img");
       if (details.length == 0) {
         // const formData = new FormData();
         // formData.append("data_id", id);
@@ -318,7 +421,7 @@ const DataBrandUpdate = () => {
         // formData.append("remark", remark);
 
         await axios
-          .put(baseUrl+"update_data", {
+          .put(baseUrl + "update_data", {
             data_id: id,
             data_name: brandName,
             remark: remark,
@@ -327,6 +430,19 @@ const DataBrandUpdate = () => {
             platform_id: platform,
             brand_id: dataBrand,
             content_type_id: contentType,
+            date_of_completion: dateOfCompletion,
+            date_of_report: dateOfReport,
+            brand_category_id: brandCat,
+            brand_sub_category_id: brandSubCategory,
+            campaign_purpose: compignPurpose,
+            number_of_post: NumOfPost,
+            number_of_reach: NumOfReach,
+            number_of_impression: NumOfImpression,
+            number_of_engagement: NumOfEngagement,
+            number_of_views: NumOfViews,
+            number_of_story_views: NumOfStoryViews,
+            operation_remark: OperationRemark,
+  
           })
           .then((res) => {})
           .catch((err) => {
@@ -334,7 +450,6 @@ const DataBrandUpdate = () => {
           });
       } else {
         for (let i = 0; i < details.length; i++) {
-          console.log("come in loop");
           const formData = new FormData();
           formData.append("data_id", id);
           formData.append("data_name", brandName);
@@ -347,22 +462,16 @@ const DataBrandUpdate = () => {
           formData.append("brand_id", dataBrand);
           formData.append("content_type_id", contentType);
           formData.append("data_upload", images[i]);
-
           // formData.append("sub_cat_id", dataSubCategory.map(e=>e));
           // formData.append("size", details[i].size);
           // formData.append("created_by", userID);
           // formData.append("designed_by", designedBy);
-          console.log(formData, "formdata");
           await axios
-            .post(
-              baseUrl+"add_data",
-              formData ,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            )
+            .post(baseUrl + "add_data", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
             .then((res) => {})
             .catch((err) => {
               console.log(err, "err");
@@ -377,6 +486,18 @@ const DataBrandUpdate = () => {
       setImage("");
       setSize("");
       setRemark("");
+      setDateOfCompletion("");
+      setDateOfReport("");
+      setBrandCat("");
+      setBrandSubCategory("");
+      setCompignPurpose("");
+      setNumOfPost("");
+      setNumOfReach("");
+      setNumOfImpression("");
+      setNumOfEngagement("");
+      setNumOfViews("");
+      setNumOfStoryViews("");
+      setOperationRemark("");
     } catch (error) {
       console.error(error);
     } finally {
@@ -461,6 +582,27 @@ const DataBrandUpdate = () => {
               title="Data"
               handleSubmit={handleSubmit}
             >
+              <div className="form-group col-6">
+                <label className="form-label">
+                  Content Type <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={contentTypeData.map((opt) => ({
+                    value: opt._id,
+                    label: opt.content_name,
+                  }))}
+                  value={{
+                    value: contentType,
+                    label:
+                      contentTypeData.find((user) => user._id === contentType)
+                        ?.content_name || "",
+                  }}
+                  onChange={(e) => {
+                    setContentType(e.value);
+                  }}
+                  required
+                />
+              </div>
               <FieldContainer
                 label="Name *"
                 type="text"
@@ -561,27 +703,7 @@ const DataBrandUpdate = () => {
                   required
                 />
               </div>
-              <div className="form-group col-3">
-                <label className="form-label">
-                  Content Type <sup style={{ color: "red" }}>*</sup>
-                </label>
-                <Select
-                  options={contentTypeData.map((opt) => ({
-                    value: opt._id,
-                    label: opt.content_name,
-                  }))}
-                  value={{
-                    value: contentType,
-                    label:
-                      contentTypeData.find((user) => user._id === contentType)
-                        ?.content_name || "",
-                  }}
-                  onChange={(e) => {
-                    setContentType(e.value);
-                  }}
-                  required
-                />
-              </div>
+
               <div className="form-group col-3">
                 <label className="form-label">
                   Brand <sup style={{ color: "red" }}>*</sup>
@@ -603,6 +725,184 @@ const DataBrandUpdate = () => {
                   required
                 />
               </div>
+              {contentType == "65a663ccef8a81593f418836" && (
+                <>
+                  <div className="form-group col-3">
+                    <label className="form-label">
+                      Date of Completion <sup style={{ color: "red" }}>*</sup>
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={dateOfCompletion}
+                      onChange={(e) => setDateOfCompletion(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group col-3">
+                    <label className="form-label">
+                      Date of Report <sup style={{ color: "red" }}>*</sup>
+                    </label>
+                    <input
+                      type="date"
+                      className="form-control"
+                      value={dateOfReport}
+                      onChange={(e) => setDateOfReport(e.target.value)}
+                    />
+                  </div>
+                  <div className="form-group col-3">
+                    <label className="form-label">
+                      Brand Category <sup style={{ color: "red" }}>*</sup>
+                    </label>
+                    <Select
+                      options={brandCategory.map((opt) => ({
+                        value: opt.category_id,
+                        label: opt.category_name,
+                      }))}
+                      value={{
+                        value: brandCat,
+                        label:
+                          brandCategory.find(
+                            (brand) => brand.category_id == brandCat
+                          )?.category_name || "",
+                      }}
+                      onChange={(e) => {
+                        setBrandCat(e.value);
+                        setBrandSubCategory("");
+                      }}
+                    />
+                  </div>
+                  <div className="form-group col-3">
+                    <label className="form-label">
+                      Brand Sub Category <sup style={{ color: "red" }}>*</sup>
+                    </label>
+                    <Select
+                      options={brandSubCatData
+                        .filter((opt) => opt.category_id == brandCat)
+                        .map((opt) => ({
+                          value: opt.sub_category_id,
+                          label: opt.sub_category_name,
+                        }))}
+                      value={{
+                        value: brandSubCategory,
+                        label:
+                          brandSubCatData.find(
+                            (e) => e.sub_category_id == brandSubCategory
+                          )?.sub_category_name || "",
+                      }}
+                      onChange={(e) => {
+                        setBrandSubCategory(e.value);
+                      }}
+                    />
+                  </div>
+
+                  <div className="form-group col-3">
+                    <label className="form-label">
+                      Campaign Purpose <sup style={{ color: "red" }}>*</sup>
+                    </label>
+
+                    <input
+                      className="form-control"
+                      value={compignPurpose}
+                      onChange={(e) => setCompignPurpose(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="form-group col-3">
+                    <label className="form-label">
+                      Number Of Post <sup style={{ color: "red" }}>*</sup>
+                    </label>
+                    <input
+                      className="form-control"
+                      value={NumOfPost}
+                      onChange={(e) => {
+                        if (!isNaN(Number(e.target.value))) {
+                          setNumOfPost(e.target.value);
+                        }
+                      }}
+                    />
+                  </div>
+
+                  <div className="form-group col-3">
+                    <label className="form-label">Number Of Reach</label>
+                    <input
+                      className="form-control"
+                      value={NumOfReach}
+                      onChange={(e) => {
+                        setNumOfReach(HandleNAFileChangeOnChange(e));
+                      }}
+                      onBlur={(e) => {
+                        setNumOfReach(handleNaFileChangeOnBlur(e));
+                      }}
+                    />
+                  </div>
+                  <div className="form-group col-3">
+                    <label className="form-label">Number Of Impression</label>
+                    <input
+                      className="form-control"
+                      value={NumOfImpression}
+                      onChange={(e) =>
+                        setNumOfImpression(HandleNAFileChangeOnChange(e))
+                      }
+                      onBlur={(e) => {
+                        setNumOfImpression(handleNaFileChangeOnBlur(e));
+                      }}
+                    />
+                  </div>
+                  <div className="form-group col-3">
+                    <label className="form-label">Number Of Engagement</label>
+                    <input
+                      className="form-control"
+                      value={NumOfEngagement}
+                      onChange={(e) =>
+                        setNumOfEngagement(HandleNAFileChangeOnChange(e))
+                      }
+                      onBlur={(e) => {
+                        setNumOfEngagement(handleNaFileChangeOnBlur(e));
+                      }}
+                    />
+                  </div>
+                  <div className="form-group col-3">
+                    <label className="form-label">Number Of views</label>
+                    <input
+                      className="form-control"
+                      value={NumOfViews}
+                      onChange={(e) =>
+                        setNumOfViews(HandleNAFileChangeOnChange(e))
+                      }
+                      onBlur={(e) => {
+                        setNumOfViews(handleNaFileChangeOnBlur(e));
+                      }}
+                    />
+                  </div>
+                  <div className="form-group col-3">
+                    <label className="form-label">Number Of Story Views</label>
+                    <input
+                      className="form-control"
+                      value={NumOfStoryViews}
+                      onChange={(e) =>
+                        setNumOfStoryViews(HandleNAFileChangeOnChange(e))
+                      }
+                      onBlur={(e) => {
+                        setNumOfStoryViews(handleNaFileChangeOnBlur(e));
+                      }}
+                    />
+                  </div>
+                  <div className="form-group col-3">
+                    <label className="form-label">Operation Remark</label>
+                    <input
+                      className="form-control"
+                      value={OperationRemark}
+                      onChange={(e) =>
+                        setOperationRemark(HandleNAFileChangeOnChange(e))
+                      }
+                      onBlur={(e) => {
+                        setOperationRemark(handleNaFileChangeOnBlur(e));
+                      }}
+                    />
+                  </div>
+                </>
+              )}
 
               <div className="summary_cards brand_img_list">
                 {logos.length > 0 &&
@@ -651,7 +951,7 @@ const DataBrandUpdate = () => {
                         </div>
                         <div className="col summary_box brand_img_box">
                           <h4>
-                            <span>Extension: manoj</span>
+                            <span>Extension:</span>
                             {detail.data_type}
                           </h4>
                         </div>
@@ -684,7 +984,9 @@ const DataBrandUpdate = () => {
                           <p>
                             {" "}
                             <MdCancel
-                              onClick={() => removeImage(detail._id,detail.data_id)}
+                              onClick={() =>
+                                removeImage(detail._id, detail.data_id)
+                              }
                               style={{ cursor: "pointer" }}
                             />
                           </p>
@@ -748,7 +1050,11 @@ const DataBrandUpdate = () => {
                         detail.fileType === "gif" ? (
                           <img
                             className="brandimg_icon"
-                            src={images[index]?URL.createObjectURL(images[index]):""}
+                            src={
+                              images[index]
+                                ? URL.createObjectURL(images[index])
+                                : ""
+                            }
                             alt={`Image ${index + 1}`}
                           />
                         ) : (
@@ -798,16 +1104,15 @@ const DataBrandUpdate = () => {
                           ))}
                         </FieldContainer>
                       </div> */}
-                                              <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
-
-                       <p>
-                            {" "}
-                            <MdCancel
-                              onClick={() => removeAddedImage(index)}
-                              style={{ cursor: "pointer" }}
-                            />
-                          </p>
-                          </div>
+                      <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                        <p>
+                          {" "}
+                          <MdCancel
+                            onClick={() => removeAddedImage(index)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        </p>
+                      </div>
                     </div>
                   </div>
                 ))}

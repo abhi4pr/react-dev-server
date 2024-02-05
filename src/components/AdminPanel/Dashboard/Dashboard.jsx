@@ -301,24 +301,25 @@ function Dashboard() {
           )}
 
           {loginUserData.department_name == "Accounts" && (
-            <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <div className="d_infocard card shadow">
-                <div
-                  className="card-body"
-                  onClick={() => navigate("/admin/accounts-finance-dashboard")}
-                >
-                  <div className="d_infocard_txt">
-                    <h2>Finance Dashboard</h2>
-                    {/* <h2>{accountsPendingPaymentsCount?.length}</h2>  */}
-                  </div>
-                  <div className="d_infocard_icon">
-                    <span>
-                      <FaProductHunt />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            // <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
+            //   <div className="d_infocard card shadow">
+            //     <div
+            //       className="card-body"
+            //       onClick={() => navigate("/admin/accounts-finance-dashboard")}
+            //     >
+            //       <div className="d_infocard_txt">
+            //         <h2>Finance Dashboard</h2>
+            //         {/* <h2>{accountsPendingPaymentsCount?.length}</h2>  */}
+            //       </div>
+            //       <div className="d_infocard_icon">
+            //         <span>
+            //           <FaProductHunt />
+            //         </span>
+            //       </div>
+            //     </div>
+            //   </div>
+            // </div>
+            navigate("/admin/finance-dashboard")
           )}
         </div>
       </div>

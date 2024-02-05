@@ -31,7 +31,7 @@ export default function PurchaseManagementAllTransaction() {
 
         axios
           .get(
-            "https://production.we-fit.in/webservices/RestController.php?view=getpaymentrequest"
+            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
           )
           .then((res) => {
             // let y = res.data.body.filter((item) => {
@@ -127,7 +127,7 @@ export default function PurchaseManagementAllTransaction() {
           .toLowerCase();
         const isPdf = fileExtension === "pdf";
 
-        const imgUrl = `https://production.we-fit.in/uploads/payment_proof/${params.row.invc_img}`;
+        const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
         // console.log(params.row.invc_img ? imgUrl : "no image");
         return isPdf ? (
           // <iframe
@@ -268,7 +268,8 @@ export default function PurchaseManagementAllTransaction() {
             <p className="fs-6 lead ">
               Total Requested Amount :-{" "}
               {data.length > 0
-                ? data.reduce((total, currentItem) => {
+                ? data
+                .filter((item) => item.payment_approval_status == 0).reduce((total, currentItem) => {
                     return total + currentItem.request_amount * 1;
                   }, 0)
                 : ""}
@@ -291,7 +292,8 @@ export default function PurchaseManagementAllTransaction() {
             <p className="fs-6 lead ">
               Total Requested Amount :-{" "}
               {data.length > 0
-                ? data.reduce((total, currentItem) => {
+                ? data 
+                .filter((item) => item.status == 1).reduce((total, currentItem) => {
                     return total + currentItem.request_amount * 1;
                   }, 0)
                 : ""}
@@ -314,7 +316,8 @@ export default function PurchaseManagementAllTransaction() {
             <p className="fs-6 lead ">
               Total Requested Amount :-{" "}
               {data.length > 0
-                ? data.reduce((total, currentItem) => {
+                ? data
+                .filter((item) => item.status == 0).reduce((total, currentItem) => {
                     return total + currentItem.request_amount * 1;
                   }, 0)
                 : ""}
