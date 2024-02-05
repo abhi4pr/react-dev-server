@@ -7,7 +7,7 @@ import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import Select from "react-select";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const UserResponsbility = () => {
   const whatsappApi = WhatsappAPI();
@@ -30,7 +30,7 @@ const UserResponsbility = () => {
   const loginUser = decodedToken.id;
 
   function getUserCompleteData() {
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       const data = res.data.data;
       getUserData(data);
       setUserContact(
@@ -54,36 +54,41 @@ const UserResponsbility = () => {
   }, [userName, userData]);
 
   useEffect(() => {
-    axios
-      .get(baseUrl+"get_all_responsibilitys")
-      .then((res) => {
-        setResponsibilityData(res.data);
-      });
+    axios.get(baseUrl + "get_all_responsibilitys").then((res) => {
+      setResponsibilityData(res.data);
+    });
   }, [todos]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    for (const element of todos) {
-      await axios.post(baseUrl+"add_job_responsibility", {
-        user_id: userName,
-        job_responsi: element.responsibility,
-        description: element.description,
-        created_by: loginUser,
-      });
-      await whatsappApi.callWhatsAPI(
-        "User Responsibility",
-        JSON.stringify(userContact),
-        userName,
-        [element.responsibility]
-      );
+    try {
+      for (const element of todos) {
+        await axios.post(baseUrl + "add_job_responsibility", {
+          user_id: userName,
+          job_responsi: element.responsibility,
+          description: element.description,
+          created_by: loginUser,
+        });
+
+        await whatsappApi.callWhatsAPI(
+          "User Responsibility",
+          JSON.stringify(userContact),
+          userName,
+          [element.responsibility]
+        );
+      }
+      setUserName("");
+      setResponsibility("");
+      setDescription("");
+      toastAlert("Submitted success");
+      setIsFormSubmitted(true);
+    } catch (error) {
+      setError("An error occurred during submission.");
+      alert(error.response.data.message);
     }
-    setUserName("");
-    setResponsibility("");
-    setDescription("");
-    toastAlert("Submitted success");
-    setIsFormSubmitted(true);
   };
+
   if (isFormSubmitted) {
     return <Navigate to="/admin/user-respons-overivew" />;
   }

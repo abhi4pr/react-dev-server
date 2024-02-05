@@ -7,10 +7,10 @@ import { useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
 import Select from "react-select";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 export default function SubDepartmentUpdate() {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const { DepartmentContext } = useAPIGlobalContext();
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -27,14 +27,12 @@ export default function SubDepartmentUpdate() {
     //     setDepartmentData(res.data);
     //   });
 
-    axios
-      .get(`${baseUrl}`+`get_subdept_from_id/${id}`)
-      .then((res) => {
-        console.log(res.data.dept_id, "yha deta hai");
-        setDeptId(res.data.dept_id);
-        setRemark(res.data.remark);
-        setSubDepartmentName(res.data.sub_dept_name);
-      });
+    axios.get(`${baseUrl}` + `get_subdept_from_id/${id}`).then((res) => {
+      console.log(res.data.dept_id, "yha deta hai");
+      setDeptId(res.data.dept_id);
+      setRemark(res.data.remark);
+      setSubDepartmentName(res.data.sub_dept_name);
+    });
   }
   useEffect(() => {
     getData();
@@ -42,16 +40,23 @@ export default function SubDepartmentUpdate() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    // sub_dept_name, dept_id, remark, last_updated_by {target by id}
-    await axios.put(`${baseUrl}`+`update_sub_department`, {
-      id: Number(id),
-      sub_dept_name: subDepartmentName,
-      dept_id: Number(deptId),
-      remark: remark,
-    });
-    setIsFormSubmitted(true);
-    toastAlert("Submitted success");
+
+    try {
+      await axios.put(`${baseUrl}update_sub_department`, {
+        id: Number(id),
+        sub_dept_name: subDepartmentName,
+        dept_id: Number(deptId),
+        remark: remark,
+      });
+
+      setIsFormSubmitted(true);
+      toastAlert("Submitted success");
+    } catch (error) {
+      toastError("Submission failed. Please try again.");
+      alert(error.response.data.message);
+    }
   }
+
   if (isFormSubmitted) {
     return <Navigate to="/admin/sub-department-overview" />;
   }

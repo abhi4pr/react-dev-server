@@ -20,9 +20,7 @@ const RoleOverView = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setDatas(res.data);
         });
@@ -31,12 +29,9 @@ const RoleOverView = () => {
 
   async function getData() {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_roles"
-      );
+      const response = await axios.get(baseUrl + "get_all_roles");
       setData(response.data.data);
       setFilterData(response.data.data);
-      console.log(response.data.data);
     } catch (error) {
       console.error("An error occurred:", error);
     }
@@ -53,15 +48,15 @@ const RoleOverView = () => {
     {
       name: "Role Name",
       selector: (row) => row.Role_name,
-      width: "20%",
+
       sortable: true,
     },
-    {
-      name: "Created By",
-      selector: (row) => row.created_by_name,
-      width: "20%",
-      sortable: true,
-    },
+    // {
+    //   name: "Created By",
+    //   selector: (row) => row.created_by_name,
+    //   width: "20%",
+    //   sortable: true,
+    // },
 
     {
       name: "remark",
@@ -69,7 +64,7 @@ const RoleOverView = () => {
     },
     {
       name: "Action",
-      width: "15%",
+
       cell: (row) => (
         <>
           {contextData &&

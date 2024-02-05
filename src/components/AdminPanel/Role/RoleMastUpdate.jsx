@@ -4,10 +4,10 @@ import { Navigate } from "react-router-dom";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 function RoleMastUpdate() {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [id, setId] = useState(0);
   const [role_name, setRoleName] = useState("");
   const [remark, setRemark] = useState("");
@@ -18,20 +18,26 @@ function RoleMastUpdate() {
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.put(`${baseUrl}`+`update_role`, {
-      role_id: id,
-      role_name: role_name,
-      remark: remark,
-      created_by: createdby,
-    });
-    setRoleName("");
-    setRemark("");
 
-    toastAlert("Form Submitted success");
-    setIsFormSubmitted(true);
-    // navigate("/role-overview");
+    try {
+      await axios.put(`${baseUrl}update_role`, {
+        role_id: id,
+        role_name: role_name,
+        remark: remark,
+        created_by: createdby,
+      });
+
+      setRoleName("");
+      setRemark("");
+      toastAlert("Form Submitted success");
+      setIsFormSubmitted(true);
+    } catch (error) {
+      console.error("Failed to submit form:", error);
+      toastError("Form submission failed");
+      alert(error.response.data.message);
+    }
   };
 
   useEffect(() => {
@@ -73,12 +79,12 @@ function RoleMastUpdate() {
           value={creationdate}
           onChange={(e) => setCreationDate(e.target.value)}
         />
-        <FieldContainer
+        {/* <FieldContainer
           label="Created By"
           disabled
           value={createdby}
           onChange={(e) => setCreatedBy(e.target.value)}
-        />
+        /> */}
         {/* <FieldContainer
           label="Last Updated By"
           disabled

@@ -5,10 +5,10 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import Select from "react-select";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const UserResponsbilityUpdate = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [id, setId] = useState(0);
   const [userName, setUserName] = useState("");
   const [responsbility, setResponsibility] = useState("");
@@ -24,16 +24,14 @@ const UserResponsbilityUpdate = () => {
   const [designation, setDesignation] = useState("");
 
   useEffect(() => {
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       getUserData(res.data.data);
     });
   }, []);
   useEffect(() => {
-    axios
-      .get(baseUrl+"get_all_responsibilitys")
-      .then((res) => {
-        setResponsibilityData(res.data);
-      });
+    axios.get(baseUrl + "get_all_responsibilitys").then((res) => {
+      setResponsibilityData(res.data);
+    });
   }, []);
 
   useEffect(() => {
@@ -60,31 +58,26 @@ const UserResponsbilityUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    for (const element of todos) {
-      console.log(userName, "userid");
-      axios
-        .put(`${baseUrl}`+`update_jobresponsibility`, {
+    try {
+      for (const element of todos) {
+        await axios.put(`${baseUrl}update_jobresponsibility`, {
           Job_res_id: Number(id),
           user_id: Number(userName),
           job_responsi: element.responsbility,
           description: element.description,
-        })
-        .then(() => {
-          setUserName("");
-          setResponsibility("");
-          setDescription("");
-        })
-        .catch((error) => {
-          setError("An error occurred while submitting the form.");
-          console.error(error);
         });
+      }
+      setUserName("");
+      setResponsibility("");
+      setDescription("");
+      toastAlert("Submitted success");
+      setIsFormSubmitted(true);
+    } catch (error) {
+      toastError("Error assigning responsibility");
+      alert(error.response.data.message);
     }
-    setUserName("");
-    setResponsibility("");
-    setDescription("");
-    toastAlert("Submitted success");
-    setIsFormSubmitted(true);
   };
+
   if (isFormSubmitted) {
     return <Navigate to="/admin/user-respons-overivew" />;
   }
@@ -138,11 +131,36 @@ const UserResponsbilityUpdate = () => {
           </>
         )}
 
-        <FieldContainer
+        <div className="">
+          <div className="form-group">
+            <label className="form-label">
+              Responsiblity <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={responsibilityData.map((option) => ({
+                value: option.respo_name,
+                label: `${option.respo_name}`,
+              }))}
+              value={{
+                value: responsbility,
+                label:
+                  responsibilityData.find(
+                    (user) => user.respo_name === responsbility
+                  )?.respo_name || "",
+              }}
+              onChange={(e) => {
+                setResponsibility(e.value);
+              }}
+              required
+            />
+          </div>
+        </div>
+        {/* <FieldContainer
           label="Responsibility"
           value={responsbility}
           onChange={(e) => setResponsibility(e.target.value)}
-        />
+        /> */}
         <div className="">
           <div className="form-group">
             <label className="form-label">

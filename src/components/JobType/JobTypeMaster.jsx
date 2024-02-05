@@ -145,6 +145,7 @@ const JobTypeMaster = () => {
           label="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          required="false"
         />
       </FormContainer>
 
