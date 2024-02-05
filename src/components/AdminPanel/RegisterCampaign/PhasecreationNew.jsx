@@ -111,7 +111,6 @@ const PhasecreationNew = () => {
     naviagte(`/admin/planOverview/${id}`);
   };
 
-  console.log(stopCreate);
   return (
     <>
       <div className="form_heading_title">
@@ -157,6 +156,7 @@ const PhasecreationNew = () => {
 
                 <PageOverview
                   selectData={item.pages}
+                  phaseIndex={`Phase ${index + 1}`}
                   stage={"phase"}
                   setRender={renderHard}
                   phase_id={item.phase_id}
@@ -210,16 +210,16 @@ const PhasecreationNew = () => {
             <Box sx={{ display: "flex", justifyContent: "space-around" }}>
               <TextField
                 label="Phase"
-                value={phaseData}
+                defaultValue={`Phase ${allPhaseData.length + 1}`}
                 onChange={(e) => {
                   setPhaseData(e.target.value);
-                  if (phaseDataError) {
-                    setPhaseDataError("");
-                  }
+                  // if (phaseDataError) {
+                  //   setPhaseDataError("");
+                  // }
                 }}
                 sx={{ m: 1, width: "300px" }}
-                error={!!phaseDataError}
-                helperText={phaseDataError}
+                // error={!!phaseDataError}
+                // helperText={phaseDataError}
               />
 
               <TextField
@@ -294,6 +294,7 @@ const PhasecreationNew = () => {
               getPhaseData,
               setExpanded,
               setShowPageDetails,
+              
               assignAll,
             }}
             setPhaseDataError={setPhaseDataError}
