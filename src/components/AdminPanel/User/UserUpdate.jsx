@@ -1081,7 +1081,7 @@ const UserUpdate = () => {
     "General",
     "Personal",
     "Salary",
-    "Documents",
+    // "Documents",
     "Family Details",
     "Education Details",
     "Documents Update",
@@ -1591,162 +1591,162 @@ const UserUpdate = () => {
     </>
   );
 
-  const documentsFields = (
-    <>
-      <FieldContainer
-        label="UID Number"
-        onChange={handleUIDInputChange}
-        fieldGrid={5}
-        type="text"
-        required={false}
-        value={uidNo}
-      />
+  // const documentsFields = (
+  //   <>
+  //     <FieldContainer
+  //       label="UID Number"
+  //       onChange={handleUIDInputChange}
+  //       fieldGrid={5}
+  //       type="text"
+  //       required={false}
+  //       value={uidNo}
+  //     />
 
-      <FieldContainer
-        label="UID"
-        onChange={(e) => setUID(e.target.files[0])}
-        fieldGrid={5}
-        type="file"
-        required={false}
-      />
+  //     <FieldContainer
+  //       label="UID"
+  //       onChange={(e) => setUID(e.target.files[0])}
+  //       fieldGrid={5}
+  //       type="file"
+  //       required={false}
+  //     />
 
-      <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-        <div className="form-group download_btn">
-          <label>&nbsp;</label>
-          {uidImage && (
-            <a href={uidImage} download>
-              <i className="bi bi-cloud-arrow-down"></i> UID Download{" "}
-            </a>
-          )}
-        </div>
-      </div>
-      <FieldContainer
-        label="PAN Number"
-        onChange={handlePANChange}
-        fieldGrid={5}
-        type="text"
-        required={false}
-        value={panNo}
-      />
+  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+  //       <div className="form-group download_btn">
+  //         <label>&nbsp;</label>
+  //         {uidImage && (
+  //           <a href={uidImage} download>
+  //             <i className="bi bi-cloud-arrow-down"></i> UID Download{" "}
+  //           </a>
+  //         )}
+  //       </div>
+  //     </div>
+  //     <FieldContainer
+  //       label="PAN Number"
+  //       onChange={handlePANChange}
+  //       fieldGrid={5}
+  //       type="text"
+  //       required={false}
+  //       value={panNo}
+  //     />
 
-      <FieldContainer
-        label="Pan Image"
-        onChange={(e) => setPanUpload(e.target.files[0])}
-        fieldGrid={5}
-        type="file"
-        required={false}
-      />
-      <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-        <div className="form-group download_btn">
-          <label>&nbsp;</label>
-          {panImage && (
-            <a href={panImage} download>
-              <i className="bi bi-cloud-arrow-down"></i> PAN Download{" "}
-            </a>
-          )}
-        </div>
-      </div>
+  //     <FieldContainer
+  //       label="Pan Image"
+  //       onChange={(e) => setPanUpload(e.target.files[0])}
+  //       fieldGrid={5}
+  //       type="file"
+  //       required={false}
+  //     />
+  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+  //       <div className="form-group download_btn">
+  //         <label>&nbsp;</label>
+  //         {panImage && (
+  //           <a href={panImage} download>
+  //             <i className="bi bi-cloud-arrow-down"></i> PAN Download{" "}
+  //           </a>
+  //         )}
+  //       </div>
+  //     </div>
 
-      <div className="form-group col-5">
-        <label className="form-label">Higest Qualification</label>
-        <Select
-          className=""
-          options={higestQualificationData?.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: higestQualification,
-            label: `${higestQualification}`,
-          }}
-          onChange={(e) => {
-            setHigestQualification(e.value);
-          }}
-          required
-        />
-      </div>
-      <FieldContainer
-        label="Highest Qualification"
-        onChange={(e) => setHighestUpload(e.target.files[0])}
-        fieldGrid={5}
-        type="file"
-        required={false}
-      />
-      <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-        <div className="form-group download_btn">
-          <label>&nbsp;</label>
-          {highestQualificationImage && (
-            <a href={highestQualificationImage} download>
-              <i className="bi bi-cloud-arrow-down"></i> Highest
-              QualificationImage Download{" "}
-            </a>
-          )}
-        </div>
-      </div>
-      <FieldContainer
-        label="Other Image"
-        onChange={(e) => setOtherUpload(e.target.files[0])}
-        fieldGrid={10}
-        type="file"
-        required={false}
-      />
-      <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-        <div className="form-group download_btn">
-          <label>&nbsp;</label>
-          {otherImage && (
-            <a href={otherImage} download>
-              <i className="bi bi-cloud-arrow-down"></i> Highest
-              QualificationImage Download{" "}
-            </a>
-          )}
-        </div>
-      </div>
-      {!isValidPAN && <p style={{ color: "red" }}>Invalid PAN format</p>}
-      {!isValidUID && (
-        <p style={{ color: "red" }}>Invalid Aadhaar number format</p>
-      )}
+  //     <div className="form-group col-5">
+  //       <label className="form-label">Higest Qualification</label>
+  //       <Select
+  //         className=""
+  //         options={higestQualificationData?.map((option) => ({
+  //           value: `${option}`,
+  //           label: `${option}`,
+  //         }))}
+  //         value={{
+  //           value: higestQualification,
+  //           label: `${higestQualification}`,
+  //         }}
+  //         onChange={(e) => {
+  //           setHigestQualification(e.value);
+  //         }}
+  //         required
+  //       />
+  //     </div>
+  //     <FieldContainer
+  //       label="Highest Qualification"
+  //       onChange={(e) => setHighestUpload(e.target.files[0])}
+  //       fieldGrid={5}
+  //       type="file"
+  //       required={false}
+  //     />
+  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+  //       <div className="form-group download_btn">
+  //         <label>&nbsp;</label>
+  //         {highestQualificationImage && (
+  //           <a href={highestQualificationImage} download>
+  //             <i className="bi bi-cloud-arrow-down"></i> Highest
+  //             QualificationImage Download{" "}
+  //           </a>
+  //         )}
+  //       </div>
+  //     </div>
+  //     <FieldContainer
+  //       label="Other Image"
+  //       onChange={(e) => setOtherUpload(e.target.files[0])}
+  //       fieldGrid={10}
+  //       type="file"
+  //       required={false}
+  //     />
+  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+  //       <div className="form-group download_btn">
+  //         <label>&nbsp;</label>
+  //         {otherImage && (
+  //           <a href={otherImage} download>
+  //             <i className="bi bi-cloud-arrow-down"></i> Highest
+  //             QualificationImage Download{" "}
+  //           </a>
+  //         )}
+  //       </div>
+  //     </div>
+  //     {!isValidPAN && <p style={{ color: "red" }}>Invalid PAN format</p>}
+  //     {!isValidUID && (
+  //       <p style={{ color: "red" }}>Invalid Aadhaar number format</p>
+  //     )}
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
-        >
-          <ArrowBackIosIcon />
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
-        >
-          <ArrowForwardIosIcon />
-        </button>
-      </div>
+  //     <div style={{ display: "flex", justifyContent: "space-between" }}>
+  //       <button
+  //         className="btn btn-primary"
+  //         onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
+  //       >
+  //         <ArrowBackIosIcon />
+  //       </button>
+  //       <button
+  //         className="btn btn-primary"
+  //         onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
+  //       >
+  //         <ArrowForwardIosIcon />
+  //       </button>
+  //     </div>
 
-      {otherDocuments && (
-        <div>
-          <h3>Other Documents</h3>
-          {otherDocuments?.map((item, index) => {
-            return (
-              <div key={index} className="d-flex ">
-                <input
-                  type="text"
-                  className="form-control mt-2 col-6 me-2"
-                  value={item.field_name}
-                  onChange={(e) => otherDocumentNameChangeHandle(e, index)}
-                />
-                <input
-                  className="form-control mt-2 col-6 "
-                  label={item.field_name}
-                  onChange={(e) => otherDocumentImageChangeHandler(e, index)}
-                  type="file"
-                  required={false}
-                />
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </>
-  );
+  //     {otherDocuments && (
+  //       <div>
+  //         <h3>Other Documents</h3>
+  //         {otherDocuments?.map((item, index) => {
+  //           return (
+  //             <div key={index} className="d-flex ">
+  //               <input
+  //                 type="text"
+  //                 className="form-control mt-2 col-6 me-2"
+  //                 value={item.field_name}
+  //                 onChange={(e) => otherDocumentNameChangeHandle(e, index)}
+  //               />
+  //               <input
+  //                 className="form-control mt-2 col-6 "
+  //                 label={item.field_name}
+  //                 onChange={(e) => otherDocumentImageChangeHandler(e, index)}
+  //                 type="file"
+  //                 required={false}
+  //               />
+  //             </div>
+  //           );
+  //         })}
+  //       </div>
+  //     )}
+  //   </>
+  // );
 
   const personalFields = (
     <>
@@ -2176,10 +2176,10 @@ const UserUpdate = () => {
         {activeAccordionIndex === 0 && genralFields}
         {activeAccordionIndex === 1 && personalFields}
         {activeAccordionIndex === 2 && salaryFields}
-        {activeAccordionIndex === 3 && documentsFields}
-        {activeAccordionIndex === 4 && familyFields}
-        {activeAccordionIndex === 5 && educationFields}
-        {activeAccordionIndex === 6 && documentFieldsNew}
+        {/* {activeAccordionIndex === 3 && documentsFields} */}
+        {activeAccordionIndex === 3 && familyFields}
+        {activeAccordionIndex === 4 && educationFields}
+        {activeAccordionIndex === 5 && documentFieldsNew}
       </FormContainer>
     </>
   );

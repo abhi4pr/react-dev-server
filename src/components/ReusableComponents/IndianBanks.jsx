@@ -1,21 +1,27 @@
 import React from "react";
 import Select from "react-select";
+import IndianBankList from "../../assets/js/IndianBankList";
 
-const banks = [];
+const IndianBanks = ({ onChange, value }) => {
+  const selectedValue = value
+    ? IndianBankList.find((bank) => bank.value === value)
+    : null;
 
-const IndianBanks = ({ onChange }) => {
   return (
-    <div className="form-group col-3">
+    <div className="form-group">
       <label className="form-label">Banks</label>
       <Select
-        options={banks.map((bank) => ({ value: bank, label: bank }))}
+        id="bankSelect"
+        options={IndianBankList}
         onChange={onChange}
         isClearable
         isSearchable
+        value={selectedValue} // Set selected value
+        getOptionLabel={(option) => option.label}
+        getOptionValue={(option) => option.value}
         required
       />
     </div>
   );
 };
-
 export default IndianBanks;
