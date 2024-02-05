@@ -661,9 +661,9 @@ const UserMaster = () => {
     }
   };
 
-  if (isFormSubmitted) {
-    return <Navigate to="/admin/user-overview" />;
-  }
+  // if (isFormSubmitted) {
+  //   return <Navigate to="/admin/user-overview" />;
+  // }
 
   // Email Validation
   function handleEmailChange(e) {

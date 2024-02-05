@@ -28,25 +28,21 @@ const DepartmentOverview = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setDatas(res.data);
         });
     }
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       setAllUserDepartment(res.data.data);
     });
   }, [userID]);
 
   function getData() {
-    axios
-      .get(baseUrl+"get_all_departments")
-      .then((res) => {
-        setData(res.data);
-        setFilterData(res.data);
-      });
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      setData(res.data);
+      setFilterData(res.data);
+    });
   }
 
   useEffect(() => {
@@ -113,6 +109,7 @@ const DepartmentOverview = () => {
                       row.Remarks,
                       row.Creation_date,
                       row.created_by,
+                      row.created_by_name,
                       row.Last_updated_by,
                       row.Last_updated_date,
                       row.short_name
@@ -147,13 +144,15 @@ const DepartmentOverview = () => {
     created_by,
     Last_updated_by,
     Last_updated_date,
-    short_name
+    short_name,
+    created_by_name
   ) => {
     localStorage.setItem("dept_id", dept_id);
     localStorage.setItem("dept_name", dept_name);
     localStorage.setItem("Remarks", Remarks);
     localStorage.setItem("Creation_date", Creation_date);
-    localStorage.setItem("created_by", created_by);
+    localStorage.setItem("Created_by", created_by);
+    localStorage.setItem("created_by_name", created_by_name);
     localStorage.setItem("Last_updated_by", Last_updated_by);
     localStorage.setItem("Last_updated_date", Last_updated_date);
     localStorage.setItem("short_name");
@@ -245,9 +244,9 @@ const DepartmentOverview = () => {
                   cell: (row, index) => <div>{index + 1}</div>,
                   width: "10%",
                 },
-                { name: "Name", selector: "user_name" },
-                { name: "Email", selector: "user_email_id" },
-                { name: "Contact", selector: "user_contact_no" },
+                { name: "Name", selector: (row) => row.user_name },
+                { name: "Email", selector: (row) => row.user_email_id },
+                { name: "Contact", selector: (row) => row.user_contact_no },
               ]}
               data={selectedUserData.filter((user) =>
                 user.user_name.toLowerCase().includes(modalSearch.toLowerCase())

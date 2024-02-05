@@ -1906,11 +1906,11 @@ const UserUpdate = () => {
           City <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
-          options={cityData.map((city) => ({
+          options={cityData?.map((city) => ({
             value: city.city_name,
             label: city.city_name,
           }))}
-          onChange={setCity}
+          onChange={(e) => setCity(e ? e.value : "")}
           required={true}
           value={{
             value: city,
