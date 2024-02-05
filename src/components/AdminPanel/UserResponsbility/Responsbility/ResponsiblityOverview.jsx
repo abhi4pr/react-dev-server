@@ -26,9 +26,7 @@ const ResponsiblityOverview = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setDatas(res.data);
         });
@@ -36,12 +34,10 @@ const ResponsiblityOverview = () => {
   }, [userID]);
 
   function getData() {
-    axios
-      .get(baseUrl+"get_all_responsibilitys")
-      .then((res) => {
-        setData(res.data);
-        setFilterData(res.data);
-      });
+    axios.get(baseUrl + "get_all_responsibilitys").then((res) => {
+      setData(res.data);
+      setFilterData(res.data);
+    });
   }
 
   const handleRowClick = (row) => {
@@ -59,11 +55,9 @@ const ResponsiblityOverview = () => {
   };
   useEffect(() => {
     getData();
-    axios
-      .get(baseUrl+"get_all_jobresponsibilitys")
-      .then((res) => {
-        setAllResponsibility(res.data.data);
-      });
+    axios.get(baseUrl + "get_all_jobresponsibilitys").then((res) => {
+      setAllResponsibility(res.data.data);
+    });
   }, []);
 
   useEffect(() => {
@@ -218,9 +212,9 @@ const ResponsiblityOverview = () => {
                   cell: (row, index) => <div>{index + 1}</div>,
                   width: "10%",
                 },
-                { name: "Name", selector: "user_name" },
-                { name: "Email", selector: "user_email_id" },
-                { name: "Contact", selector: "user_contact_no" },
+                { name: "Name", selector: (row) => row.user_name },
+                { name: "Email", selector: (row) => row.user_email_id },
+                { name: "Contact", selector: (row) => row.user_contact_no },
               ]}
               data={selectedUserData.filter((user) =>
                 user.user_name.toLowerCase().includes(modalSearch.toLowerCase())

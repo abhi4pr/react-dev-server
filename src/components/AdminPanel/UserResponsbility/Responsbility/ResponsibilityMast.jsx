@@ -5,7 +5,7 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../../Context/Context";
 import { Navigate } from "react-router-dom";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
 
 const ResponsibilityMast = () => {
   const { toastAlert } = useGlobalContext();
@@ -20,7 +20,7 @@ const ResponsibilityMast = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(baseUrl+"add_responsibility", {
+      await axios.post(baseUrl + "add_responsibility", {
         respo_name: responsibility,
         description: description,
         created_by: userId,
@@ -30,8 +30,8 @@ const ResponsibilityMast = () => {
       toastAlert("Form submitted");
       setIsFormSubmitted(true);
     } catch (error) {
-      console.error("An error occurred while submitting the form", error);
-      toastAlert("Form submission failed");
+      // toastAlert("Form submission failed");
+      alert(error.response.data.message);
     }
   };
 
