@@ -41,6 +41,7 @@ import ContactNumberReact from "../../ReusableComponents/ContactNumberReact";
 import { baseUrl } from "../../../utils/config";
 import familyRelationList from "../../../assets/js/familyRelationList";
 import OccupationList from "../../../assets/js/OccupationList";
+import IndianBankList from "../../../assets/js/IndianBankList";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -116,7 +117,6 @@ const UserMaster = () => {
   const [highestUpload, setHighestUpload] = useState("");
   const [otherUpload, setOtherUpload] = useState("");
   const [joiningDate, setJoiningDate] = useState("");
-  const [releavingDate, setReleavingDate] = useState("");
   const [salary, setSalary] = useState(null);
   const [allUsersSittings, setAllUsersSittings] = useState([]);
 
@@ -968,7 +968,7 @@ const UserMaster = () => {
     "General",
     "Personal",
     "Salary",
-    "Documents",
+    // "Document  s",
     "Family",
     "Education",
   ];
@@ -1637,13 +1637,6 @@ const UserMaster = () => {
 
   const salaryFields = (
     <>
-      {/* <FieldContainer
-        type="date"
-        label="Joining Date"
-        fieldGrid={3}
-        value={joiningDate}
-        onChange={(e) => setJoiningDate(e.target.value)}
-      /> */}
       <div className="from-group col-3">
         <label className="form-label">
           Joining Date <sup style={{ color: "red" }}>*</sup>
@@ -1656,14 +1649,6 @@ const UserMaster = () => {
           onChange={(e) => setJoiningDate(e.target.value)}
         />
       </div>
-      {/* <FieldContainer
-        type="date"
-        label=" Releaving Date "
-        fieldGrid={3}
-        value={releavingDate}
-        required={false}
-        onChange={(e) => setReleavingDate(e.target.value)}
-      /> */}
 
       {(jobType === "WFH" || jobType === "WFHD") && (
         <>
@@ -1775,30 +1760,36 @@ const UserMaster = () => {
         )}
       </div>
       <div className="form-group col-6">
-        <FieldContainer
-          label="Bank Name "
-          astric={true}
-          value={bankName}
-          onChange={(e) => setBankName(e.target.value)}
-          onBlur={() => {
-            if (bankName === "") {
-              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,bankName:true});
-              return setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                bankName: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                bankName: false,
-              });
-            }
+        <label className="form-label">
+          Bank Name <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          options={IndianBankList}
+          onChange={(selectedOption) => {
+            setBankName(selectedOption ? selectedOption.value : null);
           }}
+          isClearable
+          isSearchable
+          value={
+            bankName
+              ? IndianBankList.find((bank) => bank.value === bankName)
+              : null
+          }
+          getOptionLabel={(option) => option.label}
+          getOptionValue={(option) => option.value}
+          onBlur={() => {
+            setMandatoryFieldsEmpty((prevState) => ({
+              ...prevState,
+              bankName: !bankName,
+            }));
+          }}
+          required
         />
         {mandatoryFieldsEmpty.bankName && (
           <p style={{ color: "red" }}>Please enter Bank Name</p>
         )}
       </div>
+
       <div className="form-group col-6">
         <FieldContainer
           label="Bank Account Number"
@@ -1873,145 +1864,145 @@ const UserMaster = () => {
     </>
   );
 
-  const documentsFields = (
-    <>
-      {/* <FieldContainer
-        label="Profile Picture"
-        onChange={(e)=>setProfile(e.target.files[0]}
-        fieldGrid={3}
-        type="file"
-        required={false}
-      /> */}
-      <FieldContainer
-        label="UID Number"
-        onChange={handleUIDInputChange}
-        fieldGrid={3}
-        type="text"
-      />
-      <FieldContainer
-        label="UID"
-        onChange={(e) => setUID(e.target.files[0])}
-        fieldGrid={3}
-        type="file"
-      />
-      {/* <div>
-        <label>PAN Number</label>
-        <input
-          type="text"
-          value={PANNumber}
-          onChange={handlePANChange}
-          style={{ borderColor: isValidPAN ? "initial" : "red" }} // Change border color on validation
-        />
-        {!isValidPAN && <p style={{ color: "red" }}>Invalid PAN format</p>}
-      </div> */}
+  // const documentsFields = (
+  //   <>
+  //     {/* <FieldContainer
+  //       label="Profile Picture"
+  //       onChange={(e)=>setProfile(e.target.files[0]}
+  //       fieldGrid={3}
+  //       type="file"
+  //       required={false}
+  //     /> */}
+  //     <FieldContainer
+  //       label="UID Number"
+  //       onChange={handleUIDInputChange}
+  //       fieldGrid={3}
+  //       type="text"
+  //     />
+  //     <FieldContainer
+  //       label="UID"
+  //       onChange={(e) => setUID(e.target.files[0])}
+  //       fieldGrid={3}
+  //       type="file"
+  //     />
+  //     {/* <div>
+  //       <label>PAN Number</label>
+  //       <input
+  //         type="text"
+  //         value={PANNumber}
+  //         onChange={handlePANChange}
+  //         style={{ borderColor: isValidPAN ? "initial" : "red" }} // Change border color on validation
+  //       />
+  //       {!isValidPAN && <p style={{ color: "red" }}>Invalid PAN format</p>}
+  //     </div> */}
 
-      <FieldContainer
-        label="PAN Number"
-        onChange={handlePANChange}
-        fieldGrid={3}
-        type="text"
-        value={PANNumber}
-        required={false}
-      />
+  //     <FieldContainer
+  //       label="PAN Number"
+  //       onChange={handlePANChange}
+  //       fieldGrid={3}
+  //       type="text"
+  //       value={PANNumber}
+  //       required={false}
+  //     />
 
-      <FieldContainer
-        label="Pan Image"
-        onChange={(e) => setPanUpload(e.target.files[0])}
-        fieldGrid={3}
-        type="file"
-        required={false}
-      />
-      <FieldContainer
-        label="Highest Qualification Image"
-        onChange={(e) => setHighestUpload(e.target.files[0])}
-        fieldGrid={3}
-        type="file"
-        required={false}
-      />
-      <div className="form-group col-3">
-        <label className="form-label">Higest Qualification</label>
-        <Select
-          className=""
-          options={higestQualificationData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: higestQualification,
-            label: `${higestQualification}`,
-          }}
-          onChange={(e) => {
-            setHigestQualification(e.value);
-          }}
-          required={false}
-        />
-      </div>
-      {/* <FieldContainer
-        label="Highest Qualification"
-        Tag="select"
-        fieldGrid={3}
-        value={higestQualification}
-        onChange={(e) => {
-          setHigestQualification(e.target.value);
-        }}
-      >
-        <option>Choose...</option>
-        {higestQualificationData.map((option) => (
-          <option key={option} value={option}>
-            {option}
-          </option>
-        ))}
-      </FieldContainer> */}
-      <FieldContainer
-        label="Other Image"
-        onChange={(e) => setOtherUpload(e.target.files[0])}
-        fieldGrid={3}
-        type="file"
-        required={false}
-      />
-      <div>
-        {documents.map((document, index) => {
-          return (
-            <div className="d-flex" key={index}>
-              <FieldContainer
-                label={"Document Name"}
-                type="text"
-                value={document.name}
-                onChange={(e) => handleDocumentName(index, e.target.value)}
-                required={false}
-              />
-              <FieldContainer
-                label={"Image"}
-                type="file"
-                name="image"
-                accept="image/*"
-                onChange={(e) => handleDocumentChange(index, e.target.files[0])}
-                required={false}
-              />
-            </div>
-          );
-        })}
-        {!isValidPAN && <p style={{ color: "red" }}>Invalid PAN format</p>}
-        {!isValidUID && (
-          <p style={{ color: "red" }}>Invalid Aadhaar number format</p>
-        )}
-      </div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
-        >
-          <ArrowBackIosIcon />
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
-        >
-          <ArrowForwardIosIcon />
-        </button>
-      </div>
-    </>
-  );
+  //     <FieldContainer
+  //       label="Pan Image"
+  //       onChange={(e) => setPanUpload(e.target.files[0])}
+  //       fieldGrid={3}
+  //       type="file"
+  //       required={false}
+  //     />
+  //     <FieldContainer
+  //       label="Highest Qualification Image"
+  //       onChange={(e) => setHighestUpload(e.target.files[0])}
+  //       fieldGrid={3}
+  //       type="file"
+  //       required={false}
+  //     />
+  //     <div className="form-group col-3">
+  //       <label className="form-label">Higest Qualification</label>
+  //       <Select
+  //         className=""
+  //         options={higestQualificationData.map((option) => ({
+  //           value: `${option}`,
+  //           label: `${option}`,
+  //         }))}
+  //         value={{
+  //           value: higestQualification,
+  //           label: `${higestQualification}`,
+  //         }}
+  //         onChange={(e) => {
+  //           setHigestQualification(e.value);
+  //         }}
+  //         required={false}
+  //       />
+  //     </div>
+  //     {/* <FieldContainer
+  //       label="Highest Qualification"
+  //       Tag="select"
+  //       fieldGrid={3}
+  //       value={higestQualification}
+  //       onChange={(e) => {
+  //         setHigestQualification(e.target.value);
+  //       }}
+  //     >
+  //       <option>Choose...</option>
+  //       {higestQualificationData.map((option) => (
+  //         <option key={option} value={option}>
+  //           {option}
+  //         </option>
+  //       ))}
+  //     </FieldContainer> */}
+  //     <FieldContainer
+  //       label="Other Image"
+  //       onChange={(e) => setOtherUpload(e.target.files[0])}
+  //       fieldGrid={3}
+  //       type="file"
+  //       required={false}
+  //     />
+  //     <div>
+  //       {documents.map((document, index) => {
+  //         return (
+  //           <div className="d-flex" key={index}>
+  //             <FieldContainer
+  //               label={"Document Name"}
+  //               type="text"
+  //               value={document.name}
+  //               onChange={(e) => handleDocumentName(index, e.target.value)}
+  //               required={false}
+  //             />
+  //             <FieldContainer
+  //               label={"Image"}
+  //               type="file"
+  //               name="image"
+  //               accept="image/*"
+  //               onChange={(e) => handleDocumentChange(index, e.target.files[0])}
+  //               required={false}
+  //             />
+  //           </div>
+  //         );
+  //       })}
+  //       {!isValidPAN && <p style={{ color: "red" }}>Invalid PAN format</p>}
+  //       {!isValidUID && (
+  //         <p style={{ color: "red" }}>Invalid Aadhaar number format</p>
+  //       )}
+  //     </div>
+  //     <div style={{ display: "flex", justifyContent: "space-between" }}>
+  //       <button
+  //         className="btn btn-primary"
+  //         onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
+  //       >
+  //         <ArrowBackIosIcon />
+  //       </button>
+  //       <button
+  //         className="btn btn-primary"
+  //         onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
+  //       >
+  //         <ArrowForwardIosIcon />
+  //       </button>
+  //     </div>
+  //   </>
+  // );
 
   const personalFields = (
     <>
@@ -2753,9 +2744,9 @@ const UserMaster = () => {
         {activeAccordionIndex === 0 && genralFields}
         {activeAccordionIndex === 1 && personalFields}
         {activeAccordionIndex === 2 && salaryFields}
-        {activeAccordionIndex === 3 && documentsFields}
-        {activeAccordionIndex === 4 && familyFields}
-        {activeAccordionIndex === 5 && educationFields}
+        {/* {activeAccordionIndex === 3 && documentsFields} */}
+        {activeAccordionIndex === 3 && familyFields}
+        {activeAccordionIndex === 4 && educationFields}
       </FormContainer>
     </>
   );
