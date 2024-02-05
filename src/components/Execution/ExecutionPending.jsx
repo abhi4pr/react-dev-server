@@ -84,8 +84,7 @@ function ExecutionPending() {
         .then((res) => {
           setData(
             res.data.filter(
-              (ele) => ele.execution_status == 1
-              // (ele) => ele.execution_status == 0 || ele.execution_status == 2
+              (ele) => ele.execution_status == 0 || ele.execution_status == 2
             )
           );
         });
@@ -136,8 +135,7 @@ function ExecutionPending() {
       headerName: "Status",
       width: 150,
       renderCell: (params) => {
-        if (params.row.execution_status == "1") {
-        // if (params.row.execution_status == "0") {
+        if (params.row.execution_status == "0") {
           return (
             <Button
               size="small"
@@ -330,8 +328,7 @@ function ExecutionPending() {
             const { id, row } = params; // Destructure the id and row from params
             const executionStatus = row.execution_status; // Get the execution_status
 
-            if (executionStatus == 1) {
-            // if (executionStatus == "0") {
+            if (executionStatus == "0") {
               // Show Accept and Reject buttons when execution_status is "0"
               return [
                 // <Button key={id}><PointOfSaleTwoToneIcon/></Button>,
