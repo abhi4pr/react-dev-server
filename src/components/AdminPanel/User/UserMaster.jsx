@@ -978,7 +978,6 @@ const UserMaster = () => {
     "General",
     "Personal",
     "Salary",
-    // "Document  s",
     "Family",
     "Education",
   ];

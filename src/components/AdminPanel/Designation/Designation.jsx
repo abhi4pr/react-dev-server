@@ -9,7 +9,7 @@ import Select from "react-select";
 import { baseUrl } from "../../../utils/config";
 
 const Designation = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const { DepartmentContext } = useAPIGlobalContext();
 
   const [designationName, setDesignationName] = useState("");
@@ -28,7 +28,7 @@ const Designation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(baseUrl+"add_designation", {
+      await axios.post(baseUrl + "add_designation", {
         desi_name: designationName,
         dept_id: departmentName,
         remark: remark,
@@ -39,10 +39,8 @@ const Designation = () => {
       toastAlert("Submitted successfully");
       setIsFormSubmitted(true);
     } catch (error) {
-      const errorMessage = error?.response?.data?.sms
-        ? error?.response?.data?.sms
-        : "An error occurred while submitting the form.";
-      toastAlert(errorMessage);
+      alert(error.response.data.message);
+      toastError(errorMessage);
     }
   };
 

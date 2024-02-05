@@ -7,7 +7,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
 
 const DepartmentUpdate = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [id, setId] = useState(0);
   const [departmentName, setDepartmentName] = useState("");
   const [remark, setRemark] = useState("");
@@ -24,26 +24,24 @@ const DepartmentUpdate = () => {
     e.preventDefault();
     setError("");
 
-    await axios
-      .put(`${baseUrl}` + `update_department`, {
+    try {
+      await axios.put(`${baseUrl}update_department`, {
         dept_id: id,
         dept_name: departmentName,
         short_name: shortName,
         remark: remark,
         Created_by: createdBy,
-      })
-      .then(() => {
-        setDepartmentName("");
-        setRemark("");
-      })
-      .catch((error) => {
-        setError("An error occurred while submitting the form.");
-        console.error(error);
       });
-
-    toastAlert("Submit Success");
-    setIsFormSubmitted(true);
+      setDepartmentName("");
+      setRemark("");
+      toastAlert("Submit Success");
+      setIsFormSubmitted(true);
+    } catch (error) {
+      toastError("An error occurred while submitting the form.");
+      alert(error.response.data.message);
+    }
   };
+
   useEffect(() => {
     setId(localStorage.getItem("dept_id"));
     setDepartmentName(localStorage.getItem("dept_name"));

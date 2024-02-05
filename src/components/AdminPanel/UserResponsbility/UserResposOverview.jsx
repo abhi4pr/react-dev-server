@@ -20,9 +20,7 @@ const UserResposOverview = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setDatas(res.data);
         });
@@ -30,12 +28,10 @@ const UserResposOverview = () => {
   }, [userID]);
 
   const getData = async () => {
-    await axios
-      .get(baseUrl+"get_all_jobresponsibilitys")
-      .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
-      });
+    await axios.get(baseUrl + "get_all_jobresponsibilitys").then((res) => {
+      setData(res.data.data);
+      setFilterData(res.data.data);
+    });
   };
   useEffect(() => {
     getData();
@@ -43,7 +39,10 @@ const UserResposOverview = () => {
 
   useEffect(() => {
     const result = datas.filter((d) => {
-      return d.user_name?.toLowerCase().match(search.toLowerCase());
+      return (
+        d.user_name?.toLowerCase().match(search.toLowerCase()) ||
+        d.sjob_responsibility?.toLowerCase().match(search.toLowerCase())
+      );
     });
     setFilterData(result);
   }, [search]);
