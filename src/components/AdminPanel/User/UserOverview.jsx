@@ -451,24 +451,24 @@ const UserOverview = () => {
         </>
       ),
     },
-    {
-      field: "User Map",
-      headerName: "User Map",
-      width: 100,
-      renderCell: (params) => (
-        <Button
-          className="btn btn-success"
-          data-toggle="modal"
-          data-target="#mapModal"
-          size="small"
-          variant="contained"
-          color="success"
-          onClick={() => setMap1(params.row)}
-        >
-          Open Map
-        </Button>
-      ),
-    },
+    // {
+    //   field: "User Map",
+    //   headerName: "User Map",
+    //   width: 100,
+    //   renderCell: (params) => (
+    //     <Button
+    //       className="btn btn-success"
+    //       data-toggle="modal"
+    //       data-target="#mapModal"
+    //       size="small"
+    //       variant="contained"
+    //       color="success"
+    //       onClick={() => setMap1(params.row)}
+    //     >
+    //       Open Map
+    //     </Button>
+    //   ),
+    // },
   ];
 
   const handleTransfer = (userId) => {
@@ -497,7 +497,7 @@ const UserOverview = () => {
     }
   }
 
-  const handleTransferSubmit = () => {
+  const handleTransferSubmit = async () => {
     for (const element of checkedData) {
       const requestData = {
         user_to_id: transferTo,
@@ -507,7 +507,7 @@ const UserOverview = () => {
         job_responsibility_id: element.Job_res_id,
         Job_res_id: element.Job_res_id,
       };
-      axios.post(baseUrl + "add_kra", requestData).then(() => {
+      await axios.post(baseUrl + "add_kra", requestData).then(() => {
         setRemark("");
         setTransferTo("");
         toastAlert("KRA Transfer Successfully");
@@ -911,11 +911,14 @@ const UserOverview = () => {
                       name: "s.no",
                       cell: (row, index) => <div>{index + 1}</div>,
                     },
-                    { name: "Name", selector: "user_name" },
-                    { name: "Department", selector: "department_name" },
+                    { name: "Name", selector: (row) => row.user_name },
+                    {
+                      name: "Department",
+                      selector: (row) => row.department_name,
+                    },
                     {
                       name: "Job Responsibility",
-                      selector: "sjob_responsibility",
+                      selector: (row) => row.sjob_responsibility,
                     },
                   ]}
                   data={transferResponsibilityData}
@@ -1082,11 +1085,11 @@ const UserOverview = () => {
                 name: "s.no",
                 cell: (row, index) => <div>{index + 1}</div>,
               },
-              { name: "Name", selector: "user_name" },
-              { name: "Department", selector: "department_name" },
+              { name: "Name", selector: (row) => row.user_name },
+              { name: "Department", selector: (row) => row.department_name },
               {
                 name: "Job Responsibility",
-                selector: "sjob_responsibility",
+                selector: (row) => row.sjob_responsibility,
               },
             ]}
             data={KRIData}
