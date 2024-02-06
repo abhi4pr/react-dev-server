@@ -1,34 +1,27 @@
 import React, { useEffect, useState } from "react";
 import FormContainer from "../../AdminPanel/FormContainer";
 import axios from "axios";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-
-import Typography from "@mui/material/Typography";
-
 import { DataGrid } from "@mui/x-data-grid";
-
 import { Page } from "@react-pdf/renderer";
-import { TextField } from "@mui/material";
-
+import { TextField, Typography, Button, Box, Paper } from "@mui/material";
 import { useGlobalContext } from "../../../Context/Context";
 import DeleteCity from "./DeleteCity";
 import EditCity from "./EditCity";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 export default function CityMaster() {
+  const { toastAlert } = useGlobalContext();
   const [city, setCity] = useState([]);
   const [row, setRow] = useState([]);
   const [addCity, setAddCity] = useState("");
   const [openEditCity, setOpenEditCity] = useState(false);
   const [editCityName, setEditCityName] = useState("");
-
-  const { toastAlert } = useGlobalContext();
   const [rowData, setRowData] = useState({});
   const [openDeleteCityName, setOpenDeleteCityName] = React.useState(false);
-
+  const [searchInput, setSearchInput] = useState("");
+  const [filteredRows, setFilteredRows] = useState([]);
 
   const handleClickOpenDeleteCityName = (row) => {
     setOpenDeleteCityName(true);
@@ -39,7 +32,7 @@ export default function CityMaster() {
   };
   const handleSaveEditCityName = () => {
     axios
-      .put(baseUrl+"update_city", {
+      .put(baseUrl + "update_city", {
         _id: rowData._id,
         city_name: editCityName,
       })
@@ -68,7 +61,7 @@ export default function CityMaster() {
   };
 
   const callApi = () => {
-    axios.get(baseUrl+"get_all_cities").then((res) => {
+    axios.get(baseUrl + "get_all_cities").then((res) => {
       console.log(res);
       setCity(res.data.data);
       setRow(res.data.data);
@@ -79,7 +72,6 @@ export default function CityMaster() {
     callApi();
   }, []);
   const cityColumns = [
-
     {
       field: "S.NO",
       headerName: "S.NO",
@@ -132,24 +124,6 @@ export default function CityMaster() {
     },
   ];
 
-  // const handleSaveEditCityName = () => {
-  //   axios
-  //     .put(baseUrl+"update_city", {
-  //       _id: rowData._id,
-  //       city_name: editCityName,
-  //     })
-  //     .then((res) => {
-  //       if (res.status === 200) {
-  //         toastAlert(`${editCityName} updated successfully`);
-  //         setEditCityName("");
-  //         setOpenEditCity(false);
-  //       } else {
-  //         toastAlert("Something went wrong");
-  //       }
-  //       res.status === 200 && callApi();
-  //     });
-  // };
-
   const handleCityInputChange = (e) => {
     const a = city.filter((ele) => {
       return ele.city_name
@@ -161,44 +135,61 @@ export default function CityMaster() {
   };
 
   const handleClickAddCity = () => {
-    axios
-      .post(baseUrl+"add_city", { city_name: addCity })
-      .then((res) => {
-        if (res.status === 200) {
-          toastAlert(`${addCity} added successfully`);
-          setAddCity("");
-        } else {
-          toastAlert("Something went wrong");
-        }
-        res.status === 200 && callApi();
-      });
+    axios.post(baseUrl + "add_city", { city_name: addCity }).then((res) => {
+      if (res.status === 200) {
+        toastAlert(`${addCity} added successfully`);
+        setAddCity("");
+      } else {
+        toastAlert("Something went wrong");
+      }
+      res.status === 200 && callApi();
+    });
   };
+
+  const filterRows = () => {
+    const filtered = row.filter((row) =>
+      row.city_name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    setFilteredRows(filtered);
+  };
+
+  useEffect(() => {
+    filterRows();
+  }, [searchInput, row]);
 
   return (
     <>
       <FormContainer mainTitle="City Master" link="/ip-master" />
-      <Page>
-        <Typography variant="h6">Add City</Typography>
+      <Paper sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
         <TextField
           type="text"
-          variant="outlined"
-          label="City Name"
-          value={addCity}
-          onChange={handleCityInputChange}
+          label="Search City"
+          sx={{ m: 1 }}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
-        <button
-          className="btn btn-primary btn-lg"
-          style={{ marginLeft: 16 }}
-          disabled={row.length > 0}
-          onClick={handleClickAddCity}
-        >
-          Add
-        </button>
-      </Page>
-
+        <Page>
+          <TextField
+            type="text"
+            variant="outlined"
+            label="City Name"
+            value={addCity}
+            sx={{ m: 1 }}
+            onChange={handleCityInputChange}
+          />
+          <button
+            className="btn btn-primary btn-lg"
+            style={{ margin: "12px" }}
+            disabled={row.length > 0}
+            onClick={handleClickAddCity}
+          >
+            Add
+          </button>
+        </Page>
+      </Paper>
       <Box>
         <DataGrid
-          rows={row}
+          rows={filteredRows}
           columns={cityColumns}
           getRowId={(row) => row._id}
         />

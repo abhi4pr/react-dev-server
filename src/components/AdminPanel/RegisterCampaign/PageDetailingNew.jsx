@@ -510,7 +510,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     setUnregisteredPages(rejectedPages);
 
     const pageReplacement = allPageData.find((page) => {
-      return page.page_name == e.target.innerText;
+      return page.page_name == e;
     });
     console.log(pageReplacement);
 

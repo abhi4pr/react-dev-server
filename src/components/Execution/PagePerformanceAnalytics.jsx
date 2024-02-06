@@ -1,4 +1,4 @@
-import { Autocomplete, Button, TextField } from "@mui/material";
+import { Autocomplete, Box, Button, TextField } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -6,7 +6,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import FormContainer from "../AdminPanel/FormContainer";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
 const viewInOptions = ["Millions", "Thousands", "Default"];
 
@@ -44,10 +44,11 @@ export default function PagePerformanceAnalytics() {
     to: 0,
   });
   const [viewType, setViewType] = useState("Default");
-
+  const [searchInput, setSearchInput] = useState("");
+  const [filteredRows, setFilteredRows] = useState([]);
   const callApi = () => {
     axios
-      .post(baseUrl+"page_health_dashboard", {
+      .post(baseUrl + "page_health_dashboard", {
         intervalFlag: intervalFlag.value,
       })
       .then((res) => {
@@ -641,7 +642,7 @@ export default function PagePerformanceAnalytics() {
     const startDay = startDateObject.getDate().toString().padStart(2, "0");
     const startFormattedDate = `${startYear}-${startMonth}-${startDay}`;
     axios
-      .post(baseUrl+"page_health_dashboard", {
+      .post(baseUrl + "page_health_dashboard", {
         startDate: startFormattedDate,
         endDate: endFormattedDate,
       })
@@ -650,6 +651,18 @@ export default function PagePerformanceAnalytics() {
         setRowData(res.data.data);
       });
   };
+
+
+  const filterRows = () => {
+    const filtered = rowData.filter((row) =>
+      row.page_name.toLowerCase().includes(searchInput.toLowerCase())
+    );
+    setFilteredRows(filtered);
+  };
+
+  useEffect(() => {
+    filterRows();
+  }, [searchInput, rowData]);
 
   return (
     <>
@@ -927,7 +940,7 @@ export default function PagePerformanceAnalytics() {
             filter
           </button> */}
         </div>
-        <div>
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Autocomplete
             disablePortal
             value={viewType}
@@ -947,11 +960,19 @@ export default function PagePerformanceAnalytics() {
             renderInput={(params) => <TextField {...params} label="View In" />}
             // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
           />
-        </div>
+
+          <TextField
+            type="text"
+            label="Search Page"
+            sx={{ m: 1 }}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+          />
+        </Box>
       </div>
       {!loading ? (
         <DataGrid
-          rows={rowData}
+          rows={filteredRows}
           columns={columns}
           pageSize={10}
           rowsPerPageOptions={[10]}
