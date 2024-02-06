@@ -63,6 +63,12 @@ const DataBrandMaster = () => {
   const [brandSubCategory, setBrandSubCategory] = useState("");
   const [brandCat, setBrandCat] = useState("");
   const [brandSubCatData, setBrandSubCatData] = useState([]);
+  const [nologoImages, setNologoImages] = useState([]);
+  const [nologoDetails, setNologoDetails] = useState([]);
+  const [mmcImages, setMMCImages] = useState([]);
+  const [mmcDetails, setMMCDetails] = useState([]);
+  const [sarcasmImages, setSarcasmImages] = useState([]);
+  const [sarcasmDetails, setSarcasmDetails] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -94,14 +100,12 @@ const DataBrandMaster = () => {
     axios
       .get(baseUrl + "projectxCategory")
       .then((res) => {
-
         setBrandCategory(res.data.data);
       })
       .catch((err) => {
         console.log(err);
       });
     axios.get(baseUrl + "projectxSubCategory").then((res) => {
-
       setBrandSubCatData(res.data.data);
     });
   }, []);
@@ -137,7 +141,6 @@ const DataBrandMaster = () => {
 
   const HandleNAFileChangeOnChange = (e) => {
     const value = e.target.value;
-
 
     // Allow only empty string, 'NA', or a valid number
     if (value === "" || value === "NA" || /^\d+$/.test(value)) {
@@ -215,8 +218,152 @@ const DataBrandMaster = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleMMCFileChange = (event) => {
+    setFileDetails((prev) => [...prev, event.target.files]);
+    const files = Array.from(event.target.files);
+    setMMCImages(files);
 
+    const details = files.map((file) => {
+      const { name, size } = file;
+      const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      const fileType = name.split(".").pop().toLowerCase();
+
+      if (
+        fileType === "jpg" ||
+        fileType === "jpeg" ||
+        fileType === "png" ||
+        fileType === "gif"
+      ) {
+        // It's an image
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        return new Promise((resolve) => {
+          img.onload = () => {
+            const { naturalHeight, naturalWidth } = img;
+            resolve({
+              name,
+              file,
+              fileType,
+              size: `${naturalHeight}x${naturalWidth}`,
+              sizeInMB: `${sizeInMB}`,
+            });
+          };
+        });
+      } else {
+        // For other file types like PDF, video, Excel
+        return Promise.resolve({
+          name,
+          file,
+          fileType,
+          size: "N/A", // Size is not applicable in the same way as for images
+          sizeInMB: `${sizeInMB}`,
+        });
+      }
+    });
+
+    Promise.all(details).then((detailsArray) => {
+      setMMCDetails(detailsArray);
+    });
+  };
+
+  const handleSarcasmFileChange = (event) => {
+    setFileDetails((prev) => [...prev, event.target.files]);
+    const files = Array.from(event.target.files);
+    setSarcasmImages(files);
+
+    const details = files.map((file) => {
+      const { name, size } = file;
+      const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      const fileType = name.split(".").pop().toLowerCase();
+
+      if (
+        fileType === "jpg" ||
+        fileType === "jpeg" ||
+        fileType === "png" ||
+        fileType === "gif"
+      ) {
+        // It's an image
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        return new Promise((resolve) => {
+          img.onload = () => {
+            const { naturalHeight, naturalWidth } = img;
+            resolve({
+              name,
+              file,
+              fileType,
+              size: `${naturalHeight}x${naturalWidth}`,
+              sizeInMB: `${sizeInMB}`,
+            });
+          };
+        });
+      } else {
+        // For other file types like PDF, video, Excel
+        return Promise.resolve({
+          name,
+          file,
+          fileType,
+          size: "N/A", // Size is not applicable in the same way as for images
+          sizeInMB: `${sizeInMB}`,
+        });
+      }
+    });
+
+    Promise.all(details).then((detailsArray) => {
+      setSarcasmDetails(detailsArray);
+    });
+  };
+
+  const handleNologoFileChange = (event) => {
+    setFileDetails((prev) => [...prev, event.target.files]);
+    const files = Array.from(event.target.files);
+    setNologoImages(files);
+
+    const details = files.map((file) => {
+      const { name, size } = file;
+      const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      const fileType = name.split(".").pop().toLowerCase();
+
+      if (
+        fileType === "jpg" ||
+        fileType === "jpeg" ||
+        fileType === "png" ||
+        fileType === "gif"
+      ) {
+        // It's an image
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        return new Promise((resolve) => {
+          img.onload = () => {
+            const { naturalHeight, naturalWidth } = img;
+            resolve({
+              name,
+              file,
+              fileType,
+
+              size: `${naturalHeight}x${naturalWidth}`,
+              sizeInMB: `${sizeInMB}`,
+            });
+          };
+        });
+      } else {
+        // For other file types like PDF, video, Excel
+        return Promise.resolve({
+          name,
+          file,
+          fileType,
+          size: "N/A", // Size is not applicable in the same way as for images
+          sizeInMB: `${sizeInMB}`,
+        });
+      }
+    });
+
+    Promise.all(details).then((detailsArray) => {
+      setNologoDetails(detailsArray);
+    });
+  };
+
+  const handleSubmit = async (e) => {
     if (category == "") {
       toastError("Category is required");
     } else if (dataSubCategory == "") {
@@ -246,7 +393,6 @@ const DataBrandMaster = () => {
       } else if (compignPurpose == "") {
         toastError("Campaign purpose is required");
         return;
-
       } else if (NumOfPost == "") {
         toastError("Number of post is required");
         return;
@@ -284,7 +430,6 @@ const DataBrandMaster = () => {
         setIsLoading(true);
       }
       for (let i = 0; i < details.length; i++) {
-
         const formData = new FormData();
         formData.append("data_name", brand);
         formData.append("cat_id", category);
@@ -327,6 +472,112 @@ const DataBrandMaster = () => {
         //             operation_remark: "$operation_remark",
 
         await axios.post(baseUrl + "add_data", formData, {
+          // await axios.post( "http://192.168.1.9:3000/api/add_data", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      for (let i = 0; i < mmcDetails.length; i++) {
+        const formData = new FormData();
+        formData.append("data_name", brand);
+        formData.append("cat_id", category);
+        formData.append("sub_cat_id", dataSubCategory);
+        formData.append("platform_id", platform);
+        formData.append("brand_id", dataBrand);
+        formData.append("content_type_id", contentType);
+        formData.append("mmc", mmcDetails[i].file);
+        formData.append("data_type", mmcDetails[i].fileType);
+        formData.append("size_in_mb", mmcDetails[i].sizeInMB);
+        formData.append("remark", remark);
+        formData.append("created_by", userID);
+        formData.append("designed_by", designedBy);
+        formData.append("date_of_completion", dateOfCompletion);
+        formData.append("date_of_report", dateOfReport);
+        formData.append("brand_category_id", brandCat);
+        formData.append("brand_sub_category_id", brandSubCategory);
+        formData.append("campaign_purpose", compignPurpose);
+        formData.append("number_of_post", NumOfPost);
+        formData.append("number_of_reach", NumOfReach);
+        formData.append("number_of_impression", NumOfImpression);
+        formData.append("number_of_engagement", NumOfEngagement);
+        formData.append("number_of_views", NumOfViews);
+        formData.append("number_of_story_views", NumOfStoryViews);
+        formData.append("operation_remark", OperationRemark);
+
+        await axios.post(baseUrl + "add_data", formData, {
+          // await axios.post("http://192.168.1.9:3000/api/add_data", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      for (let i = 0; i < sarcasmDetails.length; i++) {
+        const formData = new FormData();
+        formData.append("data_name", brand);
+        formData.append("cat_id", category);
+        formData.append("sub_cat_id", dataSubCategory);
+        formData.append("platform_id", platform);
+        formData.append("brand_id", dataBrand);
+        formData.append("content_type_id", contentType);
+        formData.append("sarcasm", sarcasmDetails[i].file);
+        formData.append("data_type", sarcasmDetails[i].fileType);
+        formData.append("size_in_mb", sarcasmDetails[i].sizeInMB);
+        formData.append("remark", remark);
+        formData.append("created_by", userID);
+        formData.append("designed_by", designedBy);
+        formData.append("date_of_completion", dateOfCompletion);
+        formData.append("date_of_report", dateOfReport);
+        formData.append("brand_category_id", brandCat);
+        formData.append("brand_sub_category_id", brandSubCategory);
+        formData.append("campaign_purpose", compignPurpose);
+        formData.append("number_of_post", NumOfPost);
+        formData.append("number_of_reach", NumOfReach);
+        formData.append("number_of_impression", NumOfImpression);
+        formData.append("number_of_engagement", NumOfEngagement);
+        formData.append("number_of_views", NumOfViews);
+        formData.append("number_of_story_views", NumOfStoryViews);
+        formData.append("operation_remark", OperationRemark);
+
+        await axios.post(baseUrl + "add_data", formData, {
+          // await axios.post("http://192.168.1.9:3000/api/add_data", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      for (let i = 0; i < nologoDetails.length; i++) {
+        const formData = new FormData();
+        formData.append("data_name", brand);
+        formData.append("cat_id", category);
+        formData.append("sub_cat_id", dataSubCategory);
+        formData.append("platform_id", platform);
+        formData.append("brand_id", dataBrand);
+        formData.append("content_type_id", contentType);
+        formData.append("no_logo", nologoDetails[i].file);
+        formData.append("data_type", nologoDetails[i].fileType);
+        formData.append("size_in_mb", nologoDetails[i].sizeInMB);
+        formData.append("remark", remark);
+        formData.append("created_by", userID);
+        formData.append("designed_by", designedBy);
+        formData.append("date_of_completion", dateOfCompletion);
+        formData.append("date_of_report", dateOfReport);
+        formData.append("brand_category_id", brandCat);
+        formData.append("brand_sub_category_id", brandSubCategory);
+        formData.append("campaign_purpose", compignPurpose);
+        formData.append("number_of_post", NumOfPost);
+        formData.append("number_of_reach", NumOfReach);
+        formData.append("number_of_impression", NumOfImpression);
+        formData.append("number_of_engagement", NumOfEngagement);
+        formData.append("number_of_views", NumOfViews);
+        formData.append("number_of_story_views", NumOfStoryViews);
+        formData.append("operation_remark", OperationRemark);
+
+        await axios.post(baseUrl + "add_data", formData, {
+          // await axios.post( "http://192.168.1.9:3000/api/add_data", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -370,6 +621,24 @@ const DataBrandMaster = () => {
     const newDetails = [...details];
     newDetails.splice(index, 1);
     setDetails(newDetails);
+  };
+
+  const delteMMCRowData = (index) => {
+    const newDetails = [...mmcDetails];
+    newDetails.splice(index, 1);
+    setMMCDetails(newDetails);
+  };
+
+  const delteSarcasmRowData = (index) => {
+    const newDetails = [...sarcasmDetails];
+    newDetails.splice(index, 1);
+    setSarcasmDetails(newDetails);
+  };
+
+  const delteNologoRowData = (index) => {
+    const newDetails = [...nologoDetails];
+    newDetails.splice(index, 1);
+    setNologoDetails(newDetails);
   };
 
   if (isFormSubmitted) {
@@ -437,6 +706,37 @@ const DataBrandMaster = () => {
           fieldGrid={6}
           required={true}
         />
+        {contentType == "65a663ccef8a81593f418836" && (
+          <>
+            <FieldContainer
+              label="MMC *"
+              type="file"
+              multiple
+              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+              onChange={handleMMCFileChange}
+              fieldGrid={6}
+              required={true}
+            />
+            <FieldContainer
+              label="sarcasm *"
+              multiple
+              type="file"
+              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+              onChange={handleSarcasmFileChange}
+              fieldGrid={6}
+              required={true}
+            />
+            <FieldContainer
+              label="No Logo *"
+              multiple
+              type="file"
+              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+              onChange={handleNologoFileChange}
+              fieldGrid={6}
+              required={true}
+            />
+          </>
+        )}
 
         <div className="form-group col-3">
           <label className="form-label">
@@ -583,7 +883,9 @@ const DataBrandMaster = () => {
         {contentType == "65a663ccef8a81593f418836" && (
           <>
             <div className="form-group col-3">
-              <label className="form-label">Date of Completion <sup style={{ color: "red" }}>*</sup></label>
+              <label className="form-label">
+                Date of Completion <sup style={{ color: "red" }}>*</sup>
+              </label>
               <input
                 type="date"
                 className="form-control"
@@ -593,7 +895,9 @@ const DataBrandMaster = () => {
             </div>
 
             <div className="form-group col-3">
-              <label className="form-label">Date of Report <sup style={{ color: "red" }}>*</sup></label>
+              <label className="form-label">
+                Date of Report <sup style={{ color: "red" }}>*</sup>
+              </label>
               <input
                 type="date"
                 className="form-control"
@@ -602,7 +906,9 @@ const DataBrandMaster = () => {
               />
             </div>
             <div className="form-group col-3">
-              <label className="form-label">Brand Category <sup style={{ color: "red" }}>*</sup></label>
+              <label className="form-label">
+                Brand Category <sup style={{ color: "red" }}>*</sup>
+              </label>
               <Select
                 options={brandCategory.map((opt) => ({
                   value: opt.category_id,
@@ -622,7 +928,9 @@ const DataBrandMaster = () => {
               />
             </div>
             <div className="form-group col-3">
-              <label className="form-label">Brand Sub Category <sup style={{ color: "red" }}>*</sup></label>
+              <label className="form-label">
+                Brand Sub Category <sup style={{ color: "red" }}>*</sup>
+              </label>
               <Select
                 options={brandSubCatData
                   .filter((opt) => opt.category_id == brandCat)
@@ -645,7 +953,9 @@ const DataBrandMaster = () => {
             </div>
 
             <div className="form-group col-3">
-              <label className="form-label">Campaign Purpose <sup style={{ color: "red" }}>*</sup></label>
+              <label className="form-label">
+                Campaign Purpose <sup style={{ color: "red" }}>*</sup>
+              </label>
 
               <input
                 className="form-control"
@@ -655,7 +965,9 @@ const DataBrandMaster = () => {
             </div>
 
             <div className="form-group col-3">
-              <label className="form-label">Number Of Post <sup style={{ color: "red" }}>*</sup></label>
+              <label className="form-label">
+                Number Of Post <sup style={{ color: "red" }}>*</sup>
+              </label>
               <input
                 className="form-control"
                 value={NumOfPost}
@@ -674,11 +986,9 @@ const DataBrandMaster = () => {
                 value={NumOfReach}
                 onChange={(e) => {
                   setNumOfReach(HandleNAFileChangeOnChange(e));
-
                 }}
                 onBlur={(e) => {
                   setNumOfReach(handleNaFileChangeOnBlur(e));
-
                 }}
               />
             </div>
@@ -749,6 +1059,7 @@ const DataBrandMaster = () => {
         )}
 
         <div className="summary_cards brand_img_list">
+          {details.length > 0 && <h3 className="lead fs-4">Upload Data</h3>}
           {details.map((detail, index) => (
             <div key={index} className="summary_card brand_img_item">
               <div className="summary_cardrow brand_img_row">
@@ -808,6 +1119,251 @@ const DataBrandMaster = () => {
                 <button
                   onClick={() => {
                     delteRowData(index);
+                  }}
+                  className="btn btn-sm btn-dengor me-2"
+                >
+                  <CloseTwoTone />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="summary_cards brand_img_list">
+          {mmcDetails.length > 0 && <h3 className="lead fs-4">MMC </h3>}
+          {mmcDetails.map((detail, index) => (
+            <div key={index} className="summary_card brand_img_item">
+              <div className="summary_cardrow brand_img_row">
+                <div className="col summary_box brand_img_box col140">
+                  {detail.fileType === "jpg" ||
+                  detail.fileType === "jpeg" ||
+                  detail.fileType === "png" ||
+                  detail.fileType === "gif" ? (
+                    mmcImages[index] && (
+                      <img
+                        onClick={() =>
+                          setOpenReviewDisalog({
+                            open: true,
+                            image: URL.createObjectURL(mmcImages[index]),
+                            detail: detail,
+                          })
+                        }
+                        className="brandimg_icon"
+                        src={URL.createObjectURL(mmcImages[index])}
+                        alt={`Image ${index + 1}`}
+                      />
+                    )
+                  ) : (
+                    <div
+                      className="file_icon"
+                      onClick={() =>
+                        setOpenReviewDisalog({
+                          open: true,
+                          image: URL.createObjectURL(mmcImages[index]),
+                          detail: detail,
+                        })
+                      }
+                    >
+                      {renderFileIcon(detail.fileType)}
+                    </div>
+                  )}
+                </div>
+                <div className="col summary_box brand_img_box col140">
+                  <h4>
+                    <span>Extension:</span>
+                    {detail.fileType}
+                  </h4>
+                </div>
+                <div className="col summary_box brand_img_box col140">
+                  <h4>
+                    <span>Size:</span>
+                    {detail.sizeInMB}
+                    {"MB"}
+                  </h4>
+                </div>
+                <div className="col summary_box brand_img_box col140">
+                  <h4>
+                    <span>Date:</span>
+                    {currentDate}
+                  </h4>
+                </div>
+                <button
+                  onClick={() => {
+                    delteMMCRowData(index);
+                  }}
+                  className="btn btn-sm btn-dengor me-2"
+                >
+                  <CloseTwoTone />
+                </button>
+                {/* <div className="col summary_box brand_img_box">
+                  <FieldContainer
+                    label={`Data Category`}
+                    fieldGrid={12}
+                    Tag="select"
+                    value={selectedCategories[index] || ""}
+                    onChange={(e) => handleCategoryChange(e, index)}
+                  >
+                    <option value="">Please select</option>
+                    {categoryData.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.cat_name}
+                      </option>
+                    ))}
+                  </FieldContainer>
+                </div> */}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="summary_cards brand_img_list">
+          {sarcasmDetails.length > 0 && <h3 className="lead fs-4">Sarcasm</h3>}
+          {sarcasmDetails.map((detail, index) => (
+            <div key={index} className="summary_card brand_img_item">
+              <div className="summary_cardrow brand_img_row">
+                <div className="col summary_box brand_img_box col140">
+                  {detail.fileType === "jpg" ||
+                  detail.fileType === "jpeg" ||
+                  detail.fileType === "png" ||
+                  detail.fileType === "gif" ? (
+                    sarcasmImages[index] && (
+                      <img
+                        onClick={() =>
+                          setOpenReviewDisalog({
+                            open: true,
+                            image: URL.createObjectURL(sarcasmImages[index]),
+                            detail: detail,
+                          })
+                        }
+                        className="brandimg_icon"
+                        src={URL.createObjectURL(sarcasmImages[index])}
+                        alt={`Image ${index + 1}`}
+                      />
+                    )
+                  ) : (
+                    <div
+                      className="file_icon"
+                      onClick={() =>
+                        setOpenReviewDisalog({
+                          open: true,
+                          image: URL.createObjectURL(sarcasmImages[index]),
+                          detail: detail,
+                        })
+                      }
+                    >
+                      {renderFileIcon(detail.fileType)}
+                    </div>
+                  )}
+                </div>
+                <div className="col summary_box brand_img_box col140">
+                  <h4>
+                    <span>Extension:</span>
+                    {detail.fileType}
+                  </h4>
+                </div>
+                <div className="col summary_box brand_img_box col140">
+                  <h4>
+                    <span>Size:</span>
+                    {detail.sizeInMB}
+                    {"MB"}
+                  </h4>
+                </div>
+                <div className="col summary_box brand_img_box col140">
+                  <h4>
+                    <span>Date:</span>
+                    {currentDate}
+                  </h4>
+                </div>
+                <button
+                  onClick={() => {
+                    delteSarcasmRowData(index);
+                  }}
+                  className="btn btn-sm btn-dengor me-2"
+                >
+                  <CloseTwoTone />
+                </button>
+                {/* <div className="col summary_box brand_img_box">
+                  <FieldContainer
+                    label={`Data Category`}
+                    fieldGrid={12}
+                    Tag="select"
+                    value={selectedCategories[index] || ""}
+                    onChange={(e) => handleCategoryChange(e, index)}
+                  >
+                    <option value="">Please select</option>
+                    {categoryData.map((data) => (
+                      <option key={data.id} value={data.id}>
+                        {data.cat_name}
+                      </option>
+                    ))}
+                  </FieldContainer>
+                </div> */}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="summary_cards brand_img_list">
+          {nologoDetails.length > 0 && <h3 className="lead fs-4">No Logo</h3>}
+          {nologoDetails.map((detail, index) => (
+            <div key={index} className="summary_card brand_img_item">
+              <div className="summary_cardrow brand_img_row">
+                <div className="col summary_box brand_img_box col140">
+                  {detail.fileType === "jpg" ||
+                  detail.fileType === "jpeg" ||
+                  detail.fileType === "png" ||
+                  detail.fileType === "gif" ? (
+                    nologoImages[index] && (
+                      <img
+                        onClick={() =>
+                          setOpenReviewDisalog({
+                            open: true,
+                            image: URL.createObjectURL(nologoImages[index]),
+                            detail: detail,
+                          })
+                        }
+                        className="brandimg_icon"
+                        src={URL.createObjectURL(nologoImages[index])}
+                        alt={`Image ${index + 1}`}
+                      />
+                    )
+                  ) : (
+                    <div
+                      className="file_icon"
+                      onClick={() =>
+                        setOpenReviewDisalog({
+                          open: true,
+                          image: URL.createObjectURL(nologoImages[index]),
+                          detail: detail,
+                        })
+                      }
+                    >
+                      {renderFileIcon(detail.fileType)}
+                    </div>
+                  )}
+                </div>
+                <div className="col summary_box brand_img_box col140">
+                  <h4>
+                    <span>Extension:</span>
+                    {detail.fileType}
+                  </h4>
+                </div>
+                <div className="col summary_box brand_img_box col140">
+                  <h4>
+                    <span>Size:</span>
+                    {detail.sizeInMB}
+                    {"MB"}
+                  </h4>
+                </div>
+                <div className="col summary_box brand_img_box col140">
+                  <h4>
+                    <span>Date:</span>
+                    {currentDate}
+                  </h4>
+                </div>
+                <button
+                  onClick={() => {
+                    delteNologoRowData(index);
                   }}
                   className="btn btn-sm btn-dengor me-2"
                 >

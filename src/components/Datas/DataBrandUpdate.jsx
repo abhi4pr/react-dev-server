@@ -63,6 +63,12 @@ const DataBrandUpdate = () => {
   const [NumOfViews, setNumOfViews] = useState("");
   const [NumOfStoryViews, setNumOfStoryViews] = useState("");
   const [OperationRemark, setOperationRemark] = useState("");
+  const [nologoImages, setNologoImages] = useState([]);
+  const [nologoDetails, setNologoDetails] = useState([]);
+  const [mmcImages, setMMCImages] = useState([]);
+  const [mmcDetails, setMMCDetails] = useState([]);
+  const [sarcasmImages, setSarcasmImages] = useState([]);
+  const [sarcasmDetails, setSarcasmDetails] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -245,7 +251,7 @@ const DataBrandUpdate = () => {
       axios
         .get(`${baseUrl}` + `get_data_based_data_name_new/${brandName}`)
         .then((res) => {
-          setLogos((prev) => res.data);
+          setLogos(() => res.data);
 
           setLogo(res.data);
           // console.log(res.data[0]?.sub_cat_id[0].split(","),"subcat")
@@ -343,6 +349,19 @@ const DataBrandUpdate = () => {
   // };
 
   const handleSubmit = async (e) => {
+    console.log(dataSubCategory, "subcat");
+    console.log(brandCat, "brandCat");
+    console.log(brandSubCategory, "brandSubCategory");
+    console.log(compignPurpose, "compignPurpose");
+    console.log(NumOfPost, "NumOfPost");
+    console.log(NumOfReach, "NumOfReach");
+    console.log(NumOfImpression, "NumOfImpression");
+    console.log(NumOfEngagement, "NumOfEngagement");
+    console.log(NumOfViews, "NumOfViews");
+    console.log(NumOfStoryViews, "NumOfStoryViews");
+    console.log(OperationRemark, "OperationRemark");
+
+
     e.preventDefault();
     // return;
     if (category == "") {
@@ -409,17 +428,6 @@ const DataBrandUpdate = () => {
         setIsLoading(true);
       }
       if (details.length == 0) {
-        // const formData = new FormData();
-        // formData.append("data_id", id);
-        // formData.append("data_name", brandName);
-        // formData.append("cat_id", category);
-        // formData.append("sub_cat_id", dataSubCategory);
-        // formData.append("platform_id", platform);
-        // formData.append("brand_id", dataBrand);
-        // formData.append("content_type_id", contentType);
-
-        // formData.append("remark", remark);
-
         await axios
           .put(baseUrl + "update_data", {
             data_id: id,
@@ -444,7 +452,7 @@ const DataBrandUpdate = () => {
             operation_remark: OperationRemark,
   
           })
-          .then((res) => {})
+          .then(() => {})
           .catch((err) => {
             console.log(err, "err");
           });
@@ -462,22 +470,102 @@ const DataBrandUpdate = () => {
           formData.append("brand_id", dataBrand);
           formData.append("content_type_id", contentType);
           formData.append("data_upload", images[i]);
-          // formData.append("sub_cat_id", dataSubCategory.map(e=>e));
-          // formData.append("size", details[i].size);
-          // formData.append("created_by", userID);
-          // formData.append("designed_by", designedBy);
           await axios
             .post(baseUrl + "add_data", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
             })
-            .then((res) => {})
+            .then(() => {})
             .catch((err) => {
               console.log(err, "err");
             });
         }
       }
+
+      if(mmcDetails.length > 0){
+        for (let i = 0; i < mmcDetails.length; i++) {
+          const formData = new FormData();
+          formData.append("data_id", id);
+          formData.append("data_name", brandName);
+          formData.append("remark", remark);
+          formData.append("data_type", mmcDetails[i].fileType);
+          formData.append("size_in_mb", mmcDetails[i].sizeInMB);
+          formData.append("cat_id", category);
+          formData.append("sub_cat_id", dataSubCategory);
+          formData.append("platform_id", platform);
+          formData.append("brand_id", dataBrand);
+          formData.append("content_type_id", contentType);
+          formData.append("mmc", mmcImages[i]);
+          await axios
+            .post(baseUrl + "add_data", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then(() => {})
+            .catch((err) => {
+              console.log(err, "err");
+            });
+        }
+      }
+
+      if(sarcasmDetails.length > 0){
+        for (let i = 0; i < sarcasmDetails.length; i++) {
+          const formData = new FormData();
+          formData.append("data_id", id);
+          formData.append("data_name", brandName);
+          formData.append("remark", remark);
+          formData.append("data_type", sarcasmDetails[i].fileType);
+          formData.append("size_in_mb", sarcasmDetails[i].sizeInMB);
+          formData.append("cat_id", category);
+          formData.append("sub_cat_id", dataSubCategory);
+          formData.append("platform_id", platform);
+          formData.append("brand_id", dataBrand);
+          formData.append("content_type_id", contentType);
+          formData.append("sarcasm", sarcasmImages[i]);
+          await axios
+
+            .post(baseUrl + "add_data", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then(() => {})
+            .catch((err) => {
+              console.log(err, "err");
+            });
+        }
+      }
+
+      if(nologoDetails.length > 0){
+        for (let i = 0; i < nologoDetails.length; i++) {
+          const formData = new FormData();
+          formData.append("data_id", id);
+          formData.append("data_name", brandName);
+          formData.append("remark", remark);
+
+          formData.append("data_type", nologoDetails[i].fileType);
+          formData.append("size_in_mb", nologoDetails[i].sizeInMB);
+          formData.append("cat_id", category);
+          formData.append("sub_cat_id", dataSubCategory);
+          formData.append("platform_id", platform);
+          formData.append("brand_id", dataBrand);
+          formData.append("content_type_id", contentType);
+          formData.append("no_logo", nologoImages[i]);
+          await axios
+            .post(baseUrl + "add_data", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then(() => {})
+            .catch((err) => {
+              console.log(err, "err");
+            });
+        }
+      }
+
 
       setIsFormSubmitted(true);
       toastAlert("Data uploaded");
@@ -553,6 +641,151 @@ const DataBrandUpdate = () => {
     });
   };
 
+  const handleMMCFileChange = (event) => {
+    // setFileDetails((prev) => [...prev, event.target.files]);
+    const files = Array.from(event.target.files);
+    setMMCImages(files);
+
+    const details = files.map((file) => {
+      const { name, size } = file;
+      const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      const fileType = name.split(".").pop().toLowerCase();
+
+      if (
+        fileType === "jpg" ||
+        fileType === "jpeg" ||
+        fileType === "png" ||
+        fileType === "gif"
+      ) {
+        // It's an image
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        return new Promise((resolve) => {
+          img.onload = () => {
+            const { naturalHeight, naturalWidth } = img;
+            resolve({
+              name,
+              file,
+              fileType,
+              size: `${naturalHeight}x${naturalWidth}`,
+              sizeInMB: `${sizeInMB}`,
+            });
+          };
+        });
+      } else {
+        // For other file types like PDF, video, Excel
+        return Promise.resolve({
+          name,
+          file,
+          fileType,
+          size: "N/A", // Size is not applicable in the same way as for images
+          sizeInMB: `${sizeInMB}`,
+        });
+      }
+    });
+
+    Promise.all(details).then((detailsArray) => {
+      setMMCDetails(detailsArray);
+    });
+  };
+
+  const handleSarcasmFileChange = (event) => {
+    // setFileDetails((prev) => [...prev, event.target.files]);
+    const files = Array.from(event.target.files);
+    setSarcasmImages(files);
+
+    const details = files.map((file) => {
+      const { name, size } = file;
+      const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      const fileType = name.split(".").pop().toLowerCase();
+
+      if (
+        fileType === "jpg" ||
+        fileType === "jpeg" ||
+        fileType === "png" ||
+        fileType === "gif"
+      ) {
+        // It's an image
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        return new Promise((resolve) => {
+          img.onload = () => {
+            const { naturalHeight, naturalWidth } = img;
+            resolve({
+              name,
+              file,
+              fileType,
+              size: `${naturalHeight}x${naturalWidth}`,
+              sizeInMB: `${sizeInMB}`,
+            });
+          };
+        });
+      } else {
+        // For other file types like PDF, video, Excel
+        return Promise.resolve({
+          name,
+          file,
+          fileType,
+          size: "N/A", // Size is not applicable in the same way as for images
+          sizeInMB: `${sizeInMB}`,
+        });
+      }
+    });
+
+    Promise.all(details).then((detailsArray) => {
+      setSarcasmDetails(detailsArray);
+    });
+  };
+
+  const handleNologoFileChange = (event) => {
+    // setFileDetails((prev) => [...prev, event.target.files]);
+    const files = Array.from(event.target.files);
+    setNologoImages(files);
+
+    const details = files.map((file) => {
+      const { name, size } = file;
+      const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      const fileType = name.split(".").pop().toLowerCase();
+
+      if (
+        fileType === "jpg" ||
+        fileType === "jpeg" ||
+        fileType === "png" ||
+        fileType === "gif"
+      ) {
+        // It's an image
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        return new Promise((resolve) => {
+          img.onload = () => {
+            const { naturalHeight, naturalWidth } = img;
+            resolve({
+              name,
+              file,
+              fileType,
+
+              size: `${naturalHeight}x${naturalWidth}`,
+              sizeInMB: `${sizeInMB}`,
+            });
+          };
+        });
+      } else {
+        // For other file types like PDF, video, Excel
+        return Promise.resolve({
+          name,
+          file,
+          fileType,
+          size: "N/A", // Size is not applicable in the same way as for images
+          sizeInMB: `${sizeInMB}`,
+        });
+      }
+    });
+
+    Promise.all(details).then((detailsArray) => {
+      setNologoDetails(detailsArray);
+    });
+  };
+
   if (isFormSubmitted) {
     return <Navigate to="/data-brand-overview" />;
   }
@@ -612,7 +845,7 @@ const DataBrandUpdate = () => {
               />
 
               <FieldContainer
-                label="Upload Data *"
+                label="Upload Data "
                 type="file"
                 multiple
                 accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
@@ -620,6 +853,37 @@ const DataBrandUpdate = () => {
                 fieldGrid={6}
                 required={false}
               />
+               {contentType == "65a663ccef8a81593f418836" && (
+          <>
+            <FieldContainer
+              label="MMC "
+              type="file"
+              multiple
+              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+              onChange={handleMMCFileChange}
+              fieldGrid={6}
+required={false}
+            />
+            <FieldContainer
+              label="sarcasm "
+              multiple
+              type="file"
+              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+              onChange={handleSarcasmFileChange}
+              fieldGrid={6}
+required={false}
+            />
+            <FieldContainer
+              label="No Logo "
+              multiple
+              type="file"
+              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+              onChange={handleNologoFileChange}
+              fieldGrid={6}
+required={false}
+            />
+          </>
+        )}
 
               <div className="form-group col-3">
                 <label className="form-label">
@@ -646,23 +910,6 @@ const DataBrandUpdate = () => {
                 <label className="form-label">
                   Sub Category Name <sup style={{ color: "red" }}>*</sup>
                 </label>
-                {/* <Select
-    options={dataSubCategoryData.map((opt) => ({
-      value: opt._id,
-      label: opt.data_sub_cat_name,
-    }))}
-    value={dataSubCategory?.map(subCatId => 
-      dataSubCategoryData.find(opt => opt._id == subCatId)
-    ).filter(Boolean).map(opt => ({
-      value: opt._id,
-      label: opt.data_sub_cat_name
-    }))}
-    onChange={(selectedOptions) => {
-      setDataSubCategory(selectedOptions.map(opt => opt.value));
-    }}
-    isMulti
-    required
-  /> */}
                 <Select
                   options={dataSubCategoryData.map((opt) => ({
                     value: opt._id,
@@ -905,8 +1152,9 @@ const DataBrandUpdate = () => {
               )}
 
               <div className="summary_cards brand_img_list">
+                <h4 className="lead text-black-50 fs-6">Data</h4>
                 {logos.length > 0 &&
-                  logos?.map((detail, index) => (
+                  logos?.filter(e=>e.data_image !==null).map((detail, index) => (
                     <div key={index} className="summary_card brand_img_item">
                       <div className="summary_cardrow brand_img_row">
                         <div className="col summary_box brand_img_box">
@@ -914,40 +1162,6 @@ const DataBrandUpdate = () => {
                             className="brandimg_icon"
                             src={detail.data_image}
                           />
-                          {/* {detail.data_type === "jpg" ||
-                          detail.data_type === "jpeg" ||
-                          detail.data_type === "png" ||
-                          detail.data_type === "gif" ? (
-                            images[index] && (
-                              <img
-                                onClick={() =>
-                                  setOpenReviewDisalog({
-                                    open: true,
-                                    image: URL.createObjectURL(images[index]),
-                                    detail: detail,
-                                  })
-                                }
-                                className="brandimg_icon"
-                                src={URL.createObjectURL(images[index])}
-                                alt={`Image ${index + 1}`}
-                              />
-                              
-                            )
-                          ) : (
-                            <div
-                            
-                              className="file_icon"
-                              onClick={() =>
-                                setOpenReviewDisalog({
-                                  open: true,
-                                  image: URL.createObjectURL(images[index]),
-                                  detail: detail,
-                                })
-                              }
-                            >
-                              {renderFileIcon(detail.fileType)}
-                            </div>
-                          )} */}
                         </div>
                         <div className="col summary_box brand_img_box">
                           <h4>
@@ -955,12 +1169,6 @@ const DataBrandUpdate = () => {
                             {detail.data_type}
                           </h4>
                         </div>
-                        {/* <div className="col summary_box brand_img_box">
-                        <h4>
-                          <span>Resolution:</span>
-                          {detail.size}
-                        </h4>
-                      </div> */}
                         <div className="col summary_box brand_img_box">
                           <h4>
                             <span>Size:</span>
@@ -968,12 +1176,6 @@ const DataBrandUpdate = () => {
                             {"MB"}
                           </h4>
                         </div>
-                        {/* <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Data Category:</span>
-                            {detail.category_name}
-                          </h4>
-                        </div> */}
                         <div className="col summary_box brand_img_box">
                           <h4>
                             <span>Date:</span>
@@ -994,53 +1196,7 @@ const DataBrandUpdate = () => {
                       </div>
                     </div>
                   ))}
-                {/* {allData.length >0 && allData.filter((detail) => (
-                  detail.data_id==logos[0].data_id)).map((detail, index) => (
-                  <div key={index} className="summary_card brand_img_item">
-                    <div className="summary_cardrow brand_img_row">
-                      <div className="col summary_box brand_img_box col140">
-                        {detail.fileType === "jpg" ||
-                        detail.fileType === "jpeg" ||
-                        detail.fileType === "png" ||
-                        detail.fileType === "gif" ? (
-                          <img
-                            className="brandimg_icon"
-                            src={URL.createObjectURL(images[index])}
-                            alt={`Image ${index + 1}`}
-                          />
-                        ) : (
-                          <div className="file_icon">
-                            {renderFileIcon(detail.fileType)}
-                          </div>
-                        )}
-                      </div>
-                      <div className="col summary_box brand_img_box">
-                        <h4>
-                          <span>Extension:</span>
-                          {detail.image_type}
-                        </h4>
-                      </div>
-                      
-                      <div className="col summary_box brand_img_box">
-                        <h4>
-                          <span>Size:</span>
-                          {detail.sizeInMB}
-                          {"MB"}
-                        </h4>
-                      </div>
-                      <div className="col summary_box brand_img_box">
-                        <h4>
-                          <span>Date:</span>
-                          {currentDate}
-                        </h4>
-                      </div>
-                      
-                    </div>
-                  </div>
-
-                ))} */}
-
-                {details.map((detail, index) => (
+                {details.slice(0, images.length).map((detail, index) => (
                   <div key={index} className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
                       <div className="col summary_box brand_img_box col140">
@@ -1069,12 +1225,6 @@ const DataBrandUpdate = () => {
                           {detail.image_type}
                         </h4>
                       </div>
-                      {/* <div className="col summary_box brand_img_box">
-                        <h4>
-                          <span>Resolution:</span>
-                          {detail.size}
-                        </h4>
-                      </div> */}
                       <div className="col summary_box brand_img_box">
                         <h4>
                           <span>Size:</span>
@@ -1088,22 +1238,6 @@ const DataBrandUpdate = () => {
                           {currentDate}
                         </h4>
                       </div>
-                      {/* <div className="col summary_box brand_img_box">
-                        <FieldContainer
-                          label={`Data Category`}
-                          fieldGrid={12}
-                          Tag="select"
-                          value={selectedCategories[index] || ""}
-                          onChange={(e) => handleCategoryChange(e, index)}
-                        >
-                          <option value="">Please select</option>
-                          {categoryData.map((data) => (
-                            <option key={data.id} value={data.id}>
-                              {data.cat_name}
-                            </option>
-                          ))}
-                        </FieldContainer>
-                      </div> */}
                       <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
                         <p>
                           {" "}
@@ -1117,6 +1251,311 @@ const DataBrandUpdate = () => {
                   </div>
                 ))}
               </div>
+
+              <div className="summary_cards brand_img_list">
+                <h4 className="lead text-black-50 fs-6 mt-3">MMC</h4>
+                {logos.length > 0 &&
+                  logos?.filter(e=>e.mmc_image !==null).map((detail, index) => (
+                    <div key={index} className="summary_card brand_img_item">
+                      <div className="summary_cardrow brand_img_row">
+                        <div className="col summary_box brand_img_box">
+                          <img
+                            className="brandimg_icon"
+                            src={detail.mmc_image}
+                          />
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Extension:</span>
+                            {detail.data_type}
+                          </h4>
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Size:</span>
+                            {detail.size_in_mb}
+                            {"MB"}
+                          </h4>
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Date:</span>
+                            {detail.created_at.split("T")[0]}
+                          </h4>
+                        </div>
+                        <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                          <p>
+                            {" "}
+                            <MdCancel
+                              onClick={() =>
+                                removeImage(detail._id, detail.data_id)
+                              }
+                              style={{ cursor: "pointer" }}
+                            />
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                {mmcDetails.map((detail, index) => (
+                  <div key={index} className="summary_card brand_img_item">
+                    <div className="summary_cardrow brand_img_row">
+                      <div className="col summary_box brand_img_box col140">
+                        {detail.fileType === "jpg" ||
+                        detail.fileType === "jpeg" ||
+                        detail.fileType === "png" ||
+                        detail.fileType === "gif" ? (
+                          <img
+                            className="brandimg_icon"
+                            src={
+                              mmcImages[index]
+                                ? URL.createObjectURL(mmcImages[index])
+                                : ""
+                            }
+                            alt={`Image ${index + 1}`}
+                          />
+                        ) : (
+                          <div className="file_icon">
+                            {renderFileIcon(detail.fileType)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="col summary_box brand_img_box">
+                        <h4>
+                          <span>Extension:</span>
+                          {detail.image_type}
+                        </h4>
+                      </div>
+                      <div className="col summary_box brand_img_box">
+                        <h4>
+                          <span>Size:</span>
+                          {detail.sizeInMB}
+                          {"MB"}
+                        </h4>
+                      </div>
+                      <div className="col summary_box brand_img_box">
+                        <h4>
+                          <span>Date:</span>
+                          {currentDate}
+                        </h4>
+                      </div>
+                      <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                        <p>
+                          {" "}
+                          <MdCancel
+                            onClick={() => removeAddedImage(index)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+
+              <div className="summary_cards brand_img_list">
+                <h4 className="lead text-black-50 fs-6 mt-2">Sarcasm</h4>
+                {logos.length > 0 &&
+                  logos?.filter(e=>e.sarcasm_image !==null).map((detail, index) => (
+                    <div key={index} className="summary_card brand_img_item">
+                      <div className="summary_cardrow brand_img_row">
+                        <div className="col summary_box brand_img_box">
+                          <img
+                            className="brandimg_icon"
+                            src={detail.sarcasm_image}
+                          />
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Extension:</span>
+                            {detail.data_type}
+                          </h4>
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Size:</span>
+                            {detail.size_in_mb}
+                            {"MB"}
+                          </h4>
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Date:</span>
+                            {detail.created_at.split("T")[0]}
+                          </h4>
+                        </div>
+                        <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                          <p>
+                            {" "}
+                            <MdCancel
+                              onClick={() =>
+                                removeImage(detail._id, detail.data_id)
+                              }
+                              style={{ cursor: "pointer" }}
+                            />
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                {sarcasmDetails.map((detail, index) => (
+                  <div key={index} className="summary_card brand_img_item">
+                    <div className="summary_cardrow brand_img_row">
+                      <div className="col summary_box brand_img_box col140">
+                        {detail.fileType === "jpg" ||
+                        detail.fileType === "jpeg" ||
+                        detail.fileType === "png" ||
+                        detail.fileType === "gif" ? (
+                          <img
+                            className="brandimg_icon"
+                            src={
+                              sarcasmImages[index]
+                                ? URL.createObjectURL(sarcasmImages[index])
+                                : ""
+                            }
+                            alt={`Image ${index + 1}`}
+                          />
+                        ) : (
+                          <div className="file_icon">
+                            {renderFileIcon(detail.fileType)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="col summary_box brand_img_box">
+                        <h4>
+                          <span>Extension:</span>
+                          {detail.image_type}
+                        </h4>
+                      </div>
+                      <div className="col summary_box brand_img_box">
+                        <h4>
+                          <span>Size:</span>
+                          {detail.sizeInMB}
+                          {"MB"}
+                        </h4>
+                      </div>
+                      <div className="col summary_box brand_img_box">
+                        <h4>
+                          <span>Date:</span>
+                          {currentDate}
+                        </h4>
+                      </div>
+                      <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                        <p>
+                          {" "}
+                          <MdCancel
+                            onClick={() => removeAddedImage(index)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="summary_cards brand_img_list">
+                <h4 className="lead text-black-50 fs-6">No Logo</h4>
+                {logos.length > 0 &&
+                  logos?.filter(e=>e.no_logo_image !==null).map((detail, index) => (
+                    <div key={index} className="summary_card brand_img_item">
+                      <div className="summary_cardrow brand_img_row">
+                        <div className="col summary_box brand_img_box">
+                          <img
+                            className="brandimg_icon"
+                            src={detail.no_logo_image}
+                          />
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Extension:</span>
+                            {detail.data_type}
+                          </h4>
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Size:</span>
+                            {detail.size_in_mb}
+                            {"MB"}
+                          </h4>
+                        </div>
+                        <div className="col summary_box brand_img_box">
+                          <h4>
+                            <span>Date:</span>
+                            {detail.created_at.split("T")[0]}
+                          </h4>
+                        </div>
+                        <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                          <p>
+                            {" "}
+                            <MdCancel
+                              onClick={() =>
+                                removeImage(detail._id, detail.data_id)
+                              }
+                              style={{ cursor: "pointer" }}
+                            />
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                {nologoDetails.map((detail, index) => (
+                  <div key={index} className="summary_card brand_img_item">
+                    <div className="summary_cardrow brand_img_row">
+                      <div className="col summary_box brand_img_box col140">
+                        {detail.fileType === "jpg" ||
+                        detail.fileType === "jpeg" ||
+                        detail.fileType === "png" ||
+                        detail.fileType === "gif" ? (
+                          <img
+                            className="brandimg_icon"
+                            src={
+                              nologoImages[index]
+                                ? URL.createObjectURL(nologoImages[index])
+                                : ""
+                            }
+                            alt={`Image ${index + 1}`}
+                          />
+                        ) : (
+                          <div className="file_icon">
+                            {renderFileIcon(detail.fileType)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="col summary_box brand_img_box">
+                        <h4>
+                          <span>Extension:</span>
+                          {detail.image_type}
+                        </h4>
+                      </div>
+                      <div className="col summary_box brand_img_box">
+                        <h4>
+                          <span>Size:</span>
+                          {detail.sizeInMB}
+                          {"MB"}
+                        </h4>
+                      </div>
+                      <div className="col summary_box brand_img_box">
+                        <h4>
+                          <span>Date:</span>
+                          {currentDate}
+                        </h4>
+                      </div>
+                      <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                        <p>
+                          {" "}
+                          <MdCancel
+                            onClick={() => removeAddedImage(index)}
+                            style={{ cursor: "pointer" }}
+                          />
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
 
               <p>{error}</p>
 

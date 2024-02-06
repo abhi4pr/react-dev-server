@@ -9,7 +9,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import Select from "react-select";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import { City } from "country-state-city";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const onBoardStatus = 2;
 
@@ -93,21 +93,17 @@ const AdminPreOnboarding = () => {
   });
 
   useEffect(() => {
-    axios.get(baseUrl+"get_all_roles").then((res) => {
+    axios.get(baseUrl + "get_all_roles").then((res) => {
       getRoleData(res.data.data);
     });
-    axios
-      .get(baseUrl+"get_all_departments")
-      .then((res) => {
-        getDepartmentData(res.data);
-      });
-    axios
-      .get(baseUrl+"get_all_designations")
-      .then((res) => {
-        setDesignationData(res.data.data);
-      });
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      getDepartmentData(res.data);
+    });
+    axios.get(baseUrl + "get_all_designations").then((res) => {
+      setDesignationData(res.data.data);
+    });
 
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       getUsersData(res.data.data);
     });
   }, []);
@@ -174,7 +170,7 @@ const AdminPreOnboarding = () => {
         if (isLoginIdExists) {
           alert("this login ID already exists");
         } else {
-          await axios.post(baseUrl+"add_user", formData, {
+          await axios.post(baseUrl + "add_user", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
             },
@@ -186,7 +182,7 @@ const AdminPreOnboarding = () => {
             [username, loginId, password, "http://jarvis.work/"]
           );
           axios
-            .post(baseUrl+"add_send_user_mail", {
+            .post(baseUrl + "add_send_user_mail", {
               email: personalEmail,
               subject: "User Registration",
               text: "A new user has been onboard.",
@@ -433,7 +429,6 @@ const AdminPreOnboarding = () => {
                 });
             }}
             onBlur={(e) => {
-              console.log(reportL1);
               !reportL1 &&
                 setIsRequired((prev) => {
                   return { ...prev, reportL1: true };
@@ -677,7 +672,6 @@ const AdminPreOnboarding = () => {
                 "",
             }}
             onChange={(e) => {
-              console.log(e.value);
               setRoles(e.value);
             }}
           ></Select>

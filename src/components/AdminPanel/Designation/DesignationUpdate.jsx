@@ -5,10 +5,10 @@ import { Navigate, useParams } from "react-router-dom";
 import { useGlobalContext } from "../../../Context/Context";
 import FieldContainer from "../FieldContainer";
 import FormContainer from "../FormContainer";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const DesignationUpdate = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const { desi_id } = useParams();
   const [designationData, setDesignationData] = useState({
     id: 0,
@@ -23,9 +23,7 @@ const DesignationUpdate = () => {
   useEffect(() => {
     const fetchDepartmentData = async () => {
       try {
-        const response = await axios.get(
-          baseUrl+"get_all_departments"
-        );
+        const response = await axios.get(baseUrl + "get_all_departments");
         const departmentOptions = response.data.map((dept) => ({
           value: dept.dept_id,
           label: dept.dept_name,
@@ -33,14 +31,14 @@ const DesignationUpdate = () => {
         setDepartmentOptions(departmentOptions);
       } catch (error) {
         console.error("Error fetching departments: ", error);
-        toastAlert("Failed to fetch departments");
+        toastError("Failed to fetch departments");
       }
     };
 
     const fetchDesignationData = async () => {
       try {
         const response = await axios.get(
-          `${baseUrl}`+`get_single_designation/${desi_id}`
+          `${baseUrl}` + `get_single_designation/${desi_id}`
         );
         setDesignationData(response.data.data);
       } catch (error) {
@@ -58,15 +56,12 @@ const DesignationUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(
-        baseUrl+"update_designation",
-        designationData
-      );
+      await axios.put(baseUrl + "update_designation", designationData);
       toastAlert("Updated success");
       setIsFormSubmitted(true);
     } catch (error) {
-      console.error("Error updating data: ", error);
-      toastAlert("Update failed");
+      alert(error.response.data.message);
+      toastError("Update failed");
     }
   };
 

@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import React, { useEffect, useState } from "react";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const AnnouncementView = () => {
   const token = sessionStorage.getItem("token");
@@ -13,9 +13,7 @@ const AnnouncementView = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const res = await axios.get(
-          baseUrl+"allannouncementdata"
-        );
+        const res = await axios.get(baseUrl + "allannouncementdata");
         const allData = await res.data;
         setData(allData);
       } catch (error) {
@@ -36,7 +34,6 @@ const AnnouncementView = () => {
 
   return (
     <>
-      {console.log(loginUserOnboardStatus)}
       {filterdata.length === 1 ? (
         <div key={filterdata[0].id}>
           {filterdata[0].heading} {filterdata[0].sub_heading}

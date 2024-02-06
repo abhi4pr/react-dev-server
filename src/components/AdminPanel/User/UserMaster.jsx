@@ -133,8 +133,12 @@ const UserMaster = () => {
 
   const [FatherName, setFatherName] = useState("");
   const [motherName, setMotherName] = useState("");
-  const [hobbies, setHobbies] = useState("");
+
+  // const [hobbies, setHobbies] = useState("")
+
+  const [hobbies, setHobbies] = useState([]);
   const [hobbiesData, setHobbiesData] = useState([]);
+
   const [bloodGroup, setBloodGroup] = useState("");
   const [maritialStatus, setMaritialStatus] = useState("");
   const [dateOfMarraige, setDateOfMarraige] = useState("");
@@ -331,10 +335,26 @@ const UserMaster = () => {
     axios.get(baseUrl + "get_all_cities").then((res) => {
       setCityData(res.data.data);
     });
+  }, []);
+  useEffect(() => {
     axios.get(baseUrl + "get_all_hobbies").then((res) => {
       setHobbiesData(res.data.data);
     });
   }, []);
+  // new-----------------------------------------------------
+  const handleChange = (selectedOptions) => {
+    setHobbies(selectedOptions || []);
+  };
+
+  const availableOptions = hobbiesData
+    .filter(
+      (option) =>
+        !hobbies.some((selected) => selected.value === option.hobby_id)
+    )
+    .map((option) => ({
+      value: option.hobby_id,
+      label: option.hobby_name,
+    }));
 
   const allUserData = () => {
     axios.get(baseUrl + "get_all_users").then((res) => {
@@ -364,12 +384,24 @@ const UserMaster = () => {
       return toastError("Report L1 Is Required");
     } else if (!personalEmail || personalEmail == "") {
       return toastError("Personal Email is Required");
-    } else if (!personalContact || personalContact == "") {
-      return toastError("Personal Contact is Required");
-    } else if (!alternateContact || alternateContact == "") {
-      return toastError("Alternate Contact is Required");
-    } else if (!emergencyContact || emergencyContact == "") {
-      return toastError("Emergency Contact is Required");
+    } else if (
+      !personalContact ||
+      personalContact == "" ||
+      personalContact.length !== 10
+    ) {
+      return toastError("Personal Contact is Required and  must be 10 digits");
+    } else if (
+      !alternateContact ||
+      alternateContact == "" ||
+      alternateContact.length !== 10
+    ) {
+      return toastError("Alternate Contact is Required and  must be 10 digits");
+    } else if (
+      !emergencyContact ||
+      emergencyContact == "" ||
+      emergencyContact.length !== 10
+    ) {
+      return toastError("Emergency Contact is Required and must be 10 digits");
     } else if (!emergencyContactName || emergencyContactName == "") {
       return toastError("Emergency Contact Name is Required");
     } else if (!emergencyContactRelation || emergencyContactRelation == "") {
@@ -465,7 +497,10 @@ const UserMaster = () => {
     formData.append("Age", Number(age));
     formData.append("FatherName", FatherName);
     formData.append("MotherName", motherName);
-    formData.append("Hobbies", hobbies);
+    formData.append(
+      "Hobbies",
+      hobbies.map((hobby) => hobby.value)
+    );
     formData.append("BloodGroup", bloodGroup);
     formData.append("MartialStatus", maritialStatus);
     formData.append("DateofMarriage", dateOfMarraige);
@@ -665,9 +700,9 @@ const UserMaster = () => {
     }
   };
 
-  // if (isFormSubmitted) {
-  //   return <Navigate to="/admin/user-overview" />;
-  // }
+  if (isFormSubmitted) {
+    return <Navigate to="/admin/user-overview" />;
+  }
 
   // Email Validation
   function handleEmailChange(e) {
@@ -978,7 +1013,6 @@ const UserMaster = () => {
     "General",
     "Personal",
     "Salary",
-    // "Document  s",
     "Family",
     "Education",
   ];
@@ -2314,6 +2348,17 @@ const UserMaster = () => {
       <div className="form-group col-6">
         <label className="form-label">Hobbies</label>
         <Select
+          isMulti
+          options={availableOptions}
+          value={hobbies}
+          onChange={handleChange}
+          isClearable={true}
+          classNamePrefix="select"
+        />
+      </div>
+      {/* <div className="form-group col-6">
+        <label className="form-label">Hobbies</label>
+        <Select
           options={hobbiesData.map((option) => ({
             value: option.hobby_id,
             label: option.hobby_name,
@@ -2331,7 +2376,7 @@ const UserMaster = () => {
           onChange={(e) => setHobbies(e ? e.value : null)}
           isClearable={true}
         />
-      </div>
+      </div> */}
       <div className="form-group col-6">
         <label className="form-label">
           Blood Group <sup style={{ color: "red" }}>*</sup>

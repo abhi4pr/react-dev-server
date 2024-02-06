@@ -345,12 +345,6 @@ const UserUpdate = () => {
     });
   }
 
-  async function getHobbiesData() {
-    axios.get(baseUrl + "get_all_hobbies").then((res) => {
-      setHobbiesData(res.data.data);
-    });
-  }
-
   async function getCitiesData() {
     axios.get(baseUrl + "get_all_cities").then((res) => {
       setCityData(res.data.data);
@@ -367,8 +361,40 @@ const UserUpdate = () => {
   useEffect(() => {
     getCitiesData();
     getDocuments();
-    getHobbiesData();
   }, [id]);
+
+  //  -------------------------------------------------------hobbie multiselect logic start--------------------------------------------------------
+  useEffect(() => {
+    axios.get(`${baseUrl}get_all_hobbies`).then((res) => {
+      const formattedHobbies = res.data.data.map((hobby) => ({
+        value: hobby.hobby_id,
+        label: hobby.hobby_name,
+      }));
+      setHobbiesData(formattedHobbies);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get(`${baseUrl}get_single_user/${id}`).then((res) => {
+      const fetchedData = res.data;
+      // Assuming Hobbies is an array of hobby_ids
+      const preselectedHobbies = fetchedData.Hobbies.map((hobbyId) => {
+        return {
+          value: hobbyId,
+          label:
+            hobbiesData.find((hobby) => hobby.value === hobbyId)?.label ||
+            hobbyId.toString(),
+        };
+      });
+      setHobbies(preselectedHobbies);
+    });
+  }, [id, hobbiesData]); // Rerun when hobbiesData is set
+
+  // Handle change in selected hobbies
+  const handleChange = (selectedOptions) => {
+    setHobbies(selectedOptions || []);
+  };
+  // -----------------------------------------------------------------------------hobby logic END------------------------------------------------------------
 
   useEffect(() => {
     axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
@@ -650,7 +676,10 @@ const UserUpdate = () => {
     formData.append("Age", age);
     formData.append("FatherName", FatherName);
     formData.append("MotherName", motherName);
-    formData.append("Hobbies", hobbies);
+    formData.append(
+      "Hobbies",
+      hobbies.map((option) => option.value)
+    );
     formData.append("BloodGroup", bloodGroup);
     formData.append("MartialStatus", maritialStatus);
     formData.append("DateofMarriage", dateOfMarraige);
@@ -1836,14 +1865,19 @@ const UserUpdate = () => {
         required={false}
         onChange={(e) => setMotherName(e.target.value)}
       />
-      {/* <FieldContainer
-        label="Hobbies"
-        value={hobbies}
-        required={false}
-        onChange={(e) => setHobbies(e.target.value)}
-      /> */}
 
       <div className="form-group col-6">
+        <label className="form-label">Hobbies</label>
+        <Select
+          isMulti
+          options={hobbiesData}
+          value={hobbies}
+          onChange={handleChange}
+          isClearable={true}
+          classNamePrefix="select"
+        />
+      </div>
+      {/* <div className="form-group col-6">
         <label className="form-label">Hobbies</label>
         <Select
           options={hobbiesData.map((option) => ({
@@ -1863,7 +1897,7 @@ const UserUpdate = () => {
           onChange={(e) => setHobbies(e ? e.value : null)}
           isClearable={true}
         />
-      </div>
+      </div> */}
 
       <div className="form-group col-6">
         <label className="form-label">

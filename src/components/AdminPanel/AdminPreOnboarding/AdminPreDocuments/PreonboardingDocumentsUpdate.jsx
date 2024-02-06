@@ -5,7 +5,7 @@ import { useGlobalContext } from "../../../../Context/Context";
 import Select from "react-select";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
 
 const selectOptions = [
   {
@@ -36,9 +36,7 @@ const PreonboardingDocumentsUpdate = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        `${baseUrl}`+`get_doc/${id}`
-      );
+      const response = await axios.get(`${baseUrl}` + `get_doc/${id}`);
       const data = response.data.data;
       setDocumentType(data.doc_type);
       setPeriod(data.period);
@@ -48,12 +46,11 @@ const PreonboardingDocumentsUpdate = () => {
       console.log("", error);
     }
   };
-  console.log(id);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .put(baseUrl+"update_doc", {
+      .put(baseUrl + "update_doc", {
         _id: id,
         doc_type: documentType,
         priority: priority,

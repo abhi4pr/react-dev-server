@@ -11,6 +11,7 @@ import { baseUrl } from "../../../utils/config";
 
 export default function SubDepartmentOverview() {
   const { contextData } = useAPIGlobalContext();
+  const [search, setSearch] = useState("");
   const [modalSearch, setModalSearch] = useState("");
   const [datas, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -27,36 +28,27 @@ export default function SubDepartmentOverview() {
   };
 
   function getData() {
-    axios
-      .get(baseUrl+"get_all_sub_departments")
-      .then((res) => {
-        setData(res.data);
-        setFilterData(res.data);
-      });
+    axios.get(baseUrl + "get_all_sub_departments").then((res) => {
+      setData(res.data);
+      setFilterData(res.data);
+    });
   }
-  function getSubDepartmentData(dept_id) {
-    axios
-      .get(`${baseUrl}`+`get_subdept_from_dept"/${dept_id}`)
-      .then((res) => {
-        setSubDeparmentData(res.data);
-      });
-  }
-
   useEffect(() => {
-    axios
-      .get(baseUrl+"get_all_departments")
-      .then((res) => {
-        setDepartmentData(res.data);
-      });
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      setDepartmentData(res.data);
+    });
     getData();
   }, []);
 
-  // useEffect(() => {
-  //   const result = datas.filter((d) => {
-  //     return d.dept_name.toLowerCase().match(search.toLowerCase());
-  //   });
-  //   setFilterData(result);
-  // }, [search]);
+  useEffect(() => {
+    const result = datas.filter((d) => {
+      return (
+        d.dept_name.toLowerCase().match(search.toLowerCase()) ||
+        d.sub_dept_name.toLowerCase().match(search.toLowerCase())
+      );
+    });
+    setFilterData(result);
+  }, [search]);
 
   const columns = [
     {
@@ -137,12 +129,16 @@ export default function SubDepartmentOverview() {
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
             subHeader
+            subHeaderComponent={
+              <input
+                type="text"
+                placeholder="Search here"
+                className="w-50 form-control"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            }
           />
-          {/* <FieldContainer
-            label="Deparment Name"
-            value={departmentName}
-            onChange={(e) => setDepartmentName(e.target.value)}
-          /> */}
         </div>
       </div>
 

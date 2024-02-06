@@ -1,13 +1,12 @@
 import "./Dashboard.css";
 import { Link, useNavigate } from "react-router-dom";
 import { MdOutlineCategory } from "react-icons/md";
-import { BsFillSimFill } from "react-icons/bs";
 import { TbBrandDenodo } from "react-icons/tb";
 import { FaProductHunt } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 function Dashboard() {
   const [renderCount, setRenderCount] = useState(0);
@@ -38,49 +37,48 @@ function Dashboard() {
   const conditionToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(conditionToken);
   const userId = decodedToken.id;
+  const roleId = decodedToken.role_id;
 
   useEffect(() => {
     if (userId && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userId}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userId}`)
         .then((res) => {
           setDatas(res.data);
         });
     }
     if (userId) {
-      axios
-        .get(`${baseUrl}`+`get_single_user/${userId}`)
-        .then((res) => {
-          setLoginUserData(res.data);
-        });
+      axios.get(`${baseUrl}` + `get_single_user/${userId}`).then((res) => {
+        setLoginUserData(res.data);
+      });
     }
   }, []);
 
   useEffect(() => {
     setRenderCount(renderCount + 1);
-    axios.get(baseUrl+"get_all_sims").then((res) => {
+    axios.get(baseUrl + "get_all_sims").then((res) => {
       getAllSimData(res.data.data);
     });
-    axios.get(baseUrl+"get_logo_data").then((res) => {
+    axios.get(baseUrl + "get_logo_data").then((res) => {
       getLogoBrandData(res.data);
     });
-    axios.get(baseUrl+"total_count_data").then((res) => {
+    axios.get(baseUrl + "total_count_data").then((res) => {
       setAllData(res.data.distinctDataNamesCount);
     });
-    axios
-      .get(baseUrl+"get_all_instapages")
-      .then((res) => {
-        getIntellectualProperty(res.data);
-      });
-    axios.get(baseUrl+"get_finances").then((res) => {
+    axios.get(baseUrl + "get_all_instapages").then((res) => {
+      getIntellectualProperty(res.data);
+    });
+    axios.get(baseUrl + "get_finances").then((res) => {
       const response = res?.data;
       setAccountsPendingPaymentsCount(
         response?.filter((item) => item?.status_ == 0)
       );
     });
   }, []);
+
+  if (loginUserData.job_type == "WFHD" && roleId == 4) {
+    navigate("/admin/wfh-single-user");
+  }
 
   const AllSimData = allsimData.length;
   const AllLogoBrandData = logoBrandData.length;

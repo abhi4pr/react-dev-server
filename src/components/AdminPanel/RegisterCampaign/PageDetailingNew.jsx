@@ -510,7 +510,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     setUnregisteredPages(rejectedPages);
 
     const pageReplacement = allPageData.find((page) => {
-      return page.page_name == e.target.innerText;
+      return page.page_name == e;
     });
     console.log(pageReplacement);
 
@@ -736,8 +736,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             options={pageNames}
             getOptionLabel={(option) => option}
             sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Page Name" />
+            renderInput={(param) => (
+              <TextField {...param} label={params.row.page_name} />
             )}
             onChange={(event, newValue) => {
               pageReplacement(newValue, params);

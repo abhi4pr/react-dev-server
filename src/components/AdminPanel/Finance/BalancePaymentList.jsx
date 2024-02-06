@@ -49,7 +49,7 @@ const BalancePaymentList = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  const handleSubmit = async (e, row) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const formData = new FormData();
@@ -60,32 +60,8 @@ const BalancePaymentList = () => {
     formData.append("payment_detail_id", paymentDetails.value);
     formData.append("payment_screenshot", paymentRefImg);
     formData.append("payment_type", paymentType.label);
-    formData.append("payment_mode", paymentMode.label);
+    formData.append("payment_mode", "others");
     formData.append("paid_amount", paidAmount);
-
-
-//     // sale_booking_id:161
-//     payment_update_id:
-//     payment_ref_no:Axispo444385821
-//     payment_detail_id:43
-//     loggedin_user_id:36
-//     paid_amount:54000
-//     payment_type:Partial
-//     payment_mode:Others
-//     payment_screenshot
-
-
-
-
-
-//     sale_booking_id:161
-// payment_update_id:
-// payment_ref_no:Axispo444385821
-// payment_detail_id:43
-// loggedin_user_id:36
-// paid_amount:54000
-// payment_type:Partial
-// payment_mode:Others
 
     await axios
       .post(
@@ -105,7 +81,6 @@ const BalancePaymentList = () => {
             },
           })
           .then(() => {
-            console.log("data save in local success");
             getData();
             setBalAmount("");
             setPaymentRefNo("");
@@ -124,8 +99,7 @@ const BalancePaymentList = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then((res) => {
-      console.log("data save in local success");
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {
     });
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
@@ -149,10 +123,6 @@ const BalancePaymentList = () => {
     getData();
   }, []);
 
-  const handlePaidAmountChange = (e) => {
-    // setPaidAmount(e.target.value);
-  };
-
   const getDropdownData = async () => {
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
@@ -167,7 +137,6 @@ const BalancePaymentList = () => {
     );
     const responseData = response.data.body;
     setDropDownData(responseData);
-    console.log(responseData, "dropdown data");
   };
 
   useEffect(() => {
@@ -254,24 +223,27 @@ const BalancePaymentList = () => {
       cell: (row) =>
         row.invoice ? (
           row.invoice.includes(".pdf") ? (
-            <img src={pdfImg} onClick={() => {
-              setViewImgSrc(
-                row.invoice
-                  ? `https://sales.creativefuel.io/${row.invoice}`
-                  : ""
-              ),
-                setViewImgDialog(true);
-            }}  />
+            <img
+              src={pdfImg}
+              onClick={() => {
+                setViewImgSrc(
+                  row.invoice
+                    ? `https://sales.creativefuel.io/${row.invoice}`
+                    : ""
+                ),
+                  setViewImgDialog(true);
+              }}
+            />
           ) : (
             <img
-            onClick={() => {
-              setViewImgSrc(
-                row.invoice
-                  ? `https://sales.creativefuel.io/${row.invoice}`
-                  : ""
-              ),
-                setViewImgDialog(true);
-            }}
+              onClick={() => {
+                setViewImgSrc(
+                  row.invoice
+                    ? `https://sales.creativefuel.io/${row.invoice}`
+                    : ""
+                ),
+                  setViewImgDialog(true);
+              }}
               src={`https://sales.creativefuel.io/${row.invoice}`}
               alt="payment screenshot"
               style={{ width: "50px", height: "50px" }}
@@ -330,165 +302,6 @@ const BalancePaymentList = () => {
           />
         </div>
       </div>
-      {/* <Modal
-        isOpen={ImageModalOpen}
-        onRequestClose={handleCloseImageModal}
-        style={{
-          content: {
-            width: "50%",
-            height: "70%",
-            top: "30%",
-            // left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-            zIndex: 2,
-            position: "relative",
-          },
-        }}
-      >
-        <div>
-          <div className="d-flex justify-content-between mb-2">
-            <h2>Balance Payment Update</h2>
-
-            <button
-              className="btn btn-success float-left"
-              onClick={handleCloseImageModal}
-            >
-              X
-            </button>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-12 ">
-            <form onSubmit={handleSubmit}>
-              <div className="form-group col-12"></div>
-
-              <div className="form-group">
-                <label htmlFor="images">Balance Amount</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="images"
-                  name="images"
-                  value={balAmount}
-                  onChange={(e) => setBalAmount(e.target.value)}
-                  required
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="images">Payment Reference Number:</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="images"
-                  name="images"
-                  value={paymentRefNo}
-                  onChange={(e) => setPaymentRefNo(e.target.value)}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="images">Payment Reference Image:</label>
-                <input
-                  type="file"
-                  className="form-control"
-                  id="images"
-                  name="images"
-                  accept="image/*"
-                  onChange={(e) => setPaymentRefImg(e.target.files[0])}
-                />
-              </div>
-
-              {/* <div className="form-group">
-              <label htmlFor="images">Payment Type</label>
-              <select name="payment_type" value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
-              <option value="full">full</option>
-              <option value="partial">partial</option>
-            </select>
-            </div> */}
-
-      {/* <Autocomplete
-              className="my-2"
-              id="combo-box-demo"
-              value={paymentType.label}
-              options={[
-                { label: "Full", value: "full" },
-                { label: "Partial", value: "partial" },
-              ]}
-              // onChange={(e, value) => setPaymentType(value)}
-              getOptionLabel={(option) => option.label}
-              renderInput={(params) => (
-                <TextField {...params} label="Payment Type" variant="outlined" />
-              )}
-            /> */}
-
-      {/* <Autocomplete
-        className="my-2"
-        id="combo-box-demo"
-        // value={row.statusDropdown}
-        options={[
-          { label: "Full", value: "full" },
-          { label: "Partial", value: "partial" },
-        ]}
-        style={{ width: 180, zIndex: 1, position: "relative" }}
-        // onChange={(e, value) => setPaymentType(value)}
-        getOptionLabel={(option) => option.label}
-        renderInput={(params) => (
-          <TextField {...params} label="Status" variant="outlined" />
-        )}
-      /> */}
-
-      {/* <Autocomplete
-          className="my-2"
-          id="combo-box-demo"
-          // value={row.statusDropdown}
-          options={[
-            { label: "Approved", value: 1 },
-            { label: "Rejected", value: 0 },
-          ]}
-          getOptionLabel={(option) => option.label}
-          onChange={(e) => {
-            // handleStatusChange(row, e.target.value),
-              console.log(e.target.value);
-          }}
-          style={{ width: 180 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Status" variant="outlined" />
-          )}
-        /> */}
-
-      {/* <div className="form-group">
-              <label htmlFor="images">Payment Details</label>
-              <select name="payment_detail" value={paymentDetails} onChange={(e)=> setPaymentDetails(e.target.value)} required>
-                <option value="">Please select</option>
-                {dropdownData.map((item)=>(
-                  <option value={item.id}>{item.title}</option>
-                ))}
-              </select>
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="images">Payment Mode</label>
-              <select name="cars" value={paymentMode} onChange={(e)=> setPaymentMode(e.target.value)}>
-                <option value="cash">cash</option>
-                <option value="others">others</option>
-              </select>
-            </div> */}
-
-      {/* <button type="submit" className="btn btn-primary">
-              Submit
-            </button> */}
-      {/* </form>
-          </div>
-        </div>
-      </Modal> */}
-
-      {/* <Button variant="outlined" onClick={handleClickOpen}>
-        Open dialog
-      </Button> */}
       <BootstrapDialog
         onClose={handleCloseImageModal}
         aria-labelledby="customized-dialog-title"
@@ -553,13 +366,6 @@ const BalancePaymentList = () => {
                   />
                 </div>
 
-                {/* <div className="form-group">
-              <label htmlFor="images">Payment Type</label>
-              <select name="payment_type" value={paymentType} onChange={(e) => setPaymentType(e.target.value)}>
-              <option value="full">full</option>
-              <option value="partial">partial</option>
-            </select>
-            </div> */}
                 <TextField
                   variant="outlined"
                   label="Paid Amount *"
@@ -581,26 +387,12 @@ const BalancePaymentList = () => {
                         );
                       }
                     } else {
-                      // Handle non-numeric input
                       toastError("Please enter a valid numeric value");
                       setPaidAmount("");
                     }
                   }}
                 />
 
-                {/* <div className="form-group">
-  <label htmlFor="paidAmount">Paid Amount</label>
-  <input
-    // type="number"
-    className="form-control"
-    id="paidAmount"
-    name="paidAmount"
-
-    value={paidAmount}
-    onChange={handlePaidAmountChange}
-    required
-  />
-</div> */}
                 <Autocomplete
                   className="my-2"
                   id="combo-box-demo"
@@ -613,23 +405,13 @@ const BalancePaymentList = () => {
                   ]}
                   style={{ width: 180, zIndex: 1, position: "relative" }}
                   onChange={(e, value) => {
-                    setPaymentType(value), console.log(value);
+                    setPaymentType(value)
                   }}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
                     <TextField {...params} label="Status" variant="outlined" />
                   )}
                 />
-
-                {/* <div className="form-group">
-              <label htmlFor="images">Payment Details</label>
-              <select name="payment_detail" value={paymentDetails} onChange={(e)=> setPaymentDetails(e.target.value)} required>
-                <option value="">Please select</option>
-                {dropdownData.map((item)=>(
-                  <option value={item.id}>{item.title}</option>
-                ))}
-              </select>
-            </div> */}
 
                 <Autocomplete
                   className="my-2"
@@ -641,7 +423,7 @@ const BalancePaymentList = () => {
                   }))}
                   style={{ width: 180, zIndex: 1, position: "relative" }}
                   onChange={(e, value) => {
-                    setPaymentDetails(value), console.log(value);
+                    setPaymentDetails(value)
                   }}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
@@ -652,38 +434,6 @@ const BalancePaymentList = () => {
                     />
                   )}
                 />
-
-                {/* <div className="form-group">
-              <label htmlFor="images">Payment Mode</label>
-              <select name="cars" value={paymentMode} onChange={(e)=> setPaymentMode(e.target.value)}>
-                <option value="cash">cash</option>
-                <option value="others">others</option>
-              </select>
-            </div> */}
-
-                <Autocomplete
-                  className="my-2"
-                  id="combo-box-demo"
-                  // value={row.statusDropdown}
-                  options={[
-                    { label: "Cash", value: "cash" },
-                    { label: "Others", value: "others" },
-                  ]}
-                  style={{ width: 180, zIndex: 1, position: "relative" }}
-                  onChange={(e, value) => setPaymentMode(value)}
-                  getOptionLabel={(option) => option.label}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Payment Mode *"
-                      variant="outlined"
-                    />
-                  )}
-                />
-
-                {/* <button type="submit" className="btn btn-primary">
-              Submit
-            </button> */}
               </form>
             </div>
           </div>
@@ -705,11 +455,11 @@ const BalancePaymentList = () => {
       </BootstrapDialog>
 
       {viewImgDialog && (
-          <ImageView
-            viewImgSrc={viewImgSrc}
-            setViewImgDialog={setViewImgDialog}
-          />
-        )}
+        <ImageView
+          viewImgSrc={viewImgSrc}
+          setViewImgDialog={setViewImgDialog}
+        />
+      )}
     </>
   );
 };

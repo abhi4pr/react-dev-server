@@ -7,11 +7,11 @@ import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
 import Select from "react-select";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 export default function SubDepartmentMaster() {
   const { DepartmentContext } = useAPIGlobalContext();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [subDepartmentName, setSubDepartmentName] = useState("");
   const [departmentName, setDepartmentName] = useState("");
   const [remark, setRemark] = useState("");
@@ -21,17 +21,10 @@ export default function SubDepartmentMaster() {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  // const [departmentdata, getDepartmentData] = useState([]);
-  // useEffect(() => {
-  //   axios.get(baseUrl+"get_all_departments").then((res) => {
-  //     getDepartmentData(res.data).catch((error) => console.log(error));
-  //   });
-  // }, []);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(baseUrl+"add_sub_department", {
+      await axios.post(baseUrl + "add_sub_department", {
         sub_dept_name: subDepartmentName,
         dept_id: departmentName,
         remark: remark,
@@ -44,10 +37,8 @@ export default function SubDepartmentMaster() {
       toastAlert("Submitted success");
       setIsFormSubmitted(true);
     } catch (error) {
-      toastAlert(
-        "Error occurred: " +
-          (error.response ? error.response.data.message : "Unknown error")
-      );
+      toastError("Error while adding sub department.");
+      alert(error.response.data.message);
     }
   };
 
