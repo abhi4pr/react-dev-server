@@ -219,6 +219,9 @@ import SalesExecutiveIncentiveRequestReleaseList from "./Finance/SalesExecutiveI
 import AssetDashboard from "../Sim/AssetDashboard";
 import { baseUrl } from "../../utils/config";
 import CreatePlan from "./RegisterCampaign/Plan/CreatePlan";
+import AllPlan from "./RegisterCampaign/Plan/AllPlanData";
+import AllPlanData from "./RegisterCampaign/Plan/AllPlanData";
+import AllPlanOverview from "./RegisterCampaign/Plan/AllPlanOverview";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -777,6 +780,9 @@ const Admin = () => {
                   />
                   {/* Phase Dashboard here  */}
                   <Route path="/phase-dashboard" element={<PhaseDashboard />} />
+                  <Route path="/direct_allPlan" element={<AllPlanData />} />
+                  <Route path="/all-planoverview/:id" element={<AllPlanOverview />} />
+
                   <Route
                     path="/plan-dashboard/:id"
                     element={<PlanDashboard />}

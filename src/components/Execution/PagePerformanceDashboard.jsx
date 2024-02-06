@@ -3,9 +3,9 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import FormContainer from "../AdminPanel/FormContainer";
 import { DataGrid } from "@mui/x-data-grid";
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Box, TextField } from "@mui/material";
 import PerformanceGraphDialog from "./PerformanceGraphDialog";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
 const FilterDataOptions = [
   "Highest",
@@ -29,6 +29,9 @@ export default function PagePerformanceDashboard() {
   const [openPerformanceGraphDialog, setOpenPerformanceGraphDialog] =
     useState(false);
   const [rowData, setRowData] = useState([]);
+  const [search, setSearch] = useState("");
+  const [filteredRows, setFilteredRows] = useState([]);
+
   const [intervalFlag, setIntervalFlag] = useState({
     label: "Current Month",
     value: "1",
@@ -44,7 +47,7 @@ export default function PagePerformanceDashboard() {
 
   const callApi = () => {
     axios
-      .post(baseUrl+"page_health_dashboard", {
+      .post(baseUrl + "page_health_dashboard", {
         intervalFlag: intervalFlag.value,
       })
       .then((res) => {
@@ -254,56 +257,76 @@ export default function PagePerformanceDashboard() {
   const handleRowClick = (params) => {
     setOpenPerformanceGraphDialog(true);
     setRowData(params.row);
-    console.log(params.row)
+    console.log(params.row);
   };
+
+  const filterRows = () => {
+    const filtered = pageHistory.filter((row) =>
+      row.page_name.toLowerCase().includes(search.toLowerCase())
+    );
+    setFilteredRows(filtered);
+  };
+
+  useEffect(() => {
+    filterRows();
+  }, [search, pageHistory]);
+
 
   return (
     <>
       <FormContainer mainTitle="Page Performance Dashboard" link="/ip-master" />
-      <div className="d-flex">
-        <Autocomplete
-          disablePortal
-          va
-          lue={intervalFlag.label}
-          defaultValue={intervalFlagOptions[0].label}
-          id="combo-box-demo"
-          options={intervalFlagOptions.map((option) => ({
-            label: option.label,
-            value: option.value,
-          }))}
-          onChange={(event, newValue) => {
-            if (newValue === null) {
-              return setIntervalFlag({ label: "Current Month", value: 1 });
-            }
-            setIntervalFlag(newValue);
-          }}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Filter Date" />
-          )}
+      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+        <TextField
+          type="text"
+          label="Search Page"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
         />
-        <Autocomplete
-          className="ms-3"
-          disablePortal
-          value={filterDataVal}
-          defaultChecked="Higest"
-          defaultValue={FilterDataOptions[0]}
-          id="combo-box-demo"
-          options={FilterDataOptions}
-          onChange={(event, newValue) => {
-            if (newValue === null) {
-              return setFilterDataVal("Highest");
-            }
-            setFilterDataVal(newValue);
-          }}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Filter Data" />
-          )}
-        />
-      </div>
+        <Box sx={{ display: "flex" }}>
+          <Autocomplete
+            disablePortal
+            va
+            lue={intervalFlag.label}
+            defaultValue={intervalFlagOptions[0].label}
+            id="combo-box-demo"
+            options={intervalFlagOptions.map((option) => ({
+              label: option.label,
+              value: option.value,
+            }))}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setIntervalFlag({ label: "Current Month", value: 1 });
+              }
+              setIntervalFlag(newValue);
+            }}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Filter Date" />
+            )}
+          />
+          <Autocomplete
+            className="ms-3"
+            disablePortal
+            value={filterDataVal}
+            defaultChecked="Higest"
+            defaultValue={FilterDataOptions[0]}
+            id="combo-box-demo"
+            options={FilterDataOptions}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setFilterDataVal("Highest");
+              }
+              setFilterDataVal(newValue);
+            }}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Filter Data" />
+            )}
+          />
+        </Box>
+      </Box>
       <DataGrid
-        rows={pageHistory}
+        rows={filteredRows}
         columns={columns}
         onRowClick={handleRowClick}
         pageSize={10}
