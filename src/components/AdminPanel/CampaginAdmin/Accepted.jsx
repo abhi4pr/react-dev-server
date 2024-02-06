@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import DownloadTwoToneIcon from "@mui/icons-material/DownloadTwoTone";
 import { SnippetFolderTwoTone } from "@mui/icons-material";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 export default function Accepted() {
   const [showData, setShowData] = useState([]);
@@ -37,18 +37,15 @@ export default function Accepted() {
   };
 
   useEffect(() => {
+    axios.get(baseUrl + "contentSectionReg").then((response) => {
+      const data = response.data.data.filter(
+        (e) => e.status <= "21" && e.stage == "3"
+      );
+      console.log(data);
+      setShowData(data);
+    });
     axios
-      .get(baseUrl+"contentSectionReg")
-      .then((response) => {
-        // console.log(response.data.data);
-        const data = response.data.data.filter(
-          (e) => e.status <= "21" && e.stage == "3"
-        );
-        console.log(data);
-        setShowData(data);
-      });
-    axios
-      .get(baseUrl+"get_brands")
+      .get(baseUrl + "get_brands")
       .then((response) => {
         setBrandName(response.data.data);
         // setTable1Data2(true);
@@ -56,23 +53,19 @@ export default function Accepted() {
       .catch((err) => {
         console.log(err);
       });
-    axios.get(baseUrl+"content").then((response) => {
+    axios.get(baseUrl + "content").then((response) => {
       setContentTypeList(response.data.data);
     });
-    axios
-      .get(baseUrl+"get_all_commitments")
-      .then((response) => {
-        const data = response.data.data;
+    axios.get(baseUrl + "get_all_commitments").then((response) => {
+      const data = response.data.data;
 
-        setCommits(data);
-      });
-    axios
-      .get(baseUrl+"get_all_users")
-      .then((response) => {
-        const data = response.data.data.filter((e) => e.dept_id == 13);
-        console.log(data);
-        setAssignToList(data);
-      });
+      setCommits(data);
+    });
+    axios.get(baseUrl + "get_all_users").then((response) => {
+      const data = response.data.data.filter((e) => e.dept_id == 13);
+      console.log(data);
+      setAssignToList(data);
+    });
   }, []);
 
   const columns = [

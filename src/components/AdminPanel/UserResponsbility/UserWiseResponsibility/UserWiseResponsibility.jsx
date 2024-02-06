@@ -6,7 +6,7 @@ import FormContainer from "../../FormContainer";
 import { useParams } from "react-router-dom";
 import Select from "react-select";
 import { useGlobalContext } from "../../../../Context/Context";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
 
 const UserWiseResponsibility = () => {
   const { toastAlert } = useGlobalContext();
@@ -31,9 +31,7 @@ const UserWiseResponsibility = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setDatas(res.data);
         });
@@ -42,9 +40,7 @@ const UserWiseResponsibility = () => {
 
   async function getData() {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_users"
-      );
+      const response = await axios.get(baseUrl + "get_all_users");
       const data = response.data.data;
 
       setTransferToUser(data);
@@ -54,11 +50,9 @@ const UserWiseResponsibility = () => {
   }
 
   const handleTransfer = (userId) => {
-    axios
-      .get(`${baseUrl}`+`get_single_kra/${userId}`)
-      .then((res) => {
-        setTransferResponsibilityData(res.data);
-      });
+    axios.get(`${baseUrl}` + `get_single_kra/${userId}`).then((res) => {
+      setTransferResponsibilityData(res.data);
+    });
   };
   function handleAllCheckedData(event) {
     if (event.target.checked) {
@@ -80,21 +74,17 @@ const UserWiseResponsibility = () => {
   }
 
   function getDatas() {
-    axios
-      .get(`${baseUrl}`+`userbyjobres/${id}`)
-      .then((res) => {
-        setData(res.data);
-        setFilterData(res.data);
-      });
+    axios.get(`${baseUrl}` + `userbyjobres/${id}`).then((res) => {
+      setData(res.data);
+      setFilterData(res.data);
+    });
   }
   useEffect(() => {
     getData();
     getDatas();
-    axios
-      .get(baseUrl+"get_all_jobresponsibilitys")
-      .then((res) => {
-        setAllResponsibility(res.data.data);
-      });
+    axios.get(baseUrl + "get_all_jobresponsibilitys").then((res) => {
+      setAllResponsibility(res.data.data);
+    });
   }, []);
 
   useEffect(() => {
@@ -115,17 +105,16 @@ const UserWiseResponsibility = () => {
         Job_res_id: element.Job_res_id,
       };
       axios
-        .post(baseUrl+"kratranspost", requestData)
+        .post(baseUrl + "kratranspost", requestData)
         .then((res) => {
           setRemark("");
           setTransferTo("");
           toastAlert("KRA Transfer Successfully");
 
           const MailUser = transferToUser.find((d) => d.user_id == transferTo);
-          console.log(MailUser, "mail user hai");
 
           axios
-            .post(baseUrl+"add_send_user_mail", {
+            .post(baseUrl + "add_send_user_mail", {
               email: MailUser.user_email_id,
               subject: "User Registration",
               text: "You Have Assign New KRA",

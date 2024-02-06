@@ -137,9 +137,7 @@ const SalaryWFH = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          baseUrl+"get_all_wfh_users"
-        );
+        const res = await axios.get(baseUrl + "get_all_wfh_users");
         const data = res.data.data;
         setAllWFHUsers(data?.length);
         const filteredUser = data.filter((d) => d.dept_id === department);
@@ -162,37 +160,33 @@ const SalaryWFH = () => {
   }, [department]);
 
   function gettingSliderData() {
-    axios
-      .get(baseUrl+"get_month_year_data")
-      .then((res) => {
-        setCompletedYearsMonths(res.data.data);
-      });
+    axios.get(baseUrl + "get_month_year_data").then((res) => {
+      setCompletedYearsMonths(res.data.data);
+    });
   }
 
   useEffect(() => {
-    axios
-      .get(baseUrl+"all_departments_of_wfh")
-      .then((res) => {
-        if (RoleIDContext === 1 || RoleIDContext === 5) {
-          getDepartmentData(res.data.data);
-        } else {
-          getDepartmentData(
-            res.data.data?.filter((d) => d.dept_id == ContextDept)
-          );
-        }
-      });
+    axios.get(baseUrl + "all_departments_of_wfh").then((res) => {
+      if (RoleIDContext === 1 || RoleIDContext === 5) {
+        getDepartmentData(res.data.data);
+      } else {
+        getDepartmentData(
+          res.data.data?.filter((d) => d.dept_id == ContextDept)
+        );
+      }
+    });
 
     //harshal
     gettingSliderData();
   }, []);
 
   useEffect(() => {
-    axios.get(`${baseUrl}`+`get_all_users`).then((res) => {
+    axios.get(`${baseUrl}` + `get_all_users`).then((res) => {
       getUsersData(res.data.data);
     });
     if (department) {
       axios
-        .get(`${baseUrl}`+`get_user_by_deptid/${department}`)
+        .get(`${baseUrl}` + `get_user_by_deptid/${department}`)
         .then((res) => {
           setDepartmentWise(res.data);
         });
@@ -296,19 +290,14 @@ const SalaryWFH = () => {
     setSelectedCardIndex(index);
     setYear(data.year);
     setMonth(data.month);
-
-    console.log(data.year, data.month);
   };
 
   const handleMonthYearData = async () => {
     try {
-      const response = await axios.post(
-        baseUrl+"get_salary_by_month_year",
-        {
-          month: month,
-          year: Number(year),
-        }
-      );
+      const response = await axios.post(baseUrl + "get_salary_by_month_year", {
+        month: month,
+        year: Number(year),
+      });
       const data = response.data.data;
       setSalaryMonthYearData(data);
     } catch (error) {
@@ -319,7 +308,7 @@ const SalaryWFH = () => {
   //Create all Department Salary
   function handleAllDepartmentSalary() {
     axios
-      .post(baseUrl+"save_all_depts_attendance", {
+      .post(baseUrl + "save_all_depts_attendance", {
         month: month,
         year: year,
       })
@@ -338,7 +327,7 @@ const SalaryWFH = () => {
     formData.append("invoice_template_no", selectedTemplate);
 
     axios
-      .put(`${baseUrl}`+`update_user`, formData, {
+      .put(`${baseUrl}` + `update_user`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -361,11 +350,11 @@ const SalaryWFH = () => {
 
     if (department || month || year !== "") {
       axios
-        .get(baseUrl+"get_total_salary")
+        .get(baseUrl + "get_total_salary")
         .then((res) => setCard2Data(res.data.data[0]));
 
       axios
-        .post(baseUrl+"left_employees", {
+        .post(baseUrl + "left_employees", {
           dept_id: department,
           month: month,
           year: year,
@@ -374,7 +363,7 @@ const SalaryWFH = () => {
     }
 
     axios
-      .post(baseUrl+"new_joiners", {
+      .post(baseUrl + "new_joiners", {
         dept_id: department,
         month: month,
         year: year,
@@ -382,7 +371,7 @@ const SalaryWFH = () => {
       .then((res) => setNewJoineeCount(res.data));
 
     axios
-      .post(baseUrl+"check_salary_status", {
+      .post(baseUrl + "check_salary_status", {
         month: month,
         year: year,
         dept: department,
@@ -394,7 +383,7 @@ const SalaryWFH = () => {
 
   function gettingDepartmentSalaryExists() {
     axios
-      .post(baseUrl+"get_distinct_depts", {
+      .post(baseUrl + "get_distinct_depts", {
         month: month,
         year: year,
       })
@@ -403,21 +392,18 @@ const SalaryWFH = () => {
 
   const handleAttendance = async () => {
     try {
-      await axios.post(baseUrl+"add_attendance", {
+      await axios.post(baseUrl + "add_attendance", {
         dept: department,
         user_id: userName.user_id,
         noOfabsent: 0,
         month: month,
         year: year,
       });
-      await axios.put(
-        baseUrl+"update_attendence_status",
-        {
-          month: month,
-          year: Number(year),
-          dept: department,
-        }
-      );
+      await axios.put(baseUrl + "update_attendence_status", {
+        month: month,
+        year: Number(year),
+        dept: department,
+      });
 
       setNoOfAbsent("");
       handleSubmit();
@@ -430,15 +416,11 @@ const SalaryWFH = () => {
   const handleSubmit = async () => {
     try {
       setFilterData([]);
-      const res = await axios.post(
-        baseUrl+"get_salary_by_id_month_year",
-        {
-          dept_id: department,
-          month: month,
-          year: Number(year),
-        }
-      );
-      console.log("salary api");
+      const res = await axios.post(baseUrl + "get_salary_by_id_month_year", {
+        dept_id: department,
+        month: month,
+        year: Number(year),
+      });
       setFilterData(res.data.data);
       setData(res.data.data);
     } catch (error) {
@@ -556,12 +538,12 @@ const SalaryWFH = () => {
   //Send to finance
   function handleSendToFinance(e, row) {
     e.preventDefault();
-    axios.post(`${baseUrl}`+`add_finance`, {
+    axios.post(`${baseUrl}` + `add_finance`, {
       attendence_id: row.attendence_id,
     });
 
     axios
-      .put(`${baseUrl}`+`update_salary`, {
+      .put(`${baseUrl}` + `update_salary`, {
         attendence_id: row.attendence_id,
         sendToFinance: 1,
       })
@@ -682,13 +664,13 @@ const SalaryWFH = () => {
     setUserName(username);
     setUserContact(user_contact_no);
     axios
-      .get(baseUrl+"get_all_reasons")
+      .get(baseUrl + "get_all_reasons")
       .then((res) => setSeparationReasonGet(res.data));
   }
 
   const today = new Date()?.toISOString()?.split("T")[0];
   function handleSeparationDataPost() {
-    axios.post(baseUrl+"add_separation", {
+    axios.post(baseUrl + "add_separation", {
       user_id: separationUserID,
       status: separationStatus,
       created_by: userID,

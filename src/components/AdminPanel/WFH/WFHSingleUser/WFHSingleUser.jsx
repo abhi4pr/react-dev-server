@@ -71,11 +71,12 @@ const WFHSingleUser = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    openTemplateModal();
   };
 
-  const openTemplateModal = () => {
+  function openTemplateModal() {
     setIsTemplateModalOpen(true);
-  };
+  }
 
   const closeTemplateModal = () => {
     setIsTemplateModalOpen(false);
@@ -710,6 +711,7 @@ const WFHSingleUser = () => {
                   >
                     <WFHTemplateOverview
                       closeTemplateModal={closeTemplateModal}
+                      handleSubmit={handleSubmit}
                     />
                   </Modal>
 

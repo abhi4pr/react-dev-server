@@ -14,6 +14,7 @@ const SidebarLinks = () => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
+  console.log("token", decodedToken);
   const RoleId = decodedToken.role_id;
 
   useEffect(() => {
@@ -212,7 +213,7 @@ const SidebarLinks = () => {
       {/* USER MANAGEMENT */}
 
       {/*WFHD USER */}
-      {jobType == "WFHD" && (
+      {jobType == "WFHD" && RoleId == 4 && (
         <li className="nav-item">
           <Link
             className="nav-link collapsed"
