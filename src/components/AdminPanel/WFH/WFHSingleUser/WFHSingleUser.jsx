@@ -364,14 +364,10 @@ const WFHSingleUser = () => {
       <Page size="A1" style={styles.page}>
         <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
           <Text style={{ fontSize: 25 }}>
-            Department:{" "}
-            {(departmentdata &&
-              departmentdata?.find((user) => user.dept_id === department)
-                ?.dept_name) ||
-              ""}
+            Department: {filterData[0]?.dept_name}
           </Text>
-          <Text style={{ fontSize: 25 }}>Month: {month}</Text>
-          <Text style={{ fontSize: 25 }}>Year: {year}</Text>
+          <Text style={{ fontSize: 25 }}>Month: {filterData[0]?.month}</Text>
+          <Text style={{ fontSize: 25 }}>Year: {filterData[0]?.year}</Text>
         </View>
 
         <View style={styles.table}>
