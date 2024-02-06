@@ -19,7 +19,11 @@ const InvoiceTemplate1 = ({ data }) => {
                 <h3>Name : {data?.user_name}</h3>
                 <h4>E-Mail : {data?.user_email_id}</h4>
                 <h4>Contact No. : {data?.user_contact_no}</h4>
-                <h4>Address : {data?.permanent_address}</h4>
+                <h4>
+                  Address :{" "}
+                  {`${data?.permanent_address} ${data?.permanent_city} ${data?.permanent_state}`}
+                </h4>
+                <h4>Pincode : {data?.permanent_pin_code}</h4>
               </div>
               <div className="billBox">
                 <div className="billBoxLeft">
