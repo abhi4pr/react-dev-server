@@ -1,5 +1,5 @@
 import { DataGrid } from "@mui/x-data-grid";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   Box,
@@ -9,10 +9,10 @@ import {
   Paper,
 } from "@mui/material";
 import axios from "axios";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
 
 const RequestAssignPage = ({ data, RequestAssign }) => {
-  console.log(data[0]?.ass_page?.campaignName, "reuset");
+  const [acceptall, setAcceptAll] = useState([])
   const processedData = data.map((item) => ({
     ...item,
     campaignName: item?.ass_page?.campaignName,
@@ -21,10 +21,13 @@ const RequestAssignPage = ({ data, RequestAssign }) => {
     category: item?.ass_page?.cat_name,
     story: item?.ass_page?.storyPerPage,
   }));
+  useEffect(() => {
+    setAcceptAll(data)
+  }, [data])
 
   const handleAccept = async (row) => {
     const x = await axios.post(
-      `${baseUrl}`+`preassignment/phase/update`,
+      `${baseUrl}` + `preassignment/phase/update`,
       {
         pre_ass_id: row.pre_ass_id,
         status: "accepted",
@@ -36,7 +39,7 @@ const RequestAssignPage = ({ data, RequestAssign }) => {
   };
   const handleReject = async (row) => {
     const x = await axios.post(
-      `${baseUrl}`+`preassignment/phase/update`,
+      `${baseUrl}` + `preassignment/phase/update`,
       {
         pre_ass_id: row.pre_ass_id,
         status: "rejected",
@@ -109,12 +112,43 @@ const RequestAssignPage = ({ data, RequestAssign }) => {
     },
   ];
 
+  const handleSelectionChange=(row)=>{
+    
+    const newData=data.filter(item=>{
+      if(row.some(page=>page==item._id)){
+        return item
+      }
+    })
+
+    setAcceptAll(newData)
+
+    
+  }
+
+  const handleAcceptAll = async () => {
+    try {
+      const response = await axios.post(`${baseUrl}preassignment/acceptall`, { preAssignedPages: acceptall })
+
+      RequestAssign()
+    } catch (error) {
+
+    }
+  }
+
+  console.log(processedData)
   return (
     <div>
+      <Button variant="contained" onClick={handleAcceptAll}>
+        Accept All
+      </Button>
       <DataGrid
+        checkboxSelection
+        disableRowSelectionOnClick
+        onRowSelectionModelChange={(row) => handleSelectionChange(row)}
         rows={processedData}
         columns={columns}
         getRowId={(row) => row._id}
+        
       />
     </div>
   );

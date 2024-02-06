@@ -8,8 +8,9 @@ import {
   Button,
   TextField,
   Paper,
+  Autocomplete,
 } from "@mui/material";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
 
 const style = {
   position: "absolute",
@@ -40,7 +41,7 @@ const ExePageDetailes = ({
   const [commitPayload, setCommitPayload] = useState([]);
   const [posts, setPosts] = useState([]);
   const [story, setStory] = useState([]);
-  const[ass_id,setAss_id]=useState(null)
+  const [ass_id, setAss_id] = useState(null)
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
 
@@ -54,19 +55,19 @@ const ExePageDetailes = ({
       ass_id: row.ass_id,
       campaignId: row.campaignId,
       phase_id: row.phase_id,
-      execute:false
+      execute: false
     });
     setAss_id(row.ass_id)
     setOpen(true);
   };
-  
-  const finalExecute=async()=>{
+
+  const finalExecute = async () => {
     const response = await axios.post(
-      baseUrl+"assignment/commit",
+      baseUrl + "assignment/commit",
       {
         ass_id: ass_id,
 
-        execute:true
+        execute: true
       }
     );
     alert("executed successfully");
@@ -76,12 +77,12 @@ const ExePageDetailes = ({
 
   const handleUpdate = async (params) => {
     const response = await axios.get(
-      `${baseUrl}`+`campaignphase/singlephase/${params.row.phase_id}`
+      `${baseUrl}` + `campaignphase/singlephase/${params.row.phase_id}`
     );
     setSinglePhase(response?.data?.data?.commitment);
 
     const assCommit = await axios.get(
-      `${baseUrl}`+`assignment/commit/single/${params.row.ass_id}`
+      `${baseUrl}` + `assignment/commit/single/${params.row.ass_id}`
     );
     setAssignmentCommits(assCommit.data.data);
     setCommitPayload(assCommit.data.data);
@@ -90,7 +91,7 @@ const ExePageDetailes = ({
 
   console.log(commitPayload, "commit payload");
 
-  const handleVerified = () => {};
+  const handleVerified = () => { };
 
   const handleCommitChange = (e, field, param) => {
     console.log(param.row);
@@ -107,7 +108,7 @@ const ExePageDetailes = ({
   const handleExecute = async (params) => {
     console.log(params);
     const response = await axios.post(
-      baseUrl+"assignment/status",
+      baseUrl + "assignment/status",
       {
         ass_id: params.row.ass_id,
         campaignId: params.row.campaignId,
@@ -123,7 +124,7 @@ const ExePageDetailes = ({
       (commit) => commit.comm_id == params.comm_id
     );
     const response = await axios.put(
-      `${baseUrl}`+`assignment/commit/single/${params.comm_id}`,
+      `${baseUrl}` + `assignment/commit/single/${params.comm_id}`,
       payload
     );
     alert("updated successfully");
@@ -132,7 +133,7 @@ const ExePageDetailes = ({
 
   const handleAssignedSubmit = async () => {
     const response = await axios.post(
-      baseUrl+"assignment/commit",
+      baseUrl + "assignment/commit",
       assignedData
     );
     alert("submitted successfully");
@@ -357,6 +358,7 @@ const ExePageDetailes = ({
 
   return (
     <>
+    
       <DataGrid
         rows={data}
         columns={column}
@@ -425,7 +427,7 @@ const ExePageDetailes = ({
                       color="primary"
                       size="small"
                       sx={{ mt: 2 }}
-                      // onClick={handleAssignedSubmit}
+                    // onClick={handleAssignedSubmit}
                     >
                       Submit
                     </Button>
