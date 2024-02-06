@@ -64,9 +64,7 @@ import KRA from "./KRA/KRA";
 import UserWiseResponsibility from "./UserResponsbility/UserWiseResponsibility/UserWiseResponsibility";
 import UserWiseDashboard from "./User/UserWIseDashboard/UserWiseDashboard";
 import SalaryWFH from "./WFH/SalaryGeneration/SalaryWFH";
-
 import SalarySummary from "./WFH/SalarySummary/SalarySummary";
-
 import UserHierarchy from "./User/UserHierarchy";
 import UserSingle from "./User/UserSingle";
 import DashboardWFHUser from "./WFH/DashboardWFHUser";
@@ -111,7 +109,6 @@ import CampaignCommitment from "./RegisterCampaign/CampaignCommitment";
 import ContentCreater from "./RegisterCampaign/ContentCreater";
 import CheckPageFollowers from "./RegisterCampaign/CheckPageFollowers";
 import SubCategoryMaster from "./RegisterCampaign/SubCategoryMaster";
-
 import CreaterDashboard from "./RegisterCampaign/CreaterDashboard";
 import BillingOverview from "./WFH/Billing/BillingOverview";
 import BillingMast from "./WFH/Billing/BillingMast";
@@ -123,10 +120,9 @@ import BillingUpdate from "./WFH/Billing/BillingUpdate";
 // import AdminPostView from "../InstaApi.jsx/InstaAdmin/AdminPostView";
 // import AuditorPageView from "../InstaApi.jsx/Auditor/AuditorPageView";
 // import InterpretorContext from "../InstaApi.jsx/Interpretor/InterpretorContext";
+// import AnalyticsDashboard from "../InstaApi.jsx/Analytics/AnalyticsDashboard";
 import AccountsOverviewWFH from "./AccountsDepartment/AccountsOverviewWFH";
 import WFHSingleUser from "./WFH/WFHSingleUser/WFHSingleUser";
-// import AnalyticsDashboard from "../InstaApi.jsx/Analytics/AnalyticsDashboard";
-
 import ExecutionAll from "../Execution/ExecutionAll";
 import ExecutionOwn from "../Execution/ExecutionOwn";
 import ExecutionOther from "../Execution/ExecutionOther";
@@ -147,7 +143,6 @@ import ExeHistory from "../Execution/ExeHistory";
 import { SelfAudit } from "./AssetNotifier/SelfAudit";
 import StatsAllPagesDetail from "../Execution/StatsAllPagesDetail";
 import ExecutionDashboard from "../Execution/ExecutionDashboard";
-
 import AllTransactions from "./Finance/AllTransactions";
 import ApprovalInvoice from "./Finance/ApprovalInvoice";
 import BalancePaymentList from "./Finance/BalancePaymentList";
@@ -182,13 +177,11 @@ import AddEmailTemp from "./User/AddEmailTemp";
 import EmailTempOverview from "./User/EmailTempOverview";
 import EditEmailTemp from "./User/EditEmailTemp";
 import ManagerDashboard from "./RegisterCampaign/ManagerDashboard/ManagerDashboard";
-
 import ManagerCampaign from "./RegisterCampaign/ManagerCampaignDashboard/ManagerCampaign";
 import AssetVisibleToTagedPerosn from "../Sim/AssetVisibleToTagedPerson/AssetVisibleToTagedPerosn";
 import AssetSingleUser from "../Sim/AssetSingeUser/AssetSingleUser";
 import AssetVisibleToHr from "../Sim/AssetVisibleToHr/AssetVisibleToHr";
 import AssetManager from "../Sim/AssetManager/AssetManager";
-
 import WFHAllSalary from "./WFH/WFHAllSalary";
 import PendingPaymentRequest from "./Finance/PendingPaymentRequest";
 import PaymentDone from "./Finance/PaymentDone";
@@ -768,10 +761,7 @@ const Admin = () => {
                     path="/register-campaign"
                     element={<RegisterCampaign />}
                   />
-                     <Route
-                    path="/create-plan"
-                    element={<CreatePlan />}
-                  />
+                  <Route path="/create-plan" element={<CreatePlan />} />
                   {/* HOBBIES */}
                   <Route path="/hobbies/:id" element={<Hobbies />} />
                   <Route

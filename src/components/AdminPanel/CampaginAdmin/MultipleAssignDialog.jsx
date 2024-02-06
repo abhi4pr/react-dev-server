@@ -14,7 +14,7 @@ import {
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 export default function MultipleAssignDialog({
   brandName,
@@ -36,7 +36,7 @@ export default function MultipleAssignDialog({
   const handleAssignMultiple = () => {
     for (let i in showMultipleAssignModalData) {
       axios
-        .put(baseUrl+"contentSectionReg", {
+        .put(baseUrl + "contentSectionReg", {
           content_section_id: showMultipleAssignModalData[i].content_section_id,
           assign_to: setAssignTo.current,
           creator_dt: selectedDate,
@@ -45,7 +45,6 @@ export default function MultipleAssignDialog({
           status: "11",
         })
         .then((response) => {
-          console.log(response);
           if (response.data.success) {
             handleCloseMultipleAssignModal();
             setReload((prev) => !prev);

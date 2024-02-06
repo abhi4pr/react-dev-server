@@ -44,7 +44,6 @@ const WFHUserOverview = () => {
         const res = await axios.get(
           `${baseUrl}`+`get_wfh_user/${deptId}`
         );
-        console.log(res.data, "res");
         const data = res.data;
         setFilterData(data);
       } else {

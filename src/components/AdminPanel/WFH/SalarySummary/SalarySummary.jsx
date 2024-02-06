@@ -3,7 +3,7 @@ import axios from "axios";
 import FormContainer from "../../FormContainer";
 import DataTable from "react-data-table-component";
 import Modal from "react-modal";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
 
 const SalarySummary = () => {
   const [allSalaryData, setAllSalaryData] = useState([]);
@@ -23,15 +23,13 @@ const SalarySummary = () => {
   const handleUserModal = async (row) => {
     try {
       const response = await axios.post(
-        `${baseUrl}`+`get_users_count_by_dept`,
+        `${baseUrl}` + `get_users_count_by_dept`,
         {
           dept_id: row.dept_id,
           month: row.month,
           year: row.year,
         }
       );
-      console.log(response.data.data);
-
       setUserCount(response.data.data);
       handleOpenSubCat();
     } catch (error) {
@@ -40,9 +38,7 @@ const SalarySummary = () => {
   };
 
   const getData = async () => {
-    const response = await axios.get(
-      baseUrl+"get_salary_calculation_data"
-    );
+    const response = await axios.get(baseUrl + "get_salary_calculation_data");
     setAllSalaryData(response.data.data);
     setSavedData(response.data.data);
   };

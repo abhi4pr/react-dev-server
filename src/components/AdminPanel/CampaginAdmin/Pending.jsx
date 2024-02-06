@@ -22,7 +22,7 @@ import ExtendRequest from "./ExtendRequest";
 import { SnippetFolderTwoTone } from "@mui/icons-material";
 import MultipleAssignDialog from "./MultipleAssignDialog";
 import SingleAssignDialog from "./SingleAssignDialog";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 export default function Pending() {
   const [reload, setReoad] = useState(false);
@@ -49,12 +49,8 @@ export default function Pending() {
   const handleClose2 = () => setOpen2(false);
   const setAssignTo = useRef("");
 
-  const handleCheckBox = (params) => {
-    console.log(params, "params");
-    console.log(rowSelectionModel, "rowSelectionModel");
-  };
+  const handleCheckBox = (params) => {};
   const handleGetRowData = (row) => {
-    console.log(row, "row");
     const data = showTable1Data.filter(
       (e) => e.status == 1 && e.stage == 1 && e.brand_id == row
     );
@@ -76,37 +72,29 @@ export default function Pending() {
   };
 
   useEffect(() => {
-    axios
-      .get(baseUrl+"contentSectionReg")
-      .then((response) => {
-        // const data = response.data.data.filter(
-        //   (e) => e.status == "1" && e.stage == "1"
-        // );
-        // const arr = [];
-        // console.log(data, "data");
-        // const brandIdList = new Set(data.map((e) => e.brand_id));
-        // arr.push(...brandIdList);
-        // setBrandIdList(arr);
-        // setShowTable1Data(data);
+    axios.get(baseUrl + "contentSectionReg").then((response) => {
+      // const data = response.data.data.filter(
+      //   (e) => e.status == "1" && e.stage == "1"
+      // );
+      // const arr = [];
+      // console.log(data, "data");
+      // const brandIdList = new Set(data.map((e) => e.brand_id));
+      // arr.push(...brandIdList);
+      // setBrandIdList(arr);
+      // setShowTable1Data(data);
 
-        const data = response.data.data.filter(
-          (e) => e.status == "1" && e.stage == "1"
-        );
-        const arr = [];
-        console.log(data, "data");
-        const brandIdList = new Set(response.data.data.map((e) => e.brand_id));
-        console.log(
-          response.data.data.map((e) => e.brand_id == brandIdList.brand_id)
-            .length,
-          "brandIdList"
-        );
-        arr.push(...brandIdList);
-        setBrandIdList(arr);
-        setShowTable1Data(response.data.data);
-      });
+      const data = response.data.data.filter(
+        (e) => e.status == "1" && e.stage == "1"
+      );
+      const arr = [];
+      const brandIdList = new Set(response.data.data.map((e) => e.brand_id));
+      arr.push(...brandIdList);
+      setBrandIdList(arr);
+      setShowTable1Data(response.data.data);
+    });
 
     axios
-      .get(baseUrl+"get_brands")
+      .get(baseUrl + "get_brands")
       .then((response) => {
         setBrandName(response.data.data);
       })
@@ -114,54 +102,48 @@ export default function Pending() {
         console.log(err);
       });
 
-    axios.get(baseUrl+"content").then((response) => {
+    axios.get(baseUrl + "content").then((response) => {
       setContentTypeList(response.data.data);
     });
-    axios
-      .get(baseUrl+"get_all_commitments")
-      .then((response) => {
-        const data = response.data.data;
+    axios.get(baseUrl + "get_all_commitments").then((response) => {
+      const data = response.data.data;
 
-        setCommits(data);
-      });
-    axios
-      .get(baseUrl+"get_all_users")
-      .then((response) => {
-        const data = response.data.data.filter((e) => e.dept_id == 13);
-        setAssignToList(data);
-      });
+      setCommits(data);
+    });
+    axios.get(baseUrl + "get_all_users").then((response) => {
+      const data = response.data.data.filter((e) => e.dept_id == 13);
+      setAssignToList(data);
+    });
   }, []);
 
   useEffect(() => {
-    axios
-      .get(baseUrl+"contentSectionReg")
-      .then((response) => {
-        setShowBundelData(false);
-        // const data = response.data.data.filter(
-        //   (e) => e.status == "1" && e.stage == "1"
-        // );
-        // const arr = [];
-        // console.log(data, "data");
-        // const brandIdList = new Set(data.map((e) => e.brand_id));
-        // arr.push(...brandIdList);
-        // setBrandIdList(arr);
-        // setShowTable1Data(data);
+    axios.get(baseUrl + "contentSectionReg").then((response) => {
+      setShowBundelData(false);
+      // const data = response.data.data.filter(
+      //   (e) => e.status == "1" && e.stage == "1"
+      // );
+      // const arr = [];
+      // console.log(data, "data");
+      // const brandIdList = new Set(data.map((e) => e.brand_id));
+      // arr.push(...brandIdList);
+      // setBrandIdList(arr);
+      // setShowTable1Data(data);
 
-        const data = response.data.data.filter(
-          (e) => e.status == "1" && e.stage == "1"
-        );
-        const arr = [];
-        console.log(data, "data");
-        const brandIdList = new Set(response.data.data.map((e) => e.brand_id));
-        console.log(
-          response.data.data.map((e) => e.brand_id == brandIdList.brand_id)
-            .length,
-          "brandIdList"
-        );
-        arr.push(...brandIdList);
-        setBrandIdList(arr);
-        setShowTable1Data(response.data.data);
-      });
+      const data = response.data.data.filter(
+        (e) => e.status == "1" && e.stage == "1"
+      );
+      const arr = [];
+      console.log(data, "data");
+      const brandIdList = new Set(response.data.data.map((e) => e.brand_id));
+      console.log(
+        response.data.data.map((e) => e.brand_id == brandIdList.brand_id)
+          .length,
+        "brandIdList"
+      );
+      arr.push(...brandIdList);
+      setBrandIdList(arr);
+      setShowTable1Data(response.data.data);
+    });
   }, [reload]);
 
   const handleDateChange = (date) => {

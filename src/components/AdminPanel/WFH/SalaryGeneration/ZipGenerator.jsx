@@ -54,7 +54,6 @@ export const generatePDF = async (rowData) => {
 
   try {
     const pdf = await html2pdf().from(element).set(options).outputPdf();
-    console.log("Generated PDF:", pdf); // Log the generated PDF
     return pdf;
   } catch (error) {
     console.error("Error generating PDF:", error);

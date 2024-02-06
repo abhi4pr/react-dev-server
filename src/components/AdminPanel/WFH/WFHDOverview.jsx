@@ -12,9 +12,7 @@ const WFHDOverview = () => {
   const [search, setSearch] = useState("");
 
   const getData = async () => {
-    const response = await axios.get(
-      baseUrl+"get_all_wfh_users"
-    );
+    const response = await axios.get(baseUrl + "get_all_wfh_users");
     if (RoleIDContext == 1 || RoleIDContext == 5) {
       setAllWFHDData(response.data.data);
     } else {
@@ -72,7 +70,7 @@ const WFHDOverview = () => {
     },
     {
       name: "Profile status",
-      cell: (row) => row.percentage_filled,
+      cell: (row) => row.profile_status + " %",
     },
     {
       name: "status",

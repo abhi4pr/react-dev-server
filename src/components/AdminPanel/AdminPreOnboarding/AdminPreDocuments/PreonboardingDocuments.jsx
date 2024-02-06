@@ -5,7 +5,7 @@ import { useGlobalContext } from "../../../../Context/Context";
 import Select from "react-select";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
 
 const selectOptions = [
   {
@@ -46,7 +46,7 @@ const PreonboardingDocuments = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(baseUrl+"add_doc", {
+      .post(baseUrl + "add_doc", {
         doc_type: documentType,
         priority: priority,
         period: Number(period),
@@ -63,7 +63,6 @@ const PreonboardingDocuments = () => {
         navigate("/admin/preonboarding-documents-overview");
       });
   };
-  console.log(priority);
   return (
     <>
       <FormContainer
