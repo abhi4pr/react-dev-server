@@ -736,8 +736,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             options={pageNames}
             getOptionLabel={(option) => option}
             sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Page Name" />
+            renderInput={(param) => (
+              <TextField {...param} label={params.row.page_name} />
             )}
             onChange={(event, newValue) => {
               pageReplacement(newValue, params);

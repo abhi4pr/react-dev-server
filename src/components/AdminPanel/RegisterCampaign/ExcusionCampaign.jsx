@@ -4,13 +4,14 @@ import ExePageDetailes from "./ExePageDetailes";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import RequestAssignPage from "./RequestAssignPage";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
+import { Autocomplete, TextField } from "@mui/material";
 
 const ExcusionCampaign = () => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
 
-  console.log(decodedToken);
+
 
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [assignmentData, setAssignmentData] = useState([]);
@@ -20,46 +21,107 @@ const ExcusionCampaign = () => {
   const [verifiedData, setVerifiedData] = useState([]);
   const [rejectedData, setRejectedData] = useState([]);
   const [requestAssign, SetRequestAssign] = useState([]);
+  const [campaignOptions, setCampaignOptions] = useState([])
+  const [selectedCampaign, setSelectedCampaign] = useState(null)
+  const [unfilteredAssignment,setUnfilteredAssignment]=useState([])
+ 
 
   const getExpertee = async () => {
     const expert = await axios.get(
-      `${baseUrl}`+`expertise/user/${decodedToken.id}`
+      `${baseUrl}` + `expertise/user/${decodedToken.id}`
     );
     getAssignment(expert.data.data.exp_id);
     console.log(expert);
   };
+
+
+
+  useEffect(() => {
+    console.log("hello")
+    let x = []
+    for (const pages of unfilteredAssignment) {
+      if (!x.some(item => pages.ass_page.campaignName == item.campaignName)) {
+
+        x.push({ campaignName: pages.ass_page?.campaignName, campaignId: pages?.campaignId })
+      }
+    }
+    setCampaignOptions(x)
+    
+
+  }, [unfilteredAssignment,requestAssign,selectedCampaign])
+  console.log(campaignOptions)
+
   useEffect(() => {
     getExpertee();
   }, [activeAccordionIndex]);
+
   const RequestAssign = async () => {
     const reqAss = await axios.get(
-      `${baseUrl}`+`preassignment/${decodedToken.id}`
+      `${baseUrl}` + `preassignment/${decodedToken.id}`
     );
-    const data = reqAss?.data?.data.filter((item) => item.status == "pending");
+    const data = reqAss?.data?.data.filter((item) => {
+      if(!selectedCampaign){
+        return item.status == "pending"
+
+      }else return (item.status == "pending" && item.campaignId==selectedCampaign)
+    })
+    const data2= reqAss?.data?.data.filter((item) => {
+   
+        return item.status == "pending"
+
+      
+    })
+    
+    setUnfilteredAssignment(data2)
     SetRequestAssign(data);
   };
+
+  
   useEffect(() => {
     RequestAssign();
-  }, []);
+  }, [selectedCampaign]);
+
+
   const getAssignment = async (id) => {
     const getData = await axios.get(
-      `${baseUrl}`+`assignment/all/${decodedToken.id}`
+      `${baseUrl}` + `assignment/all/${decodedToken.id}`
     );
     const assigned = getData?.data?.data.filter(
-      (item) => item.ass_status == "assigned" || item.ass_status == "pending"
-    );
+      (item) => {
+        if(!selectedCampaign){
+         return item.ass_status == "assigned" || item.ass_status == "pending"
+        }else  {
+          return (item.ass_status == "assigned" || item.ass_status == "pending") && item.campaignId==selectedCampaign
+        }
+      }
+    ).reverse()
     // const pending = getData?.data?.data.filter(
     //   (item) => item.ass_status == "pending"
     // );
     const excuted = getData?.data?.data.filter(
-      (item) => item.ass_status == "executed"
-    );
+      (item) => {
+        if(!selectedCampaign){
+         return item.ass_status == "executed"
+        }else  {
+          return item.ass_status == "executed"  && item.campaignId==selectedCampaign
+        }}
+    ).reverse();
     const verified = getData?.data?.data.filter(
-      (item) => item.ass_status == "verified"
-    );
+      (item) => {
+        if(!selectedCampaign){
+         return item.ass_status == "verified"
+        }else  {
+          return item.ass_status == "verified"  && item.campaignId==selectedCampaign
+        }}
+    ).reverse();
     const rejected = getData?.data?.data.filter(
-      (item) => item.ass_status == "rejected"
-    );
+      (item) => {
+        if(!selectedCampaign){
+         return item.ass_status == "rejected"
+        }else  {
+          return item.ass_status == "rejected"  && item.campaignId==selectedCampaign
+        }}
+    ).reverse();
     setAssignmentData(assigned);
     // setPendingData(pending);
     setExecutedData(excuted);
@@ -123,7 +185,7 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
-
+  console.log(selectedCampaign)
   const accordionButtons = [
     "Requested Assign",
     "Assignment",
@@ -132,16 +194,34 @@ const ExcusionCampaign = () => {
     "Verified",
     "Rejected",
   ];
+
+  console.log(selectedCampaign)
   return (
-    <div>
+    <>
+
       <FormContainer
         submitButton={false}
         mainTitle="Execution Campaign"
         title="Execution Campaign"
+        execusion={true}
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
       >
+        <Autocomplete
+          id="campaigns"
+          options={campaignOptions}
+          getOptionLabel={(option) => option.campaignName}
+          className={option=>option.campaignId}
+          style={{ width: 300 }}
+          renderInput={(params) => <TextField {...params} label="Select Campaign" variant="outlined" />}
+          onChange={(e) => {
+            
+            
+            console.log(e.target.class)
+
+          }}
+        />
         {activeAccordionIndex === 0 && tab1}
         {activeAccordionIndex === 1 && tab2}
         {activeAccordionIndex === 2 && tab3}
@@ -149,7 +229,7 @@ const ExcusionCampaign = () => {
         {activeAccordionIndex === 4 && tab5}
         {/* {activeAccordionIndex === 5 && tab6} */}
       </FormContainer>
-    </div>
+    </>
   );
 };
 

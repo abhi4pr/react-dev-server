@@ -364,7 +364,7 @@ export default function RegisteredCampaign() {
             return { ...element, count: index + 1 };
           })
           .sort((a, b) => b.register_campaign_id - a.register_campaign_id);
-        console.log(table1Data);
+        
         setTable1Data(table1Data);
         setTable2Data(
           response.data.data
@@ -374,6 +374,7 @@ export default function RegisteredCampaign() {
             })
             .sort((a, b) => b.register_campaign_id - a.register_campaign_id)
         );
+        
       })
       .catch((err) => {
         console.log(err);
@@ -390,6 +391,8 @@ export default function RegisteredCampaign() {
         console.log(err);
       });
   }, [reload]);
+
+  console.log(table1Data);
 
   const tab1Columns = [
     {
