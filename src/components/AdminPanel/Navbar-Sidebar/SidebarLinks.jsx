@@ -1022,7 +1022,7 @@ const SidebarLinks = () => {
           >
             <div className="bg-white collapse-inner">
               <li className="nav-item">
-                <Link
+                {/* <Link
                   className="nav-link collapsed"
                   data-toggle="collapse"
                   data-target="#collapsInnerEightFinanceEditDashboard"
@@ -1049,7 +1049,7 @@ const SidebarLinks = () => {
                       </li>
                     </>
                   </div>
-                </div>
+                </div> */}
 
                 <Link
                   className="nav-link collapsed"
@@ -1327,7 +1327,7 @@ const SidebarLinks = () => {
                   aria-expanded="true"
                   aria-controls="collapsInnerEightFinancePayout"
                 >
-                  <span>Pay Out</span>
+                  <span>WFHD Salary</span>
                 </Link>
                 <div
                   id="collapsInnerEightFinancePayout"
@@ -1342,6 +1342,13 @@ const SidebarLinks = () => {
                         to="/admin/accounts-finance-dashboard"
                       >
                         Payout Summary
+                      </Link>
+
+                      <Link
+                        className="collapse-item"
+                        to="/admin/accounts-finance-overview"
+                      >
+Account Overview
                       </Link>
                     </>
                   </div>

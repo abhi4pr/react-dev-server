@@ -212,6 +212,7 @@ import SalesExecutiveIncentiveRequestReleaseList from "./Finance/SalesExecutiveI
 import AssetDashboard from "../Sim/AssetDashboard";
 import { baseUrl } from "../../utils/config";
 import CreatePlan from "./RegisterCampaign/Plan/CreatePlan";
+import EmailEvent from "./User/EmailEvent/EmailEvent";
 import AllPlan from "./RegisterCampaign/Plan/AllPlanData";
 import AllPlanData from "./RegisterCampaign/Plan/AllPlanData";
 import AllPlanOverview from "./RegisterCampaign/Plan/AllPlanOverview";
@@ -332,6 +333,11 @@ const Admin = () => {
                             path="/email-template-update/:id"
                             element={<EditEmailTemp />}
                           />
+                          <Route
+                            path="/email-events"
+                            element={<EmailEvent />}
+                          />
+
                         </>
                       )}
                   </>

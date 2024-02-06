@@ -73,7 +73,7 @@ function ExecutionPending() {
             `${baseUrl}`+`get_single_user_auth_detail/${userID}`
           )
           .then((res) => {
-            if (res.data[26].view_value == 1) {
+            if (res.data[42].view_value == 1) {
               setContextData(true);
               setAlert(res.data);
             }

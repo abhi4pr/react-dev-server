@@ -8,6 +8,7 @@ import DeleteButton from "../../AdminPanel/DeleteButton";
 import DataTable from "react-data-table-component";
 import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
+import { Button } from "@mui/material";
 
 const EmailTempOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -20,12 +21,10 @@ const EmailTempOverview = () => {
   const loginUserId = decodedToken.id;
 
   async function getData() {
-    await axios
-      .get(baseUrl+"get_all_email_contents")
-      .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
-      });
+    await axios.get(baseUrl + "get_all_email_contents").then((res) => {
+      setData(res.data.data);
+      setFilterData(res.data.data);
+    });
   }
 
   useEffect(() => {
@@ -90,10 +89,17 @@ const EmailTempOverview = () => {
     <>
       <FormContainer
         mainTitle="Email Template Overview"
-        title=""
+        // title=""
+        link="admin/email-template"
         submitButton={false}
-      >
-        <button
+      />
+        <div>
+          <Link className="btn btn-primary btn-sm " to="/admin/email-events">
+             Email Events
+          </Link>
+        <Link to="/admin/email-template " className="btn-success btn-sm btn">Add Email Template</Link>
+        </div>
+        {/* <button
           type="button"
           className="btn btn-success"
           style={{
@@ -103,12 +109,11 @@ const EmailTempOverview = () => {
             width: "10%",
             height: "10%",
           }}
-        >
-          <Link to="/admin/email-template">Add Email Template</Link>
-        </button>
+        > */}
+        {/* </button> */}
 
-        <div className="page_height">
-          <div className="card mb-4">
+        {/* <div className="page_height"> */}
+          <div className="card mb-4 d-block">
             <div className="data_tbl table-responsive">
               <DataTable
                 title="Email Temp Overview"
@@ -131,8 +136,8 @@ const EmailTempOverview = () => {
               />
             </div>
           </div>
-        </div>
-      </FormContainer>
+        {/* </div> */}
+      {/* </FormContainer> */}
     </>
   );
 };
