@@ -4,7 +4,10 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SiMicrosoftexcel } from "react-icons/si";
-import exportToCSV from "../../../../utils/ExcelConverter";
+// import exportToCSV from "../../../../utils/ExcelConverter";
+import * as XLSX from "xlsx";
+import SummaryDetails from "../SummrayDetailes";
+import { baseUrl } from "../../../../utils/config";
 
 
 const AllPlanData = () => {
@@ -13,7 +16,7 @@ const AllPlanData = () => {
   const [excelData, setExcelData] = useState([]);
 
   const getData = async () => {
-    const res = await axios.get(`http://192.168.1.11:3000/api/directplan`);
+    const res = await axios.get(`${baseUrl}directplan`);
     setAllPlan(res?.data?.result);
     const createExcelData = res?.data?.result?.pages;
     console.log(createExcelData, "data");
@@ -28,7 +31,7 @@ const AllPlanData = () => {
 
   const excelDownload = (params) => {
     setExcelData(params?.row?.pages);
-    exportToCSV(params?.row?.pages)
+    // exportToCSV(params?.row?.pages)
   };
   const col = [
     {
@@ -84,7 +87,36 @@ const AllPlanData = () => {
         </>
       ),
     },
+    {
+      field: "Delete",
+      headerName: "delete",
+      width: 200,
+      renderCell: (params) => (
+        <>
+          <Button
+            variant="text"
+            color="success"
+            title="del"
+            sx={{ fontSize: "25px" }}
+            onClick={() => deleteSinglePlan(params)}
+          >
+            <SiMicrosoftexcel />
+          </Button>
+        </>
+      ),
+    },
   ];
+
+  const deleteSinglePlan=async (params)=>{
+    try {
+        const response=await axios.delete(`${baseUrl}directplan/${params.row._id}`)
+        getData()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  console.log(excelData)
   return (
     <>
       <Paper>
@@ -96,6 +128,7 @@ const AllPlanData = () => {
       </Paper>
 
       <DataGrid rows={allPlan} columns={col} getRowId={(row) => row?._id} />
+      <SummaryDetails  payload={excelData} campName={"Test"} />
     </>
   );
 };

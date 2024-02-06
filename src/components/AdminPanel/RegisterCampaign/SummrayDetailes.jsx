@@ -6,6 +6,7 @@ import * as XLSX from "xlsx";
 import { SiMicrosoftexcel } from "react-icons/si";
 
 const SummaryDetails = ({ payload, campName }) => {
+  console.log(payload)
   const [summaryData, setSummaryData] = useState({
     total: 0,
     totalPost: 0,
