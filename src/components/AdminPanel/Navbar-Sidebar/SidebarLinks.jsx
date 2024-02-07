@@ -193,9 +193,9 @@ const SidebarLinks = () => {
               <Link className="collapse-item" to="/admin/jobType">
                 Job Type
               </Link>
-              <Link className="collapse-item" to="/sim-overview">
+              {/* <Link className="collapse-item" to="/sim-overview">
                 Asset Management
-              </Link>
+              </Link> */}
               <Link className="collapse-item" to="/admin/user-graph">
                 User Graphs
               </Link>
@@ -1347,7 +1347,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/accounts-finance-overview"
                       >
-Account Overview
+                        Account Overview
                       </Link>
                     </>
                   </div>
@@ -1388,7 +1388,7 @@ Account Overview
               My Asset
             </Link>
             {/* {RoleId == 5 && ( */}
-            <Link className="collapse-item" to="/sim-overview">
+            <Link className="collapse-item" to={`/sim-overview/${0}`}>
               Asset Management
             </Link>
             {/* )} */}

@@ -22,7 +22,7 @@ function Dashboard() {
   const navigate = useNavigate();
 
   function handleSim() {
-    navigate("/sim-overview");
+    navigate();
   }
   function handleBrand() {
     navigate("/brand-overview");
@@ -298,7 +298,7 @@ function Dashboard() {
             </div>
           )}
 
-          {loginUserData.department_name == "Accounts" && (
+          {loginUserData.department_name == "Accounts" &&
             // <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
             //   <div className="d_infocard card shadow">
             //     <div
@@ -317,8 +317,7 @@ function Dashboard() {
             //     </div>
             //   </div>
             // </div>
-            navigate("/admin/finance-dashboard")
-          )}
+            navigate("/admin/finance-dashboard")}
         </div>
       </div>
     </>

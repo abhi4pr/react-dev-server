@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import FormContainer from "../AdminPanel/FormContainer";
@@ -14,6 +14,8 @@ import { useGlobalContext } from "../../Context/Context";
 import { baseUrl } from "../../utils/config";
 
 const SimOverview = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { toastAlert, categoryDataContext } = useGlobalContext();
   const [search, setSearch] = useState("");
   const [ImageModalOpen, setImageModalOpen] = useState(false);
@@ -53,7 +55,7 @@ const SimOverview = () => {
     { value: "Old", label: "Old" },
   ];
 
-  function getData() {
+  function getData(buttonID) {
     axios.get(baseUrl + "get_all_sims").then((res) => {
       const simAllData = res.data.data;
       // if (status != "") {
@@ -61,20 +63,55 @@ const SimOverview = () => {
       //     (data) => data.status.toLowerCase() == status
       //   );
       //   setData(AvailableData);
-      //   setFilterData(AvailableData);
+      //   setFilterData(AvailableData);`
       // } else
-      if (selectedStatus !== "") {
-        const AvailableData = simAllData?.filter(
-          (data) => data.status == selectedStatus
-        );
-        setData(AvailableData);
-        setFilterData(AvailableData);
-      } else {
+
+      if (buttonID == 1) {
+        const f1 = simAllData?.filter((d) => d.status == "Available");
+        setData(f1);
+        setFilterData(f1);
+      }
+      if (buttonID == 2) {
+        const f2 = simAllData?.filter((d) => d.status == "Allocated");
+        setData(f2);
+        setFilterData(f2);
+      }
+      if (buttonID == 0) {
         setData(simAllData);
         setFilterData(simAllData);
       }
+
+      if (id == 1) {
+        const f1 = simAllData?.filter((d) => d.status == "Available");
+        setData(f1);
+        setFilterData(f1);
+
+        console.log("cccc", f1);
+      }
+      if (id == 2) {
+        const f2 = simAllData?.filter((d) => d.status == "Allocated");
+        setData(f2);
+        setFilterData(f2);
+        // console.log("ddd", f2);
+      }
+      if (id == 0) {
+        setData(simAllData);
+        setFilterData(simAllData);
+      }
+
+      // if (selectedStatus !== "") {
+      //   const AvailableData = simAllData?.filter(
+      //     (data) => data.status == selectedStatus
+      //   );
+      //   setData(AvailableData);
+      //   setFilterData(AvailableData);
+      // } else {
+      //   setData(simAllData);
+      //   setFilterData(simAllData);
+      // }
     });
   }
+
   // function getAllocatedData (){
   //   axios.get(baseUrl+"get_all_allocations").then((res) => {
   //     console.log(res.data)
@@ -102,6 +139,12 @@ const SimOverview = () => {
   //       setCategoryData(res.data);
   //     });
   // };
+  // useEffect(() => {
+  //   console.log(id, "id hewiafhsf");
+  //   console.log(data, "dfghj da hewiafhsf");
+
+  // }, [data]);
+
   const getSubCategoryData = () => {
     if (category) {
       axios
@@ -118,7 +161,7 @@ const SimOverview = () => {
   useEffect(() => {
     getData();
     // getCategoryData();
-  }, [selectedStatus]);
+  }, [selectedStatus, id]);
 
   useEffect(() => {
     axios.get(baseUrl + "get_all_allocations").then((res) => {
@@ -349,7 +392,7 @@ const SimOverview = () => {
             </button>
           </Link>
 
-          {selectedStatus == "Allocated" && (
+          {id == 2 && (
             <button
               type="button"
               className="btn btn-outline-primary btn-sm user-button"
@@ -362,7 +405,7 @@ const SimOverview = () => {
             </button>
           )}
 
-          {selectedStatus == "Available" && (
+          {id == 1 && (
             <button
               type="button"
               title="Allocation"
@@ -470,31 +513,30 @@ const SimOverview = () => {
                 <button
                   type="button"
                   className={`btn ${
-                    selectedStatus == "Available"
-                      ? "btn-primary"
-                      : "btn-outline-primary"
+                    id == 1 ? "btn-primary" : "btn-outline-primary"
                   } btn-sm`}
-                  onClick={() => setSelectedStatus("Available")}
+                  // onClick={() => getData(1)}
+                  onClick={() => navigate(`/sim-overview/${1}`)}
                 >
                   Available
                 </button>
                 <button
                   type="button"
                   className={`btn ${
-                    selectedStatus == "Allocated"
-                      ? "btn-primary"
-                      : "btn-outline-primary"
+                    id == 2 ? "btn-primary" : "btn-outline-primary"
                   } btn-sm`}
-                  onClick={() => setSelectedStatus("Allocated")}
+                  // onClick={() => getData(2)}
+                  onClick={() => navigate(`/sim-overview/${2}`)}
                 >
                   Allocated
                 </button>
                 <button
                   type="button"
                   className={`btn ${
-                    selectedStatus == "" ? "btn-primary" : "btn-outline-primary"
+                    id == 0 ? "btn-primary" : "btn-outline-primary"
                   } btn-sm`}
-                  onClick={() => setSelectedStatus("")}
+                  // onClick={() => getData(0)}
+                  onClick={() => navigate(`/sim-overview/${0}`)}
                 >
                   All Assets
                 </button>

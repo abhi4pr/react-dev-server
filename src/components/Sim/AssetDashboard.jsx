@@ -216,7 +216,7 @@ const AssetDashboard = () => {
                 borderRadius: "50px",
               }}
             >
-              <Link>
+              <Link to="/admin/asset_summary">
                 <i className="fa fa-3x fa-bar-chart"></i>
                 <h4>Asset Summary</h4>
               </Link>
@@ -225,7 +225,7 @@ const AssetDashboard = () => {
 
           <div className="row">
             <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <Link to="/sim-overview">
+              <Link to={`/sim-overview/${0}`}>
                 <div
                   className="d_infocard card shadow p-1"
                   style={{
@@ -246,7 +246,7 @@ const AssetDashboard = () => {
             </div>
 
             <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <Link to="/sim-overview">
+              <Link to={`/sim-overview/${1}`}>
                 <div
                   className="d_infocard card shadow p-1"
                   style={{
@@ -274,7 +274,7 @@ const AssetDashboard = () => {
                     "linear-gradient(240deg, #97e7d1 0%, #ecfcc3 100%)",
                 }}
               >
-                <Link to="/sim-overview">
+                <Link to={`/sim-overview/${2}`}>
                   <div className="card-body">
                     <div className="d_infocard_txt">
                       <h2>Allocated</h2>
@@ -459,11 +459,13 @@ const AssetDashboard = () => {
                   width: "10%",
                 },
                 { name: "Name", selector: (row) => row.user_name },
+                { name: "Asset Name", selector: (row) => row.asset_name },
                 { name: "Category Name", selector: (row) => row.category_name },
                 {
                   name: "SubCategory Name",
                   selector: (row) => row.sub_category_name,
                 },
+                { name: "Department Name", selector: (row) => row.dept_name },
               ]}
               data={selectedUserData.filter((user) =>
                 user.user_name.toLowerCase().includes(modalSearch.toLowerCase())

@@ -73,8 +73,7 @@ const PreviewInvoice = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
         {isLoading ? (
           <>
             <div>Loading...</div>
-            <Invoi
-              cePdfGenerator
+            <InvoicePdfGenerator
               data={InvoiceData}
               setIsPreviewModalOpen={setIsPreviewModalOpen}
               handleSubmit={handleSubmit}

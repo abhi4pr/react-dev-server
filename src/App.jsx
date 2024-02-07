@@ -112,7 +112,7 @@ function App() {
           />
 
           {/* sim */}
-          <Route path="/sim-overview" element={<SimOverview />} />
+          <Route path="/sim-overview/:id" element={<SimOverview />} />
           <Route
             path="/singleAssetDetails/:id"
             element={<SingleAssetUserDetails />}

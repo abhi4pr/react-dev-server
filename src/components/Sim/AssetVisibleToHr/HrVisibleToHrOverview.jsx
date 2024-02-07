@@ -707,7 +707,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
                     <div className="summary_box text-center ml-auto mr-auto"></div>
                     <div className="summary_box col">
                       <img
-                        src={showAssetsImage?.img1_url}
+                        src={showAssetsImage?.img1}
                         width="80px"
                         height="80px"
                       />
@@ -724,7 +724,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
                     <div className="summary_box text-center ml-auto mr-auto"></div>
                     <div className="summary_box col">
                       <img
-                        src={showAssetsImage?.img2_url}
+                        src={showAssetsImage?.img2}
                         width="80px"
                         height="80px"
                       />
@@ -741,7 +741,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
                     <div className="summary_box text-center ml-auto mr-auto"></div>
                     <div className="summary_box col">
                       <img
-                        src={showAssetsImage?.img3_url}
+                        src={showAssetsImage?.img3}
                         width="80px"
                         height="80px"
                       />
@@ -758,7 +758,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
                     <div className="summary_box text-center ml-auto mr-auto"></div>
                     <div className="summary_box col">
                       <img
-                        src={showAssetsImage?.img4_url}
+                        src={showAssetsImage?.img4}
                         width="80px"
                         height="80px"
                       />
