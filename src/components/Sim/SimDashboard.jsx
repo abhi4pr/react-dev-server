@@ -49,9 +49,7 @@ const SimDashboard = () => {
   const getSubCategoryData = () => {
     if (category) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_asset_sub_category/${category}`
-        )
+        .get(`${baseUrl}` + `get_single_asset_sub_category/${category}`)
         .then((res) => {
           setSubCategoryData(res.data);
           const filtersubcat = subcategory
@@ -66,7 +64,7 @@ const SimDashboard = () => {
   }, [category]);
 
   function getData() {
-    axios.get(baseUrl+"get_all_sims").then((res) => {
+    axios.get(baseUrl + "get_all_sims").then((res) => {
       setSimData(res.data.data);
 
       const availableObjects = res.data.data.filter(
@@ -79,16 +77,14 @@ const SimDashboard = () => {
       );
       setAllocatedCount(allocatedObjects);
     });
-    axios
-      .get(baseUrl+"get_asset_department_count")
-      .then((res) => {
-        setDepartmentData(res.data.data);
+    axios.get(baseUrl + "get_asset_department_count").then((res) => {
+      setDepartmentData(res.data.data);
 
-        const filteredDatas = category
-          ? res.data.data.filter((item) => item.category_id === category)
-          : res.data.data;
-        setDepartmentData(filteredDatas);
-      });
+      const filteredDatas = category
+        ? res.data.data.filter((item) => item.category_id === category)
+        : res.data.data;
+      setDepartmentData(filteredDatas);
+    });
   }
 
   useEffect(() => {
@@ -97,11 +93,9 @@ const SimDashboard = () => {
 
   const handleRowClick = (row) => {
     setSelectedRow(row);
-    axios
-      .get(`${baseUrl}`+`get_asset_users_of_dept/${row}`)
-      .then((res) => {
-        setSelectedUserData(res.data.data);
-      });
+    axios.get(`${baseUrl}` + `get_asset_users_of_dept/${row}`).then((res) => {
+      setSelectedUserData(res.data.data);
+    });
     setIsModalOpen(true);
   };
 
@@ -125,7 +119,7 @@ const SimDashboard = () => {
 
           <div className="row">
             <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <Link to="/sim-overview">
+              <Link to={`/sim-overview/${0}`}>
                 <div className="d_infocard card shadow">
                   <div className="card-body">
                     <div className="d_infocard_txt">
@@ -140,7 +134,7 @@ const SimDashboard = () => {
             </div>
 
             <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <Link to="/sim-overview">
+              <Link to={`/sim-overview/${1}`}>
                 <div className="d_infocard card shadow">
                   <div className="card-body">
                     <div className="d_infocard_txt">
@@ -156,7 +150,7 @@ const SimDashboard = () => {
 
             <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <div className="d_infocard card shadow">
-                <Link to="/sim-overview">
+                <Link to={`/sim-overview/${2}`}>
                   <div className="card-body">
                     <div className="d_infocard_txt">
                       <h2>Allocated</h2>

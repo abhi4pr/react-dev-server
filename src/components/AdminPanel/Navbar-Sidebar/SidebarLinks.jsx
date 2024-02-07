@@ -14,7 +14,6 @@ const SidebarLinks = () => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
-  console.log("token", decodedToken);
   const RoleId = decodedToken.role_id;
 
   useEffect(() => {
@@ -194,9 +193,9 @@ const SidebarLinks = () => {
               <Link className="collapse-item" to="/admin/jobType">
                 Job Type
               </Link>
-              <Link className="collapse-item" to="/sim-overview">
+              {/* <Link className="collapse-item" to="/sim-overview">
                 Asset Management
-              </Link>
+              </Link> */}
               <Link className="collapse-item" to="/admin/user-graph">
                 User Graphs
               </Link>
@@ -583,12 +582,12 @@ const SidebarLinks = () => {
                       >
                         All Pages Detailed
                       </Link>{" "}
-                      <Link
+                      {/* <Link
                         to="/admin/exeexecution/dashboard"
                         className="collapse-item"
                       >
                         Dashboard
-                      </Link>
+                      </Link> */}
                       <Link
                         className="collapse-item"
                         to="/admin/exeexecution/all"
@@ -1348,7 +1347,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/accounts-finance-overview"
                       >
-Account Overview
+                        Account Overview
                       </Link>
                     </>
                   </div>
@@ -1380,35 +1379,35 @@ Account Overview
           data-parent="#accordionSidebar"
         >
           <div className="bg-white collapse-inner">
-            {/* {RoleId == 5 && ( */}
-            <Link className="collapse-item" to="/admin/asset-dashboard">
-              Dashboard
-            </Link>
-            {/* )} */}
+            {RoleId == 5 && (
+              <Link className="collapse-item" to="/admin/asset-dashboard">
+                Dashboard
+              </Link>
+            )}
             <Link className="collapse-item" to="/admin/asset-single-user">
               My Asset
             </Link>
-            {/* {RoleId == 5 && ( */}
-            <Link className="collapse-item" to="/sim-overview">
-              Asset Management
-            </Link>
-            {/* )} */}
-            {/* {RoleId == 5 && ( */}
-            <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-              Asset's Request
-            </Link>
-            {/* )} */}
+            {RoleId == 5 && (
+              <Link className="collapse-item" to={`/sim-overview/${0}`}>
+                Asset Management
+              </Link>
+            )}
+            {RoleId == 5 && (
+              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                Asset's Request
+              </Link>
+            )}
             <Link
               className="collapse-item"
               to="/admin/asset-visible-to-taged-person"
             >
               Tagged Asset
             </Link>
-            {/* {RoleId == 2 && ( */}
-            <Link className="collapse-item" to="/admin/asset-manager">
-              Asset Request Approvel
-            </Link>
-            {/* )} */}
+            {RoleId == 2 && (
+              <Link className="collapse-item" to="/admin/asset-manager">
+                Asset Request Approvel
+              </Link>
+            )}
           </div>
         </div>
       </li>

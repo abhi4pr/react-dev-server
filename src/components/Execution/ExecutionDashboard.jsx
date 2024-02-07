@@ -1,6 +1,6 @@
 import React from "react";
 import FormContainer from "../AdminPanel/FormContainer";
-import { Button, Paper, TextField } from "@mui/material";
+import { Autocomplete, Button, Paper, TextField } from "@mui/material";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useState } from "react";
@@ -13,7 +13,9 @@ import jwtDecode from "jwt-decode";
 import ContentLoader from "react-content-loader";
 import {baseUrl} from '../../utils/config'
 
+const viewInOptions = ["Millions", "Thousands", "Default"];
 export default function ExecutionDashboard() {
+  const [viewType, setViewType] = useState("Default");
   const [contextData, setContextData] = useState(false);
   const [pagemode, setPagemode] = useState(1);
   const [copiedData, setCopiedData] = useState("");
@@ -99,6 +101,42 @@ export default function ExecutionDashboard() {
       />
     );
   }
+
+  useEffect(() => {
+    filterDataByCategory();
+  }, [selectedCategories, alldata]); // Re-run when selectedCategories or alldata changes
+  
+  const filterDataByCategory = () => {
+    if (selectedCategories.length === 0) {
+      setTableData(alldata); // If no category is selected, show all data
+      return;
+    }
+  
+    const filteredData = alldata.filter(row => selectedCategories.includes(row.cat_name));
+    setTableData(filteredData);
+  };
+
+  
+  const [categoryPageCounts, setCategoryPageCounts] = useState({});
+
+useEffect(() => {
+  calculateCategoryPageCounts();
+}, [alldata]); // Re-run when alldata changes
+
+const calculateCategoryPageCounts = () => {
+  const counts = alldata.reduce((acc, curr) => {
+    const category = curr.cat_name;
+    if (acc[category]) {
+      acc[category] += 1;
+    } else {
+      acc[category] = 1;
+    }
+    return acc;
+  }, {});
+
+  setCategoryPageCounts(counts);
+};
+
 
   const handleHistoryRowClick = (row) => {
     navigate(`/admin/exe-history/${row.p_id}`, { state: row.p_id });
@@ -256,12 +294,32 @@ export default function ExecutionDashboard() {
       ? {
         field: "follower_count",
         headerName: "Followers",
+        renderCell: (params) => {
+          const followerCount = params.row.follower_count;
+          if (viewType === "Millions") {
+            return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{followerCount}</span>;
+          }
+        },
         valueFormatter: (params) => formatNumberIndian(params.value),
       }
       : pagemode == 2
       ? ({
         field: "follower_count",
         headerName: "Followers",
+        renderCell: (params) => {
+          const followerCount = params.row.follower_count;
+          if (viewType === "Millions") {
+            return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{followerCount}</span>;
+          }
+        },
         valueFormatter: (params) => formatNumberIndian(params.value),
       },
         {
@@ -433,9 +491,13 @@ export default function ExecutionDashboard() {
     setTableData(filtered);
   };
 
+  
+
   useEffect(() => {
     filterRows();
   }, [searchInput, alldata]);
+
+
   return (
     <div>
       <div style={{ width: "100%", margin: "0 0 0 0" }}>
@@ -445,7 +507,7 @@ export default function ExecutionDashboard() {
             elevation={3}
             style={{ padding: "20px", margin: "20px 0 0 0", width: "20%" }}
           >
-            <h3 className="h6">Pages Evalution</h3>
+            <h3 className="h6">Page Evaluation</h3>
             <div className="w-50 m-auto">
               <div style={{ width: 100, height: 100 }}>
                 <CircularProgressbar value={25} text={`0-25%`} />
@@ -469,7 +531,7 @@ export default function ExecutionDashboard() {
             elevation={3}
             style={{ padding: "20px", margin: "20px 0 0 0", width: "20%" }}
           >
-            <h3 className="h6">Pages Evalution</h3>
+            <h3 className="h6">Page Evaluation</h3>
             <div className="w-50 m-auto">
               <div style={{ width: 100, height: 100 }}>
                 <CircularProgressbar value={50} text={`26-50%`} />
@@ -489,7 +551,7 @@ export default function ExecutionDashboard() {
             elevation={3}
             style={{ padding: "20px", margin: "20px 0 0 0", width: "20%" }}
           >
-            <h3 className="h6">Pages Evalution</h3>
+            <h3 className="h6">Page Evaluation</h3>
             <div className="w-50 m-auto">
               <div style={{ width: 100, height: 100 }}>
                 <CircularProgressbar value={75} text={`51-75%`} />
@@ -509,7 +571,7 @@ export default function ExecutionDashboard() {
             elevation={3}
             style={{ padding: "20px", margin: "20px 0 0 0", width: "20%" }}
           >
-            <h3 className="h6">Pages Evalution</h3>
+            <h3 className="h6">Page Evaluation</h3>
             <div className="w-50 m-auto">
               <div style={{ width: 100, height: 100 }}>
                 <CircularProgressbar value={100} text={`76-100%`} />
@@ -534,7 +596,38 @@ export default function ExecutionDashboard() {
             onChange={(e) => setSearchInput(e.target.value)}
             sx={{ mb: 2, mt: 2 }}
           />
+          <Autocomplete
+            disablePortal
+            value={viewType}
+            // defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={viewInOptions}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setViewType({
+                  newValue: "Default",
+                });
+              }
+
+              setViewType(newValue);
+            }}
+            sx={{ width: 250 }}
+            renderInput={(params) => <TextField {...params} label="View In" />}
+            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+          />
         </>
+
+        <div>
+  
+  <div style={{padding: '10px', display: "flex", justifyContent: "space-around"}}>
+    {Object.keys(categoryPageCounts).map(category => (
+      <div key={category} style={{margin: '10px 0', padding: '10px', borderRadius: '5px'}}>
+        <strong>{category}:</strong> {categoryPageCounts[category]}
+      </div>
+    ))}
+  </div>
+  </div>
+
 
         {!loading && (
           <DataGrid

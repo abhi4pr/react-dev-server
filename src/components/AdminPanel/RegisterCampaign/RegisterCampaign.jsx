@@ -12,10 +12,10 @@ import {
   Paper,
 } from "@mui/material";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import AddPage from "./AddPage";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
+//import { LocalizationProvider } from "@mui/x-date-pickers";
+//import { MobileDateTimePicker } from "@mui/x-date-pickers/MobileDateTimePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import axios from "axios";
 import * as XLSX from "xlsx";
@@ -46,6 +46,7 @@ export default function RegisterCampaign() {
   const [agencyList, setAgencyList] = useState([]);
   const [master, setMaster] = useState(null);
   const [masterPayload, setMasterPayload] = useState({});
+  const[campaignClosedBy, setCampaignClosedBy] = useState("");
   //const [service, setService] = useState([]);
   const [selectedService, setSelectedService] = useState("");
   const [isModelOpen, setIsModelOpen] = useState(false);
@@ -111,6 +112,8 @@ export default function RegisterCampaign() {
     form.append("agency", selectedAgency);
     form.append("industry", selectedIndustry);
     form.append("goal", selectedGoal);
+    form.append("campaignClosedBy", campaignClosedBy);
+
     //form.append("service", selectedService);
 
     console.log(form, "<--------------------this is form");
@@ -180,11 +183,20 @@ export default function RegisterCampaign() {
     );
   };
 
+  
+
   const [selectedDate, setSelectedDate] = useState(dayjs());
+  useEffect(() => {
+    setSelectedDate(dayjs().format('YYYY-MM-DD HH:mm:ss'));
+    getAllData();
+  }, []);
+
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
+
+  
 
   const getAllData = () => {
     axios
@@ -306,6 +318,13 @@ export default function RegisterCampaign() {
     setIsModalOpen(true);
   };
 
+  const payload = {
+    // other data
+    campaignClosedBy: campaignClosedBy,
+    // more data
+  };
+  
+
   return (
     <div>
       <div>
@@ -338,9 +357,11 @@ export default function RegisterCampaign() {
                 }
                 renderInput={(params) => (
                   <TextField {...params} label="Brand Name *" />
+                  
                 )}
                 onSelect={handleChange}
               />
+              
               <Button onClick={addBrandData}>Add</Button>
 
               {/* <Modal
@@ -394,16 +415,26 @@ export default function RegisterCampaign() {
               />
               <Button onClick={addCampaignData}>Add</Button>
 
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <MobileDateTimePicker
                   label="Date *"
+                  TextField="Date"
                   value={selectedDate}
                   required
                   sx={{ width: 300, mt: 2 }}
                   onChange={(newValue) => handleDateChange(newValue)}
                   showTimePicker={false}
                 />
-              </LocalizationProvider>
+              </LocalizationProvider> */}
+
+<Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
+    <TextField
+      label="Date and Time *"
+      value={selectedDate}
+      disabled
+      sx={{ width: 300, mt: 2 }}
+    />
+  </Box>
 
               <Autocomplete
                 disablePortal
@@ -430,7 +461,7 @@ export default function RegisterCampaign() {
                   agencyList?.length > 0 &&
                   agencyList?.map((option) => option?.name)
                 }
-                sx={{ width: 400, mt: 1 }}
+                sx={{ width: 300, mt: 1, justifyContent: "space-around" }}
                 value={selectedAgency}
                 onChange={handleAgencyChange}
                 renderInput={(params) => (
@@ -442,7 +473,7 @@ export default function RegisterCampaign() {
                 disablePortal
                 id="agency-dropdown"
                 options={goal?.length > 0 && goal?.map((option) => option?.name)}
-                sx={{ width: 400, mt: 1 }}
+                sx={{ width: 300, mt: 1, justifyContent: "space-around" }}
                 value={selectedGoal}
                 onChange={handleGoalChange}
                 renderInput={(params) => (
@@ -454,9 +485,19 @@ export default function RegisterCampaign() {
                 label="Hashtag *"
                 value={hashtag}
                 onChange={handleHashtagChange}
-                sx={{ width: 400, mt: 1 }}
+                sx={{ width: 300, mt: 1, justifyContent: "space-around" }}
                 variant="outlined"
               />
+
+<TextField
+  label="Campaign Closed By"
+  value={campaignClosedBy}
+  onChange={(e) => setCampaignClosedBy(e.target.value)}
+  fullWidth
+  variant="outlined"
+  sx={{ width: 300, mt: 1, justifyContent: "space-around" }}
+  />
+
 
               {/* <TextField
                 label="Campaign Amount"
@@ -620,6 +661,7 @@ export default function RegisterCampaign() {
               }}
             >
               <div>
+             
                 <>
                   <TextField
                     id="outlined-password-input"
@@ -643,6 +685,38 @@ export default function RegisterCampaign() {
                   />
                 </>
                 <>
+                <TextField
+          id="outlined-category-input"
+          label="Category *"
+          name="category"
+          type="text"
+          onChange={(e) => {
+            if (master === "Brand") {
+              setMasterPayload({
+                ...masterPayload,
+                category: e.target.value,
+              });
+            }
+          }}
+        />
+        </>
+        <>
+        <TextField
+          id="outlined-sub-category-input"
+          label="Sub Category"
+          name="subCategory"
+          type="text"
+          onChange={(e) => {
+            if (master === "Brand") {
+              setMasterPayload({
+                ...masterPayload,
+                subCategory: e.target.value,
+              });
+            }
+          }}
+        />
+        </>
+        <>
                   <TextField
                     id="outlined-password-input"
                     label="Remark"
@@ -661,6 +735,7 @@ export default function RegisterCampaign() {
                     }}
                   />
                 </>
+                
               </div>
             </Box>
           </DialogContent>

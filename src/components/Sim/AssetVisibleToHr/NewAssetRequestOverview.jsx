@@ -157,7 +157,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
             onClick={() => handleStatusUpdate(row, "Approved")}
             className="btn btn-success btn-sm ml-2"
           >
-            Assigne
+            Assign
           </button>
           <button
             type="button"

@@ -2840,6 +2840,7 @@ const UserMaster = () => {
       <div className="row">
         <div className="col-12">
           <button
+            type="button"
             onClick={(e) => handleAddEducationDetails(e)}
             variant="contained"
             className="btn btn-outline-primary me-2"

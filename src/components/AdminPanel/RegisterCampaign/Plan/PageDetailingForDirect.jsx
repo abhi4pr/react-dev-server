@@ -77,12 +77,13 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     const [unregisteredPages, setUnregisteredPages] = useState(null);
 
     const [externalPPP, setExternalPPP] = useState(null);
+    const [externalSPP, setExternalSPP] = useState(null);
     const [searchField, setSearchField] = useState(false);
 
     const [excelUpload, setExcelUpload] = useState(false);
     const [excelData, setExcelData] = useState([]);
 
-    const [planName,setPlanName]=useState("")
+    const [planName, setPlanName] = useState("")
 
     useEffect(() => {
         getPageData();
@@ -102,8 +103,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                 return;
             });
             setSelectedRows(rows);
-              setExcelUpload(false)
-              setRadioSelected('selected')
+            setExcelUpload(false)
+            setRadioSelected('selected')
         }
     }, [payload]);
 
@@ -112,20 +113,68 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             if (selectedRows?.length == 0) {
                 setPayload([]);
             } else {
-                const data = planPages?.filter((page) => {
+                let data = planPages?.filter((page) => {
                     if (selectedRows?.includes(page.p_id)) {
                         return page;
                     }
-                });
+                }).map(item => {
+                    if (!item.postPerPage && !item.storyPerPage) {
+                        return { ...item, postPerPage: externalPPP || 1, storyPerPage: externalSPP || 1 }
+                    } else return item
+                })
 
+
+                const lol = planPages.map(page => {
+
+                    let foundMatch = false; // Initialize a flag to track if a match is found
+                    for (const item of data) {
+                        if (item?.p_id === page?.p_id) {
+                            foundMatch = true; // Set the flag to true if a match is found
+                            return {
+                                ...page,
+                                postPerPage: item?.postPerPage,
+                                storyPerPage: item?.storyPerPage
+                            };
+                        }
+                    }
+                    // If no match is found for the current page, return it unchanged
+                    if (!foundMatch) {
+                        return page;
+                    }
+                });
+                const lol2 = filteredPages.map(page => {
+
+                    let foundMatch = false; // Initialize a flag to track if a match is found
+                    for (const item of data) {
+                        if (item?.p_id === page?.p_id) {
+                            foundMatch = true; // Set the flag to true if a match is found
+                            return {
+                                ...page,
+                                postPerPage: item?.postPerPage,
+                                storyPerPage: item?.storyPerPage
+                            };
+                        }
+                    }
+                    // If no match is found for the current page, return it unchanged
+                    if (!foundMatch) {
+                        return page;
+                    }
+                });
+                x = selectedRows
                 setPayload(data);
+                setPlanPages(lol)
+                setFilteredPages(lol2)
+
             }
         }
+
 
         // setExcelUpload(false)
     }, [selectedRows]);
 
-   
+    console.log(payload)
+
+
 
     useEffect(() => {
         if (radioSelected != "unregistered") {
@@ -407,6 +456,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                 setSearchedPages(searched);
             }, 500);
         } else {
+            x = selectedRows;
             setSearchField(false);
             setSearchedPages(null);
             clearTimeout(timer);
@@ -435,7 +485,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         for (const text of pageInfo) {
             let counter = false;
             allPageData.some((page) => {
-                if (page.page_name == text) {
+                if (page.page_name == text.toLowerCase()) {
                     counter = true;
                     if (!selectedRows?.includes(page.p_id)) {
                         newRows.push(page.p_id);
@@ -451,7 +501,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             setSelectedRows([...selectedRows, ...newRows]);
         }
 
-        setRadioSelected("selected");
+        // setRadioSelected("selected");
         setIsModalOpenCP(false);
     };
 
@@ -519,7 +569,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         x = selectedRows;
 
         setUnregisteredPages(rejectedPages);
-        
+
 
         const pageReplacement = allPageData.find((page) => {
             return page.page_name == e;
@@ -547,10 +597,15 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     const handlePost = (e, field) => {
         let updatedValue = e.target.value;
 
+
         const postperpage = payload.map((page) => {
             if (field == "post") {
+                setExternalPPP(e.target.value)
                 return { ...page, postPerPage: updatedValue };
-            } else return { ...page, storyPerPage: updatedValue };
+            } else {
+                setExternalSPP(e.target.value)
+                return { ...page, storyPerPage: updatedValue };
+            }
         });
 
         const newFilteredPages = planPages.map((page) => {
@@ -661,8 +716,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
     const submitPlan = async (e) => {
         if (pageName == "planCreation") {
-            
-            if(planName.length==0){
+
+            if (planName.length == 0) {
                 alert("planName is required")
                 return
             }
@@ -676,9 +731,10 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             try {
                 setIsLoadingPlan(true);
                 result = await axios.post(baseUrl + "directplan", newdata);
-               
+
                 setIsLoadingPlan(false);
                 toastAlert("Plan Created SuccessFully");
+                navigate("/admin/direct_allplan")
                 setTimeout(() => {
                     //   navigate(`/admin/phase/${data.campaignId}`);
                 }, 2000);
@@ -713,11 +769,11 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                     <Autocomplete
                         id={`auto-complete-${params.id}`}
                         options={pageNames}
-                        getOptionLabel={(option) =>option}
+                        getOptionLabel={(option) => option}
                         sx={{ width: 300 }}
                         renderInput={(param) => {
                             console.log(params)
-                           return  <TextField {...param} label={params.row?.page_name} />
+                            return <TextField {...param} label={params.row?.page_name} />
                         }}
                         onChange={(event, newValue) => {
                             // console.log(event.target.innerText,newValue)
@@ -831,11 +887,15 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             const sheetNames = workbook.SheetNames;
 
             // Combine data from all sheets except the first one
-            const combinedData = combineSheets(workbook, sheetNames.slice(1))
+            let combinedData = combineSheets(workbook, sheetNames.slice(1))
                 .filter((arr) => arr.length > 0)
                 .map((arr) => JSON.stringify(arr))
                 .filter((value, index, self) => self.indexOf(value) === index)
                 .map((str) => JSON.parse(str));
+            combinedData = combinedData.map(item => {
+                item.splice(1, 1, item[1].toLowerCase())
+                return [...item]
+            })
 
             setExcelData(combinedData);
             let forLoad = [];
@@ -867,11 +927,11 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                 }
             });
 
-          
 
-            let count = 0;
+
+
             const lol = planPages.map(page => {
-              
+
                 let foundMatch = false; // Initialize a flag to track if a match is found
                 for (const item of forLoad) {
                     if (item?.p_id === page?.p_id) {
@@ -889,14 +949,14 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                 }
             });
 
-            console.log(count); // Count will give the number of matches found
+
 
 
             //   console.log(forPlan)
             x = rows;
             setPlanPages(lol);
             setPayload(forLoad);
-           
+
             //   setFilteredPages(forLoad);
 
         };
@@ -935,15 +995,15 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
     return (
         <>
-                <TextField label='Plan Name' onChange={(e)=>{
-                    setPlanName(e.target.value)
-                }}/>
+            <TextField label='Plan Name' onChange={(e) => {
+                setPlanName(e.target.value)
+            }} />
 
-                <Button sx={{ml:5}} variant="outlined" onClick={()=>{
-                       navigate(`/admin/direct_allplan`);
-                }}>
-                    All plans
-                </Button>
+            <Button sx={{ ml: 5 }} variant="outlined" onClick={() => {
+                navigate(`/admin/direct_allplan`);
+            }}>
+                All plans
+            </Button>
             <Paper sx={{ marginTop: "2rem", padding: "1rem" }}>
 
                 <FormControl>
@@ -1000,7 +1060,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                     )}
                     onChange={followerChangeHandler}
                 />
-                <Autocomplete
+                {/* <Autocomplete
                     id="combo-box-demo"
                     options={page_health}
                     getOptionLabel={(option) => option}
@@ -1008,7 +1068,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                     renderInput={(params) => (
                         <TextField {...params} label="Page health" />
                     )}
-                />
+                /> */}
                 <TextField
                     label="Search"
                     variant="outlined"
@@ -1032,7 +1092,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                     </Button>
                 </Box>
             </Paper>
-            <Box sx={{ p: 2,pl:0 }}>
+            <Box sx={{ p: 2, pl: 0 }}>
                 <TextField
                     id="outlined-basic"
                     InputLabelProps={{ shrink: true }}

@@ -570,7 +570,7 @@ const UserOverview = () => {
               Hobbies
             </button>
           </Link>
-          <Link to="/sim-overview">
+          <Link to={`/sim-overview/${0}`}>
             <button type="button" className="btn btn-outline-primary btn-sm">
               Asset
             </button>

@@ -4,30 +4,45 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../AdminPanel/FormContainer";
 import { baseUrl } from "../../utils/config";
+import DateISOtoNormal from "../../utils/DateISOtoNormal";
+import Modal from "react-modal";
 
 const AssetSummary = () => {
   const [search, setSearch] = useState("");
   const [datas, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
-  const [contextData, setDatas] = useState([]);
+  // const [data, setDatas] = useState([]);
 
-  const storedToken = sessionStorage.getItem("token");
-  const decodedToken = jwtDecode(storedToken);
-  const userID = decodedToken.id;
-  useEffect(() => {
-    if (userID && contextData.length === 0) {
-      axios
-        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
-        .then((res) => {
-          setDatas(res.data);
-        });
+  // useEffect(() => {
+  //   axios.get(`${baseUrl}` + `get_all_asset_history`).then((res) => {
+  //     setDatas(res.data.results);
+  //     console.log(res.data.results);
+  //   });
+  // }, []);
+
+  const [historyData, setHistoryData] = useState([]);
+  const [historyModal, setHistoryModal] = useState(false);
+  const handleTotalasset = async (row) => {
+    console.log("id : ", row);
+    try {
+      const response = await axios.get(
+        `${baseUrl}` + `get_single_asset_history/${row}`
+      );
+      setHistoryData(response.data.data);
+      setHistoryModal(true);
+    } catch (error) {
+      console.log("total asset not working", error);
     }
-  }, [userID]);
+  };
+
+  const handleClosAssetCounteModal = () => {
+    setHistoryModal(false);
+  };
 
   function getData() {
-    axios.get(baseUrl + "get_all_objs").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
+    axios.get(baseUrl + "get_all_asset_history").then((res) => {
+      setData(res?.data.results);
+      setFilterData(res?.data.results);
     });
   }
 
@@ -53,24 +68,42 @@ const AssetSummary = () => {
       sortable: true,
     },
     {
-      name: "Object Name",
-      selector: (row) => row.obj_name,
+      name: "Asset Action by Name",
+      selector: (row) => row.asset_action_by_name,
       sortable: true,
     },
     {
-      name: "Software Name",
-      selector: (row) => row.soft_name,
+      name: "Asset Name",
+      selector: (row) => row.asset_name,
+    },
+
+    {
+      name: "Action Date",
+      // selector: (row) => row.asset_action_date_time,
+      selector: (row) => DateISOtoNormal(row.asset_action_date_time),
     },
     {
-      name: "Department",
-      selector: (row) => row.dept_name,
+      name: "Remark",
+      selector: (row) => row.asset_remark,
+    },
+    {
+      name: "History",
+      cell: (row) => (
+        <button
+          className="btn btn-outline-warning btn-sm"
+          onClick={() => handleTotalasset(row.sim_id)}
+        >
+          History
+        </button>
+      ),
+      sortable: true,
     },
   ];
 
   return (
     <>
       <FormContainer
-        mainTitle="Object"
+        mainTitle="Asset Summary"
         link="/admin/object-master"
         buttonAccess={false}
       />
@@ -78,7 +111,7 @@ const AssetSummary = () => {
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
-            title="Object Overview"
+            title="Asset Summary"
             columns={columns}
             data={filterData}
             fixedHeader
@@ -98,6 +131,76 @@ const AssetSummary = () => {
           />
         </div>
       </div>
+      <Modal
+        isOpen={historyModal}
+        onRequestClose={handleClosAssetCounteModal}
+        style={{
+          content: {
+            width: "80%",
+            height: "80%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        {/* {selectedRow && ( */}
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            {/* <h2>Department: {selectedRow.dept_name}</h2> */}
+
+            <button
+              className="btn btn-success float-left"
+              onClick={handleClosAssetCounteModal}
+            >
+              X
+            </button>
+          </div>
+          <h1></h1>
+          <DataTable
+            columns={[
+              {
+                name: "S.No",
+                cell: (row, index) => <div>{index + 1}</div>,
+                width: "10%",
+              },
+              { name: "Asset Name", selector: (row) => row.asset_name },
+              {
+                name: "Action By Name",
+                selector: (row) => row.asset_action_by_name,
+              },
+              {
+                name: "Asset Action",
+                selector: (row) => row.asset_action,
+              },
+              {
+                name: "Asset Action",
+                selector: (row) => DateISOtoNormal(row.asset_action_date_time),
+              },
+              {
+                name: "Remark",
+                selector: (row) => row.asset_remark,
+              },
+            ]}
+            data={historyData}
+            highlightOnHover
+            subHeader
+            // subHeaderComponent={
+            //   <input
+            //     type="text"
+            //     placeholder="Search..."
+            //     className="w-50 form-control"
+            //     value={modalSearch}
+            //     onChange={(e) => setModalSearch(e.target.value)}
+            //   />
+            // }
+          />
+        </div>
+        {/* )} */}
+      </Modal>
     </>
   );
 };

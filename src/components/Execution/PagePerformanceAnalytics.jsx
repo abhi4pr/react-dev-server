@@ -271,7 +271,7 @@ export default function PagePerformanceAnalytics() {
     },
     {
       field: "maxImpression",
-      headerName: "Hightest Impression",
+      headerName: "Highest Impression",
       width: 200,
       renderCell: (params) => {
         const impression = params.row.maxImpression;
@@ -286,7 +286,7 @@ export default function PagePerformanceAnalytics() {
     },
     {
       field: "maxEngagement",
-      headerName: "Hightest Engagement",
+      headerName: "Highest Engagement",
       width: 200,
       renderCell: (params) => {
         const engagement = params.row.maxEngagement;
@@ -301,7 +301,7 @@ export default function PagePerformanceAnalytics() {
     },
     {
       field: "maxStoryView",
-      headerName: "Hightest Story view",
+      headerName: "Highest Story view",
       width: 200,
       renderCell: (params) => {
         const storyView = params.row.maxStoryView;
@@ -317,7 +317,7 @@ export default function PagePerformanceAnalytics() {
     // { field: "maxStoryView", headerName: "Hightest Story view", width: 200 },
     {
       field: "maxStoryViewDate",
-      headerName: "Hightest Story view Date",
+      headerName: "Highest Story view Date",
       width: 200,
       renderCell: (params) => {
         return (

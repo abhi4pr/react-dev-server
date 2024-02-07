@@ -19,9 +19,7 @@ const AssetSubCategoryOverview = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_asset_sub_category"
-      );
+      const response = await axios.get(baseUrl + "get_all_asset_sub_category");
       setFilterData(response.data.data);
       setData(response.data.data);
     } catch (error) {
@@ -43,10 +41,9 @@ const AssetSubCategoryOverview = () => {
   const [totalAssets, setTotalAssets] = useState([]);
   const [assetModal, seAssetModel] = useState(false);
   const handleTotalasset = async (row) => {
-    console.log("id : ", row);
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_total_asset_in_category/${row}`
+        `${baseUrl}` + `get_total_asset_in_category/${row}`
       );
       setTotalAssets(response.data.data);
       console.log(response.data.data, "data sub cat");
@@ -62,7 +59,7 @@ const AssetSubCategoryOverview = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}` + `get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response.data.data);
       console.log(response.data, "sub categoy");

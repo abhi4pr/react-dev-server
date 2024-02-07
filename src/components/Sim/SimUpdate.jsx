@@ -237,7 +237,7 @@ const SimUpdate = () => {
   };
 
   if (isFormSubmitted) {
-    return <Navigate to="/sim-overview" />;
+    return <Navigate to={`/sim-overview/${0}`} />;
   }
   return (
     <div style={{ margin: "0 0 0 10%", width: "80%" }}>

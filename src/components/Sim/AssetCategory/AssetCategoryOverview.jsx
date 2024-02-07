@@ -40,7 +40,7 @@ const AssetCategoryOverview = () => {
   const handleSubCategroy = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_count_sub_category/${row}`
+        `${baseUrl}` + `get_count_sub_category/${row}`
       );
       setSubcategroycount(response.data.data?.sub_categories);
       setHandleOpenSubCat(true);
@@ -51,7 +51,7 @@ const AssetCategoryOverview = () => {
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_total_asset_in_category/${row}`
+        `${baseUrl}` + `get_total_asset_in_category/${row}`
       );
       setTotalAssets(response?.data.data);
       seAssetModel(true);
@@ -66,7 +66,7 @@ const AssetCategoryOverview = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}` + `get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response?.data.data);
       seAssetModel(true);
@@ -77,9 +77,7 @@ const AssetCategoryOverview = () => {
 
   const getSubCategoryData = async () => {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_asset_sub_category"
-      );
+      const response = await axios.get(baseUrl + "get_all_asset_sub_category");
       setSubCategoryData(response.data.data);
     } catch (error) {
       toastAlert("Data not submitted", error.message);
@@ -100,16 +98,13 @@ const AssetCategoryOverview = () => {
       if (isSubCategoryExist) {
         alert("Sub Category already Exists");
       } else {
-        const response = await axios.post(
-          baseUrl+"add_asset_sub_category",
-          {
-            sub_category_name: subCategoryName,
-            category_id: catId,
-            inWarranty: inWarranty,
-            // description: description,
-            // created_by: loginUserId,
-          }
-        );
+        const response = await axios.post(baseUrl + "add_asset_sub_category", {
+          sub_category_name: subCategoryName,
+          category_id: catId,
+          inWarranty: inWarranty,
+          // description: description,
+          // created_by: loginUserId,
+        });
         setSubCategoryName("");
         setInWarranty("");
         setIsModalOpen(false);
@@ -130,9 +125,7 @@ const AssetCategoryOverview = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_asset_category"
-      );
+      const response = await axios.get(baseUrl + "get_all_asset_category");
 
       setFilterData(response.data.data?.asset_categories);
       setData(response.data.data?.asset_categories);
@@ -484,11 +477,11 @@ const AssetCategoryOverview = () => {
                 width: "10%",
               },
               {
-                name: "Subcategory Name",
+                name: "Sub Category Name",
                 width: "40%",
                 selector: (row) => row.sub_category_name,
               },
-              { name: "Category Name", selector: (row) => row.category_name },
+              // { name: "Category Name", selector: (row) => row.category_name },
             ]}
             data={subcategoryCount}
             highlightOnHover

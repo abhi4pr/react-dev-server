@@ -6,6 +6,7 @@ import * as XLSX from "xlsx";
 import { SiMicrosoftexcel } from "react-icons/si";
 
 const SummaryDetails = ({ payload, campName }) => {
+  console.log(payload)
   const [summaryData, setSummaryData] = useState({
     total: 0,
     totalPost: 0,
@@ -49,12 +50,16 @@ const SummaryDetails = ({ payload, campName }) => {
     const filteredRows = payload.filter((e) => e.cat_name === catName);
     setFilteredData(filteredRows);
 
+    // const totalFollowers = filteredRows.reduce(
+    //   (sum, current) => {
+    //     if(typeof(current)!=Number){
+    //       return sum
+    //     }
+    //     return sum + BigInt(current.follower_count)},
+    //   0
+    // );
     const totalFollowers = filteredRows.reduce(
-      (sum, current) => {
-        if(typeof(current)!=number){
-          return sum
-        }
-        return sum + BigInt(current.follower_count)},
+      (sum, current) => sum + Number(current.follower_count),
       0
     );
     const totalPosts = filteredRows.reduce(
@@ -66,7 +71,7 @@ const SummaryDetails = ({ payload, campName }) => {
       0
     );
 
-    setTotalFollowerCount(formatNumber(BigInt(totalFollowers)));
+    setTotalFollowerCount(formatNumber(totalFollowers));
     setTotalPostPerPage(formatNumber(totalPosts));
     setStoryPerPage(formatNumber(totalStory));
   };
@@ -93,7 +98,7 @@ const SummaryDetails = ({ payload, campName }) => {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filteredData.indexOf(params.row);
+        const rowIndex = payload.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -185,7 +190,7 @@ const SummaryDetails = ({ payload, campName }) => {
   return (
     <>
       {payload?.length > 0 && (
-        <Box sx={{ height: 500, width: "35%" }}>
+        <Box sx={{ height: 500, width: "500px" }}>
           <Paper elevation={12} sx={{ mb: 4, height: "150px", width: "100%" }}>
             <Typography
               sx={{ textAlign: "center", fontSize: "20px", mb: 2 }}
@@ -263,7 +268,7 @@ const SummaryDetails = ({ payload, campName }) => {
             <Typography>Total Stories: {totalStoryPerPage}</Typography>
           </Box>
           <DataGrid
-            rows={filteredData || payload}
+            rows={payload ? payload :filteredData }
             columns={columns}
             getRowId={(row) => row.p_id}
             pageSizeOptions={[5]}
