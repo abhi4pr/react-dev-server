@@ -392,7 +392,12 @@ export default function RegisteredCampaign() {
       });
   }, [reload]);
 
-  console.log(table1Data);
+
+  const capitalizeFirstWord = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+  
+
 
   const tab1Columns = [
     {
@@ -420,11 +425,11 @@ export default function RegisteredCampaign() {
       headerName: "Brand Name",
       width: 150,
       renderCell: (params) => {
-        return brandName.filter((e) => {
-          return e.brand_id == params.row.brand_id;
-        })[0]?.brand_name;
+        const brand = brandName.find(e => e.brand_id === params.row.brand_id);
+        return brand ? capitalizeFirstWord(brand.brand_name) : "";
       },
     },
+    
     {
       field: "brnad_dt",
       headerName: "Date & Time",

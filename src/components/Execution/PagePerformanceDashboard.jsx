@@ -71,9 +71,9 @@ export default function PagePerformanceDashboard() {
   if (filterDataVal === "Highest") {
     columns.push(
       { field: "maxReach", headerName: "Highest Reach", width: 200 },
-      { field: "maxImpression", headerName: "Hightest Impression", width: 200 },
-      { field: "maxEngagement", headerName: "Hightest Engagement", width: 200 },
-      { field: "maxStoryView", headerName: "Hightest Story view", width: 200 },
+      { field: "maxImpression", headerName: "Highest Impression", width: 200 },
+      { field: "maxEngagement", headerName: "Highest Engagement", width: 200 },
+      { field: "maxStoryView", headerName: "Highest Story view", width: 200 },
       {
         field: "maxStoryViewDate",
         headerName: "Hightest Story view Date",

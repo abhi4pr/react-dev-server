@@ -26,6 +26,8 @@ import { toolbarStyles } from "./CampaignCommitment";
 import {baseUrl} from '../../../utils/config'
 
 export default function BrandMaster() {
+  const [whatsappOptions, setWhatsappOptions] = useState([]);
+const [igusernameOptions, setIgusernameOptions] = useState([]);
   const { toastAlert, toastError } = useGlobalContext();
   const [reload, setReload] = useState(false);
   const [SubCategoryString, setSubCategoryString] = useState();
@@ -156,6 +158,7 @@ export default function BrandMaster() {
           return item.category_id == postData.category_id;
         });
         console.log(filteredData, "filteredData meeee");
+
         setSubCategoryOptions(filteredData);
         setLoading(false);
       });
@@ -218,6 +221,25 @@ export default function BrandMaster() {
         setLoading(false);
       });
   }, [editData.category_id]);
+
+  useEffect(() => {
+    axios.get(`${baseUrl}/get_all_platforms`).then((response) => {
+      const options = response.data.map((item) => ({
+        label: item.label,
+        value: item.value,
+      }));
+      setWhatsappOptions(options);
+    });
+  
+    axios.get(`${baseUrl}/get_all_platforms`).then((response) => {
+      const options = response.data.map((item) => ({
+        label: item.label,
+        value: item.value,
+      }));
+      setIgusernameOptions(options);
+    });
+  }, []);
+  
 
   const handleEditClick = (id, row) => () => {
     setLoading(true);
@@ -349,6 +371,8 @@ export default function BrandMaster() {
     filterRows();
   }, [searchInput, rows]);
 
+  
+
   return (
     <>
       <Paper>
@@ -461,26 +485,60 @@ export default function BrandMaster() {
                   }}
                 />
               </>
-              <>
-                <TextField
-                  label="Igusername"
-                  name="igusername"
-                  type="text"
-                  value={postData.igusername}
-                  onChange={handleChange}
-                  sx={{ width: "100%" }}
-                />
-              </>
-              <>
-                <TextField
-                  label="Whatsapp"
-                  name="whatsapp"
-                  type="text"
-                  value={postData.whatsapp}
-                  onChange={handleChange}
-                  sx={{ width: "100%" }}
-                />
-              </>
+              <Autocomplete
+  multiple
+  id="whatsapp-select"
+  options={whatsappOptions}
+  getOptionLabel={(option) => option.label}
+  renderInput={(params) => (
+    <TextField {...params} label="Whatsapp" placeholder="Choose" />
+  )}
+  onChange={(event, newValue) => {
+    setPostData({
+      ...postData,
+      whatsapp: newValue.map((item) => item.value).join(', '),
+    });
+  }}
+/>
+
+{postData.whatsapp?.includes('writing') && (
+  <TextField
+    label="Whatsapp"
+    name="whatsapp"
+    type="text"
+    value={postData.whatsapp}
+    onChange={handleChange}
+    sx={{ width: "100%" }}
+  />
+)}
+
+<Autocomplete
+  multiple
+  id="igusername-select"
+  options={igusernameOptions}
+  getOptionLabel={(option) => option.label}
+  renderInput={(params) => (
+    <TextField {...params} label="IG Username" placeholder="Choose" />
+  )}
+  onChange={(event, newValue) => {
+    setPostData({
+      ...postData,
+      igusername: newValue.map((item) => item.value).join(', '),
+    });
+  }}
+/>
+
+{postData.igusername?.includes('writing') && (
+  <TextField
+    label="IG Username"
+    name="igusername"
+    type="text"
+    value={postData.igusername}
+    onChange={handleChange}
+    sx={{ width: "100%" }}
+  />
+)}
+
             </div>
           </Box>
         </DialogContent>
