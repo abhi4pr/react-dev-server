@@ -848,7 +848,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       const sheetNames = workbook.SheetNames;
 
       // Combine data from all sheets except the first one
-      const combinedData = combineSheets(workbook, sheetNames.slice(1))
+      let combinedData = combineSheets(workbook, sheetNames.slice(1))
         .filter((arr) => arr.length > 0)
         .map((arr) => JSON.stringify(arr))
         .filter((value, index, self) => self.indexOf(value) === index)

@@ -734,6 +734,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
                 setIsLoadingPlan(false);
                 toastAlert("Plan Created SuccessFully");
+                navigate("/admin/direct_allplan")
                 setTimeout(() => {
                     //   navigate(`/admin/phase/${data.campaignId}`);
                 }, 2000);
