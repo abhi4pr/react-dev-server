@@ -1,6 +1,6 @@
 import React from "react";
 import FormContainer from "../AdminPanel/FormContainer";
-import { Button, Paper, TextField } from "@mui/material";
+import { Autocomplete, Button, Paper, TextField } from "@mui/material";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import { useState } from "react";
@@ -13,8 +13,9 @@ import jwtDecode from "jwt-decode";
 import ContentLoader from "react-content-loader";
 import {baseUrl} from '../../utils/config'
 
+const viewInOptions = ["Millions", "Thousands", "Default"];
 export default function ExecutionDashboard() {
-  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [viewType, setViewType] = useState("Default");
   const [contextData, setContextData] = useState(false);
   const [pagemode, setPagemode] = useState(1);
   const [copiedData, setCopiedData] = useState("");
@@ -293,12 +294,32 @@ const calculateCategoryPageCounts = () => {
       ? {
         field: "follower_count",
         headerName: "Followers",
+        renderCell: (params) => {
+          const followerCount = params.row.follower_count;
+          if (viewType === "Millions") {
+            return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{followerCount}</span>;
+          }
+        },
         valueFormatter: (params) => formatNumberIndian(params.value),
       }
       : pagemode == 2
       ? ({
         field: "follower_count",
         headerName: "Followers",
+        renderCell: (params) => {
+          const followerCount = params.row.follower_count;
+          if (viewType === "Millions") {
+            return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{followerCount}</span>;
+          }
+        },
         valueFormatter: (params) => formatNumberIndian(params.value),
       },
         {
@@ -475,6 +496,8 @@ const calculateCategoryPageCounts = () => {
   useEffect(() => {
     filterRows();
   }, [searchInput, alldata]);
+
+
   return (
     <div>
       <div style={{ width: "100%", margin: "0 0 0 0" }}>
@@ -572,6 +595,25 @@ const calculateCategoryPageCounts = () => {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             sx={{ mb: 2, mt: 2 }}
+          />
+          <Autocomplete
+            disablePortal
+            value={viewType}
+            // defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={viewInOptions}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setViewType({
+                  newValue: "Default",
+                });
+              }
+
+              setViewType(newValue);
+            }}
+            sx={{ width: 250 }}
+            renderInput={(params) => <TextField {...params} label="View In" />}
+            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
           />
         </>
 
