@@ -1022,34 +1022,34 @@ const SidebarLinks = () => {
           >
             <div className="bg-white collapse-inner">
               <li className="nav-item">
-                {/* <Link
-                  className="nav-link collapsed"
-                  data-toggle="collapse"
-                  data-target="#collapsInnerEightFinanceEditDashboard"
-                  aria-expanded="true"
-                  aria-controls="collapsInnerEightFinanceEditDashboard"
-                >
-                  <span>Dashboard</span>
-                </Link>
-                <div
-                  id="collapsInnerEightFinanceEditDashboard"
-                  className="collapse"
-                  aria-labelledby="headingTwo"
-                  // data-parent="#accordionSidebar"
-                >
-                  <div className="bg-white collapse-inner">
-                    <>
-                      <li className="nav-item">
-                        <Link
-                          className="collapse-item"
-                          to="/admin/finance-dashboard"
-                        >
-                          <span>Dashboard</span>
-                        </Link>
-                      </li>
-                    </>
+                  <Link
+                    className="nav-link collapsed"
+                    data-toggle="collapse"
+                    data-target="#collapsInnerEightFinanceEditDashboard"
+                    aria-expanded="true"
+                    aria-controls="collapsInnerEightFinanceEditDashboard"
+                  >
+                    <span>Dashboard</span>
+                  </Link>
+                  <div
+                    id="collapsInnerEightFinanceEditDashboard"
+                    className="collapse"
+                    aria-labelledby="headingTwo"
+                    // data-parent="#accordionSidebar"
+                  >
+                    <div className="bg-white collapse-inner">
+                      <>
+                        <li className="nav-item">
+                          <Link
+                            className="collapse-item"
+                            to="/admin/finance-dashboard"
+                          >
+                            <span>Dashboard</span>
+                          </Link>
+                        </li>
+                      </>
+                    </div>
                   </div>
-                </div> */}
 
                 <Link
                   className="nav-link collapsed"
