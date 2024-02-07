@@ -148,7 +148,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     setSelectedRows(x);
   }, [filteredPages, searchedPages, unregisteredPages]);
 
-  useEffect(() => {}, [externalPPP]);
+  useEffect(() => { }, [externalPPP]);
 
   const resetToInitialState = () => {
     setPayload([]);
@@ -212,7 +212,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         setPlanPages(newPageData);
         setFilteredPages(newPageData);
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const categorySet = () => {
@@ -393,6 +393,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         setSearchedPages(searched);
       }, 500);
     } else {
+      x = selectedRows;
       setSearchField(false);
       setSearchedPages(null);
       clearTimeout(timer);
@@ -474,12 +475,10 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         border-radius: 8px;
         color: ${theme.palette.mode === "dark" ? grey[300] : grey[900]};
         background: ${theme.palette.mode === "dark" ? grey[900] : "#fff"};
-        border: 1px solid ${
-          theme.palette.mode === "dark" ? grey[700] : grey[200]
-        };
-        box-shadow: 0px 2px 2px ${
-          theme.palette.mode === "dark" ? grey[900] : grey[50]
-        };
+        border: 1px solid ${theme.palette.mode === "dark" ? grey[700] : grey[200]
+      };
+        box-shadow: 0px 2px 2px ${theme.palette.mode === "dark" ? grey[900] : grey[50]
+      };
     
         &:hover {
           border-color: ${blue[400]};
@@ -487,9 +486,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     
         &:focus {
           border-color: ${blue[400]};
-          box-shadow: 0 0 0 3px ${
-            theme.palette.mode === "dark" ? blue[600] : blue[200]
-          };
+          box-shadow: 0 0 0 3px ${theme.palette.mode === "dark" ? blue[600] : blue[200]
+      };
         }
     
         // firefox
@@ -744,10 +742,10 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             }}
           />
         ) : (
-          <div style={{color:"blue"}}>
-          <a href={link} target="blank">
-            {link == "" ? "" : params.row.page_name}
-          </a>
+          <div style={{ color: "blue" }}>
+            <a href={link} target="blank">
+              {link == "" ? "" : params.row.page_name}
+            </a>
           </div>
         );
       },
@@ -855,6 +853,11 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         .map((arr) => JSON.stringify(arr))
         .filter((value, index, self) => self.indexOf(value) === index)
         .map((str) => JSON.parse(str));
+
+      combinedData = combinedData.map(item => {
+        item.splice(1, 1, item[1].toLowerCase())
+        return [...item]
+      })
 
       setExcelData(combinedData);
       let forLoad = [];
