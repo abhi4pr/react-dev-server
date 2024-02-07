@@ -115,7 +115,7 @@ const DataBrandView = () => {
                     style={{ margin: "0 0 10px 0" }}
                   >
                     <div>
-                      {getFileIcon(detail.data_type, detail.data_image)}
+                      {getFileIcon(detail.data_type, detail.data_image?detail.data_image:detail.mmc_image?detail.mmc_image:detail.sarcasm_image?detail.sarcasm_image:detail.no_logo_image)}
                     </div>
                     <div className="card-body"></div>
                     <ul className="list-group list-group-flush">
