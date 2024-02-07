@@ -155,7 +155,7 @@ const UserUpdate = () => {
 
   const [FatherName, setFatherName] = useState("");
   const [motherName, setMotherName] = useState("");
-  const [hobbies, setHobbies] = useState("");
+  const [hobbies, setHobbies] = useState([]);
   const [hobbiesData, setHobbiesData] = useState([]);
   const [bloodGroup, setBloodGroup] = useState("");
   const [maritialStatus, setMaritialStatus] = useState("");
@@ -375,22 +375,26 @@ const UserUpdate = () => {
   }, []);
 
   useEffect(() => {
-    axios.get(`${baseUrl}get_single_user/${id}`).then((res) => {
-      const fetchedData = res.data;
-      // Assuming Hobbies is an array of hobby_ids
-      const preselectedHobbies = fetchedData.Hobbies.map((hobbyId) => {
-        return {
+    const fetchUserData = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}get_single_user/${id}`);
+        const fetchedData = response.data;
+
+        const preselectedHobbies = fetchedData?.Hobbies?.map((hobbyId) => ({
           value: hobbyId,
           label:
-            hobbiesData.find((hobby) => hobby.value === hobbyId)?.label ||
+            hobbiesData?.find((hobby) => hobby?.value === hobbyId)?.label ||
             hobbyId.toString(),
-        };
-      });
-      setHobbies(preselectedHobbies);
-    });
-  }, [id, hobbiesData]); // Rerun when hobbiesData is set
+        }));
+        setHobbies(preselectedHobbies);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
 
-  // Handle change in selected hobbies
+    fetchUserData();
+  }, [id, hobbiesData]);
+
   const handleChange = (selectedOptions) => {
     setHobbies(selectedOptions || []);
   };
@@ -647,7 +651,6 @@ const UserUpdate = () => {
       "room_id",
       jobType === "WFH" || jobType === "WFHD" ? "1" : roomId
     );
-    console.log("room id he yha", roomId);
     // formData.append("room_id", roomId);
     formData.append("dept_id", department);
     formData.append("job_type", jobType);
@@ -678,7 +681,7 @@ const UserUpdate = () => {
     formData.append("MotherName", motherName);
     formData.append(
       "Hobbies",
-      hobbies.map((option) => option.value)
+      hobbies?.map((option) => option?.value)
     );
     formData.append("BloodGroup", bloodGroup);
     formData.append("MartialStatus", maritialStatus);
@@ -728,7 +731,7 @@ const UserUpdate = () => {
         })
         .catch(function (err) {
           setLoading(false);
-          console.log(err);
+          console.error(err);
         });
 
       if (reportL1 !== "") {
@@ -827,15 +830,11 @@ const UserUpdate = () => {
                 ? "Verification Pending"
                 : document.status
             );
-            const response = await axios.put(
-              baseUrl + "update_user_doc",
-              formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
+            await axios.put(baseUrl + "update_user_doc", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            });
           } else {
             console.log(`No file uploaded for document ${document._id}`);
           }
@@ -2229,9 +2228,9 @@ const UserUpdate = () => {
       <div className="row">
         <div className="col-12">
           <button
+            type="button"
             onClick={handleAddEducationDetails}
             className="btn btn-outline-warning"
-            type="button"
           >
             Add More Education Details
           </button>

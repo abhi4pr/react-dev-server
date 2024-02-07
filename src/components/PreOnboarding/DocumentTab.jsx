@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
 const DocumentTab = ({
   documentData,
@@ -24,10 +24,6 @@ const DocumentTab = ({
     updateDocumentData(documentId, "file", file);
     updateDocumentData(documentId, "status", "Document Uploaded");
   };
-
-  useEffect(() => {
-    console.log(documentData);
-  }, [documentData]);
 
   const handleSubmit = async () => {
     try {
@@ -56,7 +52,7 @@ const DocumentTab = ({
                 : document.status
             );
             const response = await axios.put(
-              baseUrl+"update_user_doc",
+              baseUrl + "update_user_doc",
               formData,
               {
                 headers: {
