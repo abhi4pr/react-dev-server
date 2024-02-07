@@ -83,7 +83,7 @@ const DataBrandUpdate = () => {
   };
 
   const callAbvApi = async () => {
-    axios.get(baseUrl+"get_all_datas").then((res) => {
+    axios.get(baseUrl + "get_all_datas").then((res) => {
       setAllData(res.data);
       res.data
         .filter((detail) => {
@@ -132,48 +132,46 @@ const DataBrandUpdate = () => {
   };
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}`+`get_single_data/${id}`)
-      .then((res) => {
-        const fetchedData = res.data;
-        const {
-          data_name,
-          data_id,
-          date_of_completion,
-          date_of_report,
-          brand_category_id,
-          brand_sub_category_id,
-          campaign_purpose,
-          number_of_post,
-          number_of_reach,
-          number_of_impression,
-          number_of_engagement,
-          number_of_views,
-          operation_remark,
-          number_of_story_views,
-        } = fetchedData;
-        setDateOfCompletion(date_of_completion);
-        setDateOfReport(date_of_report);
-        setBrandCat(brand_category_id);
-        setBrandSubCategory(brand_sub_category_id);
-        setCompignPurpose(campaign_purpose);
-        setNumOfPost(number_of_post);
-        setNumOfReach(number_of_reach);
-        setNumOfImpression(number_of_impression);
-        setNumOfEngagement(number_of_engagement);
-        setNumOfViews(number_of_views);
-        setOperationRemark(operation_remark);
-        setNumOfStoryViews(number_of_story_views);
-        setBrand(data_name);
-        setPermanentBrand(data_name);
-        setDataId(data_id);
-        setBrandName(data_name);
+    axios.get(`${baseUrl}` + `get_single_data/${id}`).then((res) => {
+      const fetchedData = res.data;
+      const {
+        data_name,
+        data_id,
+        date_of_completion,
+        date_of_report,
+        brand_category_id,
+        brand_sub_category_id,
+        campaign_purpose,
+        number_of_post,
+        number_of_reach,
+        number_of_impression,
+        number_of_engagement,
+        number_of_views,
+        operation_remark,
+        number_of_story_views,
+      } = fetchedData;
+      setDateOfCompletion(date_of_completion);
+      setDateOfReport(date_of_report);
+      setBrandCat(brand_category_id);
+      setBrandSubCategory(brand_sub_category_id);
+      setCompignPurpose(campaign_purpose);
+      setNumOfPost(number_of_post);
+      setNumOfReach(number_of_reach);
+      setNumOfImpression(number_of_impression);
+      setNumOfEngagement(number_of_engagement);
+      setNumOfViews(number_of_views);
+      setOperationRemark(operation_remark);
+      setNumOfStoryViews(number_of_story_views);
+      setBrand(data_name);
+      setPermanentBrand(data_name);
+      setDataId(data_id);
+      setBrandName(data_name);
 
-        // setLogo(upload_logo);
-        // setRemark(remark);
-        // setCategory(cat_name);
-        // setBrandData(fetchedData);
-      });
+      // setLogo(upload_logo);
+      // setRemark(remark);
+      // setCategory(cat_name);
+      // setBrandData(fetchedData);
+    });
 
     axios.get(baseUrl + "get_all_data_categorys").then((res) => {
       setCategoryData(res.data.simcWithSubCategoryCount);
@@ -200,12 +198,9 @@ const DataBrandUpdate = () => {
     axios
       .get(baseUrl + "projectxCategory")
       .then((res) => {
-
         setBrandCategory(res.data.data);
       })
-      .catch((err) => {
-
-      });
+      .catch((err) => {});
     axios.get(baseUrl + "projectxSubCategory").then((res) => {
       setBrandSubCatData(res.data.data);
     });
@@ -361,7 +356,6 @@ const DataBrandUpdate = () => {
     console.log(NumOfStoryViews, "NumOfStoryViews");
     console.log(OperationRemark, "OperationRemark");
 
-
     e.preventDefault();
     // return;
     if (category == "") {
@@ -391,7 +385,6 @@ const DataBrandUpdate = () => {
       } else if (compignPurpose == "") {
         toastError("Campaign purpose is required");
         return;
-
       } else if (NumOfPost == "") {
         toastError("Number of post is required");
         return;
@@ -450,7 +443,6 @@ const DataBrandUpdate = () => {
             number_of_views: NumOfViews,
             number_of_story_views: NumOfStoryViews,
             operation_remark: OperationRemark,
-  
           })
           .then(() => {})
           .catch((err) => {
@@ -483,7 +475,7 @@ const DataBrandUpdate = () => {
         }
       }
 
-      if(mmcDetails.length > 0){
+      if (mmcDetails.length > 0) {
         for (let i = 0; i < mmcDetails.length; i++) {
           const formData = new FormData();
           formData.append("data_id", id);
@@ -510,7 +502,7 @@ const DataBrandUpdate = () => {
         }
       }
 
-      if(sarcasmDetails.length > 0){
+      if (sarcasmDetails.length > 0) {
         for (let i = 0; i < sarcasmDetails.length; i++) {
           const formData = new FormData();
           formData.append("data_id", id);
@@ -538,7 +530,7 @@ const DataBrandUpdate = () => {
         }
       }
 
-      if(nologoDetails.length > 0){
+      if (nologoDetails.length > 0) {
         for (let i = 0; i < nologoDetails.length; i++) {
           const formData = new FormData();
           formData.append("data_id", id);
@@ -565,7 +557,6 @@ const DataBrandUpdate = () => {
             });
         }
       }
-
 
       setIsFormSubmitted(true);
       toastAlert("Data uploaded");
@@ -853,37 +844,37 @@ const DataBrandUpdate = () => {
                 fieldGrid={6}
                 required={false}
               />
-               {contentType == "65a663ccef8a81593f418836" && (
-          <>
-            <FieldContainer
-              label="MMC "
-              type="file"
-              multiple
-              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-              onChange={handleMMCFileChange}
-              fieldGrid={6}
-required={false}
-            />
-            <FieldContainer
-              label="sarcasm "
-              multiple
-              type="file"
-              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-              onChange={handleSarcasmFileChange}
-              fieldGrid={6}
-required={false}
-            />
-            <FieldContainer
-              label="No Logo "
-              multiple
-              type="file"
-              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-              onChange={handleNologoFileChange}
-              fieldGrid={6}
-required={false}
-            />
-          </>
-        )}
+              {contentType == "65a663ccef8a81593f418836" && (
+                <>
+                  <FieldContainer
+                    label="MMC "
+                    type="file"
+                    multiple
+                    accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+                    onChange={handleMMCFileChange}
+                    fieldGrid={6}
+                    required={false}
+                  />
+                  <FieldContainer
+                    label="sarcasm "
+                    multiple
+                    type="file"
+                    accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+                    onChange={handleSarcasmFileChange}
+                    fieldGrid={6}
+                    required={false}
+                  />
+                  <FieldContainer
+                    label="No Logo "
+                    multiple
+                    type="file"
+                    accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+                    onChange={handleNologoFileChange}
+                    fieldGrid={6}
+                    required={false}
+                  />
+                </>
+              )}
 
               <div className="form-group col-3">
                 <label className="form-label">
@@ -1154,48 +1145,51 @@ required={false}
               <div className="summary_cards brand_img_list">
                 <h4 className="lead text-black-50 fs-6">Data</h4>
                 {logos.length > 0 &&
-                  logos?.filter(e=>e.data_image !==null).map((detail, index) => (
-                    <div key={index} className="summary_card brand_img_item">
-                      <div className="summary_cardrow brand_img_row">
-                        <div className="col summary_box brand_img_box">
-                          <img
-                            className="brandimg_icon"
-                            src={detail.data_image}
-                          />
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Extension:</span>
-                            {detail.data_type}
-                          </h4>
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Size:</span>
-                            {detail.size_in_mb}
-                            {"MB"}
-                          </h4>
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Date:</span>
-                            {detail.created_at.split("T")[0]}
-                          </h4>
-                        </div>
-                        <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
-                          <p>
-                            {" "}
-                            <MdCancel
-                              onClick={() =>
-                                removeImage(detail._id, detail.data_id)
-                              }
-                              style={{ cursor: "pointer" }}
-                            />
-                          </p>
+                  logos
+                    ?.filter((e) => e.data_image !== null)
+                    .map((detail, index) => (
+                      <div key={index} className="summary_card brand_img_item">
+                        <div className="summary_cardrow brand_img_row">
+                          <div className="col summary_box brand_img_box">
+                            <img
+                              className="brandimg_icon"
+                              // src={detail.data_image}
+                              src={detail.data_type === "jpg"||detail.data_type === "jpeg" || detail.data_type === "png" || detail.data_type === "gif" ? detail.data_image : detail.data_type === "pdf" ? pdf : video}
+                              />
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Extension:</span>
+                              {detail.data_type}
+                            </h4>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Size:</span>
+                              {detail.size_in_mb}
+                              {"MB"}
+                            </h4>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Date:</span>
+                              {detail.created_at.split("T")[0]}
+                            </h4>
+                          </div>
+                          <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                            <p>
+                              {" "}
+                              <MdCancel
+                                onClick={() =>
+                                  removeImage(detail._id, detail.data_id)
+                                }
+                                style={{ cursor: "pointer" }}
+                              />
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 {details.slice(0, images.length).map((detail, index) => (
                   <div key={index} className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
@@ -1255,48 +1249,50 @@ required={false}
               <div className="summary_cards brand_img_list">
                 <h4 className="lead text-black-50 fs-6 mt-3">MMC</h4>
                 {logos.length > 0 &&
-                  logos?.filter(e=>e.mmc_image !==null).map((detail, index) => (
-                    <div key={index} className="summary_card brand_img_item">
-                      <div className="summary_cardrow brand_img_row">
-                        <div className="col summary_box brand_img_box">
-                          <img
-                            className="brandimg_icon"
-                            src={detail.mmc_image}
-                          />
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Extension:</span>
-                            {detail.data_type}
-                          </h4>
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Size:</span>
-                            {detail.size_in_mb}
-                            {"MB"}
-                          </h4>
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Date:</span>
-                            {detail.created_at.split("T")[0]}
-                          </h4>
-                        </div>
-                        <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
-                          <p>
-                            {" "}
-                            <MdCancel
-                              onClick={() =>
-                                removeImage(detail._id, detail.data_id)
-                              }
-                              style={{ cursor: "pointer" }}
+                  logos
+                    ?.filter((e) => e.mmc_image !== null)
+                    .map((detail, index) => (
+                      <div key={index} className="summary_card brand_img_item">
+                        <div className="summary_cardrow brand_img_row">
+                          <div className="col summary_box brand_img_box">
+                            <img
+                              className="brandimg_icon"
+                              src={detail.data_type === "jpg"||detail.data_type === "jpeg" || detail.data_type === "png" || detail.data_type === "gif" ? detail.mmc_image : detail.data_type === "pdf" ? pdf : video}
                             />
-                          </p>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Extension:</span>
+                              {detail.data_type}
+                            </h4>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Size:</span>
+                              {detail.size_in_mb}
+                              {"MB"}
+                            </h4>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Date:</span>
+                              {detail.created_at.split("T")[0]}
+                            </h4>
+                          </div>
+                          <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                            <p>
+                              {" "}
+                              <MdCancel
+                                onClick={() =>
+                                  removeImage(detail._id, detail.data_id)
+                                }
+                                style={{ cursor: "pointer" }}
+                              />
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 {mmcDetails.map((detail, index) => (
                   <div key={index} className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
@@ -1353,52 +1349,53 @@ required={false}
                 ))}
               </div>
 
-
               <div className="summary_cards brand_img_list">
                 <h4 className="lead text-black-50 fs-6 mt-2">Sarcasm</h4>
                 {logos.length > 0 &&
-                  logos?.filter(e=>e.sarcasm_image !==null).map((detail, index) => (
-                    <div key={index} className="summary_card brand_img_item">
-                      <div className="summary_cardrow brand_img_row">
-                        <div className="col summary_box brand_img_box">
-                          <img
-                            className="brandimg_icon"
-                            src={detail.sarcasm_image}
-                          />
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Extension:</span>
-                            {detail.data_type}
-                          </h4>
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Size:</span>
-                            {detail.size_in_mb}
-                            {"MB"}
-                          </h4>
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Date:</span>
-                            {detail.created_at.split("T")[0]}
-                          </h4>
-                        </div>
-                        <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
-                          <p>
-                            {" "}
-                            <MdCancel
-                              onClick={() =>
-                                removeImage(detail._id, detail.data_id)
-                              }
-                              style={{ cursor: "pointer" }}
+                  logos
+                    ?.filter((e) => e.sarcasm_image !== null)
+                    .map((detail, index) => (
+                      <div key={index} className="summary_card brand_img_item">
+                        <div className="summary_cardrow brand_img_row">
+                          <div className="col summary_box brand_img_box">
+                            <img
+                              className="brandimg_icon"
+                              src={detail.data_type === "jpg"||detail.data_type === "jpeg" || detail.data_type === "png" || detail.data_type === "gif" ? detail.sarcasm_image : detail.data_type === "pdf" ? pdf : video}
                             />
-                          </p>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Extension:</span>
+                              {detail.data_type}
+                            </h4>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Size:</span>
+                              {detail.size_in_mb}
+                              {"MB"}
+                            </h4>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Date:</span>
+                              {detail.created_at.split("T")[0]}
+                            </h4>
+                          </div>
+                          <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                            <p>
+                              {" "}
+                              <MdCancel
+                                onClick={() =>
+                                  removeImage(detail._id, detail.data_id)
+                                }
+                                style={{ cursor: "pointer" }}
+                              />
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 {sarcasmDetails.map((detail, index) => (
                   <div key={index} className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
@@ -1458,48 +1455,50 @@ required={false}
               <div className="summary_cards brand_img_list">
                 <h4 className="lead text-black-50 fs-6">No Logo</h4>
                 {logos.length > 0 &&
-                  logos?.filter(e=>e.no_logo_image !==null).map((detail, index) => (
-                    <div key={index} className="summary_card brand_img_item">
-                      <div className="summary_cardrow brand_img_row">
-                        <div className="col summary_box brand_img_box">
-                          <img
-                            className="brandimg_icon"
-                            src={detail.no_logo_image}
-                          />
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Extension:</span>
-                            {detail.data_type}
-                          </h4>
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Size:</span>
-                            {detail.size_in_mb}
-                            {"MB"}
-                          </h4>
-                        </div>
-                        <div className="col summary_box brand_img_box">
-                          <h4>
-                            <span>Date:</span>
-                            {detail.created_at.split("T")[0]}
-                          </h4>
-                        </div>
-                        <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
-                          <p>
-                            {" "}
-                            <MdCancel
-                              onClick={() =>
-                                removeImage(detail._id, detail.data_id)
-                              }
-                              style={{ cursor: "pointer" }}
+                  logos
+                    ?.filter((e) => e.no_logo_image !== null)
+                    .map((detail, index) => (
+                      <div key={index} className="summary_card brand_img_item">
+                        <div className="summary_cardrow brand_img_row">
+                          <div className="col summary_box brand_img_box">
+                            <img
+                              className="brandimg_icon"
+                              src={detail.data_type === "jpg"||detail.data_type === "jpeg" || detail.data_type === "png" || detail.data_type === "gif" ? detail.no_logo_image : detail.data_type === "pdf" ? pdf : video}
                             />
-                          </p>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Extension:</span>
+                              {detail.data_type}
+                            </h4>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Size:</span>
+                              {detail.size_in_mb}
+                              {"MB"}
+                            </h4>
+                          </div>
+                          <div className="col summary_box brand_img_box">
+                            <h4>
+                              <span>Date:</span>
+                              {detail.created_at.split("T")[0]}
+                            </h4>
+                          </div>
+                          <div className="col brand_img_box ml-auto mr-0 summary_box brand_img_delete">
+                            <p>
+                              {" "}
+                              <MdCancel
+                                onClick={() =>
+                                  removeImage(detail._id, detail.data_id)
+                                }
+                                style={{ cursor: "pointer" }}
+                              />
+                            </p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 {nologoDetails.map((detail, index) => (
                   <div key={index} className="summary_card brand_img_item">
                     <div className="summary_cardrow brand_img_row">
@@ -1555,7 +1554,6 @@ required={false}
                   </div>
                 ))}
               </div>
-
 
               <p>{error}</p>
 

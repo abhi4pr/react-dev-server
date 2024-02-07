@@ -4,7 +4,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
-import { Autocomplete, Button, TextField } from "@mui/material";
+import { Alert, Autocomplete, Button, TextField } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -15,6 +15,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import { baseUrl } from "../../../utils/config";
 import pdfImg from "./pdf-file.png";
 import ImageView from "./ImageView";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -38,16 +41,24 @@ const BalancePaymentList = () => {
   const [paymentRefImg, setPaymentRefImg] = useState("");
   const [paymentType, setPaymentType] = useState({ label: "", value: "" });
   const [paymentDetails, setPaymentDetails] = useState("");
-  const [paymentMode, setPaymentMode] = useState("");
   const [singleRow, setSingleRow] = useState({});
   const [dropdownData, setDropDownData] = useState([]);
   const [paidAmount, setPaidAmount] = useState([]);
   const [viewImgSrc, setViewImgSrc] = useState("");
   const [viewImgDialog, setViewImgDialog] = useState(false);
+  const [paymentDate, setPaymentDate] = useState(dayjs(new Date()));
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
+
+  const DateFormateToYYYYMMDD = (date) => {
+    const d = new Date(date);
+    const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
+    const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
+    const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
+    return `${ye}-${mo}-${da}`;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -62,7 +73,10 @@ const BalancePaymentList = () => {
     formData.append("payment_type", paymentType.label);
     formData.append("payment_mode", "others");
     formData.append("paid_amount", paidAmount);
-
+    formData.append("payment_date", DateFormateToYYYYMMDD(paymentDate));
+    // return toastError(
+    //   "This  is not supported in this version of the app. Please contact the developer for more information."
+    // );
     await axios
       .post(
         "https://sales.creativefuel.io/webservices/RestController.php?view=balance_payment_update",
@@ -87,7 +101,6 @@ const BalancePaymentList = () => {
             setPaymentRefImg("");
             setPaymentType({ label: "", value: "" });
             setPaymentDetails("");
-            setPaymentMode("");
             setPaidAmount([]);
           });
       });
@@ -99,8 +112,7 @@ const BalancePaymentList = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {
-    });
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {});
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -165,7 +177,6 @@ const BalancePaymentList = () => {
     setPaymentRefImg("");
     setPaymentType({ label: "", value: "" });
     setPaymentDetails("");
-    setPaymentMode("");
     setPaidAmount([]);
   };
 
@@ -405,7 +416,7 @@ const BalancePaymentList = () => {
                   ]}
                   style={{ width: 180, zIndex: 1, position: "relative" }}
                   onChange={(e, value) => {
-                    setPaymentType(value)
+                    setPaymentType(value);
                   }}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
@@ -423,7 +434,7 @@ const BalancePaymentList = () => {
                   }))}
                   style={{ width: 180, zIndex: 1, position: "relative" }}
                   onChange={(e, value) => {
-                    setPaymentDetails(value)
+                    setPaymentDetails(value);
                   }}
                   getOptionLabel={(option) => option.label}
                   renderInput={(params) => (
@@ -434,6 +445,14 @@ const BalancePaymentList = () => {
                     />
                   )}
                 />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Payment Date"
+                    value={paymentDate}
+                    format="DD/MM/YYYY"
+                    onChange={setPaymentDate}
+                  />
+                </LocalizationProvider>
               </form>
             </div>
           </div>
@@ -441,10 +460,7 @@ const BalancePaymentList = () => {
         <DialogActions>
           <Button
             disabled={
-              paidAmount === 0 ||
-              paidAmount === "" ||
-              paymentDetails === "" ||
-              paymentMode === ""
+              paidAmount === 0 || paidAmount === "" || paymentDetails === ""
             }
             autoFocus
             onClick={handleSubmit}

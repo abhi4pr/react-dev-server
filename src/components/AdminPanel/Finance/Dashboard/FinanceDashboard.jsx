@@ -1,19 +1,15 @@
-import  {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FormContainer from "../../FormContainer";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import {
-  Autocomplete,
-  Button,
-  TextField,
-} from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import classes from "./FinanceDashboard.module.css";
 import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import InfoIcon from '@mui/icons-material/Info';
-import {baseUrl} from '../../../../utils/config'
+import InfoIcon from "@mui/icons-material/Info";
+import { baseUrl } from "../../../../utils/config";
 
 const filterOptions = [
   "Today",
@@ -58,78 +54,65 @@ export default function FinanceDashboard() {
   const [incentiveData, setIncentiveData] = useState([]);
   const [incentiveFilterData, setIncentiveFilterData] = useState([]);
 
-const handleResetClick = () => {
-  setFilterValue();
-  setStartDate(dayjs());
-  setEndDate(dayjs(new Date()));
-  setPendingForApprovalData(filterPendingForApprovalData);
-  setRefundReqData(filterRefundReqData);
-  setCstPaymentData(filterCstPaymentData);
-  setInvoicePending(filterInvoicePending);
-  setSalesBookingAboutToCloseData(filterSalesBookingAboutToCloseData);
-  setSalesBookingOpenData(filterSalesBookingOpenData);
-  setSalesBookingCloseData(filterSalesBookingCloseData);
-  setVendorCardData(filterVendorCardData);
-}
-
+  const handleResetClick = () => {
+    setFilterValue();
+    setStartDate(dayjs());
+    setEndDate(dayjs(new Date()));
+    setPendingForApprovalData(filterPendingForApprovalData);
+    setRefundReqData(filterRefundReqData);
+    setCstPaymentData(filterCstPaymentData);
+    setInvoicePending(filterInvoicePending);
+    setSalesBookingAboutToCloseData(filterSalesBookingAboutToCloseData);
+    setSalesBookingOpenData(filterSalesBookingOpenData);
+    setSalesBookingCloseData(filterSalesBookingCloseData);
+    setVendorCardData(filterVendorCardData);
+  };
 
   const callApi = () => {
-    axios
-      .get(baseUrl+"phpvendorpaymentrequest")
-      .then((res) => {
-        const x = res.data.modifiedData;
+    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+      const x = res.data.modifiedData;
 
-        axios
-          .get(
-            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
-          )
-          .then((res) => {
-            let y = x.filter((item) => {
-              if (item.status == 1) {
-                return item;
-              }
-            });
-            let u = res.data.body.filter((item) => {
-              return y.some((item2) => item.request_id == item2.request_id);
-            });
-            setFilterVendorCardData(u);
-            setVendorCardData(u);
-          });
-      });
-
-    axios
-      .post(baseUrl+"add_php_finance_data_in_node")
-      .then(() => {
-        console.log("data save in local success");
-      });
-    axios
-      .get(baseUrl+"get_all_php_finance_data_pending")
-      .then((res) => {
-        setFilterPendingForApprovalData(res.data.data);
-        setPendingForApprovalData(res.data.data);
-      });
-
-    axios
-      .post(baseUrl+"add_php_payment_refund_data_in_node")
-      .then(() => {
-        console.log("data save in local success");
-      });
-    setTimeout(() => {
       axios
         .get(
-          baseUrl+"get_all_php_payment_refund_data_pending"
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
+        .then((res) => {
+          let y = x.filter((item) => {
+            if (item.status == 1) {
+              return item;
+            }
+          });
+          let u = res.data.body.filter((item) => {
+            return y.some((item2) => item.request_id == item2.request_id);
+          });
+          setFilterVendorCardData(u);
+          setVendorCardData(u);
+        });
+    });
+
+    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {
+      console.log("data save in local success");
+    });
+    axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
+      setFilterPendingForApprovalData(res.data.data);
+      setPendingForApprovalData(res.data.data);
+    });
+
+    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {
+      console.log("data save in local success");
+    });
+    setTimeout(() => {
+      axios
+        .get(baseUrl + "get_all_php_payment_refund_data_pending")
         .then((res) => {
           setFilterRefundReqData(res.data.data);
           setRefundReqData(res.data.data);
         });
     }, 1000);
 
-    axios
-      .post(baseUrl+"add_php_payment_bal_data_in_node")
-      .then(() => {
-        console.log("data save in local success");
-      });
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {
+      console.log("data save in local success");
+    });
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -148,13 +131,9 @@ const handleResetClick = () => {
         setCstPaymentData(res.data.body);
       });
 
-    axios
-      .post(
-        baseUrl+"add_php_pending_invoice_data_in_node"
-      )
-      .then(() => {
-        console.log("data save in local success");
-      });
+    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then(() => {
+      console.log("data save in local success");
+    });
     const formDataa = new FormData();
     formDataa.append("loggedin_user_id", 36);
     axios
@@ -172,13 +151,9 @@ const handleResetClick = () => {
         setInvoicePending(res.data.body);
       });
 
-    axios
-      .post(
-        baseUrl+"add_php_sale_booking_tds_data_in_node"
-      )
-      .then(() => {
-        console.log("data save in local success");
-      });
+    axios.post(baseUrl + "add_php_sale_booking_tds_data_in_node").then(() => {
+      console.log("data save in local success");
+    });
     let formDataSalesbookingAboutToClose = new FormData();
     formDataSalesbookingAboutToClose.append("loggedin_user_id", 36);
     formDataSalesbookingAboutToClose.append("tds_status", 0);
@@ -240,24 +215,19 @@ const handleResetClick = () => {
         setSalesBookingCloseData(allData);
       });
 
-      try {
-        axios.get(`${baseUrl}`+`get_finances`).then((res) => {
-          const response = res.data;
-          setFilterPayoutData(response);
-          setPayoutData(response);
-        });
-      } catch (error) {
-        console.log(error);
-      }
-
-
-      axios
-      .post(
-        baseUrl+"add_php_payment_incentive_data_in_node"
-      )
-      .then(() => {
-        console.log("data save in local success");
+    try {
+      axios.get(`${baseUrl}` + `get_finances`).then((res) => {
+        const response = res.data;
+        setFilterPayoutData(response);
+        setPayoutData(response);
       });
+    } catch (error) {
+      console.log(error);
+    }
+
+    axios.post(baseUrl + "add_php_payment_incentive_data_in_node").then(() => {
+      console.log("data save in local success");
+    });
     const formDataIncentive = new FormData();
     formDataIncentive.append("loggedin_user_id", 36);
     axios
@@ -274,7 +244,6 @@ const handleResetClick = () => {
         setIncentiveFilterData(res.data.body);
         setIncentiveData(res.data.body);
       });
-
   };
 
   useEffect(() => {
@@ -338,16 +307,14 @@ const handleResetClick = () => {
         );
         endFilterDate = new Date();
         break;
-        case "search":
-          console.log(new Date(startDate), new Date(endDate));
-          startFilterDate = new Date(startDate);
-          endFilterDate = new Date(endDate);
-          break;
+      case "search":
+        console.log(new Date(startDate), new Date(endDate));
+        startFilterDate = new Date(startDate);
+        endFilterDate = new Date(endDate);
+        break;
       default:
       case "Custom Date":
         return;
-
-     
     }
 
     const filteredData = filterPendingForApprovalData.filter((item) => {
@@ -426,8 +393,6 @@ const handleResetClick = () => {
     setIncentiveData(filterData9);
   };
 
-
-
   return (
     <div>
       <FormContainer
@@ -451,37 +416,37 @@ const handleResetClick = () => {
 
         {filterValue === "Custom Date" && (
           <>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              className="col-3"
-              label="Start Date"
-              format="DD/MM/YYYY"
-              disableFuture
-              value={startDate}
-              onChange={(newValue) => {
-                setStartDate(newValue);
-              }}
-            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                className="col-3"
+                label="Start Date"
+                format="DD/MM/YYYY"
+                disableFuture
+                value={startDate}
+                onChange={(newValue) => {
+                  setStartDate(newValue);
+                }}
+              />
 
-            <DatePicker
-              className="col-3 mx-2"
-              label="End Date"
-              format="DD/MM/YYYY"
-              value={endDate}
-              shouldDisableDate={(day) => dayjs(day).isBefore(startDate)}
-              onChange={(newValue) => {
-                setEndDate(newValue);
-              }}
-            />
-          </LocalizationProvider>
-          <Button
-          variant="contained"
-          className="col-1"
-          onClick={() => handleFilterChange("search")}
-        >
-          Filter
-        </Button>
-        </>
+              <DatePicker
+                className="col-3 mx-2"
+                label="End Date"
+                format="DD/MM/YYYY"
+                value={endDate}
+                shouldDisableDate={(day) => dayjs(day).isBefore(startDate)}
+                onChange={(newValue) => {
+                  setEndDate(newValue);
+                }}
+              />
+            </LocalizationProvider>
+            <Button
+              variant="contained"
+              className="col-1"
+              onClick={() => handleFilterChange("search")}
+            >
+              Filter
+            </Button>
+          </>
         )}
 
         <Button
@@ -492,7 +457,6 @@ const handleResetClick = () => {
         >
           Reset
         </Button>
-        
       </div>
       <div className="card">
         <div className="row gx-3 justify-content-around">
@@ -519,10 +483,9 @@ const handleResetClick = () => {
               </div>
             </div>
             <div className={classes.cardActions}>
-            <Link to="/admin/finance-pendingapproveupdate">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-
+              <Link to="/admin/finance-pendingapproveupdate">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
             </div>
           </div>
           <div
@@ -532,7 +495,7 @@ const handleResetClick = () => {
               <div className={classes.circularProgress}>
                 <PointOfSaleIcon className={classes.progressValue} />
               </div>
-              <div className={classes.content }>
+              <div className={classes.content}>
                 <h5 className={classes.bodyMd}>Pending for Vendor Payment:</h5>
                 <span className={classes.h1}>{vendorCardData.length}</span>
                 <Link
@@ -544,11 +507,9 @@ const handleResetClick = () => {
               </div>
             </div>
             <div className={classes.cardActions}>
-
-                <Link to="/admin/finance-pruchasemanagement-paymentdone">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-
+              <Link to="/admin/finance-pruchasemanagement-paymentdone">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
             </div>
           </div>
 
@@ -559,21 +520,31 @@ const handleResetClick = () => {
               <div className={classes.circularProgress}>
                 <PointOfSaleIcon className={classes.progressValue} />
               </div>
-              <div className={`${classes.content} ${classes.buttonAlignIncentive2}`}>
-                <h5 className={classes.bodyMd}>Total Payout  Pending:</h5>
+              <div
+                className={`${classes.content} ${classes.buttonAlignIncentive2}`}
+              >
+                <h5 className={classes.bodyMd}>Total Payout Pending:</h5>
                 <br />
-                <span className={classes.h1}>&#8377;{payoutData.map(e=>e.toPay).reduce((prev, next) => prev + next, 0)
-                   ?payoutData.map(e=>e.toPay).reduce((prev, next) => prev + next, 0).toLocaleString("en-IN"):0}</span>
+                <span className={classes.h1}>
+                  &#8377;
+                  {payoutData
+                    .map((e) => e.toPay)
+                    .reduce((prev, next) => prev + next, 0)
+                    ? payoutData
+                        .map((e) => e.toPay)
+                        .reduce((prev, next) => prev + next, 0)
+                        .toLocaleString("en-IN")
+                    : 0}
+                </span>
                 <Link to="#" className={classes.detailsLink}>
                   View Details
                 </Link>
               </div>
             </div>
             <div className={classes.cardActions}>
-            <Link to="#">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-
+              <Link to="#">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
             </div>
           </div>
 
@@ -591,16 +562,19 @@ const handleResetClick = () => {
                   Total Invoice pending count :
                 </h5>
                 <span className={classes.h1}>{invoicePending.length}</span>
-                <Link to="#" className={classes.detailsLink}>
+                <Link
+                  to="/admin/finance-pendinginvoice"
+                  className={classes.detailsLink}
+                >
                   View Details
                 </Link>
               </div>
             </div>
             <div className={classes.cardActions}>
-            <Link to="#">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-                </div>
+              <Link to="/admin/finance-pendinginvoice">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
+            </div>
           </div>
 
           <div
@@ -640,9 +614,9 @@ const handleResetClick = () => {
             </div>
             <div className={classes.cardActions}>
               <Link to="/admin/finance-salebookingclose">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-                </div>
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
+            </div>
           </div>
 
           <div
@@ -660,18 +634,25 @@ const handleResetClick = () => {
                 <h5 className={classes.bodyMd}>Total Incentive Count:</h5>
                 <h3 className={classes.h1}>{incentiveData.length}</h3>
                 <h5 className={classes.bodyMd}>
-                Request Amount:{" "}
+                  Request Amount:{" "}
                   <span className={classes.currencySymbol}>&#8377;</span>
-                  {incentiveData.map((item) => +item.request_amount).reduce((prev, next) => prev + next, 0)}
+                  {incentiveData
+                    .map((item) => +item.request_amount)
+                    .reduce((prev, next) => prev + next, 0)}
                 </h5>
                 <h5 className={classes.bodyMd}>
-                Released Amount:{" "}
+                  Released Amount:{" "}
                   <span className={classes.currencySymbol}>&#8377;</span>
-                  {incentiveData.map((item) => +item.released_amount).reduce((prev, next) => prev + next, 0)}
-                </h5><h5 className={classes.bodyMd}>
-                Balance Release Amount:{" "}
+                  {incentiveData
+                    .map((item) => +item.released_amount)
+                    .reduce((prev, next) => prev + next, 0)}
+                </h5>
+                <h5 className={classes.bodyMd}>
+                  Balance Release Amount:{" "}
                   <span className={classes.currencySymbol}>&#8377;</span>
-                  {incentiveData.map((item) => +item.balance_release_amount).reduce((prev, next) => prev + next, 0)}
+                  {incentiveData
+                    .map((item) => +item.balance_release_amount)
+                    .reduce((prev, next) => prev + next, 0)}
                 </h5>
                 <Link
                   to="/admin/finance-incentivepayment"
@@ -682,11 +663,9 @@ const handleResetClick = () => {
               </div>
             </div>
             <div className={classes.cardActions}>
-             <Link to="/admin/finance-incentivepayment">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-
-                
+              <Link to="/admin/finance-incentivepayment">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
             </div>
           </div>
 
@@ -701,11 +680,9 @@ const handleResetClick = () => {
                 <h5 className={classes.bodyMd}>
                   Total Refund Request Amount Pending:{" "}
                   <span className={classes.h1}>
-                  <span className={classes.currencySymbol}>&#8377;</span>
-
-                  
-                  
-                    </span>{refundReqData
+                    <span className={classes.currencySymbol}>&#8377;</span>
+                  </span>
+                  {refundReqData
                     .map((item) => item.refund_amount)
                     .reduce((prev, next) => prev + next, 0)
                     .toLocaleString("en-IN")}
@@ -720,8 +697,8 @@ const handleResetClick = () => {
             </div>
             <div className={classes.cardActions}>
               <Link to="/admin/finance-pendingapproverefund">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
             </div>
           </div>
 
@@ -737,7 +714,10 @@ const handleResetClick = () => {
                   Customer Balance Payment Count:{" "}
                   <span className={classes.h1}>{cstPaymentData.length}</span>
                 </h5>
-                <h5 className={`${classes.bodyMd} mt-1 `} style={{lineHeight:"15px"}}>
+                <h5
+                  className={`${classes.bodyMd} mt-1 `}
+                  style={{ lineHeight: "15px" }}
+                >
                   Total Refund Request Amount Pending:{" "}
                   <span className={classes.h1}>&#8377;</span>
                   {cstPaymentData
@@ -757,10 +737,9 @@ const handleResetClick = () => {
             </div>
 
             <div className={classes.cardActions}>
-           <Link to="/admin/finance-balancepayment">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-
+              <Link to="/admin/finance-balancepayment">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
             </div>
           </div>
         </div>
