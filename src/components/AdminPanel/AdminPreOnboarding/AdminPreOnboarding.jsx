@@ -360,6 +360,27 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
+            Job Type <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            className=""
+            options={jobTypeData.map((option) => ({
+              value: `${option}`,
+              label: `${option}`,
+            }))}
+            value={{
+              value: jobType,
+              label: `${jobType}`,
+            }}
+            onChange={(e) => {
+              setJobType(e.value);
+            }}
+            required
+          />
+        </div>
+
+        <div className="form-group col-3">
+          <label className="form-label">
             Department Name <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
@@ -475,26 +496,6 @@ const AdminPreOnboarding = () => {
           onChange={(e) => setCity(e.target.value)}
         />
 
-        <div className="form-group col-3">
-          <label className="form-label">
-            Job Type <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            className=""
-            options={jobTypeData.map((option) => ({
-              value: `${option}`,
-              label: `${option}`,
-            }))}
-            value={{
-              value: jobType,
-              label: `${jobType}`,
-            }}
-            onChange={(e) => {
-              setJobType(e.value);
-            }}
-            required
-          />
-        </div>
         {jobType === "WFH" && (
           <>
             <FieldContainer
@@ -687,8 +688,8 @@ const AdminPreOnboarding = () => {
 
         <FieldContainer
           label="DOB"
+          fieldGrid={3}
           type="date"
-          required
           value={dateOfBirth}
           onChange={handleDateChange}
         />
