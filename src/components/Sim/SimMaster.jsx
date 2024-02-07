@@ -218,7 +218,7 @@ const SimMaster = () => {
 
   //Redirect to sim overview page
   if (isFormSubmitted) {
-    return <Navigate to="/sim-overview" />;
+    return <Navigate to={`/sim-overview/${0}`} />;
   }
   return (
     <div style={{ width: "80%", margin: "0 0 0 10%" }}>

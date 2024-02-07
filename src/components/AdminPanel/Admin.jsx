@@ -216,6 +216,7 @@ import EmailEvent from "./User/EmailEvent/EmailEvent";
 import AllPlan from "./RegisterCampaign/Plan/AllPlanData";
 import AllPlanData from "./RegisterCampaign/Plan/AllPlanData";
 import AllPlanOverview from "./RegisterCampaign/Plan/AllPlanOverview";
+import AssetSummary from "../Sim/AssetSummary";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -337,7 +338,6 @@ const Admin = () => {
                             path="/email-events"
                             element={<EmailEvent />}
                           />
-
                         </>
                       )}
                   </>
@@ -513,6 +513,7 @@ const Admin = () => {
                       path="/asset-dashboard"
                       element={<AssetDashboard />}
                     />
+                    <Route path="/asset_summary" element={<AssetSummary />} />
 
                     <Route path="/self-audit" element={<SelfAudit />} />
 
@@ -777,7 +778,10 @@ const Admin = () => {
                   {/* Phase Dashboard here  */}
                   <Route path="/phase-dashboard" element={<PhaseDashboard />} />
                   <Route path="/direct_allPlan" element={<AllPlanData />} />
-                  <Route path="/all-planoverview/:id" element={<AllPlanOverview />} />
+                  <Route
+                    path="/all-planoverview/:id"
+                    element={<AllPlanOverview />}
+                  />
 
                   <Route
                     path="/plan-dashboard/:id"
