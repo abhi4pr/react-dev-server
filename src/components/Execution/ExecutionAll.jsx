@@ -2,6 +2,7 @@ import React from "react";
 import Stack from "@mui/material/Stack";
 import {
   Autocomplete,
+  Box,
   Button,
   Checkbox,
   InputAdornment,
@@ -46,7 +47,7 @@ const VisuallyHiddenInput = styled("input")({
   whiteSpace: "nowrap",
   width: 1,
 });
-
+const viewInOptions = ["Millions", "Thousands", "Default"];
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
@@ -55,7 +56,7 @@ function ExecutionAll() {
   const [rows, setRows] = useState([]);
   const [pagemode, setPagemode] = useState(1);
   const [alldata, setAlldata] = useState([]);
-
+  const [viewType, setViewType] = useState("Default");
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [copiedData, setCopiedData] = useState("");
   const [selectedOptions, setSelectedOptions] = useState([]);
@@ -484,6 +485,21 @@ function ExecutionAll() {
   const handleHistoryRowClick = (row) => {
     navigate(`/admin/exe-history/${row.p_id}`, { state: row.p_id });
   };
+  const formatNumberIndian = (num) => {
+    if (!num) return "";
+    var x = num.toString();
+    var afterPoint = '';
+    if(x.indexOf('.') > 0)
+       afterPoint = x.substring(x.indexOf('.'),x.length);
+    x = Math.floor(x);
+    x = x.toString();
+    var lastThree = x.substring(x.length - 3);
+    var otherNumbers = x.substring(0, x.length - 3);
+    if (otherNumbers != '')
+        lastThree = ',' + lastThree;
+    var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
+    return res;
+  };
 
   const handleUpdateRowClick = async (row) => {
     await axios
@@ -582,13 +598,35 @@ function ExecutionAll() {
         },
     pagemode == 1 || pagemode == 4
       ? {
-          field: "follower_count",
-          headerName: "Followers",
+        field: "follower_count",
+        headerName: "Followers",
+        renderCell: (params) => {
+          const followerCount = params.row.follower_count;
+          if (viewType === "Millions") {
+            return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{formatNumberIndian(followerCount)}</span>;
+          }
+        },
+        valueFormatter: (params) => formatNumberIndian(params.value),
         }
       : pagemode == 2
       ? ({
-          field: "follower_count",
-          headerName: "Followers",
+        field: "follower_count",
+        headerName: "Followers",
+        renderCell: (params) => {
+          const followerCount = params.row.follower_count;
+          if (viewType === "Millions") {
+            return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{formatNumberIndian(followerCount)}</span>;
+          }
+        },
+        valueFormatter: (params) => formatNumberIndian(params.value),
         },
         {
           field: "page_likes",
@@ -1010,6 +1048,8 @@ function ExecutionAll() {
           </Stack>
         </Paper>
         {/* Third Paper */}
+        <Box sx={{display:"flex"}}>
+
         <TextField
           label="Search by Page Name"
           onChange={(e) => {
@@ -1021,6 +1061,27 @@ function ExecutionAll() {
             setRows(temp);
           }}
         />
+         <Autocomplete
+            disablePortal
+            value={viewType}
+            // defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={viewInOptions}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setViewType({
+                  newValue: "Default",
+                });
+              }
+
+              setViewType(newValue);
+            }}
+            sx={{ width: 250,ml:2 }}
+            renderInput={(params) => <TextField {...params} label="View In" />}
+            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+          />
+                  </Box>
+
         <Paper
           justifyContent="space-between"
           sx={{ flexWrap: "wrap", flexDirection: "row", p: 3, mt: 3, mb: 4 }}
