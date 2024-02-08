@@ -43,6 +43,9 @@ const SimOverview = () => {
   const [simAllocationTransferData, setSimAllocationTransferData] = useState(
     []
   );
+  const [category, setCategory] = useState("");
+  const [subcategoryData, setSubCategoryData] = useState([]);
+  const [subcategory, setSubCategory] = useState("");
 
   const [showAssetsImage, setShowAssetImages] = useState([]);
   const token = sessionStorage.getItem("token");
@@ -57,7 +60,8 @@ const SimOverview = () => {
 
   function getData(buttonID) {
     axios.get(baseUrl + "get_all_sims").then((res) => {
-      const simAllData = res.data.data;
+      const simAllData = res?.data.data;
+
       // if (status != "") {
       //   const AvailableData = simAllData?.filter(
       //     (data) => data.status.toLowerCase() == status
@@ -125,10 +129,6 @@ const SimOverview = () => {
     setModalSelectedUserData(MSD);
   }, [selectedUserTransfer]);
 
-  const [category, setCategory] = useState("");
-  const [subcategoryData, setSubCategoryData] = useState([]);
-  const [subcategory, setSubCategory] = useState("");
-
   // i want to use context api this is replace
 
   // const [categoryData, setCategoryData] = useState([]);
@@ -150,7 +150,7 @@ const SimOverview = () => {
       axios
         .get(`${baseUrl}` + `get_single_asset_sub_category/${category}`)
         .then((res) => {
-          setSubCategoryData(res.data);
+          setSubCategoryData(res?.data);
         });
     }
   };
@@ -165,20 +165,20 @@ const SimOverview = () => {
 
   useEffect(() => {
     axios.get(baseUrl + "get_all_allocations").then((res) => {
-      setSimAllocationData(res.data.data);
+      setSimAllocationData(res?.data.data);
     });
 
     axios.get(baseUrl + "get_all_users").then((res) => {
-      setUserData(res.data.data);
+      setUserData(res?.data.data);
     });
   }, []);
 
   useEffect(() => {
     const result = data?.filter((d) => {
       return (
-        d.mobileNumber?.toLowerCase().match(search.toLowerCase()) ||
-        d.provider?.toLowerCase().match(search.toLowerCase()) ||
-        d.type?.toLowerCase().match(search.toLowerCase())
+        d.mobileNumber?.toLowerCase().match(search?.toLowerCase()) ||
+        d.provider?.toLowerCase().match(search?.toLowerCase()) ||
+        d.type?.toLowerCase().match(search?.toLowerCase())
       );
     });
     setFilterData(result);
@@ -186,7 +186,7 @@ const SimOverview = () => {
 
   function handleParticularSimData(simId) {
     axios.get(`${baseUrl}` + `get_single_sim/${simId}`).then((res) => {
-      setModalData(res.data.data);
+      setModalData(res?.data.data);
     });
   }
 
@@ -202,7 +202,7 @@ const SimOverview = () => {
   useEffect(() => {
     if (simAllocationTransferData?.length > 0) {
       const commonUserId = userData?.filter(
-        (data) => data.user_id == simAllocationTransferData[0].user_id
+        (data) => data.user_id == simAllocationTransferData[0]?.user_id
       );
       setParticularUserName(commonUserId[0]?.user_name);
     }
@@ -236,6 +236,7 @@ const SimOverview = () => {
     }
   }
 
+  // Allocation -----------------------------------------------------
   const handleSimAllocation = async () => {
     if (selectedUserTransfer !== "") {
       await axios.post(baseUrl + "add_sim_allocation", {
@@ -250,12 +251,12 @@ const SimOverview = () => {
       await axios
         .put(baseUrl + "update_sim", {
           id: modalData.sim_id,
-          mobilenumber: modalData.mobileNumber,
           sim_no: modalData.sim_no,
-          provider: modalData.provider,
+          status: "Allocated",
+          // mobilenumber: modalData.mobileNumber,
+          // provider: modalData.provider,
           dept_id: Number(modalSelectedUserData[0].dept_id),
           desi_id: Number(modalSelectedUserData[0].user_designation),
-          status: "Allocated",
           s_type: modalData.s_type,
           type: modalData.type,
           remark: modalData.Remarks,
@@ -645,7 +646,7 @@ const SimOverview = () => {
                       Assets Type<sup style={{ color: "red" }}>*</sup>
                     </label>
                     <Select
-                      value={AsstestTypeOptions.find(
+                      value={AsstestTypeOptions?.find(
                         (option) => option.value === assetsType
                       )}
                       onChange={(selectedOption) => {
@@ -727,15 +728,15 @@ const SimOverview = () => {
                   <ul>
                     <li>
                       <span>Asset Name : </span>
-                      {modalData.assetsName}
+                      {modalData?.assetsName}
                     </li>
                     <li>
                       <span>Registered TO: </span>
-                      {modalData.register}
+                      {modalData?.register}
                     </li>
                     <li>
                       <span>Status: </span>
-                      {modalData.status}
+                      {modalData?.status}
                     </li>
                     <li>
                       <span>Allocated To: </span>
@@ -743,7 +744,7 @@ const SimOverview = () => {
                     </li>
                     <li>
                       <span>Sim Type: </span>
-                      {modalData.s_type}
+                      {modalData?.s_type}
                     </li>
                   </ul>
                 </div>
@@ -793,11 +794,11 @@ const SimOverview = () => {
                     <ul>
                       <li>
                         <span>Department : </span>
-                        {modalSelectedUserData[0].department_name}
+                        {modalSelectedUserData[0]?.department_name}
                       </li>
                       <li>
                         <span>Designation : </span>
-                        {modalSelectedUserData[0].designation_name}
+                        {modalSelectedUserData[0]?.designation_name}
                       </li>
                     </ul>
                   </div>
@@ -853,15 +854,15 @@ const SimOverview = () => {
                   <ul>
                     <li>
                       <span>Asset Name : </span>
-                      {modalData.assetsName}
+                      {modalData?.assetsName}
                     </li>
                     <li>
                       <span>Asset ID: </span>
-                      {modalData.asset_id}
+                      {modalData?.asset_id}
                     </li>
                     <li>
                       <span>Status: </span>
-                      {modalData.status}
+                      {modalData?.status}
                     </li>
                   </ul>
                 </div>
@@ -912,11 +913,11 @@ const SimOverview = () => {
                     <ul>
                       <li>
                         <span>Department : </span>
-                        {modalSelectedUserData[0].department_name}
+                        {modalSelectedUserData[0]?.department_name}
                       </li>
                       <li>
                         <span>Designation : </span>
-                        {modalSelectedUserData[0].designation_name}
+                        {modalSelectedUserData[0]?.designation_name}
                       </li>
                     </ul>
                   </div>

@@ -205,8 +205,8 @@ const SimMaster = () => {
 
       toastAlert("Form Submitted success");
       setIsFormSubmitted(true);
-    } catch {
-      toastError("Form submission failed. Please try again.");
+    } catch (error) {
+      alert(error.response.data.message);
     }
   };
   const handleAssetsIDChange = (e) => {

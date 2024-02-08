@@ -180,10 +180,8 @@ const AssetVisibleToHr = () => {
   const handleReturnAssetRecover = (row, status) => {
     setReturnRow(row);
     setRecoverStatus(status);
-    console.log(row, "row hai yha -------------");
   };
   const handleRecoverAssetSubmit = async () => {
-    console.log(returnRow.sim_id, returnRow.allo_id, "yah tow id hai");
     try {
       const formData = new FormData();
       formData.append("_id", returnRow._id);
@@ -197,6 +195,7 @@ const AssetVisibleToHr = () => {
 
       await axios.put(baseUrl + "update_sim", {
         id: returnRow.sim_id,
+        user_id: 0,
         status: "Available",
       });
 
@@ -204,6 +203,7 @@ const AssetVisibleToHr = () => {
         sim_id: returnRow.sim_id,
         allo_id: returnRow.allo_id,
         status: "Available",
+        user_id: 0,
         submitted_by: userID,
         Last_updated_by: userID,
         Reason: returnRecoverRemark,
@@ -245,6 +245,8 @@ const AssetVisibleToHr = () => {
             <span className="badge badge-success">Recover By HR</span>
           ) : row.asset_return_status === "RecoverdByManager" ? (
             <span className="badge badge-warning">Recovered By Manager</span>
+          ) : row.asset_return_status === "Pending" ? (
+            <span className="badge badge-warning">Pending</span>
           ) : (
             "N/A"
           )}
@@ -256,16 +258,18 @@ const AssetVisibleToHr = () => {
       name: "Action",
       cell: (row) => (
         <>
-          <button
-            type="button"
-            data-toggle="modal"
-            data-target="#return-asset-modal"
-            size="small"
-            className="btn btn-outline-primary btn-sm"
-            onClick={() => handleReturnAssetRecover(row, "RecovedByHR")}
-          >
-            Recover
-          </button>
+          {row.asset_return_status !== "RecovedByHR" && (
+            <button
+              type="button"
+              data-toggle="modal"
+              data-target="#return-asset-modal"
+              size="small"
+              className="btn btn-outline-primary btn-sm"
+              onClick={() => handleReturnAssetRecover(row, "RecovedByHR")}
+            >
+              Recover
+            </button>
+          )}
         </>
       ),
     },

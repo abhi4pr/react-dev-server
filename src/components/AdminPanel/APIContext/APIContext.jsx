@@ -1,7 +1,7 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import React, { createContext, useContext, useEffect, useState } from "react";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const ApiContextData = createContext();
 const APIContext = ({ children }) => {
@@ -16,26 +16,22 @@ const APIContext = ({ children }) => {
   const ContextDept = decodedToken.dept_id;
   const RoleIDContext = decodedToken.role_id;
   useEffect(() => {
-    if (userID && contextData.length === 0) {
+    if (userID && contextData?.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
-          setContextData(res.data);
+          setContextData(res?.data);
         });
     }
 
-    axios.get(baseUrl+"get_all_users").then((res) => {
-      setUserContextData(res.data.data);
+    axios.get(baseUrl + "get_all_users").then((res) => {
+      setUserContextData(res?.data.data);
       setLoading(true);
     });
 
-    axios
-      .get(baseUrl+"get_all_departments")
-      .then((res) => {
-        setDepartmentContext(res.data);
-      });
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      setDepartmentContext(res?.data);
+    });
   }, [userID]);
 
   return (

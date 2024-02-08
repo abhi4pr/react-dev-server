@@ -11,7 +11,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { baseUrl } from "../../../utils/config";
 
 const VenderMaster = () => {
-  const { toastAlert, categoryDataContext } = useGlobalContext();
+  const { toastAlert, toastError, categoryDataContext } = useGlobalContext();
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -42,23 +42,35 @@ const VenderMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!vendorContact || vendorContact == "" || vendorContact.length !== 10) {
+      return toastError(" Contact is Required and must be 10 digits");
+    } else if (vendorEmail) {
+      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      if (!emailRegex.test(vendorEmail)) {
+        return toastError("Invalid email format");
+      }
+    } else if (
+      !secondaryContact ||
+      secondaryContact == "" ||
+      secondaryContact.length !== 10
+    ) {
+      return toastError("Secondory Contact is Required and must be 10 digits");
+    }
+
     try {
-      const response = await axios.post(
-        baseUrl+"add_vendor",
-        {
-          vendor_name: vendorName,
-          vendor_type: type,
-          vendor_category: selectedCategory.map((category) => category.value),
-          vendor_contact_no: vendorContact,
-          secondary_contact_no: secondaryContact,
-          secondary_person_name: secondaryPersonName,
-          vendor_email_id: vendorEmail,
-          vendor_address: vendorAddress,
-          description: description,
-          created_by: loginUserId,
-          last_updated_by: loginUserId,
-        }
-      );
+      const response = await axios.post(baseUrl + "add_vendor", {
+        vendor_name: vendorName,
+        vendor_type: type,
+        vendor_category: selectedCategory.map((category) => category.value),
+        vendor_contact_no: vendorContact,
+        secondary_contact_no: secondaryContact,
+        secondary_person_name: secondaryPersonName,
+        vendor_email_id: vendorEmail,
+        vendor_address: vendorAddress,
+        description: description,
+        created_by: loginUserId,
+        last_updated_by: loginUserId,
+      });
       toastAlert("Data posted successfully!");
       setVendorName("");
       setDescription("");
@@ -166,7 +178,7 @@ const VenderMaster = () => {
           />
           <FieldContainer
             label="Email"
-            required={true}
+            required={false}
             value={vendorEmail}
             onChange={(e) => setVendorEmail(e.target.value)}
           />

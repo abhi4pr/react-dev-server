@@ -279,7 +279,7 @@ const ManagerDynamicOverview = ({
       sortable: true,
     },
     // console.log(filterData.asset_return_status == "RecovedByHR", "fsfafasfsd"),
-    filterData?.asset_return_status !== "RecovedByHR" && {
+    filterData[0]?.asset_return_status !== "RecovedByHR" && {
       name: "Return",
       cell: (row) => (
         <button
