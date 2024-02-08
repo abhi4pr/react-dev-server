@@ -64,6 +64,8 @@ const AssetSingleUser = () => {
   );
 
   const getData = async () => {
+    setFilterData([]);
+    setData([]);
     try {
       const res = await axios.get(
         `${baseUrl}` + `get_allocated_asset_data_for_user_id/${userID}`
@@ -80,16 +82,24 @@ const AssetSingleUser = () => {
   }
 
   async function getNewAssetRequest() {
-    const res = await axios.get(`${baseUrl}` + `assetrequest/${userID}`);
-    setNewAssetRequestData(
-      res?.data.filter((d) => d.asset_request_status !== "Approved")
-    );
+    setNewAssetRequestData([]);
+    try {
+      const res = await axios.get(`${baseUrl}assetrequest/${userID}`);
+      // Assuming you want to filter out only non-approved asset requests
+      const filteredData = res?.data.filter(
+        (d) => d.asset_request_status !== "Approved"
+      );
+      setNewAssetRequestData(filteredData);
+    } catch (error) {
+      // Handle the error here. For example, you could log it or display a message to the user.
+      console.error("Failed to fetch new asset request data:", error);
+      // Optionally, you can also set some state here to indicate that the request failed
+    }
   }
 
   useEffect(() => {
     getRepairReason();
-    getData();
-    getNewAssetRequest();
+    hardRender();
   }, []);
 
   useEffect(() => {

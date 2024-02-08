@@ -13,7 +13,7 @@ import { baseUrl } from "../../../utils/config";
 const VendorUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toastAlert, categoryDataContext } = useGlobalContext();
+  const { toastAlert, toastError, categoryDataContext } = useGlobalContext();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
@@ -52,12 +52,12 @@ const VendorUpdate = () => {
 
   const getData = () => {
     axios.get(`${baseUrl}` + `get_single_vendor/${id}`).then((res) => {
-      const response = res.data.data;
+      const response = res?.data.data;
 
       const selectedCategories =
-        categoryDataContext.length > 0
+        categoryDataContext?.length > 0
           ? response.vendor_category?.map((category) => ({
-              label: categoryDataContext.find((e) => e.category_id == category)
+              label: categoryDataContext?.find((e) => e.category_id == category)
                 ?.category_name,
               value: category ? +category : "",
             }))
@@ -65,9 +65,9 @@ const VendorUpdate = () => {
 
       setSelectedCategory(selectedCategories);
 
-      const availableCategories = categoryDataContext.filter(
+      const availableCategories = categoryDataContext?.filter(
         (category) =>
-          !selectedCategories.find(
+          !selectedCategories?.find(
             (selected) => selected.value === category.category_id
           )
       );
@@ -95,6 +95,21 @@ const VendorUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!vendorContact || vendorContact == "" || vendorContact.length !== 10) {
+      return toastError(" Contact is Required and must be 10 digits");
+    } else if (vendorEmail) {
+      const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      if (!emailRegex.test(vendorEmail)) {
+        return toastError("Invalid email format");
+      }
+    } else if (
+      !secondaryContact ||
+      secondaryContact == "" ||
+      secondaryContact.length !== 10
+    ) {
+      return toastError("Secondory Contact is Required and must be 10 digits");
+    }
+
     try {
       const response = await axios.put(baseUrl + "update_vendor", {
         vendor_id: id,
@@ -108,7 +123,7 @@ const VendorUpdate = () => {
         secondary_contact_no: secondaryContact,
         secondary_person_name: secondaryPersonName,
         vendor_type: type,
-        vendor_category: selectedCategory.map((category) => category.value),
+        vendor_category: selectedCategory?.map((category) => category.value),
       });
       toastAlert("Data Updated Successfully");
       setVendorName("");
@@ -129,7 +144,7 @@ const VendorUpdate = () => {
   const categoryChangeHandler = (e, op) => {
     setSelectedCategory(op);
 
-    const newFilteredCategories = categoryDataContext.filter(
+    const newFilteredCategories = categoryDataContext?.filter(
       (category) =>
         !op.find((selected) => selected.value === category.category_id)
     );
@@ -177,7 +192,7 @@ const VendorUpdate = () => {
               multiple
               id="combo-box-demo"
               value={selectedCategory}
-              options={filteredCategories.map((d) => ({
+              options={filteredCategories?.map((d) => ({
                 label: d.category_name,
                 value: d.category_id,
               }))}
@@ -192,7 +207,7 @@ const VendorUpdate = () => {
             label="Contact"
             value={vendorContact}
             onChange={(e) => {
-              if (e.target.value.length <= 10) {
+              if (e.target.value?.length <= 10) {
                 setVendorContact(e.target.value);
               }
             }}
@@ -201,7 +216,7 @@ const VendorUpdate = () => {
             label="Secondary Contact"
             value={secondaryContact}
             onChange={(e) => {
-              if (e.target.value.length <= 10) {
+              if (e.target.value?.length <= 10) {
                 setSecondaryContact(e.target.value);
               }
             }}
