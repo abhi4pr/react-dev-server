@@ -15,6 +15,7 @@ import {baseUrl} from '../../utils/config'
 
 const viewInOptions = ["Millions", "Thousands", "Default"];
 export default function ExecutionDashboard() {
+  const [selectedCategories,setSelectedCategories] =useState([])
   const [viewType, setViewType] = useState("Default");
   const [contextData, setContextData] = useState(false);
   const [pagemode, setPagemode] = useState(1);
@@ -291,7 +292,7 @@ const calculateCategoryPageCounts = () => {
           },
         },
     pagemode == 1 || pagemode == 4
-      ? {
+      ?{
         field: "follower_count",
         headerName: "Followers",
         renderCell: (params) => {
@@ -301,11 +302,12 @@ const calculateCategoryPageCounts = () => {
           } else if (viewType === "Thousands") {
             return <span>{(followerCount / 1000).toFixed(2)}K</span>;
           } else {
-            return <span>{followerCount}</span>;
+            return <span>{formatNumberIndian(followerCount)}</span>;
           }
         },
         valueFormatter: (params) => formatNumberIndian(params.value),
       }
+      
       : pagemode == 2
       ? ({
         field: "follower_count",
@@ -317,11 +319,12 @@ const calculateCategoryPageCounts = () => {
           } else if (viewType === "Thousands") {
             return <span>{(followerCount / 1000).toFixed(2)}K</span>;
           } else {
-            return <span>{followerCount}</span>;
+            return <span>{formatNumberIndian(followerCount)}</span>;
           }
         },
         valueFormatter: (params) => formatNumberIndian(params.value),
       },
+      
         {
           field: "page_likes",
           headerName: "Page Likes",

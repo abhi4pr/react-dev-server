@@ -411,6 +411,11 @@ export default function RegisteredCampaign() {
       },
     },
     {
+      field: "register_campaign_id",
+      headerName: "Unique Id",
+      width: 90, 
+    },
+    {
       field: "exeCmpId",
       headerName: "Campaign Name",
       width: 170,

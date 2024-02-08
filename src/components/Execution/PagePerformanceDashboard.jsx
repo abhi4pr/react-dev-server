@@ -23,6 +23,8 @@ const intervalFlagOptions = [
   { label: "Last one year", value: 10 },
   { label: "All Data", value: 2 },
 ];
+const viewInOptions = ["Millions", "Thousands", "Default"];
+
 export default function PagePerformanceDashboard() {
   const [pageHistory, setPageHistory] = React.useState([]);
   const [filterDataVal, setFilterDataVal] = useState("Highest");
@@ -36,6 +38,7 @@ export default function PagePerformanceDashboard() {
     label: "Current Month",
     value: "1",
   });
+  const [viewType, setViewType] = useState("Default");
 
   useEffect(() => {
     callApi();
@@ -55,6 +58,22 @@ export default function PagePerformanceDashboard() {
       });
   };
 
+  const formatNumberIndian = (num) => {
+    if (!num) return "";
+    var x = num.toString();
+    var afterPoint = '';
+    if(x.indexOf('.') > 0)
+       afterPoint = x.substring(x.indexOf('.'),x.length);
+    x = Math.floor(x);
+    x = x.toString();
+    var lastThree = x.substring(x.length - 3);
+    var otherNumbers = x.substring(0, x.length - 3);
+    if (otherNumbers != '')
+        lastThree = ',' + lastThree;
+    var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
+    return res;
+  };
+
   const columns = [
     {
       field: "id",
@@ -70,10 +89,74 @@ export default function PagePerformanceDashboard() {
 
   if (filterDataVal === "Highest") {
     columns.push(
-      { field: "maxReach", headerName: "Highest Reach", width: 200 },
-      { field: "maxImpression", headerName: "Highest Impression", width: 200 },
-      { field: "maxEngagement", headerName: "Highest Engagement", width: 200 },
-      { field: "maxStoryView", headerName: "Highest Story view", width: 200 },
+      {
+        field: "maxReach",
+        headerName: "Highest Reach",
+        width: 200,
+        renderCell: (params) => {
+          const engagement = params.row.maxReach;
+          if (viewType === "Millions") {
+            return <span>{(engagement / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(engagement / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{formatNumberIndian(engagement)}</span>;
+          }
+        },
+        valueFormatter: (params) => formatNumberIndian(params.value),
+
+      },
+      {
+        field: "maxImpression",
+        headerName: "Highest Impression",
+        width: 200,
+        renderCell: (params) => {
+          const engagement = params.row.maxImpression;
+          if (viewType === "Millions") {
+            return <span>{(engagement / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(engagement / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{formatNumberIndian(engagement)}</span>;
+          }
+        },
+        valueFormatter: (params) => formatNumberIndian(params.value),
+
+      },
+      {
+        field: "maxEngagement",
+        headerName: "Highest Engagement",
+        width: 200,
+        renderCell: (params) => {
+          const engagement = params.row.maxEngagement;
+          if (viewType === "Millions") {
+            return <span>{(engagement / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(engagement / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{formatNumberIndian(engagement)}</span>;
+          }
+        },
+        valueFormatter: (params) => formatNumberIndian(params.value),
+
+      },
+      {
+        field: "maxStoryView",
+        headerName: "Highest Story view",
+        width: 200,
+        renderCell: (params) => {
+          const engagement = params.row.maxStoryView;
+          if (viewType === "Millions") {
+            return <span>{(engagement / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(engagement / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{formatNumberIndian(engagement)}</span>;
+          }
+        },
+        valueFormatter: (params) => formatNumberIndian(params.value),
+
+      },
       {
         field: "maxStoryViewDate",
         headerName: "Hightest Story view Date",
@@ -271,7 +354,6 @@ export default function PagePerformanceDashboard() {
     filterRows();
   }, [search, pageHistory]);
 
-
   return (
     <>
       <FormContainer mainTitle="Page Performance Dashboard" link="/ip-master" />
@@ -285,8 +367,26 @@ export default function PagePerformanceDashboard() {
         <Box sx={{ display: "flex" }}>
           <Autocomplete
             disablePortal
-            va
-            lue={intervalFlag.label}
+            value={viewType}
+            // defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={viewInOptions}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setViewType({
+                  newValue: "Default",
+                });
+              }
+
+              setViewType(newValue);
+            }}
+            sx={{ width: 250,mr:2 }}
+            renderInput={(params) => <TextField {...params} label="View In" />}
+            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+          />
+          <Autocomplete
+            disablePortal
+            value={intervalFlag.label}
             defaultValue={intervalFlagOptions[0].label}
             id="combo-box-demo"
             options={intervalFlagOptions.map((option) => ({

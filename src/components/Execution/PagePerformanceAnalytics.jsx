@@ -113,6 +113,21 @@ export default function PagePerformanceAnalytics() {
       setRowData(filteredRows);
     }
   };
+  const formatNumberIndian = (num) => {
+    if (!num) return "";
+    var x = num.toString();
+    var afterPoint = '';
+    if(x.indexOf('.') > 0)
+       afterPoint = x.substring(x.indexOf('.'),x.length);
+    x = Math.floor(x);
+    x = x.toString();
+    var lastThree = x.substring(x.length - 3);
+    var otherNumbers = x.substring(0, x.length - 3);
+    if (otherNumbers != '')
+        lastThree = ',' + lastThree;
+    var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
+    return res;
+  };
 
   const handleFilterCustomReachCount = (e, type) => {
     if (type === "from") {
@@ -250,9 +265,11 @@ export default function PagePerformanceAnalytics() {
         } else if (viewType === "Thousands") {
           return <span>{(followerCount / 1000).toFixed(2)}K</span>;
         } else {
-          return <span>{followerCount}</span>;
+          return <span>{formatNumberIndian(followerCount)}</span>;
         }
       },
+      valueFormatter: (params) => formatNumberIndian(params.value),
+
     },
     {
       field: "maxReach",
@@ -265,9 +282,11 @@ export default function PagePerformanceAnalytics() {
         } else if (viewType === "Thousands") {
           return <span>{(reach / 1000).toFixed(2)}K</span>;
         } else {
-          return <span>{reach}</span>;
+          return <span>{formatNumberIndian(reach)}</span>;
         }
       },
+      valueFormatter: (params) => formatNumberIndian(params.value),
+
     },
     {
       field: "maxImpression",
@@ -280,9 +299,11 @@ export default function PagePerformanceAnalytics() {
         } else if (viewType === "Thousands") {
           return <span>{(impression / 1000).toFixed(2)}K</span>;
         } else {
-          return <span>{impression}</span>;
+          return <span>{formatNumberIndian(impression)}</span>;
         }
       },
+      valueFormatter: (params) => formatNumberIndian(params.value),
+
     },
     {
       field: "maxEngagement",
@@ -295,9 +316,11 @@ export default function PagePerformanceAnalytics() {
         } else if (viewType === "Thousands") {
           return <span>{(engagement / 1000).toFixed(2)}K</span>;
         } else {
-          return <span>{engagement}</span>;
+          return <span>{formatNumberIndian(engagement)}</span>;
         }
       },
+      valueFormatter: (params) => formatNumberIndian(params.value),
+
     },
     {
       field: "maxStoryView",
