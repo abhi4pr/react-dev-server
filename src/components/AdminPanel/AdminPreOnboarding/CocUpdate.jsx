@@ -7,6 +7,7 @@ import FieldContainer from "../FieldContainer";
 
 import { useGlobalContext } from "../../../Context/Context";
 import {baseUrl} from '../../../utils/config'
+import TextEditor from "../../ReusableComponents/TextEditor";
 
 const CocUpdate = () => {
   const { id } = useParams();
@@ -20,6 +21,7 @@ const CocUpdate = () => {
   const [description, setDescription] = useState("");
   const [remarks, setRemarks] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [cocContent, setCocContent] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -27,42 +29,37 @@ const CocUpdate = () => {
 
   useEffect(() => {
     axios
-      .get(`${baseUrl}`+`get_single_coc/${id}`)
+      .get(`${baseUrl}`+`newcoc/${id}`)
       .then((res) => {
         const fetchedData = res.data.data;
-        setDisplaySeq(fetchedData.display_sequence);
-        setHeading(fetchedData.heading);
-        setSubHeading(fetchedData.sub_heading);
-        setSubHeadingSeq(fetchedData.sub_heading_sequence);
-        setDescription(fetchedData.description);
-        setHeadingDesc(fetchedData.heading_desc);
-        setSubHeadingDesc(fetchedData.sub_heading_desc);
-        setRemarks(fetchedData.remarks);
+        // setDisplaySeq(fetchedData.display_sequence);
+        // setHeading(fetchedData.heading);
+        // setSubHeading(fetchedData.sub_heading);
+        // setSubHeadingSeq(fetchedData.sub_heading_sequence);
+        // setDescription(fetchedData.description);
+        // setHeadingDesc(fetchedData.heading_desc);
+        // setSubHeadingDesc(fetchedData.sub_heading_desc);
+        // setRemarks(fetchedData.remarks);
+        setCocContent(fetchedData.coc_content)
       });
   }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.put(`${baseUrl}`+`update_coc/`, {
+    await axios.put(`${baseUrl}`+`newcoc/`, {
       _id: id,
-      display_sequence: displaySeq,
-      heading: heading,
-      heading_desc: headingDesc,
-      sub_heading: subHeading,
-      sub_heading_desc: subHeadingDesc,
-      sub_heading_sequence: subHeadingSeq,
-      description: description,
-      remarks: remarks,
       updated_by: loginUserId,
+      coc_content: cocContent
+      // display_sequence: displaySeq,
+      // heading: heading,
+      // heading_desc: headingDesc,
+      // sub_heading: subHeading,
+      // sub_heading_desc: subHeadingDesc,
+      // sub_heading_sequence: subHeadingSeq,
+      // description: description,
+      // remarks: remarks,
     });
-
-    setDisplaySeq("");
-    setHeading("");
-    setSubHeading("");
-    setSubHeadingSeq("");
-    setDescription("");
-    setRemarks("");
 
     toastAlert("Coc created");
     setIsFormSubmitted(true);
@@ -76,10 +73,10 @@ const CocUpdate = () => {
     <>
       <FormContainer
         mainTitle="COC"
-        title="Coc Creation"
+        title="Coc Updation"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
+        {/* <FieldContainer
           label="Display Sequence"
           type="number"
           required={false}
@@ -138,16 +135,18 @@ const CocUpdate = () => {
           required={false}
           value={subHeadingDesc}
           onChange={(e) => setSubHeadingDesc(e.target.value)}
-        />
+        /> */}
 
-        <FieldContainer
+        <TextEditor value={cocContent} onChange={setCocContent} />
+
+        {/* <FieldContainer
           Tag="textarea"
           label="description"
           fieldGrid={4}
           required={false}
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-        />
+        /> */}
       </FormContainer>
     </>
   );

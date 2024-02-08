@@ -21,6 +21,7 @@ const UserSidebar = ({ cartItems, updatedCart, selectedSitting }) => {
   const userId = decodedToken.id;
   const SittingId = decodedToken.sitting_id;
   const loginUserRoomId = decodedToken.room_id;
+  const userEmail = decodedToken.email;
 
   const cartValue = Object.keys(cartItems).length;
 
@@ -105,6 +106,7 @@ const UserSidebar = ({ cartItems, updatedCart, selectedSitting }) => {
           request_delivered_by: reqDelApiData[0].user_id,
           room_id: loginUserRoomId,
           props1: element.propNames,
+          email: userEmail
           // props2: element.props2,
           // props3: element.props3,
           // props1Int: element.props1Int,
