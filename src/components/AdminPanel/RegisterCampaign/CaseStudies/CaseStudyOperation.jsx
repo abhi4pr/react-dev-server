@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { FcDownload } from "react-icons/fc";
-// import pdf from "../../pdf-file.png";
-// import video from "./montage.png";
 import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
 import { Autocomplete, Slider, TextField } from "@mui/material";
@@ -14,9 +12,11 @@ import { Link } from "react-router-dom";
 import UserNav from "../../../Pantry/UserPanel/UserNav";
 import DeleteButton from "../../DeleteButton";
 import { baseUrl } from "../../../../utils/config";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import dayjs from 'dayjs';
+
 
 const CaseStudyOperation = () => {
   const [search, setSearch] = useState("");
@@ -44,6 +44,10 @@ const CaseStudyOperation = () => {
   const [modalIndex, setModalIndex] = useState();
   const [brandCategory, setBrandCategory] = useState([]);
   const [brandSubCatData, setBrandSubCatData] = useState([]);
+  const [fromDate, setFromDate] = useState(null);
+const [toDate, setToDate] = useState(null);
+
+console.log(fromDate,"  ",toDate);
 
   const handleFileClick = (fileType, fileUrl) => {
     setEnlargedFileType(fileType);
@@ -112,6 +116,7 @@ const CaseStudyOperation = () => {
   async function getData() {
     await axios.get(baseUrl + "dataoperation").then((res) => {
       setCountData(res.data);
+      console.log(res.data," <----- hello ");
       const responseData = res.data;
 
       const uniqueBrandName = new Set();
@@ -220,6 +225,36 @@ const CaseStudyOperation = () => {
       });
   };
 
+  useEffect(() => {
+    const filteredData = backupData.filter((item) => {
+      const itemDate = dayjs(item.created_at);
+      const isAfterFromDate = fromDate ? itemDate.isAfter(fromDate.startOf('day')) || itemDate.isSame(fromDate.startOf('day'), 'day') : true;
+      const isBeforeToDate = toDate ? itemDate.isBefore(toDate.endOf('day')) || itemDate.isSame(toDate.endOf('day'), 'day') : true;
+      
+      return (
+        (selectedCategory === "" || item.cat_id === selectedCategory) &&
+        (selectedUser === "" || item.created_by == selectedUser) &&
+        (selectedBrand === "" || item.brand_id === selectedBrand) &&
+        (designed === "" || item.designed_by == designed) &&
+        (selectedContent === "" || item.content_type_id === selectedContent) &&
+        (selectedPlatform === "" || item.platform_id === selectedPlatform) &&
+        isAfterFromDate && isBeforeToDate
+      );
+    });
+    setData(filteredData);
+  }, [
+    selectedCategory,
+    selectedUser,
+    selectedBrand,
+    selectedContent,
+    selectedPlatform,
+    designed,
+    fromDate,
+    toDate,
+    backupData,
+  ]);
+  
+
   return (
     <>
       <div>
@@ -246,16 +281,6 @@ const CaseStudyOperation = () => {
                     Brand
                   </button>
                 </Link>
-                {/* <Link to="/data-brand-category">
-                  <button type="button" className="btn btn-primary btn-sm">
-                    Category
-                  </button>
-                </Link>
-                <Link to="/data-brand-sub-category">
-                  <button type="button" className="btn btn-primary btn-sm">
-                    Sub Category
-                  </button>
-                </Link> */}
                 <Link to="/case-study/brand">
                   <button type="button" className="btn btn-primary btn-sm">
                     Create Data
@@ -281,20 +306,6 @@ const CaseStudyOperation = () => {
                     )}
                     onChange={(e, value) => setSelectedCategory(value?._id)}
                   />
-                  {/* <FieldContainer
-                    label="Brand"
-                    Tag="select"
-                    fieldGrid={4}
-                    value={selectedBrand}
-                    onChange={(e) => setSelectedBrand(e.target.value)}
-                  >
-                    <option value="">Please select</option>
-                    {brandData.map((data) => (
-                      <option key={data._id} value={data._id}>
-                        {data.brand_name}
-                      </option>
-                    ))}
-                  </FieldContainer> */}
                   <Autocomplete
                     className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
                     id="combo-box-demo"
@@ -306,37 +317,6 @@ const CaseStudyOperation = () => {
                     )}
                     onChange={(e, value) => setSelectedBrand(value?._id)}
                   />
-
-                  {/* <Autocomplete
-                    className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12"
-                    id="combo-box-demo"
-                    options={contentData}
-                    getOptionLabel={(option) => option.content_name}
-                    style={{ width: 300 }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Content Type----"
-                        variant="outlined"
-                      />
-                    )}
-                    onChange={(e, value) => setSelectedContent(value?._id)}
-                  /> */}
-
-                  {/* <FieldContainer
-                    label="Platform"
-                    Tag="select"
-                    fieldGrid={4}
-                    value={selectedPlatform}
-                    onChange={(e) => setSelectedPlatform(e.target.value)}
-                  >
-                    <option value="">Please select</option>
-                    {platformData.map((data) => (
-                      <option key={data._id} value={data._id}>
-                        {data.platform_name}
-                      </option>
-                    ))}
-                  </FieldContainer> */}
                   <Autocomplete
                     className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 my-2"
                     id="combo-box-demo"
@@ -395,17 +375,31 @@ const CaseStudyOperation = () => {
                   </div>
 
                   <div className="col-md-3">
-                    <div className="form-group">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker format="DD-MM-YYYY" label="From Date" />
-                      </LocalizationProvider>
+                  <div className="form-group">
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+  <DatePicker
+    label="From Date"
+    value={fromDate}
+    onChange={(newValue) => {
+      setFromDate(newValue);
+    }}
+    renderInput={(params) => <TextField {...params} />}
+  />
+</LocalizationProvider>
                     </div>
                   </div>
                   <div className="col-md-3">
                     <div className="form-group">
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker format="DD-MM-YYYY" label="To Date" />
-                      </LocalizationProvider>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+  <DatePicker
+    label="To Date"
+    value={toDate}
+    onChange={(newValue) => {
+      setToDate(newValue);
+    }}
+    renderInput={(params) => <TextField {...params} />}
+  />
+</LocalizationProvider>
                     </div>
                   </div>
                 </div>
@@ -454,13 +448,6 @@ const CaseStudyOperation = () => {
                                 id={detail.data_name}
                                 getData={getData}
                               />
-                              {/* <button
-                                className="btn btn-sm btn-outline-danger"
-                                title="Delete"
-                                onClick={() => deleteBrand(detail.data_name)}
-                              >
-                                <i className="bi bi-trash3"></i>
-                              </button> */}
                             </div>
                           </div>
                           <div className="summary_cardbody">

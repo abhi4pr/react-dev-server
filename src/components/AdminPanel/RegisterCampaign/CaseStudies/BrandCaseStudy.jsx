@@ -13,12 +13,22 @@ import { useGlobalContext } from "../../../../Context/Context";
 import jwtDecode from "jwt-decode";
 import UserNav from "../../../Pantry/UserPanel/UserNav";
 import ImgDialogBox from "../../../Datas/ImgDialogBox";
-
+import {
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Box,
+    TextField,
+    Button,
+    Autocomplete
+  } from "@mui/material";
 const BrandCaseStudy = () => {
-    const id = useId();
+
   const { toastAlert, toastError } = useGlobalContext();
   const [fileDetails, setFileDetails] = useState([]);
-  const [brand, setBrand] = useState(id.toString());
+  const [brand, setBrand] = useState("");
   const [logo, setLogo] = useState([]);
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
@@ -36,7 +46,6 @@ const BrandCaseStudy = () => {
   const [contentTypeData, setContentTypeData] = useState([]);
   const [dataBrand, setDataBrand] = useState("");
   const [dataBrandData, setDataBrandData] = useState([]);
-  // const [dataSubCategory, setDataSubCategory] = useState([]);
   const [dataSubCategory, setDataSubCategory] = useState([]);
   const [dataSubCategoryData, setDataSubCategoryData] = useState([]);
   const [designedBy, setDesignedBy] = useState("");
@@ -68,6 +77,13 @@ const BrandCaseStudy = () => {
   const [mmcDetails, setMMCDetails] = useState([]);
   const [sarcasmImages, setSarcasmImages] = useState([]);
   const [sarcasmDetails, setSarcasmDetails] = useState([]);
+  const [cat, setCat] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenSubCat, setIsModalOpenSubCat] = useState(false);
+  const [postData, setPostData] = useState({
+    sub_category_name: "",
+    category_id: "",
+  });
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -78,6 +94,86 @@ const BrandCaseStudy = () => {
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+  };
+
+  useEffect(() => {
+    let id = localStorage.getItem('userId');
+    if (!id) {
+      // Generate a new ID using any preferred method
+      id = 'id_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('userId', id);
+    }
+    setBrand(id);
+  }, []);
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    axios
+      .post(baseUrl+"projectxCategory", {
+        category_name: cat
+      })
+      .then((response) => {
+        if (response.data.success === false) {
+          toastError(response.data.message);
+        } else {
+          toastAlert("Add successfully");
+        }
+        setIsModalOpen(false);
+        getCat()
+        setCat("")
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+        toastError("Add Properly");
+      });
+    setIsModalOpen(false);
+  };
+
+
+  const handleSaveSubCat = (e) => {
+    e.preventDefault();
+    axios
+      .post(baseUrl+"projectxSubCategory", postData)
+      .then((response) => {
+        if (response.data.success === false) {
+          toastError(response.data.message);
+        } else {
+          toastAlert("Add successfully");
+        }
+        postData.sub_category_name = "";
+        console.log("Data saved:", response.data);
+        setIsModalOpenSubCat(false);
+        getSubCat();
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+        toastError("Add Properly");
+
+      });
+    setIsModalOpen(false);
+  };
+
+  const getCat = () =>{
+    axios
+    .get(baseUrl + "projectxCategory")
+    .then((res) => {
+      setBrandCategory(res.data.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  }
+  const getSubCat = () =>{
+    axios.get(baseUrl + "projectxSubCategory").then((res) => {
+      setBrandSubCatData(res.data.data);
+    });
+  }
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setPostData({
+      ...postData,
+      [name]: value,
+    });
   };
 
   useEffect(() => {
@@ -97,17 +193,9 @@ const BrandCaseStudy = () => {
       console.log(res.data.data);
       setDataBrandData(res?.data?.data);
     });
-    axios
-      .get(baseUrl + "projectxCategory")
-      .then((res) => {
-        setBrandCategory(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    axios.get(baseUrl + "projectxSubCategory").then((res) => {
-      setBrandSubCatData(res.data.data);
-    });
+   
+    getSubCat()
+    getCat()
   }, []);
 
   useEffect(() => {
@@ -363,8 +451,15 @@ const BrandCaseStudy = () => {
     });
   };
 
+  const handleClick = () => {
+    setIsModalOpen(true);
+  };
+  const handleClickSubCat = () => {
+    setIsModalOpenSubCat(true);
+  };
+
   const handleSubmit = async (e) => {
-    if (platform == "") {
+     if (platform == "") {
       toastError("Platform is required");
     } else if (contentType == "") {
       toastError("Content type is required");
@@ -429,14 +524,12 @@ const BrandCaseStudy = () => {
         const formData = new FormData();
         formData.append("data_name", brand);
         formData.append("cat_id", category);
-        // formData.append("sub_cat_id", dataSubCategory.map(e=>e));
         formData.append("sub_cat_id", dataSubCategory);
         formData.append("platform_id", platform);
         formData.append("brand_id", dataBrand);
         formData.append("content_type_id", contentType);
         formData.append("data_upload", details[i].file);
         formData.append("data_type", details[i].fileType);
-        // formData.append("size", details[i].size);
         formData.append("size_in_mb", details[i].sizeInMB);
         formData.append("remark", remark);
         formData.append("created_by", userID);
@@ -454,21 +547,7 @@ const BrandCaseStudy = () => {
         formData.append("number_of_story_views", NumOfStoryViews);
         formData.append("operation_remark", OperationRemark);
 
-        // date_of_completion: "$date_of_completion",
-        //             date_of_report: "$date_of_report",
-        //             brand_category_id: "$brand_category_id",
-        //             brand_sub_category_id: "$brand_sub_category_id",
-        //             campaign_purpose: "$campaign_purpose",
-        //             number_of_post: "$number_of_post",
-        //             number_of_reach: "$number_of_reach",
-        //             number_of_impression: "$number_of_impression",
-        //             number_of_engagement: "$number_of_engagement",
-        //             number_of_views: "$number_of_views",
-        //             number_of_story_views: "$number_of_story_views",
-        //             operation_remark: "$operation_remark",
-
         await axios.post(baseUrl + "dataoperation", formData, {
-          // await axios.post( "http://192.168.1.9:3000/api/dataoperation", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -503,7 +582,7 @@ const BrandCaseStudy = () => {
         formData.append("operation_remark", OperationRemark);
 
         await axios.post(baseUrl + "dataoperation", formData, {
-          // await axios.post("http://192.168.1.9:3000/api/dataoperation", formData, {
+          // await axios.post("http://192.168.1.9:3000/api/add_data", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -538,7 +617,7 @@ const BrandCaseStudy = () => {
         formData.append("operation_remark", OperationRemark);
 
         await axios.post(baseUrl + "dataoperation", formData, {
-          // await axios.post("http://192.168.1.9:3000/api/dataoperation", formData, {
+          // await axios.post("http://192.168.1.9:3000/api/add_data", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -706,35 +785,6 @@ const BrandCaseStudy = () => {
         handleSubmit={handleSubmit}
         submitButton={false}
       >
-        {/* <div className="form-group col-6  ">
-          <label className="form-label">
-            Content Type <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={contentTypeData.map((opt) => ({
-              value: opt._id,
-              label: opt.content_name,
-            }))}
-            value={{
-              value: contentType,
-              label:
-                contentTypeData.find((user) => user._id === contentType)
-                  ?.content_name || "",
-            }}
-            onChange={(e) => {
-              setContentType(e.value);
-            }}
-            required
-          />
-        </div> */}
-        {/* <FieldContainer
-          label="Name *"
-          type="text"
-          value={brand}
-          onChange={(e) => setBrand(e.target.value)}
-          required={true}
-        /> */}
-
         <FieldContainer
           label="Creative Fuel *"
           type="file"
@@ -744,7 +794,6 @@ const BrandCaseStudy = () => {
           fieldGrid={6}
           required={true}
         />
-        {/* {contentType == "65a663ccef8a81593f418836" && ( */}
         <>
           <FieldContainer
             label="MMC *"
@@ -774,68 +823,6 @@ const BrandCaseStudy = () => {
             required={true}
           />
         </>
-        {/* )} */}
-
-        {/* <div className="form-group col-3">
-          <label className="form-label">
-            Category Name <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={categoryData.map((opt) => ({
-              value: opt._id,
-              label: opt.category_name,
-            }))}
-            value={{
-              value: category,
-              label:
-                categoryData.find((user) => user._id === category)
-                  ?.category_name || "",
-            }}
-            onChange={(e) => {
-              setCategory(e.value);
-            }}
-            required
-          />
-        </div> */}
-        {/* <div className="col-1 mt-4">
-          <Link
-            title="Add Category"
-            className="btn btn-sm btn-primary"
-            to="/data-brand-category"
-          >
-            <Add />
-          </Link>
-        </div> */}
-        {/* <div className="form-group col-3">
-          <label className="form-label">
-            Sub Category Name <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={dataSubCategoryData.map((opt) => ({
-              value: opt._id,
-              label: opt.data_sub_cat_name,
-            }))}
-            value={{
-              value: dataSubCategory,
-              label:
-                dataSubCategoryData.find((user) => user._id === dataSubCategory)
-                  ?.data_sub_cat_name || "",
-            }}
-            onChange={(e) => {
-              setDataSubCategory(e.value);
-            }}
-            required
-          />
-        </div>
-        <div className="col-1 mt-4">
-          <Link
-            title="Add Sub Category"
-            className="btn btn-sm btn-primary"
-            to="/data-brand-sub-category"
-          >
-            <Add />
-          </Link>
-        </div> */}
         <div className="form-group col-3">
           <label className="form-label">
             Platform Name <sup style={{ color: "red" }}>*</sup>
@@ -905,7 +892,6 @@ const BrandCaseStudy = () => {
             required
           />
         </div>
-        {/* {contentType == "65a663ccef8a81593f418836" && ( */}
         <>
           <div className="form-group col-3">
             <label className="form-label">
@@ -954,13 +940,12 @@ const BrandCaseStudy = () => {
           </div>
 
           <div className="col-1 mt-4">
-            <Link
-              title="Add Sub Category"
-              className="btn btn-sm btn-primary"
-              to="/admin/categorymaster"
+            <Button
+              title="Add Category"
+              onClick={handleClick}
             >
               <Add />
-            </Link>
+            </Button>
           </div>
 
           <div className="form-group col-3">
@@ -989,13 +974,12 @@ const BrandCaseStudy = () => {
           </div>
 
           <div className="col-1 mt-4">
-            <Link
+            <Button
               title="Add Sub Category"
-              className="btn btn-sm btn-primary"
-              to="/admin/subcategory"
+              onClick={handleClickSubCat}
             >
               <Add />
-            </Link>
+            </Button>
           </div>
           <div className="form-group col-3">
             <label className="form-label">
@@ -1101,7 +1085,6 @@ const BrandCaseStudy = () => {
             />
           </div>
         </>
-        {/* )} */}
 
         <div className="summary_cards brand_img_list">
           {details.length > 0 && <h3 className="lead fs-4">Creative Fuel</h3>}
@@ -1260,22 +1243,6 @@ const BrandCaseStudy = () => {
                 >
                   <CloseTwoTone />
                 </button>
-                {/* <div className="col summary_box brand_img_box">
-                  <FieldContainer
-                    label={`Data Category`}
-                    fieldGrid={12}
-                    Tag="select"
-                    value={selectedCategories[index] || ""}
-                    onChange={(e) => handleCategoryChange(e, index)}
-                  >
-                    <option value="">Please select</option>
-                    {categoryData.map((data) => (
-                      <option key={data.id} value={data.id}>
-                        {data.cat_name}
-                      </option>
-                    ))}
-                  </FieldContainer>
-                </div> */}
               </div>
             </div>
           ))}
@@ -1357,22 +1324,6 @@ const BrandCaseStudy = () => {
                 >
                   <CloseTwoTone />
                 </button>
-                {/* <div className="col summary_box brand_img_box">
-                  <FieldContainer
-                    label={`Data Category`}
-                    fieldGrid={12}
-                    Tag="select"
-                    value={selectedCategories[index] || ""}
-                    onChange={(e) => handleCategoryChange(e, index)}
-                  >
-                    <option value="">Please select</option>
-                    {categoryData.map((data) => (
-                      <option key={data.id} value={data.id}>
-                        {data.cat_name}
-                      </option>
-                    ))}
-                  </FieldContainer>
-                </div> */}
               </div>
             </div>
           ))}
@@ -1454,22 +1405,6 @@ const BrandCaseStudy = () => {
                 >
                   <CloseTwoTone />
                 </button>
-                {/* <div className="col summary_box brand_img_box">
-                  <FieldContainer
-                    label={`Data Category`}
-                    fieldGrid={12}
-                    Tag="select"
-                    value={selectedCategories[index] || ""}
-                    onChange={(e) => handleCategoryChange(e, index)}
-                  >
-                    <option value="">Please select</option>
-                    {categoryData.map((data) => (
-                      <option key={data.id} value={data.id}>
-                        {data.cat_name}
-                      </option>
-                    ))}
-                  </FieldContainer>
-                </div> */}
               </div>
             </div>
           ))}
@@ -1497,7 +1432,95 @@ const BrandCaseStudy = () => {
           openReviewDisalog={openReviewDisalog}
           setOpenReviewDisalog={setOpenReviewDisalog}
         />
-      )}{" "}
+      )}<>
+      
+      {/* add Category */}
+        <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <DialogTitle>Add Record</DialogTitle>
+        <DialogContent>
+          <Box
+            component="form"
+            sx={{
+              "& .MuiTextField-root": { m: 1, width: "25ch" },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <div>
+              <TextField
+                id="outlined-password-input"
+                label="Category"
+                name="category_name"
+                type="text"
+                value={cat}
+                onChange={(e)=>setCat(e.target.value)}
+              />
+            </div>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+            Cancel
+          </Button> */}
+          <Button onClick={handleSave} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+{/* add sub Category */}
+      <Dialog open={isModalOpenSubCat} onClose={() => setIsModalOpenSubCat(false)}>
+        <DialogTitle>Add Record</DialogTitle>
+        <DialogContent>
+          <Box
+            component="form"
+            sx={{
+              "& .MuiTextField-root": { m: 1, width: "25ch" },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <div>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={brandCategory.map((option) => ({
+                  label: option.category_name,
+                  value: option.category_id,
+                }))}
+                onChange={(event, value) => {
+                  setPostData((prev) => ({
+                    ...prev,
+                    category_id: value.value,
+                  }));
+                }}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category *" />
+                )}
+              />
+
+              <TextField
+                id="outlined-password-input"
+                label="Sub Category *"
+                name="sub_category_name"
+                type="text"
+                value={postData.sub_category_name}
+                onChange={handleChange}
+              />
+            </div>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+            Cancel
+          </Button> */}
+          <Button onClick={handleSaveSubCat} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+      </>
     </div>
   );
 };
