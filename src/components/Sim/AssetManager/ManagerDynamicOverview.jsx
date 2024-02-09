@@ -25,8 +25,6 @@ const ManagerDynamicOverview = ({
   const [returnRecoverImg1, setReturnRecoverImg1] = useState(null);
   const [returnRecoverImg2, setReturnRecoverImg2] = useState(null);
 
-  console.log(filterData, "firlter data");
-
   const handleStatusUpdate = async (row, status) => {
     try {
       await axios.put(baseUrl + "assetrequest", {
@@ -106,6 +104,10 @@ const ManagerDynamicOverview = ({
             <span className="badge badge-danger">Rejected</span>
           ) : row.asset_repair_request_status === "ApprovedByManager" ? (
             <span className="badge badge-warning">Approve By Manager</span>
+          ) : row.asset_repair_request_status === "Recover" ? (
+            <span className="badge badge-warning">Recover</span>
+          ) : row.asset_repair_request_status === "Resolved" ? (
+            <span className="badge badge-success">Resolved</span>
           ) : null}
         </>
       ),
@@ -139,17 +141,19 @@ const ManagerDynamicOverview = ({
       name: "Actions",
       cell: (row) => (
         <>
-          <button
-            type="button"
-            data-toggle="modal"
-            data-target="#resolvedModal"
-            size="small"
-            color="primary"
-            onClick={() => handleRepairStatusUpdate(row, "ApprovedByManager")}
-            className="btn btn-success btn-sm ml-2"
-          >
-            Approval
-          </button>
+          {row.asset_repair_request_status !== "Resolved" && (
+            <button
+              type="button"
+              data-toggle="modal"
+              data-target="#resolvedModal"
+              size="small"
+              color="primary"
+              onClick={() => handleRepairStatusUpdate(row, "ApprovedByManager")}
+              className="btn btn-success btn-sm ml-2"
+            >
+              Approval
+            </button>
+          )}
         </>
       ),
       sortable: true,
@@ -205,28 +209,32 @@ const ManagerDynamicOverview = ({
       name: "Actions",
       cell: (row) => (
         <>
-          <button
-            type="button"
-            data-toggle="modal"
-            data-target="#resolvedModal"
-            size="small"
-            color="primary"
-            onClick={() => handleStatusUpdate(row, "ApprovedByManager")}
-            className="btn btn-success btn-sm ml-2"
-          >
-            Approval
-          </button>
-          <button
-            type="button"
-            data-toggle="modal"
-            data-target="#exampleModal1"
-            size="small"
-            color="primary"
-            className="btn btn-danger btn-sm ml-2"
-            onClick={() => handleStatusUpdate(row, "RejectedByManager")}
-          >
-            Reject
-          </button>
+          {row.asset_new_request_status !== "Approved" && (
+            <>
+              <button
+                type="button"
+                data-toggle="modal"
+                data-target="#resolvedModal"
+                size="small"
+                color="primary"
+                onClick={() => handleStatusUpdate(row, "ApprovedByManager")}
+                className="btn btn-success btn-sm ml-2"
+              >
+                Approval
+              </button>
+              <button
+                type="button"
+                data-toggle="modal"
+                data-target="#exampleModal1"
+                size="small"
+                color="primary"
+                className="btn btn-danger btn-sm ml-2"
+                onClick={() => handleStatusUpdate(row, "RejectedByManager")}
+              >
+                Reject
+              </button>
+            </>
+          )}
         </>
       ),
       sortable: true,

@@ -53,7 +53,6 @@ const AssetVisibleToTagedPerosn = () => {
         `${baseUrl}` + `show_new_asset_user_data/${userID}`
       );
       setNewassetData(response.data.data);
-      console.log(response.data.data, "data");
     } catch (error) {
       console.log(error);
     }

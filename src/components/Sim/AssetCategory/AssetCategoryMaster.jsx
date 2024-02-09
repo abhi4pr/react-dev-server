@@ -29,13 +29,11 @@ const AssetCategoryMaster = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_asset_category"
-      );
+      const response = await axios.get(baseUrl + "get_all_asset_category");
 
       setCategoryData(response.data.data?.asset_categories);
     } catch (error) {
-      toastAlert("Data not submitted", error.message);
+      // toastAlert("Data not submitted", error.message);
       return null;
     }
   };
@@ -53,19 +51,16 @@ const AssetCategoryMaster = () => {
       if (isCategoryExist) {
         alert("Category already Exists");
       } else {
-        const response = await axios.post(
-          baseUrl+"add_asset_category",
-          {
-            category_name: categoryName,
-            description: description,
-            selfAuditPeriod: selfAuditPeriod,
-            selfAuditUnit: selfAuditUnit,
-            hrselfAuditPeriod: hrselfAuditPeriod,
-            hrAuditUnit: hrselfAuditUnit,
-            created_by: loginUserId,
-            last_updated_by: loginUserId,
-          }
-        );
+        const response = await axios.post(baseUrl + "add_asset_category", {
+          category_name: categoryName,
+          description: description,
+          selfAuditPeriod: selfAuditPeriod,
+          selfAuditUnit: selfAuditUnit,
+          hrselfAuditPeriod: hrselfAuditPeriod,
+          hrAuditUnit: hrselfAuditUnit,
+          created_by: loginUserId,
+          last_updated_by: loginUserId,
+        });
         toastAlert("Data posted successfully!");
         setCategoryName("");
         setDescription("");
@@ -75,7 +70,7 @@ const AssetCategoryMaster = () => {
         setIsFormSubmitted(true);
       }
     } catch (error) {
-      toastAlert(error.mesaage);
+      // toastAlert(error.mesaage);
     }
   };
   // if (isFormSubmitted) {

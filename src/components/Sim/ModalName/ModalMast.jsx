@@ -41,7 +41,7 @@ const ModalMast = () => {
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_total_asset_in_category/${row}`
+        `${baseUrl}` + `get_total_asset_in_category/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -56,7 +56,7 @@ const ModalMast = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}` + `get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -139,13 +139,10 @@ const ModalMast = () => {
       if (isModalExists) {
         alert("Brand already Exists");
       } else {
-        const response = await axios.post(
-          baseUrl+"add_asset_modal",
-          {
-            asset_modal_name: modalName,
-            asset_brand_id: brandName,
-          }
-        );
+        const response = await axios.post(baseUrl + "add_asset_modal", {
+          asset_modal_name: modalName,
+          asset_brand_id: brandName,
+        });
         setModalName("");
         setBrandName("");
         getModalData();
@@ -155,9 +152,7 @@ const ModalMast = () => {
     }
   };
   async function getModalData() {
-    const res = await axios.get(
-      baseUrl+"get_all_asset_modals"
-    );
+    const res = await axios.get(baseUrl + "get_all_asset_modals");
     setModalData(res.data);
     setModalFilter(res.data);
   }
@@ -167,15 +162,13 @@ const ModalMast = () => {
   }, []);
 
   const handleBrandData = (row) => {
-    console.log(row, "data");
     setModalId(row.asset_modal_id);
     setModalNameUpdate(row.asset_modal_name);
     setBrandNameUpdate(row.asset_brand_id);
   };
   const handleModalUpdate = () => {
-    console.log(modalId, "id");
     axios
-      .put(baseUrl+"update_asset_modal", {
+      .put(baseUrl + "update_asset_modal", {
         asset_modal_id: modalId,
         asset_brand_id: brandNameUpdate,
         asset_modal_name: modalNameUpdate,

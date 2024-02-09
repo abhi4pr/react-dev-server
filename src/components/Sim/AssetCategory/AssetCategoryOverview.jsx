@@ -80,7 +80,7 @@ const AssetCategoryOverview = () => {
       const response = await axios.get(baseUrl + "get_all_asset_sub_category");
       setSubCategoryData(response.data.data);
     } catch (error) {
-      toastAlert("Data not submitted", error.message);
+      // toastAlert("Data not submitted", error.message);
       return null;
     }
   };
@@ -130,7 +130,7 @@ const AssetCategoryOverview = () => {
       setFilterData(response.data.data?.asset_categories);
       setData(response.data.data?.asset_categories);
     } catch (error) {
-      toastAlert("Data not submitted", error.message);
+      // toastAlert("Data not submitted", error.message);
       return null;
     }
   };
