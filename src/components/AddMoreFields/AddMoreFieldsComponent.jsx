@@ -38,6 +38,7 @@ const AddMoreFieldsComponent = ({
       ))}
 
       <button
+        type="button"
         onClick={handleAddFieldDetails}
         variant="contained"
         className="btn btn-outline-danger"
