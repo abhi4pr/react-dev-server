@@ -36,7 +36,13 @@ const IndianCitiesMui = ({ selectedState, selectedCity, onChange }) => {
       onChange={(event, newValue) => onChange(newValue ? newValue.name : "")}
       inputValue={inputValue}
       onInputChange={handleInputChange}
-      isOptionEqualToValue={(option, value) => option.name === value}
+      isOptionEqualToValue={(option, value) =>
+        option.name === value.name &&
+        option.countryCode === value.countryCode &&
+        option.stateCode === value.stateCode &&
+        option.latitude === value.latitude &&
+        option.longitude === value.longitude
+      }
       renderInput={(params) => (
         <TextField {...params} label="City" variant="outlined" required />
       )}

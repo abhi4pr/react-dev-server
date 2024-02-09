@@ -100,7 +100,12 @@ const DocumentTab = ({
               <tbody>
                 {documentData.map((item) => (
                   <tr key={item._id}>
-                    <td scope="row">{item.document.doc_type}</td>
+                    <td scope="row">
+                      {item.document.doc_type}
+                      {item.document.isRequired && (
+                        <span style={{ color: "red" }}> *</span>
+                      )}
+                    </td>
                     <td>{item.document.period} days</td>
                     <td>1 Day</td>
                     <td>

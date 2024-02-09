@@ -6,6 +6,7 @@ const GuardianFields = ({
   guardianDetails,
   guardianDisplayFields,
   guardianFieldLabels,
+  guardianContactErrors,
   handleGuardianDetailsChange,
   handleAddGuardianDetails,
   handleRemoveGuardianDetails,
@@ -23,12 +24,20 @@ const GuardianFields = ({
                   type={field === "guardian_contact" ? "number" : "text"}
                   label={guardianFieldLabels[field]}
                   name={field}
-                  key={index}
                   value={detail[field] || ""}
-                  onChange={(e) => handleGuardianDetailsChange(index, e)}
+                  onChange={handleGuardianDetailsChange.bind(null, index)}
+                  error={
+                    field === "guardian_contact" && guardianContactErrors[index]
+                  }
+                  helperText={
+                    field === "guardian_contact" && guardianContactErrors[index]
+                      ? "Invalid phone number"
+                      : ""
+                  }
                 />
               </div>
             ))}
+
             {guardianDetails.length > 1 && (
               <IconButton onClick={() => handleRemoveGuardianDetails(index)}>
                 <DeleteIcon />
@@ -37,14 +46,16 @@ const GuardianFields = ({
           </div>
         ))}
 
-      <button
-        type="button"
-        onClick={handleAddGuardianDetails}
-        variant="contained"
-        className="btn btn-outline-danger"
-      >
-        Add More Guardian Details
-      </button>
+      <div className="col-12 mb-5">
+        <button
+          type="button"
+          onClick={handleAddGuardianDetails}
+          variant="contained"
+          className="btn btn-outline-danger"
+        >
+          Add More Guardian Details
+        </button>
+      </div>
     </>
   );
 };

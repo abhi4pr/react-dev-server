@@ -53,11 +53,12 @@ import ReadyToOnboardContent from "./ReadyToOnboardContent";
 // import { City, State } from "country-state-city";
 import IndianCitiesMui from "../ReusableComponents/IndianCitiesMui";
 import GuardianFields from "./GuardianFields";
-import FamilyFields from "./FamilyFieldsTest";
+import FamilyFields from "./FamilyFields";
 import EducationFields from "./EducationFields";
 import CocTabPreonboarding from "./CocTabPreonboarding";
 import { baseUrl } from "../../utils/config";
 import { set } from "date-fns";
+import ImageSelector from "./ImageSelector";
 
 const LanguageList = ["English", "Hindi", "Other"];
 
@@ -190,7 +191,8 @@ const PreOnboardingUserMaster = () => {
   const [password, setPassword] = useState("");
   const [FatherName, setFatherName] = useState("");
   const [motherName, setMotherName] = useState("");
-  const [hobbies, setHobbies] = useState("");
+  const [hobbies, setHobbies] = useState([]);
+  const [hobbiesData, setHobbiesData] = useState([]);
   const [bloodGroup, setBloodGroup] = useState("");
 
   const [maritialStatus, setMaritialStatus] = useState("");
@@ -241,10 +243,10 @@ const PreOnboardingUserMaster = () => {
   const [documentPercentage, setDocumentPercentage] = useState(0);
 
   //Permanent Address
-  const [permanentAddress, setPermanentAddress] = useState();
+  const [permanentAddress, setPermanentAddress] = useState("");
   const [permanentCity, setPermanentCity] = useState("");
   const [permanentState, setPermanentState] = useState("");
-  const [permanentPincode, setPermanentPincode] = useState();
+  const [permanentPincode, setPermanentPincode] = useState("");
 
   //Current Address
   const [currentAddress, setCurrentAddress] = useState("");
@@ -254,29 +256,20 @@ const PreOnboardingUserMaster = () => {
 
   const [sameAsCurrent, setSameAsCurrent] = useState(false);
 
-  //Extend Joining Date
-  const [joingingExtendDate, setJoiningExtendDate] = useState("");
-  const [joiningExtendReason, setJoiningExtendReason] = useState("");
-  const [joingingExtendDocument, setJoiningExtendDocument] = useState(null);
-
   //contact
   const [emergencyContact, setEmergencyContact] = useState(null);
-
-  //Guardian Fields
-  // const [guardianName, setGuardianName] = useState("");
-  // const [guardianContact, setGuardianContact] = useState("");
-  // const [relationToGuardian, setRelationToGuardian] = useState("");
-  // const [guardianAddress, setGuardianAddress] = useState("");
 
   //New Guardian Fields
   const [guardianDetails, setGuardianDetails] = useState([
     initialGuardianDetailsGroup,
   ]);
+  const [guardianContactErrors, setGuardianContactErrors] = useState({});
 
   //Family Fields
   const [familyDetails, setFamilyDetails] = useState([
     initialFamilyDetailsGroup,
   ]);
+  const [familyValidationErrors, setFamilyValidationErrors] = useState({});
 
   //Education Fields
   const [educationDetails, setEducationDetails] = useState([
@@ -287,9 +280,8 @@ const PreOnboardingUserMaster = () => {
   const [acceptCoc, setAcceptCoc] = useState(false);
   const [cocFlag, setCocFlag] = useState(false);
 
-  const [showModal, setShowModal] = useState(true);
-  const [showImageSelector, setShowImageSelector] = useState(false);
   const [selectedImage, setSelectedImage] = useState();
+  const [profileImage, setProfileImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [nickName, setNickName] = useState("");
   const [getProfile, setGetProfile] = useState("");
@@ -300,6 +292,8 @@ const PreOnboardingUserMaster = () => {
     latitude: 0,
     longitude: 0,
   });
+
+  const [isImageSelectorOpen, setIsImageSelectorOpen] = useState(false);
 
   const [showMandotaryPer, setShowMandotaryPer] = useState(0);
   const [showNonMandotaryPer, setShowNonMandotaryPer] = useState(0);
@@ -408,7 +402,6 @@ const PreOnboardingUserMaster = () => {
   };
 
   const handleIamReady = () => {
-    setIsTourOpen(true);
     setReadyToOnboard(false);
     handleGetOnboard();
   };
@@ -419,6 +412,14 @@ const PreOnboardingUserMaster = () => {
 
   const closeReactModal = () => {
     setIsModalOpen(false);
+  };
+
+  const OpenImageSelector = () => {
+    setIsImageSelectorOpen(true);
+  };
+
+  const CloseImageSelector = () => {
+    setIsImageSelectorOpen(false);
   };
 
   const handleCheckboxChange = (e) => {
@@ -487,6 +488,13 @@ const PreOnboardingUserMaster = () => {
     axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
       const fetchedData = res.data;
 
+      const preselectedHobbies = fetchedData?.Hobbies?.map((hobbyId) => ({
+        value: hobbyId,
+        label:
+          hobbiesData?.find((hobby) => hobby?.value === hobbyId)?.label ||
+          hobbyId.toString(),
+      }));
+      setHobbies(preselectedHobbies);
       const {
         user_name,
         user_email_id,
@@ -542,7 +550,6 @@ const PreOnboardingUserMaster = () => {
       setPersonalEmail(PersonalEmail);
       setFatherName(fatherName);
       setMotherName(motherName);
-      setHobbies(Hobbies);
       setGender(Gender);
       setBloodGroup(BloodGroup);
       {
@@ -608,10 +615,9 @@ const PreOnboardingUserMaster = () => {
       setEmergencyContact(emergency_contact);
       setGetProfile(image_url);
       setGetNickName(nick_name);
+      setProfileImage(image);
       {
-        showOnboardingModal
-          ? openReadyToOnboardModal()
-          : !image && setShowImageSelector(true);
+        showOnboardingModal && openReadyToOnboardModal();
       }
       setCocFlag(coc_flag);
       {
@@ -624,6 +630,11 @@ const PreOnboardingUserMaster = () => {
     fetchCOCData();
     getDocuments();
   }, [id]);
+
+  const handleHobbiesChange = (event, selectedOptions) => {
+    console.log("Hobbies", selectedOptions);
+    setHobbies(selectedOptions || []);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -783,8 +794,7 @@ const PreOnboardingUserMaster = () => {
         payload.education_id = elements.education_id;
       }
       try {
-        const response = await axios.put(baseUrl + "update_education", payload);
-        console.log(response.data);
+        await axios.put(baseUrl + "update_education", payload);
       } catch (error) {
         console.error("Error Updating Education details:", error);
       }
@@ -845,13 +855,26 @@ const PreOnboardingUserMaster = () => {
   };
 
   const handleGuardianDetailsChange = (index, event) => {
+    const { name, value } = event.target;
+
     const updatedGuardianDetails = guardianDetails?.map((detail, idx) => {
       if (idx === index) {
-        return { ...detail, [event.target.name]: event.target.value };
+        return { ...detail, [name]: value };
       }
       return detail;
     });
     setGuardianDetails(updatedGuardianDetails);
+
+    if (name === "guardian_contact") {
+      const isValidPhoneNumber =
+        value.length >= 10 &&
+        /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(value);
+
+      setGuardianContactErrors({
+        ...guardianContactErrors,
+        [index]: !isValidPhoneNumber,
+      });
+    }
   };
 
   async function handleRemoveGuardianDetails(index) {
@@ -879,13 +902,22 @@ const PreOnboardingUserMaster = () => {
   };
 
   const handleFamilyDetailsChange = (index, event) => {
-    const updatedFamilyDetails = familyDetails?.map((detail, idx) => {
-      if (idx === index) {
-        return { ...detail, [event.target.name]: event.target.value };
+    const { name, value } = event.target;
+    const updatedDetails = [...familyDetails];
+    updatedDetails[index] = { ...updatedDetails[index], [name]: value };
+
+    const errors = { ...familyValidationErrors };
+    if (name === "contact") {
+      if (!/^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(value)) {
+        errors[`${name}-${index}`] =
+          "Invalid contact number. Please enter a valid phone number.";
+      } else {
+        delete errors[`${name}-${index}`];
       }
-      return detail;
-    });
-    setFamilyDetails(updatedFamilyDetails);
+    }
+
+    setFamilyDetails(updatedDetails);
+    setFamilyValidationErrors(errors);
   };
 
   const handleRemoveFamilyDetails = async (index) => {
@@ -926,15 +958,10 @@ const PreOnboardingUserMaster = () => {
 
   const handleRemoveEducationDetails = async (index) => {
     const itemToRemove = educationDetails[index];
-    console.log(itemToRemove, "item to remove education");
     if (itemToRemove && itemToRemove.education_id) {
       try {
         await axios.delete(
           `${baseUrl}` + `delete_education/${itemToRemove.education_id}`
-        );
-        console.log(
-          "Deleted Education detail from server:",
-          itemToRemove.education_id
         );
         toastAlert("Details Deleted");
       } catch (error) {
@@ -959,6 +986,16 @@ const PreOnboardingUserMaster = () => {
     }
     setPassword(generatePassword);
   };
+
+  useEffect(() => {
+    axios.get(`${baseUrl}get_all_hobbies`).then((res) => {
+      const formattedHobbies = res.data.data.map((hobby) => ({
+        value: hobby.hobby_id,
+        label: hobby.hobby_name,
+      }));
+      setHobbiesData(formattedHobbies);
+    });
+  }, []);
 
   useEffect(() => {
     setSpeakingLanguage(
@@ -1027,7 +1064,9 @@ const PreOnboardingUserMaster = () => {
 
     const diffInTime = futureDate.getTime() - currentDate.getTime();
 
-    return Math.ceil(diffInTime / oneDay);
+    const days = Math.ceil(diffInTime / oneDay);
+    if (days < 0) return 0;
+    return days;
   }
 
   const daysLeftCount = daysUntil(daysLeftToJoining);
@@ -1092,7 +1131,7 @@ const PreOnboardingUserMaster = () => {
         "Content-Type": "multipart/form-data",
       },
     });
-    setShowModal(false);
+    CloseImageSelector();
     gettingData();
   };
 
@@ -1149,26 +1188,24 @@ const PreOnboardingUserMaster = () => {
   if (isShowRocket) {
     return (
       <>
-        {isShowRocket && (
-          <Modal
-            className="loaderRocket"
-            isOpen={openRocket}
-            onRequestClose={closeRocket}
-            contentLabel="Rocket Modal"
-            appElement={document.getElementById("root")}
-            shouldCloseOnOverlayClick={false}
+        <Modal
+          className="loaderRocket"
+          isOpen={isShowRocket}
+          onRequestClose={closeRocket}
+          contentLabel="Rocket Modal"
+          appElement={document.getElementById("root")}
+          shouldCloseOnOverlayClick={false}
+        >
+          <video
+            width="100%"
+            height="100%"
+            autoPlay
+            playsInline
+            onEnded={closeRocket}
           >
-            <video
-              width="100%"
-              height="100%"
-              autoPlay
-              playsInline
-              onEnded={closeRocket}
-            >
-              <source src={rocketVideoLink} type="video/mp4" />
-            </video>
-          </Modal>
-        )}
+            <source src={rocketVideoLink} type="video/mp4" />
+          </video>
+        </Modal>
       </>
     );
   }
@@ -1179,7 +1216,7 @@ const PreOnboardingUserMaster = () => {
         steps={steps}
         isOpen={isTourOpen}
         onRequestClose={() => {
-          setIsTourOpen(false), setShowImageSelector(true);
+          setIsTourOpen(false), setIsImageSelectorOpen(true);
         }}
       />
 
@@ -1188,6 +1225,7 @@ const PreOnboardingUserMaster = () => {
         isOpen={readyToOnboardModal}
         onRequestClose={closeReadyToOnboardModal}
         contentLabel="I am ready modal"
+        preventScroll={true}
         appElement={document.getElementById("root")}
         style={{
           overlay: {
@@ -1213,6 +1251,29 @@ const PreOnboardingUserMaster = () => {
           closeModal={closeReadyToOnboardModal}
         />
       </Modal>
+
+      {/* Image Selector Modal  */}
+      <Modal
+        className="modal-dialog modal-dialog-centered modal-lg minHeightAuto"
+        isOpen={isImageSelectorOpen}
+        onRequestClose={CloseImageSelector}
+        contentLabel="Image Selector"
+        shouldCloseOnOverlayClick={true}
+        appElement={document.getElementById("root")}
+      >
+        <ImageSelector
+          imagePreview={imagePreview}
+          handleImageClick={handleImageClick}
+          nickName={nickName}
+          images={images}
+          setNickName={setNickName}
+          handleImageUpload={handleImageUpload}
+          handleSubmitProfile={handleSubmitProfile}
+          selectedImage={selectedImage}
+          CloseImageSelector={CloseImageSelector}
+        />
+      </Modal>
+      {/* Image selector Modal Close */}
 
       <section className="section">
         <div className="page_wrapper">
@@ -1305,7 +1366,7 @@ const PreOnboardingUserMaster = () => {
                   activeTab == 7 ? "sidebar_item_active" : ""
                 }`}
                 id="sidebarLetterBox"
-                onClick={() => setActiveTab(7)}
+                onClick={() => setActiveTab(5)}
               >
                 <div className="progress-circle progressing p-26">
                   <div className="progress-circle-border">
@@ -1354,7 +1415,7 @@ const PreOnboardingUserMaster = () => {
                     {getNickName}
                   </h3>
                 </div>
-                <div className="user_img">
+                <div className="user_img" onClick={OpenImageSelector}>
                   <img src={getProfile ? getProfile : imageTest1} alt="user" />
                 </div>
                 <div className="user_logout">
@@ -1432,7 +1493,7 @@ const PreOnboardingUserMaster = () => {
                                 onRequestClose={closeReactModal}
                                 contentLabel="Modal"
                                 appElement={document.getElementById("root")}
-                                shouldCloseOnOverlayClick={false}
+                                shouldCloseOnOverlayClick={true}
                               >
                                 <ExtendJoining
                                   gettingData={gettingData}
@@ -1547,14 +1608,25 @@ const PreOnboardingUserMaster = () => {
                                 onChange={(e) => setMotherName(e.target.value)}
                               />
                             </div>
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Hobbies"
-                                variant="outlined"
-                                type="text"
+                            <div className="form-group form_select">
+                              <Autocomplete
+                                multiple
+                                id="hobbies-autocomplete"
+                                options={hobbiesData}
+                                getOptionLabel={(option) => option.label} // Adjust according to your data structure
                                 value={hobbies}
-                                onChange={(e) => setHobbies(e.target.value)}
+                                onChange={handleHobbiesChange}
+                                isOptionEqualToValue={(option, value) =>
+                                  option.value === value.value
+                                }
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Hobbies"
+                                    placeholder="Select hobbies"
+                                  />
+                                )}
+                                clearOnEscape
                               />
                             </div>
 
@@ -1651,55 +1723,11 @@ const PreOnboardingUserMaster = () => {
                               />
                             </div>
 
-                            {/* <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Guardian Name"
-                                variant="outlined"
-                                type="text"
-                                value={guardianName}
-                                onChange={(e) =>
-                                  setGuardianName(e.target.value)
-                                }
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <ContactNumber
-                                label="Guardian Contact"
-                                parentComponentContact={guardianContact}
-                                setParentComponentContact={setGuardianContact}
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Relation With Guardian"
-                                variant="outlined"
-                                type="text"
-                                value={relationToGuardian}
-                                onChange={(e) =>
-                                  setRelationToGuardian(e.target.value)
-                                }
-                              />
-                            </div>
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Guardian Address"
-                                variant="outlined"
-                                type="text"
-                                value={guardianAddress}
-                                onChange={(e) =>
-                                  setGuardianAddress(e.target.value)
-                                }
-                              />
-                            </div> */}
                             <GuardianFields
                               guardianDetails={guardianDetails}
                               guardianDisplayFields={guardianDisplayFields}
                               guardianFieldLabels={guardianFieldLabels}
+                              guardianContactErrors={guardianContactErrors}
                               handleGuardianDetailsChange={
                                 handleGuardianDetailsChange
                               }
@@ -1715,6 +1743,7 @@ const PreOnboardingUserMaster = () => {
                               familyDetails={familyDetails}
                               familyDisplayFields={familyDisplayFields}
                               familyFieldLabels={familyFieldLabels}
+                              familyValidationErrors={familyValidationErrors}
                               handleFamilyDetailsChange={
                                 handleFamilyDetailsChange
                               }
@@ -1738,11 +1767,6 @@ const PreOnboardingUserMaster = () => {
                                 handleRemoveEducationDetails
                               }
                             />
-
-                            {/* <FamilyFieldsTest
-                              fieldDetails={fieldDetails}
-                              setFieldDetails={setFieldDetails}
-                            /> */}
                           </div>
                         </div>
 
@@ -1789,9 +1813,12 @@ const PreOnboardingUserMaster = () => {
                                 variant="outlined"
                                 type="text"
                                 value={currentPincode}
-                                onChange={(e) =>
-                                  setcurrentPincode(e.target.value)
-                                }
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  if (/^\d{0,6}$/.test(value)) {
+                                    setcurrentPincode(value);
+                                  }
+                                }}
                               />
                             </div>
                           </div>
@@ -1830,7 +1857,7 @@ const PreOnboardingUserMaster = () => {
                               <IndianStatesMui
                                 selectedState={permanentState}
                                 onChange={(option) =>
-                                  setPermanentState(option ? option : "")
+                                  setPermanentState(option ? option : null)
                                 }
                               />
                             </div>
@@ -1847,16 +1874,18 @@ const PreOnboardingUserMaster = () => {
 
                             <div className="form-group">
                               <TextField
-                                key={permanentPincode}
                                 required
                                 id="outlined-basic"
-                                label="Pincode"
+                                label="Permanent Pincode"
                                 variant="outlined"
                                 type="text"
                                 value={permanentPincode}
-                                onChange={(e) =>
-                                  setPermanentPincode(e.target.value)
-                                }
+                                onChange={(e) => {
+                                  const value = e.target.value;
+                                  if (/^\d{0,6}$/.test(value)) {
+                                    setPermanentPincode(value);
+                                  }
+                                }}
                               />
                             </div>
                           </div>
@@ -1889,7 +1918,6 @@ const PreOnboardingUserMaster = () => {
                 )}
                 {/* Form Screen End */}
 
-                {/* Document Screen Start */}
                 {activeTab == 2 && (
                   <DocumentTab
                     documentData={documentData}
@@ -1897,202 +1925,12 @@ const PreOnboardingUserMaster = () => {
                     getDocuments={getDocuments}
                   />
                 )}
-                {/* Document Screen End */}
 
-                {/* COC SCREEN */}
                 {activeTab == 3 && <CocTabPreonboarding cocData={cocData} />}
-                {/* COC SCREEN */}
 
-                {/* Policy Screen Start */}
-
-                {/* {activeTab == 3 && (
-                  <div className="policyarea">
-                    <div className="thm_texthead">
-                      <h2 className="text-center">Code of Conduct</h2>
-                      <div className="thm_textarea">
-                        <div className="thm_textbx">
-                          <p>
-                            As a team player, you are responsible to behave
-                            appropriately at work. We outline our expectations
-                            here. We can’t cover every single case of conduct,
-                            but we trust you to always use your best judgment.
-                            Always make decision in company’s best interest
-                          </p>
-                          <p>
-                            Reach out to your manager or HR if you face any
-                            issues or have any questions.
-                          </p>
-                        </div>
-                        {renderList()}
-                        {
-                          <>
-                            <div className="board_form form_checkbox">
-                              <label className="cstm_check">
-                                I accept Agreement
-                                <input
-                                  className="form-control"
-                                  name="COC"
-                                  type="checkbox"
-                                  checked={acceptCoc}
-                                  onChange={(e) =>
-                                    setAcceptCoc(e.target.checked)
-                                  }
-                                />
-                                <span className="checkmark"></span>
-                              </label>
-                            </div>
-                            <button
-                              className="btn btn-primary"
-                              onClick={handleCOC}
-                            >
-                              Accept
-                            </button>
-                          </>
-                        }
-                         <div className="thm_textbx">
-                          <h3>A. Cyber security and digital devices</h3>
-                          <p>
-                            This section deals with all things digital at work.
-                            We want to set some guidelines for using computers,
-                            phones, our internet connection and social media to
-                            ensure security and protect our assets.
-                          </p>
-                        </div>
-                        <div className="thm_textbx">
-                          <h3>(1) Internet usage</h3>
-                          <p>
-                            Our corporate internet connection is primarily for
-                            business. But, you can occasionally use our
-                            connection for personal purposes as long as they
-                            don’t interfere with your job responsibilities.
-                            Also, we expect you to temporarily halt personal
-                            activities that slow down our internet connection.
-                          </p>
-                        </div> 
-                      </div>
-                      <div className="ml-auto mr-auto text-center"></div>
-                    </div>
-                  </div>c
-                )} */}
-
-                {/* Policy Screen End */}
-
-                {/* FAQ Screen Start */}
                 {activeTab == 4 && <FAQTab />}
-                {/* FAQ Screen End */}
 
                 {activeTab == 5 && (
-                  <form>
-                    <div className="formarea">
-                      {setAllUserData.joining_date_extend_status ==
-                        "Approve" && <h1>Request is Accepted</h1>}
-                      <div className="row spacing_lg">
-                        <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                          <div className="board_form">
-                            <h2>
-                              Extend Joining Date <span></span>
-                            </h2>
-                            <h3>
-                              Your Current Joning Date is:{" "}
-                              <span>{joiningDate}</span>
-                            </h3>
-                            <h3>
-                              <span>{daysLeftCount}</span> days left to Join
-                            </h3>
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Extend To"
-                                variant="outlined"
-                                type="date"
-                                value={joingingExtendDate}
-                                onChange={(e) =>
-                                  setJoiningExtendDate(e.target.value)
-                                }
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Reason"
-                                variant="outlined"
-                                type="text"
-                                value={joiningExtendReason}
-                                onChange={(e) =>
-                                  setJoiningExtendReason(e.target.value)
-                                }
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <ul className="doc_items_list">
-                                <li
-                                  className={
-                                    joingingExtendDocument
-                                      ? "doc_item doc_item_active"
-                                      : "doc_item"
-                                  }
-                                >
-                                  <p>Upload file</p>
-                                  <input
-                                    type="file"
-                                    value=""
-                                    onChange={(e) =>
-                                      setJoiningExtendDocument(
-                                        e.target.files[0]
-                                      )
-                                    }
-                                  />
-                                  <span
-                                    className="delete"
-                                    onClick={() =>
-                                      setJoiningExtendDocument(null)
-                                    }
-                                  >
-                                    <a href="#">
-                                      <i className="bi bi-x-lg" />
-                                    </a>
-                                  </span>
-                                </li>
-                              </ul>
-                            </div>
-
-                            {/* <div className="form-group">
-                              <input
-                                type="file"
-                                placeholder="upload file here"
-                                value={joingingExtendDocument}
-                                onChange={(e) =>
-                                  setJoiningExtendDocument(e.target.files[0])
-                                }
-                              />
-                            </div> */}
-                          </div>
-                        </div>
-                        {allUserData?.joining_date_extend_status ==
-                          "Reject" && (
-                          <h1>
-                            Request Rejected:{" "}
-                            {allUserData?.joining_date_extend_reason}
-                          </h1>
-                        )}
-                        <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                          <div className="form-group ml-auto mr-auto text-center">
-                            <button
-                              className="btn btn_pill btn_cmn btn_white"
-                              // onClick={handleJoiningExtend}
-                            >
-                              Request
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </form>
-                )}
-
-                {activeTab == 7 && (
                   <LetterTab
                     allUserData={allUserData}
                     gettingData={gettingData}
@@ -2104,120 +1942,6 @@ const PreOnboardingUserMaster = () => {
         </div>
       </section>
       {/* Dashboard Section End */}
-      {/* Document Modal */}
-      <div
-        className="modal fade document_modal"
-        id="documentModal"
-        tabIndex={-1}
-        aria-labelledby="documentModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="documentModalLabel">
-                Modal title
-              </h5>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              >
-                <i className="bi bi-x-lg" />
-              </button>
-            </div>
-
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn_pill btn_cmn btn_white"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Profile picture modal */}
-
-      {showImageSelector && (
-        <div
-          className={`modal profileSetModal ${showModal ? "show" : ""}`}
-          tabIndex={-1}
-          role="dialog"
-          style={{ display: showModal ? "block" : "none" }}
-        >
-          <div className="modal-dialog modal-dialog-centered modal-lg">
-            <div className="modal-content">
-              <div className="modal-body">
-                <div>
-                  {selectedImage && (
-                    <div className="showImg">
-                      <img src={imagePreview} alt="Selected" />
-                    </div>
-                  )}
-
-                  <div className="chooseImg">
-                    <div className="d-flex justify-content-between">
-                      <h5>Choose Image:</h5>
-                      <i
-                        className="bi bi-x-circle-fill"
-                        onClick={() => setShowImageSelector(true)}
-                      />
-                    </div>
-                    <div className="chooseImgItem">
-                      {images.map((image) => (
-                        <img
-                          key={image}
-                          src={image}
-                          // alt={imageName}
-                          onClick={() => handleImageClick(image)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="formImg">
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12">
-                        <h5>Upload Image :</h5>
-                        <input
-                          className="form-control"
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          required={false}
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12">
-                        <h5>Nick Name :</h5>
-                        <input
-                          type="text"
-                          className="form-control"
-                          value={nickName}
-                          onChange={(e) => setNickName(e.target.value)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="alert_text">
-                  <button
-                    className="btn cmnbtn btn_success"
-                    data-bs-dismiss="modal"
-                    onClick={handleSubmitProfile}
-                  >
-                    Upload
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 };
