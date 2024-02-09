@@ -38,6 +38,7 @@ const GuardianFields = ({
         ))}
 
       <button
+        type="button"
         onClick={handleAddGuardianDetails}
         variant="contained"
         className="btn btn-outline-danger"

@@ -774,7 +774,7 @@ const PreOnboardingUserMaster = () => {
         institute_name: elements.institute_name,
         from_year: elements.from_year,
         to_year: elements.to_year,
-        percentage: elements.percentage,
+        percentage: Number(elements.percentage),
         stream: elements.stream,
         specialization: elements.specialization,
       };
