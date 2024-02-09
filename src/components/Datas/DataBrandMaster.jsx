@@ -613,7 +613,7 @@ const DataBrandMaster = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setIsLoading(false); // Set loading state to false after API call completes
+      setIsLoading(false); 
     }
   };
 
