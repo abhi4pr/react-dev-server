@@ -1158,3 +1158,8 @@ label.checkbox-inline.propscss {
 .docTableLight .uploadDocBtn:hover .docTableLight {
   color: var(--info);
 }
+
+.minHeightAuto {
+  min-height: auto !important;
+  border-radius: 10px;
+}

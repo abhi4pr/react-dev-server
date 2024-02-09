@@ -3,9 +3,9 @@ import { TextField } from "@mui/material";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
 import WhatsappAPI from "../WhatsappAPI/WhatsappAPI";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
-const url = baseUrl+"";
+const url = baseUrl + "";
 
 const ExtendJoining = ({
   gettingData,
@@ -21,8 +21,10 @@ const ExtendJoining = ({
   const [joingingExtendDate, setJoiningExtendDate] = useState("");
   const [joiningExtendReason, setJoiningExtendReason] = useState("");
   const [joingingExtendDocument, setJoiningExtendDocument] = useState(null);
+  const [joiningDateError, setJoiningDateError] = useState("");
+  const [joiningReasonError, setJoiningReasonError] = useState("");
 
-  const calculateMaxDate = (dateStr) => {
+  const calculateMinDate = (dateStr) => {
     const parts = dateStr.split("-");
     const inputDate = new Date(parts[2], parts[1] - 1, parts[0]);
     inputDate.setDate(inputDate.getDate() + 30);
@@ -31,27 +33,57 @@ const ExtendJoining = ({
       .padStart(2, "0")}-${inputDate.getDate().toString().padStart(2, "0")}`;
   };
 
-  const maxDateFormatted = calculateMaxDate(currentJoiningDate);
+  const minDateFormatted = calculateMinDate(currentJoiningDate);
+
   const handleJoiningExtend = async (e) => {
     e.preventDefault();
+
+    setJoiningDateError("");
+    setJoiningReasonError("");
+
+    let hasErrors = false;
+
+    if (!joingingExtendDate.trim()) {
+      setJoiningDateError("Joining date is required.");
+      hasErrors = true;
+    } else {
+      const currentDate = new Date();
+      const selectedDate = new Date(joingingExtendDate);
+      if (selectedDate < currentDate) {
+        setJoiningDateError("Joining date cannot be in the past.");
+        hasErrors = true;
+      }
+    }
+
+    if (!joiningExtendReason.trim()) {
+      setJoiningReasonError(
+        "Reason for extending the joining date is required."
+      );
+      hasErrors = true;
+    }
+
+    if (hasErrors) {
+      return;
+    }
 
     const formData = new FormData();
     formData.append("user_id", id);
     formData.append("joining_date_extend", joingingExtendDate);
     formData.append("joining_date_extend_status", "Requested");
     formData.append("joining_date_extend_reason", joiningExtendReason);
-    formData.append("joining_extend_document", joingingExtendDocument);
+    if (joingingExtendDocument) {
+      formData.append("joining_extend_document", joingingExtendDocument);
+    }
 
     try {
-      // Update user
       await axios.put(`${url}update_user`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      toastAlert("Extend Date Requested Successfully");
 
-      // Send email
+      toastAlert("Joining date requested successfully");
+
       const emailResponse = await axios.post(`${url}add_send_user_mail`, {
         email: "lalit@creativefuel.io",
         subject: "User Pre Onboarding Extend Date",
@@ -74,6 +106,9 @@ const ExtendJoining = ({
       setJoiningExtendDate("");
       setJoiningExtendReason("");
       setJoiningExtendDocument(null);
+      setJoiningDateError("");
+      setJoiningReasonError("");
+
       gettingData();
       closeModal();
     } catch (error) {
@@ -94,26 +129,31 @@ const ExtendJoining = ({
                     label="Extend To"
                     variant="outlined"
                     type="date"
+                    required
                     value={joingingExtendDate}
                     onChange={(e) => setJoiningExtendDate(e.target.value)}
                     InputLabelProps={{
                       shrink: true,
                     }}
                     inputProps={{
-                      // min: minDate,
-                      max: maxDateFormatted,
+                      min: minDateFormatted,
                     }}
+                    error={!!joiningDateError}
+                    helperText={joiningDateError}
                   />
                 </div>
 
                 <div className="form-group">
                   <TextField
+                    required
                     id="outlined-basic"
                     label="Reason"
                     variant="outlined"
                     type="text"
                     value={joiningExtendReason}
                     onChange={(e) => setJoiningExtendReason(e.target.value)}
+                    error={!!joiningReasonError}
+                    helperText={joiningReasonError}
                   />
                 </div>
 
@@ -145,17 +185,6 @@ const ExtendJoining = ({
                     </li>
                   </ul>
                 </div>
-
-                <div className="form-group">
-                  <input
-                    type="file"
-                    placeholder="upload file here"
-                    // value={joingingExtendDocument}
-                    onChange={(e) =>
-                      setJoiningExtendDocument(e.target.files[0])
-                    }
-                  />
-                </div>
               </div>
             </div>
             {/* {allUserData?.joining_date_extend_status == "Reject" && (
@@ -163,13 +192,21 @@ const ExtendJoining = ({
                 Request Rejected: {allUserData?.joining_date_extend_reason}
               </h1>
             )} */}
-            <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+            <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 d-flex">
               <div className="form-group mb-0 ml-auto mr-auto text-center">
                 <button
                   className="btn btn_pill btn_cmn btn_white"
                   onClick={handleJoiningExtend}
                 >
                   Request
+                </button>
+              </div>
+              <div className="form-group mb-0 ml-auto mr-auto text-center">
+                <button
+                  className="btn btn_pill btn_cmn btn-danger"
+                  onClick={closeModal}
+                >
+                  Close
                 </button>
               </div>
             </div>

@@ -24,7 +24,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
     formData.append("offer_later_reject_reason", reason);
 
     axios
-      .put(`${baseUrl}`+`update_user`, formData, {
+      .put(`${baseUrl}` + `update_user`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -34,8 +34,6 @@ const LetterTab = ({ allUserData, gettingData }) => {
         setReason("");
       });
   };
-
-  console.log(allUserData);
 
   return (
     <>
@@ -53,7 +51,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 .split("-")
                 .reverse()
                 .join("-")}{" "}
-              and reports to {allUserData.user_report_to_id}. <br />
+              and reports to {allUserData.Report_L1N}. <br />
               We're confident {allUserData.user_name} will seamlessly integrate
               into our collaborative work culture, contributing to our success.{" "}
               <br />
