@@ -44,16 +44,13 @@ const VenderMaster = () => {
     e.preventDefault();
     if (!vendorContact || vendorContact == "" || vendorContact.length !== 10) {
       return toastError(" Contact is Required and must be 10 digits");
-    } else if (vendorEmail) {
+    }
+    if (vendorEmail) {
       const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
       if (!emailRegex.test(vendorEmail)) {
         return toastError("Invalid email format");
       }
-    } else if (
-      !secondaryContact ||
-      secondaryContact == "" ||
-      secondaryContact.length !== 10
-    ) {
+    } else if (secondaryContact.length !== 10) {
       return toastError("Secondory Contact is Required and must be 10 digits");
     }
 
@@ -154,7 +151,7 @@ const VenderMaster = () => {
             label="Contact"
             value={vendorContact}
             type="number"
-            required={true}
+            required={false}
             onChange={(e) => {
               if (e.target.value.length <= 10) {
                 setVendorContact(e.target.value);
@@ -165,6 +162,7 @@ const VenderMaster = () => {
             label="Secondary Contact"
             type="number"
             value={secondaryContact}
+            required={false}
             onChange={(e) => {
               if (e.target.value.length <= 10) {
                 setSecondaryContact(e.target.value);
@@ -174,6 +172,7 @@ const VenderMaster = () => {
           <FieldContainer
             label="Secondary Peroson Name"
             value={secondaryPersonName}
+            required={false}
             onChange={(e) => setSecondaryPersonName(e.target.value)}
           />
           <FieldContainer
@@ -185,6 +184,7 @@ const VenderMaster = () => {
           <FieldContainer
             label="Address"
             value={vendorAddress}
+            required={false}
             onChange={(e) => setVendorAddress(e.target.value)}
           />
 

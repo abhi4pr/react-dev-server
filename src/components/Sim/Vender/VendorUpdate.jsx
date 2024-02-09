@@ -102,11 +102,7 @@ const VendorUpdate = () => {
       if (!emailRegex.test(vendorEmail)) {
         return toastError("Invalid email format");
       }
-    } else if (
-      !secondaryContact ||
-      secondaryContact == "" ||
-      secondaryContact.length !== 10
-    ) {
+    } else if (secondaryContact.length !== 10) {
       return toastError("Secondory Contact is Required and must be 10 digits");
     }
 
@@ -215,6 +211,7 @@ const VendorUpdate = () => {
           <FieldContainer
             label="Secondary Contact"
             value={secondaryContact}
+            required={false}
             onChange={(e) => {
               if (e.target.value?.length <= 10) {
                 setSecondaryContact(e.target.value);
@@ -224,6 +221,7 @@ const VendorUpdate = () => {
           <FieldContainer
             label="Secondary Peroson Name"
             value={secondaryPersonName}
+            required={false}
             onChange={(e) => setSecondaryPersonName(e.target.value)}
           />
 
@@ -235,6 +233,7 @@ const VendorUpdate = () => {
           />
           <FieldContainer
             label="Address"
+            required={false}
             value={vendorAddress}
             onChange={(e) => setVendorAddress(e.target.value)}
           />
