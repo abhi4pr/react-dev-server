@@ -14,10 +14,9 @@ import { Link } from "react-router-dom";
 import UserNav from "../../../Pantry/UserPanel/UserNav";
 import DeleteButton from "../../DeleteButton";
 import { baseUrl } from "../../../../utils/config";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 
 const CaseStudyOperation = () => {
   const [search, setSearch] = useState("");
@@ -111,7 +110,7 @@ const CaseStudyOperation = () => {
   };
 
   async function getData() {
-    await axios.get(baseUrl + "get_all_datas").then((res) => {
+    await axios.get(baseUrl + "dataoperation").then((res) => {
       setCountData(res.data);
       const responseData = res.data;
 
@@ -396,7 +395,7 @@ const CaseStudyOperation = () => {
                   </div>
 
                   <div className="col-md-3">
-                  <div className="form-group">
+                    <div className="form-group">
                       <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker format="DD-MM-YYYY" label="From Date" />
                       </LocalizationProvider>
@@ -409,7 +408,6 @@ const CaseStudyOperation = () => {
                       </LocalizationProvider>
                     </div>
                   </div>
-                  
                 </div>
               </div>
             </div>
@@ -480,8 +478,8 @@ const CaseStudyOperation = () => {
                             <div className="summary_cardrow flex-column">
                               <div className="summary_box text-center ml-auto mr-auto">
                                 {detail.data_type === "jpg" ||
-                                  detail.data_type === "png" ||
-                                  detail.data_type === "jpeg" ? (
+                                detail.data_type === "png" ||
+                                detail.data_type === "jpeg" ? (
                                   <div
                                     id={`carouselExampleControls_${index}`}
                                     className="carousel slide"
@@ -492,19 +490,20 @@ const CaseStudyOperation = () => {
                                         .filter(
                                           (item) =>
                                             item.data_name ===
-                                            detail.data_name &&
+                                              detail.data_name &&
                                             item.data_image != null
                                         )
                                         .map((filteredItem, index) => (
                                           <div
                                             key={index}
-                                            className={`carousel-item ${index === 0 ? "active" : ""
-                                              }`}
+                                            className={`carousel-item ${
+                                              index === 0 ? "active" : ""
+                                            }`}
                                             data-interval="10000"
                                           >
                                             {filteredItem.data_type === "jpg" ||
-                                              filteredItem.data_type === "png" ||
-                                              filteredItem.data_type ===
+                                            filteredItem.data_type === "png" ||
+                                            filteredItem.data_type ===
                                               "jpeg" ? (
                                               <img
                                                 onClick={() =>
@@ -519,30 +518,83 @@ const CaseStudyOperation = () => {
                                               />
                                             ) : filteredItem.data_type ===
                                               "pdf" ? (
-                                              <img
+                                              // <img
+                                              //   onClick={() =>
+                                              //     handleFileClick(
+                                              //       "pdf",
+                                              //       filteredItem.data_image
+                                              //     )
+                                              //   }
+                                              //   className="d-block w-100"
+                                              //   src={"pdf"}
+                                              //   alt={`Slide ${index + 1}`}
+                                              // />
+                                              <div
+                                              style={{
+                                                position:
+                                                  "relative",
+                                                width: "100%",
+                                                height: "auto",
+                                              }}
+                                            >
+                                              {" "}
+                                              {/* Adjust the height as needed */}
+                                              <iframe
+                                                allowFullScreen={
+                                                  true
+                                                }
+                                                src={
+                                                  filteredItem.data_image
+                                                }
+                                                title="PDF Viewer"
+                                                style={{
+                                                  width: "100%",
+                                                  height: "100%",
+                                                  border: "none",
+                                                  overflow:
+                                                    "hidden",
+                                                }}
+                                              />
+                                              <div
                                                 onClick={() =>
                                                   handleFileClick(
                                                     "pdf",
                                                     filteredItem.data_image
                                                   )
                                                 }
-                                                className="d-block w-100"
-                                                src={"pdf"}
-                                                alt={`Slide ${index + 1}`}
-                                              />
+                                                style={{
+                                                  position:
+                                                    "absolute",
+                                                  width: "64%",
+                                                  height: "71%",
+                                                  top: 0,
+                                                  left: "21px",
+                                                  cursor:
+                                                    "pointer",
+                                                  background:
+                                                    "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                  zIndex: 10, // This ensures the div is placed over the iframe
+                                                }}
+                                              ></div>
+                                            </div>
                                             ) : filteredItem.data_type ===
                                               "mp4" ? (
-                                              <img
-                                                onClick={() =>
-                                                  handleFileClick(
-                                                    "video",
+                                                <video
+                                                className=""
+                                                controls
+                                                width="100%"
+                                                height="auto"
+                                              >
+                                                <source
+                                                  src={
                                                     filteredItem.data_image
-                                                  )
-                                                }
-                                                className="d-block w-100"
-                                                src={"video"}
-                                                alt={`Slide ${index + 1}`}
-                                              />
+                                                  }
+                                                  type={`video/mp4`}
+                                                />
+                                                Your browser does
+                                                not support the
+                                                video tag.
+                                              </video>
                                             ) : (
                                               <img
                                                 className="d-block w-100"
@@ -666,571 +718,909 @@ const CaseStudyOperation = () => {
                               >
                                 {detail.content_type_id ==
                                   "65a663ccef8a81593f418836" && (
-                                    <>
-                                      <div className="text-center">
-                                        <h4
-                                          onClick={() =>
-                                            HandleExpen(detail, index)
-                                          }
-                                        >
-                                          {expendModalOpen &&
-                                            modalIndex === index ? (
-                                            <ExpandLessIcon />
-                                          ) : (
-                                            <ExpandMoreIcon />
-                                          )}
-                                        </h4>
-                                      </div>
-                                      {expendModalOpen && modalIndex == index && (
-                                        <>
-                                          <div className="summary_box text-center ml-auto mr-auto">
-                                            <h3 className="lead fs-6 text-start text-black-50">
-                                              MMC
-                                            </h3>
-                                            {detail.data_type === "jpg" ||
-                                              detail.data_type === "png" ||
-                                              detail.data_type === "jpeg" ? (
-                                              <div
-                                                id={`carouselExampleControls_${detail.data_name}_${index}`} // Changed to use both detail.data_name and index for uniqueness
-                                                className="carousel slide"
-                                                data-ride="carousel"
-                                              >
-                                                <div className="carousel-inner">
-                                                  {countData
-                                                    .filter(
-                                                      (item) =>
-                                                        item.data_name ===
+                                  <>
+                                    <div className="text-center">
+                                      <h4
+                                        onClick={() =>
+                                          HandleExpen(detail, index)
+                                        }
+                                      >
+                                        {expendModalOpen &&
+                                        modalIndex === index ? (
+                                          <ExpandLessIcon />
+                                        ) : (
+                                          <ExpandMoreIcon />
+                                        )}
+                                      </h4>
+                                    </div>
+                                    {expendModalOpen && modalIndex == index && (
+                                      <>
+                                        <div className="summary_box text-center ml-auto mr-auto">
+                                          <h3 className="lead fs-6 text-start text-black-50">
+                                            MMC
+                                          </h3>
+                                          {detail.data_type === "jpg" ||
+                                          detail.data_type === "png" ||
+                                          detail.data_type === "jpeg" ? (
+                                            <div
+                                              id={`carouselExampleControls_${detail.data_name}_${index}`} // Changed to use both detail.data_name and index for uniqueness
+                                              className="carousel slide"
+                                              data-ride="carousel"
+                                            >
+                                              <div className="carousel-inner">
+                                                {countData
+                                                  .filter(
+                                                    (item) =>
+                                                      item.data_name ===
                                                         detail.data_name &&
-                                                        item.mmc_image != null
-                                                    )
-                                                    .map(
-                                                      (filteredItem, index) => (
-                                                        <div
-                                                          key={index}
-                                                          className={`carousel-item ${index === 0
+                                                      item.mmc_image != null
+                                                  )
+                                                  .map(
+                                                    (filteredItem, index) => (
+                                                      <div
+                                                        key={index}
+                                                        className={`carousel-item ${
+                                                          index === 0
                                                             ? "active"
                                                             : ""
+                                                        }`}
+                                                        data-interval="10000"
+                                                      >
+                                                        {filteredItem.data_type ===
+                                                          "jpg" ||
+                                                        filteredItem.data_type ===
+                                                          "png" ||
+                                                        filteredItem.data_type ===
+                                                          "jpeg" ? (
+                                                          <img
+                                                            onClick={() =>
+                                                              handleFileClick(
+                                                                "image",
+                                                                filteredItem.mmc_image
+                                                              )
+                                                            }
+                                                            className="d-block w-100"
+                                                            src={
+                                                              filteredItem.mmc_image
+                                                            }
+                                                            alt={`Slide ${
+                                                              index + 1
                                                             }`}
-                                                          data-interval="10000"
-                                                        >
-                                                          {filteredItem.data_type ===
-                                                            "jpg" ||
-                                                            filteredItem.data_type ===
-                                                            "png" ||
-                                                            filteredItem.data_type ===
-                                                            "jpeg" ? (
-                                                            <img
-                                                              onClick={() =>
-                                                                handleFileClick(
-                                                                  "image",
-                                                                  filteredItem.mmc_image
-                                                                )
+                                                          />
+                                                        ) : filteredItem.data_type ===
+                                                          "pdf" ? (
+                                                          // <img
+                                                          //   onClick={() =>
+                                                          //     handleFileClick(
+                                                          //       "pdf",
+                                                          //       filteredItem.mmc_image
+                                                          //     )
+                                                          //   }
+                                                          //   className="d-block w-100"
+                                                          //   src={pdf}
+                                                          //   alt={`Slide ${index + 1
+                                                          //     }`}
+                                                          // />
+                                                          <div
+                                                            style={{
+                                                              position:
+                                                                "relative",
+                                                              width: "100%",
+                                                              height: "auto",
+                                                            }}
+                                                          >
+                                                            {" "}
+                                                            {/* Adjust the height as needed */}
+                                                            <iframe
+                                                              allowFullScreen={
+                                                                true
                                                               }
-                                                              className="d-block w-100"
                                                               src={
                                                                 filteredItem.mmc_image
                                                               }
-                                                              alt={`Slide ${index + 1
-                                                                }`}
+                                                              title="PDF Viewer"
+                                                              style={{
+                                                                width: "100%",
+                                                                height: "100%",
+                                                                border: "none",
+                                                                overflow:
+                                                                  "hidden",
+                                                              }}
                                                             />
-                                                          ) : filteredItem.data_type ===
-                                                            "pdf" ? (
-                                                            <img
+                                                            <div
                                                               onClick={() =>
                                                                 handleFileClick(
                                                                   "pdf",
                                                                   filteredItem.mmc_image
                                                                 )
                                                               }
-                                                              className="d-block w-100"
-                                                              src={pdf}
-                                                              alt={`Slide ${index + 1
-                                                                }`}
-                                                            />
-                                                          ) : filteredItem.data_type ===
-                                                            "mp4" ? (
-                                                            <img
-                                                              onClick={() =>
-                                                                handleFileClick(
-                                                                  "video",
-                                                                  filteredItem.mmc_image
-                                                                )
+                                                              style={{
+                                                                position:
+                                                                  "absolute",
+                                                                width: "64%",
+                                                                height: "71%",
+                                                                top: 0,
+                                                                left: "21px",
+                                                                cursor:
+                                                                  "pointer",
+                                                                background:
+                                                                  "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                                zIndex: 10, // This ensures the div is placed over the iframe
+                                                              }}
+                                                            ></div>
+                                                          </div>
+                                                        ) : filteredItem.data_type ===
+                                                          "mp4" ? (
+                                                          // <img
+                                                          //   onClick={() =>
+                                                          //     handleFileClick(
+                                                          //       "video",
+                                                          //       filteredItem.mmc_image
+                                                          //     )
+                                                          //   }
+                                                          //   className="d-block w-100"
+                                                          //   src={video}
+                                                          //   alt={`Slide ${
+                                                          //     index + 1
+                                                          //   }`}
+                                                          // />
+                                                          <video
+                                                            className=""
+                                                            controls
+                                                            width="100%"
+                                                            height="auto"
+                                                          >
+                                                            <source
+                                                              src={
+                                                                filteredItem.mmc_image
                                                               }
-                                                              className="d-block w-100"
-                                                              src={video}
-                                                              alt={`Slide ${index + 1
-                                                                }`}
+                                                              type={`video/mp4`}
                                                             />
-                                                          ) : (
-                                                            <img
-                                                              className="d-block w-100"
-                                                              src={video}
-                                                              alt={`Slide ${index + 1
-                                                                }`}
+                                                            Your browser does
+                                                            not support the
+                                                            video tag.
+                                                          </video>
+                                                        ) : (
+                                                          // <img
+                                                          //   className="d-block w-100"
+                                                          //   src={video}
+                                                          //   alt={`Slide ${
+                                                          //     index + 1
+                                                          //   }`}
+                                                          // />
+                                                          <video
+                                                            className=""
+                                                            controls
+                                                            width="100%"
+                                                            height="auto"
+                                                          >
+                                                            <source
+                                                              src={
+                                                                filteredItem.mmc_image
+                                                              }
+                                                              type={`video/mp4`}
                                                             />
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )}
-                                                </div>
-                                                <button
-                                                  className="carousel-control-prev"
-                                                  type="button"
-                                                  data-target={`#carouselExampleControls_${detail.data_name}_${index}`} // Updated to match the new id format
-                                                  data-slide="prev"
-                                                >
-                                                  <span
-                                                    className="carousel-control-prev-icon"
-                                                    aria-hidden="true"
-                                                  ></span>
-                                                  <span className="sr-only">
-                                                    Previous
-                                                  </span>
-                                                </button>
-                                                <button
-                                                  className="carousel-control-next"
-                                                  type="button"
-                                                  data-target={`#carouselExampleControls_${detail.data_name}_${index}`} // Updated to match the new id format
-                                                  data-slide="next"
-                                                >
-                                                  <span
-                                                    className="carousel-control-next-icon"
-                                                    aria-hidden="true"
-                                                  ></span>
-                                                  <span className="sr-only">
-                                                    Next
-                                                  </span>
-                                                </button>
-                                              </div>
-                                            ) : detail.data_type === "pdf" ? (
-                                              <img
-                                                onClick={() =>
-                                                  handleFileClick(
-                                                    "pdf",
-                                                    detail.mmc_image
-                                                  )
-                                                }
-                                                src={video}
-                                                width="80px"
-                                                height="80px"
-                                              />
-                                            ) : detail.data_type === "mp4" ? (
-                                              <img
-                                                onClick={() =>
-                                                  handleFileClick(
-                                                    "video",
-                                                    detail.mmc_image
-                                                  )
-                                                }
-                                                src={video}
-                                                width="80px"
-                                                height="80px"
-                                              />
-                                            ) : (
-                                              <img
-                                                src={video}
-                                                width="80px"
-                                                height="80px"
-                                              />
-                                            )}
-                                          </div>
-
-                                          <div className="summary_box text-center ml-auto mr-auto">
-                                            {detail.data_type === "jpg" ||
-                                              detail.data_type === "png" ||
-                                              detail.data_type === "jpeg" ? (
-                                              <div
-                                                id={`carouselSarcasmControls_${detail.data_name}_${index}`} // Ensure unique ID by prefixing with "carouselSarcasmControls_"
-                                                className="carousel slide"
-                                                data-ride="carousel"
-                                              >
-                                                <div className="carousel-inner">
-                                                  {countData
-                                                    .filter(
-                                                      (item) =>
-                                                        item.data_name ===
-                                                        detail.data_name &&
-                                                        item.sarcasm_image != null
+                                                            Your browser does
+                                                            not support the
+                                                            video tag.
+                                                          </video>
+                                                        )}
+                                                      </div>
                                                     )
-                                                    .map(
-                                                      (filteredItem, index) => (
-                                                        <div
-                                                          key={index}
-                                                          className={`carousel-item ${index === 0
+                                                  )}
+                                              </div>
+                                              <button
+                                                className="carousel-control-prev"
+                                                type="button"
+                                                data-target={`#carouselExampleControls_${detail.data_name}_${index}`} // Updated to match the new id format
+                                                data-slide="prev"
+                                              >
+                                                <span
+                                                  className="carousel-control-prev-icon"
+                                                  aria-hidden="true"
+                                                ></span>
+                                                <span className="sr-only">
+                                                  Previous
+                                                </span>
+                                              </button>
+                                              <button
+                                                className="carousel-control-next"
+                                                type="button"
+                                                data-target={`#carouselExampleControls_${detail.data_name}_${index}`} // Updated to match the new id format
+                                                data-slide="next"
+                                              >
+                                                <span
+                                                  className="carousel-control-next-icon"
+                                                  aria-hidden="true"
+                                                ></span>
+                                                <span className="sr-only">
+                                                  Next
+                                                </span>
+                                              </button>
+                                            </div>
+                                          ) : detail.data_type === "pdf" ? (
+                                            <img
+                                              onClick={() =>
+                                                handleFileClick(
+                                                  "pdf",
+                                                  detail.mmc_image
+                                                )
+                                              }
+                                              src={video}
+                                              width="80px"
+                                              height="80px"
+                                            />
+                                          ) : detail.data_type === "mp4" ? (
+                                            <img
+                                              onClick={() =>
+                                                handleFileClick(
+                                                  "video",
+                                                  detail.mmc_image
+                                                )
+                                              }
+                                              src={video}
+                                              width="80px"
+                                              height="80px"
+                                            />
+                                          ) : (
+                                            <img
+                                              src={video}
+                                              width="80px"
+                                              height="80px"
+                                            />
+                                          )}
+                                        </div>
+
+                                        <div className="summary_box text-center ml-auto mr-auto">
+                                          {detail.data_type === "jpg" ||
+                                          detail.data_type === "png" ||
+                                          detail.data_type === "jpeg" ? (
+                                            <div
+                                              id={`carouselSarcasmControls_${detail.data_name}_${index}`} // Ensure unique ID by prefixing with "carouselSarcasmControls_"
+                                              className="carousel slide"
+                                              data-ride="carousel"
+                                            >
+                                              <div className="carousel-inner">
+                                                {countData
+                                                  .filter(
+                                                    (item) =>
+                                                      item.data_name ===
+                                                        detail.data_name &&
+                                                      item.sarcasm_image != null
+                                                  )
+                                                  .map(
+                                                    (filteredItem, index) => (
+                                                      <div
+                                                        key={index}
+                                                        className={`carousel-item ${
+                                                          index === 0
                                                             ? "active"
                                                             : ""
+                                                        }`}
+                                                        data-interval="10000"
+                                                      >
+                                                        <h3 className="lead text-start fs-6 text-black-50">
+                                                          Sarcasm
+                                                        </h3>
+                                                        {filteredItem.data_type ===
+                                                          "jpg" ||
+                                                        filteredItem.data_type ===
+                                                          "png" ||
+                                                        filteredItem.data_type ===
+                                                          "jpeg" ? (
+                                                          <img
+                                                            onClick={() =>
+                                                              handleFileClick(
+                                                                "image",
+                                                                filteredItem.sarcasm_image
+                                                              )
+                                                            }
+                                                            className="d-block w-100"
+                                                            src={
+                                                              filteredItem.sarcasm_image
+                                                            } // Use sarcasm_image for the src
+                                                            alt={`Slide ${
+                                                              index + 1
                                                             }`}
-                                                          data-interval="10000"
-                                                        >
-                                                          <h3 className="lead text-start fs-6 text-black-50">
-                                                            Sarcasm
-                                                          </h3>
-
-                                                          {filteredItem.data_type ===
-                                                            "jpg" ||
-                                                            filteredItem.data_type ===
-                                                            "png" ||
-                                                            filteredItem.data_type ===
-                                                            "jpeg" ? (
-                                                            <img
-                                                              onClick={() =>
-                                                                handleFileClick(
-                                                                  "image",
-                                                                  filteredItem.sarcasm_image
-                                                                )
+                                                          />
+                                                        ) : filteredItem.data_type ===
+                                                          "pdf" ? (
+                                                          // <img
+                                                          //   onClick={() =>
+                                                          //     handleFileClick(
+                                                          //       "pdf",
+                                                          //       filteredItem.sarcasm_image
+                                                          //     )
+                                                          //   }
+                                                          //   className="d-block w-100"
+                                                          //   src={pdf} // Assuming pdf is a placeholder image for PDF files
+                                                          //   alt={`Slide ${index + 1
+                                                          //     }`}
+                                                          // />
+                                                          <div
+                                                            style={{
+                                                              position:
+                                                                "relative",
+                                                              width: "100%",
+                                                              height: "auto",
+                                                            }}
+                                                          >
+                                                            {" "}
+                                                            {/* Adjust the height as needed */}
+                                                            <iframe
+                                                              allowFullScreen={
+                                                                true
                                                               }
-                                                              className="d-block w-100"
                                                               src={
                                                                 filteredItem.sarcasm_image
-                                                              } // Use sarcasm_image for the src
-                                                              alt={`Slide ${index + 1
-                                                                }`}
+                                                              }
+                                                              title="PDF Viewer"
+                                                              style={{
+                                                                width: "100%",
+                                                                height: "100%",
+                                                                border: "none",
+                                                                overflow:
+                                                                  "hidden",
+                                                              }}
                                                             />
-                                                          ) : filteredItem.data_type ===
-                                                            "pdf" ? (
-                                                            <img
+                                                            <div
                                                               onClick={() =>
                                                                 handleFileClick(
                                                                   "pdf",
                                                                   filteredItem.sarcasm_image
                                                                 )
                                                               }
-                                                              className="d-block w-100"
-                                                              src={pdf} // Assuming pdf is a placeholder image for PDF files
-                                                              alt={`Slide ${index + 1
-                                                                }`}
+                                                              style={{
+                                                                position:
+                                                                  "absolute",
+                                                                width: "64%",
+                                                                height: "71%",
+                                                                top: 0,
+                                                                left: "21px",
+                                                                cursor:
+                                                                  "pointer",
+                                                                background:
+                                                                  "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                                zIndex: 10, // This ensures the div is placed over the iframe
+                                                              }}
+                                                            ></div>
+                                                          </div>
+                                                        ) : filteredItem.data_type ===
+                                                          "mp4" ? (
+                                                          // <img
+                                                          //   onClick={() =>
+                                                          //     handleFileClick(
+                                                          //       "video",
+                                                          //       filteredItem.sarcasm_image
+                                                          //     )
+                                                          //   }
+                                                          //   className="d-block w-100"
+                                                          //   src={video} // Assuming video is a placeholder image for video files
+                                                          //   alt={`Slide ${
+                                                          //     index + 1
+                                                          //   }`}
+                                                          // />
+                                                          <div
+                                                            style={{
+                                                              position:
+                                                                "relative",
+                                                              width: "100%",
+                                                              height: "auto",
+                                                            }}
+                                                          >
+                                                            {" "}
+                                                            {/* Adjust the height as needed */}
+                                                            <iframe
+                                                              allowFullScreen={
+                                                                true
+                                                              }
+                                                              src={
+                                                                filteredItem.sarcasm_image
+                                                              }
+                                                              title="PDF Viewer"
+                                                              style={{
+                                                                width: "100%",
+                                                                height: "100%",
+                                                                border: "none",
+                                                                overflow:
+                                                                  "hidden",
+                                                              }}
                                                             />
-                                                          ) : filteredItem.data_type ===
-                                                            "mp4" ? (
-                                                            <img
+                                                            <div
                                                               onClick={() =>
                                                                 handleFileClick(
-                                                                  "video",
+                                                                  "pdf",
                                                                   filteredItem.sarcasm_image
                                                                 )
                                                               }
-                                                              className="d-block w-100"
-                                                              src={video} // Assuming video is a placeholder image for video files
-                                                              alt={`Slide ${index + 1
-                                                                }`}
-                                                            />
-                                                          ) : (
-                                                            <img
-                                                              className="d-block w-100"
-                                                              src={video} // Default case, though this seems to be an oversight as there's no alternative case for other data types
-                                                              alt={`Slide ${index + 1
-                                                                }`}
-                                                            />
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )}
-                                                </div>
-                                                <button
-                                                  className="carousel-control-prev"
-                                                  type="button"
-                                                  data-target={`#carouselSarcasmControls_${detail.data_name}_${index}`} // Match the unique ID
-                                                  data-slide="prev"
-                                                >
-                                                  <span
-                                                    className="carousel-control-prev-icon"
-                                                    aria-hidden="true"
-                                                  ></span>
-                                                  <span className="sr-only">
-                                                    Previous
-                                                  </span>
-                                                </button>
-                                                <button
-                                                  className="carousel-control-next"
-                                                  type="button"
-                                                  data-target={`#carouselSarcasmControls_${detail.data_name}_${index}`} // Match the unique ID
-                                                  data-slide="next"
-                                                >
-                                                  <span
-                                                    className="carousel-control-next-icon"
-                                                    aria-hidden="true"
-                                                  ></span>
-                                                  <span className="sr-only">
-                                                    Next
-                                                  </span>
-                                                </button>
+                                                              style={{
+                                                                position:
+                                                                  "absolute",
+                                                                width: "64%",
+                                                                height: "71%",
+                                                                top: 0,
+                                                                left: "21px",
+                                                                cursor:
+                                                                  "pointer",
+                                                                background:
+                                                                  "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                                zIndex: 10, // This ensures the div is placed over the iframe
+                                                              }}
+                                                            ></div>
+                                                          </div>
+                                                        ) : (
+                                                          <img
+                                                            className="d-block w-100"
+                                                            src={video} // Default case, though this seems to be an oversight as there's no alternative case for other data types
+                                                            alt={`Slide ${
+                                                              index + 1
+                                                            }`}
+                                                          />
+                                                        )}
+                                                      </div>
+                                                    )
+                                                  )}
                                               </div>
-                                            ) : detail.data_type === "pdf" ? (
-                                              <img
+                                              <button
+                                                className="carousel-control-prev"
+                                                type="button"
+                                                data-target={`#carouselSarcasmControls_${detail.data_name}_${index}`} // Match the unique ID
+                                                data-slide="prev"
+                                              >
+                                                <span
+                                                  className="carousel-control-prev-icon"
+                                                  aria-hidden="true"
+                                                ></span>
+                                                <span className="sr-only">
+                                                  Previous
+                                                </span>
+                                              </button>
+                                              <button
+                                                className="carousel-control-next"
+                                                type="button"
+                                                data-target={`#carouselSarcasmControls_${detail.data_name}_${index}`} // Match the unique ID
+                                                data-slide="next"
+                                              >
+                                                <span
+                                                  className="carousel-control-next-icon"
+                                                  aria-hidden="true"
+                                                ></span>
+                                                <span className="sr-only">
+                                                  Next
+                                                </span>
+                                              </button>
+                                            </div>
+                                          ) : detail.data_type === "pdf" ? (
+                                            // <img
+                                            //   onClick={() =>
+                                            //     handleFileClick(
+                                            //       "pdf",
+                                            //       detail.sarcasm_image
+                                            //     )
+                                            //   }
+                                            //   src={video} // Placeholder for PDF
+                                            //   width="80px"
+                                            //   height="80px"
+                                            // />
+
+                                            <div
+                                              style={{
+                                                position: "relative",
+                                                width: "100%",
+                                                height: "auto",
+                                              }}
+                                            >
+                                              {" "}
+                                              {/* Adjust the height as needed */}
+                                              <iframe
+                                                allowFullScreen={true}
+                                                src={detail.sarcasm_image}
+                                                title="PDF Viewer"
+                                                style={{
+                                                  width: "100%",
+                                                  height: "100%",
+                                                  border: "none",
+                                                  overflow: "hidden",
+                                                }}
+                                              />
+                                              <div
                                                 onClick={() =>
                                                   handleFileClick(
                                                     "pdf",
                                                     detail.sarcasm_image
                                                   )
                                                 }
-                                                src={video} // Placeholder for PDF
-                                                width="80px"
-                                                height="80px"
+                                                style={{
+                                                  position: "absolute",
+                                                  width: "64%",
+                                                  height: "71%",
+                                                  top: 0,
+                                                  left: "21px",
+                                                  cursor: "pointer",
+                                                  background:
+                                                    "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                  zIndex: 10, // This ensures the div is placed over the iframe
+                                                }}
+                                              ></div>
+                                            </div>
+                                          ) : detail.data_type === "mp4" ? (
+                                            // <img
+                                            //   onClick={() =>
+                                            //     handleFileClick(
+                                            //       "video",
+                                            //       detail.sarcasm_image
+                                            //     )
+                                            //   }
+                                            //   src={video} // Placeholder for video
+                                            //   width="80px"
+                                            //   height="80px"
+                                            // />
+                                            <video
+                                              className=""
+                                              controls
+                                              width="100%"
+                                              height="auto"
+                                            >
+                                              <source
+                                                src={detail.sarcasm_image}
+                                                type={`video/mp4`}
                                               />
-                                            ) : detail.data_type === "mp4" ? (
-                                              <img
-                                                onClick={() =>
-                                                  handleFileClick(
-                                                    "video",
-                                                    detail.sarcasm_image
-                                                  )
-                                                }
-                                                src={video} // Placeholder for video
-                                                width="80px"
-                                                height="80px"
-                                              />
-                                            ) : (
-                                              <img
-                                                src={video} // This case may need to be adjusted since it doesn't handle sarcasm_image
-                                                width="80px"
-                                                height="80px"
-                                              />
-                                            )}
-                                          </div>
+                                              Your browser does not support the
+                                              video tag.
+                                            </video>
+                                          ) : (
+                                            <img
+                                              src={video} // This case may need to be adjusted since it doesn't handle sarcasm_image
+                                              width="80px"
+                                              height="80px"
+                                            />
+                                          )}
+                                        </div>
 
-                                          <div className="summary_box text-center ml-auto mr-auto">
-                                            {detail.data_type === "jpg" ||
-                                              detail.data_type === "png" ||
-                                              detail.data_type === "jpeg" ? (
-                                              <div
-                                                id={`carouselNoLogoControls_${detail.data_name}_${index}`} // Changed ID prefix to "carouselNoLogoControls_"
-                                                className="carousel slide"
-                                                data-ride="carousel"
-                                              >
-                                                <div className="carousel-inner">
-                                                  {countData
-                                                    .filter(
-                                                      (item) =>
-                                                        item.data_name ===
+                                        <div className="summary_box text-center ml-auto mr-auto">
+                                          {detail.data_type === "jpg" ||
+                                          detail.data_type === "png" ||
+                                          detail.data_type === "jpeg" ? (
+                                            <div
+                                              id={`carouselNoLogoControls_${detail.data_name}_${index}`} // Changed ID prefix to "carouselNoLogoControls_"
+                                              className="carousel slide"
+                                              data-ride="carousel"
+                                            >
+                                              <div className="carousel-inner">
+                                                {countData
+                                                  .filter(
+                                                    (item) =>
+                                                      item.data_name ===
                                                         detail.data_name &&
-                                                        item.no_logo_image != null
-                                                    )
-                                                    .map(
-                                                      (filteredItem, index) => (
-                                                        <div
-                                                          key={index}
-                                                          className={`carousel-item ${index === 0
+                                                      item.no_logo_image != null
+                                                  )
+                                                  .map(
+                                                    (filteredItem, index) => (
+                                                      <div
+                                                        key={index}
+                                                        className={`carousel-item ${
+                                                          index === 0
                                                             ? "active"
                                                             : ""
-                                                            }`}
-                                                          data-interval="10000"
-                                                        >
-                                                          <h3 className="lead fs-6 text-start text-black-50">
-                                                            No Logo
-                                                          </h3>
+                                                        }`}
+                                                        data-interval="10000"
+                                                      >
+                                                        <h3 className="lead fs-6 text-start text-black-50">
+                                                          No Logo
+                                                        </h3>
 
-                                                          {filteredItem.data_type ===
-                                                            "jpg" ||
-                                                            filteredItem.data_type ===
-                                                            "png" ||
-                                                            filteredItem.data_type ===
-                                                            "jpeg" ? (
-                                                            <img
-                                                              onClick={() =>
-                                                                handleFileClick(
-                                                                  "image",
-                                                                  filteredItem.no_logo_image
-                                                                )
+                                                        {filteredItem.data_type ===
+                                                          "jpg" ||
+                                                        filteredItem.data_type ===
+                                                          "png" ||
+                                                        filteredItem.data_type ===
+                                                          "jpeg" ? (
+                                                          <img
+                                                            onClick={() =>
+                                                              handleFileClick(
+                                                                "image",
+                                                                filteredItem.no_logo_image
+                                                              )
+                                                            }
+                                                            className="d-block w-100"
+                                                            src={
+                                                              filteredItem.no_logo_image
+                                                            } // Correctly using no_logo_image for the src
+                                                            alt={`Slide ${
+                                                              index + 1
+                                                            }`}
+                                                          />
+                                                        ) : filteredItem.data_type ===
+                                                          "pdf" ? (
+                                                          // <img
+                                                          //   onClick={() =>
+                                                          //     handleFileClick(
+                                                          //       "pdf",
+                                                          //       filteredItem.no_logo_image
+                                                          //     )
+                                                          //   }
+                                                          //   className="d-block w-100"
+                                                          //   src={pdf} // Assuming pdf is a placeholder image for PDF files
+                                                          //   alt={`Slide ${
+                                                          //     index + 1
+                                                          //   }`}
+                                                          // />
+                                                          <div
+                                                            style={{
+                                                              position:
+                                                                "relative",
+                                                              width: "100%",
+                                                              height: "auto",
+                                                            }}
+                                                          >
+                                                            {" "}
+                                                            {/* Adjust the height as needed */}
+                                                            <iframe
+                                                              allowFullScreen={
+                                                                true
                                                               }
-                                                              className="d-block w-100"
                                                               src={
                                                                 filteredItem.no_logo_image
-                                                              } // Correctly using no_logo_image for the src
-                                                              alt={`Slide ${index + 1
-                                                                }`}
+                                                              }
+                                                              title="PDF Viewer"
+                                                              style={{
+                                                                width: "100%",
+                                                                height: "100%",
+                                                                border: "none",
+                                                                overflow:
+                                                                  "hidden",
+                                                              }}
                                                             />
-                                                          ) : filteredItem.data_type ===
-                                                            "pdf" ? (
-                                                            <img
+                                                            <div
                                                               onClick={() =>
                                                                 handleFileClick(
                                                                   "pdf",
                                                                   filteredItem.no_logo_image
                                                                 )
                                                               }
-                                                              className="d-block w-100"
-                                                              src={pdf} // Assuming pdf is a placeholder image for PDF files
-                                                              alt={`Slide ${index + 1
-                                                                }`}
+                                                              style={{
+                                                                position:
+                                                                  "absolute",
+                                                                width: "64%",
+                                                                height: "71%",
+                                                                top: 0,
+                                                                left: "21px",
+                                                                cursor:
+                                                                  "pointer",
+                                                                background:
+                                                                  "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                                zIndex: 10, // This ensures the div is placed over the iframe
+                                                              }}
+                                                            ></div>
+                                                          </div>
+                                                        ) : filteredItem.data_type ===
+                                                          "mp4" ? (
+                                                          // <img
+                                                          //   onClick={() =>
+                                                          //     handleFileClick(
+                                                          //       "video",
+                                                          //       filteredItem.no_logo_image
+                                                          //     )
+                                                          //   }
+                                                          //   className="d-block w-100"
+                                                          //   src={video} // Assuming video is a placeholder image for video files
+                                                          //   alt={`Slide ${
+                                                          //     index + 1
+                                                          //   }`}
+                                                          // />
+                                                          <div
+                                                            style={{
+                                                              position:
+                                                                "relative",
+                                                              width: "100%",
+                                                              height: "auto",
+                                                            }}
+                                                          >
+                                                            {" "}
+                                                            {/* Adjust the height as needed */}
+                                                            <iframe
+                                                              allowFullScreen={
+                                                                true
+                                                              }
+                                                              src={
+                                                                filteredItem.no_logo_image
+                                                              }
+                                                              title="PDF Viewer"
+                                                              style={{
+                                                                width: "100%",
+                                                                height: "100%",
+                                                                border: "none",
+                                                                overflow:
+                                                                  "hidden",
+                                                              }}
                                                             />
-                                                          ) : filteredItem.data_type ===
-                                                            "mp4" ? (
-                                                            <img
+                                                            <div
                                                               onClick={() =>
                                                                 handleFileClick(
-                                                                  "video",
+                                                                  "pdf",
                                                                   filteredItem.no_logo_image
                                                                 )
                                                               }
-                                                              className="d-block w-100"
-                                                              src={video} // Assuming video is a placeholder image for video files
-                                                              alt={`Slide ${index + 1
-                                                                }`}
-                                                            />
-                                                          ) : (
-                                                            <img
-                                                              className="d-block w-100"
-                                                              src={video} // Default case, though this seems to be an oversight as there's no alternative case for other data types
-                                                              alt={`Slide ${index + 1
-                                                                }`}
-                                                            />
-                                                          )}
-                                                        </div>
-                                                      )
-                                                    )}
-                                                </div>
-                                                <button
-                                                  className="carousel-control-prev"
-                                                  type="button"
-                                                  data-target={`#carouselNoLogoControls_${detail.data_name}_${index}`} // Updated to match the new ID format
-                                                  data-slide="prev"
-                                                >
-                                                  <span
-                                                    className="carousel-control-prev-icon"
-                                                    aria-hidden="true"
-                                                  ></span>
-                                                  <span className="sr-only">
-                                                    Previous
-                                                  </span>
-                                                </button>
-                                                <button
-                                                  className="carousel-control-next"
-                                                  type="button"
-                                                  data-target={`#carouselNoLogoControls_${detail.data_name}_${index}`} // Updated to match the new ID format
-                                                  data-slide="next"
-                                                >
-                                                  <span
-                                                    className="carousel-control-next-icon"
-                                                    aria-hidden="true"
-                                                  ></span>
-                                                  <span className="sr-only">
-                                                    Next
-                                                  </span>
-                                                </button>
+                                                              style={{
+                                                                position:
+                                                                  "absolute",
+                                                                width: "64%",
+                                                                height: "71%",
+                                                                top: 0,
+                                                                left: "21px",
+                                                                cursor:
+                                                                  "pointer",
+                                                                background:
+                                                                  "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                                zIndex: 10, // This ensures the div is placed over the iframe
+                                                              }}
+                                                            ></div>
+                                                          </div>
+                                                        ) : (
+                                                          <img
+                                                            className="d-block w-100"
+                                                            src={video} // Default case, though this seems to be an oversight as there's no alternative case for other data types
+                                                            alt={`Slide ${
+                                                              index + 1
+                                                            }`}
+                                                          />
+                                                        )}
+                                                      </div>
+                                                    )
+                                                  )}
                                               </div>
-                                            ) : detail.data_type === "pdf" ? (
-                                              <img
-                                                onClick={() =>
-                                                  handleFileClick(
-                                                    "pdf",
-                                                    detail.no_logo_image
-                                                  )
-                                                }
-                                                src={video} // Placeholder for PDF
-                                                width="80px"
-                                                height="80px"
-                                              />
-                                            ) : detail.data_type === "mp4" ? (
-                                              <img
-                                                onClick={() =>
-                                                  handleFileClick(
-                                                    "video",
-                                                    detail.no_logo_image
-                                                  )
-                                                }
-                                                src={video} // Placeholder for video
-                                                width="80px"
-                                                height="80px"
-                                              />
-                                            ) : (
-                                              <img
-                                                src={video} // This case may need to be adjusted since it doesn't directly relate to no_logo_image
-                                                width="80px"
-                                                height="80px"
-                                              />
-                                            )}
-                                          </div>
+                                              <button
+                                                className="carousel-control-prev"
+                                                type="button"
+                                                data-target={`#carouselNoLogoControls_${detail.data_name}_${index}`} // Updated to match the new ID format
+                                                data-slide="prev"
+                                              >
+                                                <span
+                                                  className="carousel-control-prev-icon"
+                                                  aria-hidden="true"
+                                                ></span>
+                                                <span className="sr-only">
+                                                  Previous
+                                                </span>
+                                              </button>
+                                              <button
+                                                className="carousel-control-next"
+                                                type="button"
+                                                data-target={`#carouselNoLogoControls_${detail.data_name}_${index}`} // Updated to match the new ID format
+                                                data-slide="next"
+                                              >
+                                                <span
+                                                  className="carousel-control-next-icon"
+                                                  aria-hidden="true"
+                                                ></span>
+                                                <span className="sr-only">
+                                                  Next
+                                                </span>
+                                              </button>
+                                            </div>
+                                          ) : detail.data_type === "pdf" ? (
+                                            <img
+                                              onClick={() =>
+                                                handleFileClick(
+                                                  "pdf",
+                                                  detail.no_logo_image
+                                                )
+                                              }
+                                              src={video} // Placeholder for PDF
+                                              width="80px"
+                                              height="80px"
+                                            />
+                                          ) : detail.data_type === "mp4" ? (
+                                            <img
+                                              onClick={() =>
+                                                handleFileClick(
+                                                  "video",
+                                                  detail.no_logo_image
+                                                )
+                                              }
+                                              src={video} // Placeholder for video
+                                              width="80px"
+                                              height="80px"
+                                            />
+                                          ) : (
+                                            <img
+                                              src={video} // This case may need to be adjusted since it doesn't directly relate to no_logo_image
+                                              width="80px"
+                                              height="80px"
+                                            />
+                                          )}
+                                        </div>
 
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Campaign Purpose</span>
-                                              {detail.campaign_purpose}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span> Number Of Post</span>
-                                              {detail.number_of_post}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Numbar of Reach</span>
-                                              {detail.number_of_reach}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Number Of Impression</span>
-                                              {detail.number_of_impression}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Number Of Engagement</span>
-                                              {detail.number_of_engagement}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Number Of Views</span>
-                                              {detail.number_of_views}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Number Of Story Views</span>
-                                              {detail.number_of_story_views}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Operation Remark</span>
-                                              {detail.operation_remark}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Date Of Report</span>
-                                              {dateConvert(detail.date_of_report)}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Date Of Completion</span>
-                                              {dateConvert(
-                                                detail.date_of_completion
-                                              )}
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Brand Category </span>
-                                              {
-                                                brandCategory.filter(
-                                                  (e) =>
-                                                    e.category_id ==
-                                                    detail.brand_category_id
-                                                )[0]?.category_name
-                                              }
-                                            </h4>
-                                          </div>
-                                          <div className="summary_box col">
-                                            <h4>
-                                              <span>Brand Sub Category</span>
-                                              {
-                                                brandSubCatData?.filter(
-                                                  (e) =>
-                                                    e.sub_category_id ==
-                                                    detail.brand_sub_category_id
-                                                )[0]?.sub_category_name
-                                              }
-                                            </h4>
-                                          </div>
-                                        </>
-                                      )}
-                                    </>
-                                  )}
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Campaign Purpose</span>
+                                            {detail.campaign_purpose}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span> Number Of Post</span>
+                                            {detail.number_of_post}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Numbar of Reach</span>
+                                            {detail.number_of_reach}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Number Of Impression</span>
+                                            {detail.number_of_impression}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Number Of Engagement</span>
+                                            {detail.number_of_engagement}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Number Of Views</span>
+                                            {detail.number_of_views}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Number Of Story Views</span>
+                                            {detail.number_of_story_views}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Operation Remark</span>
+                                            {detail.operation_remark}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Date Of Report</span>
+                                            {dateConvert(detail.date_of_report)}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Date Of Completion</span>
+                                            {dateConvert(
+                                              detail.date_of_completion
+                                            )}
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Brand Category </span>
+                                            {
+                                              brandCategory.filter(
+                                                (e) =>
+                                                  e.category_id ==
+                                                  detail.brand_category_id
+                                              )[0]?.category_name
+                                            }
+                                          </h4>
+                                        </div>
+                                        <div className="summary_box col">
+                                          <h4>
+                                            <span>Brand Sub Category</span>
+                                            {
+                                              brandSubCatData?.filter(
+                                                (e) =>
+                                                  e.sub_category_id ==
+                                                  detail.brand_sub_category_id
+                                              )[0]?.sub_category_name
+                                            }
+                                          </h4>
+                                        </div>
+                                      </>
+                                    )}
+                                  </>
+                                )}
                               </div>
                             </div>
                           </div>
