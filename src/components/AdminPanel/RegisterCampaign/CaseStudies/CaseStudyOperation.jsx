@@ -434,7 +434,7 @@ console.log(fromDate,"  ",toDate);
                                   View
                                 </button>
                               </Link>
-                              <Link to={`/data-brand-update/${detail.data_id}`}>
+                              <Link to={`/casestudy-update/${detail.data_id}`}>
                                 <button
                                   className="btn btn-sm btn-outline-primary"
                                   title="Edit"
