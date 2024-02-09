@@ -19,6 +19,8 @@ const SummaryDetails = ({ payload, campName }) => {
   const [totalStoryPerPage, setStoryPerPage] = useState(0);
   const [filteredData, setFilteredData] = useState(payload);
 
+  
+
   useEffect(() => {
     const updatedCatNameLengths = {};
     payload.forEach((entry) => {
@@ -27,6 +29,7 @@ const SummaryDetails = ({ payload, campName }) => {
         (updatedCatNameLengths[catName] || 0) + 1;
     });
     setCatNameLengths(updatedCatNameLengths);
+    handleSelectedRowData()
 
     const totalCount = payload.reduce(
       (sum, current) => sum + Number(current.follower_count),
@@ -45,9 +48,15 @@ const SummaryDetails = ({ payload, campName }) => {
 
     setSummaryData({ total, totalPost, lent, totalStory });
   }, [payload]);
-  console.log(typeof(5))
+
+
   const handleSelectedRowData = (catName) => {
-    const filteredRows = payload.filter((e) => e.cat_name === catName);
+    const filteredRows = payload.filter((e) => {
+      if(!catName){
+        return e
+      }else return e.cat_name === catName
+      
+    });
     setFilteredData(filteredRows);
 
     // const totalFollowers = filteredRows.reduce(
@@ -76,15 +85,15 @@ const SummaryDetails = ({ payload, campName }) => {
     setStoryPerPage(formatNumber(totalStory));
   };
 
-
+  console.log(totalPostPerPage)
   const formatNumber = (value) => {
 
-   console.log(value)
+    console.log(value)
     if (value >= 1000000) {
       return `${(value / 1000000).toFixed(2)}M`;
     } else if (value >= 1000) {
       return `${(value / 1000).toFixed(2)}k`;
-    }else if (value>=10000000){
+    } else if (value >= 10000000) {
       return `${(value / 1000000).toFixed(2)}M`;
     } else {
       return value.toString();
@@ -132,11 +141,11 @@ const SummaryDetails = ({ payload, campName }) => {
     const workbook = XLSX.utils.book_new();
     const overviewData = [
       ["", "", "", "Summary"],
-      ["Sno.", "Description",  "Count","Platform", "Deliverables", "Cost"], 
-      [1, "Post",  summaryData.totalPost, "", ""], 
-      [2, "Followers",  summaryData.total, "", ""], 
-      [3, "Story ",  summaryData.totalStory, "", ""], 
-      ["", "Total", summaryData.lent], 
+      ["Sno.", "Description", "Count", "Platform", "Deliverables", "Cost"],
+      [1, "Post", summaryData.totalPost, "", ""],
+      [2, "Followers", summaryData.total, "", ""],
+      [3, "Story ", summaryData.totalStory, "", ""],
+      ["", "Total", summaryData.lent],
     ];
 
     const overviewWorksheet = XLSX.utils.aoa_to_sheet(overviewData);
@@ -161,7 +170,7 @@ const SummaryDetails = ({ payload, campName }) => {
             v: item.page_link,
             l: {
               Target: item.page_link,
-              
+
               Tooltip: "Click to open link",
             },
           },
@@ -185,7 +194,7 @@ const SummaryDetails = ({ payload, campName }) => {
     XLSX.writeFile(workbook, `${campName}.xlsx`);
   };
 
-  
+
 
   return (
     <>
@@ -204,7 +213,7 @@ const SummaryDetails = ({ payload, campName }) => {
                 variant="text"
                 color="success"
                 title="Download Excel"
-                sx={{fontSize:"25px"}}
+                sx={{ fontSize: "25px" }}
               >
                 <SiMicrosoftexcel />
               </Button>
@@ -232,7 +241,7 @@ const SummaryDetails = ({ payload, campName }) => {
                 Posts: {summaryData.totalPost || 0}
               </Typography>
               <Typography variant="6">
-                Story: {summaryData.totalStory|| 0}
+                Story: {summaryData.totalStory || 0}
               </Typography>
             </Box>
           </Paper>
@@ -268,7 +277,7 @@ const SummaryDetails = ({ payload, campName }) => {
             <Typography>Total Stories: {totalStoryPerPage}</Typography>
           </Box>
           <DataGrid
-            rows={payload ? payload :filteredData }
+            rows={payload ? payload : filteredData}
             columns={columns}
             getRowId={(row) => row.p_id}
             pageSizeOptions={[5]}

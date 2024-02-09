@@ -85,6 +85,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
     const [planName, setPlanName] = useState("")
 
+    const [postInputError, setPostInputError] = useState('');
+
     useEffect(() => {
         getPageData();
     }, []);
@@ -107,6 +109,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             setRadioSelected('selected')
         }
     }, [payload]);
+
+    console.log(externalPPP)
 
     useEffect(() => {
         if (!excelUpload) {
@@ -287,6 +291,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     };
 
     const handleRadioChange = (e) => {
+        setSearchedPages(null);
+        setSearchField(false);
         const value = e.target.value;
         setRadioSelected(value);
     };
@@ -595,11 +601,21 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     //copy paste logic ends here
 
     const handlePost = (e, field) => {
-        let updatedValue = e.target.value;
-
-
-        const postperpage = payload.map((page) => {
+        let updatedValue
+      
+         updatedValue = e.target.value;
+ 
+         if(payload.length==0){
             if (field == "post") {
+                setExternalPPP(e.target.value)
+              
+            } else {
+                setExternalSPP(e.target.value)
+               
+            }
+         }
+         const postperpage = payload.map((page) => {
+             if (field == "post") {
                 setExternalPPP(e.target.value)
                 return { ...page, postPerPage: updatedValue };
             } else {
@@ -812,6 +828,8 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                     <input
                         style={{ width: "60%" }}
                         type="number"
+                        min="0"
+                        oninput="validity.valid||(value='');"
                         value={
                             params.row.postPerPage !== null
                                 ? params.row.postPerPage
@@ -832,6 +850,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                     <input
                         style={{ width: "60%" }}
                         type="number"
+                        min="0.000001"
                         disabled
                         placeholder={params.row.postRemaining}
                     />
@@ -848,6 +867,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                     <input
                         style={{ width: "60%" }}
                         type="number"
+                        min="0"
                         value={
                             params.row.storyPerPage !== null
                                 ? params.row.storyPerPage
@@ -995,7 +1015,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
     return (
         <>
-            <TextField label='Plan Name' onChange={(e) => {
+            <TextField label='Plan Name*' onChange={(e) => {
                 setPlanName(e.target.value)
             }} />
 
@@ -1096,19 +1116,22 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                 <TextField
                     id="outlined-basic"
                     InputLabelProps={{ shrink: true }}
+                    type="number"
                     label="Post/pages"
                     variant="outlined"
                     onChange={(e) => handlePost(e, "post")}
+                    InputProps={{ inputProps: { min: 0 } }}
                 />
                 <TextField
                     sx={{ ml: 2 }}
                     id="outlined-basic"
+                    type="number"
                     InputLabelProps={{ shrink: true }}
                     label="story/pages"
                     variant="outlined"
                     onChange={(e) => handlePost(e, "story")}
                 />
-                <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+                {/* <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     <Button
                         onClick={() => exportToCSV(payload)}
                         variant="text"
@@ -1127,7 +1150,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                     >
                         <PictureAsPdfIcon sx={{ fontSize: "35px" }} />
                     </Button>
-                </Box>
+                </Box> */}
             </Box>
             <Paper
                 sx={{ display: "flex", justifyContent: "space-between", gap: 1.5 }}
@@ -1164,7 +1187,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                         </Button>{" "}
                     </div>
                 </Box>
-                <SummrayDetailes payload={payload} campName={campValue} />
+                <SummrayDetailes payload={payload} campName={planName} />
             </Paper>
             {
                 //copy paste modal contents

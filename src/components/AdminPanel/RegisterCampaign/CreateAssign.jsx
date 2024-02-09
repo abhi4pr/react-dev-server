@@ -755,7 +755,7 @@ const CreateAssign = () => {
       </Box>
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
         <Button variant="contained" sx={{ m: 2 }} onClick={handleSubmitAssign}>
-          Create Assignment{" "}
+          Update Assignment{" "}
         </Button>
       </Box>
       <Assigned
