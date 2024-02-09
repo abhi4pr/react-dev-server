@@ -97,12 +97,12 @@ const BrandCaseStudy = () => {
   };
 
   useEffect(() => {
-    let id = localStorage.getItem('userId');
-    if (!id) {
+    // let id = localStorage.getItem('userId');
+    // if (!id) {
       // Generate a new ID using any preferred method
-      id = 'id_' + Math.random().toString(36).substr(2, 9);
-      localStorage.setItem('userId', id);
-    }
+    const  id = 'id_' + Math.random().toString(36).substr(2, 9)+Math.random().toString();
+      // localStorage.setItem('userId', id);
+    // }
     setBrand(id);
   }, []);
 

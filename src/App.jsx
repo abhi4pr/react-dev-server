@@ -183,6 +183,7 @@ function App() {
 <Route path="/case-study/brand" element={<BrandCaseStudy />} />
 <Route path="/casestudy-dashboard" element={<CaseStudyDashboard />} />
 <Route path="/case-platform" element={<CaseStudyplateform />} />
+<Route path="/casestudy-update/:id" element={<DataBrandUpdate />} />
 
 {/* ------------------------------ case Study end----------------------------------------- */}
 
