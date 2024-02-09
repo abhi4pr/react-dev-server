@@ -77,16 +77,12 @@ export default function FinanceDashboard() {
           "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
-          let y = x.filter((item) => {
-            if (item.status == 1) {
-              return item;
-            }
+          console.log(res.data.body, "php");
+          let y = res.data.body.filter((item) => {
+            return !x.some((item2) => item.request_id == item2.request_id);
           });
-          let u = res.data.body.filter((item) => {
-            return y.some((item2) => item.request_id == item2.request_id);
-          });
-          setFilterVendorCardData(u);
-          setVendorCardData(u);
+          setFilterVendorCardData(y);
+          setVendorCardData(y);
         });
     });
 
@@ -459,287 +455,501 @@ export default function FinanceDashboard() {
         </Button>
       </div>
       <div className="card">
-        <div className="row gx-3 justify-content-around">
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 col-3`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon className={classes.progressValue} />
-              </div>
-              <div className={classes.content}>
-                <p className={classes.bodyMd}>
-                  Pending for Approval of Sales Payment:
-                </p>
-                <span className={classes.h1}>
-                  {pendingForApprovalData.length}
-                </span>
-                <Link
-                  to="/admin/finance-pendingapproveupdate"
-                  className={classes.detailsLink}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-pendingapproveupdate">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 m-2`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon className={classes.progressValue} />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd}>Pending for Vendor Payment:</h5>
-                <span className={classes.h1}>{vendorCardData.length}</span>
-                <Link
-                  to="/admin/finance-pruchasemanagement-paymentdone"
-                  className={classes.detailsLink}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-pruchasemanagement-paymentdone">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
-
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 m-2`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon className={classes.progressValue} />
-              </div>
+        <div className="row gx-3 justify-content-around ">
+          <div className="card d-felx flex-row">
+            <div className="boarder-2 we">
+              <h4>Sales</h4>
               <div
-                className={`${classes.content} ${classes.buttonAlignIncentive2}`}
+                className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors}  `}
               >
-                <h5 className={classes.bodyMd}>Total Payout Pending:</h5>
-                <br />
-                <span className={classes.h1}>
-                  &#8377;
-                  {payoutData
-                    .map((e) => e.toPay)
-                    .reduce((prev, next) => prev + next, 0)
-                    ? payoutData
-                        .map((e) => e.toPay)
+                <div className={`${classes.cardContent} ${classes.horizontal}`}>
+                  <div className={classes.circularProgress}>
+                    <PointOfSaleIcon className={classes.progressValue} />
+                  </div>
+                  <div className={classes.content}>
+                    <p className={classes.bodyMd}>
+                      Pending for Approval of Sales Payment:
+                    </p>
+                    <span className={classes.h1}>
+                      {pendingForApprovalData.length}
+                    </span>
+                    <h5 className={classes.bodyMd}>
+                      Pending Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {pendingForApprovalData
+                        .map((item) => +item.payment_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Campign Amount Without GST:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {pendingForApprovalData
+                        .map((item) => +item.campaign_amount_without_gst)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Campign Amount :{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {pendingForApprovalData
+                        .map((item) => +item.campaign_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <Link
+                      to="/admin/finance-pendingapproveupdate"
+                      className={classes.detailsLink}
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+                <div className={classes.cardActions}>
+                  <Link to="/admin/finance-pendingapproveupdate">
+                    <InfoIcon className="fs-3  pb-1  mt-3" />
+                  </Link>
+                </div>
+              </div>
+
+              <div
+                className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors}   my-2`}
+              >
+                <div
+                  className={`${classes.cardContent} ${classes.horizontal}  ${classes.buttonAlign}`}
+                >
+                  <div className={classes.circularProgress}>
+                    <PointOfSaleIcon className={classes.progressValue} />
+                  </div>
+                  <div className={classes.content}>
+                    <h5 className={classes.bodyMd}>
+                      Total Invoice pending count :
+                    </h5>
+                    <span className={classes.h1}>{invoicePending.length}</span>
+                    <h5 className={classes.bodyMd}>
+                      Net Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {invoicePending
+                        .map((item) => +item.net_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      GST Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {invoicePending
+                        .map((item) => +item.gst_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Base Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {invoicePending
+                        .map((item) => +item.base_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Campaign Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {invoicePending
+                        .map((item) => +item.campaign_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>{" "}
+                    <h5 className={classes.bodyMd}>
+                      Campaign Amount Without GST:{" "}
+                      <span className={classes.campaign_amount_without_gst}>
+                        &#8377;
+                      </span>
+                      {invoicePending
+                        .map((item) => +item.campaign_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <Link
+                      to="/admin/finance-pendinginvoice"
+                      className={classes.detailsLink}
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+                <div className={classes.cardActions}>
+                  <Link to="/admin/finance-pendinginvoice">
+                    <InfoIcon className="fs-3  pb-1  mt-3" />
+                  </Link>
+                </div>
+              </div>
+
+              <div
+                className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors}  `}
+              >
+                <div
+                  className={`${classes.cardContent} ${classes.horizontal} `}
+                >
+                  <div className={classes.circularProgress}>
+                    <PointOfSaleIcon className={classes.progressValue} />
+                  </div>
+                  <div className={classes.content}>
+                    <h5 className={classes.bodyMd}>
+                      Total Refund Request Amount Pending:{" "}
+                      <span className={classes.h1}>
+                        <span className={classes.currencySymbol}>&#8377;</span>
+                      </span>
+                      {refundReqData
+                        .map((item) => item.refund_amount)
                         .reduce((prev, next) => prev + next, 0)
-                        .toLocaleString("en-IN")
-                    : 0}
-                </span>
-                <Link to="#" className={classes.detailsLink}>
-                  View Details
-                </Link>
+                        .toLocaleString("en-IN")}
+                    </h5>
+                    <Link
+                      to="/admin/finance-pendingapproverefund"
+                      className={classes.detailsLink}
+                    >
+                      <p className={classes.cardText}>View Details</p>
+                    </Link>
+                  </div>
+                </div>
+                <div className={classes.cardActions}>
+                  <Link to="/admin/finance-pendingapproverefund">
+                    <InfoIcon className="fs-3  pb-1  mt-3" />
+                  </Link>
+                </div>
               </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="#">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
 
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3`}
-          >
-            <div
-              className={`${classes.cardContent} ${classes.horizontal}  ${classes.buttonAlign}`}
-            >
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon className={classes.progressValue} />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd}>
-                  Total Invoice pending count :
-                </h5>
-                <span className={classes.h1}>{invoicePending.length}</span>
-                <Link
-                  to="/admin/finance-pendinginvoice"
-                  className={classes.detailsLink}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-pendinginvoice">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
-
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 mx-2`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={`${classes.circularProgress} ${classes.tdsIcon}`}>
-                <PointOfSaleIcon className={classes.progressValue} />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd}>Total TDS Verification Open:</h5>
-                <span className={classes.h1}>
-                  {salesBookingOpenData.length}
-                </span>
-
-                <h5 className={classes.bodyMd}>
-                  Total TDS Verification About to Close:
-                </h5>
-                <span className={classes.h1}>
-                  {salesBookingAboutToCloseData.length}
-                </span>
-
-                <h5 className={classes.bodyMd}>
-                  Total TDS Verification Close:
-                </h5>
-                <span className={classes.h1}>
-                  {salesBookingCloseData.length}
-                </span>
-
-                <Link
-                  to="/admin/finance-salebookingclose"
-                  className={classes.detailsLink}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-salebookingclose">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
-
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 `}
-          >
-            <div
-              className={`${classes.cardContent} ${classes.horizontal} ${classes.buttonAlignIncentive}`}
-            >
               <div
-                className={`${classes.circularProgress} ${classes.buttonAlignIncentiveIcon} `}
+                className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors}  mt-2 `}
               >
-                <PointOfSaleIcon className={classes.progressValue} />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd}>Total Incentive Count:</h5>
-                <h3 className={classes.h1}>{incentiveData.length}</h3>
-                <h5 className={classes.bodyMd}>
-                  Request Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {incentiveData
-                    .map((item) => +item.request_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <h5 className={classes.bodyMd}>
-                  Released Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {incentiveData
-                    .map((item) => +item.released_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <h5 className={classes.bodyMd}>
-                  Balance Release Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {incentiveData
-                    .map((item) => +item.balance_release_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <Link
-                  to="/admin/finance-incentivepayment"
-                  className={classes.detailsLink}
+                <div
+                  className={`${classes.cardContent} ${classes.horizontal} ${classes.buttonAlignIncentive}`}
                 >
-                  View Details
-                </Link>
+                  <div
+                    className={`${classes.circularProgress} ${classes.buttonAlignIncentiveIcon} `}
+                  >
+                    <PointOfSaleIcon className={classes.progressValue} />
+                  </div>
+                  <div className={classes.content}>
+                    <h5 className={classes.bodyMd}>Total Incentive Count:</h5>
+                    <h3 className={classes.h1}>{incentiveData.length}</h3>
+                    <h5 className={classes.bodyMd}>
+                      Request Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {incentiveData
+                        .map((item) => +item.request_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Released Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {incentiveData
+                        .map((item) => +item.released_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Balance Release Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {incentiveData
+                        .map((item) => +item.balance_release_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <Link
+                      to="/admin/finance-incentivepayment"
+                      className={classes.detailsLink}
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+                <div className={classes.cardActions}>
+                  <Link to="/admin/finance-incentivepayment">
+                    <InfoIcon className="fs-3  pb-1  mt-3" />
+                  </Link>
+                </div>
               </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-incentivepayment">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
 
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 m-2`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal} `}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon className={classes.progressValue} />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd}>
-                  Total Refund Request Amount Pending:{" "}
-                  <span className={classes.h1}>
-                    <span className={classes.currencySymbol}>&#8377;</span>
-                  </span>
-                  {refundReqData
-                    .map((item) => item.refund_amount)
-                    .reduce((prev, next) => prev + next, 0)
-                    .toLocaleString("en-IN")}
-                </h5>
-                <Link
-                  to="/admin/finance-pendingapproverefund"
-                  className={classes.detailsLink}
-                >
-                  <p className={classes.cardText}>View Details</p>
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-pendingapproverefund">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
+              <div
+                className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} my-2`}
+              >
+                <div className={`${classes.cardContent} ${classes.horizontal}`}>
+                  <div
+                    className={`${classes.circularProgress} ${classes.tdsIcon}`}
+                  >
+                    <PointOfSaleIcon className={classes.progressValue} />
+                  </div>
+                  <div className={classes.content}>
+                    <h5 className={classes.bodyMd}>
+                      Total TDS Verification Open:
+                    </h5>
+                    <span className={classes.h1}>
+                      {salesBookingOpenData.length}
+                    </span>
+                    <h5 className={classes.bodyMd}>
+                      Net Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingOpenData
+                        .map((item) => +item.net_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Total Paid Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingOpenData
+                        .map((item) => +item.total_paid_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      GST Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingOpenData
+                        .map((item) => +item.gst_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Base Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingOpenData
+                        .map((item) => +item.base_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
 
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 m-2`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon className={classes.progressValue} />
+                    <h5 className={classes.bodyMd}>
+                      Campaign Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingOpenData
+                        .map((item) => +item.campaign_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+
+                    <h5 className={classes.bodyMd + " " + "mt-2 "}>
+                      Total TDS Verification About to Close:
+                    </h5>
+                    <span className={classes.h1}>
+                      {salesBookingAboutToCloseData.length}
+                    </span>
+
+                    <h5 className={classes.bodyMd}>
+                      Net Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingAboutToCloseData
+                        .map((item) => +item.net_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Total Paid Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingAboutToCloseData
+                        .map((item) => +item.total_paid_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      GST Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingAboutToCloseData
+                        .map((item) => +item.gst_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Base Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingAboutToCloseData
+                        .map((item) => +item.base_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+
+                    <h5 className={classes.bodyMd}>
+                      Campaign Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingAboutToCloseData
+                        .map((item) => +item.campaign_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+
+                    <h5 className={classes.bodyMd}>
+                      Total TDS Verification Close:
+                    </h5>
+                    <span className={classes.h1}>
+                      {salesBookingCloseData.length}
+                    </span>
+
+                    <h5 className={classes.bodyMd}>
+                      Net Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingCloseData
+                        .map((item) => +item.net_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Total Paid Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingCloseData
+                        .map((item) => +item.total_paid_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      GST Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingCloseData
+                        .map((item) => +item.gst_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Base Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingCloseData
+                        .map((item) => +item.base_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+
+                    <h5 className={classes.bodyMd}>
+                      Campaign Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {salesBookingCloseData
+                        .map((item) => +item.campaign_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+
+                    <Link
+                      to="/admin/finance-salebookingclose"
+                      className={classes.detailsLink}
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+                <div className={classes.cardActions}>
+                  <Link to="/admin/finance-salebookingclose">
+                    <InfoIcon className="fs-3  pb-1  mt-3" />
+                  </Link>
+                </div>
               </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd}>
-                  Customer Balance Payment Count:{" "}
-                  <span className={classes.h1}>{cstPaymentData.length}</span>
-                </h5>
-                <h5
-                  className={`${classes.bodyMd} mt-1 `}
-                  style={{ lineHeight: "15px" }}
-                >
-                  Total Refund Request Amount Pending:{" "}
-                  <span className={classes.h1}>&#8377;</span>
-                  {cstPaymentData
-                    .map(
-                      (item) => item.campaign_amount - item.total_paid_amount
-                    )
-                    .reduce((prev, next) => prev + next, 0)
-                    .toLocaleString("en-IN")}
-                </h5>
-                <Link
-                  to="/admin/finance-balancepayment"
-                  className={classes.detailsLink}
-                >
-                  <p className={classes.cardText}>View Details</p>
-                </Link>
+
+              <div
+                className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors}  `}
+              >
+                <div className={`${classes.cardContent} ${classes.horizontal}`}>
+                  <div className={classes.circularProgress}>
+                    <PointOfSaleIcon className={classes.progressValue} />
+                  </div>
+                  <div className={classes.content}>
+                    <h5 className={classes.bodyMd}>
+                      Customer Balance Payment Count:{" "}
+                      <span className={classes.h1}>
+                        {cstPaymentData.length}
+                      </span>
+                    </h5>
+                    <h5
+                      className={`${classes.bodyMd} mt-1 `}
+                      style={{ lineHeight: "15px" }}
+                    >
+                      Total Refund Request Amount Pending:{" "}
+                      <span className={classes.h1}>&#8377;</span>
+                      {cstPaymentData
+                        .map(
+                          (item) =>
+                            item.campaign_amount - item.total_paid_amount
+                        )
+                        .reduce((prev, next) => prev + next, 0)
+                        .toLocaleString("en-IN")}
+                    </h5>
+                    <Link
+                      to="/admin/finance-balancepayment"
+                      className={classes.detailsLink}
+                    >
+                      <p className={classes.cardText}>View Details</p>
+                    </Link>
+                  </div>
+                </div>
+
+                <div className={classes.cardActions}>
+                  <Link to="/admin/finance-balancepayment">
+                    <InfoIcon className="fs-3  pb-1  mt-3" />
+                  </Link>
+                </div>
               </div>
             </div>
+            <div className="boarder-2 px-3 px-2">
+              <h4>Purchase</h4>
+              <div
+                className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors}    `}
+              >
+                <div className={`${classes.cardContent} ${classes.horizontal}`}>
+                  <div className={classes.circularProgress}>
+                    <PointOfSaleIcon className={classes.progressValue} />
+                  </div>
+                  <div className={classes.content}>
+                    <h5 className={classes.bodyMd}>
+                      Pending for Vendor Payment:
+                    </h5>
+                    <span className={classes.h1}>{vendorCardData.length}</span>
 
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-balancepayment">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
+                    <h5 className={classes.bodyMd}>
+                      Request Amount:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {vendorCardData
+                        .map((item) => +item.request_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+                    <h5 className={classes.bodyMd}>
+                      Outstandings Amt:{" "}
+                      <span className={classes.currencySymbol}>&#8377;</span>
+                      {vendorCardData
+                        .map((item) => +item.outstandings)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h5>
+
+                    <Link
+                      to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+                      className={classes.detailsLink}
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+                <div className={classes.cardActions}>
+                  <Link to="/admin/finance-pruchasemanagement-pendingpaymentrequest">
+                    <InfoIcon className="fs-3  pb-1  mt-3" />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="boarder 3 ">
+                <h4>Pay Out</h4>
+                <div
+                  className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors}  `}
+                >
+                  <div
+                    className={`${classes.cardContent} ${classes.horizontal}`}
+                  >
+                    <div className={classes.circularProgress}>
+                      <PointOfSaleIcon className={classes.progressValue} />
+                    </div>
+                    <div
+                      className={`${classes.content} ${classes.buttonAlignIncentive2}`}
+                    >
+                      <h5 className={classes.bodyMd}>Total Payout Pending:</h5>
+                      <span className={classes.h1}>
+                        {payoutData.length} 
+                      </span>
+                      <br />
+                      <span className={classes.h1}>
+                        &#8377;
+                        {payoutData
+                          .map((e) =>+ e.toPay)
+                          .reduce((prev, next) => prev + next, 0)
+                          ? payoutData
+                              .map((e) => e.toPay)
+                              .reduce((prev, next) => prev + next, 0)
+                              .toLocaleString("en-IN")
+                          : 0}
+                      </span>
+                      <Link
+                        to="/admin/accounts-finance-dashboard"
+                        className={classes.detailsLink}
+                      >
+                        View Details
+                      </Link>
+                    </div>
+                  </div>
+                  <div className={classes.cardActions}>
+                    <Link to="/admin/accounts-finance-dashboard">
+                      <InfoIcon className="fs-3  pb-1  mt-3" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

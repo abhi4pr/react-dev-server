@@ -56,7 +56,6 @@ export default function PendingPaymentRequest() {
     axios
       .get(baseUrl+"phpvendorpaymentrequest")
       .then((res) => {
-        console.log(res.data.modifiedData, "node");
         const x = res.data.modifiedData;
 
         axios
@@ -702,6 +701,8 @@ export default function PendingPaymentRequest() {
       {openImageDialog && (
         <ImageView
           viewImgSrc={viewImgSrc}
+          fullWidth={true}
+          maxWidth={'md'}
           setViewImgDialog={setOpenImageDialog}
         />
       )}
