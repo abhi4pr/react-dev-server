@@ -59,7 +59,6 @@ const RepairRequest = () => {
     const res = await axios.get(
       baseUrl+"get_all_assetResons"
     );
-    console.log(res.data.data, "reason");
     setReasonData(res?.data.data);
   }
 
@@ -190,7 +189,6 @@ const RepairRequest = () => {
     );
     setModalData(res?.data.data);
     setrepairRequestFilter(res?.data.data);
-    console.log(res.data.data);
   }
 
   useEffect(() => {

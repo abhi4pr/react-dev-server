@@ -90,13 +90,11 @@ const SimOverview = () => {
         setData(f1);
         setFilterData(f1);
 
-        console.log("cccc", f1);
       }
       if (id == 2) {
         const f2 = simAllData?.filter((d) => d.status == "Allocated");
         setData(f2);
         setFilterData(f2);
-        // console.log("ddd", f2);
       }
       if (id == 0) {
         setData(simAllData);
@@ -118,7 +116,6 @@ const SimOverview = () => {
 
   // function getAllocatedData (){
   //   axios.get(baseUrl+"get_all_allocations").then((res) => {
-  //     console.log(res.data)
   //   });
   // }
 
@@ -140,8 +137,6 @@ const SimOverview = () => {
   //     });
   // };
   // useEffect(() => {
-  //   console.log(id, "id hewiafhsf");
-  //   console.log(data, "dfghj da hewiafhsf");
 
   // }, [data]);
 
@@ -212,23 +207,24 @@ const SimOverview = () => {
     if (selectedUserTransfer != "") {
       const currDate = new Date().toISOString();
       const dateString = currDate.replace("T", " ").replace("Z", "");
-      axios.put(baseUrl + "update_allocationsim", {
-        sim_id: simAllocationTransferData[0].sim_id,
-        allo_id: simAllocationTransferData[0].allo_id,
-        user_id: simAllocationTransferData[0].user_id,
-        // dept_id: modalSelectedUserData[0].dept_id,
-        status: "Available",
-        submitted_by: userID,
-        Last_updated_by: userID,
-        Reason: "",
-        submitted_at: dateString,
-      });
+      // axios.put(baseUrl + "update_allocationsim", {
+      //   sim_id: simAllocationTransferData[0].sim_id,
+      //   allo_id: simAllocationTransferData[0].allo_id,
+      //   user_id: simAllocationTransferData[0].user_id,
+      //   // dept_id: modalSelectedUserData[0].dept_id,
+      //   status: "Available",
+      //   submitted_by: userID,
+      //   Last_updated_by: userID,
+      //   Reason: "",
+      //   submitted_at: dateString,
+      // });
 
-      axios.post(baseUrl + "add_sim_allocation", {
+      axios.put(baseUrl + "update_allocationsim", {
         user_id: Number(selectedUserTransfer),
         sim_id: Number(simAllocationTransferData[0].sim_id),
         // dept_id: Number(modalSelectedUserData[0].dept_id),
         created_by: userID,
+        status: "Allocated",
       });
       setSelectedUserTransfer("");
     } else {
@@ -237,9 +233,10 @@ const SimOverview = () => {
   }
 
   // Allocation -----------------------------------------------------
+
   const handleSimAllocation = async () => {
     if (selectedUserTransfer !== "") {
-      await axios.post(baseUrl + "add_sim_allocation", {
+      await axios.put(baseUrl + "update_allocationsim", {
         user_id: Number(selectedUserTransfer),
         status: "Allocated",
         sim_id: Number(modalData.sim_id),
@@ -271,7 +268,6 @@ const SimOverview = () => {
     }
   };
 
-  // console.log(modalData , "there is modal data")
   const columns = [
     {
       name: "S.No",
@@ -455,7 +451,6 @@ const SimOverview = () => {
       const subcategoryMatch =
         !subcategory || d.sub_category_id === subcategory;
       const assettypeMatch = !assetsType || d.asset_type === assetsType;
-      // console.log(assetsType, d.asset_type, "asset");
       return categoryMatch && subcategoryMatch && assettypeMatch;
     });
     setFilterData(result);

@@ -409,7 +409,6 @@ const AssetSingleuserOverview = ({
   };
 
   const handleUpdateNewAssetRow = (row) => {
-    console.log(row, "subcategory id");
     setIsEditMode(true);
     setNewAssetID(row._id);
     setAssetName(row.sub_category_id);

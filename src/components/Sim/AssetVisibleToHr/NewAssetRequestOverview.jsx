@@ -19,7 +19,6 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   const handleStatusUpdate = (row, status) => {
     setAssetStatus(status);
     setRow(row);
-    console.log(row, "row here");
   };
 
   const getAllAssetData = async () => {

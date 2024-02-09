@@ -9,12 +9,10 @@ const SingleAssetUserDetails = () => {
   const { id } = useParams();
   const [data, setData] = useState([]);
   const getData = () => {
-    axios
-      .get(`${baseUrl}`+`get_single_sim/${id}`)
-      .then((res) => {
-        const fetchedData = res.data.data;
-        setData(fetchedData);
-      });
+    axios.get(`${baseUrl}` + `get_single_sim/${id}`).then((res) => {
+      const fetchedData = res.data.data;
+      setData(fetchedData);
+    });
   };
   useEffect(() => {
     getData();
@@ -47,13 +45,13 @@ const SingleAssetUserDetails = () => {
                 <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
                   <div className="profileInfo_box">
                     <h3>Asset Type</h3>
-                    <h4>{data.s_type}</h4>
+                    <h4>{data.asset_type}</h4>
                   </div>
                 </div>
                 <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
                   <div className="profileInfo_box">
                     <h3>Asset ID</h3>
-                    <h4>{data.sim_no}</h4>
+                    <h4>{data.asset_id}</h4>
                   </div>
                 </div>
               </div>

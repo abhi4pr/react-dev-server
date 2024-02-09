@@ -10,7 +10,7 @@ import Select from "react-select";
 import { baseUrl } from "../../../utils/config";
 
 const AssetSubCategoryMaster = () => {
-  const { toastAlert, categoryDataContext } = useGlobalContext();
+  const { toastAlert, toastError, categoryDataContext } = useGlobalContext();
   const navigate = useNavigate();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -35,18 +35,18 @@ const AssetSubCategoryMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!inWarranty || inWarranty == "") {
+      return toastError("In Warranty is Mendatory");
+    }
     try {
-      const response = await axios.post(
-        baseUrl+"add_asset_sub_category",
-        {
-          sub_category_name: subCategoryName,
-          category_id: selectedCat,
-          inWarranty: inWarranty,
-          description: description,
-          created_by: loginUserId,
-          last_updated_by: loginUserId,
-        }
-      );
+      const response = await axios.post(baseUrl + "add_asset_sub_category", {
+        sub_category_name: subCategoryName,
+        category_id: selectedCat,
+        inWarranty: inWarranty,
+        description: description,
+        created_by: loginUserId,
+        last_updated_by: loginUserId,
+      });
 
       toastAlert("Data posted successfully!");
       setSubCategoryName("");
@@ -114,7 +114,7 @@ const AssetSubCategoryMaster = () => {
               onChange={(e) => {
                 setInWarranty(e.value);
               }}
-              required
+              required={true}
             />
           </div>
 

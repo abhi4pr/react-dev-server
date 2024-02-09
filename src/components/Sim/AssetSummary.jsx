@@ -23,7 +23,6 @@ const AssetSummary = () => {
   const [historyData, setHistoryData] = useState([]);
   const [historyModal, setHistoryModal] = useState(false);
   const handleTotalasset = async (row) => {
-    console.log("id : ", row);
     try {
       const response = await axios.get(
         `${baseUrl}` + `get_single_asset_history/${row}`

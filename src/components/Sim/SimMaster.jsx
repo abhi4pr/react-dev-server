@@ -302,10 +302,13 @@ const SimMaster = () => {
                   }))}
                   value={subCategory}
                   onChange={(e, newvalue) => {
-                    setSubCategory((pre) => ({
-                      label: newvalue.label,
-                      sub_category_id: newvalue.value,
-                    }));
+
+                    if (newvalue !== null) {
+                      setSubCategory((pre) => ({
+                        label: newvalue.label,
+                        sub_category_id: newvalue.value,
+                      }));
+                    }
                     if (subcategoryError) {
                       setSubCategoryError("");
                     }
@@ -469,10 +472,12 @@ const SimMaster = () => {
                   }))}
                   value={vendorName}
                   onChange={(e, newvalue) => {
-                    setVendorName((pre) => ({
-                      label: newvalue.label,
-                      vendor_id: newvalue.value,
-                    }));
+                    if (newvalue !== null) {
+                      setVendorName((pre) => ({
+                        label: newvalue.label,
+                        vendor_id: newvalue.value,
+                      }));
+                    }
                     if (vendorNameError) {
                       setVendorNameError("");
                     }
