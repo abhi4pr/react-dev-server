@@ -19,8 +19,8 @@ import { useGlobalContext } from "../../../Context/Context";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import { baseUrl } from "../../../utils/config";
 
 export default function PendingPaymentRequest() {
@@ -43,47 +43,63 @@ export default function PendingPaymentRequest() {
   const [paymentAmout, setPaymentAmount] = useState("");
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [viewImgSrc, setViewImgSrc] = useState("");
-  const [paymentDate, setPaymentDate] = useState(dayjs(new Date()).add(5, "hours").add(30, "minutes").$d.toGMTString());
+  const [paymentDate, setPaymentDate] = useState(
+    dayjs(new Date()).add(5, "hours").add(30, "minutes").$d.toGMTString()
+  );
   const [userName, setUserName] = useState("");
+  const [uniqueVendorCount, setUniqueVendorCount] = useState(0);
+  const [pendingRequestCount, setPendingRequestCount] = useState(0);
+  const [uniqueVenderDialog, setUniqueVenderDialog] = useState(false);
+  const [uniqueVendorData, setUniqueVendorData] = useState([]);
+  const [sameVendorDialog, setSameVendorDialog] = useState(false);
+  const [sameVendorData, setSameVendorData] = useState([]);
+  const [priorityFilter, setPriorityFilter] = useState("");
+  const [requestAmountFilter, setRequestAmountFilter] = useState("");
 
   const callApi = () => {
-    axios
-      .get(`${baseUrl}`+`addPhpVendorPaymentRequest`)
-      .then((res) => {
-        console.log(res);
-      });
+    axios.get(`${baseUrl}` + `addPhpVendorPaymentRequest`).then((res) => {
+      console.log(res);
+    });
 
-    axios
-      .get(baseUrl+"phpvendorpaymentrequest")
-      .then((res) => {
-        console.log(res.data.modifiedData, "node");
-        const x = res.data.modifiedData;
+    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+      console.log(res.data.modifiedData, "node");
+      const x = res.data.modifiedData;
 
-        axios
-          .get(
-            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
-          )
-          .then((res) => {
-            console.log(res.data.body, "php");
-            let y = res.data.body.filter((item) => {
-              return !x.some((item2) => item.request_id == item2.request_id);
-            });
-            setData(y);
-            setFilterData(y);
+      axios
+        .get(
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+        )
+        .then((res) => {
+          console.log(res.data.body, "php");
+          let y = res.data.body.filter((item) => {
+            return !x.some((item2) => item.request_id == item2.request_id);
           });
-      });
+          setData(y);
+          setFilterData(y);
+          setPendingRequestCount(y.length);
+          const uniqueVendors = new Set(y.map((item) => item.vendor_name));
+          setUniqueVendorCount(uniqueVendors.size);
+          const uvData = [];
+          uniqueVendors.forEach((vendorName) => {
+            const vendorRows = y.filter(
+              (item) => item.vendor_name === vendorName
+            );
+            uvData.push(vendorRows[0]);
+          });
+          setUniqueVendorData(uvData);
+        });
+    });
 
-    axios
-      .get(`${baseUrl}`+`get_single_user/${userID}`)
-      .then((res) => {
-        setUserName(res.data.user_name);
-      });
+    axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
+      setUserName(res.data.user_name);
+    });
   };
 
   useEffect(() => {
     callApi();
   }, []);
 
+  console.log(data, "Data >>>>>>");
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
     const day = String(date1.getDate()).padStart(2, "0");
@@ -108,6 +124,11 @@ export default function PendingPaymentRequest() {
     return diffDays;
   }
 
+  const totalPendingAmount = data.reduce(
+    (total, item) => total + item.request_amount,
+    0
+  );
+
   const handlePayVendorClick = () => {
     const formData = new FormData();
     formData.append("request_id", rowData.request_id);
@@ -131,10 +152,12 @@ export default function PendingPaymentRequest() {
     formData.append("name", rowData.name);
     formData.append("request_date", rowData.request_date);
     formData.append("payment_date", paymentDate);
-    console.log(new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " "));
+    console.log(
+      new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " ")
+    );
 
     axios
-      .post(baseUrl+"phpvendorpaymentrequest", formData, {
+      .post(baseUrl + "phpvendorpaymentrequest", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -143,7 +166,10 @@ export default function PendingPaymentRequest() {
         const phpFormData = new FormData();
         phpFormData.append("request_id", rowData.request_id);
         phpFormData.append("payment_amount", paymentAmout);
-        phpFormData.append("payment_date", new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " "))
+        phpFormData.append(
+          "payment_date",
+          new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " ")
+        );
         phpFormData.append("payment_by", userName);
         phpFormData.append("evidence", payMentProof);
         phpFormData.append("finance_remark", payRemark);
@@ -183,7 +209,6 @@ export default function PendingPaymentRequest() {
     //     callApi();
     //   });
   };
-
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
       const date = new Date(item.request_date);
@@ -196,7 +221,29 @@ export default function PendingPaymentRequest() {
       ) {
         return item;
       }
+      // Priority Filter:-
+      const priorityFilterData =
+        !priorityFilter || item.priority === priorityFilter;
+
+      // Request Amount Filter :-
+
+      // const requestAmountFilterPassed = (() => {
+      //   if (!requestAmountFilter || requestAmount === "") return true; // No filter selected or no amount provided, so return true
+      //   const numericRequestAmount = parseFloat(requestAmount);
+      //   switch (requestAmountFilter) {
+      //     case "greaterThan":
+      //       return parseFloat(item.request_amount) > numericRequestAmount;
+      //     case "lessThan":
+      //       return parseFloat(item.request_amount) < numericRequestAmount;
+      //     case "equalTo":
+      //       return parseFloat(item.request_amount) === numericRequestAmount;
+      //     default:
+      //       return true; // Default case, no filter applied
+      //   }
+      // })();
+      return priorityFilterData;
     });
+
     setFilterData(filterData);
   };
 
@@ -213,12 +260,163 @@ export default function PendingPaymentRequest() {
     setFromDate("");
     setToDate("");
     setVendorName("");
+    setPriorityFilter("");
+    setRequestAmountFilter("");
   };
 
   const handlePayClick = (row) => {
     setRowData(row);
     setPayDialog(true);
   };
+
+  const handleOpenUniqueVendorClick = () => {
+    setUniqueVenderDialog(true);
+  };
+
+  const handleCloseUniqueVendor = () => {
+    setUniqueVenderDialog(false);
+  };
+
+  const handleOpenSameVender = (vendorName) => {
+    setSameVendorDialog(true);
+
+    const sameNameVendors = data.filter(
+      (item) => item.vendor_name === vendorName
+    );
+    // Calculate the total amount for vendors with the same name
+    // const totalAmount = sameNameVendors.reduce(
+    //   (total, item) => total + item.request_amount,
+    //   0
+    // );
+
+    // Set the selected vendor data including the vendor name, data, and total amount
+    setSameVendorData(sameNameVendors);
+  };
+
+  const handleCloseSameVender = () => {
+    setSameVendorDialog(false);
+  };
+  // ==============================================================
+  //iterate for totalAmount of same name venders :-
+  const vendorAmounts = [];
+  uniqueVendorData.forEach((item) => {
+    const vendorName = item.vendor_name;
+    const requestAmount = item.request_amount;
+
+    if (vendorAmounts[vendorName]) {
+      vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
+    } else {
+      vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
+    }
+  });
+
+  // calculate the total amount for vendors with the same name
+  let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
+    (total, amount) => total + amount,
+    0
+  );
+  // =================================================================
+
+  // same Vender columns:-
+  const sameVenderColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = filterData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "vendor_name",
+      headerName: "Vendor Name",
+      // width: "auto",
+      width: 250,
+      renderCell: (params) => {
+        console.log(params, "same vender name >>>");
+        return params.row.vendorName;
+      },
+    },
+    {
+      field: "request_amount",
+      headerName: "Requested Amount",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.request_amount}</p>;
+      },
+    },
+    {
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            <button
+              className="btn btn-sm btn-success"
+              onClick={() => handlePayClick(params.row)}
+            >
+              Pay
+            </button>
+            <button
+              className="btn btn-sm btn-danger mx-2"
+              onClick={() => handleDiscardClick(params.row)}
+            >
+              discard
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
+
+  // unique vender column :-
+  const uniqueVendorColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = filterData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "vendor_name",
+      headerName: "Vendor Name",
+      // width: "auto",
+      width: 250,
+      renderCell: (params) => {
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => handleOpenSameVender(params.row.vendor_name)}
+          >
+            {params.row.vendor_name}
+          </div>
+        );
+      },
+    },
+    {
+      field: "total_amount",
+      headerName: "Total Amount",
+      width: 150,
+      renderCell: (params) => {
+        console.log(params, "params>>>>");
+        return <p> &#8377; {totalSameVendorAmount}</p>;
+      },
+    },
+    {
+      field: "outstandings",
+      headerName: "OutStanding ",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+  ];
   const columns = [
     {
       field: "S.NO",
@@ -250,7 +448,7 @@ export default function PendingPaymentRequest() {
               setViewImgSrc(imgUrl);
             }}
             src={pdf}
-            style={{ width: "100px", height: "100px" }}
+            style={{ width: "40px", height: "40px" }}
             title="PDF Preview"
           />
         ) : (
@@ -289,7 +487,14 @@ export default function PendingPaymentRequest() {
       // width: "auto",
       width: 250,
       renderCell: (params) => {
-        return params.row.vendor_name;
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => handleOpenSameVender(params.row.vendor_name)}
+          >
+            {params.row.vendor_name}
+          </div>
+        );
       },
     },
     {
@@ -362,7 +567,121 @@ export default function PendingPaymentRequest() {
       <FormContainer
         mainTitle="Pending Payment Request"
         link="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+        uniqueVendorCount={uniqueVendorCount}
+        totalPendingAmount={totalPendingAmount}
+        pendingRequestCount={pendingRequestCount}
+        handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
       />
+      {/* Same Vendor Dialog Box */}
+
+      <Dialog
+        open={sameVendorDialog}
+        onClose={handleCloseSameVender}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Vendors</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameVender}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameVendorData}
+          columns={sameVenderColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameVendorData.indexOf(row)}
+        />
+      </Dialog>
+
+      {/* Unique Vendor Dialog Box */}
+      <Dialog
+        open={uniqueVenderDialog}
+        onClose={handleCloseUniqueVendor}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Vendors</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniqueVendor}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueVendorData}
+          columns={uniqueVendorColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueVendorData.indexOf(row)}
+        />
+      </Dialog>
       <div className="row">
         <div className="col-md-3">
           <div className="form-group">
@@ -402,6 +721,37 @@ export default function PendingPaymentRequest() {
             />
           </div>
         </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Priority</label>
+            <select
+              value={priorityFilter}
+              className="form-control"
+              onChange={(e) => setPriorityFilter(e.target.value)}
+            >
+              <option value="">Select Priority</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Request Amount Filter</label>
+            <select
+              value={requestAmountFilter}
+              className="form-control"
+              onChange={(e) => setRequestAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        {/* </div> */}
         <div className="col-md-1 mt-4 me-2">
           <Button variant="contained" onClick={handleDateFilter}>
             <i className="fas fa-search"></i> Search
@@ -449,12 +799,14 @@ export default function PendingPaymentRequest() {
           aria-label="close"
           onClick={handleClosePayDialog}
           sx={{
-            position: 'absolute',
+            position: "absolute",
             right: 8,
             top: 8,
             color: (theme) => theme.palette.grey[500],
           }}
-        ><CloseIcon /></IconButton>
+        >
+          <CloseIcon />
+        </IconButton>
         <DialogContent>
           <div className="row">
             <TextField

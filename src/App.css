@@ -103,7 +103,19 @@
   font-weight: 500;
   color: var(--gray-900);
 }
-
+.additional-titles {
+  display: flex;
+  gap: 20px;
+}
+.additional-titles h2 {
+  font-size: 15px;
+  line-height: 26px;
+  font-weight: 500;
+  color: var(--gray-900);
+  display: flex;
+  cursor: pointer;
+  gap: 10px;
+}
 .form_heading_action button {
   box-shadow: none;
   outline: none;
