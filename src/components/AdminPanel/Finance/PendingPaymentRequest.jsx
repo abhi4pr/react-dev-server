@@ -57,12 +57,9 @@ export default function PendingPaymentRequest() {
   const [requestAmountFilter, setRequestAmountFilter] = useState("");
 
   const callApi = () => {
-    axios.get(`${baseUrl}` + `addPhpVendorPaymentRequest`).then((res) => {
-      console.log(res);
-    });
+    axios.get(`${baseUrl}` + `addPhpVendorPaymentRequest`).then((res) => {});
 
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
-      console.log(res.data.modifiedData, "node");
       const x = res.data.modifiedData;
 
       axios
@@ -211,6 +208,7 @@ export default function PendingPaymentRequest() {
   };
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
+      console.log(item, "item>>>>>>>>>>>>>>>>");
       const date = new Date(item.request_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
