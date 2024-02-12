@@ -23,6 +23,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { baseUrl } from "../../../utils/config";
 import { FaCommentsDollar } from "react-icons/fa";
+import { FaMoneyCheckAlt } from "react-icons/fa";
 
 export default function PendingPaymentRequest() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -595,6 +596,7 @@ export default function PendingPaymentRequest() {
         totalPendingAmount={totalPendingAmount}
         pendingRequestCount={pendingRequestCount}
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
+        includeAdditionalTitles={true}
       />
       {/* Same Vendor Dialog Box */}
 

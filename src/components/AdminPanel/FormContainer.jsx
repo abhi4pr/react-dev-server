@@ -20,6 +20,7 @@ const FormContainer = ({
   accordionButtons = [],
   activeAccordionIndex,
   onAccordionButtonClick,
+  includeAdditionalTitles = false,
   mainTitleRequired = true,
   loading = false,
 }) => {
@@ -30,14 +31,16 @@ const FormContainer = ({
           <div className="form_heading_title ">
             <h2>{mainTitle}</h2>
           </div>
-          <div className="additional-titles ">
-            <h2 onClick={handleOpenUniqueVendorClick}>
-              Unique Vender : <a href="#">{uniqueVendorCount}</a>
-            </h2>
-            <h2>Pending Amount : {totalPendingAmount}</h2>
-            <h2>Pending Request : {pendingRequestCount}</h2>
-            <h2>Reminder : 0</h2>
-          </div>
+          {includeAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueVendorClick}>
+                Unique Vender : <a href="#">{uniqueVendorCount}</a>
+              </h2>
+              <h2>Pending Amount : {totalPendingAmount}</h2>
+              <h2>Pending Request : {pendingRequestCount}</h2>
+              <h2>Reminder : 0</h2>
+            </div>
+          )}
           {link && buttonAccess && (
             <div className="form_heading_action d-flex ">
               <Link to={link}>
