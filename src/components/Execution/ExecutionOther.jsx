@@ -2,6 +2,7 @@ import React from "react";
 import Stack from "@mui/material/Stack";
 import {
   Autocomplete,
+  Box,
   Button,
   Checkbox,
   OutlinedInput,
@@ -34,10 +35,12 @@ import {baseUrl} from '../../utils/config'
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
+const viewInOptions = ["Millions", "Thousands", "Default"];
 
 function ExecutionOther() {
   const { toastAlert } = useGlobalContext();
   const [rows, setRows] = useState([]);
+  const [viewType, setViewType] = useState("Default");
   const [pagemode, setPagemode] = useState(1);
   const [alldata, setAlldata] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -199,7 +202,21 @@ function ExecutionOther() {
     converttoclipboard(copydata);
   };
 
-  const showlimiteddata = () => {};
+  const formatNumberIndian = (num) => {
+    if (!num) return "";
+    var x = num.toString();
+    var afterPoint = '';
+    if(x.indexOf('.') > 0)
+       afterPoint = x.substring(x.indexOf('.'),x.length);
+    x = Math.floor(x);
+    x = x.toString();
+    var lastThree = x.substring(x.length - 3);
+    var otherNumbers = x.substring(0, x.length - 3);
+    if (otherNumbers != '')
+        lastThree = ',' + lastThree;
+    var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
+    return res;
+  };
   const copyAllRows = () => {
     let copydata = [];
     let Followerscount = 0;
@@ -264,6 +281,7 @@ function ExecutionOther() {
     console.log(row.p_id);
     navigate(`/exe-history/${row.p_id}`, { state: row });
   };
+
 
   const columns = [
     {
@@ -354,9 +372,19 @@ function ExecutionOther() {
         },
     pagemode == 1 || pagemode == 4
       ? {
-          field: "follower_count",
-          headerName: "Followers",
-          // width: 150,
+        field: "follower_count",
+        headerName: "Followers",
+        renderCell: (params) => {
+          const followerCount = params.row.follower_count;
+          if (viewType === "Millions") {
+            return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{formatNumberIndian(followerCount)}</span>;
+          }
+        },
+        valueFormatter: (params) => formatNumberIndian(params.value),
         }
       : pagemode == 2
       ? ({
@@ -608,7 +636,7 @@ function ExecutionOther() {
           </Stack>
         </Paper>
         {/* Third Paper */}
-
+<Box sx ={{display:"flex"}}>
         <TextField
           label="Search by Page Name"
           onChange={(e) => {
@@ -620,6 +648,26 @@ function ExecutionOther() {
             setRows(temp);
           }}
         />
+         <Autocomplete
+            disablePortal
+            value={viewType}
+            // defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={viewInOptions}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setViewType({
+                  newValue: "Default",
+                });
+              }
+
+              setViewType(newValue);
+            }}
+            sx={{ width: 250,ml:2 }}
+            renderInput={(params) => <TextField {...params} label="View In" />}
+            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+          />
+          </Box>
         <Paper
           justifyContent="space-between"
           sx={{ flexWrap: "wrap", flexDirection: "row", p: 3, mt: 3, mb: 4 }}

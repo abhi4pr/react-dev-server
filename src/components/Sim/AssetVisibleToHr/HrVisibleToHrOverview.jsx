@@ -137,7 +137,9 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             <span className="badge badge-danger">Requested</span>
           ) : row.status === "ApprovedByManager" ? (
             <span className="badge badge-warning">Approve By Manager</span>
-          ) : null}
+          ) : (
+            "N/A"
+          )}
         </>
       ),
       width: "170px",
@@ -390,7 +392,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         `${baseUrl}` + `get_single_vendor/${id}`
       );
       setVendorData([response.data.data]);
-      console.log([response.data.data], "data jere");
       setIsModalOpen(true);
     } catch (error) {
       console.log(error);

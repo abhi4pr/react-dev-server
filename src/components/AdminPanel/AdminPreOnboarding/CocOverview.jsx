@@ -22,7 +22,7 @@ const CocOverview = () => {
 
   async function getData() {
     await axios
-      .get(baseUrl+"get_all_cocs")
+      .get(baseUrl+"newcoc")
       .then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);
@@ -35,7 +35,7 @@ const CocOverview = () => {
 
   useEffect(() => {
     const result = data.filter((d) => {
-      return d.heading.toLowerCase().match(search.toLowerCase());
+      return d.coc_content.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
@@ -48,18 +48,21 @@ const CocOverview = () => {
       sortable: true,
     },
     {
-      name: "Display sequence",
-      selector: (row) => row.display_sequence,
+      name: "Coc content",
+      selector: (row) => row.coc_content,
+      width: "50%",
       sortable: true,
     },
     {
-      name: "Heading",
-      selector: (row) => row.heading,
+      name: "Created by",
+      selector: (row) => row.created_by,
+      width: "10%",
       sortable: true,
     },
     {
-      name: "Sub heading",
-      selector: (row) => row.sub_heading,
+      name: "Creation date",
+      selector: (row) => row.creation_date,
+      width: "10%",
       sortable: true,
     },
     {
@@ -86,47 +89,48 @@ const CocOverview = () => {
             </button>
           </Link>
 
-          <DeleteButton endpoint="delete_coc" id={row._id} getData={getData} />
+          <DeleteButton endpoint="newcoc" id={row._id} getData={getData} />
         </>
       ),
       allowOverflow: true,
-      width: "22%",
+      width: "20%",
     },
   ];
 
   return (
     <>
-      <FormContainer
-        mainTitle="COC"
-        title="Coc Creation"
-        // handleSubmit={handleSubmit}
-      >
-        <div className="page_height">
-          <div className="card mb-4">
-            <div className="data_tbl table-responsive">
-              <DataTable
-                title="Pre Onboard User"
-                columns={columns}
-                data={filterdata}
-                fixedHeader
-                // pagination
-                fixedHeaderScrollHeight="64vh"
-                highlightOnHover
-                subHeader
-                subHeaderComponent={
-                  <input
-                    type="text"
-                    placeholder="Search here"
-                    className="w-50 form-control "
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                }
-              />
-            </div>
-          </div>
-        </div>
-      </FormContainer>
+    <FormContainer
+      mainTitle="Coc Overview"
+      link="/admin/pre-onboard-coc-master"
+    />
+
+    <Link className="btn btn-primary btn-sm " to="/admin/pre-onboard-coc-master">
+      New Coc
+    </Link>
+
+    <div className="card">
+      <div className="data_tbl table-responsive">
+        <DataTable
+          title="Coc Overview"
+          columns={columns}
+          data={filterdata}
+          fixedHeader
+          // pagination
+          fixedHeaderScrollHeight="62vh"
+          highlightOnHover
+          subHeader
+          subHeaderComponent={
+            <input
+              type="text"
+              placeholder="Search here"
+              className="w-50 form-control"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          }
+        />
+      </div>
+    </div>
     </>
   );
 };

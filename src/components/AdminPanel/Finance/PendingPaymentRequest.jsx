@@ -1090,6 +1090,8 @@ export default function PendingPaymentRequest() {
       {openImageDialog && (
         <ImageView
           viewImgSrc={viewImgSrc}
+          fullWidth={true}
+          maxWidth={"md"}
           setViewImgDialog={setOpenImageDialog}
         />
       )}

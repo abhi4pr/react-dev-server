@@ -77,6 +77,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
   const [unregisteredPages, setUnregisteredPages] = useState(null);
 
   const [externalPPP, setExternalPPP] = useState(null);
+  const [externalSPP, setExternalSPP] = useState(null);
   const [searchField, setSearchField] = useState(false);
 
   const [excelUpload, setExcelUpload] = useState(false);
@@ -101,9 +102,53 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           if (selectedRows.includes(page.p_id)) {
             return page;
           }
-        });
+        }).map(item => {
+          if (!item.postPerPage && !item.storyPerPage) {
+            return { ...item, postPerPage: externalPPP || 1, storyPerPage: externalSPP || 1 }
+          } else return item
+        })
 
+
+        const lol = planPages.map(page => {
+
+          let foundMatch = false; // Initialize a flag to track if a match is found
+          for (const item of data) {
+            if (item?.p_id === page?.p_id) {
+              foundMatch = true; // Set the flag to true if a match is found
+              return {
+                ...page,
+                postPerPage: item?.postPerPage,
+                storyPerPage: item?.storyPerPage
+              };
+            }
+          }
+          // If no match is found for the current page, return it unchanged
+          if (!foundMatch) {
+            return page;
+          }
+        });
+        const lol2 = filteredPages.map(page => {
+
+          let foundMatch = false; // Initialize a flag to track if a match is found
+          for (const item of data) {
+            if (item?.p_id === page?.p_id) {
+              foundMatch = true; // Set the flag to true if a match is found
+              return {
+                ...page,
+                postPerPage: item?.postPerPage,
+                storyPerPage: item?.storyPerPage
+              };
+            }
+          }
+          // If no match is found for the current page, return it unchanged
+          if (!foundMatch) {
+            return page;
+          }
+        });
+        x = selectedRows
         setPayload(data);
+        setPlanPages(lol)
+        setFilteredPages(lol2)
       }
     }
   }, [selectedRows]);
@@ -532,6 +577,15 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
   const handlePost = (e, field) => {
     let updatedValue = e.target.value;
+    if (payload.length == 0) {
+      if (field == "post") {
+        setExternalPPP(e.target.value)
+
+      } else {
+        setExternalSPP(e.target.value)
+
+      }
+    }
 
     const postperpage = payload.map((page) => {
       if (field == "post") {

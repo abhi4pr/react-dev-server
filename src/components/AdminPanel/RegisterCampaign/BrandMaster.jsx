@@ -23,11 +23,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import { toolbarStyles } from "./CampaignCommitment";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
 
 export default function BrandMaster() {
   const [whatsappOptions, setWhatsappOptions] = useState([]);
-const [igusernameOptions, setIgusernameOptions] = useState([]);
+  const [igusernameOptions, setIgusernameOptions] = useState([]);
   const { toastAlert, toastError } = useGlobalContext();
   const [reload, setReload] = useState(false);
   const [SubCategoryString, setSubCategoryString] = useState();
@@ -35,6 +35,7 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
   const [subcategoryOptions, setSubCategoryOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [rows, setRows] = useState([]);
+  const [dataPlatforms,setDataPlatforms]=useState([])
   // const [rowModesModel, setRowModesModel] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPutOpen, setIsPutOpen] = useState(false);
@@ -43,6 +44,8 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
   const [editData, setEditData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errBrandName, setErrBrandName] = useState();
+  const [fields, setFields] = useState([]);
+  const [platformPayload,setPlatformPayload]=useState([])
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [itemToDeleteId, setItemToDeleteId] = useState(null);
@@ -62,14 +65,16 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
     { major_cat_id: 5, major_cat_name: "Entertainment" },
   ];
 
-  const brandURL = baseUrl+"";
+  const brandURL = baseUrl + "";
   const handleClose = () => {
     setIsModalOpen(false);
   };
 
+  console.log(dataPlatforms)
   function EditToolbar() {
     const handleClick = () => {
       setIsModalOpen(true);
+      getDataPlatform()
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
@@ -138,7 +143,7 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
   };
 
   const categoryData = () => {
-    axios.get(baseUrl+"projectxCategory").then((res) => {
+    axios.get(baseUrl + "projectxCategory").then((res) => {
       console.log(res.data.data, "-------> cat data");
       setCategoryOptions(res.data.data);
     });
@@ -151,7 +156,7 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
   const subCategoryDataOnEdit = () => {
     console.log("calling the subcategory data on Edit");
     axios
-      .get(baseUrl+"projectxSubCategory")
+      .get(baseUrl + "projectxSubCategory")
       .then((res) => {
         console.log(res.data.data, "-------> subcat data");
         const filteredData = res.data.data.filter((item) => {
@@ -210,7 +215,7 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
 
   useEffect(() => {
     axios
-      .get(baseUrl+"projectxSubCategory")
+      .get(baseUrl + "projectxSubCategory")
       .then((res) => {
         console.log(res.data.data, "-------> subcat data");
         const filteredData = res.data.data.filter((item) => {
@@ -230,7 +235,7 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
       }));
       setWhatsappOptions(options);
     });
-  
+
     axios.get(`${baseUrl}/get_all_platforms`).then((response) => {
       const options = response.data.map((item) => ({
         label: item.label,
@@ -239,7 +244,7 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
       setIgusernameOptions(options);
     });
   }, []);
-  
+
 
   const handleEditClick = (id, row) => () => {
     setLoading(true);
@@ -297,12 +302,12 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
       headerName: "Brand",
       width: 180,
       renderCell: (params) => {
-        const brand_name = params.row.brand_name; 
+        const brand_name = params.row.brand_name;
         const BrandName = brand_name.charAt(0).toUpperCase() + brand_name.slice(1);
         return BrandName;
       }
     }
-,    
+    ,
     {
       field: "projectx_category_name",
       headerName: "Category",
@@ -366,12 +371,27 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
     );
     setFilteredRows(filtered);
   };
+  
+  console.log(fields)
 
   useEffect(() => {
     filterRows();
   }, [searchInput, rows]);
 
-  
+  const getDataPlatform = async () => {
+    try {
+      const response = await axios.get(`${baseUrl}get_all_data_platforms`)
+      setDataPlatforms(response?.data)
+
+    } catch (error) {
+
+    }
+  }
+
+  const handleAddField = () => {
+   const newField={platform:"",userid:""}
+   setFields([...fields,newField])
+  };
 
   return (
     <>
@@ -485,59 +505,82 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
                   }}
                 />
               </>
-              <Autocomplete
-  multiple
-  id="whatsapp-select"
-  options={whatsappOptions}
-  getOptionLabel={(option) => option.label}
-  renderInput={(params) => (
-    <TextField {...params} label="Whatsapp" placeholder="Choose" />
-  )}
-  onChange={(event, newValue) => {
-    setPostData({
-      ...postData,
-      whatsapp: newValue.map((item) => item.value).join(', '),
-    });
-  }}
-/>
+              <div>
 
-{postData.whatsapp?.includes('writing') && (
-  <TextField
-    label="Whatsapp"
-    name="whatsapp"
-    type="text"
-    value={postData.whatsapp}
-    onChange={handleChange}
-    sx={{ width: "100%" }}
-  />
-)}
+              <>
+            {fields.length > 0 && (
+              <FormControl sx={{ mr: 1, ml: 1 }}>
+                {fields.map((field, index) => (
+                  <div key={index} className="mt-2 mb-2 d-flex">
+                    <FormControl sx={{ width: "900px", marginRight: "10px" }}>
+                      <Autocomplete
+                        required
+                        disablePortal
+                        value={
+                          campaignList.filter(
+                            (e) => e.cmtName == field.selectValue
+                          )[0]?.cmtName
+                        }
+                        onChange={(event, newValue) => {
+                          handleSelectChange(
+                            {
+                              target: {
+                                value: campaignList.filter(
+                                  (e) => e.cmtName == newValue
+                                )[0].cmtId,
+                              },
+                            },
+                            index
+                          ),
+                            console.log(
+                              campaignList.filter(
+                                (e) => e.cmtName == newValue
+                              )[0].cmtId,
+                              "field.selectValue"
+                            );
+                        }}
+                        options={campaignList
+                          .filter(
+                            (e) =>
+                              !fields
+                                .map((e) => e.selectValue)
+                                .includes(e.cmtId)
+                          )
+                          .map((option) => option.cmtName)}
+                        renderInput={(params) => (
+                          <TextField {...params} label="Commitment *" />
+                        )}
+                      />
+                    </FormControl>
 
-<Autocomplete
-  multiple
-  id="igusername-select"
-  options={igusernameOptions}
-  getOptionLabel={(option) => option.label}
-  renderInput={(params) => (
-    <TextField {...params} label="IG Username" placeholder="Choose" />
-  )}
-  onChange={(event, newValue) => {
-    setPostData({
-      ...postData,
-      igusername: newValue.map((item) => item.value).join(', '),
-    });
-  }}
-/>
-
-{postData.igusername?.includes('writing') && (
-  <TextField
-    label="IG Username"
-    name="igusername"
-    type="text"
-    value={postData.igusername}
-    onChange={handleChange}
-    sx={{ width: "100%" }}
-  />
-)}
+                    <TextField
+                      required
+                      label="Value"
+                      // value={field.textValue}
+                      type="number"
+                      fullWidth
+                      // onChange={(event) => handleTextChange(event, index)}
+                    />
+                    {/* <Button onClick={(e) => handleRemoveField(e, index)}>
+                      <i className="fas fa-close"></i>
+                    </Button> */}
+                  </div>
+                ))}
+              </FormControl>
+            )}
+          </>
+           
+              <Button
+                variant="outlined"
+                sx={{ mt: 2 }}
+                color="secondary"
+                onClick={handleAddField}
+              >
+                Add Platform
+              </Button>
+            
+          
+          </div>
 
             </div>
           </Box>
@@ -640,30 +683,8 @@ const [igusernameOptions, setIgusernameOptions] = useState([]);
                   }}
                 />
 
-                <TextField
-                  label="Iguser Name"
-                  name="igusername"
-                  type="text"
-                  value={editData.igusername}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      igusername: e.target.value,
-                    }))
-                  }
-                />
-                <TextField
-                  label="Whatsapp"
-                  name="whatsapp"
-                  type="text"
-                  value={editData.whatsapp}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      whatsapp: e.target.value,
-                    }))
-                  }
-                />
+                
+                
               </div>
             )}
           </Box>

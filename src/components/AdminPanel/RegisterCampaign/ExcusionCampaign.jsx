@@ -40,7 +40,7 @@ const ExcusionCampaign = () => {
     console.log("hello")
     let x = []
     for (const pages of unfilteredAssignment) {
-      if (!x.some(item => pages.ass_page.campaignName == item.campaignName)) {
+      if (!x.some(item => pages.ass_page?.campaignName == item?.campaignName)) {
 
         x.push({ campaignName: pages.ass_page?.campaignName, campaignId: pages?.campaignId })
       }

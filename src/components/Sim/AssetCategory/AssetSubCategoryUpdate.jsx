@@ -30,10 +30,9 @@ const AssetSubCategoryUpdate = () => {
 
   const getData = () => {
     axios
-      .get(`${baseUrl}`+`get_single_asset_cat/${id}`)
+      .get(`${baseUrl}` + `get_single_asset_cat/${id}`)
       .then((res) => {
         const response = res.data.data;
-        console.log(response[0], "lalit is here");
         setSelectedCat(response[0].category_id);
         setSubCategoryName(response[0].sub_category_name);
         setInWarranty(response[0].inWarranty);
@@ -52,18 +51,15 @@ const AssetSubCategoryUpdate = () => {
       const decodedToken = token ? jwtDecode(token) : null;
       const loginUserId = decodedToken ? decodedToken.id : null;
 
-      const response = await axios.put(
-        baseUrl+"update_asset_sub_category",
-        {
-          category_id: selectedCat,
-          sub_category_id: id,
-          inWarranty: inWarranty,
-          sub_category_name: subCategoryName,
-          description: description,
-          created_by: loginUserId,
-          last_updated_by: loginUserId,
-        }
-      );
+      const response = await axios.put(baseUrl + "update_asset_sub_category", {
+        category_id: selectedCat,
+        sub_category_id: id,
+        inWarranty: inWarranty,
+        sub_category_name: subCategoryName,
+        description: description,
+        created_by: loginUserId,
+        last_updated_by: loginUserId,
+      });
 
       if (response.status === 200) {
         toastAlert("Data Updated Successfully");

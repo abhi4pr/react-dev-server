@@ -1,23 +1,31 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
-import FormContainer from "../AdminPanel/FormContainer";
-import FieldContainer from "../AdminPanel/FieldContainer";
-import { useGlobalContext } from "../../Context/Context";
-import UserNav from "../Pantry/UserPanel/UserNav";
 import pdf from "./pdf-file.png";
 import sheets from "./sheets.png";
 import video from "./montage.png";
 import Select from "react-select";
-import ImgDialogBox from "./ImgDialogBox";
 import { Add, CloseTwoTone } from "@mui/icons-material";
-import { baseUrl } from "../../utils/config";
-import { set } from "date-fns";
-
-const DataBrandMaster = () => {
+import { baseUrl } from "../../../../utils/config";
+import FieldContainer from "../../FieldContainer";
+import FormContainer from "../../FormContainer";
+import { useGlobalContext } from "../../../../Context/Context";
+import jwtDecode from "jwt-decode";
+import UserNav from "../../../Pantry/UserPanel/UserNav";
+import ImgDialogBox from "../../../Datas/ImgDialogBox";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Box,
+  TextField,
+  Button,
+  Autocomplete,
+} from "@mui/material";
+const BrandCaseStudy = () => {
   const { toastAlert, toastError } = useGlobalContext();
-  const [subCatData, setSubCategoryData] = useState([]);
   const [fileDetails, setFileDetails] = useState([]);
   const [brand, setBrand] = useState("");
   const [logo, setLogo] = useState([]);
@@ -31,13 +39,12 @@ const DataBrandMaster = () => {
   const [category, setCategory] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
-  const [platform, setPlateform] = useState("");
+  const [platform, setPlateform] = useState([]);
   const [platformData, setPlateformData] = useState([]);
-  const [contentType, setContentType] = useState("");
+  const [contentType, setContentType] = useState("65a663ccef8a81593f418836");
   const [contentTypeData, setContentTypeData] = useState([]);
   const [dataBrand, setDataBrand] = useState("");
   const [dataBrandData, setDataBrandData] = useState([]);
-  // const [dataSubCategory, setDataSubCategory] = useState([]);
   const [dataSubCategory, setDataSubCategory] = useState([]);
   const [dataSubCategoryData, setDataSubCategoryData] = useState([]);
   const [designedBy, setDesignedBy] = useState("");
@@ -69,6 +76,13 @@ const DataBrandMaster = () => {
   const [mmcDetails, setMMCDetails] = useState([]);
   const [sarcasmImages, setSarcasmImages] = useState([]);
   const [sarcasmDetails, setSarcasmDetails] = useState([]);
+  const [cat, setCat] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenSubCat, setIsModalOpenSubCat] = useState(false);
+  const [postData, setPostData] = useState({
+    sub_category_name: "",
+    category_id: "",
+  });
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -79,6 +93,85 @@ const DataBrandMaster = () => {
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+  };
+
+  useEffect(() => {
+    // let id = localStorage.getItem('userId');
+    // if (!id) {
+    // Generate a new ID using any preferred method
+    const id =
+      Math.random().toString(36).substr(2, 9) + Math.random().toString();
+    // localStorage.setItem('userId', id);
+    // }
+    setBrand(id);
+  }, []);
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    axios
+      .post(baseUrl + "projectxCategory", {
+        category_name: cat,
+      })
+      .then((response) => {
+        if (response.data.success === false) {
+          toastError(response.data.message);
+        } else {
+          toastAlert("Add successfully");
+        }
+        setIsModalOpen(false);
+        getCat();
+        setCat("");
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+        toastError("Add Properly");
+      });
+    setIsModalOpen(false);
+  };
+
+  const handleSaveSubCat = (e) => {
+    e.preventDefault();
+    axios
+      .post(baseUrl + "projectxSubCategory", postData)
+      .then((response) => {
+        if (response.data.success === false) {
+          toastError(response.data.message);
+        } else {
+          toastAlert("Add successfully");
+        }
+        postData.sub_category_name = "";
+        console.log("Data saved:", response.data);
+        setIsModalOpenSubCat(false);
+        getSubCat();
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+        toastError("Add Properly");
+      });
+    setIsModalOpen(false);
+  };
+
+  const getCat = () => {
+    axios
+      .get(baseUrl + "projectxCategory")
+      .then((res) => {
+        setBrandCategory(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getSubCat = () => {
+    axios.get(baseUrl + "projectxSubCategory").then((res) => {
+      setBrandSubCatData(res.data.data);
+    });
+  };
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setPostData({
+      ...postData,
+      [name]: value,
+    });
   };
 
   useEffect(() => {
@@ -94,20 +187,13 @@ const DataBrandMaster = () => {
     axios.get(baseUrl + "get_all_data_content_types").then((res) => {
       setContentTypeData(res.data);
     });
-    axios.get(baseUrl + "get_all_data_brands").then((res) => {
-      setDataBrandData(res.data);
+    axios.get(baseUrl + "get_brands").then((res) => {
+      console.log(res.data.data);
+      setDataBrandData(res?.data?.data);
     });
-    axios
-      .get(baseUrl + "projectxCategory")
-      .then((res) => {
-        setBrandCategory(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    axios.get(baseUrl + "projectxSubCategory").then((res) => {
-      setBrandSubCatData(res.data.data);
-    });
+
+    getSubCat();
+    getCat();
   }, []);
 
   useEffect(() => {
@@ -233,6 +319,8 @@ const DataBrandMaster = () => {
         fileType === "jpeg" ||
         fileType === "png" ||
         fileType === "gif"
+        // fileType === "pdf" ||
+        // fileType === "mp4"
       ) {
         // It's an image
         const img = new Image();
@@ -263,6 +351,7 @@ const DataBrandMaster = () => {
 
     Promise.all(details).then((detailsArray) => {
       setMMCDetails(detailsArray);
+      console.log(detailsArray);
     });
   };
 
@@ -340,7 +429,6 @@ const DataBrandMaster = () => {
               name,
               file,
               fileType,
-
               size: `${naturalHeight}x${naturalWidth}`,
               sizeInMB: `${sizeInMB}`,
             });
@@ -363,12 +451,15 @@ const DataBrandMaster = () => {
     });
   };
 
+  const handleClick = () => {
+    setIsModalOpen(true);
+  };
+  const handleClickSubCat = () => {
+    setIsModalOpenSubCat(true);
+  };
+
   const handleSubmit = async (e) => {
-    if (category == "") {
-      toastError("Category is required");
-    } else if (dataSubCategory == "") {
-      toastError("Sub category is required");
-    } else if (platform == "") {
+    if (platform == "") {
       toastError("Platform is required");
     } else if (contentType == "") {
       toastError("Content type is required");
@@ -419,7 +510,6 @@ const DataBrandMaster = () => {
     e.preventDefault();
     try {
       if (
-        category &&
         platform &&
         contentType &&
         dataBrand &&
@@ -433,14 +523,12 @@ const DataBrandMaster = () => {
         const formData = new FormData();
         formData.append("data_name", brand);
         formData.append("cat_id", category);
-        // formData.append("sub_cat_id", dataSubCategory.map(e=>e));
         formData.append("sub_cat_id", dataSubCategory);
-        formData.append("platform_id", platform);
+        formData.append("platform_ids", [platform]);
         formData.append("brand_id", dataBrand);
         formData.append("content_type_id", contentType);
         formData.append("data_upload", details[i].file);
         formData.append("data_type", details[i].fileType);
-        // formData.append("size", details[i].size);
         formData.append("size_in_mb", details[i].sizeInMB);
         formData.append("remark", remark);
         formData.append("created_by", userID);
@@ -458,21 +546,7 @@ const DataBrandMaster = () => {
         formData.append("number_of_story_views", NumOfStoryViews);
         formData.append("operation_remark", OperationRemark);
 
-        // date_of_completion: "$date_of_completion",
-        //             date_of_report: "$date_of_report",
-        //             brand_category_id: "$brand_category_id",
-        //             brand_sub_category_id: "$brand_sub_category_id",
-        //             campaign_purpose: "$campaign_purpose",
-        //             number_of_post: "$number_of_post",
-        //             number_of_reach: "$number_of_reach",
-        //             number_of_impression: "$number_of_impression",
-        //             number_of_engagement: "$number_of_engagement",
-        //             number_of_views: "$number_of_views",
-        //             number_of_story_views: "$number_of_story_views",
-        //             operation_remark: "$operation_remark",
-
-        await axios.post(baseUrl + "add_data", formData, {
-          // await axios.post( "http://192.168.1.9:3000/api/add_data", formData, {
+        await axios.post(baseUrl + "dataoperation", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -484,7 +558,7 @@ const DataBrandMaster = () => {
         formData.append("data_name", brand);
         formData.append("cat_id", category);
         formData.append("sub_cat_id", dataSubCategory);
-        formData.append("platform_id", platform);
+        formData.append("platform_ids", platform);
         formData.append("brand_id", dataBrand);
         formData.append("content_type_id", contentType);
         formData.append("mmc", mmcDetails[i].file);
@@ -506,7 +580,7 @@ const DataBrandMaster = () => {
         formData.append("number_of_story_views", NumOfStoryViews);
         formData.append("operation_remark", OperationRemark);
 
-        await axios.post(baseUrl + "add_data", formData, {
+        await axios.post(baseUrl + "dataoperation", formData, {
           // await axios.post("http://192.168.1.9:3000/api/add_data", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -519,7 +593,7 @@ const DataBrandMaster = () => {
         formData.append("data_name", brand);
         formData.append("cat_id", category);
         formData.append("sub_cat_id", dataSubCategory);
-        formData.append("platform_id", platform);
+        formData.append("platform_ids", platform);
         formData.append("brand_id", dataBrand);
         formData.append("content_type_id", contentType);
         formData.append("sarcasm", sarcasmDetails[i].file);
@@ -541,7 +615,7 @@ const DataBrandMaster = () => {
         formData.append("number_of_story_views", NumOfStoryViews);
         formData.append("operation_remark", OperationRemark);
 
-        await axios.post(baseUrl + "add_data", formData, {
+        await axios.post(baseUrl + "dataoperation", formData, {
           // await axios.post("http://192.168.1.9:3000/api/add_data", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -554,7 +628,7 @@ const DataBrandMaster = () => {
         formData.append("data_name", brand);
         formData.append("cat_id", category);
         formData.append("sub_cat_id", dataSubCategory);
-        formData.append("platform_id", platform);
+        formData.append("platform_ids", platform);
         formData.append("brand_id", dataBrand);
         formData.append("content_type_id", contentType);
         formData.append("no_logo", nologoDetails[i].file);
@@ -576,8 +650,8 @@ const DataBrandMaster = () => {
         formData.append("number_of_story_views", NumOfStoryViews);
         formData.append("operation_remark", OperationRemark);
 
-        await axios.post(baseUrl + "add_data", formData, {
-          // await axios.post( "http://192.168.1.9:3000/api/add_data", formData, {
+        await axios.post(baseUrl + "dataoperation", formData, {
+          // await axios.post( "http://192.168.1.9:3000/api/dataoperation", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -594,7 +668,7 @@ const DataBrandMaster = () => {
       setDetails([]);
       setCategory("");
       setPlateform("");
-      setContentType("");
+      // setContentType("");
       setDataBrand("");
       setDataSubCategory([]);
       setDesignedBy("");
@@ -613,7 +687,7 @@ const DataBrandMaster = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setIsLoading(false); 
+      setIsLoading(false); // Set loading state to false after API call completes
     }
   };
 
@@ -642,15 +716,57 @@ const DataBrandMaster = () => {
   };
 
   if (isFormSubmitted) {
-    return <Navigate to="/data-brand-overview" />;
+    return <Navigate to="/admin/operation/case-study" />;
   }
 
-  const renderFileIcon = (fileType) => {
+  const renderFileIcon = (fileType, src, detail) => {
     switch (fileType) {
       case "pdf":
-        return <img src={pdf} alt="PDF" style={{ width: "32%" }} />;
+        // return <img src={pdf} alt="PDF" style={{ width: "32%" }} />;
+        return (
+          <div style={{ position: "relative", width: "45%", height: "auto" }}>
+            {" "}
+            {/* Adjust the height as needed */}
+            <iframe
+              allowFullScreen={true}
+              src={src}
+              title="PDF Viewer"
+              style={{
+                width: "100%",
+                height: "100%",
+                border: "none",
+                overflow: "hidden",
+              }}
+            />
+            <div
+              onClick={() => {
+                setOpenReviewDisalog({
+                  open: true,
+                  image: src,
+                  detail: detail,
+                });
+              }}
+              style={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                top: 0,
+                left: 0,
+                cursor: "pointer",
+                background: "rgba(0, 0, 0, 0)", // This makes the div transparent
+                zIndex: 10, // This ensures the div is placed over the iframe
+              }}
+            ></div>
+          </div>
+        );
       case "mp4":
-        return <img src={video} alt="PDF" style={{ width: "32%" }} />;
+        // return <img src={video} alt="PDF" style={{ width: "32%" }} />;
+        return (
+          <video className="mt-5" controls width="45%" height="auto">
+            <source src={src} type={`video/${fileType}`} />
+            Your browser does not support the video tag.
+          </video>
+        );
       case "xls":
       case "xlsx":
         return <img src={sheets} alt="Excel" style={{ width: "32%" }} />;
@@ -668,37 +784,8 @@ const DataBrandMaster = () => {
         handleSubmit={handleSubmit}
         submitButton={false}
       >
-        <div className="form-group col-6  ">
-          <label className="form-label">
-            Content Type <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={contentTypeData.map((opt) => ({
-              value: opt._id,
-              label: opt.content_name,
-            }))}
-            value={{
-              value: contentType,
-              label:
-                contentTypeData.find((user) => user._id === contentType)
-                  ?.content_name || "",
-            }}
-            onChange={(e) => {
-              setContentType(e.value);
-            }}
-            required
-          />
-        </div>
         <FieldContainer
-          label="Name *"
-          type="text"
-          value={brand}
-          onChange={(e) => setBrand(e.target.value)}
-          required={true}
-        />
-
-        <FieldContainer
-          label="Upload Data *"
+          label="Creative Fuel *"
           type="file"
           multiple
           accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
@@ -706,132 +793,83 @@ const DataBrandMaster = () => {
           fieldGrid={6}
           required={true}
         />
-        {contentType == "65a663ccef8a81593f418836" && (
-          <>
-            <FieldContainer
-              label="MMC *"
-              type="file"
-              multiple
-              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-              onChange={handleMMCFileChange}
-              fieldGrid={6}
-              required={true}
-            />
-            <FieldContainer
-              label="sarcasm *"
-              multiple
-              type="file"
-              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-              onChange={handleSarcasmFileChange}
-              fieldGrid={6}
-              required={true}
-            />
-            <FieldContainer
-              label="No Logo *"
-              multiple
-              type="file"
-              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-              onChange={handleNologoFileChange}
-              fieldGrid={6}
-              required={true}
-            />
-          </>
-        )}
-
-        <div className="form-group col-3">
+        <>
+          <FieldContainer
+            label="MMC *"
+            type="file"
+            multiple
+            accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+            onChange={handleMMCFileChange}
+            fieldGrid={6}
+            required={true}
+          />
+          <FieldContainer
+            label="Sarcasm *"
+            multiple
+            type="file"
+            accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+            onChange={handleSarcasmFileChange}
+            fieldGrid={6}
+            required={true}
+          />
+          <FieldContainer
+            label="No Logo *"
+            multiple
+            type="file"
+            accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+            onChange={handleNologoFileChange}
+            fieldGrid={6}
+            required={true}
+          />
+        </>
+        {/* <div className="form-group col-3">
           <label className="form-label">
-            Category Name <sup style={{ color: "red" }}>*</sup>
+            Platform Name <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-            options={categoryData.map((opt) => ({
+            isMulti
+            options={platformData.map((opt) => ({
               value: opt._id,
-              label: opt.category_name,
+              label: opt.platform_name,
             }))}
-            value={{
-              value: category,
-              label:
-                categoryData.find((user) => user._id === category)
-                  ?.category_name || "",
-            }}
-            onChange={(e) => {
-              setCategory(e.value);
+            value={platformData
+              .filter((opt) => platform.includes(opt._id))
+              .map((opt) => ({
+                value: opt._id,
+                label: opt.platform_name,
+              }))}
+            onChange={(selectedOptions) => {
+              const selectedValues = selectedOptions.map(
+                (option) => option.value
+              );
+              setPlateform(selectedValues);
             }}
             required
           />
-        </div>
-        <div className="col-1 mt-4">
-          <Link
-            title="Add Category"
-            className="btn btn-sm btn-primary"
-            to="/data-brand-category"
-          >
-            <Add />
-          </Link>
-        </div>
-        <div className="form-group col-3">
-          <label className="form-label">
-            Sub Category Name <sup style={{ color: "red" }}>*</sup>
-          </label>
-          {/* <Select
-    options={dataSubCategoryData.map((opt) => ({
-        value: opt._id,
-        label: opt.data_sub_cat_name,
-    }))}
-    isMulti={true}
-    value={
-        dataSubCategoryData
-            .filter(opt => dataSubCategory.includes(opt._id))
-            .map(opt => ({ value: opt._id, label: opt.data_sub_cat_name }))
-    }
-    onChange={(selectedOptions) => {
-        setDataSubCategory(selectedOptions.map(opt => opt.value));
-    }}
-    required
-/> */}
+        </div> */}
 
-          <Select
-            options={dataSubCategoryData.map((opt) => ({
-              value: opt._id,
-              label: opt.data_sub_cat_name,
-            }))}
-            value={{
-              value: dataSubCategory,
-              label:
-                dataSubCategoryData.find((user) => user._id === dataSubCategory)
-                  ?.data_sub_cat_name || "",
-            }}
-            onChange={(e) => {
-              setDataSubCategory(e.value);
-            }}
-            required
-          />
-        </div>
-        <div className="col-1 mt-4">
-          <Link
-            title="Add Sub Category"
-            className="btn btn-sm btn-primary"
-            to="/data-brand-sub-category"
-          >
-            <Add />
-          </Link>
-        </div>
         <div className="form-group col-3">
           <label className="form-label">
             Platform Name <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
+            isMulti
             options={platformData.map((opt) => ({
               value: opt._id,
               label: opt.platform_name,
             }))}
-            value={{
-              value: platform,
-              label:
-                platformData.find((user) => user._id === platform)
-                  ?.platform_name || "",
-            }}
-            onChange={(e) => {
-              setPlateform(e.value);
+            value={platformData
+              .filter((opt) => platform.includes(opt._id))
+              .map((opt) => ({
+                value: opt._id,
+                label: opt.platform_name,
+              }))}
+            onChange={(selectedOptions) => {
+              // Update platform state with selected values
+              const selectedValues = selectedOptions
+                ? selectedOptions.map((option) => option.value)
+                : [];
+              setPlateform(selectedValues);
             }}
             required
           />
@@ -842,14 +880,14 @@ const DataBrandMaster = () => {
             Brand <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-            options={dataBrandData.map((opt) => ({
+            options={dataBrandData?.map((opt) => ({
               value: opt._id,
               label: opt.brand_name,
             }))}
             value={{
               value: dataBrand,
               label:
-                dataBrandData.find((user) => user._id === dataBrand)
+                dataBrandData?.find((user) => user._id === dataBrand)
                   ?.brand_name || "",
             }}
             onChange={(e) => {
@@ -880,186 +918,196 @@ const DataBrandMaster = () => {
             required
           />
         </div>
-        {contentType == "65a663ccef8a81593f418836" && (
-          <>
-            <div className="form-group col-3">
-              <label className="form-label">
-                Date of Completion <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <input
-                type="date"
-                className="form-control"
-                value={dateOfCompletion}
-                onChange={(e) => setDateOfCompletion(e.target.value)}
-              />
-            </div>
+        <>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Date of Completion <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <input
+              type="date"
+              className="form-control"
+              value={dateOfCompletion}
+              onChange={(e) => setDateOfCompletion(e.target.value)}
+            />
+          </div>
 
-            <div className="form-group col-3">
-              <label className="form-label">
-                Date of Report <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <input
-                type="date"
-                className="form-control"
-                value={dateOfReport}
-                onChange={(e) => setDateOfReport(e.target.value)}
-              />
-            </div>
-            <div className="form-group col-3">
-              <label className="form-label">
-                Brand Category <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <Select
-                options={brandCategory.map((opt) => ({
-                  value: opt.category_id,
-                  label: opt.category_name,
+          <div className="form-group col-3">
+            <label className="form-label">
+              Date of Report <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <input
+              type="date"
+              className="form-control"
+              value={dateOfReport}
+              onChange={(e) => setDateOfReport(e.target.value)}
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Brand Category <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              options={brandCategory.map((opt) => ({
+                value: opt.category_id,
+                label: opt.category_name,
+              }))}
+              value={{
+                value: brandCat,
+                label:
+                  brandCategory.find((brand) => brand.category_id == brandCat)
+                    ?.category_name || "",
+              }}
+              onChange={(e) => {
+                setBrandCat(e.value);
+                setBrandSubCategory("");
+              }}
+              required
+            />
+          </div>
+
+          <div className="col-1 mt-4">
+            <Button title="Add Category" onClick={handleClick}>
+              <Add />
+            </Button>
+          </div>
+
+          <div className="form-group col-3">
+            <label className="form-label">
+              Brand Sub Category <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              options={brandSubCatData
+                .filter((opt) => opt.category_id == brandCat)
+                .map((opt) => ({
+                  value: opt.sub_category_id,
+                  label: opt.sub_category_name,
                 }))}
-                value={{
-                  value: brandCat,
-                  label:
-                    brandCategory.find((brand) => brand.category_id == brandCat)
-                      ?.category_name || "",
-                }}
-                onChange={(e) => {
-                  setBrandCat(e.value);
-                  setBrandSubCategory("");
-                }}
-                required
-              />
-            </div>
-            <div className="form-group col-3">
-              <label className="form-label">
-                Brand Sub Category <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <Select
-                options={brandSubCatData
-                  .filter((opt) => opt.category_id == brandCat)
-                  .map((opt) => ({
-                    value: opt.sub_category_id,
-                    label: opt.sub_category_name,
-                  }))}
-                value={{
-                  value: brandSubCategory,
-                  label:
-                    brandSubCatData.find(
-                      (e) => e.sub_category_id == brandSubCategory
-                    )?.sub_category_name || "",
-                }}
-                onChange={(e) => {
-                  setBrandSubCategory(e.value);
-                }}
-                required
-              />
-            </div>
+              value={{
+                value: brandSubCategory,
+                label:
+                  brandSubCatData.find(
+                    (e) => e.sub_category_id == brandSubCategory
+                  )?.sub_category_name || "",
+              }}
+              onChange={(e) => {
+                setBrandSubCategory(e.value);
+              }}
+              required
+            />
+          </div>
 
-            <div className="form-group col-3">
-              <label className="form-label">
-                Campaign Purpose <sup style={{ color: "red" }}>*</sup>
-              </label>
+          <div className="col-1 mt-4">
+            <Button title="Add Sub Category" onClick={handleClickSubCat}>
+              <Add />
+            </Button>
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Campaign Purpose <sup style={{ color: "red" }}>*</sup>
+            </label>
 
-              <input
-                className="form-control"
-                value={compignPurpose}
-                onChange={(e) => setCompignPurpose(e.target.value)}
-              />
-            </div>
+            <input
+              className="form-control"
+              value={compignPurpose}
+              onChange={(e) => setCompignPurpose(e.target.value)}
+            />
+          </div>
 
-            <div className="form-group col-3">
-              <label className="form-label">
-                Number Of Post <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <input
-                className="form-control"
-                value={NumOfPost}
-                onChange={(e) => {
-                  if (!isNaN(Number(e.target.value))) {
-                    setNumOfPost(e.target.value);
-                  }
-                }}
-              />
-            </div>
+          <div className="form-group col-3">
+            <label className="form-label">
+              Number of Post <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <input
+              className="form-control"
+              value={NumOfPost}
+              onChange={(e) => {
+                if (!isNaN(Number(e.target.value))) {
+                  setNumOfPost(e.target.value);
+                }
+              }}
+            />
+          </div>
 
-            <div className="form-group col-3">
-              <label className="form-label">Number Of Reach</label>
-              <input
-                className="form-control"
-                value={NumOfReach}
-                onChange={(e) => {
-                  setNumOfReach(HandleNAFileChangeOnChange(e));
-                }}
-                onBlur={(e) => {
-                  setNumOfReach(handleNaFileChangeOnBlur(e));
-                }}
-              />
-            </div>
-            <div className="form-group col-3">
-              <label className="form-label">Number Of Impression</label>
-              <input
-                className="form-control"
-                value={NumOfImpression}
-                onChange={(e) =>
-                  setNumOfImpression(HandleNAFileChangeOnChange(e))
-                }
-                onBlur={(e) => {
-                  setNumOfImpression(handleNaFileChangeOnBlur(e));
-                }}
-              />
-            </div>
-            <div className="form-group col-3">
-              <label className="form-label">Number Of Engagement</label>
-              <input
-                className="form-control"
-                value={NumOfEngagement}
-                onChange={(e) =>
-                  setNumOfEngagement(HandleNAFileChangeOnChange(e))
-                }
-                onBlur={(e) => {
-                  setNumOfEngagement(handleNaFileChangeOnBlur(e));
-                }}
-              />
-            </div>
-            <div className="form-group col-3">
-              <label className="form-label">Number Of views</label>
-              <input
-                className="form-control"
-                value={NumOfViews}
-                onChange={(e) => setNumOfViews(HandleNAFileChangeOnChange(e))}
-                onBlur={(e) => {
-                  setNumOfViews(handleNaFileChangeOnBlur(e));
-                }}
-              />
-            </div>
-            <div className="form-group col-3">
-              <label className="form-label">Number Of Story Views</label>
-              <input
-                className="form-control"
-                value={NumOfStoryViews}
-                onChange={(e) =>
-                  setNumOfStoryViews(HandleNAFileChangeOnChange(e))
-                }
-                onBlur={(e) => {
-                  setNumOfStoryViews(handleNaFileChangeOnBlur(e));
-                }}
-              />
-            </div>
-            <div className="form-group col-3">
-              <label className="form-label">Operation Remark</label>
-              <input
-                className="form-control"
-                value={OperationRemark}
-                onChange={(e) =>
-                  setOperationRemark(HandleNAFileChangeOnChange(e))
-                }
-                onBlur={(e) => {
-                  setOperationRemark(handleNaFileChangeOnBlur(e));
-                }}
-              />
-            </div>
-          </>
-        )}
+          <div className="form-group col-3">
+            <label className="form-label">Number of Reach</label>
+            <input
+              className="form-control"
+              value={NumOfReach}
+              onChange={(e) => {
+                setNumOfReach(HandleNAFileChangeOnChange(e));
+              }}
+              onBlur={(e) => {
+                setNumOfReach(handleNaFileChangeOnBlur(e));
+              }}
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">Number of Impression</label>
+            <input
+              className="form-control"
+              value={NumOfImpression}
+              onChange={(e) =>
+                setNumOfImpression(HandleNAFileChangeOnChange(e))
+              }
+              onBlur={(e) => {
+                setNumOfImpression(handleNaFileChangeOnBlur(e));
+              }}
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">Number of Engagement</label>
+            <input
+              className="form-control"
+              value={NumOfEngagement}
+              onChange={(e) =>
+                setNumOfEngagement(HandleNAFileChangeOnChange(e))
+              }
+              onBlur={(e) => {
+                setNumOfEngagement(handleNaFileChangeOnBlur(e));
+              }}
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">Number of Views</label>
+            <input
+              className="form-control"
+              value={NumOfViews}
+              onChange={(e) => setNumOfViews(HandleNAFileChangeOnChange(e))}
+              onBlur={(e) => {
+                setNumOfViews(handleNaFileChangeOnBlur(e));
+              }}
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">Number of Story Views</label>
+            <input
+              className="form-control"
+              value={NumOfStoryViews}
+              onChange={(e) =>
+                setNumOfStoryViews(HandleNAFileChangeOnChange(e))
+              }
+              onBlur={(e) => {
+                setNumOfStoryViews(handleNaFileChangeOnBlur(e));
+              }}
+            />
+          </div>
+          <div className="form-group col-3">
+            <label className="form-label">Operation Remark</label>
+            <input
+              className="form-control"
+              value={OperationRemark}
+              onChange={(e) =>
+                setOperationRemark(HandleNAFileChangeOnChange(e))
+              }
+              onBlur={(e) => {
+                setOperationRemark(handleNaFileChangeOnBlur(e));
+              }}
+            />
+          </div>
+        </>
 
         <div className="summary_cards brand_img_list">
-          {details.length > 0 && <h3 className="lead fs-4">Upload Data</h3>}
+          {details.length > 0 && <h3 className="lead fs-4">Creative Fuel</h3>}
           {details.map((detail, index) => (
             <div key={index} className="summary_card brand_img_item">
               <div className="summary_cardrow brand_img_row">
@@ -1077,6 +1125,12 @@ const DataBrandMaster = () => {
                             detail: detail,
                           })
                         }
+                        style={{
+                          width: "45%",
+                          height: "auto",
+                          border: "none",
+                          overflow: "hidden",
+                        }}
                         className="brandimg_icon"
                         src={URL.createObjectURL(images[index])}
                         alt={`Image ${index + 1}`}
@@ -1093,7 +1147,11 @@ const DataBrandMaster = () => {
                         })
                       }
                     >
-                      {renderFileIcon(detail.fileType)}
+                      {renderFileIcon(
+                        detail.fileType,
+                        URL.createObjectURL(images[index]),
+                        detail
+                      )}
                     </div>
                   )}
                 </div>
@@ -1151,6 +1209,12 @@ const DataBrandMaster = () => {
                         className="brandimg_icon"
                         src={URL.createObjectURL(mmcImages[index])}
                         alt={`Image ${index + 1}`}
+                        style={{
+                          width: "45%",
+                          height: "auto",
+                          border: "none",
+                          overflow: "hidden",
+                        }}
                       />
                     )
                   ) : (
@@ -1164,7 +1228,11 @@ const DataBrandMaster = () => {
                         })
                       }
                     >
-                      {renderFileIcon(detail.fileType)}
+                      {renderFileIcon(
+                        detail.fileType,
+                        URL.createObjectURL(mmcImages[index]),
+                        detail
+                      )}
                     </div>
                   )}
                 </div>
@@ -1195,22 +1263,6 @@ const DataBrandMaster = () => {
                 >
                   <CloseTwoTone />
                 </button>
-                {/* <div className="col summary_box brand_img_box">
-                  <FieldContainer
-                    label={`Data Category`}
-                    fieldGrid={12}
-                    Tag="select"
-                    value={selectedCategories[index] || ""}
-                    onChange={(e) => handleCategoryChange(e, index)}
-                  >
-                    <option value="">Please select</option>
-                    {categoryData.map((data) => (
-                      <option key={data.id} value={data.id}>
-                        {data.cat_name}
-                      </option>
-                    ))}
-                  </FieldContainer>
-                </div> */}
               </div>
             </div>
           ))}
@@ -1238,6 +1290,12 @@ const DataBrandMaster = () => {
                         className="brandimg_icon"
                         src={URL.createObjectURL(sarcasmImages[index])}
                         alt={`Image ${index + 1}`}
+                        style={{
+                          width: "45%",
+                          height: "auto",
+                          border: "none",
+                          overflow: "hidden",
+                        }}
                       />
                     )
                   ) : (
@@ -1251,7 +1309,11 @@ const DataBrandMaster = () => {
                         })
                       }
                     >
-                      {renderFileIcon(detail.fileType)}
+                      {renderFileIcon(
+                        detail.fileType,
+                        URL.createObjectURL(sarcasmImages[index]),
+                        detail
+                      )}
                     </div>
                   )}
                 </div>
@@ -1282,22 +1344,6 @@ const DataBrandMaster = () => {
                 >
                   <CloseTwoTone />
                 </button>
-                {/* <div className="col summary_box brand_img_box">
-                  <FieldContainer
-                    label={`Data Category`}
-                    fieldGrid={12}
-                    Tag="select"
-                    value={selectedCategories[index] || ""}
-                    onChange={(e) => handleCategoryChange(e, index)}
-                  >
-                    <option value="">Please select</option>
-                    {categoryData.map((data) => (
-                      <option key={data.id} value={data.id}>
-                        {data.cat_name}
-                      </option>
-                    ))}
-                  </FieldContainer>
-                </div> */}
               </div>
             </div>
           ))}
@@ -1325,6 +1371,12 @@ const DataBrandMaster = () => {
                         className="brandimg_icon"
                         src={URL.createObjectURL(nologoImages[index])}
                         alt={`Image ${index + 1}`}
+                        style={{
+                          width: "45%",
+                          height: "auto",
+                          border: "none",
+                          overflow: "hidden",
+                        }}
                       />
                     )
                   ) : (
@@ -1338,7 +1390,11 @@ const DataBrandMaster = () => {
                         })
                       }
                     >
-                      {renderFileIcon(detail.fileType)}
+                      {renderFileIcon(
+                        detail.fileType,
+                        URL.createObjectURL(nologoImages[index]),
+                        detail
+                      )}
                     </div>
                   )}
                 </div>
@@ -1369,22 +1425,6 @@ const DataBrandMaster = () => {
                 >
                   <CloseTwoTone />
                 </button>
-                {/* <div className="col summary_box brand_img_box">
-                  <FieldContainer
-                    label={`Data Category`}
-                    fieldGrid={12}
-                    Tag="select"
-                    value={selectedCategories[index] || ""}
-                    onChange={(e) => handleCategoryChange(e, index)}
-                  >
-                    <option value="">Please select</option>
-                    {categoryData.map((data) => (
-                      <option key={data.id} value={data.id}>
-                        {data.cat_name}
-                      </option>
-                    ))}
-                  </FieldContainer>
-                </div> */}
               </div>
             </div>
           ))}
@@ -1412,9 +1452,100 @@ const DataBrandMaster = () => {
           openReviewDisalog={openReviewDisalog}
           setOpenReviewDisalog={setOpenReviewDisalog}
         />
-      )}{" "}
+      )}
+      <>
+        {/* add Category */}
+        <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+          <DialogTitle>Add Record</DialogTitle>
+          <DialogContent>
+            <Box
+              component="form"
+              sx={{
+                "& .MuiTextField-root": { m: 1, width: "25ch" },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <div>
+                <TextField
+                  id="outlined-password-input"
+                  label="Category"
+                  name="category_name"
+                  type="text"
+                  value={cat}
+                  onChange={(e) => setCat(e.target.value)}
+                />
+              </div>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+            Cancel
+          </Button> */}
+            <Button onClick={handleSave} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* add sub Category */}
+        <Dialog
+          open={isModalOpenSubCat}
+          onClose={() => setIsModalOpenSubCat(false)}
+        >
+          <DialogTitle>Add Record</DialogTitle>
+          <DialogContent>
+            <Box
+              component="form"
+              sx={{
+                "& .MuiTextField-root": { m: 1, width: "25ch" },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <div>
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={brandCategory.map((option) => ({
+                    label: option.category_name,
+                    value: option.category_id,
+                  }))}
+                  onChange={(event, value) => {
+                    setPostData((prev) => ({
+                      ...prev,
+                      category_id: value.value,
+                    }));
+                  }}
+                  sx={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Category *" />
+                  )}
+                />
+
+                <TextField
+                  id="outlined-password-input"
+                  label="Sub Category *"
+                  name="sub_category_name"
+                  type="text"
+                  value={postData.sub_category_name}
+                  onChange={handleChange}
+                />
+              </div>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+            Cancel
+          </Button> */}
+            <Button onClick={handleSaveSubCat} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </>
     </div>
   );
 };
 
-export default DataBrandMaster;
+export default BrandCaseStudy;

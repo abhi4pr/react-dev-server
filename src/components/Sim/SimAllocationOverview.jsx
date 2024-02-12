@@ -24,15 +24,13 @@ const SimAllocationOverview = () => {
   const userID = decodedToken.id;
 
   function getData() {
-    axios
-      .get(baseUrl+"alldataofsimallocment")
-      .then((res) => {
-        const filteredData = res.data.data.filter(
-          (check) => check.submitted_at == null || check.status == "Allocated"
-        );
-        setData(filteredData);
-        setFilterData(filteredData);
-      });
+    axios.get(baseUrl + "alldataofsimallocment").then((res) => {
+      const filteredData = res.data.data.filter(
+        (check) => check.submitted_at == null || check.status == "Allocated"
+      );
+      setData(filteredData);
+      setFilterData(filteredData);
+    });
   }
   useEffect(() => {
     getData();
@@ -47,17 +45,13 @@ const SimAllocationOverview = () => {
 
   const getSimData = (row) => {
     // console.log(row , "row yha hai")
-    axios
-      .get(`${baseUrl}`+`get_single_sim/${row.sim_id}`)
-      .then((res) => {
-        const particularSimData = res.data;
-        setSimInfo(particularSimData);
-      });
+    axios.get(`${baseUrl}` + `get_single_sim/${row.sim_id}`).then((res) => {
+      const particularSimData = res.data;
+      setSimInfo(particularSimData);
+    });
 
     axios
-      .get(
-        `${baseUrl}`+`get_allocation_by_alloid/${row.allo_id}`
-      )
+      .get(`${baseUrl}` + `get_allocation_by_alloid/${row.allo_id}`)
       .then((res) => {
         const fetchedData = res.data.data;
         setSimData(fetchedData);
@@ -76,11 +70,11 @@ const SimAllocationOverview = () => {
     const currentReason = reason[row.sim_id];
     const currSubDate = subDate[row.sim_id];
     if (currSubDate && currentReason) {
-      axios.put(baseUrl+"update_allocationsim", {
+      axios.put(baseUrl + "update_allocationsim", {
         sim_id: row.sim_id,
         allo_id: simData.allo_id,
-        user_id: simData.user_id,
-        // dept_id: simData.dept_id,
+        // user_id: simData.user_id,
+        user_id: 0,
         status: "Available",
         submitted_by: userID,
         Last_updated_by: userID,
@@ -89,15 +83,12 @@ const SimAllocationOverview = () => {
       });
 
       axios
-        .put(baseUrl+"update_sim", {
-          id: row.sim_id,
-          mobilenumber: row.mobileNo,
-          sim_no: row.simNo,
-          provider: simInfo.data.provider,
-          s_type: simInfo.data.s_type,
+        .put(baseUrl + "update_sim", {
+          id: simData.sim_id,
+          user_id: 0,
           status: "Available",
-          type: row.type,
-          remark: row.Remarks,
+          // remark: row.Remarks,
+          // sim_no: row.simNo,
         })
         .then(() => {
           toastAlert("Form Submitted success");

@@ -46,7 +46,6 @@ const AssetSubCategoryOverview = () => {
         `${baseUrl}` + `get_total_asset_in_category/${row}`
       );
       setTotalAssets(response.data.data);
-      console.log(response.data.data, "data sub cat");
       seAssetModel(true);
     } catch (error) {
       console.log("total asset not working", error);
@@ -62,7 +61,6 @@ const AssetSubCategoryOverview = () => {
         `${baseUrl}` + `get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response.data.data);
-      console.log(response.data, "sub categoy");
       seAssetModel(true);
     } catch (error) {
       console.log("total asset not working", error);

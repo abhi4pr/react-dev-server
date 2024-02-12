@@ -43,7 +43,8 @@ const AllPlanData = () => {
   };
 
   const excelDownload = (params) => {
-    setExcelData(params?.row?.pages);
+    
+    setExcelData({pages:params?.row?.pages,planName:params?.row?.planName});
     setDrawerOpen(true);
   };
 
@@ -141,7 +142,7 @@ const AllPlanData = () => {
       </Box>
       <DataGrid rows={allPlan} columns={col} getRowId={(row) => row._id} pageSize={5} />
       <Drawer anchor={"right"} open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <SummaryDetails payload={excelData} campName={"Test"} />
+        <SummaryDetails payload={excelData.pages} campName={excelData.planName} />
       </Drawer>
 
       <Dialog

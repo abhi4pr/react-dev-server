@@ -880,6 +880,18 @@ const SidebarLinks = () => {
                         </li>
                       )}
                     {contextData &&
+                      contextData[46] &&
+                      contextData[46].view_value === 1 && (
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link collapsed"
+                            to="/admin/operation/case-study"
+                          >
+                            <span>Case Study </span>
+                          </Link>
+                        </li>
+                      )}
+                    {contextData &&
                       contextData[31] &&
                       contextData[31].view_value === 1 && (
                         <li className="nav-item">
@@ -1021,34 +1033,34 @@ const SidebarLinks = () => {
           >
             <div className="bg-white collapse-inner">
               <li className="nav-item">
-                  <Link
-                    className="nav-link collapsed"
-                    data-toggle="collapse"
-                    data-target="#collapsInnerEightFinanceEditDashboard"
-                    aria-expanded="true"
-                    aria-controls="collapsInnerEightFinanceEditDashboard"
-                  >
-                    <span>Dashboard</span>
-                  </Link>
-                  <div
-                    id="collapsInnerEightFinanceEditDashboard"
-                    className="collapse"
-                    aria-labelledby="headingTwo"
-                    // data-parent="#accordionSidebar"
-                  >
-                    <div className="bg-white collapse-inner">
-                      <>
-                        <li className="nav-item">
-                          <Link
-                            className="collapse-item"
-                            to="/admin/finance-dashboard"
-                          >
-                            <span>Dashboard</span>
-                          </Link>
-                        </li>
-                      </>
-                    </div>
+                <Link
+                  className="nav-link collapsed"
+                  data-toggle="collapse"
+                  data-target="#collapsInnerEightFinanceEditDashboard"
+                  aria-expanded="true"
+                  aria-controls="collapsInnerEightFinanceEditDashboard"
+                >
+                  <span>Dashboard</span>
+                </Link>
+                <div
+                  id="collapsInnerEightFinanceEditDashboard"
+                  className="collapse"
+                  aria-labelledby="headingTwo"
+                  // data-parent="#accordionSidebar"
+                >
+                  <div className="bg-white collapse-inner">
+                    <>
+                      <li className="nav-item">
+                        <Link
+                          className="collapse-item"
+                          to="/admin/finance-dashboard"
+                        >
+                          <span>Dashboard</span>
+                        </Link>
+                      </li>
+                    </>
                   </div>
+                </div>
 
                 <Link
                   className="nav-link collapsed"

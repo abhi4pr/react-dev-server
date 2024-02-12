@@ -198,9 +198,10 @@ const OverView = ({ name, data, hardReload }) => {
             }}
           >
             <div>
-              {fieldInRows.map((item) => {
+              {fieldInRows.map((item,index) => {
                 return (
                   <TextField
+                  key={index}
                     label={item}
                     type="text"
                     name={item}

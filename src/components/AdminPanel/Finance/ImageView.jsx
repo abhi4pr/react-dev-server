@@ -19,7 +19,12 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function ImageView({ viewImgSrc, setViewImgDialog }) {
+export default function ImageView({
+  viewImgSrc,
+  setViewImgDialog,
+  fullWidth = true,
+  maxWidth = "md",
+}) {
   const [open, setOpen] = React.useState(true);
   const [isPDF, setIsPDF] = React.useState(false);
 
@@ -40,9 +45,9 @@ export default function ImageView({ viewImgSrc, setViewImgDialog }) {
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
-        fullWidth={"md"}
-        maxWidth={"md"}
         open={open}
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           View

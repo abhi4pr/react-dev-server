@@ -16,6 +16,17 @@
   transition: none !important;
 }
 
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
 /* MODAL FADE LEFT RIGHT BOTTOM */
 .right-modal .modal.fade:not(.in).left .modal-dialog {
   -webkit-transform: translate3d(-25%, 0, 0);
@@ -1169,4 +1180,9 @@ label.checkbox-inline.propscss {
 
 .docTableLight .uploadDocBtn:hover .docTableLight {
   color: var(--info);
+}
+
+.minHeightAuto {
+  min-height: auto !important;
+  border-radius: 10px;
 }

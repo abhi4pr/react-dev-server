@@ -95,7 +95,6 @@ const AssetSingleuserOverview = ({
       setAssetsImg3("");
       setAssetsImg4("");
       setProblemDetailing("");
-      setTagUser([]);
       toastAlert("Success");
     } catch (error) {
       console.log(error);
@@ -247,6 +246,8 @@ const AssetSingleuserOverview = ({
         <>
           {row.asset_return_status === "Pending" ? (
             <span className="badge badge-warning">Pending</span>
+          ) : row.asset_return_status === "RecoverdByManager" ? (
+            <span className="badge badge-warning">RecoverByManager</span>
           ) : (
             "N/A"
           )}
@@ -398,13 +399,16 @@ const AssetSingleuserOverview = ({
 
       hardRender();
       toastAlert("Request Success");
+      setAssetName("");
+      setPriority("");
+      setProblemDetailing("");
+      setTagUser([]);
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleUpdateNewAssetRow = (row) => {
-    console.log(row, "subcategory id");
     setIsEditMode(true);
     setNewAssetID(row._id);
     setAssetName(row.sub_category_id);

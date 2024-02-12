@@ -7,7 +7,7 @@ import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckIcon from "@mui/icons-material/Check";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const OnboardExtendDateOverview = () => {
   const whatsappApi = WhatsappAPI();
@@ -15,7 +15,7 @@ const OnboardExtendDateOverview = () => {
   const [data, setData] = useState([]);
   const [filterdata, setFilterData] = useState([]);
   const [contextData, setDatas] = useState([]);
-  const [extendDate, setExtendDate] = useState("");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [rejectReason, setRejectReason] = useState("");
@@ -36,9 +36,7 @@ const OnboardExtendDateOverview = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-        )
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
           setDatas(res.data);
         });
@@ -47,19 +45,15 @@ const OnboardExtendDateOverview = () => {
 
   async function getData() {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_users"
-      );
+      const response = await axios.get(baseUrl + "get_all_users");
       const data = response.data.data.filter(
         (item) => item.joining_date_extend_status == "Requested"
-        // const data = response.data.data;
       );
 
       setDatas(data);
       setFilterData(data);
-      setExtendDate(data[0].joining_date_extend);
     } catch (error) {
-      console.log("Error fething Data", error);
+      console.error("Error fething Data", error);
     }
   }
 
@@ -67,7 +61,13 @@ const OnboardExtendDateOverview = () => {
     getData();
   }, []);
 
-  const statusUpdate = (user_id, status, PersonalNumber, userName) => {
+  const statusUpdate = (
+    user_id,
+    status,
+    PersonalNumber,
+    userName,
+    extendDate
+  ) => {
     const formData = new FormData();
     formData.append("user_id", user_id);
     formData.append("joining_date_extend_status", status);
@@ -78,13 +78,13 @@ const OnboardExtendDateOverview = () => {
       formData.append("joining_date_reject_reason", rejectReason);
     }
     axios
-      .put(baseUrl+"update_user", formData, {
+      .put(baseUrl + "update_user", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       })
       .then(() => {
-        axios.post(baseUrl+"add_send_user_mail", {
+        axios.post(baseUrl + "add_send_user_mail", {
           email: "lalit@creativefuel.io",
           subject: "Extend Date Status",
           text: status,
@@ -191,7 +191,8 @@ const OnboardExtendDateOverview = () => {
                     row.user_id,
                     "Approve",
                     row.PersonalNumber,
-                    row.user_name
+                    row.user_name,
+                    row.joining_date_extend
                   )
                 }
               >

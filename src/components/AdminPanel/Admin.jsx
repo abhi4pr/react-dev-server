@@ -217,6 +217,7 @@ import AllPlan from "./RegisterCampaign/Plan/AllPlanData";
 import AllPlanData from "./RegisterCampaign/Plan/AllPlanData";
 import AllPlanOverview from "./RegisterCampaign/Plan/AllPlanOverview";
 import AssetSummary from "../Sim/AssetSummary";
+import CaseStudyOperation from "./RegisterCampaign/CaseStudies/CaseStudyOperation";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -775,6 +776,9 @@ const Admin = () => {
                     path="hobbies-overview"
                     element={<HobbiesOverview />}
                   />
+                  {/* ----------------------Case Studies -----------------------------*/}
+                   <Route path="/operation/case-study" element={<CaseStudyOperation />} />
+
                   {/* Phase Dashboard here  */}
                   <Route path="/phase-dashboard" element={<PhaseDashboard />} />
                   <Route path="/direct_allPlan" element={<AllPlanData />} />

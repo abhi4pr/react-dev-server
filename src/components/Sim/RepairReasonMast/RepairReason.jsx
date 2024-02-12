@@ -43,10 +43,9 @@ const RepairReason = () => {
   const handleTotalRequest = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_all_repair_request_by_asset_reasonId/${row}`
+        `${baseUrl}` + `get_all_repair_request_by_asset_reasonId/${row}`
       );
       setTotalRepariData(response.data.data);
-      console.log(response.data.data, "new data");
       setRepariModal(true);
     } catch (error) {
       console.log("total asset not working", error);
@@ -59,9 +58,7 @@ const RepairReason = () => {
   const getAllSubCategory = () => {
     if (categoryName) {
       axios
-        .get(
-          `${baseUrl}`+`get_single_asset_sub_category/${categoryName}`
-        )
+        .get(`${baseUrl}` + `get_single_asset_sub_category/${categoryName}`)
         .then((res) => {
           setSubCategoryData(res.data);
         });
@@ -137,14 +134,11 @@ const RepairReason = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        baseUrl+"add_asset_reason",
-        {
-          reason: reason,
-          category_id: categoryName,
-          sub_category_id: subCategoryName,
-        }
-      );
+      const response = await axios.post(baseUrl + "add_asset_reason", {
+        reason: reason,
+        category_id: categoryName,
+        sub_category_id: subCategoryName,
+      });
       setReason("");
       setCategoryName("");
       setSubCategoryName("");
@@ -155,12 +149,9 @@ const RepairReason = () => {
     }
   };
   async function getRepairReason() {
-    const res = await axios.get(
-      baseUrl+"get_all_assetResons"
-    );
+    const res = await axios.get(baseUrl + "get_all_assetResons");
     setModalData(res?.data.data);
     setModalFilter(res?.data.data);
-    console.log(res.data.data);
   }
 
   useEffect(() => {
@@ -168,7 +159,6 @@ const RepairReason = () => {
   }, []);
 
   const handleRepairId = (row) => {
-    console.log(row, "data");
     setRepairId(row.asset_reason_id);
     setReasonUpdate(row.reason);
     setCategoryNameUpdate(row.category_id);
@@ -177,9 +167,8 @@ const RepairReason = () => {
 
   // Update Function here with submittion
   const handleModalUpdate = () => {
-    console.log(repairId, "id");
     axios
-      .put(baseUrl+"update_asset_reason", {
+      .put(baseUrl + "update_asset_reason", {
         asset_reason_id: repairId,
         category_id: categoryNameUpdate,
         sub_category_id: subCategoryNameUpdate,
