@@ -73,10 +73,13 @@ const FormContainer = ({
       {!link && (
         <div className="card shadow mb24">
           <div className="card-header d-flex flex-row align-items-center justify-content-between">
-            <div className="card_header_title tabbtn_header">
-              {accordionButtons.length === 0 && <h2>{title}</h2>}
-            </div>
-            <div className="btn-group">
+            {accordionButtons.length === 0 && (
+              <div className="card_header_title tabbtn_header">
+                <h2>{title}</h2>
+              </div>
+            )}
+
+            <div className="btn-group w-100">
               {accordionButtons.map((buttonName, index) => (
                 <button
                   key={index}

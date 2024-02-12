@@ -13714,8 +13714,7 @@ body.sidebar-toggled .sidebar_toggle .footer_cprgt {
   font-weight: 400;
   width: 100% !important;
 }
-
-.btn,
+    
 .btn-sml {
   border-radius: var(--radius) !important;
 }
