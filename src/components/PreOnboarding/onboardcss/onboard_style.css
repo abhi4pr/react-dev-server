@@ -2353,6 +2353,11 @@ img {
   justify-content: space-between;
   margin: 0;
 }
+
+.ReactModal__Content.loaderRocket {
+  border: none !important;
+  background: transparent !important;
+}
 /* Responsive Start Here */
 
 @media only screen and (max-width: 1599px) {
