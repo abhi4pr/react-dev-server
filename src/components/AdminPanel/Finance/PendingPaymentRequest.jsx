@@ -22,6 +22,7 @@ import dayjs from "dayjs";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { baseUrl } from "../../../utils/config";
+import { FaCommentsDollar } from "react-icons/fa";
 
 export default function PendingPaymentRequest() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -237,28 +238,30 @@ export default function PendingPaymentRequest() {
         );
 
       // Requested Amount Filter
-      const requestedAmountFilterPassed = (() => {
-        if (!requestAmountFilter || requestedAmountField === "") return true; //When  No filter selected or no amount provided, so return true
-        const numericRequestedAmount = parseFloat(requestedAmountField);
-        switch (requestAmountFilter) {
-          case "greaterThan":
-            return parseFloat(item.requested_amount) > numericRequestedAmount;
-          case "lessThan":
-            return parseFloat(item.requested_amount) < numericRequestedAmount;
-          case "equalTo":
-            return parseFloat(item.requested_amount) === numericRequestedAmount;
-          default:
-            return true;
-        }
-      })();
-
+      const requestedAmountFilterPassed = () => {
+        // if (!requestAmountFilter || requestedAmountField === "") return true; //When  No filter selected or no amount provided, so return true
+        // const numericRequestedAmount = parseFloat(requestedAmountField);
+        // switch (requestAmountFilter) {
+        //   case "greaterThan":
+        //     return parseFloat(item.requested_amount) > numericRequestedAmount;
+        //   case "lessThan":
+        //     return parseFloat(item.requested_amount) < numericRequestedAmount;
+        //   case "equalTo":
+        //     return parseFloat(item.requested_amount) === numericRequestedAmount;
+        //   default:
+        //     return true;
+        // }
+        console.log(item.requested_amount);
+      };
+      // };
       // Combining All The Filters
       const allFiltersPassed =
         dateFilterPassed &&
         vendorNameFilterPassed &&
         priorityFilterPassed &&
         searchFilterPassed &&
-        requestedAmountFilterPassed;
+        (() => requestedAmountFilterPassed);
+      console.log(requestedAmountFilterPassed(), "amount filter");
 
       return allFiltersPassed;
     });
@@ -267,7 +270,6 @@ export default function PendingPaymentRequest() {
   };
 
   console.log(filterData, "filterData>>");
-
   const handleClosePayDialog = () => {
     setPayDialog(false);
     setPaymentMode("");
