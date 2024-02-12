@@ -14,18 +14,17 @@ import jwtDecode from "jwt-decode";
 import UserNav from "../../../Pantry/UserPanel/UserNav";
 import ImgDialogBox from "../../../Datas/ImgDialogBox";
 import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    Box,
-    TextField,
-    Button,
-    Autocomplete
-  } from "@mui/material";
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Box,
+  TextField,
+  Button,
+  Autocomplete,
+} from "@mui/material";
 const BrandCaseStudy = () => {
-
   const { toastAlert, toastError } = useGlobalContext();
   const [fileDetails, setFileDetails] = useState([]);
   const [brand, setBrand] = useState("");
@@ -40,7 +39,7 @@ const BrandCaseStudy = () => {
   const [category, setCategory] = useState("");
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
-  const [platform, setPlateform] = useState("");
+  const [platform, setPlateform] = useState([]);
   const [platformData, setPlateformData] = useState([]);
   const [contentType, setContentType] = useState("65a663ccef8a81593f418836");
   const [contentTypeData, setContentTypeData] = useState([]);
@@ -77,7 +76,7 @@ const BrandCaseStudy = () => {
   const [mmcDetails, setMMCDetails] = useState([]);
   const [sarcasmImages, setSarcasmImages] = useState([]);
   const [sarcasmDetails, setSarcasmDetails] = useState([]);
-  const [cat, setCat] = useState('');
+  const [cat, setCat] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenSubCat, setIsModalOpenSubCat] = useState(false);
   const [postData, setPostData] = useState({
@@ -99,9 +98,10 @@ const BrandCaseStudy = () => {
   useEffect(() => {
     // let id = localStorage.getItem('userId');
     // if (!id) {
-      // Generate a new ID using any preferred method
-    const  id = 'id_' + Math.random().toString(36).substr(2, 9)+Math.random().toString();
-      // localStorage.setItem('userId', id);
+    // Generate a new ID using any preferred method
+    const id =
+      Math.random().toString(36).substr(2, 9) + Math.random().toString();
+    // localStorage.setItem('userId', id);
     // }
     setBrand(id);
   }, []);
@@ -109,8 +109,8 @@ const BrandCaseStudy = () => {
   const handleSave = (e) => {
     e.preventDefault();
     axios
-      .post(baseUrl+"projectxCategory", {
-        category_name: cat
+      .post(baseUrl + "projectxCategory", {
+        category_name: cat,
       })
       .then((response) => {
         if (response.data.success === false) {
@@ -119,8 +119,8 @@ const BrandCaseStudy = () => {
           toastAlert("Add successfully");
         }
         setIsModalOpen(false);
-        getCat()
-        setCat("")
+        getCat();
+        setCat("");
       })
       .catch((error) => {
         console.error("Error saving data:", error);
@@ -129,11 +129,10 @@ const BrandCaseStudy = () => {
     setIsModalOpen(false);
   };
 
-
   const handleSaveSubCat = (e) => {
     e.preventDefault();
     axios
-      .post(baseUrl+"projectxSubCategory", postData)
+      .post(baseUrl + "projectxSubCategory", postData)
       .then((response) => {
         if (response.data.success === false) {
           toastError(response.data.message);
@@ -148,26 +147,25 @@ const BrandCaseStudy = () => {
       .catch((error) => {
         console.error("Error saving data:", error);
         toastError("Add Properly");
-
       });
     setIsModalOpen(false);
   };
 
-  const getCat = () =>{
+  const getCat = () => {
     axios
-    .get(baseUrl + "projectxCategory")
-    .then((res) => {
-      setBrandCategory(res.data.data);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  }
-  const getSubCat = () =>{
+      .get(baseUrl + "projectxCategory")
+      .then((res) => {
+        setBrandCategory(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getSubCat = () => {
     axios.get(baseUrl + "projectxSubCategory").then((res) => {
       setBrandSubCatData(res.data.data);
     });
-  }
+  };
   const handleChange = (event) => {
     const { name, value } = event.target;
     setPostData({
@@ -193,9 +191,9 @@ const BrandCaseStudy = () => {
       console.log(res.data.data);
       setDataBrandData(res?.data?.data);
     });
-   
-    getSubCat()
-    getCat()
+
+    getSubCat();
+    getCat();
   }, []);
 
   useEffect(() => {
@@ -321,6 +319,8 @@ const BrandCaseStudy = () => {
         fileType === "jpeg" ||
         fileType === "png" ||
         fileType === "gif"
+        // fileType === "pdf" ||
+        // fileType === "mp4"
       ) {
         // It's an image
         const img = new Image();
@@ -351,6 +351,7 @@ const BrandCaseStudy = () => {
 
     Promise.all(details).then((detailsArray) => {
       setMMCDetails(detailsArray);
+      console.log(detailsArray);
     });
   };
 
@@ -428,7 +429,6 @@ const BrandCaseStudy = () => {
               name,
               file,
               fileType,
-
               size: `${naturalHeight}x${naturalWidth}`,
               sizeInMB: `${sizeInMB}`,
             });
@@ -459,7 +459,7 @@ const BrandCaseStudy = () => {
   };
 
   const handleSubmit = async (e) => {
-     if (platform == "") {
+    if (platform == "") {
       toastError("Platform is required");
     } else if (contentType == "") {
       toastError("Content type is required");
@@ -510,7 +510,6 @@ const BrandCaseStudy = () => {
     e.preventDefault();
     try {
       if (
-        category &&
         platform &&
         contentType &&
         dataBrand &&
@@ -525,7 +524,7 @@ const BrandCaseStudy = () => {
         formData.append("data_name", brand);
         formData.append("cat_id", category);
         formData.append("sub_cat_id", dataSubCategory);
-        formData.append("platform_id", platform);
+        formData.append("platform_ids", [platform]);
         formData.append("brand_id", dataBrand);
         formData.append("content_type_id", contentType);
         formData.append("data_upload", details[i].file);
@@ -559,7 +558,7 @@ const BrandCaseStudy = () => {
         formData.append("data_name", brand);
         formData.append("cat_id", category);
         formData.append("sub_cat_id", dataSubCategory);
-        formData.append("platform_id", platform);
+        formData.append("platform_ids", platform);
         formData.append("brand_id", dataBrand);
         formData.append("content_type_id", contentType);
         formData.append("mmc", mmcDetails[i].file);
@@ -594,7 +593,7 @@ const BrandCaseStudy = () => {
         formData.append("data_name", brand);
         formData.append("cat_id", category);
         formData.append("sub_cat_id", dataSubCategory);
-        formData.append("platform_id", platform);
+        formData.append("platform_ids", platform);
         formData.append("brand_id", dataBrand);
         formData.append("content_type_id", contentType);
         formData.append("sarcasm", sarcasmDetails[i].file);
@@ -629,7 +628,7 @@ const BrandCaseStudy = () => {
         formData.append("data_name", brand);
         formData.append("cat_id", category);
         formData.append("sub_cat_id", dataSubCategory);
-        formData.append("platform_id", platform);
+        formData.append("platform_ids", platform);
         formData.append("brand_id", dataBrand);
         formData.append("content_type_id", contentType);
         formData.append("no_logo", nologoDetails[i].file);
@@ -823,7 +822,7 @@ const BrandCaseStudy = () => {
             required={true}
           />
         </>
-        <div className="form-group col-3">
+        {/* <div className="form-group col-3">
           <label className="form-label">
             Platform Name <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -843,6 +842,33 @@ const BrandCaseStudy = () => {
               const selectedValues = selectedOptions.map(
                 (option) => option.value
               );
+              setPlateform(selectedValues);
+            }}
+            required
+          />
+        </div> */}
+
+        <div className="form-group col-3">
+          <label className="form-label">
+            Platform Name <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            isMulti
+            options={platformData.map((opt) => ({
+              value: opt._id,
+              label: opt.platform_name,
+            }))}
+            value={platformData
+              .filter((opt) => platform.includes(opt._id))
+              .map((opt) => ({
+                value: opt._id,
+                label: opt.platform_name,
+              }))}
+            onChange={(selectedOptions) => {
+              // Update platform state with selected values
+              const selectedValues = selectedOptions
+                ? selectedOptions.map((option) => option.value)
+                : [];
               setPlateform(selectedValues);
             }}
             required
@@ -940,10 +966,7 @@ const BrandCaseStudy = () => {
           </div>
 
           <div className="col-1 mt-4">
-            <Button
-              title="Add Category"
-              onClick={handleClick}
-            >
+            <Button title="Add Category" onClick={handleClick}>
               <Add />
             </Button>
           </div>
@@ -974,10 +997,7 @@ const BrandCaseStudy = () => {
           </div>
 
           <div className="col-1 mt-4">
-            <Button
-              title="Add Sub Category"
-              onClick={handleClickSubCat}
-            >
+            <Button title="Add Sub Category" onClick={handleClickSubCat}>
               <Add />
             </Button>
           </div>
@@ -1210,7 +1230,7 @@ const BrandCaseStudy = () => {
                     >
                       {renderFileIcon(
                         detail.fileType,
-                        URL.createObjectURL(images[index]),
+                        URL.createObjectURL(mmcImages[index]),
                         detail
                       )}
                     </div>
@@ -1291,7 +1311,7 @@ const BrandCaseStudy = () => {
                     >
                       {renderFileIcon(
                         detail.fileType,
-                        URL.createObjectURL(images[index]),
+                        URL.createObjectURL(sarcasmImages[index]),
                         detail
                       )}
                     </div>
@@ -1372,7 +1392,7 @@ const BrandCaseStudy = () => {
                     >
                       {renderFileIcon(
                         detail.fileType,
-                        URL.createObjectURL(images[index]),
+                        URL.createObjectURL(nologoImages[index]),
                         detail
                       )}
                     </div>
@@ -1432,94 +1452,97 @@ const BrandCaseStudy = () => {
           openReviewDisalog={openReviewDisalog}
           setOpenReviewDisalog={setOpenReviewDisalog}
         />
-      )}<>
-      
-      {/* add Category */}
+      )}
+      <>
+        {/* add Category */}
         <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <DialogTitle>Add Record</DialogTitle>
-        <DialogContent>
-          <Box
-            component="form"
-            sx={{
-              "& .MuiTextField-root": { m: 1, width: "25ch" },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <div>
-              <TextField
-                id="outlined-password-input"
-                label="Category"
-                name="category_name"
-                type="text"
-                value={cat}
-                onChange={(e)=>setCat(e.target.value)}
-              />
-            </div>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+          <DialogTitle>Add Record</DialogTitle>
+          <DialogContent>
+            <Box
+              component="form"
+              sx={{
+                "& .MuiTextField-root": { m: 1, width: "25ch" },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <div>
+                <TextField
+                  id="outlined-password-input"
+                  label="Category"
+                  name="category_name"
+                  type="text"
+                  value={cat}
+                  onChange={(e) => setCat(e.target.value)}
+                />
+              </div>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
             Cancel
           </Button> */}
-          <Button onClick={handleSave} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <Button onClick={handleSave} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-{/* add sub Category */}
-      <Dialog open={isModalOpenSubCat} onClose={() => setIsModalOpenSubCat(false)}>
-        <DialogTitle>Add Record</DialogTitle>
-        <DialogContent>
-          <Box
-            component="form"
-            sx={{
-              "& .MuiTextField-root": { m: 1, width: "25ch" },
-            }}
-            noValidate
-            autoComplete="off"
-          >
-            <div>
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={brandCategory.map((option) => ({
-                  label: option.category_name,
-                  value: option.category_id,
-                }))}
-                onChange={(event, value) => {
-                  setPostData((prev) => ({
-                    ...prev,
-                    category_id: value.value,
-                  }));
-                }}
-                sx={{ width: 300 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Category *" />
-                )}
-              />
+        {/* add sub Category */}
+        <Dialog
+          open={isModalOpenSubCat}
+          onClose={() => setIsModalOpenSubCat(false)}
+        >
+          <DialogTitle>Add Record</DialogTitle>
+          <DialogContent>
+            <Box
+              component="form"
+              sx={{
+                "& .MuiTextField-root": { m: 1, width: "25ch" },
+              }}
+              noValidate
+              autoComplete="off"
+            >
+              <div>
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={brandCategory.map((option) => ({
+                    label: option.category_name,
+                    value: option.category_id,
+                  }))}
+                  onChange={(event, value) => {
+                    setPostData((prev) => ({
+                      ...prev,
+                      category_id: value.value,
+                    }));
+                  }}
+                  sx={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Category *" />
+                  )}
+                />
 
-              <TextField
-                id="outlined-password-input"
-                label="Sub Category *"
-                name="sub_category_name"
-                type="text"
-                value={postData.sub_category_name}
-                onChange={handleChange}
-              />
-            </div>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+                <TextField
+                  id="outlined-password-input"
+                  label="Sub Category *"
+                  name="sub_category_name"
+                  type="text"
+                  value={postData.sub_category_name}
+                  onChange={handleChange}
+                />
+              </div>
+            </Box>
+          </DialogContent>
+          <DialogActions>
+            {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
             Cancel
           </Button> */}
-          <Button onClick={handleSaveSubCat} color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+            <Button onClick={handleSaveSubCat} color="primary">
+              Save
+            </Button>
+          </DialogActions>
+        </Dialog>
       </>
     </div>
   );
