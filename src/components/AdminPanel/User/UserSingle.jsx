@@ -15,6 +15,8 @@ import UserSingleTab4 from "./UserSingleTab4";
 import UserSingleTab3 from "./UserSingleTab3";
 import DocumentTabUserSingle from "./DocumentTabUserSingle";
 import { baseUrl } from "../../../utils/config";
+import UserSingleTab5 from "./UserSingle5";
+import UserSingleTab6 from "./UserSingle6";
 
 const UserSingle = () => {
   const whatsappApi = WhatsappAPI();
@@ -25,6 +27,8 @@ const UserSingle = () => {
   const [otherDocuments, setOtherDocuments] = useState("");
   const [defaultSeatData, setDefaultSeatData] = useState([]);
   const [roomId, setRoomId] = useState();
+
+  const [educationData, setEducationData] = useState([]);
 
   const KRAAPI = (userId) => {
     axios.get(`${baseUrl}` + `get_single_kra/${userId}`).then((res) => {
@@ -37,9 +41,16 @@ const UserSingle = () => {
     });
   }
 
+  const [familyData, seFamilyData] = useState([]);
   useEffect(() => {
     axios.get(baseUrl + "get_all_sittings").then((res) => {
       setDefaultSeatData(res.data.data);
+    });
+    axios.get(baseUrl + `get_single_education/${id}`).then((res) => {
+      setEducationData(res.data.data);
+    });
+    axios.get(baseUrl + `get_single_family/${id}`).then((res) => {
+      seFamilyData(res.data.data);
     });
     KRAAPI(id);
   }, []);
@@ -77,6 +88,8 @@ const UserSingle = () => {
     "Professional",
     "KRA",
     "Documents",
+    "Family",
+    "Education",
     // "Documents",
   ];
 
@@ -101,6 +114,12 @@ const UserSingle = () => {
             {activeAccordionIndex === 1 && <UserSingleTab2 user={user} />}
             {activeAccordionIndex === 2 && <UserSingleTab3 KRIData={KRIData} />}
             {activeAccordionIndex == 3 && <DocumentTabUserSingle id={id} />}
+            {activeAccordionIndex == 4 && (
+              <UserSingleTab5 familyData={familyData} />
+            )}
+            {activeAccordionIndex == 5 && (
+              <UserSingleTab6 educationData={educationData} />
+            )}
           </FormContainer>
         </div>
       </div>

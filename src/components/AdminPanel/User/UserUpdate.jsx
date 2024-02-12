@@ -960,26 +960,32 @@ const UserUpdate = () => {
   }
 
   function handleContactChange(event) {
-    const newContact = event.target.value;
-    setContact(newContact);
+    if (event.target.value.length <= 10) {
+      const newContact = event.target.value;
+      setContact(newContact);
 
-    if (newContact === "") {
-      setValidContact(false);
-    } else {
-      setValidContact(/^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact));
+      if (newContact === "") {
+        setValidContact(false);
+      } else {
+        setValidContact(
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact)
+        );
+      }
     }
   }
 
   function handlePersonalContactChange(event) {
-    const newContact1 = event.target.value;
-    setPersonalContact(newContact1);
+    if (event.target.value.length <= 10) {
+      const newContact1 = event.target.value;
+      setPersonalContact(newContact1);
 
-    if (newContact1 === "") {
-      setValidContact1(false);
-    } else {
-      setValidContact1(
-        /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
-      );
+      if (newContact1 === "") {
+        setValidContact1(false);
+      } else {
+        setValidContact1(
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+        );
+      }
     }
   }
 
