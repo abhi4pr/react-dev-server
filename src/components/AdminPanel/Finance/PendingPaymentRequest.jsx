@@ -238,30 +238,28 @@ export default function PendingPaymentRequest() {
         );
 
       // Requested Amount Filter
+      console.log(requestAmountFilter, "requestAmountFilter");
       const requestedAmountFilterPassed = () => {
-        // if (!requestAmountFilter || requestedAmountField === "") return true; //When  No filter selected or no amount provided, so return true
-        // const numericRequestedAmount = parseFloat(requestedAmountField);
-        // switch (requestAmountFilter) {
-        //   case "greaterThan":
-        //     return parseFloat(item.requested_amount) > numericRequestedAmount;
-        //   case "lessThan":
-        //     return parseFloat(item.requested_amount) < numericRequestedAmount;
-        //   case "equalTo":
-        //     return parseFloat(item.requested_amount) === numericRequestedAmount;
-        //   default:
-        //     return true;
-        // }
-        console.log(item.requested_amount);
+        const numericRequestedAmount = parseFloat(requestedAmountField);
+        console.log("switch");
+        switch (requestAmountFilter) {
+          case "greaterThan":
+            return +item.request_amount > numericRequestedAmount;
+          case "lessThan":
+            return +item.request_amount < numericRequestedAmount;
+          case "equalTo":
+            return +item.request_amount === numericRequestedAmount;
+          default:
+            return true;
+        }
       };
-      // };
-      // Combining All The Filters
+
       const allFiltersPassed =
         dateFilterPassed &&
         vendorNameFilterPassed &&
         priorityFilterPassed &&
         searchFilterPassed &&
-        (() => requestedAmountFilterPassed);
-      console.log(requestedAmountFilterPassed(), "amount filter");
+        requestedAmountFilterPassed();
 
       return allFiltersPassed;
     });
@@ -639,6 +637,7 @@ export default function PendingPaymentRequest() {
           components={{
             Toolbar: GridToolbar,
           }}
+          fv
           componentsProps={{
             toolbar: {
               value: search,
@@ -807,27 +806,16 @@ export default function PendingPaymentRequest() {
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
+        slots={{ toolbar: GridToolbar }}
         disableSelectionOnClick
         autoHeight
         disableColumnMenu
-        disableColumnSelector
-        disableColumnFilter
-        disableColumnReorder
-        disableColumnResize
-        disableMultipleColumnsSorting
-        components={{
-          Toolbar: GridToolbar,
-        }}
-        componentsProps={{
+        getRowId={(row) => filterData.indexOf(row)}
+        slotProps={{
           toolbar: {
-            value: search,
-            onChange: (event) => setSearch(event.target.value),
-            placeholder: "Search",
-            clearSearch: true,
-            clearSearchAriaLabel: "clear",
+            showQuickFilter: true,
           },
         }}
-        getRowId={(row) => filterData.indexOf(row)}
       />
 
       {/*Dialog Box */}
