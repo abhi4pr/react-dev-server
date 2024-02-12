@@ -12,11 +12,10 @@ import { Link } from "react-router-dom";
 import UserNav from "../../../Pantry/UserPanel/UserNav";
 import DeleteButton from "../../DeleteButton";
 import { baseUrl } from "../../../../utils/config";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import dayjs from 'dayjs';
-
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import dayjs from "dayjs";
 
 const CaseStudyOperation = () => {
   const [search, setSearch] = useState("");
@@ -45,9 +44,9 @@ const CaseStudyOperation = () => {
   const [brandCategory, setBrandCategory] = useState([]);
   const [brandSubCatData, setBrandSubCatData] = useState([]);
   const [fromDate, setFromDate] = useState(null);
-const [toDate, setToDate] = useState(null);
+  const [toDate, setToDate] = useState(null);
 
-console.log(fromDate,"  ",toDate);
+  console.log(fromDate, "  ", toDate);
 
   const handleFileClick = (fileType, fileUrl) => {
     setEnlargedFileType(fileType);
@@ -116,7 +115,6 @@ console.log(fromDate,"  ",toDate);
   async function getData() {
     await axios.get(baseUrl + "dataoperation").then((res) => {
       setCountData(res.data);
-      console.log(res.data," <----- hello ");
       const responseData = res.data;
 
       const uniqueBrandName = new Set();
@@ -128,6 +126,7 @@ console.log(fromDate,"  ",toDate);
         return false;
       });
       if (RoleIDContext == 2 || RoleIDContext == 1) {
+        console.log(filteredData, "filteredData")
         setData(filteredData);
       } else {
         setData(filteredData.filter((d) => d.created_by === userID));
@@ -228,9 +227,15 @@ console.log(fromDate,"  ",toDate);
   useEffect(() => {
     const filteredData = backupData.filter((item) => {
       const itemDate = dayjs(item.created_at);
-      const isAfterFromDate = fromDate ? itemDate.isAfter(fromDate.startOf('day')) || itemDate.isSame(fromDate.startOf('day'), 'day') : true;
-      const isBeforeToDate = toDate ? itemDate.isBefore(toDate.endOf('day')) || itemDate.isSame(toDate.endOf('day'), 'day') : true;
-      
+      const isAfterFromDate = fromDate
+        ? itemDate.isAfter(fromDate.startOf("day")) ||
+          itemDate.isSame(fromDate.startOf("day"), "day")
+        : true;
+      const isBeforeToDate = toDate
+        ? itemDate.isBefore(toDate.endOf("day")) ||
+          itemDate.isSame(toDate.endOf("day"), "day")
+        : true;
+
       return (
         (selectedCategory === "" || item.cat_id === selectedCategory) &&
         (selectedUser === "" || item.created_by == selectedUser) &&
@@ -238,7 +243,8 @@ console.log(fromDate,"  ",toDate);
         (designed === "" || item.designed_by == designed) &&
         (selectedContent === "" || item.content_type_id === selectedContent) &&
         (selectedPlatform === "" || item.platform_id === selectedPlatform) &&
-        isAfterFromDate && isBeforeToDate
+        isAfterFromDate &&
+        isBeforeToDate
       );
     });
     setData(filteredData);
@@ -253,7 +259,6 @@ console.log(fromDate,"  ",toDate);
     toDate,
     backupData,
   ]);
-  
 
   return (
     <>
@@ -375,31 +380,31 @@ console.log(fromDate,"  ",toDate);
                   </div>
 
                   <div className="col-md-3">
-                  <div className="form-group">
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-  <DatePicker
-    label="From Date"
-    value={fromDate}
-    onChange={(newValue) => {
-      setFromDate(newValue);
-    }}
-    renderInput={(params) => <TextField {...params} />}
-  />
-</LocalizationProvider>
+                    <div className="form-group">
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          label="From Date"
+                          value={fromDate}
+                          onChange={(newValue) => {
+                            setFromDate(newValue);
+                          }}
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
                     </div>
                   </div>
                   <div className="col-md-3">
                     <div className="form-group">
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-  <DatePicker
-    label="To Date"
-    value={toDate}
-    onChange={(newValue) => {
-      setToDate(newValue);
-    }}
-    renderInput={(params) => <TextField {...params} />}
-  />
-</LocalizationProvider>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DatePicker
+                          label="To Date"
+                          value={toDate}
+                          onChange={(newValue) => {
+                            setToDate(newValue);
+                          }}
+                          renderInput={(params) => <TextField {...params} />}
+                        />
+                      </LocalizationProvider>
                     </div>
                   </div>
                 </div>
@@ -426,10 +431,12 @@ console.log(fromDate,"  ",toDate);
                         <div className="summary_card">
                           <div className="summary_cardtitle">
                             <h5>
-                              <span>{detail.data_name}</span>
+                              <span>
+                                {/* { detail.data_name } */}
+                              </span>
                             </h5>
                             <div className="summary_cardaction">
-                              <Link to={`/data-brand-view/${detail.data_id}`}>
+                              <Link to={`/caseStudy-view/${detail.data_id}`}>
                                 <button className="btn btn-warning btn-sm">
                                   View
                                 </button>
@@ -444,7 +451,7 @@ console.log(fromDate,"  ",toDate);
                               </Link>
 
                               <DeleteButton
-                                endpoint="delete_data_based_data"
+                                endpoint="dataoperationwithdataname"
                                 id={detail.data_name}
                                 getData={getData}
                               />
@@ -517,70 +524,59 @@ console.log(fromDate,"  ",toDate);
                                               //   alt={`Slide ${index + 1}`}
                                               // />
                                               <div
-                                              style={{
-                                                position:
-                                                  "relative",
-                                                width: "100%",
-                                                height: "auto",
-                                              }}
-                                            >
-                                              {" "}
-                                              {/* Adjust the height as needed */}
-                                              <iframe
-                                                allowFullScreen={
-                                                  true
-                                                }
-                                                src={
-                                                  filteredItem.data_image
-                                                }
-                                                title="PDF Viewer"
                                                 style={{
+                                                  position: "relative",
                                                   width: "100%",
-                                                  height: "100%",
-                                                  border: "none",
-                                                  overflow:
-                                                    "hidden",
+                                                  height: "auto",
                                                 }}
-                                              />
-                                              <div
-                                                onClick={() =>
-                                                  handleFileClick(
-                                                    "pdf",
-                                                    filteredItem.data_image
-                                                  )
-                                                }
-                                                style={{
-                                                  position:
-                                                    "absolute",
-                                                  width: "64%",
-                                                  height: "71%",
-                                                  top: 0,
-                                                  left: "21px",
-                                                  cursor:
-                                                    "pointer",
-                                                  background:
-                                                    "rgba(0, 0, 0, 0)", // This makes the div transparent
-                                                  zIndex: 10, // This ensures the div is placed over the iframe
-                                                }}
-                                              ></div>
-                                            </div>
+                                              >
+                                                {" "}
+                                                {/* Adjust the height as needed */}
+                                                <iframe
+                                                  allowFullScreen={true}
+                                                  src={filteredItem.data_image}
+                                                  title="PDF Viewer"
+                                                  style={{
+                                                    width: "100%",
+                                                    height: "100%",
+                                                    border: "none",
+                                                    overflow: "hidden",
+                                                  }}
+                                                />
+                                                <div
+                                                  onClick={() =>
+                                                    handleFileClick(
+                                                      "pdf",
+                                                      filteredItem.data_image
+                                                    )
+                                                  }
+                                                  style={{
+                                                    position: "absolute",
+                                                    width: "64%",
+                                                    height: "71%",
+                                                    top: 0,
+                                                    left: "21px",
+                                                    cursor: "pointer",
+                                                    background:
+                                                      "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                    zIndex: 10, // This ensures the div is placed over the iframe
+                                                  }}
+                                                ></div>
+                                              </div>
                                             ) : filteredItem.data_type ===
                                               "mp4" ? (
-                                                <video
+                                              <video
                                                 className=""
                                                 controls
                                                 width="100%"
                                                 height="auto"
                                               >
                                                 <source
-                                                  src={
-                                                    filteredItem.data_image
-                                                  }
+                                                  src={filteredItem.data_image}
                                                   type={`video/mp4`}
                                                 />
-                                                Your browser does
-                                                not support the
-                                                video tag.
+                                                Your browser does not support
+                                                the video tag.
                                               </video>
                                             ) : (
                                               <img
@@ -926,29 +922,85 @@ console.log(fromDate,"  ",toDate);
                                               </button>
                                             </div>
                                           ) : detail.data_type === "pdf" ? (
-                                            <img
-                                              onClick={() =>
-                                                handleFileClick(
-                                                  "pdf",
-                                                  detail.mmc_image
-                                                )
-                                              }
-                                              src={video}
-                                              width="80px"
-                                              height="80px"
-                                            />
+                                            // <img
+                                            //   onClick={() =>
+                                            //     handleFileClick(
+                                            //       "pdf",
+                                            //       detail.mmc_image
+                                            //     )
+                                            //   }
+                                            //   src={video}
+                                            //   width="80px"
+                                            //   height="80px"
+                                            // />
+                                            <div
+                                              style={{
+                                                position: "relative",
+                                                width: "100%",
+                                                height: "auto",
+                                              }}
+                                            >
+                                              {" "}
+                                              {/* Adjust the height as needed */}
+                                              <iframe
+
+                                                allowFullScreen={true}
+                                                src={detail.mmc_image}
+                                                title="PDF Viewer"
+                                                style={{
+                                                  width: "100%",
+                                                  height: "100%",
+                                                  border: "none",
+                                                  overflow: "hidden",
+                                                }}
+                                              />
+                                              <div
+
+                                                onClick={() =>
+                                                  handleFileClick(
+                                                    "pdf",
+                                                    detail.mmc_image
+                                                  )
+                                                }
+                                                style={{
+                                                  position: "absolute",
+                                                  width: "64%",
+                                                  height: "71%",
+                                                  top: 0,
+                                                  left: "21px",
+                                                  cursor: "pointer",
+                                                  background: "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                  zIndex: 10, // This ensures the div is placed over the iframe
+                                                }}
+                                              ></div>
+                                            </div>
+
                                           ) : detail.data_type === "mp4" ? (
-                                            <img
-                                              onClick={() =>
-                                                handleFileClick(
-                                                  "video",
-                                                  detail.mmc_image
-                                                )
-                                              }
-                                              src={video}
-                                              width="80px"
-                                              height="80px"
-                                            />
+                                            // <img
+                                            //   onClick={() =>
+                                            //     handleFileClick(
+                                            //       "video",
+                                            //       detail.mmc_image
+                                            //     )
+                                            //   }
+                                            //   src={video}
+                                            //   width="80px"
+                                            //   height="80px"
+                                            // />
+                                            <video
+                                              className=""
+                                              controls
+                                              width="100%"
+                                              height="auto"
+                                            >
+                                              <source
+                                                src={detail.mmc_image}
+                                                type={`video/mp4`}
+                                              />
+                                              Your browser does not support the
+                                              video tag.
+                                            </video>
+                                            
                                           ) : (
                                             <img
                                               src={video}
@@ -1444,13 +1496,29 @@ console.log(fromDate,"  ",toDate);
                                                             ></div>
                                                           </div>
                                                         ) : (
-                                                          <img
-                                                            className="d-block w-100"
-                                                            src={video} // Default case, though this seems to be an oversight as there's no alternative case for other data types
-                                                            alt={`Slide ${
-                                                              index + 1
-                                                            }`}
-                                                          />
+                                                          // <img
+                                                          //   className="d-block w-100"
+                                                          //   src={video} // Default case, though this seems to be an oversight as there's no alternative case for other data types
+                                                          //   alt={`Slide ${
+                                                          //     index + 1
+                                                          //   }`}
+                                                          // />
+                                                          <video
+                                                            className=""
+                                                            controls
+                                                            width="100%"
+                                                            height="auto"
+                                                          >
+                                                            <source
+                                                              src={
+                                                                filteredItem.no_logo_image
+                                                              }
+                                                              type={`video/mp4`}
+                                                            />
+                                                            Your browser does not
+                                                            support the video tag.
+                                                          </video>
+
                                                         )}
                                                       </div>
                                                     )
@@ -1486,29 +1554,86 @@ console.log(fromDate,"  ",toDate);
                                               </button>
                                             </div>
                                           ) : detail.data_type === "pdf" ? (
-                                            <img
-                                              onClick={() =>
-                                                handleFileClick(
-                                                  "pdf",
-                                                  detail.no_logo_image
-                                                )
-                                              }
-                                              src={video} // Placeholder for PDF
-                                              width="80px"
-                                              height="80px"
-                                            />
+                                            // <img
+                                            //   onClick={() =>
+                                            //     handleFileClick(
+                                            //       "pdf",
+                                            //       detail.no_logo_image
+                                            //     )
+                                            //   }
+                                            //   src={video} // Placeholder for PDF
+                                            //   width="80px"
+                                            //   height="80px"
+                                            // />
+                                            <div
+
+                                              style={{  
+                                                position: "relative",
+                                                width: "100%",
+                                                height: "auto",
+                                              }}
+                                            >
+                                              {" "}
+                                              {/* Adjust the height as needed */}
+                                              <iframe
+
+                                                allowFullScreen={true}  
+                                                src={detail.no_logo_image}
+                                                title="PDF Viewer"
+                                                style={{
+                                                  width: "100%",
+                                                  height: "100%",
+                                                  border: "none",
+                                                  overflow: "hidden",
+                                                }}
+                                              />
+                                              <div
+
+                                                onClick={() =>  
+                                                  handleFileClick(
+                                                    "pdf",
+                                                    detail.no_logo_image
+                                                  )
+                                                }
+                                                style={{
+                                                  position: "absolute",
+                                                  width: "64%",
+                                                  height: "71%",
+                                                  top: 0,
+                                                  left: "21px",
+                                                  cursor: "pointer",
+                                                  background:
+                                                    "rgba(0, 0, 0, 0)", // This makes the div transparent
+                                                  zIndex: 10, // This ensures the div is placed over the iframe
+                                                }}
+                                              ></div>
+                                            </div>
                                           ) : detail.data_type === "mp4" ? (
-                                            <img
-                                              onClick={() =>
-                                                handleFileClick(
-                                                  "video",
-                                                  detail.no_logo_image
-                                                )
-                                              }
-                                              src={video} // Placeholder for video
-                                              width="80px"
-                                              height="80px"
-                                            />
+                                            // <img
+                                            //   onClick={() =>
+                                            //     handleFileClick(
+                                            //       "video",
+                                            //       detail.no_logo_image
+                                            //     )
+                                            //   }
+                                            //   src={video} // Placeholder for video
+                                            //   width="80px"
+                                            //   height="80px"
+                                            // />
+                                            <video
+                                              className=""
+                                              controls
+                                              width="100%"
+                                              height="auto"
+                                            >
+                                              <source
+                                                src={detail.no_logo_image}
+                                                type={`video/mp4`}
+                                              />
+                                              Your browser does not support the
+                                              video tag.
+                                            </video>
+
                                           ) : (
                                             <img
                                               src={video} // This case may need to be adjusted since it doesn't directly relate to no_logo_image

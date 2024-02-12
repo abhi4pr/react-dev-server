@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
-import FormContainer from "../../AdminPanel/FormContainer";
 
 import { MdCancel } from "react-icons/md";
 import pdf from "./pdf-file.png";
@@ -14,13 +13,20 @@ import { baseUrl } from "../../../../utils/config";
 import UserNav from "../../../Pantry/UserPanel/UserNav";
 import { useGlobalContext } from "../../../../Context/Context";
 import FieldContainer from "../../FieldContainer";
+import FormContainer from "../../FormContainer";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
+import { Add } from "@mui/icons-material";
 
 const UpdateCaseStudy = () => {
-  const [openReviewDisalog, setOpenReviewDisalog] = useState({
-    open: false,
-    image: "",
-    detail: {},
-  });
   const [fileDetails, setFileDetails] = useState([]);
   const { toastAlert, toastError } = useGlobalContext();
   const [brand, setBrand] = useState("");
@@ -34,19 +40,16 @@ const UpdateCaseStudy = () => {
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [images, setImages] = useState([]);
   const [details, setDetails] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
   const [category, setCategory] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState([]);
   const [currentDate, setCurrentDate] = useState("");
   const [platform, setPlateform] = useState("");
   const [platformData, setPlateformData] = useState([]);
   const [contentType, setContentType] = useState("");
-  const [contentTypeData, setContentTypeData] = useState([]);
   const [dataBrand, setDataBrand] = useState("");
   const [dataBrandData, setDataBrandData] = useState([]);
   // const [dataSubCategory, setDataSubCategory] = useState([]);
   const [dataSubCategory, setDataSubCategory] = useState("");
-  const [dataSubCategoryData, setDataSubCategoryData] = useState([]);
+
   const [error, setError] = useState("");
   const [dataId, setDataId] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -71,6 +74,13 @@ const UpdateCaseStudy = () => {
   const [mmcDetails, setMMCDetails] = useState([]);
   const [sarcasmImages, setSarcasmImages] = useState([]);
   const [sarcasmDetails, setSarcasmDetails] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenSubCat, setIsModalOpenSubCat] = useState(false);
+  const [cat, setCat] = useState("");
+  const [postData, setPostData] = useState({
+    sub_category_name: "",
+    category_id: "",
+  });
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -85,7 +95,7 @@ const UpdateCaseStudy = () => {
   };
 
   const callAbvApi = async () => {
-    axios.get(baseUrl + "get_all_datas").then((res) => {
+    axios.get(baseUrl + "dataoperation").then((res) => {
       setAllData(res.data);
       res.data
         .filter((detail) => {
@@ -134,7 +144,7 @@ const UpdateCaseStudy = () => {
   };
 
   useEffect(() => {
-    axios.get(`${baseUrl}` + `get_single_data/${id}`).then((res) => {
+    axios.get(`${baseUrl}` + `dataoperation/${id}`).then((res) => {
       const fetchedData = res.data;
       const {
         data_name,
@@ -175,10 +185,6 @@ const UpdateCaseStudy = () => {
       // setBrandData(fetchedData);
     });
 
-    axios.get(baseUrl + "get_all_data_categorys").then((res) => {
-      setCategoryData(res.data.simcWithSubCategoryCount);
-    });
-
     axios.get(baseUrl + "get_all_data_platforms").then((res) => {
       setPlateformData(res.data);
     });
@@ -187,11 +193,9 @@ const UpdateCaseStudy = () => {
     //   .then((res) => {
     //     setDataSubCategoryData(res.data);
     //   });
-    axios.get(baseUrl + "get_all_data_content_types").then((res) => {
-      setContentTypeData(res.data);
-    });
-    axios.get(baseUrl + "get_all_data_brands").then((res) => {
-      setDataBrandData(res.data);
+
+    axios.get(baseUrl + "get_brands").then((res) => {
+      setDataBrandData(res.data.data);
     });
 
     const today = new Date();
@@ -202,30 +206,11 @@ const UpdateCaseStudy = () => {
       .then((res) => {
         setBrandCategory(res.data.data);
       })
-      .catch((err) => {});
+      .catch(() => {});
     axios.get(baseUrl + "projectxSubCategory").then((res) => {
       setBrandSubCatData(res.data.data);
     });
   }, [id]);
-
-  useEffect(() => {
-    if (category) {
-      axios
-        .get(`${baseUrl}` + `get_single_data_from_sub_category/${category}`)
-        .then((res) => {
-          setDataSubCategoryData(res.data);
-        });
-    }
-  }, [category]);
-
-  const handleCategoryChange = (event, index) => {
-    const { value } = event.target;
-    setSelectedCategories((prevCategories) => {
-      const updatedCategories = [...prevCategories];
-      updatedCategories[index] = value;
-      return updatedCategories;
-    });
-  };
 
   const getCombinedData = async () => {
     if (dataId) {
@@ -240,13 +225,15 @@ const UpdateCaseStudy = () => {
       //     // setDataSubCategory(res.data[0]?.sub_cat_id[0].split(","))
       //     setDataSubCategory(res.data[0]?.sub_cat_id);
 
-      //     setPlateform(res.data[0]?.platform_id);
+      //     setPlateform(res.data[0]?.platform_ids);
       //     setContentType(res.data[0]?.content_type_id);
       //     setDataBrand(res.data[0]?.brand_id);
       //     setRemark(res.data[0]?.remark);
       //   });
       axios
-        .get(`${baseUrl}` + `get_data_based_data_name_new/${brandName}`)
+        .get(
+          `${baseUrl}` + `get_data_operation_based_data_name_new/${brandName}`
+        )
         .then((res) => {
           setLogos(() => res.data);
 
@@ -256,7 +243,7 @@ const UpdateCaseStudy = () => {
           // setDataSubCategory(res.data[0]?.sub_cat_id[0].split(","))
           setDataSubCategory(res.data[0]?.sub_cat_id);
 
-          setPlateform(res.data[0]?.platform_id);
+          setPlateform(res.data[0]?.platform_ids);
           setContentType(res.data[0]?.content_type_id);
           setDataBrand(res.data[0]?.brand_id);
           setRemark(res.data[0]?.remark);
@@ -280,7 +267,10 @@ const UpdateCaseStudy = () => {
         "You can't delete default data type, try to delete data instead"
       );
     } else {
-      var data = await axios.delete(`${baseUrl}` + `delete_data/${_id}`, null);
+      var data = await axios.delete(
+        `${baseUrl}` + `dataoperation/${_id}`,
+        null
+      );
       if (data) {
         getCombinedData();
       }
@@ -301,7 +291,7 @@ const UpdateCaseStudy = () => {
   //     data_id: +id,
   //     data_name: brandName,
   //     brand_id: dataBrand,
-  //     platform_id: platform,
+  //     platform_ids: platform,
   //     content_type_id: contentType,
   //     cat_id: category,
   //     sub_cat_id: dataSubCategory,
@@ -318,7 +308,7 @@ const UpdateCaseStudy = () => {
   //       formData.append("data_name", brandName);
   //       formData.append("cat_id", category);
   //       formData.append("sub_cat_id", dataSubCategory);
-  //       formData.append("platform_id", platform);
+  //       formData.append("platform_ids", platform);
   //       formData.append("brand_id", dataBrand);
   //       formData.append("content_type_id", contentType);
   //       formData.append("data_upload", details[i].file);
@@ -327,7 +317,7 @@ const UpdateCaseStudy = () => {
   //       formData.append("remark", remark);
   //       formData.append("created_by", loginUserId);
 
-  //       await axios.post(baseUrl+"add_data", formData, {
+  //       await axios.post(baseUrl+"dataoperation", formData, {
   //         headers: {
   //           "Content-Type": "multipart/form-data",
   //         },
@@ -360,13 +350,7 @@ const UpdateCaseStudy = () => {
 
     e.preventDefault();
     // return;
-    if (category == "") {
-      toastError("Category is required");
-    } else if (dataSubCategory == "") {
-      toastError("Sub category is required");
-    } else if (platform == "") {
-      toastError("Platform is required");
-    } else if (contentType == "") {
+    if (contentType == "") {
       toastError("Content type is required");
     } else if (dataBrand == "") {
       toastError("Brand is required");
@@ -424,13 +408,13 @@ const UpdateCaseStudy = () => {
       }
       if (details.length == 0) {
         await axios
-          .put(baseUrl + "dataoperation", {
-            data_id: id,
+          .put(baseUrl + "editdataoperationname", {
+            data_id:  +id,
             data_name: brandName,
             remark: remark,
             cat_id: category,
             sub_cat_id: dataSubCategory,
-            platform_id: platform,
+            platform_ids: platform,
             brand_id: dataBrand,
             content_type_id: contentType,
             date_of_completion: dateOfCompletion,
@@ -453,19 +437,19 @@ const UpdateCaseStudy = () => {
       } else {
         for (let i = 0; i < details.length; i++) {
           const formData = new FormData();
-          formData.append("data_id", id);
+          formData.append("data_id", +id);
           formData.append("data_name", brandName);
           formData.append("remark", remark);
           formData.append("data_type", details[i].fileType);
           formData.append("size_in_mb", details[i].sizeInMB);
           formData.append("cat_id", category);
           formData.append("sub_cat_id", dataSubCategory);
-          formData.append("platform_id", platform);
+          formData.append("platform_ids", platform);
           formData.append("brand_id", dataBrand);
           formData.append("content_type_id", contentType);
           formData.append("data_upload", images[i]);
           await axios
-            .post(baseUrl + "add_data", formData, {
+            .post(baseUrl + "dataoperation", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
@@ -480,19 +464,19 @@ const UpdateCaseStudy = () => {
       if (mmcDetails.length > 0) {
         for (let i = 0; i < mmcDetails.length; i++) {
           const formData = new FormData();
-          formData.append("data_id", id);
+          formData.append("data_id", +id);
           formData.append("data_name", brandName);
           formData.append("remark", remark);
           formData.append("data_type", mmcDetails[i].fileType);
           formData.append("size_in_mb", mmcDetails[i].sizeInMB);
           formData.append("cat_id", category);
           formData.append("sub_cat_id", dataSubCategory);
-          formData.append("platform_id", platform);
+          formData.append("platform_ids", platform);
           formData.append("brand_id", dataBrand);
           formData.append("content_type_id", contentType);
           formData.append("mmc", mmcImages[i]);
           await axios
-            .post(baseUrl + "add_data", formData, {
+            .post(baseUrl + "dataoperation", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
@@ -507,20 +491,20 @@ const UpdateCaseStudy = () => {
       if (sarcasmDetails.length > 0) {
         for (let i = 0; i < sarcasmDetails.length; i++) {
           const formData = new FormData();
-          formData.append("data_id", id);
+          formData.append("data_id", +id);
           formData.append("data_name", brandName);
           formData.append("remark", remark);
           formData.append("data_type", sarcasmDetails[i].fileType);
           formData.append("size_in_mb", sarcasmDetails[i].sizeInMB);
           formData.append("cat_id", category);
           formData.append("sub_cat_id", dataSubCategory);
-          formData.append("platform_id", platform);
+          formData.append("platform_ids", platform);
           formData.append("brand_id", dataBrand);
           formData.append("content_type_id", contentType);
           formData.append("sarcasm", sarcasmImages[i]);
           await axios
 
-            .post(baseUrl + "add_data", formData, {
+            .post(baseUrl + "dataoperation", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
@@ -535,7 +519,7 @@ const UpdateCaseStudy = () => {
       if (nologoDetails.length > 0) {
         for (let i = 0; i < nologoDetails.length; i++) {
           const formData = new FormData();
-          formData.append("data_id", id);
+          formData.append("data_id", +id);
           formData.append("data_name", brandName);
           formData.append("remark", remark);
 
@@ -543,12 +527,12 @@ const UpdateCaseStudy = () => {
           formData.append("size_in_mb", nologoDetails[i].sizeInMB);
           formData.append("cat_id", category);
           formData.append("sub_cat_id", dataSubCategory);
-          formData.append("platform_id", platform);
+          formData.append("platform_ids", platform);
           formData.append("brand_id", dataBrand);
           formData.append("content_type_id", contentType);
           formData.append("no_logo", nologoImages[i]);
           await axios
-            .post(baseUrl + "add_data", formData, {
+            .post(baseUrl + "dataoperation", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
@@ -730,6 +714,59 @@ const UpdateCaseStudy = () => {
     });
   };
 
+  const handleClick = () => {
+    setIsModalOpen(true);
+  };
+  const handleClickSubCat = () => {
+    setIsModalOpenSubCat(true);
+  };
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    axios
+      .post(baseUrl + "projectxCategory", {
+        category_name: cat,
+      })
+      .then((response) => {
+        if (response.data.success === false) {
+          toastError(response.data.message);
+        } else {
+          toastAlert("Add successfully");
+        }
+        setIsModalOpen(false);
+        getCat();
+        setCat("");
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+        toastError("Add Properly");
+      });
+    setIsModalOpen(false);
+  };
+
+  const getCat = () => {
+    axios
+      .get(baseUrl + "projectxCategory")
+      .then((res) => {
+        setBrandCategory(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getSubCat = () => {
+    axios.get(baseUrl + "projectxSubCategory").then((res) => {
+      setBrandSubCatData(res.data.data);
+    });
+  };
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setPostData({
+      ...postData,
+      [name]: value,
+    });
+  };
+
   const handleNologoFileChange = (event) => {
     // setFileDetails((prev) => [...prev, event.target.files]);
     const files = Array.from(event.target.files);
@@ -780,21 +817,99 @@ const UpdateCaseStudy = () => {
   };
 
   if (isFormSubmitted) {
-    return <Navigate to="/data-brand-overview" />;
+    return <Navigate to="/admin/operation/case-study" />;
   }
 
-  const renderFileIcon = (fileType) => {
+  // const renderFileIcon = (fileType) => {
+  //   switch (fileType) {
+  //     case "pdf":
+  //       return <img src={pdf} alt="PDF" style={{ width: "32%" }} />;
+  //     case "mp4":
+  //       return <img src={video} alt="PDF" style={{ width: "32%" }} />;
+  //     case "xls":
+  //     case "xlsx":
+  //       return <img src={sheets} alt="Excel" style={{ width: "32%" }} />;
+  //     default:
+  //       return <i className="fa fa-file"></i>;
+  //   }
+  // };
+
+  const renderFileIcon = (fileType, src, detail) => {
     switch (fileType) {
       case "pdf":
-        return <img src={pdf} alt="PDF" style={{ width: "32%" }} />;
+        // return <img src={pdf} alt="PDF" style={{ width: "32%" }} />;
+        return (
+          <div style={{ position: "relative", width: "45%", height: "auto" }}>
+            {" "}
+            {/* Adjust the height as needed */}
+            <iframe
+              allowFullScreen={true}
+              src={src}
+              title="PDF Viewer"
+              style={{
+                width: "100%",
+                height: "100%",
+                border: "none",
+                overflow: "hidden",
+              }}
+            />
+            <div
+              // onClick={() => {
+              //   setOpenReviewDisalog({
+              //     open: true,
+              //     image: src,
+              //     detail: detail,
+              //   });
+              // }}
+              style={{
+                position: "absolute",
+                width: "100%",
+                height: "100%",
+                top: 0,
+                left: 0,
+                cursor: "pointer",
+                background: "rgba(0, 0, 0, 0)", // This makes the div transparent
+                zIndex: 10, // This ensures the div is placed over the iframe
+              }}
+            ></div>
+          </div>
+        );
       case "mp4":
-        return <img src={video} alt="PDF" style={{ width: "32%" }} />;
+        // return <img src={video} alt="PDF" style={{ width: "32%" }} />;
+        return (
+          <video className="mt-5" controls width="45%" height="auto">
+            <source src={src} type={`video/${fileType}`} />
+            Your browser does not support the video tag.
+          </video>
+        );
       case "xls":
       case "xlsx":
         return <img src={sheets} alt="Excel" style={{ width: "32%" }} />;
       default:
         return <i className="fa fa-file"></i>;
     }
+  };
+
+  const handleSaveSubCat = (e) => {
+    e.preventDefault();
+    axios
+      .post(baseUrl + "projectxSubCategory", postData)
+      .then((response) => {
+        if (response.data.success === false) {
+          toastError(response.data.message);
+        } else {
+          toastAlert("Add successfully");
+        }
+        postData.sub_category_name = "";
+        console.log("Data saved:", response.data);
+        setIsModalOpenSubCat(false);
+        getSubCat();
+      })
+      .catch((error) => {
+        console.error("Error saving data:", error);
+        toastError("Add Properly");
+      });
+    setIsModalOpen(false);
   };
 
   return (
@@ -808,15 +923,6 @@ const UpdateCaseStudy = () => {
               title="Data"
               handleSubmit={handleSubmit}
             >
-            
-              <FieldContainer
-                label="Name *"
-                type="text"
-                value={brandName}
-                onChange={(e) => setBrandName(e.target.value)}
-                // onBlur={handleContentBlur}
-              />
-
               <FieldContainer
                 label="Upload Data "
                 type="file"
@@ -826,97 +932,57 @@ const UpdateCaseStudy = () => {
                 fieldGrid={6}
                 required={false}
               />
-                <>
-                  <FieldContainer
-                    label="MMC "
-                    type="file"
-                    multiple
-                    accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-                    onChange={handleMMCFileChange}
-                    fieldGrid={6}
-                    required={false}
-                  />
-                  <FieldContainer
-                    label="sarcasm "
-                    multiple
-                    type="file"
-                    accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-                    onChange={handleSarcasmFileChange}
-                    fieldGrid={6}
-                    required={false}
-                  />
-                  <FieldContainer
-                    label="No Logo "
-                    multiple
-                    type="file"
-                    accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-                    onChange={handleNologoFileChange}
-                    fieldGrid={6}
-                    required={false}
-                  />
-                </>
-
-              <div className="form-group col-3">
-                <label className="form-label">
-                  Category Name <sup style={{ color: "red" }}>*</sup>
-                </label>
-                <Select
-                  options={categoryData.map((opt) => ({
-                    value: opt._id,
-                    label: opt.category_name,
-                  }))}
-                  value={{
-                    value: category,
-                    label:
-                      categoryData.find((user) => user._id === category)
-                        ?.category_name || "",
-                  }}
-                  onChange={(e) => {
-                    setCategory(e.value);
-                  }}
-                  required
+              <>
+                <FieldContainer
+                  label="MMC "
+                  type="file"
+                  multiple
+                  accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+                  onChange={handleMMCFileChange}
+                  fieldGrid={6}
+                  required={false}
                 />
-              </div>
-              <div className="form-group col-3">
-                <label className="form-label">
-                  Sub Category Name <sup style={{ color: "red" }}>*</sup>
-                </label>
-                <Select
-                  options={dataSubCategoryData.map((opt) => ({
-                    value: opt._id,
-                    label: opt.data_sub_cat_name,
-                  }))}
-                  value={{
-                    value: dataSubCategory,
-                    label:
-                      dataSubCategoryData.find(
-                        (user) => user._id === dataSubCategory
-                      )?.data_sub_cat_name || "",
-                  }}
-                  onChange={(e) => {
-                    setDataSubCategory(e.value);
-                  }}
-                  required
+                <FieldContainer
+                  label="Sarcasm "
+                  multiple
+                  type="file"
+                  accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+                  onChange={handleSarcasmFileChange}
+                  fieldGrid={6}
+                  required={false}
                 />
-              </div>
+                <FieldContainer
+                  label="No Logo "
+                  multiple
+                  type="file"
+                  accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+                  onChange={handleNologoFileChange}
+                  fieldGrid={6}
+                  required={false}
+                />
+              </>
 
               <div className="form-group col-3">
                 <label className="form-label">
                   Platform Name <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <Select
+                  isMulti
                   options={platformData.map((opt) => ({
                     value: opt._id,
                     label: opt.platform_name,
                   }))}
-                  value={{
-                    value: platform,
-                    label:
-                      platformData.find((user) => user._id === platform)
-                        ?.platform_name || "",
-                  }}
-                  onChange={(e) => {
-                    setPlateform(e.value);
+                  value={platformData
+                    .filter((opt) => platform?.includes(opt._id))
+                    .map((opt) => ({
+                      value: opt._id,
+                      label: opt.platform_name,
+                    }))}
+                  onChange={(selectedOptions) => {
+                    const selectedValues = selectedOptions.map(
+                      (option) => option.value
+                    );
+                    setPlateform(selectedValues);
                   }}
                   required
                 />
@@ -943,186 +1009,203 @@ const UpdateCaseStudy = () => {
                   required
                 />
               </div>
-                <>
-                  <div className="form-group col-3">
-                    <label className="form-label">
-                      Date of Completion <sup style={{ color: "red" }}>*</sup>
-                    </label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      value={dateOfCompletion}
-                      onChange={(e) => setDateOfCompletion(e.target.value)}
-                    />
-                  </div>
+              <>
+                <div className="form-group col-3">
+                  <label className="form-label">
+                    Date of Completion <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={dateOfCompletion}
+                    onChange={(e) => setDateOfCompletion(e.target.value)}
+                  />
+                </div>
 
-                  <div className="form-group col-3">
-                    <label className="form-label">
-                      Date of Report <sup style={{ color: "red" }}>*</sup>
-                    </label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      value={dateOfReport}
-                      onChange={(e) => setDateOfReport(e.target.value)}
-                    />
-                  </div>
-                  <div className="form-group col-3">
-                    <label className="form-label">
-                      Brand Category <sup style={{ color: "red" }}>*</sup>
-                    </label>
-                    <Select
-                      options={brandCategory.map((opt) => ({
-                        value: opt.category_id,
-                        label: opt.category_name,
+                <div className="form-group col-3">
+                  <label className="form-label">
+                    Date of Report <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <input
+                    type="date"
+                    className="form-control"
+                    value={dateOfReport}
+                    onChange={(e) => setDateOfReport(e.target.value)}
+                  />
+                </div>
+                <div className="form-group col-3">
+                  <label className="form-label">
+                    Brand Category <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    options={brandCategory.map((opt) => ({
+                      value: opt.category_id,
+                      label: opt.category_name,
+                    }))}
+                    value={{
+                      value: brandCat,
+                      label:
+                        brandCategory.find(
+                          (brand) => brand.category_id == brandCat
+                        )?.category_name || "",
+                    }}
+                    onChange={(e) => {
+                      setBrandCat(e.value);
+                      setBrandSubCategory("");
+                    }}
+                  />
+                </div>
+                <div className="col-1 mt-4">
+                  <Button
+                    title="Add Category"
+                    variant="contained"
+                    onClick={handleClick}
+                  >
+                    <Add />
+                  </Button>
+                </div>
+                <div className="form-group col-3">
+                  <label className="form-label">
+                    Brand Sub Category <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    options={brandSubCatData
+                      .filter((opt) => opt.category_id == brandCat)
+                      .map((opt) => ({
+                        value: opt.sub_category_id,
+                        label: opt.sub_category_name,
                       }))}
-                      value={{
-                        value: brandCat,
-                        label:
-                          brandCategory.find(
-                            (brand) => brand.category_id == brandCat
-                          )?.category_name || "",
-                      }}
-                      onChange={(e) => {
-                        setBrandCat(e.value);
-                        setBrandSubCategory("");
-                      }}
-                    />
-                  </div>
-                  <div className="form-group col-3">
-                    <label className="form-label">
-                      Brand Sub Category <sup style={{ color: "red" }}>*</sup>
-                    </label>
-                    <Select
-                      options={brandSubCatData
-                        .filter((opt) => opt.category_id == brandCat)
-                        .map((opt) => ({
-                          value: opt.sub_category_id,
-                          label: opt.sub_category_name,
-                        }))}
-                      value={{
-                        value: brandSubCategory,
-                        label:
-                          brandSubCatData.find(
-                            (e) => e.sub_category_id == brandSubCategory
-                          )?.sub_category_name || "",
-                      }}
-                      onChange={(e) => {
-                        setBrandSubCategory(e.value);
-                      }}
-                    />
-                  </div>
+                    value={{
+                      value: brandSubCategory,
+                      label:
+                        brandSubCatData.find(
+                          (e) => e.sub_category_id == brandSubCategory
+                        )?.sub_category_name || "",
+                    }}
+                    onChange={(e) => {
+                      setBrandSubCategory(e.value);
+                    }}
+                  />
+                </div>
+                <div className="col-1 mt-4">
+                  <Button
+                    title="Add Sub Category"
+                    variant="contained"
+                    onClick={handleClickSubCat}
+                  >
+                    <Add />
+                  </Button>
+                </div>
+                <div className="form-group col-3">
+                  <label className="form-label">
+                    Campaign Purpose <sup style={{ color: "red" }}>*</sup>
+                  </label>
 
-                  <div className="form-group col-3">
-                    <label className="form-label">
-                      Campaign Purpose <sup style={{ color: "red" }}>*</sup>
-                    </label>
+                  <input
+                    className="form-control"
+                    value={compignPurpose}
+                    onChange={(e) => setCompignPurpose(e.target.value)}
+                  />
+                </div>
 
-                    <input
-                      className="form-control"
-                      value={compignPurpose}
-                      onChange={(e) => setCompignPurpose(e.target.value)}
-                    />
-                  </div>
+                <div className="form-group col-3">
+                  <label className="form-label">
+                    Number of Post <sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <input
+                    className="form-control"
+                    value={NumOfPost}
+                    onChange={(e) => {
+                      if (!isNaN(Number(e.target.value))) {
+                        setNumOfPost(e.target.value);
+                      }
+                    }}
+                  />
+                </div>
 
-                  <div className="form-group col-3">
-                    <label className="form-label">
-                      Number Of Post <sup style={{ color: "red" }}>*</sup>
-                    </label>
-                    <input
-                      className="form-control"
-                      value={NumOfPost}
-                      onChange={(e) => {
-                        if (!isNaN(Number(e.target.value))) {
-                          setNumOfPost(e.target.value);
-                        }
-                      }}
-                    />
-                  </div>
-
-                  <div className="form-group col-3">
-                    <label className="form-label">Number Of Reach</label>
-                    <input
-                      className="form-control"
-                      value={NumOfReach}
-                      onChange={(e) => {
-                        setNumOfReach(HandleNAFileChangeOnChange(e));
-                      }}
-                      onBlur={(e) => {
-                        setNumOfReach(handleNaFileChangeOnBlur(e));
-                      }}
-                    />
-                  </div>
-                  <div className="form-group col-3">
-                    <label className="form-label">Number Of Impression</label>
-                    <input
-                      className="form-control"
-                      value={NumOfImpression}
-                      onChange={(e) =>
-                        setNumOfImpression(HandleNAFileChangeOnChange(e))
-                      }
-                      onBlur={(e) => {
-                        setNumOfImpression(handleNaFileChangeOnBlur(e));
-                      }}
-                    />
-                  </div>
-                  <div className="form-group col-3">
-                    <label className="form-label">Number Of Engagement</label>
-                    <input
-                      className="form-control"
-                      value={NumOfEngagement}
-                      onChange={(e) =>
-                        setNumOfEngagement(HandleNAFileChangeOnChange(e))
-                      }
-                      onBlur={(e) => {
-                        setNumOfEngagement(handleNaFileChangeOnBlur(e));
-                      }}
-                    />
-                  </div>
-                  <div className="form-group col-3">
-                    <label className="form-label">Number Of views</label>
-                    <input
-                      className="form-control"
-                      value={NumOfViews}
-                      onChange={(e) =>
-                        setNumOfViews(HandleNAFileChangeOnChange(e))
-                      }
-                      onBlur={(e) => {
-                        setNumOfViews(handleNaFileChangeOnBlur(e));
-                      }}
-                    />
-                  </div>
-                  <div className="form-group col-3">
-                    <label className="form-label">Number Of Story Views</label>
-                    <input
-                      className="form-control"
-                      value={NumOfStoryViews}
-                      onChange={(e) =>
-                        setNumOfStoryViews(HandleNAFileChangeOnChange(e))
-                      }
-                      onBlur={(e) => {
-                        setNumOfStoryViews(handleNaFileChangeOnBlur(e));
-                      }}
-                    />
-                  </div>
-                  <div className="form-group col-3">
-                    <label className="form-label">Operation Remark</label>
-                    <input
-                      className="form-control"
-                      value={OperationRemark}
-                      onChange={(e) =>
-                        setOperationRemark(HandleNAFileChangeOnChange(e))
-                      }
-                      onBlur={(e) => {
-                        setOperationRemark(handleNaFileChangeOnBlur(e));
-                      }}
-                    />
-                  </div>
-                </>
-              
+                <div className="form-group col-3">
+                  <label className="form-label">Number of Reach</label>
+                  <input
+                    className="form-control"
+                    value={NumOfReach}
+                    onChange={(e) => {
+                      setNumOfReach(HandleNAFileChangeOnChange(e));
+                    }}
+                    onBlur={(e) => {
+                      setNumOfReach(handleNaFileChangeOnBlur(e));
+                    }}
+                  />
+                </div>
+                <div className="form-group col-3">
+                  <label className="form-label">Number of Impression</label>
+                  <input
+                    className="form-control"
+                    value={NumOfImpression}
+                    onChange={(e) =>
+                      setNumOfImpression(HandleNAFileChangeOnChange(e))
+                    }
+                    onBlur={(e) => {
+                      setNumOfImpression(handleNaFileChangeOnBlur(e));
+                    }}
+                  />
+                </div>
+                <div className="form-group col-3">
+                  <label className="form-label">Number of Engagement</label>
+                  <input
+                    className="form-control"
+                    value={NumOfEngagement}
+                    onChange={(e) =>
+                      setNumOfEngagement(HandleNAFileChangeOnChange(e))
+                    }
+                    onBlur={(e) => {
+                      setNumOfEngagement(handleNaFileChangeOnBlur(e));
+                    }}
+                  />
+                </div>
+                <div className="form-group col-3">
+                  <label className="form-label">Number of views</label>
+                  <input
+                    className="form-control"
+                    value={NumOfViews}
+                    onChange={(e) =>
+                      setNumOfViews(HandleNAFileChangeOnChange(e))
+                    }
+                    onBlur={(e) => {
+                      setNumOfViews(handleNaFileChangeOnBlur(e));
+                    }}
+                  />
+                </div>
+                <div className="form-group col-3">
+                  <label className="form-label">Number of Story Views</label>
+                  <input
+                    className="form-control"
+                    value={NumOfStoryViews}
+                    onChange={(e) =>
+                      setNumOfStoryViews(HandleNAFileChangeOnChange(e))
+                    }
+                    onBlur={(e) => {
+                      setNumOfStoryViews(handleNaFileChangeOnBlur(e));
+                    }}
+                  />
+                </div>
+                <div className="form-group col-3">
+                  <label className="form-label">Operation Remark</label>
+                  <input
+                    className="form-control"
+                    value={OperationRemark}
+                    onChange={(e) =>
+                      setOperationRemark(HandleNAFileChangeOnChange(e))
+                    }
+                    onBlur={(e) => {
+                      setOperationRemark(handleNaFileChangeOnBlur(e));
+                    }}
+                  />
+                </div>
+              </>
 
               <div className="summary_cards brand_img_list">
                 <h4 className="lead text-black-50 fs-6">Data</h4>
+                {console.log(logos, "logos")}
                 {logos.length > 0 &&
                   logos
                     ?.filter((e) => e.data_image !== null)
@@ -1130,11 +1213,45 @@ const UpdateCaseStudy = () => {
                       <div key={index} className="summary_card brand_img_item">
                         <div className="summary_cardrow brand_img_row">
                           <div className="col summary_box brand_img_box">
-                            <img
+                            {
+
+                              detail.data_type === "jpg" ||
+                              detail.data_type === "jpeg" ||
+                              detail.data_type === "png" ||
+                              detail.data_type === "gif" ? (
+                                <img
+                                  className="brandimg_icon"
+                                  src={detail.data_image}
+                                />
+                              ) : detail.data_type === "pdf" ? (
+                                <iframe
+                                  src={detail.data_image}
+                                  width="50%"
+                                  height="50%"
+                                ></iframe>
+                              ) : (
+                                <video width="50%" height="50%" controls>
+                                  <source
+                                    src={detail.data_image}
+                                    type="video/mp4"
+                                  />
+                                </video>
+                              )
+                            }
+                            {/* <img
                               className="brandimg_icon"
                               // src={detail.data_image}
-                              src={detail.data_type === "jpg"||detail.data_type === "jpeg" || detail.data_type === "png" || detail.data_type === "gif" ? detail.data_image : detail.data_type === "pdf" ? pdf : video}
-                              />
+                              src={
+                                detail.data_type === "jpg" ||
+                                detail.data_type === "jpeg" ||
+                                detail.data_type === "png" ||
+                                detail.data_type === "gif"
+                                  ? detail.data_image
+                                  : detail.data_type === "pdf"
+                                  ? pdf
+                                  : video
+                              }
+                            /> */}
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1188,7 +1305,11 @@ const UpdateCaseStudy = () => {
                           />
                         ) : (
                           <div className="file_icon">
-                            {renderFileIcon(detail.fileType)}
+                            {renderFileIcon(
+                              detail.fileType,
+                              URL.createObjectURL(images[index]),
+                              detail
+                            )}
                           </div>
                         )}
                       </div>
@@ -1234,10 +1355,41 @@ const UpdateCaseStudy = () => {
                       <div key={index} className="summary_card brand_img_item">
                         <div className="summary_cardrow brand_img_row">
                           <div className="col summary_box brand_img_box">
-                            <img
+                            {detail.data_type === "jpg" ||
+                            detail.data_type === "jpeg" ||
+                            detail.data_type === "png" ||
+                            detail.data_type === "gif" ? (
+                              <img
+                                className="brandimg_icon"
+                                src={detail.mmc_image}
+                              />
+                            ) : detail.data_type === "pdf" ? (
+                              <iframe
+                                src={detail.mmc_image}
+                                width="50%"
+                                height="50%"
+                              ></iframe>
+                            ) : (
+                              <video width="50%" height="50%" controls>
+                                <source
+                                  src={detail.mmc_image}
+                                  type="video/mp4"
+                                />
+                              </video>
+                            )}
+                            {/* <img
                               className="brandimg_icon"
-                              src={detail.data_type === "jpg"||detail.data_type === "jpeg" || detail.data_type === "png" || detail.data_type === "gif" ? detail.mmc_image : detail.data_type === "pdf" ? pdf : video}
-                            />
+                              src={
+                                detail.data_type === "jpg" ||
+                                detail.data_type === "jpeg" ||
+                                detail.data_type === "png" ||
+                                detail.data_type === "gif"
+                                  ? detail.mmc_image
+                                  : detail.data_type === "pdf"
+                                  ? pdf
+                                  : video
+                              }
+                            /> */}
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1291,7 +1443,11 @@ const UpdateCaseStudy = () => {
                           />
                         ) : (
                           <div className="file_icon">
-                            {renderFileIcon(detail.fileType)}
+                            {renderFileIcon(
+                              detail.fileType,
+                              URL.createObjectURL(mmcImages[index]),
+                              detail
+                            )}
                           </div>
                         )}
                       </div>
@@ -1337,10 +1493,41 @@ const UpdateCaseStudy = () => {
                       <div key={index} className="summary_card brand_img_item">
                         <div className="summary_cardrow brand_img_row">
                           <div className="col summary_box brand_img_box">
-                            <img
+                            {detail.data_type === "jpg" ||
+                            detail.data_type === "jpeg" ||
+                            detail.data_type === "png" ||
+                            detail.data_type === "gif" ? (
+                              <img
+                                className="brandimg_icon"
+                                src={detail.sarcasm_image}
+                              />
+                            ) : detail.data_type === "pdf" ? (
+                              <iframe
+                                src={detail.sarcasm_image}
+                                width="50%"
+                                height="50%"
+                              ></iframe>
+                            ) : (
+                              <video width="50%" height="50%" controls>
+                                <source
+                                  src={detail.sarcasm_image}
+                                  type="video/mp4"
+                                />
+                              </video>
+                            )}
+                            {/* <img
                               className="brandimg_icon"
-                              src={detail.data_type === "jpg"||detail.data_type === "jpeg" || detail.data_type === "png" || detail.data_type === "gif" ? detail.sarcasm_image : detail.data_type === "pdf" ? pdf : video}
-                            />
+                              src={
+                                detail.data_type === "jpg" ||
+                                detail.data_type === "jpeg" ||
+                                detail.data_type === "png" ||
+                                detail.data_type === "gif"
+                                  ? detail.sarcasm_image
+                                  : detail.data_type === "pdf"
+                                  ? pdf
+                                  : video
+                              }
+                            /> */}
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1394,7 +1581,11 @@ const UpdateCaseStudy = () => {
                           />
                         ) : (
                           <div className="file_icon">
-                            {renderFileIcon(detail.fileType)}
+                            {renderFileIcon(
+                              detail.fileType,
+                              URL.createObjectURL(sarcasmImages[index]),
+                              detail
+                            )}
                           </div>
                         )}
                       </div>
@@ -1440,10 +1631,41 @@ const UpdateCaseStudy = () => {
                       <div key={index} className="summary_card brand_img_item">
                         <div className="summary_cardrow brand_img_row">
                           <div className="col summary_box brand_img_box">
-                            <img
+                            {detail.data_type === "jpg" ||
+                            detail.data_type === "jpeg" ||
+                            detail.data_type === "png" ||
+                            detail.data_type === "gif" ? (
+                              <img
+                                className="brandimg_icon"
+                                src={detail.no_logo_image}
+                              />
+                            ) : detail.data_type === "pdf" ? (
+                              <iframe
+                                src={detail.no_logo_image}
+                                width="50%"
+                                height="50%"
+                              ></iframe>
+                            ) : (
+                              <video width="50%" height="50%" controls>
+                                <source
+                                  src={detail.no_logo_image}
+                                  type="video/mp4"
+                                />
+                              </video>
+                            )}
+                            {/* <img
                               className="brandimg_icon"
-                              src={detail.data_type === "jpg"||detail.data_type === "jpeg" || detail.data_type === "png" || detail.data_type === "gif" ? detail.no_logo_image : detail.data_type === "pdf" ? pdf : video}
-                            />
+                              src={
+                                detail.data_type === "jpg" ||
+                                detail.data_type === "jpeg" ||
+                                detail.data_type === "png" ||
+                                detail.data_type === "gif"
+                                  ? detail.no_logo_image
+                                  : detail.data_type === "pdf"
+                                  ? pdf
+                                  : video
+                              }
+                            /> */}
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1497,7 +1719,11 @@ const UpdateCaseStudy = () => {
                           />
                         ) : (
                           <div className="file_icon">
-                            {renderFileIcon(detail.fileType)}
+                            {renderFileIcon(
+                              detail.fileType,
+                              URL.createObjectURL(nologoImages[index]),
+                              detail
+                            )}
                           </div>
                         )}
                       </div>
@@ -1548,8 +1774,98 @@ const UpdateCaseStudy = () => {
           </div>
         </div>
       </div>
+
+      {/* add Category */}
+      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <DialogTitle>Add Record</DialogTitle>
+        <DialogContent>
+          <Box
+            component="form"
+            sx={{
+              "& .MuiTextField-root": { m: 1, width: "25ch" },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <div>
+              <TextField
+                id="outlined-password-input"
+                label="Category"
+                name="category_name"
+                type="text"
+                value={cat}
+                onChange={(e) => setCat(e.target.value)}
+              />
+            </div>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+            Cancel
+          </Button> */}
+          <Button onClick={handleSave} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* add sub Category */}
+      <Dialog
+        open={isModalOpenSubCat}
+        onClose={() => setIsModalOpenSubCat(false)}
+      >
+        <DialogTitle>Add Record</DialogTitle>
+        <DialogContent>
+          <Box
+            component="form"
+            sx={{
+              "& .MuiTextField-root": { m: 1, width: "25ch" },
+            }}
+            noValidate
+            autoComplete="off"
+          >
+            <div>
+              <Autocomplete
+                disablePortal
+                id="combo-box-demo"
+                options={brandCategory.map((option) => ({
+                  label: option.category_name,
+                  value: option.category_id,
+                }))}
+                onChange={(event, value) => {
+                  setPostData((prev) => ({
+                    ...prev,
+                    category_id: value.value,
+                  }));
+                }}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category *" />
+                )}
+              />
+
+              <TextField
+                id="outlined-password-input"
+                label="Sub Category *"
+                name="sub_category_name"
+                type="text"
+                value={postData.sub_category_name}
+                onChange={handleChange}
+              />
+            </div>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+            Cancel
+          </Button> */}
+          <Button onClick={handleSaveSubCat} color="primary">
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
 
-export default DataBrandUpdate;
+export default UpdateCaseStudy;

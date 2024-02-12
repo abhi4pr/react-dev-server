@@ -13,6 +13,7 @@ import SimOverview from "./components/Sim/SimOverview";
 import SimMaster from "./components/Sim/SimMaster";
 import SimUpdate from "./components/Sim/SimUpdate";
 import SimAllocationOverview from "./components/Sim/SimAllocationOverview";
+import UpdateCaseStudy from "./components/AdminPanel/RegisterCampaign/CaseStudies/UpdateCaseStudy";
 
 import SimSummary from "./components/Sim/SimSummary";
 import IpMaster from "./components/IntellectualProperty/IpMaster";
@@ -62,6 +63,7 @@ import Dashboard from "./components/Datas/Dashboard";
 import BrandCaseStudy from "./components/AdminPanel/RegisterCampaign/CaseStudies/BrandCaseStudy";
 import CaseStudyDashboard from "./components/AdminPanel/RegisterCampaign/CaseStudies/CaseStudyDashboard";
 import CaseStudyplateform from "./components/AdminPanel/RegisterCampaign/CaseStudies/CaseStudyplateform";
+import CaseStudyView from "./components/AdminPanel/RegisterCampaign/CaseStudies/CaseStudyView";
 
 function App() {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -183,7 +185,8 @@ function App() {
 <Route path="/case-study/brand" element={<BrandCaseStudy />} />
 <Route path="/casestudy-dashboard" element={<CaseStudyDashboard />} />
 <Route path="/case-platform" element={<CaseStudyplateform />} />
-<Route path="/casestudy-update/:id" element={<DataBrandUpdate />} />
+<Route path="/casestudy-update/:id" element={<UpdateCaseStudy />} />
+<Route path="/caseStudy-view/:id" element={<CaseStudyView />} />
 
 {/* ------------------------------ case Study end----------------------------------------- */}
 
