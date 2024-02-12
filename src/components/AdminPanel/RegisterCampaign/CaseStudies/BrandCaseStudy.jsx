@@ -100,7 +100,9 @@ const BrandCaseStudy = () => {
     // if (!id) {
     // Generate a new ID using any preferred method
     const id =
-      Math.random().toString(36).substr(2, 9) + Math.random().toString();
+      "id_" +
+      Math.random().toString(36).substr(2, 9) +
+      Math.random().toString();
     // localStorage.setItem('userId', id);
     // }
     setBrand(id);
@@ -776,348 +778,348 @@ const BrandCaseStudy = () => {
   };
 
   return (
-    <div style={{ width: "80%", margin: "0 0 0 10%" }}>
-      <UserNav />
-      <FormContainer
-        mainTitle="Data"
-        title="Data"
-        handleSubmit={handleSubmit}
-        submitButton={false}
-      >
-        <FieldContainer
-          label="Creative Fuel *"
-          type="file"
-          multiple
-          accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-          onChange={handleFileChange}
-          fieldGrid={6}
-          required={true}
-        />
-        <>
+    <>
+      <div className="full_page_content container">
+        <UserNav />
+        <FormContainer
+          mainTitle="Data"
+          title="Data"
+          handleSubmit={handleSubmit}
+          submitButton={false}
+        >
           <FieldContainer
-            label="MMC *"
+            label="Creative Fuel *"
             type="file"
             multiple
             accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-            onChange={handleMMCFileChange}
-            fieldGrid={6}
+            onChange={handleFileChange}
+            fieldGrid={4}
             required={true}
           />
-          <FieldContainer
-            label="Sarcasm *"
-            multiple
-            type="file"
-            accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-            onChange={handleSarcasmFileChange}
-            fieldGrid={6}
-            required={true}
-          />
-          <FieldContainer
-            label="No Logo *"
-            multiple
-            type="file"
-            accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
-            onChange={handleNologoFileChange}
-            fieldGrid={6}
-            required={true}
-          />
-        </>
-        {/* <div className="form-group col-3">
-          <label className="form-label">
-            Platform Name <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            isMulti
-            options={platformData.map((opt) => ({
-              value: opt._id,
-              label: opt.platform_name,
-            }))}
-            value={platformData
-              .filter((opt) => platform.includes(opt._id))
-              .map((opt) => ({
+          <>
+            <FieldContainer
+              label="MMC *"
+              type="file"
+              multiple
+              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+              onChange={handleMMCFileChange}
+              fieldGrid={4}
+              required={true}
+            />
+            <FieldContainer
+              label="Sarcasm *"
+              multiple
+              type="file"
+              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+              onChange={handleSarcasmFileChange}
+              fieldGrid={4}
+              required={true}
+            />
+            <FieldContainer
+              label="No Logo *"
+              multiple
+              type="file"
+              accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
+              onChange={handleNologoFileChange}
+              fieldGrid={4}
+              required={true}
+            />
+          </>
+          <div className="form-group col-xl-4">
+            <label className="form-label">
+              Platform Name <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className="formSelect"
+              isMulti
+              options={platformData.map((opt) => ({
                 value: opt._id,
                 label: opt.platform_name,
               }))}
-            onChange={(selectedOptions) => {
-              const selectedValues = selectedOptions.map(
-                (option) => option.value
-              );
-              setPlateform(selectedValues);
-            }}
-            required
-          />
-        </div> */}
-
-        <div className="form-group col-3">
-          <label className="form-label">
-            Platform Name <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            isMulti
-            options={platformData.map((opt) => ({
-              value: opt._id,
-              label: opt.platform_name,
-            }))}
-            value={platformData
-              .filter((opt) => platform.includes(opt._id))
-              .map((opt) => ({
-                value: opt._id,
-                label: opt.platform_name,
-              }))}
-            onChange={(selectedOptions) => {
-              // Update platform state with selected values
-              const selectedValues = selectedOptions
-                ? selectedOptions.map((option) => option.value)
-                : [];
-              setPlateform(selectedValues);
-            }}
-            required
-          />
-        </div>
-
-        <div className="form-group col-3">
-          <label className="form-label">
-            Brand <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={dataBrandData?.map((opt) => ({
-              value: opt._id,
-              label: opt.brand_name,
-            }))}
-            value={{
-              value: dataBrand,
-              label:
-                dataBrandData?.find((user) => user._id === dataBrand)
-                  ?.brand_name || "",
-            }}
-            onChange={(e) => {
-              setDataBrand(e.value);
-            }}
-            required
-          />
-        </div>
-
-        <div className="form-group col-3">
-          <label className="form-label">
-            Designed by <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={employeeData.map((opt) => ({
-              value: opt.user_id,
-              label: opt.user_name,
-            }))}
-            value={{
-              value: designedBy,
-              label:
-                employeeData.find((user) => user.user_id === designedBy)
-                  ?.user_name || "",
-            }}
-            onChange={(e) => {
-              setDesignedBy(e.value);
-            }}
-            required
-          />
-        </div>
-        <>
-          <div className="form-group col-3">
-            <label className="form-label">
-              Date of Completion <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <input
-              type="date"
-              className="form-control"
-              value={dateOfCompletion}
-              onChange={(e) => setDateOfCompletion(e.target.value)}
-            />
-          </div>
-
-          <div className="form-group col-3">
-            <label className="form-label">
-              Date of Report <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <input
-              type="date"
-              className="form-control"
-              value={dateOfReport}
-              onChange={(e) => setDateOfReport(e.target.value)}
-            />
-          </div>
-          <div className="form-group col-3">
-            <label className="form-label">
-              Brand Category <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              options={brandCategory.map((opt) => ({
-                value: opt.category_id,
-                label: opt.category_name,
-              }))}
-              value={{
-                value: brandCat,
-                label:
-                  brandCategory.find((brand) => brand.category_id == brandCat)
-                    ?.category_name || "",
-              }}
-              onChange={(e) => {
-                setBrandCat(e.value);
-                setBrandSubCategory("");
-              }}
-              required
-            />
-          </div>
-
-          <div className="col-1 mt-4">
-            <Button title="Add Category" onClick={handleClick}>
-              <Add />
-            </Button>
-          </div>
-
-          <div className="form-group col-3">
-            <label className="form-label">
-              Brand Sub Category <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              options={brandSubCatData
-                .filter((opt) => opt.category_id == brandCat)
+              value={platformData
+                .filter((opt) => platform.includes(opt._id))
                 .map((opt) => ({
-                  value: opt.sub_category_id,
-                  label: opt.sub_category_name,
+                  value: opt._id,
+                  label: opt.platform_name,
                 }))}
-              value={{
-                value: brandSubCategory,
-                label:
-                  brandSubCatData.find(
-                    (e) => e.sub_category_id == brandSubCategory
-                  )?.sub_category_name || "",
-              }}
-              onChange={(e) => {
-                setBrandSubCategory(e.value);
+              onChange={(selectedOptions) => {
+                const selectedValues = selectedOptions.map(
+                  (option) => option.value
+                );
+                setPlateform(selectedValues);
               }}
               required
             />
           </div>
 
-          <div className="col-1 mt-4">
-            <Button title="Add Sub Category" onClick={handleClickSubCat}>
-              <Add />
-            </Button>
-          </div>
-          <div className="form-group col-3">
+          <div className="form-group col-xl-4">
             <label className="form-label">
-              Campaign Purpose <sup style={{ color: "red" }}>*</sup>
+              Brand <sup style={{ color: "red" }}>*</sup>
             </label>
-
-            <input
-              className="form-control"
-              value={compignPurpose}
-              onChange={(e) => setCompignPurpose(e.target.value)}
+            <Select
+              className="formSelect"
+              options={dataBrandData?.map((opt) => ({
+                value: opt._id,
+                label: opt.brand_name,
+              }))}
+              value={{
+                value: dataBrand,
+                label:
+                  dataBrandData?.find((user) => user._id === dataBrand)
+                    ?.brand_name || "",
+              }}
+              onChange={(e) => {
+                setDataBrand(e.value);
+              }}
+              required
             />
           </div>
 
-          <div className="form-group col-3">
+          <div className="form-group col-xl-4">
             <label className="form-label">
-              Number of Post <sup style={{ color: "red" }}>*</sup>
+              Designed by <sup style={{ color: "red" }}>*</sup>
             </label>
-            <input
-              className="form-control"
-              value={NumOfPost}
+            <Select
+              className="formSelect"
+              options={employeeData.map((opt) => ({
+                value: opt.user_id,
+                label: opt.user_name,
+              }))}
+              value={{
+                value: designedBy,
+                label:
+                  employeeData.find((user) => user.user_id === designedBy)
+                    ?.user_name || "",
+              }}
               onChange={(e) => {
-                if (!isNaN(Number(e.target.value))) {
-                  setNumOfPost(e.target.value);
+                setDesignedBy(e.value);
+              }}
+              required
+            />
+          </div>
+          <>
+            <div className="form-group col-xl-4">
+              <label className="form-label">
+                Date of Completion <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                value={dateOfCompletion}
+                onChange={(e) => setDateOfCompletion(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group col-xl-4">
+              <label className="form-label">
+                Date of Report <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <input
+                type="date"
+                className="form-control"
+                value={dateOfReport}
+                onChange={(e) => setDateOfReport(e.target.value)}
+              />
+            </div>
+            <div className="form-group col-xl-4">
+              <label className="form-label">
+                Brand Category <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <div className="input-group inputGroup">
+                <Select
+                  className="formSelect"
+                  options={brandCategory.map((opt) => ({
+                    value: opt.category_id,
+                    label: opt.category_name,
+                  }))}
+                  value={{
+                    value: brandCat,
+                    label:
+                      brandCategory.find(
+                        (brand) => brand.category_id == brandCat
+                      )?.category_name || "",
+                  }}
+                  onChange={(e) => {
+                    setBrandCat(e.value);
+                    setBrandSubCategory("");
+                  }}
+                  required
+                />
+                <Button title="Add Category" onClick={handleClick}>
+                  <Add />
+                </Button>
+              </div>
+            </div>
+
+            <div className="form-group col-xl-4">
+              <label className="form-label">
+                Brand Sub Category <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <div className="input-group inputGroup">
+                <Select
+                  className="formSelect"
+                  options={brandSubCatData
+                    .filter((opt) => opt.category_id == brandCat)
+                    .map((opt) => ({
+                      value: opt.sub_category_id,
+                      label: opt.sub_category_name,
+                    }))}
+                  value={{
+                    value: brandSubCategory,
+                    label:
+                      brandSubCatData.find(
+                        (e) => e.sub_category_id == brandSubCategory
+                      )?.sub_category_name || "",
+                  }}
+                  onChange={(e) => {
+                    setBrandSubCategory(e.value);
+                  }}
+                  required
+                />
+                <Button title="Add Sub Category" onClick={handleClickSubCat}>
+                  <Add />
+                </Button>
+              </div>
+            </div>
+
+            <div className="form-group col-xl-4">
+              <label className="form-label">
+                Campaign Purpose <sup style={{ color: "red" }}>*</sup>
+              </label>
+
+              <input
+                className="form-control"
+                value={compignPurpose}
+                onChange={(e) => setCompignPurpose(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group col-xl-4">
+              <label className="form-label">
+                Number of Post <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <input
+                className="form-control"
+                value={NumOfPost}
+                onChange={(e) => {
+                  if (!isNaN(Number(e.target.value))) {
+                    setNumOfPost(e.target.value);
+                  }
+                }}
+              />
+            </div>
+
+            <div className="form-group col-xl-4">
+              <label className="form-label">Number of Reach</label>
+              <input
+                className="form-control"
+                value={NumOfReach}
+                onChange={(e) => {
+                  setNumOfReach(HandleNAFileChangeOnChange(e));
+                }}
+                onBlur={(e) => {
+                  setNumOfReach(handleNaFileChangeOnBlur(e));
+                }}
+              />
+            </div>
+            <div className="form-group col-xl-4">
+              <label className="form-label">Number of Impression</label>
+              <input
+                className="form-control"
+                value={NumOfImpression}
+                onChange={(e) =>
+                  setNumOfImpression(HandleNAFileChangeOnChange(e))
                 }
-              }}
-            />
-          </div>
+                onBlur={(e) => {
+                  setNumOfImpression(handleNaFileChangeOnBlur(e));
+                }}
+              />
+            </div>
+            <div className="form-group col-xl-4">
+              <label className="form-label">Number of Engagement</label>
+              <input
+                className="form-control"
+                value={NumOfEngagement}
+                onChange={(e) =>
+                  setNumOfEngagement(HandleNAFileChangeOnChange(e))
+                }
+                onBlur={(e) => {
+                  setNumOfEngagement(handleNaFileChangeOnBlur(e));
+                }}
+              />
+            </div>
+            <div className="form-group col-xl-4">
+              <label className="form-label">Number of Views</label>
+              <input
+                className="form-control"
+                value={NumOfViews}
+                onChange={(e) => setNumOfViews(HandleNAFileChangeOnChange(e))}
+                onBlur={(e) => {
+                  setNumOfViews(handleNaFileChangeOnBlur(e));
+                }}
+              />
+            </div>
+            <div className="form-group col-xl-4">
+              <label className="form-label">Number of Story Views</label>
+              <input
+                className="form-control"
+                value={NumOfStoryViews}
+                onChange={(e) =>
+                  setNumOfStoryViews(HandleNAFileChangeOnChange(e))
+                }
+                onBlur={(e) => {
+                  setNumOfStoryViews(handleNaFileChangeOnBlur(e));
+                }}
+              />
+            </div>
+            <div className="form-group col-xl-4">
+              <label className="form-label">Operation Remark</label>
+              <input
+                className="form-control"
+                value={OperationRemark}
+                onChange={(e) =>
+                  setOperationRemark(HandleNAFileChangeOnChange(e))
+                }
+                onBlur={(e) => {
+                  setOperationRemark(handleNaFileChangeOnBlur(e));
+                }}
+              />
+            </div>
+          </>
 
-          <div className="form-group col-3">
-            <label className="form-label">Number of Reach</label>
-            <input
-              className="form-control"
-              value={NumOfReach}
-              onChange={(e) => {
-                setNumOfReach(HandleNAFileChangeOnChange(e));
-              }}
-              onBlur={(e) => {
-                setNumOfReach(handleNaFileChangeOnBlur(e));
-              }}
-            />
-          </div>
-          <div className="form-group col-3">
-            <label className="form-label">Number of Impression</label>
-            <input
-              className="form-control"
-              value={NumOfImpression}
-              onChange={(e) =>
-                setNumOfImpression(HandleNAFileChangeOnChange(e))
-              }
-              onBlur={(e) => {
-                setNumOfImpression(handleNaFileChangeOnBlur(e));
-              }}
-            />
-          </div>
-          <div className="form-group col-3">
-            <label className="form-label">Number of Engagement</label>
-            <input
-              className="form-control"
-              value={NumOfEngagement}
-              onChange={(e) =>
-                setNumOfEngagement(HandleNAFileChangeOnChange(e))
-              }
-              onBlur={(e) => {
-                setNumOfEngagement(handleNaFileChangeOnBlur(e));
-              }}
-            />
-          </div>
-          <div className="form-group col-3">
-            <label className="form-label">Number of Views</label>
-            <input
-              className="form-control"
-              value={NumOfViews}
-              onChange={(e) => setNumOfViews(HandleNAFileChangeOnChange(e))}
-              onBlur={(e) => {
-                setNumOfViews(handleNaFileChangeOnBlur(e));
-              }}
-            />
-          </div>
-          <div className="form-group col-3">
-            <label className="form-label">Number of Story Views</label>
-            <input
-              className="form-control"
-              value={NumOfStoryViews}
-              onChange={(e) =>
-                setNumOfStoryViews(HandleNAFileChangeOnChange(e))
-              }
-              onBlur={(e) => {
-                setNumOfStoryViews(handleNaFileChangeOnBlur(e));
-              }}
-            />
-          </div>
-          <div className="form-group col-3">
-            <label className="form-label">Operation Remark</label>
-            <input
-              className="form-control"
-              value={OperationRemark}
-              onChange={(e) =>
-                setOperationRemark(HandleNAFileChangeOnChange(e))
-              }
-              onBlur={(e) => {
-                setOperationRemark(handleNaFileChangeOnBlur(e));
-              }}
-            />
-          </div>
-        </>
-
-        <div className="summary_cards brand_img_list">
-          {details.length > 0 && <h3 className="lead fs-4">Creative Fuel</h3>}
-          {details.map((detail, index) => (
-            <div key={index} className="summary_card brand_img_item">
-              <div className="summary_cardrow brand_img_row">
-                <div className="col summary_box brand_img_box col140">
-                  {detail.fileType === "jpg" ||
-                  detail.fileType === "jpeg" ||
-                  detail.fileType === "png" ||
-                  detail.fileType === "gif" ? (
-                    images[index] && (
-                      <img
+          <div className="summary_cards brand_img_list">
+            {details.length > 0 && <h3 className="lead fs-4">Creative Fuel</h3>}
+            {details.map((detail, index) => (
+              <div key={index} className="summary_card brand_img_item">
+                <div className="summary_cardrow brand_img_row">
+                  <div className="col summary_box brand_img_box col140">
+                    {detail.fileType === "jpg" ||
+                    detail.fileType === "jpeg" ||
+                    detail.fileType === "png" ||
+                    detail.fileType === "gif" ? (
+                      images[index] && (
+                        <img
+                          onClick={() =>
+                            setOpenReviewDisalog({
+                              open: true,
+                              image: URL.createObjectURL(images[index]),
+                              detail: detail,
+                            })
+                          }
+                          style={{
+                            width: "45%",
+                            height: "auto",
+                            border: "none",
+                            overflow: "hidden",
+                          }}
+                          className="brandimg_icon"
+                          src={URL.createObjectURL(images[index])}
+                          alt={`Image ${index + 1}`}
+                        />
+                      )
+                    ) : (
+                      <div
+                        className="file_icon"
                         onClick={() =>
                           setOpenReviewDisalog({
                             open: true,
@@ -1125,80 +1127,80 @@ const BrandCaseStudy = () => {
                             detail: detail,
                           })
                         }
-                        style={{
-                          width: "45%",
-                          height: "auto",
-                          border: "none",
-                          overflow: "hidden",
-                        }}
-                        className="brandimg_icon"
-                        src={URL.createObjectURL(images[index])}
-                        alt={`Image ${index + 1}`}
-                      />
-                    )
-                  ) : (
-                    <div
-                      className="file_icon"
-                      onClick={() =>
-                        setOpenReviewDisalog({
-                          open: true,
-                          image: URL.createObjectURL(images[index]),
-                          detail: detail,
-                        })
-                      }
-                    >
-                      {renderFileIcon(
-                        detail.fileType,
-                        URL.createObjectURL(images[index]),
-                        detail
-                      )}
-                    </div>
-                  )}
+                      >
+                        {renderFileIcon(
+                          detail.fileType,
+                          URL.createObjectURL(images[index]),
+                          detail
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Extension:</span>
+                      {detail.fileType}
+                    </h4>
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Size:</span>
+                      {detail.sizeInMB}
+                      {"MB"}
+                    </h4>
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Date:</span>
+                      {currentDate}
+                    </h4>
+                  </div>
+                  <button
+                    onClick={() => {
+                      delteRowData(index);
+                    }}
+                    className="btn btn-sm btn-dengor me-2"
+                  >
+                    <CloseTwoTone />
+                  </button>
                 </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Extension:</span>
-                    {detail.fileType}
-                  </h4>
-                </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Size:</span>
-                    {detail.sizeInMB}
-                    {"MB"}
-                  </h4>
-                </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Date:</span>
-                    {currentDate}
-                  </h4>
-                </div>
-                <button
-                  onClick={() => {
-                    delteRowData(index);
-                  }}
-                  className="btn btn-sm btn-dengor me-2"
-                >
-                  <CloseTwoTone />
-                </button>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="summary_cards brand_img_list">
-          {mmcDetails.length > 0 && <h3 className="lead fs-4">MMC </h3>}
-          {mmcDetails.map((detail, index) => (
-            <div key={index} className="summary_card brand_img_item">
-              <div className="summary_cardrow brand_img_row">
-                <div className="col summary_box brand_img_box col140">
-                  {detail.fileType === "jpg" ||
-                  detail.fileType === "jpeg" ||
-                  detail.fileType === "png" ||
-                  detail.fileType === "gif" ? (
-                    mmcImages[index] && (
-                      <img
+          <div className="summary_cards brand_img_list">
+            {mmcDetails.length > 0 && <h3 className="lead fs-4">MMC </h3>}
+            {mmcDetails.map((detail, index) => (
+              <div key={index} className="summary_card brand_img_item">
+                <div className="summary_cardrow brand_img_row">
+                  <div className="col summary_box brand_img_box col140">
+                    {detail.fileType === "jpg" ||
+                    detail.fileType === "jpeg" ||
+                    detail.fileType === "png" ||
+                    detail.fileType === "gif" ? (
+                      mmcImages[index] && (
+                        <img
+                          onClick={() =>
+                            setOpenReviewDisalog({
+                              open: true,
+                              image: URL.createObjectURL(mmcImages[index]),
+                              detail: detail,
+                            })
+                          }
+                          className="brandimg_icon"
+                          src={URL.createObjectURL(mmcImages[index])}
+                          alt={`Image ${index + 1}`}
+                          style={{
+                            width: "45%",
+                            height: "auto",
+                            border: "none",
+                            overflow: "hidden",
+                          }}
+                        />
+                      )
+                    ) : (
+                      <div
+                        className="file_icon"
                         onClick={() =>
                           setOpenReviewDisalog({
                             open: true,
@@ -1206,80 +1208,82 @@ const BrandCaseStudy = () => {
                             detail: detail,
                           })
                         }
-                        className="brandimg_icon"
-                        src={URL.createObjectURL(mmcImages[index])}
-                        alt={`Image ${index + 1}`}
-                        style={{
-                          width: "45%",
-                          height: "auto",
-                          border: "none",
-                          overflow: "hidden",
-                        }}
-                      />
-                    )
-                  ) : (
-                    <div
-                      className="file_icon"
-                      onClick={() =>
-                        setOpenReviewDisalog({
-                          open: true,
-                          image: URL.createObjectURL(mmcImages[index]),
-                          detail: detail,
-                        })
-                      }
-                    >
-                      {renderFileIcon(
-                        detail.fileType,
-                        URL.createObjectURL(mmcImages[index]),
-                        detail
-                      )}
-                    </div>
-                  )}
+                      >
+                        {renderFileIcon(
+                          detail.fileType,
+                          URL.createObjectURL(images[index]),
+                          detail
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Extension:</span>
+                      {detail.fileType}
+                    </h4>
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Size:</span>
+                      {detail.sizeInMB}
+                      {"MB"}
+                    </h4>
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Date:</span>
+                      {currentDate}
+                    </h4>
+                  </div>
+                  <button
+                    onClick={() => {
+                      delteMMCRowData(index);
+                    }}
+                    className="btn btn-sm btn-dengor me-2"
+                  >
+                    <CloseTwoTone />
+                  </button>
                 </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Extension:</span>
-                    {detail.fileType}
-                  </h4>
-                </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Size:</span>
-                    {detail.sizeInMB}
-                    {"MB"}
-                  </h4>
-                </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Date:</span>
-                    {currentDate}
-                  </h4>
-                </div>
-                <button
-                  onClick={() => {
-                    delteMMCRowData(index);
-                  }}
-                  className="btn btn-sm btn-dengor me-2"
-                >
-                  <CloseTwoTone />
-                </button>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="summary_cards brand_img_list">
-          {sarcasmDetails.length > 0 && <h3 className="lead fs-4">Sarcasm</h3>}
-          {sarcasmDetails.map((detail, index) => (
-            <div key={index} className="summary_card brand_img_item">
-              <div className="summary_cardrow brand_img_row">
-                <div className="col summary_box brand_img_box col140">
-                  {detail.fileType === "jpg" ||
-                  detail.fileType === "jpeg" ||
-                  detail.fileType === "png" ||
-                  detail.fileType === "gif" ? (
-                    sarcasmImages[index] && (
-                      <img
+          <div className="summary_cards brand_img_list">
+            {sarcasmDetails.length > 0 && (
+              <h3 className="lead fs-4">Sarcasm</h3>
+            )}
+            {sarcasmDetails.map((detail, index) => (
+              <div key={index} className="summary_card brand_img_item">
+                <div className="summary_cardrow brand_img_row">
+                  <div className="col summary_box brand_img_box col140">
+                    {detail.fileType === "jpg" ||
+                    detail.fileType === "jpeg" ||
+                    detail.fileType === "png" ||
+                    detail.fileType === "gif" ? (
+                      sarcasmImages[index] && (
+                        <img
+                          onClick={() =>
+                            setOpenReviewDisalog({
+                              open: true,
+                              image: URL.createObjectURL(sarcasmImages[index]),
+                              detail: detail,
+                            })
+                          }
+                          className="brandimg_icon"
+                          src={URL.createObjectURL(sarcasmImages[index])}
+                          alt={`Image ${index + 1}`}
+                          style={{
+                            width: "45%",
+                            height: "auto",
+                            border: "none",
+                            overflow: "hidden",
+                          }}
+                        />
+                      )
+                    ) : (
+                      <div
+                        className="file_icon"
                         onClick={() =>
                           setOpenReviewDisalog({
                             open: true,
@@ -1287,80 +1291,80 @@ const BrandCaseStudy = () => {
                             detail: detail,
                           })
                         }
-                        className="brandimg_icon"
-                        src={URL.createObjectURL(sarcasmImages[index])}
-                        alt={`Image ${index + 1}`}
-                        style={{
-                          width: "45%",
-                          height: "auto",
-                          border: "none",
-                          overflow: "hidden",
-                        }}
-                      />
-                    )
-                  ) : (
-                    <div
-                      className="file_icon"
-                      onClick={() =>
-                        setOpenReviewDisalog({
-                          open: true,
-                          image: URL.createObjectURL(sarcasmImages[index]),
-                          detail: detail,
-                        })
-                      }
-                    >
-                      {renderFileIcon(
-                        detail.fileType,
-                        URL.createObjectURL(sarcasmImages[index]),
-                        detail
-                      )}
-                    </div>
-                  )}
+                      >
+                        {renderFileIcon(
+                          detail.fileType,
+                          URL.createObjectURL(images[index]),
+                          detail
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Extension:</span>
+                      {detail.fileType}
+                    </h4>
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Size:</span>
+                      {detail.sizeInMB}
+                      {"MB"}
+                    </h4>
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Date:</span>
+                      {currentDate}
+                    </h4>
+                  </div>
+                  <button
+                    onClick={() => {
+                      delteSarcasmRowData(index);
+                    }}
+                    className="btn btn-sm btn-dengor me-2"
+                  >
+                    <CloseTwoTone />
+                  </button>
                 </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Extension:</span>
-                    {detail.fileType}
-                  </h4>
-                </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Size:</span>
-                    {detail.sizeInMB}
-                    {"MB"}
-                  </h4>
-                </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Date:</span>
-                    {currentDate}
-                  </h4>
-                </div>
-                <button
-                  onClick={() => {
-                    delteSarcasmRowData(index);
-                  }}
-                  className="btn btn-sm btn-dengor me-2"
-                >
-                  <CloseTwoTone />
-                </button>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <div className="summary_cards brand_img_list">
-          {nologoDetails.length > 0 && <h3 className="lead fs-4">No Logo</h3>}
-          {nologoDetails.map((detail, index) => (
-            <div key={index} className="summary_card brand_img_item">
-              <div className="summary_cardrow brand_img_row">
-                <div className="col summary_box brand_img_box col140">
-                  {detail.fileType === "jpg" ||
-                  detail.fileType === "jpeg" ||
-                  detail.fileType === "png" ||
-                  detail.fileType === "gif" ? (
-                    nologoImages[index] && (
-                      <img
+          <div className="summary_cards brand_img_list">
+            {nologoDetails.length > 0 && <h3 className="lead fs-4">No Logo</h3>}
+            {nologoDetails.map((detail, index) => (
+              <div key={index} className="summary_card brand_img_item">
+                <div className="summary_cardrow brand_img_row">
+                  <div className="col summary_box brand_img_box col140">
+                    {detail.fileType === "jpg" ||
+                    detail.fileType === "jpeg" ||
+                    detail.fileType === "png" ||
+                    detail.fileType === "gif" ? (
+                      nologoImages[index] && (
+                        <img
+                          onClick={() =>
+                            setOpenReviewDisalog({
+                              open: true,
+                              image: URL.createObjectURL(nologoImages[index]),
+                              detail: detail,
+                            })
+                          }
+                          className="brandimg_icon"
+                          src={URL.createObjectURL(nologoImages[index])}
+                          alt={`Image ${index + 1}`}
+                          style={{
+                            width: "45%",
+                            height: "auto",
+                            border: "none",
+                            overflow: "hidden",
+                          }}
+                        />
+                      )
+                    ) : (
+                      <div
+                        className="file_icon"
                         onClick={() =>
                           setOpenReviewDisalog({
                             open: true,
@@ -1368,183 +1372,163 @@ const BrandCaseStudy = () => {
                             detail: detail,
                           })
                         }
-                        className="brandimg_icon"
-                        src={URL.createObjectURL(nologoImages[index])}
-                        alt={`Image ${index + 1}`}
-                        style={{
-                          width: "45%",
-                          height: "auto",
-                          border: "none",
-                          overflow: "hidden",
-                        }}
-                      />
-                    )
-                  ) : (
-                    <div
-                      className="file_icon"
-                      onClick={() =>
-                        setOpenReviewDisalog({
-                          open: true,
-                          image: URL.createObjectURL(nologoImages[index]),
-                          detail: detail,
-                        })
-                      }
-                    >
-                      {renderFileIcon(
-                        detail.fileType,
-                        URL.createObjectURL(nologoImages[index]),
-                        detail
-                      )}
-                    </div>
-                  )}
+                      >
+                        {renderFileIcon(
+                          detail.fileType,
+                          URL.createObjectURL(images[index]),
+                          detail
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Extension:</span>
+                      {detail.fileType}
+                    </h4>
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Size:</span>
+                      {detail.sizeInMB}
+                      {"MB"}
+                    </h4>
+                  </div>
+                  <div className="col summary_box brand_img_box col140">
+                    <h4>
+                      <span>Date:</span>
+                      {currentDate}
+                    </h4>
+                  </div>
+                  <button
+                    onClick={() => {
+                      delteNologoRowData(index);
+                    }}
+                    className="btn btn-sm btn-dengor me-2"
+                  >
+                    <CloseTwoTone />
+                  </button>
                 </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Extension:</span>
-                    {detail.fileType}
-                  </h4>
-                </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Size:</span>
-                    {detail.sizeInMB}
-                    {"MB"}
-                  </h4>
-                </div>
-                <div className="col summary_box brand_img_box col140">
-                  <h4>
-                    <span>Date:</span>
-                    {currentDate}
-                  </h4>
-                </div>
-                <button
-                  onClick={() => {
-                    delteNologoRowData(index);
-                  }}
-                  className="btn btn-sm btn-dengor me-2"
-                >
-                  <CloseTwoTone />
-                </button>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        <FieldContainer
-          label="Remark"
-          Tag="textarea"
-          rows="3"
-          value={remark}
-          required={false}
-          onChange={(e) => setRemark(e.target.value)}
-        />
-        <button
-          type="submit"
-          className="btn btn-primary"
-          disabled={isLoading}
-          style={{ width: "20%", marginLeft: "1%" }}
-        >
-          {isLoading ? "Please wait data uploading..." : "Submit"}
-        </button>
-      </FormContainer>
-      {openReviewDisalog.open && (
-        <ImgDialogBox
-          openReviewDisalog={openReviewDisalog}
-          setOpenReviewDisalog={setOpenReviewDisalog}
-        />
-      )}
-      <>
-        {/* add Category */}
-        <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-          <DialogTitle>Add Record</DialogTitle>
-          <DialogContent>
-            <Box
-              component="form"
-              sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <div>
-                <TextField
-                  id="outlined-password-input"
-                  label="Category"
-                  name="category_name"
-                  type="text"
-                  value={cat}
-                  onChange={(e) => setCat(e.target.value)}
-                />
-              </div>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+          <FieldContainer
+            label="Remark"
+            Tag="textarea"
+            rows="3"
+            value={remark}
+            required={false}
+            onChange={(e) => setRemark(e.target.value)}
+          />
+          <button
+            type="submit"
+            className="btn btn-primary"
+            disabled={isLoading}
+            style={{ width: "20%", marginLeft: "1%" }}
+          >
+            {isLoading ? "Please wait data uploading..." : "Submit"}
+          </button>
+        </FormContainer>
+        {openReviewDisalog.open && (
+          <ImgDialogBox
+            openReviewDisalog={openReviewDisalog}
+            setOpenReviewDisalog={setOpenReviewDisalog}
+          />
+        )}
+        <>
+          {/* add Category */}
+          <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+            <DialogTitle>Add Record</DialogTitle>
+            <DialogContent>
+              <Box
+                component="form"
+                sx={{
+                  "& .MuiTextField-root": { m: 1, width: "25ch" },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <div>
+                  <TextField
+                    id="outlined-password-input"
+                    label="Category"
+                    name="category_name"
+                    type="text"
+                    value={cat}
+                    onChange={(e) => setCat(e.target.value)}
+                  />
+                </div>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
             Cancel
           </Button> */}
-            <Button onClick={handleSave} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
+              <Button onClick={handleSave} color="primary">
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
 
-        {/* add sub Category */}
-        <Dialog
-          open={isModalOpenSubCat}
-          onClose={() => setIsModalOpenSubCat(false)}
-        >
-          <DialogTitle>Add Record</DialogTitle>
-          <DialogContent>
-            <Box
-              component="form"
-              sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <div>
-                <Autocomplete
-                  disablePortal
-                  id="combo-box-demo"
-                  options={brandCategory.map((option) => ({
-                    label: option.category_name,
-                    value: option.category_id,
-                  }))}
-                  onChange={(event, value) => {
-                    setPostData((prev) => ({
-                      ...prev,
-                      category_id: value.value,
-                    }));
-                  }}
-                  sx={{ width: 300 }}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Category *" />
-                  )}
-                />
+          {/* add sub Category */}
+          <Dialog
+            open={isModalOpenSubCat}
+            onClose={() => setIsModalOpenSubCat(false)}
+          >
+            <DialogTitle>Add Record</DialogTitle>
+            <DialogContent>
+              <Box
+                component="form"
+                sx={{
+                  "& .MuiTextField-root": { m: 1, width: "25ch" },
+                }}
+                noValidate
+                autoComplete="off"
+              >
+                <div>
+                  <Autocomplete
+                    disablePortal
+                    id="combo-box-demo"
+                    options={brandCategory.map((option) => ({
+                      label: option.category_name,
+                      value: option.category_id,
+                    }))}
+                    onChange={(event, value) => {
+                      setPostData((prev) => ({
+                        ...prev,
+                        category_id: value.value,
+                      }));
+                    }}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Category *" />
+                    )}
+                  />
 
-                <TextField
-                  id="outlined-password-input"
-                  label="Sub Category *"
-                  name="sub_category_name"
-                  type="text"
-                  value={postData.sub_category_name}
-                  onChange={handleChange}
-                />
-              </div>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
+                  <TextField
+                    id="outlined-password-input"
+                    label="Sub Category *"
+                    name="sub_category_name"
+                    type="text"
+                    value={postData.sub_category_name}
+                    onChange={handleChange}
+                  />
+                </div>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
             Cancel
           </Button> */}
-            <Button onClick={handleSaveSubCat} color="primary">
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    </div>
+              <Button onClick={handleSaveSubCat} color="primary">
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </>
+      </div>
+    </>
   );
 };
 

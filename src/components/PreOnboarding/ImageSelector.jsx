@@ -22,7 +22,7 @@ const ImageSelector = ({
 
         <div className="chooseImg">
           <div className="d-flex justify-content-between">
-            <h5>Choose Image:</h5>
+            <h5>Choose :</h5>
             <div onClick={CloseImageSelector}>
               <i className="bi bi-x-circle-fill" />
             </div>

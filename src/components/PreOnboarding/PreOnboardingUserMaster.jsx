@@ -40,7 +40,9 @@ import imageTest28 from "../../assets/img/product/Avtar28.png";
 import imageTest29 from "../../assets/img/product/Avtar29.png";
 import imageTest30 from "../../assets/img/product/Avtar30.png";
 
-import rocketVideoLink from "../../assets/video/Rocket_Blast.mp4";
+// import rocketVideoLink from "../../assets/video/Rocket.mp4";
+import rocketVideoLink from "../../assets/video/rocketAnimation.gif";
+// import rocketAudioLink from "../../assets/video/RocketAudio.mpeg";
 
 import Modal from "react-modal";
 import ExtendJoining from "./ExtendJoining";
@@ -59,6 +61,7 @@ import CocTabPreonboarding from "./CocTabPreonboarding";
 import { baseUrl } from "../../utils/config";
 import { set } from "date-fns";
 import ImageSelector from "./ImageSelector";
+import RocketAnimation from "./RocketAnimation";
 
 const LanguageList = ["English", "Hindi", "Other"];
 
@@ -156,7 +159,7 @@ const educationFieldLabels = {
 };
 
 const PreOnboardingUserMaster = () => {
-  const [isShowRocket, setIsShowRocket] = useState(true);
+  const [isShowRocket, setIsShowRocket] = useState(false);
   const [isTourOpen, setIsTourOpen] = useState(false);
   const whatsappApi = WhatsappAPI();
   const navigate = useNavigate();
@@ -337,9 +340,9 @@ const PreOnboardingUserMaster = () => {
 
   const fetchCOCData = async () => {
     try {
-      const response = await axios.get(baseUrl + "newcoc");
-      const data = response.data.data[1].coc_content;
-      setCocData(data);
+      const response = await axios.get(baseUrl + "latest_newcoc");
+
+      setCocData(response.data.data[0].coc_content);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -385,14 +388,6 @@ const PreOnboardingUserMaster = () => {
   //   ));
   // };
 
-  const openRocket = () => {
-    setIsShowRocket(true);
-  };
-
-  const closeRocket = () => {
-    setIsShowRocket(false);
-  };
-
   const openReadyToOnboardModal = () => {
     setReadyToOnboard(true);
   };
@@ -404,6 +399,33 @@ const PreOnboardingUserMaster = () => {
   const handleIamReady = () => {
     setReadyToOnboard(false);
     handleGetOnboard();
+    openRocket();
+  };
+
+  const openRocket = () => {
+    setIsShowRocket(true);
+  };
+
+  const closeRocket = () => {
+    setIsShowRocket(false);
+    openTour();
+  };
+
+  const openTour = () => {
+    setIsTourOpen(true);
+  };
+
+  const closeTour = () => {
+    setIsTourOpen(false);
+    OpenImageSelector();
+  };
+
+  const OpenImageSelector = () => {
+    setIsImageSelectorOpen(true);
+  };
+
+  const CloseImageSelector = () => {
+    setIsImageSelectorOpen(false);
   };
 
   const openReactModal = () => {
@@ -414,13 +436,15 @@ const PreOnboardingUserMaster = () => {
     setIsModalOpen(false);
   };
 
-  const OpenImageSelector = () => {
-    setIsImageSelectorOpen(true);
-  };
+  useEffect(() => {
+    if (isShowRocket && rocketVideoLink) {
+      const timer = setTimeout(() => {
+        closeRocket();
+      }, 5000);
 
-  const CloseImageSelector = () => {
-    setIsImageSelectorOpen(false);
-  };
+      return () => clearTimeout(timer);
+    }
+  }, [isShowRocket, closeRocket, rocketVideoLink]);
 
   const handleCheckboxChange = (e) => {
     const { checked } = e.target;
@@ -539,7 +563,6 @@ const PreOnboardingUserMaster = () => {
         showOnboardingModal,
         image,
         coc_flag,
-        show_rocket,
       } = fetchedData;
       setAllUserData(fetchedData);
       setUserName(user_name);
@@ -620,9 +643,6 @@ const PreOnboardingUserMaster = () => {
         showOnboardingModal && openReadyToOnboardModal();
       }
       setCocFlag(coc_flag);
-      {
-        !show_rocket && closeRocket();
-      }
     });
   };
   useEffect(() => {
@@ -632,7 +652,6 @@ const PreOnboardingUserMaster = () => {
   }, [id]);
 
   const handleHobbiesChange = (event, selectedOptions) => {
-    console.log("Hobbies", selectedOptions);
     setHobbies(selectedOptions || []);
   };
 
@@ -692,7 +711,10 @@ const PreOnboardingUserMaster = () => {
     formData.append("DOB", dateOfBirth);
     formData.append("fatherName", FatherName);
     formData.append("motherName", motherName);
-    formData.append("Hobbies", hobbies);
+    formData.append(
+      "Hobbies",
+      hobbies.map((hobby) => hobby.value)
+    );
     formData.append("BloodGroup", bloodGroup);
     formData.append("MartialStatus", maritialStatus);
     formData.append("DateofMarriage", dateOfMarraige);
@@ -1133,6 +1155,9 @@ const PreOnboardingUserMaster = () => {
     });
     CloseImageSelector();
     gettingData();
+    // setTimeout(() => {
+    //   gettingData();
+    // }, 3000);
   };
 
   const handleCOC = async () => {
@@ -1185,41 +1210,8 @@ const PreOnboardingUserMaster = () => {
     },
   ];
 
-  if (isShowRocket) {
-    return (
-      <>
-        <Modal
-          className="loaderRocket"
-          isOpen={isShowRocket}
-          onRequestClose={closeRocket}
-          contentLabel="Rocket Modal"
-          appElement={document.getElementById("root")}
-          shouldCloseOnOverlayClick={false}
-        >
-          <video
-            width="100%"
-            height="100%"
-            autoPlay
-            playsInline
-            onEnded={closeRocket}
-          >
-            <source src={rocketVideoLink} type="video/mp4" />
-          </video>
-        </Modal>
-      </>
-    );
-  }
-
   return (
     <>
-      <Tour
-        steps={steps}
-        isOpen={isTourOpen}
-        onRequestClose={() => {
-          setIsTourOpen(false), setIsImageSelectorOpen(true);
-        }}
-      />
-
       <Modal
         className="Ready to Onboard"
         isOpen={readyToOnboardModal}
@@ -1252,9 +1244,37 @@ const PreOnboardingUserMaster = () => {
         />
       </Modal>
 
+      <Modal
+        className="loaderRocket"
+        isOpen={isShowRocket}
+        onRequestClose={closeRocket}
+        contentLabel="Rocket Modal"
+        appElement={document.getElementById("root")}
+        shouldCloseOnOverlayClick={false}
+      >
+        {/* <RocketAnimation
+          isShowRocket={isShowRocket}
+          closeRocket={closeRocket}
+          videoLink={rocketVideoLink}
+          audioLink={rocketAudioLink}
+        /> */}
+        {/* <video
+          width="100%"
+          height="100%"
+          autoPlay
+          playsInline
+          onEnded={closeRocket}
+        >
+          <source src={rocketVideoLink} type="video/mp4" />
+        </video> */}
+        <img src={rocketVideoLink} alt="my-gif" />
+      </Modal>
+
+      <Tour steps={steps} isOpen={isTourOpen} onRequestClose={closeTour} />
+
       {/* Image Selector Modal  */}
       <Modal
-        className="modal-dialog modal-dialog-centered modal-lg minHeightAuto"
+        className="modal-dialog-centered modal-lg minHeightAuto"
         isOpen={isImageSelectorOpen}
         onRequestClose={CloseImageSelector}
         contentLabel="Image Selector"

@@ -2135,7 +2135,8 @@ pre code {
 .form-control {
   display: block;
   width: 100%;
-  height: 42px;
+  height: 50px;
+  min-height: 50px;
   padding: 8px 16px;
   font-size: 14px;
   line-height: 18px;
@@ -2230,6 +2231,29 @@ select.form-control:focus::-ms-value {
 .form-control-range {
   display: block;
   width: 100%;
+}
+
+.formSelect {
+  display: block;
+  width: 100%;
+  height: 50px;
+  min-height: 50px;
+  padding: 0px 0px;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  color: var(--gray-600);
+  background-color: transparent;
+  background-clip: padding-box;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.formSelect .css-13cymwt-control {
+  border-radius: 8px;
+  height: 100%;
+  border: none;
 }
 
 .col-form-label {
@@ -13633,4 +13657,94 @@ body.sidebar-toggled .sidebar_toggle .footer_cprgt {
 
 .profileInfo_row .col-sm-12 {
   padding: 0;
+}
+
+.row {
+  margin-right: -0.75rem;
+  margin-left: -0.75rem;
+}
+
+.thm_form .MuiFormControl-root {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  min-height: 50px;
+  vertical-align: middle;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.thm_form .MuiFormControl-root fieldset.MuiOutlinedInput-notchedOutline {
+  display: none;
+}
+
+.thm_form .MuiFormControl-root .MuiFormLabel-root {
+  color: var(--gray-500);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  margin: 0px 0px;
+  letter-spacing: 0;
+  transform: translateX(16px) translateY(15px);
+}
+
+.thm_form .MuiFormControl-root .MuiFormLabel-root.MuiInputLabel-shrink {
+  color: var(--gray-900);
+  font-size: 12px;
+  line-height: 14px;
+  padding: 0px 4px;
+  background: var(--bg-white);
+  transform: translateX(10px) translateY(-7px);
+}
+
+.thm_form .MuiFormControl-root .MuiInputBase-root {
+  padding: 8px 16px;
+  height: 100%;
+  min-height: 48px;
+  border: none;
+}
+
+.thm_form .MuiFormControl-root .MuiInputBase-input {
+  padding: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  color: var(--dark);
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+  width: 100% !important;
+}
+
+.btn,
+.btn-sml {
+  border-radius: var(--radius) !important;
+}
+
+.btn-sml {
+  font-size: 14px;
+  line-height: 18px;
+  padding: 6px 6px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 !important;
+}
+
+.full_page_content {
+  padding: 20px 0px 0px;
+}
+
+.input-group > .formSelect {
+  position: relative;
+  flex: 1 1 auto;
+  width: 1%;
+  min-width: 0;
+}
+
+.input-group button.MuiButtonBase-root {
+  border: 1px solid var(--border);
+  margin-left: -2px;
 }

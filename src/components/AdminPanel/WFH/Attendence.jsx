@@ -59,25 +59,21 @@ const Attendence = () => {
   }
 
   function gettingSliderData() {
-    axios
-      .get(baseUrl+"get_month_year_data")
-      .then((res) => {
-        setCompletedYearsMonths(res.data.data);
-      });
+    axios.get(baseUrl + "get_month_year_data").then((res) => {
+      setCompletedYearsMonths(res.data.data);
+    });
   }
 
   useEffect(() => {
-    axios
-      .get(baseUrl+"all_departments_of_wfh")
-      .then((res) => {
-        if (RoleIDContext == 1 || RoleIDContext == 5) {
-          getDepartmentData(res.data.data);
-        } else {
-          getDepartmentData(
-            res.data.data?.filter((d) => d.dept_id == ContextDept)
-          );
-        }
-      });
+    axios.get(baseUrl + "all_departments_of_wfh").then((res) => {
+      if (RoleIDContext == 1 || RoleIDContext == 5) {
+        getDepartmentData(res.data.data);
+      } else {
+        getDepartmentData(
+          res.data.data?.filter((d) => d.dept_id == ContextDept)
+        );
+      }
+    });
 
     gettingSliderData();
   }, []);
@@ -85,9 +81,7 @@ const Attendence = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(
-          baseUrl+"get_all_wfh_users"
-        );
+        const res = await axios.get(baseUrl + "get_all_wfh_users");
         const data = res.data.data;
         const filteredUser = data.filter((d) => d.dept_id === department);
         if (filteredUser?.length > 0) {
@@ -157,7 +151,7 @@ const Attendence = () => {
 
   const handleAttendence = () => {
     axios
-      .post(baseUrl+"add_attendance", {
+      .post(baseUrl + "add_attendance", {
         dept: department,
         user_id: userName.user_id,
         noOfabsent: 0,
@@ -176,7 +170,7 @@ const Attendence = () => {
 
   function handleAllDepartmentAttendance() {
     axios
-      .post(baseUrl+"save_all_depts_attendance", {
+      .post(baseUrl + "save_all_depts_attendance", {
         month: selectedMonth,
         year: selectedYear,
       })
@@ -206,7 +200,7 @@ const Attendence = () => {
 
   function gettingDepartmentSalaryExists() {
     axios
-      .post(baseUrl+"get_distinct_depts", {
+      .post(baseUrl + "get_distinct_depts", {
         month: selectedMonth,
         year: selectedYear,
       })
@@ -220,10 +214,11 @@ const Attendence = () => {
   };
 
   useEffect(() => {
-    axios.get(baseUrl+"get_all_wfh_users").then((res) => {
+    axios.get(baseUrl + "get_all_wfh_users").then((res) => {
       const data = res.data.data;
       const filteredUser = data.filter(
-        (d) => d.dept_id === department && d.user_status
+        (d) =>
+          d.dept_id === department && d.user_status && d.job_type === "WFHD"
       );
       setActiveUsers(filteredUser);
     });
@@ -236,10 +231,7 @@ const Attendence = () => {
       year: selectedYear,
     };
     axios
-      .post(
-        baseUrl+"get_salary_by_id_month_year",
-        payload
-      )
+      .post(baseUrl + "get_salary_by_id_month_year", payload)
       .then((res) => {
         setAttendenceData(res.data.data);
         setFilterData(res.data.data);
@@ -262,18 +254,16 @@ const Attendence = () => {
 
   useEffect(() => {
     if (department) {
-      axios
-        .get(`${baseUrl}`+`get_wfh_user/${department}`)
-        .then((res) => {
-          getUsersData(res.data);
-        });
+      axios.get(`${baseUrl}` + `get_wfh_user/${department}`).then((res) => {
+        getUsersData(res.data);
+      });
     }
   }, [department]);
 
   const handleCreateSalary = (e) => {
     e.preventDefault();
     axios
-      .put(baseUrl+"update_attendence_status", {
+      .put(baseUrl + "update_attendence_status", {
         month: selectedMonth,
         year: Number(selectedYear),
         dept: department,
@@ -289,7 +279,7 @@ const Attendence = () => {
       const updatedRow = { ...newRow, isNew: false };
       // console.log(updatedRow, "update row");
       axios
-        .post(baseUrl+"add_attendance", {
+        .post(baseUrl + "add_attendance", {
           attendence_id: updatedRow.attendence_id,
           dept: updatedRow.dept,
           user_id: updatedRow.user_id,

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { FcDownload } from "react-icons/fc";
 import ApproveReject from "./ApproveReject";
 import { useGlobalContext } from "../../../Context/Context";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const DocumentTabUserSingle = (id) => {
   const { toastAlert } = useGlobalContext();
@@ -13,12 +13,9 @@ const DocumentTabUserSingle = (id) => {
 
   const getDocuments = async () => {
     try {
-      const response = await axios.post(
-        baseUrl+"get_user_doc",
-        {
-          user_id: id.id,
-        }
-      );
+      const response = await axios.post(baseUrl + "get_user_doc", {
+        user_id: id.id,
+      });
       setDocumentData(response.data.data);
     } catch (error) {
       console.log(error, "Error Fetching data");
@@ -42,10 +39,7 @@ const DocumentTabUserSingle = (id) => {
       }
 
       console.log(payload);
-      const response = await axios.put(
-        baseUrl+"update_user_doc",
-        payload
-      );
+      const response = await axios.put(baseUrl + "update_user_doc", payload);
       toastAlert("Approved");
       setRejectReason("");
       setRejectReasonActive("");
@@ -64,7 +58,6 @@ const DocumentTabUserSingle = (id) => {
             // .filter((item) => item?.status !== "")
             .map((data) => (
               <>
-                {console.log(data.status)}
                 <div
                   className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12"
                   key={data._id}
@@ -112,6 +105,7 @@ const DocumentTabUserSingle = (id) => {
                       {rejectReasonActive == data._id && (
                         <div className="documentCard_input">
                           <input
+                            required
                             type="text"
                             className="form-control"
                             value={rejectReason}

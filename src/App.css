@@ -318,6 +318,27 @@ body[theme="dark"] .summary_cardtitle {
   gap: 6px 0px;
 }
 
+.summaryList ul {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.summaryList ul li {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 12px;
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--gray-600);
+  font-weight: 400;
+}
+
+.summaryList ul li:nth-last-child(1) {
+  border-bottom: none;
+}
+
 .modal-content {
   margin-top: 30%;
 }
