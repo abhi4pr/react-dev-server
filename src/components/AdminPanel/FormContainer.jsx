@@ -4,6 +4,10 @@ import { FaUserPlus } from "react-icons/fa";
 const FormContainer = ({
   mainTitle,
   title,
+  uniqueVendorCount,
+  totalPendingAmount,
+  pendingRequestCount,
+  handleOpenUniqueVendorClick,
   link,
   buttonAccess,
   newbutton,
@@ -17,14 +21,22 @@ const FormContainer = ({
   activeAccordionIndex,
   onAccordionButtonClick,
   mainTitleRequired = true,
-  loading=false
+  loading = false,
 }) => {
   return (
     <>
       {mainTitleRequired && (
         <div className="form-heading">
-          <div className="form_heading_title">
+          <div className="form_heading_title ">
             <h2>{mainTitle}</h2>
+          </div>
+          <div className="additional-titles ">
+            <h2 onClick={handleOpenUniqueVendorClick}>
+              Unique Vender : <a href="#">{uniqueVendorCount}</a>
+            </h2>
+            <h2>Pending Amount : {totalPendingAmount}</h2>
+            <h2>Pending Request : {pendingRequestCount}</h2>
+            <h2>Reminder : 0</h2>
           </div>
           {link && buttonAccess && (
             <div className="form_heading_action d-flex ">
@@ -96,12 +108,14 @@ const FormContainer = ({
                     {activeAccordionIndex === accordionButtons.length - 1 &&
                       submitButton && (
                         <button
-                          className={`btn btn ${loading?"btn-danger":"btn-success"}`}
+                          className={`btn btn ${
+                            loading ? "btn-danger" : "btn-success"
+                          }`}
                           style={{ marginRight: "5px" }}
                           type="submit"
                           disabled={loading}
                         >
-                          {loading?"Submiting":"Submit"}
+                          {loading ? "Submiting" : "Submit"}
                         </button>
                       )}
                   </div>

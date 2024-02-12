@@ -19,20 +19,24 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function ImageView({viewImgSrc,setViewImgDialog ,  fullWidth=true,
-  maxWidth="md"}) {
+export default function ImageView({
+  viewImgSrc,
+  setViewImgDialog,
+  fullWidth = true,
+  maxWidth = "md",
+}) {
   const [open, setOpen] = React.useState(true);
   const [isPDF, setIsPDF] = React.useState(false);
 
-useEffect(() => {
- let verify= viewImgSrc.split(".").pop().toLowerCase() === "pdf" 
-  setIsPDF(verify)
-}
-, [viewImgSrc]);
+  useEffect(() => {
+    let verify = viewImgSrc.split(".").pop().toLowerCase() === "pdf";
+    setIsPDF(verify);
+  }, [viewImgSrc]);
 
   const handleClose = () => {
     setViewImgDialog(false);
   };
+
   return (
     <div>
       {/* <Button variant="outlined" onClick={handleClickOpen}>
@@ -46,7 +50,7 @@ useEffect(() => {
         maxWidth={maxWidth}
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-            View
+          View
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -60,22 +64,22 @@ useEffect(() => {
         >
           <CloseIcon />
         </IconButton>
-        <DialogContent dividers 
-        // sx={{width:"50vw",height:"auto"}}
-        > 
-            {!isPDF?<img src={viewImgSrc} alt="img"  />:<div style={
-              {width:"100%",height:"80vh"}
-
-            }><iframe
-            src={viewImgSrc}
-            title="file"
-            width="100%"
-            height="100%"
-            >
-            </iframe>
+        <DialogContent
+          dividers
+          // sx={{width:"50vw",height:"auto"}}
+        >
+          {!isPDF ? (
+            <img src={viewImgSrc} alt="img" />
+          ) : (
+            <div style={{ width: "100%", height: "80vh" }}>
+              <iframe
+                src={viewImgSrc}
+                title="file"
+                width="100%"
+                height="100%"
+              ></iframe>
             </div>
-            }
-            
+          )}
         </DialogContent>
       </BootstrapDialog>
     </div>
