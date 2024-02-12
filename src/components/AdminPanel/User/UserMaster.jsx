@@ -549,18 +549,16 @@ const UserMaster = () => {
             email?.toLocaleLowerCase()
         );
 
-        const userNameExists = usersData.some(
-          (user) =>
-            user.user_name?.toLocaleLowerCase() == username?.toLocaleLowerCase()
-        );
+        // const userNameExists = usersData.some(
+        //   (user) =>
+        //     user.user_name?.toLocaleLowerCase() == username?.toLocaleLowerCase()
+        // );
         if (isLoginIdExists) {
           alert("this login ID already exists");
         } else if (contactNumberExists) {
           alert("Official Contact Already Exists");
         } else if (emailIdExists) {
           alert("Official Email Already Exists");
-        } else if (userNameExists) {
-          alert("User Name Already Exists");
         } else {
           setLoading(true);
           axios
@@ -720,37 +718,45 @@ const UserMaster = () => {
 
   // Number validation
   function handleContactChange(event) {
-    const newContact = event.target.value;
-    setContact(newContact);
+    if (event.target.value.length <= 10) {
+      const newContact = event.target.value;
+      setContact(newContact);
 
-    if (newContact === "") {
-      setValidContact(false);
-    } else {
-      setValidContact(/^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact));
+      if (newContact === "") {
+        setValidContact(false);
+      } else {
+        setValidContact(
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact)
+        );
+      }
     }
   }
   function handlePersonalContactChange(event) {
-    const newContact1 = event.target.value;
-    setPersonalContact(newContact1);
+    if (event.target.value.length <= 10) {
+      const newContact1 = event.target.value;
+      setPersonalContact(newContact1);
 
-    if (newContact1 === "") {
-      setValidContact1(false);
-    } else {
-      setValidContact1(
-        /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
-      );
+      if (newContact1 === "") {
+        setValidContact1(false);
+      } else {
+        setValidContact1(
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+        );
+      }
     }
   }
   function handleAlternateContactChange(event) {
-    const newContact1 = event.target.value;
-    setAlternateContact(newContact1);
+    if (event.target.value.length <= 10) {
+      const newContact1 = event.target.value;
+      setAlternateContact(newContact1);
 
-    if (newContact1 === "") {
-      setValidContact3(false);
-    } else {
-      setValidContact3(
-        /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
-      );
+      if (newContact1 === "") {
+        setValidContact3(false);
+      } else {
+        setValidContact3(
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+        );
+      }
     }
   }
 

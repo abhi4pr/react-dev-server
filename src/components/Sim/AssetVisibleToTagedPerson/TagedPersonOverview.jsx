@@ -1,4 +1,5 @@
 import DataTable from "react-data-table-component";
+import DateISOtoNormal from "../../../utils/DateISOtoNormal";
 
 const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
   const columnsTab1 = [

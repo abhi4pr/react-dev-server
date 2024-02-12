@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import FieldContainer from "../AdminPanel/FieldContainer";
 
 const ContactNumberReact = ({
- astric,
+  astric,
   label,
   parentComponentContact,
   setParentComponentContact,
   mandatoryFieldsEmpty,
-  setMandatoryFieldsEmpty, 
+  setMandatoryFieldsEmpty,
 }) => {
   const [contact, setContact] = useState(parentComponentContact || "");
   const [isValidcontact, setIsValidContact] = useState(false);
@@ -22,10 +22,12 @@ const ContactNumberReact = ({
   }
 
   function handleContactChange(event) {
-    const newContact = event.target.value;
-    setContact(newContact);
-    setIsValidContact(newContact ? validateContact(newContact) : false);
-    setParentComponentContact(newContact);
+    if (event.target.value.length <= 10) {
+      const newContact = event.target.value;
+      setContact(newContact);
+      setIsValidContact(newContact ? validateContact(newContact) : false);
+      setParentComponentContact(newContact);
+    }
   }
 
   function handleContactBlur() {
@@ -50,14 +52,16 @@ const ContactNumberReact = ({
         onChange={handleContactChange}
         onBlur={handleContactBlur}
       />
-      {(isContactTouched || contact?.length >= 10) && !isValidcontact && mandatoryFieldsEmpty?.personalContact&& (
-         
-        <p style={{ color: "red" }}>*Please enter emergency contact valid number</p>
-      )}
+      {(isContactTouched || contact?.length >= 10) &&
+        !isValidcontact &&
+        mandatoryFieldsEmpty?.personalContact && (
+          <p style={{ color: "red" }}>
+            *Please enter emergency contact valid number
+          </p>
+        )}
       {mandatoryFieldsEmpty?.personalContact && (
-        <p style={{ color: "red" }}>*Please enter emergency  contact number</p>
-      )
-      }
+        <p style={{ color: "red" }}>*Please enter emergency contact number</p>
+      )}
     </div>
   );
 };
