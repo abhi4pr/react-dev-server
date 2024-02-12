@@ -55,6 +55,7 @@ export default function PendingPaymentRequest() {
   const [sameVendorData, setSameVendorData] = useState([]);
   const [priorityFilter, setPriorityFilter] = useState("");
   const [requestAmountFilter, setRequestAmountFilter] = useState("");
+  const [requestedAmountField, setRequestedAmountField] = useState("");
 
   const callApi = () => {
     axios.get(`${baseUrl}` + `addPhpVendorPaymentRequest`).then((res) => {});
@@ -208,42 +209,64 @@ export default function PendingPaymentRequest() {
   };
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
-      console.log(item, "item>>>>>>>>>>>>>>>>");
       const date = new Date(item.request_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
       toDate1.setDate(toDate1.getDate() + 1);
-      if (
-        (date >= fromDate1 && date <= toDate1) ||
-        item.vendor_name.toLowerCase().includes(vendorName.toLowerCase())
-      ) {
-        return item;
-      }
-      // Priority Filter:-
-      const priorityFilterData =
+
+      // Date Range Filter
+      const dateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+
+      // Vender Name Filter
+      const vendorNameFilterPassed =
+        !vendorName ||
+        item.vendor_name.toLowerCase().includes(vendorName.toLowerCase());
+
+      // Priority Filter
+      const priorityFilterPassed =
         !priorityFilter || item.priority === priorityFilter;
 
-      // Request Amount Filter :-
+      // Search Query Filter
+      const searchFilterPassed =
+        !search ||
+        Object.values(item).some(
+          (val) =>
+            typeof val === "string" &&
+            val.toLowerCase().includes(search.toLowerCase())
+        );
 
-      // const requestAmountFilterPassed = (() => {
-      //   if (!requestAmountFilter || requestAmount === "") return true; // No filter selected or no amount provided, so return true
-      //   const numericRequestAmount = parseFloat(requestAmount);
-      //   switch (requestAmountFilter) {
-      //     case "greaterThan":
-      //       return parseFloat(item.request_amount) > numericRequestAmount;
-      //     case "lessThan":
-      //       return parseFloat(item.request_amount) < numericRequestAmount;
-      //     case "equalTo":
-      //       return parseFloat(item.request_amount) === numericRequestAmount;
-      //     default:
-      //       return true; // Default case, no filter applied
-      //   }
-      // })();
-      return priorityFilterData;
+      // Requested Amount Filter
+      const requestedAmountFilterPassed = (() => {
+        if (!requestAmountFilter || requestedAmountField === "") return true; //When  No filter selected or no amount provided, so return true
+        const numericRequestedAmount = parseFloat(requestedAmountField);
+        switch (requestAmountFilter) {
+          case "greaterThan":
+            return parseFloat(item.requested_amount) > numericRequestedAmount;
+          case "lessThan":
+            return parseFloat(item.requested_amount) < numericRequestedAmount;
+          case "equalTo":
+            return parseFloat(item.requested_amount) === numericRequestedAmount;
+          default:
+            return true;
+        }
+      })();
+
+      // Combining All The Filters
+      const allFiltersPassed =
+        dateFilterPassed &&
+        vendorNameFilterPassed &&
+        priorityFilterPassed &&
+        searchFilterPassed &&
+        requestedAmountFilterPassed;
+
+      return allFiltersPassed;
     });
 
     setFilterData(filterData);
   };
+
+  console.log(filterData, "filterData>>");
 
   const handleClosePayDialog = () => {
     setPayDialog(false);
@@ -260,6 +283,7 @@ export default function PendingPaymentRequest() {
     setVendorName("");
     setPriorityFilter("");
     setRequestAmountFilter("");
+    setRequestedAmountField("");
   };
 
   const handlePayClick = (row) => {
@@ -747,6 +771,20 @@ export default function PendingPaymentRequest() {
               <option value="lessThan">Less Than</option>
               <option value="equalTo">Equal To</option>
             </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Requested Amount</label>
+            <input
+              value={requestedAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setRequestedAmountField(e.target.value);
+              }}
+            />
           </div>
         </div>
         {/* </div> */}
