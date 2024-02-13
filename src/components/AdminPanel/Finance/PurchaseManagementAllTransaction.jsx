@@ -6,7 +6,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import ImageView from "./ImageView";
 import pdf from "./pdf-file.png";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 export default function PurchaseManagementAllTransaction() {
   const [search, setSearch] = useState("");
@@ -18,42 +18,42 @@ export default function PurchaseManagementAllTransaction() {
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [viewImgSrc, setViewImgSrc] = useState("");
   const [actionFieldData, setActionFieldData] = useState([]);
+  const [priorityFilter, setPriorityFilter] = useState("");
+  const [requestAmountFilter, setRequestAmountFilter] = useState("");
+  const [requestedAmountField, setRequestedAmountField] = useState("");
 
   const callApi = () => {
-    axios
-      .get(baseUrl+"phpvendorpaymentrequest")
-      .then((res) => {
-        console.log(res.data.modifiedData.length, "node l js");
-        console.log(res.data.modifiedData, "node js");
-        const x = res.data.modifiedData;
-        setActionFieldData(x);
+    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+      console.log(res.data.modifiedData.length, "node l js");
+      console.log(res.data.modifiedData, "node js");
+      const x = res.data.modifiedData;
+      setActionFieldData(x);
 
+      axios
+        .get(
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+        )
+        .then((res) => {
+          // let y = res.data.body.filter((item) => {
+          //   return x.some((item2) =>( item.request_id == item2.request_id));
+          // });
+          // console.log(res.data.body.filter((item) => {
+          //   return x.some((item2) =>( item.request_id == item2.request_id));
+          // }),'y')
+          let y = res.data.body;
+          setData(y);
+          setFilterData(y);
+          // console.log(y, "y");
+          // let y = x;
 
-        axios
-          .get(
-            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
-          )
-          .then((res) => {
-            // let y = res.data.body.filter((item) => {
-            //   return x.some((item2) =>( item.request_id == item2.request_id));
-            // });
-            // console.log(res.data.body.filter((item) => {
-            //   return x.some((item2) =>( item.request_id == item2.request_id));
-            // }),'y')
-            let y = res.data.body
-            setData(y);
-            setFilterData(y);
-            // console.log(y, "y");
-            // let y = x;
-
-            // let u = res.data.body.filter((item) => {
-            //   return !y.some((item2) => item.request_id == item2.request_id);
-            // });
-            // console.log(u, "u");
-            // setData(u);
-            // setFilterData(u);
-          });
-      });
+          // let u = res.data.body.filter((item) => {
+          //   return !y.some((item2) => item.request_id == item2.request_id);
+          // });
+          // console.log(u, "u");
+          // setData(u);
+          // setFilterData(u);
+        });
+    });
   };
 
   useEffect(() => {
@@ -89,12 +89,53 @@ export default function PurchaseManagementAllTransaction() {
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
       toDate1.setDate(toDate1.getDate() + 1);
-      if (
-        (date >= fromDate1 && date <= toDate1) ||
-        item.vendor_name.toLowerCase().includes(vendorName.toLowerCase())
-      ) {
-        return item;
-      }
+
+      const dateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+
+      // Vender Name Filter
+      const vendorNameFilterPassed =
+        !vendorName ||
+        item.vendor_name.toLowerCase().includes(vendorName.toLowerCase());
+
+      // Priority Filter
+      const priorityFilterPassed =
+        !priorityFilter || item.priority === priorityFilter;
+
+      // Search Query Filter
+      const searchFilterPassed =
+        !search ||
+        Object.values(item).some(
+          (val) =>
+            typeof val === "string" &&
+            val.toLowerCase().includes(search.toLowerCase())
+        );
+
+      // Requested Amount Filter
+      console.log(requestAmountFilter, "requestAmountFilter");
+      const requestedAmountFilterPassed = () => {
+        const numericRequestedAmount = parseFloat(requestedAmountField);
+        console.log("switch");
+        switch (requestAmountFilter) {
+          case "greaterThan":
+            return +item.request_amount > numericRequestedAmount;
+          case "lessThan":
+            return +item.request_amount < numericRequestedAmount;
+          case "equalTo":
+            return +item.request_amount === numericRequestedAmount;
+          default:
+            return true;
+        }
+      };
+
+      const allFiltersPassed =
+        dateFilterPassed &&
+        vendorNameFilterPassed &&
+        priorityFilterPassed &&
+        searchFilterPassed &&
+        requestedAmountFilterPassed();
+
+      return allFiltersPassed;
     });
     setFilterData(filterData);
   };
@@ -103,6 +144,9 @@ export default function PurchaseManagementAllTransaction() {
     setFromDate("");
     setToDate("");
     setVendorName("");
+    setPriorityFilter("");
+    setRequestAmountFilter("");
+    setRequestedAmountField("");
   };
 
   const columns = [
@@ -140,14 +184,14 @@ export default function PurchaseManagementAllTransaction() {
           //   title="PDF Preview"
           // />
           <img
-          src={pdf}
-          alt="pdf"
-          onClick={() => {
-            setOpenImageDialog(true);
-            setViewImgSrc(imgUrl);
-          }}
-          style={{ width: "100px", height: "100px" }}
-        />
+            src={pdf}
+            alt="pdf"
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            style={{ width: "100px", height: "100px" }}
+          />
         ) : (
           <img
             onClick={() => {
@@ -156,7 +200,7 @@ export default function PurchaseManagementAllTransaction() {
             }}
             src={imgUrl}
             alt="Invoice"
-            style={{ width: "100px", height: "100px" }}
+            style={{ width: "60px", height: "60px" }}
           />
         );
       },
@@ -234,26 +278,25 @@ export default function PurchaseManagementAllTransaction() {
       headerName: "Status",
       width: 150,
       renderCell: (params) => {
-        const matchingItems = actionFieldData.filter((item) => item.request_id == params.row.request_id);
-    console.log(matchingItems, "matchingItems");
+        const matchingItems = actionFieldData.filter(
+          (item) => item.request_id == params.row.request_id
+        );
+        console.log(matchingItems, "matchingItems");
         if (matchingItems.length > 0) {
           return matchingItems.map((item, index) => (
             <p key={index}>
-              {item.status == 0 ? (
-                "Pending"
-              ) : item.status == 2 ? (
-                "Discarded"
-              ) : (
-                "Paid"
-              )}
+              {item.status == 0
+                ? "Pending"
+                : item.status == 2
+                ? "Discarded"
+                : "Paid"}
             </p>
           ));
         } else {
           return "Pending"; // Default value if no matching item is found
         }
       },
-    }
-    
+    },
   ];
   return (
     <div>
@@ -269,9 +312,10 @@ export default function PurchaseManagementAllTransaction() {
               Total Requested Amount :-{" "}
               {data.length > 0
                 ? data
-                .filter((item) => item.payment_approval_status == 0).reduce((total, currentItem) => {
-                    return total + currentItem.request_amount * 1;
-                  }, 0)
+                    .filter((item) => item.payment_approval_status == 0)
+                    .reduce((total, currentItem) => {
+                      return total + currentItem.request_amount * 1;
+                    }, 0)
                 : ""}
             </p>
             <p className="fs-6 lead ">
@@ -292,10 +336,11 @@ export default function PurchaseManagementAllTransaction() {
             <p className="fs-6 lead ">
               Total Requested Amount :-{" "}
               {data.length > 0
-                ? data 
-                .filter((item) => item.status == 1).reduce((total, currentItem) => {
-                    return total + currentItem.request_amount * 1;
-                  }, 0)
+                ? data
+                    .filter((item) => item.status == 1)
+                    .reduce((total, currentItem) => {
+                      return total + currentItem.request_amount * 1;
+                    }, 0)
                 : ""}
             </p>
             <p className="fs-6 lead ">
@@ -317,9 +362,10 @@ export default function PurchaseManagementAllTransaction() {
               Total Requested Amount :-{" "}
               {data.length > 0
                 ? data
-                .filter((item) => item.status == 0).reduce((total, currentItem) => {
-                    return total + currentItem.request_amount * 1;
-                  }, 0)
+                    .filter((item) => item.status == 0)
+                    .reduce((total, currentItem) => {
+                      return total + currentItem.request_amount * 1;
+                    }, 0)
                 : ""}
             </p>
             <p className="fs-6 lead ">
@@ -370,6 +416,50 @@ export default function PurchaseManagementAllTransaction() {
               className="form-control"
               onChange={(e) => {
                 setToDate(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Priority</label>
+            <select
+              value={priorityFilter}
+              className="form-control"
+              onChange={(e) => setPriorityFilter(e.target.value)}
+            >
+              <option value="">Select Priority</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Request Amount Filter</label>
+            <select
+              value={requestAmountFilter}
+              className="form-control"
+              onChange={(e) => setRequestAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Requested Amount</label>
+            <input
+              value={requestedAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setRequestedAmountField(e.target.value);
               }}
             />
           </div>

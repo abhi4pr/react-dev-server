@@ -7,7 +7,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { Autocomplete, Button, TextField } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 import ImageView from "./ImageView";
 import pdfImg from "./pdf-file.png";
 
@@ -29,6 +29,9 @@ const AllTransactions = () => {
   const [paymetMethod, setPaymetMethod] = useState([]);
   const [viewImgSrc, setViewImgSrc] = useState("");
   const [viewImgDialog, setViewImgDialog] = useState(false);
+  const [priorityFilter, setPriorityFilter] = useState("");
+  const [requestAmountFilter, setRequestAmountFilter] = useState("");
+  const [requestedAmountField, setRequestedAmountField] = useState("");
 
   const handleFilter = () => {
     const result = datas
@@ -94,30 +97,24 @@ const AllTransactions = () => {
   };
 
   function getData() {
-    axios
-      .post(baseUrl+"add_php_payment_acc_data_in_node")
-      .then((res) => {
-        console.log("data save in local success");
-      });
-    axios
-      .get(baseUrl+"get_all_php_finance_data")
-      .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
-      });
+    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {
+      console.log("data save in local success");
+    });
+    axios.get(baseUrl + "get_all_php_finance_data").then((res) => {
+      setData(res.data.data);
+      setFilterData(res.data.data);
+    });
 
-    axios
-      .get(baseUrl+"get_all_php_payment_acc_data")
-      .then((res) => {
-        setPaymetMethod(res.data.data);
-        // let x =res.data.data.map(e=>{
-        //   setPaymetMethod(prev=>[...prev,{payment_type:e.payment_type}])
-        // })
-        // console.log(res.data.data)
-        // console.log(res.data.data.map(e=>{
-        //  return e.payment_type})
-        // )
-      });
+    axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
+      setPaymetMethod(res.data.data);
+      // let x =res.data.data.map(e=>{
+      //   setPaymetMethod(prev=>[...prev,{payment_type:e.payment_type}])
+      // })
+      // console.log(res.data.data)
+      // console.log(res.data.data.map(e=>{
+      //  return e.payment_type})
+      // )
+    });
   }
   function convertDateToDDMMYYYY(dateString) {
     const date = new Date(dateString);
@@ -227,15 +224,18 @@ const AllTransactions = () => {
       cell: (row) => (
         <div style={{ whiteSpace: "normal" }}>
           {row.payment_screenshot.includes(".pdf") ? (
-            <img src={pdfImg} onClick={() => {
-              setViewImgSrc(
-                row.payment_screenshot
-                  ? `https://sales.creativefuel.io/${row.payment_screenshot}`
-                  : ""
-              ),
-                setViewImgDialog(true);
-            }} />
-          ) : 
+            <img
+              src={pdfImg}
+              onClick={() => {
+                setViewImgSrc(
+                  row.payment_screenshot
+                    ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+                    : ""
+                ),
+                  setViewImgDialog(true);
+              }}
+            />
+          ) : (
             <img
               onClick={() => {
                 setViewImgSrc(
@@ -251,9 +251,7 @@ const AllTransactions = () => {
                   : ""
               }
             />
-          
-
-          }
+          )}
           {/* <img
             onClick={() => {
               setViewImgSrc(
@@ -485,36 +483,35 @@ const AllTransactions = () => {
                     return <option key={index} value={item.title}>{item.title}</option>
                   })}
                 </select> */}
-               <Autocomplete
-  value={paymentMode}
-  onChange={(event, newValue) => {
-    setPaymetMode(newValue);
-  }}
-  options={paymetMethod.map((option) => option.payment_type)}
-  getOptionLabel={(option) => (option ? option : "")}
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      placeholder="Select Payment Mode"
-      variant="outlined"
-      InputProps={{
-        ...params.InputProps,
-        className: "form-control", // Apply Bootstrap's form-control class
-      }}
-      // Applying inline styles to match Bootstrap's form-control as closely as possible
-      style={{
-        borderRadius: '0.25rem',
-        transition: 'border-color .15s ease-in-out,box-shadow .15s ease-in-out',
-        '&:focus': {
-          borderColor: '#80bdff',
-          boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
-        }
-      }}
-    />
-  )}
-/>
-
-
+                <Autocomplete
+                  value={paymentMode}
+                  onChange={(event, newValue) => {
+                    setPaymetMode(newValue);
+                  }}
+                  options={paymetMethod.map((option) => option.payment_type)}
+                  getOptionLabel={(option) => (option ? option : "")}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Select Payment Mode"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      // Applying inline styles to match Bootstrap's form-control as closely as possible
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
               </div>
             </div>
             <div className="col-md-2">
@@ -616,11 +613,11 @@ const AllTransactions = () => {
         </div>
       </div>
       {viewImgDialog && (
-          <ImageView
-            viewImgSrc={viewImgSrc}
-            setViewImgDialog={setViewImgDialog}
-          />
-        )}
+        <ImageView
+          viewImgSrc={viewImgSrc}
+          setViewImgDialog={setViewImgDialog}
+        />
+      )}
     </>
   );
 };

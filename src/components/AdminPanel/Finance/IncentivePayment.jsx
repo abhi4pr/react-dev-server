@@ -37,10 +37,14 @@ const IncentivePayment = () => {
   const [paymentDate, setPaymentDate] = useState(dayjs(new Date()));
   const [paymentType, setPaymentType] = useState("Full Payment");
   const [partialPaymentReason, setPartialPaymentReason] = useState("");
-
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
+  const [salesExecutive, setSalesExecutive] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [requestAmountFilter, setRequestAmountFilter] = useState("");
+  const [requestedAmountField, setRequestedAmountField] = useState("");
 
   const DateFormateToYYYYMMDD = (date) => {
     console.log(date);
@@ -160,6 +164,56 @@ const IncentivePayment = () => {
     setFilterData(result);
   }, [search]);
 
+  console.log(datas, "datas>>>>");
+  //  All Filters :-
+  const handleAllFilters = () => {
+    const filterData = datas.filter((item) => {
+      // const date = new Date(item.payment_date);
+      // const fromDate1 = new Date(fromDate);
+      // const toDate1 = new Date(toDate);
+      // toDate1.setDate(toDate1.getDate() + 1);
+      // Date Range Filter:-
+      // const dateFilterPassed =
+      //   !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+      // // Customer Name Filter:-
+      // const customerNameFilterPassed =
+      //   !customerName ||
+      //   item.cust_name.toLowerCase().includes(customerName.toLowerCase());
+      // // Requested By Filter
+      // const requestedByFilterPassed =
+      //   !requestedBy ||
+      //   item.user_name.toLowerCase().includes(requestedBy.toLowerCase());
+      // // Bank Name Filter
+      // const bankNameFilterPassed =
+      //   !bankName || item.detail.toLowerCase().includes(bankName.toLowerCase());
+      // //  Payment Amount Filter
+      // const paymentAmountFilterPassed = () => {
+      //   const paymentAmount = parseFloat(paymentAmountField);
+      //   console.log("switch");
+      //   switch (paymentAmountFilter) {
+      //     case "greaterThan":
+      //       return +item.payment_amount > paymentAmount;
+      //     case "lessThan":
+      //       return +item.payment_amount < paymentAmount;
+      //     case "equalTo":
+      //       return +item.payment_amount === paymentAmount;
+      //     default:
+      //       return true;
+      //   }
+      // };
+      // const allFiltersPassed =
+      //   dateFilterPassed &&
+      //   customerNameFilterPassed &&
+      //   requestedByFilterPassed &&
+      //   bankNameFilterPassed &&
+      //   paymentAmountFilterPassed();
+      // return allFiltersPassed;
+    });
+    console.log(filterData, "FD??????????????");
+    setFilterData(filterData);
+    console.log(filterData);
+  };
+  const handleClearAllFilter = () => {};
   const columns = useMemo(
     () => [
       {
@@ -356,7 +410,91 @@ const IncentivePayment = () => {
           false
         }
       />
-
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Sales Executive</label>
+            <input
+              value={salesExecutive}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setSalesExecutive(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Aging</label>
+            <input type="text" placeholder="Name" className="form-control" />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>From Date</label>
+            <input
+              value={fromDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => setFromDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>To Date</label>
+            <input
+              value={toDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => {
+                setToDate(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Requested Amount Filter</label>
+            <select
+              value={requestAmountFilter}
+              className="form-control"
+              onChange={(e) => setPaymentAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Requested Amount</label>
+            <input
+              // value={paymentAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                // setPaymentAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-1 mt-4 me-2">
+          <Button variant="contained" onClick={handleAllFilters}>
+            <i className="fas fa-search"></i> Search
+          </Button>
+        </div>
+        <div className="col-md-1 mt-4">
+          <Button variant="contained" onClick={handleClearAllFilter}>
+            Clear
+          </Button>
+        </div>
+      </div>
       <Dialog
         fullWidth={true}
         maxWidth={"sm"}

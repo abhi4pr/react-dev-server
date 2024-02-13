@@ -6,7 +6,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { get } from "jquery";
 import { set } from "date-fns";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const PendingApprovalRefund = () => {
   const { toastAlert } = useGlobalContext();
@@ -23,7 +23,7 @@ const PendingApprovalRefund = () => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
-
+  console.log("PALLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
   const handleFileChange = (e, index) => {
     const newRefundImage = [...refundImage]; // Creating a new array
     newRefundImage[index] = e.target.files[0]; // Updating the specific index
@@ -40,16 +40,12 @@ const PendingApprovalRefund = () => {
   };
 
   function getData() {
-    axios
-      .post(baseUrl+"add_php_payment_refund_data_in_node")
-      .then((res) => {
-        console.log("data save in local success");
-      });
+    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then((res) => {
+      console.log("data save in local success");
+    });
     setTimeout(() => {
       axios
-        .get(
-          baseUrl+"get_all_php_payment_refund_data_pending"
-        )
+        .get(baseUrl + "get_all_php_payment_refund_data_pending")
         .then((res) => {
           setData(res.data.data);
           setFilterData(res.data.data);
@@ -97,7 +93,7 @@ const PendingApprovalRefund = () => {
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_refund_id", row.sale_booking_refund_id);
     formData.append("sale_booking_id", row.sale_booking_id);
-    formData.append("refund_files",  e.target.files[0]);
+    formData.append("refund_files", e.target.files[0]);
 
     await axios
       .post(
@@ -185,7 +181,7 @@ const PendingApprovalRefund = () => {
               // setRefundImage(refundImage);
               // setImageChanged(!imageChanged); // Toggle the state to trigger re-render
               handleFileChange(e, index);
-              uploadImage(e, row, index)
+              uploadImage(e, row, index);
             }}
           />
           <br />
@@ -206,9 +202,9 @@ const PendingApprovalRefund = () => {
 
     {
       name: "Action",
-      selector: (row,index) => (
+      selector: (row, index) => (
         <select
-        key={index}
+          key={index}
           className="form-control"
           value={row.statusDropdown}
           onChange={(e) => handleStatusChange(row, e.target.value)}
