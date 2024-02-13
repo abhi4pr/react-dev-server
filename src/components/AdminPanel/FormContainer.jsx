@@ -36,9 +36,15 @@ const FormContainer = ({
               <h2 onClick={handleOpenUniqueVendorClick}>
                 Unique Vender : <a href="#">{uniqueVendorCount}</a>
               </h2>
-              <h2>Pending Amount : {totalPendingAmount}</h2>
-              <h2>Pending Request : {pendingRequestCount}</h2>
-              <h2>Reminder : 0</h2>
+              <h2>
+                Pending Amount : <a href="#"> {totalPendingAmount}</a>
+              </h2>
+              <h2>
+                Pending Request : <a href="#"> {pendingRequestCount}</a>
+              </h2>
+              <h2>
+                Reminder : <a href="#">0</a>
+              </h2>
             </div>
           )}
           {link && buttonAccess && (

@@ -132,7 +132,7 @@ export default function PendingPaymentRequest() {
     (total, item) => total + item.request_amount,
     0
   );
-
+  console.log(totalPendingAmount, "totalPendingAmount");
   const handlePayVendorClick = () => {
     const formData = new FormData();
     formData.append("request_id", rowData.request_id);
