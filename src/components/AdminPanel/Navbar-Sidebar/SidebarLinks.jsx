@@ -71,7 +71,7 @@ const SidebarLinks = () => {
   const isLeadManagementVisible = [22].some(
     (index) => contextData[index]?.view_value === 1
   );
-  const isExecutionVisible = [24, 31, 32, 34].some(
+  const isExecutionVisible = [24, 31, 32, 34, 46].some(
     (index) => contextData[index]?.view_value === 1
   );
   const isInstaApiVisible = [25].some(
@@ -880,8 +880,8 @@ const SidebarLinks = () => {
                         </li>
                       )}
                     {contextData &&
-                      contextData[46] &&
-                      contextData[46].view_value === 1 && (
+                      contextData[45] &&
+                      contextData[45].view_value === 1 && (
                         <li className="nav-item">
                           <Link
                             className="nav-link collapsed"

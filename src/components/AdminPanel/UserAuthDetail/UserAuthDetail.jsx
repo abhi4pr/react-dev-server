@@ -15,12 +15,12 @@ const UserAuthDetail = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
-
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     getData();
   }, []);
+
   function getData() {
     axios
       .get(`${baseUrl}`+`get_single_user_auth_detail/${id}`)
@@ -29,12 +29,14 @@ const UserAuthDetail = () => {
         setFilterData(res.data);
       });
   }
+
   useEffect(() => {
     const result = data.filter((d) => {
       return d.obj_name.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
+
   const handleCheckboxChange = (event, row, property) => {
     const { checked } = event.target;
     setFilterData((prevData) =>
@@ -48,6 +50,41 @@ const UserAuthDetail = () => {
         return item;
       })
     );
+  };
+
+  const handleSelectAll = () => {
+    const updatedData = filterData.map((item) => ({
+      ...item,
+      insert_value: 1,
+      view_value: 1,
+      update_value: 1,
+      delete_flag_value: 1,
+    }));
+    setFilterData(updatedData);
+  };
+
+  const handleSelectRow = (row) => {
+    const updatedData = filterData.map((item) => {
+      if (item.obj_id === row.obj_id) {
+        return {
+          ...item,
+          insert_value: 1,
+          view_value: 1,
+          update_value: 1,
+          delete_flag_value: 1,
+        };
+      }
+      return item;
+    });
+    setFilterData(updatedData);
+  };
+
+  const handleSelectAllColumn = (columnName) => {
+    const updatedData = filterData.map((item) => ({
+      ...item,
+      [columnName]: 1,
+    }));
+    setFilterData(updatedData);
   };
 
   const columns = [
@@ -104,7 +141,19 @@ const UserAuthDetail = () => {
         />
       ),
     },
+    {
+      name: "Select Row",
+      cell: (row) => (
+        <button
+          className="btn btn-outline-info"
+          onClick={() => handleSelectRow(row)}
+        >
+          Select All
+        </button>
+      ),
+    },
   ];
+
   function postData() {
     for (const element of filterData) {
       axios.put(baseUrl+"update_user_auth", {
@@ -131,9 +180,29 @@ const UserAuthDetail = () => {
         <div className="form_heading_title">
           <h2>User Auth Detail</h2>
         </div>
-        <div className="form_heading_action d-flex gap-2">
-          <button onClick={postData} className="btn btn-primary">
-            Post
+        <div className="action_btns">
+          <button onClick={postData} className="btn btn-outline-danger btn-sm">
+            Post  
+          </button>
+
+          <button onClick={() => handleSelectAllColumn("insert_value")} className="btn btn-outline-warning btn-sm">
+            Select All Insert
+          </button>
+          
+          <button onClick={() => handleSelectAllColumn("view_value")} className="btn btn-outline-warning btn-sm">
+            Select All View
+          </button>
+          
+          <button onClick={() => handleSelectAllColumn("update_value")} className="btn btn-outline-warning btn-sm">
+            Select All Update
+          </button>
+          
+          <button onClick={() => handleSelectAllColumn("delete_flag_value")} className="btn btn-outline-warning btn-sm">
+            Select All Delete
+          </button>
+          
+          <button onClick={handleSelectAll} type="button" className="btn btn-outline-success btn-sm">
+            Select All
           </button>
         </div>
       </div>
