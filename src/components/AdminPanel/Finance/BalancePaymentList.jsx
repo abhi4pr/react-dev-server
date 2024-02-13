@@ -73,10 +73,31 @@ const BalancePaymentList = () => {
     formData.append("payment_type", paymentType.label);
     formData.append("payment_mode", "others");
     formData.append("paid_amount", paidAmount);
-    formData.append("payment_date", DateFormateToYYYYMMDD(paymentDate));
-    // return toastError(
-    //   "This  is not supported in this version of the app. Please contact the developer for more information."
-    // );
+
+
+//     // sale_booking_id:161
+//     payment_update_id:
+//     payment_ref_no:Axispo444385821
+//     payment_detail_id:43
+//     loggedin_user_id:36
+//     paid_amount:54000
+//     payment_type:Partial
+//     payment_mode:Others
+//     payment_screenshot
+
+
+
+
+
+//     sale_booking_id:161
+// payment_update_id:
+// payment_ref_no:Axispo444385821
+// payment_detail_id:43
+// loggedin_user_id:36
+// paid_amount:54000
+// payment_type:Partial
+// payment_mode:Others
+
     await axios
       .post(
         "https://sales.creativefuel.io/webservices/RestController.php?view=balance_payment_update",

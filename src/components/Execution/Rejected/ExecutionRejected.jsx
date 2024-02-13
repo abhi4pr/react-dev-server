@@ -56,7 +56,7 @@ export default function ExecutionRejected() {
           // formData
         )
         .then((res) => {
-          setData(res.data.filter((ele) => ele.execution_status == "3"));
+          setData(res.data.filter((ele) => ele.execution_status == "4"));
         });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -103,7 +103,7 @@ export default function ExecutionRejected() {
       headerName: "Status",
       width: 150,
       renderCell: (params) => {
-        if (params.row.execution_status == "3") {
+        if (params.row.execution_status == "4") {
           return (
             <Button size="small" color="error" variant="outlined">
               Rejected

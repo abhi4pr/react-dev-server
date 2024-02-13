@@ -321,8 +321,6 @@ const BrandCaseStudy = () => {
         fileType === "jpeg" ||
         fileType === "png" ||
         fileType === "gif"
-        // fileType === "pdf" ||
-        // fileType === "mp4"
       ) {
         // It's an image
         const img = new Image();
@@ -353,7 +351,6 @@ const BrandCaseStudy = () => {
 
     Promise.all(details).then((detailsArray) => {
       setMMCDetails(detailsArray);
-      console.log(detailsArray);
     });
   };
 
@@ -782,8 +779,8 @@ const BrandCaseStudy = () => {
       <div className="full_page_content container">
         <UserNav />
         <FormContainer
-          mainTitle="Data"
-          title="Data"
+          mainTitle="Case Study"
+          title="Case Study"
           handleSubmit={handleSubmit}
           submitButton={false}
         >
@@ -1211,7 +1208,7 @@ const BrandCaseStudy = () => {
                       >
                         {renderFileIcon(
                           detail.fileType,
-                          URL.createObjectURL(images[index]),
+                          URL.createObjectURL(mmcImages[index]),
                           detail
                         )}
                       </div>
@@ -1294,7 +1291,7 @@ const BrandCaseStudy = () => {
                       >
                         {renderFileIcon(
                           detail.fileType,
-                          URL.createObjectURL(images[index]),
+                          URL.createObjectURL(sarcasmImages[index]),
                           detail
                         )}
                       </div>
@@ -1375,7 +1372,7 @@ const BrandCaseStudy = () => {
                       >
                         {renderFileIcon(
                           detail.fileType,
-                          URL.createObjectURL(images[index]),
+                          URL.createObjectURL(nologoImages[index]),
                           detail
                         )}
                       </div>

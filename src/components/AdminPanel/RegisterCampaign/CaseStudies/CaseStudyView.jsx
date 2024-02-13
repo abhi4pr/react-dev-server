@@ -95,7 +95,7 @@ export default function CaseStudyView() {
               // handleSubmit={handleSubmit}
               submitButton={false}
             >
-              <FieldContainer
+              {/* <FieldContainer
                 label="Brand Name"
                 type="text"
                 value={brand}
@@ -103,7 +103,7 @@ export default function CaseStudyView() {
                 onChange={(e) => {
                   setBrand(e.target.value);
                 }}
-              />
+              /> */}
 
               <div className="row">
                 {logos.map((detail, index) => (
@@ -136,6 +136,9 @@ export default function CaseStudyView() {
                         Size - {detail.size_in_mb}
                       </li>
                       <li className="list-group-item">
+                       For - {detail.data_image? "Creative Fuel":detail.mmc_image? "MMC":detail.sarcasm_image? "Sarcasm":detail.no_logo_image? "No Logo" : "Unknown"}
+                      </li>
+                      {/* <li className="list-group-item">
                         Category - {detail.category_name}
                       </li>
                       <li className="list-group-item">
@@ -143,10 +146,10 @@ export default function CaseStudyView() {
                       </li>
                       <li className="list-group-item">
                         Content type - {detail.content_type_name}
-                      </li>
-                      <li className="list-group-item">
+                      </li> */}
+                      {/* <li className="list-group-item">
                         Brand Name - {detail.brand_name}
-                      </li>
+                      </li> */}
                       <li className="list-group-item">
                         Platform - {detail.platform_name}
                       </li>
@@ -157,13 +160,19 @@ export default function CaseStudyView() {
                     <div className="card-body">
                       <button type="button" className="btn btn-success">
                         <a
-                          href={detail.data_image_download}
+                          href={ detail.data_image
+                            ? detail.data_image
+                            : detail.mmc_image
+                            ? detail.mmc_image
+                            : detail.sarcasm_image
+                            ? detail.sarcasm_image
+                            : detail.no_logo_image}
                           target="_blank"
                           rel="noopener noreferrer"
-                          download={detail.data_image_download}
+                          // download={detail.data_image_download}
                         >
                           {" "}
-                          Download{" "}
+                          View{" "}
                         </a>
                       </button>
                     </div>

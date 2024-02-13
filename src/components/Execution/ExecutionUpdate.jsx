@@ -49,8 +49,6 @@ export default function ExecutionUpdate({ id, rowData, setReload, status,executi
 
   const handleSave = () => {
    if(status==1 && !value){
-   console.log("hitted");
-   console.log(status,"execution status");
       setValidationError(true);
       return;
     }
@@ -65,7 +63,6 @@ export default function ExecutionUpdate({ id, rowData, setReload, status,executi
     console.log(value);
   };
   const validation = () => {
-    console.log("validation call");
     setOpen(false);
     setConfirmation(true);
 
@@ -81,10 +78,11 @@ export default function ExecutionUpdate({ id, rowData, setReload, status,executi
         variant="outlined"
         onClick={() => {
           setOpen(true);
+          console.log(rowData?.execution_status, "execution_status");
         }}
-        color={rowData?.execution_status == 0 ? "error" : "success"}
+        color={rowData?.execution_status == 1 ? "error" : "success"}
       >
-        {rowData?.execution_status == 0 ? "Reject" : "Done"}
+        {rowData?.execution_status == 1 ? "Reject" : "Done"}
       </Button>
       {/* <EditIcon
         onClick={() => {
@@ -131,7 +129,7 @@ export default function ExecutionUpdate({ id, rowData, setReload, status,executi
           <Typography gutterBottom>
             You are about to update the execution status.
           </Typography>
-          {rowData?.execution_status !== 0 && (
+          {rowData?.execution_status != 1  && (
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 value={value}

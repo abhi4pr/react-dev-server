@@ -9,7 +9,6 @@ import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import FormContainer from "../../FormContainer";
 import ExpendModal from "../../../Datas/ExpendModal";
 import { Link } from "react-router-dom";
-import UserNav from "../../../Pantry/UserPanel/UserNav";
 import DeleteButton from "../../DeleteButton";
 import { baseUrl } from "../../../../utils/config";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -139,8 +138,8 @@ const CaseStudyOperation = () => {
       .then((res) => setCategoryData(res.data.data));
 
     axios
-      .get(baseUrl + "get_all_data_brands")
-      .then((res) => setBrandData(res.data));
+      .get(baseUrl + "get_brands")
+      .then((res) => setBrandData(res.data.data));
 
     axios
       .get(baseUrl + "distinct_created_by")
@@ -423,11 +422,11 @@ const CaseStudyOperation = () => {
                       <div className="summary_cardtitle">
                         <h5>{/* <span>{detail.data_name}</span> */}</h5>
                         <div className="summary_cardaction">
-                          <Link to={detail.data_image} target="_bank" download>
+                          {/* <Link to={detail.data_image} target="_bank" download>
                             <button className="btn btn-sm btn-outline-primary">
                               <i className="bi bi-download"></i>
                             </button>
-                          </Link>
+                          </Link> */}
                           <Link to={`/caseStudy-view/${detail.data_id}`}>
                             <button className="btn btn-sm btn-outline-primary">
                               <i className="bi bi-eye"></i>
@@ -475,6 +474,7 @@ const CaseStudyOperation = () => {
                                         }`}
                                         data-interval="10000"
                                       >
+                                        {console.log(index, "filteredItem")}
                                         {filteredItem.data_type === "jpg" ||
                                         filteredItem.data_type === "png" ||
                                         filteredItem.data_type === "jpeg" ? (
@@ -555,11 +555,19 @@ const CaseStudyOperation = () => {
                                             video tag.
                                           </video>
                                         ) : (
-                                          <img
-                                            className="d-block w-100"
-                                            src={"video"}
-                                            alt={`Slide ${index + 1}`}
-                                          />
+                                          <video
+                                            className=""
+                                            controls
+                                            width="100%"
+                                            height="auto"
+                                          >
+                                            <source
+                                              src={filteredItem.data_image}
+                                              type={`video/mp4`}
+                                            />
+                                            Your browser does not support the
+                                            video tag.
+                                          </video>
                                         )}
                                       </div>
                                     ))}
@@ -618,24 +626,32 @@ const CaseStudyOperation = () => {
                                 <span>Type</span>
                                 {detail.data_type}
                               </li>
+                             
                               <li>
-                                <span>Type</span>
-                                {detail.data_type}
+                                <span>Brand</span>
+                                {brandData.map((brand) => {
+                                  if (brand._id == detail.brand_id) {
+                                    return brand.brand_name;
+                                  }
+                                })}
+                                {/* }
+                                {detail.brand_id} */}
                               </li>
-                              <li>
-                                <span>Category</span>
-                                {detail.category_name}
-                              </li>
-                              <li>
-                                <span>Content type</span>
-                                {detail.content_type_name}
-                              </li>
+                             
                               <li>
                                 <span>Platform</span>
-                                {detail.platform_name}
+                                {/* {detail.platform_name} */}
+                                {detail.platform_ids.map((platform) => {
+                                  return platformData?.map((plat) => {
+                                    if (plat._id == platform) {
+                                      return plat.platform_name  + " ";
+                                    }
+                                  });
+                                }
+                                )}
                               </li>
                               <li>
-                                <span>Date</span>
+                                <span>Creation Date</span>
                                 {detail.created_at.split("T")[0]}
                               </li>
                               <li>
@@ -943,11 +959,19 @@ const CaseStudyOperation = () => {
                                           video tag.
                                         </video>
                                       ) : (
-                                        <img
-                                          src={video}
-                                          width="80px"
-                                          height="80px"
-                                        />
+                                        <video
+                                          className=""
+                                          controls
+                                          width="100%"
+                                          height="auto"
+                                        >
+                                          <source
+                                            src={detail.mmc_image}
+                                            type={`video/mp4`}
+                                          />
+                                          Your browser does not support the
+                                          video tag.
+                                        </video>
                                       )}
                                     </div>
 
@@ -1112,11 +1136,21 @@ const CaseStudyOperation = () => {
                                                       ></div>
                                                     </div>
                                                   ) : (
-                                                    <img
-                                                      className="d-block w-100"
-                                                      src={video} // Default case, though this seems to be an oversight as there's no alternative case for other data types
-                                                      alt={`Slide ${index + 1}`}
-                                                    />
+                                                   <video
+                                                      className=""
+                                                      controls
+                                                      width="100%"
+                                                      height="auto"
+                                                    >
+                                                      <source
+                                                        src={
+                                                          filteredItem.sarcasm_image
+                                                        }
+                                                        type={`video/mp4`}
+                                                      />
+                                                      Your browser does not support the
+                                                      video tag.
+                                                    </video>
                                                   )}
                                                 </div>
                                               ))}
@@ -1228,11 +1262,19 @@ const CaseStudyOperation = () => {
                                           video tag.
                                         </video>
                                       ) : (
-                                        <img
-                                          src={video} // This case may need to be adjusted since it doesn't handle sarcasm_image
-                                          width="80px"
-                                          height="80px"
-                                        />
+                                        <video
+                                          className=""
+                                          controls
+                                          width="100%"
+                                          height="auto"
+                                        >
+                                          <source
+                                            src={detail.sarcasm_image}
+                                            type={`video/mp4`}
+                                          />
+                                          Your browser does not support the
+                                          video tag.
+                                        </video>
                                       )}
                                     </div>
 
@@ -1531,11 +1573,19 @@ const CaseStudyOperation = () => {
                                           video tag.
                                         </video>
                                       ) : (
-                                        <img
-                                          src={video} // This case may need to be adjusted since it doesn't directly relate to no_logo_image
-                                          width="80px"
-                                          height="80px"
-                                        />
+                                        <video
+                                          className=""
+                                          controls
+                                          width="100%"
+                                          height="auto"
+                                        >
+                                          <source
+                                            src={detail.no_logo_image}
+                                            type={`video/mp4`}
+                                          />
+                                          Your browser does not support the
+                                          video tag.
+                                        </video>
                                       )}
                                     </div>
 
@@ -1546,7 +1596,7 @@ const CaseStudyOperation = () => {
                                           {detail.campaign_purpose}
                                         </li>
                                         <li>
-                                          <span> Number Of Post</span>
+                                          <span> Number of Post</span>
                                           {detail.number_of_post}
                                         </li>
                                         <li>
@@ -1554,19 +1604,19 @@ const CaseStudyOperation = () => {
                                           {detail.number_of_reach}
                                         </li>
                                         <li>
-                                          <span>Number Of Impression</span>
+                                          <span>Number of Impression</span>
                                           {detail.number_of_impression}
                                         </li>
                                         <li>
-                                          <span>Number Of Engagement</span>
+                                          <span>Number of Engagement</span>
                                           {detail.number_of_engagement}
                                         </li>
                                         <li>
-                                          <span>Number Of Views</span>
+                                          <span>Number of Views</span>
                                           {detail.number_of_views}
                                         </li>
                                         <li>
-                                          <span>Number Of Story Views</span>
+                                          <span>Number of Story Views</span>
                                           {detail.number_of_story_views}
                                         </li>
                                         <li>
@@ -1574,11 +1624,11 @@ const CaseStudyOperation = () => {
                                           {detail.operation_remark}
                                         </li>
                                         <li>
-                                          <span>Date Of Report</span>
+                                          <span>Date of Report</span>
                                           {dateConvert(detail.date_of_report)}
                                         </li>
                                         <li>
-                                          <span>Date Of Completion</span>
+                                          <span>Date of Completion</span>
                                           {dateConvert(
                                             detail.date_of_completion
                                           )}

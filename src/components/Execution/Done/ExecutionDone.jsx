@@ -57,7 +57,7 @@ export default function ExecutionDone() {
           loggedin_user_id: 52,
         })
         .then((res) => {
-          setData(res.data.filter((ele) => ele.execution_status == "1"));
+          setData(res.data.filter((ele) => ele.execution_status == "3"));
         });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -99,7 +99,7 @@ export default function ExecutionDone() {
       headerName: "Status",
       width: 150,
       renderCell: (params) => {
-        if (params.row.execution_status == "1") {
+        if (params.row.execution_status == "3") {
           return (
             <Button size="small" color="success" variant="outlined">
               Done
