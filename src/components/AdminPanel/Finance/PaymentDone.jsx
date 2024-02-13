@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import FormContainer from '../FormContainer'
-import { DataGrid, GridToolbar } from '@mui/x-data-grid'
-import { Button } from '@mui/material';
-import axios from 'axios';
-import ImageView from './ImageView';
-import {baseUrl} from '../../../utils/config'
+import React, { useEffect, useState } from "react";
+import FormContainer from "../FormContainer";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Button } from "@mui/material";
+import axios from "axios";
+import ImageView from "./ImageView";
+import { baseUrl } from "../../../utils/config";
 
 export default function PaymentDone() {
   const [search, setSearch] = useState("");
@@ -15,6 +15,9 @@ export default function PaymentDone() {
   const [vendorName, setVendorName] = useState("");
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [viewImgSrc, setViewImgSrc] = useState("");
+  const [priorityFilter, setPriorityFilter] = useState("");
+  const [requestAmountFilter, setRequestAmountFilter] = useState("");
+  const [requestedAmountField, setRequestedAmountField] = useState("");
 
   // const callApi = () => {
   //   axios
@@ -31,44 +34,36 @@ export default function PaymentDone() {
   //     });
   // };
 
-
   const callApi = () => {
-    axios
-      .get(baseUrl+"phpvendorpaymentrequest")
-      .then((res) => {
-        console.log(res.data.modifiedData,"node js");
-        const x = res.data.modifiedData;
+    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+      console.log(res.data.modifiedData, "node js");
+      const x = res.data.modifiedData;
 
-        axios
-          .get(
-            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
-          )
-          .then((res) => {
-            // let y = res.data.body.filter((item) => {
-            //   return !x.some((item2) => (item2.status == 2)&&( item.request_id == item2.request_id));
-            // });
-            // console.log(y,'y')
-            // setData(y);
-            // setFilterData(y);
-          let y=  x.filter((item) => {
-              if (item.status == 1) {
-                return item;
-              }
-
+      axios
+        .get(
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+        )
+        .then((res) => {
+          // let y = res.data.body.filter((item) => {
+          //   return !x.some((item2) => (item2.status == 2)&&( item.request_id == item2.request_id));
+          // });
+          // console.log(y,'y')
+          // setData(y);
+          // setFilterData(y);
+          let y = x.filter((item) => {
+            if (item.status == 1) {
+              return item;
             }
-          )
-          let u= 
-          res.data.body.filter((item) => {
-            return y.some((item2) => item.request_id == item2.request_id);
-          })
-          console.log(u,'u')
-            setData(u);
-            setFilterData(u);
-
           });
-      });
+          let u = res.data.body.filter((item) => {
+            return y.some((item2) => item.request_id == item2.request_id);
+          });
+          console.log(u, "u");
+          setData(u);
+          setFilterData(u);
+        });
+    });
   };
-  
 
   useEffect(() => {
     callApi();
@@ -97,17 +92,58 @@ export default function PaymentDone() {
     return diffDays;
   }
 
-
-
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
       const date = new Date(item.request_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
       toDate1.setDate(toDate1.getDate() + 1);
-      if (date >= fromDate1 && date <= toDate1 || item.vendor_name.toLowerCase().includes(vendorName.toLowerCase())) {
-        return item;
-      }
+      const dateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+
+      // Vender Name Filter
+      const vendorNameFilterPassed =
+        !vendorName ||
+        item.vendor_name.toLowerCase().includes(vendorName.toLowerCase());
+
+      // Priority Filter
+      const priorityFilterPassed =
+        !priorityFilter || item.priority === priorityFilter;
+
+      // Search Query Filter
+      const searchFilterPassed =
+        !search ||
+        Object.values(item).some(
+          (val) =>
+            typeof val === "string" &&
+            val.toLowerCase().includes(search.toLowerCase())
+        );
+
+      // Requested Amount Filter
+      console.log(requestAmountFilter, "requestAmountFilter");
+      const requestedAmountFilterPassed = () => {
+        const numericRequestedAmount = parseFloat(requestedAmountField);
+        console.log("switch");
+        switch (requestAmountFilter) {
+          case "greaterThan":
+            return +item.request_amount > numericRequestedAmount;
+          case "lessThan":
+            return +item.request_amount < numericRequestedAmount;
+          case "equalTo":
+            return +item.request_amount === numericRequestedAmount;
+          default:
+            return true;
+        }
+      };
+
+      const allFiltersPassed =
+        dateFilterPassed &&
+        vendorNameFilterPassed &&
+        priorityFilterPassed &&
+        searchFilterPassed &&
+        requestedAmountFilterPassed();
+
+      return allFiltersPassed;
     });
     setFilterData(filterData);
   };
@@ -117,6 +153,9 @@ export default function PaymentDone() {
     setFromDate("");
     setToDate("");
     setVendorName("");
+    setPriorityFilter("");
+    setRequestAmountFilter("");
+    setRequestedAmountField("");
   };
 
   const columns = [
@@ -131,36 +170,38 @@ export default function PaymentDone() {
       },
     },
     {
-      field:"invc_img",
-      headerName:"Invoice Image",
+      field: "invc_img",
+      headerName: "Invoice Image",
       renderCell: (params) => {
         // Extract file extension and check if it's a PDF
-        const fileExtension = params.row.invc_img.split(".").pop().toLowerCase();
+        const fileExtension = params.row.invc_img
+          .split(".")
+          .pop()
+          .toLowerCase();
         const isPdf = fileExtension === "pdf";
-    
+
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
-    console.log(params.row.invc_img?imgUrl:"no image")
-        return (
-          isPdf ? 
-            <iframe
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={imgUrl}
-              style={{ width: "100px", height: "100px" }}
-              title="PDF Preview"
-            />
-          :
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={imgUrl}
-              alt="Invoice"
-              style={{ width: "100px", height: "100px" }}
-            />
+        console.log(params.row.invc_img ? imgUrl : "no image");
+        return isPdf ? (
+          <iframe
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={imgUrl}
+            style={{ width: "100px", height: "100px" }}
+            title="PDF Preview"
+          />
+        ) : (
+          <img
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(imgUrl);
+            }}
+            src={imgUrl}
+            alt="Invoice"
+            style={{ width: "80px", height: "80px" }}
+          />
         );
       },
       width: 250,
@@ -202,11 +243,11 @@ export default function PaymentDone() {
       field: "priority",
       headerName: "Priority",
       width: 150,
-        renderCell: (params) => {
-          return params.row.priority;
-        },
+      renderCell: (params) => {
+        return params.row.priority;
       },
-      {
+    },
+    {
       field: "request_amount",
       headerName: "Requested Amount",
       width: 150,
@@ -227,10 +268,11 @@ export default function PaymentDone() {
       headerName: "Aging",
       width: 150,
       renderCell: (params) => {
-        return <p> {calculateDays(params.row.request_date, new Date())} Days</p>;
+        return (
+          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
+        );
       },
     },
-    
   ];
   return (
     <div>
@@ -238,7 +280,7 @@ export default function PaymentDone() {
         mainTitle="Payment Done"
         link="/admin/finance-pruchasemanagement-paymentdone"
       />
-        <div className="row">
+      <div className="row">
         <div className="col-md-3">
           <div className="form-group">
             <label>Vendor Name</label>
@@ -277,6 +319,50 @@ export default function PaymentDone() {
             />
           </div>
         </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Priority</label>
+            <select
+              value={priorityFilter}
+              className="form-control"
+              onChange={(e) => setPriorityFilter(e.target.value)}
+            >
+              <option value="">Select Priority</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Request Amount Filter</label>
+            <select
+              value={requestAmountFilter}
+              className="form-control"
+              onChange={(e) => setRequestAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Requested Amount</label>
+            <input
+              value={requestedAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setRequestedAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
         <div className="col-md-1 mt-4 me-2">
           <Button variant="contained" onClick={handleDateFilter}>
             <i className="fas fa-search"></i> Search
@@ -288,7 +374,7 @@ export default function PaymentDone() {
           </Button>
         </div>
       </div>
-        <DataGrid
+      <DataGrid
         rows={filterData}
         columns={columns}
         pageSize={5}
@@ -315,8 +401,12 @@ export default function PaymentDone() {
         }}
         getRowId={(row) => filterData.indexOf(row)}
       />
-           {openImageDialog&& <ImageView viewImgSrc={viewImgSrc} setViewImgDialog={setOpenImageDialog}/>}
-
+      {openImageDialog && (
+        <ImageView
+          viewImgSrc={viewImgSrc}
+          setViewImgDialog={setOpenImageDialog}
+        />
+      )}
     </div>
-  )
+  );
 }

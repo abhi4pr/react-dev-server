@@ -9,8 +9,9 @@ import { Autocomplete, TextField } from "@mui/material";
 import { get } from "jquery";
 import ImageView from "./ImageView";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 import pdfImg from "./pdf-file.png";
+import { Button } from "@mui/material";
 
 const PendingApprovalUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -22,6 +23,14 @@ const PendingApprovalUpdate = () => {
   const [status, setStatus] = useState("");
   const [viewImgSrc, setViewImgSrc] = useState("");
   const [viewImgDialog, setViewImgDialog] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [paymentAmountFilter, setPaymentAmountFilter] = useState("");
+  const [paymentAmountField, setPaymentAmountField] = useState("");
+  const [requestedBy, setRequestedBy] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  // const []
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -31,7 +40,6 @@ const PendingApprovalUpdate = () => {
     navigator.clipboard.writeText(detail);
     toastAlert("Detail copied");
   };
-
 
   const handleStatusChange = async (row, selectedStatus) => {
     setStatus(selectedStatus);
@@ -62,17 +70,13 @@ const PendingApprovalUpdate = () => {
     toastAlert("Data updated");
     setIsFormSubmitted(true);
   };
-  
+
   function getData() {
-    axios
-      .post(baseUrl+"add_php_finance_data_in_node")
-      .then((res) => {
-        console.log("data save in local success");
-      });
-      setTimeout(() => {
-    axios
-      .get(baseUrl+"get_all_php_finance_data_pending")
-      .then((res) => {
+    axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
+      console.log("data save in local success");
+    });
+    setTimeout(() => {
+      axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
         setData(res.data.data);
         setFilterData(res.data.data);
       });
@@ -90,14 +94,76 @@ const PendingApprovalUpdate = () => {
 
   useEffect(() => {
     getData();
+    // handleAllFilters();
   }, []);
-
   useEffect(() => {
     const result = datas.filter((d) => {
       return d.user_name?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
+
+  // Filters Logic :-
+  const handleAllFilters = () => {
+    const filterData = datas.filter((item) => {
+      const date = new Date(item.payment_date);
+      const fromDate1 = new Date(fromDate);
+      const toDate1 = new Date(toDate);
+      toDate1.setDate(toDate1.getDate() + 1);
+      // Date Range Filter:-
+      const dateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+      // Customer Name Filter:-
+      const customerNameFilterPassed =
+        !customerName ||
+        item.cust_name.toLowerCase().includes(customerName.toLowerCase());
+
+      // Requested By Filter
+      const requestedByFilterPassed =
+        !requestedBy ||
+        item.user_name.toLowerCase().includes(requestedBy.toLowerCase());
+      // Bank Name Filter
+      const bankNameFilterPassed =
+        !bankName || item.detail.toLowerCase().includes(bankName.toLowerCase());
+
+      //  Payment Amount Filter
+      const paymentAmountFilterPassed = () => {
+        const paymentAmount = parseFloat(paymentAmountField);
+        console.log("switch");
+        switch (paymentAmountFilter) {
+          case "greaterThan":
+            return +item.payment_amount > paymentAmount;
+          case "lessThan":
+            return +item.payment_amount < paymentAmount;
+          case "equalTo":
+            return +item.payment_amount === paymentAmount;
+          default:
+            return true;
+        }
+      };
+      const allFiltersPassed =
+        dateFilterPassed &&
+        customerNameFilterPassed &&
+        requestedByFilterPassed &&
+        bankNameFilterPassed &&
+        paymentAmountFilterPassed();
+
+      return allFiltersPassed;
+    });
+    console.log(filterData, "FD??????????????");
+    setFilterData(filterData);
+  };
+
+  const handleClearAllFilter = () => {
+    setFilterData(datas);
+    setFromDate("");
+    setToDate("");
+    setCustomerName("");
+    setRequestedBy("");
+    setBankName("");
+    setPaymentAmountFilter("");
+    setPaymentAmountField("");
+  };
   const columns = [
     {
       name: "S.No",
@@ -164,7 +230,11 @@ const PendingApprovalUpdate = () => {
           style={{ whiteSpace: "normal" }}
         >
           <img
-            src={row.payment_screenshot.includes(".pdf") ? pdfImg : `https://sales.creativefuel.io/${row.payment_screenshot}`}
+            src={
+              row.payment_screenshot.includes(".pdf")
+                ? pdfImg
+                : `https://sales.creativefuel.io/${row.payment_screenshot}`
+            }
             //   row.payment_screenshot
             //     ? `https://sales.creativefuel.io/${row.payment_screenshot}`
             //     : ""
@@ -210,18 +280,17 @@ const PendingApprovalUpdate = () => {
       cell: (row) => (
         <div style={{ whiteSpace: "normal" }}>
           {row.detail}
-          <button 
-            className="btn btn-secondary ml-2" 
+          <button
+            className="btn btn-secondary ml-2"
             onClick={() => handleCopyDetail(row.detail)}
           >
-            <ContentCopyIcon/> 
- {/* or any other icon */}
+            <ContentCopyIcon />
+            {/* or any other icon */}
           </button>
         </div>
       ),
       width: "250px",
-    }
-,    
+    },
     {
       name: <div style={{ whiteSpace: "normal" }}>Reference No</div>,
       selector: (row) => row.payment_ref_no,
@@ -288,7 +357,7 @@ const PendingApprovalUpdate = () => {
       width: "150px",
     },
   ];
-
+  // console.log(fromDate, "HIIIIIIIIIIIIIIIIIIIIIIIII", toDate);
   return (
     <>
       <FormContainer
@@ -301,6 +370,113 @@ const PendingApprovalUpdate = () => {
           false
         }
       />
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Customer Name</label>
+            <input
+              value={customerName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setCustomerName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Requested By</label>
+            <input
+              value={requestedBy}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setRequestedBy(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Bank Name</label>
+            <input
+              value={bankName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setBankName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>From Date</label>
+            <input
+              value={fromDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => setFromDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>To Date</label>
+            <input
+              value={toDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => {
+                setToDate(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Pay Amount Filter</label>
+            <select
+              value={paymentAmountFilter}
+              className="form-control"
+              onChange={(e) => setPaymentAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Payment Amount</label>
+            <input
+              value={paymentAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setPaymentAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-1 mt-4 me-2">
+          <Button variant="contained" onClick={handleAllFilters}>
+            <i className="fas fa-search"></i> Search
+          </Button>
+        </div>
+        <div className="col-md-1 mt-4">
+          <Button variant="contained" onClick={handleClearAllFilter}>
+            Clear
+          </Button>
+        </div>
+      </div>
 
       <div className="card">
         <div className="data_tbl table-responsive">
