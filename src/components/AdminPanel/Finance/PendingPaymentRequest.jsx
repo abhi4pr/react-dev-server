@@ -24,8 +24,98 @@ import CloseIcon from "@mui/icons-material/Close";
 import { baseUrl } from "../../../utils/config";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import HistoryIcon from "@mui/icons-material/History";
-// import { FaMoney } from "react-icons/fa";
-// import { FaHistory } from "react-icons/fa";
+import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsActiveTwoTone";
+import Badge from "@mui/material/Badge";
+import ShowDataModal from "./ShowDataModal";
+
+const reminderDummyData = [
+  {
+    request_id: 1,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 10,
+  },
+  {
+    request_id: 2,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 9,
+  },
+  {
+    request_id: 3,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 8,
+  },
+  {
+    request_id: 4,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 7,
+  },
+  {
+    request_id: 5,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 6,
+  },
+  {
+    request_id: 6,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 5,
+  },
+  {
+    request_id: 7,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 4,
+  },
+  {
+    request_id: 20,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 3,
+  },
+  {
+    request_id: 20,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 2,
+  },
+  {
+    request_id: 20,
+    request_date: "2024-02-03 07:17:12",
+    vendor_name: "Rahul",
+    remark_audit: "This is a reminder",
+    remand_id: 1,
+  },
+];
+
+const convertDateToDDMMYYYY = (date) => {
+  const date1 = new Date(date);
+  const day = String(date1.getDate()).padStart(2, "0");
+  const month = String(date1.getMonth() + 1).padStart(2, "0"); // January is 0!
+  const year = date1.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
+
+const getValidationCSSForRemainder = (params) => {
+  const reminder = reminderDummyData.filter(
+    (item) => item.request_id == params.row.request_id
+  );
+  return reminder.length > 2 ? "bg-danger" : "";
+};
 
 export default function PendingPaymentRequest() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -62,6 +152,68 @@ export default function PendingPaymentRequest() {
   const [requestedAmountField, setRequestedAmountField] = useState("");
   const [bankDetail, setBankDetail] = useState(false);
   const [paymentHistory, setPaymentHistory] = useState(false);
+  const [reminderData, setReminderData] = useState([]);
+  const [remainderDialog, setRemainderDialog] = useState(false);
+  const [aknowledgementDialog, setAknowledgementDialog] = useState(false);
+
+  var handleAcknowledgeClick = (row) => {
+    setAknowledgementDialog(true);
+  };
+
+  const remainderDialogColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = reminderDummyData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "request_date",
+      headerName: "Requested Date",
+      width: 150,
+      renderCell: (params) => {
+        return convertDateToDDMMYYYY(params.row.request_date);
+      },
+    },
+    {
+      field: "vendor_name",
+      headerName: "Vendor Name",
+      width: 250,
+      renderCell: (params) => {
+        return params.row.vendor_name;
+      },
+    },
+    {
+      field: "remark_audit",
+
+      headerName: "Remark",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.remark_audit;
+      },
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            <button
+              className="btn btn-sm btn-success"
+              onClick={() => handleAcknowledgeClick(params.row)}
+            >
+              Acknowledge
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
 
   const callApi = () => {
     axios.get(`${baseUrl}` + `addPhpVendorPaymentRequest`).then((res) => {});
@@ -74,7 +226,6 @@ export default function PendingPaymentRequest() {
           "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
-          console.log(res.data.body, "php");
           let y = res.data.body.filter((item) => {
             return !x.some((item2) => item.request_id == item2.request_id);
           });
@@ -99,11 +250,16 @@ export default function PendingPaymentRequest() {
     });
   };
 
+  const handleRemainderModal = (reaminderData) => {
+    console.log("reaminderData--->", reaminderData);
+    setReminderData(reaminderData);
+    setRemainderDialog(true);
+  };
+
   useEffect(() => {
     callApi();
   }, []);
 
-  console.log(data, "Data >>>>>>");
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
     const day = String(date1.getDate()).padStart(2, "0");
@@ -157,10 +313,6 @@ export default function PendingPaymentRequest() {
     formData.append("name", rowData.name);
     formData.append("request_date", rowData.request_date);
     formData.append("payment_date", paymentDate);
-    console.log(
-      new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " ")
-    );
-
     axios
       .post(baseUrl + "phpvendorpaymentrequest", formData, {
         headers: {
@@ -190,11 +342,10 @@ export default function PendingPaymentRequest() {
               },
             }
           )
-          .then((res) => {
-            console.log(res);
+          .then(() => {
             toastAlert("Payment Done Successfully");
           });
-        console.log(res);
+
         setPaymentMode("");
         setPayRemark("");
         setPayMentProof("");
@@ -244,10 +395,8 @@ export default function PendingPaymentRequest() {
         );
 
       // Requested Amount Filter
-      console.log(requestAmountFilter, "requestAmountFilter");
       const requestedAmountFilterPassed = () => {
         const numericRequestedAmount = parseFloat(requestedAmountField);
-        console.log("switch");
         switch (requestAmountFilter) {
           case "greaterThan":
             return +item.request_amount > numericRequestedAmount;
@@ -273,7 +422,6 @@ export default function PendingPaymentRequest() {
     setFilterData(filterData);
   };
 
-  console.log(filterData, "filterData>>");
   const handleClosePayDialog = () => {
     setPayDialog(false);
     setPaymentMode("");
@@ -462,7 +610,6 @@ export default function PendingPaymentRequest() {
       // width: "auto",
       width: 250,
       renderCell: (params) => {
-        console.log(params, "same vender name >>>");
         return params.row.vendorName;
       },
     },
@@ -530,8 +677,7 @@ export default function PendingPaymentRequest() {
       field: "total_amount",
       headerName: "Total Amount",
       width: 150,
-      renderCell: (params) => {
-        console.log(params, "params>>>>");
+      renderCell: () => {
         return <p> &#8377; {totalSameVendorAmount}</p>;
       },
     },
@@ -605,7 +751,26 @@ export default function PendingPaymentRequest() {
       headerName: "Requested By",
       width: 150,
       renderCell: (params) => {
-        return params.row.name;
+        const reminder = reminderDummyData.filter(
+          (item) => item.request_id == params.row.request_id
+        );
+
+        return (
+          <>
+            <span>{params.row.name}</span> &nbsp;{" "}
+            <span>
+              {reminder ? (
+                <Badge badgeContent={reminder.length} color="primary">
+                  <NotificationsActiveTwoToneIcon
+                    onClick={() => handleRemainderModal(reminder)}
+                  />{" "}
+                </Badge>
+              ) : (
+                ""
+              )}
+            </span>
+          </>
+        );
       },
     },
     {
@@ -1030,6 +1195,7 @@ export default function PendingPaymentRequest() {
         columns={columns}
         pageSize={5}
         rowsPerPageOptions={[5]}
+        getRowClassName={getValidationCSSForRemainder}
         slots={{ toolbar: GridToolbar }}
         disableSelectionOnClick
         autoHeight
@@ -1241,14 +1407,6 @@ export default function PendingPaymentRequest() {
                   setPaymentDate(
                     newValue.add(5, "hours").add(30, "minutes").$d.toGMTString()
                   );
-                  console.log(
-                    new Date(
-                      newValue
-                        .add(5, "hours")
-                        .add(30, "minutes")
-                        .$d.toGMTString()
-                    )
-                  );
                 }}
                 disableFuture
                 views={["year", "month", "day"]}
@@ -1307,6 +1465,16 @@ export default function PendingPaymentRequest() {
           fullWidth={true}
           maxWidth={"md"}
           setViewImgDialog={setOpenImageDialog}
+        />
+      )}
+
+      {remainderDialog && (
+        <ShowDataModal
+          handleClose={setRemainderDialog}
+          rows={reminderData}
+          columns={remainderDialogColumns}
+          aknowledgementDialog={aknowledgementDialog}
+          setAknowledgementDialog={setAknowledgementDialog}
         />
       )}
     </div>
