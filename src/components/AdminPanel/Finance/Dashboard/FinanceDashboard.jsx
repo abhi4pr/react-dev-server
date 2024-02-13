@@ -72,6 +72,42 @@ export default function FinanceDashboard() {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       const x = res.data.modifiedData;
 
+        axios
+          .get(
+            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+          )
+          .then((res) => {
+            let y = x.filter((item) => {
+              if (item.status == 1) {
+                return item;
+              }
+            });
+            let u = res.data.body.filter((item) => {
+              return y.some((item2) => item.request_id == item2.request_id);
+            });
+            setFilterVendorCardData(u);
+            setVendorCardData(u);
+          });
+      });
+
+    axios
+      .post(baseUrl+"add_php_finance_data_in_node")
+      .then(() => {
+        console.log("data save in local success");
+      });
+    axios
+      .get(baseUrl+"get_all_php_finance_data_pending")
+      .then((res) => {
+        setFilterPendingForApprovalData(res.data.data);
+        setPendingForApprovalData(res.data.data);
+      });
+
+    axios
+      .post(baseUrl+"add_php_payment_refund_data_in_node")
+      .then(() => {
+        console.log("data save in local success");
+      });
+    setTimeout(() => {
       axios
         .get(
           "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
@@ -455,10 +491,162 @@ export default function FinanceDashboard() {
         </Button>
       </div>
       <div className="card">
-        <div className="row gx-3 justify-content-around ">
-          <div className="card d-felx flex-row">
-            <div className="boarder-2 we">
-              <h4>Sales</h4>
+        <div className="row gx-3 justify-content-around">
+          <div
+            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 col-3`}
+          >
+            <div className={`${classes.cardContent} ${classes.horizontal}`}>
+              <div className={classes.circularProgress}>
+                <PointOfSaleIcon className={classes.progressValue} />
+              </div>
+              <div className={classes.content}>
+                <p className={classes.bodyMd}>
+                  Pending for Approval of Sales Payment:
+                </p>
+                <span className={classes.h1}>
+                  {pendingForApprovalData.length}
+                </span>
+                <Link
+                  to="/admin/finance-pendingapproveupdate"
+                  className={classes.detailsLink}
+                >
+                  View Details
+                </Link>
+              </div>
+            </div>
+            <div className={classes.cardActions}>
+            <Link to="/admin/finance-pendingapproveupdate">
+                <InfoIcon  className="fs-3  pb-1  mt-3"/>
+                </Link>
+
+            </div>
+          </div>
+          <div
+            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 m-2`}
+          >
+            <div className={`${classes.cardContent} ${classes.horizontal}`}>
+              <div className={classes.circularProgress}>
+                <PointOfSaleIcon className={classes.progressValue} />
+              </div>
+              <div className={classes.content }>
+                <h5 className={classes.bodyMd}>Pending for Vendor Payment:</h5>
+                <span className={classes.h1}>{vendorCardData.length}</span>
+                <Link
+                  to="/admin/finance-pruchasemanagement-paymentdone"
+                  className={classes.detailsLink}
+                >
+                  View Details
+                </Link>
+              </div>
+            </div>
+            <div className={classes.cardActions}>
+
+                <Link to="/admin/finance-pruchasemanagement-paymentdone">
+                <InfoIcon  className="fs-3  pb-1  mt-3"/>
+                </Link>
+
+            </div>
+          </div>
+
+          <div
+            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 m-2`}
+          >
+            <div className={`${classes.cardContent} ${classes.horizontal}`}>
+              <div className={classes.circularProgress}>
+                <PointOfSaleIcon className={classes.progressValue} />
+              </div>
+              <div className={`${classes.content} ${classes.buttonAlignIncentive2}`}>
+                <h5 className={classes.bodyMd}>Total Payout  Pending:</h5>
+                <br />
+                <span className={classes.h1}>&#8377;{payoutData.map(e=>e.toPay).reduce((prev, next) => prev + next, 0)
+                   ?payoutData.map(e=>e.toPay).reduce((prev, next) => prev + next, 0).toLocaleString("en-IN"):0}</span>
+                <Link to="#" className={classes.detailsLink}>
+                  View Details
+                </Link>
+              </div>
+            </div>
+            <div className={classes.cardActions}>
+            <Link to="#">
+                <InfoIcon  className="fs-3  pb-1  mt-3"/>
+                </Link>
+
+            </div>
+          </div>
+
+          <div
+            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3`}
+          >
+            <div
+              className={`${classes.cardContent} ${classes.horizontal}  ${classes.buttonAlign}`}
+            >
+              <div className={classes.circularProgress}>
+                <PointOfSaleIcon className={classes.progressValue} />
+              </div>
+              <div className={classes.content}>
+                <h5 className={classes.bodyMd}>
+                  Total Invoice pending count :
+                </h5>
+                <span className={classes.h1}>{invoicePending.length}</span>
+                <Link to="#" className={classes.detailsLink}>
+                  View Details
+                </Link>
+              </div>
+            </div>
+            <div className={classes.cardActions}>
+            <Link to="#">
+                <InfoIcon  className="fs-3  pb-1  mt-3"/>
+                </Link>
+                </div>
+          </div>
+
+          <div
+            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 mx-2`}
+          >
+            <div className={`${classes.cardContent} ${classes.horizontal}`}>
+              <div className={`${classes.circularProgress} ${classes.tdsIcon}`}>
+                <PointOfSaleIcon className={classes.progressValue} />
+              </div>
+              <div className={classes.content}>
+                <h5 className={classes.bodyMd}>Total TDS Verification Open:</h5>
+                <span className={classes.h1}>
+                  {salesBookingOpenData.length}
+                </span>
+
+                <h5 className={classes.bodyMd}>
+                  Total TDS Verification About to Close:
+                </h5>
+                <span className={classes.h1}>
+                  {salesBookingAboutToCloseData.length}
+                </span>
+
+                <h5 className={classes.bodyMd}>
+                  Total TDS Verification Close:
+                </h5>
+                <span className={classes.h1}>
+                  {salesBookingCloseData.length}
+                </span>
+
+                <Link
+                  to="/admin/finance-salebookingclose"
+                  className={classes.detailsLink}
+                >
+                  View Details
+                </Link>
+              </div>
+            </div>
+            <div className={classes.cardActions}>
+              <Link to="/admin/finance-salebookingclose">
+                <InfoIcon  className="fs-3  pb-1  mt-3"/>
+                </Link>
+                </div>
+          </div>
+
+          <div
+            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 `}
+          >
+            <div
+              className={`${classes.cardContent} ${classes.horizontal} ${classes.buttonAlignIncentive}`}
+            >
               <div
                 className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors}  `}
               >

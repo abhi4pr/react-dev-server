@@ -45,9 +45,7 @@ export default function PendingPaymentRequest() {
   const [paymentAmout, setPaymentAmount] = useState("");
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [viewImgSrc, setViewImgSrc] = useState("");
-  const [paymentDate, setPaymentDate] = useState(
-    dayjs(new Date()).add(5, "hours").add(30, "minutes").$d.toGMTString()
-  );
+  const [paymentDate, setPaymentDate] = useState(dayjs(new Date()).add(5, "hours").add(30, "minutes").$d.toGMTString());
   const [userName, setUserName] = useState("");
   const [uniqueVendorCount, setUniqueVendorCount] = useState(0);
   const [pendingRequestCount, setPendingRequestCount] = useState(0);
@@ -152,9 +150,7 @@ export default function PendingPaymentRequest() {
     formData.append("name", rowData.name);
     formData.append("request_date", rowData.request_date);
     formData.append("payment_date", paymentDate);
-    console.log(
-      new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " ")
-    );
+    console.log(new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " "));
 
     axios
       .post(baseUrl + "phpvendorpaymentrequest", formData, {
@@ -166,10 +162,7 @@ export default function PendingPaymentRequest() {
         const phpFormData = new FormData();
         phpFormData.append("request_id", rowData.request_id);
         phpFormData.append("payment_amount", paymentAmout);
-        phpFormData.append(
-          "payment_date",
-          new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " ")
-        );
+        phpFormData.append("payment_date", new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " "))
         phpFormData.append("payment_by", userName);
         phpFormData.append("evidence", payMentProof);
         phpFormData.append("finance_remark", payRemark);
