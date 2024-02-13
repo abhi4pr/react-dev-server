@@ -1033,7 +1033,7 @@ const SidebarLinks = () => {
           >
             <div className="bg-white collapse-inner">
               <li className="nav-item">
-                {/* <Link
+                <Link
                   className="nav-link collapsed"
                   data-toggle="collapse"
                   data-target="#collapsInnerEightFinanceEditDashboard"
@@ -1060,7 +1060,7 @@ const SidebarLinks = () => {
                       </li>
                     </>
                   </div>
-                </div> */}
+                </div>
 
                 <Link
                   className="nav-link collapsed"
