@@ -22,8 +22,10 @@ import dayjs from "dayjs";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { baseUrl } from "../../../utils/config";
-import { FaCommentsDollar } from "react-icons/fa";
-import { FaMoneyCheckAlt } from "react-icons/fa";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import HistoryIcon from "@mui/icons-material/History";
+// import { FaMoney } from "react-icons/fa";
+// import { FaHistory } from "react-icons/fa";
 
 export default function PendingPaymentRequest() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -56,6 +58,8 @@ export default function PendingPaymentRequest() {
   const [priorityFilter, setPriorityFilter] = useState("");
   const [requestAmountFilter, setRequestAmountFilter] = useState("");
   const [requestedAmountField, setRequestedAmountField] = useState("");
+  const [bankDetail, setBankDetail] = useState(false);
+  const [paymentHistory, setPaymentHistory] = useState(false);
 
   const callApi = () => {
     axios.get(`${baseUrl}` + `addPhpVendorPaymentRequest`).then((res) => {});
@@ -126,7 +130,7 @@ export default function PendingPaymentRequest() {
     (total, item) => total + item.request_amount,
     0
   );
-
+  console.log(totalPendingAmount, "totalPendingAmount");
   const handlePayVendorClick = () => {
     const formData = new FormData();
     formData.append("request_id", rowData.request_id);
@@ -312,6 +316,24 @@ export default function PendingPaymentRequest() {
   const handleCloseSameVender = () => {
     setSameVendorDialog(false);
   };
+  // Bank Details:-
+
+  const handleOpenBankDetail = () => {
+    setBankDetail(true);
+  };
+  const handleCloseBankDetail = () => {
+    setBankDetail(false);
+  };
+
+  // Payment history detail:-
+
+  const handleOpenPaymentHistory = () => {
+    setPaymentHistory(true);
+  };
+  const handleClosePaymentHistory = () => {
+    setPaymentHistory(false);
+  };
+
   // ==============================================================
   //iterate for totalAmount of same name venders :-
   const vendorAmounts = [];
@@ -331,8 +353,89 @@ export default function PendingPaymentRequest() {
     (total, amount) => total + amount,
     0
   );
-  // =================================================================
-
+  // ================================================================
+  // Bank Detail columns:-
+  const bankDetailColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = filterData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "account_number",
+      headerName: "Account Number",
+      width: 150,
+      renderCell: (params) => {
+        return <p>12345647321 </p>;
+      },
+    },
+    {
+      field: "bank_name",
+      headerName: "Bank Name",
+      width: 150,
+      renderCell: (params) => {
+        return <p>Axis Bank</p>;
+      },
+    },
+    {
+      field: "ifsc",
+      headerName: "IFSC Number",
+      width: 150,
+      renderCell: (params) => {
+        return <p>AXIS1234</p>;
+      },
+    },
+    {
+      field: "gst",
+      headerName: "GST",
+      width: 150,
+      renderCell: (params) => {
+        return <p> 1 </p>;
+      },
+    },
+    {
+      field: "pan_number",
+      headerName: "Pan Number",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377;ABCD12345G </p>;
+      },
+    },
+  ];
+  // bank Payment Detail column:-
+  const paymentDetailColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = filterData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "request_amount",
+      headerName: "Requested Amount",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.request_amount}</p>;
+      },
+    },
+    {
+      field: "outstandings",
+      headerName: "OutStanding ",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+  ];
   // same Vender columns:-
   const sameVenderColumns = [
     {
@@ -500,15 +603,22 @@ export default function PendingPaymentRequest() {
     {
       field: "vendor_name",
       headerName: "Vendor Name",
-      // width: "auto",
       width: 250,
       renderCell: (params) => {
         return (
-          <div
-            style={{ cursor: "pointer" }}
-            onClick={() => handleOpenSameVender(params.row.vendor_name)}
-          >
-            {params.row.vendor_name}
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{ cursor: "pointer", marginRight: "60px" }}
+              onClick={() => handleOpenSameVender(params.row.vendor_name)}
+            >
+              {params.row.vendor_name}
+            </div>
+            <div onClick={() => handleOpenBankDetail()}>
+              <AccountBalanceIcon style={{ fontSize: "25px" }} />
+            </div>
+            <div onClick={() => handleOpenPaymentHistory()}>
+              <HistoryIcon style={{ fontSize: "25px", marginLeft: "20px" }} />
+            </div>
           </div>
         );
       },
@@ -589,6 +699,117 @@ export default function PendingPaymentRequest() {
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
         includeAdditionalTitles={true}
       />
+      {/* Bank Details */}
+      <Dialog
+        open={bankDetail}
+        onClose={handleCloseBankDetail}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Bank Details</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseBankDetail}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={filterData}
+          columns={bankDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => filterData.indexOf(row)}
+        />
+      </Dialog>
+      {/* Payment History */}
+      <Dialog
+        open={paymentHistory}
+        onClose={handleClosePaymentHistory}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Payment History</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClosePaymentHistory}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={filterData}
+          columns={paymentDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => filterData.indexOf(row)}
+        />
+      </Dialog>
+
       {/* Same Vendor Dialog Box */}
 
       <Dialog
