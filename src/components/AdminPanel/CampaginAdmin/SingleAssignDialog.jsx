@@ -37,7 +37,6 @@ export default function SingleAssignDialog(props) {
     setSelectedDate(date);
   };
   const handleRemarkChange = (event) => {
-    console.log(event.target.value);
     setRemarkValue(event.target.value);
   };
 
@@ -52,7 +51,6 @@ export default function SingleAssignDialog(props) {
         status: "11",
       })
       .then((response) => {
-        console.log(response);
         if (response.data.success) {
           handleClose();
           setReload((prev) => !prev);
@@ -63,9 +61,6 @@ export default function SingleAssignDialog(props) {
         }
       });
     setOpen(false);
-    console.log("Assign to", setAssignTo.current);
-    console.log("Date Time", selectedDate);
-    console.log("Remark", remarkValue);
   };
 
   return (

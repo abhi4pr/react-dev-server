@@ -28,7 +28,6 @@ export default function SubDepartmentUpdate() {
     //   });
 
     axios.get(`${baseUrl}` + `get_subdept_from_id/${id}`).then((res) => {
-      console.log(res.data.dept_id, "yha deta hai");
       setDeptId(res.data.dept_id);
       setRemark(res.data.remark);
       setSubDepartmentName(res.data.sub_dept_name);

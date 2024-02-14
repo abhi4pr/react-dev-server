@@ -42,7 +42,6 @@ const DepartmentMaster = () => {
           Created_by: loginUserId,
         })
         .then((response) => {
-          console.log(response, "console hai yha");
           if (response.data.data == 409) {
             toastError("The department already exists.");
           }

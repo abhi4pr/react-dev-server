@@ -30,7 +30,6 @@ export default function DiscardConfirmation({
   userID,
   callApi,
 }) {
-  console.log(rowData);
   const [open, setOpen] = React.useState(true);
   const [discardRemark, setDiscardRemark] = React.useState("");
   const handleClose = () => {
@@ -58,7 +57,6 @@ export default function DiscardConfirmation({
 
       })
       .then((res) => {
-        console.log(res);
         callApi();
         setShowDiscardModal(false);
         setDiscardRemark("");

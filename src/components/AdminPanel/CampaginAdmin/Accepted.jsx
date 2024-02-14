@@ -18,7 +18,6 @@ export default function Accepted() {
 
   const handleOpen = (params) => {
     setCommitmentModalData(params.row.commitment);
-    console.log(params.row);
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
@@ -41,7 +40,6 @@ export default function Accepted() {
       const data = response.data.data.filter(
         (e) => e.status <= "21" && e.stage == "3"
       );
-      console.log(data);
       setShowData(data);
     });
     axios
@@ -63,7 +61,6 @@ export default function Accepted() {
     });
     axios.get(baseUrl + "get_all_users").then((response) => {
       const data = response.data.data.filter((e) => e.dept_id == 13);
-      console.log(data);
       setAssignToList(data);
     });
   }, []);
@@ -127,7 +124,6 @@ export default function Accepted() {
         const matchingContentType = contentTypeList.find((e) => {
           return params.row?.content_type_id == e?.content_type_id;
         });
-        console.log(contentTypeList, "matchingContentType");
         return matchingContentType?.content_type || "";
       },
     },

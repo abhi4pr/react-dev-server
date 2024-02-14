@@ -21,7 +21,6 @@ export default function Discard() {
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
-      console.log(res.data.modifiedData, "node js");
       const x = res.data.modifiedData;
 
       axios
@@ -43,7 +42,6 @@ export default function Discard() {
           let u = res.data.body.filter((item) => {
             return y.some((item2) => item.request_id == item2.request_id);
           });
-          console.log(u, "u");
           setData(u);
           setFilterData(u);
         });
@@ -105,10 +103,8 @@ export default function Discard() {
         );
 
       // Requested Amount Filter
-      console.log(requestAmountFilter, "requestAmountFilter");
       const requestedAmountFilterPassed = () => {
         const numericRequestedAmount = parseFloat(requestedAmountField);
-        console.log("switch");
         switch (requestAmountFilter) {
           case "greaterThan":
             return +item.request_amount > numericRequestedAmount;
@@ -165,7 +161,6 @@ export default function Discard() {
         const isPdf = fileExtension === "pdf";
 
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
-        console.log(params.row.invc_img ? imgUrl : "no image");
         return isPdf ? (
           <iframe
             onClick={() => {

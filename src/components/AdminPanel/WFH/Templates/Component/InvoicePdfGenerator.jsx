@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { generatePDF } from "../Utils/genratePDF";
 import { useGlobalContext } from "../../../../../Context/Context";
 import axios from "axios";
@@ -20,31 +20,41 @@ const templates = {
 const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
   const { toastAlert } = useGlobalContext();
   const invoiceRef = useRef();
+  const [isUpdatingSalary, setIsUpdatingSalary] = useState(false); 
+
   const TemplateComponent = templates[data?.invoice_template_no] || null;
+
   const handleGeneratePDF = async (e, data) => {
     await generatePDF(data, invoiceRef);
-
     e.preventDefault();
 
-    await axios.put(`${baseUrl}` + `update_attendance`, {
-      attendence_id: data.attendence_id,
-      month: data.month,
-      year: data.year,
-      attendence_status_flow: "Pending for invoice verification",
-    });
+    setIsUpdatingSalary(true); 
 
-    await axios.post(`${baseUrl}` + `add_finance`, {
-      attendence_id: data?.attendence_id,
-    });
+    try {
+      await axios.put(`${baseUrl}` + `update_attendance`, {
+        attendence_id: data.attendence_id,
+        month: data.month,
+        year: data.year,
+        attendence_status_flow: "Invoice Submit Pending For Verifcation",
+      });
 
-    await axios.put(`${baseUrl}` + `update_salary`, {
-      attendence_id: data?.attendence_id,
-      sendToFinance: 1,
-    });
+      await axios.post(`${baseUrl}` + `add_finance`, {
+        attendence_id: data?.attendence_id,
+      });
 
-    setIsPreviewModalOpen && (await setIsPreviewModalOpen(false));
-    handleSubmit && handleSubmit();
-    toastAlert("Sent To Finance");
+      await axios.put(`${baseUrl}` + `update_salary`, {
+        attendence_id: data?.attendence_id,
+        sendToFinance: 1,
+      });
+
+      setIsPreviewModalOpen && setIsPreviewModalOpen(false);
+      handleSubmit && handleSubmit();
+      toastAlert("Sent To Finance");
+    } catch (error) {
+      console.error("Error updating salary:", error);
+    } finally {
+      setIsUpdatingSalary(false); 
+    }
   };
 
   return (
@@ -60,8 +70,9 @@ const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
         <button
           className="btn btn-secondary"
           onClick={(e) => handleGeneratePDF(e, data)}
+          disabled={isUpdatingSalary} 
         >
-          Submit
+          {isUpdatingSalary ? 'Signing...' : 'Sign'}
         </button>
       )}
     </div>

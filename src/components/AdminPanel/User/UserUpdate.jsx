@@ -644,7 +644,7 @@ const UserUpdate = () => {
     formData.append("image", profile);
     formData.append("user_email_id", email);
     formData.append("user_login_id", loginId);
-    formData.append("user_login_password", password);
+    // formData.append("user_login_password", password);
     formData.append("user_contact_no", contact ? contact : "");
     formData.append("sitting_id", jobType === "WFH" ? 0 : Number(sitting));
     formData.append(

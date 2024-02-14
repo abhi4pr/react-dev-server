@@ -255,7 +255,7 @@ const LoginHistory = () => {
         new Date(customFormattedDate).getTime()
       );
     });
-    console.log(result);
+    
     setFilterData(result);
     setDurationFilter("Custom Date");
   };

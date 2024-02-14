@@ -33,13 +33,11 @@ export default function Review() {
 
   const handleOpen = (params) => {
     setCommitmentModalData(params.row.commitment);
-    console.log(params.row);
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
 
   const handleOpenActionModal = (params, action) => {
-    console.log(params.row);
     setActionModalData(params.row);
     setOpenActionModal(true);
     setActionType(action);
@@ -82,8 +80,6 @@ export default function Review() {
   };
 
   const handleActionSubmit = () => {
-    console.log(actionType);
-    console.log(actionRemark);
     const status =
       actionType == "complect" ? "23" : actionType == "reject" ? "24" : "25";
     const stage =
@@ -107,11 +103,9 @@ export default function Review() {
     axios
       .get(baseUrl+"contentSectionReg")
       .then((response) => {
-        // console.log(response.data.data);
         const data = response.data.data.filter(
           (e) => e.status == "22" && e.stage == "3"
         );
-        console.log(data);
         setShowData(data);
       });
 
@@ -139,7 +133,6 @@ export default function Review() {
       .get(baseUrl+"get_all_users")
       .then((response) => {
         const data = response.data.data.filter((e) => e.dept_id == 13);
-        console.log(data);
         setAssignToList(data);
       });
   }, []);
@@ -151,7 +144,6 @@ export default function Review() {
         const data = response.data.data.filter(
           (e) => e.status == "22" && e.stage == "3"
         );
-        console.log(data);
         setShowData(data);
       });
   }, [reload]);

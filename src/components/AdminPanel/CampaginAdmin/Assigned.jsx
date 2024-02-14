@@ -212,11 +212,9 @@ export default function Assigned() {
 
   useEffect(() => {
     axios.get(baseUrl + "contentSectionReg").then((response) => {
-      // console.log(response.data.data);
       const data = response.data.data.filter(
         (e) => e.status == "11" && e.stage == "2"
       );
-      console.log(data);
       setShowData(data);
     });
 
@@ -240,7 +238,6 @@ export default function Assigned() {
     });
     axios.get(baseUrl + "get_all_users").then((response) => {
       const data = response.data.data.filter((e) => e.dept_id == 13);
-      console.log(data);
       setAssignToList(data);
     });
   }, []);

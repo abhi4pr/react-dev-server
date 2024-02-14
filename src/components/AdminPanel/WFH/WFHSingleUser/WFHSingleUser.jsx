@@ -31,6 +31,7 @@ import PreviewInvoice from "./PreviewInvoice";
 import getDecodedToken from "../../../../utils/DecodedToken";
 import { baseUrl } from "../../../../utils/config";
 import WFHTemplateOverview from "./WFHTemplateOverview";
+import { Link } from "react-router-dom";
 
 const images = useInvoiceTemplateImages();
 
@@ -478,15 +479,15 @@ const WFHSingleUser = () => {
       cell: (row) => row.month,
     },
     {
-      name: "Absent Days",
+      name: "Absents",
       cell: (row) => row.noOfabsent,
     },
     {
-      name: "Present Days",
+      name: "Presents",
       cell: (row) => 30 - Number(row.noOfabsent),
     },
     {
-      name: "Total Salary",
+      name: "Total Payout",
       cell: (row) => row.total_salary + " ₹",
       footer: {
         cell: (row) =>
@@ -511,7 +512,7 @@ const WFHSingleUser = () => {
     },
 
     {
-      name: "Net Salary",
+      name: "Net Payout",
       cell: (row) => row.net_salary + " ₹",
     },
     {
@@ -668,12 +669,12 @@ const WFHSingleUser = () => {
         </div>
       </div>
 
-      <FormContainer mainTitle="Salary" link="/admin" />
+      <FormContainer mainTitle="Payout" link="/admin" />
       <div className="card">
         <div className="data_tbl table-responsive">
           {filterData?.length > 0 && (
             <DataTable
-              title="Salary Overview"
+              title="Payout Overview"
               columns={columns}
               data={filterData}
               fixedHeader
@@ -683,9 +684,9 @@ const WFHSingleUser = () => {
               subHeader
               subHeaderComponent={
                 <>
-                  <button className="btn btn-primary mr-3" onClick={openModal}>
+                  {/* <button className="btn btn-primary mr-3" onClick={openModal}>
                     Digital Signature
-                  </button>
+                  </button> */}
                   <Modal
                     isOpen={isModalOpen}
                     onRequestClose={closeModal}
@@ -711,7 +712,7 @@ const WFHSingleUser = () => {
                     />
                   </Modal>
 
-                  <Button
+                  {/* <Button
                     sx={{ marginRight: "10px" }}
                     size="medium"
                     onClick={handleExport}
@@ -719,7 +720,7 @@ const WFHSingleUser = () => {
                     color="secondary"
                   >
                     Export Excel
-                  </Button>
+                  </Button> */}
 
                   <div className="d-flex">
                     <PDFDownloadLink
@@ -733,18 +734,22 @@ const WFHSingleUser = () => {
                         // border: "1px solid #4a4a4a",
                       }}
                     >
-                      <button
+                      {/* <button
                         className="btn btn-outline-primary me-3"
                         type="button"
                       >
                         PDF Download
-                      </button>
+                      </button> */}
                     </PDFDownloadLink>
+
+                    <button className="btn btn-outline-primary me-3" type="button">
+                      <Link to='/admin/dispute-overview'>Dispute</Link>
+                    </button>
 
                     <input
                       type="text"
                       placeholder="Search here"
-                      className="w-50 form-control"
+                      className="w-100 form-control"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                     />

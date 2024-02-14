@@ -133,13 +133,7 @@ export default function Pending() {
         (e) => e.status == "1" && e.stage == "1"
       );
       const arr = [];
-      console.log(data, "data");
       const brandIdList = new Set(response.data.data.map((e) => e.brand_id));
-      console.log(
-        response.data.data.map((e) => e.brand_id == brandIdList.brand_id)
-          .length,
-        "brandIdList"
-      );
       arr.push(...brandIdList);
       setBrandIdList(arr);
       setShowTable1Data(response.data.data);
@@ -162,9 +156,7 @@ export default function Pending() {
     boxShadow: 24,
     p: 1,
   };
-  console.log("call");
   const handleOpen = (params) => {
-    console.log(params.row, "params row");
     setModalNotEditable(params.row);
     setOpen(true);
   };
@@ -238,7 +230,6 @@ export default function Pending() {
       width: 150,
       renderCell: (params) => {
         const data = showTable1Data.filter((e) => params.row == e.brand_id);
-        console.log(data.length, "length");
         return showTable1Data.filter((e) => params.row == e.brand_id).length;
       },
     },

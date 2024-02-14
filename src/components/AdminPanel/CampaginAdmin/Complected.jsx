@@ -33,7 +33,6 @@ export default function Complected() {
 
   const handleOpen = (params) => {
     setCommitmentModalData(params.row.commitment);
-    console.log(params.row);
     setOpen(true);
   };
   const handleClose = () => setOpen(false);

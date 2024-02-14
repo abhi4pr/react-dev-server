@@ -15,6 +15,7 @@ const SidebarLinks = () => {
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
   const RoleId = decodedToken.role_id;
+  const job_type = decodedToken.job_type
 
   useEffect(() => {
     if (userID && contextData.length === 0) {
@@ -212,7 +213,7 @@ const SidebarLinks = () => {
       {/* USER MANAGEMENT */}
 
       {/*WFHD USER */}
-      {jobType == "WFHD" && RoleId == 4 && (
+      {job_type == "WFHD" && RoleId == 4 && (
         <li className="nav-item">
           <Link
             className="nav-link collapsed"
@@ -222,7 +223,7 @@ const SidebarLinks = () => {
             aria-controls="collapseFourddnm"
           >
             <i className="bi bi-person-gear" />
-            <span>My Info</span>
+            <span>Payout</span>
           </Link>
 
           <div
@@ -232,7 +233,7 @@ const SidebarLinks = () => {
             data-parent="#accordionSidebar"
           >
             <div className="bg-white collapse-inner">
-              <Link
+              {/* <Link
                 className="collapse-item"
                 to="/admin/view-edit-digital-signature"
               >
@@ -241,19 +242,19 @@ const SidebarLinks = () => {
 
               <Link className="collapse-item" to="/admin/wfh-template-overview">
                 Change/View Template
-              </Link>
+              </Link> */}
 
               <Link className="collapse-item" to="/admin/wfh-single-user">
                 Payout Summary
               </Link>
 
-              <Link
+              {/* <Link
                 className="collapse-item"
                 to="/admin/dispute-overview"
                 state={{ id: userID }}
               >
                 Dispute Summary
-              </Link>
+              </Link> */}
             </div>
           </div>
         </li>
@@ -1373,6 +1374,7 @@ const SidebarLinks = () => {
       {/* FINANCE */}
 
       {/* Asset Management here  */}
+      {job_type !== 'WFHD' &&(
       <li className="nav-item">
         <Link
           className="nav-link collapsed"
@@ -1423,6 +1425,7 @@ const SidebarLinks = () => {
           </div>
         </div>
       </li>
+      )}
 
       {isTaskManagment && (
         <li className="nav-item">

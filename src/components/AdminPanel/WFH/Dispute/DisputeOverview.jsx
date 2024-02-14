@@ -151,7 +151,7 @@ const DisputeOverview = () => {
       attendence_id: row.attendence_id,
       month: row.month,
       year: row.year,
-      attendence_status_flow: "Pending for invoice verification",
+      attendence_status_flow: "Invoice Submit Pending For Verifcation",
     });
     getData();
     toastAlert("Successful");

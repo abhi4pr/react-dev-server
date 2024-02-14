@@ -98,7 +98,6 @@ const AllTransactions = () => {
 
   function getData() {
     axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {
-      console.log("data save in local success");
     });
     axios.get(baseUrl + "get_all_php_finance_data").then((res) => {
       setData(res.data.data);

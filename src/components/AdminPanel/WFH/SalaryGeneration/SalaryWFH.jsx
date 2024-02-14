@@ -1009,7 +1009,7 @@ const SalaryWFH = () => {
               contextData[38].view_value === 1 && (
                 <Link to="/admin/salary-summary">
                   <button className="btn btn-warning mr-3">
-                    Salary Summary
+                    Payout Summary
                   </button>
                 </Link>
               )}
@@ -1091,7 +1091,7 @@ const SalaryWFH = () => {
                 <div className="salary_dtlCard_info">
                   <ul>
                     <li>
-                      <span>Total Salary Incurred :</span>
+                      <span>Total Payout Incurred :</span>
                       {thisMonthTotalSalary}
                     </li>
                     <li>
@@ -1122,7 +1122,7 @@ const SalaryWFH = () => {
                 <div className="salary_dtlCard_info">
                   <ul>
                     <li>
-                      <span>Total Salary :</span>
+                      <span>Total Payout :</span>
                       {card2Data?.totalsalary}
                     </li>
                     <li>
