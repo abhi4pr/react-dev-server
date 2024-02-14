@@ -1,6 +1,5 @@
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import {
@@ -23,7 +22,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import { toolbarStyles } from "./CampaignCommitment";
-import { baseUrl } from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 export default function BrandMaster() {
   const [whatsappOptions, setWhatsappOptions] = useState([]);
@@ -31,12 +30,10 @@ export default function BrandMaster() {
   const { toastAlert, toastError } = useGlobalContext();
   const [reload, setReload] = useState(false);
   const [SubCategoryString, setSubCategoryString] = useState();
-  console.log(SubCategoryString);
   const [subcategoryOptions, setSubCategoryOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [rows, setRows] = useState([]);
-  const [dataPlatforms,setDataPlatforms]=useState([])
-  // const [rowModesModel, setRowModesModel] = useState({});
+  const [dataPlatforms, setDataPlatforms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPutOpen, setIsPutOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -45,16 +42,16 @@ export default function BrandMaster() {
   const [loading, setLoading] = useState(false);
   const [errBrandName, setErrBrandName] = useState();
   const [fields, setFields] = useState([]);
-  const [platformPayload,setPlatformPayload]=useState([])
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [itemToDeleteId, setItemToDeleteId] = useState(null);
+  const [selectedPages, setSelectedPages] = useState([]);
+  const [userName, setUserName] = useState([]);
+
   const [postData, setPostData] = useState({
     brand_name: "",
     category_id: "",
     sub_category_id: "",
-    igusername: "",
-    whatsapp: "",
     major_category: "",
   });
   const majorcategoryoption = [
@@ -65,24 +62,28 @@ export default function BrandMaster() {
     { major_cat_id: 5, major_cat_name: "Entertainment" },
   ];
 
+  const platform = [
+    { plt_id: 1, plat_name: "Instagram" },
+    { plt_id: 2, plat_name: "Facebook" },
+    { plt_id: 3, plat_name: "Whatsapp" },
+    { plt_id: 4, plat_name: "Youtube" },
+    { plt_id: 5, plat_name: "x" },
+  ];
+
   const brandURL = baseUrl + "";
   const handleClose = () => {
     setIsModalOpen(false);
   };
 
-  console.log(dataPlatforms)
+  console.log(dataPlatforms);
   function EditToolbar() {
     const handleClick = () => {
       setIsModalOpen(true);
-      getDataPlatform()
+      getDataPlatform();
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button
-          color="error"
-          variant="outlined"
-          onClick={handleClick}
-        >
+        <Button color="error" variant="outlined" onClick={handleClick}>
           create brand
         </Button>
       </GridToolbarContainer>
@@ -108,6 +109,16 @@ export default function BrandMaster() {
 
   const handleSave = (e) => {
     e.preventDefault();
+    const platformsData = selectedPages.reduce((acc, platform, index) => {
+      const key = platform.plat_name;
+      const value = userName[index] || "";
+      acc[key] = value;
+      return acc;
+    }, {});
+    const updatedPostData = {
+      ...postData,
+      platform: platformsData,
+    };
     if (
       !postData.brand_name ||
       !postData.category_id ||
@@ -117,7 +128,7 @@ export default function BrandMaster() {
       toastError(" * Please fill in all required fields ");
     } else {
       axios
-        .post(`${brandURL}/add_brand`, postData)
+        .post(`${brandURL}add_brand`, updatedPostData)
         .then((response) => {
           response.data.message
             ? toastError(response.data.message)
@@ -155,18 +166,16 @@ export default function BrandMaster() {
 
   const subCategoryDataOnEdit = () => {
     console.log("calling the subcategory data on Edit");
-    axios
-      .get(baseUrl + "projectxSubCategory")
-      .then((res) => {
-        console.log(res.data.data, "-------> subcat data");
-        const filteredData = res.data.data.filter((item) => {
-          return item.category_id == postData.category_id;
-        });
-        console.log(filteredData, "filteredData meeee");
-
-        setSubCategoryOptions(filteredData);
-        setLoading(false);
+    axios.get(baseUrl + "projectxSubCategory").then((res) => {
+      console.log(res.data.data, "-------> subcat data");
+      const filteredData = res.data.data.filter((item) => {
+        return item.category_id == postData.category_id;
       });
+      console.log(filteredData, "filteredData meeee");
+
+      setSubCategoryOptions(filteredData);
+      setLoading(false);
+    });
   };
 
   useEffect(() => {
@@ -196,8 +205,6 @@ export default function BrandMaster() {
         category_id: editData.category_id,
         sub_category_id: editData.sub_category_id,
         major_category: editData.major_category,
-        igusername: editData.igusername,
-        whatsapp: editData.whatsapp,
       })
       .then((res) => {
         if (res.data.success === false) {
@@ -214,17 +221,15 @@ export default function BrandMaster() {
   };
 
   useEffect(() => {
-    axios
-      .get(baseUrl + "projectxSubCategory")
-      .then((res) => {
-        console.log(res.data.data, "-------> subcat data");
-        const filteredData = res.data.data.filter((item) => {
-          return item.category_id == editData.category_id;
-        });
-        console.log(filteredData, "filteredData meeee");
-        setSubCategoryOptions(filteredData);
-        setLoading(false);
+    axios.get(baseUrl + "projectxSubCategory").then((res) => {
+      console.log(res.data.data, "-------> subcat data");
+      const filteredData = res.data.data.filter((item) => {
+        return item.category_id == editData.category_id;
       });
+      console.log(filteredData, "filteredData meeee");
+      setSubCategoryOptions(filteredData);
+      setLoading(false);
+    });
   }, [editData.category_id]);
 
   useEffect(() => {
@@ -244,7 +249,6 @@ export default function BrandMaster() {
       setIgusernameOptions(options);
     });
   }, []);
-
 
   const handleEditClick = (id, row) => () => {
     setLoading(true);
@@ -272,9 +276,6 @@ export default function BrandMaster() {
           getData();
           console.log("Data deleted successfully");
         })
-        // .catch((error) => {
-        //   console.error("Error deleting data:", error);
-        // })
         .finally(() => {
           setIsDeleteConfirmationOpen(false);
           setItemToDeleteId(null);
@@ -303,11 +304,11 @@ export default function BrandMaster() {
       width: 180,
       renderCell: (params) => {
         const brand_name = params.row.brand_name;
-        const BrandName = brand_name.charAt(0).toUpperCase() + brand_name.slice(1);
+        const BrandName =
+          brand_name.charAt(0).toUpperCase() + brand_name.slice(1);
         return BrandName;
-      }
-    }
-    ,
+      },
+    },
     {
       field: "projectx_category_name",
       headerName: "Category",
@@ -323,18 +324,6 @@ export default function BrandMaster() {
       headerName: "Major Category",
       width: 180,
     },
-
-    {
-      field: "igusername",
-      headerName: "User Name",
-      width: 180,
-    },
-    {
-      field: "whatsapp",
-      headerName: "Whatsapp",
-      width: 180,
-    },
-
     {
       field: "actions",
       type: "actions",
@@ -344,7 +333,6 @@ export default function BrandMaster() {
       getActions: (params) => {
         const { id, row } = params;
         return [
-          // eslint-disable-next-line react/jsx-key
           <GridActionsCellItem
             icon={<EditIcon />}
             label="Edit"
@@ -352,7 +340,6 @@ export default function BrandMaster() {
             onClick={handleEditClick(id, row)}
             color="primary"
           />,
-          // eslint-disable-next-line react/jsx-key
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
@@ -371,8 +358,8 @@ export default function BrandMaster() {
     );
     setFilteredRows(filtered);
   };
-  
-  console.log(fields)
+
+  console.log(fields);
 
   useEffect(() => {
     filterRows();
@@ -380,19 +367,16 @@ export default function BrandMaster() {
 
   const getDataPlatform = async () => {
     try {
-      const response = await axios.get(`${baseUrl}get_all_data_platforms`)
-      setDataPlatforms(response?.data)
-
-    } catch (error) {
-
-    }
-  }
-
-  const handleAddField = () => {
-   const newField={platform:"",userid:""}
-   setFields([...fields,newField])
+      const response = await axios.get(`${baseUrl}get_all_data_platforms`);
+      setDataPlatforms(response?.data);
+    } catch (error) {}
   };
-
+  const handlePlatfromChange = (index, value) => {
+    const updatedpages = [...userName];
+    updatedpages[index] = value;
+    setUserName(updatedpages);
+  };
+  console.log(userName);
   return (
     <>
       <Paper>
@@ -463,7 +447,6 @@ export default function BrandMaster() {
                   }
                 }}
               />
-
               <>
                 <Autocomplete
                   disablePortal
@@ -505,83 +488,49 @@ export default function BrandMaster() {
                   }}
                 />
               </>
-              <div>
 
-              <>
-            {fields.length > 0 && (
-              <FormControl sx={{ mr: 1, ml: 1 }}>
-                {fields.map((field, index) => (
-                  <div key={index} className="mt-2 mb-2 d-flex">
-                    <FormControl sx={{ width: "900px", marginRight: "10px" }}>
-                      <Autocomplete
-                        required
-                        disablePortal
-                        value={
-                          campaignList.filter(
-                            (e) => e.cmtName == field.selectValue
-                          )[0]?.cmtName
-                        }
-                        onChange={(event, newValue) => {
-                          handleSelectChange(
-                            {
-                              target: {
-                                value: campaignList.filter(
-                                  (e) => e.cmtName == newValue
-                                )[0].cmtId,
-                              },
-                            },
-                            index
-                          ),
-                            console.log(
-                              campaignList.filter(
-                                (e) => e.cmtName == newValue
-                              )[0].cmtId,
-                              "field.selectValue"
-                            );
-                        }}
-                        options={campaignList
-                          .filter(
-                            (e) =>
-                              !fields
-                                .map((e) => e.selectValue)
-                                .includes(e.cmtId)
-                          )
-                          .map((option) => option.cmtName)}
-                        renderInput={(params) => (
-                          <TextField {...params} label="Commitment *" />
-                        )}
-                      />
-                    </FormControl>
+              <Autocomplete
+                id="combo-box-demo"
+                multiple
+                options={platform}
+                getOptionLabel={(option) => option.plat_name}
+                value={selectedPages}
+                onChange={(event, newValue) => {
+                  setSelectedPages(newValue);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="  * Platform" />
+                )}
+                isOptionEqualToValue={(option, value) =>
+                  option.plt_id === value.plt_id
+                }
+              />
 
-                    <TextField
-                      required
-                      label="Value"
-                      // value={field.textValue}
-                      type="number"
-                      fullWidth
-                      // onChange={(event) => handleTextChange(event, index)}
-                    />
-                    {/* <Button onClick={(e) => handleRemoveField(e, index)}>
-                      <i className="fas fa-close"></i>
-                    </Button> */}
-                  </div>
-                ))}
-              </FormControl>
-            )}
-          </>
-           
-              <Button
-                variant="outlined"
-                sx={{ mt: 2 }}
-                color="secondary"
-                onClick={handleAddField}
-              >
-                Add Platform
-              </Button>
-            
-          
-          </div>
+              {selectedPages?.map((page, index) => (
+                <Box key={index} sx={{ display: "flex", mb: 1 }}>
+                  <TextField
+                    label="Page Name"
+                    value={page.plat_name}
+                    fullWidth
+                    margin="normal"
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    InputLabelProps={{ shrink: true }}
+                  />
+                  <TextField
+                    label="User name"
+                    value={userName[index]}
+                    fullWidth
+                    onChange={(e) =>
+                      handlePlatfromChange(index, e.target.value)
+                    }
+                    sx={{ m: 2 }}
+                  />
+                </Box>
+              ))}
 
+              <div></div>
             </div>
           </Box>
         </DialogContent>
@@ -682,9 +631,6 @@ export default function BrandMaster() {
                     }));
                   }}
                 />
-
-                
-                
               </div>
             )}
           </Box>
@@ -716,7 +662,11 @@ export default function BrandMaster() {
           >
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="error" variant="outlined">
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="outlined"
+          >
             Delete
           </Button>
         </DialogActions>

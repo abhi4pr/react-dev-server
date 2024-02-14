@@ -12,11 +12,13 @@ import {
   Button,
   FormControl,
   Input,
+  InputLabel,
+  MenuItem,
   Modal,
   OutlinedInput,
   Paper,
   TextField,
-  TextareaAutosize,
+  Select,
   Typography,
   styled,
 } from "@mui/material";
@@ -24,7 +26,7 @@ import DownloadTwoToneIcon from "@mui/icons-material/DownloadTwoTone";
 import { useEffect } from "react";
 import axios from "axios";
 import { Page } from "@react-pdf/renderer";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 export default function RegisteredCampaign() {
   const navigate = useNavigate();
@@ -52,6 +54,18 @@ export default function RegisteredCampaign() {
   const [campignData, setCampignData] = useState([{}]);
   const [deleteRowModal, setDeleteRowModal] = useState(false);
   const [deleteRowId, setDeleteRowId] = useState("");
+  const [dateFilter, setDateFilter] = useState("year");
+  const [filteredTable1DataLength, setFilteredTable1DataLength] = useState(0);
+
+  const handleDateFilterChange = (e) => {
+    const newFilter = e.target.value;
+    setDateFilter(newFilter);
+  };
+
+  useEffect(() => {
+    const updatedFilteredData = filterDataByDateRange(table1Data);
+    setFilteredTable1DataLength(updatedFilteredData.length);
+  }, [table1Data, dateFilter]);
 
   const handleFileChange = (event, index) => {
     const file = event.target.files[0];
@@ -65,26 +79,20 @@ export default function RegisteredCampaign() {
 
   const handleDeleteRowConfirm = () => {
     axios
-      .delete(`${baseUrl}`+`register_campaign/${deleteRowId}`)
+      .delete(`${baseUrl}` + `register_campaign/${deleteRowId}`)
       .then((res) => {
-        console.log(res);
         setReload(!reload);
         setDeleteRowModal(false);
       });
   };
 
   const handleDeleteRow = (params) => {
-    console.log(
-      params.row.register_campaign_id,
-      "params.row.register_campaign_id"
-    );
     setDeleteRowModal(true);
     setDeleteRowId(params.row._id);
   };
 
   const handleOpen = (params) => {
-    setCampaignId(params.row.register_campaign_id);
-    // console.log(params.row.register_campaign_id,"params.row.register_campaign_id")
+    setCampaignId(params?.row?.register_campaign_id);
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
@@ -135,7 +143,6 @@ export default function RegisteredCampaign() {
 
   const handleBriefChange = (event, index) => {
     const newBriefValue = event.target.value;
-    console.log(newBriefValue, "newBriefValue");
     const updatedFields = [...formData.fields];
     updatedFields[index].brief = newBriefValue;
 
@@ -200,7 +207,6 @@ export default function RegisteredCampaign() {
   };
 
   const sendData = async (data) => {
-    console.log(data, "data");
     for (const field of data.fields) {
       for (let i = 0; i < field.textValue; i++) {
         const formData = new FormData();
@@ -218,19 +224,18 @@ export default function RegisteredCampaign() {
 
         try {
           const response = await axios
-            .post(baseUrl+"contentSectionReg", formData, {
+            .post(baseUrl + "contentSectionReg", formData, {
               headers: {
                 "Content-Type": "multipart/form-data", // Important for file uploads
               },
             })
             .then((response) => {
               axios
-                .put(baseUrl+"register_campaign", {
+                .put(baseUrl + "register_campaign", {
                   register_campaign_id: campaignId,
                   status: 1,
                 })
                 .then((res) => {
-                  console.log(res);
                   handleClose();
                   // formData.contentCount = "";
                   formData.videoCount = "";
@@ -240,7 +245,6 @@ export default function RegisteredCampaign() {
                   ];
                   setFormData(formData);
                 });
-              console.log(response);
               setReload(!reload);
             })
             .catch((error) => {
@@ -279,33 +283,24 @@ export default function RegisteredCampaign() {
 
   const handleSubmit = () => {
     const validationErrors = validateForm(formData);
-    console.log(validationErrors, "validationErrors");
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length === 0) {
-      console.log("form is valid");
       sendData(formData);
-      // console.log(formData, "formData");
     } else {
-      console.log("Form is invalid");
-      // Form is invalid, update the errors state
       setErrors(validationErrors);
     }
   };
   useEffect(() => {
     axios
-      .get(baseUrl+"register_campaign")
+      .get(baseUrl + "register_campaign")
       .then((response) => {
-        // console.log(response.data.data, "response");
         SetLoadTable1(true);
-        const table1Data = response.data.data
+        const table1Datas = response.data.data
           .filter((element) => element.status === 0)
           .map((element, index) => {
             return { ...element, count: index + 1 };
           })
           .sort((a, b) => b.register_campaign_id - a.register_campaign_id);
-
-        // console.log(table1Data);
-        console.log(table1Data,"new data");
         setTable1Data(table1Data);
         setTable2Data(
           response.data.data
@@ -320,7 +315,7 @@ export default function RegisteredCampaign() {
       });
 
     axios
-      .get(baseUrl+"get_brands")
+      .get(baseUrl + "get_brands")
       .then((response) => {
         console.log(response.data.data, "response");
         setBrandName(response.data.data);
@@ -329,23 +324,18 @@ export default function RegisteredCampaign() {
       .catch((err) => {
         console.log(err);
       });
-    axios
-      .get(baseUrl+"get_all_commitments")
-      .then((response) => {
-        const data = response.data.data;
-        console.log(data, "<--------");
-
-        setCommits(data);
-      });
-    axios.get(baseUrl+"content").then((response) => {
+    axios.get(baseUrl + "get_all_commitments").then((response) => {
+      const data = response.data.data;
+      setCommits(data);
+    });
+    axios.get(baseUrl + "content").then((response) => {
       setContentTypeList(response.data.data);
     });
 
     axios
-      .get(baseUrl+"exe_campaign")
+      .get(baseUrl + "exe_campaign")
       .then((response) => {
-        const data = response.data.data;
-        console.log(data, "<----data");
+        const data = response?.data?.data;
         setCampignData(data);
       })
       .catch((err) => {
@@ -354,17 +344,16 @@ export default function RegisteredCampaign() {
   }, []);
   useEffect(() => {
     axios
-      .get(baseUrl+"register_campaign")
+      .get(baseUrl + "register_campaign")
       .then((response) => {
-        console.log(response.data.data, "response");
         SetLoadTable1(true);
-        const table1Data = response.data.data
-          .filter((element) => element.status === 0)
-          .map((element, index) => {
+        const table1Data = response?.data?.data
+          ?.filter((element) => element.status === 0)
+          ?.map((element, index) => {
             return { ...element, count: index + 1 };
           })
-          .sort((a, b) => b.register_campaign_id - a.register_campaign_id);
-        
+          ?.sort((a, b) => b.register_campaign_id - a.register_campaign_id);
+
         setTable1Data(table1Data);
         setTable2Data(
           response.data.data
@@ -374,16 +363,14 @@ export default function RegisteredCampaign() {
             })
             .sort((a, b) => b.register_campaign_id - a.register_campaign_id)
         );
-        
       })
       .catch((err) => {
         console.log(err);
       });
 
     axios
-      .get(baseUrl+"get_brands")
+      .get(baseUrl + "get_brands")
       .then((response) => {
-        console.log(response.data.data, "response");
         setBrandName(response.data.data);
         setTable1Data2(true);
       })
@@ -392,12 +379,9 @@ export default function RegisteredCampaign() {
       });
   }, [reload]);
 
-
   const capitalizeFirstWord = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-  
-
 
   const tab1Columns = [
     {
@@ -413,7 +397,7 @@ export default function RegisteredCampaign() {
     {
       field: "register_campaign_id",
       headerName: "Unique Id",
-      width: 90, 
+      width: 90,
     },
     {
       field: "exeCmpId",
@@ -430,11 +414,11 @@ export default function RegisteredCampaign() {
       headerName: "Brand Name",
       width: 150,
       renderCell: (params) => {
-        const brand = brandName.find(e => e.brand_id === params.row.brand_id);
+        const brand = brandName.find((e) => e.brand_id === params.row.brand_id);
         return brand ? capitalizeFirstWord(brand.brand_name) : "";
       },
     },
-    
+
     {
       field: "brnad_dt",
       headerName: "Date & Time",
@@ -552,7 +536,11 @@ export default function RegisteredCampaign() {
       renderCell: (params) => {
         return (
           <div>
-            <Button type="button" color="error" onClick={() => handleDeleteRow(params)}>
+            <Button
+              type="button"
+              color="error"
+              onClick={() => handleDeleteRow(params)}
+            >
               <DeleteIcon />
             </Button>
           </div>
@@ -673,6 +661,71 @@ export default function RegisteredCampaign() {
   const handleAccordionButtonClick = (index) => {
     setActiveAccordionIndex(index);
   };
+  const filterDataByDateRange = (data) => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfWeek = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() - 7
+    );
+    const startOfMonth = new Date(new Date().setMonth(now.getMonth() - 1));
+    const startOfLast3Months = new Date(
+      new Date(now.getFullYear(), now.getMonth() - 3, now.getDate() + 1)
+      // .setMonth(now.getMonth() - 3)
+    );
+    // console.log(startOfLast3Months,"startOfLast3Months");
+
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+    switch (dateFilter) {
+      case "today":
+        return data.filter((item) => {
+          const itemDate = new Date(item.brnad_dt);
+          return (
+            itemDate.getDate() === today.getDate() &&
+            itemDate.getMonth() === today.getMonth() &&
+            itemDate.getFullYear() === today.getFullYear()
+          );
+        });
+      case "thisWeek":
+        return data.filter((item) => {
+          const itemDate = new Date(item.brnad_dt);
+          return (
+            itemDate >= startOfWeek &&
+            itemDate < today.setDate(today.getDate() + 1)
+          );
+        });
+      case "thisMonth":
+        return data.filter((item) => {
+          const itemDate = new Date(item.brnad_dt);
+          return itemDate >= startOfMonth;
+        });
+      case "last3Months":
+        return data.filter((item, i) => {
+          const itemDate = new Date(item.brnad_dt);
+          return itemDate >= startOfLast3Months;
+        });
+      case "thisYear":
+        return data.filter((item) => {
+          const itemDate = new Date(item.brnad_dt);
+          const startOfNextYear = new Date(now.getFullYear() + 1, 0, 1);
+          return (
+            // itemDate >= startOfYear &&
+            itemDate < startOfNextYear
+          );
+        });
+      default:
+        return data;
+    }
+  };
+
+  // Use this function to filter your data before rendering
+  const filteredTable1Data = filterDataByDateRange(table1Data);
+
+  console.log(filteredTable1Data?.length, "harshal");
+
+  const filteredTable2Data = filterDataByDateRange(table2Data);
 
   const commitColumns = [
     {
@@ -691,13 +744,14 @@ export default function RegisteredCampaign() {
       width: 150,
     },
   ];
+
   const tab1 = (
     <div>
       {loadTable1 && table1Data2 && (
         <DataGrid
-          rows={table1Data}
+          rows={filteredTable1Data}
           columns={tab1Columns}
-          getRowId={(row) => row?.count}
+          getRowId={(row) => row?._id}
         />
       )}
       <Modal
@@ -771,6 +825,25 @@ export default function RegisteredCampaign() {
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
       >
+        <Box sx={{display:"flex" }}>
+          <FormControl style={{ width: "300px", margin: "10px" }}>
+            <InputLabel id="date-filter-select-label">Date Filter</InputLabel>
+            <Select
+              labelId="date-filter-select-label"
+              id="date-filter-select"
+              value={dateFilter}
+              label="Date filter"
+              onChange={handleDateFilterChange}
+            >
+              <MenuItem value="today">Today</MenuItem>
+              <MenuItem value="thisWeek"> Week</MenuItem>
+              <MenuItem value="thisMonth"> This Month</MenuItem>
+              <MenuItem value="last3Months">Last 3 Months</MenuItem>
+              <MenuItem value="thisYear"> Year</MenuItem>
+            </Select>
+          </FormControl>
+          <Box sx={{m:3}}>Count: {filteredTable1DataLength}</Box>
+        </Box>
         {activeAccordionIndex === 0 && tab1}
         {activeAccordionIndex === 1 && tab2}
       </FormContainer>
@@ -819,7 +892,7 @@ export default function RegisteredCampaign() {
 
               <Paper sx={{ padding: "10px", marginBottom: "10px" }}>
                 <FormControl>
-                  {formData.fields.map((field, index) => (
+                  {formData?.fields?.map((field, index) => (
                     <>
                       <Page sx={{ mt: 1 }}>
                         <div className="d-flex">
@@ -830,23 +903,22 @@ export default function RegisteredCampaign() {
                               >
                                 <Autocomplete
                                   disablePortal
-                                  value={formData.fields.selectValue}
+                                  value={formData?.fields?.selectValue}
                                   name="contentType"
                                   onChange={(event, newValue) => {
-                                    console.log(newValue.value, "newValue"),
-                                      handleSelectChange(
-                                        { target: { value: newValue.value } },
-                                        index
-                                      );
+                                    handleSelectChange(
+                                      { target: { value: newValue.value } },
+                                      index
+                                    );
                                   }}
                                   options={contentTypeList
                                     .filter(
                                       (option) =>
                                         !fields
-                                          .map((field) => field.selectValue)
-                                          .includes(option.value)
+                                          ?.map((field) => field.selectValue)
+                                          ?.includes(option.value)
                                     )
-                                    .map((option) => ({
+                                    ?.map((option) => ({
                                       label: option.content_type,
                                       value: option.content_type_id,
                                     }))}
@@ -921,8 +993,8 @@ export default function RegisteredCampaign() {
               </Paper>
               <div className="d-flex justify-content-between">
                 <div>
-                  {videoType.filter(
-                    (e) => !fields.map((e) => e.selectValue).includes(e)
+                  {videoType?.filter(
+                    (e) => !fields?.map((e) => e.selectValue).includes(e)
                   ).length > 0 && (
                     <Button
                       variant="outlined"
@@ -1004,7 +1076,7 @@ const PlanCreationComponent = ({ row, handlePlan, handleShowPlan }) => {
     const fetchData = async () => {
       try {
         const newData = await axios.get(
-          `${baseUrl}`+`campaignplan/${row._id}`
+          `${baseUrl}` + `campaignplan/${row._id}`
         );
         setPlanData(newData);
       } catch (error) {
@@ -1037,9 +1109,7 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const newData = await axios.get(
-          `${baseUrl}`+`campaignplan/${rowId}`
-        );
+        const newData = await axios.get(`${baseUrl}` + `campaignplan/${rowId}`);
         setPlanData(newData);
       } catch (error) {
         console.error("Error fetching plan data:", error);
