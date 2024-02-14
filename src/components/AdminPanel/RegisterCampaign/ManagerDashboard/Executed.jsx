@@ -5,7 +5,8 @@ import { Box, Modal, Paper, Typography, Button } from "@mui/material";
 import axios from "axios";
 import {baseUrl} from '../../../../utils/config'
 
-const Executed = ({ executed, forceRender }) => {
+const 
+Executed = ({ executed, forceRender }) => {
   console.log(executed, "new data");
   const [open2, setOpen2] = useState(false);
   const [executedCommit, setExecutedCommit] = useState([]);

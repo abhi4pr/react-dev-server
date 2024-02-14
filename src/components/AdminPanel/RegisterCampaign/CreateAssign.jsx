@@ -404,7 +404,7 @@ const CreateAssign = () => {
     });
 
     setPayload(data);
-    setFilteredPages([]);
+    // setFilteredPages([]);
     setExternalExpert(newValue);
     // setSelectedRows([])
 
@@ -542,7 +542,7 @@ const CreateAssign = () => {
       ),
       width: 150,
     },
-    (radioSelected == "rejected" || radioSelected == "unassigned") && {
+    {
       field: "expert",
       headerName: "Experts",
       width: 190,
@@ -598,7 +598,7 @@ const CreateAssign = () => {
   if (isLoading) {
     return <Loader message="Auto Assignment in Progress..." />;
   }
-
+console.log(filteredPages)
   return (
     <>
       <div className="form-heading">

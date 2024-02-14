@@ -31,7 +31,7 @@ const ExePageDetailes = ({
   activeAccordion,
   getAssignment,
 }) => {
-  console.log(data, "sAsaSASA");
+
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [singlePhase, setSinglePhase] = useState([]);
@@ -375,7 +375,7 @@ const ExePageDetailes = ({
         >
           <Box sx={style}>
             <Typography variant="h5" component="h2" sx={{ ml: 1 }}>
-              Excuation
+              Execution
             </Typography>
             <Box sx={{ display: "flex" }}>
               <Box>
@@ -390,6 +390,7 @@ const ExePageDetailes = ({
                         setAssignedData({
                           ...assignedData,
                           link: e.target.value,
+                          commitType:'post'
                         })
                       }
                     />
@@ -418,6 +419,7 @@ const ExePageDetailes = ({
                         setAssignedData({
                           ...assignedData,
                           link: e.target.value,
+                          commitType:"story"
                         })
                       }
                       sx={{ m: 1 }}
@@ -427,7 +429,7 @@ const ExePageDetailes = ({
                       color="primary"
                       size="small"
                       sx={{ mt: 2 }}
-                    // onClick={handleAssignedSubmit}
+                    onClick={handleAssignedSubmit}
                     >
                       Submit
                     </Button>
