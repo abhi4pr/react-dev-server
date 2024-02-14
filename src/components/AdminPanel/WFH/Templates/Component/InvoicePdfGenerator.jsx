@@ -1,15 +1,13 @@
 import React, { useRef } from "react";
-import InvoiceTemplate1 from "./InvoiceTemplate1";
 import { generatePDF } from "../Utils/genratePDF";
 import { useGlobalContext } from "../../../../../Context/Context";
 import axios from "axios";
 import { baseUrl } from "../../../../../utils/config";
+import InvoiceTemplate1 from "./InvoiceTemplate1";
 import InvoiceTemplate2 from "./InvoiceTemplate2";
 import InvoiceTemplate3 from "./InvoiceTemplate3";
 import InvoiceTemplate4 from "./InvoiceTemplate4";
 import InvoiceTemplate5 from "./InvoiceTemplate5";
-import InvoiceTemplate6 from "./InvoiceTemplate6";
-import InvoiceTemplate7 from "./InvoiceTemplate7";
 
 const templates = {
   1: InvoiceTemplate1,
@@ -17,16 +15,12 @@ const templates = {
   3: InvoiceTemplate3,
   4: InvoiceTemplate4,
   5: InvoiceTemplate5,
-  6: InvoiceTemplate6,
-  7: InvoiceTemplate7,
 };
 
 const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
   const { toastAlert } = useGlobalContext();
   const invoiceRef = useRef();
-  // const TemplateComponent = templates[data?.invoice_template_no] || null;
-  const TemplateComponent = templates[2] || null;
-
+  const TemplateComponent = templates[data?.invoice_template_no] || null;
   const handleGeneratePDF = async (e, data) => {
     await generatePDF(data, invoiceRef);
 
