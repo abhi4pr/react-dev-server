@@ -119,8 +119,11 @@ const AdminPreOnboarding = () => {
     } else if (!gender || gender == "") {
       return toastError("Gender is Required");
     } else if (!reportL1 || reportL1 == "") {
-      return toastError("Report Error Is Required");
+      return toastError("Report manager Is Required");
+    } else if (!personalContact || personalContact == "") {
+      return toastError("Contact Is Required and should be equal to 10");
     }
+
     const formData = new FormData();
     formData.append("created_by", loginUserId);
     formData.append("user_name", username);
@@ -138,7 +141,7 @@ const AdminPreOnboarding = () => {
     formData.append("tds_per", tdsPercentage);
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
-    formData.append("user_contact_no", contact);
+    // formData.append("user_contact_no", 0);
     formData.append("sitting_id", 183);
     formData.append("room_id", roomId);
     formData.append("dept_id", department);
@@ -167,8 +170,21 @@ const AdminPreOnboarding = () => {
             user.user_login_id.toLocaleLowerCase() ===
             loginId.toLocaleLowerCase()
         );
+        const contactNumberExists = usersData.some(
+          (user) => user.user_contact_no == contact
+        );
+
+        const emailIdExists = usersData.some(
+          (user) =>
+            user.user_email_id?.toLocaleLowerCase() ==
+            email?.toLocaleLowerCase()
+        );
         if (isLoginIdExists) {
           alert("this login ID already exists");
+        } else if (contactNumberExists) {
+          alert("Official Contact Already Exists");
+        } else if (emailIdExists) {
+          alert("Official Email Already Exists");
         } else {
           await axios.post(baseUrl + "add_user", formData, {
             headers: {
@@ -291,15 +307,17 @@ const AdminPreOnboarding = () => {
   //personal Contact validation
 
   function handlePersonalContactChange(event) {
-    const newContact1 = event.target.value;
-    setPersonalContact(newContact1);
+    if (event.target.value.length <= 10) {
+      const newContact1 = event.target.value;
+      setPersonalContact(newContact1);
 
-    if (newContact1 === "") {
-      setValidContact1(false);
-    } else {
-      setValidContact1(
-        /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
-      );
+      if (newContact1 === "") {
+        setValidContact1(false);
+      } else {
+        setValidContact1(
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+        );
+      }
     }
   }
 
@@ -339,8 +357,29 @@ const AdminPreOnboarding = () => {
     setLoginId(selectedLoginId);
   };
 
+  const calculateAge = (dob) => {
+    const currentDate = new Date();
+    const birthDate = new Date(dob);
+    let age = currentDate.getFullYear() - birthDate.getFullYear();
+    const m = currentDate.getMonth() - birthDate.getMonth();
+
+    if (m < 0 || (m === 0 && currentDate.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age;
+  };
+
   const handleDateChange = (e) => {
-    setDateOfBirth(e.target.value);
+    const selectedDate = e.target.value;
+    const age = calculateAge(selectedDate);
+
+    if (age < 15) {
+      window.alert("Your age must be greater than 15 years.");
+    } else {
+      setDateOfBirth(selectedDate);
+    }
+
   };
 
   return (
@@ -465,7 +504,7 @@ const AdminPreOnboarding = () => {
           )}
         </div>
 
-        <FieldContainer
+        {/* <FieldContainer
           label="Email"
           type="email"
           fieldGrid={3}
@@ -475,7 +514,7 @@ const AdminPreOnboarding = () => {
         />
         {!validEmail && (
           <p style={{ color: "red" }}>*Please enter valid email</p>
-        )}
+        )} */}
         <FieldContainer
           label="Personal Email"
           type="email"
@@ -583,7 +622,7 @@ const AdminPreOnboarding = () => {
           />
         )}
 
-        <FieldContainer
+        {/* <FieldContainer
           label="Contact"
           type="number"
           fieldGrid={3}
@@ -594,7 +633,7 @@ const AdminPreOnboarding = () => {
         />
         {(isContactTouched || contact.length >= 10) && !isValidcontact && (
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
-        )}
+        )} */}
 
         <FieldContainer
           label="Personal Contact"
