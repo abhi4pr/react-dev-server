@@ -156,7 +156,9 @@ input[type="number"] {
   justify-content: center;
   border-radius: var(--radius);
 }
-
+.css-1h51icj-MuiAutocomplete-root .MuiOutlinedInput-root {
+  padding: 6px;
+}
 .data_tbl .rdt_TableHeader {
   /* border-radius: var(--radius); */
   float: left;

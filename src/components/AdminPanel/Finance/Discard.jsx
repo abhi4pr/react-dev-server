@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Button } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import axios from "axios";
 import ImageView from "./ImageView";
 import { baseUrl } from "../../../utils/config";
@@ -74,7 +74,6 @@ export default function Discard() {
 
     return diffDays;
   }
-
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
       const date = new Date(item.request_date);
@@ -131,6 +130,7 @@ export default function Discard() {
 
   const handleClearDateFilter = () => {
     setFilterData(data);
+    setVendorName("");
     setFromDate("");
     setToDate("");
     setPriorityFilter("");
@@ -263,14 +263,31 @@ export default function Discard() {
         <div className="col-md-3">
           <div className="form-group">
             <label>Vendor Name</label>
-            <input
+            <Autocomplete
               value={vendorName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setVendorName(e.target.value);
-              }}
+              onChange={(event, newValue) => setVendorName(newValue)}
+              options={data.map((option) => option.vendor_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Vendor Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>

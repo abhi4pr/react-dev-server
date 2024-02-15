@@ -7,7 +7,7 @@ import DataTable from "react-data-table-component";
 import Modal from "react-modal";
 import { set } from "date-fns";
 import { baseUrl } from "../../../utils/config";
-import { Button } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 
 const SaleBookingVerify = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -33,7 +33,6 @@ const SaleBookingVerify = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(row);
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_id", row.sale_booking_id);
@@ -72,9 +71,7 @@ const SaleBookingVerify = () => {
   function getData() {
     axios
       .post(baseUrl + "add_php_sale_booking_tds_verification_data_in_node")
-      .then(() => {
-        console.log("data save in local success");
-      });
+      .then(() => {});
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -90,7 +87,6 @@ const SaleBookingVerify = () => {
       .then((res) => {
         setFilterData(res.data.boby);
         setData(res.data.body);
-        console.log(res.data.body);
       });
   }
 
@@ -117,7 +113,6 @@ const SaleBookingVerify = () => {
   // Filters Logic :-
   const handleAllFilters = () => {
     const filterData = datas.filter((item) => {
-      console.log(item.payment_approval_status, "status>>");
       const date = new Date(item.payment_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
@@ -139,7 +134,6 @@ const SaleBookingVerify = () => {
       // Campaign Amount filter
       const campaignAmountFilterPassed = () => {
         const campaignAmount = parseFloat(campaignAmountField);
-        console.log("switch");
         switch (campaignAmountFilter) {
           case "greaterThan":
             return +item.campaign_amount > campaignAmount;
@@ -159,7 +153,6 @@ const SaleBookingVerify = () => {
 
       return allFiltersPassed;
     });
-    console.log(filterData, "FD??????????????");
     setFilterData(filterData);
   };
 
@@ -289,28 +282,62 @@ const SaleBookingVerify = () => {
         <div className="col-md-3">
           <div className="form-group">
             <label>Customer Name</label>
-            <input
+            <Autocomplete
               value={customerName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setCustomerName(e.target.value);
-              }}
+              onChange={(event, newValue) => setCustomerName(newValue)}
+              options={datas.map((option) => option.cust_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Sales Executive Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label>Sales Executive Name</label>
-            <input
+            <Autocomplete
               value={salesExecutive}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setSalesExecutive(e.target.value);
-              }}
+              onChange={(event, newValue) => setSalesExecutive(newValue)}
+              options={datas.map((option) => option.sales_exe_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Sales Executive Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>

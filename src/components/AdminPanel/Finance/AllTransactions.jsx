@@ -21,7 +21,8 @@ const AllTransactions = () => {
   const [filterData, setFilterData] = useState([]);
   const [requestedBy, setRequestedBy] = useState("");
   const [custName, setCustName] = useState("");
-  const [paymentAmount, setPaymentAmount] = useState();
+  const [paymentAmountFilter, setPaymentAmountFilter] = useState();
+  const [paymentAmountField, setPaymentAmountField] = useState();
   const [paymentMode, setPaymetMode] = useState("");
   const [status, setStatus] = useState();
   const [fromDate, setFromDate] = useState("");
@@ -48,10 +49,20 @@ const AllTransactions = () => {
           !custName ||
           (d.cust_name &&
             d.cust_name.toLowerCase().includes(custName.toLowerCase()));
-        const matchesAmount =
-          !paymentAmount ||
-          (d.payment_amount &&
-            d.payment_amount.toString() === paymentAmount.toString());
+
+        const paymentAmountFilterPassed = () => {
+          const paymentAmount = parseFloat(paymentAmountField);
+          switch (paymentAmountFilter) {
+            case "greaterThan":
+              return +d.payment_amount > paymentAmount;
+            case "lessThan":
+              return +d.payment_amount < paymentAmount;
+            case "equalTo":
+              return +d.payment_amount === paymentAmount;
+            default:
+              return true;
+          }
+        };
 
         const matchesMode =
           !paymentMode ||
@@ -75,10 +86,10 @@ const AllTransactions = () => {
         return (
           matchesUser &&
           matchesCust &&
-          matchesAmount &&
           matchesMode &&
           matchesStatus &&
-          dateMatch(d.payment_date, fromDate, toDate)
+          dateMatch(d.payment_date, fromDate, toDate) &&
+          paymentAmountFilterPassed()
         );
       });
 
@@ -88,7 +99,8 @@ const AllTransactions = () => {
   const handleClear = () => {
     setRequestedBy("");
     setCustName("");
-    setPaymentAmount();
+    setPaymentAmountFilter("");
+    setPaymentAmountField("");
     setPaymetMode("");
     setStatus("");
     setFromDate("");
@@ -97,8 +109,7 @@ const AllTransactions = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {
-    });
+    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
     axios.get(baseUrl + "get_all_php_finance_data").then((res) => {
       setData(res.data.data);
       setFilterData(res.data.data);
@@ -109,7 +120,6 @@ const AllTransactions = () => {
       // let x =res.data.data.map(e=>{
       //   setPaymetMethod(prev=>[...prev,{payment_type:e.payment_type}])
       // })
-      // console.log(res.data.data)
       // console.log(res.data.data.map(e=>{
       //  return e.payment_type})
       // )
@@ -328,7 +338,7 @@ const AllTransactions = () => {
       width: "4%",
     },
   ];
-
+  console.log(datas, "DATAS>>>>>");
   return (
     <>
       <FormContainer
@@ -371,7 +381,7 @@ const AllTransactions = () => {
           <div className="card-header fs-6 lead">Approved</div>
           <div className="card-body">
             <p className="fs-6 lead ">
-              Total Approver Amount :- ₹{" "}
+              Total Approved Amount :- ₹{" "}
               {datas.length > 0
                 ? datas
                     .filter((item) => item.payment_approval_status == 1)
@@ -449,16 +459,31 @@ const AllTransactions = () => {
                 />
               </div>
             </div>
-            <div className="col-md-2">
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Payment Amount Filter</label>
+                <select
+                  value={paymentAmountFilter}
+                  className="form-control"
+                  onChange={(e) => setPaymentAmountFilter(e.target.value)}
+                >
+                  <option value="">Select Amount</option>
+                  <option value="greaterThan">Greater Than</option>
+                  <option value="lessThan">Less Than</option>
+                  <option value="equalTo">Equal To</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
               <div className="form-group">
                 <label>Payment Amount</label>
                 <input
-                  value={paymentAmount}
+                  value={paymentAmountField}
                   type="number"
-                  placeholder="Request By"
+                  placeholder="Request Amount"
                   className="form-control"
                   onChange={(e) => {
-                    setPaymentAmount(e.target.value);
+                    setPaymentAmountField(e.target.value);
                   }}
                 />
               </div>

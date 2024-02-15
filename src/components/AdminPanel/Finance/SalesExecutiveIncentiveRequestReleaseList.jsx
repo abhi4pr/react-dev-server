@@ -40,7 +40,6 @@ export default function SalesExecutiveIncentiveRequestReleaseList() {
       headerName: "Release Date",
       renderCell: (params) => {
         const releaseDate = new Date(params.row.released_payment_date);
-        console.log(releaseDate, "releaseDate");
         return <span>{releaseDate.toLocaleDateString("en-IN")} </span>;
       },
       width: 200,

@@ -6,7 +6,8 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import Button from "@mui/material/Button";
 import ImageView from "./ImageView";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
+import { Autocomplete, TextField } from "@mui/material";
 
 const RefundRequests = () => {
   const { toastAlert } = useGlobalContext();
@@ -29,7 +30,6 @@ const RefundRequests = () => {
   const [status, setStatus] = useState("");
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [viewImgSrc, setViewImgSrc] = useState("");
-
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -169,17 +169,13 @@ const RefundRequests = () => {
 
   function getData() {
     axios
-      .post(baseUrl+"add_php_payment_refund_data_in_node")
-      .then((res) => {
-        console.log("data save in local success");
-      });
+      .post(baseUrl + "add_php_payment_refund_data_in_node")
+      .then((res) => {});
     setTimeout(() => {
-      axios
-        .get(baseUrl+"get_all_php_payment_refund_data")
-        .then((res) => {
-          setData(res.data.data);
-          setFilterData(res.data.data);
-        });
+      axios.get(baseUrl + "get_all_php_payment_refund_data").then((res) => {
+        setData(res.data.data);
+        setFilterData(res.data.data);
+      });
     }, 1500);
   }
 
@@ -251,8 +247,6 @@ const RefundRequests = () => {
                 name="refund_image"
                 onChange={(e) => {
                   //   refundImage.splice(index, 1, e.target.files[0]);
-                  //   console.log(index);
-                  //   console.log(refundImage);
                   //   setImageChanged(!imageChanged); // Toggle the state to trigger re-render
                   handleFileChange(e, index);
                 }}
@@ -278,15 +272,19 @@ const RefundRequests = () => {
       name: "Refund Payment Image",
       selector: (row, index) => (
         <>
-         {row.refund_files&& <button
-          className="btn btn-primary"
-          onClick={() => {
-            setOpenImageDialog(true);
-            setViewImgSrc(`https://sales.creativefuel.io/${row.refund_files}`);
-          }}
-        >
-          View
-        </button>}
+          {row.refund_files && (
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(
+                  `https://sales.creativefuel.io/${row.refund_files}`
+                );
+              }}
+            >
+              View
+            </button>
+          )}
         </>
       ),
       width: "20%",
@@ -320,7 +318,6 @@ const RefundRequests = () => {
       ),
     },
   ];
-
   return (
     <>
       <FormContainer
@@ -379,7 +376,6 @@ const RefundRequests = () => {
                     }, 0)
                 : ""}
             </p>
-            {/* <p className="card-text">0</p> */}
           </div>
         </div>
       </div>
@@ -387,14 +383,31 @@ const RefundRequests = () => {
       <div className="row">
         <div className=" col-2">
           <label htmlFor="">Customer Name</label>
-          <input
-            type="text"
-            className="form-control"
+          <Autocomplete
             value={custName}
-            // disabled
-            onChange={(e) => {
-              setCustName(e.target.value);
-            }}
+            onChange={(event, newValue) => setCustName(newValue)}
+            options={datas.map((option) => option.cust_name)}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="customer Name"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  ...params.InputProps,
+                  className: "form-control", // Apply Bootstrap's form-control class
+                }}
+                style={{
+                  borderRadius: "0.25rem",
+                  transition:
+                    "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                  "&:focus": {
+                    borderColor: "#80bdff",
+                    boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                  },
+                }}
+              />
+            )}
           />
         </div>
         <div className=" col-2">
