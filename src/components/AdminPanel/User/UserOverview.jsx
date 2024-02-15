@@ -565,6 +565,11 @@ const UserOverview = () => {
           />
         </div>
         <div className="action_btns">
+          <Link to="/admin/billing-overview">
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Billing{" "}
+            </button>
+          </Link>
           <Link to="/admin/hobbies-overview">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Hobbies

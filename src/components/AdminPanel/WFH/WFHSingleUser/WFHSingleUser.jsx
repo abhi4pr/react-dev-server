@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-import IosShareIcon from "@mui/icons-material/IosShare";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
 import DataTable from "react-data-table-component";
 import axios from "axios";
@@ -18,7 +17,6 @@ import {
 } from "@react-pdf/renderer";
 import { Text, StyleSheet } from "@react-pdf/renderer";
 
-import { Button } from "@mui/material";
 import MyTemplate1 from "../SalaryGeneration/Template";
 import MyTemplate2 from "../SalaryGeneration/Template2";
 import MyTemplate3 from "../SalaryGeneration/Template3";
@@ -28,7 +26,6 @@ import Modal from "react-modal";
 import DigitalSignature from "../../../DigitalSignature/DigitalSignature";
 import useInvoiceTemplateImages from "../Templates/Hooks/useInvoiceTemplateImages";
 import PreviewInvoice from "./PreviewInvoice";
-import getDecodedToken from "../../../../utils/DecodedToken";
 import { baseUrl } from "../../../../utils/config";
 import WFHTemplateOverview from "./WFHTemplateOverview";
 import { Link } from "react-router-dom";
@@ -60,6 +57,7 @@ const WFHSingleUser = () => {
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
   const [rowData, setDataRow] = useState(null);
+  const [PreviewInvoiceData, setPreviewInvoiceData] = useState(null);
   const [rowDataModal, setRowDataModal] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -106,22 +104,6 @@ const WFHSingleUser = () => {
       }
     });
   }, [userID]);
-
-  // useEffect(() => {
-  //   axios
-  //     .get(`${baseUrl}`+`get_single_user/${userID}`)
-  //     .then((res) => {
-  //       const digitalSignImageUrl = res.data.digital_signature_image_url;
-
-  //       const shouldOpenModal =
-  //         !digitalSignImageUrl || digitalSignImageUrl.trim() === "";
-
-  //       setIsModalOpen(shouldOpenModal);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching user data:", error);
-  //     });
-  // }, [userID]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -205,26 +187,6 @@ const WFHSingleUser = () => {
       handleSubmit();
     }
   }, [department, month, year]);
-
-  // const handleAttendence = () => {
-  //   axios
-  //     .post(baseUrl+"add_attendance", {
-  //       dept: department,
-  //       user_id: userName.user_id,
-  //       noOfabsent: 0,
-  //       month: month,
-  //       year: year,
-  //     })
-  //     .then(() => {
-  //       setNoOfAbsent("");
-  //       toastAlert("Submitted success");
-  //       handleSubmit();
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error submitting data:", error);
-  //       toastAlert("Failed to submit data");
-  //     });
-  // };
 
   if (loading) {
     return <p>Loading...</p>;
@@ -339,26 +301,6 @@ const WFHSingleUser = () => {
       fontWeight: "bold",
     },
   });
-
-  //Send to finance
-  // function handleSendToFinance(e, row) {
-  //   e.preventDefault();
-  //   axios.post(`${baseUrl}`+`add_finance`, {
-  //     attendence_id: row.attendence_id,
-  //   });
-
-  //   axios
-  //     .put(`${baseUrl}`+`update_salary`, {
-  //       attendence_id: row.attendence_id,
-  //       sendToFinance: 1,
-  //     })
-  //     .then(() => {
-  //       handleSubmit();
-  //     });
-  //   toastAlert("Sent To Finance");
-  // }
-
-  //--------------------------------------------------------------------------------------------------------------------
 
   const pdfTemplate = () => (
     <Document>
@@ -566,23 +508,14 @@ const WFHSingleUser = () => {
           {row.sendToFinance !== 1 && (
             <button
               className="btn btn-secondary"
-              onClick={() => setIsPreviewModalOpen(true)}
+              onClick={() => (
+                setIsPreviewModalOpen(true), setPreviewInvoiceData(row)
+              )}
             >
               Preview Invoice
             </button>
           )}
-          <Modal
-            isOpen={isPreviewModalOpen}
-            onRequestClose={() => setIsPreviewModalOpen(false)}
-            contentLabel="Preview Modal"
-            appElement={document.getElementById("root")}
-          >
-            <PreviewInvoice
-              data={row}
-              setIsPreviewModalOpen={setIsPreviewModalOpen}
-              handleSubmit={handleSubmit}
-            />
-          </Modal>
+
           {/* {!row?.sendToFinance && (
             <button
               title="Send to Finance"
@@ -645,6 +578,19 @@ const WFHSingleUser = () => {
 
   return (
     <>
+      <Modal
+        isOpen={isPreviewModalOpen}
+        onRequestClose={() => setIsPreviewModalOpen(false)}
+        contentLabel="Preview Modal"
+        appElement={document.getElementById("root")}
+      >
+        <PreviewInvoice
+          data={PreviewInvoiceData}
+          setIsPreviewModalOpen={setIsPreviewModalOpen}
+          handleSubmit={handleSubmit}
+        />
+      </Modal>
+
       <div className="modal fade" id="myModal" role="dialog">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -742,8 +688,13 @@ const WFHSingleUser = () => {
                       </button> */}
                     </PDFDownloadLink>
 
-                    <button className="btn btn-outline-primary me-3" type="button">
-                      <Link to='/admin/dispute-overview'>Dispute</Link>
+                    <button
+                      className="btn btn-outline-primary me-3"
+                      type="button"
+                    >
+                      <Link to="/admin/dispute-overview" state={{ id: userID }}>
+                        Dispute
+                      </Link>
                     </button>
 
                     <input

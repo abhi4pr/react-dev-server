@@ -18,7 +18,7 @@ const InvoiceTemplate3 = ({ data }) => {
                 </div>
               </div>
             </div>
-            <div class="container">
+            <div class="temp_container">
               <div class="invoice-agency-details">
                 <div class="invo-head-wrap">
                   <div class="color-light-black font-md wid-40">
@@ -43,7 +43,7 @@ const InvoiceTemplate3 = ({ data }) => {
             </div>
           </header>
           <section class="agency-service-content" id="agency_service">
-            <div class="container">
+            <div class="temp_container">
               <div class="invoice-owner-conte-wrap pt-40">
                 <div class="invo-to-wrap">
                   <div class="invoice-to-content">
