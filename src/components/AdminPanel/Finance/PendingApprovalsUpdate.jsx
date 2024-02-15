@@ -464,7 +464,7 @@ const PendingApprovalUpdate = () => {
                   variant="outlined"
                   InputProps={{
                     ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
+                    className: "form-control",
                   }}
                   style={{
                     borderRadius: "0.25rem",
