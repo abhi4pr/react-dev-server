@@ -787,7 +787,7 @@ const SidebarLinks = () => {
                                     Campaign Master
                                   </Link>
 
-                                  <Link
+                                  {/* <Link
                                     className="collapse-item"
                                     to="/admin/categorymaster"
                                   >
@@ -798,7 +798,7 @@ const SidebarLinks = () => {
                                     to="/admin/subcategory"
                                   >
                                     Subcategory Master
-                                  </Link>
+                                  </Link> */}
                                   <Link
                                     className="collapse-item"
                                     to="/admin/contentcreater"
