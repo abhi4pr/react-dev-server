@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
-import { Button } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -24,8 +24,6 @@ export default function PurchaseManagementAllTransaction() {
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
-      console.log(res.data.modifiedData.length, "node l js");
-      console.log(res.data.modifiedData, "node js");
       const x = res.data.modifiedData;
       setActionFieldData(x);
 
@@ -59,7 +57,6 @@ export default function PurchaseManagementAllTransaction() {
   useEffect(() => {
     callApi();
   }, []);
-
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
     const day = String(date1.getDate()).padStart(2, "0");
@@ -112,10 +109,8 @@ export default function PurchaseManagementAllTransaction() {
         );
 
       // Requested Amount Filter
-      console.log(requestAmountFilter, "requestAmountFilter");
       const requestedAmountFilterPassed = () => {
         const numericRequestedAmount = parseFloat(requestedAmountField);
-        console.log("switch");
         switch (requestAmountFilter) {
           case "greaterThan":
             return +item.request_amount > numericRequestedAmount;
@@ -172,7 +167,6 @@ export default function PurchaseManagementAllTransaction() {
         const isPdf = fileExtension === "pdf";
 
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
-        // console.log(params.row.invc_img ? imgUrl : "no image");
         return isPdf ? (
           // <iframe
           //   onClick={() => {
@@ -281,7 +275,6 @@ export default function PurchaseManagementAllTransaction() {
         const matchingItems = actionFieldData.filter(
           (item) => item.request_id == params.row.request_id
         );
-        console.log(matchingItems, "matchingItems");
         if (matchingItems.length > 0) {
           return matchingItems.map((item, index) => (
             <p key={index}>
@@ -385,14 +378,31 @@ export default function PurchaseManagementAllTransaction() {
         <div className="col-md-3">
           <div className="form-group">
             <label>Vendor Name</label>
-            <input
+            <Autocomplete
               value={vendorName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setVendorName(e.target.value);
-              }}
+              onChange={(event, newValue) => setVendorName(newValue)}
+              options={data.map((option) => option.vendor_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Vendor Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>

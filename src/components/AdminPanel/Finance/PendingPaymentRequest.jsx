@@ -251,7 +251,6 @@ export default function PendingPaymentRequest() {
   };
 
   const handleRemainderModal = (reaminderData) => {
-    console.log("reaminderData--->", reaminderData);
     setReminderData(reaminderData);
     setRemainderDialog(true);
   };
@@ -289,7 +288,6 @@ export default function PendingPaymentRequest() {
     0
   );
 
-  console.log(totalPendingAmount, "totalPendingAmount");
   const handlePayVendorClick = () => {
     const formData = new FormData();
     formData.append("request_id", rowData.request_id);
@@ -1098,7 +1096,7 @@ export default function PendingPaymentRequest() {
         <div className="col-md-3">
           <div className="form-group">
             <label>Vendor Name</label>
-            <input
+            {/* <input
               value={vendorName}
               type="text"
               placeholder="Name"
@@ -1106,6 +1104,32 @@ export default function PendingPaymentRequest() {
               onChange={(e) => {
                 setVendorName(e.target.value);
               }}
+            /> */}
+            <Autocomplete
+              value={vendorName}
+              onChange={(event, newValue) => setVendorName(newValue)}
+              options={data.map((option) => option.vendor_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Vendor Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>

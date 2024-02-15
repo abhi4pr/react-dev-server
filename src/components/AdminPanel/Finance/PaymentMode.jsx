@@ -5,10 +5,12 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
-import { Button } from "@mui/material";
 import DataTable from "react-data-table-component";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { baseUrl } from "../../../utils/config";
+// import { Autocomplete } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
+// import { AutoComplete, Button, TextField } from "@mui/material";
 
 const PaymentMode = () => {
   const { toastAlert } = useGlobalContext();
@@ -41,9 +43,7 @@ const PaymentMode = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {
-      console.log("data save in local success");
-    });
+    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
     axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
       setData(res.data.data);
       setFilterData(res.data.data);
@@ -69,7 +69,6 @@ const PaymentMode = () => {
   // Filters Logic :-
   const handleAllFilters = () => {
     const filterData = datas.filter((item) => {
-      console.log(datas, "datas>>>");
       // Title Filter:-
       const titleFilterPassed =
         !title || item.title.toLowerCase().includes(title.toLowerCase());
@@ -97,7 +96,6 @@ const PaymentMode = () => {
 
       return allFiltersPassed;
     });
-    console.log(filterData, "FD??????????????");
     setFilterData(filterData);
   };
 
@@ -173,56 +171,126 @@ const PaymentMode = () => {
         <div className="col-md-3">
           <div className="form-group">
             <label> Title</label>
-            <input
+            <Autocomplete
               value={title}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setTitle(e.target.value);
-              }}
+              onChange={(event, newValue) => setTitle(newValue)}
+              options={datas.map((option) => option.title)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Title"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label> Bank Name</label>
-            <input
+            <Autocomplete
               value={bankName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setBankName(e.target.value);
-              }}
+              onChange={(event, newValue) => setBankName(newValue)}
+              options={datas.map((option) => option.detail)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Bank Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label> Payment Type</label>
-            <input
+            <Autocomplete
               value={paymentType}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setPaymentType(e.target.value);
-              }}
+              onChange={(event, newValue) => setPaymentType(newValue)}
+              options={datas.map((option) => option.payment_type)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Payment Type"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label> GST</label>
-            <input
+            <Autocomplete
               value={gst}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setGST(e.target.value);
-              }}
+              onChange={(event, newValue) => setGST(newValue)}
+              options={datas.map((option) =>
+                option.gst_bank === 1 ? "GST" : "Non GST"
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Payment Type"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>

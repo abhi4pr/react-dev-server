@@ -6,7 +6,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { useNavigate, Link } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, Autocomplete } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -99,16 +99,15 @@ const PendingInvoice = () => {
             },
           })
           .then(() => {
-            console.log("data save in local success");
             getData();
           });
       });
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then((res) => {
-      console.log("data save in local success");
-    });
+    axios
+      .post(baseUrl + "add_php_pending_invoice_data_in_node")
+      .then((res) => {});
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -169,7 +168,6 @@ const PendingInvoice = () => {
       // request amount filter:-
       const requestAmountFilterPassed = () => {
         const baseAmountData = parseFloat(baseAmountField);
-        console.log("switch");
         switch (baseAmountFilter) {
           case "greaterThan":
             return +item.base_amount > baseAmountData;
@@ -375,14 +373,62 @@ const PendingInvoice = () => {
         <div className="col-md-3">
           <div className="form-group">
             <label>Sales Person Name</label>
-            <input
+            <Autocomplete
               value={salesPersonName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setSalesPersonName(e.target.value);
-              }}
+              onChange={(event, newValue) => setSalesPersonName(newValue)}
+              options={datas.map((option) => option.sales_person_username)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Sales Executive Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Customer Name</label>
+            <Autocomplete
+              value={customerName}
+              onChange={(event, newValue) => setCustomerName(newValue)}
+              options={datas.map((option) => option.cust_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="customer Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>
@@ -410,18 +456,7 @@ const PendingInvoice = () => {
             />
           </div>
         </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Customer Name</label>
-            <input
-              value={customerName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => setCustomerName(e.target.value)}
-            />
-          </div>
-        </div>
+
         <div className="col-md-3">
           <div className="form-group">
             <label>Requested Amount Filter</label>

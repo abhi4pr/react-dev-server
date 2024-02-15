@@ -16,16 +16,14 @@ export default function ShowDataModal({
   rows,
   columns,
   aknowledgementDialog,
-  setAknowledgementDialog
+  setAknowledgementDialog,
 }) {
-
   const [acknowledgementMessage, setAcknowledgementMessage] = useState("");
 
   const handleSendAcknowledgement = (e) => {
     e.preventDefault();
-    console.log(acknowledgementMessage);
     setAknowledgementDialog(false);
-  }
+  };
 
   return (
     <>
@@ -56,7 +54,11 @@ export default function ShowDataModal({
 
       {/* Acknowledgement Dialog */}
       {aknowledgementDialog && (
-        <Dialog open={true} onClose={() => setAknowledgementDialog(false)} maxWidth="lg" >
+        <Dialog
+          open={true}
+          onClose={() => setAknowledgementDialog(false)}
+          maxWidth="lg"
+        >
           <DialogTitle>vendor Payment</DialogTitle>
           <IconButton
             aria-label="close"
@@ -75,13 +77,18 @@ export default function ShowDataModal({
               multiline
               rows={5}
               value={acknowledgementMessage}
-              onChange={(e) =>setAcknowledgementMessage(e.target.value)}
+              onChange={(e) => setAcknowledgementMessage(e.target.value)}
               fullWidth
               label="Acknowledgement Message"
               variant="outlined"
             />
             <DialogActions>
-              <Button variant="contained" onClick={e=>handleSendAcknowledgement(e)}>Send</Button>
+              <Button
+                variant="contained"
+                onClick={(e) => handleSendAcknowledgement(e)}
+              >
+                Send
+              </Button>
             </DialogActions>
           </DialogContent>
         </Dialog>

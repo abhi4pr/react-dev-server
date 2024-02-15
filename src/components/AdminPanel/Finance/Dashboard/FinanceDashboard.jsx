@@ -72,48 +72,37 @@ export default function FinanceDashboard() {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       const x = res.data.modifiedData;
 
-        axios
-          .get(
-            "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
-          )
-          .then((res) => {
-            let y = x.filter((item) => {
-              if (item.status == 1) {
-                return item;
-              }
-            });
-            let u = res.data.body.filter((item) => {
-              return y.some((item2) => item.request_id == item2.request_id);
-            });
-            setFilterVendorCardData(u);
-            setVendorCardData(u);
+      axios
+        .get(
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+        )
+        .then((res) => {
+          let y = x.filter((item) => {
+            if (item.status == 1) {
+              return item;
+            }
           });
-      });
+          let u = res.data.body.filter((item) => {
+            return y.some((item2) => item.request_id == item2.request_id);
+          });
+          setFilterVendorCardData(u);
+          setVendorCardData(u);
+        });
+    });
 
-    axios
-      .post(baseUrl+"add_php_finance_data_in_node")
-      .then(() => {
-        console.log("data save in local success");
-      });
-    axios
-      .get(baseUrl+"get_all_php_finance_data_pending")
-      .then((res) => {
-        setFilterPendingForApprovalData(res.data.data);
-        setPendingForApprovalData(res.data.data);
-      });
+    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {});
+    axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
+      setFilterPendingForApprovalData(res.data.data);
+      setPendingForApprovalData(res.data.data);
+    });
 
-    axios
-      .post(baseUrl+"add_php_payment_refund_data_in_node")
-      .then(() => {
-        console.log("data save in local success");
-      });
+    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {});
     setTimeout(() => {
       axios
         .get(
           "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
-          console.log(res.data.body, "php");
           let y = res.data.body.filter((item) => {
             return !x.some((item2) => item.request_id == item2.request_id);
           });
@@ -122,17 +111,13 @@ export default function FinanceDashboard() {
         });
     });
 
-    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {
-      console.log("data save in local success");
-    });
+    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {});
     axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
       setFilterPendingForApprovalData(res.data.data);
       setPendingForApprovalData(res.data.data);
     });
 
-    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {
-      console.log("data save in local success");
-    });
+    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {});
     setTimeout(() => {
       axios
         .get(baseUrl + "get_all_php_payment_refund_data_pending")
@@ -142,9 +127,7 @@ export default function FinanceDashboard() {
         });
     }, 1000);
 
-    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {
-      console.log("data save in local success");
-    });
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {});
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -159,13 +142,10 @@ export default function FinanceDashboard() {
       )
       .then((res) => {
         setFilterCstPaymentData(res.data.body);
-        console.log(res.data.body.length, "cst pay link");
         setCstPaymentData(res.data.body);
       });
 
-    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then(() => {
-      console.log("data save in local success");
-    });
+    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then(() => {});
     const formDataa = new FormData();
     formDataa.append("loggedin_user_id", 36);
     axios
@@ -183,9 +163,9 @@ export default function FinanceDashboard() {
         setInvoicePending(res.data.body);
       });
 
-    axios.post(baseUrl + "add_php_sale_booking_tds_data_in_node").then(() => {
-      console.log("data save in local success");
-    });
+    axios
+      .post(baseUrl + "add_php_sale_booking_tds_data_in_node")
+      .then(() => {});
     let formDataSalesbookingAboutToClose = new FormData();
     formDataSalesbookingAboutToClose.append("loggedin_user_id", 36);
     formDataSalesbookingAboutToClose.append("tds_status", 0);
@@ -253,13 +233,11 @@ export default function FinanceDashboard() {
         setFilterPayoutData(response);
         setPayoutData(response);
       });
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
 
-    axios.post(baseUrl + "add_php_payment_incentive_data_in_node").then(() => {
-      console.log("data save in local success");
-    });
+    axios
+      .post(baseUrl + "add_php_payment_incentive_data_in_node")
+      .then(() => {});
     const formDataIncentive = new FormData();
     formDataIncentive.append("loggedin_user_id", 36);
     axios
@@ -340,7 +318,6 @@ export default function FinanceDashboard() {
         endFilterDate = new Date();
         break;
       case "search":
-        console.log(new Date(startDate), new Date(endDate));
         startFilterDate = new Date(startDate);
         endFilterDate = new Date(endDate);
         break;
@@ -351,7 +328,6 @@ export default function FinanceDashboard() {
 
     const filteredData = filterPendingForApprovalData.filter((item) => {
       const itemDate = new Date(item.creation_date);
-      // console.log(itemDate , startFilterDate, endFilterDate)
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
     setPendingForApprovalData(filteredData);
@@ -360,12 +336,10 @@ export default function FinanceDashboard() {
       const itemDate = new Date(item.creation_date);
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
-    console.log(filteredData1);
     setRefundReqData(filteredData1);
 
     const filteredData2 = filterCstPaymentData.filter((item) => {
       const itemDate = new Date(item.sale_booking_date);
-      // console.log(itemDate , startFilterDate, endFilterDate)
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
 
@@ -373,7 +347,6 @@ export default function FinanceDashboard() {
 
     const filteredData3 = filterInvoicePending.filter((item) => {
       const itemDate = new Date(item.creation_date);
-      // console.log(itemDate , startFilterDate, endFilterDate)
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
 
@@ -381,7 +354,6 @@ export default function FinanceDashboard() {
 
     const filteredData4 = filterSalesBookingAboutToCloseData.filter((item) => {
       const itemDate = new Date(item.booking_created_date);
-      // console.log(itemDate , startFilterDate, endFilterDate)
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
 
@@ -389,7 +361,6 @@ export default function FinanceDashboard() {
 
     const filteredData5 = filterSalesBookingOpenData.filter((item) => {
       const itemDate = new Date(item.booking_created_date);
-      // console.log(itemDate , startFilterDate, endFilterDate)
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
 
@@ -397,7 +368,6 @@ export default function FinanceDashboard() {
 
     const filteredData6 = filterSalesBookingCloseData.filter((item) => {
       const itemDate = new Date(item.booking_created_date);
-      // console.log(itemDate , startFilterDate, endFilterDate)
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
 
@@ -405,21 +375,18 @@ export default function FinanceDashboard() {
 
     const filteredData7 = filterVendorCardData.filter((item) => {
       const itemDate = new Date(item.request_date);
-      // console.log(itemDate , startFilterDate, endFilterDate)
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
 
     setVendorCardData(filteredData7);
     const filterData8 = filterPayoutData.filter((item) => {
       const itemDate = new Date(item.date);
-      // console.log(itemDate , startFilterDate, endFilterDate)
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
     setPayoutData(filterData8);
 
     const filterData9 = incentiveFilterData.filter((item) => {
       const itemDate = new Date(item.request_creation_date);
-      // console.log(itemDate , startFilterDate, endFilterDate)
       return itemDate >= startFilterDate && itemDate <= endFilterDate;
     });
     setIncentiveData(filterData9);
@@ -515,10 +482,9 @@ export default function FinanceDashboard() {
               </div>
             </div>
             <div className={classes.cardActions}>
-            <Link to="/admin/finance-pendingapproveupdate">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-
+              <Link to="/admin/finance-pendingapproveupdate">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
             </div>
           </div>
           <div
@@ -528,7 +494,7 @@ export default function FinanceDashboard() {
               <div className={classes.circularProgress}>
                 <PointOfSaleIcon className={classes.progressValue} />
               </div>
-              <div className={classes.content }>
+              <div className={classes.content}>
                 <h5 className={classes.bodyMd}>Pending for Vendor Payment:</h5>
                 <span className={classes.h1}>{vendorCardData.length}</span>
                 <Link
@@ -540,11 +506,9 @@ export default function FinanceDashboard() {
               </div>
             </div>
             <div className={classes.cardActions}>
-
-                <Link to="/admin/finance-pruchasemanagement-paymentdone">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-
+              <Link to="/admin/finance-pruchasemanagement-paymentdone">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
             </div>
           </div>
 
@@ -555,21 +519,31 @@ export default function FinanceDashboard() {
               <div className={classes.circularProgress}>
                 <PointOfSaleIcon className={classes.progressValue} />
               </div>
-              <div className={`${classes.content} ${classes.buttonAlignIncentive2}`}>
-                <h5 className={classes.bodyMd}>Total Payout  Pending:</h5>
+              <div
+                className={`${classes.content} ${classes.buttonAlignIncentive2}`}
+              >
+                <h5 className={classes.bodyMd}>Total Payout Pending:</h5>
                 <br />
-                <span className={classes.h1}>&#8377;{payoutData.map(e=>e.toPay).reduce((prev, next) => prev + next, 0)
-                   ?payoutData.map(e=>e.toPay).reduce((prev, next) => prev + next, 0).toLocaleString("en-IN"):0}</span>
+                <span className={classes.h1}>
+                  &#8377;
+                  {payoutData
+                    .map((e) => e.toPay)
+                    .reduce((prev, next) => prev + next, 0)
+                    ? payoutData
+                        .map((e) => e.toPay)
+                        .reduce((prev, next) => prev + next, 0)
+                        .toLocaleString("en-IN")
+                    : 0}
+                </span>
                 <Link to="#" className={classes.detailsLink}>
                   View Details
                 </Link>
               </div>
             </div>
             <div className={classes.cardActions}>
-            <Link to="#">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-
+              <Link to="#">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
             </div>
           </div>
 
@@ -593,10 +567,10 @@ export default function FinanceDashboard() {
               </div>
             </div>
             <div className={classes.cardActions}>
-            <Link to="#">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-                </div>
+              <Link to="#">
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
+            </div>
           </div>
 
           <div
@@ -636,9 +610,9 @@ export default function FinanceDashboard() {
             </div>
             <div className={classes.cardActions}>
               <Link to="/admin/finance-salebookingclose">
-                <InfoIcon  className="fs-3  pb-1  mt-3"/>
-                </Link>
-                </div>
+                <InfoIcon className="fs-3  pb-1  mt-3" />
+              </Link>
+            </div>
           </div>
 
           <div
@@ -1108,14 +1082,12 @@ export default function FinanceDashboard() {
                       className={`${classes.content} ${classes.buttonAlignIncentive2}`}
                     >
                       <h5 className={classes.bodyMd}>Total Payout Pending:</h5>
-                      <span className={classes.h1}>
-                        {payoutData.length} 
-                      </span>
+                      <span className={classes.h1}>{payoutData.length}</span>
                       <br />
                       <span className={classes.h1}>
                         &#8377;
                         {payoutData
-                          .map((e) =>+ e.toPay)
+                          .map((e) => +e.toPay)
                           .reduce((prev, next) => prev + next, 0)
                           ? payoutData
                               .map((e) => e.toPay)

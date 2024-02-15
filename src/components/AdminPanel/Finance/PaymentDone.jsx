@@ -11,10 +11,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  TextField,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import PaymentHistory from "../../PaymentHistory/PaymentHistoryDialog";
 import HistoryIcon from "@mui/icons-material/History";
 
 export default function PaymentDone() {
@@ -174,10 +174,8 @@ export default function PaymentDone() {
         );
 
       // Requested Amount Filter
-      console.log(requestAmountFilter, "requestAmountFilter");
       const requestedAmountFilterPassed = () => {
         const numericRequestedAmount = parseFloat(requestedAmountField);
-        console.log("switch");
         switch (requestAmountFilter) {
           case "greaterThan":
             return +item.request_amount > numericRequestedAmount;
@@ -399,7 +397,6 @@ export default function PaymentDone() {
         const isPdf = fileExtension === "pdf";
 
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
-        console.log(params.row.invc_img ? imgUrl : "no image");
         return isPdf ? (
           <iframe
             onClick={() => {
@@ -516,14 +513,6 @@ export default function PaymentDone() {
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
         includeAdditionalTitles={true}
       />
-      {/* <PaymentHistory
-        open={paymentHistoryOpen}
-        handleClose={handleClosePaymentHistory}
-        filterData={filterData} // Pass filter data as prop
-        search={search} // Pass search value as prop
-        paymentDetailColumns={paymentDetailColumns}
-      /> */}
-      {/* Same Vendor Dialog Box */}
 
       <Dialog
         open={sameVendorDialog}
@@ -638,14 +627,31 @@ export default function PaymentDone() {
         <div className="col-md-3">
           <div className="form-group">
             <label>Vendor Name</label>
-            <input
+            <Autocomplete
               value={vendorName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setVendorName(e.target.value);
-              }}
+              onChange={(event, newValue) => setVendorName(newValue)}
+              options={data.map((option) => option.vendor_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Vendor Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>

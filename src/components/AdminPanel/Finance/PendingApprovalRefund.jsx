@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
-import { get } from "jquery";
-import { set } from "date-fns";
 import { baseUrl } from "../../../utils/config";
+import { Button } from "@mui/material";
+import { Autocomplete, TextField } from "@mui/material";
 
 const PendingApprovalRefund = () => {
   const { toastAlert } = useGlobalContext();
@@ -19,11 +19,17 @@ const PendingApprovalRefund = () => {
   const [refundImage, setRefundImage] = useState([]);
   const [singleRow, setSingleRow] = useState({});
   const [imageChanged, setImageChanged] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [salesExecutiveName, setSalesExecutiveName] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [refundAmountFilter, setRefundAmountFilter] = useState("");
+  const [refundAmountField, setRefundAmountField] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
-  console.log("PALLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL");
+
   const handleFileChange = (e, index) => {
     const newRefundImage = [...refundImage]; // Creating a new array
     newRefundImage[index] = e.target.files[0]; // Updating the specific index
@@ -40,9 +46,9 @@ const PendingApprovalRefund = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then((res) => {
-      console.log("data save in local success");
-    });
+    axios
+      .post(baseUrl + "add_php_payment_refund_data_in_node")
+      .then((res) => {});
     setTimeout(() => {
       axios
         .get(baseUrl + "get_all_php_payment_refund_data_pending")
@@ -120,6 +126,65 @@ const PendingApprovalRefund = () => {
     setFilterData(result);
   }, [search]);
 
+  const handleAllFilter = () => {
+    const filterData = datas.filter((item) => {
+      const date = new Date(item.creation_date);
+      const fromDate1 = new Date(fromDate);
+      const toDate1 = new Date(toDate);
+      toDate1.setDate(toDate1.getDate() + 1);
+
+      // Refund Date Filter:-
+      const refundDateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+
+      // Vender Name Filter
+      const customerNameFilterPassed =
+        !customerName ||
+        item.cust_name.toLowerCase().includes(customerName.toLowerCase());
+      // Search Query Filter
+      const searchFilterPassed =
+        !search ||
+        Object.values(item).some(
+          (val) =>
+            typeof val === "string" &&
+            val.toLowerCase().includes(search.toLowerCase())
+        );
+
+      // Refund Amount Filter
+      const refundAmountFilterPassed = () => {
+        const numericRefundAmount = parseFloat(refundAmountField);
+        switch (refundAmountFilter) {
+          case "greaterThan":
+            return +item.refund_amount > numericRefundAmount;
+          case "lessThan":
+            return +item.refund_amount < numericRefundAmount;
+          case "equalTo":
+            return +item.refund_amount === numericRefundAmount;
+          default:
+            return true;
+        }
+      };
+
+      const allFiltersPassed =
+        refundDateFilterPassed &&
+        customerNameFilterPassed &&
+        searchFilterPassed &&
+        refundAmountFilterPassed();
+
+      return allFiltersPassed;
+    });
+    setFilterData(filterData);
+  };
+
+  const handleClearAllFilter = () => {
+    setFilterData(datas);
+    setFromDate("");
+    setToDate("");
+    setCustomerName("");
+    setRefundAmountFilter("");
+    setRefundAmountField("");
+  };
+
   const columns = [
     {
       name: "S.No",
@@ -176,8 +241,6 @@ const PendingApprovalRefund = () => {
             name="refund_image"
             onChange={(e) => {
               // refundImage.splice(index, 1, e.target.files[0]);
-              // console.log(index);
-              // console.log(refundImage);
               // setRefundImage(refundImage);
               // setImageChanged(!imageChanged); // Toggle the state to trigger re-render
               handleFileChange(e, index);
@@ -231,6 +294,122 @@ const PendingApprovalRefund = () => {
         }
       />
 
+      <div className="row">
+        <div className="col-md-4">
+          <div className="form-group">
+            <label>Customer Name</label>
+            <Autocomplete
+              value={customerName}
+              onChange={(event, newValue) => setCustomerName(newValue)}
+              options={datas.map((option) => option.cust_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Vendor Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
+            />
+          </div>
+        </div>
+        {/* <div className="col-md-3">
+          <div className="form-group">
+            <label>Sales Executive Name</label>
+            <Autocomplete
+              value={salesExecutiveName}
+              onChange={(event, newValue) => setSalesExecutiveName(newValue)}
+              options={datas.map((option) => option.sale)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Vendor Name"
+                  type="text"
+                  variant="outlined"
+                />
+              )}
+            />
+          </div>
+        </div> */}
+        <div className="col-md-4">
+          <div className="form-group">
+            <label>From Date</label>
+            <input
+              value={fromDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => {
+                setFromDate(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-4">
+          <div className="form-group">
+            <label>To Date</label>
+            <input
+              value={toDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => {
+                setToDate(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Request Amount Filter</label>
+            <select
+              value={refundAmountFilter}
+              className="form-control"
+              onChange={(e) => setRefundAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Requested Amount</label>
+            <input
+              value={refundAmountField}
+              type="number"
+              placeholder="Refund Amount"
+              className="form-control"
+              onChange={(e) => {
+                setRefundAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-1 mt-4 me-2">
+          <Button variant="contained" onClick={handleAllFilter}>
+            <i className="fas fa-search"></i> Search
+          </Button>
+        </div>
+        <div className="col-md-1 mt-4">
+          <Button variant="contained" onClick={handleClearAllFilter}>
+            Clear
+          </Button>
+        </div>
+      </div>
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable

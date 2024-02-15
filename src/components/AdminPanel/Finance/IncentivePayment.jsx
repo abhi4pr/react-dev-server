@@ -51,7 +51,6 @@ const IncentivePayment = () => {
   const [balanceAmountField, setBalanceAmountField] = useState("");
 
   const DateFormateToYYYYMMDD = (date) => {
-    console.log(date);
     const d = new Date(date);
     const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
     const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
@@ -73,9 +72,7 @@ const IncentivePayment = () => {
         ),
         paid_amount: balanceReleaseAmount,
       })
-      .then((res) => {
-        console.log(res);
-      });
+      .then((res) => {});
 
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
@@ -168,7 +165,6 @@ const IncentivePayment = () => {
     setFilterData(result);
   }, [search]);
 
-  console.log(datas, "datas>>>>");
   //  All Filters :-
   const handleAllFilters = () => {
     const filterData = datas.filter((item) => {
@@ -188,7 +184,6 @@ const IncentivePayment = () => {
       // request amount filter:-
       const requestAmountFilterPassed = () => {
         const requestAmount = parseFloat(requestedAmountField);
-        console.log("switch");
         switch (requestAmountFilter) {
           case "greaterThan":
             return +item.request_amount > requestAmount;
@@ -202,7 +197,6 @@ const IncentivePayment = () => {
       };
       const releasedAmountFilterPassed = () => {
         const releasedAmount = parseFloat(releasedAmountField);
-        console.log("switch");
         switch (releasedAmountFilter) {
           case "greaterThan":
             return +item.released_amount > releasedAmount;
@@ -216,7 +210,6 @@ const IncentivePayment = () => {
       };
       const balancetAmountFilterPassed = () => {
         const balanceAmount = parseFloat(balanceAmountField);
-        console.log("switch");
         switch (balanceAmountFilter) {
           case "greaterThan":
             return +item.balance_release_amount > balanceAmount;
@@ -397,7 +390,6 @@ const IncentivePayment = () => {
       sales_executive_name: "Total",
     };
 
-    console.log(result, "result");
     setFilterData([...result, totalRow]);
   };
 
@@ -423,7 +415,6 @@ const IncentivePayment = () => {
       balance_release_amount: totalBalanceReleaseAmount,
       sales_executive_name: "Total",
     };
-    console.log(result, "resultComplete");
     setFilterData([...result, totalRow]);
   };
 
@@ -438,7 +429,7 @@ const IncentivePayment = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Sales Executive Incentive Request List"
+        mainTitle="Incentive Disbursement Request"
         link="/admin/incentive-payment-list"
         buttonAccess={
           contextData &&
@@ -448,17 +439,34 @@ const IncentivePayment = () => {
         }
       />
       <div className="row">
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="form-group">
             <label>Sales Executive</label>
-            <input
+            <Autocomplete
               value={salesExecutive}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setSalesExecutive(e.target.value);
-              }}
+              onChange={(event, newValue) => setSalesExecutive(newValue)}
+              options={datas.map((option) => option.sales_executive_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Sales Executive Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>
@@ -468,7 +476,7 @@ const IncentivePayment = () => {
             <input type="text" placeholder="Name" className="form-control" />
           </div>
         </div> */}
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="form-group">
             <label>From Date</label>
             <input
@@ -479,7 +487,7 @@ const IncentivePayment = () => {
             />
           </div>
         </div>
-        <div className="col-md-3">
+        <div className="col-md-4">
           <div className="form-group">
             <label>To Date</label>
             <input
@@ -513,7 +521,7 @@ const IncentivePayment = () => {
             <input
               value={requestedAmountField}
               type="number"
-              placeholder="Request Amount"
+              placeholder="Requested Amount"
               className="form-control"
               onChange={(e) => {
                 setRequestAmountField(e.target.value);
@@ -542,7 +550,7 @@ const IncentivePayment = () => {
             <input
               value={releasedAmountField}
               type="number"
-              placeholder="Request Amount"
+              placeholder="Released Amount"
               className="form-control"
               onChange={(e) => {
                 setReleasedAmountField(e.target.value);

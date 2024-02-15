@@ -67,7 +67,6 @@ const PendingApprovalUpdate = () => {
         }
       )
       .then((res) => {
-        console.log(res);
         getData();
       });
 
@@ -76,9 +75,7 @@ const PendingApprovalUpdate = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
-      console.log("data save in local success");
-    });
+    axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {});
     setTimeout(() => {
       axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
         setData(res.data.data);
@@ -110,7 +107,6 @@ const PendingApprovalUpdate = () => {
   // Filters Logic :-
   const handleAllFilters = () => {
     const filterData = datas.filter((item) => {
-      console.log(item.payment_approval_status, "status>>");
       const date = new Date(item.payment_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
@@ -131,7 +127,6 @@ const PendingApprovalUpdate = () => {
       const bankNameFilterPassed =
         !bankName || item.detail.toLowerCase().includes(bankName.toLowerCase());
       // Payment Status
-
       const paymentStatusFilterPassed =
         !paymentStatus ||
         (item.payment_approval_status === 0 &&
@@ -147,7 +142,6 @@ const PendingApprovalUpdate = () => {
       //  Payment Amount Filter
       const paymentAmountFilterPassed = () => {
         const paymentAmount = parseFloat(paymentAmountField);
-        console.log("switch");
         switch (paymentAmountFilter) {
           case "greaterThan":
             return +item.payment_amount > paymentAmount;
@@ -162,7 +156,6 @@ const PendingApprovalUpdate = () => {
       // Campaign Amount filter
       const campaignAmountFilterPassed = () => {
         const campaignAmount = parseFloat(campaignAmountField);
-        console.log("switch");
         switch (campaignAmountFilter) {
           case "greaterThan":
             return +item.campaign_amount > campaignAmount;
@@ -186,7 +179,6 @@ const PendingApprovalUpdate = () => {
 
       return allFiltersPassed;
     });
-    console.log(filterData, "FD??????????????");
     setFilterData(filterData);
   };
 
@@ -397,7 +389,6 @@ const PendingApprovalUpdate = () => {
       width: "150px",
     },
   ];
-  // console.log(fromDate, "HIIIIIIIIIIIIIIIIIIIIIIIII", toDate);
   return (
     <>
       <FormContainer
@@ -414,70 +405,139 @@ const PendingApprovalUpdate = () => {
         <div className="col-md-3">
           <div className="form-group">
             <label>Customer Name</label>
-            <input
+            <Autocomplete
               value={customerName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setCustomerName(e.target.value);
-              }}
+              style={{ border: "1px solid var(--border)" }}
+              onChange={(event, newValue) => setCustomerName(newValue)}
+              options={datas.map((option) => option.cust_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Vendor Name"
+                  type="text"
+                  style={{ color: "var(--gray-600)" }}
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label>Requested By</label>
-            <input
+
+            <Autocomplete
               value={requestedBy}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setRequestedBy(e.target.value);
-              }}
+              onChange={(event, newValue) => setRequestedBy(newValue)}
+              options={datas.map((option) => option.user_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Requested By"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label>Bank Name</label>
-            <input
+            <Autocomplete
               value={bankName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setBankName(e.target.value);
-              }}
+              onChange={(event, newValue) => setBankName(newValue)}
+              options={datas.map((option) => option.detail)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Bank Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label>Payment Status</label>
-            <input
+            <Autocomplete
               value={paymentStatus}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setPaymentStatus(e.target.value);
-              }}
+              onChange={(event, newValue) => setPaymentStatus(newValue)}
+              options={datas.map((option) =>
+                option.payment_approval_status === 0
+                  ? "Pending"
+                  : row.payment_approval_status === 1
+                  ? "Approved"
+                  : row.payment_approval_status === 2
+                  ? "Rejected"
+                  : ""
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Payment Status"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label>Payment Mode</label>
-            <input
+            <Autocomplete
               value={paymentMode}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setPaymetMode(e.target.value);
-              }}
+              onChange={(event, newValue) => setPaymetMode(newValue)}
+              options={datas.map((option) => option.payment_mode)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Payment Mode"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
             />
           </div>
         </div>
@@ -555,7 +615,7 @@ const PendingApprovalUpdate = () => {
             <input
               value={campaignAmountField}
               type="number"
-              placeholder="Request Amount"
+              placeholder="Campaign Amount"
               className="form-control"
               onChange={(e) => {
                 setcampaignAmountField(e.target.value);

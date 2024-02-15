@@ -7,7 +7,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import ImageView from "./ImageView";
 import { baseUrl } from "../../../utils/config";
-import { Button } from "@mui/material";
+import { Autocomplete, Button, TextField } from "@mui/material";
 
 const InvoiceCreated = () => {
   const navigate = useNavigate();
@@ -43,9 +43,9 @@ const InvoiceCreated = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then((res) => {
-      console.log("data save in local success");
-    });
+    axios
+      .post(baseUrl + "add_php_pending_invoice_data_in_node")
+      .then((res) => {});
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -83,14 +83,13 @@ const InvoiceCreated = () => {
         item.cust_name.toLowerCase().includes(customerName.toLowerCase());
       // Invoice Particular Filter:-
       const invoiceParticularNameFilterPassed =
-        !invoiceParticular ||
+        !invoiceParticularName ||
         item.invoice_particular_name
           .toLowerCase()
-          .includes(invoiceParticular.toLowerCase());
+          .includes(invoiceParticularName.toLowerCase());
       // campaign amount filter:-
       const campaignAmountFilterPassed = () => {
         const campaignAmounttData = parseFloat(campaignAmountField);
-        console.log("switch");
         switch (campaignAmountFilter) {
           case "greaterThan":
             return +item.campaign_amount > campaignAmounttData;
@@ -188,28 +187,44 @@ const InvoiceCreated = () => {
         <div className="col-md-3">
           <div className="form-group">
             <label>Customer Name</label>
-            <input
+            <Autocomplete
               value={customerName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setCustomerName(e.target.value);
-              }}
+              onChange={(event, newValue) => setCustomerName(newValue)}
+              options={datas.map((option) => option.cust_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Customer Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label>Invoice Particular</label>
-            <input
+            <Autocomplete
               value={invoiceParticularName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setInvoiceParticularName(e.target.value);
-              }}
+              onChange={(event, newValue) => setInvoiceParticularName(newValue)}
+              options={datas.map((option) => option.invoice_particular_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Invoice Particular"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                />
+              )}
             />
           </div>
         </div>

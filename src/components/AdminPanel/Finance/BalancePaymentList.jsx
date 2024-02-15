@@ -231,7 +231,6 @@ const BalancePaymentList = () => {
       //  Campaign Amount Filter
       const campaignAmountFilterPassed = () => {
         const campaignAmount = parseFloat(campaignAmountField);
-        console.log("switch");
         switch (campaignAmountFilter) {
           case "greaterThan":
             return +item.campaign_amount > campaignAmount;
@@ -247,7 +246,6 @@ const BalancePaymentList = () => {
       const balanceAmountFilterPassed = () => {
         const balanceAmount = parseFloat(balanceAmountField);
         const balance = +item.campaign_amount - item.total_paid_amount;
-        console.log("switch");
         switch (balanceAmountFilter) {
           case "greaterThan":
             return +balance > balanceAmount;
@@ -268,7 +266,6 @@ const BalancePaymentList = () => {
 
       return allFiltersPassed;
     });
-    console.log(filterData, "FD??????????????");
     setFilterData(filterData);
   };
 
@@ -376,7 +373,7 @@ const BalancePaymentList = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Sale Booking - All Balance Payment List Pending"
+        mainTitle="Sale Booking - Outstanding Payment"
         link="/admin/balance-payment-list"
         buttonAccess={
           contextData &&
@@ -390,28 +387,44 @@ const BalancePaymentList = () => {
         <div className="col-md-3">
           <div className="form-group">
             <label>Customer Name</label>
-            <input
+            <Autocomplete
               value={customerName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setCustomerName(e.target.value);
-              }}
+              onChange={(event, newValue) => setCustomerName(newValue)}
+              options={datas.map((option) => option.cust_name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="customer Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                />
+              )}
             />
           </div>
         </div>
         <div className="col-md-3">
           <div className="form-group">
             <label>Sales Executive Name</label>
-            <input
+            <Autocomplete
               value={salesExecutiveName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setSalesExecutiveName(e.target.value);
-              }}
+              onChange={(event, newValue) => setSalesExecutiveName(newValue)}
+              options={datas.map((option) => option.username)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Sales Executive Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                />
+              )}
             />
           </div>
         </div>
