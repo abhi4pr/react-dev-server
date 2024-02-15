@@ -6,7 +6,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { useNavigate, Link } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
-import { TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -22,6 +22,12 @@ const PendingInvoice = () => {
   const [partyName, setPartyName] = useState("");
   const [inoiceNum, setInoiceNum] = useState("");
   const [date, setDate] = useState(dayjs());
+  const [salesPersonName, setSalesPersonName] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [baseAmountFilter, setBaseAmountFilter] = useState("");
+  const [baseAmountField, setBaseAmountField] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -141,6 +147,59 @@ const PendingInvoice = () => {
     setFilterData(result);
   }, [search]);
 
+  const handleAllFilters = () => {
+    const filterData = datas.filter((item) => {
+      const date = new Date(item.sale_booking_date);
+      const fromDate1 = new Date(fromDate);
+      const toDate1 = new Date(toDate);
+      toDate1.setDate(toDate1.getDate() + 1);
+      // Date Range Filter:-
+      const dateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+      // Sales Person Filter:-
+      const salesPersonNameFilterPassed =
+        !salesPersonName ||
+        item.sales_person_username
+          .toLowerCase()
+          .includes(salesPersonName.toLowerCase());
+      // customer Name Filter:-
+      const customerNameFilterPassed =
+        !customerName ||
+        item.cust_name.toLowerCase().includes(customerName.toLowerCase());
+      // request amount filter:-
+      const requestAmountFilterPassed = () => {
+        const baseAmountData = parseFloat(baseAmountField);
+        console.log("switch");
+        switch (baseAmountFilter) {
+          case "greaterThan":
+            return +item.base_amount > baseAmountData;
+          case "lessThan":
+            return +item.base_amount < baseAmountData;
+          case "equalTo":
+            return +item.base_amount === baseAmountData;
+          default:
+            return true;
+        }
+      };
+      const allFiltersPassed =
+        dateFilterPassed &&
+        salesPersonNameFilterPassed &&
+        customerNameFilterPassed &&
+        requestAmountFilterPassed();
+
+      return allFiltersPassed;
+    });
+    setFilterData(filterData);
+  };
+  const handleClearAllFilter = () => {
+    setFilterData(datas);
+    setSalesPersonName("");
+    setToDate("");
+    setFromDate("");
+    setCustomerName("");
+    setBaseAmountFilter("");
+    setBaseAmountField("");
+  };
   const columns = [
     {
       name: "S.No",
@@ -211,7 +270,7 @@ const PendingInvoice = () => {
                 }}
                 defaultValue={dayjs()}
                 onChange={(e) => {
-                  setDate(e)
+                  setDate(e);
                 }}
               />
             </LocalizationProvider>
@@ -219,7 +278,6 @@ const PendingInvoice = () => {
           <div>
             <TextField
               key={row.sale_booking_id}
-              
               type="text"
               name="input"
               label="Party Name"
@@ -304,7 +362,7 @@ const PendingInvoice = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Pending invoice "
+        mainTitle="Pending Invoice "
         link="/admin/incentive-payment-list"
         buttonAccess={
           contextData &&
@@ -313,7 +371,97 @@ const PendingInvoice = () => {
           false
         }
       />
-
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Sales Person Name</label>
+            <input
+              value={salesPersonName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setSalesPersonName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>From Date</label>
+            <input
+              value={fromDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => setFromDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>To Date</label>
+            <input
+              value={toDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => {
+                setToDate(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Customer Name</label>
+            <input
+              value={customerName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => setCustomerName(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Requested Amount Filter</label>
+            <select
+              value={baseAmountFilter}
+              className="form-control"
+              onChange={(e) => setBaseAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Requested Amount</label>
+            <input
+              value={baseAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setBaseAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-1 mt-4 me-2">
+          <Button variant="contained" onClick={handleAllFilters}>
+            <i className="fas fa-search"></i> Search
+          </Button>
+        </div>
+        <div className="col-md-1 mt-4">
+          <Button variant="contained" onClick={handleClearAllFilter}>
+            Clear
+          </Button>
+        </div>
+      </div>
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable

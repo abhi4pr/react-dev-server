@@ -5,10 +5,10 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
-import DataTable from "react-data-table-component";
 import { Button } from "@mui/material";
+import DataTable from "react-data-table-component";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const PaymentMode = () => {
   const { toastAlert } = useGlobalContext();
@@ -20,6 +20,10 @@ const PaymentMode = () => {
   const [search, setSearch] = useState("");
   const [contextData, setDatas] = useState([]);
   const [filterData, setFilterData] = useState([]);
+  const [title, setTitle] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [paymentType, setPaymentType] = useState("");
+  const [gst, setGST] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -28,7 +32,7 @@ const PaymentMode = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post(baseUrl+"", {
+    await axios.post(baseUrl + "", {
       display_sequence: displaySeq,
     });
 
@@ -37,17 +41,13 @@ const PaymentMode = () => {
   };
 
   function getData() {
-    axios
-      .post(baseUrl+"add_php_payment_acc_data_in_node")
-      .then((res) => {
-        console.log("data save in local success");
-      });
-    axios
-      .get(baseUrl+"get_all_php_payment_acc_data")
-      .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
-      });
+    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {
+      console.log("data save in local success");
+    });
+    axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
+      setData(res.data.data);
+      setFilterData(res.data.data);
+    });
   }
 
   const handleCopyDetail = (detail) => {
@@ -66,6 +66,48 @@ const PaymentMode = () => {
     setFilterData(result);
   }, [search]);
 
+  // Filters Logic :-
+  const handleAllFilters = () => {
+    const filterData = datas.filter((item) => {
+      console.log(datas, "datas>>>");
+      // Title Filter:-
+      const titleFilterPassed =
+        !title || item.title.toLowerCase().includes(title.toLowerCase());
+
+      // Bank Name By Filter
+      const bankNameFilterPassed =
+        !bankName || item.detail.toLowerCase().includes(bankName.toLowerCase());
+      // Payment Type Filter
+      const paymentTypeFilterPassed =
+        !paymentType ||
+        item.payment_type.toLowerCase().includes(paymentType.toLowerCase());
+      // row.gst_bank === 1 ? "GST" : "Non GST";
+      // GST Bank Filter
+      const gstFilterPassed =
+        !gst ||
+        (item.gst_bank === 1 && gst.toLowerCase() === "gst") ||
+        (item.gst_bank !== 1 && gst.toLowerCase() === "non gst");
+
+      // combining all logic
+      const allFiltersPassed =
+        titleFilterPassed &&
+        bankNameFilterPassed &&
+        paymentTypeFilterPassed &&
+        gstFilterPassed;
+
+      return allFiltersPassed;
+    });
+    console.log(filterData, "FD??????????????");
+    setFilterData(filterData);
+  };
+
+  const handleClearAllFilter = () => {
+    setFilterData(datas);
+    setBankName("");
+    setPaymentType("");
+    setGST("");
+    setTitle("");
+  };
   const columns = [
     {
       name: "S.No",
@@ -127,6 +169,74 @@ const PaymentMode = () => {
           false
         }
       />
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label> Title</label>
+            <input
+              value={title}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label> Bank Name</label>
+            <input
+              value={bankName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setBankName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label> Payment Type</label>
+            <input
+              value={paymentType}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setPaymentType(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label> GST</label>
+            <input
+              value={gst}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setGST(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-1 mt-4 me-2">
+          <Button variant="contained" onClick={handleAllFilters}>
+            <i className="fas fa-search"></i> Search
+          </Button>
+        </div>
+        <div className="col-md-1 mt-4">
+          <Button variant="contained" onClick={handleClearAllFilter}>
+            Clear
+          </Button>
+        </div>
+      </div>
 
       <div className="card">
         <div className="data_tbl table-responsive">

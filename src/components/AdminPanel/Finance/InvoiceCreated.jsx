@@ -7,6 +7,7 @@ import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
 import ImageView from "./ImageView";
 import { baseUrl } from "../../../utils/config";
+import { Button } from "@mui/material";
 
 const InvoiceCreated = () => {
   const navigate = useNavigate();
@@ -21,6 +22,10 @@ const InvoiceCreated = () => {
   const [filterData, setFilterData] = useState([]);
   const [openImageDialog, setOpenImageDialog] = useState(false);
   const [viewImgSrc, setViewImgSrc] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [campaignAmountFilter, setCampaignAmountFilter] = useState("");
+  const [campaignAmountField, setCampaignAmountField] = useState("");
+  const [invoiceParticularName, setInvoiceParticularName] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -29,7 +34,7 @@ const InvoiceCreated = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post(baseUrl+"", {
+    await axios.post(baseUrl + "", {
       display_sequence: displaySeq,
     });
 
@@ -38,13 +43,9 @@ const InvoiceCreated = () => {
   };
 
   function getData() {
-    axios
-      .post(
-        baseUrl+"add_php_pending_invoice_data_in_node"
-      )
-      .then((res) => {
-        console.log("data save in local success");
-      });
+    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then((res) => {
+      console.log("data save in local success");
+    });
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -74,6 +75,48 @@ const InvoiceCreated = () => {
     setFilterData(result);
   }, [search]);
 
+  const handleAllFilters = () => {
+    const filterData = datas.filter((item) => {
+      // Customer Name Filter:-
+      const customerNameFilterPassed =
+        !customerName ||
+        item.cust_name.toLowerCase().includes(customerName.toLowerCase());
+      // Invoice Particular Filter:-
+      const invoiceParticularNameFilterPassed =
+        !invoiceParticular ||
+        item.invoice_particular_name
+          .toLowerCase()
+          .includes(invoiceParticular.toLowerCase());
+      // campaign amount filter:-
+      const campaignAmountFilterPassed = () => {
+        const campaignAmounttData = parseFloat(campaignAmountField);
+        console.log("switch");
+        switch (campaignAmountFilter) {
+          case "greaterThan":
+            return +item.campaign_amount > campaignAmounttData;
+          case "lessThan":
+            return +item.campaign_amount < campaignAmounttData;
+          case "equalTo":
+            return +item.campaign_amount === campaignAmounttData;
+          default:
+            return true;
+        }
+      };
+      const allFiltersPassed =
+        customerNameFilterPassed &&
+        invoiceParticularNameFilterPassed &&
+        campaignAmountFilterPassed();
+
+      return allFiltersPassed;
+    });
+    setFilterData(filterData);
+  };
+  const handleClearAllFilter = () => {
+    setFilterData(datas);
+    setCustomerName("");
+    setCampaignAmountField("");
+    setCampaignAmountFilter("");
+  };
   const columns = [
     {
       name: "S.No",
@@ -132,7 +175,7 @@ const InvoiceCreated = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Pending invoice "
+        mainTitle="Pending Invoice "
         link="/admin/incentive-payment-list"
         buttonAccess={
           contextData &&
@@ -141,8 +184,76 @@ const InvoiceCreated = () => {
           false
         }
       />
-
-      <div className="card">
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Customer Name</label>
+            <input
+              value={customerName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setCustomerName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Invoice Particular</label>
+            <input
+              value={invoiceParticularName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setInvoiceParticularName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount Filter</label>
+            <select
+              value={campaignAmountFilter}
+              className="form-control"
+              onChange={(e) => setCampaignAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount</label>
+            <input
+              value={campaignAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setCampaignAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-1 mt-1 me-2">
+          <Button variant="contained" onClick={handleAllFilters}>
+            <i className="fas fa-search"></i> Search
+          </Button>
+        </div>
+        <div className="col-md-1 mt-1">
+          <Button variant="contained" onClick={handleClearAllFilter}>
+            Clear
+          </Button>
+        </div>
+      </div>
+      <div className="card mt-3">
         <div className="data_tbl table-responsive">
           <DataTable
             title="Invoice Created"

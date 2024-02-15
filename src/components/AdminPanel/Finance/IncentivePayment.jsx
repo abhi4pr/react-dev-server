@@ -44,7 +44,11 @@ const IncentivePayment = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [requestAmountFilter, setRequestAmountFilter] = useState("");
-  const [requestedAmountField, setRequestedAmountField] = useState("");
+  const [requestedAmountField, setRequestAmountField] = useState("");
+  const [releasedAmountFilter, setReleasedAmountFilter] = useState("");
+  const [releasedAmountField, setReleasedAmountField] = useState("");
+  const [balanceAmountFilter, setBalanceAmountFilter] = useState("");
+  const [balanceAmountField, setBalanceAmountField] = useState("");
 
   const DateFormateToYYYYMMDD = (date) => {
     console.log(date);
@@ -168,52 +172,85 @@ const IncentivePayment = () => {
   //  All Filters :-
   const handleAllFilters = () => {
     const filterData = datas.filter((item) => {
-      // const date = new Date(item.payment_date);
-      // const fromDate1 = new Date(fromDate);
-      // const toDate1 = new Date(toDate);
-      // toDate1.setDate(toDate1.getDate() + 1);
+      const date = new Date(item.request_creation_date);
+      const fromDate1 = new Date(fromDate);
+      const toDate1 = new Date(toDate);
+      toDate1.setDate(toDate1.getDate() + 1);
       // Date Range Filter:-
-      // const dateFilterPassed =
-      //   !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
-      // // Customer Name Filter:-
-      // const customerNameFilterPassed =
-      //   !customerName ||
-      //   item.cust_name.toLowerCase().includes(customerName.toLowerCase());
-      // // Requested By Filter
-      // const requestedByFilterPassed =
-      //   !requestedBy ||
-      //   item.user_name.toLowerCase().includes(requestedBy.toLowerCase());
-      // // Bank Name Filter
-      // const bankNameFilterPassed =
-      //   !bankName || item.detail.toLowerCase().includes(bankName.toLowerCase());
-      // //  Payment Amount Filter
-      // const paymentAmountFilterPassed = () => {
-      //   const paymentAmount = parseFloat(paymentAmountField);
-      //   console.log("switch");
-      //   switch (paymentAmountFilter) {
-      //     case "greaterThan":
-      //       return +item.payment_amount > paymentAmount;
-      //     case "lessThan":
-      //       return +item.payment_amount < paymentAmount;
-      //     case "equalTo":
-      //       return +item.payment_amount === paymentAmount;
-      //     default:
-      //       return true;
-      //   }
-      // };
-      // const allFiltersPassed =
-      //   dateFilterPassed &&
-      //   customerNameFilterPassed &&
-      //   requestedByFilterPassed &&
-      //   bankNameFilterPassed &&
-      //   paymentAmountFilterPassed();
-      // return allFiltersPassed;
+      const dateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+      // Sales Executive Filter:-
+      const salesExecutiveFilterPassed =
+        !salesExecutive ||
+        item.sales_executive_name
+          .toLowerCase()
+          .includes(salesExecutive.toLowerCase());
+      // request amount filter:-
+      const requestAmountFilterPassed = () => {
+        const requestAmount = parseFloat(requestedAmountField);
+        console.log("switch");
+        switch (requestAmountFilter) {
+          case "greaterThan":
+            return +item.request_amount > requestAmount;
+          case "lessThan":
+            return +item.request_amount < requestAmount;
+          case "equalTo":
+            return +item.request_amount === requestAmount;
+          default:
+            return true;
+        }
+      };
+      const releasedAmountFilterPassed = () => {
+        const releasedAmount = parseFloat(releasedAmountField);
+        console.log("switch");
+        switch (releasedAmountFilter) {
+          case "greaterThan":
+            return +item.released_amount > releasedAmount;
+          case "lessThan":
+            return +item.released_amount < releasedAmount;
+          case "equalTo":
+            return +item.released_amount === releasedAmount;
+          default:
+            return true;
+        }
+      };
+      const balancetAmountFilterPassed = () => {
+        const balanceAmount = parseFloat(balanceAmountField);
+        console.log("switch");
+        switch (balanceAmountFilter) {
+          case "greaterThan":
+            return +item.balance_release_amount > balanceAmount;
+          case "lessThan":
+            return +item.balance_release_amount < balanceAmount;
+          case "equalTo":
+            return +item.balance_release_amount === balanceAmount;
+          default:
+            return true;
+        }
+      };
+      const allFiltersPassed =
+        dateFilterPassed &&
+        salesExecutiveFilterPassed &&
+        requestAmountFilterPassed() &&
+        releasedAmountFilterPassed() &&
+        balancetAmountFilterPassed();
+
+      return allFiltersPassed;
     });
-    console.log(filterData, "FD??????????????");
     setFilterData(filterData);
-    console.log(filterData);
   };
-  const handleClearAllFilter = () => {};
+  const handleClearAllFilter = () => {
+    setFilterData(datas);
+    setFromDate("");
+    setToDate("");
+    setSalesExecutive("");
+    setRequestAmountFilter("");
+    setRequestAmountField("");
+    setReleasedAmountField("");
+    setReleasedAmountFilter("");
+    setBalanceAmountField("");
+    setBalanceAmountFilter("");
+  };
   const columns = useMemo(
     () => [
       {
@@ -425,12 +462,12 @@ const IncentivePayment = () => {
             />
           </div>
         </div>
-        <div className="col-md-3">
+        {/* <div className="col-md-3">
           <div className="form-group">
             <label>Aging</label>
             <input type="text" placeholder="Name" className="form-control" />
           </div>
-        </div>
+        </div> */}
         <div className="col-md-3">
           <div className="form-group">
             <label>From Date</label>
@@ -461,7 +498,7 @@ const IncentivePayment = () => {
             <select
               value={requestAmountFilter}
               className="form-control"
-              onChange={(e) => setPaymentAmountFilter(e.target.value)}
+              onChange={(e) => setRequestAmountFilter(e.target.value)}
             >
               <option value="">Select Amount</option>
               <option value="greaterThan">Greater Than</option>
@@ -474,12 +511,70 @@ const IncentivePayment = () => {
           <div className="form-group">
             <label>Requested Amount</label>
             <input
-              // value={paymentAmountField}
+              value={requestedAmountField}
               type="number"
               placeholder="Request Amount"
               className="form-control"
               onChange={(e) => {
-                // setPaymentAmountField(e.target.value);
+                setRequestAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Released Amount Filter</label>
+            <select
+              value={releasedAmountFilter}
+              className="form-control"
+              onChange={(e) => setReleasedAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Released Amount</label>
+            <input
+              value={releasedAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setReleasedAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label> Balance Released Amount Filter</label>
+            <select
+              value={balanceAmountFilter}
+              className="form-control"
+              onChange={(e) => setBalanceAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label> Balance Released Amount</label>
+            <input
+              value={balanceAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setBalanceAmountField(e.target.value);
               }}
             />
           </div>

@@ -27,7 +27,6 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
     padding: theme.spacing(1),
   },
 }));
-
 const BalancePaymentList = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -47,6 +46,14 @@ const BalancePaymentList = () => {
   const [viewImgSrc, setViewImgSrc] = useState("");
   const [viewImgDialog, setViewImgDialog] = useState(false);
   const [paymentDate, setPaymentDate] = useState(dayjs(new Date()));
+  const [customerName, setCustomerName] = useState("");
+  const [salesExecutiveName, setSalesExecutiveName] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [campaignAmountFilter, setCampaignAmountFilter] = useState("");
+  const [campaignAmountField, setCampaignAmountField] = useState("");
+  const [balanceAmountFilter, setBalanceAmountFilter] = useState("");
+  const [balanceAmountField, setBalanceAmountField] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -74,29 +81,24 @@ const BalancePaymentList = () => {
     formData.append("payment_mode", "others");
     formData.append("paid_amount", paidAmount);
 
+    //     // sale_booking_id:161
+    //     payment_update_id:
+    //     payment_ref_no:Axispo444385821
+    //     payment_detail_id:43
+    //     loggedin_user_id:36
+    //     paid_amount:54000
+    //     payment_type:Partial
+    //     payment_mode:Others
+    //     payment_screenshot
 
-//     // sale_booking_id:161
-//     payment_update_id:
-//     payment_ref_no:Axispo444385821
-//     payment_detail_id:43
-//     loggedin_user_id:36
-//     paid_amount:54000
-//     payment_type:Partial
-//     payment_mode:Others
-//     payment_screenshot
-
-
-
-
-
-//     sale_booking_id:161
-// payment_update_id:
-// payment_ref_no:Axispo444385821
-// payment_detail_id:43
-// loggedin_user_id:36
-// paid_amount:54000
-// payment_type:Partial
-// payment_mode:Others
+    //     sale_booking_id:161
+    // payment_update_id:
+    // payment_ref_no:Axispo444385821
+    // payment_detail_id:43
+    // loggedin_user_id:36
+    // paid_amount:54000
+    // payment_type:Partial
+    // payment_mode:Others
 
     await axios
       .post(
@@ -208,6 +210,79 @@ const BalancePaymentList = () => {
     setFilterData(result);
   }, [search]);
 
+  const handleAllFilters = () => {
+    const filterData = datas.filter((item) => {
+      const date = new Date(item.sale_booking_date);
+      const fromDate1 = new Date(fromDate);
+      const toDate1 = new Date(toDate);
+      toDate1.setDate(toDate1.getDate() + 1);
+      // sales Booking Date Range Filter:-
+      const salesBookingdateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+      // Customer Name Filter:-
+      const customerNameFilterPassed =
+        !customerName ||
+        item.cust_name.toLowerCase().includes(customerName.toLowerCase());
+      // sales Executive Name Filter:-
+      const salesExecutiveNameFilterPassed =
+        !salesExecutiveName ||
+        item.username.toLowerCase().includes(salesExecutiveName.toLowerCase());
+
+      //  Campaign Amount Filter
+      const campaignAmountFilterPassed = () => {
+        const campaignAmount = parseFloat(campaignAmountField);
+        console.log("switch");
+        switch (campaignAmountFilter) {
+          case "greaterThan":
+            return +item.campaign_amount > campaignAmount;
+          case "lessThan":
+            return +item.campaign_amount < campaignAmount;
+          case "equalTo":
+            return +item.campaign_amount === campaignAmount;
+          default:
+            return true;
+        }
+      };
+      //  Balance Amount Filter
+      const balanceAmountFilterPassed = () => {
+        const balanceAmount = parseFloat(balanceAmountField);
+        const balance = +item.campaign_amount - item.total_paid_amount;
+        console.log("switch");
+        switch (balanceAmountFilter) {
+          case "greaterThan":
+            return +balance > balanceAmount;
+          case "lessThan":
+            return +balance < balanceAmount;
+          case "equalTo":
+            return +balance === balanceAmount;
+          default:
+            return true;
+        }
+      };
+      const allFiltersPassed =
+        customerNameFilterPassed &&
+        salesExecutiveNameFilterPassed &&
+        salesBookingdateFilterPassed &&
+        campaignAmountFilterPassed() &&
+        balanceAmountFilterPassed();
+
+      return allFiltersPassed;
+    });
+    console.log(filterData, "FD??????????????");
+    setFilterData(filterData);
+  };
+
+  const handleClearAllFilter = () => {
+    setFilterData(datas);
+    setFromDate("");
+    setToDate("");
+    setCustomerName("");
+    setSalesExecutiveName("");
+    setCampaignAmountFilter("");
+    setCampaignAmountField("");
+    setBalanceAmountFilter("");
+    setBalanceAmountField("");
+  };
   const columns = [
     {
       name: "S.No",
@@ -311,7 +386,129 @@ const BalancePaymentList = () => {
         }
       />
 
-      <div className="card">
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Customer Name</label>
+            <input
+              value={customerName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setCustomerName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Sales Executive Name</label>
+            <input
+              value={salesExecutiveName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setSalesExecutiveName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>From Date</label>
+            <input
+              value={fromDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => setFromDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>To Date</label>
+            <input
+              value={toDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => {
+                setToDate(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount Filter</label>
+            <select
+              value={campaignAmountFilter}
+              className="form-control"
+              onChange={(e) => setCampaignAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount</label>
+            <input
+              value={campaignAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setCampaignAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Balance Amount Filter</label>
+            <select
+              value={balanceAmountFilter}
+              className="form-control"
+              onChange={(e) => setBalanceAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Balance Amount</label>
+            <input
+              value={balanceAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setBalanceAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-1 mt-1 me-2">
+          <Button variant="contained" onClick={handleAllFilters}>
+            <i className="fas fa-search"></i> Search
+          </Button>
+        </div>
+        <div className="col-md-1 mt-1">
+          <Button variant="contained" onClick={handleClearAllFilter}>
+            Clear
+          </Button>
+        </div>
+      </div>
+      <div className="card mt-3">
         <div className="data_tbl table-responsive">
           <DataTable
             title="Balance payment list"

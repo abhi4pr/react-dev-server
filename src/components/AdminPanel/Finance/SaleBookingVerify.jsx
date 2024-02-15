@@ -6,7 +6,8 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import Modal from "react-modal";
 import { set } from "date-fns";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
+import { Button } from "@mui/material";
 
 const SaleBookingVerify = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -19,6 +20,12 @@ const SaleBookingVerify = () => {
   const [remark, setRemark] = useState("");
   const [ImageModalOpen, setImageModalOpen] = useState(false);
   const [row, setRow] = useState({});
+  const [customerName, setCustomerName] = useState("");
+  const [salesExecutive, setSalesExecutive] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [campaignAmountFilter, setCampaignAmountFilter] = useState("");
+  const [campaignAmountField, setcampaignAmountField] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -26,25 +33,26 @@ const SaleBookingVerify = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(row)
+    console.log(row);
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_id", row.sale_booking_id);
     formData.append("verified_amount", balAmount);
     formData.append("verified_remark", remark);
-    await axios.post(
-      "https://sales.creativefuel.io/webservices/RestController.php?view=verifybooking",
-      formData,
-      {
-        headers: {
-          "application-type": "multipart/form-data",
-        },
-      }
-    ).then(()=>{
-      handleCloseImageModal()
-      getData()
-    }
-    );
+    await axios
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=verifybooking",
+        formData,
+        {
+          headers: {
+            "application-type": "multipart/form-data",
+          },
+        }
+      )
+      .then(() => {
+        handleCloseImageModal();
+        getData();
+      });
 
     toastAlert("Data Updated");
     setIsFormSubmitted(true);
@@ -52,7 +60,7 @@ const SaleBookingVerify = () => {
 
   const handleImageClick = (row) => {
     setImageModalOpen(true);
-    setRow(row)
+    setRow(row);
   };
 
   const handleCloseImageModal = () => {
@@ -63,9 +71,7 @@ const SaleBookingVerify = () => {
 
   function getData() {
     axios
-      .post(
-        baseUrl+"add_php_sale_booking_tds_verification_data_in_node"
-      )
+      .post(baseUrl + "add_php_sale_booking_tds_verification_data_in_node")
       .then(() => {
         console.log("data save in local success");
       });
@@ -84,7 +90,7 @@ const SaleBookingVerify = () => {
       .then((res) => {
         setFilterData(res.data.boby);
         setData(res.data.body);
-        console.log(res.data.body)
+        console.log(res.data.body);
       });
   }
 
@@ -102,13 +108,70 @@ const SaleBookingVerify = () => {
   }, []);
 
   useEffect(() => {
-    const result = datas.filter(d => {
+    const result = datas.filter((d) => {
       return d.cust_name?.toLowerCase().includes(search.toLowerCase());
     });
     setFilterData(result);
-  }, [search,datas]); // Including datas in dependencies
-  
+  }, [search, datas]); // Including datas in dependencies
 
+  // Filters Logic :-
+  const handleAllFilters = () => {
+    const filterData = datas.filter((item) => {
+      console.log(item.payment_approval_status, "status>>");
+      const date = new Date(item.payment_date);
+      const fromDate1 = new Date(fromDate);
+      const toDate1 = new Date(toDate);
+      toDate1.setDate(toDate1.getDate() + 1);
+      // Date Range Filter:-
+      const dateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+      // Customer Name Filter:-
+      const customerNameFilterPassed =
+        !customerName ||
+        item.cust_name.toLowerCase().includes(customerName.toLowerCase());
+
+      // Requested By Filter
+      const salesExecutiveFilterPassed =
+        !salesExecutive ||
+        item.sales_exe_name
+          .toLowerCase()
+          .includes(salesExecutive.toLowerCase());
+      // Campaign Amount filter
+      const campaignAmountFilterPassed = () => {
+        const campaignAmount = parseFloat(campaignAmountField);
+        console.log("switch");
+        switch (campaignAmountFilter) {
+          case "greaterThan":
+            return +item.campaign_amount > campaignAmount;
+          case "lessThan":
+            return +item.campaign_amount < campaignAmount;
+          case "equalTo":
+            return +item.campaign_amount === campaignAmount;
+          default:
+            return true;
+        }
+      };
+      const allFiltersPassed =
+        dateFilterPassed &&
+        customerNameFilterPassed &&
+        salesExecutiveFilterPassed &&
+        campaignAmountFilterPassed();
+
+      return allFiltersPassed;
+    });
+    console.log(filterData, "FD??????????????");
+    setFilterData(filterData);
+  };
+
+  const handleClearAllFilter = () => {
+    setFilterData(datas);
+    setFromDate("");
+    setToDate("");
+    setCustomerName("");
+    setcampaignAmountField("");
+    setCampaignAmountFilter("");
+    setSalesExecutive("");
+  };
   const columns = [
     {
       name: "S.No",
@@ -173,10 +236,8 @@ const SaleBookingVerify = () => {
     {
       name: "Balance Amount",
       cell: (row) => {
-
         return row.campaign_amount - row.total_paid_amount;
-      }
-
+      },
     },
     {
       name: "Net Bal Cust to pay Amt",
@@ -197,15 +258,17 @@ const SaleBookingVerify = () => {
       name: "Action",
       selector: (row) => (
         <>
-        {row.tds_status==2?<span>Verified</span>:
-        <button
-        className="btn btn-sm btn-outline-info"
-        onClick={() => handleImageClick(row)}
-      >
-        Verify
-      </button>
-      }
-      </>
+          {row.tds_status == 2 ? (
+            <span>Verified</span>
+          ) : (
+            <button
+              className="btn btn-sm btn-outline-info"
+              onClick={() => handleImageClick(row)}
+            >
+              Verify
+            </button>
+          )}
+        </>
       ),
     },
   ];
@@ -222,7 +285,99 @@ const SaleBookingVerify = () => {
           false
         }
       />
-
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Customer Name</label>
+            <input
+              value={customerName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setCustomerName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Sales Executive Name</label>
+            <input
+              value={salesExecutive}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setSalesExecutive(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>From Date</label>
+            <input
+              value={fromDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => setFromDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>To Date</label>
+            <input
+              value={toDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => {
+                setToDate(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount Filter</label>
+            <select
+              value={campaignAmountFilter}
+              className="form-control"
+              onChange={(e) => setCampaignAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount</label>
+            <input
+              value={campaignAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setcampaignAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-1 mt-4 me-2">
+          <Button variant="contained" onClick={handleAllFilters}>
+            <i className="fas fa-search"></i> Search
+          </Button>
+        </div>
+        <div className="col-md-1 mt-4">
+          <Button variant="contained" onClick={handleClearAllFilter}>
+            Clear
+          </Button>
+        </div>
+      </div>
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
@@ -287,12 +442,15 @@ const SaleBookingVerify = () => {
                   id="images"
                   name="images"
                   value={balAmount}
-                  onChange={(e) =>{
-                    if(e.target.value>row.net_balance_amount_to_pay){
-                      toastError("Amount is greater than balance amount to pay");
-                      return
+                  onChange={(e) => {
+                    if (e.target.value > row.net_balance_amount_to_pay) {
+                      toastError(
+                        "Amount is greater than balance amount to pay"
+                      );
+                      return;
                     }
-                    setBalAmount(e.target.value)}}
+                    setBalAmount(e.target.value);
+                  }}
                   required
                 />
               </div>

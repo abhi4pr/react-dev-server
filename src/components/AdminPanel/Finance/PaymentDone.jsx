@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { Button } from "@mui/material";
 import axios from "axios";
 import ImageView from "./ImageView";
 import { baseUrl } from "../../../utils/config";
+import {
+  Autocomplete,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import PaymentHistory from "../../PaymentHistory/PaymentHistoryDialog";
+import HistoryIcon from "@mui/icons-material/History";
 
 export default function PaymentDone() {
   const [search, setSearch] = useState("");
@@ -18,7 +29,14 @@ export default function PaymentDone() {
   const [priorityFilter, setPriorityFilter] = useState("");
   const [requestAmountFilter, setRequestAmountFilter] = useState("");
   const [requestedAmountField, setRequestedAmountField] = useState("");
-
+  const [uniqueVendorCount, setUniqueVendorCount] = useState(0);
+  const [pendingRequestCount, setPendingRequestCount] = useState(0);
+  const [uniqueVenderDialog, setUniqueVenderDialog] = useState(false);
+  const [uniqueVendorData, setUniqueVendorData] = useState([]);
+  const [sameVendorDialog, setSameVendorDialog] = useState(false);
+  const [sameVendorData, setSameVendorData] = useState([]);
+  const [paymentHistoryOpen, setPaymentHistoryOpen] = useState(false);
+  const [paymentHistory, setPaymentHistory] = useState(false);
   // const callApi = () => {
   //   axios
   //     .get(baseUrl+"phpvendorpaymentrequest")
@@ -61,6 +79,17 @@ export default function PaymentDone() {
           console.log(u, "u");
           setData(u);
           setFilterData(u);
+          setPendingRequestCount(u.length);
+          const uniqueVendors = new Set(u.map((item) => item.vendor_name));
+          setUniqueVendorCount(uniqueVendors.size);
+          const uvData = [];
+          uniqueVendors.forEach((vendorName) => {
+            const vendorRows = y.filter(
+              (item) => item.vendor_name === vendorName
+            );
+            uvData.push(vendorRows[0]);
+          });
+          setUniqueVendorData(uvData);
         });
     });
   };
@@ -68,7 +97,7 @@ export default function PaymentDone() {
   useEffect(() => {
     callApi();
   }, []);
-
+  console.log(data, "data ", filterData, "filterdata>>");
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
     const day = String(date1.getDate()).padStart(2, "0");
@@ -91,7 +120,32 @@ export default function PaymentDone() {
 
     return diffDays;
   }
+  // total pending  amount data :-
+  const totalPendingAmount = data.reduce(
+    (total, item) => total + parseFloat(item.request_amount),
+    0
+  );
 
+  // ==============================================================
+  //iterate for totalAmount of same name venders :-
+  const vendorAmounts = [];
+  uniqueVendorData.forEach((item) => {
+    const vendorName = item.vendor_name;
+    const requestAmount = item.request_amount;
+
+    if (vendorAmounts[vendorName]) {
+      vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
+    } else {
+      vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
+    }
+  });
+
+  // calculate the total amount for vendors with the same name
+  let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
+    (total, amount) => total + amount,
+    0
+  );
+  // ================================================================
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
       const date = new Date(item.request_date);
@@ -158,6 +212,170 @@ export default function PaymentDone() {
     setRequestedAmountField("");
   };
 
+  const handleOpenUniqueVendorClick = () => {
+    setUniqueVenderDialog(true);
+  };
+
+  const handleCloseUniqueVendor = () => {
+    setUniqueVenderDialog(false);
+  };
+
+  const handleOpenSameVender = (vendorName) => {
+    setSameVendorDialog(true);
+
+    const sameNameVendors = data.filter(
+      (item) => item.vendor_name === vendorName
+    );
+    // Calculate the total amount for vendors with the same name
+    // const totalAmount = sameNameVendors.reduce(
+    //   (total, item) => total + item.request_amount,
+    //   0
+    // );
+
+    // Set the selected vendor data including the vendor name, data, and total amount
+    setSameVendorData(sameNameVendors);
+  };
+
+  const handleCloseSameVender = () => {
+    setSameVendorDialog(false);
+  };
+
+  // Payment history detail:-
+
+  const handleOpenPaymentHistory = () => {
+    setPaymentHistory(true);
+  };
+  const handleClosePaymentHistory = () => {
+    setPaymentHistory(false);
+  };
+
+  // same Vender columns:-
+  const sameVenderColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = filterData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "vendor_name",
+      headerName: "Vendor Name",
+      // width: "auto",
+      width: 250,
+      renderCell: (params) => {
+        return params.row.vendorName;
+      },
+    },
+    {
+      field: "request_amount",
+      headerName: "Requested Amount",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.request_amount}</p>;
+      },
+    },
+    // {
+    //   headerName: "Action",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div>
+    //         <button
+    //           className="btn btn-sm btn-success"
+    //           onClick={() => handlePayClick(params.row)}
+    //         >
+    //           Pay
+    //         </button>
+    //         <button
+    //           className="btn btn-sm btn-danger mx-2"
+    //           onClick={() => handleDiscardClick(params.row)}
+    //         >
+    //           discard
+    //         </button>
+    //       </div>
+    //     );
+    //   },
+    // },
+  ];
+
+  // unique vender column :-
+  const uniqueVendorColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = filterData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "vendor_name",
+      headerName: "Vendor Name",
+      // width: "auto",
+      width: 250,
+      renderCell: (params) => {
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => handleOpenSameVender(params.row.vendor_name)}
+          >
+            {params.row.vendor_name}
+          </div>
+        );
+      },
+    },
+    {
+      field: "total_amount",
+      headerName: "Total Amount",
+      width: 150,
+      renderCell: () => {
+        return <p> &#8377; {totalSameVendorAmount}</p>;
+      },
+    },
+    {
+      field: "outstandings",
+      headerName: "OutStanding ",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+  ];
+  // bank Payment Detail column:-
+  const paymentDetailColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = filterData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "request_amount",
+      headerName: "Requested Amount",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.request_amount}</p>;
+      },
+    },
+    {
+      field: "outstandings",
+      headerName: "OutStanding ",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+  ];
   const columns = [
     {
       field: "S.NO",
@@ -228,7 +446,20 @@ export default function PaymentDone() {
       // width: "auto",
       width: 250,
       renderCell: (params) => {
-        return params.row.vendor_name;
+        // return params.row.vendor_name;
+        return (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{ cursor: "pointer", marginRight: "60px" }}
+              onClick={() => handleOpenSameVender(params.row.vendor_name)}
+            >
+              {params.row.vendor_name}
+            </div>
+            <div onClick={() => handleOpenPaymentHistory()}>
+              <HistoryIcon style={{ fontSize: "25px", marginLeft: "20px" }} />
+            </div>
+          </div>
+        );
       },
     },
     {
@@ -279,7 +510,130 @@ export default function PaymentDone() {
       <FormContainer
         mainTitle="Payment Done"
         link="/admin/finance-pruchasemanagement-paymentdone"
+        uniqueVendorCount={uniqueVendorCount}
+        totalPendingAmount={totalPendingAmount}
+        pendingRequestCount={pendingRequestCount}
+        handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
+        includeAdditionalTitles={true}
       />
+      {/* <PaymentHistory
+        open={paymentHistoryOpen}
+        handleClose={handleClosePaymentHistory}
+        filterData={filterData} // Pass filter data as prop
+        search={search} // Pass search value as prop
+        paymentDetailColumns={paymentDetailColumns}
+      /> */}
+      {/* Same Vendor Dialog Box */}
+
+      <Dialog
+        open={sameVendorDialog}
+        onClose={handleCloseSameVender}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Vendors</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameVender}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameVendorData}
+          columns={sameVenderColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameVendorData.indexOf(row)}
+        />
+      </Dialog>
+
+      {/* Unique Vendor Dialog Box */}
+      <Dialog
+        open={uniqueVenderDialog}
+        onClose={handleCloseUniqueVendor}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Vendors</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniqueVendor}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueVendorData}
+          columns={uniqueVendorColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueVendorData.indexOf(row)}
+        />
+      </Dialog>
       <div className="row">
         <div className="col-md-3">
           <div className="form-group">
