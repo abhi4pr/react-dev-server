@@ -15,13 +15,14 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import dayjs from "dayjs";
+import CasestudyTabulerData from "./CasestudyTabulerData";
 
 const CaseStudyOperation = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [backupData, setBackupData] = useState([]);
-  console.log(backupData,"backupData");
+  console.log(backupData, "backupData");
   const [selectedUser, setSelectedUser] = useState("");
   const [categoryData, setCategoryData] = useState([]);
   const [brandData, setBrandData] = useState([]);
@@ -114,9 +115,9 @@ const CaseStudyOperation = () => {
 
   async function getData() {
     await axios.get(baseUrl + "dataoperation").then((res) => {
-      setCountData(res.data)
+      setCountData(res.data);
       const responseData = res.data;
-      console.log(res.data," new data");
+      console.log(res.data, " new data");
 
       const uniqueBrandName = new Set();
       const filteredData = responseData.filter((item) => {
@@ -263,6 +264,12 @@ const CaseStudyOperation = () => {
 
   return (
     <>
+      {/* <CasestudyTabulerData
+        backupData={backupData}
+        brandData={brandData}
+        brandCategory={brandCategory}
+        brandSubCatData={brandSubCatData}
+      /> */}
       <div>
         <div className="action_heading">
           <div className="action_title">
@@ -628,7 +635,7 @@ const CaseStudyOperation = () => {
                                 <span>Type</span>
                                 {detail.data_type}
                               </li>
-                             
+
                               <li>
                                 <span>Brand</span>
                                 {brandData.map((brand) => {
@@ -639,18 +646,17 @@ const CaseStudyOperation = () => {
                                 {/* }
                                 {detail.brand_id} */}
                               </li>
-                             
+
                               <li>
                                 <span>Platform</span>
                                 {/* {detail.platform_name} */}
                                 {detail.platform_ids.map((platform) => {
                                   return platformData?.map((plat) => {
                                     if (plat._id == platform) {
-                                      return plat.platform_name  + " ";
+                                      return plat.platform_name + " ";
                                     }
                                   });
-                                }
-                                )}
+                                })}
                               </li>
                               <li>
                                 <span>Creation Date</span>
@@ -1138,7 +1144,7 @@ const CaseStudyOperation = () => {
                                                       ></div>
                                                     </div>
                                                   ) : (
-                                                   <video
+                                                    <video
                                                       className=""
                                                       controls
                                                       width="100%"
@@ -1150,8 +1156,8 @@ const CaseStudyOperation = () => {
                                                         }
                                                         type={`video/mp4`}
                                                       />
-                                                      Your browser does not support the
-                                                      video tag.
+                                                      Your browser does not
+                                                      support the video tag.
                                                     </video>
                                                   )}
                                                 </div>

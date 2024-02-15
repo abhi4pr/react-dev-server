@@ -148,13 +148,13 @@ export default function BrandMaster() {
     if (
       !postData.brand_name ||
       !postData.category_id ||
-      !postData.sub_category_id ||
-      !postData.major_category
+      !postData.sub_category_id 
+      // !postData.major_category
     ) {
       toastError(" * Please fill in all required fields ");
     } else {
       axios
-        .post(`${brandURL}add_brand`, updatedPostData)
+        .post(`${brandURL}/add_brand`, updatedPostData)
         .then((response) => {
           response.data.message
             ? toastError(response.data.message)
