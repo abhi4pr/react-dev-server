@@ -829,6 +829,14 @@ const SidebarLinks = () => {
 
                                 <Link
                                   className="collapse-item"
+                                  to="/admin/assignment-dashboard"
+                                >
+                                  Assignment Dashboard
+                                </Link>
+
+
+                                <Link
+                                  className="collapse-item"
                                   to="/admin/registered-campaign"
                                 >
                                   Registered Campaign

@@ -457,6 +457,11 @@ export default function RegisteredCampaign() {
       width: 200,
     },
     {
+      field: "campaignclosedby",
+      headerName: "Campaign Closed By",
+      width: 200,
+    },
+    {
       field: "captions",
       headerName: "Caption",
       width: 200,

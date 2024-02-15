@@ -166,6 +166,7 @@ import ExpertiesOverview from "./RegisterCampaign/Experties/ExpertiesOverview";
 import ExpertiesUpdate from "./RegisterCampaign/Experties/ExpertUpdate";
 import PhaseDashboard from "./RegisterCampaign/PhaseDashboard/PhaseDashboard";
 import ReplacementDashobard from "./RegisterCampaign/ReplacementDashboard/ReplacementDashboard";
+import AssignmentDashobard from "./RegisterCampaign/AssignmentDashboard/AssignmentDashboard";
 import WFHUserOverview from "./WFH/WFHUserOverview";
 import CreateAssign from "./RegisterCampaign/CreateAssign";
 import PagePerformanceAnalytics from "../Execution/PagePerformanceAnalytics";
@@ -794,6 +795,10 @@ const Admin = () => {
                   <Route
                     path="/replacement-dashboard"
                     element={<ReplacementDashobard />}
+                  />
+                  <Route
+                    path="/assignment-dashboard"
+                    element={<AssignmentDashobard />}
                   />
                   <Route
                     path="/manager-dashboard/:id"

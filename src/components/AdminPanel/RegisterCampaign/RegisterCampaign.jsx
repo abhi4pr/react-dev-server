@@ -25,6 +25,9 @@ import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 
 export default function RegisterCampaign() {
+  const [salesUsers, setSalesUsers] = useState([]);
+  const [isBrandModalOpen, setIsBrandModalOpen] = useState(false);
+  const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const { toastAlert, toastError } = useGlobalContext();
   const [openModal, setOpenModal] = useState(false);
   const [showPageDetails, setShowPageDetails] = useState(false);
@@ -46,7 +49,7 @@ export default function RegisterCampaign() {
   const [agencyList, setAgencyList] = useState([]);
   const [master, setMaster] = useState(null);
   const [masterPayload, setMasterPayload] = useState({});
-  const[campaignClosedBy, setCampaignClosedBy] = useState("");
+  const [campaignClosedBy, setCampaignClosedBy] = useState("");
   //const [service, setService] = useState([]);
   const [selectedService, setSelectedService] = useState("");
   const [isModelOpen, setIsModelOpen] = useState(false);
@@ -118,7 +121,7 @@ export default function RegisterCampaign() {
 
     console.log(form, "<--------------------this is form");
     axios
-      .post(baseUrl+"register_campaign", form)
+      .post(baseUrl + "register_campaign", form)
       .then(() => {
         setBrandName([]);
         setSelectedDate(null);
@@ -183,24 +186,19 @@ export default function RegisterCampaign() {
     );
   };
 
-  
-
   const [selectedDate, setSelectedDate] = useState(dayjs());
   useEffect(() => {
-    setSelectedDate(dayjs().format('YYYY-MM-DD HH:mm:ss'));
+    setSelectedDate(dayjs().format("YYYY-MM-DD HH:mm:ss"));
     getAllData();
   }, []);
-
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
-  
-
   const getAllData = () => {
     axios
-      .get(baseUrl+"get_brands")
+      .get(baseUrl + "get_brands")
       .then((response) => {
         const data = response.data.data;
         setShowBrandName(data);
@@ -210,7 +208,7 @@ export default function RegisterCampaign() {
       });
 
     axios
-      .get(baseUrl+"get_all_commitments")
+      .get(baseUrl + "get_all_commitments")
       .then((response) => {
         setCampignList(response.data.data);
       })
@@ -219,7 +217,7 @@ export default function RegisterCampaign() {
       });
 
     axios
-      .get(baseUrl+"exe_campaign")
+      .get(baseUrl + "exe_campaign")
       .then((response) => {
         const data = response.data.data;
         console.log(data, "<----data");
@@ -229,7 +227,7 @@ export default function RegisterCampaign() {
         console.log(err);
       });
     axios
-      .get(baseUrl+"agency")
+      .get(baseUrl + "agency")
       .then((response) => {
         const data = response?.data?.result;
         console.log(data, "<----agency");
@@ -239,7 +237,7 @@ export default function RegisterCampaign() {
         console.log(err);
       });
     axios
-      .get(baseUrl+"goal")
+      .get(baseUrl + "goal")
       .then((response) => {
         const data = response.data.result;
         console.log(data, "<----goal");
@@ -249,7 +247,7 @@ export default function RegisterCampaign() {
         console.log(err);
       });
     axios
-      .get(baseUrl+"industry")
+      .get(baseUrl + "industry")
       .then((response) => {
         const data = response.data.result;
         console.log(data, "<----industry");
@@ -288,14 +286,12 @@ export default function RegisterCampaign() {
     try {
       let response;
       if (master == "Campaign") {
-        response = await axios.post(`${baseUrl}`+`exe_campaign`,
+        response = await axios.post(
+          `${baseUrl}` + `exe_campaign`,
           masterPayload
         );
       } else if (master == "Brand") {
-        response = await axios.post(
-          `${baseUrl}`+`add_brand`,
-          masterPayload
-        );
+        response = await axios.post(`${baseUrl}` + `add_brand`, masterPayload);
       }
 
       if (response.data.success === false) {
@@ -304,7 +300,7 @@ export default function RegisterCampaign() {
         toastAlert("Added successfully");
         setMaster(null);
         setMasterPayload({});
-        getAllData()
+        getAllData();
         setIsModalOpen(false);
       }
     } catch (error) {
@@ -318,12 +314,39 @@ export default function RegisterCampaign() {
     setIsModalOpen(true);
   };
 
-  const payload = {
-    // other data
-    campaignClosedBy: campaignClosedBy,
-    // more data
+  // const payload = {
+  //   // other data
+  //   campaignClosedBy: campaignClosedBy,
+  //   // more data
+  // };
+
+  const toggleBrandModal = () => {
+    setIsBrandModalOpen(!isBrandModalOpen);
+  };
+
+
+  const toggleCategoryModal = () => {
+    setIsCategoryModalOpen(!isCategoryModalOpen);
+  };
+
+  const fetchSalesUsers = () => {
+    axios.get(`${baseUrl}get_all_sales_users`)
+      .then((response) => {
+        setSalesUsers(response.data); // Assuming the API returns an array of sales users
+        console.log(response.data , '------------------------data-----')
+      })
+      .catch((err) => {
+        console.log(err);
+        toastError("Failed to fetch sales users");
+      });
   };
   
+  useEffect(() => {
+    fetchSalesUsers();
+    // Call other necessary functions like getAllData here
+  }, []);
+  
+
 
   return (
     <div>
@@ -357,11 +380,10 @@ export default function RegisterCampaign() {
                 }
                 renderInput={(params) => (
                   <TextField {...params} label="Brand Name *" />
-                  
                 )}
                 onSelect={handleChange}
               />
-              
+
               <Button onClick={addBrandData}>Add</Button>
 
               {/* <Modal
@@ -393,7 +415,7 @@ export default function RegisterCampaign() {
                     title="Add Brand Name"
                     onClick={() => setOpenModal(true)}
                   >
-                    Add
+                   Add
                   </Button>
                 </Box>
               </Modal> */}
@@ -427,14 +449,16 @@ export default function RegisterCampaign() {
                 />
               </LocalizationProvider> */}
 
-<Box sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
-    <TextField
-      label="Date and Time *"
-      value={selectedDate}
-      disabled
-      sx={{ width: 300, mt: 2 }}
-    />
-  </Box>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", m: 1 }}
+              >
+                <TextField
+                  label="Date and Time *"
+                  value={selectedDate}
+                  disabled
+                  sx={{ width: 300, mt: 2 }}
+                />
+              </Box>
 
               <Autocomplete
                 disablePortal
@@ -472,7 +496,9 @@ export default function RegisterCampaign() {
               <Autocomplete
                 disablePortal
                 id="agency-dropdown"
-                options={goal?.length > 0 && goal?.map((option) => option?.name)}
+                options={
+                  goal?.length > 0 && goal?.map((option) => option?.name)
+                }
                 sx={{ width: 300, mt: 1, justifyContent: "space-around" }}
                 value={selectedGoal}
                 onChange={handleGoalChange}
@@ -489,17 +515,31 @@ export default function RegisterCampaign() {
                 variant="outlined"
               />
 
-<TextField
-  label="Campaign Closed By"
-  value={campaignClosedBy}
-  onChange={(e) => setCampaignClosedBy(e.target.value)}
-  fullWidth
-  variant="outlined"
-  sx={{ width: 300, mt: 1, justifyContent: "space-around" }}
-  />
-
-
               {/* <TextField
+                label="Campaign Closed By"
+                value={campaignClosedBy}
+                onChange={(e) => setCampaignClosedBy(e.target.value)}
+                fullWidth
+                variant="outlined"
+                sx={{ width: 300, mt: 1, justifyContent: "space-around" }}
+              /> */}
+
+
+<Autocomplete
+  disablePortal
+  id="campaign-closed-by-dropdown"
+  options={salesUsers?.length > 0 && salesUsers?. map((user) => user.user_name)} 
+  sx={{ width: 300, mt: 2 }}
+  value={campaignClosedBy}
+  onChange={(event, newValue) => {
+    setCampaignClosedBy(newValue);
+  }}
+  renderInput={(params) => (
+    <TextField {...params} label="Campaign Closed By *" />
+  )}
+/>
+
+                {/* <TextField
                 label="Campaign Amount"
                 value={campaignAmount}
                 onChange={(e) => setCampaignAmount(e.target.value)}
@@ -661,7 +701,6 @@ export default function RegisterCampaign() {
               }}
             >
               <div>
-             
                 <>
                   <TextField
                     id="outlined-password-input"
@@ -685,38 +724,38 @@ export default function RegisterCampaign() {
                   />
                 </>
                 <>
-                <TextField
-          id="outlined-category-input"
-          label="Category *"
-          name="category"
-          type="text"
-          onChange={(e) => {
-            if (master === "Brand") {
-              setMasterPayload({
-                ...masterPayload,
-                category: e.target.value,
-              });
-            }
-          }}
-        />
-        </>
-        <>
-        <TextField
-          id="outlined-sub-category-input"
-          label="Sub Category"
-          name="subCategory"
-          type="text"
-          onChange={(e) => {
-            if (master === "Brand") {
-              setMasterPayload({
-                ...masterPayload,
-                subCategory: e.target.value,
-              });
-            }
-          }}
-        />
-        </>
-        <>
+                  <TextField
+                    id="outlined-category-input"
+                    label="Category *"
+                    name="category"
+                    type="text"
+                    onChange={(e) => {
+                      if (master === "Brand") {
+                        setMasterPayload({
+                          ...masterPayload,
+                          category: e.target.value,
+                        });
+                      }
+                    }}
+                  />
+                </>
+                <>
+                  <TextField
+                    id="outlined-sub-category-input"
+                    label="Sub Category"
+                    name="subCategory"
+                    type="text"
+                    onChange={(e) => {
+                      if (master === "Brand") {
+                        setMasterPayload({
+                          ...masterPayload,
+                          subCategory: e.target.value,
+                        });
+                      }
+                    }}
+                  />
+                </>
+                <>
                   <TextField
                     id="outlined-password-input"
                     label="Remark"
@@ -735,7 +774,6 @@ export default function RegisterCampaign() {
                     }}
                   />
                 </>
-                
               </div>
             </Box>
           </DialogContent>
