@@ -19,6 +19,8 @@ const AdminPreOnboarding = () => {
     { label: "No", value: false },
   ];
 
+  const [loading, setLoading] = useState(false);
+
   const jobTypeData = ["WFO", "WFH"];
   const tdsApplicableData = ["Yes", "No"];
   const genderData = ["Male", "Female", "Other"];
@@ -122,6 +124,8 @@ const AdminPreOnboarding = () => {
       return toastError("Report manager Is Required");
     } else if (!personalContact || personalContact == "") {
       return toastError("Contact Is Required and should be equal to 10");
+    } else if (!personalEmail || personalEmail == "") {
+      return toastError("Email is Required");
     }
 
     const formData = new FormData();
@@ -129,7 +133,6 @@ const AdminPreOnboarding = () => {
     formData.append("user_name", username);
     formData.append("role_id", roles);
     formData.append("image", selectedImage);
-    formData.append("user_email_id", email);
     formData.append("permanent_city", city);
     formData.append("ctc", userCtc);
     formData.append(
@@ -141,15 +144,21 @@ const AdminPreOnboarding = () => {
     formData.append("tds_per", tdsPercentage);
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
-    // formData.append("user_contact_no", 0);
     formData.append("sitting_id", 183);
     formData.append("room_id", roomId);
     formData.append("dept_id", department);
     formData.append("Gender", gender);
     formData.append("job_type", jobType);
     formData.append("DOB", dateOfBirth);
-    formData.append("personal_number", personalContact);
-    formData.append("Personal_email", personalEmail);
+
+    // formData.append("user_contact_no", contact);
+    // formData.append("personal_number", personalContact);
+    formData.append("user_contact_no", personalContact);
+
+    // formData.append("user_email_id", email);
+    // formData.append("Personal_email", personalEmail);
+    formData.append("user_email_id", personalEmail);
+
     formData.append("report_L1", reportL1);
     formData.append("report_L2", reportL2);
     formData.append("report_L3", reportL3);
@@ -163,7 +172,7 @@ const AdminPreOnboarding = () => {
     formData.append("salary", Number(salary));
     formData.append("onboard_status", onBoardStatus);
 
-    if (isValidcontact1 == true && validEmail == true) {
+    // if (isValidcontact1 == true && validEmail == true) {
       try {
         const isLoginIdExists = usersData.some(
           (user) =>
@@ -171,21 +180,22 @@ const AdminPreOnboarding = () => {
             loginId.toLocaleLowerCase()
         );
         const contactNumberExists = usersData.some(
-          (user) => user.user_contact_no == contact
+          (user) => user.user_contact_no == personalContact
         );
 
         const emailIdExists = usersData.some(
           (user) =>
             user.user_email_id?.toLocaleLowerCase() ==
-            email?.toLocaleLowerCase()
+            personalEmail?.toLocaleLowerCase()
         );
         if (isLoginIdExists) {
           alert("this login ID already exists");
         } else if (contactNumberExists) {
-          alert("Official Contact Already Exists");
+          alert(" Contact Already Exists");
         } else if (emailIdExists) {
-          alert("Official Email Already Exists");
+          alert(" Email Already Exists");
         } else {
+          setLoading(true);
           await axios.post(baseUrl + "add_user", formData, {
             headers: {
               "Content-Type": "multipart/form-data",
@@ -208,17 +218,21 @@ const AdminPreOnboarding = () => {
               password: password,
             })
             .then((res) => {
+              // setLoading(true);
               console.log("Email sent successfully:", res.data);
             })
             .then((res) => {
               if (res.status == 200) {
                 toastAlert("User Registerd");
                 setIsFormSubmitted(true);
+                setLoading(false);
               } else {
+                setLoading(false);
                 toastError("Sorry User is Not Created, Please try again later");
               }
             })
             .catch((error) => {
+              setLoading(false);
               console.log("Failed to send email:", error);
             });
 
@@ -248,15 +262,17 @@ const AdminPreOnboarding = () => {
         }
       } catch (error) {
         console.log("Failed to submit form", error);
+      } finally {
+        setLoading(false); 
       }
-    } else {
-      if (contact.length !== 10) {
-        if (isValidcontact == false)
-          alert("Enter Phone Number in Proper Format");
-      } else if (validEmail != true) {
-        alert("Enter Valid Email");
-      }
-    }
+    // } else {
+    //   if (contact.length !== 10) {
+    //     if (isValidcontact == false)
+    //       alert("Enter Phone Number in Proper Format");
+    //   } else if (validEmail != true) {
+    //     alert("Enter Valid Email");
+    //   }
+    // }
   };
 
   // Email Validation
@@ -285,15 +301,17 @@ const AdminPreOnboarding = () => {
 
   //user Contact validation
   function handleContactChange(event) {
-    const newContact1 = event.target.value;
-    setContact(newContact1);
+    if (event.target.value.length <= 10) {
+      const newContact1 = event.target.value;
+      setContact(newContact1);
 
-    if (newContact1 === "") {
-      setValidContact(false);
-    } else {
-      setValidContact(
-        /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
-      );
+      if (newContact1 === "") {
+        setValidContact(false);
+      } else {
+        setValidContact(
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+        );
+      }
     }
   }
 
@@ -379,7 +397,6 @@ const AdminPreOnboarding = () => {
     } else {
       setDateOfBirth(selectedDate);
     }
-
   };
 
   return (
@@ -388,6 +405,8 @@ const AdminPreOnboarding = () => {
         mainTitle="User"
         title="User Registration"
         handleSubmit={handleSubmit}
+        submitButton={false}
+        loading={loading}
       >
         <FieldContainer
           label="Full Name"
@@ -753,6 +772,14 @@ const AdminPreOnboarding = () => {
             required
           />
         </div>
+      <button
+          type="submit"
+          className="btn btn-primary"
+          style={{width:'10%',height:'15%'}}
+          disabled={loading} 
+        >
+          {loading ? 'Submitting...' : 'Submit'}
+      </button>
       </FormContainer>
     </>
   );
