@@ -14,9 +14,9 @@ const PhaseDashboard = () => {
     const phase = await axios.get(
       `${baseUrl}`+`campaignphase/singlephase/${44}`
     );
-    const setsinglephasedata = phase.data.data.pages[0].campaignId;
-    console.log(phase.data.data.pages[0]._id, "singledasta");
-    planId = phase.data.data.pages[0]._id;
+    const setsinglephasedata = phase.data.data.pages[0]?.campaignId;
+    console.log(phase.data.data.pages[0]?._id, "singledasta");
+    planId = phase.data.data.pages[0]?._id;
 
     setSinglePhaseData(setsinglephasedata);
 
