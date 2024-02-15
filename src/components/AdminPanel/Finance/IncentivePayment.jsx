@@ -51,7 +51,6 @@ const IncentivePayment = () => {
   const [balanceAmountField, setBalanceAmountField] = useState("");
 
   const DateFormateToYYYYMMDD = (date) => {
-    console.log(date);
     const d = new Date(date);
     const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
     const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
@@ -74,7 +73,7 @@ const IncentivePayment = () => {
         paid_amount: balanceReleaseAmount,
       })
       .then((res) => {
-        console.log(res);
+
       });
 
     const formData = new FormData();
@@ -168,7 +167,6 @@ const IncentivePayment = () => {
     setFilterData(result);
   }, [search]);
 
-  console.log(datas, "datas>>>>");
   //  All Filters :-
   const handleAllFilters = () => {
     const filterData = datas.filter((item) => {
@@ -188,7 +186,6 @@ const IncentivePayment = () => {
       // request amount filter:-
       const requestAmountFilterPassed = () => {
         const requestAmount = parseFloat(requestedAmountField);
-        console.log("switch");
         switch (requestAmountFilter) {
           case "greaterThan":
             return +item.request_amount > requestAmount;
@@ -202,7 +199,6 @@ const IncentivePayment = () => {
       };
       const releasedAmountFilterPassed = () => {
         const releasedAmount = parseFloat(releasedAmountField);
-        console.log("switch");
         switch (releasedAmountFilter) {
           case "greaterThan":
             return +item.released_amount > releasedAmount;
@@ -216,7 +212,6 @@ const IncentivePayment = () => {
       };
       const balancetAmountFilterPassed = () => {
         const balanceAmount = parseFloat(balanceAmountField);
-        console.log("switch");
         switch (balanceAmountFilter) {
           case "greaterThan":
             return +item.balance_release_amount > balanceAmount;
@@ -397,7 +392,6 @@ const IncentivePayment = () => {
       sales_executive_name: "Total",
     };
 
-    console.log(result, "result");
     setFilterData([...result, totalRow]);
   };
 
@@ -423,7 +417,6 @@ const IncentivePayment = () => {
       balance_release_amount: totalBalanceReleaseAmount,
       sales_executive_name: "Total",
     };
-    console.log(result, "resultComplete");
     setFilterData([...result, totalRow]);
   };
 
