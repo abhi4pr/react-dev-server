@@ -19,7 +19,7 @@ const InvoiceTemplate5 = ({ data }) => {
               <img src={pinkImg} alt="background-img" className="pink-img" />
               <img src={blackImg2} alt="background-img" />
             </div>
-            <div className="container">
+            <div className="temp_container">
               <div className="bus-header-logo res-contact">
                 <div className="wid-50">
                   <h1 className="invoice-txt text-left bus-txt">INVOICE</h1>
@@ -144,7 +144,7 @@ const InvoiceTemplate5 = ({ data }) => {
             </div>
           </header>
           <section className="bus-booking-content" id="bus_booking">
-            <div className="container">
+            <div className="temp_container">
               <div className="invoice-owner-conte-wrap pt-40">
                 <div className="invo-to-wrap">
                   <div className="invoice-to-content">
@@ -176,66 +176,6 @@ const InvoiceTemplate5 = ({ data }) => {
                   </div>
                 </div>
               </div>
-              {/* <div className="invoice-timing-wrap pt-40">
-                  <div className="invo-time-col">
-                    <div className="booking-info column-one">
-                      <p className="font-sm">
-                        <b className="color-light-black circle font-sm-700">
-                          From:{" "}
-                        </b>
-                        24 Avon street, 4th Parkon, New York
-                      </p>
-                      <p className="font-sm mtb-14">
-                        <b className="color-light-black circle font-sm-700">
-                          To:{" "}
-                        </b>
-                        outhgate LRT Bus Stop 2217, New York
-                      </p>
-                    </div>
-                  </div>
-                  <div className="invo-time-col">
-                    <div className="booking-info">
-                      <p className="font-sm">
-                        <b className="color-light-black circle font-sm-700">
-                          Depart Time:{" "}
-                        </b>
-                        10:00 AM
-                      </p>
-                      <p className="font-sm mtb-14">
-                        <b className="color-light-black circle font-sm-700">
-                          Arrive Time:{" "}
-                        </b>
-                        1:00 PM
-                      </p>
-                    </div>
-                  </div>
-                </div> */}
-              {/* <div className="bus-detail-wrap bus-detail-sec">
-                <div className="bus-detail-col border-bottom">
-                  <div className="font-md color-light-black bus-type">
-                    Bus Type:
-                  </div>
-                  <div className="font-md-grey color-grey">Volvo AC</div>
-                </div>
-                <div className="bus-detail-col border-bottom">
-                  <div className="font-md color-light-black bus-type">
-                    Bus Number:
-                  </div>
-                  <div className="font-md-grey color-grey">10DIB</div>
-                </div>
-                <div className="bus-detail-col seat-col">
-                  <div className="font-md color-light-black bus-type">
-                    Seat No:
-                  </div>
-                  <div className="font-md-grey color-grey">A1, A2</div>
-                </div>
-                <div className="bus-detail-col ticket-col">
-                  <div className="font-md color-light-black bus-type">
-                    Ticket Pnr:
-                  </div>
-                  <div className="font-md-grey color-grey">23156-89512</div>
-                </div>
-              </div> */}
               <div className="table-wrapper pt-40">
                 <table className="invoice-table bus-detail-table">
                   <thead>

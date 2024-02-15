@@ -24,7 +24,7 @@ const InvoiceTemplate6 = ({ data }) => {
             </div>
           </header>
           <section className="photo-invoice-details" id="photostudio_invoice">
-            <div className="container">
+            <div className="temp_container">
               <div className="invoice-owner-conte-wrap pt-40">
                 <div className="invo-to-wrap invo-to-wrap-photo">
                   <div className="invoice-to-content">

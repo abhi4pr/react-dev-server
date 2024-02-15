@@ -163,7 +163,7 @@ const UserMaster = () => {
   const [showTdsPercentage, setShowTdsPercentage] = useState(false);
   const [subDepartmentData, setSubDepartmentData] = useState([]);
   const [subDepartment, setSubDeparment] = useState([]);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("Active");
   const [documents, setDocuments] = useState([]);
   const [familyDetails, setFamilyDetails] = useState([
     initialFamilyDetailsGroup,
@@ -201,7 +201,7 @@ const UserMaster = () => {
   const [validEmergencyContact, setValidEmergencyContact] = useState(false);
   const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
   const [cast, setCast] = useState("");
-
+  const [banktype, setBankType] = useState("Own")
   const [familyValidationErrors, setFamilyValidationErrors] = useState({});
 
   const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState({
@@ -247,7 +247,7 @@ const UserMaster = () => {
     "Post Graduation",
     "Other",
   ];
-  // const jobTypeData = ["WFO", "WFH"];
+  const bankTypeData = ["Own", "Family"];
   const tdsApplicableData = ["Yes", "No"];
   const statusData = ["Active", "Exit", "On Leave", "Resign"];
   const genderData = ["Male", "Female", "Other"];
@@ -530,7 +530,7 @@ const UserMaster = () => {
 
     formData.append("cast_type", cast);
     formData.append("digital_signature_image", "");
-    // formData.append("emergency_contact_relation1", "delete it");
+    formData.append("bank_type", banktype);
 
     if (personalEmail && personalContact) {
       try {
@@ -1892,10 +1892,30 @@ const UserMaster = () => {
       </div>
 
       <FieldContainer
-        label="Beneficiary"
+        label="Beneficiary Name"
         value={beneficiary}
         onChange={(e) => setBeneficiary(e.target.value)}
       />
+
+      <div className="form-group col-6">
+        <label className="form-label">
+          Bank Type <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={bankTypeData.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
+          }))}
+          value={{
+            value: banktype,
+            label: `${banktype}`,
+          }}
+          onChange={(e) => {
+            setBankType(e.value);
+          }}
+        />
+      </div>
 
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button

@@ -7,7 +7,7 @@ import { Button } from "@mui/material";
 import { downloadSelectedInvoices } from "../AdminPanel/WFH/SalaryGeneration/ZipGenerator";
 import { generatePDF } from "../AdminPanel/WFH/SalaryGeneration/pdfGenerator";
 import { useGlobalContext } from "../../Context/Context";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
 const accordionButtons = ["Pending Verify", "Verified", "Payment Released"];
 
@@ -31,7 +31,7 @@ export default function FinanceWFHDashboard() {
 
   const getData = async () => {
     try {
-      axios.get(`${baseUrl}`+`get_finances`).then((res) => {
+      axios.get(`${baseUrl}` + `get_finances`).then((res) => {
         const response = res.data;
         setData(response);
         setFilterData(response);
@@ -82,6 +82,25 @@ export default function FinanceWFHDashboard() {
     );
   }
 
+  const handleVerifyAll = (e) => {
+    e.preventDefault();
+    for (let i = 0; i < rowForPayment.length; i++) {
+      console.log(rowForPayment[i].reference_no, "<----------reference_no" + i);
+      console.log(rowForPayment[i].reference_no, "<----------reference_no" + i);
+      console.log(rowForPayment[i].id, "<----------id" + i);
+      setDataRow(rowForPayment[i]);
+      console.log(rowForPayment[i].toPay, "<----------topay" + i);
+      setAmount(rowForPayment[i].toPay);
+      setId(rowForPayment[i].id);
+      setRefrenceNumber(rowForPayment[i].reference_no);
+      console.log(rowForPayment[i], "<----------row" + i);
+      console.log(rowForPayment[i].pay_date, "<----------pay_date" + i);
+      setDate(rowForPayment[i].pay_date);
+      setTimeout(()=>handlePayOut(e), 1000);
+    }
+  };
+  
+
   const handlePay = (row, e) => {
     e.preventDefault(e);
     setShowModal(true);
@@ -89,6 +108,19 @@ export default function FinanceWFHDashboard() {
     setDataRow(row);
     setAmount("");
     setDate("");
+    setAmount(row.toPay);
+  };
+
+  const handlePayVerify = (row, e) => {
+    setDataRow(() => row);
+    e.preventDefault(e);
+    setAmount(() => row.net_salary);
+    setId(() => row.id);
+    setRefrenceNumber(() => row.reference_no);
+    console.log(row, "<----------row");
+    console.log(row.pay_date);
+    setDate(() => row.pay_date);
+    handlePayOut(e);
   };
 
   const openModal = () => {
@@ -100,6 +132,9 @@ export default function FinanceWFHDashboard() {
 
   function handlePayOut(e) {
     e.preventDefault();
+    if(!refrenceNumber)return
+    // console.log(refrenceNumber, "<----------refrenceNumber from payout");
+    // return
     const formData = new FormData();
     formData.append("id", id);
     formData.append("amount", amount);
@@ -110,7 +145,7 @@ export default function FinanceWFHDashboard() {
     formData.append("attendence_id", rowData.attendence_id);
 
     axios
-      .put(`${baseUrl}`+`edit_finance`, formData, {
+      .put(`${baseUrl}` + `edit_finance`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -229,9 +264,13 @@ export default function FinanceWFHDashboard() {
                 className="btn btn-primary"
                 data-toggle="modal"
                 data-target="#exampleModal"
-                onClick={(e) => handlePay(params.row, e)}
+                onClick={(e) =>
+                  activeAccordionIndex == 0
+                    ? handlePay(params.row, e)
+                    : handlePayVerify(params.row, e)
+                }
               >
-                Pay
+                Verify
               </button>
             )}
 
@@ -302,6 +341,20 @@ export default function FinanceWFHDashboard() {
 
   const verified = (
     <div>
+      <div style={{ height: "50px" }}>
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={(e) => handleVerifyAll (e)}
+          >
+            Verify All
+          </Button>
+        )}
+      </div>
       <DataGrid
         rows={filterData.filter((item) => item.status_ === 1)}
         columns={pendingColumns}
@@ -335,6 +388,20 @@ export default function FinanceWFHDashboard() {
 
   const payoutReleased = (
     <div>
+      <div style={{ height: "50px" }}>
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadInvoices}
+          >
+            Download
+          </Button>
+        )}
+      </div>
       {/* <h1>Payout Released</h1> */}
       <DataGrid
         rows={filterData.filter((item) => item.status_ === 2)}

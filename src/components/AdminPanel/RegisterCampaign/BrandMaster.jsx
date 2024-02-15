@@ -23,8 +23,11 @@ import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import { toolbarStyles } from "./CampaignCommitment";
 import { baseUrl } from "../../../utils/config";
+import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
+import { useNavigate } from "react-router-dom";
 
 export default function BrandMaster() {
+  const navigate=useNavigate()
   const [whatsappOptions, setWhatsappOptions] = useState([]);
   const [igusernameOptions, setIgusernameOptions] = useState([]);
   const { toastAlert, toastError } = useGlobalContext();
@@ -35,6 +38,7 @@ export default function BrandMaster() {
   const [rows, setRows] = useState([]);
   const [dataPlatforms, setDataPlatforms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalPlatFrom, setIsModalPlatFrom] = useState(false);
   const [isPutOpen, setIsPutOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filteredRows, setFilteredRows] = useState([]);
@@ -52,15 +56,15 @@ export default function BrandMaster() {
     brand_name: "",
     category_id: "",
     sub_category_id: "",
-    major_category: "",
+    // major_category: "",
   });
-  const majorcategoryoption = [
-    { major_cat_id: 1, major_cat_name: "Brands" },
-    { major_cat_id: 2, major_cat_name: "Normal" },
-    { major_cat_id: 3, major_cat_name: "Negative" },
-    { major_cat_id: 4, major_cat_name: "NBFRS" },
-    { major_cat_id: 5, major_cat_name: "Entertainment" },
-  ];
+  // const majorcategoryoption = [
+  //   { major_cat_id: 1, major_cat_name: "Brands" },
+  //   { major_cat_id: 2, major_cat_name: "Normal" },
+  //   { major_cat_id: 3, major_cat_name: "Negative" },
+  //   { major_cat_id: 4, major_cat_name: "NBFRS" },
+  //   { major_cat_id: 5, major_cat_name: "Entertainment" },
+  // ];
 
   const platform = [
     { plt_id: 1, plat_name: "Instagram" },
@@ -85,6 +89,28 @@ export default function BrandMaster() {
       <GridToolbarContainer style={toolbarStyles}>
         <Button color="error" variant="outlined" onClick={handleClick}>
           create brand
+        </Button>
+
+        <Button
+          color="primary"
+          variant="outlined"
+          onClick={() => navigate("/admin/categorymaster")}
+        >
+          Create Category
+        </Button>
+        <Button
+          color="secondary"
+          variant="outlined"
+          onClick={() => navigate("/admin/subcategory")}
+        >
+          Create Subcategory
+        </Button>
+        <Button
+          color="secondary"
+          variant="outlined"
+          onClick={() => navigate("/case-platform")}
+        >
+         Platfrom
         </Button>
       </GridToolbarContainer>
     );
@@ -122,13 +148,13 @@ export default function BrandMaster() {
     if (
       !postData.brand_name ||
       !postData.category_id ||
-      !postData.sub_category_id ||
-      !postData.major_category
+      !postData.sub_category_id 
+      // !postData.major_category
     ) {
       toastError(" * Please fill in all required fields ");
     } else {
       axios
-        .post(`${brandURL}add_brand`, updatedPostData)
+        .post(`${brandURL}/add_brand`, updatedPostData)
         .then((response) => {
           response.data.message
             ? toastError(response.data.message)
@@ -232,6 +258,11 @@ export default function BrandMaster() {
     });
   }, [editData.category_id]);
 
+  const handlePlatformData = (params) => {
+
+    console.log("new ");
+  };
+
   useEffect(() => {
     axios.get(`${baseUrl}/get_all_platforms`).then((response) => {
       const options = response.data.map((item) => ({
@@ -319,10 +350,30 @@ export default function BrandMaster() {
       headerName: "SubCategory",
       width: 180,
     },
+    // {
+    //   field: "major_category",
+    //   headerName: "Major Category",
+    //   width: 180,
+    // },
     {
-      field: "major_category",
-      headerName: "Major Category",
-      width: 180,
+      field: "platform",
+      headerName: "Platfrom",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            <Button
+              onClick={
+                () => handlePlatformData(params)
+                //  console.log(params?.row?.platform)
+              }
+              variant="text"
+            >
+              <ModeCommentTwoToneIcon />
+            </Button>
+          </div>
+        );
+      },
     },
     {
       field: "actions",
@@ -428,7 +479,7 @@ export default function BrandMaster() {
                 />
                 <span style={{ color: "red" }}>{errBrandName}</span>
               </>
-              <Autocomplete
+              {/* <Autocomplete
                 id="combo-box-demo"
                 options={majorcategoryoption.map((item) => ({
                   label: item.major_cat_name,
@@ -446,7 +497,7 @@ export default function BrandMaster() {
                     });
                   }
                 }}
-              />
+              /> */}
               <>
                 <Autocomplete
                   disablePortal
@@ -613,7 +664,7 @@ export default function BrandMaster() {
                     }));
                   }}
                 />
-                <Autocomplete
+                {/* <Autocomplete
                   disablePortal
                   options={majorcategoryoption}
                   getOptionLabel={(option) => option.major_cat_name}
@@ -630,7 +681,7 @@ export default function BrandMaster() {
                       major_category: newValue && newValue.major_cat_name,
                     }));
                   }}
-                />
+                /> */}
               </div>
             )}
           </Box>

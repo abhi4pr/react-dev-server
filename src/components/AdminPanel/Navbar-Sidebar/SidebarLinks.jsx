@@ -300,7 +300,9 @@ const SidebarLinks = () => {
                   <Link className="collapse-item" to="/admin/user">
                     Payout Employee Registration
                   </Link>
-
+                  <Link className="collapse-item" to="/admin/billing-overview">
+                    Billing Header Overview
+                  </Link>
                   <Link className="collapse-item" to="/admin/wfhd-overview">
                     WFHD Overview
                   </Link>
@@ -785,7 +787,7 @@ const SidebarLinks = () => {
                                     Campaign Master
                                   </Link>
 
-                                  <Link
+                                  {/* <Link
                                     className="collapse-item"
                                     to="/admin/categorymaster"
                                   >
@@ -796,7 +798,7 @@ const SidebarLinks = () => {
                                     to="/admin/subcategory"
                                   >
                                     Subcategory Master
-                                  </Link>
+                                  </Link> */}
                                   <Link
                                     className="collapse-item"
                                     to="/admin/contentcreater"
@@ -826,6 +828,14 @@ const SidebarLinks = () => {
                                 >
                                   Replacement Dashboard
                                 </Link>
+
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/assignment-dashboard"
+                                >
+                                  Assignment Dashboard
+                                </Link>
+
 
                                 <Link
                                   className="collapse-item"

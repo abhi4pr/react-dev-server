@@ -155,6 +155,8 @@ export default function PendingPaymentRequest() {
   const [reminderData, setReminderData] = useState([]);
   const [remainderDialog, setRemainderDialog] = useState(false);
   const [aknowledgementDialog, setAknowledgementDialog] = useState(false);
+  const [nodeData, setNodeData] = useState([]);
+  const [phpData, setPhpData] = useState([]);
 
   var handleAcknowledgeClick = (row) => {
     setAknowledgementDialog(true);
@@ -220,7 +222,7 @@ export default function PendingPaymentRequest() {
 
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       const x = res.data.modifiedData;
-
+      setNodeData(x);
       axios
         .get(
           "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
@@ -229,6 +231,7 @@ export default function PendingPaymentRequest() {
           let y = res.data.body.filter((item) => {
             return !x.some((item2) => item.request_id == item2.request_id);
           });
+          setPhpData(res.data.body);
           setData(y);
           setFilterData(y);
           setPendingRequestCount(y.length);
@@ -481,7 +484,9 @@ export default function PendingPaymentRequest() {
 
   // Payment history detail:-
 
-  const handleOpenPaymentHistory = () => {
+  const handleOpenPaymentHistory = (row) => {
+    console.log(row, "row");
+    setRowData(row);
     setPaymentHistory(true);
   };
   const handleClosePaymentHistory = () => {
@@ -587,6 +592,81 @@ export default function PendingPaymentRequest() {
       width: 150,
       renderCell: (params) => {
         return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+    {
+      field: "request_date",
+      headerName: "Requested Date",
+      width: 150,
+      renderCell: (params) => {
+        return convertDateToDDMMYYYY(params.row.request_date);
+      },
+    },
+    {
+      field: "name",
+      headerName: "Requested By",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.name;
+      },
+    },
+    {
+      field: "vendor_name",
+      headerName: "Vendor Name",
+      // width: "auto",
+      width: 250,
+      renderCell: (params) => {
+        return params.row.vendor_name;
+      },
+    },
+    {
+      field: "remark_audit",
+      headerName: "Remark",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.remark_audit;
+      },
+    },
+    {
+      field: "priority",
+      headerName: "Priority",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.priority;
+      },
+    },
+    {
+      field: "aging",
+      headerName: "Aging",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
+        );
+      },
+    },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 150,
+      renderCell: (params) => {
+        const matchingItems = nodeData.filter(
+          (item) => item.request_id == params.row.request_id
+        );
+        console.log(matchingItems, "matchingItems");
+        if (matchingItems.length > 0) {
+          return matchingItems.map((item, index) => (
+            <p key={index}>
+              {item.status == 0
+                ? "Pending"
+                : item.status == 2
+                ? "Discarded"
+                : "Paid"}
+            </p>
+          ));
+        } else {
+          return "Pending"; // Default value if no matching item is found
+        }
       },
     },
   ];
@@ -776,6 +856,10 @@ export default function PendingPaymentRequest() {
       headerName: "Vendor Name",
       width: 250,
       renderCell: (params) => {
+        console.log(
+          phpData.filter((e) => e.vendor_name === params.row.vendor_name),
+          "phpData"
+        );
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
@@ -787,8 +871,13 @@ export default function PendingPaymentRequest() {
             <div onClick={() => handleOpenBankDetail()}>
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
             </div>
-            <div onClick={() => handleOpenPaymentHistory()}>
-              <HistoryIcon style={{ fontSize: "25px", marginLeft: "20px" }} />
+            <div onClick={() => handleOpenPaymentHistory(params.row)}>
+              {phpData.filter((e) => e.vendor_name === params.row.vendor_name)
+                .length > 0 ? (
+                <HistoryIcon style={{ fontSize: "25px", marginLeft: "20px" }} />
+              ) : (
+                ""
+              )}
             </div>
           </div>
         );
@@ -952,7 +1041,7 @@ export default function PendingPaymentRequest() {
         </IconButton>
 
         <DataGrid
-          rows={filterData}
+          rows={phpData.filter(e => e.vendor_name === rowData.vendor_name)}
           columns={paymentDetailColumns}
           pageSize={5}
           rowsPerPageOptions={[5]}

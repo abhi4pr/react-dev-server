@@ -43,19 +43,23 @@ export default function RegisteredCampaign() {
   const [errors, setErrors] = useState({});
 
   const [commits, setCommits] = useState([]);
-  const [table1Data, setTable1Data] = useState([{}]);
-  const [table2Data, setTable2Data] = useState([{}]);
+  const [table1Data, setTable1Data] = useState([]);
+  const [table2Data, setTable2Data] = useState([]);
+  console.log(table2Data, "table2Data");
   const [loadTable1, SetLoadTable1] = useState(false);
   const [table1Data2, setTable1Data2] = useState(false);
   const [brandName, setBrandName] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [commitmentModalData, setCommitmentModalData] = useState([{}]);
+  console.log(commitmentModalData, "commitmentModalData");
   const [campaignId, setCampaignId] = useState("");
   const [campignData, setCampignData] = useState([{}]);
   const [deleteRowModal, setDeleteRowModal] = useState(false);
   const [deleteRowId, setDeleteRowId] = useState("");
   const [dateFilter, setDateFilter] = useState("year");
   const [filteredTable1DataLength, setFilteredTable1DataLength] = useState(0);
+  const [filteredTable1Data, setFilterTable1Data] = useState([])
+  const [filteredTable2Data, setFilterTable2Data] = useState([])
 
   const handleDateFilterChange = (e) => {
     const newFilter = e.target.value;
@@ -65,7 +69,13 @@ export default function RegisteredCampaign() {
   useEffect(() => {
     const updatedFilteredData = filterDataByDateRange(table1Data);
     setFilteredTable1DataLength(updatedFilteredData.length);
-  }, [table1Data, dateFilter]);
+    if (table1Data) {
+      setFilterTable1Data(updatedFilteredData)
+    }
+    if (table2Data) {
+      setFilterTable2Data(table2Data)
+    }
+  }, [table1Data, dateFilter, table2Data]);
 
   const handleFileChange = (event, index) => {
     const file = event.target.files[0];
@@ -266,6 +276,8 @@ export default function RegisteredCampaign() {
     }
   };
 
+  console.log(filteredTable1Data)
+  console.log(filteredTable2Data)
   const handlePlan = (event) => {
     const path = `/admin/planCreation/${event._id}`;
     navigate(path);
@@ -454,6 +466,11 @@ export default function RegisteredCampaign() {
     {
       field: "hashtags",
       headerName: "Hashtag",
+      width: 200,
+    },
+    {
+      field: "campaignclosedby",
+      headerName: "Campaign Closed By",
       width: 200,
     },
     {
@@ -720,12 +737,9 @@ export default function RegisteredCampaign() {
     }
   };
 
-  // Use this function to filter your data before rendering
-  const filteredTable1Data = filterDataByDateRange(table1Data);
 
-  console.log(filteredTable1Data?.length, "harshal");
+  console.log(filteredTable1Data)
 
-  const filteredTable2Data = filterDataByDateRange(table2Data);
 
   const commitColumns = [
     {
@@ -808,7 +822,7 @@ export default function RegisteredCampaign() {
           columns={tab2Columns}
           // pageSize={10}
 
-          getRowId={(row) => row.count}
+          getRowId={(row) => row?._id}
         />
       )}
     </div>
@@ -825,7 +839,7 @@ export default function RegisteredCampaign() {
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
       >
-        <Box sx={{display:"flex" }}>
+        <Box sx={{ display: "flex" }}>
           <FormControl style={{ width: "300px", margin: "10px" }}>
             <InputLabel id="date-filter-select-label">Date Filter</InputLabel>
             <Select
@@ -842,7 +856,7 @@ export default function RegisteredCampaign() {
               <MenuItem value="thisYear"> Year</MenuItem>
             </Select>
           </FormControl>
-          <Box sx={{m:3}}>Count: {filteredTable1DataLength}</Box>
+          <Box sx={{ m: 3 }}>Count: {filteredTable1DataLength}</Box>
         </Box>
         {activeAccordionIndex === 0 && tab1}
         {activeAccordionIndex === 1 && tab2}
@@ -996,15 +1010,15 @@ export default function RegisteredCampaign() {
                   {videoType?.filter(
                     (e) => !fields?.map((e) => e.selectValue).includes(e)
                   ).length > 0 && (
-                    <Button
-                      variant="outlined"
-                      sx={{ marginBottom: "10px", marginRight: "10px" }}
-                      color="primary"
-                      onClick={handleAddField}
-                    >
-                      Add Row
-                    </Button>
-                  )}
+                      <Button
+                        variant="outlined"
+                        sx={{ marginBottom: "10px", marginRight: "10px" }}
+                        color="primary"
+                        onClick={handleAddField}
+                      >
+                        Add Row
+                      </Button>
+                    )}
                 </div>
               </div>
               <div className="d-flex justify-content-between">
@@ -1050,7 +1064,7 @@ export default function RegisteredCampaign() {
                   rows={commitmentModalData}
                   columns={commitColumns}
                   pageSize={10}
-                  getRowId={(row) => row.selectValue}
+                  getRowId={(row) => row?.selectValue}
                 />
               </div>
               <Button

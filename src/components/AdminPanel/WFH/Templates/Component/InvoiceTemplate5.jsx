@@ -39,7 +39,7 @@ const InvoiceTemplate7 = ({ data }) => {
             </div>
           </header>
           <section className="bus-booking-content" id="domain_invoice">
-            <div className="container">
+            <div className="temp_container">
               <div className="invoice-owner-conte-wrap domain-owner">
                 <div className="invo-to-wrap">
                   <div className="invoice-to-content">

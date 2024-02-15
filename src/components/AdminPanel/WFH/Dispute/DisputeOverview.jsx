@@ -6,6 +6,10 @@ import DataTable from "react-data-table-component";
 import { baseUrl } from "../../../../utils/config";
 import { useLocation } from "react-router-dom";
 import getDecodedToken from "../../../../utils/DecodedToken";
+import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
+
+const d = new Date();
+const currentDate = DateISOtoNormal(d.toISOString());
 
 const DisputeOverview = () => {
   const location = useLocation();
@@ -28,7 +32,6 @@ const DisputeOverview = () => {
     {
       name: "Employee Name",
       cell: (row) => row.user_name,
-      width: "12%",
     },
     {
       name: "Department",
@@ -37,7 +40,6 @@ const DisputeOverview = () => {
 
     {
       name: "Work Days",
-      width: "8%",
       cell: () => 30,
     },
     {
@@ -91,32 +93,36 @@ const DisputeOverview = () => {
     },
     {
       name: "Status",
-      cell: (row) => row.attendence_status_flow,
+      cell: (row) => row.dispute_status,
     },
     {
       name: "Disputed Date",
-      cell: (row) => row.disputed_date,
+      cell: (row) => row.dispute_date,
     },
     {
       name: "Reason",
-      cell: (row) => row.disputed_reason,
+      cell: (row) => row.dispute_reason,
     },
     (!id || loginUserRole == 2) && {
       name: "Actions",
       cell: (row) => (
         <>
-          <button
-            className="btn btn-primary"
-            onClick={(e) => handleResolveReject(row, e)}
-          >
-            Resolve
-          </button>
-          <button
-            className="btn btn-danger"
-            onClick={(e) => handleResolveReject(row, e)}
-          >
-            Reject
-          </button>
+          {row.dispute_status == "Disputed" && (
+            <>
+              <button
+                className="btn btn-primary"
+                onClick={(e) => handleResolveReject(row, e, "Dispute Resolved")}
+              >
+                Resolve
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={(e) => handleResolveReject(row, e, "Dispute Rejected")}
+              >
+                Reject
+              </button>
+            </>
+          )}
         </>
       ),
     },
@@ -133,6 +139,7 @@ const DisputeOverview = () => {
         data = data.filter((item) => item.dept === loginUserDept);
       }
 
+      console.log("data", data);
       setData(data);
       setFilterData(data);
       toastAlert("Data Fetched Successfully");
@@ -145,13 +152,20 @@ const DisputeOverview = () => {
     getData();
   }, []);
 
-  async function handleResolveReject(row, e) {
+  async function handleResolveReject(row, e, status) {
     e.preventDefault();
     await axios.put(`${baseUrl}` + `update_attendance`, {
       attendence_id: row.attendence_id,
       month: row.month,
       year: row.year,
       attendence_status_flow: "Invoice Submit Pending For Verifcation",
+    });
+    await axios.put(`${baseUrl}update_attendance_dispute`, {
+      user_id: row.user_id,
+      attendence_id: row.attendence_id,
+      dispute_status: status,
+      dispute_reason: row.dispute_reason,
+      dispute_date: currentDate,
     });
     getData();
     toastAlert("Successful");
@@ -173,6 +187,7 @@ const DisputeOverview = () => {
         mainTitle="Dispute"
         title="Dispute Overview"
         // handleSubmit={handleSubmit}
+        submitButton={false}
       >
         <div className="page_height">
           <div className="card mb-4">
