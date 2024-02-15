@@ -5,7 +5,8 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { tr } from "date-fns/locale";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
+import { Button } from "@mui/material";
 
 const SaleBookingClose = () => {
   const { toastAlert } = useGlobalContext();
@@ -17,6 +18,12 @@ const SaleBookingClose = () => {
   const [filterData, setFilterData] = useState([]);
   const [tdsStatus, setTdsStatus] = useState(0);
   const [aboutToClose, setAboutToClose] = useState(false);
+  const [customerName, setCustomerName] = useState("");
+  const [salesExecutive, setSalesExecutive] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [campaignAmountFilter, setCampaignAmountFilter] = useState("");
+  const [campaignAmountField, setcampaignAmountField] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -28,7 +35,6 @@ const SaleBookingClose = () => {
     formData.append("close_booking", 1);
     formData.append("tds_status", 1);
     formData.append("sale_booking_id", row.sale_booking_id);
-
     await axios.post(
       "https://sales.creativefuel.io/webservices/RestController.php?view=close_booking",
       formData,
@@ -38,30 +44,33 @@ const SaleBookingClose = () => {
         },
       }
     );
-getData()
+    getData();
     toastAlert("Data Updated");
     setIsFormSubmitted(true);
   };
-
   function getData() {
     axios
-      .post(
-        baseUrl+"add_php_sale_booking_tds_data_in_node"
-      )
+      .post(baseUrl + "add_php_sale_booking_tds_data_in_node")
       .then((res) => {
         console.log("data save in local success");
       });
-      let formData = new FormData();
-      formData.append("loggedin_user_id", 36);
-      formData.append("tds_status", tdsStatus);
-      {aboutToClose&&formData.append("about_to_close", 1);}
+    let formData = new FormData();
+    formData.append("loggedin_user_id", 36);
+    formData.append("tds_status", tdsStatus);
+    {
+      aboutToClose && formData.append("about_to_close", 1);
+    }
 
     axios
-      .post("https://sales.creativefuel.io/webservices/RestController.php?view=sales-sale_booking_for_tds",formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        })
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales-sale_booking_for_tds",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((res) => {
         const allData = res.data.body;
         // const filteredData = allData.filter(
@@ -74,7 +83,7 @@ getData()
 
   useEffect(() => {
     getData();
-  }, [tdsStatus,aboutToClose]);
+  }, [tdsStatus, aboutToClose]);
 
   const aboutClose = () => {
     // const allData = datas;
@@ -92,8 +101,8 @@ getData()
     // const filteredData = allData.filter((item) => item.show_fstatus == "Open");
     // setData(allData);
     // setFilterData(filteredData);
-    setTdsStatus(0)
-setAboutToClose(false)
+    setTdsStatus(0);
+    setAboutToClose(false);
   };
 
   const close = () => {
@@ -103,8 +112,8 @@ setAboutToClose(false)
     // );
     // setData(allData);
     // setFilterData(filteredData);
-    setTdsStatus(1);  
-    setAboutToClose(false)
+    setTdsStatus(1);
+    setAboutToClose(false);
   };
 
   useEffect(() => {
@@ -118,6 +127,64 @@ setAboutToClose(false)
     setFilterData(result);
   }, [search]);
 
+  // Filters Logic :-
+  const handleAllFilters = () => {
+    const filterData = datas.filter((item) => {
+      console.log(item.payment_approval_status, "status>>");
+      const date = new Date(item.payment_date);
+      const fromDate1 = new Date(fromDate);
+      const toDate1 = new Date(toDate);
+      toDate1.setDate(toDate1.getDate() + 1);
+      // Date Range Filter:-
+      const dateFilterPassed =
+        !fromDate || !toDate || (date >= fromDate1 && date <= toDate1);
+      // Customer Name Filter:-
+      const customerNameFilterPassed =
+        !customerName ||
+        item.cust_name.toLowerCase().includes(customerName.toLowerCase());
+
+      // Requested By Filter
+      const salesExecutiveFilterPassed =
+        !salesExecutive ||
+        item.sales_exe_name
+          .toLowerCase()
+          .includes(salesExecutive.toLowerCase());
+      // Campaign Amount filter
+      const campaignAmountFilterPassed = () => {
+        const campaignAmount = parseFloat(campaignAmountField);
+        console.log("switch");
+        switch (campaignAmountFilter) {
+          case "greaterThan":
+            return +item.campaign_amount > campaignAmount;
+          case "lessThan":
+            return +item.campaign_amount < campaignAmount;
+          case "equalTo":
+            return +item.campaign_amount === campaignAmount;
+          default:
+            return true;
+        }
+      };
+      const allFiltersPassed =
+        dateFilterPassed &&
+        customerNameFilterPassed &&
+        salesExecutiveFilterPassed &&
+        campaignAmountFilterPassed();
+
+      return allFiltersPassed;
+    });
+    console.log(filterData, "FD??????????????");
+    setFilterData(filterData);
+  };
+
+  const handleClearAllFilter = () => {
+    setFilterData(datas);
+    setFromDate("");
+    setToDate("");
+    setCustomerName("");
+    setcampaignAmountField("");
+    setCampaignAmountFilter("");
+    setSalesExecutive("");
+  };
   const columns = [
     {
       name: "S.No",
@@ -178,7 +245,7 @@ setAboutToClose(false)
       name: "Action",
       selector: (row) => {
         // return row.show_fstatus === "About To Close" ? (
-        return tdsStatus === 0 && aboutToClose==true ? (
+        return tdsStatus === 0 && aboutToClose == true ? (
           <button
             className="btn btn-sm btn-outline-info"
             onClick={() => handleVerify(row)}
@@ -204,7 +271,99 @@ setAboutToClose(false)
           false
         }
       />
-
+      <div className="row">
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Customer Name</label>
+            <input
+              value={customerName}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setCustomerName(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Sales Executive Name</label>
+            <input
+              value={salesExecutive}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setSalesExecutive(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>From Date</label>
+            <input
+              value={fromDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => setFromDate(e.target.value)}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>To Date</label>
+            <input
+              value={toDate}
+              type="date"
+              className="form-control"
+              onChange={(e) => {
+                setToDate(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount Filter</label>
+            <select
+              value={campaignAmountFilter}
+              className="form-control"
+              onChange={(e) => setCampaignAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount</label>
+            <input
+              value={campaignAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setcampaignAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-1 mt-4 me-2">
+          <Button variant="contained" onClick={handleAllFilters}>
+            <i className="fas fa-search"></i> Search
+          </Button>
+        </div>
+        <div className="col-md-1 mt-4">
+          <Button variant="contained" onClick={handleClearAllFilter}>
+            Clear
+          </Button>
+        </div>
+      </div>
       <button className="btn btn-success" onClick={open}>
         Open
       </button>

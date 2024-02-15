@@ -30,6 +30,10 @@ const PendingApprovalUpdate = () => {
   const [bankName, setBankName] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [campaignAmountFilter, setCampaignAmountFilter] = useState("");
+  const [campaignAmountField, setcampaignAmountField] = useState("");
+  const [paymentMode, setPaymetMode] = useState("");
+  const [paymentStatus, setPaymentStatus] = useState("");
   // const []
 
   const token = sessionStorage.getItem("token");
@@ -106,6 +110,7 @@ const PendingApprovalUpdate = () => {
   // Filters Logic :-
   const handleAllFilters = () => {
     const filterData = datas.filter((item) => {
+      console.log(item.payment_approval_status, "status>>");
       const date = new Date(item.payment_date);
       const fromDate1 = new Date(fromDate);
       const toDate1 = new Date(toDate);
@@ -125,7 +130,20 @@ const PendingApprovalUpdate = () => {
       // Bank Name Filter
       const bankNameFilterPassed =
         !bankName || item.detail.toLowerCase().includes(bankName.toLowerCase());
+      // Payment Status
 
+      const paymentStatusFilterPassed =
+        !paymentStatus ||
+        (item.payment_approval_status === 0 &&
+          paymentStatus.toLowerCase() === "pending") ||
+        (item.payment_approval_status === 1 &&
+          paymentStatus.toLowerCase() === "approved") ||
+        (item.payment_approval_status === 2 &&
+          paymentStatus.toLowerCase() === "rejected");
+      //  Payment Mode
+      const paymentModeFilterPassed =
+        !paymentMode ||
+        item.payment_mode.toLowerCase().includes(paymentMode.toLowerCase());
       //  Payment Amount Filter
       const paymentAmountFilterPassed = () => {
         const paymentAmount = parseFloat(paymentAmountField);
@@ -141,12 +159,30 @@ const PendingApprovalUpdate = () => {
             return true;
         }
       };
+      // Campaign Amount filter
+      const campaignAmountFilterPassed = () => {
+        const campaignAmount = parseFloat(campaignAmountField);
+        console.log("switch");
+        switch (campaignAmountFilter) {
+          case "greaterThan":
+            return +item.campaign_amount > campaignAmount;
+          case "lessThan":
+            return +item.campaign_amount < campaignAmount;
+          case "equalTo":
+            return +item.campaign_amount === campaignAmount;
+          default:
+            return true;
+        }
+      };
       const allFiltersPassed =
         dateFilterPassed &&
         customerNameFilterPassed &&
         requestedByFilterPassed &&
         bankNameFilterPassed &&
-        paymentAmountFilterPassed();
+        paymentStatusFilterPassed &&
+        paymentModeFilterPassed &&
+        paymentAmountFilterPassed() &&
+        campaignAmountFilterPassed();
 
       return allFiltersPassed;
     });
@@ -163,6 +199,10 @@ const PendingApprovalUpdate = () => {
     setBankName("");
     setPaymentAmountFilter("");
     setPaymentAmountField("");
+    setcampaignAmountField("");
+    setCampaignAmountFilter("");
+    setPaymentStatus("");
+    setPaymetMode("");
   };
   const columns = [
     {
@@ -415,6 +455,34 @@ const PendingApprovalUpdate = () => {
         </div>
         <div className="col-md-3">
           <div className="form-group">
+            <label>Payment Status</label>
+            <input
+              value={paymentStatus}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setPaymentStatus(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Payment Mode</label>
+            <input
+              value={paymentMode}
+              type="text"
+              placeholder="Name"
+              className="form-control"
+              onChange={(e) => {
+                setPaymetMode(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
             <label>From Date</label>
             <input
               value={fromDate}
@@ -462,6 +530,35 @@ const PendingApprovalUpdate = () => {
               className="form-control"
               onChange={(e) => {
                 setPaymentAmountField(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount Filter</label>
+            <select
+              value={campaignAmountFilter}
+              className="form-control"
+              onChange={(e) => setCampaignAmountFilter(e.target.value)}
+            >
+              <option value="">Select Amount</option>
+              <option value="greaterThan">Greater Than</option>
+              <option value="lessThan">Less Than</option>
+              <option value="equalTo">Equal To</option>
+            </select>
+          </div>
+        </div>
+        <div className="col-md-3">
+          <div className="form-group">
+            <label>Campaign Amount</label>
+            <input
+              value={campaignAmountField}
+              type="number"
+              placeholder="Request Amount"
+              className="form-control"
+              onChange={(e) => {
+                setcampaignAmountField(e.target.value);
               }}
             />
           </div>
