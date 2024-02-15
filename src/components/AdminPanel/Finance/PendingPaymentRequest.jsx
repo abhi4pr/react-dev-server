@@ -28,79 +28,6 @@ import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsAct
 import Badge from "@mui/material/Badge";
 import ShowDataModal from "./ShowDataModal";
 
-const reminderDummyData = [
-  {
-    request_id: 1,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 10,
-  },
-  {
-    request_id: 2,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 9,
-  },
-  {
-    request_id: 3,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 8,
-  },
-  {
-    request_id: 4,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 7,
-  },
-  {
-    request_id: 5,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 6,
-  },
-  {
-    request_id: 6,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 5,
-  },
-  {
-    request_id: 7,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 4,
-  },
-  {
-    request_id: 20,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 3,
-  },
-  {
-    request_id: 20,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 2,
-  },
-  {
-    request_id: 20,
-    request_date: "2024-02-03 07:17:12",
-    vendor_name: "Rahul",
-    remark_audit: "This is a reminder",
-    remand_id: 1,
-  },
-];
-
 const convertDateToDDMMYYYY = (date) => {
   const date1 = new Date(date);
   const day = String(date1.getDate()).padStart(2, "0");
@@ -108,13 +35,6 @@ const convertDateToDDMMYYYY = (date) => {
   const year = date1.getFullYear();
 
   return `${day}/${month}/${year}`;
-};
-
-const getValidationCSSForRemainder = (params) => {
-  const reminder = reminderDummyData.filter(
-    (item) => item.request_id == params.row.request_id
-  );
-  return reminder.length > 2 ? "bg-danger" : "";
 };
 
 export default function PendingPaymentRequest() {
@@ -157,9 +77,19 @@ export default function PendingPaymentRequest() {
   const [aknowledgementDialog, setAknowledgementDialog] = useState(false);
   const [nodeData, setNodeData] = useState([]);
   const [phpData, setPhpData] = useState([]);
+  const [phpRemainderData, setPhpRemainderData] = useState([]);
+  const [historyType, setHistoryType] = useState("");
+  const [historyData, setHistoryData] = useState([]);
 
   var handleAcknowledgeClick = (row) => {
     setAknowledgementDialog(true);
+  };
+
+  const getValidationCSSForRemainder = (params) => {
+    const reminder = phpRemainderData.filter(
+      (item) => item.request_id == params.row.request_id
+    );
+    return reminder.length > 2 ? "bg-danger" : "";
   };
 
   const remainderDialogColumns = [
@@ -169,7 +99,7 @@ export default function PendingPaymentRequest() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = reminderDummyData.indexOf(params.row);
+        const rowIndex = reminderData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -182,15 +112,7 @@ export default function PendingPaymentRequest() {
       },
     },
     {
-      field: "vendor_name",
-      headerName: "Vendor Name",
-      width: 250,
-      renderCell: (params) => {
-        return params.row.vendor_name;
-      },
-    },
-    {
-      field: "remark_audit",
+      field: "remind_remark",
 
       headerName: "Remark",
       width: 150,
@@ -218,8 +140,6 @@ export default function PendingPaymentRequest() {
   ];
 
   const callApi = () => {
-    axios.get(`${baseUrl}` + `addPhpVendorPaymentRequest`).then((res) => {});
-
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       const x = res.data.modifiedData;
       setNodeData(x);
@@ -251,6 +171,16 @@ export default function PendingPaymentRequest() {
     axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
       setUserName(res.data.user_name);
     });
+
+    //Reminder API
+    axios
+      .get(
+        "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
+      )
+      .then((res) => {
+        console.log(res.data.body, "res.data for reminder");
+        setPhpRemainderData(res.data.body);
+      });
   };
 
   const handleRemainderModal = (reaminderData) => {
@@ -462,13 +392,6 @@ export default function PendingPaymentRequest() {
     const sameNameVendors = data.filter(
       (item) => item.vendor_name === vendorName
     );
-    // Calculate the total amount for vendors with the same name
-    // const totalAmount = sameNameVendors.reduce(
-    //   (total, item) => total + item.request_amount,
-    //   0
-    // );
-
-    // Set the selected vendor data including the vendor name, data, and total amount
     setSameVendorData(sameNameVendors);
   };
 
@@ -486,11 +409,34 @@ export default function PendingPaymentRequest() {
 
   // Payment history detail:-
 
-  const handleOpenPaymentHistory = (row) => {
-    console.log(row, "row");
+  const handleOpenPaymentHistory = (row, type) => {
+    setHistoryType(type);
     setRowData(row);
     setPaymentHistory(true);
+
+    const startDate = new Date(`04/01/${new Date().getFullYear() - 1}`);
+    const endDate = new Date(`03/31/${new Date().getFullYear()}`);
+
+    const dataFY= phpData.filter((e) => {
+      const paymentDate = new Date(e.request_date);
+      return (
+        paymentDate >= startDate &&
+        paymentDate <= endDate &&
+        e.vendor_name === row.vendor_name &&
+        e.status != 0 &&
+        e.status != 2
+      );
+    });
+
+    const dataTP = phpData.filter((e) => {
+      return e.vendor_name === row.vendor_name && e.status != 0 && e.status != 2;
+    });
+
+     setHistoryData(type=="FY"?dataFY:dataTP);
+
+    console.log(nn, "nn");
   };
+
   const handleClosePaymentHistory = () => {
     setPaymentHistory(false);
   };
@@ -594,6 +540,46 @@ export default function PendingPaymentRequest() {
       width: 150,
       renderCell: (params) => {
         return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+    {
+      field: "invc_img",
+      headerName: "Invoice Image",
+      renderCell: (params) => {
+        if (params.row.invc_img) {
+          // Extract file extension and check if it's a PDF
+          const fileExtension = params.row.invc_img
+            .split(".")
+            .pop()
+            .toLowerCase();
+          const isPdf = fileExtension === "pdf";
+
+          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+
+          return isPdf ? (
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={pdf}
+              style={{ width: "40px", height: "40px" }}
+              title="PDF Preview"
+            />
+          ) : (
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={imgUrl}
+              alt="Invoice"
+              style={{ width: "100px", height: "100px" }}
+            />
+          );
+        } else {
+          return null;
+        }
       },
     },
     {
@@ -831,7 +817,7 @@ export default function PendingPaymentRequest() {
       headerName: "Requested By",
       width: 150,
       renderCell: (params) => {
-        const reminder = reminderDummyData.filter(
+        const reminder = phpRemainderData.filter(
           (item) => item.request_id == params.row.request_id
         );
 
@@ -839,7 +825,7 @@ export default function PendingPaymentRequest() {
           <>
             <span>{params.row.name}</span> &nbsp;{" "}
             <span>
-              {reminder ? (
+              {reminder.length > 0 ? (
                 <Badge badgeContent={reminder.length} color="primary">
                   <NotificationsActiveTwoToneIcon
                     onClick={() => handleRemainderModal(reminder)}
@@ -856,16 +842,16 @@ export default function PendingPaymentRequest() {
     {
       field: "vendor_name",
       headerName: "Vendor Name",
-      width: 250,
+      width: 320,
       renderCell: (params) => {
-        console.log(
-          phpData.filter((e) => e.vendor_name === params.row.vendor_name),
-          "phpData"
-        );
+        // console.log(
+        //   phpData.filter((e) => e.vendor_name === params.row.vendor_name),
+        //   "phpData"
+        // );
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
-              style={{ cursor: "pointer", marginRight: "60px" }}
+              style={{ cursor: "pointer", marginRight: "20px" }}
               onClick={() => handleOpenSameVender(params.row.vendor_name)}
             >
               {params.row.vendor_name}
@@ -873,10 +859,26 @@ export default function PendingPaymentRequest() {
             <div onClick={() => handleOpenBankDetail()}>
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
             </div>
-            <div onClick={() => handleOpenPaymentHistory(params.row)}>
-              {phpData.filter((e) => e.vendor_name === params.row.vendor_name)
+            <div>
+              {nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
                 .length > 0 ? (
-                <HistoryIcon style={{ fontSize: "25px", marginLeft: "20px" }} />
+                <span className="row ml-2 ">
+                  <h5
+                    onClick={() => handleOpenPaymentHistory(params.row, "TP")}
+                    style={{ cursor: "pointer" }}
+                    className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
+                  >
+                    Total Paid
+                  </h5>
+                  <h5
+                    onClick={() => handleOpenPaymentHistory(params.row, "FY")}
+                    style={{ cursor: "pointer" }}
+                    className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+                  >
+                    {/* Financial Year */}
+                    FY
+                  </h5>
+                </span>
               ) : (
                 ""
               )}
@@ -1043,7 +1045,107 @@ export default function PendingPaymentRequest() {
         </IconButton>
 
         <DataGrid
-          rows={phpData.filter(e => e.vendor_name === rowData.vendor_name)}
+          // rows={
+          //   historyType === "FY"
+          //     ? phpData
+          //         .filter(
+          //           (e) =>
+          //             e.vendor_name === rowData.vendor_name &&
+          //             e.status != 0 &&
+          //             e.status != 2
+          //         )
+
+          //         .filter((e) => {
+          //           // console.log("come to FY");
+
+          //           // Extract year and month from payment_date
+          //           const paymentDate = new Date(rowData.request_date);
+          //           const paymentYear = paymentDate.getFullYear();
+          //           const paymentMonth = paymentDate.getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
+          //           // console.log(
+          //           //   paymentMonth,
+          //           //   "<-----payment month",
+          //           //   paymentYear,
+          //           //   "<-----payment year"
+          //           // );
+          //           const nowDate = new Date();
+          //           const nowMonth = nowDate.getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
+          //           // console.log(
+          //           //   nowMonth,
+          //           //   "<-----now month",
+          //           //   paymentMonth,
+          //           //   "<-----payment month"
+          //           // );
+
+          //           // Define the start and end months for the financial year (April = 4, March = 3)
+          //           const financialYearStartMonth = 4; // April
+          //           const financialYearEndMonth = 3; // March
+
+          //           // Calculate the start and end dates of the financial year
+          //           const financialYearStartDate = new Date(
+          //             paymentYear,
+          //             financialYearStartMonth,
+          //             1
+          //           ); // Month is zero-based index
+          //           const financialYearEndDate = new Date(
+          //             paymentYear + 1,
+          //             financialYearEndMonth,
+          //             31
+          //           ); // Month is zero-based index
+          //           // console.log(
+          //           //   paymentMonth >= financialYearStartMonth &&
+          //           //     paymentYear == nowMonth <= financialYearStartMonth
+          //           //     ? financialYearStartDate.getFullYear() - 1
+          //           //     : financialYearStartDate.getFullYear()
+          //           // );
+          //           // Check if the payment date falls within the financial year range
+          //           console.log(
+          //             paymentMonth >= financialYearStartMonth,
+          //             "testing"
+          //           );
+          //           // console.log(
+          //           //   paymentMonth,
+          //           //   "<-----payment month",
+          //           //   financialYearStartMonth,
+          //           //   "<---------financial year start month",
+          //           //   paymentYear,
+          //           //   "<------------ payment year",
+          //           //   financialYearStartDate.getFullYear(),
+          //           //   "<-----financial year start",
+          //           //   financialYearEndMonth,
+          //           //   "financial year month",
+          //           //   paymentMonth,
+          //           //   "<-------- payment month",
+          //           //   financialYearEndDate.getFullYear(),
+          //           //   "<------financial year end"
+          //           // );
+          //           if (
+          //             (paymentMonth >= financialYearStartMonth &&
+          //             paymentYear == nowMonth <= financialYearStartMonth
+          //               ? financialYearStartDate.getFullYear() - 1
+          //               : financialYearStartDate.getFullYear()) ||
+          //             (paymentMonth <= financialYearEndMonth &&
+          //             paymentYear == nowMonth <= financialYearStartMonth
+          //               ? financialYearEndDate.getFullYear() - 1
+          //               : financialYearEndDate.getFullYear())
+          //           ) {
+          //             // Return true if conditions are met
+          //             console.log("come to true");
+          //             return true;
+          //           }
+
+          //           // Return false if the payment date is outside the financial year range
+          //           console.log("come to false");
+          //           return false;
+          //         })
+          //     : phpData.filter(
+          //         (e) =>
+          //           e.vendor_name === rowData.vendor_name &&
+          //           e.status != 0 &&
+          //           e.status != 2
+          //       )
+          // }
+          rows={historyData}
           columns={paymentDetailColumns}
           pageSize={5}
           rowsPerPageOptions={[5]}
@@ -1058,7 +1160,6 @@ export default function PendingPaymentRequest() {
           components={{
             Toolbar: GridToolbar,
           }}
-          fv
           componentsProps={{
             toolbar: {
               value: search,
@@ -1068,7 +1169,7 @@ export default function PendingPaymentRequest() {
               clearSearchAriaLabel: "clear",
             },
           }}
-          getRowId={(row) => filterData.indexOf(row)}
+          getRowId={(row) => row.request_id}
         />
       </Dialog>
 
