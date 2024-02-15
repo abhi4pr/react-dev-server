@@ -47,12 +47,11 @@ export default function ShowDataModal({
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5]}
-            getRowId={(row) => row.remand_id}
+            getRowId={(row) => row.remind_id}
           />
         </DialogContent>
       </Dialog>
 
-      {/* Acknowledgement Dialog */}
       {aknowledgementDialog && (
         <Dialog
           open={true}
