@@ -21,6 +21,7 @@ const CaseStudyOperation = () => {
   const [data, setData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [backupData, setBackupData] = useState([]);
+  console.log(backupData,"backupData");
   const [selectedUser, setSelectedUser] = useState("");
   const [categoryData, setCategoryData] = useState([]);
   const [brandData, setBrandData] = useState([]);
@@ -113,8 +114,9 @@ const CaseStudyOperation = () => {
 
   async function getData() {
     await axios.get(baseUrl + "dataoperation").then((res) => {
-      setCountData(res.data);
+      setCountData(res.data)
       const responseData = res.data;
+      console.log(res.data," new data");
 
       const uniqueBrandName = new Set();
       const filteredData = responseData.filter((item) => {
@@ -272,11 +274,11 @@ const CaseStudyOperation = () => {
                 Dashboard
               </button>
             </Link>{" "}
-            <Link to="/case-platform">
+            {/* <Link to="/case-platform">
               <button type="button" className="btn btn-primary btn-sm">
                 Platform
               </button>
-            </Link>
+            </Link> */}
             <Link to="/admin/brandmaster">
               <button type="button" className="btn btn-primary btn-sm">
                 Brand

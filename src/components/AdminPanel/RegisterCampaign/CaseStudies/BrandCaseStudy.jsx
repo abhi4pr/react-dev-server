@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useId, useState } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import pdf from "./pdf-file.png";
 import sheets from "./sheets.png";
 import video from "./montage.png";
@@ -25,6 +25,7 @@ import {
   Autocomplete,
 } from "@mui/material";
 const BrandCaseStudy = () => {
+  const navigate = useNavigate();
   const { toastAlert, toastError } = useGlobalContext();
   const [fileDetails, setFileDetails] = useState([]);
   const [brand, setBrand] = useState("");
@@ -32,6 +33,7 @@ const BrandCaseStudy = () => {
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
   const [remark, setRemark] = useState("");
+  const [feedback, setFeedback] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [images, setImages] = useState([]);
   const [details, setDetails] = useState([]);
@@ -183,9 +185,6 @@ const BrandCaseStudy = () => {
       setEmployeeData(filteredUsers);
     });
 
-    axios.get(baseUrl + "get_all_data_platforms").then((res) => {
-      setPlateformData(res.data);
-    });
     axios.get(baseUrl + "get_all_data_content_types").then((res) => {
       setContentTypeData(res.data);
     });
@@ -194,9 +193,22 @@ const BrandCaseStudy = () => {
       setDataBrandData(res?.data?.data);
     });
 
+    axios.get(baseUrl + "get_all_data_platforms").then((res) => {
+      setPlateformData(res.data);
+    });
+
     getSubCat();
     getCat();
   }, []);
+
+  useEffect(() => {
+    const instagram = platformData?.find(
+      (p) => p.platform_name === "Instagram"
+    );
+    if (instagram) {
+      setPlateform([instagram._id]);
+    }
+  }, [platformData]);
 
   useEffect(() => {
     if (category) {
@@ -530,6 +542,7 @@ const BrandCaseStudy = () => {
         formData.append("data_type", details[i].fileType);
         formData.append("size_in_mb", details[i].sizeInMB);
         formData.append("remark", remark);
+        formData.append("feedback", feedback);
         formData.append("created_by", userID);
         formData.append("designed_by", designedBy);
         formData.append("date_of_completion", dateOfCompletion);
@@ -564,6 +577,7 @@ const BrandCaseStudy = () => {
         formData.append("data_type", mmcDetails[i].fileType);
         formData.append("size_in_mb", mmcDetails[i].sizeInMB);
         formData.append("remark", remark);
+        formData.append("feedback", feedback);
         formData.append("created_by", userID);
         formData.append("designed_by", designedBy);
         formData.append("date_of_completion", dateOfCompletion);
@@ -599,6 +613,7 @@ const BrandCaseStudy = () => {
         formData.append("data_type", sarcasmDetails[i].fileType);
         formData.append("size_in_mb", sarcasmDetails[i].sizeInMB);
         formData.append("remark", remark);
+        formData.append("feedback", feedback);
         formData.append("created_by", userID);
         formData.append("designed_by", designedBy);
         formData.append("date_of_completion", dateOfCompletion);
@@ -634,6 +649,7 @@ const BrandCaseStudy = () => {
         formData.append("data_type", nologoDetails[i].fileType);
         formData.append("size_in_mb", nologoDetails[i].sizeInMB);
         formData.append("remark", remark);
+        formData.append("feedback", feedback);
         formData.append("created_by", userID);
         formData.append("designed_by", designedBy);
         formData.append("date_of_completion", dateOfCompletion);
@@ -664,6 +680,7 @@ const BrandCaseStudy = () => {
       setImage("");
       setSize("");
       setRemark("");
+      setFeedback("");
       setDetails([]);
       setCategory("");
       setPlateform("");
@@ -785,7 +802,7 @@ const BrandCaseStudy = () => {
           submitButton={false}
         >
           <FieldContainer
-            label="Creative Fuel *"
+            label="CreativeFuel *"
             type="file"
             multiple
             accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
@@ -853,23 +870,31 @@ const BrandCaseStudy = () => {
             <label className="form-label">
               Brand <sup style={{ color: "red" }}>*</sup>
             </label>
-            <Select
-              className="formSelect"
-              options={dataBrandData?.map((opt) => ({
-                value: opt._id,
-                label: opt.brand_name,
-              }))}
-              value={{
-                value: dataBrand,
-                label:
-                  dataBrandData?.find((user) => user._id === dataBrand)
-                    ?.brand_name || "",
-              }}
-              onChange={(e) => {
-                setDataBrand(e.value);
-              }}
-              required
-            />
+            <div className="input-group inputGroup">
+              <Select
+                className="formSelect"
+                options={dataBrandData?.map((opt) => ({
+                  value: opt._id,
+                  label: opt.brand_name,
+                }))}
+                value={{
+                  value: dataBrand,
+                  label:
+                    dataBrandData?.find((user) => user._id === dataBrand)
+                      ?.brand_name || "",
+                }}
+                onChange={(e) => {
+                  setDataBrand(e.value);
+                }}
+                required
+              />
+              <Button
+                title="Add Category"
+                onClick={() => navigate("/admin/brandmaster")}
+              >
+                <Add />
+              </Button>
+            </div>
           </div>
 
           <div className="form-group col-xl-4">
@@ -1417,6 +1442,14 @@ const BrandCaseStudy = () => {
             value={remark}
             required={false}
             onChange={(e) => setRemark(e.target.value)}
+          />
+          <FieldContainer
+            label="Feedback"
+            Tag="textarea"
+            rows="3"
+            value={feedback}
+            required={false}
+            onChange={(e) => setFeedback(e.target.value)}
           />
           <button
             type="submit"
