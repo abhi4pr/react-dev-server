@@ -300,7 +300,9 @@ const SidebarLinks = () => {
                   <Link className="collapse-item" to="/admin/user">
                     Payout Employee Registration
                   </Link>
-
+                  <Link className="collapse-item" to="/admin/billing-overview">
+                    Billing Header Overview
+                  </Link>
                   <Link className="collapse-item" to="/admin/wfhd-overview">
                     WFHD Overview
                   </Link>
