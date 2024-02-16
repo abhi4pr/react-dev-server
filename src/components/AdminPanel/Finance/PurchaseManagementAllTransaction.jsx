@@ -13,14 +13,11 @@ import { Link } from "react-router-dom";
 import ImageView from "./ImageView";
 import pdf from "./pdf-file.png";
 import { baseUrl } from "../../../utils/config";
-<<<<<<< Updated upstream
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
 
-=======
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
->>>>>>> Stashed changes
 
 export default function PurchaseManagementAllTransaction() {
   const [search, setSearch] = useState("");
@@ -35,7 +32,6 @@ export default function PurchaseManagementAllTransaction() {
   const [priorityFilter, setPriorityFilter] = useState("");
   const [requestAmountFilter, setRequestAmountFilter] = useState("");
   const [requestedAmountField, setRequestedAmountField] = useState("");
-<<<<<<< Updated upstream
   const [sameVendorDialog, setSameVendorDialog] = useState(false);
   const [sameVendorData, setSameVendorData] = useState([]);
   const [bankDetail, setBankDetail] = useState(false);
@@ -46,13 +42,11 @@ export default function PurchaseManagementAllTransaction() {
   const [phpData, setPhpData] = useState([]);
   const [rowData, setRowData] = useState([]);
   
-=======
   const [uniqueVenderDialog, setUniqueVenderDialog] = useState(false);
   const [uniqueVendorData, setUniqueVendorData] = useState([]);
-  const [sameVendorDialog, setSameVendorDialog] = useState(false);
-  const [sameVendorData, setSameVendorData] = useState([]);
+  // const [sameVendorDialog, setSameVendorDialog] = useState(false);
+  // const [sameVendorData, setSameVendorData] = useState([]);
   const [uniqueVendorCount, setUniqueVendorCount] = useState(0);
->>>>>>> Stashed changes
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -99,12 +93,12 @@ export default function PurchaseManagementAllTransaction() {
     // setFilterData(u);
   };
 
-  const handleOpenSameVender = (vendorName) => {
-    setSameVendorDialog(true);
+  // const handleOpenSameVender = (vendorName) => {
+  //   setSameVendorDialog(true);
 
-    const sameNameVendors = data.filter(
-      (item) => item.vendor_name === vendorName
-    );
+  //   const sameNameVendors = data.filter(
+  //     (item) => item.vendor_name === vendorName
+  //   );
     // Calculate the total amount for vendors with the same name
     // const totalAmount = sameNameVendors.reduce(
     //   (total, item) => total + item.request_amount,
@@ -112,8 +106,8 @@ export default function PurchaseManagementAllTransaction() {
     // );
 
     // Set the selected vendor data including the vendor name, data, and total amount
-    setSameVendorData(sameNameVendors);
-  };
+  //   setSameVendorData(sameNameVendors);
+  // };
 
   const handleOpenBankDetail = () => {
     setBankDetail(true);
