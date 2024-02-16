@@ -495,6 +495,30 @@ export default function PurchaseManagementAllTransaction() {
       },
     },
     {
+      field: "base_amount",
+      headerName: "Base Amount",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.base_amount ? (
+          <p> &#8377; {params.row.base_amount}</p>
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "gst_amount",
+      headerName: "GST Amount",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.gst_amount ? (
+          <p>&#8377; {params.row.gst_amount}</p>
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
       field: "outstandings",
       headerName: "OutStanding ",
       width: 150,
