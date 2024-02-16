@@ -7,6 +7,9 @@ import { Link } from "react-router-dom";
 import ImageView from "./ImageView";
 import pdf from "./pdf-file.png";
 import { baseUrl } from "../../../utils/config";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
+
 
 export default function PurchaseManagementAllTransaction() {
   const [search, setSearch] = useState("");
@@ -21,9 +24,20 @@ export default function PurchaseManagementAllTransaction() {
   const [priorityFilter, setPriorityFilter] = useState("");
   const [requestAmountFilter, setRequestAmountFilter] = useState("");
   const [requestedAmountField, setRequestedAmountField] = useState("");
+  const [sameVendorDialog, setSameVendorDialog] = useState(false);
+  const [sameVendorData, setSameVendorData] = useState([]);
+  const [bankDetail, setBankDetail] = useState(false);
+  const [nodeData, setNodeData] = useState([]);
+  const [paymentHistory, setPaymentHistory] = useState(false);
+  const [historyData, setHistoryData] = useState([]);
+  const [historyType, setHistoryType] = useState("");
+  const [phpData, setPhpData] = useState([]);
+  const [rowData, setRowData] = useState([]);
+  
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+      setNodeData(res.data.modifiedData);
       const x = res.data.modifiedData;
       setActionFieldData(x);
 
@@ -32,6 +46,7 @@ export default function PurchaseManagementAllTransaction() {
           "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
+          setPhpData(res.data.body);
           // let y = res.data.body.filter((item) => {
           //   return x.some((item2) =>( item.request_id == item2.request_id));
           // });
@@ -53,6 +68,198 @@ export default function PurchaseManagementAllTransaction() {
         });
     });
   };
+
+  const handleOpenSameVender = (vendorName) => {
+    setSameVendorDialog(true);
+
+    const sameNameVendors = data.filter(
+      (item) => item.vendor_name === vendorName
+    );
+    // Calculate the total amount for vendors with the same name
+    // const totalAmount = sameNameVendors.reduce(
+    //   (total, item) => total + item.request_amount,
+    //   0
+    // );
+
+    // Set the selected vendor data including the vendor name, data, and total amount
+    setSameVendorData(sameNameVendors);
+  };
+
+  const handleOpenBankDetail = () => {
+    setBankDetail(true);
+  };
+
+  const handleOpenPaymentHistory = (row, type) => {
+    setHistoryType(type);
+    setRowData(row);
+    setPaymentHistory(true);
+
+    const startDate = new Date(`04/01/${new Date().getFullYear() - 1}`);
+    const endDate = new Date(`03/31/${new Date().getFullYear()}`);
+
+    const dataFY = phpData.filter((e) => {
+      const paymentDate = new Date(e.request_date);
+      return (
+        paymentDate >= startDate &&
+        paymentDate <= endDate &&
+        e.vendor_name === row.vendor_name &&
+        e.status != 0 &&
+        e.status != 2
+      );
+    });
+    console.log(dataFY, "dataFY");
+    console.log(phpData, "phpData");
+
+    const dataTP = phpData.filter((e) => {
+      return (
+        e.vendor_name === row.vendor_name && e.status != 0 && e.status != 2
+      );
+    });
+    setHistoryData(type == "FY" ? dataFY : dataTP);
+  };
+
+  const paymentDetailColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = historyData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "request_amount",
+      headerName: "Requested Amount",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.request_amount}</p>;
+      },
+    },
+    {
+      field: "outstandings",
+      headerName: "OutStanding ",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+    {
+      field: "invc_img",
+      headerName: "Invoice Image",
+      renderCell: (params) => {
+        if (params.row.invc_img.length > 0) {
+          // Extract file extension and check if it's a PDF
+          const fileExtension = params.row.invc_img
+            .split(".")
+            .pop()
+            .toLowerCase();
+          const isPdf = fileExtension === "pdf";
+
+          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+
+          return isPdf ? (
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={pdf}
+              style={{ width: "30px", height: "30px" }}
+              title="PDF Preview"
+            />
+          ) : (
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={imgUrl}
+              alt="Invoice"
+              style={{ width: "30px", height: "30px" }}
+            />
+          );
+        } else {
+          return null;
+        }
+      },
+    },
+    {
+      field: "request_date",
+      headerName: "Requested Date",
+      width: 150,
+      renderCell: (params) => {
+        return convertDateToDDMMYYYY(params.row.request_date);
+      },
+    },
+    {
+      field: "name",
+      headerName: "Requested By",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.name;
+      },
+    },
+    {
+      field: "vendor_name",
+      headerName: "Vendor Name",
+      // width: "auto",
+      width: 250,
+      renderCell: (params) => {
+        return params.row.vendor_name;
+      },
+    },
+    {
+      field: "remark_audit",
+      headerName: "Remark",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.remark_audit;
+      },
+    },
+    {
+      field: "priority",
+      headerName: "Priority",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.priority;
+      },
+    },
+    {
+      field: "aging",
+      headerName: "Aging",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
+        );
+      },
+    },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 150,
+      renderCell: (params) => {
+        const matchingItems = nodeData.filter(
+          (item) => item.request_id == params.row.request_id
+        );
+        if (matchingItems.length > 0) {
+          return matchingItems.map((item, index) => (
+            <p key={index}>
+              {item.status == 0
+                ? "Pending"
+                : item.status == 2
+                ? "Discarded"
+                : "Paid"}
+            </p>
+          ));
+        } else {
+          return "Pending"; // Default value if no matching item is found
+        }
+      },
+    },
+  ];
 
   useEffect(() => {
     callApi();
@@ -159,6 +366,7 @@ export default function PurchaseManagementAllTransaction() {
       field: "invc_img",
       headerName: "Invoice Image",
       renderCell: (params) => {
+        if(params.row.invc_img.length > 0){
         // Extract file extension and check if it's a PDF
         const fileExtension = params.row.invc_img
           .split(".")
@@ -184,7 +392,7 @@ export default function PurchaseManagementAllTransaction() {
               setOpenImageDialog(true);
               setViewImgSrc(imgUrl);
             }}
-            style={{ width: "100px", height: "100px" }}
+            style={{ width: "40px", height: "40px" }}
           />
         ) : (
           <img
@@ -196,7 +404,7 @@ export default function PurchaseManagementAllTransaction() {
             alt="Invoice"
             style={{ width: "60px", height: "60px" }}
           />
-        );
+        )}
       },
       width: 250,
     },
@@ -220,9 +428,46 @@ export default function PurchaseManagementAllTransaction() {
       field: "vendor_name",
       headerName: "Vendor Name",
       // width: "auto",
-      width: 250,
+      width: 370,
+
       renderCell: (params) => {
-        return params.row.vendor_name;
+        return (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{ cursor: "pointer", marginRight: "20px" }}
+              onClick={() => handleOpenSameVender(params.row.vendor_name)}
+            >
+              {params.row.vendor_name}
+            </div>
+            <div onClick={() => handleOpenBankDetail()}>
+              <AccountBalanceIcon style={{ fontSize: "25px" }} />
+            </div>
+            <div>
+              {nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
+                .length > 0 ? (
+                <span className="row ml-2 ">
+                  <h5
+                    onClick={() => handleOpenPaymentHistory(params.row, "TP")}
+                    style={{ cursor: "pointer" }}
+                    className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
+                  >
+                    Total Paid
+                  </h5>
+                  <h5
+                    onClick={() => handleOpenPaymentHistory(params.row, "FY")}
+                    style={{ cursor: "pointer" }}
+                    className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+                  >
+                    {/* Financial Year */}
+                    FY
+                  </h5>
+                </span>
+              ) : (
+                ""
+              )}
+            </div>
+          </div>
+        );
       },
     },
     {
@@ -385,7 +630,6 @@ export default function PurchaseManagementAllTransaction() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Vendor Name"
                   type="text"
                   variant="outlined"
                   InputProps={{
@@ -518,6 +762,15 @@ export default function PurchaseManagementAllTransaction() {
           setViewImgDialog={setOpenImageDialog}
         />
       )}
+
+{paymentHistory && (
+        <PaymentHistoryDialog
+          handleClose={setPaymentHistory}
+          paymentDetailColumns={paymentDetailColumns}
+          filterData={historyData}
+        />
+      )}
+
     </div>
   );
 }

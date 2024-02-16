@@ -8,14 +8,13 @@ import {
   Autocomplete,
   Button,
   Dialog,
-  DialogActions,
-  DialogContent,
   DialogTitle,
   TextField,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import HistoryIcon from "@mui/icons-material/History";
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
 
 export default function PaymentDone() {
   const [search, setSearch] = useState("");
@@ -37,6 +36,13 @@ export default function PaymentDone() {
   const [sameVendorData, setSameVendorData] = useState([]);
   const [paymentHistoryOpen, setPaymentHistoryOpen] = useState(false);
   const [paymentHistory, setPaymentHistory] = useState(false);
+  const [bankDetail, setBankDetail] = useState(false);
+  const [nodeData, setNodeData] = useState([]);
+  const [type, setHistoryType] = useState("");
+  const [row, setRowData] = useState([]);
+  const [historyData, setHistoryData] = useState([]);
+  const [phpData, setPhpData] = useState([]);
+
   // const callApi = () => {
   //   axios
   //     .get(baseUrl+"phpvendorpaymentrequest")
@@ -55,6 +61,7 @@ export default function PaymentDone() {
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       console.log(res.data.modifiedData, "node js");
+      setNodeData(res.data.modifiedData);
       const x = res.data.modifiedData;
 
       axios
@@ -68,6 +75,9 @@ export default function PaymentDone() {
           // console.log(y,'y')
           // setData(y);
           // setFilterData(y);
+
+          setPhpData(res.data.body);
+
           let y = x.filter((item) => {
             if (item.status == 1) {
               return item;
@@ -92,6 +102,10 @@ export default function PaymentDone() {
           setUniqueVendorData(uvData);
         });
     });
+  };
+
+  const handleOpenBankDetail = () => {
+    setBankDetail(true);
   };
 
   useEffect(() => {
@@ -240,9 +254,35 @@ export default function PaymentDone() {
 
   // Payment history detail:-
 
-  const handleOpenPaymentHistory = () => {
+  const handleOpenPaymentHistory = (row, type) => {
+    setHistoryType(type);
+    setRowData(row);
     setPaymentHistory(true);
+
+    const startDate = new Date(`04/01/${new Date().getFullYear() - 1}`);
+    const endDate = new Date(`03/31/${new Date().getFullYear()}`);
+
+    const dataFY = phpData.filter((e) => {
+      const paymentDate = new Date(e.request_date);
+      return (
+        paymentDate >= startDate &&
+        paymentDate <= endDate &&
+        e.vendor_name === row.vendor_name &&
+        e.status != 0 &&
+        e.status != 2
+      );
+    });
+    console.log(dataFY, "dataFY");
+    console.log(phpData, "phpData");
+
+    const dataTP = phpData.filter((e) => {
+      return (
+        e.vendor_name === row.vendor_name && e.status != 0 && e.status != 2
+      );
+    });
+    setHistoryData(type == "FY" ? dataFY : dataTP);
   };
+
   const handleClosePaymentHistory = () => {
     setPaymentHistory(false);
   };
@@ -353,7 +393,7 @@ export default function PaymentDone() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = historyData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -371,6 +411,120 @@ export default function PaymentDone() {
       width: 150,
       renderCell: (params) => {
         return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+    {
+      field: "invc_img",
+      headerName: "Invoice Image",
+      renderCell: (params) => {
+        if (params.row.invc_img) {
+          // Extract file extension and check if it's a PDF
+          const fileExtension = params.row.invc_img
+            .split(".")
+            .pop()
+            .toLowerCase();
+          const isPdf = fileExtension === "pdf";
+
+          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+
+          return isPdf ? (
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={pdf}
+              style={{ width: "40px", height: "40px" }}
+              title="PDF Preview"
+            />
+          ) : (
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={imgUrl}
+              alt="Invoice"
+              style={{ width: "100px", height: "100px" }}
+            />
+          );
+        } else {
+          return null;
+        }
+      },
+    },
+    {
+      field: "request_date",
+      headerName: "Requested Date",
+      width: 150,
+      renderCell: (params) => {
+        return convertDateToDDMMYYYY(params.row.request_date);
+      },
+    },
+    {
+      field: "name",
+      headerName: "Requested By",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.name;
+      },
+    },
+    {
+      field: "vendor_name",
+      headerName: "Vendor Name",
+      // width: "auto",
+      width: 250,
+      renderCell: (params) => {
+        return params.row.vendor_name;
+      },
+    },
+    {
+      field: "remark_audit",
+      headerName: "Remark",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.remark_audit;
+      },
+    },
+    {
+      field: "priority",
+      headerName: "Priority",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.priority;
+      },
+    },
+    {
+      field: "aging",
+      headerName: "Aging",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
+        );
+      },
+    },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 150,
+      renderCell: (params) => {
+        const matchingItems = nodeData.filter(
+          (item) => item.request_id == params.row.request_id
+        );
+        if (matchingItems.length > 0) {
+          return matchingItems.map((item, index) => (
+            <p key={index}>
+              {item.status == 0
+                ? "Pending"
+                : item.status == 2
+                ? "Discarded"
+                : "Paid"}
+            </p>
+          ));
+        } else {
+          return "Pending"; // Default value if no matching item is found
+        }
       },
     },
   ];
@@ -441,23 +595,57 @@ export default function PaymentDone() {
       field: "vendor_name",
       headerName: "Vendor Name",
       // width: "auto",
-      width: 250,
+      width: 370,
+     
       renderCell: (params) => {
-        // return params.row.vendor_name;
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
-              style={{ cursor: "pointer", marginRight: "60px" }}
+              style={{ cursor: "pointer", marginRight: "20px" }}
               onClick={() => handleOpenSameVender(params.row.vendor_name)}
             >
               {params.row.vendor_name}
             </div>
-            <div onClick={() => handleOpenPaymentHistory()}>
-              <HistoryIcon style={{ fontSize: "25px", marginLeft: "20px" }} />
+            <div onClick={() => handleOpenBankDetail()}>
+              <AccountBalanceIcon style={{ fontSize: "25px" }} />
+            </div>
+            <div>
+              {nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
+                .length > 0 ? (
+                <span className="row ml-2 ">
+                  <h5
+                    onClick={() => handleOpenPaymentHistory(params.row, "TP")}
+                    style={{ cursor: "pointer" }}
+                    className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
+                  >
+                    Total Paid
+                  </h5>
+                  <h5
+                    onClick={() => handleOpenPaymentHistory(params.row, "FY")}
+                    style={{ cursor: "pointer" }}
+                    className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+                  >
+                    {/* Financial Year */}
+                    FY
+                  </h5>
+                </span>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         );
       },
+    },
+    {
+      field:"pan",
+      headerName:"PAN",
+      width:200,
+    },
+    {
+      field: "gst",
+      headerName: "GST",
+      width: 200,
     },
     {
       field: "remark_audit",
@@ -765,6 +953,14 @@ export default function PaymentDone() {
         <ImageView
           viewImgSrc={viewImgSrc}
           setViewImgDialog={setOpenImageDialog}
+        />
+      )}
+
+      {paymentHistory && (
+        <PaymentHistoryDialog
+          handleClose={setPaymentHistory}
+          paymentDetailColumns={paymentDetailColumns}
+          filterData={historyData}
         />
       )}
     </div>

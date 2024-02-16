@@ -288,6 +288,18 @@ const BalancePaymentList = () => {
       sortable: true,
     },
     {
+      name: "Aging",
+      cell: (row) => {
+        const date = new Date(row.sale_booking_date);
+        const today = new Date();
+        const diffTime = Math.abs(today - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays + " Days";
+      },
+
+    }
+    ,
+    {
       name: "Customer Name",
       selector: (row) => row.cust_name,
       sortable: true,

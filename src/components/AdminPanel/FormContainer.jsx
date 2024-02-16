@@ -23,6 +23,7 @@ const FormContainer = ({
   includeAdditionalTitles = false,
   mainTitleRequired = true,
   loading = false,
+  pendingpaymentRemainder=0
 }) => {
   return (
     <>
@@ -43,7 +44,7 @@ const FormContainer = ({
                 Pending Request : <a href="#"> {pendingRequestCount}</a>
               </h2>
               <h2>
-                Reminder : <a href="#">0</a>
+                Reminder : <a href="#">{pendingpaymentRemainder}</a>
               </h2>
             </div>
           )}
