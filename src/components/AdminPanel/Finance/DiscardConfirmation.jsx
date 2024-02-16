@@ -29,6 +29,7 @@ export default function DiscardConfirmation({
   setShowDiscardModal,
   userID,
   callApi,
+  userName,
 }) {
   const [open, setOpen] = React.useState(true);
   const [discardRemark, setDiscardRemark] = React.useState("");
@@ -54,12 +55,43 @@ export default function DiscardConfirmation({
         vendor_name: rowData.vendor_name,
         name: rowData.name,
         request_date: rowData.request_date,
-
+        gst_hold: rowData.gst_amount,
+        tds_deduction: 0,
       })
       .then((res) => {
-        callApi();
-        setShowDiscardModal(false);
-        setDiscardRemark("");
+        
+          const phpFormData = new FormData();
+          phpFormData.append("request_id", rowData.request_id);
+          phpFormData.append("payment_amount",rowData.payment_amount);
+          phpFormData.append(
+            "payment_date",
+            new Date()?.toISOString().slice(0, 19).replace("T", " ")
+          );
+          phpFormData.append("payment_by", userName);
+          phpFormData.append("evidence", '');
+          phpFormData.append("finance_remark", discardRemark);
+          phpFormData.append("status", 2);
+          phpFormData.append("payment_mode", "");
+          phpFormData.append("gst_hold", rowData.gst_amount);
+          phpFormData.append("tds_deduction", 0);
+          axios
+            .post(
+              "https://purchase.creativefuel.io/webservices/RestController.php?view=updatePaymentrequestNew",
+              phpFormData,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+            .then(() => {
+              // toastAlert("Payment Done Successfully");
+              callApi();
+              setShowDiscardModal(false);
+              setDiscardRemark("");
+            })
+
+      
       })
       .catch((err) => {
         console.log(err);
