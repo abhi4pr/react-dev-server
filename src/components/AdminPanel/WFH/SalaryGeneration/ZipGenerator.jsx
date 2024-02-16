@@ -1,11 +1,19 @@
 import html2pdf from "html2pdf.js";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
-import InvoiceTemplate1 from "./InvoiceTemplate1";
+import InvoiceTemplate1 from "../Templates/Component/InvoiceTemplate1";
+import InvoiceTemplate2 from "../Templates/Component/InvoiceTemplate2";
+import InvoiceTemplate3 from "../Templates/Component/InvoiceTemplate3";
+import InvoiceTemplate4 from "../Templates/Component/InvoiceTemplate4";
+import InvoiceTemplate5 from "../Templates/Component/InvoiceTemplate5";
 import JSZip from "jszip";
 
 const templates = {
   1: InvoiceTemplate1,
+  2: InvoiceTemplate2,
+  3: InvoiceTemplate3,
+  4: InvoiceTemplate4,
+  5: InvoiceTemplate5,
 };
 
 export const generatePDF = async (rowData) => {

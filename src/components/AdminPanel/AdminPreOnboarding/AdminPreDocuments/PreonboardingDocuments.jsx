@@ -104,7 +104,7 @@ const PreonboardingDocuments = () => {
         </div>
         <FieldContainer
           fieldGrid={3}
-          label="Documetn Number"
+          label="Document Number"
           value={documentNumber}
           onChange={(e) => setDocumentNumber(e.target.value)}
         />
