@@ -166,7 +166,7 @@ export default function PurchaseManagementAllTransaction() {
                 setViewImgSrc(imgUrl);
               }}
               src={pdf}
-              style={{ width: "40px", height: "40px" }}
+              style={{ width: "30px", height: "30px" }}
               title="PDF Preview"
             />
           ) : (
@@ -177,7 +177,7 @@ export default function PurchaseManagementAllTransaction() {
               }}
               src={imgUrl}
               alt="Invoice"
-              style={{ width: "100px", height: "100px" }}
+              style={{ width: "30px", height: "30px" }}
             />
           );
         } else {
@@ -392,7 +392,7 @@ export default function PurchaseManagementAllTransaction() {
               setOpenImageDialog(true);
               setViewImgSrc(imgUrl);
             }}
-            style={{ width: "100px", height: "100px" }}
+            style={{ width: "40px", height: "40px" }}
           />
         ) : (
           <img
@@ -630,7 +630,6 @@ export default function PurchaseManagementAllTransaction() {
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="Vendor Name"
                   type="text"
                   variant="outlined"
                   InputProps={{
