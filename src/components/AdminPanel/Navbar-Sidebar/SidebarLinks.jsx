@@ -297,7 +297,7 @@ const SidebarLinks = () => {
                 data-parent="#accordionSidebar"
               >
                 <div className="bg-white collapse-inner">
-                  <Link className="collapse-item" to="/admin/user">
+                  <Link className="collapse-item" to="/admin/wfhd-register">
                     Payout Employee Registration
                   </Link>
                   <Link className="collapse-item" to="/admin/billing-overview">
