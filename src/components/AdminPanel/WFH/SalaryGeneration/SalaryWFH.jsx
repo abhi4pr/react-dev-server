@@ -24,6 +24,7 @@ import { useLocation, Link } from "react-router-dom";
 import FieldContainer from "../../FieldContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { baseUrl } from "../../../../utils/config";
+import { downloadSelectedInvoices } from "./ZipGenerator";
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -581,6 +582,14 @@ const SalaryWFH = () => {
       })
       .then(() => handleSubmit());
     toastAlert("Sent To Finance");
+  }
+
+  async function handleInvoiceDownload() {
+    try {
+      await downloadSelectedInvoices(selectedRows);
+    } catch (error) {
+      console.error("Error Downloading Invoices", error);
+    }
   }
 
   async function handleBulkSendToFinance() {
@@ -1305,12 +1314,20 @@ const SalaryWFH = () => {
                 subHeaderComponent={
                   <>
                     {selectedRows.length > 0 && (
-                      <button
-                        className="btn btn-primary mr-2"
-                        onClick={handleBulkSendToFinance}
-                      >
-                        Send to Finance
-                      </button>
+                      <>
+                        <button
+                          className="btn btn-primary mr-2"
+                          onClick={handleBulkSendToFinance}
+                        >
+                          Send to Finance
+                        </button>
+                        <button
+                          className="btn btn-primary mr-2"
+                          onClick={handleInvoiceDownload}
+                        >
+                          Download Invoices
+                        </button>
+                      </>
                     )}
                     <button
                       className="btn btn-primary mr-2"

@@ -1,8 +1,8 @@
-import image1 from "../images/image1.png";
-import image2 from "../images/image2.png";
-import image3 from "../images/image3.png";
-import image4 from "../images/image4.png";
-import image5 from "../images/image5.png";
+import image1 from "../images/TemplateImage1.png";
+import image2 from "../images/TemplateImage2.png";
+import image3 from "../images/TemplateImage3.png";
+import image4 from "../images/TemplateImage4.png";
+import image5 from "../images/TemplateImage5.png";
 
 const useInvoiceTemplateImages = () => {
   return [
