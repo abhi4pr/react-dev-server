@@ -178,7 +178,6 @@ export default function PendingPaymentRequest() {
         "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
       )
       .then((res) => {
-        console.log(res.data.body, "res.data for reminder");
         setPhpRemainderData(res.data.body);
       });
   };
@@ -431,9 +430,30 @@ export default function PendingPaymentRequest() {
       );
     });
 
-    setHistoryData(type == "FY" ? dataFY : dataTP);
 
-    console.log(nn, "nn");
+
+    
+    // let outstandings = 0;
+    // let request_amount = 0;
+
+    // type=="FY"?dataFY:dataTP.forEach((row) => {
+    //   outstandings += +row.outstandings;
+    //   request_amount += +row.request_amount || 0;
+    // });
+
+    // // Create total row
+    // const totalRow = {
+    //   outstandings: outstandings,
+    //   request_amount: request_amount,
+    //   vendor_name: "Total",
+
+    // };
+
+    // setHistoryData(type === "FY" ? [...dataFY, totalRow] : [...dataTP, totalRow]);
+
+
+     setHistoryData(type=="FY"?dataFY:dataTP);
+
   };
 
   const handleClosePaymentHistory = () => {
@@ -521,7 +541,7 @@ export default function PendingPaymentRequest() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = historyData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -640,7 +660,6 @@ export default function PendingPaymentRequest() {
         const matchingItems = nodeData.filter(
           (item) => item.request_id == params.row.request_id
         );
-        console.log(matchingItems, "matchingItems");
         if (matchingItems.length > 0) {
           return matchingItems.map((item, index) => (
             <p key={index}>
@@ -843,10 +862,6 @@ export default function PendingPaymentRequest() {
       headerName: "Vendor Name",
       width: 320,
       renderCell: (params) => {
-        // console.log(
-        //   phpData.filter((e) => e.vendor_name === params.row.vendor_name),
-        //   "phpData"
-        // );
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
@@ -885,6 +900,16 @@ export default function PendingPaymentRequest() {
           </div>
         );
       },
+    },
+    {
+      field:"pan",
+      headerName:"Pan",
+      width:150,
+    },
+    {
+      field:"gst",
+      headerName:"GST",
+      width:200,
     },
     {
       field: "remark_audit",
@@ -961,6 +986,7 @@ export default function PendingPaymentRequest() {
         pendingRequestCount={pendingRequestCount}
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
         includeAdditionalTitles={true}
+        pendingpaymentRemainder={phpRemainderData.length}
       />
       {/* Bank Details */}
       <Dialog
@@ -1044,106 +1070,6 @@ export default function PendingPaymentRequest() {
         </IconButton>
 
         <DataGrid
-          // rows={
-          //   historyType === "FY"
-          //     ? phpData
-          //         .filter(
-          //           (e) =>
-          //             e.vendor_name === rowData.vendor_name &&
-          //             e.status != 0 &&
-          //             e.status != 2
-          //         )
-
-          //         .filter((e) => {
-          //           // console.log("come to FY");
-
-          //           // Extract year and month from payment_date
-          //           const paymentDate = new Date(rowData.request_date);
-          //           const paymentYear = paymentDate.getFullYear();
-          //           const paymentMonth = paymentDate.getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
-          //           // console.log(
-          //           //   paymentMonth,
-          //           //   "<-----payment month",
-          //           //   paymentYear,
-          //           //   "<-----payment year"
-          //           // );
-          //           const nowDate = new Date();
-          //           const nowMonth = nowDate.getMonth() + 1; // Adding 1 because getMonth() returns zero-based index
-          //           // console.log(
-          //           //   nowMonth,
-          //           //   "<-----now month",
-          //           //   paymentMonth,
-          //           //   "<-----payment month"
-          //           // );
-
-          //           // Define the start and end months for the financial year (April = 4, March = 3)
-          //           const financialYearStartMonth = 4; // April
-          //           const financialYearEndMonth = 3; // March
-
-          //           // Calculate the start and end dates of the financial year
-          //           const financialYearStartDate = new Date(
-          //             paymentYear,
-          //             financialYearStartMonth,
-          //             1
-          //           ); // Month is zero-based index
-          //           const financialYearEndDate = new Date(
-          //             paymentYear + 1,
-          //             financialYearEndMonth,
-          //             31
-          //           ); // Month is zero-based index
-          //           // console.log(
-          //           //   paymentMonth >= financialYearStartMonth &&
-          //           //     paymentYear == nowMonth <= financialYearStartMonth
-          //           //     ? financialYearStartDate.getFullYear() - 1
-          //           //     : financialYearStartDate.getFullYear()
-          //           // );
-          //           // Check if the payment date falls within the financial year range
-          //           console.log(
-          //             paymentMonth >= financialYearStartMonth,
-          //             "testing"
-          //           );
-          //           // console.log(
-          //           //   paymentMonth,
-          //           //   "<-----payment month",
-          //           //   financialYearStartMonth,
-          //           //   "<---------financial year start month",
-          //           //   paymentYear,
-          //           //   "<------------ payment year",
-          //           //   financialYearStartDate.getFullYear(),
-          //           //   "<-----financial year start",
-          //           //   financialYearEndMonth,
-          //           //   "financial year month",
-          //           //   paymentMonth,
-          //           //   "<-------- payment month",
-          //           //   financialYearEndDate.getFullYear(),
-          //           //   "<------financial year end"
-          //           // );
-          //           if (
-          //             (paymentMonth >= financialYearStartMonth &&
-          //             paymentYear == nowMonth <= financialYearStartMonth
-          //               ? financialYearStartDate.getFullYear() - 1
-          //               : financialYearStartDate.getFullYear()) ||
-          //             (paymentMonth <= financialYearEndMonth &&
-          //             paymentYear == nowMonth <= financialYearStartMonth
-          //               ? financialYearEndDate.getFullYear() - 1
-          //               : financialYearEndDate.getFullYear())
-          //           ) {
-          //             // Return true if conditions are met
-          //             console.log("come to true");
-          //             return true;
-          //           }
-
-          //           // Return false if the payment date is outside the financial year range
-          //           console.log("come to false");
-          //           return false;
-          //         })
-          //     : phpData.filter(
-          //         (e) =>
-          //           e.vendor_name === rowData.vendor_name &&
-          //           e.status != 0 &&
-          //           e.status != 2
-          //       )
-          // }
           rows={historyData}
           columns={paymentDetailColumns}
           pageSize={5}

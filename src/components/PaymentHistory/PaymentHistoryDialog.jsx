@@ -4,7 +4,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 export default function PaymentHistory({
-  open,
+  // open,
   handleClose,
   filterData,
   search,
@@ -13,8 +13,8 @@ export default function PaymentHistory({
   // Define your component logic here
   return (
     <Dialog
-      open={open}
-      onClose={handleClose}
+      open={true}
+      onClose={()=>{handleClose(false)}}
       fullWidth={"md"}
       maxWidth={"md"}
       sx={{
@@ -26,7 +26,7 @@ export default function PaymentHistory({
       <DialogTitle>Payment History</DialogTitle>
       <IconButton
         aria-label="close"
-        onClick={handleClose}
+        onClick={()=>handleClose(false)}
         sx={{
           position: "absolute",
           right: 8,
@@ -62,7 +62,7 @@ export default function PaymentHistory({
             clearSearchAriaLabel: "clear",
           },
         }}
-        getRowId={(row) => filterData.indexOf(row)}
+        getRowId={(row) => row.request_id}
       />
     </Dialog>
   );
