@@ -220,6 +220,7 @@ import AllPlanOverview from "./RegisterCampaign/Plan/AllPlanOverview";
 import AssetSummary from "../Sim/AssetSummary";
 import CaseStudyOperation from "./RegisterCampaign/CaseStudies/CaseStudyOperation";
 import WFHDRegister from "./WFH/WFHDRegister/WFHDRegister";
+import UpdateDocument from "./WFH/UpdateDocument";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -401,6 +402,10 @@ const Admin = () => {
                   <Route
                     path="/wfh-users-overview/:deptId"
                     element={<WFHUserOverview />}
+                  />
+                  <Route
+                    path="/wfh-update-document/:user_id"
+                    element={<UpdateDocument />}
                   />
                   {/* DesiDeptAuth Routing  */}
                   <Route

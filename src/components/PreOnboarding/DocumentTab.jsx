@@ -156,8 +156,9 @@ const DocumentTab = ({
           {submitButton && (
             <div className="ml-auto mr-auto text-center">
               <button
-                className="btn btn_pill btn_cmn btn_white"
+                className="btn btn_pill btn_cmn btn_success"
                 onClick={handleSubmit}
+                style={{marginBottom:'5%'}}
               >
                 Submit
               </button>

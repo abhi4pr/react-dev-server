@@ -20,6 +20,7 @@ const WFHDOverview = () => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
+  const roleID = decodedToken.role_id;
 
   const getData = async () => {
     const response = await axios.get(baseUrl + "get_all_wfh_users");
@@ -168,12 +169,12 @@ const WFHDOverview = () => {
       name: "Login ID",
       cell: (row) => row.user_login_id,
     },
-    {
+    roleID !== 2 && {
       name: "Action",
       cell: (row) => (
         <>
           {row.att_status == "registered" ? (
-            <button type="button" className="btn btn-success"><Link to={`/admin/user-update/${row.user_id}`}>Upload Document</Link></button>
+            <button type="button" className="btn btn-success"><Link to={`/admin/wfh-update-document/${row.user_id}`}>Upload Document</Link></button>
           ) : row.att_status == "document_upload" ? (
             <button 
               type="button" className="btn btn-success"
