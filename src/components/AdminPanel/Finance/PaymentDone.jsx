@@ -111,7 +111,6 @@ export default function PaymentDone() {
   useEffect(() => {
     callApi();
   }, []);
-  console.log(data, "data ", filterData, "filterdata>>");
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
     const day = String(date1.getDate()).padStart(2, "0");
@@ -134,8 +133,8 @@ export default function PaymentDone() {
 
     return diffDays;
   }
-  // total pending  amount data :-
-  const totalPendingAmount = data.reduce(
+  // total requested  amount data :-
+  const totalRequestAmount = data.reduce(
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
@@ -720,12 +719,12 @@ export default function PaymentDone() {
         mainTitle="Payment Done"
         link="/admin/finance-pruchasemanagement-paymentdone"
         uniqueVendorCount={uniqueVendorCount}
-        totalPendingAmount={totalPendingAmount}
+        totalRequestAmount={totalRequestAmount}
         pendingRequestCount={pendingRequestCount}
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
-        includeAdditionalTitles={true}
+        paymentDoneAdditionalTitles={true}
       />
-
+      {/* Same Vendors Dialog */}
       <Dialog
         open={sameVendorDialog}
         onClose={handleCloseSameVender}
