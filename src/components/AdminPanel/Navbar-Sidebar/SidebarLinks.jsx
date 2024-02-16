@@ -15,7 +15,7 @@ const SidebarLinks = () => {
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
   const RoleId = decodedToken.role_id;
-  const job_type = decodedToken.job_type
+  const job_type = decodedToken.job_type;
 
   useEffect(() => {
     if (userID && contextData.length === 0) {
@@ -298,13 +298,13 @@ const SidebarLinks = () => {
               >
                 <div className="bg-white collapse-inner">
                   <Link className="collapse-item" to="/admin/wfhd-register">
-                    Payout Employee Registration
+                    Add Buddy
                   </Link>
                   <Link className="collapse-item" to="/admin/billing-overview">
                     Billing Header Overview
                   </Link>
                   <Link className="collapse-item" to="/admin/wfhd-overview">
-                    WFHD Overview
+                    My Team
                   </Link>
 
                   {!isWFHDManager && (
@@ -313,7 +313,7 @@ const SidebarLinks = () => {
                     </Link>
                   )}
                   <Link className="collapse-item" to="/admin/attendence-mast">
-                    Attendance Summary
+                    Create Attendance
                   </Link>
                   <Link className="collapse-item" to="/admin/dispute-overview">
                     Dispute Summary
@@ -835,7 +835,6 @@ const SidebarLinks = () => {
                                 >
                                   Assignment Dashboard
                                 </Link>
-
 
                                 <Link
                                   className="collapse-item"
@@ -1384,57 +1383,57 @@ const SidebarLinks = () => {
       {/* FINANCE */}
 
       {/* Asset Management here  */}
-      {job_type !== 'WFHD' &&(
-      <li className="nav-item">
-        <Link
-          className="nav-link collapsed"
-          data-toggle="collapse"
-          data-target="#assets"
-          aria-expanded="true"
-          aria-controls="assets"
-        >
-          <i className="bi bi-person-gear" />
-          <span>Assets</span>
-        </Link>
-        <div
-          id="assets"
-          className="collapse"
-          aria-labelledby="headingTwo"
-          data-parent="#accordionSidebar"
-        >
-          <div className="bg-white collapse-inner">
-            {RoleId == 5 && (
-              <Link className="collapse-item" to="/admin/asset-dashboard">
-                Dashboard
+      {job_type !== "WFHD" && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#assets"
+            aria-expanded="true"
+            aria-controls="assets"
+          >
+            <i className="bi bi-person-gear" />
+            <span>Assets</span>
+          </Link>
+          <div
+            id="assets"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              {RoleId == 5 && (
+                <Link className="collapse-item" to="/admin/asset-dashboard">
+                  Dashboard
+                </Link>
+              )}
+              <Link className="collapse-item" to="/admin/asset-single-user">
+                My Asset
               </Link>
-            )}
-            <Link className="collapse-item" to="/admin/asset-single-user">
-              My Asset
-            </Link>
-            {RoleId == 5 && (
-              <Link className="collapse-item" to={`/sim-overview/${0}`}>
-                Asset Management
+              {RoleId == 5 && (
+                <Link className="collapse-item" to={`/sim-overview/${0}`}>
+                  Asset Management
+                </Link>
+              )}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                  Asset's Request
+                </Link>
+              )}
+              <Link
+                className="collapse-item"
+                to="/admin/asset-visible-to-taged-person"
+              >
+                Tagged Asset
               </Link>
-            )}
-            {RoleId == 5 && (
-              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                Asset's Request
-              </Link>
-            )}
-            <Link
-              className="collapse-item"
-              to="/admin/asset-visible-to-taged-person"
-            >
-              Tagged Asset
-            </Link>
-            {RoleId == 2 && (
-              <Link className="collapse-item" to="/admin/asset-manager">
-                Asset Request Approvel
-              </Link>
-            )}
+              {RoleId == 2 && (
+                <Link className="collapse-item" to="/admin/asset-manager">
+                  Asset Request Approvel
+                </Link>
+              )}
+            </div>
           </div>
-        </div>
-      </li>
+        </li>
       )}
 
       {isTaskManagment && (
