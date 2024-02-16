@@ -51,7 +51,7 @@ const CasestudyTabulerData = ({ backupData, brandData,brandCategory,brandSubCatD
       width: 180,
     },
     {
-      field: "designed_by_name",
+      field: "designed_by",
       headerName: "Designed by",
       width: 180,
     },

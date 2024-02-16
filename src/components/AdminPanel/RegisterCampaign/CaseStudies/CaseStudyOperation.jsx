@@ -264,12 +264,12 @@ const CaseStudyOperation = () => {
 
   return (
     <>
-      {/* <CasestudyTabulerData
+      <CasestudyTabulerData
         backupData={backupData}
         brandData={brandData}
         brandCategory={brandCategory}
         brandSubCatData={brandSubCatData}
-      /> */}
+      />
       <div>
         <div className="action_heading">
           <div className="action_title">
@@ -672,7 +672,7 @@ const CaseStudyOperation = () => {
                               </li>
                               <li>
                                 <span>Designed by</span>
-                                {detail.designed_by_name}
+                                {detail.designed_by_name || detail.designed_by}
                               </li>
                             </ul>
                           </div>
@@ -1659,6 +1659,18 @@ const CaseStudyOperation = () => {
                                                 e.sub_category_id ==
                                                 detail.brand_sub_category_id
                                             )[0]?.sub_category_name
+                                          }
+                                        </li>
+                                        <li>
+                                          <span>Public Usage</span>
+                                          {
+                                            detail?.public_usage
+                                          }
+                                        </li>
+                                        <li>
+                                          <span> Feedback</span>
+                                          {
+                                            detail?.feedback
                                           }
                                         </li>
                                       </ul>

@@ -557,7 +557,7 @@ export default function BrandMaster() {
                 }
               />
 
-              {selectedPages?.map((page, index) => (
+              {/* {selectedPages?.map((page, index) => (
                 <Box key={index} sx={{ display: "flex", mb: 1 }}>
                   <TextField
                     label="Page Name"
@@ -579,7 +579,7 @@ export default function BrandMaster() {
                     sx={{ m: 2 }}
                   />
                 </Box>
-              ))}
+              ))} */}
 
               <div></div>
             </div>
