@@ -130,13 +130,17 @@ const OnboardExtendDateOverview = () => {
     {
       name: "Joining Date",
       selector: (row) =>
-        row.joining_date?.split("T")[0].split("-").reverse().join("-"),
+        row.joining_date?.split("T")[0]?.split("-")?.reverse()?.join("-"),
       sortable: true,
     },
     {
       name: "Requested Joining",
       selector: (row) =>
-        row?.joining_date_extend.split("T")[0].split("-").reverse().join("-"),
+        row?.joining_date_extend
+          ?.split("T")[0]
+          ?.split("-")
+          ?.reverse()
+          ?.join("-"),
       sortable: true,
     },
     {

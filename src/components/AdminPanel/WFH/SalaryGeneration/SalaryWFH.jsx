@@ -92,6 +92,9 @@ const SalaryWFH = () => {
   const [separationLWD, setSeparationLWD] = useState("");
   const [separationReinstateDate, setSeparationReinstateDate] = useState("");
 
+  const [activeTab, setActiveTab] = useState(0);
+
+  const [selectedRows, setSelectedRows] = useState([]);
   var settings = {
     dots: false,
     arrows: true,
@@ -256,6 +259,10 @@ const SalaryWFH = () => {
     return months[titleCaseMonth] || "Invalid Month";
   };
 
+  const handleRowSelected = (state) => {
+    setSelectedRows(state.selectedRows);
+  };
+
   function monthNameToNumberAndEndDate(monthName) {
     const months = {
       January: { number: "01", days: 31 },
@@ -413,6 +420,30 @@ const SalaryWFH = () => {
     }
   };
 
+  const FilterTabData = (filterValue) => {
+    let filteredData = [];
+
+    switch (filterValue) {
+      case "Send To Finance":
+        filteredData = data.filter((option) => option.sendToFinance == 0);
+        break;
+      case "Verification Pending":
+        filteredData = data.filter(
+          (option) => option.sendToFinance == 1 && option.status_ == 0
+        );
+        break;
+      case "Verified":
+        filteredData = data.filter(
+          (option) => option.sendToFinance == 1 && option.status_ == 1
+        );
+        break;
+      default:
+        filteredData = data;
+    }
+
+    setFilterData(filteredData);
+  };
+
   const handleSubmit = async () => {
     try {
       setFilterData([]);
@@ -421,8 +452,9 @@ const SalaryWFH = () => {
         month: month,
         year: Number(year),
       });
-      setFilterData(res.data.data);
-      setData(res.data.data);
+      const response = res.data.data;
+      setFilterData(response.filter((option) => option.sendToFinance == 0));
+      setData(response);
     } catch (error) {
       console.error("Error submitting data:", error);
     }
@@ -549,6 +581,38 @@ const SalaryWFH = () => {
       })
       .then(() => handleSubmit());
     toastAlert("Sent To Finance");
+  }
+
+  async function handleBulkSendToFinance() {
+    try {
+      for (const row of selectedRows) {
+        await axios.post(`${baseUrl}add_finance`, {
+          attendence_id: row.attendence_id,
+        });
+
+        await axios.put(`${baseUrl}update_salary`, {
+          attendence_id: row.attendence_id,
+          sendToFinance: 1,
+        });
+      }
+
+      handleSubmit();
+      setSelectedRows([]);
+      toastAlert("All selected rows have been sent to Finance successfully.");
+    } catch (error) {
+      console.error("Error sending data to finance:", error);
+      toastAlert("An error occurred while sending data to Finance."); // Show error message
+    }
+
+    Promise.all(sendToFinancePromises)
+      .then(() => {
+        handleSubmit();
+        toastAlert("Sent To Finance");
+      })
+      .catch((error) => {
+        console.error("Error sending data to finance:", error);
+        toastAlert("Failed to send to finance");
+      });
   }
 
   const pdfTemplate = () => (
@@ -930,6 +994,7 @@ const SalaryWFH = () => {
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
     XLSX.writeFile(workbook, fileName);
   };
+
   return (
     <>
       <div className="modal fade" id="myModal" role="dialog">
@@ -1186,74 +1251,122 @@ const SalaryWFH = () => {
         </div>
       </div>
 
-      <FormContainer mainTitle="Salary" link="/admin" />
-      <div className="card">
-        <div className="data_tbl table-responsive">
-          {filterData?.length > 0 && (
-            <DataTable
-              title="Salary Overview"
-              columns={columns}
-              data={filterData}
-              fixedHeader
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              exportToCSV
-              subHeader
-              subHeaderComponent={
-                <>
-                  <button
-                    className="btn btn-primary mr-2"
-                    onClick={handleBankDepartmentExcel}
-                  >
-                    Export Bank Excel
-                  </button>
-                  <Button
-                    sx={{ marginRight: "10px" }}
-                    size="medium"
-                    onClick={handleExport}
-                    variant="outlined"
-                    color="secondary"
-                  >
-                    Export Excel
-                  </Button>
-                  <div className="d-flex">
-                    <PDFDownloadLink
-                      document={pdfTemplate()}
-                      fileName={
-                        departmentdata?.find(
-                          (user) => user?.dept_id === department
-                        )?.dept_name +
-                        " " +
-                        month +
-                        " " +
-                        year +
-                        " " +
-                        " invoice" +
-                        "pdf"
-                      }
-                      style={{
-                        color: "#4a4a4a",
-                      }}
-                    >
-                      <button className="btn btn-primary me-3" type="button">
-                        Download
-                      </button>
-                    </PDFDownloadLink>
+      {data?.length > 0 && (
+        <>
+          <FormContainer mainTitle="Salary" link="/admin" />
 
-                    <input
-                      type="text"
-                      placeholder="Search here"
-                      className="w-50 form-control"
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                  </div>
-                </>
-              }
-            />
-          )}
-        </div>
-      </div>
+          <div className="card-header d-flex flex-row align-items-center justify-content-between">
+            <div className="btn-group w-100">
+              <button
+                className={`btn ${
+                  activeTab == 0 ? "btn-primary" : "btn-outline-primary"
+                }`}
+                onClick={() => {
+                  FilterTabData("Send To Finance"), setActiveTab(0);
+                }}
+              >
+                Approved and Send To Finance
+              </button>
+              <button
+                className={`btn ${
+                  activeTab == 1 ? "btn-primary" : "btn-outline-primary"
+                }`}
+                onClick={() => {
+                  FilterTabData("Verification Pending"), setActiveTab(1);
+                }}
+              >
+                Verification Pending
+              </button>
+              <button
+                className={`btn ${
+                  activeTab == 2 ? "btn-primary" : "btn-outline-primary"
+                }`}
+                onClick={() => {
+                  FilterTabData("Verified"), setActiveTab(2);
+                }}
+              >
+                Verified
+              </button>
+            </div>
+          </div>
+          <div className="card">
+            <div className="data_tbl table-responsive">
+              <DataTable
+                title="Salary Overview"
+                columns={columns}
+                data={filterData}
+                fixedHeader
+                fixedHeaderScrollHeight="64vh"
+                highlightOnHover
+                exportToCSV
+                subHeader
+                selectableRows={activeTab == 0 ? true : false}
+                onSelectedRowsChange={handleRowSelected}
+                subHeaderComponent={
+                  <>
+                    {selectedRows.length > 0 && (
+                      <button
+                        className="btn btn-primary mr-2"
+                        onClick={handleBulkSendToFinance}
+                      >
+                        Send to Finance
+                      </button>
+                    )}
+                    <button
+                      className="btn btn-primary mr-2"
+                      onClick={handleBankDepartmentExcel}
+                    >
+                      Export Bank Excel
+                    </button>
+                    <Button
+                      sx={{ marginRight: "10px" }}
+                      size="medium"
+                      onClick={handleExport}
+                      variant="outlined"
+                      color="secondary"
+                    >
+                      Export Excel
+                    </Button>
+                    <div className="d-flex">
+                      <PDFDownloadLink
+                        document={pdfTemplate()}
+                        fileName={
+                          departmentdata?.find(
+                            (user) => user?.dept_id === department
+                          )?.dept_name +
+                          " " +
+                          month +
+                          " " +
+                          year +
+                          " " +
+                          " invoice" +
+                          "pdf"
+                        }
+                        style={{
+                          color: "#4a4a4a",
+                        }}
+                      >
+                        <button className="btn btn-primary me-3" type="button">
+                          Download
+                        </button>
+                      </PDFDownloadLink>
+
+                      <input
+                        type="text"
+                        placeholder="Search here"
+                        className="w-50 form-control"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                    </div>
+                  </>
+                }
+              />
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Modal */}
       <div
         className="modal fade"
