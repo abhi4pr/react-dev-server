@@ -7,6 +7,11 @@ const FormContainer = ({
   uniqueVendorCount,
   totalPendingAmount,
   pendingRequestCount,
+  uniqueCustomerCount,
+  discardCount,
+  discardedRequestCount,
+  paidRequestCount,
+  totalRequestAmount,
   handleOpenUniqueVendorClick,
   link,
   buttonAccess,
@@ -15,13 +20,24 @@ const FormContainer = ({
   newbuttonName,
   children,
   handleSubmit,
+  handleOpenUniqueCustomerClick,
   submitButton = true,
   addNewButtonName,
   accordionButtons = [],
   activeAccordionIndex,
   onAccordionButtonClick,
+  refundAmountTotal,
+  pendingCount,
+  approvedCount,
+  rejectedCount,
+  pendingApprovalAdditionalTitles = false,
   includeAdditionalTitles = false,
+  paymentDoneAdditionalTitles = false,
+  allTransactionAdditionalTitles = false,
+  discardAdditionalTitles = false,
+  dashboardAdditionalTitles = false,
   mainTitleRequired = true,
+  pendingApprovalRefundAdditionalTitles = true,
   loading = false,
   pendingpaymentRemainder=0
 }) => {
@@ -45,6 +61,93 @@ const FormContainer = ({
               </h2>
               <h2>
                 Reminder : <a href="#">{pendingpaymentRemainder}</a>
+              </h2>
+            </div>
+          )}
+          {paymentDoneAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueVendorClick}>
+                Unique Vender : <a href="#">{uniqueVendorCount}</a>
+              </h2>
+              <h2>
+                Payment Done Amount : <a href="#"> {totalRequestAmount}</a>
+              </h2>
+              <h2>
+                Payment Done : <a href="#"> {pendingRequestCount}</a>
+              </h2>
+            </div>
+          )}
+          {allTransactionAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueVendorClick}>
+                Unique Vender : <a href="#">{uniqueVendorCount}</a>
+              </h2>
+              <h2>
+                Requested Amount : <a href="#"> {totalRequestAmount}</a>
+              </h2>
+              <h2>
+                Pending Request Count : <a href="#"> {pendingRequestCount}</a>
+              </h2>
+              <h2>
+                Paid Count : <a href="#"> {paidRequestCount}</a>
+              </h2>
+              <h2>
+                Discard Count : <a href="#"> {discardedRequestCount}</a>
+              </h2>
+            </div>
+          )}
+          {discardAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueVendorClick}>
+                Unique Vender : <a href="#">{uniqueVendorCount}</a>
+              </h2>
+              <h2>
+                Requested Amount : <a href="#"> {totalRequestAmount}</a>
+              </h2>
+              <h2>
+                Discard Count : <a href="#"> {discardCount}</a>
+              </h2>
+            </div>
+          )}
+          {pendingApprovalAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customer : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              {/* totalRequestAmount */}
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Payment Amount : <a href="#">{totalRequestAmount}</a>
+              </h2>
+            </div>
+          )}
+          {dashboardAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customer : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              {/* totalRequestAmount */}
+              <h2>
+                Payment Amount : <a href="#">{totalRequestAmount}</a>
+              </h2>
+              <h2>
+                Pending Count : <a href="#">{pendingCount}</a>
+              </h2>
+              <h2>
+                Approved Count : <a href="#">{approvedCount}</a>
+              </h2>
+              <h2>
+                Rejected Count : <a href="#">{rejectedCount}</a>
+              </h2>
+            </div>
+          )}
+          {pendingApprovalRefundAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customer : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              {/* totalRequestAmount */}
+              <h2>
+                Refund Amount : <a href="#">{refundAmountTotal}</a>
               </h2>
             </div>
           )}

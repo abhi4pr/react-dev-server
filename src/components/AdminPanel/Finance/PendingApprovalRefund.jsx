@@ -6,7 +6,10 @@ import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { baseUrl } from "../../../utils/config";
 import { Button } from "@mui/material";
-import { Autocomplete, TextField } from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Autocomplete, TextField, Dialog, DialogTitle } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const PendingApprovalRefund = () => {
   const { toastAlert } = useGlobalContext();
@@ -25,6 +28,11 @@ const PendingApprovalRefund = () => {
   const [toDate, setToDate] = useState("");
   const [refundAmountFilter, setRefundAmountFilter] = useState("");
   const [refundAmountField, setRefundAmountField] = useState("");
+  const [uniqueCustomerCount, setUniqueCustomerCount] = useState(0);
+  const [uniqueCustomerDialog, setUniqueCustomerDialog] = useState(false);
+  const [uniqueCustomerData, setUniqueCustomerData] = useState([]);
+  const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
+  const [sameCustomerData, setSameCustomerData] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -55,6 +63,17 @@ const PendingApprovalRefund = () => {
         .then((res) => {
           setData(res.data.data);
           setFilterData(res.data.data);
+          const custData = res.data.data;
+          const uniqueCustomers = new Set(
+            custData.map((item) => item.cust_name)
+          );
+          setUniqueCustomerCount(uniqueCustomers.size);
+          const uniqueCustomerData = Array.from(uniqueCustomers).map(
+            (customerName) => {
+              return custData.find((item) => item.cust_name === customerName);
+            }
+          );
+          setUniqueCustomerData(uniqueCustomerData);
         });
     }, 1000);
   }
@@ -184,7 +203,222 @@ const PendingApprovalRefund = () => {
     setRefundAmountFilter("");
     setRefundAmountField("");
   };
+  const handleOpenUniqueCustomerClick = () => {
+    setUniqueCustomerDialog(true);
+    console.log(uniqueCustomerData, "unique cust data");
+  };
 
+  const handleCloseUniqueCustomer = () => {
+    setUniqueCustomerDialog(false);
+  };
+
+  const handleOpenSameCustomer = (custName) => {
+    setSameCustomerDialog(true);
+
+    const sameNameCustomers = datas.filter(
+      (item) => item.cust_name === custName
+    );
+    // Calculate the total amount for vendors with the same name
+    // const totalAmount = sameNameVendors.reduce(
+    //   (total, item) => total + item.request_amount,
+    //   0
+    // );
+
+    // Set the selected vendor data including the vendor name, data, and total amount
+    setSameCustomerData(sameNameCustomers);
+  };
+
+  const handleCloseSameCustomer = () => {
+    setSameCustomerDialog(false);
+  };
+  const calculateRequestedAmountTotal = () => {
+    let totalAmount = 0;
+    uniqueCustomerData.forEach((customer) => {
+      totalAmount += parseFloat(customer.refund_amount);
+    });
+    return totalAmount;
+  };
+  const refundAmountTotal = calculateRequestedAmountTotal();
+  console.log("Total Requested Amount Total:", refundAmountTotal);
+
+  const sameCustomerColumn = [
+    {
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...filterData].indexOf(params.row) + 1}</div>
+      ),
+    },
+    {
+      field: "cust_name",
+      headerName: "Customer Name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+        >
+          {params.row.cust_name}{" "}
+        </div>
+      ),
+    },
+    {
+      field: "refund_amount",
+      headerName: "Refund Amount",
+      renderCell: (params) => <div>{params.row.refund_amount} </div>,
+    },
+    {
+      field: "finance_refund_reason",
+      headerName: "Refund Request Reason",
+      renderCell: (params) => <div>{params.row.refund_amount} </div>,
+    },
+    {
+      field: "creation_date",
+      headerName: "Refund Request Date",
+      renderCell: (params) => (
+        <div>
+          {params.row.creation_date
+            ? convertDateToDDMMYYYY(params.row.creation_date)
+            : ""}
+        </div>
+      ),
+    },
+    {
+      headerName: "Refund Payment Image",
+      renderCell: (params) => (
+        <form method="POST" encType="multipart/form-data" action="">
+          <input
+            key={index}
+            type="file"
+            name="refund_image"
+            onChange={(e) => {
+              // refundImage.splice(index, 1, e.target.files[0]);
+              // setRefundImage(refundImage);
+              // setImageChanged(!imageChanged); // Toggle the state to trigger re-render
+              handleFileChange(e, index);
+              uploadImage(e, params.row, index);
+            }}
+          />
+          <br />
+          {/* <input
+          key={index}
+          type="submit"
+          value="upload"
+          disabled={!refundImage[index] ? true : false}
+          onClick={(e) => {
+            setSingleRow(row);
+            uploadImage(e, row, index);
+          }}
+        /> */}
+        </form>
+      ),
+    },
+    {
+      headerName: "Action",
+      renderCell: (params, index) => (
+        <select
+          key={index}
+          className="form-control"
+          value={params.row.statusDropdown}
+          onChange={(e) => handleStatusChange(params.row, e.target.value)}
+        >
+          <option value="">Select</option>
+          <option value="1">Approved</option>
+          <option value="2">Rejected</option>
+        </select>
+      ),
+    },
+  ];
+  const uniqueCustomersColumn = [
+    {
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...filterData].indexOf(params.row) + 1}</div>
+      ),
+    },
+    {
+      field: "cust_name",
+      headerName: "Customer Name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+        >
+          {params.row.cust_name}{" "}
+        </div>
+      ),
+    },
+    {
+      field: "refund_amount",
+      headerName: "Refund Amount",
+      renderCell: (params) => <div>{params.row.refund_amount} </div>,
+    },
+    {
+      field: "finance_refund_reason",
+      headerName: "Refund Request Reason",
+      renderCell: (params) => <div>{params.row.refund_amount} </div>,
+    },
+    {
+      field: "creation_date",
+      headerName: "Refund Request Date",
+      renderCell: (params) => (
+        <div>
+          {params.row.creation_date
+            ? convertDateToDDMMYYYY(params.row.creation_date)
+            : ""}
+        </div>
+      ),
+    },
+    {
+      headerName: "Refund Payment Image",
+      renderCell: (params) => (
+        <form method="POST" encType="multipart/form-data" action="">
+          <input
+            key={index}
+            type="file"
+            name="refund_image"
+            onChange={(e) => {
+              // refundImage.splice(index, 1, e.target.files[0]);
+              // setRefundImage(refundImage);
+              // setImageChanged(!imageChanged); // Toggle the state to trigger re-render
+              handleFileChange(e, index);
+              uploadImage(e, params.row, index);
+            }}
+          />
+          <br />
+          {/* <input
+          key={index}
+          type="submit"
+          value="upload"
+          disabled={!refundImage[index] ? true : false}
+          onClick={(e) => {
+            setSingleRow(row);
+            uploadImage(e, row, index);
+          }}
+        /> */}
+        </form>
+      ),
+    },
+    {
+      headerName: "Action",
+      renderCell: (params, index) => (
+        <select
+          key={index}
+          className="form-control"
+          value={params.row.statusDropdown}
+          onChange={(e) => handleStatusChange(params.row, e.target.value)}
+        >
+          <option value="">Select</option>
+          <option value="1">Approved</option>
+          <option value="2">Rejected</option>
+        </select>
+      ),
+    },
+  ];
   const columns = [
     {
       name: "S.No",
@@ -292,8 +526,121 @@ const PendingApprovalRefund = () => {
           contextData[2].insert_value === 1 &&
           false
         }
+        uniqueCustomerCount={uniqueCustomerCount}
+        refundAmountTotal={refundAmountTotal}
+        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+        pendingApprovalRefundAdditionalTitles={true}
       />
+      {/* Same Customer Dialog */}
+      <Dialog
+        open={sameCustomerDialog}
+        onClose={handleCloseSameCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
 
+        <DataGrid
+          rows={sameCustomerData}
+          columns={sameCustomerColumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameCustomerData.indexOf(row)}
+        />
+      </Dialog>
+
+      {/* Unique Customer Dialog Box */}
+      <Dialog
+        open={uniqueCustomerDialog}
+        onClose={handleCloseUniqueCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniqueCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueCustomerData}
+          columns={uniqueCustomersColumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => row._id}
+        />
+      </Dialog>
       <div className="row">
         <div className="col-md-4">
           <div className="form-group">
