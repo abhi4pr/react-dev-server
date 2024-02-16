@@ -715,6 +715,7 @@ const UserUpdate = () => {
     formData.append("sub_dept_id", subDepartment);
     formData.append("highest_qualification_name", higestQualification);
     formData.append("cast_type", cast);
+    formData.append('att_status', 'document_upload')
 
     const formDataa = new FormData();
     if (personalEmail && personalContact) {

@@ -26,8 +26,9 @@ const BillingMast = () => {
         const wfhDepartmentsResponse = await axios.get(
           baseUrl + "dept_with_wfh"
         );
-
+        
         const assignedDepartments = assignedDepartmentResponse.data.result;
+
         const wfhDepartments = wfhDepartmentsResponse.data;
 
         const assignedDeptIds = new Set(
@@ -113,7 +114,7 @@ const BillingMast = () => {
             value={{
               value: department,
               label:
-                options.find((opt) => opt.dept_id === department)?.dept_name ||
+                options?.find((opt) => opt.dept_id === department)?.dept_name ||
                 "",
             }}
             onChange={(selectedOption) => setDepartment(selectedOption.value)}

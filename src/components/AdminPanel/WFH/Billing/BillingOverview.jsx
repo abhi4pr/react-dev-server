@@ -57,7 +57,7 @@ const BillingOverview = () => {
       selector: (row) => row.department_name,
     },
     {
-      name: "WFH Employees Count",
+      name: "WFHD Employees Count",
       selector: (row) => (
         <Link
           className="text-primary"

@@ -1,20 +1,32 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import FormContainer from "../FormContainer";
 import DataTable from "react-data-table-component";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
 import { baseUrl } from "../../../utils/config";
+import { Link } from "react-router-dom";
+import FieldContainer from '../FieldContainer'
+import jwtDecode from "jwt-decode";
 
 const WFHDOverview = () => {
   const { ContextDept, RoleIDContext } = useAPIGlobalContext();
   const [allWFHDData, setAllWFHDData] = useState([]);
   const [savedData, setSavedData] = useState([]);
   const [search, setSearch] = useState("");
+  const [remark, setRemark] = useState("");
+  const [rowData, setRowData] = useState({});
+  const [filterDataS, setFilteredDatas] = useState([]);
+
+  const storedToken = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(storedToken);
+  const userID = decodedToken.id;
 
   const getData = async () => {
     const response = await axios.get(baseUrl + "get_all_wfh_users");
     if (RoleIDContext == 1 || RoleIDContext == 5) {
       setAllWFHDData(response.data.data);
+      const attStatus = response.data.data.filter((item)=> item.att_status == 'registered');
+      setFilteredDatas(attStatus)
     } else {
       setAllWFHDData(
         response.data.data?.filter((d) => d.dept_id == ContextDept)
@@ -26,6 +38,40 @@ const WFHDOverview = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  function getFilterData(status) {
+    const newData = allWFHDData.filter((item) => item.att_status == status);
+    setFilteredDatas(newData);
+  }
+
+  const setRowDataFunc = (row) => {
+    setRowData(row)
+  };
+
+  const trainingFunc = (e) =>{
+    e.preventDefault();
+    const payload = {
+      user: rowData.user_id,
+      done_by: userID,
+      remark: remark
+    };
+    axios.post(baseUrl+'add_user_training',payload);
+    axios.put(baseUrl+'update_user',{
+      att_status:'training'
+    });
+    setRemark('')
+    getData()
+  }
+
+  const onboardingFunc = (e) =>{
+    e.preventDefault();
+    axios.put(baseUrl+'update_user',{
+      user_id: rowData.user_id,
+      att_status:'onboarded'
+    });
+    setRemark('')
+    getData()
+  }
 
   useEffect(() => {
     const lowerCaseSearch = search.toLowerCase();
@@ -122,18 +168,92 @@ const WFHDOverview = () => {
       name: "Login ID",
       cell: (row) => row.user_login_id,
     },
+    {
+      name: "Action",
+      cell: (row) => (
+        <>
+          {row.att_status == "registered" ? (
+            <button type="button" className="btn btn-success"><Link to={`/admin/user-update/${row.user_id}`}>Upload Document</Link></button>
+          ) : row.att_status == "document_upload" ? (
+            <button 
+              type="button" className="btn btn-success"
+              data-toggle="modal"
+              data-target="#exampleModal"
+              onClick={()=>setRowDataFunc(row)}
+            >Training Done
+            </button>
+          ) : row.att_status == "training" ? (
+            <button  type="button" 
+              className="btn btn-success" 
+              data-toggle="modal"
+              data-target="#exampleModal2"
+              onClick={()=>setRowDataFunc(row)}
+            >Onboard Him
+            </button>
+          ) : row.att_status == "onboarded" ? (
+            'User Onboarded'
+          ) : null}
+        </>
+      ),
+      width: "100px",
+    }
   ];
 
   return (
     <>
       <div>
         <FormContainer mainTitle="Payout Overivew" link={"/admin/"} />
+        <ul
+          className="nav nav-pills nav-fill navtop"
+          style={{ marginBottom: "20px" }}
+        >
+          <li className="nav-item">
+            <a
+              className="nav-link active"
+              href="#menu1"
+              data-toggle="tab"
+              onClick={() => getFilterData("registered")}
+            >
+              Registered
+            </a>
+          </li>
+          <li className="nav-item">
+            <a
+              className="nav-link"
+              href="#menu2"
+              data-toggle="tab"
+              onClick={() => getFilterData("document_upload")}
+            >
+              Upload Document
+            </a>
+          </li>
+          <li className="nav-item">
+            <a
+              className="nav-link"
+              href="#menu3"
+              data-toggle="tab"
+              onClick={() => getFilterData("training")}
+            >
+              Training
+            </a>
+          </li>
+          <li className="nav-item">
+            <a
+              className="nav-link"
+              href="#menu4"
+              data-toggle="tab"
+              onClick={() => getFilterData("onboarded")}
+            >
+              Onboarded
+            </a>
+          </li>
+        </ul>
         <div className="card">
           <div className="data_tbl table-responsive">
             <DataTable
               title="Payout Users"
               columns={columns}
-              data={allWFHDData}
+              data={filterDataS}
               fixedHeader
               fixedHeaderScrollHeight="64vh"
               highlightOnHover
@@ -150,6 +270,115 @@ const WFHDOverview = () => {
             />
           </div>
         </div>
+
+      <div
+        className="modal fade"
+        id="exampleModal"
+        tabIndex={-1}
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Done Training
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <FieldContainer
+                label="Remark"
+                fieldGrid={12}
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+                required={true}
+              ></FieldContainer>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={trainingFunc}
+                data-dismiss="modal"
+                disabled={!remark}
+              >
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div
+        className="modal fade"
+        id="exampleModal2"
+        tabIndex={-1}
+        role="dialog"
+        aria-labelledby="exampleModalLabel2"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel2">
+                Onboard user
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <FieldContainer
+                label="Remark"
+                fieldGrid={12}
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+                required={true}
+              ></FieldContainer>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={onboardingFunc}
+                data-dismiss="modal"
+                disabled={!remark}
+              >
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       </div>
     </>
   );
