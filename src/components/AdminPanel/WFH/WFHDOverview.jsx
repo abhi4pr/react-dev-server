@@ -16,6 +16,12 @@ const WFHDOverview = () => {
   const [remark, setRemark] = useState("");
   const [rowData, setRowData] = useState({});
   const [filterDataS, setFilteredDatas] = useState([]);
+  const [statusCounts, setStatusCounts] = useState({
+    registered: 0,
+    document_upload: 0,
+    training: 0,
+    onboarded: 0,
+  });
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -34,6 +40,11 @@ const WFHDOverview = () => {
       );
       setSavedData(response.data.data?.filter((d) => d.dept_id == ContextDept));
     }
+    const counts = response.data.data.reduce((acc, curr) => {
+      acc[curr.att_status] = (acc[curr.att_status] || 0) + 1;
+      return acc;
+    }, {});
+    setStatusCounts(counts);
   };
 
   useEffect(() => {
@@ -215,7 +226,7 @@ const WFHDOverview = () => {
               data-toggle="tab"
               onClick={() => getFilterData("registered")}
             >
-              Registered
+              Registered ({statusCounts.registered})
             </a>
           </li>
           <li className="nav-item">
@@ -225,7 +236,7 @@ const WFHDOverview = () => {
               data-toggle="tab"
               onClick={() => getFilterData("document_upload")}
             >
-              Upload Document
+              Upload Document ({statusCounts.document_upload})
             </a>
           </li>
           <li className="nav-item">
@@ -235,7 +246,7 @@ const WFHDOverview = () => {
               data-toggle="tab"
               onClick={() => getFilterData("training")}
             >
-              Training
+              Training ({statusCounts.training})
             </a>
           </li>
           <li className="nav-item">
@@ -245,7 +256,7 @@ const WFHDOverview = () => {
               data-toggle="tab"
               onClick={() => getFilterData("onboarded")}
             >
-              Onboarded
+              Onboarded ({statusCounts.onboarded})
             </a>
           </li>
         </ul>
