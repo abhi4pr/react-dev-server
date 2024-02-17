@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import { useGlobalContext } from "../../../../Context/Context";
@@ -42,6 +42,16 @@ const PreonboardingDocuments = () => {
   const [description, setDescription] = useState("");
   const [mandatory, setMandatory] = useState("");
   const [documentNumber, setDocumentNumber] = useState("");
+  const [jobTypeData, setJobTypeData] = useState([]);
+  const [jobType, setJobType] = useState([]);
+
+  useEffect(() => {
+    async function getJobtTypes() {
+      const jobTypeResponse = await axios.get(baseUrl + "get_all_job_types");
+      setJobTypeData(jobTypeResponse.data.data);
+    }
+    getJobtTypes();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -53,6 +63,7 @@ const PreonboardingDocuments = () => {
         description: description,
         isRequired: mandatory,
         doc_number: documentNumber,
+        job_type: jobType,
       })
       .then(() => {
         setDocumentType("");
@@ -115,6 +126,31 @@ const PreonboardingDocuments = () => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        <div className="form-group col-6">
+          <label className="form-label">
+            Job Type <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            className=""
+            isMulti
+            options={jobTypeData?.map((option) => ({
+              value: `${option.job_type}`,
+              label: `${option.job_type}`,
+            }))}
+            value={jobType?.map((type) => ({
+              value: type,
+              label: type,
+            }))}
+            onChange={(selectedOptions) => {
+              const selectedValues = selectedOptions.map(
+                (option) => option.value
+              );
+              setJobType(selectedValues);
+            }}
+            required
+          />
+        </div>
       </FormContainer>
     </>
   );

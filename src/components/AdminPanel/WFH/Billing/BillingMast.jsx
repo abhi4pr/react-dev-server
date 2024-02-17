@@ -16,8 +16,6 @@ const BillingMast = () => {
   const [allWFHDepartments, setAllWFHDepartments] = useState([]);
   const [unassignedWFHDepartments, setUnassignedWFHDepartments] = useState([]);
   const [seeMoreButtonActive, setSeeMoreButtonActive] = useState(true);
-  const [jobTypeData, setJobTypeData] = useState([]);
-  const [jobType, setJobType] = useState([]);
 
   useEffect(() => {
     async function fetchData() {
@@ -28,8 +26,6 @@ const BillingMast = () => {
         const wfhDepartmentsResponse = await axios.get(
           baseUrl + "dept_with_wfh"
         );
-
-        const jobTypeResponse = await axios.get(baseUrl + "get_all_job_types");
 
         const assignedDepartments = assignedDepartmentResponse.data.result;
 
@@ -43,7 +39,6 @@ const BillingMast = () => {
           (dept) => !assignedDeptIds.has(dept.dept_id)
         );
 
-        setJobTypeData(jobTypeResponse.data.data);
         setUnassignedWFHDepartments(unassignedWfhDepartments);
         setAllWFHDepartments(wfhDepartments);
         if (unassignedWfhDepartments.length == wfhDepartments.length) {
@@ -78,7 +73,6 @@ const BillingMast = () => {
       .post(baseUrl + "add_billingheader", {
         billing_header_name: bilingName,
         dept_id: department,
-        jobType,
       })
       .then(() => {
         setIsFormSubmitted(true);
@@ -125,31 +119,6 @@ const BillingMast = () => {
             }}
             onChange={(selectedOption) => setDepartment(selectedOption.value)}
             components={{ MenuList: DepartmentMenuList }}
-            required
-          />
-        </div>
-
-        <div className="form-group col-6">
-          <label className="form-label">
-            Job Type <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            className=""
-            isMulti
-            options={jobTypeData?.map((option) => ({
-              value: `${option.job_type}`,
-              label: `${option.job_type}`,
-            }))}
-            value={jobType?.map((type) => ({
-              value: type,
-              label: type,
-            }))}
-            onChange={(selectedOptions) => {
-              const selectedValues = selectedOptions.map(
-                (option) => option.value
-              );
-              setJobType(selectedValues);
-            }}
             required
           />
         </div>
