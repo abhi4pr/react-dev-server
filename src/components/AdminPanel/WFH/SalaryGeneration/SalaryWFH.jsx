@@ -260,6 +260,19 @@ const SalaryWFH = () => {
     return months[titleCaseMonth] || "Invalid Month";
   };
 
+  const conditionalRowStyles = [
+    {
+      when: (row) => Number(row.toPay) > 1.2 * Number(row.salary),
+      style: {
+        backgroundColor: "rgba(242, 38, 19, 0.9)",
+        color: "white",
+        "&:hover": {
+          cursor: "pointer",
+        },
+      },
+    },
+  ];
+
   const handleRowSelected = (state) => {
     setSelectedRows(state.selectedRows);
   };
@@ -1309,6 +1322,7 @@ const SalaryWFH = () => {
                 highlightOnHover
                 exportToCSV
                 subHeader
+                conditionalRowStyles={conditionalRowStyles}
                 selectableRows={activeTab == 0 ? true : false}
                 onSelectedRowsChange={handleRowSelected}
                 subHeaderComponent={
