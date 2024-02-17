@@ -171,6 +171,7 @@ const AllTransactions = () => {
     });
     setFilterData(result);
   }, [search]);
+
   const handleOpenUniqueCustomerClick = () => {
     setUniqueCustomerDialog(true);
     console.log(uniqueCustomerData, "unique cust data");

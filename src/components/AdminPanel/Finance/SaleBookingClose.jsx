@@ -253,7 +253,6 @@ const SaleBookingClose = () => {
       },
     },
   ];
-
   return (
     <>
       <FormContainer

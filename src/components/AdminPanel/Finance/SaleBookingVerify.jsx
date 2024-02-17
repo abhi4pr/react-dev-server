@@ -265,7 +265,6 @@ const SaleBookingVerify = () => {
       ),
     },
   ];
-
   return (
     <>
       <FormContainer
