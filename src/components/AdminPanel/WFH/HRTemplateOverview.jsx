@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import useInvoiceTemplateImages from "./Templates/Hooks/useInvoiceTemplateImages";
 import Modal from "react-modal";
 import { baseUrl } from "../../../utils/config";
 import axios from "axios";
+import TemplateAssignedUsers from "./TemplateAssignedUsers";
 
 const templateImages = useInvoiceTemplateImages();
 
 const HRTemplateOverview = () => {
   const [previewImage, setPreviewImage] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTemplatePreviewModalOpen, setIsTemplatePreviewModalOpen] =
+    useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState("");
+  const [isSeletedTemplateUsersModalOpen, setIsSelectedUsersModalOpen] =
+    useState(false);
   const [templateWiseData, setTemplateWiseData] = useState([]);
 
   useEffect(() => {
@@ -26,18 +30,30 @@ const HRTemplateOverview = () => {
     getTemplateData();
   }, []);
 
-  function templateUserCount(templateId) {
-    return templateWiseData.find((item) => item._id == templateId)?.count;
-  }
+  const selectedTemplateUsers = useCallback(
+    (templateId) => {
+      return templateWiseData.find((item) => item._id == templateId);
+    },
+    [templateWiseData]
+  );
 
-  function openModal(image) {
+  function openTemplatePreviewModal(image) {
     setPreviewImage(image);
-    setIsModalOpen(true);
+    setIsTemplatePreviewModalOpen(true);
   }
 
-  function closeModal() {
-    setIsModalOpen(false);
+  function closeTemplatePreviewModal() {
+    setIsTemplatePreviewModalOpen(false);
   }
+
+  function openSelectedTemplateUsersModal() {
+    setIsSelectedUsersModalOpen(true);
+  }
+
+  function closeSelectedTemplateUsersModal() {
+    setIsSelectedUsersModalOpen(false);
+  }
+
   return (
     <div>
       <div className="transfer_body">
@@ -57,11 +73,22 @@ const HRTemplateOverview = () => {
                   <img
                     src={d.image}
                     alt="img"
-                    onClick={() => openModal(d.image)}
+                    onClick={() => openTemplatePreviewModal(d.image)}
                   />
-                  <i className="bi bi-eye" onClick={() => openModal(d.image)} />{" "}
+                  <i
+                    className="bi bi-eye"
+                    onClick={() => openTemplatePreviewModal(d.image)}
+                  />
                   <h3>Template No: {d.temp_id}</h3>
-                  <h3>Assigned: {templateUserCount(d.temp_id)}</h3>
+                  <div className="d-flex">
+                    <h3>Assigned: {selectedTemplateUsers(d.temp_id)?.count}</h3>
+                    <i
+                      className="bi bi-eye"
+                      onClick={() => {
+                        openSelectedTemplateUsersModal();
+                      }}
+                    />
+                  </div>
                 </div>
               </span>
             </label>
@@ -70,9 +97,10 @@ const HRTemplateOverview = () => {
       </div>
 
       <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
+        isOpen={isTemplatePreviewModalOpen}
+        onRequestClose={closeTemplatePreviewModal}
         contentLabel="Image Preview"
+        appElement={document.getElementById("root")}
         style={{
           content: {
             display: "flex",
@@ -87,10 +115,24 @@ const HRTemplateOverview = () => {
       >
         <div className="d-flex flex-column ">
           <img src={previewImage} alt="Preview" style={{ width: "100%" }} />
-          <button className="btn btn-secondary" onClick={closeModal}>
+          <button
+            className="btn btn-secondary"
+            onClick={closeTemplatePreviewModal}
+          >
             Close
           </button>
         </div>
+      </Modal>
+
+      <Modal
+        isOpen={isSeletedTemplateUsersModalOpen}
+        onRequestClose={closeSelectedTemplateUsersModal}
+        contentLabel="Users Preview"
+        appElement={document.getElementById("root")}
+      >
+        <TemplateAssignedUsers
+          usersData={selectedTemplateUsers(selectedTemplate)?.users}
+        />
       </Modal>
     </div>
   );
