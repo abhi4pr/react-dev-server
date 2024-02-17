@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
 import { baseUrl } from "../../utils/config";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const DocumentTab = ({
   documentData,
@@ -11,9 +11,10 @@ const DocumentTab = ({
   submitButton = true,
   normalUserLayout = false,
 }) => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const { user_id } = useParams();
   const [user, setUser] = useState({})
+  const navigate = useNavigate();
 
   const getData = () => {
     axios.get(`${baseUrl}` + `get_single_user/${user_id}`).then((res) => {
@@ -40,19 +41,30 @@ const DocumentTab = ({
 
   const handleSubmit = async () => {
     try {
-      const mandatoryDocTypes = ["10th", "12th"];
+      // const mandatoryDocTypes = ["10th", "12th"];
 
-      const isMandatoryDocMissing = documentData.some(
-        (doc) =>
-          mandatoryDocTypes.includes(doc.document.doc_type) &&
-          doc.doc_image &&
-          doc.file
-      );
+      // const isMandatoryDocMissing = documentData.some(
+      //   (doc) =>
+      //     mandatoryDocTypes.includes(doc.document.doc_type) &&
+      //     doc.doc_image &&
+      //     doc.file
+      // );
 
-      if (isMandatoryDocMissing) {
-        toastAlert("Please fill all mandatory fields");
-        return;
-      } else {
+      // if (isMandatoryDocMissing) {
+      //   toastAlert("Please fill all mandatory fields");
+      //   return;
+      // } else {
+        const requiredDocuments = documentData.filter(
+          (doc) => doc.document.isRequired && doc.document.job_type.includes(user.job_type)
+        );
+        const isAnyRequiredDocumentMissing = requiredDocuments.some(
+          (doc) => !doc.file
+        );
+    
+        if (isAnyRequiredDocumentMissing) {
+          toastError("Please upload all required documents");
+          return;
+        }
         for (const document of documentData) {
           if (document.file) {
             let formData = new FormData();
@@ -81,11 +93,12 @@ const DocumentTab = ({
           axios.put(baseUrl+'update_user',{
             user_id: user_id,
             att_status: 'document_upload'
-          })
+          });
+          navigate("/admin/wfhd-overview");
         }
         toastAlert("Documents Updated");
         getDocuments();
-      }
+      // }
     } catch (error) {
       console.error("Error submitting documents", error);
     }
@@ -121,7 +134,7 @@ const DocumentTab = ({
                   <tr key={item._id}>
                     <td scope="row">
                       {item.document.doc_type}
-                      {item.document.isRequired && (
+                      {item.document.isRequired && item.document.job_type.includes(user.job_type) && (
                         <span style={{ color: "red" }}> *</span>
                       )}
                     </td>
