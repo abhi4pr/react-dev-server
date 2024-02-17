@@ -221,6 +221,7 @@ import AssetSummary from "../Sim/AssetSummary";
 import CaseStudyOperation from "./RegisterCampaign/CaseStudies/CaseStudyOperation";
 import WFHDRegister from "./WFH/WFHDRegister/WFHDRegister";
 import UpdateDocument from "./WFH/UpdateDocument";
+import HRTemplateOverview from "./WFH/HRTemplateOverview";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -385,6 +386,10 @@ const Admin = () => {
                   <Route
                     path="/wfh-template-overview"
                     element={<WFHTemplateOverview />}
+                  />
+                  <Route
+                    path="hr-template-overview"
+                    element={<HRTemplateOverview />}
                   />
                   <Route
                     path="view-edit-digital-signature"
@@ -787,7 +792,10 @@ const Admin = () => {
                     element={<HobbiesOverview />}
                   />
                   {/* ----------------------Case Studies -----------------------------*/}
-                   <Route path="/operation/case-study" element={<CaseStudyOperation />} />
+                  <Route
+                    path="/operation/case-study"
+                    element={<CaseStudyOperation />}
+                  />
 
                   {/* Phase Dashboard here  */}
                   <Route path="/phase-dashboard" element={<PhaseDashboard />} />
