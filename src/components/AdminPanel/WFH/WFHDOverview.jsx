@@ -22,6 +22,7 @@ const WFHDOverview = () => {
     training: 0,
     onboarded: 0,
   });
+  const [trainingDate, setTrainingDate] = useState("")
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -41,9 +42,11 @@ const WFHDOverview = () => {
       setSavedData(response.data.data?.filter((d) => d.dept_id == ContextDept));
     }
     const counts = response.data.data.reduce((acc, curr) => {
-      acc[curr.att_status] = (acc[curr.att_status] || 0) + 1;
+      if (RoleIDContext == 1 || RoleIDContext == 5 || curr.dept_id == ContextDept) {
+          acc[curr.att_status] = (acc[curr.att_status] || 0) + 1;
+      }
       return acc;
-    }, {});
+  }, {});
     setStatusCounts(counts);
   };
 
@@ -65,10 +68,12 @@ const WFHDOverview = () => {
     const payload = {
       user: rowData.user_id,
       done_by: userID,
-      remark: remark
+      remark: remark,
+      training_date: trainingDate 
     };
     axios.post(baseUrl+'add_user_training',payload);
     axios.put(baseUrl+'update_user',{
+      user_id: rowData.user_id,
       att_status:'training'
     });
     setRemark('')
@@ -200,7 +205,7 @@ const WFHDOverview = () => {
               data-toggle="modal"
               data-target="#exampleModal2"
               onClick={()=>setRowDataFunc(row)}
-            >Onboard Him
+            >Onboard
             </button>
           ) : row.att_status == "onboarded" ? (
             'User Onboarded'
@@ -314,6 +319,13 @@ const WFHDOverview = () => {
                 onChange={(e) => setRemark(e.target.value)}
                 required={true}
               ></FieldContainer>
+              <FieldContainer
+                type="date"
+                label="Training Date"
+                fieldGrid={12}
+                value={trainingDate}
+                onChange={(e) => setTrainingDate(e.target.value)}
+              />
             </div>
             <div className="modal-footer">
               <button
@@ -328,7 +340,7 @@ const WFHDOverview = () => {
                 className="btn btn-primary"
                 onClick={trainingFunc}
                 data-dismiss="modal"
-                disabled={!remark}
+                disabled={!remark || !trainingDate}
               >
                 Save changes
               </button>

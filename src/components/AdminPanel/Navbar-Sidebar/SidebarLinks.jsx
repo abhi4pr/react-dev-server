@@ -272,7 +272,7 @@ const SidebarLinks = () => {
             aria-controls="collapsInnerOneModify"
           >
             <i className="bi bi-person-gear" />
-            <span>HR</span>
+            <span>WFHD</span>
           </a>
           <div
             id="collapsInnerOneModify"
@@ -300,9 +300,9 @@ const SidebarLinks = () => {
                   <Link className="collapse-item" to="/admin/wfhd-register">
                     Add Buddy
                   </Link>
-                  <Link className="collapse-item" to="/admin/billing-overview">
+                  {/* <Link className="collapse-item" to="/admin/billing-overview">
                     Billing Header Overview
-                  </Link>
+                  </Link> */}
                   <Link className="collapse-item" to="/admin/wfhd-overview">
                     My Team
                   </Link>
