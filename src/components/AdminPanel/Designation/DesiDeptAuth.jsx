@@ -15,12 +15,12 @@ const DesiDeptAuth = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
-
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     getData();
   }, []);
+
   function getData() {
     axios
       .get(`${baseUrl}`+`get_single_desi_dept_auth/${id}`)
@@ -29,12 +29,14 @@ const DesiDeptAuth = () => {
         setFilterData(res.data);
       });
   }
+
   useEffect(() => {
     const result = data.filter((d) => {
-      return d.obj_name.toLowerCase().match(search.toLowerCase());
+      return d.obj_name?.toLowerCase()?.match(search?.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
+  
   const handleCheckboxChange = (event, row, property) => {
     const { checked } = event.target;
     setFilterData((prevData) =>

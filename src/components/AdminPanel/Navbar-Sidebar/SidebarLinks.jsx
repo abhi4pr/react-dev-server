@@ -315,12 +315,14 @@ const SidebarLinks = () => {
                   <Link className="collapse-item" to="/admin/attendence-mast">
                     Create Attendance
                   </Link>
-                  <Link
-                    className="collapse-item"
-                    to="/admin/hr-template-overview"
-                  >
-                    Invoice Template Summary
-                  </Link>
+                  {RoleId == 1 && (
+                    <Link
+                      className="collapse-item"
+                      to="/admin/hr-template-overview"
+                    >
+                      Invoice Template Summary
+                    </Link>
+                  )}
                   <Link className="collapse-item" to="/admin/dispute-overview">
                     Dispute Summary
                   </Link>

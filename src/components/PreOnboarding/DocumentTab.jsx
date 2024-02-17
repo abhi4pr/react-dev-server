@@ -41,30 +41,19 @@ const DocumentTab = ({
 
   const handleSubmit = async () => {
     try {
-      // const mandatoryDocTypes = ["10th", "12th"];
+      const mandatoryDocTypes = ["10th", "12th"];
 
-      // const isMandatoryDocMissing = documentData.some(
-      //   (doc) =>
-      //     mandatoryDocTypes.includes(doc.document.doc_type) &&
-      //     doc.doc_image &&
-      //     doc.file
-      // );
+      const isMandatoryDocMissing = documentData.some(
+        (doc) =>
+          mandatoryDocTypes.includes(doc.document.doc_type) &&
+          doc.doc_image &&
+          doc.file
+      );
 
-      // if (isMandatoryDocMissing) {
-      //   toastAlert("Please fill all mandatory fields");
-      //   return;
-      // } else {
-        const requiredDocuments = documentData.filter(
-          (doc) => doc.document.isRequired && doc.document.job_type.includes(user.job_type)
-        );
-        const isAnyRequiredDocumentMissing = requiredDocuments.some(
-          (doc) => !doc.file
-        );
-    
-        if (isAnyRequiredDocumentMissing) {
-          toastError("Please upload all required documents");
-          return;
-        }
+      if (isMandatoryDocMissing) {
+        toastAlert("Please fill all mandatory fields");
+        return;
+      } else {
         for (const document of documentData) {
           if (document.file) {
             let formData = new FormData();
@@ -89,16 +78,9 @@ const DocumentTab = ({
             console.log(`No file uploaded for document ${document._id}`);
           }
         }
-        if(user.att_status == 'registered'){
-          axios.put(baseUrl+'update_user',{
-            user_id: user_id,
-            att_status: 'document_upload'
-          });
-          navigate("/admin/wfhd-overview");
-        }
         toastAlert("Documents Updated");
         getDocuments();
-      // }
+      }
     } catch (error) {
       console.error("Error submitting documents", error);
     }
@@ -134,7 +116,7 @@ const DocumentTab = ({
                   <tr key={item._id}>
                     <td scope="row">
                       {item.document.doc_type}
-                      {item.document.isRequired && item.document.job_type.includes(user.job_type) && (
+                      {item.document.isRequired && (
                         <span style={{ color: "red" }}> *</span>
                       )}
                     </td>
