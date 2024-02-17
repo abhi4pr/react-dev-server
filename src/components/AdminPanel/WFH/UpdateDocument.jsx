@@ -20,11 +20,6 @@ const UpdateDocument = () => {
       user_id: user_id,
     });
     setDocumentData(response.data.data);
-    
-    axios.put(baseUrl+'update_user',{
-      user_id: user_id,
-      att_status: 'document_upload'
-    })
   }
 
   useEffect(() => {

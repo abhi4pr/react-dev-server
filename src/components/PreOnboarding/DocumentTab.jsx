@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
 import { baseUrl } from "../../utils/config";
+import { useParams } from "react-router-dom";
 
 const DocumentTab = ({
   documentData,
@@ -11,6 +12,18 @@ const DocumentTab = ({
   normalUserLayout = false,
 }) => {
   const { toastAlert } = useGlobalContext();
+  const { user_id } = useParams();
+  const [user, setUser] = useState({})
+
+  const getData = () => {
+    axios.get(`${baseUrl}` + `get_single_user/${user_id}`).then((res) => {
+      setUser(res.data);
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const updateDocumentData = (documentId, key, value) => {
     setDocumentData((prevDocumentData) =>
@@ -63,6 +76,12 @@ const DocumentTab = ({
           } else {
             console.log(`No file uploaded for document ${document._id}`);
           }
+        }
+        if(user.att_status == 'registered'){
+          axios.put(baseUrl+'update_user',{
+            user_id: user_id,
+            att_status: 'document_upload'
+          })
         }
         toastAlert("Documents Updated");
         getDocuments();
