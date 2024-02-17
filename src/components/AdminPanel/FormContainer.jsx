@@ -36,10 +36,11 @@ const FormContainer = ({
   allTransactionAdditionalTitles = false,
   discardAdditionalTitles = false,
   dashboardAdditionalTitles = false,
-  mainTitleRequired = true,
-  pendingApprovalRefundAdditionalTitles = true,
+  refundReqAdditionalTitles = false,
+  pendingApprovalRefundAdditionalTitles = false,
   loading = false,
-  pendingpaymentRemainder=0
+  pendingpaymentRemainder = 0,
+  mainTitleRequired = true,
 }) => {
   return (
     <>
@@ -118,6 +119,15 @@ const FormContainer = ({
               <h2 onClick={handleOpenUniqueCustomerClick}>
                 Payment Amount : <a href="#">{totalRequestAmount}</a>
               </h2>
+              <h2>
+                Pending count : <a href="#"> {pendingCount}</a>
+              </h2>
+              <h2>
+                Approved Count : <a href="#"> {approvedCount}</a>
+              </h2>
+              <h2>
+                Rejected Count : <a href="#">{rejectedCount}</a>
+              </h2>
             </div>
           )}
           {dashboardAdditionalTitles && (
@@ -148,6 +158,23 @@ const FormContainer = ({
               {/* totalRequestAmount */}
               <h2>
                 Refund Amount : <a href="#">{refundAmountTotal}</a>
+              </h2>
+            </div>
+          )}
+          {refundReqAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customer : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              {/* totalRequestAmount */}
+              <h2>
+                Refund Amount : <a href="#">{refundAmountTotal}</a>
+              </h2>
+              <h2>
+                Approved Count : <a href="#">{approvedCount}</a>
+              </h2>
+              <h2>
+                Rejected Count : <a href="#">{rejectedCount}</a>
               </h2>
             </div>
           )}

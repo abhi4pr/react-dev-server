@@ -43,7 +43,7 @@ const PendingApprovalUpdate = () => {
   const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
   const [sameCustomerData, setSameCustomerData] = useState([]);
   // const []
-
+  console.log("HII");
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
@@ -252,7 +252,17 @@ const PendingApprovalUpdate = () => {
 
   // Call the function to get the total sum of requested amount
   const requestedAmountTotal = calculateRequestedAmountTotal();
-  console.log("Total Requested Amount Total:", requestedAmountTotal);
+
+  // All Counts:-
+  const pendingCount = datas.filter(
+    (item) => item.payment_approval_status === 0
+  ).length;
+  const approvedCount = datas.filter(
+    (item) => item.payment_approval_status === 1
+  ).length;
+  const rejectedCount = datas.filter(
+    (item) => item.payment_approval_status === 2
+  ).length;
 
   const sameCustomerColumn = [
     {
@@ -753,12 +763,6 @@ const PendingApprovalUpdate = () => {
       width: "150px",
     },
   ];
-  console.log(
-    uniqueCustomerData,
-    "uniqueCustomerData",
-    sameCustomerData,
-    "sameCustomerData"
-  );
   return (
     <>
       <FormContainer
@@ -772,6 +776,9 @@ const PendingApprovalUpdate = () => {
         }
         uniqueCustomerCount={uniqueCustomerCount}
         totalRequestAmount={requestedAmountTotal}
+        pendingCount={pendingCount}
+        approvedCount={approvedCount}
+        rejectedCount={rejectedCount}
         handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
         pendingApprovalAdditionalTitles={true}
       />
