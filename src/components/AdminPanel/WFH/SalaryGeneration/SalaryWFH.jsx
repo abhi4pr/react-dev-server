@@ -25,7 +25,6 @@ import FieldContainer from "../../FieldContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { baseUrl } from "../../../../utils/config";
 import { downloadSelectedInvoices } from "./ZipGenerator";
-import getDecodedToken from "../../../../utils/DecodedToken";
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -148,7 +147,11 @@ const SalaryWFH = () => {
         setAllWFHUsers(data?.length);
         const filteredUser = data.filter((d) => d.dept_id === department);
         const filteredActive = data.filter(
-          (d) => d.dept_id === department && d.user_status
+          (d) =>
+            d.dept_id === department &&
+            d.user_status == "Active" &&
+            d.job_type === "WFHD" &&
+            d.att_status == "onboarded"
         );
         setActiveUsers(filteredActive);
         if (filteredUser?.length > 0) {
@@ -368,7 +371,7 @@ const SalaryWFH = () => {
       gettingDepartmentSalaryExists();
     }
 
-    if (department || month || year !== "") {
+    if (department !== "" && month !== "" && year !== "") {
       axios
         .get(baseUrl + "get_total_salary")
         .then((res) => setCard2Data(res.data.data[0]));
@@ -396,8 +399,10 @@ const SalaryWFH = () => {
         year: year,
         dept: department,
       })
-      .then((res) =>
-        res.data.salary_status == 1 ? handleSubmit() : setFilterData([])
+      .then(
+        (res) =>
+          res.data.salary_status == 1 ? handleSubmit() : setFilterData([]),
+        setData([])
       );
   }, [department, month, year]);
 
@@ -460,6 +465,7 @@ const SalaryWFH = () => {
   const handleSubmit = async () => {
     try {
       setFilterData([]);
+      setData([]);
       const res = await axios.post(baseUrl + "get_salary_by_id_month_year", {
         dept_id: department,
         month: month,
