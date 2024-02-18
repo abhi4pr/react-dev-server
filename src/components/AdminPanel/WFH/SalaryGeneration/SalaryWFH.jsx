@@ -66,6 +66,7 @@ const SalaryWFH = () => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
+  const roleID = decodedToken.role_id;
   const [month, setMonth] = useState(null);
   const [year, setYear] = useState(null);
   const [rowData, setDataRow] = useState(null);
@@ -146,7 +147,11 @@ const SalaryWFH = () => {
         setAllWFHUsers(data?.length);
         const filteredUser = data.filter((d) => d.dept_id === department);
         const filteredActive = data.filter(
-          (d) => d.dept_id === department && d.user_status
+          (d) =>
+            d.dept_id === department &&
+            d.user_status == "Active" &&
+            d.job_type === "WFHD" &&
+            d.att_status == "onboarded"
         );
         setActiveUsers(filteredActive);
         if (filteredUser?.length > 0) {
@@ -199,19 +204,16 @@ const SalaryWFH = () => {
 
   //harshal.. calculating monthly salary
   useEffect(() => {
-    const sumMonth = filterData.reduce(
+    const sumMonth = data?.reduce(
       (acc, obj) => acc + parseFloat(obj.total_salary),
       0
     );
-    const sumBonus = filterData.reduce(
-      (acc, obj) => acc + parseFloat(obj.bonus),
-      0
-    );
-    const sumDeductions = filterData.reduce(
+    const sumBonus = data?.reduce((acc, obj) => acc + parseFloat(obj.bonus), 0);
+    const sumDeductions = data?.reduce(
       (acc, obj) => acc + parseFloat(obj.salary_deduction),
       0
     );
-    const sumTDSDeductions = filterData.reduce(
+    const sumTDSDeductions = data?.reduce(
       (acc, obj) => acc + parseFloat(obj.tds_deduction),
       0
     );
@@ -219,7 +221,7 @@ const SalaryWFH = () => {
     setThisMonthTotalBonus(sumBonus);
     setThisMonthTotalDeductions(sumDeductions);
     setThisMonthTDS(sumTDSDeductions);
-  }, [filterData]);
+  }, [data]);
 
   // Get the current year and month
   const currentDate = new Date();
@@ -369,7 +371,7 @@ const SalaryWFH = () => {
       gettingDepartmentSalaryExists();
     }
 
-    if (department || month || year !== "") {
+    if (department !== "" && month !== "" && year !== "") {
       axios
         .get(baseUrl + "get_total_salary")
         .then((res) => setCard2Data(res.data.data[0]));
@@ -397,8 +399,10 @@ const SalaryWFH = () => {
         year: year,
         dept: department,
       })
-      .then((res) =>
-        res.data.salary_status == 1 ? handleSubmit() : setFilterData([])
+      .then(
+        (res) =>
+          res.data.salary_status == 1 ? handleSubmit() : setFilterData([]),
+        setData([])
       );
   }, [department, month, year]);
 
@@ -461,6 +465,7 @@ const SalaryWFH = () => {
   const handleSubmit = async () => {
     try {
       setFilterData([]);
+      setData([]);
       const res = await axios.post(baseUrl + "get_salary_by_id_month_year", {
         dept_id: department,
         month: month,
@@ -581,20 +586,26 @@ const SalaryWFH = () => {
       fontWeight: "bold",
     },
   });
-  //Send to finance
-  function handleSendToFinance(e, row) {
-    e.preventDefault();
-    axios.post(`${baseUrl}` + `add_finance`, {
-      attendence_id: row.attendence_id,
-    });
 
-    axios
-      .put(`${baseUrl}` + `update_salary`, {
+  //Send to finance
+  async function handleSendToFinance(e, row) {
+    e.preventDefault();
+    try {
+      await axios.post(`${baseUrl}add_finance`, {
+        attendence_id: row.attendence_id,
+      });
+
+      await axios.put(`${baseUrl}update_salary`, {
         attendence_id: row.attendence_id,
         sendToFinance: 1,
-      })
-      .then(() => handleSubmit());
-    toastAlert("Sent To Finance");
+      });
+
+      handleSubmit();
+      toastAlert("Sent To Finance");
+    } catch (error) {
+      console.error("Error sending to finance", error);
+      toastAlert("Failed to send to finance");
+    }
   }
 
   async function handleInvoiceDownload() {
@@ -921,7 +932,7 @@ const SalaryWFH = () => {
       name: "Status",
       cell: (row) => row.attendence_status_flow,
     },
-    {
+    roleID == 2 && {
       name: "separation",
       cell: (row) => (
         <Button
@@ -1153,18 +1164,15 @@ const SalaryWFH = () => {
       </div>
 
       <div className="form-group col-3">
-        {filterData?.length == 0 &&
-          department &&
-          selectedMonth &&
-          selectedYear && (
-            <button
-              onClick={handleAttendance}
-              className="btn btn-warning"
-              style={{ marginTop: "25px" }}
-            >
-              No Absents, Create Attendance
-            </button>
-          )}
+        {data?.length == 0 && department && selectedMonth && selectedYear && (
+          <button
+            onClick={handleAttendance}
+            className="btn btn-warning"
+            style={{ marginTop: "25px" }}
+          >
+            No Absents, Create Attendance
+          </button>
+        )}
       </div>
 
       <div className="card mb24">

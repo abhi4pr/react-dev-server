@@ -218,7 +218,10 @@ const Attendence = () => {
       const data = res.data.data;
       const filteredUser = data.filter(
         (d) =>
-          d.dept_id === department && d.user_status && d.job_type === "WFHD"
+          d.dept_id === department &&
+          d.user_status == "Active" &&
+          d.job_type === "WFHD" &&
+          d.att_status == "onboarded"
       );
       setActiveUsers(filteredUser);
     });
@@ -260,15 +263,20 @@ const Attendence = () => {
     }
   }, [department]);
 
-  const handleCreateSalary = (e) => {
+  const handleCreateSalary = async (e) => {
     e.preventDefault();
-    axios
-      .put(baseUrl + "update_attendence_status", {
+    try {
+      await axios.put(baseUrl + "update_attendence_status", {
         month: selectedMonth,
         year: Number(selectedYear),
         dept: department,
-      })
-      .then(() => toastAlert("Attendance Completed"));
+      });
+      getAttendanceData();
+      toastAlert("Attendance Completed");
+    } catch (error) {
+      console.error("Error updating attendance status", error);
+      toastError("Failed to complete attendance");
+    }
   };
 
   const processRowUpdate = (newRow) => {
@@ -470,7 +478,6 @@ const Attendence = () => {
           ))}
         </Slider>
       </div>
-
       <div className="card mb24">
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
@@ -519,8 +526,7 @@ const Attendence = () => {
           </h6>
         </div>
       </div>
-
-      {filterData?.length !== 0 && (
+      {filterData?.length !== 0 && filterData[0]?.attendence_generated == 0 && (
         <button
           className="btn btn-primary"
           onClick={(e) => handleCreateSalary(e)}
@@ -528,7 +534,6 @@ const Attendence = () => {
           Complete Attendance
         </button>
       )}
-
       <div className="form-group col-3">
         {filterData?.length == 0 &&
           department &&
@@ -539,7 +544,6 @@ const Attendence = () => {
             </button>
           )}
       </div>
-
       <div className="card">
         <div className="data_tbl table-responsive footer_none">
           {filterData?.length > 0 && (
