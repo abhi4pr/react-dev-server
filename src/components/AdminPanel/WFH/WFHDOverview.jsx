@@ -38,9 +38,14 @@ const WFHDOverview = () => {
       );
       setFilteredDatas(attStatus);
     } else {
-      setAllWFHDData(
-        response.data.data?.filter((d) => d.dept_id == ContextDept)
+      const deptWiseData = response.data.data?.filter(
+        (d) => d.dept_id == ContextDept
       );
+      setAllWFHDData(deptWiseData);
+      const attStatus = deptWiseData.filter(
+        (item) => item.att_status == "registered"
+      );
+      setFilteredDatas(attStatus);
       setSavedData(response.data.data?.filter((d) => d.dept_id == ContextDept));
     }
     const counts = response.data.data.reduce((acc, curr) => {
@@ -69,7 +74,7 @@ const WFHDOverview = () => {
     setRowData(row);
   };
 
-  const trainingFunc = (e) => {
+  const trainingFunc = async (e) => {
     e.preventDefault();
     const payload = {
       user: rowData.user_id,
@@ -77,13 +82,13 @@ const WFHDOverview = () => {
       remark: remark,
       training_date: trainingDate,
     };
-    axios.post(baseUrl + "add_user_training", payload);
-    axios.put(baseUrl + "update_user", {
+    await axios.post(baseUrl + "add_user_training", payload);
+    await axios.put(baseUrl + "update_user", {
       user_id: rowData.user_id,
       att_status: "training",
     });
     setRemark("");
-    getData();
+    await getData();
   };
 
   const onboardingFunc = (e) => {
@@ -270,7 +275,7 @@ const WFHDOverview = () => {
               data-toggle="tab"
               onClick={() => getFilterData("training")}
             >
-              Training ({statusCounts.training})
+              Training ({statusCounts?.training ? statusCounts.training : 0})
             </a>
           </li>
           <li className="nav-item">

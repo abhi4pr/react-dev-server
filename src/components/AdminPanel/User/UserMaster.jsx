@@ -201,7 +201,7 @@ const UserMaster = () => {
   const [validEmergencyContact, setValidEmergencyContact] = useState(false);
   const [validEmergencyContact1, setValidEmergencyContact1] = useState(false);
   const [cast, setCast] = useState("");
-  const [banktype, setBankType] = useState("Own")
+  const [banktype, setBankType] = useState("Own");
   const [familyValidationErrors, setFamilyValidationErrors] = useState({});
 
   const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState({
@@ -583,6 +583,24 @@ const UserMaster = () => {
               setLoading(false);
             });
 
+          axios
+            .post(baseUrl + "add_send_user_mail", {
+              email: email,
+              subject: "User Registration",
+              text: "A new user has been registered.",
+              attachment: selectedImage,
+              login_id: loginId,
+              name: username,
+              password: password,
+              status: "onboarded",
+            })
+            .then((res) => {
+              // console.log("Email sent successfully:", res.data);
+            })
+            .catch((error) => {
+              // console.log("Failed to send email:", error);
+            });
+
           if (familyDetails[0].Name !== "") {
             for (const elements of familyDetails) {
               const response = axios.post(baseUrl + "add_family", {
@@ -656,24 +674,6 @@ const UserMaster = () => {
               }
             );
           }
-
-          axios
-            .post(baseUrl + "add_send_user_mail", {
-              email: email,
-              subject: "User Registration",
-              text: "A new user has been registered.",
-              attachment: selectedImage,
-              login_id: loginId,
-              name: username,
-              password: password,
-              status: "onboarded",
-            })
-            .then((res) => {
-              // console.log("Email sent successfully:", res.data);
-            })
-            .catch((error) => {
-              // console.log("Failed to send email:", error);
-            });
 
           whatsappApi.callWhatsAPI(
             "user_register",

@@ -28,6 +28,8 @@ const UpdateDocument = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
 
+  const [isUpdaing, setIsUpdating] = useState(false);
+
   async function getDocuments() {
     const response = await axios.post(baseUrl + "get_user_doc", {
       user_id: user_id,
@@ -62,6 +64,7 @@ const UpdateDocument = () => {
 
   const handleSubmit = async () => {
     try {
+      setIsUpdating(true);
       const requiredDocuments = documentData.filter(
         (doc) =>
           doc.document.isRequired &&
@@ -71,10 +74,10 @@ const UpdateDocument = () => {
         (doc) => !doc.file
       );
 
-      // if (isAnyRequiredDocumentMissing) {
-      //   toastError("Please upload all required documents");
-      //   return;
-      // }
+      if (isAnyRequiredDocumentMissing) {
+        toastError("Please upload all required documents");
+        return;
+      }
       for (const document of documentData) {
         if (document.file) {
           let formData = new FormData();
@@ -110,6 +113,8 @@ const UpdateDocument = () => {
       getDocuments();
     } catch (error) {
       console.error("Error submitting documents", error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -262,8 +267,9 @@ const UpdateDocument = () => {
               className="btn btn_pill btn_cmn btn_success"
               onClick={handleSubmit}
               style={{ marginBottom: "5%" }}
+              disabled={isUpdaing}
             >
-              Submit
+              {isUpdaing ? "Submitting..." : "Submit"}
             </button>
           </div>
         </div>
