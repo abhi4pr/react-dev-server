@@ -720,7 +720,10 @@ const RefundRequests = () => {
           <Autocomplete
             value={custName}
             onChange={(event, newValue) => setCustName(newValue)}
-            options={datas.map((option) => option.cust_name)}
+            // options={datas.map((option) => option.cust_name)}
+            options={Array.from(
+              new Set(datas.map((option) => option.cust_name))
+            )}
             renderInput={(params) => (
               <TextField
                 {...params}

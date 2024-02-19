@@ -27,9 +27,15 @@ const FormContainer = ({
   activeAccordionIndex,
   onAccordionButtonClick,
   refundAmountTotal,
+  balanceAmountTotal,
+  requestedAmountTotal,
   pendingCount,
   approvedCount,
   rejectedCount,
+  baseAmountTotal,
+  campaignAmountTotal,
+  uniqueSalesExecutiveCount,
+  handleOpenUniqueSalesExecutive,
   pendingApprovalAdditionalTitles = false,
   includeAdditionalTitles = false,
   paymentDoneAdditionalTitles = false,
@@ -37,7 +43,13 @@ const FormContainer = ({
   discardAdditionalTitles = false,
   dashboardAdditionalTitles = false,
   refundReqAdditionalTitles = false,
+  saleBookingClosePaymentAdditionalTitles = false,
+  invoiceCreatedPaymentAdditionalTitles = false,
   pendingApprovalRefundAdditionalTitles = false,
+  balancePaymentAdditionalTitles = false,
+  incentivePaymentAdditionalTitles = false,
+  saleBookingVerifyPaymentAdditionalTitles = false,
+  pendingInvoicePaymentAdditionalTitles = false,
   loading = false,
   pendingpaymentRemainder = 0,
   mainTitleRequired = true,
@@ -115,7 +127,6 @@ const FormContainer = ({
               <h2 onClick={handleOpenUniqueCustomerClick}>
                 Unique Customer : <a href="#">{uniqueCustomerCount}</a>
               </h2>
-              {/* totalRequestAmount */}
               <h2 onClick={handleOpenUniqueCustomerClick}>
                 Payment Amount : <a href="#">{totalRequestAmount}</a>
               </h2>
@@ -135,7 +146,6 @@ const FormContainer = ({
               <h2 onClick={handleOpenUniqueCustomerClick}>
                 Unique Customer : <a href="#">{uniqueCustomerCount}</a>
               </h2>
-              {/* totalRequestAmount */}
               <h2>
                 Payment Amount : <a href="#">{totalRequestAmount}</a>
               </h2>
@@ -155,7 +165,6 @@ const FormContainer = ({
               <h2 onClick={handleOpenUniqueCustomerClick}>
                 Unique Customer : <a href="#">{uniqueCustomerCount}</a>
               </h2>
-              {/* totalRequestAmount */}
               <h2>
                 Refund Amount : <a href="#">{refundAmountTotal}</a>
               </h2>
@@ -166,7 +175,6 @@ const FormContainer = ({
               <h2 onClick={handleOpenUniqueCustomerClick}>
                 Unique Customer : <a href="#">{uniqueCustomerCount}</a>
               </h2>
-              {/* totalRequestAmount */}
               <h2>
                 Refund Amount : <a href="#">{refundAmountTotal}</a>
               </h2>
@@ -175,6 +183,83 @@ const FormContainer = ({
               </h2>
               <h2>
                 Rejected Count : <a href="#">{rejectedCount}</a>
+              </h2>
+            </div>
+          )}
+          {balancePaymentAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customer : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              <h2 onClick={handleOpenUniqueSalesExecutive}>
+                Unique Sales Executive :{" "}
+                <a href="#">{uniqueSalesExecutiveCount}</a>
+              </h2>
+              <h2>
+                Balance Amount : <a href="#">{balanceAmountTotal}</a>
+              </h2>
+            </div>
+          )}
+          {incentivePaymentAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueSalesExecutive}>
+                Unique Sales Executive :{" "}
+                <a href="#">{uniqueSalesExecutiveCount}</a>
+              </h2>
+              <h2>
+                Requested Amount : <a href="#">{requestedAmountTotal}</a>
+              </h2>
+            </div>
+          )}
+          {pendingInvoicePaymentAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueSalesExecutive}>
+                Unique Sales Executive :{" "}
+                <a href="#">{uniqueSalesExecutiveCount}</a>
+              </h2>
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customers : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              <h2>
+                Base Amount : <a href="#">{baseAmountTotal}</a>
+              </h2>
+            </div>
+          )}
+          {invoiceCreatedPaymentAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customers : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              <h2>
+                Campaign Amount : <a href="#">{campaignAmountTotal}</a>
+              </h2>
+            </div>
+          )}
+          {saleBookingClosePaymentAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueSalesExecutive}>
+                Unique Sales Executive :{" "}
+                <a href="#">{uniqueSalesExecutiveCount}</a>
+              </h2>
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customers : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              <h2>
+                Base Amount : <a href="#">{baseAmountTotal}</a>
+              </h2>
+            </div>
+          )}
+          {saleBookingVerifyPaymentAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueSalesExecutive}>
+                Unique Sales Executive :{" "}
+                <a href="#">{uniqueSalesExecutiveCount}</a>
+              </h2>
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customers : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              <h2>
+                Base Amount : <a href="#">{baseAmountTotal}</a>
               </h2>
             </div>
           )}

@@ -900,9 +900,9 @@ const PendingApprovalUpdate = () => {
               value={customerName}
               style={{ border: "1px solid var(--border)" }}
               onChange={(event, newValue) => setCustomerName(newValue)}
-              options={datas
-                .map((option) => option.cust_name)
-                .filter((value, index, self) => self.indexOf(value) === index)} // Filter unique vendor names
+              options={Array.from(
+                new Set(datas.map((option) => option.cust_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -926,7 +926,9 @@ const PendingApprovalUpdate = () => {
             <Autocomplete
               value={requestedBy}
               onChange={(event, newValue) => setRequestedBy(newValue)}
-              options={datas.map((option) => option.user_name)}
+              options={Array.from(
+                new Set(datas.map((option) => option.user_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -948,7 +950,9 @@ const PendingApprovalUpdate = () => {
             <Autocomplete
               value={bankName}
               onChange={(event, newValue) => setBankName(newValue)}
-              options={datas.map((option) => option.detail)}
+              options={Array.from(
+                new Set(datas.map((option) => option.detail))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -979,14 +983,18 @@ const PendingApprovalUpdate = () => {
             <Autocomplete
               value={paymentStatus}
               onChange={(event, newValue) => setPaymentStatus(newValue)}
-              options={datas.map((option) =>
-                option.payment_approval_status === 0
-                  ? "Pending"
-                  : row.payment_approval_status === 1
-                  ? "Approved"
-                  : row.payment_approval_status === 2
-                  ? "Rejected"
-                  : ""
+              options={Array.from(
+                new Set(
+                  datas.map((option) =>
+                    option.payment_approval_status === 0
+                      ? "Pending"
+                      : row.payment_approval_status === 1
+                      ? "Approved"
+                      : row.payment_approval_status === 2
+                      ? "Rejected"
+                      : ""
+                  )
+                )
               )}
               renderInput={(params) => (
                 <TextField
@@ -1009,7 +1017,9 @@ const PendingApprovalUpdate = () => {
             <Autocomplete
               value={paymentMode}
               onChange={(event, newValue) => setPaymetMode(newValue)}
-              options={datas.map((option) => option.payment_mode)}
+              options={Array.from(
+                new Set(datas.map((option) => option.payment_mode))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}

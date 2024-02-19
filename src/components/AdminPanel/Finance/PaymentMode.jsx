@@ -174,7 +174,7 @@ const PaymentMode = () => {
             <Autocomplete
               value={title}
               onChange={(event, newValue) => setTitle(newValue)}
-              options={datas.map((option) => option.title)}
+              options={Array.from(new Set(datas.map((option) => option.title)))}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -205,7 +205,9 @@ const PaymentMode = () => {
             <Autocomplete
               value={bankName}
               onChange={(event, newValue) => setBankName(newValue)}
-              options={datas.map((option) => option.detail)}
+              options={Array.from(
+                new Set(datas.map((option) => option.detail))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}

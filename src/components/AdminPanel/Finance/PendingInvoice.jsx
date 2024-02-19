@@ -4,12 +4,21 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useNavigate, Link } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
-import { TextField, Button, Autocomplete } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Autocomplete,
+  Dialog,
+  DialogTitle,
+} from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const PendingInvoice = () => {
   const navigate = useNavigate();
@@ -28,6 +37,18 @@ const PendingInvoice = () => {
   const [customerName, setCustomerName] = useState("");
   const [baseAmountFilter, setBaseAmountFilter] = useState("");
   const [baseAmountField, setBaseAmountField] = useState("");
+  const [uniqueCustomerCount, setUniqueCustomerCount] = useState(0);
+  const [uniqueCustomerDialog, setUniqueCustomerDialog] = useState(false);
+  const [uniqueCustomerData, setUniqueCustomerData] = useState([]);
+  const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
+  const [sameCustomerData, setSameCustomerData] = useState([]);
+  const [uniqueSalesExecutiveCount, setUniqueSalesExecutiveCount] =
+    useState("");
+  const [uniqueSalesExecutiveDialog, setUniqueSalesExecutiveDialog] =
+    useState("");
+  const [uniqueSalesExecutiveData, setUniqueSalesExecutiveData] = useState("");
+  const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
+  const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -123,6 +144,28 @@ const PendingInvoice = () => {
       .then((res) => {
         setData(res.data.body);
         setFilterData(res.data.body);
+        // For Unique Customers
+        const custData = res.data.body;
+        const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
+        setUniqueCustomerCount(uniqueCustomers.size);
+        const uniqueCustomerData = Array.from(uniqueCustomers).map(
+          (customerName) => {
+            return custData.find((item) => item.cust_name === customerName);
+          }
+        );
+        setUniqueCustomerData(uniqueCustomerData);
+        // For Unique Sales Executive
+        const salesExecuteiveData = res.data.body;
+        const uniqueSalesEx = new Set(
+          salesExecuteiveData.map((item) => item.sales_person_username)
+        );
+        setUniqueSalesExecutiveCount(uniqueSalesEx.size);
+        const uniqueSEData = Array.from(uniqueSalesEx).map((salesEName) => {
+          return salesExecuteiveData.find(
+            (item) => item.sales_person_username === salesEName
+          );
+        });
+        setUniqueSalesExecutiveData(uniqueSEData);
       });
   }
 
@@ -134,7 +177,6 @@ const PendingInvoice = () => {
     const formattedDate = `${day}/${month}/${year}`;
     return formattedDate;
   };
-
   useEffect(() => {
     getData();
   }, []);
@@ -198,6 +240,524 @@ const PendingInvoice = () => {
     setBaseAmountFilter("");
     setBaseAmountField("");
   };
+  // For Customers
+  const handleOpenUniqueCustomerClick = () => {
+    setUniqueCustomerDialog(true);
+  };
+
+  const handleCloseUniqueCustomer = () => {
+    setUniqueCustomerDialog(false);
+  };
+
+  const handleOpenSameCustomer = (custName) => {
+    setSameCustomerDialog(true);
+
+    const sameNameCustomers = datas.filter(
+      (item) => item.cust_name === custName
+    );
+    setSameCustomerData(sameNameCustomers);
+  };
+
+  const handleCloseSameCustomer = () => {
+    setSameCustomerDialog(false);
+  };
+
+  // For Sales Executive
+  const handleOpenUniqueSalesExecutive = () => {
+    setUniqueSalesExecutiveDialog(true);
+  };
+
+  const handleCloseUniquesalesExecutive = () => {
+    setUniqueSalesExecutiveDialog(false);
+  };
+
+  const handleOpenSameSalesExecutive = (salesEName) => {
+    setSameSalesExecutiveDialog(true);
+
+    const sameNameSalesExecutive = datas.filter(
+      (item) => item.sales_person_username === salesEName
+    );
+
+    setSameSalesExecutiveData(sameNameSalesExecutive);
+  };
+
+  const handleCloseSameSalesExecutive = () => {
+    setSameSalesExecutiveDialog(false);
+  };
+
+  // Total base amount:-
+  const baseAmountTotal = datas.reduce(
+    (total, item) => total + parseFloat(item.base_amount),
+    0
+  );
+  const sameSalesExecutivecolumn = [
+    {
+      fieldName: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sales_person_username",
+      field: "Sales Person Name",
+      renderCell: (params) => params.row.sales_person_username,
+    },
+
+    {
+      fieldName: "sale_booking_date",
+      field: "Requested On Date",
+      renderCell: (params) =>
+        convertDateToDDMMYYYY(params.row.sale_booking_date),
+    },
+    {
+      fieldName: "description",
+      field: "Sale Booking Description",
+      renderCell: (params) => params.row.description,
+    },
+    {
+      fieldName: "cust_name",
+      field: "Customer Name",
+      renderCell: (params) => (
+        <>
+          <Link
+            className="text-primary"
+            to={`/admin/finance-pendinginvoice/customer-details/${params.row.cust_id}`}
+          >
+            {params.row.cust_name}
+          </Link>
+        </>
+      ),
+    },
+    {
+      fieldName: "invoice_particular_name",
+      field: "Invoice Particular Name",
+      renderCell: (params) => params.row.invoice_particular_name,
+    },
+    {
+      fieldName: "invoice_type_name",
+      field: "Invoice Type",
+      renderCell: (params) => params.row.invoice_type_name,
+    },
+    {
+      fieldName: "base_amount",
+      field: "Base Amount",
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
+      fieldName: "gst_amount",
+      field: "GST Amount",
+      renderCell: (params) => params.row.gst_amount,
+    },
+    {
+      fieldName: "net_amount",
+      field: "Net Amount",
+      renderCell: (params) => params.row.net_amount,
+    },
+    // {
+    //   name: "Action",
+    //   cell: (row) => (
+    //     <>
+    //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
+    //       <button className="btn btn-primary" >
+    //         Customer Details
+    //       </button>
+    //     </Link>
+    //     </>
+    //   ),
+    // },
+  ];
+  const uniqueSalesExecutivecolumn = [
+    {
+      fieldName: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sales_person_username",
+      field: "Sales Person Name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() =>
+            handleOpenSameSalesExecutive(params.row.sales_person_username)
+          }
+        >
+          {params.row.sales_person_username}
+        </div>
+      ),
+    },
+
+    {
+      fieldName: "sale_booking_date",
+      field: "Requested On Date",
+      renderCell: (params) =>
+        convertDateToDDMMYYYY(params.row.sale_booking_date),
+    },
+    {
+      fieldName: "description",
+      field: "Sale Booking Description",
+      renderCell: (params) => params.row.description,
+    },
+    {
+      fieldName: "cust_name",
+      field: "Customer Name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+        >
+          {params.row.cust_name}
+        </div>
+      ),
+    },
+
+    {
+      field: "Input",
+      selector: (params, index) => (
+        <div className="mt-2">
+          <TextField
+            key={params.row.sale_booking_id}
+            className="d-block"
+            type="text"
+            name="input"
+            label="Invoice No."
+            sx={{
+              marginBottom: "1px",
+              "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+                padding: "12px ",
+              },
+            }}
+            onChange={(e) => setInoiceNum(e.target.value)}
+          />
+          {/* //invoice num , date , party name */}
+          <div>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                key={params.row.sale_booking_id}
+                format="DD/MM/YYYY"
+                sx={{
+                  "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
+                    padding: "10px",
+                  },
+                }}
+                defaultValue={dayjs()}
+                onChange={(e) => {
+                  setDate(e);
+                }}
+              />
+            </LocalizationProvider>
+          </div>
+          <div>
+            <TextField
+              key={params.row.sale_booking_id}
+              type="text"
+              name="input"
+              label="Party Name"
+              sx={{
+                marginBottom: "1px",
+                "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+                  padding: "12px ",
+                },
+              }}
+              onChange={(e) => setPartyName(e.target.value)}
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      field: "Upload Invoice",
+      renderCell: (params, index) => (
+        <div key={params.row.sale_booking_id}>
+          <form>
+            <input
+              key={index}
+              type="file"
+              name="upload_image"
+              onChange={(e) => handleImageUpload(params.row, e.target.files[0])}
+            />
+            {/* <button type="submit" value="upload">
+              Upload
+            </button> */}
+          </form>
+          <br />
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={() => handleReject(params.row)}
+          >
+            Reject
+          </button>
+        </div>
+      ),
+    },
+    {
+      fieldName: "invoice_particular_name",
+      field: "Invoice Particular Name",
+      renderCell: (params) => params.row.invoice_particular_name,
+    },
+    {
+      fieldName: "invoice_type_name",
+      field: "Invoice Type",
+      renderCell: (params) => params.row.invoice_type_name,
+    },
+    {
+      fieldName: "base_amount",
+      field: "Base Amount",
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
+      fieldName: "gst_amount",
+      field: "GST Amount",
+      renderCell: (params) => params.row.gst_amount,
+    },
+    {
+      fieldName: "net_amount",
+      field: "Net Amount",
+      renderCell: (params) => params.row.net_amount,
+    },
+    // {
+    //   name: "Action",
+    //   cell: (row) => (
+    //     <>
+    //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
+    //       <button className="btn btn-primary" >
+    //         Customer Details
+    //       </button>
+    //     </Link>
+    //     </>
+    //   ),
+    // },
+  ];
+
+  const sameCustomercolumn = [
+    {
+      fieldName: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sales_person_username",
+      field: "Sales Person Name",
+      renderCell: (params) => params.row.sales_person_username,
+    },
+
+    {
+      fieldName: "sale_booking_date",
+      field: "Requested On Date",
+      renderCell: (params) =>
+        convertDateToDDMMYYYY(params.row.sale_booking_date),
+    },
+    {
+      fieldName: "description",
+      field: "Sale Booking Description",
+      renderCell: (params) => params.row.description,
+    },
+    {
+      fieldName: "cust_name",
+      field: "Customer Name",
+      renderCell: (params) => (
+        <>
+          <Link
+            className="text-primary"
+            to={`/admin/finance-pendinginvoice/customer-details/${params.row.cust_id}`}
+          >
+            {params.row.cust_name}
+          </Link>
+        </>
+      ),
+    },
+    {
+      fieldName: "invoice_particular_name",
+      field: "Invoice Particular Name",
+      renderCell: (params) => params.row.invoice_particular_name,
+    },
+    {
+      fieldName: "invoice_type_name",
+      field: "Invoice Type",
+      renderCell: (params) => params.row.invoice_type_name,
+    },
+    {
+      fieldName: "base_amount",
+      field: "Base Amount",
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
+      fieldName: "gst_amount",
+      field: "GST Amount",
+      renderCell: (params) => params.row.gst_amount,
+    },
+    {
+      fieldName: "net_amount",
+      field: "Net Amount",
+      renderCell: (params) => params.row.net_amount,
+    },
+    // {
+    //   name: "Action",
+    //   cell: (row) => (
+    //     <>
+    //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
+    //       <button className="btn btn-primary" >
+    //         Customer Details
+    //       </button>
+    //     </Link>
+    //     </>
+    //   ),
+    // },
+  ];
+  const uniqueCustomercolumn = [
+    {
+      fieldName: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sales_person_username",
+      field: "Sales Person Name",
+      renderCell: (params) => params.row.sales_person_username,
+    },
+
+    {
+      fieldName: "sale_booking_date",
+      field: "Requested On Date",
+      renderCell: (params) =>
+        convertDateToDDMMYYYY(params.row.sale_booking_date),
+    },
+    {
+      fieldName: "description",
+      field: "Sale Booking Description",
+      renderCell: (params) => params.row.description,
+    },
+    {
+      fieldName: "cust_name",
+      field: "Customer Name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+        >
+          {params.row.cust_name}
+        </div>
+      ),
+    },
+
+    {
+      field: "Input",
+      selector: (params, index) => (
+        <div className="mt-2">
+          <TextField
+            key={params.row.sale_booking_id}
+            className="d-block"
+            type="text"
+            name="input"
+            label="Invoice No."
+            sx={{
+              marginBottom: "1px",
+              "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+                padding: "12px ",
+              },
+            }}
+            onChange={(e) => setInoiceNum(e.target.value)}
+          />
+          {/* //invoice num , date , party name */}
+          <div>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                key={params.row.sale_booking_id}
+                format="DD/MM/YYYY"
+                sx={{
+                  "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
+                    padding: "10px",
+                  },
+                }}
+                defaultValue={dayjs()}
+                onChange={(e) => {
+                  setDate(e);
+                }}
+              />
+            </LocalizationProvider>
+          </div>
+          <div>
+            <TextField
+              key={params.row.sale_booking_id}
+              type="text"
+              name="input"
+              label="Party Name"
+              sx={{
+                marginBottom: "1px",
+                "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+                  padding: "12px ",
+                },
+              }}
+              onChange={(e) => setPartyName(e.target.value)}
+            />
+          </div>
+        </div>
+      ),
+    },
+    {
+      field: "Upload Invoice",
+      renderCell: (params, index) => (
+        <div key={params.row.sale_booking_id}>
+          <form>
+            <input
+              key={index}
+              type="file"
+              name="upload_image"
+              onChange={(e) => handleImageUpload(params.row, e.target.files[0])}
+            />
+            {/* <button type="submit" value="upload">
+              Upload
+            </button> */}
+          </form>
+          <br />
+          <button
+            type="button"
+            className="btn btn-success"
+            onClick={() => handleReject(params.row)}
+          >
+            Reject
+          </button>
+        </div>
+      ),
+    },
+    {
+      fieldName: "invoice_particular_name",
+      field: "Invoice Particular Name",
+      renderCell: (params) => params.row.invoice_particular_name,
+    },
+    {
+      fieldName: "invoice_type_name",
+      field: "Invoice Type",
+      renderCell: (params) => params.row.invoice_type_name,
+    },
+    {
+      fieldName: "base_amount",
+      field: "Base Amount",
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
+      fieldName: "gst_amount",
+      field: "GST Amount",
+      renderCell: (params) => params.row.gst_amount,
+    },
+    {
+      fieldName: "net_amount",
+      field: "Net Amount",
+      renderCell: (params) => params.row.net_amount,
+    },
+    // {
+    //   name: "Action",
+    //   cell: (row) => (
+    //     <>
+    //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
+    //       <button className="btn btn-primary" >
+    //         Customer Details
+    //       </button>
+    //     </Link>
+    //     </>
+    //   ),
+    // },
+  ];
   const columns = [
     {
       name: "S.No",
@@ -368,7 +928,233 @@ const PendingInvoice = () => {
           contextData[2].insert_value === 1 &&
           false
         }
+        uniqueCustomerCount={uniqueCustomerCount}
+        baseAmountTotal={baseAmountTotal}
+        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
+        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
+        pendingInvoicePaymentAdditionalTitles={true}
       />
+      {/* Same Sales Executive Dialog Box */}
+
+      <Dialog
+        open={sameSalesExecutiveDialog}
+        onClose={handleCloseSameSalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameSalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameSalesExecutiveData}
+          columns={sameSalesExecutivecolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+        />
+      </Dialog>
+      {/* Unique Sales Executive Dialog Box */}
+      <Dialog
+        open={uniqueSalesExecutiveDialog}
+        onClose={handleCloseUniquesalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniquesalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueSalesExecutiveData}
+          columns={uniqueSalesExecutivecolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+        />
+      </Dialog>
+      {/* Same Customer Dialog */}
+      <Dialog
+        open={sameCustomerDialog}
+        onClose={handleCloseSameCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameCustomerData}
+          columns={sameCustomercolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameCustomerData.indexOf(row)}
+        />
+      </Dialog>
+
+      {/* Unique Customer Dialog Box */}
+      <Dialog
+        open={uniqueCustomerDialog}
+        onClose={handleCloseUniqueCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniqueCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueCustomerData}
+          columns={uniqueCustomercolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueCustomerData.indexOf(row)}
+        />
+      </Dialog>
       <div className="row">
         <div className="col-md-3">
           <div className="form-group">
@@ -376,7 +1162,9 @@ const PendingInvoice = () => {
             <Autocomplete
               value={salesPersonName}
               onChange={(event, newValue) => setSalesPersonName(newValue)}
-              options={datas.map((option) => option.sales_person_username)}
+              options={Array.from(
+                new Set(datas.map((option) => option.sales_person_username))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -407,7 +1195,9 @@ const PendingInvoice = () => {
             <Autocomplete
               value={customerName}
               onChange={(event, newValue) => setCustomerName(newValue)}
-              options={datas.map((option) => option.cust_name)}
+              options={Array.from(
+                new Set(datas.map((option) => option.cust_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}

@@ -6,8 +6,7 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 
 const PendingInvoiceCustomerDeatils = () => {
-
-  const {id} = useParams();
+  const { id } = useParams();
   const { toastAlert } = useGlobalContext();
   const [datas, setData] = useState([]);
 
@@ -17,17 +16,23 @@ const PendingInvoiceCustomerDeatils = () => {
 
   function getData() {
     const formData = new FormData();
-    formData.append("loggedin_user_id",36)
-    formData.append("cust_id",id)
+    formData.append("loggedin_user_id", 36);
+    formData.append("cust_id", id);
 
-    axios.post(`https://production.sales.creativefuel.io/webservices/RestController.php?view=sales-customer_detail`, formData, {
-      headers:{
-        "Content-Type":"multipart/form-data"
-      }
-    }).then((res) => {
-      setData(res.data.body);
-      // setFilterData(res.data.data);
-    });
+    axios
+      .post(
+        `https://production.sales.creativefuel.io/webservices/RestController.php?view=sales-customer_detail`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((res) => {
+        setData(res.data.body);
+        // setFilterData(res.data.data);
+      });
   }
 
   useEffect(() => {
@@ -53,9 +58,8 @@ const PendingInvoiceCustomerDeatils = () => {
         <div>City: {datas.city} </div>
         <div>Website: {datas.website} </div>
         <div>Instagram username: {datas.instagram_username} </div>
-        <div>Category: {'data'} </div>
+        <div>Category: {"data"} </div>
       </FormContainer>
-    
     </>
   );
 };

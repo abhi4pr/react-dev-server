@@ -955,28 +955,70 @@ const AllTransactions = () => {
             <div className="col-md-2">
               <div className="form-group">
                 <label>Requested By</label>
-                <input
+                <Autocomplete
                   value={requestedBy}
-                  type="text"
-                  placeholder="Request By"
-                  className="form-control"
-                  onChange={(e) => {
-                    setRequestedBy(e.target.value);
+                  onChange={(event, newValue) => {
+                    setRequestedBy(newValue);
                   }}
+                  options={Array.from(
+                    new Set(datas.map((option) => option.user_name))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Select Payment Mode"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      // Applying inline styles to match Bootstrap's form-control as closely as possible
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
                 />
               </div>
             </div>
             <div className="col-md-2">
               <div className="form-group">
                 <label>Customer Name</label>
-                <input
+                <Autocomplete
                   value={custName}
-                  type="text"
-                  placeholder="Request By"
-                  className="form-control"
-                  onChange={(e) => {
-                    setCustName(e.target.value);
+                  onChange={(event, newValue) => {
+                    setCustName(newValue);
                   }}
+                  options={Array.from(
+                    new Set(datas.map((option) => option.cust_name))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      placeholder="Select Payment Mode"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      // Applying inline styles to match Bootstrap's form-control as closely as possible
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
                 />
               </div>
             </div>
@@ -1012,28 +1054,14 @@ const AllTransactions = () => {
             <div className="col-md-2">
               <div className="form-group">
                 <label>Payment Mode</label>
-                {/* <input
-                  value={paymentMode}
-                  type="text"
-                  placeholder="Request By"
-                  className="form-control"
-                  onChange={(e) => {
-                    setPaymetMode(e.target.value);
-                  }}
-                /> */}
-
-                {/* <select className="form-select" onChange={e=>setPaymetMode(e.target.value)}  >
-                  <option value="">Select Payment Mode</option>
-                  {paymetMethod.map((item,index)=>{
-                    return <option key={index} value={item.title}>{item.title}</option>
-                  })}
-                </select> */}
                 <Autocomplete
                   value={paymentMode}
                   onChange={(event, newValue) => {
                     setPaymetMode(newValue);
                   }}
-                  options={paymetMethod.map((option) => option.payment_type)}
+                  options={Array.from(
+                    new Set(paymetMethod.map((option) => option.payment_type))
+                  )}
                   getOptionLabel={(option) => (option ? option : "")}
                   renderInput={(params) => (
                     <TextField
@@ -1062,12 +1090,6 @@ const AllTransactions = () => {
             <div className="col-md-2">
               <div className="form-group">
                 <label>Status</label>
-                {/* <select onChange={e=>setStatus(e.target.value)}  >
-                  <option value="">Select Status</option>
-                  <option value="0">Pending</option>
-                  <option value="1">Approved</option>
-                  <option value="2">Rejected</option>
-                </select> */}
                 <Autocomplete
                   value={status?.title}
                   onChange={(event, newValue) => {

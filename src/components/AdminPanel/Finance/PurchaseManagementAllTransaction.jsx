@@ -41,7 +41,7 @@ export default function PurchaseManagementAllTransaction() {
   const [historyType, setHistoryType] = useState("");
   const [phpData, setPhpData] = useState([]);
   const [rowData, setRowData] = useState([]);
-  
+
   const [uniqueVenderDialog, setUniqueVenderDialog] = useState(false);
   const [uniqueVendorData, setUniqueVendorData] = useState([]);
   // const [sameVendorDialog, setSameVendorDialog] = useState(false);
@@ -99,13 +99,13 @@ export default function PurchaseManagementAllTransaction() {
   //   const sameNameVendors = data.filter(
   //     (item) => item.vendor_name === vendorName
   //   );
-    // Calculate the total amount for vendors with the same name
-    // const totalAmount = sameNameVendors.reduce(
-    //   (total, item) => total + item.request_amount,
-    //   0
-    // );
+  // Calculate the total amount for vendors with the same name
+  // const totalAmount = sameNameVendors.reduce(
+  //   (total, item) => total + item.request_amount,
+  //   0
+  // );
 
-    // Set the selected vendor data including the vendor name, data, and total amount
+  // Set the selected vendor data including the vendor name, data, and total amount
   //   setSameVendorData(sameNameVendors);
   // };
 
@@ -554,45 +554,46 @@ export default function PurchaseManagementAllTransaction() {
       field: "invc_img",
       headerName: "Invoice Image",
       renderCell: (params) => {
-        if(params.row.invc_img.length > 0){
-        // Extract file extension and check if it's a PDF
-        const fileExtension = params.row.invc_img
-          .split(".")
-          .pop()
-          .toLowerCase();
-        const isPdf = fileExtension === "pdf";
+        if (params.row.invc_img.length > 0) {
+          // Extract file extension and check if it's a PDF
+          const fileExtension = params.row.invc_img
+            .split(".")
+            .pop()
+            .toLowerCase();
+          const isPdf = fileExtension === "pdf";
 
-        const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
-        return isPdf ? (
-          // <iframe
-          //   onClick={() => {
-          //     setOpenImageDialog(true);
-          //     setViewImgSrc(imgUrl);
-          //   }}
-          //   src={imgUrl}
-          //   style={{ width: "100px", height: "100px" }}
-          //   title="PDF Preview"
-          // />
-          <img
-            src={pdf}
-            alt="pdf"
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            style={{ width: "40px", height: "40px" }}
-          />
-        ) : (
-          <img
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            src={imgUrl}
-            alt="Invoice"
-            style={{ width: "60px", height: "60px" }}
-          />
-        )}
+          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+          return isPdf ? (
+            // <iframe
+            //   onClick={() => {
+            //     setOpenImageDialog(true);
+            //     setViewImgSrc(imgUrl);
+            //   }}
+            //   src={imgUrl}
+            //   style={{ width: "100px", height: "100px" }}
+            //   title="PDF Preview"
+            // />
+            <img
+              src={pdf}
+              alt="pdf"
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              style={{ width: "40px", height: "40px" }}
+            />
+          ) : (
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={imgUrl}
+              alt="Invoice"
+              style={{ width: "60px", height: "60px" }}
+            />
+          );
+        }
       },
       width: 250,
     },
@@ -954,7 +955,9 @@ export default function PurchaseManagementAllTransaction() {
             <Autocomplete
               value={vendorName}
               onChange={(event, newValue) => setVendorName(newValue)}
-              options={data.map((option) => option.vendor_name)}
+              options={Array.from(
+                new Set(data.map((option) => option.vendor_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -1091,14 +1094,13 @@ export default function PurchaseManagementAllTransaction() {
         />
       )}
 
-{paymentHistory && (
+      {paymentHistory && (
         <PaymentHistoryDialog
           handleClose={setPaymentHistory}
           paymentDetailColumns={paymentDetailColumns}
           filterData={historyData}
         />
       )}
-
     </div>
   );
 }

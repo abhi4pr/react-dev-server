@@ -202,7 +202,7 @@ export default function PendingPaymentRequest() {
 
   useEffect(() => {
     handleCalculatePaymentAmount();
-  }, [TDSPercentage, GSTHoldAmount, TDSDeduction, gstHold,]);
+  }, [TDSPercentage, GSTHoldAmount, TDSDeduction, gstHold]);
 
   const handleTDSDeduction = (e) => {
     console.log(e.target.checked);
@@ -218,27 +218,27 @@ export default function PendingPaymentRequest() {
   const handleCalculatePaymentAmount = () => {
     let paymentAmount = rowData.request_amount;
     let baseamount = baseAmount;
-    let tdsvalue=0;
+    let tdsvalue = 0;
 
     if (TDSDeduction) {
-      tdsvalue =  (baseamount * TDSPercentage) / 100;
-      paymentAmount = paymentAmount- tdsvalue;
+      tdsvalue = (baseamount * TDSPercentage) / 100;
+      paymentAmount = paymentAmount - tdsvalue;
     }
     if (gstHold) {
-      paymentAmount = paymentAmount - GSTHoldAmount ;
+      paymentAmount = paymentAmount - GSTHoldAmount;
     }
- tdsvalue=   Math.round(tdsvalue);
+    tdsvalue = Math.round(tdsvalue);
     setTDSValue(tdsvalue);
-        setPaymentAmount(paymentAmount);
+    setPaymentAmount(paymentAmount);
   };
 
   const handleGSTHoldInputChange = (e) => {
-    if(e.target.value>rowData.gst_amount){
+    if (e.target.value > rowData.gst_amount) {
       toastError("GST Hold Amount can't be greater than GST Amount");
-    }else{
+    } else {
       setGSTHoldAmount(e.target.value);
     }
-  }
+  };
 
   GridToolbar.defaultProps = {
     filterRowsButtonText: "Filter",
@@ -322,7 +322,7 @@ export default function PendingPaymentRequest() {
         setPaymentMode("");
         setPayRemark("");
         setPayMentProof("");
-        handleClosePayDialog()
+        handleClosePayDialog();
         setPaymentAmount("");
         callApi();
       });
@@ -418,9 +418,7 @@ export default function PendingPaymentRequest() {
   const handlePayClick = (row) => {
     setRowData(row);
     setPaymentAmount(row.request_amount);
-    setBaseAmount(row.base_amount!=0
-      ? row.base_amount
-      : row.request_amount)
+    setBaseAmount(row.base_amount != 0 ? row.base_amount : row.request_amount);
     setPayDialog(true);
   };
 
@@ -1294,7 +1292,9 @@ export default function PendingPaymentRequest() {
             <Autocomplete
               value={vendorName}
               onChange={(event, newValue) => setVendorName(newValue)}
-              options={data.map((option) => option.vendor_name)}
+              options={Array.from(
+                new Set(data.map((option) => option.vendor_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -1523,9 +1523,7 @@ export default function PendingPaymentRequest() {
 
             <TextField
               className="col-md-4 me-3"
-              value={`₹${
-                baseAmount
-              }`}
+              value={`₹${baseAmount}`}
               autoFocus
               margin="dense"
               id="name"
@@ -1575,29 +1573,29 @@ export default function PendingPaymentRequest() {
             )}
             {TDSDeduction && (
               <>
-              <Autocomplete
-                onChange={(e, value) => setTDSPercentage(value)}
-                disablePortal
-                className="col-md-3 mt-2"
-                value={TDSPercentage}
-                id="combo-box-demo"
-                options={[
-                  1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                  19, 20,
-                ]}
-                renderInput={(params) => (
-                  <TextField {...params} label="TDS %" placeholder="TDS %" />
-                )}
-              />
-              <TextField
-                className="col-md-3 mt-2"
-                value={TDSValue}
-                autoFocus
-                readOnly
-                margin="dense"
-                id="name"
-                label="TDS Amount"
-              />
+                <Autocomplete
+                  onChange={(e, value) => setTDSPercentage(value)}
+                  disablePortal
+                  className="col-md-3 mt-2"
+                  value={TDSPercentage}
+                  id="combo-box-demo"
+                  options={[
+                    1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                    19, 20,
+                  ]}
+                  renderInput={(params) => (
+                    <TextField {...params} label="TDS %" placeholder="TDS %" />
+                  )}
+                />
+                <TextField
+                  className="col-md-3 mt-2"
+                  value={TDSValue}
+                  autoFocus
+                  readOnly
+                  margin="dense"
+                  id="name"
+                  label="TDS Amount"
+                />
               </>
             )}
 
@@ -1743,7 +1741,7 @@ export default function PendingPaymentRequest() {
 
       {showDisCardModal && (
         <DiscardConfirmation
-        userName={userName}
+          userName={userName}
           rowData={rowData}
           setShowDiscardModal={setShowDiscardModal}
           userID={userID}

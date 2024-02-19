@@ -581,7 +581,9 @@ export default function Discard() {
             <Autocomplete
               value={vendorName}
               onChange={(event, newValue) => setVendorName(newValue)}
-              options={data.map((option) => option.vendor_name)}
+              options={Array.from(
+                new Set(data.map((option) => option.vendor_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}

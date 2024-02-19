@@ -4,9 +4,18 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tr } from "date-fns/locale";
 import { baseUrl } from "../../../utils/config";
-import { Autocomplete, Button, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  TextField,
+  Dialog,
+  DialogTitle,
+} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const SaleBookingClose = () => {
   const { toastAlert } = useGlobalContext();
@@ -24,6 +33,18 @@ const SaleBookingClose = () => {
   const [toDate, setToDate] = useState("");
   const [campaignAmountFilter, setCampaignAmountFilter] = useState("");
   const [campaignAmountField, setcampaignAmountField] = useState("");
+  const [uniqueCustomerCount, setUniqueCustomerCount] = useState(0);
+  const [uniqueCustomerDialog, setUniqueCustomerDialog] = useState(false);
+  const [uniqueCustomerData, setUniqueCustomerData] = useState([]);
+  const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
+  const [sameCustomerData, setSameCustomerData] = useState([]);
+  const [uniqueSalesExecutiveCount, setUniqueSalesExecutiveCount] =
+    useState("");
+  const [uniqueSalesExecutiveDialog, setUniqueSalesExecutiveDialog] =
+    useState("");
+  const [uniqueSalesExecutiveData, setUniqueSalesExecutiveData] = useState("");
+  const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
+  const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -70,12 +91,32 @@ const SaleBookingClose = () => {
         }
       )
       .then((res) => {
-        const allData = res.data.body;
         // const filteredData = allData.filter(
         //   (item) => item.show_fstatus == "Open"
         // );
-        setData(allData);
-        setFilterData(allData);
+        setData(res.data.body);
+        setFilterData(res.data.body);
+        const custData = res.data.body;
+        const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
+        setUniqueCustomerCount(uniqueCustomers.size);
+        const uniqueCustomerData = Array.from(uniqueCustomers).map(
+          (customerName) => {
+            return custData.find((item) => item.cust_name === customerName);
+          }
+        );
+        setUniqueCustomerData(uniqueCustomerData);
+        // For Unique Sales Executive
+        const salesExecuteiveData = res.data.body;
+        const uniqueSalesEx = new Set(
+          salesExecuteiveData.map((item) => item.sales_exe_name)
+        );
+        setUniqueSalesExecutiveCount(uniqueSalesEx.size);
+        const uniqueSEData = Array.from(uniqueSalesEx).map((salesEName) => {
+          return salesExecuteiveData.find(
+            (item) => item.sales_exe_name === salesEName
+          );
+        });
+        setUniqueSalesExecutiveData(uniqueSEData);
       });
   }
 
@@ -180,6 +221,374 @@ const SaleBookingClose = () => {
     setCampaignAmountFilter("");
     setSalesExecutive("");
   };
+  // For Customers
+  const handleOpenUniqueCustomerClick = () => {
+    setUniqueCustomerDialog(true);
+  };
+
+  const handleCloseUniqueCustomer = () => {
+    setUniqueCustomerDialog(false);
+  };
+
+  const handleOpenSameCustomer = (custName) => {
+    setSameCustomerDialog(true);
+
+    const sameNameCustomers = datas.filter(
+      (item) => item.cust_name === custName
+    );
+    setSameCustomerData(sameNameCustomers);
+  };
+
+  const handleCloseSameCustomer = () => {
+    setSameCustomerDialog(false);
+  };
+
+  // For Sales Executive
+  const handleOpenUniqueSalesExecutive = () => {
+    setUniqueSalesExecutiveDialog(true);
+  };
+
+  const handleCloseUniquesalesExecutive = () => {
+    setUniqueSalesExecutiveDialog(false);
+  };
+
+  const handleOpenSameSalesExecutive = (salesEName) => {
+    setSameSalesExecutiveDialog(true);
+
+    const sameNameSalesExecutive = datas.filter(
+      (item) => item.sales_exe_name === salesEName
+    );
+
+    setSameSalesExecutiveData(sameNameSalesExecutive);
+  };
+
+  const handleCloseSameSalesExecutive = () => {
+    setSameSalesExecutiveDialog(false);
+  };
+
+  // Total base amount:-
+  const baseAmountTotal = datas.reduce(
+    (total, item) => total + parseFloat(item.base_amount),
+    0
+  );
+  const sameSalesExecutivecolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      field: "Customer Name",
+      fieldName: "cust_name",
+      renderCell: (params) => params.row.cust_name,
+    },
+    {
+      field: "Sales Executive Name",
+      fieldName: "sales_exe_name",
+      renderCell: (params) => params.row.sales_exe_name,
+    },
+    {
+      field: "Booking Date",
+      fieldName: "sale_booking_date",
+      renderCell: (params) => params.row.sale_booking_date,
+    },
+    {
+      field: "Campaign Amount",
+      fieldName: "campaign_amount",
+      renderCell: (params) => params.row.campaign_amount,
+    },
+    {
+      field: "Base Amount",
+      fieldName: "base_amount",
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
+      field: "GST Amount",
+      fieldName: "gst_amount",
+      renderCell: (params) => params.row.gst_amount,
+    },
+    {
+      field: "Net Amount",
+      fieldName: "net_amount",
+      renderCell: (params) => params.row.net_amount,
+    },
+    {
+      field: "Paid Amount",
+      fieldName: "total_paid_amount",
+      renderCell: (params) => params.row.total_paid_amount,
+    },
+    {
+      field: "Refund Amount",
+      fieldName: "total_refund_amount",
+      renderCell: (params) => params.row.total_refund_amount,
+    },
+    {
+      field: "Refund Balance Amount",
+      fieldName: "balance_refund_amount",
+      renderCell: (params) => params.row.balance_refund_amount,
+    },
+    {
+      field: "Net Bal Cust to pay Amt (%)",
+      fieldName: "net_balance_amount_to_pay_percentage",
+      renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
+    },
+    {
+      field: "Booking Created Date",
+      fieldName: "booking_created_date",
+      renderCell: (params) => params.row.booking_created_date,
+    },
+  ];
+  const uniqueSalesExecutivecolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      field: "Customer Name",
+      fieldName: "cust_name",
+      renderCell: (params) => params.row.cust_name,
+    },
+    {
+      field: "Sales Executive Name",
+      fieldName: "sales_exe_name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() =>
+            handleOpenSameSalesExecutive(params.row.sales_exe_name)
+          }
+        >
+          {params.row.sales_exe_name}
+        </div>
+      ),
+    },
+    {
+      field: "Booking Date",
+      fieldName: "sale_booking_date",
+      renderCell: (params) => params.row.sale_booking_date,
+    },
+    {
+      field: "Campaign Amount",
+      fieldName: "campaign_amount",
+      renderCell: (params) => params.row.campaign_amount,
+    },
+    {
+      field: "Base Amount",
+      fieldName: "base_amount",
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
+      field: "GST Amount",
+      fieldName: "gst_amount",
+      renderCell: (params) => params.row.gst_amount,
+    },
+    {
+      field: "Net Amount",
+      fieldName: "net_amount",
+      renderCell: (params) => params.row.net_amount,
+    },
+    {
+      field: "Paid Amount",
+      fieldName: "total_paid_amount",
+      renderCell: (params) => params.row.total_paid_amount,
+    },
+    {
+      field: "Refund Amount",
+      fieldName: "total_refund_amount",
+      renderCell: (params) => params.row.total_refund_amount,
+    },
+    {
+      field: "Refund Balance Amount",
+      fieldName: "balance_refund_amount",
+      renderCell: (params) => params.row.balance_refund_amount,
+    },
+    {
+      field: "Net Bal Cust to pay Amt (%)",
+      fieldName: "net_balance_amount_to_pay_percentage",
+      renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
+    },
+    {
+      field: "Booking Created Date",
+      fieldName: "booking_created_date",
+      renderCell: (params) => params.row.booking_created_date,
+    },
+    {
+      field: "Action",
+      renderCell: (params) => {
+        // return row.show_fstatus === "About To Close" ? (
+        return tdsStatus === 0 && aboutToClose == true ? (
+          <button
+            className="btn btn-sm btn-outline-info"
+            onClick={() => handleVerify(params.row)}
+          >
+            Close
+          </button>
+        ) : (
+          <span>{params.row.show_fstatus}</span>
+        );
+      },
+    },
+  ];
+  const sameCustomercolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      field: "Customer Name",
+      fieldName: "cust_name",
+      renderCell: (params) => params.row.cust_name,
+    },
+    {
+      field: "Sales Executive Name",
+      fieldName: "sales_exe_name",
+      renderCell: (params) => params.row.sales_exe_name,
+    },
+    {
+      field: "Booking Date",
+      fieldName: "sale_booking_date",
+      renderCell: (params) => params.row.sale_booking_date,
+    },
+    {
+      field: "Campaign Amount",
+      fieldName: "campaign_amount",
+      renderCell: (params) => params.row.campaign_amount,
+    },
+    {
+      field: "Base Amount",
+      fieldName: "base_amount",
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
+      field: "GST Amount",
+      fieldName: "gst_amount",
+      renderCell: (params) => params.row.gst_amount,
+    },
+    {
+      field: "Net Amount",
+      fieldName: "net_amount",
+      renderCell: (params) => params.row.net_amount,
+    },
+    {
+      field: "Paid Amount",
+      fieldName: "total_paid_amount",
+      renderCell: (params) => params.row.total_paid_amount,
+    },
+    {
+      field: "Refund Amount",
+      fieldName: "total_refund_amount",
+      renderCell: (params) => params.row.total_refund_amount,
+    },
+    {
+      field: "Refund Balance Amount",
+      fieldName: "balance_refund_amount",
+      renderCell: (params) => params.row.balance_refund_amount,
+    },
+    {
+      field: "Net Bal Cust to pay Amt (%)",
+      fieldName: "net_balance_amount_to_pay_percentage",
+      renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
+    },
+    {
+      field: "Booking Created Date",
+      fieldName: "booking_created_date",
+      renderCell: (params) => params.row.booking_created_date,
+    },
+  ];
+
+  const uniqueCustomercolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      field: "Customer Name",
+      fieldName: "cust_name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+        >
+          {params.row.cust_name}
+        </div>
+      ),
+    },
+    {
+      field: "Sales Executive Name",
+      fieldName: "sales_exe_name",
+      renderCell: (params) => params.row.sales_exe_name,
+    },
+    {
+      field: "Booking Date",
+      fieldName: "sale_booking_date",
+      renderCell: (params) => params.row.sale_booking_date,
+    },
+    {
+      field: "Campaign Amount",
+      fieldName: "campaign_amount",
+      renderCell: (params) => params.row.campaign_amount,
+    },
+    {
+      field: "Base Amount",
+      fieldName: "base_amount",
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
+      field: "GST Amount",
+      fieldName: "gst_amount",
+      renderCell: (params) => params.row.gst_amount,
+    },
+    {
+      field: "Net Amount",
+      fieldName: "net_amount",
+      renderCell: (params) => params.row.net_amount,
+    },
+    {
+      field: "Paid Amount",
+      fieldName: "total_paid_amount",
+      renderCell: (params) => params.row.total_paid_amount,
+    },
+    {
+      field: "Refund Amount",
+      fieldName: "total_refund_amount",
+      renderCell: (params) => params.row.total_refund_amount,
+    },
+    {
+      field: "Refund Balance Amount",
+      fieldName: "balance_refund_amount",
+      renderCell: (params) => params.row.balance_refund_amount,
+    },
+    {
+      field: "Net Bal Cust to pay Amt (%)",
+      fieldName: "net_balance_amount_to_pay_percentage",
+      renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
+    },
+    {
+      field: "Booking Created Date",
+      fieldName: "booking_created_date",
+      renderCell: (params) => params.row.booking_created_date,
+    },
+    {
+      field: "Action",
+      renderCell: (params) => {
+        // return row.show_fstatus === "About To Close" ? (
+        return tdsStatus === 0 && aboutToClose == true ? (
+          <button
+            className="btn btn-sm btn-outline-info"
+            onClick={() => handleVerify(params.row)}
+          >
+            Close
+          </button>
+        ) : (
+          <span>{params.row.show_fstatus}</span>
+        );
+      },
+    },
+  ];
+
   const columns = [
     {
       name: "S.No",
@@ -264,7 +673,233 @@ const SaleBookingClose = () => {
           contextData[2].insert_value === 1 &&
           false
         }
+        uniqueCustomerCount={uniqueCustomerCount}
+        baseAmountTotal={baseAmountTotal}
+        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
+        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
+        saleBookingClosePaymentAdditionalTitles={true}
       />
+      {/* Same Sales Executive Dialog Box */}
+
+      <Dialog
+        open={sameSalesExecutiveDialog}
+        onClose={handleCloseSameSalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameSalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameSalesExecutiveData}
+          columns={sameSalesExecutivecolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+        />
+      </Dialog>
+      {/* Unique Sales Executive Dialog Box */}
+      <Dialog
+        open={uniqueSalesExecutiveDialog}
+        onClose={handleCloseUniquesalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniquesalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueSalesExecutiveData}
+          columns={uniqueSalesExecutivecolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+        />
+      </Dialog>
+      {/* Same Customer Dialog */}
+      <Dialog
+        open={sameCustomerDialog}
+        onClose={handleCloseSameCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameCustomerData}
+          columns={sameCustomercolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameCustomerData.indexOf(row)}
+        />
+      </Dialog>
+
+      {/* Unique Customer Dialog Box */}
+      <Dialog
+        open={uniqueCustomerDialog}
+        onClose={handleCloseUniqueCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniqueCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueCustomerData}
+          columns={uniqueCustomercolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueCustomerData.indexOf(row)}
+        />
+      </Dialog>
       <div className="row">
         <div className="col-md-3">
           <div className="form-group">
@@ -272,7 +907,9 @@ const SaleBookingClose = () => {
             <Autocomplete
               value={customerName}
               onChange={(event, newValue) => setCustomerName(newValue)}
-              options={datas.map((option) => option.cust_name)}
+              options={Array.from(
+                new Set(datas.map((option) => option.cust_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -303,7 +940,9 @@ const SaleBookingClose = () => {
             <Autocomplete
               value={salesExecutive}
               onChange={(event, newValue) => setSalesExecutive(newValue)}
-              options={datas.map((option) => option.sales_exe_name)}
+              options={Array.from(
+                new Set(datas.map((option) => option.sales_exe_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
