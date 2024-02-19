@@ -23,9 +23,14 @@ const DataBrandOverview = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  console.log(selectedCategory,"cat selected");
   const [backupData, setBackupData] = useState([]);
+  console.log(backupData,"backupData");
+
   const [selectedUser, setSelectedUser] = useState("");
   const [categoryData, setCategoryData] = useState([]);
+  console.log(categoryData,"cat data");
+
   const [brandData, setBrandData] = useState([]);
   const [selectedBrand, setSelectedBrand] = useState("");
   const [contentData, setContentData] = useState([]);
