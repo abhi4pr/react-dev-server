@@ -10,9 +10,9 @@ import FieldContainer from "../../FieldContainer";
 import WhatsappAPI from "../../../WhatsappAPI/WhatsappAPI";
 import { baseUrl } from "../../../../utils/config";
 
-const onBoardStatus = 2;
+const onBoardStatus = 1;
 
-const WFHDRegister = () => {
+const WFHDRegister = ({ userUpdateID }) => {
   const offerLetter = [
     { label: "Yes", value: true },
     { label: "No", value: false },
@@ -79,14 +79,12 @@ const WFHDRegister = () => {
 
   const [designation, setDesignation] = useState("");
   const [sendLetter, setSendLetter] = useState({});
-  const [uid, setUID] = useState("");
-  const [panUpload, setPanUpload] = useState("");
-  const [highestUpload, setHighestUpload] = useState("");
-  const [otherUpload, setOtherUpload] = useState("");
   const [joiningDate, setJoiningDate] = useState("");
   const [releavingDate, setReleavingDate] = useState("");
   const [salary, setSalary] = useState("");
   const [yearlySalary, setYearlySalary] = useState("");
+
+  const [lastIndexUsed, setLastIndexUsed] = useState(-1);
 
   const [designationData, setDesignationData] = useState([]);
 
@@ -100,6 +98,69 @@ const WFHDRegister = () => {
   });
 
   const [lastUpdated, setLastUpdated] = useState("");
+
+  useEffect(() => {
+    if (userUpdateID)
+      axios
+        .get(`${baseUrl}` + `get_single_user/${userUpdateID}`)
+        .then((res) => {
+          const fetchedData = res.data;
+          const {
+            user_name,
+            user_email_id,
+            user_contact_no,
+            user_login_id,
+            user_login_password,
+            user_designation,
+            sitting_id,
+            permanent_city,
+            ctc,
+            room_id,
+            dept_id,
+            Report_L1,
+            Report_L2,
+            Report_L3,
+            PersonalEmail,
+            joining_date,
+            salary,
+            Gender,
+            DOB,
+            tbs_applicable,
+            tds_per,
+            alternate_contact,
+          } = fetchedData;
+
+          // console.log(Report_L2, "come to l2");
+
+          setUserName(user_name);
+          setDepartment(dept_id);
+          setDesignation(user_designation);
+          setCity(permanent_city);
+          setReportL1(Report_L1);
+          setSalary(salary);
+          setLoginId(user_login_id);
+          setJoiningDate(joining_date?.split("T")?.[0]);
+          setDateOfBirth(DOB?.split("T")?.[0]);
+          setYearlySalary(ctc);
+          setGender(Gender);
+          setReportL2(Report_L2);
+          setReportL3(Report_L3);
+
+          setTdsApplicable(tbs_applicable);
+          setTdsPercentage(tds_per);
+          setPersonalEmail(user_email_id);
+          setContact(alternate_contact);
+          setPersonalContact(user_contact_no);
+          setEmail(user_email_id);
+          setPassword(user_login_password);
+          setSitting(sitting_id);
+          setRoomId(room_id);
+        });
+  }, [userUpdateID]);
+
+  useEffect(() => {
+    console.log(reportL2, "report l2");
+  }, [reportL2]);
 
   // Handle change for Monthly Salary
   const handleMonthlySalaryChange = (e) => {
@@ -139,9 +200,6 @@ const WFHDRegister = () => {
   }, [yearlySalary, lastUpdated]);
 
   useEffect(() => {
-    // axios.get(baseUrl + "get_all_roles").then((res) => {
-    //   getRoleData(res.data.data);
-    // });
     axios.get(baseUrl + "get_all_departments").then((res) => {
       getDepartmentData(res.data);
     });
@@ -185,6 +243,11 @@ const WFHDRegister = () => {
     }
 
     const formData = new FormData();
+
+    if (userUpdateID) {
+      formData.append("user_id", userUpdateID);
+    }
+
     formData.append("created_by", loginUserId);
     formData.append("user_name", username);
     formData.append("role_id", 4);
@@ -201,15 +264,14 @@ const WFHDRegister = () => {
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
     formData.append("sitting_id", 183);
-    formData.append("room_id", roomId);
+    formData.append("room_id", 1);
     formData.append("dept_id", department);
     formData.append("Gender", gender);
     formData.append("job_type", jobType);
     formData.append("DOB", dateOfBirth);
 
-    formData.append("alternate_contact", contact); //contact all replace to alternate contact
-
     // formData.append("personal_number", personalContact);
+    formData.append("alternate_contact", contact); //contact all replace to alternate contact
     formData.append("user_contact_no", personalContact);
 
     // formData.append("user_email_id", email);
@@ -217,6 +279,7 @@ const WFHDRegister = () => {
     formData.append("user_email_id", personalEmail);
 
     formData.append("att_status", "registered");
+
     formData.append("year_salary", Number(yearlySalary));
     formData.append("salary", Number(salary));
 
@@ -224,113 +287,126 @@ const WFHDRegister = () => {
     formData.append("report_L2", reportL2);
     formData.append("report_L3", reportL3);
     formData.append("user_designation", designation);
-    formData.append("UID", uid);
-    formData.append("pan", panUpload);
-    formData.append("highest_upload", highestUpload);
-    formData.append("other_upload", otherUpload);
     formData.append("joining_date", joiningDate);
     formData.append("releaving_date", releavingDate);
     formData.append("onboard_status", onBoardStatus);
 
     // if (isValidcontact1 == true && validEmail == true) {
-    try {
-      const isLoginIdExists = usersData.some(
-        (user) =>
-          user.user_login_id.toLocaleLowerCase() === loginId.toLocaleLowerCase()
-      );
-      const contactNumberExists = usersData.some(
-        (user) => user.user_contact_no == personalContact
-      );
 
-      const emailIdExists = usersData.some(
-        (user) =>
-          user.user_email_id?.toLocaleLowerCase() ==
-          personalEmail?.toLocaleLowerCase()
-      );
-      if (isLoginIdExists) {
-        alert("this login ID already exists");
-      } else if (contactNumberExists) {
-        alert(" Contact Already Exists");
-      } else if (emailIdExists) {
-        alert(" Email Already Exists");
+    try {
+      if (!userUpdateID) {
+        setLoading(true);
+        const isLoginIdExists = usersData.some(
+          (user) =>
+            user.user_login_id?.toLocaleLowerCase() ===
+            loginId?.toLocaleLowerCase()
+        );
+        const contactNumberExists = usersData?.some(
+          (user) => user.user_contact_no == personalContact
+        );
+
+        const emailIdExists = usersData?.some(
+          (user) =>
+            user.user_email_id?.toLocaleLowerCase() ==
+            personalEmail?.toLocaleLowerCase()
+        );
+
+        if (isLoginIdExists) {
+          alert("this login ID already exists");
+        } else if (contactNumberExists) {
+          alert(" Contact Already Exists");
+        } else if (emailIdExists) {
+          alert(" Email Already Exists");
+        }
       } else {
         setLoading(true);
-        await axios.post(baseUrl + "add_user", formData, {
+
+        if (userUpdateID) {
+          await axios
+            .put(`${baseUrl}` + `update_user`, formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then(() => {
+              setIsFormSubmitted(true);
+            });
+          return;
+        }
+      }
+      await axios
+        .post(baseUrl + "add_user", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
+        })
+        .then(() => {
+          setIsFormSubmitted(true);
         });
-        whatsappApi.callWhatsAPI(
-          "Preonboarding Register",
-          JSON.stringify(personalContact),
-          username,
-          [username, loginId, password, "http://jarvis.work/"]
-        );
-        axios
-          .post(baseUrl + "add_send_user_mail", {
-            email: personalEmail,
-            subject: "User Registration",
-            text: "A new user has been onboard.",
-            attachment: selectedImage,
-            login_id: loginId,
-            name: username,
-            password: password,
-          })
-          .then((res) => {
-            // setLoading(true);
-            console.log("Email sent successfully:", res.data);
-          })
-          .then((res) => {
-            if (res.status == 200) {
-              toastAlert("User Registerd");
-              setIsFormSubmitted(true);
-              setLoading(false);
-            } else {
-              setLoading(false);
-              toastError("Sorry User is Not Created, Please try again later");
-            }
-          })
-          .catch((error) => {
-            setLoading(false);
-            console.log("Failed to send email:", error);
-          });
 
-        setUserName("");
-        setRoles("");
-        setEmail("");
-        setLoginId("");
-        setContact("");
-        setPersonalContact("");
-        setUserCtc("");
-        setPassword("");
-        setDepartment("");
-        setSitting("");
-        setRoomId("");
-        setPersonalContact("");
-        setCity("");
-        setSendLetter("");
-        setAnnexurePdf("");
-        setPersonalEmail("");
-        setReportL1("");
-        setReportL2("");
-        setReportL3("");
-        setDesignation("");
-        toastAlert("User Registerd");
-        setIsFormSubmitted(true);
-      }
+      whatsappApi.callWhatsAPI(
+        "Preonboarding Register",
+        JSON.stringify(personalContact),
+        username,
+        [username, loginId, password, "http://jarvis.work/"]
+      );
+      await axios
+        .post(baseUrl + "add_send_user_mail", {
+          email: personalEmail,
+          subject: "User Registration",
+          text: "A new user has been onboard.",
+          attachment: selectedImage,
+          login_id: loginId,
+          name: username,
+          password: password,
+          status: "onboarded",
+        })
+        .then((res) => {
+          // setLoading(true);
+          console.log("Email sent successfully:", res.data);
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            toastAlert("User Registerd");
+            setIsFormSubmitted(true);
+            setLoading(false);
+          } else {
+            setLoading(false);
+            toastError("Sorry User is Not Created, Please try again later");
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log("Failed to send email:", error);
+        });
+
+      setUserName("");
+      setRoles("");
+      setEmail("");
+      setLoginId("");
+      setContact("");
+      setPersonalContact("");
+      setUserCtc("");
+      setPassword("");
+      setDepartment("");
+      setSitting("");
+      setRoomId("");
+      setPersonalContact("");
+      setCity("");
+      setSendLetter("");
+      setAnnexurePdf("");
+      setPersonalEmail("");
+      setReportL1("");
+      setReportL2("");
+      setReportL3("");
+      setDesignation("");
+      toastAlert("User Registerd");
+      setIsFormSubmitted(true);
     } catch (error) {
       console.log("Failed to submit form", error);
     } finally {
       setLoading(false);
     }
-    // } else {
-    //   if (contact.length !== 10) {
-    //     if (isValidcontact == false)
-    //       alert("Enter Phone Number in Proper Format");
-    //   } else if (validEmail != true) {
-    //     alert("Enter Valid Email");
-    //   }
-    // }
   };
 
   // Email Validation
@@ -375,7 +451,7 @@ const WFHDRegister = () => {
 
   function handleContactBlur() {
     setisContactTouched(true);
-    if (contact.length < 10) {
+    if (contact?.length < 10) {
       setValidContact(false);
     }
   }
@@ -421,41 +497,58 @@ const WFHDRegister = () => {
     }
     setPassword(generatePassword);
   };
-
-  const generateLoginId = async () => {
+  const generateLoginId = () => {
+    // Example username, replace with actual data source
     const userName = username.trim().toLowerCase().split(" ");
 
-    const loginIdOption1 = userName[0] + userName[1].charAt(0);
-
-    const loginIdOption2 = userName[0].charAt(0) + userName[1];
-
-    const loginIdOption3 = userName.join(".");
-
-    const loginIdOption4 = userName[0];
-
-    // Randomly choose one of the options
-    const randomIndex = Math.floor(Math.random() * 4);
-    const generatedLoginId = [
-      loginIdOption4,
-      loginIdOption1,
-      loginIdOption2,
-      loginIdOption3,
-    ][randomIndex];
-
+    // Define login ID options
+    const loginIdOptions = [
+      userName[0], // loginIdOption1
+      userName[0] + (userName[1] ? userName[1].charAt(0) : ""), // loginIdOption2
+      (userName[0] ? userName[0].charAt(0) : "") + (userName[1] || ""), // loginIdOption3
+      userName.join("."), // loginIdOption4
+    ];
+    const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
+    setLastIndexUsed(nextIndex);
+    const generatedLoginId = loginIdOptions[nextIndex];
     setLoginId(generatedLoginId);
-
-    await axios
-      .post(baseUrl + `check_login_exist`, {
-        user_login_id: loginId,
-      })
-      .then((res) => {
-        setLoginResponse(res.data.message);
-      });
-
-    if (generatedLoginId.length > 0) {
-      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
-    }
   };
+
+  // const generateLoginId = async () => {
+  //   const userName = username.trim().toLowerCase().split(" ");
+
+  //   const loginIdOption1 = userName[0];
+
+  //   const loginIdOption2 = userName[0] + userName[1].charAt(0);
+
+  //   const loginIdOption3 = userName[0].charAt(0) + userName[1];
+
+  //   const loginIdOption4 = userName.join(".");
+
+  //   // Randomly choose one of the options
+  //   const randomIndex = Math.floor(Math.random() * 4);
+
+  //   const generatedLoginId = [
+  //     loginIdOption1,
+  //     loginIdOption2,
+  //     loginIdOption3,
+  //     loginIdOption4,
+  //   ][randomIndex];
+
+  //   setLoginId(generatedLoginId);
+
+  //   await axios
+  //     .post(baseUrl + `check_login_exist`, {
+  //       user_login_id: loginId,
+  //     })
+  //     .then((res) => {
+  //       setLoginResponse(res.data.message);
+  //     });
+
+  //   if (generatedLoginId?.length > 0) {
+  //     setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+  //   }
+  // };
 
   const handleLoginIdChange = (event) => {
     const selectedLoginId = event.target.value;
@@ -491,7 +584,7 @@ const WFHDRegister = () => {
       <FormContainer
         mainTitle="WFHD Register"
         title="WFHD User Registration"
-        handleSubmit={handleSubmit}
+        // handleSubmit={handleSubmit}
         submitButton={false}
       >
         <FieldContainer
@@ -808,7 +901,7 @@ const WFHDRegister = () => {
           onChange={handlePersonalContactChange}
           onBlur={handlePersonalContactBlur}
         />
-        {(isContactTouched1 || personalContact.length >= 10) &&
+        {(isContactTouched1 || personalContact?.length >= 10) &&
           !isValidcontact1 && (
             <p style={{ color: "red" }}>*Please enter a valid Number</p>
           )}
@@ -948,10 +1041,11 @@ const WFHDRegister = () => {
         <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
           <div className="form-group">
             <button
-              type="submit"
+              type="button"
               className="btn btn-primary"
               style={{ width: "10%", height: "15%" }}
               disabled={loading}
+              onClick={handleSubmit}
             >
               {loading ? "Submitting..." : "Submit"}
             </button>
