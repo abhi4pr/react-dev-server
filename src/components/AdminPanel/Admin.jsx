@@ -222,6 +222,7 @@ import CaseStudyOperation from "./RegisterCampaign/CaseStudies/CaseStudyOperatio
 import WFHDRegister from "./WFH/WFHDRegister/WFHDRegister";
 import UpdateDocument from "./WFH/UpdateDocument";
 import HRTemplateOverview from "./WFH/HRTemplateOverview";
+import WFHDUpdate from './WFH/WFHDRegister/WFHDUpdate'
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -350,6 +351,7 @@ const Admin = () => {
                   {/* Attendence  */}
 
                   <Route path="/wfhd-register" element={<WFHDRegister />} />
+                  <Route path="/wfhd-update/:id" element={<WFHDUpdate />} />
 
                   <Route
                     path="/salary-dashboard/:id"
