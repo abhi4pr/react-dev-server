@@ -143,17 +143,21 @@ const SalaryWFH = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(baseUrl + "get_all_wfh_users");
-        const data = res.data.data;
-        setAllWFHUsers(data?.length);
-        const filteredUser = data.filter((d) => d.dept_id === department);
-        const filteredActive = data.filter(
-          (d) =>
-            d.dept_id === department &&
-            d.user_status == "Active" &&
-            d.job_type === "WFHD" &&
-            d.att_status == "onboarded"
+        const ActiveUsers = await axios.post(
+          baseUrl + "get_all_users_counts_with_joining_date",
+          {
+            month: month,
+            year: year,
+            dept_id: department,
+          }
         );
-        setActiveUsers(filteredActive);
+
+        const data = res.data.data;
+        const ActiveUsersCount = ActiveUsers.data.message[0].count;
+
+        setAllWFHUsers(data?.length);
+        setActiveUsers(ActiveUsersCount);
+        const filteredUser = data.filter((d) => d.dept_id === department);
         if (filteredUser?.length > 0) {
           const firstUser = filteredUser[0];
           setUserName(firstUser);
@@ -1156,9 +1160,7 @@ const SalaryWFH = () => {
           </div>
 
           <h6>
-            <span style={{ color: "green" }}>
-              Active : {activeusers?.length}
-            </span>
+            <span style={{ color: "green" }}>Active : {activeusers}</span>
           </h6>
         </div>
       </div>
