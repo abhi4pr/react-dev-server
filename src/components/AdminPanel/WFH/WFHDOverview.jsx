@@ -5,7 +5,7 @@ import DataTable from "react-data-table-component";
 import { useAPIGlobalContext } from "../APIContext/APIContext";
 import { baseUrl } from "../../../utils/config";
 import { Link } from "react-router-dom";
-import FieldContainer from '../FieldContainer'
+import FieldContainer from "../FieldContainer";
 import jwtDecode from "jwt-decode";
 
 const WFHDOverview = () => {
@@ -22,7 +22,7 @@ const WFHDOverview = () => {
     training: 0,
     onboarded: 0,
   });
-  const [trainingDate, setTrainingDate] = useState("")
+  const [trainingDate, setTrainingDate] = useState("");
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -33,8 +33,10 @@ const WFHDOverview = () => {
     const response = await axios.get(baseUrl + "get_all_wfh_users");
     if (RoleIDContext == 1 || RoleIDContext == 5) {
       setAllWFHDData(response.data.data);
-      const attStatus = response.data.data.filter((item)=> item.att_status == 'registered');
-      setFilteredDatas(attStatus)
+      const attStatus = response.data.data.filter(
+        (item) => item.att_status == "registered"
+      );
+      setFilteredDatas(attStatus);
     } else {
       setAllWFHDData(
         response.data.data?.filter((d) => d.dept_id == ContextDept)
@@ -42,11 +44,15 @@ const WFHDOverview = () => {
       setSavedData(response.data.data?.filter((d) => d.dept_id == ContextDept));
     }
     const counts = response.data.data.reduce((acc, curr) => {
-      if (RoleIDContext == 1 || RoleIDContext == 5 || curr.dept_id == ContextDept) {
-          acc[curr.att_status] = (acc[curr.att_status] || 0) + 1;
+      if (
+        RoleIDContext == 1 ||
+        RoleIDContext == 5 ||
+        curr.dept_id == ContextDept
+      ) {
+        acc[curr.att_status] = (acc[curr.att_status] || 0) + 1;
       }
       return acc;
-  }, {});
+    }, {});
     setStatusCounts(counts);
   };
 
@@ -60,35 +66,35 @@ const WFHDOverview = () => {
   }
 
   const setRowDataFunc = (row) => {
-    setRowData(row)
+    setRowData(row);
   };
 
-  const trainingFunc = (e) =>{
+  const trainingFunc = (e) => {
     e.preventDefault();
     const payload = {
       user: rowData.user_id,
       done_by: userID,
       remark: remark,
-      training_date: trainingDate 
+      training_date: trainingDate,
     };
-    axios.post(baseUrl+'add_user_training',payload);
-    axios.put(baseUrl+'update_user',{
+    axios.post(baseUrl + "add_user_training", payload);
+    axios.put(baseUrl + "update_user", {
       user_id: rowData.user_id,
-      att_status:'training'
+      att_status: "training",
     });
-    setRemark('')
-    getData()
-  }
+    setRemark("");
+    getData();
+  };
 
-  const onboardingFunc = (e) =>{
+  const onboardingFunc = (e) => {
     e.preventDefault();
-    axios.put(baseUrl+'update_user',{
+    axios.put(baseUrl + "update_user", {
       user_id: rowData.user_id,
-      att_status:'onboarded'
+      att_status: "onboarded",
     });
-    setRemark('')
-    getData()
-  }
+    setRemark("");
+    getData();
+  };
 
   useEffect(() => {
     const lowerCaseSearch = search.toLowerCase();
@@ -190,30 +196,43 @@ const WFHDOverview = () => {
       cell: (row) => (
         <>
           {row.att_status == "registered" ? (
-            <button type="button" className="btn btn-success"><Link to={`/admin/wfh-update-document/${row.user_id}`}>Upload Document</Link></button>
+            <>
+              <button type="button" className="btn btn-primary mr-1">
+                <Link to={`/admin/wfhd-update/${row.user_id}`}>Edit</Link>
+              </button>
+              <button type="button" className="btn btn-success">
+                <Link to={`/admin/wfh-update-document/${row.user_id}`}>
+                  Upload Document
+                </Link>
+              </button>
+            </>
           ) : row.att_status == "document_upload" ? (
-            <button 
-              type="button" className="btn btn-success"
+            <button
+              type="button"
+              className="btn btn-success"
               data-toggle="modal"
               data-target="#exampleModal"
-              onClick={()=>setRowDataFunc(row)}
-            >Training Done
+              onClick={() => setRowDataFunc(row)}
+            >
+              Training Done
             </button>
           ) : row.att_status == "training" ? (
-            <button  type="button" 
-              className="btn btn-success" 
+            <button
+              type="button"
+              className="btn btn-success"
               data-toggle="modal"
               data-target="#exampleModal2"
-              onClick={()=>setRowDataFunc(row)}
-            >Onboard
+              onClick={() => setRowDataFunc(row)}
+            >
+              Onboard
             </button>
           ) : row.att_status == "onboarded" ? (
-            'User Onboarded'
+            "User Onboarded"
           ) : null}
         </>
       ),
       width: "100px",
-    }
+    },
   ];
 
   return (
@@ -288,121 +307,120 @@ const WFHDOverview = () => {
           </div>
         </div>
 
-      <div
-        className="modal fade"
-        id="exampleModal"
-        tabIndex={-1}
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Done Training
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
+        <div
+          className="modal fade"
+          id="exampleModal"
+          tabIndex={-1}
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Done Training
+                </h5>
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <FieldContainer
+                  label="Remark"
+                  fieldGrid={12}
+                  value={remark}
+                  onChange={(e) => setRemark(e.target.value)}
+                  required={true}
+                ></FieldContainer>
+                <FieldContainer
+                  type="date"
+                  label="Training Date"
+                  fieldGrid={12}
+                  value={trainingDate}
+                  onChange={(e) => setTrainingDate(e.target.value)}
+                />
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={trainingFunc}
+                  data-dismiss="modal"
+                  disabled={!remark || !trainingDate}
+                >
+                  Save changes
+                </button>
+              </div>
             </div>
-            <div className="modal-body">
-              <FieldContainer
-                label="Remark"
-                fieldGrid={12}
-                value={remark}
-                onChange={(e) => setRemark(e.target.value)}
-                required={true}
-              ></FieldContainer>
-              <FieldContainer
-                type="date"
-                label="Training Date"
-                fieldGrid={12}
-                value={trainingDate}
-                onChange={(e) => setTrainingDate(e.target.value)}
-              />
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={trainingFunc}
-                data-dismiss="modal"
-                disabled={!remark || !trainingDate}
-              >
-                Save changes
-              </button>
+          </div>
+
+          <div
+            className="modal fade"
+            id="exampleModal2"
+            tabIndex={-1}
+            role="dialog"
+            aria-labelledby="exampleModalLabel2"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel2">
+                    Onboard user
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <FieldContainer
+                    label="Remark"
+                    fieldGrid={12}
+                    value={remark}
+                    onChange={(e) => setRemark(e.target.value)}
+                    required={true}
+                  ></FieldContainer>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={onboardingFunc}
+                    data-dismiss="modal"
+                    disabled={!remark}
+                  >
+                    Save changes
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div
-        className="modal fade"
-        id="exampleModal2"
-        tabIndex={-1}
-        role="dialog"
-        aria-labelledby="exampleModalLabel2"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel2">
-                Onboard user
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <FieldContainer
-                label="Remark"
-                fieldGrid={12}
-                value={remark}
-                onChange={(e) => setRemark(e.target.value)}
-                required={true}
-              ></FieldContainer>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={onboardingFunc}
-                data-dismiss="modal"
-                disabled={!remark}
-              >
-                Save changes
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       </div>
     </>
   );
