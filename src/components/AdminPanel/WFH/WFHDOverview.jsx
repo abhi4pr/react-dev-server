@@ -88,16 +88,25 @@ const WFHDOverview = () => {
       att_status: "training",
     });
     setRemark("");
+    
+    const specificElement = document.getElementById('training_tab');
+    if (specificElement) {
+      specificElement.click();
+    }
     await getData();
   };
 
-  const onboardingFunc = (e) => {
+  const onboardingFunc = async(e) => {
     e.preventDefault();
-    axios.put(baseUrl + "update_user", {
+    await axios.put(baseUrl + "update_user", {
       user_id: rowData.user_id,
       att_status: "onboarded",
     });
     setRemark("");
+    const specificElement = document.getElementById('onboarded_tab');
+    if (specificElement) {
+      specificElement.click();
+    }
     getData();
   };
 
@@ -273,6 +282,7 @@ const WFHDOverview = () => {
               className="nav-link"
               href="#menu3"
               data-toggle="tab"
+              id="training_tab"
               onClick={() => getFilterData("training")}
             >
               Training ({statusCounts?.training ? statusCounts.training : 0})
@@ -282,6 +292,7 @@ const WFHDOverview = () => {
             <a
               className="nav-link"
               href="#menu4"
+              id="onboarded_tab"
               data-toggle="tab"
               onClick={() => getFilterData("onboarded")}
             >

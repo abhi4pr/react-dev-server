@@ -1,3 +1,10 @@
+.login-success{
+  color: green;
+}
+.login-error{
+  color: red;
+}
+
 /* sidebar menu color */
 .asset_chart {
   margin-top: -50px;
