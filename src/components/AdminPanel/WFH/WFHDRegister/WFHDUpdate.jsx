@@ -5,11 +5,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import UpdateDocument from "../UpdateDocument";
 import WFHDRegister from "./WFHDRegister";
 import { baseUrl } from "../../../../utils/config";
+import { useGlobalContext } from "../../../../Context/Context";
 
 const normalUserLayout = true;
 const WFHDUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [isUpdaing, setIsUpdating] = useState(false);
+  const [user, setUser] = useState({});
+  const { toastAlert, toastError } = useGlobalContext();
 
   // New tab
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
@@ -25,6 +29,16 @@ const WFHDUpdate = () => {
     });
     setDocumentData(response.data.data);
   }
+
+  const getData = () => {
+    axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
+      setUser(res.data);
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   useEffect(() => {
     getDocuments();
@@ -45,6 +59,7 @@ const WFHDUpdate = () => {
 
   const handleSubmit = async () => {
     try {
+      setIsUpdating(true);
       for (const document of documentData) {
         if (document.file) {
           let formData = new FormData();
@@ -69,23 +84,149 @@ const WFHDUpdate = () => {
           console.log(`No file uploaded for document ${document._id}`);
         }
       }
+      const requiredDocumentsMissing = documentData
+        .filter(
+          (doc) =>
+            doc.document.isRequired &&
+            doc.document.job_type.includes(user.job_type)
+        )
+        .filter((doc) => doc.status == "");
+
+      if (requiredDocumentsMissing?.length == 0) {
+        axios.put(baseUrl + "update_user", {
+          user_id: id,
+          att_status: "document_upload",
+        });
+      }
+
       navigate("/admin/wfhd-overview");
       toastAlert("Documents Updated");
       getDocuments();
       // }
     } catch (error) {
       console.error("Error submitting documents", error);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   const tab1 = <WFHDRegister userUpdateID={id} />;
   const tab2 = (
+    // <>
+    //   <div
+    //     className={`documentarea ${normalUserLayout && "documentareaLight"}`}
+    //   >
+    //     <div className="document_box">
+    //       <h2>Documents</h2>
+
+    //       <div
+    //         className={`docTable ${
+    //           normalUserLayout && "docTableLight"
+    //         } table-responsive`}
+    //       >
+    //         <table className="table">
+    //           <thead>
+    //             <tr>
+    //               <th scope="col">Document Type</th>
+    //               <th scope="col">Period (Days)</th>
+    //               <th scope="col">Time</th>
+    //               <th scope="col">Upload</th>
+    //               <th scope="col" className="text-center">
+    //                 Status
+    //               </th>
+    //             </tr>
+    //           </thead>
+    //           <tbody>
+    //             {documentData.map((item) => (
+    //               <tr key={item._id}>
+    //                 <td scope="row">
+    //                   {item.document.doc_type}
+    //                   {item.document.isRequired && (
+    //                     <span style={{ color: "red" }}> *</span>
+    //                   )}
+    //                 </td>
+    //                 <td>{item.document.period} days</td>
+    //                 <td>1 Day</td>
+    //                 <td>
+    //                   <div className="uploadDocBtn">
+    //                     <span>
+    //                       <i className="bi bi-cloud-arrow-up" /> Upload
+    //                     </span>
+    //                     <input
+    //                       type="file"
+    //                       onChange={(e) =>
+    //                         handleFileUpload(e.target.files[0], item._id)
+    //                       }
+    //                     />
+    //                   </div>
+    //                 </td>
+    //                 <td>
+    //                   <div className="docStatus">
+    //                     <span
+    //                       className={`warning_badges
+    //                 ${item.status == "" && "not_uploaded"}
+    //                 ${item.status == "Document Uploaded" && "document_uploaded"}
+    //                 ${item.status == "Verification Pending" && "pending"}
+    //                 ${item.status == "Approved" && "approve"}
+    //                 ${item.status == "Rejected" && "reject"}
+    //                 `}
+    //                     >
+    //                       <h4>
+    //                         {item.status == "" && "Not Uploaded"}
+    //                         {item.status !== "" && item.status}
+    //                       </h4>
+    //                       {item.status == "Rejected" && (
+    //                         <i
+    //                           class="bi bi-exclamation-circle-fill"
+    //                           title={item.reject_reason}
+    //                         />
+    //                       )}
+    //                     </span>
+    //                   </div>
+    //                 </td>
+    //               </tr>
+    //             ))}
+    //           </tbody>
+    //         </table>
+    //       </div>
+
+    //       <div className="ml-auto mr-auto text-center">
+    //         <button
+    //           type="button"
+    //           className="btn btn_pill btn_cmn btn_success"
+    //           onClick={handleSubmit}
+    //           style={{ marginBottom: "5%" }}
+    //         >
+    //           Submit
+    //         </button>
+    //       </div>
+    //     </div>
+    //   </div>
+    // </>
     <>
       <div
         className={`documentarea ${normalUserLayout && "documentareaLight"}`}
       >
         <div className="document_box">
           <h2>Documents</h2>
+          {/* <select
+            onChange={(e) => handleFilterChange(e.target.value)}
+            className="form-select"
+            style={{ marginBottom: "2%", width: "20%" }}
+          >
+            <option value="all">All Documents</option>
+            <option value="required">Required Documents</option>
+            <option value="nonRequired">Non-Required Documents</option>
+          </select> */}
+          {/* <Select
+            value={mandatoryOptions.find(
+              (option) => option.value === mandatoryFilter
+            )}
+            onChange={(selectedOption) => {
+              setMandatoryFillter(selectedOption.value);
+            }}
+            options={mandatoryOptions}
+          /> */}
 
           <div
             className={`docTable ${
@@ -109,9 +250,10 @@ const WFHDUpdate = () => {
                   <tr key={item._id}>
                     <td scope="row">
                       {item.document.doc_type}
-                      {item.document.isRequired && (
-                        <span style={{ color: "red" }}> *</span>
-                      )}
+                      {item.document.isRequired &&
+                        item.document.job_type.includes(user.job_type) && (
+                          <span style={{ color: "red" }}> (Mandatory)</span>
+                        )}
                     </td>
                     <td>{item.document.period} days</td>
                     <td>1 Day</td>
@@ -132,12 +274,15 @@ const WFHDUpdate = () => {
                       <div className="docStatus">
                         <span
                           className={`warning_badges 
-                    ${item.status == "" && "not_uploaded"}
-                    ${item.status == "Document Uploaded" && "document_uploaded"}
-                    ${item.status == "Verification Pending" && "pending"}
-                    ${item.status == "Approved" && "approve"}
-                    ${item.status == "Rejected" && "reject"}
-                    `}
+                        ${item.status == "" && "not_uploaded"}
+                        ${
+                          item.status == "Document Uploaded" &&
+                          "document_uploaded"
+                        }
+                        ${item.status == "Verification Pending" && "pending"}
+                        ${item.status == "Approved" && "approve"}
+                        ${item.status == "Rejected" && "reject"}
+                        `}
                         >
                           <h4>
                             {item.status == "" && "Not Uploaded"}
@@ -157,15 +302,15 @@ const WFHDUpdate = () => {
               </tbody>
             </table>
           </div>
-
           <div className="ml-auto mr-auto text-center">
             <button
-              type="button"
+              type="submit"
               className="btn btn_pill btn_cmn btn_success"
               onClick={handleSubmit}
               style={{ marginBottom: "5%" }}
+              disabled={isUpdaing}
             >
-              Submit
+              {isUpdaing ? "Submitting..." : "Submit"}
             </button>
           </div>
         </div>

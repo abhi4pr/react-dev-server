@@ -65,19 +65,7 @@ const UpdateDocument = () => {
   const handleSubmit = async () => {
     try {
       setIsUpdating(true);
-      const requiredDocuments = documentData.filter(
-        (doc) =>
-          doc.document.isRequired &&
-          doc.document.job_type.includes(user.job_type)
-      );
-      const isAnyRequiredDocumentMissing = requiredDocuments.some(
-        (doc) => !doc.file
-      );
 
-      if (isAnyRequiredDocumentMissing) {
-        toastError("Please upload all required documents");
-        return;
-      }
       for (const document of documentData) {
         if (document.file) {
           let formData = new FormData();
@@ -102,13 +90,22 @@ const UpdateDocument = () => {
           console.log(`No file uploaded for document ${document._id}`);
         }
       }
-      if (user.att_status == "registered" && isAnyRequiredDocumentMissing) {
+
+      const requiredDocumentsMissing = documentData
+        .filter(
+          (doc) =>
+            doc.document.isRequired &&
+            doc.document.job_type.includes(user.job_type)
+        )
+        .filter((doc) => doc.status == "");
+
+      if (requiredDocumentsMissing?.length == 0) {
         axios.put(baseUrl + "update_user", {
           user_id: user_id,
           att_status: "document_upload",
         });
-        navigate("/admin/wfhd-overview");
       }
+      navigate("/admin/wfhd-overview");
       toastAlert("Documents Updated");
       getDocuments();
     } catch (error) {
