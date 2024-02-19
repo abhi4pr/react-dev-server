@@ -4,8 +4,8 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import CloseIcon from "@mui/icons-material/Close";
-import $ from "jquery";
 import {
   Autocomplete,
   Button,
@@ -49,6 +49,13 @@ const IncentivePayment = () => {
   const [releasedAmountField, setReleasedAmountField] = useState("");
   const [balanceAmountFilter, setBalanceAmountFilter] = useState("");
   const [balanceAmountField, setBalanceAmountField] = useState("");
+  const [uniqueSalesExecutiveCount, setUniqueSalesExecutiveCount] =
+    useState("");
+  const [uniqueSalesExecutiveDialog, setUniqueSalesExecutiveDialog] =
+    useState("");
+  const [uniqueSalesExecutiveData, setUniqueSalesExecutiveData] = useState("");
+  const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
+  const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
 
   const DateFormateToYYYYMMDD = (date) => {
     const d = new Date(date);
@@ -125,7 +132,19 @@ const IncentivePayment = () => {
         // Set data received from the API response
         setData(res.data.body);
         setFilterData(res.data.body);
-
+        const salesExecuteiveData = res.data.body;
+        const uniqueSalesEx = new Set(
+          salesExecuteiveData.map((item) => item.sales_executive_name)
+        );
+        setUniqueSalesExecutiveCount(uniqueSalesEx.size);
+        const SEData = [];
+        uniqueSalesEx.forEach((vendorName) => {
+          const salesRows = salesExecuteiveData.filter(
+            (item) => item.sales_executive_name === vendorName
+          );
+          SEData.push(salesRows[0]);
+        });
+        setUniqueSalesExecutiveData(SEData);
         // Calculate totals
         let totalRequestAmount = 0;
         let totalReleasedAmount = 0;
@@ -244,6 +263,296 @@ const IncentivePayment = () => {
     setBalanceAmountField("");
     setBalanceAmountFilter("");
   };
+
+  const handleOpenUniqueSalesExecutive = () => {
+    setUniqueSalesExecutiveDialog(true);
+  };
+
+  const handleCloseUniquesalesExecutive = () => {
+    setUniqueSalesExecutiveDialog(false);
+  };
+
+  const handleOpenSameSalesExecutive = (salesEName) => {
+    setSameSalesExecutiveDialog(true);
+
+    const sameNameSalesExecutive = datas.filter(
+      (item) => item.sales_executive_name === salesEName
+    );
+    // Calculate the total amount for vendors with the same name
+    // const totalAmount = sameNameVendors.reduce(
+    //   (total, item) => total + item.request_amount,
+    //   0
+    // );
+
+    // Set the selected vendor data including the vendor name, data, and total amount
+    setSameSalesExecutiveData(sameNameSalesExecutive);
+  };
+
+  const handleCloseSameSalesExecutive = () => {
+    setSameSalesExecutiveDialog(false);
+  };
+
+  // const calculateRequestedAmountTotal = () => {
+  //   let totalAmount = 0;
+  //   uniqueSalesExecutiveData.forEach((customer) => {
+  //     totalAmount += parseFloat(customer.request_amount);
+  //   });
+  //   return totalAmount;
+  // };
+  // const requestedAmountTotal = calculateRequestedAmountTotal();
+  const requestedAmountTotal = datas.reduce(
+    (total, item) => total + parseFloat(item.request_amount) / 2,
+    0
+  );
+
+  const sameSalesExecutivecolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sales_executive_name",
+      field: "Sales executive name",
+      renderCell: (params) => {
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              handleOpenSameSalesExecutive(params.row.sales_executive_name)
+            }
+          >
+            {params.row.sales_executive_name}
+          </div>
+        );
+      },
+    },
+    {
+      field: "Requested Date & Time",
+      fieldName: "request_creation_date",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total"
+          ? new Date(params.row.request_creation_date).toLocaleDateString(
+              "en-IN"
+            ) +
+            " " +
+            new Date(params.row.request_creation_datee).toLocaleTimeString(
+              "en-IN"
+            )
+          : null,
+    },
+    {
+      field: "Request Amount",
+      fieldName: "sales_executive_name",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          params.row.request_amount
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {" "}
+            {params.row.request_amount}
+          </div>
+        ),
+    },
+    {
+      field: "Released Amount",
+      fieldName: "released_amount",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          <Link
+            to={`/admin/Incentive-Request-Released-List/${params.row.incentive_request_id}`}
+            className="link-primary"
+          >
+            {params.row.released_amount
+              ? params.row.released_amount?.toLocaleString("en-IN")
+              : 0}
+          </Link>
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {params.row.released_amount?.toLocaleString("en-IN")}
+          </div>
+        ),
+    },
+    {
+      field: "Balance Release Amount",
+      fieldName: "balance_release_amount",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          params.row.balance_release_amount?.toLocaleString("en-IN")
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {params.row.balance_release_amount}
+          </div>
+        ),
+    },
+    {
+      field: "Status",
+      width: "15%",
+      renderCell: (params) => {
+        return params.row.action == "Complete Release Button" ? (
+          <button
+            className="btn btn-sm btn-outline-info"
+            data-toggle="modal"
+            data-target="#incentiveModal"
+            onClick={() => {
+              setSelectedData(row),
+                setBalanceReleaseAmount(params.row.balance_release_amount);
+              setAccountNo("");
+              setRemarks("");
+              setModalOpen(true);
+            }}
+          >
+            Complete Release
+          </button>
+        ) : (
+          <span>{params.row.action}</span>
+        );
+      },
+    },
+    {
+      field: "Aging",
+      renderCell: (params) => {
+        const currentDate = new Date(
+          params.row.action == "Complete Release Button"
+            ? new Date()
+            : params.row.request_creation_date
+        );
+        const requestedDate = new Date(
+          params.row.action == "Complete Release Button"
+            ? params.row.request_creation_date
+            : params.row.payment_date
+        );
+        const diffTime = Math.abs(currentDate - requestedDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return params.row.sales_executive_name !== "Total" ? diffDays : null;
+      },
+    },
+  ];
+  const uniqueSalesExecutivecolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sales_executive_name",
+      field: "Sales executive name",
+      renderCell: (params) => {
+        return (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              handleOpenSameSalesExecutive(params.row.sales_executive_name)
+            }
+          >
+            {params.row.sales_executive_name}
+          </div>
+        );
+      },
+    },
+    {
+      field: "Requested Date & Time",
+      fieldName: "request_creation_date",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total"
+          ? new Date(params.row.request_creation_date).toLocaleDateString(
+              "en-IN"
+            ) +
+            " " +
+            new Date(params.row.request_creation_datee).toLocaleTimeString(
+              "en-IN"
+            )
+          : null,
+    },
+    {
+      field: "Request Amount",
+      fieldName: "sales_executive_name",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          params.row.request_amount
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {" "}
+            {params.row.request_amount}
+          </div>
+        ),
+    },
+    {
+      field: "Released Amount",
+      fieldName: "released_amount",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          <Link
+            to={`/admin/Incentive-Request-Released-List/${params.row.incentive_request_id}`}
+            className="link-primary"
+          >
+            {params.row.released_amount
+              ? params.row.released_amount?.toLocaleString("en-IN")
+              : 0}
+          </Link>
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {params.row.released_amount?.toLocaleString("en-IN")}
+          </div>
+        ),
+    },
+    {
+      field: "Balance Release Amount",
+      fieldName: "balance_release_amount",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          params.row.balance_release_amount?.toLocaleString("en-IN")
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {params.row.balance_release_amount}
+          </div>
+        ),
+    },
+    {
+      field: "Status",
+      width: "15%",
+      renderCell: (params) => {
+        return params.row.action == "Complete Release Button" ? (
+          <button
+            className="btn btn-sm btn-outline-info"
+            data-toggle="modal"
+            data-target="#incentiveModal"
+            onClick={() => {
+              setSelectedData(row),
+                setBalanceReleaseAmount(params.row.balance_release_amount);
+              setAccountNo("");
+              setRemarks("");
+              setModalOpen(true);
+            }}
+          >
+            Complete Release
+          </button>
+        ) : (
+          <span>{params.row.action}</span>
+        );
+      },
+    },
+    {
+      field: "Aging",
+      renderCell: (params) => {
+        const currentDate = new Date(
+          params.row.action == "Complete Release Button"
+            ? new Date()
+            : params.row.request_creation_date
+        );
+        const requestedDate = new Date(
+          params.row.action == "Complete Release Button"
+            ? params.row.request_creation_date
+            : params.row.payment_date
+        );
+        const diffTime = Math.abs(currentDate - requestedDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        return params.row.sales_executive_name !== "Total" ? diffDays : null;
+      },
+    },
+  ];
   const columns = useMemo(
     () => [
       {
@@ -437,7 +746,122 @@ const IncentivePayment = () => {
           contextData[2].insert_value === 1 &&
           false
         }
+        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
+        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
+        requestedAmountTotal={requestedAmountTotal}
+        incentivePaymentAdditionalTitles={true}
       />
+
+      {/* Same Sales Executive Dialog Box */}
+
+      <Dialog
+        open={sameSalesExecutiveDialog}
+        onClose={handleCloseSameSalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Vendors</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameSalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameSalesExecutiveData}
+          columns={sameSalesExecutivecolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+        />
+      </Dialog>
+      {/* Unique Sales Executive Dialog Box */}
+      <Dialog
+        open={uniqueSalesExecutiveDialog}
+        onClose={handleCloseUniquesalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniquesalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueSalesExecutiveData}
+          columns={uniqueSalesExecutivecolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+        />
+      </Dialog>
       <div className="row">
         <div className="col-md-4">
           <div className="form-group">
@@ -445,7 +869,9 @@ const IncentivePayment = () => {
             <Autocomplete
               value={salesExecutive}
               onChange={(event, newValue) => setSalesExecutive(newValue)}
-              options={datas.map((option) => option.sales_executive_name)}
+              options={Array.from(
+                new Set(datas.map((option) => option.sales_executive_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -470,12 +896,6 @@ const IncentivePayment = () => {
             />
           </div>
         </div>
-        {/* <div className="col-md-3">
-          <div className="form-group">
-            <label>Aging</label>
-            <input type="text" placeholder="Name" className="form-control" />
-          </div>
-        </div> */}
         <div className="col-md-4">
           <div className="form-group">
             <label>From Date</label>

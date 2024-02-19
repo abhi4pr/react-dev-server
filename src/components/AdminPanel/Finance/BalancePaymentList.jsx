@@ -5,6 +5,7 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { Alert, Autocomplete, Button, TextField } from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -54,6 +55,18 @@ const BalancePaymentList = () => {
   const [campaignAmountField, setCampaignAmountField] = useState("");
   const [balanceAmountFilter, setBalanceAmountFilter] = useState("");
   const [balanceAmountField, setBalanceAmountField] = useState("");
+  const [uniqueCustomerCount, setUniqueCustomerCount] = useState(0);
+  const [uniqueCustomerDialog, setUniqueCustomerDialog] = useState(false);
+  const [uniqueCustomerData, setUniqueCustomerData] = useState([]);
+  const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
+  const [sameCustomerData, setSameCustomerData] = useState([]);
+  const [uniqueSalesExecutiveCount, setUniqueSalesExecutiveCount] =
+    useState("");
+  const [uniqueSalesExecutiveDialog, setUniqueSalesExecutiveDialog] =
+    useState("");
+  const [uniqueSalesExecutiveData, setUniqueSalesExecutiveData] = useState("");
+  const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
+  const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -151,9 +164,30 @@ const BalancePaymentList = () => {
       .then((res) => {
         setData(res.data.body);
         setFilterData(res.data.body);
+        const custData = res.data.body;
+        const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
+        setUniqueCustomerCount(uniqueCustomers.size);
+        const uniqueCustomerData = Array.from(uniqueCustomers).map(
+          (customerName) => {
+            return custData.find((item) => item.cust_name === customerName);
+          }
+        );
+        setUniqueCustomerData(uniqueCustomerData);
+
+        // For Unique Sales Executive
+        const salesExecuteiveData = res.data.body;
+        const uniqueSalesEx = new Set(
+          salesExecuteiveData.map((item) => item.username)
+        );
+        setUniqueSalesExecutiveCount(uniqueSalesEx.size);
+        const uniqueSEData = Array.from(uniqueSalesEx).map((salesEName) => {
+          return salesExecuteiveData.find(
+            (item) => item.username === salesEName
+          );
+        });
+        setUniqueSalesExecutiveData(uniqueSEData);
       });
   }
-
   useEffect(() => {
     getData();
   }, []);
@@ -280,6 +314,439 @@ const BalancePaymentList = () => {
     setBalanceAmountFilter("");
     setBalanceAmountField("");
   };
+
+  const handleOpenUniqueCustomerClick = () => {
+    setUniqueCustomerDialog(true);
+  };
+
+  const handleCloseUniqueCustomer = () => {
+    setUniqueCustomerDialog(false);
+  };
+
+  const handleOpenSameCustomer = (custName) => {
+    setSameCustomerDialog(true);
+
+    const sameNameCustomers = datas.filter(
+      (item) => item.cust_name === custName
+    );
+    // Calculate the total amount for vendors with the same name
+    // const totalAmount = sameNameVendors.reduce(
+    //   (total, item) => total + item.request_amount,
+    //   0
+    // );
+
+    // Set the selected vendor data including the vendor name, data, and total amount
+    setSameCustomerData(sameNameCustomers);
+  };
+
+  const handleCloseSameCustomer = () => {
+    setSameCustomerDialog(false);
+  };
+
+  // For Sales Executive
+  const handleOpenUniqueSalesExecutive = () => {
+    setUniqueSalesExecutiveDialog(true);
+  };
+
+  const handleCloseUniquesalesExecutive = () => {
+    setUniqueSalesExecutiveDialog(false);
+  };
+
+  const handleOpenSameSalesExecutive = (salesEName) => {
+    setSameSalesExecutiveDialog(true);
+
+    const sameNameSalesExecutive = datas.filter(
+      (item) => item.username === salesEName
+    );
+
+    setSameSalesExecutiveData(sameNameSalesExecutive);
+  };
+
+  const handleCloseSameSalesExecutive = () => {
+    setSameSalesExecutiveDialog(false);
+  };
+
+  const calculateRequestedAmountTotal = () => {
+    let totalAmount = 0;
+    uniqueCustomerData.forEach((customer) => {
+      totalAmount += parseFloat(
+        customer.campaign_amount - customer.total_paid_amount
+      );
+    });
+    return totalAmount;
+  };
+
+  // Call the function to get the total sum of requested amount
+  const balanceAmountTotal = calculateRequestedAmountTotal();
+  // All counts :-
+  const approvedCount = datas.filter(
+    (item) => item.finance_refund_status === 1
+  ).length;
+  const rejectedCount = datas.filter(
+    (item) => item.finance_refund_status === 2
+  ).length;
+
+  const sameSalesExecutivecolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sale_booking_date",
+      field: "Aging",
+      renderCell: (params) => {
+        const date = new Date(params.row.sale_booking_date);
+        const today = new Date();
+        const diffTime = Math.abs(today - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays + " Days";
+      },
+    },
+    {
+      fieldName: "cust_name",
+      field: "Customer Name",
+      renderCell: (params) => params.row.cust_name,
+    },
+    {
+      fieldName: "username",
+      field: "Sales Executive Name",
+      renderCell: (params) => params.row.username,
+    },
+    {
+      fieldName: "sale_booking_date",
+      field: "Sale Booking Date",
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {convertDateToDDMMYYYY(params.row.sale_booking_date)}
+        </div>
+      ),
+    },
+    {
+      fieldName: "campaign_amount",
+      field: "Campaign Amount",
+      selector: (params) => params.row.campaign_amount,
+    },
+    {
+      fieldName: "total_paid_amount",
+      field: "Paid Amount",
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {params.row.total_paid_amount ? params.row.total_paid_amount : 0}
+        </div>
+      ),
+    },
+    {
+      field: "Balance Amount",
+      renderCell: (params) =>
+        params.row.campaign_amount - params.row.total_paid_amount,
+    },
+    {
+      field: "Status",
+      cell: (params) => (
+        <button
+          className="btn btn-sm btn-outline-info"
+          onClick={() => handleImageClick(params.row)}
+        >
+          Balance Update
+        </button>
+      ),
+    },
+  ];
+  const uniqueSalesExecutivecolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sale_booking_date",
+      field: "Aging",
+      renderCell: (params) => {
+        const date = new Date(params.row.sale_booking_date);
+        const today = new Date();
+        const diffTime = Math.abs(today - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays + " Days";
+      },
+    },
+    {
+      fieldName: "cust_name",
+      field: "Customer Name",
+      renderCell: (params) => params.row.cust_name,
+    },
+    {
+      fieldName: "username",
+      field: "Sales Executive Name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameSalesExecutive(params.row.username)}
+        >
+          {params.row.username}
+        </div>
+      ),
+    },
+    {
+      fieldName: "sale_booking_date",
+      field: "Sale Booking Date",
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {convertDateToDDMMYYYY(params.row.sale_booking_date)}
+        </div>
+      ),
+    },
+    {
+      fieldName: "campaign_amount",
+      field: "Campaign Amount",
+      selector: (params) => params.row.campaign_amount,
+    },
+    {
+      fieldName: "total_paid_amount",
+      field: "Paid Amount",
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {params.row.total_paid_amount ? params.row.total_paid_amount : 0}
+        </div>
+      ),
+    },
+    {
+      field: "Balance Amount",
+      renderCell: (params) =>
+        params.row.campaign_amount - params.row.total_paid_amount,
+    },
+    {
+      fieldName: "invoice",
+      field: "Screen Shot",
+      renderCell: (params) =>
+        params.row.invoice ? (
+          params.row.invoice.includes(".pdf") ? (
+            <img
+              src={pdfImg}
+              onClick={() => {
+                setViewImgSrc(
+                  params.row.invoice
+                    ? `https://sales.creativefuel.io/${params.row.invoice}`
+                    : ""
+                ),
+                  setViewImgDialog(true);
+              }}
+            />
+          ) : (
+            <img
+              onClick={() => {
+                setViewImgSrc(
+                  params.row.invoice
+                    ? `https://sales.creativefuel.io/${params.row.invoice}`
+                    : ""
+                ),
+                  setViewImgDialog(true);
+              }}
+              src={`https://sales.creativefuel.io/${params.row.invoice}`}
+              alt="payment screenshot"
+              style={{ width: "50px", height: "50px" }}
+            />
+          )
+        ) : (
+          "No Image"
+        ),
+    },
+    {
+      field: "Status",
+      cell: (params) => (
+        <button
+          className="btn btn-sm btn-outline-info"
+          onClick={() => handleImageClick(params.row)}
+        >
+          Balance Update
+        </button>
+      ),
+    },
+  ];
+  const sameCustomercolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sale_booking_date",
+      field: "Aging",
+      renderCell: (params) => {
+        const date = new Date(params.row.sale_booking_date);
+        const today = new Date();
+        const diffTime = Math.abs(today - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays + " Days";
+      },
+    },
+    {
+      fieldName: "cust_name",
+      field: "Customer Name",
+      renderCell: (params) => params.row.cust_name,
+    },
+    {
+      fieldName: "username",
+      field: "Sales Executive Name",
+      renderCell: (params) => params.row.username,
+    },
+    {
+      fieldName: "sale_booking_date",
+      field: "Sale Booking Date",
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {convertDateToDDMMYYYY(params.row.sale_booking_date)}
+        </div>
+      ),
+    },
+    {
+      fieldName: "campaign_amount",
+      field: "Campaign Amount",
+      selector: (params) => params.row.campaign_amount,
+    },
+    {
+      fieldName: "total_paid_amount",
+      field: "Paid Amount",
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {params.row.total_paid_amount ? params.row.total_paid_amount : 0}
+        </div>
+      ),
+    },
+    {
+      field: "Balance Amount",
+      renderCell: (params) =>
+        params.row.campaign_amount - params.row.total_paid_amount,
+    },
+    {
+      field: "Status",
+      cell: (params) => (
+        <button
+          className="btn btn-sm btn-outline-info"
+          onClick={() => handleImageClick(params.row)}
+        >
+          Balance Update
+        </button>
+      ),
+    },
+  ];
+  const uniqueCustomercolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      fieldName: "sale_booking_date",
+      field: "Aging",
+      renderCell: (params) => {
+        const date = new Date(params.row.sale_booking_date);
+        const today = new Date();
+        const diffTime = Math.abs(today - date);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays + " Days";
+      },
+    },
+    {
+      fieldName: "cust_name",
+      field: "Customer Name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+        >
+          {params.row.cust_name}
+        </div>
+      ),
+    },
+    {
+      fieldName: "username",
+      field: "Sales Executive Name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.username)}
+        >
+          {params.row.username}
+        </div>
+      ),
+    },
+    {
+      fieldName: "sale_booking_date",
+      field: "Sale Booking Date",
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {convertDateToDDMMYYYY(params.row.sale_booking_date)}
+        </div>
+      ),
+    },
+    {
+      fieldName: "campaign_amount",
+      field: "Campaign Amount",
+      selector: (params) => params.row.campaign_amount,
+    },
+    {
+      fieldName: "total_paid_amount",
+      field: "Paid Amount",
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {params.row.total_paid_amount ? params.row.total_paid_amount : 0}
+        </div>
+      ),
+    },
+    {
+      field: "Balance Amount",
+      renderCell: (params) =>
+        params.row.campaign_amount - params.row.total_paid_amount,
+    },
+    {
+      fieldName: "invoice",
+      field: "Screen Shot",
+      renderCell: (params) =>
+        params.row.invoice ? (
+          params.row.invoice.includes(".pdf") ? (
+            <img
+              src={pdfImg}
+              onClick={() => {
+                setViewImgSrc(
+                  params.row.invoice
+                    ? `https://sales.creativefuel.io/${params.row.invoice}`
+                    : ""
+                ),
+                  setViewImgDialog(true);
+              }}
+            />
+          ) : (
+            <img
+              onClick={() => {
+                setViewImgSrc(
+                  params.row.invoice
+                    ? `https://sales.creativefuel.io/${params.row.invoice}`
+                    : ""
+                ),
+                  setViewImgDialog(true);
+              }}
+              src={`https://sales.creativefuel.io/${params.row.invoice}`}
+              alt="payment screenshot"
+              style={{ width: "50px", height: "50px" }}
+            />
+          )
+        ) : (
+          "No Image"
+        ),
+    },
+    {
+      field: "Status",
+      cell: (params) => (
+        <button
+          className="btn btn-sm btn-outline-info"
+          onClick={() => handleImageClick(params.row)}
+        >
+          Balance Update
+        </button>
+      ),
+    },
+  ];
   const columns = [
     {
       name: "S.No",
@@ -296,9 +763,7 @@ const BalancePaymentList = () => {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         return diffDays + " Days";
       },
-
-    }
-    ,
+    },
     {
       name: "Customer Name",
       selector: (row) => row.cust_name,
@@ -393,8 +858,235 @@ const BalancePaymentList = () => {
           contextData[2].insert_value === 1 &&
           false
         }
+        uniqueCustomerCount={uniqueCustomerCount}
+        balanceAmountTotal={balanceAmountTotal}
+        approvedCount={approvedCount}
+        rejectedCount={rejectedCount}
+        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
+        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
+        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+        balancePaymentAdditionalTitles={true}
       />
+      {/* Same Sales Executive Dialog Box */}
 
+      <Dialog
+        open={sameSalesExecutiveDialog}
+        onClose={handleCloseSameSalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameSalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameSalesExecutiveData}
+          columns={sameSalesExecutivecolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+        />
+      </Dialog>
+      {/* Unique Sales Executive Dialog Box */}
+      <Dialog
+        open={uniqueSalesExecutiveDialog}
+        onClose={handleCloseUniquesalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniquesalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueSalesExecutiveData}
+          columns={uniqueSalesExecutivecolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+        />
+      </Dialog>
+      {/* Same Customer Dialog */}
+      <Dialog
+        open={sameCustomerDialog}
+        onClose={handleCloseSameCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Vendors</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameCustomerData}
+          columns={sameCustomercolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameCustomerData.indexOf(row)}
+        />
+      </Dialog>
+
+      {/* Unique Customer Dialog Box */}
+      <Dialog
+        open={uniqueCustomerDialog}
+        onClose={handleCloseUniqueCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniqueCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueCustomerData}
+          columns={uniqueCustomercolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueCustomerData.indexOf(row)}
+        />
+      </Dialog>
       <div className="row">
         <div className="col-md-3">
           <div className="form-group">
@@ -402,7 +1094,9 @@ const BalancePaymentList = () => {
             <Autocomplete
               value={customerName}
               onChange={(event, newValue) => setCustomerName(newValue)}
-              options={datas.map((option) => option.cust_name)}
+              options={Array.from(
+                new Set(datas.map((option) => option.cust_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -424,7 +1118,9 @@ const BalancePaymentList = () => {
             <Autocomplete
               value={salesExecutiveName}
               onChange={(event, newValue) => setSalesExecutiveName(newValue)}
-              options={datas.map((option) => option.username)}
+              options={Array.from(
+                new Set(datas.map((option) => option.username))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}

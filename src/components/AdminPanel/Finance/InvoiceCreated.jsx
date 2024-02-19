@@ -4,10 +4,19 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import ImageView from "./ImageView";
 import { baseUrl } from "../../../utils/config";
-import { Autocomplete, Button, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  TextField,
+  Dialog,
+  DialogTitle,
+} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 
 const InvoiceCreated = () => {
   const navigate = useNavigate();
@@ -26,6 +35,11 @@ const InvoiceCreated = () => {
   const [campaignAmountFilter, setCampaignAmountFilter] = useState("");
   const [campaignAmountField, setCampaignAmountField] = useState("");
   const [invoiceParticularName, setInvoiceParticularName] = useState("");
+  const [uniqueCustomerCount, setUniqueCustomerCount] = useState(0);
+  const [uniqueCustomerDialog, setUniqueCustomerDialog] = useState(false);
+  const [uniqueCustomerData, setUniqueCustomerData] = useState([]);
+  const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
+  const [sameCustomerData, setSameCustomerData] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -61,6 +75,16 @@ const InvoiceCreated = () => {
       .then((res) => {
         setData(res.data.body);
         setFilterData(res.data.body);
+        // For Unique Customers
+        const custData = res.data.body;
+        const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
+        setUniqueCustomerCount(uniqueCustomers.size);
+        const uniqueCustomerData = Array.from(uniqueCustomers).map(
+          (customerName) => {
+            return custData.find((item) => item.cust_name === customerName);
+          }
+        );
+        setUniqueCustomerData(uniqueCustomerData);
       });
   }
 
@@ -82,11 +106,17 @@ const InvoiceCreated = () => {
         !customerName ||
         item.cust_name.toLowerCase().includes(customerName.toLowerCase());
       // Invoice Particular Filter:-
+      // const invoiceParticularNameFilterPassed =
+      //   !invoiceParticularName ||
+      //   item.invoice_particular_name
+      //     .toLowerCase()
+      //     .includes(invoiceParticularName.toLowerCase());
       const invoiceParticularNameFilterPassed =
         !invoiceParticularName ||
-        item.invoice_particular_name
-          .toLowerCase()
-          .includes(invoiceParticularName.toLowerCase());
+        (item.invoice_particular_name &&
+          item.invoice_particular_name
+            .toLowerCase()
+            .includes(invoiceParticularName.toLowerCase()));
       // campaign amount filter:-
       const campaignAmountFilterPassed = () => {
         const campaignAmounttData = parseFloat(campaignAmountField);
@@ -115,7 +145,130 @@ const InvoiceCreated = () => {
     setCustomerName("");
     setCampaignAmountField("");
     setCampaignAmountFilter("");
+    setInvoiceParticularName("");
   };
+  // For Customers
+  const handleOpenUniqueCustomerClick = () => {
+    setUniqueCustomerDialog(true);
+  };
+
+  const handleCloseUniqueCustomer = () => {
+    setUniqueCustomerDialog(false);
+  };
+
+  const handleOpenSameCustomer = (custName) => {
+    setSameCustomerDialog(true);
+
+    const sameNameCustomers = datas.filter(
+      (item) => item.cust_name === custName
+    );
+    setSameCustomerData(sameNameCustomers);
+  };
+
+  const handleCloseSameCustomer = () => {
+    setSameCustomerDialog(false);
+  };
+
+  // Total base amount:-
+  const campaignAmountTotal = datas.reduce(
+    (total, item) => total + parseFloat(item.campaign_amount),
+    0
+  );
+
+  const sameCustomercolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      field: "Customer name",
+      fieldName: "cust_name",
+      renderCell: (params) => params.row.cust_name,
+    },
+    {
+      field: "Invoice Particular",
+      fieldName: "invoice_particular_name",
+      renderCell: (params) => params.row.invoice_particular_name,
+    },
+    {
+      field: "Campaign Amount",
+      fieldName: "campaign_amount",
+      renderCell: (params) => params.row.campaign_amount,
+    },
+    {
+      field: "Remark",
+      fieldName: "invoice_remark",
+      renderCell: (params) => params.row.invoice_remark,
+      width: "250px",
+    },
+  ];
+  const uniqueCustomercolumn = [
+    {
+      field: "S.No",
+      renderCell: (params, index) => <div>{index + 1}</div>,
+      sortable: true,
+    },
+    {
+      field: "Customer name",
+      fieldName: "cust_name",
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+        >
+          {params.row.cust_name}
+        </div>
+      ),
+    },
+    {
+      field: "Invoice Particular",
+      fieldName: "invoice_particular_name",
+      renderCell: (params) => params.row.invoice_particular_name,
+    },
+    {
+      field: "Campaign Amount",
+      fieldName: "campaign_amount",
+      renderCell: (params) => params.row.campaign_amount,
+    },
+    {
+      field: "Download Invoice",
+      fieldName: "invoice",
+      renderCell: (params) => (
+        <a
+          className="btn btn-primary"
+          href={`https://sales.creativefuel.io/${params.row.invoice}`}
+          target="_blank"
+          rel="noreferrer"
+          download // Add the 'download' attribute to trigger the download
+        >
+          Download
+        </a>
+      ),
+    },
+    {
+      field: "View Invoice",
+      renderCell: (params) => (
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            setOpenImageDialog(true);
+            setViewImgSrc(
+              `https://sales.creativefuel.io/${params.row.invoice}`
+            );
+          }}
+        >
+          View
+        </button>
+      ),
+    },
+    {
+      field: "Remark",
+      fieldName: "invoice_remark",
+      renderCell: (params) => params.row.invoice_remark,
+      width: "250px",
+    },
+  ];
   const columns = [
     {
       name: "S.No",
@@ -182,7 +335,121 @@ const InvoiceCreated = () => {
           contextData[2].insert_value === 1 &&
           false
         }
+        uniqueCustomerCount={uniqueCustomerCount}
+        campaignAmountTotal={campaignAmountTotal}
+        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+        invoiceCreatedPaymentAdditionalTitles={true}
       />
+      {/* Same Customer Dialog */}
+      <Dialog
+        open={sameCustomerDialog}
+        onClose={handleCloseSameCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={sameCustomerData}
+          columns={sameCustomercolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => sameCustomerData.indexOf(row)}
+        />
+      </Dialog>
+
+      {/* Unique Customer Dialog Box */}
+      <Dialog
+        open={uniqueCustomerDialog}
+        onClose={handleCloseUniqueCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniqueCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={uniqueCustomerData}
+          columns={uniqueCustomercolumn}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => uniqueCustomerData.indexOf(row)}
+        />
+      </Dialog>
       <div className="row">
         <div className="col-md-3">
           <div className="form-group">
@@ -190,7 +457,9 @@ const InvoiceCreated = () => {
             <Autocomplete
               value={customerName}
               onChange={(event, newValue) => setCustomerName(newValue)}
-              options={datas.map((option) => option.cust_name)}
+              options={Array.from(
+                new Set(datas.map((option) => option.cust_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -212,7 +481,20 @@ const InvoiceCreated = () => {
             <Autocomplete
               value={invoiceParticularName}
               onChange={(event, newValue) => setInvoiceParticularName(newValue)}
-              options={datas.map((option) => option.invoice_particular_name)}
+              options={Array.from(
+                new Set(
+                  datas
+                    .filter(
+                      (option) =>
+                        option &&
+                        option.invoice_particular_name !== null &&
+                        option.invoice_particular_name !== undefined
+                    ) // Filter out null or undefined values
+                    .map((option) =>
+                      option.invoice_particular_name.toLowerCase()
+                    ) // Convert to lowercase here
+                )
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -221,7 +503,7 @@ const InvoiceCreated = () => {
                   variant="outlined"
                   InputProps={{
                     ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
+                    className: "form-control",
                   }}
                 />
               )}

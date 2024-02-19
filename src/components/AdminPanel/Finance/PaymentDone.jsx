@@ -595,7 +595,7 @@ export default function PaymentDone() {
       headerName: "Vendor Name",
       // width: "auto",
       width: 370,
-     
+
       renderCell: (params) => {
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
@@ -637,9 +637,9 @@ export default function PaymentDone() {
       },
     },
     {
-      field:"pan",
-      headerName:"PAN",
-      width:200,
+      field: "pan",
+      headerName: "PAN",
+      width: 200,
     },
     {
       field: "gst",
@@ -841,7 +841,9 @@ export default function PaymentDone() {
             <Autocomplete
               value={vendorName}
               onChange={(event, newValue) => setVendorName(newValue)}
-              options={data.map((option) => option.vendor_name)}
+              options={Array.from(
+                new Set(data.map((option) => option.vendor_name))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
