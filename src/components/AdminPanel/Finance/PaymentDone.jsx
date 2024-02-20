@@ -43,24 +43,10 @@ export default function PaymentDone() {
   const [historyData, setHistoryData] = useState([]);
   const [phpData, setPhpData] = useState([]);
 
-  // const callApi = () => {
-  //   axios
-  //     .get(baseUrl+"phpvendorpaymentrequest")
-  //     .then((res) => {
-  //       let filterData = res.data.modifiedData.filter((item) => {
-  //         if (item.status == 0) {
-  //           return item;
-  //         }
-  //       });
-  //       console.log(filterData);
-  //       setData(filterData);
-  //       setFilterData(filterData);
-  //     });
-  // };
+ 
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
-      console.log(res.data.modifiedData, "node js");
       setNodeData(res.data.modifiedData);
       const x = res.data.modifiedData;
 
@@ -69,13 +55,7 @@ export default function PaymentDone() {
           "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
-          // let y = res.data.body.filter((item) => {
-          //   return !x.some((item2) => (item2.status == 2)&&( item.request_id == item2.request_id));
-          // });
-          // console.log(y,'y')
-          // setData(y);
-          // setFilterData(y);
-
+      
           setPhpData(res.data.body);
 
           let y = x.filter((item) => {
@@ -86,7 +66,6 @@ export default function PaymentDone() {
           let u = res.data.body.filter((item) => {
             return y.some((item2) => item.request_id == item2.request_id);
           });
-          console.log(u, "u");
           setData(u);
           setFilterData(u);
           setPendingRequestCount(u.length);
@@ -257,11 +236,19 @@ export default function PaymentDone() {
     setHistoryType(type);
     setRowData(row);
     setPaymentHistory(true);
+    const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+    const currentYear = new Date().getFullYear();
 
-    const startDate = new Date(`04/01/${new Date().getFullYear() - 1}`);
-    const endDate = new Date(`03/31/${new Date().getFullYear()}`);
+    // const startDate = new Date(`04/01/${new Date().getFullYear() -MonthisGraterThenMarch? 0:1}`);
+    // const endDate = new Date(`03/31/${new Date().getFullYear()+MonthisGraterThenMarch? 1:0}`);
+    const startDate = new Date(
+      `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1}`
+    );
+    const endDate = new Date(
+      `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear}`
+    );
 
-    const dataFY = phpData.filter((e) => {
+    const dataFY = nodeData.filter((e) => {
       const paymentDate = new Date(e.request_date);
       return (
         paymentDate >= startDate &&
@@ -271,17 +258,33 @@ export default function PaymentDone() {
         e.status != 2
       );
     });
-    console.log(dataFY, "dataFY");
-    console.log(phpData, "phpData");
 
-    const dataTP = phpData.filter((e) => {
+    const dataTP = nodeData.filter((e) => {
       return (
         e.vendor_name === row.vendor_name && e.status != 0 && e.status != 2
       );
     });
+
+    // let outstandings = 0;
+    // let request_amount = 0;
+
+    // type=="FY"?dataFY:dataTP.forEach((row) => {
+    //   outstandings += +row.outstandings;
+    //   request_amount += +row.request_amount || 0;
+    // });
+
+    // // Create total row
+    // const totalRow = {
+    //   outstandings: outstandings,
+    //   request_amount: request_amount,
+    //   vendor_name: "Total",
+
+    // };
+
+    // setHistoryData(type === "FY" ? [...dataFY, totalRow] : [...dataTP, totalRow]);
+
     setHistoryData(type == "FY" ? dataFY : dataTP);
   };
-
   const handleClosePaymentHistory = () => {
     setPaymentHistory(false);
   };
@@ -597,6 +600,29 @@ export default function PaymentDone() {
       width: 370,
 
       renderCell: (params) => {
+        const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+        const currentYear = new Date().getFullYear();
+        const startDate = new Date(
+          `04/01/${
+            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          }`
+        );
+        const endDate = new Date(
+          `03/31/${
+            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          }`
+        );
+
+        const dataFY = nodeData.filter((e) => {
+          const paymentDate = new Date(e.request_date);
+          return (
+            paymentDate >= startDate &&
+            paymentDate <= endDate &&
+            e.vendor_name === params.row.vendor_name &&
+            e.status !== 0 &&
+            e.status !== 2
+          );
+        });
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
@@ -617,7 +643,14 @@ export default function PaymentDone() {
                     style={{ cursor: "pointer" }}
                     className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
                   >
-                    Total Paid
+                    {/* Total Paid */}
+                    {nodeData
+                      .filter(
+                        (e) =>
+                          e.vendor_name === params.row.vendor_name &&
+                          e.status == 1
+                      )
+                      .reduce((acc, item) => acc + +item.request_amount, 0)}
                   </h5>
                   <h5
                     onClick={() => handleOpenPaymentHistory(params.row, "FY")}
@@ -625,7 +658,11 @@ export default function PaymentDone() {
                     className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
                   >
                     {/* Financial Year */}
-                    FY
+                    FY:
+                    {dataFY.reduce(
+                      (acc, item) => acc + parseFloat(item.request_amount),
+                      0
+                    )}
                   </h5>
                 </span>
               ) : (

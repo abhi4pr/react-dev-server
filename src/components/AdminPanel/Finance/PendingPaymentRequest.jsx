@@ -28,8 +28,6 @@ import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsAct
 import Badge from "@mui/material/Badge";
 import ShowDataModal from "./ShowDataModal";
 import Checkbox from "@mui/material/Checkbox";
-import { G } from "@react-pdf/renderer";
-import { set } from "lodash";
 
 export default function PendingPaymentRequest() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -205,13 +203,11 @@ export default function PendingPaymentRequest() {
   }, [TDSPercentage, GSTHoldAmount, TDSDeduction, gstHold]);
 
   const handleTDSDeduction = (e) => {
-    console.log(e.target.checked);
     setTDSDeduction(e.target.checked);
     setTDSPercentage(1);
   };
 
   const handleGstHold = (e) => {
-    console.log(e.target.checked);
     setGstHold(e.target.checked);
     setGSTHoldAmount(rowData.gst_amount);
   };
@@ -457,11 +453,19 @@ export default function PendingPaymentRequest() {
     setHistoryType(type);
     setRowData(row);
     setPaymentHistory(true);
+    const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+    const currentYear = new Date().getFullYear();
 
-    const startDate = new Date(`04/01/${new Date().getFullYear() - 1}`);
-    const endDate = new Date(`03/31/${new Date().getFullYear()}`);
+    // const startDate = new Date(`04/01/${new Date().getFullYear() -MonthisGraterThenMarch? 0:1}`);
+    // const endDate = new Date(`03/31/${new Date().getFullYear()+MonthisGraterThenMarch? 1:0}`);
+    const startDate = new Date(
+      `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1}`
+    );
+    const endDate = new Date(
+      `03/31/${isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear}`
+    );
 
-    const dataFY = phpData.filter((e) => {
+    const dataFY = nodeData.filter((e) => {
       const paymentDate = new Date(e.request_date);
       return (
         paymentDate >= startDate &&
@@ -472,7 +476,7 @@ export default function PendingPaymentRequest() {
       );
     });
 
-    const dataTP = phpData.filter((e) => {
+    const dataTP = nodeData.filter((e) => {
       return (
         e.vendor_name === row.vendor_name && e.status != 0 && e.status != 2
       );
@@ -905,6 +909,29 @@ export default function PendingPaymentRequest() {
       headerName: "Vendor Name",
       width: 320,
       renderCell: (params) => {
+        const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+        const currentYear = new Date().getFullYear();
+        const startDate = new Date(
+          `04/01/${
+            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+          }`
+        );
+        const endDate = new Date(
+          `03/31/${
+            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+          }`
+        );
+
+        const dataFY = nodeData.filter((e) => {
+          const paymentDate = new Date(e.request_date);
+          return (
+            paymentDate >= startDate &&
+            paymentDate <= endDate &&
+            e.vendor_name === params.row.vendor_name &&
+            e.status !== 0 &&
+            e.status !== 2
+          );
+        });
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
@@ -925,7 +952,14 @@ export default function PendingPaymentRequest() {
                     style={{ cursor: "pointer" }}
                     className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
                   >
-                    Total Paid
+                    {/* Total Paid */}
+                    {nodeData
+                      .filter(
+                        (e) =>
+                          e.vendor_name === params.row.vendor_name &&
+                          e.status == 1
+                      )
+                      .reduce((acc, item) => acc + +item.request_amount, 0)}
                   </h5>
                   <h5
                     onClick={() => handleOpenPaymentHistory(params.row, "FY")}
@@ -933,7 +967,11 @@ export default function PendingPaymentRequest() {
                     className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
                   >
                     {/* Financial Year */}
-                    FY
+                    FY:
+                    {dataFY.reduce(
+                      (acc, item) => acc + parseFloat(item.request_amount),
+                      0
+                    )}
                   </h5>
                 </span>
               ) : (
