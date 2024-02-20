@@ -405,6 +405,7 @@ const Attendence = () => {
       type: "Number",
       editable: true,
     },
+    (filterData?.length !== 0 && filterData[0]?.attendence_generated == 0 )&&(
     {
       field: "actions",
       type: "actions",
@@ -443,7 +444,7 @@ const Attendence = () => {
           />,
         ];
       },
-    },
+    })
   ];
   return (
     <>

@@ -62,11 +62,64 @@ const UpdateDocument = () => {
     updateDocumentData(documentId, "status", "Document Uploaded");
   };
 
+  // const handleSubmit = async () => {
+  //   try {
+  //     setIsUpdating(true);
+
+  //     for (const document of documentData) {
+  //       if (document.file) {
+  //         let formData = new FormData();
+  //         formData.append("doc_image", document.file);
+  //         formData.append("_id", document._id);
+  //         formData.append(
+  //           "status",
+  //           document.status == "Document Uploaded"
+  //             ? "Verification Pending"
+  //             : document.status
+  //         );
+  //         const response = await axios.put(
+  //           baseUrl + "update_user_doc",
+  //           formData,
+  //           {
+  //             headers: {
+  //               "Content-Type": "multipart/form-data",
+  //             },
+  //           }
+  //         );
+  //       } else {
+  //         console.log(`No file uploaded for document ${document._id}`);
+  //       }
+  //     }
+
+  //     const requiredDocumentsMissing = documentData
+  //       .filter(
+  //         (doc) =>
+  //           doc.document.isRequired &&
+  //           doc.document.job_type.includes(user.job_type)
+  //       )
+  //       .filter((doc) => doc.status == "");
+
+  //     if (requiredDocumentsMissing?.length == 0) {
+  //       axios.put(baseUrl + "update_user", {
+  //         user_id: user_id,
+  //         att_status: "document_upload",
+  //       });
+  //     }
+  //     navigate("/admin/wfhd-overview");
+  //     toastAlert("Documents Updated");
+  //     getDocuments();
+  //   } catch (error) {
+  //     console.error("Error submitting documents", error);
+  //   } finally {
+  //     setIsUpdating(false);
+  //   }
+  // };
+
   const handleSubmit = async () => {
     try {
       setIsUpdating(true);
-
-      for (const document of documentData) {
+  
+      const uploadPromises = documentData.map(async (document) => {
         if (document.file) {
           let formData = new FormData();
           formData.append("doc_image", document.file);
@@ -77,34 +130,31 @@ const UpdateDocument = () => {
               ? "Verification Pending"
               : document.status
           );
-          const response = await axios.put(
-            baseUrl + "update_user_doc",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+          await axios.put(baseUrl + "update_user_doc", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
         } else {
           console.log(`No file uploaded for document ${document._id}`);
         }
-      }
-
-      const requiredDocumentsMissing = documentData
-        .filter(
-          (doc) =>
-            doc.document.isRequired &&
-            doc.document.job_type.includes(user.job_type)
-        )
-        .filter((doc) => doc.status == "");
-
-      if (requiredDocumentsMissing?.length == 0) {
-        axios.put(baseUrl + "update_user", {
+      });
+  
+      await Promise.all(uploadPromises);
+  
+      const requiredDocumentsMissing = documentData.filter(
+        (doc) =>
+          doc.document.isRequired &&
+          doc.document.job_type.includes(user.job_type)
+      ).filter((doc) => doc.status === "");
+  
+      if (requiredDocumentsMissing.length === 0) {
+        await axios.put(baseUrl + "update_user", {
           user_id: user_id,
           att_status: "document_upload",
         });
       }
+  
       navigate("/admin/wfhd-overview");
       toastAlert("Documents Updated");
       getDocuments();
@@ -114,6 +164,7 @@ const UpdateDocument = () => {
       setIsUpdating(false);
     }
   };
+  
 
   // const handleFilterChange = (option) => {
   //   if (option === "all") {

@@ -108,7 +108,6 @@ const WFHDRegister = ({ userUpdateID }) => {
           const {
             user_name,
             user_email_id,
-            user_contact_no,
             user_login_id,
             user_login_password,
             user_designation,
@@ -128,6 +127,7 @@ const WFHDRegister = ({ userUpdateID }) => {
             tbs_applicable,
             tds_per,
             alternate_contact,
+            PersonalNumber,
           } = fetchedData;
 
           // console.log(Report_L2, "come to l2");
@@ -150,7 +150,7 @@ const WFHDRegister = ({ userUpdateID }) => {
           setTdsPercentage(tds_per);
           setPersonalEmail(user_email_id);
           setContact(alternate_contact);
-          setPersonalContact(user_contact_no);
+          setPersonalContact(PersonalNumber);
           setEmail(user_email_id);
           setPassword(user_login_password);
           setSitting(sitting_id);
@@ -272,6 +272,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
     // formData.append("personal_number", personalContact);
     formData.append("alternate_contact", contact); //contact all replace to alternate contact
+    formData.append("personal_number", personalContact);
     formData.append("user_contact_no", personalContact);
 
     // formData.append("user_email_id", email);
@@ -302,7 +303,7 @@ const WFHDRegister = ({ userUpdateID }) => {
             loginId?.toLocaleLowerCase()
         );
         const contactNumberExists = usersData?.some(
-          (user) => user.user_contact_no == personalContact
+          (user) => user.personal_contact == personalContact
         );
 
         const emailIdExists = usersData?.some(
@@ -391,7 +392,6 @@ const WFHDRegister = ({ userUpdateID }) => {
       setDepartment("");
       setSitting("");
       setRoomId("");
-      setPersonalContact("");
       setCity("");
       setSendLetter("");
       setAnnexurePdf("");

@@ -113,17 +113,18 @@ export default function FinanceWFHDashboard() {
   }, []);
 
   useEffect(() => {
-    // const result = data.filter((d) => {
-    //   const departmentMatch = !departmentFilter || d.dept === departmentFilter;
-    //   const monthsMatch = !months || d.month === months;
+    const result = data.filter((d) => {
+      const departmentMatch = !departmentFilter || d.dept === departmentFilter;
+      const monthsMatch = !months || d.month === months;
 
-    //   const yearsMatch = !years || d.year.toString() === years;
-    //   return departmentMatch && monthsMatch && yearsMatch;
-    // });
-    // console.log(result, "<----------result");
-    // setFilterData(result);
+      const yearsMatch = !years || d.year.toString() === years;
+      return departmentMatch && monthsMatch && yearsMatch;
+    });
+    setFilterData(result);
+  }, [data, departmentFilter, months, years])
 
-    // }, [data, departmentFilter, months, years]);
+  useEffect(() => {
+
     axios
       .post(`${baseUrl}` + `get_wfhd_tds_users`, {
         month: months,
@@ -374,13 +375,13 @@ export default function FinanceWFHDashboard() {
         const rowIndex =
           activeAccordionIndex == 0
             ? filterData
-                .filter((item) => item.status_ === 0)
-                .indexOf(params.row)
+              .filter((item) => item.status_ === 0)
+              .indexOf(params.row)
             : activeAccordionIndex == 1
-            ? filterData
+              ? filterData
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
-            : filterData
+              : filterData
                 .filter((item) => item.status_ === 2)
                 .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
@@ -436,13 +437,13 @@ export default function FinanceWFHDashboard() {
         const rowIndex =
           activeAccordionIndex == 0
             ? filterData
-                .filter((item) => item.status_ === 0)
-                .indexOf(params.row)
+              .filter((item) => item.status_ === 0)
+              .indexOf(params.row)
             : activeAccordionIndex == 1
-            ? filterData
+              ? filterData
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
-            : filterData
+              : filterData
                 .filter((item) => item.status_ === 2)
                 .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
@@ -674,13 +675,13 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-        // unstable_ignoreValueFormatterDuringExport
-        // slotProps={{
-        //   toolbar: {
-        //     showQuickFilter: true,
-        //   },
-        // }}
-        // unstable_headerFilters
+      // unstable_ignoreValueFormatterDuringExport
+      // slotProps={{
+      //   toolbar: {
+      //     showQuickFilter: true,
+      //   },
+      // }}
+      // unstable_headerFilters
       />
     </div>
   );
@@ -746,13 +747,13 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-        // unstable_ignoreValueFormatterDuringExport
-        // slotProps={{
-        //   toolbar: {
-        //     showQuickFilter: true,
-        //   },
-        // }}
-        // unstable_headerFilters
+      // unstable_ignoreValueFormatterDuringExport
+      // slotProps={{
+      //   toolbar: {
+      //     showQuickFilter: true,
+      //   },
+      // }}
+      // unstable_headerFilters
       />
     </div>
   );
@@ -819,13 +820,13 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-        // unstable_ignoreValueFormatterDuringExport
-        // slotProps={{
-        //   toolbar: {
-        //     showQuickFilter: true,
-        //   },
-        // }}
-        // unstable_headerFilters
+      // unstable_ignoreValueFormatterDuringExport
+      // slotProps={{
+      //   toolbar: {
+      //     showQuickFilter: true,
+      //   },
+      // }}
+      // unstable_headerFilters
       />
     </div>
   );
@@ -866,13 +867,13 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-        // unstable_ignoreValueFormatterDuringExport
-        // slotProps={{
-        //   toolbar: {
-        //     showQuickFilter: true,
-        //   },
-        // }}
-        // unstable_headerFilters
+      // unstable_ignoreValueFormatterDuringExport
+      // slotProps={{
+      //   toolbar: {
+      //     showQuickFilter: true,
+      //   },
+      // }}
+      // unstable_headerFilters
       />
     </div>
   );
@@ -931,7 +932,7 @@ export default function FinanceWFHDashboard() {
             </label>
             <Select
               options={[
-                // { value: "", label: "All" },
+                { value: "", label: "All" },
                 ...departmentData.map((option) => ({
                   value: option.dept_id,
                   label: option.dept_name,
@@ -941,12 +942,12 @@ export default function FinanceWFHDashboard() {
                 departmentFilter === ""
                   ? { value: "", label: "" }
                   : {
-                      value: departmentFilter,
-                      label:
-                        departmentData.find(
-                          (dept) => dept.dept_id === departmentFilter
-                        )?.dept_name || "Select...",
-                    }
+                    value: departmentFilter,
+                    label:
+                      departmentData.find(
+                        (dept) => dept.dept_id === departmentFilter
+                      )?.dept_name || "Select...",
+                  }
               }
               onChange={(selectedOption) => {
                 const selectedValue = selectedOption
@@ -1040,7 +1041,7 @@ export default function FinanceWFHDashboard() {
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
-        handleSubmit=  {handleCSVFlieupload}
+        handleSubmit={handleCSVFlieupload}
       >
         {activeAccordionIndex === 2 && (
           // <FormContainer {handleCSVFlieupload}>
@@ -1053,7 +1054,7 @@ export default function FinanceWFHDashboard() {
 
             />
             <input type="submit" value={"Upload utr"} className="btn btn-primary h-50 mt-3 " disabled={!CSVFile} />
-            </div>
+          </div>
           // </FormContainer>
         )}
 
@@ -1142,7 +1143,7 @@ export default function FinanceWFHDashboard() {
                   <button
                     type="submit"
                     className="btn btn-primary"
-                    // onClick={handlePayOut}
+                  // onClick={handlePayOut}
                   >
                     Pay
                   </button>

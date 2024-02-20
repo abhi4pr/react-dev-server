@@ -7,6 +7,7 @@ import { baseUrl } from "../../../utils/config";
 import { Link } from "react-router-dom";
 import FieldContainer from "../FieldContainer";
 import jwtDecode from "jwt-decode";
+import Modal from "react-modal"
 
 const WFHDOverview = () => {
   const { ContextDept, RoleIDContext } = useAPIGlobalContext();
@@ -23,6 +24,7 @@ const WFHDOverview = () => {
     onboarded: 0,
   });
   const [trainingDate, setTrainingDate] = useState("");
+  const [showOnBoardModal, setShowOnBoardModal] = useState(false)
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -88,7 +90,7 @@ const WFHDOverview = () => {
       att_status: "training",
     });
     setRemark("");
-    
+
     const specificElement = document.getElementById('training_tab');
     if (specificElement) {
       specificElement.click();
@@ -96,7 +98,7 @@ const WFHDOverview = () => {
     await getData();
   };
 
-  const onboardingFunc = async(e) => {
+  const onboardingFunc = async (e) => {
     e.preventDefault();
     await axios.put(baseUrl + "update_user", {
       user_id: rowData.user_id,
@@ -134,6 +136,7 @@ const WFHDOverview = () => {
 
     setAllWFHDData(result);
   }, [search, savedData]); // Dependencies
+
 
   const columns = [
     {
@@ -234,9 +237,15 @@ const WFHDOverview = () => {
             <button
               type="button"
               className="btn btn-success"
-              data-toggle="modal"
-              data-target="#exampleModal2"
-              onClick={() => setRowDataFunc(row)}
+              // data-toggle="modal"
+              // data-target="#exampleModal2"
+
+              onClick={() => 
+                {
+                  setRowDataFunc(row)
+                  setShowOnBoardModal(true)
+                }
+              }
             >
               Onboard
             </button>
@@ -251,8 +260,79 @@ const WFHDOverview = () => {
 
   return (
     <>
+      <Modal
+        className="Ready to Onboard"
+        isOpen={showOnBoardModal}
+        onRequestClose={() => setShowOnBoardModal(false)}
+        contentLabel="Preview Modal"
+        appElement={document.getElementById("root")}
+        style={{
+          overlay: {
+            position: "fixed",
+            backgroundColor: "rgba(255, 255, 255, 0.75)",
+          },
+          content: {
+            position: "absolute",
+
+            width: "500px",
+            border: "1px solid #ccc",
+            background: "#fff",
+            overflow: "auto",
+            WebkitOverflowScrolling: "touch",
+            borderRadius: "4px",
+            outline: "none",
+            padding: "20px",
+          },
+        }}
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel2">
+                Onboard user
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true" onClick={()=>setShowOnBoardModal(false)}>×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <FieldContainer
+                label="Remark"
+                fieldGrid={12}
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+                required={true}
+              ></FieldContainer>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                // data-dismiss="modal"
+                onClick={()=>setShowOnBoardModal(false)}
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={onboardingFunc}
+                data-dismiss="modal"
+                disabled={!remark}
+              >
+                Save changes
+              </button>
+            </div>
+          </div>
+        </div>
+      </Modal>
       <div>
-        <FormContainer mainTitle="Payout Overivew" link={"/admin/"} />
+        <FormContainer mainTitle="My Team" link={"/admin/"} />
         <ul
           className="nav nav-pills nav-fill navtop"
           style={{ marginBottom: "20px" }}
@@ -358,6 +438,7 @@ const WFHDOverview = () => {
                   type="date"
                   label="Training Date"
                   fieldGrid={12}
+                   min={rowData?.joining_date && rowData?.joining_date.split("T")[0]}
                   value={trainingDate}
                   onChange={(e) => setTrainingDate(e.target.value)}
                 />
@@ -383,7 +464,7 @@ const WFHDOverview = () => {
             </div>
           </div>
 
-          <div
+          {/* <div
             className="modal fade"
             id="exampleModal2"
             tabIndex={-1}
@@ -435,7 +516,7 @@ const WFHDOverview = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

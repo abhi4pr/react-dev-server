@@ -30,8 +30,8 @@ const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
   const invoiceRef = useRef();
   const [isUpdatingSalary, setIsUpdatingSalary] = useState(false);
 
-  // const TemplateComponent = templates[data?.invoice_template_no] || null;
-  const TemplateComponent = templates[9] || null;
+  const TemplateComponent = templates[data?.invoice_template_no] || null;
+  
   const handleGeneratePDF = async (e, data) => {
     await generatePDF(data, invoiceRef);
     e.preventDefault();

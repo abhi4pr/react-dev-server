@@ -6,6 +6,10 @@ import InvoiceTemplate2 from "../Templates/Component/InvoiceTemplate2";
 import InvoiceTemplate3 from "../Templates/Component/InvoiceTemplate3";
 import InvoiceTemplate4 from "../Templates/Component/InvoiceTemplate4";
 import InvoiceTemplate5 from "../Templates/Component/InvoiceTemplate5";
+import InvoiceTemplate6 from "../Templates/Component/InvoiceTemplate6";
+import InvoiceTemplate7 from "../Templates/Component/InvoiceTemplate7";
+import InvoiceTemplate8 from "../Templates/Component/InvoiceTemplate8";
+import InvoiceTemplate9 from "../Templates/Component/InvoiceTemplate9";
 
 const templates = {
   1: InvoiceTemplate1,
@@ -13,10 +17,14 @@ const templates = {
   3: InvoiceTemplate3,
   4: InvoiceTemplate4,
   5: InvoiceTemplate5,
+  6: InvoiceTemplate6,
+  7: InvoiceTemplate7,
+  8: InvoiceTemplate8,
+  9: InvoiceTemplate9,
 };
 
 export const generatePDF = async (rowData) => {
-  const TemplateComponent = templates[rowData?.invoice_template_no];
+  const TemplateComponent = templates[rowData?.invoice_template_no] || null;
 
   if (!TemplateComponent) {
     console.error(
