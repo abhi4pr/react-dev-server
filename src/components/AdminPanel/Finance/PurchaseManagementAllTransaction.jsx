@@ -16,6 +16,7 @@ import { baseUrl } from "../../../utils/config";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
 
+
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -119,9 +120,6 @@ export default function PurchaseManagementAllTransaction() {
     setPaymentHistory(true);
     const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
     const currentYear = new Date().getFullYear();
-
-    // const startDate = new Date(`04/01/${new Date().getFullYear() -MonthisGraterThenMarch? 0:1}`);
-    // const endDate = new Date(`03/31/${new Date().getFullYear()+MonthisGraterThenMarch? 1:0}`);
     const startDate = new Date(
       `04/01/${isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1}`
     );
@@ -145,24 +143,7 @@ export default function PurchaseManagementAllTransaction() {
         e.vendor_name === row.vendor_name && e.status != 0 && e.status != 2
       );
     });
-
-    // let outstandings = 0;
-    // let request_amount = 0;
-
-    // type=="FY"?dataFY:dataTP.forEach((row) => {
-    //   outstandings += +row.outstandings;
-    //   request_amount += +row.request_amount || 0;
-    // });
-
-    // // Create total row
-    // const totalRow = {
-    //   outstandings: outstandings,
-    //   request_amount: request_amount,
-    //   vendor_name: "Total",
-
-    // };
-
-    // setHistoryData(type === "FY" ? [...dataFY, totalRow] : [...dataTP, totalRow]);
+    console.log(dataFY, "dataFY");
 
     setHistoryData(type == "FY" ? dataFY : dataTP);
   };
@@ -427,7 +408,6 @@ export default function PurchaseManagementAllTransaction() {
     setSameVendorDialog(false);
   };
 
-  console.log(data, "DATA>>>");
   // According to status count :-
 
   const pendingRequestCount = data.filter(
@@ -642,33 +622,8 @@ export default function PurchaseManagementAllTransaction() {
     {
       field: "vendor_name",
       headerName: "Vendor Name",
-      // width: "auto",
-      width: 370,
-
+      width: 200,
       renderCell: (params) => {
-        const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
-        const currentYear = new Date().getFullYear();
-        const startDate = new Date(
-          `04/01/${
-            isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
-          }`
-        );
-        const endDate = new Date(
-          `03/31/${
-            isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
-          }`
-        );
-
-        const dataFY = nodeData.filter((e) => {
-          const paymentDate = new Date(e.request_date);
-          return (
-            paymentDate >= startDate &&
-            paymentDate <= endDate &&
-            e.vendor_name === params.row.vendor_name &&
-            e.status !== 0 &&
-            e.status !== 2
-          );
-        });
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
@@ -680,42 +635,105 @@ export default function PurchaseManagementAllTransaction() {
             <div onClick={() => handleOpenBankDetail()}>
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
             </div>
-            <div>
-              {nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
-                .length > 0 ? (
-                <span className="row ml-2 ">
-                  <h5
-                    onClick={() => handleOpenPaymentHistory(params.row, "TP")}
-                    style={{ cursor: "pointer" }}
-                    className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
-                  >
-                    {/* Total Paid */}
-                    {nodeData
-                      .filter(
-                        (e) =>
-                          e.vendor_name === params.row.vendor_name &&
-                          e.status == 1
-                      )
-                      .reduce((acc, item) => acc + +item.request_amount, 0)}
-                  </h5>
-                  <h5
-                    onClick={() => handleOpenPaymentHistory(params.row, "FY")}
-                    style={{ cursor: "pointer" }}
-                    className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
-                  >
-                    {/* Financial Year */}
-                    FY:
-                    {dataFY.reduce(
-                      (acc, item) => acc + parseFloat(item.request_amount),
-                      0
-                    )}
-                  </h5>
-                </span>
-              ) : (
-                ""
-              )}
-            </div>
           </div>
+        );
+      },
+    },
+    // {
+    //   field: "total_paid",
+    //   headerName: "Total Paid",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
+    //       .length > 0 ? (
+    //       <span className="row ml-2 ">
+    //         <h5
+    //           onClick={() => handleOpenPaymentHistory(params.row, "TP")}
+    //           style={{ cursor: "pointer" }}
+    //           className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
+    //         >
+    //           {/* Total Paid */}
+    //           {nodeData
+    //             .filter(
+    //               (e) =>
+    //                 e.vendor_name === params.row.vendor_name && e.status == 1
+    //             )
+    //             .reduce((acc, item) => acc + +item.request_amount, 0)}
+    //         </h5>
+    //       </span>
+    //     ) : (
+    //       <h5
+    //         style={{ cursor: "pointer" }}
+    //         className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
+    //       >
+    //         0
+    //       </h5>
+    //     );
+    //   },
+    // },
+    // {
+    //   field: "F.Y",
+    //   headerName: "F.Y",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
+    //     const currentYear = new Date().getFullYear();
+    //     const startDate = new Date(
+    //       `04/01/${
+    //         isCurrentMonthGreaterThanMarch ? currentYear : currentYear - 1
+    //       }`
+    //     );
+    //     const endDate = new Date(
+    //       `03/31/${
+    //         isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
+    //       }`
+    //     );
+    //     const dataFY = nodeData.filter((e) => {
+    //       const paymentDate = new Date(e.request_date);
+    //       return (
+    //         paymentDate >= startDate &&
+    //         paymentDate <= endDate &&
+    //         e.vendor_name === params.row.vendor_name &&
+    //         e.status !== 0 &&
+    //         e.status !== 2
+    //       );
+    //     });
+    //     return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
+    //       .length > 0 ? (
+    //       <h5
+    //         onClick={() => handleOpenPaymentHistory(params.row, "FY")}
+    //         style={{ cursor: "pointer" }}
+    //         className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+    //       >
+    //         {/* Financial Year */}
+
+    //         {dataFY.reduce(
+    //           (acc, item) => acc + parseFloat(item.request_amount),
+    //           0
+    //         )}
+    //       </h5>
+    //     ) : (
+    //       <h5
+    //         style={{ cursor: "pointer" }}
+    //         className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+    //       >
+    //         0
+    //       </h5>
+    //     );
+    //   },
+    // },
+    {
+      field: "Pan Img",
+      headerName: "Pan Img",
+      renderCell: (params) => {
+        return params.row.pan_img ? (
+          <img
+            src={params.row.pan_img}
+            alt="Pan"
+            style={{ width: "40px", height: "40px" }}
+          />
+        ) : (
+          "NA"
         );
       },
     },
@@ -1147,14 +1165,8 @@ export default function PurchaseManagementAllTransaction() {
         }}
         getRowId={(row) => filterData.indexOf(row)}
       />
-      {openImageDialog && (
-        <ImageView
-          viewImgSrc={viewImgSrc}
-          setViewImgDialog={setOpenImageDialog}
-        />
-      )}
 
-      {paymentHistory && (
+{paymentHistory && (
         <PaymentHistoryDialog
           handleClose={setPaymentHistory}
           paymentDetailColumns={paymentDetailColumns}

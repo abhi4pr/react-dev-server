@@ -21,7 +21,7 @@ const PendingInvoiceCustomerDeatils = () => {
 
     axios
       .post(
-        `https://production.sales.creativefuel.io/webservices/RestController.php?view=sales-customer_detail`,
+        `https://sales.creativefuel.io/webservices/RestController.php?view=sales-customer_detail`,
         formData,
         {
           headers: {
