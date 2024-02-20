@@ -25,6 +25,7 @@ const WFHDOverview = () => {
   });
   const [trainingDate, setTrainingDate] = useState("");
   const [showOnBoardModal, setShowOnBoardModal] = useState(false)
+  const [activeTab, setActiveTab] = useState(0)
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -35,19 +36,85 @@ const WFHDOverview = () => {
     const response = await axios.get(baseUrl + "get_all_wfh_users");
     if (RoleIDContext == 1 || RoleIDContext == 5) {
       setAllWFHDData(response.data.data);
-      const attStatus = response.data.data.filter(
-        (item) => item.att_status == "registered"
-      );
-      setFilteredDatas(attStatus);
+      const FinalResonse = response.data.data
+
+      let filterTabWise = [];
+      console.log(activeTab, "activeTab");
+      switch (activeTab) {
+        case 0:
+          filterTabWise = FinalResonse.filter(
+            (item) => item.att_status == "registered"
+          );
+          break;
+
+        case 1:
+          filterTabWise = FinalResonse.filter(
+            (item) => item.att_status == "document_upload"
+          );
+          break;
+
+        case 2:
+          filterTabWise = FinalResonse.filter(
+            (item) => item.att_status == "training"
+          );
+          break;
+
+        case 3:
+          filterTabWise = FinalResonse.filter(
+            (item) => item.att_status == "onboarded"
+          );
+          break;
+
+        default:
+          filterTabWise = FinalResonse.filter(
+            (item) => item.att_status == "registered"
+          );
+      }
+
+      setFilteredDatas(filterTabWise);
+
     } else {
       const deptWiseData = response.data.data?.filter(
         (d) => d.dept_id == ContextDept
       );
       setAllWFHDData(deptWiseData);
-      const attStatus = deptWiseData.filter(
-        (item) => item.att_status == "registered"
-      );
-      setFilteredDatas(attStatus);
+
+
+      let filterTabWise = [];
+      switch (activeTab) {
+        case 0:
+          filterTabWise = deptWiseData.filter(
+            (item) => item.att_status == "registered"
+          );
+          break;
+
+        case 1:
+          filterTabWise = deptWiseData.filter(
+            (item) => item.att_status == "document_upload"
+          );
+          break;
+
+        case 2:
+          filterTabWise = deptWiseData.filter(
+            (item) => item.att_status == "training"
+          );
+          break;
+
+        case 3:
+          filterTabWise = deptWiseData.filter(
+            (item) => item.att_status == "onboarded"
+          );
+          break;
+
+        default:
+          filterTabWise = deptWiseData.filter(
+            (item) => item.att_status == "registered"
+          );
+      }
+
+
+
+      setFilteredDatas(filterTabWise);
       setSavedData(response.data.data?.filter((d) => d.dept_id == ContextDept));
     }
     const counts = response.data.data.reduce((acc, curr) => {
@@ -90,27 +157,26 @@ const WFHDOverview = () => {
       att_status: "training",
     });
     setRemark("");
-
-    const specificElement = document.getElementById('training_tab');
-    if (specificElement) {
-      specificElement.click();
-    }
     await getData();
   };
 
   const onboardingFunc = async (e) => {
     e.preventDefault();
-    await axios.put(baseUrl + "update_user", {
-      user_id: rowData.user_id,
-      att_status: "onboarded",
-    });
-    setRemark("");
-    const specificElement = document.getElementById('onboarded_tab');
-    if (specificElement) {
-      specificElement.click();
+    try {
+      await axios.put(baseUrl + "update_user", {
+        user_id: rowData.user_id,
+        att_status: "onboarded",
+      });
+      setRemark("");
+      setShowOnBoardModal(false)
+      // setActiveTab(prev =>prev + 1);
+    } catch (error) {
+      console.error(error)
+    } finally {
+      getData()
     }
-    getData();
-  };
+  }
+
 
   useEffect(() => {
     const lowerCaseSearch = search.toLowerCase();
@@ -137,6 +203,34 @@ const WFHDOverview = () => {
     setAllWFHDData(result);
   }, [search, savedData]); // Dependencies
 
+  const FilterTabData = (filterValue) => {
+    let filteredData = [];
+
+    switch (filterValue) {
+      case "registered":
+        filteredData = allWFHDData.filter((option) => option.att_status == filterValue);
+        break;
+      case "document_upload":
+        filteredData = allWFHDData.filter(
+          (option) => option.att_status == filterValue
+        );
+        break;
+      case "training":
+        filteredData = allWFHDData.filter(
+          (option) => option.att_status == filterValue
+        );
+        break;
+      case "onboarded":
+        filteredData = allWFHDData.filter(
+          (option) => option.att_status == filterValue
+        );
+        break;
+      default:
+        filteredData = allWFHDData;
+    }
+
+    setFilteredDatas(filteredData);
+  };
 
   const columns = [
     {
@@ -240,11 +334,10 @@ const WFHDOverview = () => {
               // data-toggle="modal"
               // data-target="#exampleModal2"
 
-              onClick={() => 
-                {
-                  setRowDataFunc(row)
-                  setShowOnBoardModal(true)
-                }
+              onClick={() => {
+                setRowDataFunc(row)
+                setShowOnBoardModal(true)
+              }
               }
             >
               Onboard
@@ -297,7 +390,7 @@ const WFHDOverview = () => {
                 data-dismiss="modal"
                 aria-label="Close"
               >
-                <span aria-hidden="true" onClick={()=>setShowOnBoardModal(false)}>×</span>
+                <span aria-hidden="true" onClick={() => setShowOnBoardModal(false)}>×</span>
               </button>
             </div>
             <div className="modal-body">
@@ -314,7 +407,7 @@ const WFHDOverview = () => {
                 type="button"
                 className="btn btn-secondary"
                 // data-dismiss="modal"
-                onClick={()=>setShowOnBoardModal(false)}
+                onClick={() => setShowOnBoardModal(false)}
               >
                 Close
               </button>
@@ -322,7 +415,7 @@ const WFHDOverview = () => {
                 type="button"
                 className="btn btn-primary"
                 onClick={onboardingFunc}
-                data-dismiss="modal"
+                // data-dismiss="modal"
                 disabled={!remark}
               >
                 Save changes
@@ -332,8 +425,9 @@ const WFHDOverview = () => {
         </div>
       </Modal>
       <div>
+        {console.log(activeTab)}
         <FormContainer mainTitle="My Team" link={"/admin/"} />
-        <ul
+        {/* <ul
           className="nav nav-pills nav-fill navtop"
           style={{ marginBottom: "20px" }}
         >
@@ -379,7 +473,47 @@ const WFHDOverview = () => {
               Onboarded ({statusCounts.onboarded})
             </a>
           </li>
-        </ul>
+        </ul> */}
+        <div className="card-header d-flex flex-row align-items-center justify-content-between">
+          <div className="btn-group w-100">
+            <button
+              className={`btn ${activeTab == 0 ? "btn-primary" : "btn-outline-primary"
+                }`}
+              onClick={() => {
+                FilterTabData("registered"), setActiveTab(0);
+              }}
+            >
+              Registered ({statusCounts.registered})
+            </button>
+            <button
+              className={`btn ${activeTab == 1 ? "btn-primary" : "btn-outline-primary"
+                }`}
+              onClick={() => {
+                FilterTabData("document_upload"), setActiveTab(1);
+              }}
+            >
+              Upload document ({statusCounts.document_upload})
+            </button>
+            <button
+              className={`btn ${activeTab == 2 ? "btn-primary" : "btn-outline-primary"
+                }`}
+              onClick={() => {
+                FilterTabData("training"), setActiveTab(2);
+              }}
+            >
+              Training ({statusCounts.training})
+            </button>
+            <button
+              className={`btn ${activeTab == 3 ? "btn-primary" : "btn-outline-primary"
+                }`}
+              onClick={() => {
+                FilterTabData("onboarded"), setActiveTab(3);
+              }}
+            >
+              Onboarded ({statusCounts.onboarded})
+            </button>
+          </div>
+        </div>
         <div className="card">
           <div className="data_tbl table-responsive">
             <DataTable
@@ -438,7 +572,7 @@ const WFHDOverview = () => {
                   type="date"
                   label="Training Date"
                   fieldGrid={12}
-                   min={rowData?.joining_date && rowData?.joining_date.split("T")[0]}
+                  min={rowData?.joining_date && rowData?.joining_date.split("T")[0]}
                   value={trainingDate}
                   onChange={(e) => setTrainingDate(e.target.value)}
                 />
