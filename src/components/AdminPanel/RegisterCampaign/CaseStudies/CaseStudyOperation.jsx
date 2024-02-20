@@ -161,17 +161,7 @@ const CaseStudyOperation = () => {
       .get(baseUrl + "get_all_data_content_types")
       .then((res) => setContentData(res.data));
 
-    axios
-      .get(baseUrl + "projectxCategory")
-      .then((res) => {
-        setBrandCategory(res.data.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    axios.get(baseUrl + "projectxSubCategory").then((res) => {
-      setBrandSubCatData(res.data.data);
-    });
+   
   }
 
   const getBrandCount = (brandName, data) => {
@@ -182,6 +172,19 @@ const CaseStudyOperation = () => {
   };
 
   useEffect(() => {
+    axios
+    .get(baseUrl + "projectxCategory")
+    .then((res) => {
+      setBrandCategory(res.data.data);
+
+       
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  axios.get(baseUrl + "projectxSubCategory").then((res) => {
+    setBrandSubCatData(res.data.data);
+  });
     getData();
   }, []);
 
@@ -1800,6 +1803,7 @@ const CaseStudyOperation = () => {
             {backupData.length > 0 && (
               <CasestudyTabulerData
                 newData={data}
+                setNewData={setData}
                 backupData={backupData}
                 brandData={brandData}
                 brandCategory={brandCategory}

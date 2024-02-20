@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DataGrid,
   GridToolbarContainer,
@@ -11,6 +11,8 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { useNavigate } from "react-router-dom";
 import Modal from "react-modal";
 import DeleteButton from "../../DeleteButton";
+import { baseUrl } from "../../../../utils/config";
+import axios from "axios";
 
 function CustomToolbar({ setFilterButtonEl }) {
   return (
@@ -30,6 +32,7 @@ const CasestudyTabulerData = ({
   countData,
   newData,
   getData,
+  setNewData
 }) => {
   console.log(brandSubCatData);
   const navigate = useNavigate();
@@ -37,10 +40,11 @@ const CasestudyTabulerData = ({
   const [enlargedFileUrl, setEnlargedFileUrl] = useState("");
   const [enlargedFileType, setEnlargedFileType] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  
   const [filterModel, setFilterModel] = useState({
     items: [
       {
-        id: 1,
+        _id: 1,
         field: "brand_name",
         // value: [5000, 15000],
         // operator: 'between',
@@ -49,7 +53,7 @@ const CasestudyTabulerData = ({
   });
   const [columnVisibilityModel, setColumnVisibilityModel] = useState({
     S_NO: true,
-    brandName: true,
+    brand_name: true,
     campaign_purpose: true,
     categoryName: true,
     subcat: true,
@@ -79,6 +83,10 @@ const CasestudyTabulerData = ({
     setIsModalOpen(true);
   };
 
+
+  useEffect(()=>{
+   setNewData(newData )
+  },[brandCategory])
   const renderEnlargedContent = () => {
     switch (enlargedFileType) {
       case "image":
@@ -106,6 +114,9 @@ const CasestudyTabulerData = ({
         return null;
     }
   };
+
+  
+  
   // resizeing columns ---->
   const [columns, setColumns] = useState([
     {
@@ -117,6 +128,9 @@ const CasestudyTabulerData = ({
         return <div>{rowIndex + 1}</div>;
       },
     },
+    
+    
+    
     {
       field: "campaign_purpose",
       headerName: "Campaign",
@@ -145,6 +159,7 @@ const CasestudyTabulerData = ({
       headerName: "Category",
       width: 180,
       renderCell: (params) => {
+        console.log(brandCategory,"brandcat")
         const category = brandCategory?.find(
           (cat) => cat.category_id === params.row.brand_category_id
         );
@@ -515,18 +530,21 @@ const CasestudyTabulerData = ({
       <ResizableHeader field={col.headerName} width={params.colDef.width} />
     ),
   }));
-
+console.log(brandCategory,"brandCat",brandSubCatData)
   return (
     <div style={{ height: 400, width: "100%" }}>
+      {console.log("datagrid rendered")}
+      {brandCategory.length > 0 && brandSubCatData.length >0 &&
+      
       <DataGrid
         rows={newData}
         columns={resizableColumns}
         pageSize={5}
         getRowId={(row) => row._id}
         initialState={{
-          sorting: {
-            sortModel: [{ field: "brand_name", sort: "desc" }],
-          },
+          // sorting: {
+          //   sortModel: [{ field: "brand_name", sort: "desc" }],
+          // },
         }}
         slots={{ toolbar: CustomToolbar }}
         slotProps={{
@@ -543,7 +561,7 @@ const CasestudyTabulerData = ({
         onColumnVisibilityModelChange={(newModel) =>
           setColumnVisibilityModel(newModel)
         }
-      />
+      />}
 
       <Modal
         isOpen={isModalOpen}
