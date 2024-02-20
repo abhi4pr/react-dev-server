@@ -33,13 +33,15 @@ const CasestudyTabulerData = ({
 }) => {
   console.log(brandSubCatData);
   const navigate = useNavigate();
-  const [enrichedData, setEnrichedData] = useState([]);
   const [filterButtonEl, setFilterButtonEl] = useState(null);
+  const [enlargedFileUrl, setEnlargedFileUrl] = useState("");
+  const [enlargedFileType, setEnlargedFileType] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterModel, setFilterModel] = useState({
     items: [
       {
         id: 1,
-        field: "brandName",
+        field: "brand_name",
         // value: [5000, 15000],
         // operator: 'between',
       },
@@ -64,9 +66,6 @@ const CasestudyTabulerData = ({
     number_of_reach: true,
     number_of_story_views: true,
   });
-  const [enlargedFileUrl, setEnlargedFileUrl] = useState("");
-  const [enlargedFileType, setEnlargedFileType] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -119,15 +118,28 @@ const CasestudyTabulerData = ({
       },
     },
     {
-      field: "brand_name",
-      headerName: "Brand",
-      width: 180,
-    },
-    {
       field: "campaign_purpose",
       headerName: "Campaign",
       width: 180,
+      renderCell: (params) => {
+        const campName = params.value;
+          const capitalizedCampName =
+          campName.charAt(0).toUpperCase() + campName.slice(1);
+          return <div>{capitalizedCampName}</div>;
+      },
     },
+    {
+      field: "brand_name",
+      headerName: "Brand",
+      width: 180,
+      renderCell: (params) => {
+        const brandName = params.value;
+          const capitalizedBrandName =
+            brandName.charAt(0).toUpperCase() + brandName.slice(1);
+          return <div>{capitalizedBrandName}</div>;
+      },
+    },
+  
     {
       field: "categoryName",
       headerName: "Category",
@@ -378,8 +390,6 @@ const CasestudyTabulerData = ({
       field: "created_by_name",
       headerName: "Uploaded by",
       width: 125,
-      minWidth: 150,
-      maxWidth: 200,
     },
     {
       field: "number_of_engagement",
@@ -515,7 +525,7 @@ const CasestudyTabulerData = ({
         getRowId={(row) => row._id}
         initialState={{
           sorting: {
-            sortModel: [{ field: "brandName", sort: "desc" }],
+            sortModel: [{ field: "brand_name", sort: "desc" }],
           },
         }}
         slots={{ toolbar: CustomToolbar }}
