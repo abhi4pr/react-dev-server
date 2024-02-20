@@ -2,7 +2,7 @@ import React from "react";
 import "../assets/css/Template.css";
 import "../assets/css/media-query.css";
 
-const InvoiceTemplate7 = ({ data }) => {
+const InvoiceTemplate5 = ({ data }) => {
   const handleImageError = (e) => {
     console.error("Image failed to load", e);
     e.target.style.display = "none";
@@ -45,11 +45,10 @@ const InvoiceTemplate7 = ({ data }) => {
                   <div className="invoice-to-content">
                     <p className="font-md color-light-black">Bill To:</p>
                     <h2 className="font-lg domain-color pt-10 ">
-                      Jordon Smith
+                      CREATIVEFUEL PRIVATE LIMITED
                     </h2>
                     <p className="font-md-grey color-grey pt-10">
-                      CREATIVEFUEL PRIVATE LIMITED <br /> 105, Gravity Mall,
-                      Vijay Nagar
+                      105, Gravity Mall, Vijay Nagar
                       <br />
                       Indore, Madhya Pradesh
                       <br />
@@ -91,7 +90,7 @@ const InvoiceTemplate7 = ({ data }) => {
                   <tbody className="invo-tb-body">
                     <tr className="invo-tb-row">
                       <td className="font-sm">{data?.billing_header_name}</td>
-                      <td className="font-sm ">{data?.toPay}</td>
+                      <td className="font-sm ">₹ {data?.toPay}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -100,6 +99,14 @@ const InvoiceTemplate7 = ({ data }) => {
                 <div className="invo-add-info-content"></div>
                 <div className="invo-bill-total width-30">
                   <table className="invo-total-table">
+                    <tbody>
+                      <tr className="invo-grand-total">
+                        <td className="font-md domain-color pt-20">TDS:</td>
+                        <td className="font-18-500 color-light-black pt-20 text-right">
+                          - ₹ {data?.tds_deduction}
+                        </td>
+                      </tr>
+                    </tbody>
                     <tbody>
                       <tr className="invo-grand-total">
                         <td className="font-md domain-color pt-20">
@@ -128,8 +135,7 @@ const InvoiceTemplate7 = ({ data }) => {
                   </div>
                   <div className="footerCol col">
                     <div className="termBox">
-                      <h2 className="domain-color">Terms & Condition</h2>
-                      <h3>Account Details</h3>
+                      <h2 className="domain-color">Account Details</h2>
                       <p>
                         <span>Beneficiary name :-</span> {data?.user_name}
                       </p>
@@ -162,4 +168,4 @@ const InvoiceTemplate7 = ({ data }) => {
   );
 };
 
-export default InvoiceTemplate7;
+export default InvoiceTemplate5;

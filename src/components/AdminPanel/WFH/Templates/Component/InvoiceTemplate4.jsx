@@ -1,7 +1,7 @@
 import React from "react";
 import headerImg from "../assets/images/photostudio/header-img.svg";
 import footerImg from "../assets/images/photostudio/footer-img.svg";
-const InvoiceTemplate6 = ({ data }) => {
+const InvoiceTemplate4 = ({ data }) => {
   const handleImageError = (e) => {
     console.error("Image failed to load", e);
     e.target.style.display = "none";
@@ -94,9 +94,9 @@ const InvoiceTemplate6 = ({ data }) => {
                     <tr className="paddind-pt-row table-bg">
                       <td className="font-sm">1</td>
                       <td className="font-sm">{data?.billing_header_name}</td>
-                      <td className="font-sm">₹ {data?.toPay}</td>
+                      <td className="font-sm">₹ {data?.net_salary}</td>
 
-                      <td className="font-sm">₹ {data?.toPay}</td>
+                      <td className="font-sm">₹ {data?.net_salary}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -111,7 +111,7 @@ const InvoiceTemplate6 = ({ data }) => {
                           Sub Total:
                         </td>
                         <td className="font-md-grey color-grey ">
-                          ₹ {data?.total_salary}
+                          ₹ {data?.net_salary}
                         </td>
                       </tr>
                       <tr className="tax-row">
@@ -151,11 +151,11 @@ const InvoiceTemplate6 = ({ data }) => {
                 </div>
                 <div className="footerCol col">
                   <div className="termBox">
-                    <h2 className="color-blue-flight">Terms & Condition</h2>
-                    <h3>Account Details</h3>
+                    {/* <h2 className="color-blue-flight">Terms & Condition</h2> */}
+                    <h2 className="color-blue-flight">Account Details</h2>
                     <p>
                       <span>Beneficiary name :-</span>
-                      {data?.user_name}
+                      {data?.beneficiary_name}
                     </p>
                     <p>
                       <span>Bank name :-</span> {data?.bank_name}
@@ -187,4 +187,4 @@ const InvoiceTemplate6 = ({ data }) => {
   );
 };
 
-export default InvoiceTemplate6;
+export default InvoiceTemplate4;
