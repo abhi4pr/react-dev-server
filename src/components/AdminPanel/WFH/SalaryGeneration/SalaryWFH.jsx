@@ -1010,27 +1010,27 @@ const SalaryWFH = () => {
     XLSX.writeFile(workbook, fileName);
   };
 
-  const handleBankDepartmentExcel = () => {
-    const formattedData = filterData?.map((row, index) => ({
-      "S.No": index + 1,
-      "Beneficiary Name (Mandatory) Special characters not supported":
-        row.user_name,
-      "Beneficiary's Account Number (Mandatory) Typically 9-18 digits":
-        row.account_no,
-      "IFSC Code (Mandatory) 11 digit code of the beneficiary’s bank account. Eg. HDFC0004277":
-        row.ifsc_code,
-      "Payout Amount (Mandatory) Amount should be in rupees": row.toPay,
-      "Phone Number (Optional)": row.user_contact_no,
-      "Email ID (Optional)": row.user_email_id,
-      "Contact Reference ID (Optional) Eg: Employee ID or Customer ID":
-        row?.emp_id,
-    }));
-    const fileName = "AllSalary.xlsx";
-    const worksheet = XLSX.utils.json_to_sheet(formattedData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, fileName);
-  };
+  // const handleBankDepartmentExcel = () => {
+  //   const formattedData = filterData?.map((row, index) => ({
+  //     "S.No": index + 1,
+  //     "Beneficiary Name (Mandatory) Special characters not supported":
+  //       row.user_name,
+  //     "Beneficiary's Account Number (Mandatory) Typically 9-18 digits":
+  //       row.account_no,
+  //     "IFSC Code (Mandatory) 11 digit code of the beneficiary’s bank account. Eg. HDFC0004277":
+  //       row.ifsc_code,
+  //     "Payout Amount (Mandatory) Amount should be in rupees": row.toPay,
+  //     "Phone Number (Optional)": row.user_contact_no,
+  //     "Email ID (Optional)": row.user_email_id,
+  //     "Contact Reference ID (Optional) Eg: Employee ID or Customer ID":
+  //       row?.emp_id,
+  //   }));
+  //   const fileName = "AllSalary.xlsx";
+  //   const worksheet = XLSX.utils.json_to_sheet(formattedData);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+  //   XLSX.writeFile(workbook, fileName);
+  // };
 
   return (
     <>
@@ -1353,12 +1353,12 @@ const SalaryWFH = () => {
                         </button>
                       </>
                     )}
-                    <button
+                    {/* <button
                       className="btn btn-primary mr-2"
                       onClick={handleBankDepartmentExcel}
                     >
                       Export Bank Excel
-                    </button>
+                    </button> */}
                     <Button
                       sx={{ marginRight: "10px" }}
                       size="medium"

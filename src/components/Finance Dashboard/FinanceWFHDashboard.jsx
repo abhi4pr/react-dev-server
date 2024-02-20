@@ -9,8 +9,17 @@ import { generatePDF } from "../AdminPanel/WFH/SalaryGeneration/pdfGenerator";
 import { useGlobalContext } from "../../Context/Context";
 import { baseUrl } from "../../utils/config";
 import Select from "react-select";
+import * as XLSX from "xlsx";
+import DataGridDialog from "../DataGridDialog/DataGridDialog";
+import FieldContainer from "../AdminPanel/FieldContainer";
 
-const accordionButtons = ["Pending Verify", "Verified", "Payment Released"];
+const accordionButtons = [
+  "Pending Verify",
+  "Proceed to Bank",
+  "Payment Released",
+  // "TDS",
+  // "Non-TDS",
+];
 
 export default function FinanceWFHDashboard() {
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
@@ -33,6 +42,8 @@ export default function FinanceWFHDashboard() {
   const [refrenceNumber, setRefrenceNumber] = useState(null);
   const [screenshot, setScreenshot] = useState([]);
   const [rowData, setDataRow] = useState(null);
+  const [showFilterModal, setShowFilterModal] = useState(false);
+  const [CSVFile, setCSVFile] = useState(null);
 
   const { toastAlert } = useGlobalContext();
 
@@ -75,6 +86,10 @@ export default function FinanceWFHDashboard() {
     { value: "2030", label: "2030" },
   ];
 
+  const handSearchleClick = () => {
+    setShowFilterModal(true);
+  };
+
   const getData = async () => {
     try {
       axios.get(`${baseUrl}` + `get_finances`).then((res) => {
@@ -98,15 +113,27 @@ export default function FinanceWFHDashboard() {
   }, []);
 
   useEffect(() => {
-    const result = data.filter((d) => {
-      const departmentMatch = !departmentFilter || d.dept === departmentFilter;
-      const monthsMatch = !months || d.month === months;
+    // const result = data.filter((d) => {
+    //   const departmentMatch = !departmentFilter || d.dept === departmentFilter;
+    //   const monthsMatch = !months || d.month === months;
 
-      const yearsMatch = !years || d.year.toString() === years;
-      return departmentMatch && monthsMatch && yearsMatch;
-    });
-    setFilterData(result);
-  }, [data, departmentFilter, months, years]);
+    //   const yearsMatch = !years || d.year.toString() === years;
+    //   return departmentMatch && monthsMatch && yearsMatch;
+    // });
+    // console.log(result, "<----------result");
+    // setFilterData(result);
+
+    // }, [data, departmentFilter, months, years]);
+    axios
+      .post(`${baseUrl}` + `get_wfhd_tds_users`, {
+        month: months,
+        year: 1 * years,
+        dept_id: departmentFilter,
+      })
+      .then((res) => {
+        setFilterData(res.data);
+      });
+  }, [showFilterModal]);
 
   const handleDownloadInvoices = async () => {
     try {
@@ -117,17 +144,111 @@ export default function FinanceWFHDashboard() {
     }
   };
 
+  const handleUTRupload = async (e, row) => {
+    e.preventDefault();
+
+    console.log(e.target.value, "<----------value");
+    console.log(row, "<----------row");
+    console.log(e.utr, "<----------utr");
+    // const formData = new FormData();
+    // formData.append("id", row.id);
+    // formData.append("utr", e.target.fileUpload.files[0]);
+    // axios
+
+    //   .put(`${baseUrl}` + `edit_finance`, formData, {
+    //     headers: {
+    //       "Content-Type": "multipart/form-data",
+    //     },
+    //   })
+    //   .then(() => {
+    //     toastAlert("UTR uploaded");
+    //     getData();
+    //   });
+  };
+
+  const handleCSVFlieupload = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("excel", CSVFile);
+    await axios
+      .post(`${baseUrl}` + `set_utr_data`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        toastAlert("CSV uploaded");
+        getData();
+      });
+  };
+
+  const handleSendToBank = async () => {
+    try {
+      for (let i = 0; i < rowForPayment.length; i++) {
+        const formData = new FormData();
+
+        formData.append("id", rowForPayment[i].id);
+        formData.append("amount", rowForPayment[i].toPay);
+        formData.append("status_", 1);
+        formData.append("screenshot", screenshot);
+        formData.append("reference_no", rowForPayment[i].reference_no);
+        formData.append("pay_date", new Date());
+        formData.append("attendence_id", rowForPayment[i].attendence_id);
+
+        axios
+          .put(`${baseUrl}` + `edit_finance`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then(() => {
+            setRefrenceNumber("");
+            setAmount("");
+            toastAlert("Sent to bank");
+            setShowModal(false);
+          });
+        toastAlert("Sent to bank");
+      }
+
+      toastAlert("Sent to bank");
+      getData();
+      setTimeout(() => {
+        getData();
+      }, 1000);
+    } catch (error) {
+      console.error("Error sending to bank:", error);
+      // Handle any errors related to sending to bank here
+    }
+  };
+
+  const handleDownloadExcel = () => {
+    const formattedData = rowForPayment?.map((row, index) => ({
+      "S.No": index + 1,
+      Name: row.user_name,
+      Department: row.dept_name,
+      Month: row.month,
+      Year: row.year,
+      Salary: row.total_salary,
+      "Net Salary": row.net_salary,
+      "TDS Deduction": row.tds_deduction,
+      "To Pay": row.toPay,
+      Status: row.attendence_status_flow,
+      "Attendence ID": row.attendence_id,
+    }));
+    const fileName = "AllSalary.xlsx";
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, fileName);
+  };
+
   const handleRowSelectionModelChange = async (rowIds) => {
     setRowSelectionModel(rowIds);
     let x = filterData.filter((item) => {
       return rowIds.includes(item.id);
     });
+    console.log(x, "<----------x");
     setRowForPayment(x);
-    // console.log(x);
-    // Call downloadSelectedInvoices when rows are selected
-    // if (x.length > 0) {
-    //   downloadSelectedInvoices(x);
-    // }
   };
 
   const handleAccordionButtonClick = (index) => {
@@ -147,19 +268,42 @@ export default function FinanceWFHDashboard() {
 
   const handleVerifyAll = (e) => {
     e.preventDefault();
-    for (let i = 0; i < rowForPayment.length; i++) {
-      console.log(rowForPayment[i].reference_no, "<----------reference_no" + i);
-      console.log(rowForPayment[i].reference_no, "<----------reference_no" + i);
-      console.log(rowForPayment[i].id, "<----------id" + i);
-      setDataRow(rowForPayment[i]);
-      console.log(rowForPayment[i].toPay, "<----------topay" + i);
-      setAmount(rowForPayment[i].toPay);
-      setId(rowForPayment[i].id);
-      setRefrenceNumber(rowForPayment[i].reference_no);
-      console.log(rowForPayment[i], "<----------row" + i);
-      console.log(rowForPayment[i].pay_date, "<----------pay_date" + i);
-      setDate(rowForPayment[i].pay_date);
-      setTimeout(() => handlePayOut(e), 1000);
+
+    try {
+      for (let i = 0; i < rowForPayment.length; i++) {
+        const formData = new FormData();
+
+        formData.append("id", rowForPayment[i].id);
+        formData.append("amount", rowForPayment[i].toPay);
+        formData.append("status_", 2);
+        formData.append("screenshot", screenshot);
+        formData.append("reference_no", rowForPayment[i].reference_no);
+        formData.append("pay_date", new Date());
+        formData.append("attendence_id", rowForPayment[i].attendence_id);
+
+        axios
+          .put(`${baseUrl}` + `edit_finance`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then(() => {
+            setRefrenceNumber("");
+            setAmount("");
+            toastAlert("Sent to bank");
+            setShowModal(false);
+          });
+        toastAlert("Sent to bank");
+      }
+
+      toastAlert("Sent to bank");
+      getData();
+      setTimeout(() => {
+        getData();
+      }, 1000);
+    } catch (error) {
+      console.error("Error sending to bank:", error);
+      // Handle any errors related to sending to bank here
     }
   };
 
@@ -220,6 +364,68 @@ export default function FinanceWFHDashboard() {
         getData();
       });
   }
+
+  const TDSUserCol = [
+    {
+      field: "id",
+      headerName: "S.No",
+      width: 40,
+      renderCell: (params) => {
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? filterData
+                .filter((item) => item.status_ === 0)
+                .indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? filterData
+                .filter((item) => item.status_ === 1)
+                .indexOf(params.row)
+            : filterData
+                .filter((item) => item.status_ === 2)
+                .indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      headerName: "Name",
+      field: "name",
+      width: 150,
+      renderCell: (params) => {
+        return <div>{params.row.user_name}</div>;
+      },
+    },
+    {
+      headerName: "Department",
+      field: "department",
+      width: 150,
+      renderCell: (params) => {
+        return <div>{params.row.dept_name}</div>;
+      },
+    },
+    {
+      headerName: "Month",
+      field: "month",
+      width: 150,
+      renderCell: (params) => {
+        return <div>{params.row.month}</div>;
+      },
+    },
+    {
+      headerName: "Year",
+      field: "year",
+      width: 150,
+      renderCell: (params) => {
+        return <div>{params.row.year}</div>;
+      },
+    },
+    {
+      field: "toPay",
+      headerName: "To Pay",
+      renderCell: (params) => {
+        return <div>{`${params.row.toPay}  ₹`}</div>;
+      },
+    },
+  ];
 
   const pendingColumns = [
     {
@@ -352,7 +558,204 @@ export default function FinanceWFHDashboard() {
         );
       },
     },
+
+    // {
+    //   headerName: "UTR",
+    //   width: 250,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div>
+    //        <form method="post"
+    //         // onSubmit={(e)=>handleUTRupload(e,params.row)}
+    //          className="d-flex ">
+    //         <input className="form-control" type="text" id="utr" name="utr"  />
+    //         <button className="btn btn-primary " type="submit">
+    //           Submit
+    //         </button>
+    //       </form>
+
+    //       </div>
+    //     );
+    //   },
+    // },
   ];
+
+  if (activeAccordionIndex === 2) {
+    pendingColumns.push({
+      headerName: "UTR",
+      width: 250,
+      renderCell: (params) => {
+        return (
+          <div>
+            <form
+              method="post"
+              // onSubmit={(e)=>handleUTRupload(e,params.row)}
+              className="d-flex "
+            >
+              <input
+                className="form-control"
+                value={params.row.utr || ""}
+                disabled
+                type="text"
+                id="utr"
+                name="utr"
+              />
+              {/* <button
+                className="btn btn-primary "
+                //  type="submit"
+              >
+                Submit
+              </button> */}
+            </form>
+          </div>
+        );
+      },
+    });
+  }
+  const NonTDS = (
+    <div>
+      <div style={{ height: "50px" }}>
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadInvoices}
+          >
+            Download PDF Zip
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadExcel}
+          >
+            Download Excel
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleSendToBank}
+          >
+            Send to Bank
+          </Button>
+        )}
+      </div>
+      <DataGrid
+        rows={filterData.filter((item) => item.status_ === 0)}
+        columns={pendingColumns}
+        getRowId={(row) => row.id}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 50,
+            },
+          },
+        }}
+        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+        pageSizeOptions={[5, 25, 50, 100, 500]}
+        checkboxSelection
+        // disableRowSelectionOnClick
+        onRowSelectionModelChange={(rowIds) => {
+          handleRowSelectionModelChange(rowIds);
+          // console.log(rowIds);
+        }}
+        rowSelectionModel={rowSelectionModel}
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
+      />
+    </div>
+  );
+  const TDS = (
+    <div>
+      <div style={{ height: "50px" }}>
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadInvoices}
+          >
+            Download PDF Zip
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadExcel}
+          >
+            Download Excel
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleSendToBank}
+          >
+            Send to Bank
+          </Button>
+        )}
+      </div>
+      <DataGrid
+        rows={filterData.filter((item) => item.status_ === 0)}
+        columns={pendingColumns}
+        getRowId={(row) => row.id}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 50,
+            },
+          },
+        }}
+        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+        pageSizeOptions={[5, 25, 50, 100, 500]}
+        checkboxSelection
+        // disableRowSelectionOnClick
+        onRowSelectionModelChange={(rowIds) => {
+          handleRowSelectionModelChange(rowIds);
+          // console.log(rowIds);
+        }}
+        rowSelectionModel={rowSelectionModel}
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
+      />
+    </div>
+  );
 
   const pending = (
     <div>
@@ -366,7 +769,33 @@ export default function FinanceWFHDashboard() {
             className="ml-3 mb-2"
             onClick={handleDownloadInvoices}
           >
-            Download
+            Download PDF Zip
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadExcel}
+          >
+            Download Excel
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleSendToBank}
+          >
+            Send to Bank
           </Button>
         )}
       </div>
@@ -449,52 +878,47 @@ export default function FinanceWFHDashboard() {
   );
 
   const payoutReleased = (
-    <div>
-      <div style={{ height: "50px" }}>
-        {rowForPayment.length > 0 && (
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            sx={{ width: "100px" }}
-            className="ml-3 mb-2"
-            onClick={handleDownloadInvoices}
-          >
-            Download
-          </Button>
-        )}
-      </div>
-      {/* <h1>Payout Released</h1> */}
+    <>
+      <div>
+        <div style={{ height: "50px" }} className="d-flex">
+          {rowForPayment.length > 0 && (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ width: "100px" }}
+              className="ml-3 mb-2"
+              onClick={handleDownloadInvoices}
+            >
+              Download PDF Zip
+            </Button>
+          )}
+        </div>
+        {/* <h1>Payout Released</h1> */}
 
-      <DataGrid
-        rows={filterData.filter((item) => item.status_ === 2)}
-        columns={pendingColumns}
-        getRowId={(row) => row.id}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 50,
+        <DataGrid
+          rows={filterData.filter((item) => item.status_ === 2)}
+          columns={pendingColumns}
+          getRowId={(row) => row.id}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 50,
+              },
             },
-          },
-        }}
-        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-        pageSizeOptions={[5, 25, 50, 100, 500]}
-        checkboxSelection
-        // disableRowSelectionOnClick
-        onRowSelectionModelChange={(rowIds) => {
-          handleRowSelectionModelChange(rowIds);
-          // console.log(rowIds);
-        }}
-        rowSelectionModel={rowSelectionModel}
-        // unstable_ignoreValueFormatterDuringExport
-        // slotProps={{
-        //   toolbar: {
-        //     showQuickFilter: true,
-        //   },
-        // }}
-        // unstable_headerFilters
-      />
-    </div>
+          }}
+          slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+          pageSizeOptions={[5, 25, 50, 100, 500]}
+          checkboxSelection
+          // disableRowSelectionOnClick
+          onRowSelectionModelChange={(rowIds) => {
+            handleRowSelectionModelChange(rowIds);
+            // console.log(rowIds);
+          }}
+          rowSelectionModel={rowSelectionModel}
+        />
+      </div>
+    </>
   );
 
   return (
@@ -507,7 +931,7 @@ export default function FinanceWFHDashboard() {
             </label>
             <Select
               options={[
-                { value: "", label: "All" },
+                // { value: "", label: "All" },
                 ...departmentData.map((option) => ({
                   value: option.dept_id,
                   label: option.dept_name,
@@ -515,7 +939,7 @@ export default function FinanceWFHDashboard() {
               ]}
               value={
                 departmentFilter === ""
-                  ? { value: "", label: "All" }
+                  ? { value: "", label: "" }
                   : {
                       value: departmentFilter,
                       label:
@@ -597,21 +1021,49 @@ export default function FinanceWFHDashboard() {
               options={monthOptions}
             />
           </div>
+          <div className="form-group col-3 mt-4">
+            <button
+              onClick={handSearchleClick}
+              disabled={!years || !months || !departmentFilter}
+              className="btn btn-primary"
+            >
+              Show TDS Users
+            </button>
+          </div>
         </div>
       </div>
+
       <FormContainer
-        submitButton={false}
+        // submitButton={false}
         mainTitle="Dashboard"
         title="Finance"
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
+        handleSubmit=  {handleCSVFlieupload}
       >
+        {activeAccordionIndex === 2 && (
+          // <FormContainer {handleCSVFlieupload}>
+          <div className="d-flex">
+            <FieldContainer
+              // label="Upload UTR"
+              type="file"
+              fieldGrid={6}
+              onChange={(e) => setCSVFile(e.target.files[0])}
+
+            />
+            <input type="submit" value={"Upload utr"} className="btn btn-primary h-50 mt-3 " disabled={!CSVFile} />
+            </div>
+          // </FormContainer>
+        )}
+
         {invoice}
 
         {activeAccordionIndex === 0 && pending}
         {activeAccordionIndex === 1 && verified}
         {activeAccordionIndex === 2 && payoutReleased}
+        {activeAccordionIndex === 3 && TDS}
+        {activeAccordionIndex === 4 && NonTDS}
       </FormContainer>
 
       {showModal && (
@@ -699,6 +1151,24 @@ export default function FinanceWFHDashboard() {
             </div>
           </div>
         </div>
+      )}
+
+      {showFilterModal && (
+        <DataGridDialog
+          open={showFilterModal}
+          handleClose={() => {
+            setShowFilterModal(false),
+              setDepartmentFilter(""),
+              setMonths(""),
+              setYears("");
+          }}
+          fullWidth={true}
+          maxWidth="lg"
+          // handleFullWidthChange={handleFullWidthChange}
+          // handleMaxWidthChange={handleMaxWidthChange}
+          rows={filterData}
+          columns={TDSUserCol}
+        />
       )}
     </div>
   );
