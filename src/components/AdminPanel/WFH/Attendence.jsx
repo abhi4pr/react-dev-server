@@ -214,18 +214,27 @@ const Attendence = () => {
   };
 
   useEffect(() => {
-    axios.get(baseUrl + "get_all_wfh_users").then((res) => {
-      const data = res.data.data;
-      const filteredUser = data.filter(
-        (d) =>
-          d.dept_id === department &&
-          d.user_status == "Active" &&
-          d.job_type === "WFHD" &&
-          d.att_status == "onboarded"
-      );
-      setActiveUsers(filteredUser);
-    });
-  }, [department]);
+    const fetchData = async () => {
+      try {
+        const ActiveUsers = await axios.post(
+          baseUrl + "get_all_users_counts_with_joining_date",
+          {
+            month: selectedMonth,
+            year: selectedYear,
+            dept_id: department,
+          }
+        );
+
+        const ActiveUsersCount = ActiveUsers.data.message[0].count;
+
+        setActiveUsers(ActiveUsersCount);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [department, selectedMonth, selectedYear]);
 
   const getAttendanceData = () => {
     const payload = {
@@ -520,9 +529,7 @@ const Attendence = () => {
           </div>
 
           <h6>
-            <span style={{ color: "green" }}>
-              Active : {activeusers?.length}
-            </span>
+            <span style={{ color: "green" }}>Active : {activeusers}</span>
           </h6>
         </div>
       </div>

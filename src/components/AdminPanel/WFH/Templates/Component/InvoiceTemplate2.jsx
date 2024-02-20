@@ -1,38 +1,38 @@
 import React from "react";
 import "../assets/css/Template.css";
 import "../assets/css/media-query.css";
-const InvoiceTemplate3 = ({ data }) => {
+const InvoiceTemplate2 = ({ data }) => {
   const handleImageError = (e) => {
     console.error("Image failed to load", e);
     e.target.style.display = "none";
   };
   return (
-    <div class="invoice_wrap agency1">
-      <div class="invoice-container">
-        <div class="invoice-content-wrap" id="download_section">
-          <header class="invoice-header " id="invo_header">
-            <div class="invoice-logo-content bg-black ">
-              <div class="invoice-logo">
-                <div class="agency-logo">
-                  <h1 class="invoice-txt">INVOICE</h1>
+    <div className="invoice_wrap agency1">
+      <div className="invoice-container">
+        <div className="invoice-content-wrap" id="download_section">
+          <header className="invoice-header " id="invo_header">
+            <div className="invoice-logo-content bg-black ">
+              <div className="invoice-logo">
+                <div className="agency-logo">
+                  <h1 className="invoice-txt">INVOICE</h1>
                 </div>
               </div>
             </div>
-            <div class="temp_container">
-              <div class="invoice-agency-details">
-                <div class="invo-head-wrap">
-                  <div class="color-light-black font-md wid-40">
+            <div className="temp_container">
+              <div className="invoice-agency-details">
+                <div className="invo-head-wrap">
+                  <div className="color-light-black font-md wid-40">
                     Invoice No:
                   </div>
-                  <div class="font-md-grey color-grey wid-20">
+                  <div className="font-md-grey color-grey wid-20">
                     {data?.invoiceNo}
                   </div>
                 </div>
-                <div class="invo-head-wrap invoi-date-wrap invoi-date-wrap-agency">
-                  <div class="color-light-black font-md wid-40">
+                <div className="invo-head-wrap invoi-date-wrap invoi-date-wrap-agency">
+                  <div className="color-light-black font-md wid-40">
                     Invoice Date:
                   </div>
-                  <div class="font-md-grey color-grey wid-20">
+                  <div className="font-md-grey color-grey wid-20">
                     {data?.Creation_date.split("T")[0]
                       .split("-")
                       .reverse()
@@ -42,14 +42,16 @@ const InvoiceTemplate3 = ({ data }) => {
               </div>
             </div>
           </header>
-          <section class="agency-service-content" id="agency_service">
-            <div class="temp_container">
-              <div class="invoice-owner-conte-wrap pt-40">
-                <div class="invo-to-wrap">
-                  <div class="invoice-to-content">
-                    <p class="font-md color-light-black">Invoice By</p>
-                    <h2 class="font-lg color-blue pt-10">{data?.user_name}</h2>
-                    <p class="font-md-grey color-grey pt-10">
+          <section className="agency-service-content" id="agency_service">
+            <div className="temp_container">
+              <div className="invoice-owner-conte-wrap pt-40">
+                <div className="invo-to-wrap">
+                  <div className="invoice-to-content">
+                    <p className="font-md color-light-black">Invoice By</p>
+                    <h2 className="font-lg color-blue pt-10">
+                      {data?.user_name}
+                    </h2>
+                    <p className="font-md-grey color-grey pt-10">
                       {data?.user_email_id}
                       <br /> {data?.user_contact_no}
                       <br /> {data?.permanent_address}
@@ -59,13 +61,13 @@ const InvoiceTemplate3 = ({ data }) => {
                     </p>
                   </div>
                 </div>
-                <div class="invo-pay-to-wrap">
-                  <div class="invoice-pay-content">
-                    <p class="font-md color-light-black">Invoice To:</p>
-                    <h2 class="font-lg color-blue pt-10">
+                <div className="invo-pay-to-wrap">
+                  <div className="invoice-pay-content">
+                    <p className="font-md color-light-black">Invoice To:</p>
+                    <h2 className="font-lg color-blue pt-10">
                       CREATIVEFUEL PRIVATE LIMITED
                     </h2>
-                    <p class="font-md-grey color-grey pt-10">
+                    <p className="font-md-grey color-grey pt-10">
                       105, Gravity Mall, Vijay Nagar <br />
                       Indore, Madhya Pradesh
                       <br />
@@ -75,50 +77,54 @@ const InvoiceTemplate3 = ({ data }) => {
                   </div>
                 </div>
               </div>
-              <div class="table-wrapper agency-service-table pt-32">
-                <table class="invoice-table agency-table">
+              <div className="table-wrapper agency-service-table pt-32">
+                <table className="invoice-table agency-table">
                   <thead>
-                    <tr class="invo-tb-header bg-black">
-                      <th class="serv-wid pl-10 font-md">Service</th>
-                      <th class="desc-wid font-md">Description</th>
-                      <th class="pric-wid font-md">Price</th>
-                      <th class="tota-wid pr-10 font-md text-right ">Total</th>
+                    <tr className="invo-tb-header bg-black">
+                      <th className="serv-wid pl-10 font-md">Service</th>
+                      <th className="desc-wid font-md">Description</th>
+                      <th className="pric-wid font-md">Price</th>
+                      <th className="tota-wid pr-10 font-md text-right ">
+                        Total
+                      </th>
                     </tr>
                   </thead>
-                  <tbody class="invo-tb-body">
-                    <tr class="invo-tb-row">
-                      <td class="font-sm pl-10">Marketing</td>
-                      <td class="font-sm"> {data?.billing_header_name}</td>
-                      <td class="font-sm">{data?.net_salary}</td>
-                      <td class="font-sm text-right pr-10">
+                  <tbody className="invo-tb-body">
+                    <tr className="invo-tb-row">
+                      <td className="font-sm pl-10">Marketing</td>
+                      <td className="font-sm"> {data?.billing_header_name}</td>
+                      <td className="font-sm">{data?.net_salary}</td>
+                      <td className="font-sm text-right pr-10">
                         ₹ {data?.net_salary}
                       </td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <div class="invo-addition-wrap pt-20">
-                <div class="invo-add-info-content"></div>
-                <div class="invo-bill-total width-30">
-                  <table class="invo-total-table">
+              <div className="invo-addition-wrap pt-20">
+                <div className="invo-add-info-content"></div>
+                <div className="invo-bill-total width-30">
+                  <table className="invo-total-table">
                     <tbody>
                       <tr>
-                        <td class="font-md color-light-black ">Sub Total:</td>
-                        <td class="font-md-grey color-grey text-right pr-10 ">
+                        <td className="font-md color-light-black ">
+                          Sub Total:
+                        </td>
+                        <td className="font-md-grey color-grey text-right pr-10 ">
                           {data?.net_salary}
                         </td>
                       </tr>
-                      <tr class="tax-row">
-                        <td class="font-md color-light-black ">
-                          TDS <span class="color-grey"></span>
+                      <tr className="tax-row">
+                        <td className="font-md color-light-black ">
+                          TDS <span className="color-grey"></span>
                         </td>
-                        <td class="font-md-grey color-grey text-right pr-10 ">
+                        <td className="font-md-grey color-grey text-right pr-10 ">
                           ₹ {data?.tds_deduction}
                         </td>
                       </tr>
-                      <tr class="invo-grand-total bg-blue ">
-                        <td class="font-18-700 padding">Grand Total:</td>
-                        <td class="font-18-500 text-right pr-10 ">
+                      <tr className="invo-grand-total bg-blue ">
+                        <td className="font-18-700 padding">Grand Total:</td>
+                        <td className="font-18-500 text-right pr-10 ">
                           ₹ {data?.toPay}
                         </td>
                       </tr>
@@ -127,10 +133,10 @@ const InvoiceTemplate3 = ({ data }) => {
                 </div>
               </div>
             </div>
-            <div class="agencyFooterSection footerSection">
-              <div class="footerRow row alignFlexEnd">
-                <div class="footerCol col">
-                  <div class="signBox">
+            <div className="agencyFooterSection footerSection">
+              <div className="footerRow row alignFlexEnd">
+                <div className="footerCol col">
+                  <div className="signBox">
                     {data?.digital_signature_image_url && (
                       <img
                         src={data?.digital_signature_image_url}
@@ -140,10 +146,10 @@ const InvoiceTemplate3 = ({ data }) => {
                     )}
                   </div>
                 </div>
-                <div class="footerCol col">
-                  <div class="termBox">
-                    <h2 class="color-blue">Terms & Condition</h2>
-                    <h3>Account Details</h3>
+                <div className="footerCol col">
+                  <div className="termBox">
+                    {/* <h2 className="color-bl ue">Terms & Condition</h2> */}
+                    <h2 className="color-blue">Account Details</h2>
                     <p>
                       <span>Beneficiary name :-</span> {data?.user_name}
                     </p>
@@ -172,4 +178,4 @@ const InvoiceTemplate3 = ({ data }) => {
   );
 };
 
-export default InvoiceTemplate3;
+export default InvoiceTemplate2;

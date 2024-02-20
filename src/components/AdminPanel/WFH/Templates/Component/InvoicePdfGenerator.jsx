@@ -8,6 +8,10 @@ import InvoiceTemplate2 from "./InvoiceTemplate2";
 import InvoiceTemplate3 from "./InvoiceTemplate3";
 import InvoiceTemplate4 from "./InvoiceTemplate4";
 import InvoiceTemplate5 from "./InvoiceTemplate5";
+import InvoiceTemplate6 from "./InvoiceTemplate6";
+import InvoiceTemplate7 from "./InvoiceTemplate7";
+import InvoiceTemplate8 from "./InvoiceTemplate8";
+import InvoiceTemplate9 from "./InvoiceTemplate9";
 
 const templates = {
   1: InvoiceTemplate1,
@@ -15,20 +19,24 @@ const templates = {
   3: InvoiceTemplate3,
   4: InvoiceTemplate4,
   5: InvoiceTemplate5,
+  6: InvoiceTemplate6,
+  7: InvoiceTemplate7,
+  8: InvoiceTemplate8,
+  9: InvoiceTemplate9,
 };
 
 const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
   const { toastAlert } = useGlobalContext();
   const invoiceRef = useRef();
-  const [isUpdatingSalary, setIsUpdatingSalary] = useState(false); 
+  const [isUpdatingSalary, setIsUpdatingSalary] = useState(false);
 
-  const TemplateComponent = templates[data?.invoice_template_no] || null;
-
+  // const TemplateComponent = templates[data?.invoice_template_no] || null;
+  const TemplateComponent = templates[9] || null;
   const handleGeneratePDF = async (e, data) => {
     await generatePDF(data, invoiceRef);
     e.preventDefault();
 
-    setIsUpdatingSalary(true); 
+    setIsUpdatingSalary(true);
 
     try {
       await axios.put(`${baseUrl}` + `update_attendance`, {
@@ -53,7 +61,7 @@ const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
     } catch (error) {
       console.error("Error updating salary:", error);
     } finally {
-      setIsUpdatingSalary(false); 
+      setIsUpdatingSalary(false);
     }
   };
 
@@ -70,9 +78,9 @@ const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
         <button
           className="btn btn-secondary"
           onClick={(e) => handleGeneratePDF(e, data)}
-          disabled={isUpdatingSalary} 
+          disabled={isUpdatingSalary}
         >
-          {isUpdatingSalary ? 'Signing...' : 'Sign'}
+          {isUpdatingSalary ? "Signing..." : "Sign"}
         </button>
       )}
     </div>

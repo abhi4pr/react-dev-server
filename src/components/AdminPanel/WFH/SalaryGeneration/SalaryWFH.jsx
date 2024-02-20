@@ -143,20 +143,10 @@ const SalaryWFH = () => {
     const fetchData = async () => {
       try {
         const res = await axios.get(baseUrl + "get_all_wfh_users");
-        const ActiveUsers = await axios.post(
-          baseUrl + "get_all_users_counts_with_joining_date",
-          {
-            month: month,
-            year: year,
-            dept_id: department,
-          }
-        );
 
         const data = res.data.data;
-        const ActiveUsersCount = ActiveUsers.data.message[0].count;
 
         setAllWFHUsers(data?.length);
-        setActiveUsers(ActiveUsersCount);
         const filteredUser = data.filter((d) => d.dept_id === department);
         if (filteredUser?.length > 0) {
           const firstUser = filteredUser[0];
@@ -171,6 +161,29 @@ const SalaryWFH = () => {
 
     fetchData();
   }, [department]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const ActiveUsers = await axios.post(
+          baseUrl + "get_all_users_counts_with_joining_date",
+          {
+            month: month,
+            year: year,
+            dept_id: department,
+          }
+        );
+
+        const ActiveUsersCount = ActiveUsers.data.message[0].count;
+
+        setActiveUsers(ActiveUsersCount);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [department, month, year]);
 
   function gettingSliderData() {
     axios.get(baseUrl + "get_month_year_data").then((res) => {

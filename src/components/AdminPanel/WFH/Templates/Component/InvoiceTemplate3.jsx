@@ -4,7 +4,7 @@ import "../assets/css/media-query.css";
 import blackImg1 from "../assets/images/bus/black-img1.svg";
 import blackImg2 from "../assets/images/bus/black-img2.svg";
 import pinkImg from "../assets/images/bus/pink-img.svg";
-const InvoiceTemplate5 = ({ data }) => {
+const InvoiceTemplate3 = ({ data }) => {
   const handleImageError = (e) => {
     console.error("Image failed to load", e);
     e.target.style.display = "none";
@@ -211,7 +211,7 @@ const InvoiceTemplate5 = ({ data }) => {
                           Sub Total:
                         </td>
                         <td className="font-md-grey color-grey text-right">
-                          ₹ {data?.total_salary}
+                          ₹ {data?.net_salary}
                         </td>
                       </tr>
                       <tr className="tax-row bottom-border">
@@ -251,8 +251,7 @@ const InvoiceTemplate5 = ({ data }) => {
               </div>
               <div className="footerCol col">
                 <div className="termBox">
-                  <h2 className="color-pink">Terms & Condition</h2>
-                  <h3>Account Details</h3>
+                  <h2 className="color-pink">Account Details</h2>
                   <p>
                     <span>Beneficiary name :-</span> {data?.user_name}
                   </p>
@@ -280,4 +279,4 @@ const InvoiceTemplate5 = ({ data }) => {
   );
 };
 
-export default InvoiceTemplate5;
+export default InvoiceTemplate3;

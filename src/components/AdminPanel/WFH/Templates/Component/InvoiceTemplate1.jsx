@@ -68,7 +68,15 @@ const InvoiceTemplate1 = ({ data }) => {
                           {data?.billing_header_name}
                         </td>
                         <td scope="row" className="text_right">
-                          {data?.toPay}
+                          ₹ {data?.net_salary}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td scope="row" className="text_left">
+                          TDS
+                        </td>
+                        <td scope="row" className="text_right">
+                          - ₹ {data?.tds_deduction}
                         </td>
                       </tr>
                     </tbody>
@@ -100,8 +108,8 @@ const InvoiceTemplate1 = ({ data }) => {
                 <h3>Thank You</h3>
               </div>
               <div className="invoiceBodyFooter_right">
-                <h3>Terms & Conditions</h3>
-                <h4>Account Details</h4>
+                {/* <h3>Terms & Conditions</h3> */}
+                <h3>Account Details</h3>
                 <h4>Beneficiary Name : {data?.user_name}</h4>
                 <h4>Bank Name: {data?.bank_name}</h4>
                 <h4>Account Number :{data?.account_no}</h4>
