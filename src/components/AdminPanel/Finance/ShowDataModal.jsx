@@ -28,7 +28,7 @@ export default function ShowDataModal({
   return (
     <>
       <Dialog open={true} onClose={() => handleClose(false)} maxWidth="lg">
-        <DialogTitle>vendor Payment</DialogTitle>
+        <DialogTitle>Remainder</DialogTitle>
         <IconButton
           aria-label="close"
           onClick={() => handleClose(false)}
@@ -58,7 +58,7 @@ export default function ShowDataModal({
           onClose={() => setAknowledgementDialog(false)}
           maxWidth="lg"
         >
-          <DialogTitle>vendor Payment</DialogTitle>
+          <DialogTitle>Acknowledge</DialogTitle>
           <IconButton
             aria-label="close"
             onClick={() => setAknowledgementDialog(false)}

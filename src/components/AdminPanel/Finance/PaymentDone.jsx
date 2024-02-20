@@ -596,9 +596,59 @@ export default function PaymentDone() {
     {
       field: "vendor_name",
       headerName: "Vendor Name",
-      // width: "auto",
-      width: 370,
-
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <div
+              style={{ cursor: "pointer", marginRight: "20px" }}
+              onClick={() => handleOpenSameVender(params.row.vendor_name)}
+            >
+              {params.row.vendor_name}
+            </div>
+            <div onClick={() => handleOpenBankDetail()}>
+              <AccountBalanceIcon style={{ fontSize: "25px" }} />
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      field: "total_paid",
+      headerName: "Total Paid",
+      width: 150,
+      renderCell: (params) => {
+        return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
+          .length > 0 ? (
+          <span className="row ml-2 ">
+            <h5
+              onClick={() => handleOpenPaymentHistory(params.row, "TP")}
+              style={{ cursor: "pointer" }}
+              className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
+            >
+              {/* Total Paid */}
+              {nodeData
+                .filter(
+                  (e) =>
+                    e.vendor_name === params.row.vendor_name && e.status == 1
+                )
+                .reduce((acc, item) => acc + +item.request_amount, 0)}
+            </h5>
+          </span>
+        ) : (
+          <h5
+            style={{ cursor: "pointer" }}
+            className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
+          >
+            0
+          </h5>
+        );
+      },
+    },
+    {
+      field: "F.Y",
+      headerName: "F.Y",
+      width: 150,
       renderCell: (params) => {
         const isCurrentMonthGreaterThanMarch = new Date().getMonth() + 1 > 3;
         const currentYear = new Date().getFullYear();
@@ -612,7 +662,6 @@ export default function PaymentDone() {
             isCurrentMonthGreaterThanMarch ? currentYear + 1 : currentYear
           }`
         );
-
         const dataFY = nodeData.filter((e) => {
           const paymentDate = new Date(e.request_date);
           return (
@@ -623,55 +672,43 @@ export default function PaymentDone() {
             e.status !== 2
           );
         });
-        return (
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{ cursor: "pointer", marginRight: "20px" }}
-              onClick={() => handleOpenSameVender(params.row.vendor_name)}
-            >
-              {params.row.vendor_name}
-            </div>
-            <div onClick={() => handleOpenBankDetail()}>
-              <AccountBalanceIcon style={{ fontSize: "25px" }} />
-            </div>
-            <div>
-              {nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
-                .length > 0 ? (
-                <span className="row ml-2 ">
-                  <h5
-                    onClick={() => handleOpenPaymentHistory(params.row, "TP")}
-                    style={{ cursor: "pointer" }}
-                    className="fs-5 col-3 pointer font-sm lead  text-decoration-underline text-black-50"
-                  >
-                    {/* Total Paid */}
-                    {nodeData
-                      .filter(
-                        (e) =>
-                          e.vendor_name === params.row.vendor_name &&
-                          e.status == 1
-                      )
-                      .reduce((acc, item) => acc + +item.request_amount, 0)}
-                  </h5>
-                  <h5
-                    onClick={() => handleOpenPaymentHistory(params.row, "FY")}
-                    style={{ cursor: "pointer" }}
-                    className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
-                  >
-                    {/* Financial Year */}
-                    FY:
-                    {dataFY.reduce(
-                      (acc, item) => acc + parseFloat(item.request_amount),
-                      0
-                    )}
-                  </h5>
-                </span>
-              ) : (
-                ""
-              )}
-            </div>
-          </div>
+        return nodeData.filter((e) => e.vendor_name === params.row.vendor_name)
+          .length > 0 ? (
+          <h5
+            onClick={() => handleOpenPaymentHistory(params.row, "FY")}
+            style={{ cursor: "pointer" }}
+            className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+          >
+            {/* Financial Year */}
+
+            {dataFY.reduce(
+              (acc, item) => acc + parseFloat(item.request_amount),
+              0
+            )}
+          </h5>
+        ) : (
+          <h5
+            style={{ cursor: "pointer" }}
+            className="fs-5 col-3  font-sm lead  text-decoration-underline text-black-50"
+          >
+            0
+          </h5>
         );
       },
+    },
+    {
+      field: "Pan Img",
+      headerName: "Pan Img",
+      renderCell: (params) => {
+        return (
+        params.row.pan_img?  <img
+            src={params.row.pan_img}
+            alt="Pan"
+            style={{ width: "40px", height: "40px" }}
+          />:"NA"
+        );
+      
+      }
     },
     {
       field: "pan",
