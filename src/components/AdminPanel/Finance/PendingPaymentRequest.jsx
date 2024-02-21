@@ -78,6 +78,7 @@ export default function PendingPaymentRequest() {
   const [TDSPercentage, setTDSPercentage] = useState(1);
   const [TDSValue, setTDSValue] = useState(0);
   const [baseAmount, setBaseAmount] = useState(0);
+  const [paymentStatus, setPaymentStatus] = useState("Fully Paid");
 
   var handleAcknowledgeClick = () => {
     setAknowledgementDialog(true);
@@ -212,6 +213,16 @@ export default function PendingPaymentRequest() {
     setGSTHoldAmount(rowData.gst_amount);
   };
   const handleCalculatePaymentAmount = () => {
+    if (gstHold && TDSDeduction) {
+      setPaymentStatus("Fully Paid GST Hold and TDS Deduction");
+  } else if (gstHold) {
+      setPaymentStatus("Fully Paid GST Hold");
+  } else if (TDSDeduction) {
+      setPaymentStatus("Fully Paid TDS Deduction");
+  } else {
+      setPaymentStatus("Fully Paid");
+  }
+  
     let paymentAmount = rowData.request_amount;
     let baseamount = baseAmount;
     let tdsvalue = 0;
@@ -1724,6 +1735,30 @@ export default function PendingPaymentRequest() {
                   {...params}
                   label="Payment Mode *"
                   placeholder="Payment Mode"
+                />
+              )}
+            />
+
+            <Autocomplete
+              onChange={(e, value) => setPaymentStatus(value)}
+              value={paymentStatus}
+              disablePortal
+              disabled
+              className=" mt-2"
+              id="combo-box-demo"
+              options={[
+                "Fully Paid",
+                "Fully Paid(TDS Deducted)",
+                "Fully Paid(GST Hold)",
+                "Fully Paid(TDS Deducted & GST Hold)",
+                "Partially Paid",
+              ]}
+              fullWidth={true}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Payment Status *"
+                  placeholder="Payment Status"
                 />
               )}
             />

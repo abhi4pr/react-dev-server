@@ -1324,6 +1324,11 @@ const SidebarLinks = () => {
                         to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
                       >
                         Pending Payment Request
+                      </Link> <Link
+                        className="collapse-item"
+                        to="/admin/payment-mode-master"
+                      >
+                        Payment Mode Master
                       </Link>
                       <Link
                         className="collapse-item"
