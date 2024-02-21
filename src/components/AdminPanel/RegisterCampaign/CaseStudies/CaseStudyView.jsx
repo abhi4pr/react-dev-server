@@ -108,9 +108,9 @@ export default function CaseStudyView() {
               <div className="row">
                 {logos.map((detail, index) => (
                   <div
-                    key={index}
-                    className="col-md-3 card"
-                    style={{ margin: "0 0 10px 0" }}
+                  key={index}
+                  className="col-md-3 card"
+                  style={{ margin: "0 0 10px 0" }}
                   >
                     <div>
                       {getFileIcon(
@@ -154,7 +154,7 @@ export default function CaseStudyView() {
                         Platform - {detail.platform_name}
                       </li>
                       <li className="list-group-item">
-                        Designed By - {detail?.designed_by_name}
+                        Designed By - {detail?.designed_by}
                       </li>
                     </ul>
                     <div className="card-body">
