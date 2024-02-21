@@ -8,6 +8,9 @@ import { Link } from "react-router-dom";
 import FieldContainer from "../FieldContainer";
 import jwtDecode from "jwt-decode";
 import Modal from "react-modal"
+import EditIcon from '@mui/icons-material/Edit';
+import UploadIcon from '@mui/icons-material/Upload';
+import DetailsIcon from '@mui/icons-material/Details';
 
 const WFHDOverview = () => {
   const { ContextDept, RoleIDContext } = useAPIGlobalContext();
@@ -185,18 +188,18 @@ const WFHDOverview = () => {
       const matchesUserName = d.user_name
         ?.toLowerCase()
         .includes(lowerCaseSearch);
-      const matchesDeptName = d.dept_name
-        ?.toLowerCase()
-        .includes(lowerCaseSearch);
-      const matchesDesiName = d.desi_name
-        ?.toLowerCase()
-        .includes(lowerCaseSearch);
-      const matchesJobType = d.job_type
-        ?.toLowerCase()
-        .includes(lowerCaseSearch);
+      // const matchesDeptName = d.dept_name
+      //   ?.toLowerCase()
+      //   .includes(lowerCaseSearch);
+      // const matchesDesiName = d.desi_name
+      //   ?.toLowerCase()
+      //   .includes(lowerCaseSearch);
+      // const matchesJobType = d.job_type
+      //   ?.toLowerCase()
+      //   .includes(lowerCaseSearch);
 
       return (
-        matchesUserName || matchesDeptName || matchesDesiName || matchesJobType
+        matchesUserName
       );
     });
 
@@ -275,10 +278,10 @@ const WFHDOverview = () => {
       name: "Personal Contact Number",
       cell: (row) => row.PersonalNumber,
     },
-    {
-      name: "Alternate Contact Number",
-      cell: (row) => row.alternate_contact,
-    },
+    // {
+    //   name: "Alternate Contact Number",
+    //   cell: (row) => row.alternate_contact,
+    // },
     {
       name: "Department",
       cell: (row) => row.department_name,
@@ -298,10 +301,10 @@ const WFHDOverview = () => {
       name: "Email",
       cell: (row) => row.user_email_id,
     },
-    {
-      name: "Login ID",
-      cell: (row) => row.user_login_id,
-    },
+    // {
+    //   name: "Login ID",
+    //   cell: (row) => row.user_login_id,
+    // },
     roleID !== 2 && {
       name: "Action",
       cell: (row) => (
@@ -309,11 +312,14 @@ const WFHDOverview = () => {
           {row.att_status == "registered" ? (
             <>
               <button type="button" className="btn btn-primary mr-1">
-                <Link to={`/admin/wfhd-update/${row.user_id}`}>Edit</Link>
+                <Link to={`/admin/wfhd-update/${row.user_id}`}><EditIcon /></Link>
+              </button>
+              <button type="button" className="btn btn-primary mr-1">
+                <Link to={`/admin/wfhd-bank-update/${row.user_id}`}><DetailsIcon /></Link>
               </button>
               <button type="button" className="btn btn-success">
                 <Link to={`/admin/wfh-update-document/${row.user_id}`}>
-                  Upload Document
+                  <UploadIcon />
                 </Link>
               </button>
             </>

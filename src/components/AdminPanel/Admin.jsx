@@ -223,6 +223,7 @@ import WFHDRegister from "./WFH/WFHDRegister/WFHDRegister";
 import UpdateDocument from "./WFH/UpdateDocument";
 import HRTemplateOverview from "./WFH/HRTemplateOverview";
 import WFHDUpdate from './WFH/WFHDRegister/WFHDUpdate'
+import WFHDBankUpdate from './WFH/WFHDBankUpdate'
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -409,6 +410,10 @@ const Admin = () => {
                   <Route
                     path="/wfh-users-overview/:deptId"
                     element={<WFHUserOverview />}
+                  />
+                  <Route
+                    path="/wfhd-bank-update/:user_id"
+                    element={<WFHDBankUpdate />}
                   />
                   <Route
                     path="/wfh-update-document/:user_id"

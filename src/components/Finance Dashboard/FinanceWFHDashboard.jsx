@@ -148,9 +148,6 @@ export default function FinanceWFHDashboard() {
   const handleUTRupload = async (e, row) => {
     e.preventDefault();
 
-    console.log(e.target.value, "<----------value");
-    console.log(row, "<----------row");
-    console.log(e.utr, "<----------utr");
     // const formData = new FormData();
     // formData.append("id", row.id);
     // formData.append("utr", e.target.fileUpload.files[0]);
@@ -245,10 +242,9 @@ export default function FinanceWFHDashboard() {
 
   const handleRowSelectionModelChange = async (rowIds) => {
     setRowSelectionModel(rowIds);
-    let x = filterData.filter((item) => {
+    let x = filterData?.filter((item) => {
       return rowIds.includes(item.id);
     });
-    console.log(x, "<----------x");
     setRowForPayment(x);
   };
 
@@ -324,8 +320,6 @@ export default function FinanceWFHDashboard() {
     setAmount(() => row.net_salary);
     setId(() => row.id);
     setRefrenceNumber(() => row.reference_no);
-    console.log(row, "<----------row");
-    console.log(row.pay_date);
     setDate(() => row.pay_date);
     handlePayOut(e);
   };
@@ -340,8 +334,7 @@ export default function FinanceWFHDashboard() {
   function handlePayOut(e) {
     e.preventDefault();
     if (!refrenceNumber) return;
-    // console.log(refrenceNumber, "<----------refrenceNumber from payout");
-    // return
+    
     const formData = new FormData();
     formData.append("id", id);
     formData.append("amount", amount);
@@ -656,7 +649,7 @@ export default function FinanceWFHDashboard() {
         )}
       </div>
       <DataGrid
-        rows={filterData.filter((item) => item.status_ === 0)}
+        rows={filterData?.filter((item) => item.status_ === 0)}
         columns={pendingColumns}
         getRowId={(row) => row.id}
         initialState={{
@@ -728,7 +721,7 @@ export default function FinanceWFHDashboard() {
         )}
       </div>
       <DataGrid
-        rows={filterData.filter((item) => item.status_ === 0)}
+        rows={filterData?.filter((item) => item.status_ === 0)}
         columns={pendingColumns}
         getRowId={(row) => row.id}
         initialState={{
@@ -747,13 +740,6 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-      // unstable_ignoreValueFormatterDuringExport
-      // slotProps={{
-      //   toolbar: {
-      //     showQuickFilter: true,
-      //   },
-      // }}
-      // unstable_headerFilters
       />
     </div>
   );
@@ -801,7 +787,7 @@ export default function FinanceWFHDashboard() {
         )}
       </div>
       <DataGrid
-        rows={filterData.filter((item) => item.status_ === 0)}
+        rows={filterData?.filter((item) => item.status_ === 0)}
         columns={pendingColumns}
         getRowId={(row) => row.id}
         initialState={{
@@ -848,7 +834,7 @@ export default function FinanceWFHDashboard() {
         )}
       </div>
       <DataGrid
-        rows={filterData.filter((item) => item.status_ === 1)}
+        rows={filterData?.filter((item) => item.status_ === 1)}
         columns={pendingColumns}
         getRowId={(row) => row.id}
         initialState={{
@@ -898,7 +884,7 @@ export default function FinanceWFHDashboard() {
         {/* <h1>Payout Released</h1> */}
 
         <DataGrid
-          rows={filterData.filter((item) => item.status_ === 2)}
+          rows={filterData?.filter((item) => item.status_ === 2)}
           columns={pendingColumns}
           getRowId={(row) => row.id}
           initialState={{

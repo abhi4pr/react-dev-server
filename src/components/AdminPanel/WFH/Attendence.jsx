@@ -129,7 +129,7 @@ const Attendence = () => {
     if (row.noOfabsent > 30) {
       setRowUpdateError({
         id,
-        error: "Absent days cannot be greater than 30.",
+        error: "Absent days cannot be greater than present days.",
       });
       return;
     }
@@ -253,7 +253,7 @@ const Attendence = () => {
         department &&
           selectedMonth &&
           selectedYear &&
-          toastError("Not Data Exist");
+          toastError("Attendance not created");
       });
   };
 
@@ -290,7 +290,7 @@ const Attendence = () => {
 
   const processRowUpdate = (newRow) => {
     if (newRow.noOfabsent < 0 || newRow.noOfabsent > newRow.present_days) {
-      toastError("Absent days cannot be greater than 30.");
+      toastError("Absent days cannot be greater present days.");
       return null;
     } else {
       const updatedRow = { ...newRow, isNew: false };
