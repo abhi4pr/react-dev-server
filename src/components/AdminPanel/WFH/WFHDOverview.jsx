@@ -29,6 +29,7 @@ const WFHDOverview = () => {
   const [trainingDate, setTrainingDate] = useState("");
   const [showOnBoardModal, setShowOnBoardModal] = useState(false)
   const [activeTab, setActiveTab] = useState(0)
+  const [searchFilter, setSearchFilter] = useState([])
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -42,7 +43,6 @@ const WFHDOverview = () => {
       const FinalResonse = response.data.data
 
       let filterTabWise = [];
-      console.log(activeTab, "activeTab");
       switch (activeTab) {
         case 0:
           filterTabWise = FinalResonse.filter(
@@ -75,6 +75,7 @@ const WFHDOverview = () => {
       }
 
       setFilteredDatas(filterTabWise);
+      setSearchFilter(filterTabWise)
 
     } else {
       const deptWiseData = response.data.data?.filter(
@@ -118,6 +119,8 @@ const WFHDOverview = () => {
 
 
       setFilteredDatas(filterTabWise);
+      setSearchFilter(filterTabWise)
+
       setSavedData(response.data.data?.filter((d) => d.dept_id == ContextDept));
     }
     const counts = response.data.data.reduce((acc, curr) => {
@@ -184,27 +187,27 @@ const WFHDOverview = () => {
   useEffect(() => {
     const lowerCaseSearch = search.toLowerCase();
 
-    const result = savedData.filter((d) => {
+    const result = searchFilter.filter((d) => {
       const matchesUserName = d.user_name
         ?.toLowerCase()
         .includes(lowerCaseSearch);
-      // const matchesDeptName = d.dept_name
-      //   ?.toLowerCase()
-      //   .includes(lowerCaseSearch);
-      // const matchesDesiName = d.desi_name
-      //   ?.toLowerCase()
-      //   .includes(lowerCaseSearch);
-      // const matchesJobType = d.job_type
-      //   ?.toLowerCase()
-      //   .includes(lowerCaseSearch);
+      const matchesDeptName = d.dept_name
+        ?.toLowerCase()
+        .includes(lowerCaseSearch);
+      const matchesDesiName = d.desi_name
+        ?.toLowerCase()
+        .includes(lowerCaseSearch);
+      const matchesJobType = d.job_type
+        ?.toLowerCase()
+        .includes(lowerCaseSearch);
 
       return (
-        matchesUserName
+        matchesUserName || matchesDeptName || matchesDesiName || matchesJobType
       );
     });
 
-    setAllWFHDData(result);
-  }, [search, savedData]); // Dependencies
+    setFilteredDatas(result);
+  }, [search, searchFilter]); // Dependencies
 
   const FilterTabData = (filterValue) => {
     let filteredData = [];
@@ -233,7 +236,9 @@ const WFHDOverview = () => {
     }
 
     setFilteredDatas(filteredData);
+    setSearchFilter(filteredData)
   };
+
 
   const columns = [
     {

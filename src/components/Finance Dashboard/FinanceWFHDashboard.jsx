@@ -117,7 +117,7 @@ export default function FinanceWFHDashboard() {
       const departmentMatch = !departmentFilter || d.dept === departmentFilter;
       const monthsMatch = !months || d.month === months;
 
-      const yearsMatch = !years || d.year.toString() === years;
+      const yearsMatch = !years || d.year == years;
       return departmentMatch && monthsMatch && yearsMatch;
     });
     setFilterData(result);
