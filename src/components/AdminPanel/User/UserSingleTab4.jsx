@@ -4,7 +4,7 @@ import { FcDownload } from "react-icons/fc";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import ApproveReject from "./ApproveReject";
 import Tab4DocumentCard from "./Tab4DocumentCard";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const UserSingleTab4 = ({ user, id, getData }) => {
   const whatsappApi = WhatsappAPI();
@@ -65,7 +65,7 @@ const UserSingleTab4 = ({ user, id, getData }) => {
 
     axios({
       method: "put",
-      url: baseUrl+"update_user",
+      url: baseUrl + "update_user",
       data: formData,
     }).then(() => {
       if (emptyState) emptyState("");
@@ -80,7 +80,7 @@ const UserSingleTab4 = ({ user, id, getData }) => {
       .then(() => {
         e.preventDefault();
         axios
-          .post(baseUrl+"add_send_user_mail", {
+          .post(baseUrl + "add_send_user_mail", {
             email: fetchedData[0].user_email_id,
             subject: "User Onboard",
             text: "Your Some Document is not clear Plzz Upload Again",
@@ -146,100 +146,6 @@ const UserSingleTab4 = ({ user, id, getData }) => {
             />
           )}
 
-          {/* {user.other_upload_url && (
-          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-              <div className="card documentCard_bx">
-              <div className="card-body">
-                  <div className="img-thumbnail">
-                    <img
-                      className="img-fluid"
-                      src={user.other_upload_url}
-                      alt="user_photo"
-                    />
-                  </div>
-                <div className="d-flex justify-content-between mb-4">
-                  <h3 className="fs-4 mt-2">Other</h3>
-                  <a
-                    className="fs-4 mb-2"
-                    href={user.other_upload_url}
-                    download
-                  >
-                    <FcDownload />
-                  </a>
-                </div>
-                <div className="d-flex">
-                  <button
-                    type="button"
-                    onClick={(e) =>
-                      handleVerification(e, "pan_validate", "Approve")
-                    }
-                  >
-                    Approve
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) =>
-                      handleVerification(e, "pan_validate", "Reject")
-                    }
-                  >
-                    Reject
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )} */}
-          {/* {user.highest_upload_url && (
-          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
-              <div className="card documentCard_bx">
-              <div className="card-body">
-                  <div className="img-thumbnail">
-                    <img
-                      src={user.highest_upload_url}
-                      className="img-fluid"
-                      alt="user_photo"
-                    />
-                  </div>
-                <div className="d-flex justify-content-between">
-                  <h3 className="fs-4 mt-2">Higest Qualification</h3>
-                  <a
-                    className="fs-4 mb-2"
-                    href={user.highest_upload_url}
-                    download
-                  >
-                    <FcDownload />
-                  </a>
-                </div>
-                <div className="d-flex">
-                  <button
-                    type="button"
-                    onClick={(e) =>
-                      handleVerification(e, "pan_validate", "Approve")
-                    }
-                  >
-                    Approve
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) =>
-                      handleVerification(e, "pan_validate", "Reject")
-                    }
-                  >
-                    Reject
-                  </button>
-                </div>
-                <h5 className="fs-6">
-                  <span className="text-black-50 ">
-                    Higest Qualification :-
-                  </span>
-                  {user.highest_qualification_name
-                    ? user.highest_qualification_name
-                    : "NA"}
-                </h5>
-              </div>
-            </div>
-          </div>
-        )} */}
           {user.uid_url && (
             <Tab4DocumentCard
               documentTitle="UID"
@@ -488,43 +394,6 @@ const UserSingleTab4 = ({ user, id, getData }) => {
               }
             />
           )}
-
-          {/* {otherDocuments &&
-            otherDocuments.map((item, i) => {
-              return (
-                <div
-                  key={i}
-                  className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12"
-                >
-                  <div className="card documentCard_bx">
-                    <div className="card-body">
-                      <h2>{item.field_name}</h2> 
-                      <div className="img-thumbnail">
-                        <img
-                          src={item.field_value}
-                          className="img-fluid"
-                          alt="user_photo"
-                        />
-                      </div>
-                      <div className="documentCard_text">
-                        <h3>{item.field_name}</h3>
-                        <div className="documentCard_download">
-                          <a
-                            className="fs-4 mb-2"
-                            href={item.field_value}
-                            download
-                          >
-                            <FcDownload />
-                          </a>
-                        </div>
-                      </div>
-
-                      <h2 className="fs-6 "><span className="lead text-black-50 fs-6">UID No :-</span>{user.uid_no}</h2> 
-                    </div>
-                  </div>
-                </div>
-              );
-            })} */}
         </div>
       </div>
     </>

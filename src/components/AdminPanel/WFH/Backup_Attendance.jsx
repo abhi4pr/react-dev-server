@@ -6,7 +6,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
 import Select from "react-select";
 import DataTable from "react-data-table-component";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const Backup_Attendence = () => {
   const { toastAlert } = useGlobalContext();
@@ -56,7 +56,7 @@ const Backup_Attendence = () => {
   const userID = decodedToken.id;
 
   useEffect(() => {
-    axios.get(baseUrl+"allwfhusers").then((res) => {
+    axios.get(baseUrl + "allwfhusers").then((res) => {
       const data = res.data.data;
       const filteredUser = data.filter(
         (d) => d.dept_id === department && d.user_status
@@ -66,11 +66,9 @@ const Backup_Attendence = () => {
   }, [department]);
 
   useEffect(() => {
-    axios
-      .get(baseUrl+"get_all_departments")
-      .then((res) => {
-        getDepartmentData(res.data);
-      });
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      getDepartmentData(res.data);
+    });
   }, []);
 
   const getAttendanceData = () => {
@@ -81,7 +79,7 @@ const Backup_Attendence = () => {
       year: selectedYear,
     };
     axios
-      .post(baseUrl+"salaryfromattendence", payload)
+      .post(baseUrl + "salaryfromattendence", payload)
       .then((res) => {
         console.log(res.data, "res");
         setAttendenceData(res.data.data);
@@ -102,9 +100,7 @@ const Backup_Attendence = () => {
   useEffect(() => {
     if (department) {
       axios
-        .get(
-          `${baseUrl}`+`getuserdeptwisewfhdata/${department}`
-        )
+        .get(`${baseUrl}` + `getuserdeptwisewfhdata/${department}`)
         .then((res) => {
           getUsersData(res.data);
         });
@@ -114,7 +110,7 @@ const Backup_Attendence = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post(baseUrl+"attendencemastpost", {
+      .post(baseUrl + "attendencemastpost", {
         dept: department,
         user_id: userName,
         noOfabsent: Number(noOfAbsent),

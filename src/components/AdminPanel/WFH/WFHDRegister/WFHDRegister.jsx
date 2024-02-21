@@ -218,6 +218,7 @@ const WFHDRegister = ({ userUpdateID }) => {
         .get(baseUrl + `get_all_designations_by_deptId/${department}`)
         .then((res) => {
           setDesignationData(res.data.data);
+          console.log(res.data.data, "-----------data");
         });
     }
   }, [department]);
@@ -786,7 +787,13 @@ const WFHDRegister = ({ userUpdateID }) => {
             }))}
             onChange={setCity}
             required={true}
-            value={city}
+            // value={city}
+            value={{
+              value: city,
+              label:
+                cityData.find((gotCity) => gotCity.city_name == city)
+                  ?.city_name || "",
+            }}
             placeholder="Select a city..."
             isClearable
           />

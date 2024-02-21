@@ -19,11 +19,36 @@ import DocumentTab from "../../PreOnboarding/DocumentTab";
 import { baseUrl } from "../../../utils/config";
 import OccupationList from "../../../assets/js/OccupationList";
 import familyRelationList from "../../../assets/js/familyRelationList";
+import { ToastContainer } from "react-toastify";
 
 const castOption = ["General", "OBC", "SC", "ST"];
 const colourOptions = [
   { value: "English", label: "English" },
   { value: "Hindi", label: "Hindi" },
+  { value: "Spanish", label: "Spanish" },
+  { value: "Mandarin", label: "Mandarin" },
+  { value: "French", label: "French" },
+  { value: "Arabic", label: "Arabic" },
+  { value: "Bengali", label: "Bengali" },
+  { value: "Russian", label: "Russian" },
+  { value: "Portuguese", label: "Portuguese" },
+  { value: "Indonesian", label: "Indonesian" },
+  { value: "Urdu", label: "Urdu" },
+  { value: "German", label: "German" },
+  { value: "Japanese", label: "Japanese" },
+  { value: "Swahili", label: "Swahili" },
+  { value: "Marathi", label: "Marathi" },
+  { value: "Telugu", label: "Telugu" },
+  { value: "Turkish", label: "Turkish" },
+  { value: "Tamil", label: "Tamil" },
+  { value: "Vietnamese", label: "Vietnamese" },
+  { value: "Italian", label: "Italian" },
+  { value: "Korean", label: "Korean" },
+  { value: "Persian", label: "Persian" },
+  { value: "Polish", label: "Polish" },
+  { value: "Dutch", label: "Dutch" },
+  { value: "Greek", label: "Greek" },
+  { value: "Thai", label: "Thai" },
   { value: "Other", label: "Other" },
 ];
 
@@ -227,6 +252,30 @@ const UserUpdate = () => {
   ];
   // const jobTypeData = ["WFO", "WFH"];
   const genderData = ["Male", "Female", "Other"];
+
+  const familyRelations = [
+    "Brother",
+    "Sister",
+    "Mother",
+    "Father",
+    "Son",
+    "Daughter",
+    "Aunt",
+    "Uncle",
+    "Cousin",
+    "Grandmother",
+    "Grandfather",
+    "Nephew",
+    "Niece",
+    "Stepmother",
+    "Stepfather",
+    "Stepson",
+    "Stepdaughter",
+    "Half-brother",
+    "Half-sister",
+    // Add more relations as needed
+  ];
+
   const bloodGroupData = [
     "A+ (A Positive)",
     "A- (A Negetive)",
@@ -275,6 +324,87 @@ const UserUpdate = () => {
   //   );
   //   setRoomId(selectedOption);
   // }, [sitting, refrenceData, roomId]);
+
+  // login progress bar---------------------------------------------------------------------
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const fields = [
+      jobType,
+      department,
+      subDepartment,
+      designation,
+      reportL1,
+      personalEmail,
+      personalContact,
+      alternateContact,
+      emergencyContact,
+      emergencyContactName,
+      emergencyContactRelation,
+      loginId,
+      password,
+      speakingLanguage,
+      // selectedImage,
+      gender,
+      nationality,
+      dateOfBirth,
+      FatherName,
+      motherName,
+      bloodGroup,
+      maritialStatus,
+      address,
+      city,
+      state,
+      pincode,
+      joiningDate,
+      userStatus,
+      bankName,
+      bankAccountNumber,
+      username,
+      roles,
+    ];
+    const filledFields = fields.filter((field) => field).length;
+    const progressPercentage = (filledFields / fields.length) * 100;
+    setProgress(progressPercentage);
+
+    // Display toast notifications at specific milestones
+    const milestones = [25, 50, 75, 100];
+    if (milestones.includes(progressPercentage)) {
+      // toast.info(`Progress: ${progressPercentage}%`, { position: "top-right" });
+    }
+  }, [
+    jobType,
+    department,
+    subDepartment,
+    designation,
+    reportL1,
+    personalEmail,
+    personalContact,
+    alternateContact,
+    emergencyContact,
+    emergencyContactName,
+    emergencyContactRelation,
+    loginId,
+    password,
+    speakingLanguage,
+    // selectedImage,
+    gender,
+    nationality,
+    dateOfBirth,
+    FatherName,
+    motherName,
+    bloodGroup,
+    maritialStatus,
+    address,
+    city,
+    state,
+    pincode,
+    joiningDate,
+    userStatus,
+    bankName,
+    bankAccountNumber,
+    username,
+    roles,
+  ]);
 
   useEffect(() => {
     if (department) {
@@ -677,8 +807,8 @@ const UserUpdate = () => {
     formData.append("Nationality", nationality);
     formData.append("DOB", dateOfBirth);
     formData.append("Age", age);
-    formData.append("FatherName", FatherName);
-    formData.append("MotherName", motherName);
+    formData.append("fatherName", FatherName);
+    formData.append("motherName", motherName);
     formData.append(
       "Hobbies",
       hobbies?.map((option) => option?.value)
@@ -733,6 +863,16 @@ const UserUpdate = () => {
         .catch(function (err) {
           setLoading(false);
           console.error(err);
+        });
+
+      // new api ------------------------------------------------------
+      await axios
+        .post(baseUrl + "update_user_history", formData)
+        .then((res) => {
+          console.log("History sent successfully:", res);
+        })
+        .catch((error) => {
+          console.log("Failed to send History:", error);
         });
 
       if (reportL1 !== "") {
@@ -1018,10 +1158,32 @@ const UserUpdate = () => {
     setPassword(generatePassword);
   };
 
+  // const generateLoginId = () => {
+  //   const randomSuffix = Math.floor(Math.random() * 1000);
+  //   const generatedLoginId = `${username}@${randomSuffix}`;
+  //   setLoginId(generatedLoginId);
+  // };
+
   const generateLoginId = () => {
-    const randomSuffix = Math.floor(Math.random() * 1000);
-    const generatedLoginId = `${username}@${randomSuffix}`;
+    const userName = username.trim().toLowerCase().split(" ");
+
+    const loginIdOption1 = userName[0] + userName[1].charAt(0);
+
+    const loginIdOption2 = userName[0].charAt(0) + userName[1];
+
+    const loginIdOption3 = userName.join(".");
+
+    // Randomly choose one of the options
+    const randomIndex = Math.floor(Math.random() * 3);
+    const generatedLoginId = [loginIdOption1, loginIdOption2, loginIdOption3][
+      randomIndex
+    ];
+
     setLoginId(generatedLoginId);
+
+    if (generatedLoginId.length > 0) {
+      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+    }
   };
 
   const handleLoginIdChange = (event) => {
@@ -1130,8 +1292,8 @@ const UserUpdate = () => {
 
   const accordionButtons = [
     "General",
-    "Personal",
-    "Salary",
+    // "Personal",
+    // "Salary",
     // "Documents",
     "Family Details",
     "Education Details",
@@ -1405,13 +1567,35 @@ const UserUpdate = () => {
         onChange={(e) => setEmergencyContactName(e.target.value)}
       />
 
-      <FieldContainer
+      {/* <FieldContainer
         label="Emergency Contact 1 Person Relation"
         astric={true}
         fieldGrid={3}
         value={emergencyContactRelation}
         onChange={(e) => setEmergencyContactRelation(e.target.value)}
-      />
+      /> */}
+
+      <div className="form-group col-3">
+        <label className="form-label">
+          Emergency Contact 1 Person Relation
+          <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={familyRelations.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
+          }))}
+          value={{
+            value: emergencyContactRelation,
+            label: `${emergencyContactRelation}`,
+          }}
+          onChange={(e) => {
+            setEmergencyContactRelation(e.value);
+          }}
+          required
+        />
+      </div>
 
       <ContactNumberReact
         label="Emergency Contact2"
@@ -1503,304 +1687,17 @@ const UserUpdate = () => {
         />
       </div>
 
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+      {/* <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button
           className="btn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
         >
           <ArrowForwardIosIcon />
         </button>
-      </div>
-    </>
-  );
+      </div> */}
 
-  const salaryFields = (
-    <>
-      <div className="from-group col-3">
-        <label className="form-label">
-          Joining Date <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <input
-          type="date"
-          className="form-control"
-          value={joiningDate}
-          onChange={(e) => setJoiningDate(e.target.value)}
-        />
-      </div>
+      {/* Personal Tab Input here-------------------------------------------- */}
 
-      {(jobType === "WFH" || jobType === "WFHD") && (
-        <>
-          <FieldContainer
-            label="Salary"
-            type="number"
-            fieldGrid={3}
-            value={salary}
-            onChange={(e) => setSalary(e.target.value)}
-          />
-          <div className="form-group col-3">
-            <label className="form-label">
-              TDS Applicable<sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              className=""
-              options={tdsApplicableData?.map((option) => ({
-                value: `${option}`,
-                label: `${option}`,
-              }))}
-              value={{
-                value: tdsApplicable,
-                label: tdsApplicable,
-              }}
-              onChange={(e) => {
-                const selectedValue = e.value;
-                setTdsApplicable(e.value);
-                setShowTdsPercentage(selectedValue === "Yes");
-              }}
-              // required
-            />
-          </div>
-          {showTdsPercentage && (
-            <FieldContainer
-              label="TDS Percentage"
-              fieldGrid={3}
-              type="number"
-              value={tdsPercentage}
-              required={false}
-              onChange={(e) => setTdsPercentage(e.target.value)}
-            />
-          )}
-        </>
-      )}
-      <div className="form-group col-3">
-        <label className="form-label">
-          Status <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={statusData?.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: userStatus,
-            label: `${userStatus}`,
-          }}
-          onChange={(e) => {
-            setUserStatus(e.value);
-          }}
-          required
-        />
-      </div>
-      {userStatus == "Resign" && (
-        <FieldContainer
-          type="date"
-          label="Date of Resign"
-          fieldGrid={3}
-          value={releavingDate}
-          onChange={(e) => setReleavingDate(e.target.value)}
-        />
-      )}
-
-      <FieldContainer
-        label="Bank Name"
-        astric={true}
-        value={bankName}
-        onChange={(e) => setBankName(e.target.value)}
-      />
-      <FieldContainer
-        label="Bank Account Number"
-        astric={true}
-        value={bankAccountNumber}
-        onChange={(e) => setBankAccountNumber(e.target.value)}
-      />
-      <FieldContainer
-        label="IFSC"
-        astric={true}
-        value={IFSC}
-        onChange={(e) => setIFSC(e.target.value.toUpperCase())}
-      />
-      <FieldContainer
-        label="Beneficiary"
-        value={beneficiary}
-        onChange={(e) => setBeneficiary(e.target.value)}
-      />
-
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
-        >
-          <ArrowBackIosIcon />
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
-        >
-          <ArrowForwardIosIcon />
-        </button>
-      </div>
-    </>
-  );
-
-  // const documentsFields = (
-  //   <>
-  //     <FieldContainer
-  //       label="UID Number"
-  //       onChange={handleUIDInputChange}
-  //       fieldGrid={5}
-  //       type="text"
-  //       required={false}
-  //       value={uidNo}
-  //     />
-
-  //     <FieldContainer
-  //       label="UID"
-  //       onChange={(e) => setUID(e.target.files[0])}
-  //       fieldGrid={5}
-  //       type="file"
-  //       required={false}
-  //     />
-
-  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-  //       <div className="form-group download_btn">
-  //         <label>&nbsp;</label>
-  //         {uidImage && (
-  //           <a href={uidImage} download>
-  //             <i className="bi bi-cloud-arrow-down"></i> UID Download{" "}
-  //           </a>
-  //         )}
-  //       </div>
-  //     </div>
-  //     <FieldContainer
-  //       label="PAN Number"
-  //       onChange={handlePANChange}
-  //       fieldGrid={5}
-  //       type="text"
-  //       required={false}
-  //       value={panNo}
-  //     />
-
-  //     <FieldContainer
-  //       label="Pan Image"
-  //       onChange={(e) => setPanUpload(e.target.files[0])}
-  //       fieldGrid={5}
-  //       type="file"
-  //       required={false}
-  //     />
-  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-  //       <div className="form-group download_btn">
-  //         <label>&nbsp;</label>
-  //         {panImage && (
-  //           <a href={panImage} download>
-  //             <i className="bi bi-cloud-arrow-down"></i> PAN Download{" "}
-  //           </a>
-  //         )}
-  //       </div>
-  //     </div>
-
-  //     <div className="form-group col-5">
-  //       <label className="form-label">Higest Qualification</label>
-  //       <Select
-  //         className=""
-  //         options={higestQualificationData?.map((option) => ({
-  //           value: `${option}`,
-  //           label: `${option}`,
-  //         }))}
-  //         value={{
-  //           value: higestQualification,
-  //           label: `${higestQualification}`,
-  //         }}
-  //         onChange={(e) => {
-  //           setHigestQualification(e.value);
-  //         }}
-  //         required
-  //       />
-  //     </div>
-  //     <FieldContainer
-  //       label="Highest Qualification"
-  //       onChange={(e) => setHighestUpload(e.target.files[0])}
-  //       fieldGrid={5}
-  //       type="file"
-  //       required={false}
-  //     />
-  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-  //       <div className="form-group download_btn">
-  //         <label>&nbsp;</label>
-  //         {highestQualificationImage && (
-  //           <a href={highestQualificationImage} download>
-  //             <i className="bi bi-cloud-arrow-down"></i> Highest
-  //             QualificationImage Download{" "}
-  //           </a>
-  //         )}
-  //       </div>
-  //     </div>
-  //     <FieldContainer
-  //       label="Other Image"
-  //       onChange={(e) => setOtherUpload(e.target.files[0])}
-  //       fieldGrid={10}
-  //       type="file"
-  //       required={false}
-  //     />
-  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-  //       <div className="form-group download_btn">
-  //         <label>&nbsp;</label>
-  //         {otherImage && (
-  //           <a href={otherImage} download>
-  //             <i className="bi bi-cloud-arrow-down"></i> Highest
-  //             QualificationImage Download{" "}
-  //           </a>
-  //         )}
-  //       </div>
-  //     </div>
-  //     {!isValidPAN && <p style={{ color: "red" }}>Invalid PAN format</p>}
-  //     {!isValidUID && (
-  //       <p style={{ color: "red" }}>Invalid Aadhaar number format</p>
-  //     )}
-
-  //     <div style={{ display: "flex", justifyContent: "space-between" }}>
-  //       <button
-  //         className="btn btn-primary"
-  //         onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
-  //       >
-  //         <ArrowBackIosIcon />
-  //       </button>
-  //       <button
-  //         className="btn btn-primary"
-  //         onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
-  //       >
-  //         <ArrowForwardIosIcon />
-  //       </button>
-  //     </div>
-
-  //     {otherDocuments && (
-  //       <div>
-  //         <h3>Other Documents</h3>
-  //         {otherDocuments?.map((item, index) => {
-  //           return (
-  //             <div key={index} className="d-flex ">
-  //               <input
-  //                 type="text"
-  //                 className="form-control mt-2 col-6 me-2"
-  //                 value={item.field_name}
-  //                 onChange={(e) => otherDocumentNameChangeHandle(e, index)}
-  //               />
-  //               <input
-  //                 className="form-control mt-2 col-6 "
-  //                 label={item.field_name}
-  //                 onChange={(e) => otherDocumentImageChangeHandler(e, index)}
-  //                 type="file"
-  //                 required={false}
-  //               />
-  //             </div>
-  //           );
-  //         })}
-  //       </div>
-  //     )}
-  //   </>
-  // );
-
-  const personalFields = (
-    <>
       <div className="form-group col-3">
         <label className="form-label">
           Spoken Languages <sup style={{ color: "red" }}>*</sup>
@@ -2015,7 +1912,7 @@ const UserUpdate = () => {
         required={false}
       />
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           className="btn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
@@ -2028,9 +1925,286 @@ const UserUpdate = () => {
         >
           <ArrowForwardIosIcon />
         </button>
+      </div> */}
+
+      {/* Salary Tab Inputs here----------------------------------------------- */}
+
+      <div className="from-group col-3">
+        <label className="form-label">
+          Joining Date <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <input
+          type="date"
+          className="form-control"
+          value={joiningDate}
+          onChange={(e) => setJoiningDate(e.target.value)}
+        />
+      </div>
+
+      {(jobType === "WFH" || jobType === "WFHD") && (
+        <>
+          <FieldContainer
+            label="Salary"
+            type="number"
+            fieldGrid={3}
+            value={salary}
+            onChange={(e) => setSalary(e.target.value)}
+          />
+          <div className="form-group col-3">
+            <label className="form-label">
+              TDS Applicable<sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={tdsApplicableData?.map((option) => ({
+                value: `${option}`,
+                label: `${option}`,
+              }))}
+              value={{
+                value: tdsApplicable,
+                label: tdsApplicable,
+              }}
+              onChange={(e) => {
+                const selectedValue = e.value;
+                setTdsApplicable(e.value);
+                setShowTdsPercentage(selectedValue === "Yes");
+              }}
+              // required
+            />
+          </div>
+          {showTdsPercentage && (
+            <FieldContainer
+              label="TDS Percentage"
+              fieldGrid={3}
+              type="number"
+              value={tdsPercentage}
+              required={false}
+              onChange={(e) => setTdsPercentage(e.target.value)}
+            />
+          )}
+        </>
+      )}
+      <div className="form-group col-3">
+        <label className="form-label">
+          Status <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={statusData?.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
+          }))}
+          value={{
+            value: userStatus,
+            label: `${userStatus}`,
+          }}
+          onChange={(e) => {
+            setUserStatus(e.value);
+          }}
+          required
+        />
+      </div>
+      {userStatus == "Resign" && (
+        <FieldContainer
+          type="date"
+          label="Date of Resign"
+          fieldGrid={3}
+          value={releavingDate}
+          onChange={(e) => setReleavingDate(e.target.value)}
+        />
+      )}
+
+      <FieldContainer
+        label="Bank Name"
+        astric={true}
+        value={bankName}
+        onChange={(e) => setBankName(e.target.value)}
+      />
+      <FieldContainer
+        label="Bank Account Number"
+        astric={true}
+        value={bankAccountNumber}
+        onChange={(e) => setBankAccountNumber(e.target.value)}
+      />
+      <FieldContainer
+        label="IFSC"
+        astric={true}
+        value={IFSC}
+        onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+      />
+      <FieldContainer
+        label="Beneficiary"
+        value={beneficiary}
+        onChange={(e) => setBeneficiary(e.target.value)}
+      />
+
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          className="btn btn-primary"
+          onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
+        >
+          <ArrowForwardIosIcon />
+        </button>
       </div>
     </>
   );
+
+  // const documentsFields = (
+  //   <>
+  //     <FieldContainer
+  //       label="UID Number"
+  //       onChange={handleUIDInputChange}
+  //       fieldGrid={5}
+  //       type="text"
+  //       required={false}
+  //       value={uidNo}
+  //     />
+
+  //     <FieldContainer
+  //       label="UID"
+  //       onChange={(e) => setUID(e.target.files[0])}
+  //       fieldGrid={5}
+  //       type="file"
+  //       required={false}
+  //     />
+
+  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+  //       <div className="form-group download_btn">
+  //         <label>&nbsp;</label>
+  //         {uidImage && (
+  //           <a href={uidImage} download>
+  //             <i className="bi bi-cloud-arrow-down"></i> UID Download{" "}
+  //           </a>
+  //         )}
+  //       </div>
+  //     </div>
+  //     <FieldContainer
+  //       label="PAN Number"
+  //       onChange={handlePANChange}
+  //       fieldGrid={5}
+  //       type="text"
+  //       required={false}
+  //       value={panNo}
+  //     />
+
+  //     <FieldContainer
+  //       label="Pan Image"
+  //       onChange={(e) => setPanUpload(e.target.files[0])}
+  //       fieldGrid={5}
+  //       type="file"
+  //       required={false}
+  //     />
+  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+  //       <div className="form-group download_btn">
+  //         <label>&nbsp;</label>
+  //         {panImage && (
+  //           <a href={panImage} download>
+  //             <i className="bi bi-cloud-arrow-down"></i> PAN Download{" "}
+  //           </a>
+  //         )}
+  //       </div>
+  //     </div>
+
+  //     <div className="form-group col-5">
+  //       <label className="form-label">Higest Qualification</label>
+  //       <Select
+  //         className=""
+  //         options={higestQualificationData?.map((option) => ({
+  //           value: `${option}`,
+  //           label: `${option}`,
+  //         }))}
+  //         value={{
+  //           value: higestQualification,
+  //           label: `${higestQualification}`,
+  //         }}
+  //         onChange={(e) => {
+  //           setHigestQualification(e.value);
+  //         }}
+  //         required
+  //       />
+  //     </div>
+  //     <FieldContainer
+  //       label="Highest Qualification"
+  //       onChange={(e) => setHighestUpload(e.target.files[0])}
+  //       fieldGrid={5}
+  //       type="file"
+  //       required={false}
+  //     />
+  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+  //       <div className="form-group download_btn">
+  //         <label>&nbsp;</label>
+  //         {highestQualificationImage && (
+  //           <a href={highestQualificationImage} download>
+  //             <i className="bi bi-cloud-arrow-down"></i> Highest
+  //             QualificationImage Download{" "}
+  //           </a>
+  //         )}
+  //       </div>
+  //     </div>
+  //     <FieldContainer
+  //       label="Other Image"
+  //       onChange={(e) => setOtherUpload(e.target.files[0])}
+  //       fieldGrid={10}
+  //       type="file"
+  //       required={false}
+  //     />
+  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
+  //       <div className="form-group download_btn">
+  //         <label>&nbsp;</label>
+  //         {otherImage && (
+  //           <a href={otherImage} download>
+  //             <i className="bi bi-cloud-arrow-down"></i> Highest
+  //             QualificationImage Download{" "}
+  //           </a>
+  //         )}
+  //       </div>
+  //     </div>
+  //     {!isValidPAN && <p style={{ color: "red" }}>Invalid PAN format</p>}
+  //     {!isValidUID && (
+  //       <p style={{ color: "red" }}>Invalid Aadhaar number format</p>
+  //     )}
+
+  //     <div style={{ display: "flex", justifyContent: "space-between" }}>
+  //       <button
+  //         className="btn btn-primary"
+  //         onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
+  //       >
+  //         <ArrowBackIosIcon />
+  //       </button>
+  //       <button
+  //         className="btn btn-primary"
+  //         onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
+  //       >
+  //         <ArrowForwardIosIcon />
+  //       </button>
+  //     </div>
+
+  //     {otherDocuments && (
+  //       <div>
+  //         <h3>Other Documents</h3>
+  //         {otherDocuments?.map((item, index) => {
+  //           return (
+  //             <div key={index} className="d-flex ">
+  //               <input
+  //                 type="text"
+  //                 className="form-control mt-2 col-6 me-2"
+  //                 value={item.field_name}
+  //                 onChange={(e) => otherDocumentNameChangeHandle(e, index)}
+  //               />
+  //               <input
+  //                 className="form-control mt-2 col-6 "
+  //                 label={item.field_name}
+  //                 onChange={(e) => otherDocumentImageChangeHandler(e, index)}
+  //                 type="file"
+  //                 required={false}
+  //               />
+  //             </div>
+  //           );
+  //         })}
+  //       </div>
+  //     )}
+  //   </>
+  // );
 
   const familyFields = (
     <>
@@ -2266,6 +2440,30 @@ const UserUpdate = () => {
   );
   return (
     <>
+      <div className="mb-2 " style={{}}>
+        <ToastContainer />
+        <div
+          style={{
+            marginTop: 20,
+            width: "100%",
+            backgroundColor: "#ddd",
+            borderRadius: "10px",
+          }}
+        >
+          <div
+            className="progress-bar"
+            style={{
+              width: `${progress}%`,
+              backgroundColor: "blue",
+              height: "20px",
+              color: "white",
+              borderRadius: "10px",
+            }}
+          >
+            {progress.toFixed(0)}%
+          </div>
+        </div>
+      </div>
       <FormContainer
         mainTitle="User Update"
         title="User Registration"
@@ -2276,12 +2474,12 @@ const UserUpdate = () => {
         loading={loading}
       >
         {activeAccordionIndex === 0 && genralFields}
-        {activeAccordionIndex === 1 && personalFields}
-        {activeAccordionIndex === 2 && salaryFields}
+        {/* {activeAccordionIndex === 1 && personalFields} */}
+        {/* {activeAccordionIndex === 2 && salaryFields} */}
         {/* {activeAccordionIndex === 3 && documentsFields} */}
-        {activeAccordionIndex === 3 && familyFields}
-        {activeAccordionIndex === 4 && educationFields}
-        {activeAccordionIndex === 5 && documentFieldsNew}
+        {activeAccordionIndex === 1 && familyFields}
+        {activeAccordionIndex === 2 && educationFields}
+        {activeAccordionIndex === 3 && documentFieldsNew}
       </FormContainer>
     </>
   );

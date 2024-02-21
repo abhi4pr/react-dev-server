@@ -173,98 +173,97 @@ const AdminPreOnboarding = () => {
     formData.append("onboard_status", onBoardStatus);
 
     // if (isValidcontact1 == true && validEmail == true) {
-      try {
-        const isLoginIdExists = usersData.some(
-          (user) =>
-            user.user_login_id.toLocaleLowerCase() ===
-            loginId.toLocaleLowerCase()
-        );
-        const contactNumberExists = usersData.some(
-          (user) => user.user_contact_no == personalContact
-        );
+    try {
+      const isLoginIdExists = usersData.some(
+        (user) =>
+          user.user_login_id.toLocaleLowerCase() === loginId.toLocaleLowerCase()
+      );
+      const contactNumberExists = usersData.some(
+        (user) => user.user_contact_no == personalContact
+      );
 
-        const emailIdExists = usersData.some(
-          (user) =>
-            user.user_email_id?.toLocaleLowerCase() ==
-            personalEmail?.toLocaleLowerCase()
+      const emailIdExists = usersData.some(
+        (user) =>
+          user.user_email_id?.toLocaleLowerCase() ==
+          personalEmail?.toLocaleLowerCase()
+      );
+      if (isLoginIdExists) {
+        alert("this login ID already exists");
+      } else if (contactNumberExists) {
+        alert(" Contact Already Exists");
+      } else if (emailIdExists) {
+        alert(" Email Already Exists");
+      } else {
+        setLoading(true);
+        await axios.post(baseUrl + "add_user", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        whatsappApi.callWhatsAPI(
+          "Preonboarding Register",
+          JSON.stringify(personalContact),
+          username,
+          [username, loginId, password, "http://jarvis.work/"]
         );
-        if (isLoginIdExists) {
-          alert("this login ID already exists");
-        } else if (contactNumberExists) {
-          alert(" Contact Already Exists");
-        } else if (emailIdExists) {
-          alert(" Email Already Exists");
-        } else {
-          setLoading(true);
-          await axios.post(baseUrl + "add_user", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          whatsappApi.callWhatsAPI(
-            "Preonboarding Register",
-            JSON.stringify(personalContact),
-            username,
-            [username, loginId, password, "http://jarvis.work/"]
-          );
-          axios
-            .post(baseUrl + "add_send_user_mail", {
-              email: personalEmail,
-              subject: "User Registration",
-              text: "A new user has been onboard.",
-              attachment: selectedImage,
-              login_id: loginId,
-              name: username,
-              password: password,
-            })
-            .then((res) => {
-              // setLoading(true);
-              console.log("Email sent successfully:", res.data);
-            })
-            .then((res) => {
-              if (res.status == 200) {
-                toastAlert("User Registerd");
-                setIsFormSubmitted(true);
-                setLoading(false);
-              } else {
-                setLoading(false);
-                toastError("Sorry User is Not Created, Please try again later");
-              }
-            })
-            .catch((error) => {
+        axios
+          .post(baseUrl + "add_send_user_mail", {
+            email: personalEmail,
+            subject: "User Registration",
+            text: "A new user has been onboard.",
+            attachment: selectedImage,
+            login_id: loginId,
+            name: username,
+            password: password,
+          })
+          .then((res) => {
+            // setLoading(true);
+            console.log("Email sent successfully:", res.data);
+          })
+          .then((res) => {
+            if (res.status == 200) {
+              toastAlert("User Registerd");
+              setIsFormSubmitted(true);
               setLoading(false);
-              console.log("Failed to send email:", error);
-            });
+            } else {
+              setLoading(false);
+              toastError("Sorry User is Not Created, Please try again later");
+            }
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.log("Failed to send email:", error);
+          });
 
-          setUserName("");
-          setRoles("");
-          setEmail("");
-          setLoginId("");
-          setContact("");
-          setPersonalContact("");
-          setUserCtc("");
-          setPassword("");
-          setDepartment("");
-          setSitting("");
-          setRoomId("");
-          setPersonalContact("");
-          setCity("");
-          setSendLetter("");
-          setAnnexurePdf("");
-          setPersonalEmail("");
-          setJobType("");
-          setReportL1("");
-          setReportL2("");
-          setReportL3("");
-          setDesignation("");
-          toastAlert("User Registerd");
-          setIsFormSubmitted(true);
-        }
-      } catch (error) {
-        console.log("Failed to submit form", error);
-      } finally {
-        setLoading(false); 
+        setUserName("");
+        setRoles("");
+        setEmail("");
+        setLoginId("");
+        setContact("");
+        setPersonalContact("");
+        setUserCtc("");
+        setPassword("");
+        setDepartment("");
+        setSitting("");
+        setRoomId("");
+        setPersonalContact("");
+        setCity("");
+        setSendLetter("");
+        setAnnexurePdf("");
+        setPersonalEmail("");
+        setJobType("");
+        setReportL1("");
+        setReportL2("");
+        setReportL3("");
+        setDesignation("");
+        toastAlert("User Registerd");
+        setIsFormSubmitted(true);
       }
+    } catch (error) {
+      console.log("Failed to submit form", error);
+    } finally {
+      setLoading(false);
+    }
     // } else {
     //   if (contact.length !== 10) {
     //     if (isValidcontact == false)
@@ -406,7 +405,7 @@ const AdminPreOnboarding = () => {
         title="User Registration"
         handleSubmit={handleSubmit}
         submitButton={false}
-        loading={loading}
+        // loading={loading}
       >
         <FieldContainer
           label="Full Name"
@@ -772,14 +771,14 @@ const AdminPreOnboarding = () => {
             required
           />
         </div>
-      <button
+        <button
           type="submit"
           className="btn btn-primary"
-          style={{width:'10%',height:'15%'}}
-          disabled={loading} 
+          style={{ width: "10%", height: "15%" }}
+          disabled={loading}
         >
-          {loading ? 'Submitting...' : 'Submit'}
-      </button>
+          {loading ? "Submitting..." : "Submit"}
+        </button>
       </FormContainer>
     </>
   );

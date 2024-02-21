@@ -10,11 +10,11 @@ const UserSingleTab3 = ({ KRIData }) => {
             name: "s.no",
             cell: (row, index) => <div>{index + 1}</div>,
           },
-          { name: "Name", selector: "user_name" },
-          { name: "Department", selector: "department_name" },
+          { name: "Name", selector: (row) => row.user_name },
+          { name: "Department", selector: (row) => row.department_name },
           {
             name: "Job Responsibility",
-            selector: "sjob_responsibility",
+            selector: (row) => row.sjob_responsibility,
           },
         ]}
         data={KRIData}

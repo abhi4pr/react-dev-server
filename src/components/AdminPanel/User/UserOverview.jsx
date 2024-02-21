@@ -60,6 +60,9 @@ const UserOverview = () => {
   const [KRIData, setKRIData] = useState([]);
   const [map1, setMap1] = useState({});
 
+  const [isSummaryModal, setIsSummaryModal] = useState(false);
+  const [historyData, setHistoryData] = useState([]);
+
   const handleKRA = (userId) => {
     setIsModalOpen(true);
     KRAAPI(userId);
@@ -74,6 +77,26 @@ const UserOverview = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setKRIData([]);
+  };
+
+  // handleUpdateSummary manage here-----------------------------------
+
+  const handleUpdateSummary = (userId) => {
+    setIsSummaryModal(true);
+    SummaryData(userId);
+  };
+  const SummaryData = (userId) => {
+    axios
+      .get(`${baseUrl}` + `get_single_user_update_history/${userId}`)
+      .then((res) => {
+        setHistoryData(res.data.data);
+        console.log(res.data.data, "-------------------hostory");
+      });
+  };
+  const handleCloseSummaryModal = () => {
+    setIsSummaryModal(false);
+    // setKRIData([]);
+    setHistoryData([]);
   };
 
   function handleSeprationReason(userId, username, user_contact_no) {
@@ -426,6 +449,22 @@ const UserOverview = () => {
         </Button>
       ),
     },
+
+    {
+      field: "Summary",
+      headerName: "Summary",
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="warning"
+          onClick={() => handleUpdateSummary(params.row.user_id)}
+        >
+          Summary
+        </Button>
+      ),
+    },
+
     {
       field: "actions",
       headerName: "Action",
@@ -1090,7 +1129,7 @@ const UserOverview = () => {
                 name: "s.no",
                 cell: (row, index) => <div>{index + 1}</div>,
               },
-              { name: "Name", selector: (row) => row.user_name },
+              { name: "Name", selector: (row) => row.user_id },
               { name: "Department", selector: (row) => row.department_name },
               {
                 name: "Job Responsibility",
@@ -1098,6 +1137,58 @@ const UserOverview = () => {
               },
             ]}
             data={KRIData}
+            highlightOnHover
+          />
+        </>
+      </Modal>
+
+      {/* Modal for user Summary */}
+      <Modal
+        // appElement={document.getElementById("root")}
+        isOpen={isSummaryModal}
+        onRequestClose={handleCloseSummaryModal}
+        style={{
+          content: {
+            width: "80%",
+            height: "85%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <>
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLabel">
+              User Update History
+            </h5>
+            <button
+              type="button"
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              onClick={handleCloseSummaryModal}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+
+          <DataTable
+            columns={[
+              {
+                name: "s.no",
+                cell: (row, index) => <div>{index + 1}</div>,
+              },
+              { name: "Name", selector: (row) => row.user_id },
+              {
+                name: "Previous Value",
+                selector: (row) => row.previous_value[0],
+              },
+            ]}
+            data={historyData}
             highlightOnHover
           />
         </>
