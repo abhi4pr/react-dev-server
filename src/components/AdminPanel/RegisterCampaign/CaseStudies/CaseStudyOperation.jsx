@@ -48,7 +48,7 @@ const CaseStudyOperation = () => {
   const [fromDate, setFromDate] = useState(null);
   const [toDate, setToDate] = useState(null);
 
-  const [showCards, setShowCards] = useState(false); 
+  const [showCards, setShowCards] = useState(false);
   const toggleDisplay = () => {
     setShowCards(!showCards);
   };
@@ -160,8 +160,6 @@ const CaseStudyOperation = () => {
 
       .get(baseUrl + "get_all_data_content_types")
       .then((res) => setContentData(res.data));
-
-   
   }
 
   const getBrandCount = (brandName, data) => {
@@ -173,18 +171,16 @@ const CaseStudyOperation = () => {
 
   useEffect(() => {
     axios
-    .get(baseUrl + "projectxCategory")
-    .then((res) => {
-      setBrandCategory(res.data.data);
-
-       
-    })
-    .catch((err) => {
-      console.log(err);
+      .get(baseUrl + "projectxCategory")
+      .then((res) => {
+        setBrandCategory(res.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    axios.get(baseUrl + "projectxSubCategory").then((res) => {
+      setBrandSubCatData(res.data.data);
     });
-  axios.get(baseUrl + "projectxSubCategory").then((res) => {
-    setBrandSubCatData(res.data.data);
-  });
     getData();
   }, []);
 
@@ -222,20 +218,29 @@ const CaseStudyOperation = () => {
   //   designed,
   // ]);
 
-
-  console.log(selectedPlatform , '--------------platform')
+  console.log(selectedPlatform, "--------------platform");
   useEffect(() => {
     const result = backupData.filter((d) => {
       const BrandMatch = !selectedBrand || d.brand_id === selectedBrand;
       const userMatch = !selectedUser || d.created_by === selectedUser;
       const designedMatch = !designedBy || d.designed_by === designedBy;
-      const cateMatch = !selectedCategory || d.brand_category_id === selectedCategory;
-      const platformMatch = !selectedPlatform || d.platform_ids[0] === selectedPlatform;
+      const cateMatch =
+        !selectedCategory || d.brand_category_id === selectedCategory;
+      const platformMatch =
+        !selectedPlatform || d.platform_ids[0] === selectedPlatform;
 
-      return BrandMatch && userMatch && designedMatch && cateMatch && platformMatch
+      return (
+        BrandMatch && userMatch && designedMatch && cateMatch && platformMatch
+      );
     });
     setData(result);
-  }, [selectedBrand, selectedUser, designedBy,selectedCategory,selectedPlatform]);
+  }, [
+    selectedBrand,
+    selectedUser,
+    designedBy,
+    selectedCategory,
+    selectedPlatform,
+  ]);
 
   const deleteBrand = async (brand_name) => {
     await axios
@@ -265,14 +270,12 @@ const CaseStudyOperation = () => {
     setData(filteredData);
   }, [fromDate, toDate, backupData]);
 
-
   const filterRows = () => {
     const filtered = backupData?.filter((row) =>
       row?.brand_name.toLowerCase().includes(search.toLowerCase())
     );
     setData(filtered);
   };
-
 
   useEffect(() => {
     filterRows();
@@ -386,11 +389,11 @@ const CaseStudyOperation = () => {
               <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12 mb-3">
                 <TextField
                   id="outlined-basic"
-                  label="Search"
+                  label="Search Brand Name"
                   variant="outlined"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search by brand name"
+                  // placeholder="Search by brand name"
                 />
               </div>
 
@@ -438,17 +441,17 @@ const CaseStudyOperation = () => {
         {showCards ? (
           <>
             <div className="summary_cards flex-row row">
-              {data.length > 0 &&
+              {data?.length > 0 &&
                 data
-                  .filter(
-                    (detail) =>
-                      detail.data_name
-                        ?.toLowerCase()
-                        .includes(search.toLowerCase()) ||
-                      detail.data_type
-                        ?.toLowerCase()
-                        .includes(search.toLowerCase())
-                  )
+                  // .filter(
+                  //   (detail) =>
+                  //     detail.data_name
+                  //       ?.toLowerCase()
+                  //       .includes(search.toLowerCase()) ||
+                  //     detail.data_type
+                  //       ?.toLowerCase()
+                  //       .includes(search.toLowerCase())
+                  // )
                   .map((detail, index) => {
                     return (
                       <div
@@ -672,11 +675,7 @@ const CaseStudyOperation = () => {
 
                                   <li>
                                     <span>Brand</span>
-                                    {brandData.map((brand) => {
-                                      if (brand._id == detail.brand_id) {
-                                        return brand.brand_name;
-                                      }
-                                    })}
+                                    {detail.brand_name}
                                   </li>
 
                                   <li>
@@ -1810,7 +1809,6 @@ const CaseStudyOperation = () => {
                 brandSubCatData={brandSubCatData}
                 countData={countData}
                 getData={getData}
-
               />
             )}
           </>
