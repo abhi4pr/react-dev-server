@@ -515,20 +515,7 @@ const PendingInvoice = () => {
       field: "Net Amount",
       renderCell: (params) => params.row.net_amount,
     },
-    // {
-    //   name: "Action",
-    //   cell: (row) => (
-    //     <>
-    //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
-    //       <button className="btn btn-primary" >
-    //         Customer Details
-    //       </button>
-    //     </Link>
-    //     </>
-    //   ),
-    // },
   ];
-
   const sameCustomercolumn = [
     {
       fieldName: "S.No",
@@ -760,31 +747,39 @@ const PendingInvoice = () => {
   ];
   const columns = [
     {
-      name: "S.No",
-      cell: (row, index) => <div>{index + 1}</div>,
-      width: "5%",
-      sortable: true,
+      field: "S.No",
+      fieldName: "s_no",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...datas].indexOf(params.row) + 1}</div>
+      ),
     },
     {
-      name: "Sales Person name",
-      selector: (row) => row.sales_person_username,
-      width: "10%",
+      field: "Sales Person name",
+      fieldName: "sales_person_username",
+      width: 220,
+      renderCell: (params) => params.row.sales_person_username,
+      height: "200px",
     },
     {
-      name: "Requested On Date",
-      // selector: (row) => row.sale_booking_date,
-      cell: (row) => convertDateToDDMMYYYY(row.sale_booking_date),
-      width: "12%",
+      field: "Requested On Date",
+      fieldName: "sale_booking_date",
+      width: 220,
+      renderCell: (params) =>
+        convertDateToDDMMYYYY(params.row.sale_booking_date),
     },
     {
-      name: "Sale Booking Description",
-      selector: (row) => row.description,
-      width: "17%",
+      field: "Sale Booking Description",
+      fieldName: "description",
+      width: 220,
+      renderCell: (params) => params.row.description,
     },
     {
-      name: "Customer Name",
-      // selector: (row) => row.cust_name,
-      cell: (row) => (
+      field: "Customer Name",
+      fieldName: "cust_id",
+      width: 220,
+      renderCell: (row) => (
         <>
           <Link
             className="text-primary"
@@ -794,15 +789,15 @@ const PendingInvoice = () => {
           </Link>
         </>
       ),
-      width: "15%",
     },
 
     {
-      name: "Input",
-      selector: (row, index) => (
-        <div className="mt-2">
+      field: "Input",
+      width: 600,
+      renderCell: (params, index) => (
+        <div className="mt-2 d-flex">
           <TextField
-            key={row.sale_booking_id}
+            key={params.row.sale_booking_id}
             className="d-block"
             type="text"
             name="input"
@@ -819,7 +814,7 @@ const PendingInvoice = () => {
           <div>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                key={row.sale_booking_id}
+                key={params.row.sale_booking_id}
                 format="DD/MM/YYYY"
                 sx={{
                   "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
@@ -835,7 +830,7 @@ const PendingInvoice = () => {
           </div>
           <div>
             <TextField
-              key={row.sale_booking_id}
+              key={params.row.sale_booking_id}
               type="text"
               name="input"
               label="Party Name"
@@ -850,58 +845,61 @@ const PendingInvoice = () => {
           </div>
         </div>
       ),
-      width: "15%",
     },
     {
-      name: "Upload Invoice",
-      selector: (row, index) => (
-        <div key={row.sale_booking_id}>
+      field: "Upload Invoice",
+      width: 380,
+      renderCell: (params, index) => (
+        <div key={params.row.sale_booking_id} className="d-flex">
           <form>
             <input
               key={index}
               type="file"
               name="upload_image"
-              onChange={(e) => handleImageUpload(row, e.target.files[0])}
+              className="w-70"
+              onChange={(e) => handleImageUpload(params.row, e.target.files[0])}
             />
-            {/* <button type="submit" value="upload">
-              Upload
-            </button> */}
           </form>
           <br />
           <button
             type="button"
             className="btn btn-success"
-            onClick={() => handleReject(row)}
+            onClick={() => handleReject(params.row)}
           >
             Reject
           </button>
         </div>
       ),
-      width: "20%",
     },
     {
-      name: "Invoice Particular Name",
-      selector: (row) => row.invoice_particular_name,
-      width: "15%",
+      field: "Invoice Particular Name",
+      fieldName: "invoice_particular_name",
+      width: 200,
+      renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      name: "Invoice Type",
-      selector: (row) => row.invoice_type_name,
-      width: "15%",
+      field: "Invoice Type",
+      fieldName: "invoice_type_name",
+      width: 180,
+      renderCell: (params) => params.row.invoice_type_name,
     },
     {
-      name: "Base Amount",
-      selector: (row) => row.base_amount,
-      width: "9%",
+      field: "Base Amount",
+      fieldName: "base_amount",
+      width: 180,
+      renderCell: (params) => params.row.base_amount,
     },
     {
-      name: "GST Amount",
-      selector: (row) => row.gst_amount,
-      width: "9%",
+      field: "GST Amount",
+      fieldName: "gst_amount",
+      width: 180,
+      renderCell: (params) => params.row.gst_amount,
     },
     {
-      name: "Net Amount",
-      selector: (row) => row.net_amount,
+      field: "Net Amount",
+      fieldName: "net_amount",
+      width: 180,
+      renderCell: (params) => params.row.net_amount,
     },
     // {
     //   name: "Action",
@@ -916,7 +914,6 @@ const PendingInvoice = () => {
     //   ),
     // },
   ];
-
   return (
     <>
       <FormContainer
@@ -1289,7 +1286,7 @@ const PendingInvoice = () => {
       </div>
       <div className="card">
         <div className="data_tbl table-responsive">
-          <DataTable
+          {/* <DataTable
             title="Pending Invoice Creation"
             columns={columns}
             data={filterData}
@@ -1307,6 +1304,34 @@ const PendingInvoice = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             }
+          /> */}
+          <DataGrid
+            rows={filterData}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            disableColumnMenu
+            disableColumnSelector
+            disableColumnFilter
+            disableColumnReorder
+            disableColumnResize
+            disableMultipleColumnsSorting
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            fv
+            componentsProps={{
+              toolbar: {
+                value: search,
+                onChange: (event) => setSearch(event.target.value),
+                placeholder: "Search",
+                clearSearch: true,
+                clearSearchAriaLabel: "clear",
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>

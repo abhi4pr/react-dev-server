@@ -5,7 +5,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import DataTable from "react-data-table-component";
+// import DataTable from "react-data-table-component";
 import { Autocomplete, TextField, Dialog, DialogTitle } from "@mui/material";
 import { get } from "jquery";
 import ImageView from "./ImageView";
@@ -425,7 +425,7 @@ const PendingApprovalUpdate = () => {
     },
     {
       field: "cust_name",
-      headerName: "Customer Name",
+      fieldName: "Customer Name",
       renderCell: (params) => (
         <div
           style={{ cursor: "pointer" }}
@@ -569,66 +569,68 @@ const PendingApprovalUpdate = () => {
       ),
     },
   ];
-
   const columns = [
     {
-      name: "S.No",
-      cell: (row, index) => (
-        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
-
-        <div>{[...filterData].reverse().indexOf(row) + 1}</div>
+      field: "S.No",
+      fieldName: "s_no",
+      width: 180,
+      renderCell: (params, index) => (
+        <div>{[...datas].indexOf(params.row) + 1}</div>
       ),
-      width: "80px",
-      sortable: true,
     },
     {
-      name: <div style={{ whiteSpace: "normal" }}>Requested By</div>,
-      selector: (row) => (
-        <div style={{ whiteSpace: "normal" }}>{row.user_name} </div>
-      ),
-      width: "100px",
-      sortable: false,
-    },
-    {
-      name: <div style={{ whiteSpace: "normal" }}>Customer Name</div>,
-      selector: (row) => (
-        <div style={{ whiteSpace: "normal" }}>{row.cust_name}</div>
-      ),
-      width: "200px",
-    },
-    {
-      name: <div style={{ whiteSpace: "normal" }}>Campaign Amount</div>,
-      selector: (row) => (
-        <div style={{ whiteSpace: "normal" }}>{row.campaign_amount} </div>
-      ),
-      width: "150px",
-    },
-    {
-      name: (
-        <div style={{ whiteSpace: "normal" }}>Campaign Amount Without Gst</div>
-      ),
-      selector: (row) => row.campaign_amount_without_gst,
-      width: "200px",
-    },
-    {
-      name: <div style={{ whiteSpace: "normal" }}>Payment On Date</div>,
-      // selector: (row) => row.payment_date,
-      cell: (row) => (
-        <div style={{ whiteSpace: "normal" }}>
-          {convertDateToDDMMYYYY(row.payment_date)}
+      field: "Customer Name",
+      fieldName: "cust_name",
+      width: 260,
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+        >
+          {params.row.cust_name}{" "}
         </div>
       ),
-      width: "150px",
     },
     {
-      name: <div style={{ whiteSpace: "normal" }}>Screenshot</div>,
-      // selector: (row) => row.payment_time,
-      cell: (row) => (
+      field: "Requested By",
+      fieldName: "user_name",
+      width: 180,
+      name: <div style={{ whiteSpace: "normal" }}>Requested By</div>,
+      renderCell: (params, index) => <div>{params.row.user_name} </div>,
+    },
+
+    {
+      field: "Campaign Amount",
+      fieldName: "campaign_amount",
+      width: 180,
+      renderCell: (params) => <div>{params.row.campaign_amount} </div>,
+    },
+    {
+      field: "Campaign Amount Without GST",
+      fieldName: "campaign_amount_without_gst",
+      width: 180,
+      renderCell: (params) => (
+        <div>{params.row.campaign_amount_without_gst} </div>
+      ),
+    },
+    {
+      field: "Payment On Date",
+      fieldName: "payment_date",
+      width: 180,
+      renderCell: (params, index) => (
+        <div>{convertDateToDDMMYYYY(params.row.payment_date)} </div>
+      ),
+    },
+    {
+      field: "Payment Screenshot",
+      fieldName: "payment_screenshot",
+      width: 180,
+      renderCell: (params) => (
         <div
           onClick={() => {
             setViewImgSrc(
-              row.payment_screenshot
-                ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+              params.row.payment_screenshot
+                ? `https://sales.creativefuel.io/${params.row.payment_screenshot}`
                 : ""
             ),
               setViewImgDialog(true);
@@ -637,9 +639,9 @@ const PendingApprovalUpdate = () => {
         >
           <img
             src={
-              row.payment_screenshot.includes(".pdf")
+              params.row.payment_screenshot.includes(".pdf")
                 ? pdfImg
-                : `https://sales.creativefuel.io/${row.payment_screenshot}`
+                : `https://sales.creativefuel.io/${params.row.payment_screenshot}`
             }
             //   row.payment_screenshot
             //     ? `https://sales.creativefuel.io/${row.payment_screenshot}`
@@ -648,109 +650,82 @@ const PendingApprovalUpdate = () => {
           />
         </div>
       ),
-      width: "150px",
     },
     {
-      name: <div style={{ whiteSpace: "normal" }}>Payment Amount</div>,
-      selector: (row) => row.payment_amount,
-      width: "150px",
+      field: "Payment Amount",
+      fieldName: "payment_amount",
+      width: 180,
+      renderCell: (params) => <div>{params.row.payment_amount} </div>,
     },
     {
-      name: <div style={{ whiteSpace: "normal" }}>Payment Mode</div>,
-      selector: (row) => row.payment_mode,
-      width: "150px",
+      field: "Payment Mode",
+      fieldName: "payment_mode",
+      width: 180,
+      renderCell: (params) => <div>{params.row.payment_mode} </div>,
     },
     {
-      name: <div style={{ whiteSpace: "normal" }}>Payment Status</div>,
-      // selector: (row) => row.payment_approval_status, // 0 = pending, 1 = approved, 2 = rejected
-      cell: (row) => (
-        <div style={{ whiteSpace: "normal" }}>
-          {row.payment_approval_status === 0
+      field: "Payment Status",
+      fieldName: "payment_approval_status",
+      width: 190,
+      renderCell: (params) => (
+        <div>
+          {params.row.payment_approval_status === 0
             ? "Pending"
-            : row.payment_approval_status === 1
+            : params.row.payment_approval_status === 1
             ? "Approved"
-            : row.payment_approval_status === 2
+            : params.row.payment_approval_status === 2
             ? "Rejected"
             : ""}
         </div>
       ),
     },
     {
-      name: "Bank Name",
-      selector: (row) => (
-        <div style={{ whiteSpace: "normal" }}>{row.title} </div>
-      ),
+      field: "Bank Name ",
+      fieldName: "title",
+      width: 180,
+      renderCell: (params) => <div>{params.row.title} </div>,
     },
     {
-      name: "Bank Detail",
-      cell: (row) => (
-        <div style={{ whiteSpace: "normal" }}>
-          {row.detail}
+      field: "Bank Detail ",
+      fieldName: "detail",
+      width: 490,
+      renderCell: (params) => (
+        <div>
+          {params.row.detail}
           <button
             className="btn btn-secondary ml-2"
-            onClick={() => handleCopyDetail(row.detail)}
+            onClick={() => handleCopyDetail(params.row.detail)}
           >
             <ContentCopyIcon />
             {/* or any other icon */}
           </button>
         </div>
       ),
-      width: "250px",
+      // width: 150,
     },
     {
-      name: <div style={{ whiteSpace: "normal" }}>Reference No</div>,
-      selector: (row) => row.payment_ref_no,
-      width: "150px",
+      field: "Reference No ",
+      fieldName: "payment_ref_no",
+      width: 190,
+      renderCell: (params) => <div>{params.row.payment_ref_no} </div>,
     },
     {
-      name: "Remarks",
-      selector: (row) => row.payment_update_remarks,
-      width: "200px",
+      field: "Remarks ",
+      fieldName: "payment_update_remarks",
+      width: 200,
+      renderCell: (params) => <div>{params.row.payment_update_remarks} </div>,
     },
     {
-      name: "Status",
-      selector: (row) => (
-        // <select
-        //   className="form-control"
-        //   value={row.statusDropdown}
-        //   onChange={(e) => handleStatusChange(row, e.target.value)}
-        // >
-        //   <option value="">Select</option>
-        //   <option value="1">Approved</option>
-        //   <option value="0">Rejected</option>
-        // </select>
-
-        <Autocomplete
-          className="my-2"
-          id="combo-box-demo"
-          value={row.statusDropdown}
-          options={[
-            { label: "Approved", value: 1 },
-            { label: "Rejected", value: 2 },
-          ]}
-          getOptionLabel={(option) => option.label}
-          onChange={(event, newValue) => {
-            handleStatusChange(row, newValue.value),
-              console.log(newValue.value);
-          }}
-          style={{ width: 180 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Status" variant="outlined" />
-          )}
-        />
-      ),
-      width: "230px",
+      field: "Payment Requested Date and Time ",
+      fieldName: "balance_payment_ondate",
+      width: 180,
+      renderCell: (params) => <div>{params.row.balance_payment_ondate} </div>,
     },
-    // {
-    //   name: "Payment Requested Date and Time",
-    //   selector: (row) => row.balance_payment_ondate,
-    //   width: "200px",
-    // },
     {
-      name: "Action",
-      selector: (row) => (
+      field: "Action ",
+      renderCell: (params) => (
         <>
-          <Link to={`/admin/payment-summary/${row.cust_id}`}>
+          <Link to={`/admin/payment-summary/${params.row.cust_id}`}>
             <button
               title="Summary"
               className="btn btn-outline-primary btn-sm user-button"
@@ -760,7 +735,6 @@ const PendingApprovalUpdate = () => {
           </Link>
         </>
       ),
-      width: "150px",
     },
   ];
   return (
@@ -1140,25 +1114,33 @@ const PendingApprovalUpdate = () => {
 
       <div className="card">
         <div className="data_tbl table-responsive">
-          <DataTable
-            title="Pending Approval"
+          <DataGrid
+            rows={filterData}
             columns={columns}
-            data={[...filterData].reverse()}
-            keyField="_id"
-            fixedHeader
-            pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            disableColumnMenu
+            disableColumnSelector
+            disableColumnFilter
+            disableColumnReorder
+            disableColumnResize
+            disableMultipleColumnsSorting
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            fv
+            componentsProps={{
+              toolbar: {
+                value: search,
+                onChange: (event) => setSearch(event.target.value),
+                placeholder: "Search",
+                clearSearch: true,
+                clearSearchAriaLabel: "clear",
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
         {viewImgDialog && (
