@@ -16,7 +16,6 @@ import { baseUrl } from "../../../utils/config";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
 
-
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -955,11 +954,19 @@ export default function PurchaseManagementAllTransaction() {
           <div className="card-body">
             <p className="fs-6 lead ">
               Total Requested Amount :-{" "}
-              {data.length > 0
-                ? data
-                    .filter((item) => item.payment_approval_status == 0)
+              {phpData.length > 0
+                ? phpData
+                    .filter((item) => {
+                      return !nodeData.some(
+                        (item2) => item.request_id == item2.request_id
+                      );
+                    })
                     .reduce((total, currentItem) => {
-                      return total + currentItem.request_amount * 1;
+                      console.log(
+                        total + currentItem.request_amount,
+                        "currentItem Pending"
+                      );
+                      return total + parseFloat(currentItem.request_amount);
                     }, 0)
                 : ""}
             </p>
@@ -1166,7 +1173,7 @@ export default function PurchaseManagementAllTransaction() {
         getRowId={(row) => filterData.indexOf(row)}
       />
 
-{paymentHistory && (
+      {paymentHistory && (
         <PaymentHistoryDialog
           handleClose={setPaymentHistory}
           paymentDetailColumns={paymentDetailColumns}

@@ -163,6 +163,7 @@ const WFHDOverview = () => {
       att_status: "training",
     });
     setRemark("");
+    setTrainingDate("");
     await getData();
   };
 

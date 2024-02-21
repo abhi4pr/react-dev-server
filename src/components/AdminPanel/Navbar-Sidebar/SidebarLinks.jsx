@@ -326,6 +326,9 @@ const SidebarLinks = () => {
                   <Link className="collapse-item" to="/admin/dispute-overview">
                     Dispute Summary
                   </Link>
+                  <Link className="collapse-item" to="/admin/total-NDG">
+                    totla NDG
+                  </Link>
                 </div>
               </div>
             </li>
