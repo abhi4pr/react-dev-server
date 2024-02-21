@@ -225,6 +225,7 @@ import HRTemplateOverview from "./WFH/HRTemplateOverview";
 import WFHDUpdate from './WFH/WFHDRegister/WFHDUpdate'
 import WFHDBankUpdate from './WFH/WFHDBankUpdate'
 import PaymentModeMast from "./Finance/PaymentModeMast";
+import TotalNDG from "./WFH/TotalNDG";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -353,6 +354,7 @@ const Admin = () => {
                   {/* Attendence  */}
 
                   <Route path="/wfhd-register" element={<WFHDRegister />} />
+                  <Route path="/total-NDG" element={<TotalNDG />} />
                   <Route path="/wfhd-update/:id" element={<WFHDUpdate />} />
 
                   <Route

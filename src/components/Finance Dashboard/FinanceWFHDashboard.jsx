@@ -15,8 +15,9 @@ import FieldContainer from "../AdminPanel/FieldContainer";
 
 const accordionButtons = [
   "Pending Verify",
-  "Proceed to Bank",
+  // "Proceed to Bank",
   "Payment Released",
+  "Failed Transactions",
   // "TDS",
   // "Non-TDS",
 ];
@@ -514,44 +515,44 @@ export default function FinanceWFHDashboard() {
         return params.row.attendence_status_flow;
       },
     },
-    {
-      headerName: "Action",
-      field: "action",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <>
-            {activeAccordionIndex != 2 && (
-              <button
-                className="btn btn-primary"
-                data-toggle="modal"
-                data-target="#exampleModal"
-                onClick={(e) =>
-                  activeAccordionIndex == 0
-                    ? handlePay(params.row, e)
-                    : handlePayVerify(params.row, e)
-                }
-              >
-                Verify
-              </button>
-            )}
+    // {
+    //   headerName: "Action",
+    //   field: "action",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     return (
+    //       <>
+    //         {activeAccordionIndex != 2 && (
+    //           <button
+    //             className="btn btn-primary"
+    //             data-toggle="modal"
+    //             data-target="#exampleModal"
+    //             onClick={(e) =>
+    //               activeAccordionIndex == 0
+    //                 ? handlePay(params.row, e)
+    //                 : handlePayVerify(params.row, e)
+    //             }
+    //           >
+    //             Verify
+    //           </button>
+    //         )}
 
-            {params.row?.invoice_template_no !== "0" && (
-              <button
-                className="btn btn-outline-primary btn-sm"
-                title="Download Invoice"
-                type="button"
-                onClick={() => {
-                  generatePDF(params.row);
-                }}
-              >
-                <CloudDownloadIcon />
-              </button>
-            )}
-          </>
-        );
-      },
-    },
+    //         {params.row?.invoice_template_no !== "0" && (
+    //           <button
+    //             className="btn btn-outline-primary btn-sm"
+    //             title="Download Invoice"
+    //             type="button"
+    //             onClick={() => {
+    //               generatePDF(params.row);
+    //             }}
+    //           >
+    //             <CloudDownloadIcon />
+    //           </button>
+    //         )}
+    //       </>
+    //     );
+    //   },
+    // },
 
     // {
     //   headerName: "UTR",
@@ -574,7 +575,7 @@ export default function FinanceWFHDashboard() {
     // },
   ];
 
-  if (activeAccordionIndex === 2) {
+  if (activeAccordionIndex === 1) {
     pendingColumns.push({
       headerName: "UTR",
       width: 250,
@@ -606,6 +607,48 @@ export default function FinanceWFHDashboard() {
       },
     });
   }
+
+if(activeAccordionIndex === 0){
+  pendingColumns.push(  {
+    headerName: "Action",
+    field: "action",
+    width: 150,
+    renderCell: (params) => {
+      return (
+        <>
+          {activeAccordionIndex != 2 && (
+            <button
+              className="btn btn-primary"
+              data-toggle="modal"
+              data-target="#exampleModal"
+              onClick={(e) =>
+                activeAccordionIndex == 0
+                  ? handlePay(params.row, e)
+                  : handlePayVerify(params.row, e)
+              }
+            >
+              Verify
+            </button>
+          )}
+
+          {params.row?.invoice_template_no !== "0" && (
+            <button
+              className="btn btn-outline-primary btn-sm"
+              title="Download Invoice"
+              type="button"
+              onClick={() => {
+                generatePDF(params.row);
+              }}
+            >
+              <CloudDownloadIcon />
+            </button>
+          )}
+        </>
+      );
+    },
+  })
+}
+
   const NonTDS = (
     <div>
       <div style={{ height: "50px" }}>
@@ -867,7 +910,7 @@ export default function FinanceWFHDashboard() {
   const payoutReleased = (
     <>
       <div>
-        <div style={{ height: "50px" }} className="d-flex">
+        {/* <div style={{ height: "50px" }} className="d-flex">
           {rowForPayment.length > 0 && (
             <Button
               variant="contained"
@@ -880,11 +923,11 @@ export default function FinanceWFHDashboard() {
               Download PDF Zip
             </Button>
           )}
-        </div>
+        </div> */}
         {/* <h1>Payout Released</h1> */}
 
         <DataGrid
-          rows={filterData?.filter((item) => item.status_ === 2)}
+          rows={filterData?.filter((item) => item.status_ === 1)}
           columns={pendingColumns}
           getRowId={(row) => row.id}
           initialState={{
@@ -906,6 +949,81 @@ export default function FinanceWFHDashboard() {
         />
       </div>
     </>
+  );
+
+
+  const failedTransaction = (
+
+    <div>
+      {/* <div style={{ height: "50px" }}>
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadInvoices}
+          >
+            Download PDF Zip
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadExcel}
+          >
+            Download Excel
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleSendToBank}
+          >
+            Send to Bank
+          </Button>
+        )}
+      </div> */}
+      <DataGrid
+        rows={filterData?.filter((item) => item.status_ === 1 && item.utr== "")}
+        columns={pendingColumns}
+        getRowId={(row) => row.id}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 50,
+            },
+          },
+        }}
+        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+        pageSizeOptions={[5, 25, 50, 100, 500]}
+        checkboxSelection
+        // disableRowSelectionOnClick
+        onRowSelectionModelChange={(rowIds) => {
+          handleRowSelectionModelChange(rowIds);
+          // console.log(rowIds);
+        }}
+        rowSelectionModel={rowSelectionModel}
+      // unstable_ignoreValueFormatterDuringExport
+      // slotProps={{
+      //   toolbar: {
+      //     showQuickFilter: true,
+      //   },
+      // }}
+      // unstable_headerFilters
+      />
+    </div>
   );
 
   return (
@@ -1021,7 +1139,7 @@ export default function FinanceWFHDashboard() {
       </div>
 
       <FormContainer
-        // submitButton={false}
+        submitButton={false}
         mainTitle="Dashboard"
         title="Finance"
         accordionButtons={accordionButtons}
@@ -1029,12 +1147,14 @@ export default function FinanceWFHDashboard() {
         onAccordionButtonClick={handleAccordionButtonClick}
         handleSubmit={handleCSVFlieupload}
       >
-        {activeAccordionIndex === 2 && (
+        {activeAccordionIndex === 1 && (
           // <FormContainer {handleCSVFlieupload}>
           <div className="d-flex">
             <FieldContainer
               // label="Upload UTR"
               type="file"
+              accept=".xls,.xlsx"
+
               fieldGrid={6}
               onChange={(e) => setCSVFile(e.target.files[0])}
 
@@ -1047,10 +1167,11 @@ export default function FinanceWFHDashboard() {
         {invoice}
 
         {activeAccordionIndex === 0 && pending}
-        {activeAccordionIndex === 1 && verified}
-        {activeAccordionIndex === 2 && payoutReleased}
-        {activeAccordionIndex === 3 && TDS}
-        {activeAccordionIndex === 4 && NonTDS}
+        {/* {activeAccordionIndex === 1 && verified} */}
+        {activeAccordionIndex === 1 && payoutReleased}
+        {activeAccordionIndex === 2 && failedTransaction}
+        {/* {activeAccordionIndex === 3 && TDS}
+        {activeAccordionIndex === 4 && NonTDS} */}
       </FormContainer>
 
       {showModal && (
