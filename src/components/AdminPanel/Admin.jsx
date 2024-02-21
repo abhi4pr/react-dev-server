@@ -223,11 +223,8 @@ import WFHDRegister from "./WFH/WFHDRegister/WFHDRegister";
 import UpdateDocument from "./WFH/UpdateDocument";
 import HRTemplateOverview from "./WFH/HRTemplateOverview";
 import WFHDUpdate from './WFH/WFHDRegister/WFHDUpdate'
-<<<<<<< Updated upstream
 import WFHDBankUpdate from './WFH/WFHDBankUpdate'
-=======
 import PaymentModeMast from "./Finance/PaymentModeMast";
->>>>>>> Stashed changes
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
