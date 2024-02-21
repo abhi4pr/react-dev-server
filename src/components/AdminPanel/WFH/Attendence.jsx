@@ -149,24 +149,28 @@ const Attendence = () => {
     setRowModesModel(newRowModesModel);
   };
 
-  const handleAttendence = () => {
-    axios
-      .post(baseUrl + "add_attendance", {
+  const handleAttendence = async () => {
+    try {
+      await axios.post(baseUrl + "add_attendance", {
         dept: department,
         user_id: userName.user_id,
         noOfabsent: 0,
         month: selectedMonth,
         year: selectedYear,
-      })
-      .then(() => {
-        setNoOfAbsent("");
-        toastAlert("Submitted success");
-      })
-      .then(() => {
-        getAttendanceData();
-        toastAlert("Submitted success");
       });
+  
+      setNoOfAbsent("");
+      toastAlert("Submitted success");
+  
+      await getAttendanceData();
+      toastAlert("Submitted success");
+    } catch (error) {
+      toastError('Billing header not set for this department')
+      // console.error("Error submitting attendance:", error);
+      // Handle error as needed
+    }
   };
+  
 
   function handleAllDepartmentAttendance() {
     axios

@@ -36,7 +36,7 @@ const images = [
 
 const SalaryWFH = () => {
   const location = useLocation();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const { contextData, ContextDept, RoleIDContext } = useAPIGlobalContext();
 
   const [allWFHUsers, setAllWFHUsers] = useState(0);
@@ -451,7 +451,9 @@ const SalaryWFH = () => {
       handleSubmit();
       toastAlert("Submitted success");
     } catch (error) {
-      console.error("Error submitting data:", error);
+      // alert('ssssss');
+      // console.error("Error submitting data:", error);
+      toastError('Billing header not set for this department')
     }
   };
 
