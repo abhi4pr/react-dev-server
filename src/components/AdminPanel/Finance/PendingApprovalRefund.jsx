@@ -421,53 +421,43 @@ const PendingApprovalRefund = () => {
   ];
   const columns = [
     {
-      name: "S.No",
-      cell: (row, index) => <div>{index + 1}</div>,
-      width: "9%",
-      sortable: true,
-    },
-    {
-      name: "Customer Name",
-      selector: (row) => row.cust_name,
-      sortable: true,
-      width: "20%",
-    },
-    {
-      name: "Refund Amount",
-      selector: (row) => row.refund_amount,
-      width: "15%",
-    },
-    {
-      name: "Refund Request Reason",
-      selector: (row) => row.finance_refund_reason,
-      width: "20%",
-    },
-    {
-      name: "Refund Request Date",
-      // selector: (row) => row.creation_date,
-      width: "15%",
-      cell: (row) => (
-        <div>
-          {row.creation_date ? convertDateToDDMMYYYY(row.creation_date) : ""}
-        </div>
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...filterData].indexOf(params.row) + 1}</div>
       ),
     },
     {
-      name: "Refund Updated Date",
-      // selector: (row) => row.last_updated_date,
-      cell: (row) => (
+      field: "cust_name",
+      headerName: "Customer Name",
+      renderCell: (params) => <div>{params.row.cust_name} </div>,
+    },
+    {
+      field: "refund_amount",
+      headerName: "Refund Amount",
+      renderCell: (params) => <div>{params.row.refund_amount} </div>,
+    },
+    {
+      field: "finance_refund_reason",
+      headerName: "Refund Request Reason",
+      renderCell: (params) => <div>{params.row.refund_amount} </div>,
+    },
+    {
+      field: "creation_date",
+      headerName: "Refund Request Date",
+      renderCell: (params) => (
         <div>
-          {row.last_updated_date
-            ? convertDateToDDMMYYYY(row.last_updated_date)
+          {params.row.creation_date
+            ? convertDateToDDMMYYYY(params.row.creation_date)
             : ""}
         </div>
       ),
-      width: "15%",
     },
-
     {
-      name: "Refund Payment Image",
-      selector: (row, index) => (
+      headerName: "Refund Payment Image",
+      renderCell: (params) => (
         <form method="POST" encType="multipart/form-data" action="">
           <input
             key={index}
@@ -478,40 +468,37 @@ const PendingApprovalRefund = () => {
               // setRefundImage(refundImage);
               // setImageChanged(!imageChanged); // Toggle the state to trigger re-render
               handleFileChange(e, index);
-              uploadImage(e, row, index);
+              uploadImage(e, params.row, index);
             }}
           />
           <br />
           {/* <input
-            key={index}
-            type="submit"
-            value="upload"
-            disabled={!refundImage[index] ? true : false}
-            onClick={(e) => {
-              setSingleRow(row);
-              uploadImage(e, row, index);
-            }}
-          /> */}
+          key={index}
+          type="submit"
+          value="upload"
+          disabled={!refundImage[index] ? true : false}
+          onClick={(e) => {
+            setSingleRow(row);
+            uploadImage(e, row, index);
+          }}
+        /> */}
         </form>
       ),
-      width: "250px",
     },
-
     {
-      name: "Action",
-      selector: (row, index) => (
+      headerName: "Action",
+      renderCell: (params, index) => (
         <select
           key={index}
           className="form-control"
-          value={row.statusDropdown}
-          onChange={(e) => handleStatusChange(row, e.target.value)}
+          value={params.row.statusDropdown}
+          onChange={(e) => handleStatusChange(params.row, e.target.value)}
         >
           <option value="">Select</option>
           <option value="1">Approved</option>
           <option value="2">Rejected</option>
         </select>
       ),
-      width: "200px",
     },
   ];
 
@@ -761,24 +748,32 @@ const PendingApprovalRefund = () => {
       </div>
       <div className="card">
         <div className="data_tbl table-responsive">
-          <DataTable
-            title="Pending Approval for Refund"
+          <DataGrid
+            rows={filterData}
             columns={columns}
-            data={filterData}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            disableColumnMenu
+            disableColumnSelector
+            disableColumnFilter
+            disableColumnReorder
+            disableColumnResize
+            disableMultipleColumnsSorting
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            componentsProps={{
+              toolbar: {
+                value: search,
+                onChange: (event) => setSearch(event.target.value),
+                placeholder: "Search",
+                clearSearch: true,
+                clearSearchAriaLabel: "clear",
+              },
+            }}
+            getRowId={(row) => row._id}
           />
         </div>
       </div>

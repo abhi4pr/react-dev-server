@@ -263,7 +263,6 @@ const RefundRequests = () => {
   const rejectedCount = datas.filter(
     (item) => item.finance_refund_status === 2
   ).length;
-  console.log("Total Requested Amount Total:", refundAmountTotal);
 
   const sameCustomercolumn = [
     {
@@ -425,40 +424,52 @@ const RefundRequests = () => {
       ),
     },
     {
-      name: "Customer Name",
-      selector: (row) => row.cust_name,
+      field: "cust_name",
+      headerName: "Customer Name",
       sortable: true,
-      width: "20%",
+      width: 150,
+      renderCell: (params) => (
+        <div
+          style={{ cursor: "pointer" }}
+          onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+        >
+          {params.row.cust_name}{" "}
+        </div>
+      ),
     },
     {
-      name: "Refund Amount",
-      selector: (row) => row.refund_amount,
-      width: "15%",
+      field: "refund_amount",
+      headerName: "Refund Amount",
+      width: 150,
+      renderCell: (params) => <div>{params.row.refund_amount} </div>,
     },
     {
-      name: "Refund Request Reason",
-      selector: (row) => row.finance_refund_reason,
-      width: "20%",
+      field: "finance_refund_reason",
+      headerName: "Refund Request Reason",
+      width: 190,
+      renderCell: (params) => <div>{params.row.finance_refund_reason} </div>,
     },
     {
-      name: "Refund Request Date",
-      // selector: (row) => row.creation_date,
-      selector: (row) => {
-        return <div>{convertDateToDDMMYYYY(row.creation_date)}</div>;
-      },
-      width: "15%",
-    },
-
-    {
-      name: "Refund Updated Date",
-      selector: (row) => convertDateToDDMMYYYY(row.last_updated_date),
-      width: "15%",
+      field: "creation_date",
+      headerName: "Refund Request Date",
+      width: 190,
+      renderCell: (params) => (
+        <div>{convertDateToDDMMYYYY(params.row.creation_date)}</div>
+      ),
     },
     {
-      name: "Refund Payment Image",
-      selector: (row, index) => (
+      field: "last_updated_date",
+      headerName: "Refund Updated Date",
+      width: 190,
+      renderCell: (params) => (
+        <div>{convertDateToDDMMYYYY(params.row.last_updated_date)} </div>
+      ),
+    },
+    {
+      headerName: "Refund Payment Image",
+      renderCell: (params) => (
         <>
-          {row.finance_refund_status == 0 && (
+          {params.row.finance_refund_status === 0 && (
             <form method="POST" encType="multipart/form-data" action="">
               <input
                 type="file"
@@ -484,19 +495,18 @@ const RefundRequests = () => {
           )}
         </>
       ),
-      width: "20%",
     },
     {
-      name: "Refund Payment Image",
-      selector: (row, index) => (
+      fieldName: "Refund Payment Image",
+      renderCell: (params, index) => (
         <>
-          {row.refund_files && (
+          {params.row.refund_files && (
             <button
               className="btn btn-primary"
               onClick={() => {
                 setOpenImageDialog(true);
                 setViewImgSrc(
-                  `https://sales.creativefuel.io/${row.refund_files}`
+                  `https://sales.creativefuel.io/${params.row.refund_files}`
                 );
               }}
             >
@@ -505,20 +515,18 @@ const RefundRequests = () => {
           )}
         </>
       ),
-      width: "20%",
     },
     {
-      name: "Action",
-      // selector: (row) => "Pending",
-      cell: (row) => (
+      field: "Action",
+      renderCell: (params) => (
         <div>
           {" "}
-          {row.finance_refund_status == 0 && (
+          {params.row.finance_refund_status == 0 && (
             <>
               <select
                 className="form-control"
-                value={row.statusDropdown}
-                onChange={(e) => handleStatusChange(row, e.target.value)}
+                value={params.row.statusDropdown}
+                onChange={(e) => handleStatusChange(params.row, e.target.value)}
               >
                 <option value="">Select</option>
                 <option value="1">Approved</option>
@@ -526,16 +534,17 @@ const RefundRequests = () => {
               </select>
             </>
           )}
-          {row.finance_refund_status == 1 && (
+          {params.row.finance_refund_status == 1 && (
             <div className="text-success btn">Approved</div>
           )}
-          {row.finance_refund_status == 2 && (
+          {params.row.finance_refund_status == 2 && (
             <div className="text-danger btn">Rejected</div>
           )}
         </div>
       ),
     },
   ];
+
   return (
     <>
       <FormContainer
@@ -811,7 +820,7 @@ const RefundRequests = () => {
             type="primary"
             variant="contained"
             onClick={handleFilter}
-            className="mt-2 mb-2"
+            className="mt-2 mb-2 "
           >
             Search
           </Button>
@@ -830,24 +839,33 @@ const RefundRequests = () => {
 
       <div className="card">
         <div className="data_tbl table-responsive">
-          <DataTable
-            title="All Refund Requests"
+          <DataGrid
+            rows={filterData}
             columns={columns}
-            data={filterData}
-            fixedHeader
-            pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            disableColumnMenu
+            disableColumnSelector
+            disableColumnFilter
+            disableColumnReorder
+            disableColumnResize
+            disableMultipleColumnsSorting
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            fv
+            componentsProps={{
+              toolbar: {
+                value: search,
+                onChange: (event) => setSearch(event.target.value),
+                placeholder: "Search",
+                clearSearch: true,
+                clearSearchAriaLabel: "clear",
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>

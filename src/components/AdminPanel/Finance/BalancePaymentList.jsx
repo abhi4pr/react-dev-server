@@ -749,15 +749,19 @@ const BalancePaymentList = () => {
   ];
   const columns = [
     {
-      name: "S.No",
-      cell: (row, index) => <div>{index + 1}</div>,
-      width: "7%",
+      field: "S.No",
+      fieldName: "s_no",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...datas].indexOf(params.row) + 1}</div>
+      ),
       sortable: true,
     },
     {
-      name: "Aging",
-      cell: (row) => {
-        const date = new Date(row.sale_booking_date);
+      field: "Aging",
+      renderCell: (params) => {
+        const date = new Date(params.row.sale_booking_date);
         const today = new Date();
         const diffTime = Math.abs(today - date);
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -765,51 +769,62 @@ const BalancePaymentList = () => {
       },
     },
     {
-      name: "Customer Name",
-      selector: (row) => row.cust_name,
+      field: "Customer Name",
+      fieldName: "cust_name",
+      width: 320,
+      renderCell: (params) => params.row.cust_name,
       sortable: true,
     },
     {
-      name: "Sales Executive Name",
-      selector: (row) => row.username,
+      field: "Sales Executive Name",
+      width: 190,
+      fieldName: "username",
+      renderCell: (params) => params.row.username,
     },
     {
-      name: "Sale Booking Date",
-      // selector: (row) => row.sale_booking_date,
-      cell: (row) => (
+      field: "Sale Booking Date",
+      fieldName: "sale_booking_date",
+      width: 190,
+      renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
-          {convertDateToDDMMYYYY(row.sale_booking_date)}
+          {convertDateToDDMMYYYY(params.row.sale_booking_date)}
         </div>
       ),
     },
     {
-      name: "Campaign Amount",
-      selector: (row) => row.campaign_amount,
+      field: "Campaign Amount",
+      fieldName: "campaign_amount",
+      width: 190,
+      renderCell: (params) => params.row.campaign_amount,
     },
     {
-      name: "Paid Amount",
-      // selector: (row) => row.total_paid_amount,
-      cell: (row) => (
+      field: "Paid Amount",
+      fieldName: "total_paid_amount",
+      width: 190,
+      renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
-          {row.total_paid_amount ? row.total_paid_amount : 0}
+          {params.row.total_paid_amount ? params.row.total_paid_amount : 0}
         </div>
       ),
     },
     {
-      name: "Balance Amount",
-      selector: (row) => row.campaign_amount - row.total_paid_amount,
+      field: "Balance Amount",
+      width: 190,
+      renderCell: (params) =>
+        params.row.campaign_amount - params.row.total_paid_amount,
     },
     {
-      name: "Screen Shot",
-      cell: (row) =>
-        row.invoice ? (
-          row.invoice.includes(".pdf") ? (
+      field: "Screen Shot",
+      width: 190,
+      renderCell: (params) =>
+        params.row.invoice ? (
+          params.row.invoice.includes(".pdf") ? (
             <img
               src={pdfImg}
               onClick={() => {
                 setViewImgSrc(
-                  row.invoice
-                    ? `https://sales.creativefuel.io/${row.invoice}`
+                  params.row.invoice
+                    ? `https://sales.creativefuel.io/${params.row.invoice}`
                     : ""
                 ),
                   setViewImgDialog(true);
@@ -819,13 +834,13 @@ const BalancePaymentList = () => {
             <img
               onClick={() => {
                 setViewImgSrc(
-                  row.invoice
-                    ? `https://sales.creativefuel.io/${row.invoice}`
+                  params.row.invoice
+                    ? `https://sales.creativefuel.io/${params.row.invoice}`
                     : ""
                 ),
                   setViewImgDialog(true);
               }}
-              src={`https://sales.creativefuel.io/${row.invoice}`}
+              src={`https://sales.creativefuel.io/${params.row.invoice}`}
               alt="payment screenshot"
               style={{ width: "50px", height: "50px" }}
             />
@@ -835,11 +850,12 @@ const BalancePaymentList = () => {
         ),
     },
     {
-      name: "Status",
-      cell: (row) => (
+      field: "Status",
+      width: 190,
+      renderCell: (params) => (
         <button
           className="btn btn-sm btn-outline-info"
-          onClick={() => handleImageClick(row)}
+          onClick={() => handleImageClick(params.row)}
         >
           Balance Update
         </button>
@@ -1105,7 +1121,7 @@ const BalancePaymentList = () => {
                   variant="outlined"
                   InputProps={{
                     ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
+                    className: "form-control",
                   }}
                 />
               )}
@@ -1231,7 +1247,7 @@ const BalancePaymentList = () => {
       </div>
       <div className="card mt-3">
         <div className="data_tbl table-responsive">
-          <DataTable
+          {/* <DataTable
             title="Balance payment list"
             columns={columns}
             data={filterData}
@@ -1249,6 +1265,34 @@ const BalancePaymentList = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             }
+          /> */}
+          <DataGrid
+            rows={filterData}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            disableColumnMenu
+            disableColumnSelector
+            disableColumnFilter
+            disableColumnReorder
+            disableColumnResize
+            disableMultipleColumnsSorting
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            fv
+            componentsProps={{
+              toolbar: {
+                value: search,
+                onChange: (event) => setSearch(event.target.value),
+                placeholder: "Search",
+                clearSearch: true,
+                clearSearchAriaLabel: "clear",
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>

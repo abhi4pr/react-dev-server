@@ -271,29 +271,41 @@ const InvoiceCreated = () => {
   ];
   const columns = [
     {
-      name: "S.No",
-      cell: (row, index) => <div>{index + 1}</div>,
-      width: "9%",
+      field: "S.No",
+      fieldName: "s_no",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...datas].indexOf(params.row) + 1}</div>
+      ),
       sortable: true,
     },
     {
-      name: "Customer name",
-      selector: (row) => row.cust_name,
+      field: "Customer name",
+      fieldName: "cust_name",
+      width: 340,
+      renderCell: (params) => params.row.cust_name,
     },
     {
-      name: "Invoice Particular",
-      selector: (row) => row.invoice_particular_name,
+      field: "Invoice Particular",
+      fieldName: "invoice_particular_name",
+      width: 210,
+      renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      name: "Campaign Amount",
-      selector: (row) => row.campaign_amount,
+      field: "Campaign Amount",
+      fieldName: "campaign_amount",
+      width: 210,
+      renderCell: (params) => params.row.campaign_amount,
     },
     {
-      name: "Download Invoice",
-      cell: (row) => (
+      field: "Download Invoice",
+      fieldName: "invoice",
+      width: 210,
+      renderCell: (params) => (
         <a
           className="btn btn-primary"
-          href={`https://sales.creativefuel.io/${row.invoice}`}
+          href={`https://sales.creativefuel.io/${params.row.invoice}`}
           target="_blank"
           rel="noreferrer"
           download // Add the 'download' attribute to trigger the download
@@ -303,14 +315,17 @@ const InvoiceCreated = () => {
       ),
     },
     {
-      name: "View Invoice",
-      // selector: (row) => row.vendor_name,
-      cell: (row) => (
+      field: "View Invoice",
+      fieldName: "invoice",
+      width: 210,
+      renderCell: (params) => (
         <button
           className="btn btn-primary"
           onClick={() => {
             setOpenImageDialog(true);
-            setViewImgSrc(`https://sales.creativefuel.io/${row.invoice}`);
+            setViewImgSrc(
+              `https://sales.creativefuel.io/${params.row.invoice}`
+            );
           }}
         >
           View
@@ -318,9 +333,9 @@ const InvoiceCreated = () => {
       ),
     },
     {
-      name: "Remark",
-      selector: (row) => row.invoice_remark,
-      width: "250px",
+      field: "Remark",
+      fieldName: "invoice_remark",
+      renderCell: (params) => params.row.invoice_remark,
     },
   ];
 
@@ -552,24 +567,33 @@ const InvoiceCreated = () => {
       </div>
       <div className="card mt-3">
         <div className="data_tbl table-responsive">
-          <DataTable
-            title="Invoice Created"
+          <DataGrid
+            rows={filterData}
             columns={columns}
-            data={filterData}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            disableColumnMenu
+            disableColumnSelector
+            disableColumnFilter
+            disableColumnReorder
+            disableColumnResize
+            disableMultipleColumnsSorting
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            fv
+            componentsProps={{
+              toolbar: {
+                value: search,
+                onChange: (event) => setSearch(event.target.value),
+                placeholder: "Search",
+                clearSearch: true,
+                clearSearchAriaLabel: "clear",
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>

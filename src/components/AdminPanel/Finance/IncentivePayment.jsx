@@ -556,90 +556,108 @@ const IncentivePayment = () => {
   const columns = useMemo(
     () => [
       {
-        name: "S.No",
-        cell: (row, index) => <div>{index + 1}</div>,
-        width: "9%",
+        field: "S.No",
+        fieldName: "s_no",
+        renderCell: (params, index) => (
+          // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+          <div>{[...datas].indexOf(params.row) + 1}</div>
+        ),
         sortable: true,
       },
       {
-        name: "Sales executive name",
-        selector: (row) =>
-          row.sales_executive_name !== "Total" ? (
+        field: "Sales executive name",
+        width: 230,
+        fieldName: "sales_executive_name",
+        renderCell: (params) =>
+          params.row.sales_executive_name !== "Total" ? (
             <Link
-              to={`/admin/Incentive-Request-Released-List/${row.incentive_request_id}`}
+              to={`/admin/Incentive-Request-Released-List/${params.row.incentive_request_id}`}
               className="link-primary"
             >
-              {row.sales_executive_name}
+              {params.row.sales_executive_name}
             </Link>
           ) : (
             <div className="fs-6 font-bold text-black-50">
               {" "}
-              {row.sales_executive_name}
+              {params.row.sales_executive_name}
             </div>
           ),
       },
       {
-        name: "Requested Date & Time",
-        selector: (row) =>
-          row.sales_executive_name !== "Total"
-            ? new Date(row.request_creation_date).toLocaleDateString("en-IN") +
+        field: "Requested Date & Time",
+        width: 230,
+        fieldName: "request_creation_date",
+        renderCell: (params) =>
+          params.row.sales_executive_name !== "Total"
+            ? new Date(params.row.request_creation_date).toLocaleDateString(
+                "en-IN"
+              ) +
               " " +
-              new Date(row.request_creation_date).toLocaleTimeString("en-IN")
+              new Date(params.row.request_creation_date).toLocaleTimeString(
+                "en-IN"
+              )
             : null,
-        width: "15%",
       },
       {
-        name: "Request Amount",
-        selector: (row) =>
-          row.sales_executive_name !== "Total" ? (
-            row.request_amount
+        field: "Request Amount",
+        width: 230,
+        fieldName: "request_amount",
+        renderCell: (params) =>
+          params.row.sales_executive_name !== "Total" ? (
+            params.row.request_amount
           ) : (
             <div className="fs-6 font-bold text-black-50">
               {" "}
-              {row.request_amount}
+              {params.row.request_amount}
             </div>
           ),
       },
       {
-        name: "Released Amount",
-        selector: (row) =>
-          row.sales_executive_name !== "Total" ? (
+        field: "Released Amount",
+        width: 230,
+        fieldName: "released_amount",
+        renderCell: (params) =>
+          params.row.sales_executive_name !== "Total" ? (
             <Link
-              to={`/admin/Incentive-Request-Released-List/${row.incentive_request_id}`}
+              to={`/admin/Incentive-Request-Released-List/${params.row.incentive_request_id}`}
               className="link-primary"
             >
-              {row.released_amount
-                ? row.released_amount?.toLocaleString("en-IN")
+              {params.row.released_amount
+                ? params.row.released_amount?.toLocaleString("en-IN")
                 : 0}
             </Link>
           ) : (
             <div className="fs-6 font-bold text-black-50">
-              {row.released_amount?.toLocaleString("en-IN")}
+              {params.row.released_amount?.toLocaleString("en-IN")}
             </div>
           ),
       },
       {
-        name: "Balance Release Amount",
-        selector: (row) =>
-          row.sales_executive_name !== "Total" ? (
-            row.balance_release_amount?.toLocaleString("en-IN")
+        field: "Balance Release Amount",
+        width: 230,
+        fieldName: "balance_release_amount",
+        renderCell: (params) =>
+          params.row.sales_executive_name !== "Total" ? (
+            params.row.balance_release_amount?.toLocaleString("en-IN")
           ) : (
             <div className="fs-6 font-bold text-black-50">
-              {row.balance_release_amount}
+              {params.row.balance_release_amount}
             </div>
           ),
       },
       {
-        name: "Status",
-        selector: (row) => {
-          return row.action == "Complete Release Button" ? (
+        field: "Status",
+        width: 230,
+        renderCell: (params) => {
+          return params.row.action == "Complete Release Button" ? (
             <button
               className="btn btn-sm btn-outline-info"
               data-toggle="modal"
               data-target="#incentiveModal"
               onClick={() => {
-                setSelectedData(row),
-                  setBalanceReleaseAmount(row.balance_release_amount);
+                setSelectedData(params.row),
+                  setBalanceReleaseAmount(params.row.balance_release_amount);
                 setAccountNo("");
                 setRemarks("");
                 setModalOpen(true);
@@ -648,28 +666,27 @@ const IncentivePayment = () => {
               Complete Release
             </button>
           ) : (
-            <span>{row.action}</span>
+            <span>{params.row.action}</span>
           );
         },
-        width: "15%",
       },
       {
-        name: "Aging",
-        selector: (row) => {
+        field: "Aging",
+        renderCell: (params) => {
           const currentDate = new Date(
-            row.action == "Complete Release Button"
+            params.row.action == "Complete Release Button"
               ? new Date()
-              : row.request_creation_date
+              : params.row.request_creation_date
           );
           const requestedDate = new Date(
-            row.action == "Complete Release Button"
-              ? row.request_creation_date
-              : row.payment_date
+            params.row.action == "Complete Release Button"
+              ? params.row.request_creation_date
+              : params.row.payment_date
           );
           const diffTime = Math.abs(currentDate - requestedDate);
           const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-          return row.sales_executive_name !== "Total" ? diffDays : null;
+          return params.row.sales_executive_name !== "Total" ? diffDays : null;
         },
       },
     ],
@@ -1209,24 +1226,33 @@ const IncentivePayment = () => {
               </Button>
             </div>
           </div>
-          <DataTable
-            title="Sales Executive Incentive Request List"
+          <DataGrid
+            rows={filterData}
             columns={columns}
-            data={filterData}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            disableColumnMenu
+            disableColumnSelector
+            disableColumnFilter
+            disableColumnReorder
+            disableColumnResize
+            disableMultipleColumnsSorting
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            fv
+            componentsProps={{
+              toolbar: {
+                value: search,
+                onChange: (event) => setSearch(event.target.value),
+                placeholder: "Search",
+                clearSearch: true,
+                clearSearchAriaLabel: "clear",
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>

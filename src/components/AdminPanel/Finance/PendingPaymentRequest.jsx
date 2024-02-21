@@ -502,7 +502,7 @@ export default function PendingPaymentRequest() {
 
     setHistoryData(type == "FY" ? dataFY : dataTP);
   };
-
+  console.log("history data", historyData);
   const handleClosePaymentHistory = () => {
     setPaymentHistory(false);
   };
@@ -1011,15 +1011,16 @@ export default function PendingPaymentRequest() {
       field: "Pan Img",
       headerName: "Pan Img",
       renderCell: (params) => {
-        return (
-        params.row.pan_img?  <img
+        return params.row.pan_img ? (
+          <img
             src={params.row.pan_img}
             alt="Pan"
             style={{ width: "40px", height: "40px" }}
-          />:"NA"
+          />
+        ) : (
+          "NA"
         );
-      
-      }
+      },
     },
     {
       field: "pan",
@@ -1357,15 +1358,6 @@ export default function PendingPaymentRequest() {
         <div className="col-md-3">
           <div className="form-group">
             <label>Vendor Name</label>
-            {/* <input
-              value={vendorName}
-              type="text"
-              placeholder="Name"
-              className="form-control"
-              onChange={(e) => {
-                setVendorName(e.target.value);
-              }}
-            /> */}
             <Autocomplete
               value={vendorName}
               onChange={(event, newValue) => setVendorName(newValue)}

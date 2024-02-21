@@ -5,6 +5,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DataTable from "react-data-table-component";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { baseUrl } from "../../../utils/config";
@@ -108,31 +109,33 @@ const PaymentMode = () => {
   };
   const columns = [
     {
-      name: "S.No",
-      cell: (row, index) => <div>{index + 1}</div>,
-      width: "9%",
-      sortable: true,
+      field: "S.No",
+      fieldName: "s_no",
+      renderCell: (params, index) => (
+        <div>{[...filterData].indexOf(params.row) + 1}</div>
+      ),
     },
     {
-      name: <div style={{ whiteSpace: "normal" }}>Title</div>,
-      selector: (row) => (
-        <div style={{ whiteSpace: "normal" }}>{row.title}</div>
-      ),
-      width: "15%",
+      field: "Title",
+      fieldName: "title",
+      width: 200,
+      renderCell: (params) => <div>{params.row.title}</div>,
       sortable: false,
     },
     {
-      name: "Detail",
+      field: "Detail",
+      fieldName: "detail",
+      width: 700,
       // selector: (row) =>  <div style={{ whiteSpace: 'normal' }}>{row.detail}
       //   <Button key={row.detail} variant="contained" color="primary" onClick={console.log('clicked')} style={{marginLeft: "10px"}}>Copy</Button>
       // </div>,
-      cell: (row) => (
+      renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
-          {row.detail}
+          {params.row.detail}
           <Button
-            key={row.detail}
+            key={params.row.detail}
             color="secondary"
-            onClick={() => handleCopyDetail(row.detail)}
+            onClick={() => handleCopyDetail(params.row.detail)}
             style={{ marginLeft: "10px" }}
           >
             <ContentCopyIcon />
@@ -141,16 +144,17 @@ const PaymentMode = () => {
       ),
     },
     {
-      name: "Payment Type",
-      selector: (row) => row.payment_type,
-      width: "12%",
+      field: "Payment Type",
+      fieldName: "payment_type",
+      width: 200,
+      renderCell: (params) => params.row.payment_type,
     },
     {
-      name: "GST Bank",
-
-      width: "8%",
-      selector: (row) => {
-        return <div>{row.gst_bank === 1 ? "GST" : "Non GST"}</div>;
+      field: "GST Bank",
+      fieldName: "gst_bank",
+      width: 200,
+      renderCell: (params) => {
+        return <div>{params.row.gst_bank === 1 ? "GST" : "Non GST"}</div>;
       },
     },
   ];
@@ -310,24 +314,33 @@ const PaymentMode = () => {
 
       <div className="card">
         <div className="data_tbl table-responsive">
-          <DataTable
-            title="Payment Mode"
+          <DataGrid
+            rows={filterData}
             columns={columns}
-            data={filterData}
-            fixedHeader
-            pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            disableColumnMenu
+            disableColumnSelector
+            disableColumnFilter
+            disableColumnReorder
+            disableColumnResize
+            disableMultipleColumnsSorting
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            fv
+            componentsProps={{
+              toolbar: {
+                value: search,
+                onChange: (event) => setSearch(event.target.value),
+                placeholder: "Search",
+                clearSearch: true,
+                clearSearchAriaLabel: "clear",
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>
