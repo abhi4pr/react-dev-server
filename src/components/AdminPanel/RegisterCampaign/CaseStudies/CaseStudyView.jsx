@@ -90,8 +90,8 @@ export default function CaseStudyView() {
         <div className="section section_padding sec_bg ">
           <div className="container">
             <FormContainer
-              mainTitle="Data"
-              title="Data"
+              mainTitle="Case Study"
+              title="Case Study"
               // handleSubmit={handleSubmit}
               submitButton={false}
             >

@@ -497,22 +497,22 @@ const BrandCaseStudy = () => {
       } else if (compignPurpose == "") {
         toastError("please Provide campaign Purpose ");
         return;
-      } else if (NumOfPost == "N/A" || NumOfPost == "") {
+      } else if (NumOfPost == "") {
         toastError("please Provide Number of Post ");
         return;
-      } else if (NumOfReach == "N/A" || NumOfReach == "") {
+      } else if (NumOfReach == "") {
         toastError("please Provide Number of Reach ");
         return;
-      } else if (NumOfImpression == "N/A" || NumOfImpression == "") {
+      } else if (NumOfImpression == "") {
         toastError("please Provide Number of Impression ");
         return;
-      } else if (NumOfEngagement == "N/A" || NumOfEngagement == "") {
+      } else if (NumOfEngagement == "") {
         toastError("please Provide Number of Engagement ");
         return;
-      } else if (NumOfViews == "N/A" || NumOfViews == "") {
+      } else if (NumOfViews == "") {
         toastError("please Provide Number of Views ");
         return;
-      } else if (NumOfStoryViews == "N/A" || NumOfStoryViews == "") {
+      } else if (NumOfStoryViews == "") {
         toastError("please Provide Number of Story Views ");
         return;
       }
@@ -1248,7 +1248,7 @@ const BrandCaseStudy = () => {
           </div>
 
           <div className="summary_cards brand_img_list">
-             {mmcDetails.length > 0 && <h3 className="lead fs-4">MMC </h3>}
+            {mmcDetails.length > 0 && <h3 className="lead fs-4">MMC </h3>}
             {/* {mmcDetails.length > 0 && <h3 className="lead fs-4">MMC </h3>}
             {mmcDetails.map((detail, index) => (
               <div key={index} className="summary_card brand_img_item">
@@ -1596,9 +1596,20 @@ const BrandCaseStudy = () => {
             {isLoading ? "Please wait data uploading..." : "Submit"}
           </button> */}
         </FormContainer>
-        <Button variant="contained" onClick={handleSubmit}>
-          Submit
+
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={isLoading}
+          onClick={handleSubmit}
+          // style={{ width: "20%", marginLeft: "1%" }}
+        >
+          {isLoading ? "Please wait data uploading..." : "Submit"}
         </Button>
+
+        {/* <Button variant="contained" onClick={handleSubmit}>
+          Submit
+        </Button> */}
         {openReviewDisalog.open && (
           <ImgDialogBox
             openReviewDisalog={openReviewDisalog}
