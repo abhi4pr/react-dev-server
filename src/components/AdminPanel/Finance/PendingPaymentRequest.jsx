@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import axios from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -80,7 +80,7 @@ export default function PendingPaymentRequest() {
   const [baseAmount, setBaseAmount] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("Fully Paid");
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
-
+const [ paymentModeData, setPaymentModeData] = useState([]);
   var handleAcknowledgeClick = () => {
     setAknowledgementDialog(true);
   };
@@ -145,7 +145,7 @@ export default function PendingPaymentRequest() {
       setNodeData(x);
       axios
         .get(
-          "https://ptest.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
           let y = res.data.body.filter((item) => {
@@ -166,6 +166,11 @@ export default function PendingPaymentRequest() {
           });
           setUniqueVendorData(uvData);
         });
+    });
+
+    axios.get(`${baseUrl}` + `get_all_payment_mode`).then((res) => {
+      console.log(res.data, "payment mode");
+      setPaymentModeData(res.data);
     });
 
     axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
@@ -455,7 +460,6 @@ export default function PendingPaymentRequest() {
   const handleOpenBankDetail = (row) => {
     let x =[]
     x.push(row)
-    console.log(x, "row");
     
     setBankDetailRowData(x);
     setBankDetail(true);
@@ -921,9 +925,10 @@ export default function PendingPaymentRequest() {
             >
               {params.row.vendor_name}
             </div>
-            <div onClick={() => handleOpenBankDetail(params.row)}>
+            {/* Hold for confirmation of sourabh sir */}
+            {/* <Button disabled={params.row.payment_details?!params.row.payment_details.length>0:true} onClick={() => handleOpenBankDetail(params.row)}>
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
-            </div>
+            </Button> */}
           </div>
         );
       },
@@ -1015,7 +1020,8 @@ export default function PendingPaymentRequest() {
       field: "Pan Img",
       headerName: "Pan Img",
       renderCell: (params) => {
-        return params.row.pan_img ? (
+        return params.row.pan_img.includes("uploads")
+        ? (
           <img
             src={"https://purchase.creativefuel.io/" + params.row.pan_img}
             alt="Pan"
@@ -1716,12 +1722,11 @@ export default function PendingPaymentRequest() {
               disablePortal
               className=" mt-2"
               id="combo-box-demo"
-              options={[
-                "Cash",
-                "Crypto",
-                "Transfer from CF",
-                "Transfer from other Account",
-              ]}
+              options={
+                paymentModeData.length > 0
+                  ? paymentModeData.map((item) => item.payment_mode)
+                  : []
+              }
               fullWidth={true}
               renderInput={(params) => (
                 <TextField
