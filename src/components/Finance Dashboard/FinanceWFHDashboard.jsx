@@ -242,6 +242,7 @@ export default function FinanceWFHDashboard() {
       "To Pay": row.toPay,
       Status: row.attendence_status_flow,
       "Attendence ID": row.attendence_id,
+      utr: "",
     }));
     const fileName = "AllSalary.xlsx";
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -447,7 +448,7 @@ export default function FinanceWFHDashboard() {
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
             : filterData
-                .filter((item) => item.status_ === 2)
+                ?.filter((item) => item.attendence_status_flow == "Payment Failed" )
                 .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
@@ -1026,9 +1027,7 @@ export default function FinanceWFHDashboard() {
         )}
       </div> */}
       <DataGrid
-        rows={filterData?.filter(
-          (item) => item.status_ === 1 && item.utr == ""
-        )}
+        rows={filterData?.filter((item) => item.attendence_status_flow == "Payment Failed" )}
         columns={pendingColumns}
         getRowId={(row) => row.id}
         initialState={{

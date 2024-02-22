@@ -74,7 +74,7 @@ export default function FinanceDashboard() {
 
       axios
         .get(
-          "https://ptest.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
           let y = x.filter((item) => {
@@ -100,7 +100,7 @@ export default function FinanceDashboard() {
     setTimeout(() => {
       axios
         .get(
-          "https://ptest.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
           let y = res.data.body.filter((item) => {
