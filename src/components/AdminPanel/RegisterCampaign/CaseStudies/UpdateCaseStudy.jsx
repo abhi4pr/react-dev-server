@@ -256,7 +256,7 @@ const UpdateCaseStudy = () => {
     newDetails.splice(index, 1);
     setDetails(newDetails);
   };
-  
+
   const handleSubmit = async (e) => {
     console.log(dataSubCategory, "subcat");
     console.log(brandCat, "brandCat");
@@ -331,7 +331,7 @@ const UpdateCaseStudy = () => {
       if (details.length == 0) {
         await axios
           .put(baseUrl + "editdataoperationname", {
-            data_id:  +id,
+            data_id: +id,
             data_name: brandName,
             remark: remark,
             cat_id: category,
@@ -816,12 +816,14 @@ const UpdateCaseStudy = () => {
         <div className="section section_padding sec_bg h100vh">
           <div className="container">
             <FormContainer
-              mainTitle="Data"
-              title="Data"
-              handleSubmit={handleSubmit}
+              mainTitle="Case Study"
+              title="Case Study"
+              // handleSubmit={handleSubmit}
+              submitButton={false}
+              isLoading={isLoading}
             >
               <FieldContainer
-                label="Upload Data "
+                label="CreativeFuel "
                 type="file"
                 multiple
                 accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
@@ -1096,7 +1098,7 @@ const UpdateCaseStudy = () => {
                     // onBlur={(e) => {
                     //   setOperationRemark(handleNaFileChangeOnBlur(e));
                     // }}
-                    onChange={(e) => setOperationRemark(e.target.value)} 
+                    onChange={(e) => setOperationRemark(e.target.value)}
                   />
                 </div>
               </>
@@ -1111,31 +1113,28 @@ const UpdateCaseStudy = () => {
                       <div key={index} className="summary_card brand_img_item">
                         <div className="summary_cardrow brand_img_row">
                           <div className="col summary_box brand_img_box">
-                            {
-
-                              detail.data_type === "jpg" ||
-                              detail.data_type === "jpeg" ||
-                              detail.data_type === "png" ||
-                              detail.data_type === "gif" ? (
-                                <img
-                                  className="brandimg_icon"
+                            {detail.data_type === "jpg" ||
+                            detail.data_type === "jpeg" ||
+                            detail.data_type === "png" ||
+                            detail.data_type === "gif" ? (
+                              <img
+                                className="brandimg_icon"
+                                src={detail.data_image}
+                              />
+                            ) : detail.data_type === "pdf" ? (
+                              <iframe
+                                src={detail.data_image}
+                                width="50%"
+                                height="50%"
+                              ></iframe>
+                            ) : (
+                              <video width="50%" height="50%" controls>
+                                <source
                                   src={detail.data_image}
+                                  type="video/mp4"
                                 />
-                              ) : detail.data_type === "pdf" ? (
-                                <iframe
-                                  src={detail.data_image}
-                                  width="50%"
-                                  height="50%"
-                                ></iframe>
-                              ) : (
-                                <video width="50%" height="50%" controls>
-                                  <source
-                                    src={detail.data_image}
-                                    type="video/mp4"
-                                  />
-                                </video>
-                              )
-                            }
+                              </video>
+                            )}
                             {/* <img
                               className="brandimg_icon"
                               // src={detail.data_image}
@@ -1275,7 +1274,6 @@ const UpdateCaseStudy = () => {
                                 />
                               </video>
                             )}
-                           
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1401,7 +1399,6 @@ const UpdateCaseStudy = () => {
                                 />
                               </video>
                             )}
-                           
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1527,7 +1524,6 @@ const UpdateCaseStudy = () => {
                                 />
                               </video>
                             )}
-                           
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1633,6 +1629,14 @@ const UpdateCaseStudy = () => {
                 onChange={(e) => setRemark(e.target.value)}
               />
             </FormContainer>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isLoading}
+              onClick={handleSubmit}
+            >
+          {isLoading ? "Please wait data uploading..." : "Submit"}
+            </Button>
           </div>
         </div>
       </div>
@@ -1662,7 +1666,6 @@ const UpdateCaseStudy = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-         
           <Button onClick={handleSave} color="primary">
             Save
           </Button>
@@ -1716,7 +1719,6 @@ const UpdateCaseStudy = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-        
           <Button onClick={handleSaveSubCat} color="primary">
             Save
           </Button>
