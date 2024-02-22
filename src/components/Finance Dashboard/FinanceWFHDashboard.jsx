@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FormContainer from "../AdminPanel/FormContainer";
 import axios from "axios";
 import { DataGrid, GridColumnMenu, GridToolbar } from "@mui/x-data-grid";
@@ -12,6 +12,7 @@ import Select from "react-select";
 import * as XLSX from "xlsx";
 import DataGridDialog from "../DataGridDialog/DataGridDialog";
 import FieldContainer from "../AdminPanel/FieldContainer";
+import BankExcelConverter from "../../utils/BankExcelConverter";
 
 const accordionButtons = [
   "Pending Verify",
@@ -164,9 +165,7 @@ export default function FinanceWFHDashboard() {
           attendence_id: Number(rowUTR.row.attendence_id),
           utr: String(rowUTR.value),
         },
-        {
-        
-        }
+        {}
       )
       .then(() => {
         setRowUTR({ value: "", row: null });
@@ -812,16 +811,28 @@ export default function FinanceWFHDashboard() {
     <div>
       <div style={{ height: "50px" }}>
         {rowForPayment.length > 0 && (
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            sx={{ width: "100px" }}
-            className="ml-3 mb-2"
-            onClick={handleDownloadInvoices}
-          >
-            Download PDF Zip
-          </Button>
+          <>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ width: "200px" }}
+              className="ml-3 mb-2"
+              onClick={handleDownloadInvoices}
+            >
+              Download PDF Zip
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="lg"
+              sx={{ width: "200px" }}
+              className="ml-3 mb-2"
+              onClick={() => BankExcelConverter(rowForPayment)}
+            >
+              Export Bank Excel
+            </Button>
+          </>
         )}
 
         {rowForPayment.length > 0 && (
@@ -829,7 +840,7 @@ export default function FinanceWFHDashboard() {
             variant="contained"
             color="primary"
             size="small"
-            sx={{ width: "100px" }}
+            sx={{ width: "200px" }}
             className="ml-3 mb-2"
             onClick={handleDownloadExcel}
           >
@@ -842,7 +853,7 @@ export default function FinanceWFHDashboard() {
             variant="contained"
             color="primary"
             size="small"
-            sx={{ width: "100px" }}
+            sx={{ width: "200px" }}
             className="ml-3 mb-2"
             onClick={handleSendToBank}
           >
