@@ -158,19 +158,18 @@ const Attendence = () => {
         month: selectedMonth,
         year: selectedYear,
       });
-  
+
       setNoOfAbsent("");
       toastAlert("Submitted success");
-  
+
       await getAttendanceData();
       toastAlert("Submitted success");
     } catch (error) {
-      toastError('Billing header not set for this department')
+      toastError("Billing header not set for this department");
       // console.error("Error submitting attendance:", error);
       // Handle error as needed
     }
   };
-  
 
   function handleAllDepartmentAttendance() {
     axios
@@ -345,16 +344,16 @@ const Attendence = () => {
       headerName: "Designation",
       type: "text",
     },
-    {
-      field: "Report_L1Name",
-      headerName: "Report to L1",
-      type: "text",
-    },
-    {
-      field: "Report_L2Name",
-      headerName: "Report to L2",
-      type: "text",
-    },
+    // {
+    //   field: "Report_L1Name",
+    //   headerName: "Report to L1",
+    //   type: "text",
+    // },
+    // {
+    //   field: "Report_L2Name",
+    //   headerName: "Report to L2",
+    //   type: "text",
+    // },
     {
       field: "joining_date",
       headerName: "Joining Date",
@@ -384,16 +383,22 @@ const Attendence = () => {
       type: "number",
       editable: true,
     },
+    // {
+    //   field: "present_days",
+    //   headerName: "Present Days ",
+    //   type: "number",
+    //   valueGetter: (params) =>
+    //     Number(params.row.present_days) - Number(params.row.noOfabsent),
+    // },
+    // {
+    //   field: "month_salary",
+    //   headerName: "Total Salary",
+    //   width: 150,
+    //   type: "text",
+    // },
     {
-      field: "present_days",
-      headerName: "Present Days ",
-      type: "number",
-      valueGetter: (params) =>
-        Number(params.row.present_days) - Number(params.row.noOfabsent),
-    },
-    {
-      field: "month_salary",
-      headerName: "Total Salary",
+      field: "salary",
+      headerName: "Salary",
       width: 150,
       type: "text",
     },
@@ -409,46 +414,46 @@ const Attendence = () => {
       type: "Number",
       editable: true,
     },
-    (filterData?.length !== 0 && filterData[0]?.attendence_generated == 0 )&&(
-    {
-      field: "actions",
-      type: "actions",
-      headerName: "Actions",
-      width: 100,
-      cellClassName: "actions",
-      getActions: ({ id }) => {
-        isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        if (isInEditMode) {
+    filterData?.length !== 0 &&
+      filterData[0]?.attendence_generated == 0 && {
+        field: "actions",
+        type: "actions",
+        headerName: "Actions",
+        width: 100,
+        cellClassName: "actions",
+        getActions: ({ id }) => {
+          isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+          if (isInEditMode) {
+            return [
+              <GridActionsCellItem
+                icon={<ClearIcon />}
+                label="Cancel"
+                className="textPrimary"
+                onClick={handleCancelClick(id)}
+                color="inherit"
+              />,
+              <GridActionsCellItem
+                icon={<SaveAsIcon />}
+                label="Save"
+                sx={{
+                  color: "primary.main",
+                }}
+                onClick={handleSaveClick(id)}
+              />,
+            ];
+          }
+
           return [
             <GridActionsCellItem
-              icon={<ClearIcon />}
-              label="Cancel"
+              icon={<EditIcon />}
+              label="Edit"
               className="textPrimary"
-              onClick={handleCancelClick(id)}
+              onClick={handleEditClick(id)}
               color="inherit"
             />,
-            <GridActionsCellItem
-              icon={<SaveAsIcon />}
-              label="Save"
-              sx={{
-                color: "primary.main",
-              }}
-              onClick={handleSaveClick(id)}
-            />,
           ];
-        }
-
-        return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-        ];
+        },
       },
-    })
   ];
   return (
     <>
