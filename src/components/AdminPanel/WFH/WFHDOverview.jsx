@@ -317,13 +317,13 @@ const WFHDOverview = () => {
         <>
           {row.att_status == "registered" ? (
             <>
-              <button type="button" className="btn btn-primary mr-1">
+              <button title="Edit user" type="button" className="btn btn-primary mr-1">
                 <Link to={`/admin/wfhd-update/${row.user_id}`}><EditIcon /></Link>
               </button>
-              <button type="button" className="btn btn-primary mr-1">
+              <button title="Bank details" type="button" className="btn btn-primary mr-1">
                 <Link to={`/admin/wfhd-bank-update/${row.user_id}`}><DetailsIcon /></Link>
               </button>
-              <button type="button" className="btn btn-success">
+              <button title="Document upload" type="button" className="btn btn-success">
                 <Link to={`/admin/wfh-update-document/${row.user_id}`}>
                   <UploadIcon />
                 </Link>

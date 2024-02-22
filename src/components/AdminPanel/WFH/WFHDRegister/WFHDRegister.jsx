@@ -30,6 +30,8 @@ const WFHDRegister = ({ userUpdateID }) => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
+  const deptID = decodedToken.dept_id;
+
   const [username, setUserName] = useState("");
   const [jobType, setJobType] = useState("WFHD");
   const [roles, setRoles] = useState("");
@@ -212,23 +214,21 @@ const WFHDRegister = ({ userUpdateID }) => {
       setCityData(res.data.data);
     });
   }, []);
+
   useEffect(() => {
-    if (department) {
+    if (deptID) {
       axios
-        .get(baseUrl + `get_all_designations_by_deptId/${department}`)
+        .get(baseUrl + `get_all_designations_by_deptId/${deptID}`)
         .then((res) => {
           setDesignationData(res.data.data);
-          console.log(res.data.data, "-----------data");
         });
     }
-  }, [department]);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!jobType) {
       return toastError("Job Type is Required");
-    } else if (!department || department == "") {
-      return toastError("Department is Required");
     } else if (!designation || designation == "") {
       return toastError("Designatoin is Required");
     } else if (!gender || gender == "") {
@@ -241,6 +241,10 @@ const WFHDRegister = ({ userUpdateID }) => {
       );
     } else if (!personalEmail || personalEmail == "") {
       return toastError("Email is Required");
+    } else if (!contact || contact == "") {
+      return toastError(
+        "Alternate Contact Is Required and should be equal to 10"
+      );
     }
 
     const formData = new FormData();
@@ -248,12 +252,13 @@ const WFHDRegister = ({ userUpdateID }) => {
     if (userUpdateID) {
       formData.append("user_id", userUpdateID);
     }
-
+    formData.append("dept_id", deptID);
+    formData.append("permanent_city", city);
     formData.append("created_by", loginUserId);
     formData.append("user_name", username);
     formData.append("role_id", 4);
     formData.append("image", selectedImage);
-    formData.append("permanent_city", city?.value ? city.value : "");
+    // formData.append("permanent_city", city?.value ? city.value : "");
     formData.append("ctc", Number(yearlySalary));
     formData.append(
       "offer_letter_send",
@@ -266,7 +271,7 @@ const WFHDRegister = ({ userUpdateID }) => {
     formData.append("user_login_password", password);
     formData.append("sitting_id", 183);
     formData.append("room_id", 1);
-    formData.append("dept_id", department);
+    // formData.append("dept_id", department);
     formData.append("Gender", gender);
     formData.append("job_type", jobType);
     formData.append("DOB", dateOfBirth);
@@ -625,19 +630,20 @@ const WFHDRegister = ({ userUpdateID }) => {
           <Select
             className=""
             options={departmentdata.map((option) => ({
-              value: option.dept_id,
+              value: option.deptID,
               label: `${option.dept_name}`,
             }))}
             value={{
               value: department,
               label:
-                departmentdata.find((user) => user.dept_id === department)
+                departmentdata.find((user) => user.dept_id === deptID)
                   ?.dept_name || "",
             }}
-            onChange={(e) => {
-              setDepartment(e.value);
-            }}
+            // onChange={(e) => {
+            //   setDepartment(e.value);
+            // }}
             required
+            isDisabled={true}
           />
         </div>
 
@@ -785,7 +791,7 @@ const WFHDRegister = ({ userUpdateID }) => {
               value: city.city_name,
               label: city.city_name,
             }))}
-            onChange={setCity}
+            onChange={(e) => setCity(e ? e.value : "")}
             required={true}
             // value={city}
             value={{
@@ -914,7 +920,7 @@ const WFHDRegister = ({ userUpdateID }) => {
           )}
 
         <FieldContainer
-          label="Alternate Contact"
+          label="Alternate Contact *"
           type="number"
           fieldGrid={3}
           value={contact}

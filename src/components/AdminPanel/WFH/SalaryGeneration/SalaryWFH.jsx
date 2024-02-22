@@ -905,7 +905,7 @@ const SalaryWFH = () => {
     },
     {
       name: "Present Days",
-      cell: (row) => 30 - Number(row.noOfabsent),
+      cell: (row) => Number(row.present_days) - Number(row.noOfabsent),
     },
     {
       name: "Total Salary",
