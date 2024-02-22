@@ -79,6 +79,7 @@ export default function PendingPaymentRequest() {
   const [TDSValue, setTDSValue] = useState(0);
   const [baseAmount, setBaseAmount] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("Fully Paid");
+  const [bankDetailRowData, setBankDetailRowData] = useState([]);
 
   var handleAcknowledgeClick = () => {
     setAknowledgementDialog(true);
@@ -215,14 +216,14 @@ export default function PendingPaymentRequest() {
   const handleCalculatePaymentAmount = () => {
     if (gstHold && TDSDeduction) {
       setPaymentStatus("Fully Paid GST Hold and TDS Deduction");
-  } else if (gstHold) {
+    } else if (gstHold) {
       setPaymentStatus("Fully Paid GST Hold");
-  } else if (TDSDeduction) {
+    } else if (TDSDeduction) {
       setPaymentStatus("Fully Paid TDS Deduction");
-  } else {
+    } else {
       setPaymentStatus("Fully Paid");
-  }
-  
+    }
+
     let paymentAmount = rowData.request_amount;
     let baseamount = baseAmount;
     let tdsvalue = 0;
@@ -451,7 +452,12 @@ export default function PendingPaymentRequest() {
   };
   // Bank Details:-
 
-  const handleOpenBankDetail = () => {
+  const handleOpenBankDetail = (row) => {
+    let x =[]
+    x.push(row)
+    console.log(x, "row");
+    
+    setBankDetailRowData(x);
     setBankDetail(true);
   };
   const handleCloseBankDetail = () => {
@@ -492,28 +498,8 @@ export default function PendingPaymentRequest() {
         e.vendor_name === row.vendor_name && e.status != 0 && e.status != 2
       );
     });
-
-    // let outstandings = 0;
-    // let request_amount = 0;
-
-    // type=="FY"?dataFY:dataTP.forEach((row) => {
-    //   outstandings += +row.outstandings;
-    //   request_amount += +row.request_amount || 0;
-    // });
-
-    // // Create total row
-    // const totalRow = {
-    //   outstandings: outstandings,
-    //   request_amount: request_amount,
-    //   vendor_name: "Total",
-
-    // };
-
-    // setHistoryData(type === "FY" ? [...dataFY, totalRow] : [...dataTP, totalRow]);
-
     setHistoryData(type == "FY" ? dataFY : dataTP);
   };
-  console.log("history data", historyData);
   const handleClosePaymentHistory = () => {
     setPaymentHistory(false);
   };
@@ -546,7 +532,7 @@ export default function PendingPaymentRequest() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = bankDetailRowData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -554,40 +540,47 @@ export default function PendingPaymentRequest() {
       field: "account_number",
       headerName: "Account Number",
       width: 150,
-      renderCell: () => {
-        return <p>12345647321 </p>;
+      renderCell: (params) => {
+        console.log(params.row, "row");
+        const accountNumber = params.row.payment_details.match(
+          /(?<=account number -)\d+/
+        )[0];
+        return <p>{accountNumber} </p>;
       },
     },
     {
-      field: "bank_name",
-      headerName: "Bank Name",
+      field: "accunt_bank_name",
+      headerName: "Account Holder Name",
       width: 150,
-      renderCell: () => {
-        return <p>Axis Bank</p>;
+      renderCell: ({row}) => {
+        const accountHolderName = row.payment_details.match(/(?<=Account Holder Name -)[^\n]+/)[0];
+
+        return <p>{accountHolderName}</p>;
       },
     },
     {
       field: "ifsc",
       headerName: "IFSC Number",
       width: 150,
-      renderCell: () => {
-        return <p>AXIS1234</p>;
+      renderCell: (params) => {
+        const ifscCode = params.row.payment_details.match(/(?<=IFSC Code -)[A-Z\d]+/)[0];
+        return <p>{ifscCode}</p>;
       },
     },
     {
       field: "gst",
       headerName: "GST",
       width: 150,
-      renderCell: () => {
-        return <p> 1 </p>;
+      renderCell: ({row}) => {
+        return <p> {row.gst}</p>;
       },
     },
     {
       field: "pan_number",
       headerName: "Pan Number",
       width: 150,
-      renderCell: () => {
-        return <p> &#8377;ABCD12345G </p>;
+      renderCell: ({row}) => {
+        return <p> {row.pan} </p>;
       },
     },
   ];
@@ -928,7 +921,7 @@ export default function PendingPaymentRequest() {
             >
               {params.row.vendor_name}
             </div>
-            <div onClick={() => handleOpenBankDetail()}>
+            <div onClick={() => handleOpenBankDetail(params.row)}>
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
             </div>
           </div>
@@ -1024,7 +1017,7 @@ export default function PendingPaymentRequest() {
       renderCell: (params) => {
         return params.row.pan_img ? (
           <img
-            src={params.row.pan_img}
+            src={"https://purchase.creativefuel.io/" + params.row.pan_img}
             alt="Pan"
             style={{ width: "40px", height: "40px" }}
           />
@@ -1171,7 +1164,7 @@ export default function PendingPaymentRequest() {
         </IconButton>
 
         <DataGrid
-          rows={filterData}
+          rows={bankDetailRowData}
           columns={bankDetailColumns}
           pageSize={5}
           rowsPerPageOptions={[5]}

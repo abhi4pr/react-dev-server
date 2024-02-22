@@ -25,6 +25,7 @@ import FieldContainer from "../../FieldContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { baseUrl } from "../../../../utils/config";
 import { downloadSelectedInvoices } from "./ZipGenerator";
+import BankExcelConverter from "../../../../utils/BankExcelConverter";
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -1132,7 +1133,7 @@ const SalaryWFH = () => {
               )}
             <button
               className="btn btn-primary mr-3"
-              onClick={handleAllDepartmentSalaryExcel}
+              onClick={()=>BankExcelConverter(salaryMonthYearData)}
             >
               Export Excel
             </button>
