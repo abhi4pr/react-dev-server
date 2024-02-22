@@ -56,7 +56,7 @@ export default function PurchaseManagementAllTransaction() {
 
       axios
         .get(
-          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+          "https://ptest.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
           setPhpData(res.data.body);

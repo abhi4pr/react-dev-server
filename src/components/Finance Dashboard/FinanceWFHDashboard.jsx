@@ -45,6 +45,7 @@ export default function FinanceWFHDashboard() {
   const [rowData, setDataRow] = useState(null);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [CSVFile, setCSVFile] = useState(null);
+  const [rowUTR, setRowUTR] = useState({ value: "", row: null });
 
   const { toastAlert } = useGlobalContext();
 
@@ -122,10 +123,9 @@ export default function FinanceWFHDashboard() {
       return departmentMatch && monthsMatch && yearsMatch;
     });
     setFilterData(result);
-  }, [data, departmentFilter, months, years])
+  }, [data, departmentFilter, months, years]);
 
   useEffect(() => {
-
     axios
       .post(`${baseUrl}` + `get_wfhd_tds_users`, {
         month: months,
@@ -148,21 +148,31 @@ export default function FinanceWFHDashboard() {
 
   const handleUTRupload = async (e, row) => {
     e.preventDefault();
+    console.log(rowUTR);
+    console.log(typeof rowUTR.row.attendence_id);
 
     // const formData = new FormData();
-    // formData.append("id", row.id);
-    // formData.append("utr", e.target.fileUpload.files[0]);
-    // axios
+    console.log(rowUTR);
+    // return;
 
-    //   .put(`${baseUrl}` + `edit_finance`, formData, {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   })
-    //   .then(() => {
-    //     toastAlert("UTR uploaded");
-    //     getData();
-    //   });
+    axios
+
+      .put(
+        `${baseUrl}` + `edit_finance_utr`,
+        {
+          id: row.id,
+          attendence_id: Number(rowUTR.row.attendence_id),
+          utr: String(rowUTR.value),
+        },
+        {
+        
+        }
+      )
+      .then(() => {
+        setRowUTR({ value: "", row: null });
+        toastAlert("UTR uploaded");
+        getData();
+      });
   };
 
   const handleCSVFlieupload = async (e) => {
@@ -335,7 +345,7 @@ export default function FinanceWFHDashboard() {
   function handlePayOut(e) {
     e.preventDefault();
     if (!refrenceNumber) return;
-    
+
     const formData = new FormData();
     formData.append("id", id);
     formData.append("amount", amount);
@@ -369,13 +379,13 @@ export default function FinanceWFHDashboard() {
         const rowIndex =
           activeAccordionIndex == 0
             ? filterData
-              .filter((item) => item.status_ === 0)
-              .indexOf(params.row)
+                .filter((item) => item.status_ === 0)
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? filterData
+            ? filterData
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
-              : filterData
+            : filterData
                 .filter((item) => item.status_ === 2)
                 .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
@@ -431,13 +441,13 @@ export default function FinanceWFHDashboard() {
         const rowIndex =
           activeAccordionIndex == 0
             ? filterData
-              .filter((item) => item.status_ === 0)
-              .indexOf(params.row)
+                .filter((item) => item.status_ === 0)
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? filterData
+            ? filterData
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
-              : filterData
+            : filterData
                 .filter((item) => item.status_ === 2)
                 .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
@@ -589,18 +599,29 @@ export default function FinanceWFHDashboard() {
             >
               <input
                 className="form-control"
-                value={params.row.utr || ""}
-                disabled
+                value={
+                  params.row.utr
+                    ? params.row.utr
+                    : params.row.utr || rowUTR.row?.id === params.row.id
+                    ? rowUTR.value
+                    : ""
+                }
+                disabled={params.row.utr}
                 type="text"
                 id="utr"
                 name="utr"
+                onChange={(e) => {
+                  setRowUTR({ value: e.target.value, row: params.row });
+                }}
               />
-              {/* <button
+              <button
                 className="btn btn-primary "
                 //  type="submit"
+                onClick={(e) => handleUTRupload(e, params.row)}
+                disabled={params.row.utr}
               >
                 Submit
-              </button> */}
+              </button>
             </form>
           </div>
         );
@@ -608,46 +629,46 @@ export default function FinanceWFHDashboard() {
     });
   }
 
-if(activeAccordionIndex === 0){
-  pendingColumns.push(  {
-    headerName: "Action",
-    field: "action",
-    width: 150,
-    renderCell: (params) => {
-      return (
-        <>
-          {activeAccordionIndex != 2 && (
-            <button
-              className="btn btn-primary"
-              data-toggle="modal"
-              data-target="#exampleModal"
-              onClick={(e) =>
-                activeAccordionIndex == 0
-                  ? handlePay(params.row, e)
-                  : handlePayVerify(params.row, e)
-              }
-            >
-              Verify
-            </button>
-          )}
+  if (activeAccordionIndex === 0) {
+    pendingColumns.push({
+      headerName: "Action",
+      field: "action",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <>
+            {activeAccordionIndex != 2 && (
+              <button
+                className="btn btn-primary"
+                data-toggle="modal"
+                data-target="#exampleModal"
+                onClick={(e) =>
+                  activeAccordionIndex == 0
+                    ? handlePay(params.row, e)
+                    : handlePayVerify(params.row, e)
+                }
+              >
+                Verify
+              </button>
+            )}
 
-          {params.row?.invoice_template_no !== "0" && (
-            <button
-              className="btn btn-outline-primary btn-sm"
-              title="Download Invoice"
-              type="button"
-              onClick={() => {
-                generatePDF(params.row);
-              }}
-            >
-              <CloudDownloadIcon />
-            </button>
-          )}
-        </>
-      );
-    },
-  })
-}
+            {params.row?.invoice_template_no !== "0" && (
+              <button
+                className="btn btn-outline-primary btn-sm"
+                title="Download Invoice"
+                type="button"
+                onClick={() => {
+                  generatePDF(params.row);
+                }}
+              >
+                <CloudDownloadIcon />
+              </button>
+            )}
+          </>
+        );
+      },
+    });
+  }
 
   const NonTDS = (
     <div>
@@ -711,13 +732,13 @@ if(activeAccordionIndex === 0){
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-      // unstable_ignoreValueFormatterDuringExport
-      // slotProps={{
-      //   toolbar: {
-      //     showQuickFilter: true,
-      //   },
-      // }}
-      // unstable_headerFilters
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
       />
     </div>
   );
@@ -849,13 +870,13 @@ if(activeAccordionIndex === 0){
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-      // unstable_ignoreValueFormatterDuringExport
-      // slotProps={{
-      //   toolbar: {
-      //     showQuickFilter: true,
-      //   },
-      // }}
-      // unstable_headerFilters
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
       />
     </div>
   );
@@ -896,13 +917,13 @@ if(activeAccordionIndex === 0){
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-      // unstable_ignoreValueFormatterDuringExport
-      // slotProps={{
-      //   toolbar: {
-      //     showQuickFilter: true,
-      //   },
-      // }}
-      // unstable_headerFilters
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
       />
     </div>
   );
@@ -951,9 +972,7 @@ if(activeAccordionIndex === 0){
     </>
   );
 
-
   const failedTransaction = (
-
     <div>
       {/* <div style={{ height: "50px" }}>
         {rowForPayment.length > 0 && (
@@ -996,7 +1015,9 @@ if(activeAccordionIndex === 0){
         )}
       </div> */}
       <DataGrid
-        rows={filterData?.filter((item) => item.status_ === 1 && item.utr== "")}
+        rows={filterData?.filter(
+          (item) => item.status_ === 1 && item.utr == ""
+        )}
         columns={pendingColumns}
         getRowId={(row) => row.id}
         initialState={{
@@ -1015,13 +1036,13 @@ if(activeAccordionIndex === 0){
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-      // unstable_ignoreValueFormatterDuringExport
-      // slotProps={{
-      //   toolbar: {
-      //     showQuickFilter: true,
-      //   },
-      // }}
-      // unstable_headerFilters
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
       />
     </div>
   );
@@ -1046,12 +1067,12 @@ if(activeAccordionIndex === 0){
                 departmentFilter === ""
                   ? { value: "", label: "" }
                   : {
-                    value: departmentFilter,
-                    label:
-                      departmentData.find(
-                        (dept) => dept.dept_id === departmentFilter
-                      )?.dept_name || "Select...",
-                  }
+                      value: departmentFilter,
+                      label:
+                        departmentData.find(
+                          (dept) => dept.dept_id === departmentFilter
+                        )?.dept_name || "Select...",
+                    }
               }
               onChange={(selectedOption) => {
                 const selectedValue = selectedOption
@@ -1154,12 +1175,15 @@ if(activeAccordionIndex === 0){
               // label="Upload UTR"
               type="file"
               accept=".xls,.xlsx"
-
               fieldGrid={6}
               onChange={(e) => setCSVFile(e.target.files[0])}
-
             />
-            <input type="submit" value={"Upload utr"} className="btn btn-primary h-50 mt-3 " disabled={!CSVFile} />
+            <input
+              type="submit"
+              value={"Upload utr"}
+              className="btn btn-primary h-50 mt-3 "
+              disabled={!CSVFile}
+            />
           </div>
           // </FormContainer>
         )}
@@ -1250,7 +1274,7 @@ if(activeAccordionIndex === 0){
                   <button
                     type="submit"
                     className="btn btn-primary"
-                  // onClick={handlePayOut}
+                    // onClick={handlePayOut}
                   >
                     Pay
                   </button>
