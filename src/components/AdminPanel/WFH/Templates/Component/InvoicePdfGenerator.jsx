@@ -31,7 +31,7 @@ const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
   const [isUpdatingSalary, setIsUpdatingSalary] = useState(false);
 
   const TemplateComponent = templates[data?.invoice_template_no] || null;
-  
+
   const handleGeneratePDF = async (e, data) => {
     await generatePDF(data, invoiceRef);
     e.preventDefault();
@@ -67,13 +67,13 @@ const InvoicePdfGenerator = ({ data, setIsPreviewModalOpen, handleSubmit }) => {
 
   return (
     <div>
-      <div ref={invoiceRef}>
-        {TemplateComponent ? (
+      {TemplateComponent ? (
+        <div ref={invoiceRef}>
           <TemplateComponent data={data} />
-        ) : (
-          <p>No template available</p>
-        )}
-      </div>
+        </div>
+      ) : (
+        <p>No template available</p>
+      )}
       {data?.digital_signature_image_url && (
         <button
           className="btn btn-secondary"
