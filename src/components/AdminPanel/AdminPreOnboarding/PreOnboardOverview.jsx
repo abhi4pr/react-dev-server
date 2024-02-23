@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import FormContainer from "../FormContainer";
 import { Button } from "@mui/material";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const PreOnboardingOverview = () => {
   const [search, setSearch] = useState("");
@@ -14,9 +14,7 @@ const PreOnboardingOverview = () => {
 
   async function getData() {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_users"
-      );
+      const response = await axios.get(baseUrl + "get_all_users");
       const data = response.data.data;
       const onboarddata = data.filter((d) => d.onboard_status === 2);
       setDatas(onboarddata);
@@ -37,7 +35,7 @@ const PreOnboardingOverview = () => {
     formData.append("user_id", row);
     formData.append("onboard_status", 1);
     axios
-      .put(baseUrl+"update_user", formData, {
+      .put(baseUrl + "update_user", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -61,6 +59,7 @@ const PreOnboardingOverview = () => {
       cell: (row, index) => <div>{index + 1}</div>,
       width: "5%",
       sortable: true,
+      reorder: true,
     },
 
     {
@@ -74,6 +73,7 @@ const PreOnboardingOverview = () => {
       ),
       width: "10%",
       sortable: true,
+      reorder: true,
     },
 
     {
@@ -81,53 +81,63 @@ const PreOnboardingOverview = () => {
       selector: (row) => row.document_percentage,
       width: "5%",
       sortable: true,
+      reorder: true,
     },
     {
       name: "Mandatory Documents Filled Percentage",
       selector: (row) => row.document_percentage_mandatory,
       width: "5%",
       sortable: true,
+      reorder: true,
     },
     {
       name: "Non Mandatory Documents Filled Percentage",
       selector: (row) => row.document_percentage_non_mandatory,
       width: "5%",
       sortable: true,
+      reorder: true,
     },
     {
       name: "Role",
       selector: (row) => row.Role_name,
       width: "5%",
       sortable: true,
+      reorder: true,
     },
     {
       name: "Login ID",
       selector: (row) => row.user_login_id,
       sortable: true,
+      reorder: true,
     },
     {
       name: "Designation",
       selector: (row) => row.designation_name,
       sortable: true,
+      reorder: true,
     },
     {
       name: "Department",
       selector: (row) => row.department_name,
       sortable: true,
+      reorder: true,
     },
     {
       name: "Contact No",
       selector: (row) => row.PersonalNumber,
+      reorder: true,
     },
     {
       name: "Email",
       selector: (row) => row.user_email_id,
       width: "16%",
+      reorder: true,
     },
     {
       name: "City",
       selector: (row) => row.permanent_city,
       width: "16%",
+      reorder: true,
     },
     {
       name: "Status",
@@ -150,6 +160,7 @@ const PreOnboardingOverview = () => {
           </Button>
         </>
       ),
+      reorder: true,
     },
   ];
 

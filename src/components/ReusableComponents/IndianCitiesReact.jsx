@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { City } from "country-state-city";
 
-const IndianCitiesReact = ({ selectedCity, onChange }) => {
+const IndianCitiesReact = ({ selectedCity, onChange, fieldGrid = 6 }) => {
   const [cities, setCities] = useState([]);
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -26,7 +26,7 @@ const IndianCitiesReact = ({ selectedCity, onChange }) => {
   };
 
   return (
-    <div className="form-group col-6">
+    <div className={`form-group col-${fieldGrid}`}>
       <label className="form-label">
         City <sup style={{ color: "red" }}>*</sup>
       </label>

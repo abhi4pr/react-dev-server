@@ -74,7 +74,11 @@ const DocumentTabUserSingle = (id) => {
                         <h3>{data.document.doc_type}</h3>
                         {data.status !== "" && (
                           <div className="documentCard_download">
-                            <a href={data.doc_image_url} download>
+                            <a
+                              href={data.doc_image_url}
+                              download="filename.ext"
+                              target="_blank"
+                            >
                               <FcDownload />
                             </a>
                           </div>

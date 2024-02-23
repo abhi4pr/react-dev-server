@@ -123,7 +123,7 @@ const UserSingleTab1 = ({ user, roomId }) => {
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
             <div className="profileInfo_box">
               <h3>Nationality</h3>
-              <h4>{user.Role_name ? user.Nationality : "NA"}</h4>
+              <h4>{user.Role_name ? user?.Nationality : "NA"}</h4>
             </div>
           </div>
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
@@ -153,14 +153,12 @@ const UserSingleTab1 = ({ user, roomId }) => {
               </h4>
             </div>
           </div>
-          {user.MartialStatus === "Married" && (
-            <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-              <div className="profileInfo_box">
-                <h3>user Status</h3>
-                <h4>{user.user_status ? user.user_status : "NA"}</h4>
-              </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Alternate Contact </h3>
+              <h4>{user.alternate_contact ? user.alternate_contact : "NA"}</h4>
             </div>
-          )}
+          </div>
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
             <div className="profileInfo_box">
               <h3>Martial Status</h3>
@@ -168,34 +166,39 @@ const UserSingleTab1 = ({ user, roomId }) => {
             </div>
           </div>
         </div>
-        <div className="row profileInfo_row">
-          {user.MartialStatus === "Married" && (
-            <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-              <div className="profileInfo_box">
-                <h3>Date Of Marriage</h3>
-                <h4>
-                  {" "}
-                  <DateFormattingComponent date={user.DateOfMarriage} />
-                </h4>
+
+        {user.MartialStatus === "Married" && (
+          <div className="row profileInfo_row">
+            {user.MartialStatus === "Married" && (
+              <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                <div className="profileInfo_box">
+                  <h3>user Status</h3>
+                  <h4>{user.user_status ? user.user_status : "NA"}</h4>
+                </div>
               </div>
-            </div>
-          )}
-          {user.MartialStatus === "Married" && (
-            <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-              <div className="profileInfo_box">
-                <h3>Spouse Name</h3>
-                <h4>{user.spouse_name}</h4>
+            )}
+            {user.MartialStatus === "Married" && (
+              <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                <div className="profileInfo_box">
+                  <h3>Date Of Marriage</h3>
+                  <h4>
+                    {" "}
+                    <DateFormattingComponent date={user.DateOfMarriage} />
+                  </h4>
+                </div>
               </div>
-            </div>
-          )}
-          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-            {" "}
-            <div className="profileInfo_box">
-              <h3>Alternate Contact </h3>
-              <h4>{user.alternate_contact ? user.alternate_contact : "NA"}</h4>
-            </div>
+            )}
+            {user.MartialStatus === "Married" && (
+              <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                <div className="profileInfo_box">
+                  <h3>Spouse Name</h3>
+                  <h4>{user.spouse_name}</h4>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
+        )}
+
         <div className="row profileInfo_row">
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
             {" "}
@@ -209,6 +212,62 @@ const UserSingleTab1 = ({ user, roomId }) => {
             <div className="profileInfo_box">
               <h3>Cast </h3>
               <h4>{user.cast_type ? user.cast_type : "NA"}</h4>
+            </div>
+          </div>
+        </div>
+
+        <div className="row profileInfo_row">
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Permanent Address</h3>
+              <h4>{user.permanent_address ? user.permanent_address : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Permanent State</h3>
+              <h4>{user?.permanent_state ? user?.permanent_state : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Permanent City</h3>
+              <h4>{user?.permanent_city ? user?.permanent_city : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Permanent Pincode</h3>
+              <h4>
+                {user.permanent_pin_code ? user.permanent_pin_code : "NA"}
+              </h4>
+            </div>
+          </div>
+        </div>
+
+        <div className="row profileInfo_row">
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Current Address</h3>
+              <h4>{user.current_address ? user.current_address : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Current State</h3>
+              <h4>{user?.current_state ? user?.current_state : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Current City</h3>
+              <h4>{user?.current_city ? user?.current_city : "NA"}</h4>
+            </div>
+          </div>
+          <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+            <div className="profileInfo_box">
+              <h3>Current Pincode</h3>
+              <h4>{user.current_pin_code ? user.current_pin_code : "NA"}</h4>
             </div>
           </div>
         </div>

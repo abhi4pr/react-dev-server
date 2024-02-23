@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./UserView.css";
-import Logo from "../../../assets/img/logo/logo.png";
+import blankProfilePic from "../../../assets/img/product/blankProfilePic.webp";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import FormContainer from "../FormContainer";
@@ -27,6 +27,7 @@ const UserSingle = () => {
   const [otherDocuments, setOtherDocuments] = useState("");
   const [defaultSeatData, setDefaultSeatData] = useState([]);
   const [roomId, setRoomId] = useState();
+  const [userProfileImage, setUserProfileImage] = useState(null);
 
   const [educationData, setEducationData] = useState([]);
 
@@ -65,6 +66,8 @@ const UserSingle = () => {
       const { dept_id } = fetchedData;
       setUser(fetchedData);
       setSubDeptId(dept_id);
+      console.log(fetchedData);
+      setUserProfileImage(fetchedData.image_url);
     });
   };
 
@@ -84,7 +87,7 @@ const UserSingle = () => {
     setRoomId(selectedOption);
   }, [defaultSeatData, user?.sitting_id]);
   const accordionButtons = [
-    "Genral",
+    "General",
     "Professional",
     "KRA",
     "Documents",
@@ -98,7 +101,19 @@ const UserSingle = () => {
       <div className="box">
         <div id="content">
           <div className="profileInfo_imgbox">
-            <img src={Logo} alt="Circular Image" className="img-fluid" />
+            {user.image ? (
+              <img
+                src={userProfileImage}
+                alt="Circular Image"
+                className="img-fluid"
+              />
+            ) : (
+              <img
+                src={blankProfilePic}
+                alt="Circular Image"
+                className="img-fluid"
+              />
+            )}
           </div>
           <FormContainer
             submitButton={false}

@@ -10,6 +10,7 @@ import Select from "react-select";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import { City } from "country-state-city";
 import { baseUrl } from "../../../utils/config";
+import IndianCitiesReact from "../../ReusableComponents/IndianCitiesReact";
 
 const onBoardStatus = 2;
 
@@ -74,7 +75,6 @@ const AdminPreOnboarding = () => {
 
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
-  const [designation, setDesignation] = useState("");
   const [sendLetter, setSendLetter] = useState({});
   const [uid, setUID] = useState("");
   const [panUpload, setPanUpload] = useState("");
@@ -83,6 +83,7 @@ const AdminPreOnboarding = () => {
   const [joiningDate, setJoiningDate] = useState("");
   const [releavingDate, setReleavingDate] = useState("");
   const [salary, setSalary] = useState("");
+  const [designation, setDesignation] = useState("");
   const [designationData, setDesignationData] = useState([]);
 
   const [selectedImage, setSelectedImage] = useState(null);
@@ -92,6 +93,9 @@ const AdminPreOnboarding = () => {
 
   const [isRequired, setIsRequired] = useState({
     reportL1: false,
+    sendLetter: false,
+    role: false,
+    gender: false,
   });
 
   useEffect(() => {
@@ -101,31 +105,59 @@ const AdminPreOnboarding = () => {
     axios.get(baseUrl + "get_all_departments").then((res) => {
       getDepartmentData(res.data);
     });
-    axios.get(baseUrl + "get_all_designations").then((res) => {
-      setDesignationData(res.data.data);
-    });
+    // axios.get(baseUrl + "get_all_designations").then((res) => {
+    //   setDesignationData(res.data.data);
+    // });
 
     axios.get(baseUrl + "get_all_users").then((res) => {
       getUsersData(res.data.data);
     });
   }, []);
 
+  useEffect(() => {
+    if (department) {
+      axios
+        .get(baseUrl + `get_all_designations_by_deptId/${department}`)
+        .then((res) => {
+          setDesignationData(res.data.data);
+        });
+    }
+  }, [department]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!jobType) {
+    if (!username) {
       return toastError("Job Type is Required");
+    } else if (!jobType || jobType == "") {
+      return toastError("Job type is Required");
     } else if (!department || department == "") {
       return toastError("Department is Required");
     } else if (!designation || designation == "") {
       return toastError("Designatoin is Required");
-    } else if (!gender || gender == "") {
-      return toastError("Gender is Required");
     } else if (!reportL1 || reportL1 == "") {
       return toastError("Report manager Is Required");
-    } else if (!personalContact || personalContact == "") {
-      return toastError("Contact Is Required and should be equal to 10");
     } else if (!personalEmail || personalEmail == "") {
       return toastError("Email is Required");
+    } else if (!personalContact || personalContact == "") {
+      return toastError("Contact Is Required and should be equal to 10");
+    } else if (jobType == "WFO") {
+      if (!sendLetter.label || sendLetter.label == "") {
+        return toastError("Select letter options");
+      }
+    } else if (!city || city == "") {
+      return toastError("City is Required");
+    } else if (!loginId || loginId == "") {
+      return toastError("Login Id is Required");
+    } else if (!password || password == "") {
+      return toastError("Password is Required");
+    } else if (!roles || roles == "") {
+      return toastError("Role is Required");
+    } else if (!joiningDate || joiningDate == "") {
+      return toastError("Joining Date is Required");
+    } else if (!dateOfBirth || dateOfBirth == "") {
+      return toastError("DOB is Required");
+    } else if (!gender || gender == "") {
+      return toastError("Gender is Required");
     }
 
     const formData = new FormData();
@@ -152,12 +184,12 @@ const AdminPreOnboarding = () => {
     formData.append("DOB", dateOfBirth);
 
     // formData.append("user_contact_no", contact);
-    // formData.append("personal_number", personalContact);
-    formData.append("user_contact_no", personalContact);
+    formData.append("personal_number", personalContact);
+    // formData.append("pe", personalContact);
 
     // formData.append("user_email_id", email);
-    // formData.append("Personal_email", personalEmail);
-    formData.append("user_email_id", personalEmail);
+    formData.append("Personal_email", personalEmail);
+    // formData.append("PersonalEmail", personalEmail);
 
     formData.append("report_L1", reportL1);
     formData.append("report_L2", reportL2);
@@ -173,98 +205,97 @@ const AdminPreOnboarding = () => {
     formData.append("onboard_status", onBoardStatus);
 
     // if (isValidcontact1 == true && validEmail == true) {
-      try {
-        const isLoginIdExists = usersData.some(
-          (user) =>
-            user.user_login_id.toLocaleLowerCase() ===
-            loginId.toLocaleLowerCase()
-        );
-        const contactNumberExists = usersData.some(
-          (user) => user.user_contact_no == personalContact
-        );
+    try {
+      const isLoginIdExists = usersData.some(
+        (user) =>
+          user.user_login_id.toLocaleLowerCase() === loginId.toLocaleLowerCase()
+      );
+      const contactNumberExists = usersData.some(
+        (user) => user.user_contact_no == personalContact
+      );
 
-        const emailIdExists = usersData.some(
-          (user) =>
-            user.user_email_id?.toLocaleLowerCase() ==
-            personalEmail?.toLocaleLowerCase()
+      const emailIdExists = usersData.some(
+        (user) =>
+          user.user_email_id?.toLocaleLowerCase() ==
+          personalEmail?.toLocaleLowerCase()
+      );
+      if (isLoginIdExists) {
+        alert("this login ID already exists");
+      } else if (contactNumberExists) {
+        alert(" Contact Already Exists");
+      } else if (emailIdExists) {
+        alert(" Email Already Exists");
+      } else {
+        setLoading(true);
+        await axios.post(baseUrl + "add_user", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+        whatsappApi.callWhatsAPI(
+          "Preonboarding Register",
+          JSON.stringify(personalContact),
+          username,
+          [username, loginId, password, "http://jarvis.work/"]
         );
-        if (isLoginIdExists) {
-          alert("this login ID already exists");
-        } else if (contactNumberExists) {
-          alert(" Contact Already Exists");
-        } else if (emailIdExists) {
-          alert(" Email Already Exists");
-        } else {
-          setLoading(true);
-          await axios.post(baseUrl + "add_user", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-          whatsappApi.callWhatsAPI(
-            "Preonboarding Register",
-            JSON.stringify(personalContact),
-            username,
-            [username, loginId, password, "http://jarvis.work/"]
-          );
-          axios
-            .post(baseUrl + "add_send_user_mail", {
-              email: personalEmail,
-              subject: "User Registration",
-              text: "A new user has been onboard.",
-              attachment: selectedImage,
-              login_id: loginId,
-              name: username,
-              password: password,
-            })
-            .then((res) => {
-              // setLoading(true);
-              console.log("Email sent successfully:", res.data);
-            })
-            .then((res) => {
-              if (res.status == 200) {
-                toastAlert("User Registerd");
-                setIsFormSubmitted(true);
-                setLoading(false);
-              } else {
-                setLoading(false);
-                toastError("Sorry User is Not Created, Please try again later");
-              }
-            })
-            .catch((error) => {
+        axios
+          .post(baseUrl + "add_send_user_mail", {
+            email: personalEmail,
+            subject: "User Registration",
+            text: "A new user has been onboard.",
+            attachment: selectedImage,
+            login_id: loginId,
+            name: username,
+            password: password,
+          })
+          .then((res) => {
+            // setLoading(true);
+            console.log("Email sent successfully:", res.data);
+          })
+          .then((res) => {
+            if (res.status == 200) {
+              toastAlert("User Registerd");
+              setIsFormSubmitted(true);
               setLoading(false);
-              console.log("Failed to send email:", error);
-            });
+            } else {
+              setLoading(false);
+              toastError("Sorry User is Not Created, Please try again later");
+            }
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.log("Failed to send email:", error);
+          });
 
-          setUserName("");
-          setRoles("");
-          setEmail("");
-          setLoginId("");
-          setContact("");
-          setPersonalContact("");
-          setUserCtc("");
-          setPassword("");
-          setDepartment("");
-          setSitting("");
-          setRoomId("");
-          setPersonalContact("");
-          setCity("");
-          setSendLetter("");
-          setAnnexurePdf("");
-          setPersonalEmail("");
-          setJobType("");
-          setReportL1("");
-          setReportL2("");
-          setReportL3("");
-          setDesignation("");
-          toastAlert("User Registerd");
-          setIsFormSubmitted(true);
-        }
-      } catch (error) {
-        console.log("Failed to submit form", error);
-      } finally {
-        setLoading(false); 
+        setUserName("");
+        setRoles("");
+        setEmail("");
+        setLoginId("");
+        setContact("");
+        setPersonalContact("");
+        setUserCtc("");
+        setPassword("");
+        setDepartment("");
+        setSitting("");
+        setRoomId("");
+        setPersonalContact("");
+        setCity("");
+        setSendLetter("");
+        setAnnexurePdf("");
+        setPersonalEmail("");
+        setJobType("");
+        setReportL1("");
+        setReportL2("");
+        setReportL3("");
+        setDesignation("");
+        toastAlert("User Registerd");
+        setIsFormSubmitted(true);
       }
+    } catch (error) {
+      console.log("Failed to submit form", error);
+    } finally {
+      setLoading(false);
+    }
     // } else {
     //   if (contact.length !== 10) {
     //     if (isValidcontact == false)
@@ -410,8 +441,8 @@ const AdminPreOnboarding = () => {
       >
         <FieldContainer
           label="Full Name"
+          astric
           fieldGrid={3}
-          required
           value={username}
           onChange={(e) => setUserName(e.target.value)}
         />
@@ -433,7 +464,6 @@ const AdminPreOnboarding = () => {
             onChange={(e) => {
               setJobType(e.value);
             }}
-            required
           />
         </div>
 
@@ -456,7 +486,6 @@ const AdminPreOnboarding = () => {
             onChange={(e) => {
               setDepartment(e.value);
             }}
-            required
           />
         </div>
 
@@ -479,7 +508,6 @@ const AdminPreOnboarding = () => {
             onChange={(e) => {
               setDesignation(e.value);
             }}
-            required
           />
         </div>
 
@@ -537,6 +565,7 @@ const AdminPreOnboarding = () => {
         <FieldContainer
           label="Personal Email"
           type="email"
+          astric
           fieldGrid={3}
           required={false}
           value={personalEmail}
@@ -545,14 +574,30 @@ const AdminPreOnboarding = () => {
         {!validPersonalEmail && (
           <p style={{ color: "red" }}>*Please enter valid email</p>
         )}
+
         <FieldContainer
+          label="Personal Contact"
+          astric
+          type="number"
+          fieldGrid={3}
+          value={personalContact}
+          required={false}
+          onChange={handlePersonalContactChange}
+          onBlur={handlePersonalContactBlur}
+        />
+        {(isContactTouched1 || personalContact.length >= 10) &&
+          !isValidcontact1 && (
+            <p style={{ color: "red" }}>*Please enter a valid Number</p>
+          )}
+
+        {/* <FieldContainer
           label=" City"
           type="text"
           fieldGrid={3}
           required={false}
           value={city}
           onChange={(e) => setCity(e.target.value)}
-        />
+        /> */}
 
         {jobType === "WFH" && (
           <>
@@ -625,9 +670,21 @@ const AdminPreOnboarding = () => {
               }}
               onChange={(e) => {
                 setSendLetter(e);
+                setIsRequired((prev) => ({
+                  ...prev,
+                  sendLetter: !e.value, // Set to true if e.value is empty, false otherwise
+                }));
               }}
-              required
+              onBlur={() => {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  sendLetter: !sendLetter.value, // Set to true if sendLetter.value is empty, false otherwise
+                }));
+              }}
             />
+            {isRequired.sendLetter && (
+              <p style={{ color: "red" }}>*Please select a Letter</p>
+            )}
           </div>
         )}
 
@@ -654,28 +711,20 @@ const AdminPreOnboarding = () => {
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
         )} */}
 
-        <FieldContainer
-          label="Personal Contact"
-          type="number"
+        <IndianCitiesReact
+          selectedCity={city}
+          onChange={setCity}
           fieldGrid={3}
-          value={personalContact}
-          required={false}
-          onChange={handlePersonalContactChange}
-          onBlur={handlePersonalContactBlur}
         />
-        {(isContactTouched1 || personalContact.length >= 10) &&
-          !isValidcontact1 && (
-            <p style={{ color: "red" }}>*Please enter a valid Number</p>
-          )}
 
         <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
           <div className="form-group">
             <label>Login ID</label>
+            <sup style={{ color: "red" }}>*</sup>
             <div className="input-group">
               <input
                 className="form-control"
                 value={loginId}
-                required
                 onChange={handleLoginIdChange}
               />
               <div className="input-group-append">
@@ -694,12 +743,12 @@ const AdminPreOnboarding = () => {
         <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
           <div className="form-group">
             <label>Generate Password</label>
+            <sup style={{ color: "red" }}>*</sup>
             <div className="input-group">
               <input
                 type="text"
                 className="form-control"
                 value={password}
-                required
                 onChange={(e) => setPassword(e.target.value)}
               />
               <div className="input-group-append">
@@ -732,20 +781,37 @@ const AdminPreOnboarding = () => {
             }}
             onChange={(e) => {
               setRoles(e.value);
+              setIsRequired((prev) => ({
+                ...prev,
+                role: !e.value, // Set to true if e.value is empty (no selection), false otherwise
+              }));
             }}
-          ></Select>
+            onBlur={() => {
+              setIsRequired((prev) => ({
+                ...prev,
+                role: !roles, // Set to true if roles is empty (no selection), false otherwise
+              }));
+            }}
+          />
+          {isRequired.role && (
+            <p style={{ color: "red" }}>*Please select a Role</p>
+          )}
         </div>
 
         <FieldContainer
           type="date"
+          astric
           label="Joining Date"
+          required={false}
           fieldGrid={3}
           value={joiningDate}
           onChange={(e) => setJoiningDate(e.target.value)}
         />
 
         <FieldContainer
+          astric
           label="DOB"
+          required={false}
           fieldGrid={3}
           type="date"
           value={dateOfBirth}
@@ -768,18 +834,31 @@ const AdminPreOnboarding = () => {
             }}
             onChange={(e) => {
               setGender(e.value);
+              setIsRequired((prev) => ({
+                ...prev,
+                gender: !e.value, // Set to true if e.value is empty, false otherwise
+              }));
+            }}
+            onBlur={() => {
+              setIsRequired((prev) => ({
+                ...prev,
+                gender: !gender, // Set to true if gender is empty, indicating a selection hasn't been made
+              }));
             }}
             required
           />
+          {isRequired.gender && (
+            <p style={{ color: "red" }}>*Please select a Gender</p>
+          )}
         </div>
-      <button
+        <button
           type="submit"
           className="btn btn-primary"
-          style={{width:'10%',height:'15%'}}
-          disabled={loading} 
+          style={{ width: "10%", height: "15%" }}
+          disabled={loading}
         >
-          {loading ? 'Submitting...' : 'Submit'}
-      </button>
+          {loading ? "Submitting..." : "Submit"}
+        </button>
       </FormContainer>
     </>
   );
