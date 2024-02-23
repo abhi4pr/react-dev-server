@@ -226,8 +226,12 @@ import WFHDUpdate from "./WFH/WFHDRegister/WFHDUpdate";
 import WFHDBankUpdate from "./WFH/WFHDBankUpdate";
 import PaymentModeMast from "./Finance/PaymentModeMast";
 import TotalNDG from "./WFH/TotalNDG";
+<<<<<<< Updated upstream
 import TaskPending from "./Finance/TaskPending";
 import TaskDone from "./Finance/TaskDone";
+=======
+import NewExcelFile from "./RegisterCampaign/Plan/NewExcelFile";
+>>>>>>> Stashed changes
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -871,6 +875,10 @@ const Admin = () => {
                   <Route
                     path="/planCreation/:id"
                     element={<PlancreationNew />}
+                  />
+                   <Route
+                    path="/tempExcel"
+                    element={<NewExcelFile />}
                   />
                   <Route path="/phase/:id" element={<PhaseCreation />} />
                   <Route
