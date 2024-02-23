@@ -47,7 +47,6 @@ export default function FinanceWFHDashboard() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [CSVFile, setCSVFile] = useState(null);
   const [rowUTR, setRowUTR] = useState({ value: "", row: null });
-
   const { toastAlert } = useGlobalContext();
 
   const monthOptions = [
@@ -448,7 +447,9 @@ export default function FinanceWFHDashboard() {
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
             : filterData
-                ?.filter((item) => item.attendence_status_flow == "Payment Failed" )
+                ?.filter(
+                  (item) => item.attendence_status_flow == "Payment Failed"
+                )
                 .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
@@ -1027,7 +1028,9 @@ export default function FinanceWFHDashboard() {
         )}
       </div> */}
       <DataGrid
-        rows={filterData?.filter((item) => item.attendence_status_flow == "Payment Failed" )}
+        rows={filterData?.filter(
+          (item) => item.attendence_status_flow == "Payment Failed"
+        )}
         columns={pendingColumns}
         getRowId={(row) => row.id}
         initialState={{
@@ -1056,6 +1059,91 @@ export default function FinanceWFHDashboard() {
       />
     </div>
   );
+
+  // const verified = (
+  //   <div>
+  //     <div style={{ height: "50px" }}>
+  //       {rowForPayment.length > 0 && (
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           size="small"
+  //           sx={{ width: "100px" }}
+  //           className="ml-3 mb-2"
+  //           onClick={(e) => handleVerifyAll(e)}
+  //         >
+  //           Verify All
+  //         </Button>
+  //       )}
+  //     </div>
+  //     <DataGrid
+  //       rows={filterData.filter((item) => item.status_ === 1)}
+  //       columns={pendingColumns}
+  //       getRowId={(row) => row.id}
+  //       initialState={{
+  //         pagination: {
+  //           paginationModel: {
+  //             pageSize: 50,
+  //           },
+  //         },
+  //       }}
+  //       slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+  //       pageSizeOptions={[5, 25, 50, 100, 500]}
+  //       checkboxSelection
+  //       // disableRowSelectionOnClick
+  //       onRowSelectionModelChange={(rowIds) => {
+  //         handleRowSelectionModelChange(rowIds);
+  //         // console.log(rowIds);
+  //       }}
+  //       rowSelectionModel={rowSelectionModel}
+
+  //     />
+  //   </div>
+  // );
+
+  // const payoutReleased = (
+  //   <>
+  //     <div>
+  //       <div style={{ height: "50px" }} className="d-flex">
+  //         {rowForPayment.length > 0 && (
+  //           <Button
+  //             variant="contained"
+  //             color="primary"
+  //             size="small"
+  //             sx={{ width: "100px" }}
+  //             className="ml-3 mb-2"
+  //             onClick={handleDownloadInvoices}
+  //           >
+  //             Download PDF Zip
+  //           </Button>
+  //         )}
+  //       </div>
+  //       {/* <h1>Payout Released</h1> */}
+
+  //       <DataGrid
+  //         rows={filterData.filter((item) => item.status_ === 2)}
+  //         columns={pendingColumns}
+  //         getRowId={(row) => row.id}
+  //         initialState={{
+  //           pagination: {
+  //             paginationModel: {
+  //               pageSize: 50,
+  //             },
+  //           },
+  //         }}
+  //         slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+  //         pageSizeOptions={[5, 25, 50, 100, 500]}
+  //         checkboxSelection
+  //         // disableRowSelectionOnClick
+  //         onRowSelectionModelChange={(rowIds) => {
+  //           handleRowSelectionModelChange(rowIds);
+  //           // console.log(rowIds);
+  //         }}
+  //         rowSelectionModel={rowSelectionModel}
+  //       />
+  //     </div>
+  //   </>
+  // );
 
   return (
     <div>

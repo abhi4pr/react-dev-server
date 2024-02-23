@@ -1343,7 +1343,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-alltransaction"
                       >
-                        All Transaction
+                        Purchase Dashboard
                       </Link>
                       <Link
                         className="collapse-item"
@@ -1386,6 +1386,41 @@ const SidebarLinks = () => {
                         to="/admin/accounts-finance-overview"
                       >
                         Account Overview
+                      </Link>
+                    </>
+                  </div>
+                </div>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link collapsed"
+                  data-toggle="collapse"
+                  data-target="#collapsInnerEightFinanceTask"
+                  aria-expanded="true"
+                  aria-controls="collapsInnerEightFinanceTask"
+                >
+                  <span>Task</span>
+                </Link>
+                <div
+                  id="collapsInnerEightFinanceTask"
+                  className="collapse"
+                  aria-labelledby="headingTwo"
+                  // data-parent="#accordionSidebar"
+                >
+                  <div className="bg-white collapse-inner">
+                    <>
+                      <Link
+                        className="collapse-item"
+                        to="/admin/finance-task-pending"
+                      >
+                        Pending
+                      </Link>
+
+                      <Link
+                        className="collapse-item"
+                        to="/admin/finance-task-done"
+                      >
+                        Done
                       </Link>
                     </>
                   </div>

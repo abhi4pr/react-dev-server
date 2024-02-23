@@ -222,10 +222,12 @@ import CaseStudyOperation from "./RegisterCampaign/CaseStudies/CaseStudyOperatio
 import WFHDRegister from "./WFH/WFHDRegister/WFHDRegister";
 import UpdateDocument from "./WFH/UpdateDocument";
 import HRTemplateOverview from "./WFH/HRTemplateOverview";
-import WFHDUpdate from './WFH/WFHDRegister/WFHDUpdate'
-import WFHDBankUpdate from './WFH/WFHDBankUpdate'
+import WFHDUpdate from "./WFH/WFHDRegister/WFHDUpdate";
+import WFHDBankUpdate from "./WFH/WFHDBankUpdate";
 import PaymentModeMast from "./Finance/PaymentModeMast";
 import TotalNDG from "./WFH/TotalNDG";
+import TaskPending from "./Finance/TaskPending";
+import TaskDone from "./Finance/TaskDone";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -708,8 +710,8 @@ const Admin = () => {
                   <Route
                     path="/finance-pruchasemanagement-pendingpaymentrequest"
                     element={<PendingPaymentRequest />}
-                  /> 
-                   <Route
+                  />
+                  <Route
                     path="/payment-mode-master"
                     element={<PaymentModeMast />}
                   />
@@ -733,6 +735,13 @@ const Admin = () => {
                     path="/finance-pruchasemanagement-discardpayment"
                     element={<Discard />}
                   />
+                  {/* task components */}
+                  <Route
+                    path="/finance-task-pending"
+                    element={<TaskPending />}
+                  />
+                  <Route path="/finance-task-done" element={<TaskDone />} />
+                  {/*  ==============*/}
                   <Route
                     path="/payment-summary/:id"
                     element={<PaymentSummary />}

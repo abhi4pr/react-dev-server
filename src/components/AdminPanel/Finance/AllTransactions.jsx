@@ -1138,26 +1138,7 @@ const AllTransactions = () => {
               </div>
             </div>
           </div>
-          {/* <DataTable
-            title="Dashboard"
-            columns={columns}
-            data={filterData}
-            keyField="index"
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
-          /> */}
+
           <DataGrid
             rows={filterData}
             columns={columns}
