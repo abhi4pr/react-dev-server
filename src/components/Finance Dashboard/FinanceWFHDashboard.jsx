@@ -944,6 +944,18 @@ export default function FinanceWFHDashboard() {
   const payoutReleased = (
     <>
       <div>
+      {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "200px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadExcel}
+          >
+            Download Excel
+          </Button>
+        )}
         {/* <div style={{ height: "50px" }} className="d-flex">
           {rowForPayment.length > 0 && (
             <Button

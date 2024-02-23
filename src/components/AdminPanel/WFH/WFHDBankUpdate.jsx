@@ -29,6 +29,7 @@ const WFHDBankUpdate = () => {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
+  const [upi, setUpi] = useState("")
   //--------------------Address Info State End
 
   useEffect(() => {
@@ -50,6 +51,7 @@ const WFHDBankUpdate = () => {
         beneficiary,
         permanent_pin_code,
         pan_no,
+        upi_Id
       } = fetchedData;
 
       setBankName(bank_name);
@@ -61,6 +63,7 @@ const WFHDBankUpdate = () => {
       setBeneficiary(beneficiary);
       setPincode(permanent_pin_code);
       setPanNo(pan_no);
+      setUpi(upi_Id)
     });
   }, []);
 
@@ -92,8 +95,7 @@ const WFHDBankUpdate = () => {
         permanent_state: state,
         permanent_pin_code: Number(pincode),
         pan_no: panNo,
-
-        // bank_type: banktype,
+        upi_Id: upi
       });
 
       navigate("/admin/wfhd-overview");
@@ -101,6 +103,7 @@ const WFHDBankUpdate = () => {
     } catch (error) {
       console.error("Error submitting documents", error);
     } finally {
+      console.log('')
     }
   };
   const handlePANChange = (e) => {
@@ -232,6 +235,14 @@ const WFHDBankUpdate = () => {
                   setPincode(value);
                 }
               }}
+            />
+            <FieldContainer
+              label="Upi Id"
+              type="text"
+              astric={false}
+              fieldGrid={3}
+              maxLength={6}
+              value={upi}
             />
           </div>
 
