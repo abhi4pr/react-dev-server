@@ -906,6 +906,22 @@ const SidebarLinks = () => {
                         <li className="nav-item">
                           <Link
                             className="nav-link collapsed"
+                            to="/admin/tempexcusion"
+                            // data-toggle="collapse"
+                            // data-target="#collapsInnerThree"
+                            // aria-expanded="true"
+                            // aria-controls="collapsInnerThree"
+                          >
+                            <span> Temp. Execution</span>
+                          </Link>
+                        </li>
+                      )}
+                    {contextData &&
+                      contextData[45] &&
+                      contextData[45].view_value === 1 && (
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link collapsed"
                             to="/admin/operation/case-study"
                           >
                             <span>Case Study </span>

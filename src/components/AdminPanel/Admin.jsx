@@ -97,7 +97,7 @@ import OnboardExtendDateOverview from "./AdminPreOnboarding/OnboardExtendDateOve
 // import AuditorTrack from "../InstaApi.jsx/Auditor/AuditorTrack";
 import ExecutionDone from "../Execution/Done/ExecutionDone";
 import ExecutionAccepted from "../Execution/Accepted/ExecutionAccepted";
-import RegisterCampaign from "./RegisterCampaign/registerCampaign";
+import RegisterCampaign from "./RegisterCampaign/RegisterCampaign";
 import ExecutionRejected from "../Execution/Rejected/ExecutionRejected";
 import RegisteredCampaign from "./RegisterCampaign/RegisteredCampaign";
 import SalaryDashboard from "./WFH/SalaryGeneration/SalaryDashboard";
@@ -193,6 +193,7 @@ import FinanceWFHDashboard from "../Finance Dashboard/FinanceWFHDashboard";
 import WFHTemplateOverview from "./WFH/WFHSingleUser/WFHTemplateOverview";
 import ViewEditDigiSignature from "./WFH/DigitalSignature/ViewEditDigiSignature";
 import PlancreationNew from "./RegisterCampaign/PlancreationNew";
+import TempPlanCreation from "./RegisterCampaign/tempPlan/TempPlanCreation";
 import PhasecreationNew from "./RegisterCampaign/PhasecreationNew";
 import DesiDeptAuth from "../AdminPanel/Designation/DesiDeptAuth";
 import PlanDashboard from "./RegisterCampaign/PlanDashboard/PlanDashboard";
@@ -222,16 +223,19 @@ import CaseStudyOperation from "./RegisterCampaign/CaseStudies/CaseStudyOperatio
 import WFHDRegister from "./WFH/WFHDRegister/WFHDRegister";
 import UpdateDocument from "./WFH/UpdateDocument";
 import HRTemplateOverview from "./WFH/HRTemplateOverview";
+
 import WFHDUpdate from "./WFH/WFHDRegister/WFHDUpdate";
 import WFHDBankUpdate from "./WFH/WFHDBankUpdate";
 import PaymentModeMast from "./Finance/PaymentModeMast";
 import TotalNDG from "./WFH/TotalNDG";
-<<<<<<< Updated upstream
+
 import TaskPending from "./Finance/TaskPending";
 import TaskDone from "./Finance/TaskDone";
-=======
+
 import NewExcelFile from "./RegisterCampaign/Plan/NewExcelFile";
->>>>>>> Stashed changes
+
+import TempExecution from "./RegisterCampaign/tempPlan/TempExecution";
+
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -885,6 +889,10 @@ const Admin = () => {
                     path="/planCreation/:id"
                     element={<PlancreationNew />}
                   />
+                  <Route
+                    path="/tempplanCreation/:id"
+                    element={<TempPlanCreation />}
+                  />
                   <Route path="/createAssign/:id" element={<CreateAssign />} />
                   <Route
                     path="/checkPageFollowers"
@@ -916,6 +924,10 @@ const Admin = () => {
                   <Route
                     path="/excusionCampaign"
                     element={<ExcusionCampaign />}
+                  />
+                  <Route
+                    path="/tempexcusion"
+                    element={<TempExecution />}
                   />
                   {/* ----------------------lead source routes -----------------------------*/}
                   <Route
