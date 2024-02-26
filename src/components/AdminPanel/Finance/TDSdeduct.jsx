@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
@@ -14,10 +13,10 @@ import {
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
+import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 
-export default function PaymentDone() {
+export default function TDSdeduct() {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -68,7 +67,11 @@ export default function PaymentDone() {
             }
           });
           let u = res.data.body.filter((item) => {
-            return y.some((item2) => item.request_id == item2.request_id);
+            return y.some(
+              (item2) =>
+                item.request_id == item2.request_id &&
+                item2.tds_Deduction_Bool == true
+            );
           });
           setData(u);
           setFilterData(u);
@@ -94,6 +97,7 @@ export default function PaymentDone() {
     setBankDetailRowData(x);
     setBankDetail(true);
   };
+
   useEffect(() => {
     callApi();
   }, []);
@@ -537,6 +541,7 @@ export default function PaymentDone() {
       },
     },
   ];
+
   const columns = [
     {
       field: "S.NO",
@@ -842,7 +847,7 @@ export default function PaymentDone() {
   return (
     <div>
       <FormContainer
-        mainTitle="Payment Done"
+        mainTitle="TDS Deduction"
         link="/admin/finance-pruchasemanagement-paymentdone"
         uniqueVendorCount={uniqueVendorCount}
         totalRequestAmount={totalRequestAmount}
@@ -1107,7 +1112,7 @@ export default function PaymentDone() {
         />
       )}
 
-      <Dialog
+<Dialog
         open={bankDetail}
         onClose={handleCloseBankDetail}
         fullWidth={"md"}

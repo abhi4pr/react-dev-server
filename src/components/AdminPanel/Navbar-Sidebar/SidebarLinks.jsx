@@ -1344,11 +1344,24 @@ const SidebarLinks = () => {
                         to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
                       >
                         Pending Payment Request
-                      </Link> <Link
+                      </Link>{" "}
+                      <Link
                         className="collapse-item"
                         to="/admin/payment-mode-master"
                       >
                         Payment Mode Master
+                      </Link>
+                      <Link
+                        className="collapse-item"
+                        to="/admin/payment-TDS_deduct"
+                      >
+                        TDS Deduction
+                      </Link>
+                       <Link
+                        className="collapse-item"
+                        to="/admin/payment-GST_hold"
+                      >
+                        GST Hold
                       </Link>
                       <Link
                         className="collapse-item"

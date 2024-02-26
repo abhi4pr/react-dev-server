@@ -18,6 +18,7 @@ import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
 
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { useGlobalContext } from "../../../Context/Context";
 
 export default function PurchaseManagementAllTransaction() {
   const [search, setSearch] = useState("");
@@ -41,6 +42,8 @@ export default function PurchaseManagementAllTransaction() {
   const [historyType, setHistoryType] = useState("");
   const [phpData, setPhpData] = useState([]);
   const [rowData, setRowData] = useState([]);
+  const [bankDetailRowData, setBankDetailRowData] = useState([]);
+  const { toastAlert, toastError } = useGlobalContext();
 
   const [uniqueVenderDialog, setUniqueVenderDialog] = useState(false);
   const [uniqueVendorData, setUniqueVendorData] = useState([]);
@@ -49,6 +52,10 @@ export default function PurchaseManagementAllTransaction() {
   const [uniqueVendorCount, setUniqueVendorCount] = useState(0);
   const [withInvoiceCount, setWithInvoiceCount] = useState(0);
   const [withoutInvoiceCount, setWithoutInvoiceCount] = useState(0);
+
+  const handleCloseBankDetail = () => {
+    setBankDetail(false);
+  };
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -118,7 +125,11 @@ export default function PurchaseManagementAllTransaction() {
   //   setSameVendorData(sameNameVendors);
   // };
 
-  const handleOpenBankDetail = () => {
+  const handleOpenBankDetail = (row) => {
+    let x = [];
+    x.push(row);
+
+    setBankDetailRowData(x);
     setBankDetail(true);
   };
 
@@ -187,7 +198,7 @@ export default function PurchaseManagementAllTransaction() {
       field: "invc_img",
       headerName: "Invoice Image",
       renderCell: (params) => {
-        if (params.row.invc_img.length > 0) {
+        if (params.row.invc_img?.length > 0) {
           // Extract file extension and check if it's a PDF
           const fileExtension = params.row.invc_img
             .split(".")
@@ -577,7 +588,7 @@ export default function PurchaseManagementAllTransaction() {
       field: "invc_img",
       headerName: "Invoice Image",
       renderCell: (params) => {
-        if (params.row.invc_img.length > 0) {
+        if (params.row?.length > 0) {
           // Extract file extension and check if it's a PDF
           const fileExtension = params.row.invc_img
             .split(".")
@@ -649,9 +660,16 @@ export default function PurchaseManagementAllTransaction() {
             >
               {params.row.vendor_name}
             </div>
-            <div onClick={() => handleOpenBankDetail()}>
+            <Button
+              disabled={
+                params.row.payment_details
+                  ? !params.row.payment_details.length > 0
+                  : true
+              }
+              onClick={() => handleOpenBankDetail(params.row)}
+            >
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
-            </div>
+            </Button>
           </div>
         );
       },
@@ -743,9 +761,14 @@ export default function PurchaseManagementAllTransaction() {
       field: "Pan Img",
       headerName: "Pan Img",
       renderCell: (params) => {
-        return params.row.pan_img ? (
+        const ImgUrl = `https://purchase.creativefuel.io/${params.row.pan_img}`;
+        return params.row.pan_img.includes("uploads") ? (
           <img
-            src={params.row.pan_img}
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(ImgUrl);
+            }}
+            src={ImgUrl}
             alt="Pan"
             style={{ width: "40px", height: "40px" }}
           />
@@ -801,6 +824,30 @@ export default function PurchaseManagementAllTransaction() {
           "NA"
         );
       },
+    },{
+      field: "gst_hold_amount",
+      headerName: "GST Hold Amount",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.gst_hold_amount ? (
+          <p>&#8377; {params.row.gst_hold_amount}</p>
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "tds_deduction",
+      headerName: "TDS Amount",
+      width: 150,
+      renderCell: (params) => {
+        console.log(params.row.tds_deduction, "tds_deduction")
+        return params.row.tds_deduction ? (
+          <p>&#8377; {params.row.tds_deduction}</p>
+        ) : (
+          "NA"
+        );
+      },
     },
     {
       field: "outstandings",
@@ -842,7 +889,13 @@ export default function PurchaseManagementAllTransaction() {
           return "Pending"; // Default value if no matching item is found
         }
       },
-    },
+    }, {
+      field:"gst_Hold_Bool",
+      headerName:"GST Hold",
+      renderCell:(params)=>{
+        return params.row.gst_Hold_Bool?"Yes":"No"
+      }
+    }
   ];
   console.log(
     filterData,
@@ -1155,7 +1208,7 @@ export default function PurchaseManagementAllTransaction() {
               {filterData.length > 0
                 ? filterData
                     .filter(
-                      (item) =>
+                      (item) => 
                         parseInt(item.status) === 1 &&
                         !nodeData.some(
                           (item2) => item.request_id === item2.request_id
@@ -1311,6 +1364,93 @@ export default function PurchaseManagementAllTransaction() {
           filterData={historyData}
         />
       )}
+
+{openImageDialog && (
+      <ImageView
+        viewImgSrc={viewImgSrc}
+        setViewImgDialog={setOpenImageDialog}
+      />
+    )}
+
+
+
+<Dialog
+        open={bankDetail}
+        onClose={handleCloseBankDetail}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Bank Details</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseBankDetail}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        {/* <DataGrid
+          rows={bankDetailRowData}
+          columns={bankDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => filterData.indexOf(row)}
+        /> */}
+
+        <TextField
+          id="outlined-multiline-static"
+          // label="Multiline"
+          multiline
+          value={bankDetailRowData[0]?.payment_details}
+          rows={4}
+          defaultValue="Default Value"
+          variant="outlined"
+        />
+
+        <Button
+          onClick={() => {
+            navigator.clipboard.writeText(
+              bankDetailRowData[0]?.payment_details
+            );
+            toastAlert("Copied to clipboard");
+          }}
+        >
+          Copy
+        </Button>
+      </Dialog>
     </div>
+
+
   );
 }
