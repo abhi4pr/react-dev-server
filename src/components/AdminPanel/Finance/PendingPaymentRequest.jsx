@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import {  useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import axios from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -78,7 +78,9 @@ export default function PendingPaymentRequest() {
   const [TDSPercentage, setTDSPercentage] = useState(1);
   const [TDSValue, setTDSValue] = useState(0);
   const [baseAmount, setBaseAmount] = useState(0);
-
+  const [paymentStatus, setPaymentStatus] = useState("Fully Paid");
+  const [bankDetailRowData, setBankDetailRowData] = useState([]);
+const [ paymentModeData, setPaymentModeData] = useState([]);
   var handleAcknowledgeClick = () => {
     setAknowledgementDialog(true);
   };
@@ -166,6 +168,11 @@ export default function PendingPaymentRequest() {
         });
     });
 
+    axios.get(`${baseUrl}` + `get_all_payment_mode`).then((res) => {
+      console.log(res.data, "payment mode");
+      setPaymentModeData(res.data);
+    });
+
     axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
       setUserName(res.data.user_name);
     });
@@ -212,6 +219,16 @@ export default function PendingPaymentRequest() {
     setGSTHoldAmount(rowData.gst_amount);
   };
   const handleCalculatePaymentAmount = () => {
+    if (gstHold && TDSDeduction) {
+      setPaymentStatus("Fully Paid GST Hold and TDS Deduction");
+    } else if (gstHold) {
+      setPaymentStatus("Fully Paid GST Hold");
+    } else if (TDSDeduction) {
+      setPaymentStatus("Fully Paid TDS Deduction");
+    } else {
+      setPaymentStatus("Fully Paid");
+    }
+
     let paymentAmount = rowData.request_amount;
     let baseamount = baseAmount;
     let tdsvalue = 0;
@@ -440,7 +457,11 @@ export default function PendingPaymentRequest() {
   };
   // Bank Details:-
 
-  const handleOpenBankDetail = () => {
+  const handleOpenBankDetail = (row) => {
+    let x =[]
+    x.push(row)
+    
+    setBankDetailRowData(x);
     setBankDetail(true);
   };
   const handleCloseBankDetail = () => {
@@ -481,28 +502,8 @@ export default function PendingPaymentRequest() {
         e.vendor_name === row.vendor_name && e.status != 0 && e.status != 2
       );
     });
-
-    // let outstandings = 0;
-    // let request_amount = 0;
-
-    // type=="FY"?dataFY:dataTP.forEach((row) => {
-    //   outstandings += +row.outstandings;
-    //   request_amount += +row.request_amount || 0;
-    // });
-
-    // // Create total row
-    // const totalRow = {
-    //   outstandings: outstandings,
-    //   request_amount: request_amount,
-    //   vendor_name: "Total",
-
-    // };
-
-    // setHistoryData(type === "FY" ? [...dataFY, totalRow] : [...dataTP, totalRow]);
-
     setHistoryData(type == "FY" ? dataFY : dataTP);
   };
-  console.log("history data", historyData);
   const handleClosePaymentHistory = () => {
     setPaymentHistory(false);
   };
@@ -535,7 +536,7 @@ export default function PendingPaymentRequest() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = bankDetailRowData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -543,40 +544,47 @@ export default function PendingPaymentRequest() {
       field: "account_number",
       headerName: "Account Number",
       width: 150,
-      renderCell: () => {
-        return <p>12345647321 </p>;
+      renderCell: (params) => {
+        console.log(params.row, "row");
+        const accountNumber = params.row.payment_details.match(
+          /(?<=account number -)\d+/
+        )[0];
+        return <p>{accountNumber} </p>;
       },
     },
     {
-      field: "bank_name",
-      headerName: "Bank Name",
+      field: "accunt_bank_name",
+      headerName: "Account Holder Name",
       width: 150,
-      renderCell: () => {
-        return <p>Axis Bank</p>;
+      renderCell: ({row}) => {
+        const accountHolderName = row.payment_details.match(/(?<=Account Holder Name -)[^\n]+/)[0];
+
+        return <p>{accountHolderName}</p>;
       },
     },
     {
       field: "ifsc",
       headerName: "IFSC Number",
       width: 150,
-      renderCell: () => {
-        return <p>AXIS1234</p>;
+      renderCell: (params) => {
+        const ifscCode = params.row.payment_details.match(/(?<=IFSC Code -)[A-Z\d]+/)[0];
+        return <p>{ifscCode}</p>;
       },
     },
     {
       field: "gst",
       headerName: "GST",
       width: 150,
-      renderCell: () => {
-        return <p> 1 </p>;
+      renderCell: ({row}) => {
+        return <p> {row.gst}</p>;
       },
     },
     {
       field: "pan_number",
       headerName: "Pan Number",
       width: 150,
-      renderCell: () => {
-        return <p> &#8377;ABCD12345G </p>;
+      renderCell: ({row}) => {
+        return <p> {row.pan} </p>;
       },
     },
   ];
@@ -917,9 +925,10 @@ export default function PendingPaymentRequest() {
             >
               {params.row.vendor_name}
             </div>
-            <div onClick={() => handleOpenBankDetail()}>
+            {/* Hold for confirmation of sourabh sir */}
+            {/* <Button disabled={params.row.payment_details?!params.row.payment_details.length>0:true} onClick={() => handleOpenBankDetail(params.row)}>
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
-            </div>
+            </Button> */}
           </div>
         );
       },
@@ -1011,9 +1020,10 @@ export default function PendingPaymentRequest() {
       field: "Pan Img",
       headerName: "Pan Img",
       renderCell: (params) => {
-        return params.row.pan_img ? (
+        return params.row.pan_img.includes("uploads")
+        ? (
           <img
-            src={params.row.pan_img}
+            src={"https://purchase.creativefuel.io/" + params.row.pan_img}
             alt="Pan"
             style={{ width: "40px", height: "40px" }}
           />
@@ -1160,7 +1170,7 @@ export default function PendingPaymentRequest() {
         </IconButton>
 
         <DataGrid
-          rows={filterData}
+          rows={bankDetailRowData}
           columns={bankDetailColumns}
           pageSize={5}
           rowsPerPageOptions={[5]}
@@ -1712,18 +1722,41 @@ export default function PendingPaymentRequest() {
               disablePortal
               className=" mt-2"
               id="combo-box-demo"
-              options={[
-                "Cash",
-                "Crypto",
-                "Transfer from CF",
-                "Transfer from other Account",
-              ]}
+              options={
+                paymentModeData.length > 0
+                  ? paymentModeData.map((item) => item.payment_mode)
+                  : []
+              }
               fullWidth={true}
               renderInput={(params) => (
                 <TextField
                   {...params}
                   label="Payment Mode *"
                   placeholder="Payment Mode"
+                />
+              )}
+            />
+
+            <Autocomplete
+              onChange={(e, value) => setPaymentStatus(value)}
+              value={paymentStatus}
+              disablePortal
+              disabled
+              className=" mt-2"
+              id="combo-box-demo"
+              options={[
+                "Fully Paid",
+                "Fully Paid(TDS Deducted)",
+                "Fully Paid(GST Hold)",
+                "Fully Paid(TDS Deducted & GST Hold)",
+                "Partially Paid",
+              ]}
+              fullWidth={true}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Payment Status *"
+                  placeholder="Payment Status"
                 />
               )}
             />

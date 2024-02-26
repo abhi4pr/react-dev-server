@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./UserView.css";
-import Logo from "../../../assets/img/logo/logo.png";
+import blankProfilePic from "../../../assets/img/product/blankProfilePic.webp";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import FormContainer from "../FormContainer";
@@ -27,6 +27,7 @@ const UserSingle = () => {
   const [otherDocuments, setOtherDocuments] = useState("");
   const [defaultSeatData, setDefaultSeatData] = useState([]);
   const [roomId, setRoomId] = useState();
+  const [userProfileImage, setUserProfileImage] = useState(null);
 
   const [educationData, setEducationData] = useState([]);
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
@@ -46,14 +47,14 @@ const UserSingle = () => {
     });
   }
 
-  const getData = async () => {
-    await axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
-      const fetchedData = res.data;
-      const { dept_id } = fetchedData;
-      setUser(fetchedData);
-      setSubDeptId(dept_id);
-    });
-  };
+  // const getData = async () => {
+  //   await axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
+  //     const fetchedData = res.data;
+  //     const { dept_id } = fetchedData;
+  //     setUser(fetchedData);
+  //     setSubDeptId(dept_id);
+  //   });
+  // };
 
   useEffect(() => {
     axios.get(baseUrl + "get_all_sittings").then((res) => {
@@ -66,7 +67,23 @@ const UserSingle = () => {
       seFamilyData(res.data.data);
     });
     KRAAPI(id);
+  }, []);
 
+  // const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+
+  // const [user, setUser] = useState([]);
+  let fetchedData;
+  const getData = () => {
+    axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
+      fetchedData = res.data;
+      const { dept_id } = fetchedData;
+      setUser(fetchedData);
+      setSubDeptId(dept_id);
+      setUserProfileImage(fetchedData.image_url);
+    });
+  };
+
+  useEffect(() => {
     getData();
     userOtherDocuments();
   }, [id]);
@@ -83,7 +100,7 @@ const UserSingle = () => {
   }, [defaultSeatData, user?.sitting_id]);
 
   const accordionButtons = [
-    "Genral",
+    "General",
     "Professional",
     "KRA",
     "Documents",
@@ -110,6 +127,21 @@ const UserSingle = () => {
           {/* <div className="profileInfo_imgbox">
               <img src={Logo} alt="Circular Image" className="img-fluid" />
             </div> */}
+          {/* <div className="profileInfo_imgbox">
+            {user.image ? (
+              <img
+                src={userProfileImage}
+                alt="Circular Image"
+                className="img-fluid"
+              />
+            ) : (
+              <img
+                src={blankProfilePic}
+                alt="Circular Image"
+                className="img-fluid"
+              />
+            )}
+          </div> */}
           <FormContainer
             submitButton={false}
             mainTitle="User"

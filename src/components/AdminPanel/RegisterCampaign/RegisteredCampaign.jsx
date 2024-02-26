@@ -279,7 +279,7 @@ export default function RegisteredCampaign() {
   console.log(filteredTable1Data)
   console.log(filteredTable2Data)
   const handlePlan = (event) => {
-    const path = `/admin/planCreation/${event._id}`;
+    const path = `/admin/tempplanCreation/${event._id}`;
     navigate(path);
   };
   const handleShowPlan = (event) => {
@@ -525,6 +525,18 @@ export default function RegisteredCampaign() {
           </div>
         );
       },
+      width: 200,
+    },
+    {
+      field: "temp plan_creation",
+      headerName: "temp Plan Creation",
+      renderCell: (params) => (
+        <PlanCreationComponent
+          {...params}
+          handlePlan={handlePlan}
+          handleShowPlan={handleShowPlan}
+        />
+      ),
       width: 200,
     },
     {

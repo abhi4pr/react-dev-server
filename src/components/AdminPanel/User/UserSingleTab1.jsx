@@ -307,32 +307,28 @@ const UserSingleTab1 = ({ user, roomId }) => {
   return (
     <div className="profileInfo_area">
       <div className="row profileInfo_row pt-0">
-        {fields.map(
-          (field, index) => (
-            console.log(field, "-----------ff"),
-            (
-              <div
-                key={field.id}
-                className="col-xl-4 col-lg-4 col-md-6 col-sm-12"
-                draggable
-                onDragStart={() => handleDragStart(index)}
-                onDragEnter={() => handleDragEnter(index)}
-                onDragOver={(e) => e.preventDefault()}
-                onDragEnd={handleDragEnd}
-              >
-                <div className="profileInfo_box">
-                  <h3>{field.label}</h3>
-                  <h4>
-                    {typeof field.value === "function"
-                      ? field.value()
-                      : field.value}
-                  </h4>
-                  <hr className="mb-4 mt-2" />
-                </div>
-              </div>
-            )
-          )
-        )}
+        {fields.map((field, index) => (
+          // console.log(field, "-----------ff"),
+          <div
+            key={field.id}
+            className="col-xl-4 col-lg-4 col-md-6 col-sm-12"
+            draggable
+            onDragStart={() => handleDragStart(index)}
+            onDragEnter={() => handleDragEnter(index)}
+            onDragOver={(e) => e.preventDefault()}
+            onDragEnd={handleDragEnd}
+          >
+            <div className="profileInfo_box">
+              <h3>{field.label}</h3>
+              <h4>
+                {typeof field.value === "function"
+                  ? field.value()
+                  : field.value}
+              </h4>
+              <hr className="mb-4 mt-2" />
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

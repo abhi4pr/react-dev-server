@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FormContainer from "../AdminPanel/FormContainer";
 import axios from "axios";
 import { DataGrid, GridColumnMenu, GridToolbar } from "@mui/x-data-grid";
@@ -12,11 +12,13 @@ import Select from "react-select";
 import * as XLSX from "xlsx";
 import DataGridDialog from "../DataGridDialog/DataGridDialog";
 import FieldContainer from "../AdminPanel/FieldContainer";
+import BankExcelConverter from "../../utils/BankExcelConverter";
 
 const accordionButtons = [
   "Pending Verify",
-  "Proceed to Bank",
+  // "Proceed to Bank",
   "Payment Released",
+  "Failed Transactions",
   // "TDS",
   // "Non-TDS",
 ];
@@ -44,7 +46,7 @@ export default function FinanceWFHDashboard() {
   const [rowData, setDataRow] = useState(null);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [CSVFile, setCSVFile] = useState(null);
-
+  const [rowUTR, setRowUTR] = useState({ value: "", row: null });
   const { toastAlert } = useGlobalContext();
 
   const monthOptions = [
@@ -117,14 +119,13 @@ export default function FinanceWFHDashboard() {
       const departmentMatch = !departmentFilter || d.dept === departmentFilter;
       const monthsMatch = !months || d.month === months;
 
-      const yearsMatch = !years || d.year.toString() === years;
+      const yearsMatch = !years || d.year == years;
       return departmentMatch && monthsMatch && yearsMatch;
     });
     setFilterData(result);
-  }, [data, departmentFilter, months, years])
+  }, [data, departmentFilter, months, years]);
 
   useEffect(() => {
-
     axios
       .post(`${baseUrl}` + `get_wfhd_tds_users`, {
         month: months,
@@ -147,21 +148,29 @@ export default function FinanceWFHDashboard() {
 
   const handleUTRupload = async (e, row) => {
     e.preventDefault();
+    console.log(rowUTR);
+    console.log(typeof rowUTR.row.attendence_id);
 
     // const formData = new FormData();
-    // formData.append("id", row.id);
-    // formData.append("utr", e.target.fileUpload.files[0]);
-    // axios
+    console.log(rowUTR);
+    // return;
 
-    //   .put(`${baseUrl}` + `edit_finance`, formData, {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   })
-    //   .then(() => {
-    //     toastAlert("UTR uploaded");
-    //     getData();
-    //   });
+    axios
+
+      .put(
+        `${baseUrl}` + `edit_finance_utr`,
+        {
+          id: row.id,
+          attendence_id: Number(rowUTR.row.attendence_id),
+          utr: String(rowUTR.value),
+        },
+        {}
+      )
+      .then(() => {
+        setRowUTR({ value: "", row: null });
+        toastAlert("UTR uploaded");
+        getData();
+      });
   };
 
   const handleCSVFlieupload = async (e) => {
@@ -232,6 +241,7 @@ export default function FinanceWFHDashboard() {
       "To Pay": row.toPay,
       Status: row.attendence_status_flow,
       "Attendence ID": row.attendence_id,
+      utr: "",
     }));
     const fileName = "AllSalary.xlsx";
     const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -334,7 +344,7 @@ export default function FinanceWFHDashboard() {
   function handlePayOut(e) {
     e.preventDefault();
     if (!refrenceNumber) return;
-    
+
     const formData = new FormData();
     formData.append("id", id);
     formData.append("amount", amount);
@@ -368,13 +378,13 @@ export default function FinanceWFHDashboard() {
         const rowIndex =
           activeAccordionIndex == 0
             ? filterData
-              .filter((item) => item.status_ === 0)
-              .indexOf(params.row)
+                .filter((item) => item.status_ === 0)
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? filterData
+            ? filterData
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
-              : filterData
+            : filterData
                 .filter((item) => item.status_ === 2)
                 .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
@@ -430,14 +440,16 @@ export default function FinanceWFHDashboard() {
         const rowIndex =
           activeAccordionIndex == 0
             ? filterData
-              .filter((item) => item.status_ === 0)
-              .indexOf(params.row)
+                .filter((item) => item.status_ === 0)
+                .indexOf(params.row)
             : activeAccordionIndex == 1
-              ? filterData
+            ? filterData
                 .filter((item) => item.status_ === 1)
                 .indexOf(params.row)
-              : filterData
-                .filter((item) => item.status_ === 2)
+            : filterData
+                ?.filter(
+                  (item) => item.attendence_status_flow == "Payment Failed"
+                )
                 .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
@@ -514,7 +526,112 @@ export default function FinanceWFHDashboard() {
         return params.row.attendence_status_flow;
       },
     },
-    {
+    // {
+    //   headerName: "Action",
+    //   field: "action",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     return (
+    //       <>
+    //         {activeAccordionIndex != 2 && (
+    //           <button
+    //             className="btn btn-primary"
+    //             data-toggle="modal"
+    //             data-target="#exampleModal"
+    //             onClick={(e) =>
+    //               activeAccordionIndex == 0
+    //                 ? handlePay(params.row, e)
+    //                 : handlePayVerify(params.row, e)
+    //             }
+    //           >
+    //             Verify
+    //           </button>
+    //         )}
+
+    //         {params.row?.invoice_template_no !== "0" && (
+    //           <button
+    //             className="btn btn-outline-primary btn-sm"
+    //             title="Download Invoice"
+    //             type="button"
+    //             onClick={() => {
+    //               generatePDF(params.row);
+    //             }}
+    //           >
+    //             <CloudDownloadIcon />
+    //           </button>
+    //         )}
+    //       </>
+    //     );
+    //   },
+    // },
+
+    // {
+    //   headerName: "UTR",
+    //   width: 250,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div>
+    //        <form method="post"
+    //         // onSubmit={(e)=>handleUTRupload(e,params.row)}
+    //          className="d-flex ">
+    //         <input className="form-control" type="text" id="utr" name="utr"  />
+    //         <button className="btn btn-primary " type="submit">
+    //           Submit
+    //         </button>
+    //       </form>
+
+    //       </div>
+    //     );
+    //   },
+    // },
+  ];
+
+  if (activeAccordionIndex === 1) {
+    pendingColumns.push({
+      headerName: "UTR",
+      width: 250,
+      renderCell: (params) => {
+        return (
+          <div>
+            <form
+              method="post"
+              // onSubmit={(e)=>handleUTRupload(e,params.row)}
+              className="d-flex "
+            >
+              <input
+                className="form-control"
+                value={
+                  params.row.utr
+                    ? params.row.utr
+                    : params.row.utr || rowUTR.row?.id === params.row.id
+                    ? rowUTR.value
+                    : ""
+                }
+                disabled={params.row.utr}
+                type="text"
+                id="utr"
+                name="utr"
+                onChange={(e) => {
+                  setRowUTR({ value: e.target.value, row: params.row });
+                }}
+              />
+              <button
+                className="btn btn-primary "
+                //  type="submit"
+                onClick={(e) => handleUTRupload(e, params.row)}
+                disabled={params.row.utr}
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+        );
+      },
+    });
+  }
+
+  if (activeAccordionIndex === 0) {
+    pendingColumns.push({
       headerName: "Action",
       field: "action",
       width: 150,
@@ -551,61 +668,9 @@ export default function FinanceWFHDashboard() {
           </>
         );
       },
-    },
-
-    // {
-    //   headerName: "UTR",
-    //   width: 250,
-    //   renderCell: (params) => {
-    //     return (
-    //       <div>
-    //        <form method="post"
-    //         // onSubmit={(e)=>handleUTRupload(e,params.row)}
-    //          className="d-flex ">
-    //         <input className="form-control" type="text" id="utr" name="utr"  />
-    //         <button className="btn btn-primary " type="submit">
-    //           Submit
-    //         </button>
-    //       </form>
-
-    //       </div>
-    //     );
-    //   },
-    // },
-  ];
-
-  if (activeAccordionIndex === 2) {
-    pendingColumns.push({
-      headerName: "UTR",
-      width: 250,
-      renderCell: (params) => {
-        return (
-          <div>
-            <form
-              method="post"
-              // onSubmit={(e)=>handleUTRupload(e,params.row)}
-              className="d-flex "
-            >
-              <input
-                className="form-control"
-                value={params.row.utr || ""}
-                disabled
-                type="text"
-                id="utr"
-                name="utr"
-              />
-              {/* <button
-                className="btn btn-primary "
-                //  type="submit"
-              >
-                Submit
-              </button> */}
-            </form>
-          </div>
-        );
-      },
     });
   }
+
   const NonTDS = (
     <div>
       <div style={{ height: "50px" }}>
@@ -668,13 +733,13 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-      // unstable_ignoreValueFormatterDuringExport
-      // slotProps={{
-      //   toolbar: {
-      //     showQuickFilter: true,
-      //   },
-      // }}
-      // unstable_headerFilters
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
       />
     </div>
   );
@@ -748,16 +813,28 @@ export default function FinanceWFHDashboard() {
     <div>
       <div style={{ height: "50px" }}>
         {rowForPayment.length > 0 && (
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            sx={{ width: "100px" }}
-            className="ml-3 mb-2"
-            onClick={handleDownloadInvoices}
-          >
-            Download PDF Zip
-          </Button>
+          <>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ width: "200px" }}
+              className="ml-3 mb-2"
+              onClick={handleDownloadInvoices}
+            >
+              Download PDF Zip
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              size="lg"
+              sx={{ width: "200px" }}
+              className="ml-3 mb-2"
+              onClick={() => BankExcelConverter(rowForPayment)}
+            >
+              Export Bank Excel
+            </Button>
+          </>
         )}
 
         {rowForPayment.length > 0 && (
@@ -765,7 +842,7 @@ export default function FinanceWFHDashboard() {
             variant="contained"
             color="primary"
             size="small"
-            sx={{ width: "100px" }}
+            sx={{ width: "200px" }}
             className="ml-3 mb-2"
             onClick={handleDownloadExcel}
           >
@@ -778,7 +855,7 @@ export default function FinanceWFHDashboard() {
             variant="contained"
             color="primary"
             size="small"
-            sx={{ width: "100px" }}
+            sx={{ width: "200px" }}
             className="ml-3 mb-2"
             onClick={handleSendToBank}
           >
@@ -806,13 +883,13 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-      // unstable_ignoreValueFormatterDuringExport
-      // slotProps={{
-      //   toolbar: {
-      //     showQuickFilter: true,
-      //   },
-      // }}
-      // unstable_headerFilters
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
       />
     </div>
   );
@@ -853,13 +930,13 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-      // unstable_ignoreValueFormatterDuringExport
-      // slotProps={{
-      //   toolbar: {
-      //     showQuickFilter: true,
-      //   },
-      // }}
-      // unstable_headerFilters
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
       />
     </div>
   );
@@ -867,7 +944,19 @@ export default function FinanceWFHDashboard() {
   const payoutReleased = (
     <>
       <div>
-        <div style={{ height: "50px" }} className="d-flex">
+      {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "200px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadExcel}
+          >
+            Download Excel
+          </Button>
+        )}
+        {/* <div style={{ height: "50px" }} className="d-flex">
           {rowForPayment.length > 0 && (
             <Button
               variant="contained"
@@ -880,11 +969,11 @@ export default function FinanceWFHDashboard() {
               Download PDF Zip
             </Button>
           )}
-        </div>
+        </div> */}
         {/* <h1>Payout Released</h1> */}
 
         <DataGrid
-          rows={filterData?.filter((item) => item.status_ === 2)}
+          rows={filterData?.filter((item) => item.status_ === 1)}
           columns={pendingColumns}
           getRowId={(row) => row.id}
           initialState={{
@@ -908,6 +997,166 @@ export default function FinanceWFHDashboard() {
     </>
   );
 
+  const failedTransaction = (
+    <div>
+      {/* <div style={{ height: "50px" }}>
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadInvoices}
+          >
+            Download PDF Zip
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleDownloadExcel}
+          >
+            Download Excel
+          </Button>
+        )}
+
+        {rowForPayment.length > 0 && (
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "100px" }}
+            className="ml-3 mb-2"
+            onClick={handleSendToBank}
+          >
+            Send to Bank
+          </Button>
+        )}
+      </div> */}
+      <DataGrid
+        rows={filterData?.filter(
+          (item) => item.attendence_status_flow == "Payment Failed"
+        )}
+        columns={pendingColumns}
+        getRowId={(row) => row.id}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 50,
+            },
+          },
+        }}
+        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+        pageSizeOptions={[5, 25, 50, 100, 500]}
+        checkboxSelection
+        // disableRowSelectionOnClick
+        onRowSelectionModelChange={(rowIds) => {
+          handleRowSelectionModelChange(rowIds);
+          // console.log(rowIds);
+        }}
+        rowSelectionModel={rowSelectionModel}
+        // unstable_ignoreValueFormatterDuringExport
+        // slotProps={{
+        //   toolbar: {
+        //     showQuickFilter: true,
+        //   },
+        // }}
+        // unstable_headerFilters
+      />
+    </div>
+  );
+
+  // const verified = (
+  //   <div>
+  //     <div style={{ height: "50px" }}>
+  //       {rowForPayment.length > 0 && (
+  //         <Button
+  //           variant="contained"
+  //           color="primary"
+  //           size="small"
+  //           sx={{ width: "100px" }}
+  //           className="ml-3 mb-2"
+  //           onClick={(e) => handleVerifyAll(e)}
+  //         >
+  //           Verify All
+  //         </Button>
+  //       )}
+  //     </div>
+  //     <DataGrid
+  //       rows={filterData.filter((item) => item.status_ === 1)}
+  //       columns={pendingColumns}
+  //       getRowId={(row) => row.id}
+  //       initialState={{
+  //         pagination: {
+  //           paginationModel: {
+  //             pageSize: 50,
+  //           },
+  //         },
+  //       }}
+  //       slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+  //       pageSizeOptions={[5, 25, 50, 100, 500]}
+  //       checkboxSelection
+  //       // disableRowSelectionOnClick
+  //       onRowSelectionModelChange={(rowIds) => {
+  //         handleRowSelectionModelChange(rowIds);
+  //         // console.log(rowIds);
+  //       }}
+  //       rowSelectionModel={rowSelectionModel}
+
+  //     />
+  //   </div>
+  // );
+
+  // const payoutReleased = (
+  //   <>
+  //     <div>
+  //       <div style={{ height: "50px" }} className="d-flex">
+  //         {rowForPayment.length > 0 && (
+  //           <Button
+  //             variant="contained"
+  //             color="primary"
+  //             size="small"
+  //             sx={{ width: "100px" }}
+  //             className="ml-3 mb-2"
+  //             onClick={handleDownloadInvoices}
+  //           >
+  //             Download PDF Zip
+  //           </Button>
+  //         )}
+  //       </div>
+  //       {/* <h1>Payout Released</h1> */}
+
+  //       <DataGrid
+  //         rows={filterData.filter((item) => item.status_ === 2)}
+  //         columns={pendingColumns}
+  //         getRowId={(row) => row.id}
+  //         initialState={{
+  //           pagination: {
+  //             paginationModel: {
+  //               pageSize: 50,
+  //             },
+  //           },
+  //         }}
+  //         slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+  //         pageSizeOptions={[5, 25, 50, 100, 500]}
+  //         checkboxSelection
+  //         // disableRowSelectionOnClick
+  //         onRowSelectionModelChange={(rowIds) => {
+  //           handleRowSelectionModelChange(rowIds);
+  //           // console.log(rowIds);
+  //         }}
+  //         rowSelectionModel={rowSelectionModel}
+  //       />
+  //     </div>
+  //   </>
+  // );
+
   return (
     <div>
       <div className="card-body pb0 pb4">
@@ -928,12 +1177,12 @@ export default function FinanceWFHDashboard() {
                 departmentFilter === ""
                   ? { value: "", label: "" }
                   : {
-                    value: departmentFilter,
-                    label:
-                      departmentData.find(
-                        (dept) => dept.dept_id === departmentFilter
-                      )?.dept_name || "Select...",
-                  }
+                      value: departmentFilter,
+                      label:
+                        departmentData.find(
+                          (dept) => dept.dept_id === departmentFilter
+                        )?.dept_name || "Select...",
+                    }
               }
               onChange={(selectedOption) => {
                 const selectedValue = selectedOption
@@ -1021,7 +1270,7 @@ export default function FinanceWFHDashboard() {
       </div>
 
       <FormContainer
-        // submitButton={false}
+        submitButton={false}
         mainTitle="Dashboard"
         title="Finance"
         accordionButtons={accordionButtons}
@@ -1029,17 +1278,22 @@ export default function FinanceWFHDashboard() {
         onAccordionButtonClick={handleAccordionButtonClick}
         handleSubmit={handleCSVFlieupload}
       >
-        {activeAccordionIndex === 2 && (
+        {activeAccordionIndex === 1 && (
           // <FormContainer {handleCSVFlieupload}>
           <div className="d-flex">
             <FieldContainer
               // label="Upload UTR"
               type="file"
+              accept=".xls,.xlsx"
               fieldGrid={6}
               onChange={(e) => setCSVFile(e.target.files[0])}
-
             />
-            <input type="submit" value={"Upload utr"} className="btn btn-primary h-50 mt-3 " disabled={!CSVFile} />
+            <input
+              type="submit"
+              value={"Upload utr"}
+              className="btn btn-primary h-50 mt-3 "
+              disabled={!CSVFile}
+            />
           </div>
           // </FormContainer>
         )}
@@ -1047,10 +1301,11 @@ export default function FinanceWFHDashboard() {
         {invoice}
 
         {activeAccordionIndex === 0 && pending}
-        {activeAccordionIndex === 1 && verified}
-        {activeAccordionIndex === 2 && payoutReleased}
-        {activeAccordionIndex === 3 && TDS}
-        {activeAccordionIndex === 4 && NonTDS}
+        {/* {activeAccordionIndex === 1 && verified} */}
+        {activeAccordionIndex === 1 && payoutReleased}
+        {activeAccordionIndex === 2 && failedTransaction}
+        {/* {activeAccordionIndex === 3 && TDS}
+        {activeAccordionIndex === 4 && NonTDS} */}
       </FormContainer>
 
       {showModal && (
@@ -1129,7 +1384,7 @@ export default function FinanceWFHDashboard() {
                   <button
                     type="submit"
                     className="btn btn-primary"
-                  // onClick={handlePayOut}
+                    // onClick={handlePayOut}
                   >
                     Pay
                   </button>

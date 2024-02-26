@@ -6,6 +6,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../../DeleteButton";
 import { Link } from "react-router-dom";
 import { baseUrl } from "../../../../utils/config";
+import FieldContainer from "../../FieldContainer";
 
 const PreonboardingDocumentOverview = () => {
   const [search, setSearch] = useState("");
@@ -21,6 +22,11 @@ const PreonboardingDocumentOverview = () => {
     {
       name: "Document Type",
       selector: (row) => row.doc_type,
+      sortable: true,
+    },
+    {
+      name: "Status",
+      selector: (row) => <>{row.isRequired ? "Mandatory" : "Non mandatory"}</>,
       sortable: true,
     },
     {
@@ -62,9 +68,7 @@ const PreonboardingDocumentOverview = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_docs"
-      );
+      const response = await axios.get(baseUrl + "get_all_docs");
       const data = response.data.data;
       setData(data);
       setFilterData(data);
@@ -77,12 +81,20 @@ const PreonboardingDocumentOverview = () => {
     getData();
   }, []);
 
-  useEffect(() => {}, [search]);
+  useEffect(() => {
+    const result = data.filter((d) => {
+      return (
+        d.doc_type?.toLowerCase().includes(search.toLowerCase()) ||
+        d.priority?.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+    setFilterData(result);
+  }, [search]);
 
   return (
     <>
       <FormContainer
-        mainTitle="Preonboarding Document"
+        mainTitle="Pre Onboarding Document"
         link="/admin/preonboarding-documents"
         buttonAccess={true}
       />
@@ -98,13 +110,15 @@ const PreonboardingDocumentOverview = () => {
               highlightOnHover
               subHeader
               subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+                <>
+                  <input
+                    type="text"
+                    placeholder="Search here"
+                    className="w-50 form-control "
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </>
               }
             />
           </div>

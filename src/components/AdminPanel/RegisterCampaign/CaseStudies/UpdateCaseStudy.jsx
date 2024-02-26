@@ -37,6 +37,7 @@ const UpdateCaseStudy = () => {
   const [image, setImage] = useState("");
   const [size, setSize] = useState("");
   const [remark, setRemark] = useState("");
+  const [feedback, setFeedback] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [images, setImages] = useState([]);
   const [details, setDetails] = useState([]);
@@ -47,7 +48,6 @@ const UpdateCaseStudy = () => {
   const [contentType, setContentType] = useState("");
   const [dataBrand, setDataBrand] = useState("");
   const [dataBrandData, setDataBrandData] = useState([]);
-  // const [dataSubCategory, setDataSubCategory] = useState([]);
   const [dataSubCategory, setDataSubCategory] = useState("");
 
   const [error, setError] = useState("");
@@ -115,7 +115,6 @@ const UpdateCaseStudy = () => {
   const HandleNAFileChangeOnChange = (e) => {
     const value = e.target.value;
 
-    // Allow only empty string, 'NA', or a valid number
     if (value === "" || value === "NA" || /^\d+$/.test(value)) {
       return value;
     } else if (
@@ -188,11 +187,6 @@ const UpdateCaseStudy = () => {
     axios.get(baseUrl + "get_all_data_platforms").then((res) => {
       setPlateformData(res.data);
     });
-    // axios
-    //   .get(baseUrl+"get_all_data_Sub_categories")
-    //   .then((res) => {
-    //     setDataSubCategoryData(res.data);
-    //   });
 
     axios.get(baseUrl + "get_brands").then((res) => {
       setDataBrandData(res.data.data);
@@ -214,35 +208,15 @@ const UpdateCaseStudy = () => {
 
   const getCombinedData = async () => {
     if (dataId) {
-      // axios
-      //   .get(`${baseUrl}`+`get_data_based_data_name/${dataId}`)
-      //   .then((res) => {
-      //     setLogos(prev=>res.data);
-
-      //     setLogo(res.data)
-      //     // console.log(res.data[0]?.sub_cat_id[0].split(","),"subcat")
-      //     setCategory(res.data[0]?.cat_id);
-      //     // setDataSubCategory(res.data[0]?.sub_cat_id[0].split(","))
-      //     setDataSubCategory(res.data[0]?.sub_cat_id);
-
-      //     setPlateform(res.data[0]?.platform_ids);
-      //     setContentType(res.data[0]?.content_type_id);
-      //     setDataBrand(res.data[0]?.brand_id);
-      //     setRemark(res.data[0]?.remark);
-      //   });
       axios
         .get(
           `${baseUrl}` + `get_data_operation_based_data_name_new/${brandName}`
         )
         .then((res) => {
           setLogos(() => res.data);
-
           setLogo(res.data);
-          // console.log(res.data[0]?.sub_cat_id[0].split(","),"subcat")
           setCategory(res.data[0]?.cat_id);
-          // setDataSubCategory(res.data[0]?.sub_cat_id[0].split(","))
           setDataSubCategory(res.data[0]?.sub_cat_id);
-
           setPlateform(res.data[0]?.platform_ids);
           setContentType(res.data[0]?.content_type_id);
           setDataBrand(res.data[0]?.brand_id);
@@ -282,58 +256,6 @@ const UpdateCaseStudy = () => {
     newDetails.splice(index, 1);
     setDetails(newDetails);
   };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   console.log(dataSubCategory, "subcat");
-  //   // return;
-
-  //   await axios.put(`${baseUrl}`+`update_data`, {
-  //     data_id: +id,
-  //     data_name: brandName,
-  //     brand_id: dataBrand,
-  //     platform_ids: platform,
-  //     content_type_id: contentType,
-  //     cat_id: category,
-  //     sub_cat_id: dataSubCategory,
-  //     remark: remark,
-  //     updated_by: loginUserId,
-  //     updated_at: new Date(),
-  //     size_in_mb: size,
-
-  //   });
-
-  //   try {
-  //     for (let i = 0; i < details.length; i++) {
-  //       const formData = new FormData();
-  //       formData.append("data_name", brandName);
-  //       formData.append("cat_id", category);
-  //       formData.append("sub_cat_id", dataSubCategory);
-  //       formData.append("platform_ids", platform);
-  //       formData.append("brand_id", dataBrand);
-  //       formData.append("content_type_id", contentType);
-  //       formData.append("data_upload", details[i].file);
-  //       formData.append("data_type", details[i].fileType);
-  //       formData.append("size_in_mb", details[i].sizeInMB);
-  //       formData.append("remark", remark);
-  //       formData.append("created_by", loginUserId);
-
-  //       await axios.post(baseUrl+"dataoperation", formData, {
-  //         headers: {
-  //           "Content-Type": "multipart/form-data",
-  //         },
-  //       });
-  //     }
-  //     setIsFormSubmitted(true);
-  //     toastAlert("Data details updated");
-  //     setBrand("");
-  //     setLogo("");
-  //     setImage("");
-  //     setSize("");
-  //     setRemark("");
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
 
   const handleSubmit = async (e) => {
     console.log(dataSubCategory, "subcat");
@@ -409,7 +331,7 @@ const UpdateCaseStudy = () => {
       if (details.length == 0) {
         await axios
           .put(baseUrl + "editdataoperationname", {
-            data_id:  +id,
+            data_id: +id,
             data_name: brandName,
             remark: remark,
             cat_id: category,
@@ -571,7 +493,6 @@ const UpdateCaseStudy = () => {
   };
 
   const handleFileChange = (event) => {
-    // setFileDetails((prev) => [...prev, event.target.files]);
     const files = Array.from(event.target.files);
     setImages(files);
 
@@ -619,7 +540,6 @@ const UpdateCaseStudy = () => {
   };
 
   const handleMMCFileChange = (event) => {
-    // setFileDetails((prev) => [...prev, event.target.files]);
     const files = Array.from(event.target.files);
     setMMCImages(files);
 
@@ -667,7 +587,6 @@ const UpdateCaseStudy = () => {
   };
 
   const handleSarcasmFileChange = (event) => {
-    // setFileDetails((prev) => [...prev, event.target.files]);
     const files = Array.from(event.target.files);
     setSarcasmImages(files);
 
@@ -820,20 +739,6 @@ const UpdateCaseStudy = () => {
     return <Navigate to="/admin/operation/case-study" />;
   }
 
-  // const renderFileIcon = (fileType) => {
-  //   switch (fileType) {
-  //     case "pdf":
-  //       return <img src={pdf} alt="PDF" style={{ width: "32%" }} />;
-  //     case "mp4":
-  //       return <img src={video} alt="PDF" style={{ width: "32%" }} />;
-  //     case "xls":
-  //     case "xlsx":
-  //       return <img src={sheets} alt="Excel" style={{ width: "32%" }} />;
-  //     default:
-  //       return <i className="fa fa-file"></i>;
-  //   }
-  // };
-
   const renderFileIcon = (fileType, src, detail) => {
     switch (fileType) {
       case "pdf":
@@ -854,13 +759,6 @@ const UpdateCaseStudy = () => {
               }}
             />
             <div
-              // onClick={() => {
-              //   setOpenReviewDisalog({
-              //     open: true,
-              //     image: src,
-              //     detail: detail,
-              //   });
-              // }}
               style={{
                 position: "absolute",
                 width: "100%",
@@ -875,7 +773,6 @@ const UpdateCaseStudy = () => {
           </div>
         );
       case "mp4":
-        // return <img src={video} alt="PDF" style={{ width: "32%" }} />;
         return (
           <video className="mt-5" controls width="45%" height="auto">
             <source src={src} type={`video/${fileType}`} />
@@ -919,12 +816,14 @@ const UpdateCaseStudy = () => {
         <div className="section section_padding sec_bg h100vh">
           <div className="container">
             <FormContainer
-              mainTitle="Data"
-              title="Data"
-              handleSubmit={handleSubmit}
+              mainTitle="Case Study"
+              title="Case Study"
+              // handleSubmit={handleSubmit}
+              submitButton={false}
+              isLoading={isLoading}
             >
               <FieldContainer
-                label="Upload Data "
+                label="CreativeFuel "
                 type="file"
                 multiple
                 accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
@@ -1193,12 +1092,13 @@ const UpdateCaseStudy = () => {
                   <input
                     className="form-control"
                     value={OperationRemark}
-                    onChange={(e) =>
-                      setOperationRemark(HandleNAFileChangeOnChange(e))
-                    }
-                    onBlur={(e) => {
-                      setOperationRemark(handleNaFileChangeOnBlur(e));
-                    }}
+                    // onChange={(e) =>
+                    //   setOperationRemark(HandleNAFileChangeOnChange(e))
+                    // }
+                    // onBlur={(e) => {
+                    //   setOperationRemark(handleNaFileChangeOnBlur(e));
+                    // }}
+                    onChange={(e) => setOperationRemark(e.target.value)}
                   />
                 </div>
               </>
@@ -1213,31 +1113,28 @@ const UpdateCaseStudy = () => {
                       <div key={index} className="summary_card brand_img_item">
                         <div className="summary_cardrow brand_img_row">
                           <div className="col summary_box brand_img_box">
-                            {
-
-                              detail.data_type === "jpg" ||
-                              detail.data_type === "jpeg" ||
-                              detail.data_type === "png" ||
-                              detail.data_type === "gif" ? (
-                                <img
-                                  className="brandimg_icon"
+                            {detail.data_type === "jpg" ||
+                            detail.data_type === "jpeg" ||
+                            detail.data_type === "png" ||
+                            detail.data_type === "gif" ? (
+                              <img
+                                className="brandimg_icon"
+                                src={detail.data_image}
+                              />
+                            ) : detail.data_type === "pdf" ? (
+                              <iframe
+                                src={detail.data_image}
+                                width="50%"
+                                height="50%"
+                              ></iframe>
+                            ) : (
+                              <video width="50%" height="50%" controls>
+                                <source
                                   src={detail.data_image}
+                                  type="video/mp4"
                                 />
-                              ) : detail.data_type === "pdf" ? (
-                                <iframe
-                                  src={detail.data_image}
-                                  width="50%"
-                                  height="50%"
-                                ></iframe>
-                              ) : (
-                                <video width="50%" height="50%" controls>
-                                  <source
-                                    src={detail.data_image}
-                                    type="video/mp4"
-                                  />
-                                </video>
-                              )
-                            }
+                              </video>
+                            )}
                             {/* <img
                               className="brandimg_icon"
                               // src={detail.data_image}
@@ -1377,19 +1274,6 @@ const UpdateCaseStudy = () => {
                                 />
                               </video>
                             )}
-                            {/* <img
-                              className="brandimg_icon"
-                              src={
-                                detail.data_type === "jpg" ||
-                                detail.data_type === "jpeg" ||
-                                detail.data_type === "png" ||
-                                detail.data_type === "gif"
-                                  ? detail.mmc_image
-                                  : detail.data_type === "pdf"
-                                  ? pdf
-                                  : video
-                              }
-                            /> */}
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1515,19 +1399,6 @@ const UpdateCaseStudy = () => {
                                 />
                               </video>
                             )}
-                            {/* <img
-                              className="brandimg_icon"
-                              src={
-                                detail.data_type === "jpg" ||
-                                detail.data_type === "jpeg" ||
-                                detail.data_type === "png" ||
-                                detail.data_type === "gif"
-                                  ? detail.sarcasm_image
-                                  : detail.data_type === "pdf"
-                                  ? pdf
-                                  : video
-                              }
-                            /> */}
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1653,19 +1524,6 @@ const UpdateCaseStudy = () => {
                                 />
                               </video>
                             )}
-                            {/* <img
-                              className="brandimg_icon"
-                              src={
-                                detail.data_type === "jpg" ||
-                                detail.data_type === "jpeg" ||
-                                detail.data_type === "png" ||
-                                detail.data_type === "gif"
-                                  ? detail.no_logo_image
-                                  : detail.data_type === "pdf"
-                                  ? pdf
-                                  : video
-                              }
-                            /> */}
                           </div>
                           <div className="col summary_box brand_img_box">
                             <h4>
@@ -1771,6 +1629,14 @@ const UpdateCaseStudy = () => {
                 onChange={(e) => setRemark(e.target.value)}
               />
             </FormContainer>
+            <Button
+              type="submit"
+              variant="contained"
+              disabled={isLoading}
+              onClick={handleSubmit}
+            >
+          {isLoading ? "Please wait data uploading..." : "Submit"}
+            </Button>
           </div>
         </div>
       </div>
@@ -1800,9 +1666,6 @@ const UpdateCaseStudy = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
-            Cancel
-          </Button> */}
           <Button onClick={handleSave} color="primary">
             Save
           </Button>
@@ -1856,9 +1719,6 @@ const UpdateCaseStudy = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          {/* <Button onClick={() => setIsModalOpen(false)} color="primary">
-            Cancel
-          </Button> */}
           <Button onClick={handleSaveSubCat} color="primary">
             Save
           </Button>

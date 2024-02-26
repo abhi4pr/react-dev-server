@@ -301,6 +301,8 @@ const PreOnboardingUserMaster = () => {
   const [showMandotaryPer, setShowMandotaryPer] = useState(0);
   const [showNonMandotaryPer, setShowNonMandotaryPer] = useState(0);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     const getLocation = () => {
       if (navigator.geolocation) {
@@ -658,6 +660,8 @@ const PreOnboardingUserMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setIsSubmitting(true);
+
     const formData = new FormData();
     formData.append("user_id", id);
     formData.append("user_name", username);
@@ -821,6 +825,8 @@ const PreOnboardingUserMaster = () => {
         console.error("Error Updating Education details:", error);
       }
     }
+
+    setIsSubmitting(false);
 
     // After update send mail
     axios
@@ -1351,10 +1357,10 @@ const PreOnboardingUserMaster = () => {
                 </div>
                 <div className="sidebar_iteminfo">
                   <h3>
-                    Mandotary <span>{showMandotaryPer}%</span>
+                    Mandatory <span>{showMandotaryPer}%</span>
                   </h3>
                   <h3>
-                    Non Mandotary{" "}
+                    Non Mandatory{" "}
                     <span>
                       {showNonMandotaryPer ? showNonMandotaryPer : 0}%
                     </span>
@@ -1381,24 +1387,26 @@ const PreOnboardingUserMaster = () => {
                 <h2 className="policy_tab_name">Policy</h2>
               </div>
 
-              <div
-                className={`sidebar_itembox ${
-                  activeTab == 7 ? "sidebar_item_active" : ""
-                }`}
-                id="sidebarLetterBox"
-                onClick={() => setActiveTab(5)}
-              >
-                <div className="progress-circle progressing p-26">
-                  <div className="progress-circle-border">
-                    <div className="left-half-circle" />
-                    <div className="right-half-circle" />
+              {allUserData.offer_letter_send && (
+                <div
+                  className={`sidebar_itembox ${
+                    activeTab == 7 ? "sidebar_item_active" : ""
+                  }`}
+                  id="sidebarLetterBox"
+                  onClick={() => setActiveTab(5)}
+                >
+                  <div className="progress-circle progressing p-26">
+                    <div className="progress-circle-border">
+                      <div className="left-half-circle" />
+                      <div className="right-half-circle" />
+                    </div>
+                    <div className="progress-circle-content">
+                      <i className="bi bi-book" />
+                    </div>
                   </div>
-                  <div className="progress-circle-content">
-                    <i className="bi bi-book" />
-                  </div>
+                  <h2 className="letter_tab_name">Letter</h2>
                 </div>
-                <h2 className="letter_tab_name">Letter</h2>
-              </div>
+              )}
 
               <div
                 className={`sidebar_itembox ${
@@ -1925,10 +1933,11 @@ const PreOnboardingUserMaster = () => {
                                 !permanentState &&
                                 !permanentCity &&
                                 !permanentPincode &&
+                                isSubmitting &&
                                 true
                               }
                             >
-                              submit
+                              {isSubmitting ? "Submitting...." : "Submit"}
                             </button>
                           </div>
                         </div>
@@ -1950,7 +1959,7 @@ const PreOnboardingUserMaster = () => {
 
                 {activeTab == 4 && <FAQTab />}
 
-                {activeTab == 5 && (
+                {activeTab == 5 && allUserData.offer_letter_send && (
                   <LetterTab
                     allUserData={allUserData}
                     gettingData={gettingData}

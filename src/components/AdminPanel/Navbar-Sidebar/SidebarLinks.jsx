@@ -307,7 +307,8 @@ const SidebarLinks = () => {
                     My Team
                   </Link>
 
-                  {!isWFHDManager && (
+                  {/* {!isWFHDManager && ( */}
+                  {isWFHDHRPayrollManager && (
                     <Link className="collapse-item" to="/admin/salaryWFH">
                       Payout Summary
                     </Link>
@@ -325,6 +326,9 @@ const SidebarLinks = () => {
                   )}
                   <Link className="collapse-item" to="/admin/dispute-overview">
                     Dispute Summary
+                  </Link>
+                  <Link className="collapse-item" to="/admin/total-NDG">
+                    total & NDG
                   </Link>
                 </div>
               </div>
@@ -903,6 +907,22 @@ const SidebarLinks = () => {
                         <li className="nav-item">
                           <Link
                             className="nav-link collapsed"
+                            to="/admin/tempexcusion"
+                            // data-toggle="collapse"
+                            // data-target="#collapsInnerThree"
+                            // aria-expanded="true"
+                            // aria-controls="collapsInnerThree"
+                          >
+                            <span> Temp. Execution</span>
+                          </Link>
+                        </li>
+                      )}
+                    {contextData &&
+                      contextData[45] &&
+                      contextData[45].view_value === 1 && (
+                        <li className="nav-item">
+                          <Link
+                            className="nav-link collapsed"
                             to="/admin/operation/case-study"
                           >
                             <span>Case Study </span>
@@ -1324,6 +1344,11 @@ const SidebarLinks = () => {
                         to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
                       >
                         Pending Payment Request
+                      </Link> <Link
+                        className="collapse-item"
+                        to="/admin/payment-mode-master"
+                      >
+                        Payment Mode Master
                       </Link>
                       <Link
                         className="collapse-item"
@@ -1335,7 +1360,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-alltransaction"
                       >
-                        All Transaction
+                        Purchase Dashboard
                       </Link>
                       <Link
                         className="collapse-item"
@@ -1378,6 +1403,41 @@ const SidebarLinks = () => {
                         to="/admin/accounts-finance-overview"
                       >
                         Account Overview
+                      </Link>
+                    </>
+                  </div>
+                </div>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link collapsed"
+                  data-toggle="collapse"
+                  data-target="#collapsInnerEightFinanceTask"
+                  aria-expanded="true"
+                  aria-controls="collapsInnerEightFinanceTask"
+                >
+                  <span>Task</span>
+                </Link>
+                <div
+                  id="collapsInnerEightFinanceTask"
+                  className="collapse"
+                  aria-labelledby="headingTwo"
+                  // data-parent="#accordionSidebar"
+                >
+                  <div className="bg-white collapse-inner">
+                    <>
+                      <Link
+                        className="collapse-item"
+                        to="/admin/finance-task-pending"
+                      >
+                        Pending
+                      </Link>
+
+                      <Link
+                        className="collapse-item"
+                        to="/admin/finance-task-done"
+                      >
+                        Done
                       </Link>
                     </>
                   </div>

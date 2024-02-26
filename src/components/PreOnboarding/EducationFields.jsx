@@ -16,30 +16,109 @@ const EducationFields = ({
         <div key={index} mb={2}>
           {/* <div className="row"> */}
           {educationDispalyFields.map((key) => {
-            return key === "from_year" || key === "to_year" ? (
-              <div className="form-group">
-                <TextField
-                  key={key}
-                  fieldGrid={3}
-                  type="date"
-                  name={key}
-                  label={educationFieldLabels[key]}
-                  value={detail[key].split("T")[0]}
-                  onChange={(e) => handleEducationDetailsChange(index, e)}
-                />
-              </div>
-            ) : (
-              <div className="form-group">
-                <TextField
-                  key={key}
-                  fieldGrid={3}
-                  name={key}
-                  label={educationFieldLabels[key]}
-                  value={detail[key] || ""}
-                  onChange={(e) => handleEducationDetailsChange(index, e)}
-                />
-              </div>
-            );
+            switch (key) {
+              case "institute_name":
+                return (
+                  <div className="form-group">
+                    <TextField
+                      key={key}
+                      fieldGrid={3}
+                      type="text"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key] || ""}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  </div>
+                );
+
+              case "from_year":
+                return (
+                  <div className="form-group">
+                    <TextField
+                      key={key}
+                      fieldGrid={3}
+                      type="date"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key].split("T")[0]}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  </div>
+                );
+              case "to_year":
+                return (
+                  <div className="form-group">
+                    <TextField
+                      key={key}
+                      fieldGrid={3}
+                      type="date"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key].split("T")[0]}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  </div>
+                );
+
+              case "percentage":
+                return (
+                  <div className="form-group">
+                    <TextField
+                      key={key}
+                      fieldGrid={3}
+                      type="number"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key] || ""}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  </div>
+                );
+
+              case "stream":
+                return (
+                  <div className="form-group">
+                    <TextField
+                      key={key}
+                      fieldGrid={3}
+                      type="text"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key] || ""}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  </div>
+                );
+              case "specialization":
+                return (
+                  <div className="form-group">
+                    <TextField
+                      key={key}
+                      fieldGrid={3}
+                      type="text"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key] || ""}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  </div>
+                );
+              case "title":
+                return (
+                  <div className="form-group">
+                    <TextField
+                      key={key}
+                      fieldGrid={3}
+                      type="text"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key] || ""}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  </div>
+                );
+            }
           })}
           {educationDetails?.length > 1 && (
             <IconButton onClick={() => handleRemoveEducationDetails(index)}>

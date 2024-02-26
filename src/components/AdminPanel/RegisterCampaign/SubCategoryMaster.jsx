@@ -50,12 +50,8 @@ export default function SubCategoryMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button
-          color="error"
-          variant="outlined"
-          onClick={handleClick}
-        >
-         create SubCategory
+        <Button color="error" variant="outlined" onClick={handleClick}>
+          create SubCategory
         </Button>
       </GridToolbarContainer>
     );
@@ -73,7 +69,7 @@ export default function SubCategoryMaster() {
   const handleSave = (e) => {
     e.preventDefault();
     axios
-      .post(baseUrl+"projectxSubCategory", postData)
+      .post(baseUrl + "projectxSubCategory", postData)
       .then((response) => {
         if (response.data.success === false) {
           toastError(response.data.message);
@@ -88,7 +84,6 @@ export default function SubCategoryMaster() {
       .catch((error) => {
         console.error("Error saving data:", error);
         toastError("Add Properly");
-
       });
     setIsModalOpen(false);
   };
@@ -97,18 +92,16 @@ export default function SubCategoryMaster() {
 
   // get api ------
   const getData = () => {
-    axios
-      .get(baseUrl+"projectxSubCategory")
-      .then((res) => {
-        console.log(res.data);
-        const sortedData = res.data.data.sort(
-          (a, b) => b.sub_category_id - a.sub_category_id
-        );
-        setRows(sortedData);
-      });
+    axios.get(baseUrl + "projectxSubCategory").then((res) => {
+      console.log(res.data);
+      const sortedData = res.data.data.sort(
+        (a, b) => b.sub_category_id - a.sub_category_id
+      );
+      setRows(sortedData);
+    });
   };
   useEffect(() => {
-    axios.get(baseUrl+"projectxCategory").then((res) => {
+    axios.get(baseUrl + "projectxCategory").then((res) => {
       console.log(res.data.data);
       setCategory(res.data.data);
     });
@@ -118,7 +111,7 @@ export default function SubCategoryMaster() {
   // put api ------
   const handlePutData = () => {
     axios
-      .put(`${baseUrl}`+`projectxSubCategory`, {
+      .put(`${baseUrl}` + `projectxSubCategory`, {
         sub_category_id: editData.sub_category_id,
         sub_category_name: editData.sub_category_name,
         category_id: editData.category_id,
@@ -132,7 +125,7 @@ export default function SubCategoryMaster() {
           toastAlert("Update successfully");
         }
       })
-      
+
       .then(() => {
         setIsPutOpen(false);
         getData();
@@ -161,9 +154,7 @@ export default function SubCategoryMaster() {
   const handleConfirmDelete = () => {
     if (itemToDeleteId) {
       axios
-        .delete(
-          `${baseUrl}`+`projectxSubCategory/${itemToDeleteId}`
-        )
+        .delete(`${baseUrl}` + `projectxSubCategory/${itemToDeleteId}`)
         .then(() => {
           getData();
           console.log("Data deleted successfully");
@@ -325,14 +316,14 @@ export default function SubCategoryMaster() {
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
-                options={category.map((option) => ({
+                options={category?.map((option) => ({
                   label: option.category_name,
                   value: option.category_id,
                 }))}
                 onChange={(event, value) => {
                   setPostData((prev) => ({
                     ...prev,
-                    category_id: value.value,
+                    category_id: value ? value.value : "",
                   }));
                 }}
                 sx={{ width: 300 }}
@@ -390,7 +381,7 @@ export default function SubCategoryMaster() {
                 onChange={(event, value) => {
                   setEditData((prev) => ({
                     ...prev,
-                    category_id: value.value,
+                    category_id: value ? value.value : "",
                   }));
                 }}
                 // sx={{ width: 300 }}
@@ -404,7 +395,7 @@ export default function SubCategoryMaster() {
                 label="sub Category"
                 name="sub_category_name"
                 type="text"
-                value={editData.sub_category_name}
+                value={editData?.sub_category_name}
                 onChange={(e) =>
                   setEditData((prev) => ({
                     ...prev,
@@ -441,8 +432,11 @@ export default function SubCategoryMaster() {
           >
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="error"             variant="outlined"
->
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="outlined"
+          >
             Delete
           </Button>
         </DialogActions>

@@ -16,7 +16,6 @@ import { baseUrl } from "../../../utils/config";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
 
-
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -48,6 +47,8 @@ export default function PurchaseManagementAllTransaction() {
   // const [sameVendorDialog, setSameVendorDialog] = useState(false);
   // const [sameVendorData, setSameVendorData] = useState([]);
   const [uniqueVendorCount, setUniqueVendorCount] = useState(0);
+  const [withInvoiceCount, setWithInvoiceCount] = useState(0);
+  const [withoutInvoiceCount, setWithoutInvoiceCount] = useState(0);
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -70,6 +71,13 @@ export default function PurchaseManagementAllTransaction() {
           let y = res.data.body;
           setData(y);
           setFilterData(y);
+          // Filter data to find counts
+          const withInvoiceImage = y.filter((item) => item.invc_img.length > 0);
+          const withoutInvoiceImage = y.filter(
+            (item) => item.invc_img.length === 0
+          );
+          setWithInvoiceCount(withInvoiceImage.length);
+          setWithoutInvoiceCount(withoutInvoiceImage.length);
           // setPendingRequestCount(y.length);
           const uniqueVendors = new Set(y.map((item) => item.vendor_name));
           setUniqueVendorCount(uniqueVendors.size);
@@ -294,6 +302,7 @@ export default function PurchaseManagementAllTransaction() {
   useEffect(() => {
     callApi();
   }, []);
+
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
     const day = String(date1.getDate()).padStart(2, "0");
@@ -447,6 +456,14 @@ export default function PurchaseManagementAllTransaction() {
     0
   );
   // ================================================================
+  // Calculate GST hold amount and count
+  const gstHoldData = data.filter((item) => item.gst_amount); // Assuming 'gstApplied' is a boolean field indicating if GST is applied
+  const gstHoldCount = gstHoldData.length;
+  const gstHoldAmount = gstHoldData.reduce(
+    (total, item) => total + parseFloat(item.gst_amount),
+    0
+  );
+
   // same Vender columns:-
   const sameVenderColumns = [
     {
@@ -827,10 +844,19 @@ export default function PurchaseManagementAllTransaction() {
       },
     },
   ];
+  console.log(
+    filterData,
+    "filterData>>",
+    nodeData,
+    "+++++++++nodeData+++++++++++",
+    phpData,
+    "phpdata>>"
+  );
+
   return (
     <div>
       <FormContainer
-        mainTitle="All Transaction"
+        mainTitle="Purchase Dashboard"
         link="/admin/finance-pruchasemanagement-alltransaction"
         uniqueVendorCount={uniqueVendorCount}
         totalRequestAmount={totalRequestAmount}
@@ -950,83 +976,6 @@ export default function PurchaseManagementAllTransaction() {
         />
       </Dialog>
       <div className="row">
-        <div className="card col-4">
-          <div className="card-header h4">Pending</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total Requested Amount :-{" "}
-              {data.length > 0
-                ? data
-                    .filter((item) => item.payment_approval_status == 0)
-                    .reduce((total, currentItem) => {
-                      return total + currentItem.request_amount * 1;
-                    }, 0)
-                : ""}
-            </p>
-            <p className="fs-6 lead ">
-              {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
-                >
-                  Click Here
-                </Link>
-              }
-            </p>
-          </div>{" "}
-        </div>{" "}
-        <div className="card col-4">
-          <div className="card-header h4">Done</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total Requested Amount :-{" "}
-              {data.length > 0
-                ? data
-                    .filter((item) => item.status == 1)
-                    .reduce((total, currentItem) => {
-                      return total + currentItem.request_amount * 1;
-                    }, 0)
-                : ""}
-            </p>
-            <p className="fs-6 lead ">
-              {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pruchasemanagement-paymentdone"
-                >
-                  Click Here
-                </Link>
-              }
-            </p>
-          </div>{" "}
-        </div>{" "}
-        <div className="card col-4">
-          <div className="card-header h4">Discard</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total Requested Amount :-{" "}
-              {data.length > 0
-                ? data
-                    .filter((item) => item.status == 0)
-                    .reduce((total, currentItem) => {
-                      return total + currentItem.request_amount * 1;
-                    }, 0)
-                : ""}
-            </p>
-            <p className="fs-6 lead ">
-              {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pruchasemanagement-discardpayment"
-                >
-                  Click Here
-                </Link>
-              }
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="row">
         <div className="col-md-3">
           <div className="form-group">
             <label>Vendor Name</label>
@@ -1138,35 +1087,224 @@ export default function PurchaseManagementAllTransaction() {
           </Button>
         </div>
       </div>
-      <DataGrid
-        rows={filterData}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        disableSelectionOnClick
-        autoHeight
-        disableColumnMenu
-        disableColumnSelector
-        disableColumnFilter
-        disableColumnReorder
-        disableColumnResize
-        disableMultipleColumnsSorting
-        components={{
-          Toolbar: GridToolbar,
-        }}
-        componentsProps={{
-          toolbar: {
-            value: search,
-            onChange: (event) => setSearch(event.target.value),
-            placeholder: "Search",
-            clearSearch: true,
-            clearSearchAriaLabel: "clear",
-          },
-        }}
-        getRowId={(row) => filterData.indexOf(row)}
-      />
-
-{paymentHistory && (
+      <div className="row">
+        <div className="card col-2 ms-2">
+          <div className="card-header h4  fs-5">Pending</div>
+          <div className="card-body">
+            <p className="fs-6 lead ">
+              Total Requested Amount :-{" "}
+              {/* {filterData.length > 0
+                ? filterData
+                    .filter((item) => item.status == 0)
+                    .reduce((total, currentItem) => {
+                      return total + currentItem.request_amount * 1;
+                    }, 0)
+                : ""} */}
+              {filterData.length > 0
+                ? filterData
+                    .filter((item) => {
+                      return !nodeData.some(
+                        (item2) => item.request_id == item2.request_id
+                      );
+                    })
+                    .reduce((total, currentItem) => {
+                      return total + parseFloat(currentItem.request_amount);
+                    }, 0)
+                : ""}
+            </p>
+            <p className="fs-6 lead ">
+              {
+                <Link
+                  className="link-primary"
+                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+                >
+                  Click Here
+                </Link>
+              }
+            </p>
+          </div>{" "}
+        </div>{" "}
+        <div className="card col-2 ms-2">
+          <div className="card-header h4  fs-5">Done</div>
+          <div className="card-body">
+            <p className="fs-6 lead ">
+              Total Requested Amount :-{" "}
+              {/* {filterData.length > 0
+                ? filterData
+                    .filter((item) => item.status == 1)
+                    .reduce((total, currentItem) => {
+                      return total + currentItem.request_amount * 1;
+                    }, 0)
+                : ""} */}
+              {/* {filterData.length > 0
+                ? filterData
+                    .filter((item) => {
+                      // Adjust condition to filter for paid requests (assuming status code for paid requests is 1)
+                      return (
+                        parseFloat(item.status) === 1 &&
+                        !nodeData.some(
+                          (item2) => item.request_id === item2.request_id
+                        )
+                      );
+                      // This condition checks if the item is paid and if its request_id is not found in nodeData
+                    })
+                    .reduce((total, currentItem) => {
+                      return total + parseFloat(currentItem.request_amount);
+                    }, 0)
+                : ""} */}
+              {filterData.length > 0
+                ? filterData
+                    .filter(
+                      (item) =>
+                        parseInt(item.status) === 1 &&
+                        !nodeData.some(
+                          (item2) => item.request_id === item2.request_id
+                        )
+                    )
+                    .reduce(
+                      (total, currentItem) =>
+                        total + parseFloat(currentItem.request_amount),
+                      0
+                    )
+                : 0}
+            </p>
+            <p className="fs-6 lead ">
+              {
+                <Link
+                  className="link-primary"
+                  to="/admin/finance-pruchasemanagement-paymentdone"
+                >
+                  Click Here
+                </Link>
+              }
+            </p>
+          </div>{" "}
+        </div>{" "}
+        <div className="card col-2 ms-2">
+          <div className="card-header h4  fs-5">Discard</div>
+          <div className="card-body">
+            <p className="fs-6 lead ">
+              Total Requested Amount :-{" "}
+              {/* {filterData.length > 0
+                ? filterData
+                    .filter((item) => item.status == 0)
+                    .reduce((total, currentItem) => {
+                      return total + currentItem.request_amount * 1;
+                    }, 0)
+                : ""} */}
+              {filterData.length > 0
+                ? filterData
+                    .filter((item) => {
+                      // Adjust condition to filter for paid requests (assuming status code for paid requests is 1)
+                      return (
+                        parseFloat(item.status) === 2 &&
+                        !nodeData.some(
+                          (item2) => item.request_id === item2.request_id
+                        )
+                      );
+                      // This condition checks if the item is paid and if its request_id is not found in nodeData
+                    })
+                    .reduce((total, currentItem) => {
+                      return total + parseFloat(currentItem.request_amount);
+                    }, 0)
+                : ""}
+            </p>
+            <p className="fs-6 lead ">
+              {
+                <Link
+                  className="link-primary"
+                  to="/admin/finance-pruchasemanagement-discardpayment"
+                >
+                  Click Here
+                </Link>
+              }
+            </p>
+          </div>
+        </div>
+        <div className="card col-2 ms-2">
+          <div className="card-header h4  fs-5">With Incoive</div>
+          <div className="card-body">
+            <p className="fs-6 lead ">
+              With Invoice Count :- {withInvoiceCount}
+            </p>
+            <p className="fs-6 lead ">
+              {
+                <Link
+                  className="link-primary"
+                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+                >
+                  Click Here
+                </Link>
+              }
+            </p>
+          </div>
+        </div>
+        <div className="card col-2 ms-2">
+          <div className="card-header h4 fs-5">Without Invoive</div>
+          <div className="card-body">
+            <p className="fs-6 lead ">
+              Without Invoice Count :- {withoutInvoiceCount}
+            </p>
+            <p className="fs-6 lead ">
+              {
+                <Link
+                  className="link-primary"
+                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+                >
+                  Click Here
+                </Link>
+              }
+            </p>
+          </div>
+        </div>
+        <div className="card col-2 ms-2">
+          GST Hold{" "}
+          <div className="card-body">
+            <p className="fs-6 lead ">GST Hold Amount :- {gstHoldAmount}</p>
+            <p className="fs-6 lead ">GST Hold Count :- {gstHoldCount}</p>
+            <p className="fs-6 lead ">
+              {
+                <Link
+                  className="link-primary"
+                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+                >
+                  Click Here
+                </Link>
+              }
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="mt-3">
+        <DataGrid
+          rows={filterData}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => filterData.indexOf(row)}
+        />
+      </div>
+      {paymentHistory && (
         <PaymentHistoryDialog
           handleClose={setPaymentHistory}
           paymentDetailColumns={paymentDetailColumns}

@@ -1055,13 +1055,6 @@ export default function PaymentDone() {
         />
       )}
 
-      {paymentHistory && (
-        <PaymentHistoryDialog
-          handleClose={setPaymentHistory}
-          paymentDetailColumns={paymentDetailColumns}
-          filterData={historyData}
-        />
-      )}
     </div>
   );
 }

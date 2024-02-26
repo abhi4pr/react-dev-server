@@ -81,7 +81,7 @@ const HRTemplateOverview = () => {
                   />
                   <h3>Template No: {d.temp_id}</h3>
                   <div className="d-flex">
-                    <h3>Assigned: {selectedTemplateUsers(d.temp_id)?.count}</h3>
+                    <h3>Assigned: {selectedTemplateUsers(d.temp_id)?.count ? selectedTemplateUsers(d.temp_id)?.count : 0}</h3>
                     <i
                       className="bi bi-eye"
                       onClick={() => {

@@ -56,6 +56,9 @@ const LoginHistory = () => {
   }, [search]);
 
   function formatTimestamp(timestamp) {
+    if(timestamp == null){
+      return 'N/A'
+    }
     const date = new Date(timestamp);
 
     const year = date.getFullYear();

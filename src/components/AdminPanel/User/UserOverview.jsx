@@ -281,7 +281,7 @@ const UserOverview = () => {
     },
     {
       field: "user_name",
-      headerName: "User Name",
+      headerName: "Employe Name",
       width: 120,
       renderCell: (params) => (
         <Link
@@ -296,14 +296,7 @@ const UserOverview = () => {
     {
       field: "emp_id",
       headerName: "Employee ID",
-      width: 100,
-      sortable: true,
-    },
-    { field: "Role_name", headerName: "Role", width: 110, sortable: true },
-    {
-      field: "percentage_filled",
-      headerName: "Profile Status",
-      width: 110,
+      width: 120,
       sortable: true,
     },
     {
@@ -313,9 +306,9 @@ const UserOverview = () => {
       sortable: true,
     },
     {
-      field: "designation_name",
-      headerName: "Designation",
-      width: 180,
+      field: "percentage_filled",
+      headerName: "Profile Status",
+      width: 110,
       sortable: true,
     },
     {
@@ -325,11 +318,19 @@ const UserOverview = () => {
       sortable: true,
     },
     {
+      field: "designation_name",
+      headerName: "Designation",
+      width: 180,
+      sortable: true,
+    },
+
+    {
       field: "job_type",
       headerName: "Job Type",
       width: 120,
       sortable: true,
     },
+    { field: "PersonalNumber", headerName: "Personal Contact", width: 150 },
     { field: "user_email_id", headerName: "Email", width: 230 },
     {
       field: "user_status",

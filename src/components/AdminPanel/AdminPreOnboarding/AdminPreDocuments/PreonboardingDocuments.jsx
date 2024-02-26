@@ -83,11 +83,13 @@ const PreonboardingDocuments = () => {
       >
         <FieldContainer
           label="Document Type"
+          astric
           value={documentType}
           onChange={(e) => setDocumentType(e.target.value)}
         />
         <FieldContainer
           label="Period (days)"
+          astric
           type="number"
           fieldGrid={3}
           value={period}
@@ -96,6 +98,7 @@ const PreonboardingDocuments = () => {
 
         <div className="form-group col-3">
           <label className="form-label">Priority</label>
+          <sup style={{ color: "red" }}>*</sup>
           <Select
             value={selectOptions.find((option) => option.value === priority)}
             label={priority}
@@ -116,15 +119,9 @@ const PreonboardingDocuments = () => {
         <FieldContainer
           fieldGrid={3}
           label="Document Number"
+          astric
           value={documentNumber}
           onChange={(e) => setDocumentNumber(e.target.value)}
-        />
-
-        <FieldContainer
-          Tag="textarea"
-          label="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
         />
 
         <div className="form-group col-6">
@@ -151,6 +148,13 @@ const PreonboardingDocuments = () => {
             required
           />
         </div>
+        <FieldContainer
+          Tag="textarea"
+          astric
+          label="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
       </FormContainer>
     </>
   );

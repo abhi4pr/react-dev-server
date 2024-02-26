@@ -20,6 +20,8 @@ const WFHDBankUpdate = () => {
   const [bankAccountNumber, setBankAccountNumber] = useState("");
   const [beneficiary, setBeneficiary] = useState("");
   const [IFSC, setIFSC] = useState("");
+  const [panNo, setPanNo] = useState("");
+  const [isValidPAN, setIsValidPAN] = useState(true);
   //--------------------Bank Info State End
 
   //--------------------Address Info State Start
@@ -27,11 +29,41 @@ const WFHDBankUpdate = () => {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [pincode, setPincode] = useState("");
+  const [upi, setUpi] = useState("");
   //--------------------Address Info State End
 
   useEffect(() => {
     axios.get(baseUrl + "get_all_cities").then((res) => {
       setCityData(res.data.data);
+    });
+  }, []);
+
+  useEffect(() => {
+    axios.get(`${baseUrl}` + `get_single_user/${user_id}`).then((res) => {
+      const fetchedData = res.data;
+      const {
+        bank_name,
+        account_no,
+        ifsc_code,
+        permanent_city,
+        permanent_address,
+        permanent_state,
+        beneficiary,
+        permanent_pin_code,
+        pan_no,
+        upi_Id,
+      } = fetchedData;
+
+      setBankName(bank_name);
+      setBankAccountNumber(account_no);
+      setIFSC(ifsc_code);
+      setCity(permanent_city);
+      setAddress(permanent_address);
+      setState(permanent_state);
+      setBeneficiary(beneficiary);
+      setPincode(permanent_pin_code);
+      setPanNo(pan_no);
+      setUpi(upi_Id);
     });
   }, []);
 
@@ -58,12 +90,12 @@ const WFHDBankUpdate = () => {
         account_no: bankAccountNumber,
         ifsc_code: IFSC,
         beneficiary: beneficiary,
-        permanent_city: city?.value ? city.value : "",
+        permanent_city: city,
         permanent_address: address,
         permanent_state: state,
         permanent_pin_code: Number(pincode),
-
-        // bank_type: banktype,
+        pan_no: panNo,
+        upi_Id: upi,
       });
 
       navigate("/admin/wfhd-overview");
@@ -71,7 +103,21 @@ const WFHDBankUpdate = () => {
     } catch (error) {
       console.error("Error submitting documents", error);
     } finally {
+      console.log("");
     }
+  };
+  const handlePANChange = (e) => {
+    const inputPAN = e.target.value.toUpperCase();
+    setPanNo(inputPAN);
+
+    // Validate PAN when input changes
+    const isValid = validatePAN(inputPAN);
+    setIsValidPAN(isValid);
+  };
+  // Function to validate PAN
+  const validatePAN = (pan) => {
+    const panPattern = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    return panPattern.test(pan);
   };
 
   return (
@@ -108,7 +154,6 @@ const WFHDBankUpdate = () => {
               value={bankAccountNumber}
               onChange={(e) => setBankAccountNumber(e.target.value)}
             />
-
             <FieldContainer
               astric={true}
               label="IFSC"
@@ -118,35 +163,62 @@ const WFHDBankUpdate = () => {
             />
 
             <FieldContainer
+              label="PAN No"
+              fieldGrid={3}
+              value={panNo}
+              onChange={handlePANChange}
+            />
+            {!isValidPAN && <p style={{ color: "red" }}>PAN is not valid</p>}
+            <FieldContainer
               label="Beneficiary"
               value={beneficiary}
               fieldGrid={3}
               onChange={(e) => setBeneficiary(e.target.value)}
             />
-
             <FieldContainer
               label="Address"
               fieldGrid={3}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
             />
-
             <div className="form-group col-3">
               <label className="form-label">City</label>
-              <Select
+              {/* <Select
                 options={cityData.map((city) => ({
                   value: city.city_name,
                   label: city.city_name,
                 }))}
                 onChange={setCity}
                 required={true}
-                value={city}
+                value={{
+                  value: city,
+                  label:
+                    cityData.find((gotCity) => gotCity.city_name == city)
+                      ?.city_name || "",
+                }}
+                placeholder="Select a city..."
+                isClearable
+              /> */}
+              <Select
+                options={cityData?.map((city) => ({
+                  value: city.city_name,
+                  label: city.city_name,
+                }))}
+                onChange={(e) => setCity(e ? e.value : "")}
+                required={true}
+                value={{
+                  value: city,
+                  label:
+                    cityData.find((gotCity) => gotCity.city_name == city)
+                      ?.city_name || "",
+                }}
                 placeholder="Select a city..."
                 isClearable
               />
             </div>
             <div className="form-group col-3">
               <IndianStates
+                newValue={state}
                 onChange={(option) => setState(option ? option.value : null)}
               />
             </div>
@@ -163,6 +235,14 @@ const WFHDBankUpdate = () => {
                   setPincode(value);
                 }
               }}
+            />
+            <FieldContainer
+              label="Upi Id"
+              type="text"
+              astric={false}
+              fieldGrid={3}
+              maxLength={6}
+              value={upi}
             />
           </div>
 

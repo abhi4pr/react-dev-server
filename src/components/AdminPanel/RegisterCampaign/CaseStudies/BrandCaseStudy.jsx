@@ -497,10 +497,26 @@ const BrandCaseStudy = () => {
       } else if (compignPurpose == "") {
         toastError("please Provide campaign Purpose ");
         return;
-      } else if (NumOfPost == "N/A" || NumOfPost == "") {
+      } else if (NumOfPost == "") {
         toastError("please Provide Number of Post ");
         return;
+      } else if (NumOfReach == "") {
+        toastError("please Provide Number of Reach ");
+        return;
+      } else if (NumOfImpression == "") {
+        toastError("please Provide Number of Impression ");
+        return;
+      } else if (NumOfEngagement == "") {
+        toastError("please Provide Number of Engagement ");
+        return;
+      } else if (NumOfViews == "") {
+        toastError("please Provide Number of Views ");
+        return;
+      } else if (NumOfStoryViews == "") {
+        toastError("please Provide Number of Story Views ");
+        return;
       }
+
       if (!dataBrand?._id) {
         toastError("please Provide Brand ");
       } else {
@@ -1044,7 +1060,9 @@ const BrandCaseStudy = () => {
             </div>
 
             <div className="form-group col-xl-4">
-              <label className="form-label">Number of Reach</label>
+              <label className="form-label">
+                Number of Reach <sup style={{ color: "red" }}>*</sup>
+              </label>
               <input
                 className="form-control"
                 value={NumOfReach}
@@ -1058,7 +1076,9 @@ const BrandCaseStudy = () => {
               />
             </div>
             <div className="form-group col-xl-4">
-              <label className="form-label">Number of Impression</label>
+              <label className="form-label">
+                Number of Impression <sup style={{ color: "red" }}>*</sup>{" "}
+              </label>
               <input
                 className="form-control"
                 value={NumOfImpression}
@@ -1070,7 +1090,9 @@ const BrandCaseStudy = () => {
               />
             </div>
             <div className="form-group col-xl-4">
-              <label className="form-label">Number of Engagement</label>
+              <label className="form-label">
+                Number of Engagement <sup style={{ color: "red" }}>*</sup>
+              </label>
               <input
                 className="form-control"
                 value={NumOfEngagement}
@@ -1082,7 +1104,9 @@ const BrandCaseStudy = () => {
               />
             </div>
             <div className="form-group col-xl-4">
-              <label className="form-label">Number of Views</label>
+              <label className="form-label">
+                Number of Views <sup style={{ color: "red" }}>*</sup>{" "}
+              </label>
               <input
                 className="form-control"
                 value={NumOfViews}
@@ -1094,7 +1118,9 @@ const BrandCaseStudy = () => {
               />
             </div>
             <div className="form-group col-xl-4">
-              <label className="form-label">Number of Story Views</label>
+              <label className="form-label">
+                Number of Story Views <sup style={{ color: "red" }}>*</sup>
+              </label>
               <input
                 className="form-control"
                 value={NumOfStoryViews}
@@ -1222,6 +1248,7 @@ const BrandCaseStudy = () => {
           </div>
 
           <div className="summary_cards brand_img_list">
+            {mmcDetails.length > 0 && <h3 className="lead fs-4">MMC </h3>}
             {/* {mmcDetails.length > 0 && <h3 className="lead fs-4">MMC </h3>}
             {mmcDetails.map((detail, index) => (
               <div key={index} className="summary_card brand_img_item">
@@ -1569,9 +1596,20 @@ const BrandCaseStudy = () => {
             {isLoading ? "Please wait data uploading..." : "Submit"}
           </button> */}
         </FormContainer>
-        <Button variant="contained" onClick={handleSubmit}>
-          Submit
+
+        <Button
+          type="submit"
+          variant="contained"
+          disabled={isLoading}
+          onClick={handleSubmit}
+          // style={{ width: "20%", marginLeft: "1%" }}
+        >
+          {isLoading ? "Please wait data uploading..." : "Submit"}
         </Button>
+
+        {/* <Button variant="contained" onClick={handleSubmit}>
+          Submit
+        </Button> */}
         {openReviewDisalog.open && (
           <ImgDialogBox
             openReviewDisalog={openReviewDisalog}

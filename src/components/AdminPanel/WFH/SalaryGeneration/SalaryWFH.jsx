@@ -25,6 +25,7 @@ import FieldContainer from "../../FieldContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { baseUrl } from "../../../../utils/config";
 import { downloadSelectedInvoices } from "./ZipGenerator";
+import BankExcelConverter from "../../../../utils/BankExcelConverter";
 
 const images = [
   { temp_id: 1, image: image1 },
@@ -36,7 +37,7 @@ const images = [
 
 const SalaryWFH = () => {
   const location = useLocation();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const { contextData, ContextDept, RoleIDContext } = useAPIGlobalContext();
 
   const [allWFHUsers, setAllWFHUsers] = useState(0);
@@ -451,7 +452,9 @@ const SalaryWFH = () => {
       handleSubmit();
       toastAlert("Submitted success");
     } catch (error) {
-      console.error("Error submitting data:", error);
+      // alert('ssssss');
+      // console.error("Error submitting data:", error);
+      toastError('Billing header not set for this department')
     }
   };
 
@@ -903,7 +906,7 @@ const SalaryWFH = () => {
     },
     {
       name: "Present Days",
-      cell: (row) => 30 - Number(row.noOfabsent),
+      cell: (row) => Number(row.present_days) - Number(row.noOfabsent),
     },
     {
       name: "Total Salary",
@@ -1130,7 +1133,7 @@ const SalaryWFH = () => {
               )}
             <button
               className="btn btn-primary mr-3"
-              onClick={handleAllDepartmentSalaryExcel}
+              onClick={()=>BankExcelConverter(salaryMonthYearData)}
             >
               Export Excel
             </button>

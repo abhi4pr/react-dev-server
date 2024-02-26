@@ -42,6 +42,7 @@ import familyRelationList from "../../../assets/js/familyRelationList";
 import OccupationList from "../../../assets/js/OccupationList";
 import IndianBankList from "../../../assets/js/IndianBankList";
 import { ToastContainer } from "react-toastify";
+import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -95,6 +96,7 @@ const initialEducationDetailsGroup = {
 const UserMaster = () => {
   const whatsappApi = WhatsappAPI();
   const { toastAlert, toastError } = useGlobalContext();
+  const [userResID, setUserResID] = useState("");
 
   // Genral Information Tab-------------------Start------------------------------------
   // ---------------------Prsonal Info State Start
@@ -134,6 +136,8 @@ const UserMaster = () => {
   const [validEmail, setValidEmail] = useState(true);
   const [contact, setContact] = useState(""); //official contact
   const [loginId, setLoginId] = useState("");
+  const [lastIndexUsed, setLastIndexUsed] = useState(-1);
+
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("Active");
   const [joiningDate, setJoiningDate] = useState("");
@@ -174,6 +178,7 @@ const UserMaster = () => {
   const [bankAccountNumber, setBankAccountNumber] = useState("");
   const [beneficiary, setBeneficiary] = useState("");
   const [IFSC, setIFSC] = useState("");
+  const [banktype, setBankType] = useState("");
 
   //--------------------Bank Info State End
 
@@ -199,6 +204,7 @@ const UserMaster = () => {
   const [uid, setUID] = useState("");
 
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+  const [isGeneralSubmitted, setIsGeneralSubmitted] = useState(false);
 
   const [documents, setDocuments] = useState([]);
   const [familyDetails, setFamilyDetails] = useState([
@@ -215,7 +221,6 @@ const UserMaster = () => {
   // const [validAlternateContact, setValidAlternateContact] = useState(false);
   // const [validAlternateContact1, setValidAlternateContact1] = useState(false);
 
-  const [banktype, setBankType] = useState("Own");
   const [familyValidationErrors, setFamilyValidationErrors] = useState({});
 
   const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState({
@@ -239,24 +244,26 @@ const UserMaster = () => {
     currentAddress: false,
     currentCity: false,
     currentState: false,
-    currentPincodepincode: false,
+    currentPincode: false,
     joiningDate: false,
     status: false,
     bankDetails: false,
+    email: false,
+    banktype: false,
   });
   const [jobTypeData, setJobTypeData] = useState([]);
 
   const [loading, setLoading] = useState(false);
 
-  // const higestQualificationData = [
-  //   "10th",
-  //   "12th",
-  //   "Diploma",
-  //   "Graduation",
-  //   "Post Graduation",
-  //   "Other",
-  // ];
-  // const bankTypeData = ["Own", "Family"];
+  const higestQualificationData = [
+    "10th",
+    "12th",
+    "Diploma",
+    "Graduation",
+    "Post Graduation",
+    "Other",
+  ];
+  const bankTypeData = ["Permanent A/C", "Current A/C"];
   const statusData = ["Active", "Exit", "On Leave", "Resign"];
   const genderData = ["Male", "Female", "Other"];
   const bloodGroupData = [
@@ -269,29 +276,6 @@ const UserMaster = () => {
     "O+ (O Positive)",
     "O- (O Negetive)",
   ];
-
-  // const familyRelations = [
-  //   "Brother",
-  //   "Sister",
-  //   "Mother",
-  //   "Father",
-  //   "Son",
-  //   "Daughter",
-  //   "Aunt",
-  //   "Uncle",
-  //   "Cousin",
-  //   "Grandmother",
-  //   "Grandfather",
-  //   "Nephew",
-  //   "Niece",
-  //   "Stepmother",
-  //   "Stepfather",
-  //   "Stepson",
-  //   "Stepdaughter",
-  //   "Half-brother",
-  //   "Half-sister",
-  //   // Add more relations as needed
-  // ];
 
   const castOption = ["General", "OBC", "SC", "ST"];
   const maritialStatusData = ["Single", "Married"]; //,"Divorced","Widowed","Separated"
@@ -328,9 +312,9 @@ const UserMaster = () => {
       // setAllUsersSittings(userSitting);
     });
 
-    axios.get(baseUrl + "get_all_designations").then((res) => {
-      setDesignationData(res.data.data);
-    });
+    // axios.get(baseUrl + "get_all_designations").then((res) => {
+    //   setDesignationData(res.data.data);
+    // });
 
     axios.get(baseUrl + "get_all_job_types").then((res) => {
       setJobTypeData(res.data.data);
@@ -346,6 +330,16 @@ const UserMaster = () => {
       setHobbiesData(res.data.data);
     });
   }, []);
+
+  useEffect(() => {
+    if (department) {
+      axios
+        .get(baseUrl + `get_all_designations_by_deptId/${department}`)
+        .then((res) => {
+          setDesignationData(res.data.data);
+        });
+    }
+  }, [department]);
   // new-----------------------------------------------------
   const handleChange = (selectedOptions) => {
     setHobbies(selectedOptions || []);
@@ -375,33 +369,47 @@ const UserMaster = () => {
   const [progress, setProgress] = useState(0);
   useEffect(() => {
     const fields = [
-      jobType,
-      department,
-      subDepartment,
-      designation,
-      reportL1,
+      username,
+      selectedImage,
       personalEmail,
       personalContact,
       alternateContact,
+      gender,
+      dateOfBirth,
+      age,
+      nationality,
+      maritialStatus,
+      jobType,
+      department,
+      designation,
+      reportL1,
+      reportL2,
+      reportL3,
+      roles,
+      email,
+      contact,
       loginId,
       password,
-      speakingLanguage,
-      selectedImage,
-      gender,
-      nationality,
-      dateOfBirth,
-      bloodGroup,
-      maritialStatus,
+      status,
+      joiningDate,
+      currentAddress,
+      currentCity,
+      currentState,
+      currentState,
+      currentPincode,
       address,
       city,
       state,
       pincode,
-      joiningDate,
-      status,
+      bloodGroup,
+      hobbies,
+      speakingLanguage,
+      cast,
       bankName,
       bankAccountNumber,
-      username,
-      roles,
+      beneficiary,
+      IFSC,
+      banktype,
     ];
     const filledFields = fields.filter((field) => field).length;
     const progressPercentage = (filledFields / fields.length) * 100;
@@ -413,33 +421,47 @@ const UserMaster = () => {
       // toast.info(`Progress: ${progressPercentage}%`, { position: "top-right" });
     }
   }, [
-    jobType,
-    department,
-    subDepartment,
-    designation,
-    reportL1,
+    username,
+    selectedImage,
     personalEmail,
     personalContact,
     alternateContact,
+    gender,
+    dateOfBirth,
+    age,
+    nationality,
+    maritialStatus,
+    jobType,
+    department,
+    designation,
+    reportL1,
+    reportL2,
+    reportL3,
+    roles,
+    email,
+    contact,
     loginId,
     password,
-    speakingLanguage,
-    selectedImage,
-    gender,
-    nationality,
-    dateOfBirth,
-    bloodGroup,
-    maritialStatus,
+    status,
+    joiningDate,
+    currentAddress,
+    currentCity,
+    currentState,
+    currentState,
+    currentPincode,
     address,
     city,
     state,
     pincode,
-    joiningDate,
-    status,
+    bloodGroup,
+    hobbies,
+    speakingLanguage,
+    cast,
     bankName,
     bankAccountNumber,
-    username,
-    roles,
+    beneficiary,
+    IFSC,
+    banktype,
   ]);
 
   const handleSubmit = async (e) => {
@@ -476,46 +498,24 @@ const UserMaster = () => {
       return toastError("Login Id is Required");
     } else if (!password || password == "") {
       return toastError("Password is Required");
-    } else if (!speakingLanguage || speakingLanguage == "") {
-      return toastError("Speaking Language is Required");
-    }
-    //  else if (
-    //   !selectedImage ||
-    //   selectedImage == "" ||
-    //   selectedImage.length == 0
-    // ) {
-    //   return toastError("Avtar/Profile Image is Required");
-    // }
-    else if (!gender || gender == "") {
+    } else if (!gender || gender == "") {
       return toastError("Gender is Required");
     } else if (!nationality || nationality == "") {
       return toastError("Nationality is Required");
     } else if (!dateOfBirth || dateOfBirth == "") {
       return toastError("Date of Birth is Required");
-    } else if (!bloodGroup || bloodGroup == "") {
-      return toastError("Blood Group is Required");
     } else if (
       !maritialStatus ||
       maritialStatus == "" ||
       maritialStatus.length == 0
     ) {
       return toastError("Maritial Status is Required");
-    } else if (!pincode || pincode == "" || pincode.length !== 6) {
-      return toastError("Pincode should be 6 number long");
     } else if (!joiningDate || joiningDate == "") {
       return toastError("Joining Date is Required");
     } else if (!status || status == "") {
       return toastError("Status is Required");
-    } else if (!bankName || bankName == "") {
-      return toastError("Bank Name is Required");
-    } else if (!bankAccountNumber || bankAccountNumber == "") {
-      return toastError("Bank Account Number is Required");
     } else if (!username || username == "") {
       return toastError("User Name Error is required");
-    }
-
-    if (jobType == "WFO" && sitting == "") {
-      return toastError("Sitting Error is required");
     }
 
     const formData = new FormData();
@@ -550,39 +550,13 @@ const UserMaster = () => {
     formData.append("user_login_password", password);
     formData.append("user_status", status);
     formData.append("sitting_id", sitting);
-    formData.append(
-      "room_id",
-      jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id
-    );
+    // formData.append(
+    //   "room_id",
+    //   jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id
+    // );
+    formData.append("room_id", 1);
     formData.append("joining_date", joiningDate);
     //offcial info payload End
-
-    //other info payload Start
-    formData.append("permanent_city", city?.value ? city.value : "");
-    formData.append("permanent_address", address);
-    formData.append("permanent_state", state);
-    formData.append("permanent_pin_code", Number(pincode));
-    formData.append("current_address", currentAddress);
-    formData.append("current_city", currentCity);
-    formData.append("current_state", currentState);
-    formData.append("current_pin_code", Number(currentPincode));
-
-    formData.append("BloodGroup", bloodGroup);
-    formData.append(
-      "Hobbies",
-      hobbies.map((hobby) => hobby.value)
-    );
-    formData.append("SpokenLanguages", speakingLanguage);
-    formData.append("cast_type", cast);
-    //other info payload End
-
-    // Bank info payload Start
-    formData.append("bank_name", bankName);
-    formData.append("account_no", bankAccountNumber);
-    formData.append("ifsc_code", IFSC);
-    formData.append("beneficiary", beneficiary);
-    formData.append("bank_type", banktype);
-    // Bank info payload End
 
     if (personalEmail && personalContact) {
       try {
@@ -609,14 +583,17 @@ const UserMaster = () => {
           alert("Official Email Already Exists");
         } else {
           setLoading(true);
-          axios
+          const response = await axios
             .post(baseUrl + "add_user_for_general_information", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
               },
             })
+
             .then((res) => {
               if (res.status == 200) {
+                const userResponseID = res.data.simv.user_id;
+                setUserResID(userResponseID);
                 setIsFormSubmitted(true);
                 toastAlert("User Registerd");
                 setLoading(false);
@@ -624,6 +601,8 @@ const UserMaster = () => {
                 toastError("Sorry User is Not Created, Please try again later");
                 setLoading(false);
               }
+              setIsGeneralSubmitted(true);
+              setActiveAccordionIndex((prev) => prev + 1);
             })
             .catch((err) => {
               toastError(err.message);
@@ -647,33 +626,6 @@ const UserMaster = () => {
             .catch((error) => {
               // console.log("Failed to send email:", error);
             });
-
-          if (familyDetails[0].Name !== "") {
-            for (const elements of familyDetails) {
-              const response = axios.post(baseUrl + "add_family", {
-                name: elements.Name,
-                DOB: elements.DOB,
-                relation: elements.Relation,
-                contact: elements.Contact,
-                occupation: elements.Occupation,
-                annual_income: elements.Income,
-              });
-            }
-          }
-
-          if (educationDetails[0].Title !== "") {
-            for (const elements of educationDetails) {
-              const response = axios.post(baseUrl + "add_education", {
-                title: elements.Title,
-                institute_name: elements.Institute,
-                from_year: elements.From,
-                to_year: elements.To,
-                percentage: elements.Percentage,
-                stream: elements.Stream,
-                specialization: elements.Specialization,
-              });
-            }
-          }
 
           if (reportL1 !== "") {
             axios
@@ -703,17 +655,17 @@ const UserMaster = () => {
             );
           }
 
-          for (const elements of documents) {
-            axios.post(
-              baseUrl + "add_user_other_field",
-              { field_name: elements.name, field_value: elements.file },
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
-          }
+          // for (const elements of documents) {
+          //   axios.post(
+          //     baseUrl + "add_user_other_field",
+          //     { field_name: elements.name, field_value: elements.file },
+          //     {
+          //       headers: {
+          //         "Content-Type": "multipart/form-data",
+          //       },
+          //     }
+          //   );
+          // }
 
           whatsappApi.callWhatsAPI(
             "user_register",
@@ -737,8 +689,120 @@ const UserMaster = () => {
     }
   };
 
+  const handleSubmitOtherDetails = async (e) => {
+    e.preventDefault();
+    if (!currentAddress || currentAddress == "") {
+      return toastError("Current Address is required");
+    } else if (!currentCity || currentCity == "") {
+      return toastError("Current city is required");
+    } else if (!currentState || currentState == "") {
+      return toastError("Current state is required");
+    } else if (!currentPincode || currentPincode == "") {
+      return toastError("Current Pincode is required");
+    }
+    try {
+      const response = await axios.put(
+        baseUrl + `update_user_for_other_details/${userResID}`,
+        {
+          permanent_city: city?.value ? city.value : "",
+          permanent_address: address,
+          permanent_state: state,
+          permanent_pin_code: Number(pincode),
+          current_address: currentAddress,
+          current_city: currentCity?.value ? currentCity.value : "",
+          current_pin_code: Number(currentPincode),
+          current_state: currentState,
+          BloodGroup: bloodGroup,
+          Hobbies: hobbies.map((hobby) => hobby.value),
+          SpokenLanguages: speakingLanguage,
+          cast_type: cast,
+        }
+      );
+      console.log("Update successful", response.data);
+    } catch (error) {
+      console.error(
+        "Update failed",
+        error.response ? error.response.data : error
+      );
+    }
+  };
+  const handleSubmitBank = async (e) => {
+    e.preventDefault();
+    if (!bankName || bankName == "") {
+      return toastError("bank name is required");
+    } else if (!bankAccountNumber || bankAccountNumber == "") {
+      return toastError("bank account number is required");
+    } else if (!IFSC || IFSC == "") {
+      return toastError("IFSC is required");
+    } else if (!banktype || banktype == "") {
+      return toastError("Bank Type is required");
+    }
+    try {
+      const response = await axios.put(
+        baseUrl + `update_user_for_bank_details/${userResID}`,
+        {
+          // Bank info payload Start
+          bank_name: bankName,
+          account_no: bankAccountNumber,
+          ifsc_code: IFSC,
+          beneficiary: beneficiary,
+          bank_type: banktype,
+          // Bank info payload End
+        },
+        setActiveAccordionIndex((prev) => prev + 1)
+      );
+      console.log("Update successful", response.data);
+    } catch (error) {
+      console.error(
+        "Update failed",
+        error.response ? error.response.data : error
+      );
+    }
+  };
+  const handleSubmitFamily = () => {
+    try {
+      if (familyDetails[0].Name !== "") {
+        for (const elements of familyDetails) {
+          const response = axios.put(baseUrl + "update_family", {
+            user_id: userResID,
+            name: elements.Name,
+            DOB: elements.DOB,
+            relation: elements.Relation,
+            contact: elements.Contact,
+            occupation: elements.Occupation,
+            annual_income: elements.Income,
+          });
+        }
+      }
+      toastAlert("Submit Family Details");
+    } catch (error) {
+      toastError(error);
+    }
+  };
+  const handleSubmitEducation = () => {
+    try {
+      if (educationDetails[0].Title !== "") {
+        for (const elements of educationDetails) {
+          const response = axios.put(baseUrl + "update_education", {
+            user_id: userResID,
+            title: elements.Title,
+            institute_name: elements.Institute,
+            from_year: elements.From,
+            to_year: elements.To,
+            percentage: elements.Percentage,
+            stream: elements.Stream,
+            specialization: elements.Specialization,
+          });
+        }
+      }
+      toastAlert("Submite Euducation Details ");
+    } catch (error) {
+      toastError(error);
+    }
+  };
+
   if (isFormSubmitted) {
-    return <Navigate to="/admin/user-overview" />;
+    // return <Navigate to="/admin/user-overview" />;
   }
 
   // Email Validation
@@ -862,13 +926,15 @@ const UserMaster = () => {
 
   const generateLoginId = () => {
     const userName = username.trim().toLowerCase().split(" ");
-    const loginIdOption1 = userName[0] + userName[1].charAt(0);
-    const loginIdOption2 = userName[0].charAt(0) + userName[1];
-    const loginIdOption3 = userName.join(".");
-    const randomIndex = Math.floor(Math.random() * 3);
-    const generatedLoginId = [loginIdOption1, loginIdOption2, loginIdOption3][
-      randomIndex
+    const loginIdOptions = [
+      userName[0], // loginIdOption1
+      userName[0] + (userName[1] ? userName[1].charAt(0) : ""), // loginIdOption2
+      (userName[0] ? userName[0].charAt(0) : "") + (userName[1] || ""), // loginIdOption3
+      userName.join("."), // loginIdOption4
     ];
+    const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
+    setLastIndexUsed(nextIndex);
+    const generatedLoginId = loginIdOptions[nextIndex];
     setLoginId(generatedLoginId);
     if (generatedLoginId.length > 0) {
       setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
@@ -1107,7 +1173,7 @@ const UserMaster = () => {
             data-bs-toggle="modal"
             data-bs-target="#transferModal"
           >
-            Profile <sup style={{ color: "red" }}>*</sup>
+            Profile
           </button>
 
           {selectedImage && (
@@ -1613,6 +1679,20 @@ const UserMaster = () => {
         fieldGrid={3}
         value={email}
         onChange={handleEmailChange}
+        onBlur={() => {
+          if (email === "") {
+            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,personalEmail:true});
+            return setMandatoryFieldsEmpty((prevState) => ({
+              ...prevState,
+              email: true,
+            }));
+          } else {
+            setMandatoryFieldsEmpty({
+              ...mandatoryFieldsEmpty,
+              email: false,
+            });
+          }
+        }}
       />
       {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
 
@@ -1625,9 +1705,9 @@ const UserMaster = () => {
         onChange={handleContactChange}
         onBlur={handleContentBlur}
       />
-      {/* {(isContactTouched || contact.length >= 10) && !isValidcontact && (
+      {(isContactTouched || contact.length >= 10) && !isValidcontact && (
         <p style={{ color: "red" }}>*Please enter a valid Number</p>
-      )} */}
+      )}
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
           <label>
@@ -1755,6 +1835,16 @@ const UserMaster = () => {
         />
       </div>
 
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmit}
+        >
+          Submit & Next
+        </button>
+      </div>
+
       {/* Official Info Inputs------------------------End------------ */}
 
       {/* Transfer Modal Start  Profile Modal*/}
@@ -1865,15 +1955,6 @@ const UserMaster = () => {
           />
         </div>
       )} */}
-
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
-        >
-          <ArrowForwardIosIcon />
-        </button>
-      </div>
     </>
   );
 
@@ -1919,20 +2000,20 @@ const UserMaster = () => {
               label: city.city_name,
             }))}
             onChange={setcurrentCity}
-            onBlur={() => {
-              if (city === "") {
-                // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,city:true});
-                return setMandatoryFieldsEmpty((prevState) => ({
-                  ...prevState,
-                  city: true,
-                }));
-              } else {
-                setMandatoryFieldsEmpty({
-                  ...mandatoryFieldsEmpty,
-                  city: false,
-                });
-              }
-            }}
+            // onBlur={() => {
+            //   if (city === "") {
+            //     // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,city:true});
+            //     return setMandatoryFieldsEmpty((prevState) => ({
+            //       ...prevState,
+            //       city: true,
+            //     }));
+            //   } else {
+            //     setMandatoryFieldsEmpty({
+            //       ...mandatoryFieldsEmpty,
+            //       city: false,
+            //     });
+            //   }
+            // }}
             required={true}
             value={currentCity}
             placeholder="Select a city..."
@@ -1980,37 +2061,37 @@ const UserMaster = () => {
             }
           }}
           onBlur={() => {
-            if (pincode === "") {
+            if (currentPincode === "") {
               // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,pincode:true});
               return setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
-                pincode: true,
+                currentPincode: true,
               }));
             } else {
               setMandatoryFieldsEmpty({
                 ...mandatoryFieldsEmpty,
-                pincode: false,
+                currentPincode: false,
               });
             }
           }}
           required={false}
         />
-        {mandatoryFieldsEmpty.pincode && (
+        {mandatoryFieldsEmpty.currentPincode && (
           <p style={{ color: "red" }}>Please enter Pincode</p>
         )}
-      </div>
-      {/*  Parmanent Address here------------ */}
-      <div className="board_form form_checkbox">
-        <label className="cstm_check">
-          Same as Current Addresss
-          <input
-            className="form-control"
-            type="checkbox"
-            checked={sameAsCurrent}
-            onChange={handleCheckboxChange}
-          />
-          <span className="checkmark"></span>
-        </label>
+        {/*  Parmanent Address here------------ */}
+        <div className="board_form form_checkbox">
+          <label className="cstm_check" style={{ color: "red" }}>
+            Same as Current Addresss
+            <input
+              className="form-control"
+              type="checkbox"
+              checked={sameAsCurrent}
+              onChange={handleCheckboxChange}
+            />
+            <span className="checkmark"></span>
+          </label>
+        </div>
       </div>
 
       <hr className="mb-2" />
@@ -2070,22 +2151,23 @@ const UserMaster = () => {
       </div>
       <div className="form-group col-4">
         <IndianStates
-          //   onBlur={() => {
-          //     if (state === "") {
-          //       return setMandatoryFieldsEmpty((prevState) => ({
-          //         ...prevState,
-          //         state: true,
-          //       }));
-          //     } else {
-          //       setMandatoryFieldsEmpty({
-          //         ...mandatoryFieldsEmpty,
-          //         state: false,
-          //       });
-          //     }
+          // onBlur={() => {
+          //   if (state === "") {
+          //     return setMandatoryFieldsEmpty((prevState) => ({
+          //       ...prevState,
+          //       state: true,
+          //     }));
+          //   } else {
+          //     setMandatoryFieldsEmpty({
+          //       ...mandatoryFieldsEmpty,
+          //       state: false,
+          //     });
           //   }
-          // }
+          // }}
           onChange={(option) => setState(option ? option.value : null)}
+          newValue={state}
         />
+
         {/* {mandatoryFieldsEmpty.state && (
           <p style={{ color: "red" }}>Please enter State</p>
         )} */}
@@ -2238,6 +2320,15 @@ const UserMaster = () => {
           required
         />
       </div>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmitOtherDetails}
+        >
+          Submit Other Details
+        </button>
+      </div>
       {/* Other Info Inputs------------------------End------------ */}
 
       {/* Bank Info Inputs------------------------Start------------ */}
@@ -2272,9 +2363,48 @@ const UserMaster = () => {
           <p style={{ color: "red" }}>Please enter Bank Name</p>
         )}
       </div>
+
+      <div className="form-group col-3">
+        <label className="form-label">
+          Bank Type <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={bankTypeData.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
+          }))}
+          value={{
+            value: banktype,
+            label: `${banktype}`,
+          }}
+          onChange={(e) => {
+            setBankType(e.value);
+          }}
+          onBlur={() => {
+            if (banktype === "" || banktype === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                banktype: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                banktype: false,
+              });
+            }
+          }}
+          required
+        />
+        {mandatoryFieldsEmpty.banktype && (
+          <p style={{ color: "red" }}>Please enter Bank Type</p>
+        )}
+      </div>
+
       <FieldContainer
         label="Bank Account Number"
         astric={true}
+        fieldGrid={3}
         value={bankAccountNumber}
         onChange={(e) => setBankAccountNumber(e.target.value)}
         onBlur={() => {
@@ -2323,8 +2453,18 @@ const UserMaster = () => {
         value={beneficiary}
         onChange={(e) => setBeneficiary(e.target.value)}
       />
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmitBank}
+        >
+          Submit Bank Details
+        </button>
+      </div>
       {/* Bank Info Inputs------------------------End------------ */}
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+
+      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           className="btn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
@@ -2337,7 +2477,7 @@ const UserMaster = () => {
         >
           <ArrowForwardIosIcon />
         </button>
-      </div>
+      </div> */}
     </>
   );
 
@@ -2354,7 +2494,7 @@ const UserMaster = () => {
                   return (
                     <FieldContainer
                       key={key}
-                      fieldGrid={3}
+                      fieldGrid={2}
                       type="date"
                       name={key}
                       label="Date of Birth"
@@ -2364,7 +2504,7 @@ const UserMaster = () => {
                   );
                 case "Relation":
                   return (
-                    <div className="form-group col-3">
+                    <div className="form-group col-2">
                       <label className="form-label">Relation</label>
                       <Select
                         label="Relation"
@@ -2392,7 +2532,7 @@ const UserMaster = () => {
                   );
                 case "Occupation":
                   return (
-                    <div className="form-group col-3">
+                    <div className="form-group col-2">
                       <label className="form-label">Occupation</label>
                       <Select
                         label="Occupation"
@@ -2430,7 +2570,7 @@ const UserMaster = () => {
                     <>
                       <FieldContainer
                         key={key}
-                        fieldGrid={3}
+                        fieldGrid={2}
                         type="number"
                         name={key}
                         label={key}
@@ -2451,7 +2591,7 @@ const UserMaster = () => {
                     <FieldContainer
                       key={key}
                       type="number"
-                      fieldGrid={3}
+                      fieldGrid={2}
                       name={key}
                       label={key}
                       placeholder={key}
@@ -2464,7 +2604,7 @@ const UserMaster = () => {
                   return (
                     <FieldContainer
                       key={key}
-                      fieldGrid={3}
+                      fieldGrid={2}
                       name={key}
                       label={key}
                       placeholder={key}
@@ -2494,6 +2634,15 @@ const UserMaster = () => {
           </button>
         </div>
       </div>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmitFamily}
+        >
+          Submit Family Details
+        </button>
+      </div>
       {/* Family Info Inputs------------------------End------------ */}
 
       {/* Education Info Inputs------------------------Start------------ */}
@@ -2514,6 +2663,31 @@ const UserMaster = () => {
                   onChange={(e) => handleEducationDetailsChange(index, e)}
                 />
               ) : (
+                // <div className="form-group col-2">
+                //   <label className="form-label">Relation</label>
+                //   <Select
+                //     label="Title"
+                //     placeholder="Select Relation"
+                //     className=""
+                //     options={familyRelationList}
+                //     name={key}
+                //     value={
+                //       higestQualificationData.find(
+                //         (option) => option.value === detail.Relation
+                //       ) || null
+                //     }
+                //     onChange={(selectedOption) =>
+                //       handleFamilyDetailsChange(index, {
+                //         target: {
+                //           name: key,
+                //           value: selectedOption ? selectedOption.value : "",
+                //         },
+                //       })
+                //     }
+                //     isClearable={true}
+                //     isSearchable={true}
+                //   />
+                // </div>
                 <FieldContainer
                   key={key}
                   fieldGrid={3}
@@ -2545,16 +2719,25 @@ const UserMaster = () => {
           </button>
         </div>
       </div>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmitEducation}
+        >
+          Submit Education Details
+        </button>
+      </div>
       {/* Education Info Inputs------------------------End------------ */}
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           className="btn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
         >
           <ArrowBackIosIcon />
         </button>
-      </div>
+      </div> */}
     </>
   );
 
@@ -2587,15 +2770,20 @@ const UserMaster = () => {
       <FormContainer
         mainTitle="User"
         title="User Registration"
-        handleSubmit={handleSubmit}
+        // handleSubmit={handleSubmit}
+        submitButton={false}
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
         loading={loading}
       >
         {activeAccordionIndex === 0 && genralFields}
-        {activeAccordionIndex === 1 && othersFields}
-        {activeAccordionIndex === 2 && educationFamilyFieald}
+        {/* {activeAccordionIndex === 1 && othersFields}
+        {activeAccordionIndex === 2 && educationFamilyFieald} */}
+        {isGeneralSubmitted && activeAccordionIndex === 1 && othersFields}
+        {isGeneralSubmitted &&
+          activeAccordionIndex === 2 &&
+          educationFamilyFieald}
       </FormContainer>
     </>
   );

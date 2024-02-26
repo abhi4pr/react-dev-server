@@ -97,7 +97,7 @@ import OnboardExtendDateOverview from "./AdminPreOnboarding/OnboardExtendDateOve
 // import AuditorTrack from "../InstaApi.jsx/Auditor/AuditorTrack";
 import ExecutionDone from "../Execution/Done/ExecutionDone";
 import ExecutionAccepted from "../Execution/Accepted/ExecutionAccepted";
-import RegisterCampaign from "./RegisterCampaign/registerCampaign";
+import RegisterCampaign from "./RegisterCampaign/RegisterCampaign";
 import ExecutionRejected from "../Execution/Rejected/ExecutionRejected";
 import RegisteredCampaign from "./RegisterCampaign/RegisteredCampaign";
 import SalaryDashboard from "./WFH/SalaryGeneration/SalaryDashboard";
@@ -193,6 +193,7 @@ import FinanceWFHDashboard from "../Finance Dashboard/FinanceWFHDashboard";
 import WFHTemplateOverview from "./WFH/WFHSingleUser/WFHTemplateOverview";
 import ViewEditDigiSignature from "./WFH/DigitalSignature/ViewEditDigiSignature";
 import PlancreationNew from "./RegisterCampaign/PlancreationNew";
+import TempPlanCreation from "./RegisterCampaign/tempPlan/TempPlanCreation";
 import PhasecreationNew from "./RegisterCampaign/PhasecreationNew";
 import DesiDeptAuth from "../AdminPanel/Designation/DesiDeptAuth";
 import PlanDashboard from "./RegisterCampaign/PlanDashboard/PlanDashboard";
@@ -222,8 +223,19 @@ import CaseStudyOperation from "./RegisterCampaign/CaseStudies/CaseStudyOperatio
 import WFHDRegister from "./WFH/WFHDRegister/WFHDRegister";
 import UpdateDocument from "./WFH/UpdateDocument";
 import HRTemplateOverview from "./WFH/HRTemplateOverview";
-import WFHDUpdate from './WFH/WFHDRegister/WFHDUpdate'
-import WFHDBankUpdate from './WFH/WFHDBankUpdate'
+
+import WFHDUpdate from "./WFH/WFHDRegister/WFHDUpdate";
+import WFHDBankUpdate from "./WFH/WFHDBankUpdate";
+import PaymentModeMast from "./Finance/PaymentModeMast";
+import TotalNDG from "./WFH/TotalNDG";
+
+import TaskPending from "./Finance/TaskPending";
+import TaskDone from "./Finance/TaskDone";
+
+import NewExcelFile from "./RegisterCampaign/Plan/NewExcelFile";
+
+import TempExecution from "./RegisterCampaign/tempPlan/TempExecution";
+
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -352,6 +364,7 @@ const Admin = () => {
                   {/* Attendence  */}
 
                   <Route path="/wfhd-register" element={<WFHDRegister />} />
+                  <Route path="/total-NDG" element={<TotalNDG />} />
                   <Route path="/wfhd-update/:id" element={<WFHDUpdate />} />
 
                   <Route
@@ -707,6 +720,10 @@ const Admin = () => {
                     element={<PendingPaymentRequest />}
                   />
                   <Route
+                    path="/payment-mode-master"
+                    element={<PaymentModeMast />}
+                  />
+                  <Route
                     path="/finance-pruchasemanagement-paymentdone"
                     element={<PaymentDone />}
                   />
@@ -726,6 +743,13 @@ const Admin = () => {
                     path="/finance-pruchasemanagement-discardpayment"
                     element={<Discard />}
                   />
+                  {/* task components */}
+                  <Route
+                    path="/finance-task-pending"
+                    element={<TaskPending />}
+                  />
+                  <Route path="/finance-task-done" element={<TaskDone />} />
+                  {/*  ==============*/}
                   <Route
                     path="/payment-summary/:id"
                     element={<PaymentSummary />}
@@ -856,10 +880,18 @@ const Admin = () => {
                     path="/planCreation/:id"
                     element={<PlancreationNew />}
                   />
+                   <Route
+                    path="/tempExcel"
+                    element={<NewExcelFile />}
+                  />
                   <Route path="/phase/:id" element={<PhaseCreation />} />
                   <Route
                     path="/planCreation/:id"
                     element={<PlancreationNew />}
+                  />
+                  <Route
+                    path="/tempplanCreation/:id"
+                    element={<TempPlanCreation />}
                   />
                   <Route path="/createAssign/:id" element={<CreateAssign />} />
                   <Route
@@ -892,6 +924,10 @@ const Admin = () => {
                   <Route
                     path="/excusionCampaign"
                     element={<ExcusionCampaign />}
+                  />
+                  <Route
+                    path="/tempexcusion"
+                    element={<TempExecution />}
                   />
                   {/* ----------------------lead source routes -----------------------------*/}
                   <Route
