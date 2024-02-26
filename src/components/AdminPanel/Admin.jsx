@@ -231,6 +231,8 @@ import TotalNDG from "./WFH/TotalNDG";
 
 import TaskPending from "./Finance/TaskPending";
 import TaskDone from "./Finance/TaskDone";
+import TDSdeduct from "./Finance/TDSdeduct";
+import GSThold from "./Finance/GSThold";
 
 import NewExcelFile from "./RegisterCampaign/Plan/NewExcelFile";
 
@@ -678,6 +680,12 @@ const Admin = () => {
                   <Route
                     path="/finance-paymentmode"
                     element={<PaymentMode />}
+                  /><Route
+                    path="/payment-TDS_deduct"
+                    element={<TDSdeduct />}
+                  /><Route
+                    path="/payment-GST_hold"
+                    element={<GSThold />}
                   />
                   <Route
                     path="/finance-pendingapproverefund"

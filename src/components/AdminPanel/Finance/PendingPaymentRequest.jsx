@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import axios from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
@@ -28,8 +28,11 @@ import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsAct
 import Badge from "@mui/material/Badge";
 import ShowDataModal from "./ShowDataModal";
 import Checkbox from "@mui/material/Checkbox";
+import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 
 export default function PendingPaymentRequest() {
+  const whatsappApi = WhatsappAPI();
+
   const { toastAlert, toastError } = useGlobalContext();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -80,7 +83,7 @@ export default function PendingPaymentRequest() {
   const [baseAmount, setBaseAmount] = useState(0);
   const [paymentStatus, setPaymentStatus] = useState("Fully Paid");
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
-const [ paymentModeData, setPaymentModeData] = useState([]);
+  const [paymentModeData, setPaymentModeData] = useState([]);
   var handleAcknowledgeClick = () => {
     setAknowledgementDialog(true);
   };
@@ -215,6 +218,7 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
   };
 
   const handleGstHold = (e) => {
+    console.log(e.target.checked, "checked")
     setGstHold(e.target.checked);
     setGSTHoldAmount(rowData.gst_amount);
   };
@@ -295,8 +299,11 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
     formData.append("name", rowData.name);
     formData.append("request_date", rowData.request_date);
     formData.append("payment_date", paymentDate);
-    formData.append("gst_hold", GSTHoldAmount);
+    formData.append("gst_hold", rowData.gst_amount);
+    formData.append("gst_hold_amount", GSTHoldAmount);
     formData.append("tds_deduction", TDSValue);
+    formData.append("gst_Hold_Bool", gstHold);
+    formData.append("tds_Deduction_Bool", TDSDeduction);
     axios
       .post(baseUrl + "phpvendorpaymentrequest", formData, {
         headers: {
@@ -316,8 +323,11 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
         phpFormData.append("finance_remark", payRemark);
         phpFormData.append("status", 1);
         phpFormData.append("payment_mode", paymentMode);
-        phpFormData.append("gst_hold", GSTHoldAmount);
+        phpFormData.append("gst_hold", rowData.gst_amount);
+        phpFormData.append("gst_hold_amount", GSTHoldAmount);
         phpFormData.append("tds_deduction", TDSValue);
+        phpFormData.append("gst_Hold_Bool", gstHold?1:0);
+        phpFormData.append("tds_Deduction_Bool", TDSDeduction?1:0);
         axios
           .post(
             "https://purchase.creativefuel.io/webservices/RestController.php?view=updatePaymentrequestNew",
@@ -330,6 +340,13 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
           )
           .then(() => {
             toastAlert("Payment Done Successfully");
+
+            whatsappApi.callWhatsAPI(
+              "Extend Date by User",  
+              JSON.stringify(9109266387),
+              rowData.vendor_name,
+              [paymentAmout, rowData.vendor_name, rowData.mob1]
+            );
           });
 
         setPaymentMode("");
@@ -458,9 +475,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
   // Bank Details:-
 
   const handleOpenBankDetail = (row) => {
-    let x =[]
-    x.push(row)
-    
+    let x = [];
+    x.push(row);
+
     setBankDetailRowData(x);
     setBankDetail(true);
   };
@@ -556,8 +573,10 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
       field: "accunt_bank_name",
       headerName: "Account Holder Name",
       width: 150,
-      renderCell: ({row}) => {
-        const accountHolderName = row.payment_details.match(/(?<=Account Holder Name -)[^\n]+/)[0];
+      renderCell: ({ row }) => {
+        const accountHolderName = row.payment_details.match(
+          /(?<=Account Holder Name -)[^\n]+/
+        )[0];
 
         return <p>{accountHolderName}</p>;
       },
@@ -567,7 +586,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
       headerName: "IFSC Number",
       width: 150,
       renderCell: (params) => {
-        const ifscCode = params.row.payment_details.match(/(?<=IFSC Code -)[A-Z\d]+/)[0];
+        const ifscCode = params.row.payment_details.match(
+          /(?<=IFSC Code -)[A-Z\d]+/
+        )[0];
         return <p>{ifscCode}</p>;
       },
     },
@@ -575,7 +596,7 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
       field: "gst",
       headerName: "GST",
       width: 150,
-      renderCell: ({row}) => {
+      renderCell: ({ row }) => {
         return <p> {row.gst}</p>;
       },
     },
@@ -583,7 +604,7 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
       field: "pan_number",
       headerName: "Pan Number",
       width: 150,
-      renderCell: ({row}) => {
+      renderCell: ({ row }) => {
         return <p> {row.pan} </p>;
       },
     },
@@ -926,12 +947,24 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               {params.row.vendor_name}
             </div>
             {/* Hold for confirmation of sourabh sir */}
-            {/* <Button disabled={params.row.payment_details?!params.row.payment_details.length>0:true} onClick={() => handleOpenBankDetail(params.row)}>
+            <Button
+              disabled={
+                params.row.payment_details
+                  ? !params.row.payment_details.length > 0
+                  : true
+              }
+              onClick={() => handleOpenBankDetail(params.row)}
+            >
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
-            </Button> */}
+            </Button>
           </div>
         );
       },
+    },
+    {
+      field:"payment_cycle",
+      headerName:"Payment Cycle",
+      width:150,
     },
     {
       field: "total_paid",
@@ -1020,10 +1053,14 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
       field: "Pan Img",
       headerName: "Pan Img",
       renderCell: (params) => {
-        return params.row.pan_img.includes("uploads")
-        ? (
+        const ImgUrl = `https://purchase.creativefuel.io/${params.row.pan_img}`;
+        return params.row.pan_img.includes("uploads") ? (
           <img
-            src={"https://purchase.creativefuel.io/" + params.row.pan_img}
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(ImgUrl);
+            }}
+            src={ImgUrl}
             alt="Pan"
             style={{ width: "40px", height: "40px" }}
           />
@@ -1169,7 +1206,7 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
           <CloseIcon />
         </IconButton>
 
-        <DataGrid
+        {/* <DataGrid
           rows={bankDetailRowData}
           columns={bankDetailColumns}
           pageSize={5}
@@ -1196,7 +1233,28 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
             },
           }}
           getRowId={(row) => filterData.indexOf(row)}
+        /> */}
+
+        <TextField
+          id="outlined-multiline-static"
+          // label="Multiline"
+          multiline
+          value={bankDetailRowData[0]?.payment_details}
+          rows={4}
+          defaultValue="Default Value"
+          variant="outlined"
         />
+
+        <Button
+          onClick={() => {
+            navigator.clipboard.writeText(
+              bankDetailRowData[0]?.payment_details
+            );
+            toastAlert("Copied to clipboard");
+          }}
+        >
+          Copy
+        </Button>
       </Dialog>
       {/* Payment History */}
       <Dialog
@@ -1523,6 +1581,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               readOnly={true}
               label="Vendor Name"
               type="text"
+              InputProps={{
+                readOnly: true,
+              }}
               variant="outlined"
             />
             <TextField
@@ -1536,6 +1597,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               label="Address"
               type="text"
               variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
           <div className="row">
@@ -1549,6 +1613,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               label="Mobile"
               type="text"
               variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
             />
             <TextField
               className="col-md-5 ml-2"
@@ -1560,6 +1627,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               label="Pan"
               type="text"
               variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
           <div className="row">
@@ -1573,6 +1643,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               label="GST"
               type="text"
               variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
             />
             <TextField
               className="col-md-5 ml-2"
@@ -1584,6 +1657,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               label="Outstanding"
               type="text"
               variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
           <div className="row">
@@ -1598,6 +1674,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               label="Amount Requested"
               type="text"
               variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
             />
 
             <TextField
@@ -1611,6 +1690,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               label="Base Amount"
               type="text"
               variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
             />
             <TextField
               className="col-md-4 "
@@ -1623,6 +1705,9 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               label="GST Amount"
               type="text"
               variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
             />
             <FormControlLabel
               className="col-md-5"
@@ -1761,6 +1846,11 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
               )}
             />
             <TextField
+
+InputProps={{
+  readOnly: gstHold || TDSDeduction,
+}}
+  
               onChange={(e) => {
                 rowData.request_amount;
 
@@ -1769,6 +1859,7 @@ const [ paymentModeData, setPaymentModeData] = useState([]);
                   // setPaymentAmount(currentValue);
                   if (currentValue <= +rowData.request_amount) {
                     setPaymentAmount(currentValue);
+                    setPaymentStatus
                   } else {
                     toastError(
                       "Payment Amount should be less than or equal to Requested Amount"

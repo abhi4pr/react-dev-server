@@ -81,6 +81,7 @@ export default function ShowDataModal({
               label="Acknowledgement Message"
               variant="outlined"
             />
+            <input type="date" className="form-control" />
             <DialogActions>
               <Button
                 variant="contained"
