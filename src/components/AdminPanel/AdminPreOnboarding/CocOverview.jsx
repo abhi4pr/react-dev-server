@@ -21,12 +21,10 @@ const CocOverview = () => {
   const loginUserId = decodedToken.id;
 
   async function getData() {
-    await axios
-      .get(baseUrl+"newcoc")
-      .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
-      });
+    await axios.get(baseUrl + "newcoc").then((res) => {
+      setData(res.data.data);
+      setFilterData(res.data.data);
+    });
   }
 
   useEffect(() => {
@@ -50,7 +48,7 @@ const CocOverview = () => {
     {
       name: "Coc content",
       selector: (row) => row.coc_content,
-      width: "50%",
+      // width: "50%",
       sortable: true,
     },
     {
@@ -99,38 +97,40 @@ const CocOverview = () => {
 
   return (
     <>
-    <FormContainer
-      mainTitle="Coc Overview"
-      link="/admin/pre-onboard-coc-master"
-    />
+      <FormContainer
+        mainTitle="Coc Overview"
+        link="/admin/pre-onboard-coc-master"
+      />
+      <Link
+        className="btn btn-primary btn-sm "
+        to="/admin/pre-onboard-coc-master"
+      >
+        New Coc
+      </Link>
 
-    <Link className="btn btn-primary btn-sm " to="/admin/pre-onboard-coc-master">
-      New Coc
-    </Link>
-
-    <div className="card">
-      <div className="data_tbl table-responsive">
-        <DataTable
-          title="Coc Overview"
-          columns={columns}
-          data={filterdata}
-          fixedHeader
-          // pagination
-          fixedHeaderScrollHeight="62vh"
-          highlightOnHover
-          subHeader
-          subHeaderComponent={
-            <input
-              type="text"
-              placeholder="Search here"
-              className="w-50 form-control"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          }
-        />
+      <div className="card">
+        <div className="data_tbl table-responsive">
+          <DataTable
+            title="Coc Overview"
+            columns={columns}
+            data={filterdata}
+            fixedHeader
+            // pagination
+            fixedHeaderScrollHeight="62vh"
+            highlightOnHover
+            subHeader
+            subHeaderComponent={
+              <input
+                type="text"
+                placeholder="Search here"
+                className="w-50 form-control"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            }
+          />
+        </div>
       </div>
-    </div>
     </>
   );
 };
