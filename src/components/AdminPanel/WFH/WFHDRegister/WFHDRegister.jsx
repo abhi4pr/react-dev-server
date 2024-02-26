@@ -257,7 +257,7 @@ const WFHDRegister = ({ userUpdateID }) => {
     if (userUpdateID) {
       formData.append("user_id", userUpdateID);
     }
-    formData.append("dept_id", deptID);
+    formData.append("dept_id", department);
     formData.append("permanent_city", city);
     formData.append("created_by", loginUserId);
     formData.append("user_name", username);
