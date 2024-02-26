@@ -12,7 +12,6 @@ import { baseUrl } from "../../../utils/config";
 const OnboardExtendDateOverview = () => {
   const whatsappApi = WhatsappAPI();
   const [search, setSearch] = useState("");
-  const [data, setData] = useState([]);
   const [filterdata, setFilterData] = useState([]);
   const [contextData, setDatas] = useState([]);
 
@@ -28,9 +27,10 @@ const OnboardExtendDateOverview = () => {
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
 
-  const handleRejectClick = (rowId) => {
-    setEditableRowId(rowId);
+  const handleRejectClick = (row) => {
+    setEditableRowId(row.user_id);
     setReasonField(true);
+    setRejectReason(row.joining_date_extend_reason);
   };
 
   useEffect(() => {
@@ -101,8 +101,8 @@ const OnboardExtendDateOverview = () => {
   };
 
   useEffect(() => {
-    const result = data.filter((d) => {
-      return d.desi_name.toLowerCase().match(search.toLowerCase());
+    const result = contextData.filter((d) => {
+      return d.user_name.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
@@ -149,16 +149,9 @@ const OnboardExtendDateOverview = () => {
       sortable: true,
     },
     {
-      name: "Reason",
-      selector: (row) => row.joining_date_extend_reason,
-      sortable: true,
-    },
-    {
       name: "Proof Doc",
       selector: (row) => (
-        <a
-          href={`http://34.93.221.166:3000/uploads/${row.joining_extend_document}`}
-        >
+        <a href={row.joining_extend_document_url}>
           <CloudDownloadIcon />
         </a>
       ),
@@ -205,13 +198,13 @@ const OnboardExtendDateOverview = () => {
               <button
                 title="Reject"
                 className="btn btn-outline-danger"
-                onClick={() => handleRejectClick(row.user_id)}
+                onClick={() => handleRejectClick(row)}
               >
                 <CancelIcon />
               </button>
             </>
           )}
-          {reasonField && (
+          {reasonField && editableRowId === row.user_id && (
             <button
               title="Save"
               className="btn btn-outline-primary"
@@ -236,6 +229,7 @@ const OnboardExtendDateOverview = () => {
 
   return (
     <>
+      {console.log(filterdata)}
       <FormContainer
         mainTitle="Extend Date Overview"
         link="/admin/designation-master"

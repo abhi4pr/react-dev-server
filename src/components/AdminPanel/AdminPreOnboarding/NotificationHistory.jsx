@@ -18,12 +18,10 @@ const NotificationHistory = () => {
   const loginUserId = decodedToken.id;
 
   async function getData() {
-    await axios
-      .get(baseUrl+"get_all_notifications")
-      .then((res) => {
-        setData(res.data.data);
-        setFilterData(res.data.data);
-      });
+    await axios.get(baseUrl + "get_all_notifications").then((res) => {
+      setData(res.data.data);
+      setFilterData(res.data.data);
+    });
   }
 
   useEffect(() => {
@@ -57,7 +55,7 @@ const NotificationHistory = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "5%",
+      width: "9%",
       sortable: true,
     },
     {
@@ -98,37 +96,31 @@ const NotificationHistory = () => {
 
   return (
     <>
-      <FormContainer
-        mainTitle="Notifications"
-        title="Notification History"
-        // handleSubmit={handleSubmit}
-      >
-        <div className="page_height">
-          <div className="card mb-4">
-            <div className="data_tbl table-responsive">
-              <DataTable
-                title="Notification History"
-                columns={columns}
-                data={filterdata}
-                fixedHeader
-                // pagination
-                fixedHeaderScrollHeight="64vh"
-                highlightOnHover
-                subHeader
-                subHeaderComponent={
-                  <input
-                    type="text"
-                    placeholder="Search here"
-                    className="w-50 form-control "
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                }
+      <FormContainer mainTitle="Notifications" link="/" />
+
+      <div className="card">
+        <div className="data_tbl table-responsive">
+          <DataTable
+            title="Notification History"
+            columns={columns}
+            data={filterdata}
+            fixedHeader
+            // pagination
+            fixedHeaderScrollHeight="64vh"
+            highlightOnHover
+            subHeader
+            subHeaderComponent={
+              <input
+                type="text"
+                placeholder="Search here"
+                className="w-50 form-control "
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
-            </div>
-          </div>
+            }
+          />
         </div>
-      </FormContainer>
+      </div>
     </>
   );
 };

@@ -13,7 +13,7 @@ const DocumentTab = ({
 }) => {
   const { toastAlert, toastError } = useGlobalContext();
   const { user_id } = useParams();
-  const [user, setUser] = useState({})
+  const [user, setUser] = useState({});
   const navigate = useNavigate();
 
   const getData = () => {
@@ -117,7 +117,7 @@ const DocumentTab = ({
                     <td scope="row">
                       {item.document.doc_type}
                       {item.document.isRequired && (
-                        <span style={{ color: "red" }}> *</span>
+                        <span style={{ color: "red" }}> * (Mandatory)</span>
                       )}
                     </td>
                     <td>{item.document.period} days</td>
@@ -172,7 +172,7 @@ const DocumentTab = ({
               <button
                 className="btn btn_pill btn_cmn btn_success"
                 onClick={handleSubmit}
-                style={{marginBottom:'5%'}}
+                style={{ marginBottom: "5%" }}
               >
                 Submit
               </button>

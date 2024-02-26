@@ -82,9 +82,7 @@ const ExtendJoining = ({
         },
       });
 
-      toastAlert("Joining date requested successfully");
-
-      const emailResponse = await axios.post(`${url}add_send_user_mail`, {
+      const emailResponse = axios.post(`${url}add_send_user_mail`, {
         email: "lalit@creativefuel.io",
         subject: "User Pre Onboarding Extend Date",
         text: joiningExtendReason,
@@ -96,7 +94,7 @@ const ExtendJoining = ({
       console.log("Email sent successfully:", emailResponse.data);
 
       // Call WhatsApp API
-      await whatsappApi.callWhatsAPI(
+      whatsappApi.callWhatsAPI(
         "CF_Extend_request_new",
         "9826116769",
         username,
@@ -108,9 +106,9 @@ const ExtendJoining = ({
       setJoiningExtendDocument(null);
       setJoiningDateError("");
       setJoiningReasonError("");
-
       gettingData();
       closeModal();
+      toastAlert("Joining date requested successfully");
     } catch (error) {
       console.error("An error occurred:", error);
     }

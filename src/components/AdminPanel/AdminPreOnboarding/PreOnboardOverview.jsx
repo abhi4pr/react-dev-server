@@ -78,7 +78,7 @@ const PreOnboardingOverview = () => {
 
     {
       name: "Total Documents Filled Percentage",
-      selector: (row) => row.document_percentage,
+      selector: (row) => Math.ceil(row.documentPercentage) + "%",
       width: "5%",
       sortable: true,
       reorder: true,
