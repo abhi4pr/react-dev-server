@@ -243,6 +243,7 @@ const WFHDBankUpdate = () => {
               fieldGrid={3}
               maxLength={6}
               value={upi}
+              onChange={(e) => setUpi(e.target.value)}
             />
           </div>
 
