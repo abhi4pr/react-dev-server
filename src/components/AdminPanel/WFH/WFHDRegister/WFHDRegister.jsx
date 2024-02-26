@@ -226,6 +226,7 @@ const WFHDRegister = ({ userUpdateID }) => {
         .get(baseUrl + `get_all_designations_by_deptId/${department}`)
         .then((res) => {
           setDesignationData(res.data.data);
+          console.log(res.data.data, "-----------data");
         });
     }
   }, [department]);

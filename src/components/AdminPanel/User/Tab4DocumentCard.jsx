@@ -28,7 +28,8 @@ const Tab4DocumentCard = ({
             <h3>{documentTitle}</h3>
             <div className="documentCard_download">
               <a href={documentUrl} download>
-                <FcDownload />
+                {/* <FcDownload /> */}
+                <i class="fa fa-eye" aria-hidden="true"></i>
               </a>
             </div>
           </div>

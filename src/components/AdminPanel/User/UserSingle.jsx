@@ -30,6 +30,11 @@ const UserSingle = () => {
   const [userProfileImage, setUserProfileImage] = useState(null);
 
   const [educationData, setEducationData] = useState([]);
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+
+  const [user, setUser] = useState([]);
+
+  const [familyData, seFamilyData] = useState([]);
 
   const KRAAPI = (userId) => {
     axios.get(`${baseUrl}` + `get_single_kra/${userId}`).then((res) => {
@@ -42,7 +47,15 @@ const UserSingle = () => {
     });
   }
 
-  const [familyData, seFamilyData] = useState([]);
+  // const getData = async () => {
+  //   await axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
+  //     const fetchedData = res.data;
+  //     const { dept_id } = fetchedData;
+  //     setUser(fetchedData);
+  //     setSubDeptId(dept_id);
+  //   });
+  // };
+
   useEffect(() => {
     axios.get(baseUrl + "get_all_sittings").then((res) => {
       setDefaultSeatData(res.data.data);
@@ -56,9 +69,9 @@ const UserSingle = () => {
     KRAAPI(id);
   }, []);
 
-  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+  // const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
 
-  const [user, setUser] = useState([]);
+  // const [user, setUser] = useState([]);
   let fetchedData;
   const getData = () => {
     axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
@@ -66,7 +79,6 @@ const UserSingle = () => {
       const { dept_id } = fetchedData;
       setUser(fetchedData);
       setSubDeptId(dept_id);
-      console.log(fetchedData);
       setUserProfileImage(fetchedData.image_url);
     });
   };
@@ -86,6 +98,7 @@ const UserSingle = () => {
     );
     setRoomId(selectedOption);
   }, [defaultSeatData, user?.sitting_id]);
+
   const accordionButtons = [
     "General",
     "Professional",
@@ -96,11 +109,25 @@ const UserSingle = () => {
     // "Documents",
   ];
 
+  // This Code for Right Click Disable Purpos ---------------------------------------
+  // useEffect(() => {
+  //   const handleRightClick = (e) => {
+  //     e.preventDefault();
+  //   };
+  //   document.addEventListener("contextmenu", handleRightClick);
+
+  //   // Cleanup the event listener on component unmount
+  //   return () => document.removeEventListener("contextmenu", handleRightClick);
+  // }, []);
+
   return (
     <>
       <div className="box">
         <div id="content">
-          <div className="profileInfo_imgbox">
+          {/* <div className="profileInfo_imgbox">
+              <img src={Logo} alt="Circular Image" className="img-fluid" />
+            </div> */}
+          {/* <div className="profileInfo_imgbox">
             {user.image ? (
               <img
                 src={userProfileImage}
@@ -114,7 +141,7 @@ const UserSingle = () => {
                 className="img-fluid"
               />
             )}
-          </div>
+          </div> */}
           <FormContainer
             submitButton={false}
             mainTitle="User"

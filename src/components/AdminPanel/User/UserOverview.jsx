@@ -60,6 +60,9 @@ const UserOverview = () => {
   const [KRIData, setKRIData] = useState([]);
   const [map1, setMap1] = useState({});
 
+  const [isSummaryModal, setIsSummaryModal] = useState(false);
+  const [historyData, setHistoryData] = useState([]);
+
   const handleKRA = (userId) => {
     setIsModalOpen(true);
     KRAAPI(userId);
@@ -74,6 +77,26 @@ const UserOverview = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setKRIData([]);
+  };
+
+  // handleUpdateSummary manage here-----------------------------------
+
+  const handleUpdateSummary = (userId) => {
+    setIsSummaryModal(true);
+    SummaryData(userId);
+  };
+  const SummaryData = (userId) => {
+    axios
+      .get(`${baseUrl}` + `get_single_user_update_history/${userId}`)
+      .then((res) => {
+        setHistoryData(res.data.data);
+        console.log(res.data.data, "-------------------hostory");
+      });
+  };
+  const handleCloseSummaryModal = () => {
+    setIsSummaryModal(false);
+    // setKRIData([]);
+    setHistoryData([]);
   };
 
   function handleSeprationReason(userId, username, user_contact_no) {
@@ -258,7 +281,7 @@ const UserOverview = () => {
     },
     {
       field: "user_name",
-      headerName: "User Name",
+      headerName: "Employe Name",
       width: 120,
       renderCell: (params) => (
         <Link
@@ -273,14 +296,7 @@ const UserOverview = () => {
     {
       field: "emp_id",
       headerName: "Employee ID",
-      width: 100,
-      sortable: true,
-    },
-    { field: "Role_name", headerName: "Role", width: 110, sortable: true },
-    {
-      field: "percentage_filled",
-      headerName: "Profile Status",
-      width: 110,
+      width: 120,
       sortable: true,
     },
     {
@@ -290,9 +306,9 @@ const UserOverview = () => {
       sortable: true,
     },
     {
-      field: "designation_name",
-      headerName: "Designation",
-      width: 180,
+      field: "percentage_filled",
+      headerName: "Profile Status",
+      width: 110,
       sortable: true,
     },
     {
@@ -302,11 +318,19 @@ const UserOverview = () => {
       sortable: true,
     },
     {
+      field: "designation_name",
+      headerName: "Designation",
+      width: 180,
+      sortable: true,
+    },
+
+    {
       field: "job_type",
       headerName: "Job Type",
       width: 120,
       sortable: true,
     },
+    { field: "PersonalNumber", headerName: "Personal Contact", width: 150 },
     { field: "user_email_id", headerName: "Email", width: 230 },
     {
       field: "user_status",
@@ -426,6 +450,22 @@ const UserOverview = () => {
         </Button>
       ),
     },
+
+    {
+      field: "Summary",
+      headerName: "Summary",
+      width: 100,
+      renderCell: (params) => (
+        <Button
+          variant="contained"
+          color="warning"
+          onClick={() => handleUpdateSummary(params.row.user_id)}
+        >
+          Summary
+        </Button>
+      ),
+    },
+
     {
       field: "actions",
       headerName: "Action",
@@ -1090,7 +1130,7 @@ const UserOverview = () => {
                 name: "s.no",
                 cell: (row, index) => <div>{index + 1}</div>,
               },
-              { name: "Name", selector: (row) => row.user_name },
+              { name: "Name", selector: (row) => row.user_id },
               { name: "Department", selector: (row) => row.department_name },
               {
                 name: "Job Responsibility",
@@ -1098,6 +1138,58 @@ const UserOverview = () => {
               },
             ]}
             data={KRIData}
+            highlightOnHover
+          />
+        </>
+      </Modal>
+
+      {/* Modal for user Summary */}
+      <Modal
+        // appElement={document.getElementById("root")}
+        isOpen={isSummaryModal}
+        onRequestClose={handleCloseSummaryModal}
+        style={{
+          content: {
+            width: "80%",
+            height: "85%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <>
+          <div className="modal-header">
+            <h5 className="modal-title" id="exampleModalLabel">
+              User Update History
+            </h5>
+            <button
+              type="button"
+              className="close"
+              data-dismiss="modal"
+              aria-label="Close"
+              onClick={handleCloseSummaryModal}
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+
+          <DataTable
+            columns={[
+              {
+                name: "s.no",
+                cell: (row, index) => <div>{index + 1}</div>,
+              },
+              { name: "Name", selector: (row) => row.user_id },
+              {
+                name: "Previous Value",
+                selector: (row) => row.previous_value[0],
+              },
+            ]}
+            data={historyData}
             highlightOnHover
           />
         </>

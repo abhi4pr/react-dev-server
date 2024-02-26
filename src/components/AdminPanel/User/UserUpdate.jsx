@@ -19,11 +19,37 @@ import DocumentTab from "../../PreOnboarding/DocumentTab";
 import { baseUrl } from "../../../utils/config";
 import OccupationList from "../../../assets/js/OccupationList";
 import familyRelationList from "../../../assets/js/familyRelationList";
+import { ToastContainer } from "react-toastify";
+import IndianBankList from "../../../assets/js/IndianBankList";
 
 const castOption = ["General", "OBC", "SC", "ST"];
 const colourOptions = [
   { value: "English", label: "English" },
   { value: "Hindi", label: "Hindi" },
+  { value: "Spanish", label: "Spanish" },
+  { value: "Mandarin", label: "Mandarin" },
+  { value: "French", label: "French" },
+  { value: "Arabic", label: "Arabic" },
+  { value: "Bengali", label: "Bengali" },
+  { value: "Russian", label: "Russian" },
+  { value: "Portuguese", label: "Portuguese" },
+  { value: "Indonesian", label: "Indonesian" },
+  { value: "Urdu", label: "Urdu" },
+  { value: "German", label: "German" },
+  { value: "Japanese", label: "Japanese" },
+  { value: "Swahili", label: "Swahili" },
+  { value: "Marathi", label: "Marathi" },
+  { value: "Telugu", label: "Telugu" },
+  { value: "Turkish", label: "Turkish" },
+  { value: "Tamil", label: "Tamil" },
+  { value: "Vietnamese", label: "Vietnamese" },
+  { value: "Italian", label: "Italian" },
+  { value: "Korean", label: "Korean" },
+  { value: "Persian", label: "Persian" },
+  { value: "Polish", label: "Polish" },
+  { value: "Dutch", label: "Dutch" },
+  { value: "Greek", label: "Greek" },
+  { value: "Thai", label: "Thai" },
   { value: "Other", label: "Other" },
 ];
 
@@ -90,132 +116,125 @@ const UserUpdate = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
   const { id } = useParams();
+  const [usersData, getUsersData] = useState([]);
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { toastAlert, toastError } = useGlobalContext();
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+
+  // Genral Information Tab-------------------Start------------------------------------
+  // ---------------------Prsonal Info State Start
   const [username, setUserName] = useState("");
-
-  const [roles, setRoles] = useState("");
-  const [roledata, getRoleData] = useState([]);
-
-  const [reportL1, setReportL1] = useState("");
-  const [reportL2, setReportL2] = useState("");
-  const [reportL3, setReportL3] = useState("");
-
   const [profile, setProfile] = useState([]);
-
-  const [email, setEmail] = useState("");
   const [personalEmail, setPersonalEmail] = useState("");
-  const [validEmail, setValidEmail] = useState(true);
-
-  const [contact, setContact] = useState();
   const [personalContact, setPersonalContact] = useState();
-  const [isValidcontact, setValidContact] = useState(true);
+  const [alternateContact, setAlternateContact] = useState(null);
   const [isValidcontact1, setValidContact1] = useState(true);
   const [isContactTouched, setisContactTouched] = useState(false);
   const [isContactTouched1, setisContactTouched1] = useState(false);
+  const [gender, setGender] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [age, setAge] = useState(0);
+  const [nationality, setNationality] = useState("Indian");
+  const [maritialStatus, setMaritialStatus] = useState("");
+  const [dateOfMarraige, setDateOfMarraige] = useState("");
+  const [spouseName, setSpouseName] = useState("");
+  //---------------------Personal Info State End
 
-  const [alternateContact, setAlternateContact] = useState(null);
-
+  //--------------------Official Info State Start
+  const [jobType, setJobType] = useState("");
+  const [jobTypeData, setJobTypeData] = useState([]);
+  const [department, setDepartment] = useState("");
+  const [departmentdata, getDepartmentData] = useState([]);
+  const [subDepartmentData, setSubDepartmentData] = useState([]);
+  const [subDepartment, setSubDeparment] = useState([]);
+  const [designation, setDesignation] = useState("");
+  const [designationData, setDesignationData] = useState([]);
+  const [reportL1, setReportL1] = useState("");
+  const [reportL2, setReportL2] = useState("");
+  const [reportL3, setReportL3] = useState("");
+  const [roles, setRoles] = useState("");
+  const [roledata, getRoleData] = useState([]);
+  const [email, setEmail] = useState("");
+  const [validEmail, setValidEmail] = useState(true);
+  const [contact, setContact] = useState();
+  const [isValidcontact, setValidContact] = useState(true);
   const [loginId, setLoginId] = useState("");
   const [password, setPassword] = useState("");
-  const [incomingPassword, setIncomingPassword] = useState("");
-
-  const [jobType, setJobType] = useState("");
+  const [userStatus, setUserStatus] = useState("");
+  const [joiningDate, setJoiningDate] = useState("");
   const [sitting, setSitting] = useState();
   const [sittingValue, setSittingValue] = useState({});
-
   const [roomId, setRoomId] = useState("");
   const [refrenceData, setRefrenceData] = useState([]);
 
-  const [department, setDepartment] = useState("");
-  const [departmentdata, getDepartmentData] = useState([]);
+  //--------------------Official Info State End
+  // Genral Information Tab-------------------End------------------------------------
 
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-
-  const [usersData, getUsersData] = useState([]);
-
-  const [designation, setDesignation] = useState("");
-  const [designationData, setDesignationData] = useState([]);
-
-  const [uid, setUID] = useState({ name: "sumit.jpg" });
-  const [panUpload, setPanUpload] = useState("");
-  const [highestUpload, setHighestUpload] = useState("");
-  const [otherUpload, setOtherUpload] = useState("");
-  const [joiningDate, setJoiningDate] = useState("");
-  const [releavingDate, setReleavingDate] = useState("");
-  const [salary, setSalary] = useState(0);
-  const [incomingUserStatus, setIncomingUserStatus] = useState("");
-  const [userStatus, setUserStatus] = useState("");
-  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
-  const [tempLanguage, setTempLanguage] = useState([]);
-  const [speakingLanguage, setSpeakingLanguage] = useState("");
-  const [gender, setGender] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [nationality, setNationality] = useState("Indian");
-
-  const [age, setAge] = useState(0);
-
-  const [FatherName, setFatherName] = useState("");
-  const [motherName, setMotherName] = useState("");
-  const [hobbies, setHobbies] = useState([]);
-  const [hobbiesData, setHobbiesData] = useState([]);
-  const [bloodGroup, setBloodGroup] = useState("");
-  const [maritialStatus, setMaritialStatus] = useState("");
-  const [dateOfMarraige, setDateOfMarraige] = useState("");
-  const [address, setAddress] = useState("");
+  // Other Information Tab-------------------Start------------------------------------
+  //--------------------Other Info State Start
   const [city, setCity] = useState("");
   const [cityData, setCityData] = useState([]);
-  const [state, setState] = useState("");
+
+  const [currentAddress, setCurrentAddress] = useState("");
+  const [currentCity, setcurrentCity] = useState("");
+  const [currentState, setcurrentState] = useState("");
+  const [currentPincode, setcurrentPincode] = useState("");
+
+  const [sameAsCurrent, setSameAsCurrent] = useState(false);
+
+  const [address, setAddress] = useState("");
   const [pincode, setPincode] = useState("");
-  const [error, setError] = useState("");
+  const [state, setState] = useState("");
+  const [bloodGroup, setBloodGroup] = useState("");
+  const [hobbies, setHobbies] = useState([]);
+  const [hobbiesData, setHobbiesData] = useState([]);
+  const [tempLanguage, setTempLanguage] = useState([]);
+  const [speakingLanguage, setSpeakingLanguage] = useState("");
+  const [cast, setCast] = useState("");
 
-  // TDS State
-  const [tdsApplicable, setTdsApplicable] = useState("No");
-  const [tdsPercentage, setTdsPercentage] = useState(0);
-  const [showTdsPercentage, setShowTdsPercentage] = useState(false);
-  const [panNo, setPanNo] = useState("");
-  const [uidNo, setUidNo] = useState("");
-  const [spouseName, setSpouseName] = useState("");
-  const [otherDocuments, setOtherDocuments] = useState();
-  const [subDepartmentData, setSubDepartmentData] = useState([]);
-  const [subDepartment, setSubDeparment] = useState([]);
-  const [higestQualification, setHigestQualification] = useState("");
-  const [isValidPAN, setIsValidPAN] = useState(true);
-  const [isValidUID, setIsValidUID] = useState(true); // State to track UID validation
-  const [defaultSeatData, setDefaultSeatData] = useState([]);
+  //--------------------Other Info State End
 
-  const [uidImage, setUidImage] = useState("");
-  const [panImage, setPanImage] = useState("");
-  const [highestQualificationImage, setHighestQualificationImage] =
-    useState("");
-  const [otherImage, setOtherImage] = useState("");
-  //SalaryFields
+  //--------------------Bank Info State Start
   const [bankName, setBankName] = useState("");
   const [bankAccountNumber, setBankAccountNumber] = useState("");
   const [IFSC, setIFSC] = useState("");
   const [beneficiary, setBeneficiary] = useState("");
+  const [banktype, setAccountType] = useState("");
 
+  //--------------------Bank Info State End
+  // Other Information Tab-------------------End------------------------------------
+
+  //--------------------Family Info State Start
   const [familyDetails, setFamilyDetails] = useState([
     initialFamilyDetailsGroup,
   ]);
+  const [familyValidationErrors, setFamilyValidationErrors] = useState({});
+  // handleAddFamilyDetails define below this funciton
+  //--------------------Family Info State End
+
+  //--------------------Education Info State Start
   const [educationDetails, setEducationDetails] = useState([
     initialEducationDetailsGroup,
   ]);
 
-  const [emergencyContact, setEmergencyContact] = useState("");
-  const [emergencyContactName, setEmergencyContactName] = useState("");
-  const [emergencyContactRelation, setEmergencyContactRelation] = useState("");
-  const [emergencyContact2, setEmergencyContact2] = useState();
-  const [emergencyContactName2, setEmergencyContactName2] = useState("");
-  const [emergencyContactRelation2, setEmergencyContactRelation2] =
-    useState("");
+  // handleEducationDetailsChange define below this funciton
+  //--------------------Education Info State End
 
+  // Document Information Tab-------------------Start------------------------------------
   const [documentData, setDocumentData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [jobTypeData, setJobTypeData] = useState([]);
 
-  const [cast, setCast] = useState("");
-  const { toastAlert, toastError } = useGlobalContext();
+  // Document Information Tab-------------------End------------------------------------
 
-  const [familyValidationErrors, setFamilyValidationErrors] = useState({});
+  const [incomingPassword, setIncomingPassword] = useState("");
+  const [uid, setUID] = useState({ name: "sumit.jpg" });
+  const [releavingDate, setReleavingDate] = useState("");
+  const [salary, setSalary] = useState(0);
+  const [incomingUserStatus, setIncomingUserStatus] = useState("");
+
+  const [otherDocuments, setOtherDocuments] = useState();
+  const [higestQualification, setHigestQualification] = useState("");
+  const [defaultSeatData, setDefaultSeatData] = useState([]);
 
   const higestQualificationData = [
     "10th",
@@ -225,8 +244,32 @@ const UserUpdate = () => {
     "Post Graduation",
     "Other",
   ];
-  // const jobTypeData = ["WFO", "WFH"];
+  const bankTypeData = ["Permanent A/C", "Current A/C"];
   const genderData = ["Male", "Female", "Other"];
+
+  const familyRelations = [
+    "Brother",
+    "Sister",
+    "Mother",
+    "Father",
+    "Son",
+    "Daughter",
+    "Aunt",
+    "Uncle",
+    "Cousin",
+    "Grandmother",
+    "Grandfather",
+    "Nephew",
+    "Niece",
+    "Stepmother",
+    "Stepfather",
+    "Stepson",
+    "Stepdaughter",
+    "Half-brother",
+    "Half-sister",
+    // Add more relations as needed
+  ];
+
   const bloodGroupData = [
     "A+ (A Positive)",
     "A- (A Negetive)",
@@ -237,44 +280,105 @@ const UserUpdate = () => {
     "O+ (O Positive)",
     "O- (O Negetive)",
   ];
-  const tdsApplicableData = ["Yes", "No"];
   const statusData = ["Active", "Exit", "On Leave", "Resign"];
   const maritialStatusData = ["Married", "Unmarried"];
-  const handlePANChange = (e) => {
-    const inputPAN = e.target.value.toUpperCase();
-    setPanNo(inputPAN);
 
-    // Validate PAN when input changes
-    const isValid = validatePAN(inputPAN);
-    setIsValidPAN(isValid);
-  };
-  // Function to validate PAN
-  const validatePAN = (pan) => {
-    const panPattern = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    return panPattern.test(pan);
-  };
-  const handleUIDInputChange = (e) => {
-    const inputUID = e.target.value;
-    setUidNo(inputUID);
+  // login progress bar---------------------------------------------------------------------
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const fields = [
+      username,
+      personalEmail,
+      personalContact,
+      alternateContact,
+      gender,
+      dateOfBirth,
+      age,
+      nationality,
+      maritialStatus,
+      jobType,
+      department,
+      designation,
+      reportL1,
+      reportL2,
+      reportL3,
+      roles,
+      email,
+      contact,
+      loginId,
+      password,
+      status,
+      joiningDate,
+      currentAddress,
+      currentCity,
+      currentState,
+      currentState,
+      currentPincode,
+      address,
+      city,
+      state,
+      pincode,
+      bloodGroup,
+      hobbies,
+      speakingLanguage,
+      cast,
+      bankName,
+      bankAccountNumber,
+      beneficiary,
+      IFSC,
+      banktype,
+    ];
+    const filledFields = fields.filter((field) => field).length;
+    const progressPercentage = (filledFields / fields.length) * 100;
+    setProgress(progressPercentage);
 
-    // Validate Aadhaar number when input changes
-    const isValid = validateAadhaarNumber(inputUID);
-    setIsValidUID(isValid);
-  };
-  // Function to validate Aadhaar number (UID)
-  const validateAadhaarNumber = (uid) => {
-    // Aadhaar number format: 12 digits
-    const uidPattern = /^\d{12}$/;
-    return uidPattern.test(uid);
-  };
-  // const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
-
-  // useEffect(() => {
-  //   const selectedOption = defaultSeatData?.find(
-  //     (option) => option?.sitting_id === Number(sitting)
-  //   );
-  //   setRoomId(selectedOption);
-  // }, [sitting, refrenceData, roomId]);
+    // Display toast notifications at specific milestones
+    const milestones = [25, 50, 75, 100];
+    if (milestones.includes(progressPercentage)) {
+      // toast.info(`Progress: ${progressPercentage}%`, { position: "top-right" });
+    }
+  }, [
+    username,
+    personalEmail,
+    personalContact,
+    alternateContact,
+    gender,
+    dateOfBirth,
+    age,
+    nationality,
+    maritialStatus,
+    jobType,
+    department,
+    designation,
+    reportL1,
+    reportL2,
+    reportL3,
+    roles,
+    email,
+    contact,
+    loginId,
+    password,
+    status,
+    joiningDate,
+    currentAddress,
+    currentCity,
+    currentState,
+    currentState,
+    currentPincode,
+    address,
+    city,
+    state,
+    pincode,
+    bloodGroup,
+    hobbies,
+    speakingLanguage,
+    cast,
+    bankName,
+    bankAccountNumber,
+    beneficiary,
+    IFSC,
+    banktype,
+  ]);
 
   useEffect(() => {
     if (department) {
@@ -285,12 +389,14 @@ const UserUpdate = () => {
   }, [department]);
 
   useEffect(() => {
-    if (tdsApplicable === "Yes") {
-      setShowTdsPercentage(true);
-    } else {
-      setShowTdsPercentage(false);
+    if (department) {
+      axios
+        .get(baseUrl + `get_all_designations_by_deptId/${department}`)
+        .then((res) => {
+          setDesignationData(res.data.data);
+        });
     }
-  }, [tdsApplicable]);
+  }, [department]);
 
   useEffect(() => {
     const GetAllData = async () => {
@@ -308,8 +414,6 @@ const UserUpdate = () => {
 
       const AllUsersResponse = await axios.get(baseUrl + "get_all_users");
 
-      const AllDesiResponse = await axios.get(baseUrl + "get_all_designations");
-
       const AllJobTypesResponse = await axios.get(
         baseUrl + "get_all_job_types"
       );
@@ -317,7 +421,6 @@ const UserUpdate = () => {
       getRoleData(AllRolesResposne.data.data);
       getDepartmentData(AllDepartmentResponse.data);
       setJobTypeData(AllJobTypesResponse.data.data);
-      setDesignationData(AllDesiResponse.data.data);
       getUsersData(AllUsersResponse.data.data);
       setDefaultSeatData(AllSittingsResponse.data.data);
       setRefrenceData(RemainingSittingResponse.data.data);
@@ -421,9 +524,6 @@ const UserUpdate = () => {
         PersonalNumber,
         user_designation,
         UID,
-        pan,
-        highest_upload,
-        other_upload,
         joining_date,
         releaving_date,
         salary,
@@ -433,42 +533,29 @@ const UserUpdate = () => {
         DOB,
         user_status,
         Age,
-        fatherName,
-        motherName,
         Hobbies,
         BloodGroup,
         MartialStatus,
         DateOfMarriage,
-        tbs_applicable,
-        tds_per,
-        pan_no,
-        uid_no,
         spouse_name,
         sub_dept_id,
-        highest_qualification_name,
-        uid_url,
-        pan_url,
-        highest_upload_url,
-        other_upload_url,
         bank_name,
         ifsc_code,
         beneficiary,
         account_no,
+        account_type,
         permanent_city,
         permanent_address,
         permanent_state,
         permanent_pin_code,
+        current_address,
+        current_city,
+        current_state,
+        current_pin_code,
         cast_type,
         alternate_contact,
-        emergency_contact1,
-        emergency_contact2,
-        emergency_contact_person_name1,
-        emergency_contact_person_name2,
-        emergency_contact_relation1,
-        emergency_contact_relation2,
       } = fetchedData;
-      setPanNo(pan_no);
-      setUidNo(uid_no);
+      console.log(setAccountType(account_type), "----------");
       setSpouseName(spouse_name);
       setUserName(user_name);
       setUserStatus(user_status);
@@ -490,13 +577,7 @@ const UserUpdate = () => {
       setReportL3(Report_L3);
       setDesignation(user_designation);
       setUID(UID);
-      setUidImage(uid_url);
-      setPanUpload(pan);
-      setPanImage(pan_url);
-      setHighestUpload(highest_upload);
-      setHighestQualificationImage(highest_upload_url);
-      setOtherUpload(other_upload);
-      setOtherImage(other_upload_url);
+
       setJoiningDate(joining_date?.split("T")?.[0]);
       setReleavingDate(releaving_date?.split("T")?.[0]);
       setSalary(salary);
@@ -509,32 +590,26 @@ const UserUpdate = () => {
       setNationality(Nationality);
       setDateOfBirth(DOB.split("T")?.[0]);
       setAge(Age);
-      setFatherName(fatherName);
-      setMotherName(motherName);
       setHobbies(Hobbies);
       setBloodGroup(BloodGroup);
       setMaritialStatus(MartialStatus);
       setDateOfMarraige(DateOfMarriage?.split("T")?.[0]);
-      setTdsApplicable(tbs_applicable);
-      setTdsPercentage(tds_per);
       setSubDeparment(sub_dept_id);
-      setHigestQualification(highest_qualification_name);
       setBankName(bank_name);
       setIFSC(ifsc_code);
-      setBeneficiary(beneficiary);
+      setAccountType(account_type);
       setBankAccountNumber(account_no);
+      setBeneficiary(beneficiary);
       setCity(permanent_city);
       setAddress(permanent_address);
       setState(permanent_state);
       setPincode(permanent_pin_code);
+      setCurrentAddress(current_address);
+      setcurrentCity(current_city);
+      setcurrentState(current_state);
+      setcurrentPincode(current_pin_code);
       setCast(cast_type);
       setAlternateContact(alternate_contact);
-      setEmergencyContact(emergency_contact1);
-      setEmergencyContact2(emergency_contact2);
-      setEmergencyContactName(emergency_contact_person_name1);
-      setEmergencyContactName2(emergency_contact_person_name2);
-      setEmergencyContactRelation(emergency_contact_relation1);
-      setEmergencyContactRelation2(emergency_contact_relation2);
     });
 
     getOtherDocument();
@@ -583,150 +658,108 @@ const UserUpdate = () => {
       return toastError("Personal Contact is Required");
     } else if (!alternateContact || alternateContact == "") {
       return toastError("Alternate Contact is Required");
-    } else if (!emergencyContact || emergencyContact == "") {
-      return toastError("Emergency Contact is Required");
-    } else if (!emergencyContactName || emergencyContactName == "") {
-      return toastError("Emergency Contact Name is Required");
-    } else if (!emergencyContactRelation || emergencyContactRelation == "") {
-      return toastError("Emergency Contact Relation is Required");
     } else if (!loginId || loginId == "") {
       return toastError("Login Id is Required");
     } else if (!password || password == "") {
       return toastError("Password is Required");
-    } else if (!speakingLanguage || speakingLanguage == "") {
-      return toastError("Speaking Language is Required");
     } else if (!gender || gender == "") {
       return toastError("Gender is Required");
     } else if (!nationality || nationality == "") {
       return toastError("Nationality is Required");
     } else if (!dateOfBirth || dateOfBirth == "") {
       return toastError("Date of Birth is Required");
-    } else if (!FatherName || FatherName == "") {
-      return toastError("Father Name is Required");
-    } else if (!motherName || motherName == "") {
-      return toastError("Mother Name is Required");
-    } else if (!bloodGroup || bloodGroup == "") {
-      return toastError("Blood Group is Required");
     } else if (
       !maritialStatus ||
       maritialStatus == "" ||
       maritialStatus.length == 0
     ) {
       return toastError("Maritial Status is Required");
-    } else if (!address || address == "") {
-      return toastError("Address is Required");
-    } else if (!city || city == "") {
-      return toastError("City is Required");
-    } else if (!state || state == "") {
-      return toastError("State/UT is Required");
-    } else if (!pincode || pincode == "") {
-      return toastError("Pincode should be 6 number long");
     } else if (!joiningDate || joiningDate == "") {
       return toastError("Joining Date is Required");
     } else if (!userStatus || userStatus == "") {
       return toastError("Status is Required");
-    } else if (!bankName || bankName == "") {
-      return toastError("Bank Name is Required");
-    } else if (!bankAccountNumber || bankAccountNumber == "") {
-      return toastError("Bank Account Number is Required");
     } else if (!username || username == "") {
       return toastError("User Name Error is required");
     }
-
-    if (jobType == "WFO" && sitting == "") {
-      return toastError("Sitting Error is required");
-    }
     const formData = new FormData();
-    formData.append("user_status", userStatus);
-    formData.append("user_id", id);
+    //personal info payload Start
+    // formData.append("user_id", id);
     formData.append("user_name", username);
-    formData.append("role_id", roles);
     formData.append("image", profile);
+    formData.append("Personal_email", personalEmail);
+    formData.append("personal_number", personalContact);
+    formData.append("alternate_contact", alternateContact);
+    formData.append("Gender", gender);
+    formData.append("DOB", dateOfBirth);
+    formData.append("Age", age);
+    formData.append("Nationality", nationality);
+    formData.append("MartialStatus", maritialStatus);
+    formData.append("DateofMarriage", dateOfMarraige);
+    formData.append("spouse_name", spouseName);
+    //personal info payload End
+
+    //offcial info payload Start
+    formData.append("job_type", jobType);
+    formData.append("dept_id", department);
+    formData.append("sub_dept_id", subDepartment);
+    formData.append("user_designation", designation);
+    formData.append("report_L1", Number(reportL1));
+    formData.append("report_L2", Number(reportL2));
+    formData.append("report_L3", Number(reportL3));
+    formData.append("role_id", roles);
     formData.append("user_email_id", email);
-    formData.append("user_login_id", loginId);
-    // formData.append("user_login_password", password);
     formData.append("user_contact_no", contact ? contact : "");
+    formData.append("user_login_id", loginId);
+    formData.append("user_login_password", password);
+    formData.append("user_status", userStatus);
     formData.append("sitting_id", jobType === "WFH" ? 0 : Number(sitting));
     formData.append(
       "room_id",
       jobType === "WFH" || jobType === "WFHD" ? "1" : roomId
     );
-    // formData.append("room_id", roomId);
-    formData.append("dept_id", department);
-    formData.append("job_type", jobType);
-    formData.append("personal_number", personalContact);
-    formData.append("Personal_email", personalEmail);
-    formData.append("alternate_contact", alternateContact);
-    // console.log(reportL1, "report here");
-    formData.append("report_L1", Number(reportL1));
-    formData.append("report_L2", Number(reportL2));
-    formData.append("report_L3", Number(reportL3));
-    formData.append("user_designation", designation);
-
-    formData.append("UID", uid);
-    formData.append("pan", panUpload);
-    formData.append("highest_upload", highestUpload);
-    formData.append("other_upload", otherUpload);
     formData.append("joining_date", joiningDate);
-    formData.append("releaving_date", releavingDate);
-    formData.append("salary", Number(salary));
+    // formData.append("room_id", roomId);
 
-    formData.append("SpokenLanguages", speakingLanguage);
-    formData.append("Gender", gender);
+    //offcial info payload End
 
-    formData.append("Nationality", nationality);
-    formData.append("DOB", dateOfBirth);
-    formData.append("Age", age);
-    formData.append("FatherName", FatherName);
-    formData.append("MotherName", motherName);
-    formData.append(
-      "Hobbies",
-      hobbies?.map((option) => option?.value)
-    );
-    formData.append("BloodGroup", bloodGroup);
-    formData.append("MartialStatus", maritialStatus);
-    formData.append("DateofMarriage", dateOfMarraige);
-    formData.append("permanent_address", address);
-    formData.append("permanent_city", city);
-    formData.append("permanent_state", state);
-    formData.append("permanent_pin_code", Number(pincode));
+    // formData.append("UID", uid);
+    // formData.append("releaving_date", releavingDate);
+    // formData.append("salary", Number(salary));
 
-    formData.append("bank_name", bankName);
-    formData.append("ifsc_code", IFSC);
-    formData.append("account_no", bankAccountNumber);
+    // formData.append("SpokenLanguages", speakingLanguage);
 
-    formData.append("tds_applicable", tdsApplicable);
-    formData.append("tds_per", tdsPercentage);
-    formData.append("pan_no", panNo);
-    formData.append("uid_no", uidNo);
+    // formData.append(
+    //   "Hobbies",
+    //   hobbies?.map((option) => option?.value)
+    // );
+    // formData.append("BloodGroup", bloodGroup);
+    // formData.append("permanent_address", address);
+    // formData.append("permanent_city", city);
+    // formData.append("permanent_state", state);
+    // formData.append("permanent_pin_code", Number(pincode));
 
-    //Emergency Contact fields
-    formData.append("emergency_contact1", emergencyContact);
-    formData.append("emergency_contact_person_name1", emergencyContactName);
-    formData.append("emergency_contact_relation1", emergencyContactRelation);
-    formData.append(
-      "emergency_contact2",
-      emergencyContact2 ? emergencyContact2 : ""
-    );
-    formData.append("emergency_contact_person_name2", emergencyContactName2);
-    formData.append("emergency_contact_relation2", emergencyContactRelation2);
+    // formData.append("bank_name", bankName);
+    // formData.append("ifsc_code", IFSC);
+    // formData.append("account_no", bankAccountNumber);
 
-    // formData.append("spouse_name", spouseName);
-    formData.append("sub_dept_id", subDepartment);
-    formData.append("highest_qualification_name", higestQualification);
-    formData.append("cast_type", cast);
-    formData.append('att_status', 'document_upload')
+    // formData.append("highest_qualification_name", higestQualification);
+    // formData.append("cast_type", cast);
+    // formData.append("att_status", "document_upload");
 
     const formDataa = new FormData();
     if (personalEmail && personalContact) {
       setLoading(true);
 
       await axios
-        .put(`${baseUrl}` + `update_user`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
+        .put(
+          `${baseUrl}` + `update_user_for_general_information/${id}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        )
         .then((res) => {
           setLoading(false);
         })
@@ -735,13 +768,22 @@ const UserUpdate = () => {
           console.error(err);
         });
 
+      // new api ------------------------------------------------------
+      await axios
+        .post(baseUrl + "update_user_history", formData)
+        .then((res) => {
+          console.log("History sent successfully:", res);
+        })
+        .catch((error) => {
+          console.log("Failed to send History:", error);
+        });
+
       if (reportL1 !== "") {
         axios
           .post(baseUrl + "add_send_user_mail", {
             email: email,
             subject: "User Registration",
             text: "A new user has been registered.",
-            // attachment: selectedImage,
             login_id: loginId,
             name: username,
             password: password,
@@ -759,52 +801,6 @@ const UserUpdate = () => {
           username,
           ["You have assinge Report L1", "ok"]
         );
-      }
-
-      for (const elements of familyDetails) {
-        let payload = {
-          user_id: id,
-          name: elements.name,
-          DOB: elements.DOB,
-          relation: elements.relation,
-          contact: elements.contact,
-          occupation: elements.occupation,
-          annual_income: elements.annual_income,
-        };
-
-        if (elements.family_id) {
-          payload.family_id = elements.family_id;
-        }
-        try {
-          const response = await axios.put(baseUrl + "update_family", payload);
-        } catch (error) {
-          console.error("Error updating family details:", error);
-        }
-      }
-
-      for (const elements of educationDetails) {
-        let payload = {
-          user_id: id,
-          title: elements.title,
-          institute_name: elements.institute_name,
-          from_year: elements.from_year,
-          to_year: elements.to_year,
-          percentage: elements.percentage,
-          stream: elements.stream,
-          specialization: elements.specialization,
-        };
-
-        if (elements.education_id) {
-          payload.education_id = elements.education_id;
-        }
-        try {
-          const response = await axios.put(
-            baseUrl + "update_education",
-            payload
-          );
-        } catch (error) {
-          console.error("Error Updating Education details:", error);
-        }
       }
 
       const mandatoryDocTypes = ["10th", "12th", "Graduation"];
@@ -868,21 +864,11 @@ const UserUpdate = () => {
         formDataa.append("field_name", element.field_name);
         formDataa.append("lastupdated_by", loginUserId);
         formDataa.append("field_value", element.field_value);
-        axios.put(
-          `${baseUrl}` + `updateuserotherfielddata/${id}`,
-          // {
-          //   id:element.id,
-          //   field_name: element.field_name,
-          //   lastUpdatedBy: loginUserId,
-          //   field_value: element.field_value,
-          // }
-          formDataa,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        axios.put(`${baseUrl}` + `updateuserotherfielddata/${id}`, formDataa, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
         formDataa.delete("id");
         formDataa.delete("field_name");
         formDataa.delete("lastupdated_by");
@@ -914,6 +900,163 @@ const UserUpdate = () => {
       } else if (validEmail != true) {
         alert("Enter Valid Email");
       }
+    }
+  };
+
+  const handleSubmitOtherDetails = async (e) => {
+    e.preventDefault();
+    if (!currentAddress || currentAddress == "") {
+      return toastError("Current Address is required");
+    } else if (!currentCity || currentCity == "") {
+      return toastError("Current city is required");
+    } else if (!currentState || currentState == "") {
+      return toastError("Current state is required");
+    } else if (!currentPincode || currentPincode == "") {
+      return toastError("Current Pincode is required");
+    }
+    try {
+      const response = await axios.put(
+        baseUrl + `update_user_for_other_details/${id}`,
+        {
+          permanent_city: city,
+          permanent_address: address,
+          permanent_state: state,
+          permanent_pin_code: Number(pincode),
+          current_address: currentAddress,
+          current_city: currentCity,
+          current_pin_code: Number(currentPincode),
+          current_state: currentState,
+          BloodGroup: bloodGroup,
+          Hobbies: hobbies.map((hobby) => hobby.value),
+          SpokenLanguages: speakingLanguage,
+          cast_type: cast,
+        }
+      );
+      toastAlert("Other Details Update");
+      console.log("Update successful", response.data);
+    } catch (error) {
+      console.error(
+        "Update failed",
+        error.response ? error.response.data : error
+      );
+    }
+  };
+
+  const handleSubmitBank = async (e) => {
+    e.preventDefault();
+    if (!bankName || bankName == "") {
+      return toastError("bank name is required");
+    } else if (!bankAccountNumber || bankAccountNumber == "") {
+      return toastError("bank account number is required");
+    } else if (!IFSC || IFSC == "") {
+      return toastError("IFSC is required");
+    } else if (!banktype || banktype == "") {
+      return toastError("Bank Type is required");
+    }
+    try {
+      const response = await axios.put(
+        baseUrl + `update_user_for_bank_details/${id}`,
+        {
+          // Bank info payload Start
+          bank_name: bankName,
+          account_no: bankAccountNumber,
+          ifsc_code: IFSC,
+          beneficiary: beneficiary,
+          account_type: banktype,
+          // Bank info payload End
+        },
+        setActiveAccordionIndex((prev) => prev + 1)
+      );
+      toastAlert("Bank Details Update");
+      console.log("Update successful", response.data);
+    } catch (error) {
+      console.error(
+        "Update failed",
+        error.response ? error.response.data : error
+      );
+    }
+  };
+  const handleSubmitFamily = () => {
+    for (const elements of familyDetails) {
+      let payload = {
+        user_id: id,
+        name: elements.name,
+        DOB: elements.DOB,
+        relation: elements.relation,
+        contact: elements.contact,
+        occupation: elements.occupation,
+        annual_income: elements.annual_income,
+      };
+
+      if (elements.family_id) {
+        payload.family_id = elements.family_id;
+      }
+      try {
+        toastAlert("Family Details Update");
+        const response = axios.put(baseUrl + "update_family", payload);
+      } catch (error) {
+        console.error("Error updating family details:", error);
+      }
+    }
+  };
+  const handleSubmitEducation = () => {
+    for (const elements of educationDetails) {
+      let payload = {
+        user_id: id,
+        title: elements.title,
+        institute_name: elements.institute_name,
+        from_year: elements.from_year,
+        to_year: elements.to_year,
+        percentage: elements.percentage,
+        stream: elements.stream,
+        specialization: elements.specialization,
+      };
+
+      if (elements.education_id) {
+        payload.education_id = elements.education_id;
+      }
+      try {
+        toastAlert("Family Details Update");
+        const response = axios.put(baseUrl + "update_education", payload);
+      } catch (error) {
+        console.error("Error Updating Education details:", error);
+      }
+    }
+  };
+  const handleSubmitDocument = async () => {
+    const isMandatoryDocMissing = documentData.some(
+      (doc) =>
+        mandatoryDocTypes.includes(doc.document.doc_type) &&
+        doc.doc_image &&
+        doc.file
+    );
+
+    if (isMandatoryDocMissing) {
+      toastAlert("Please fill all mandatory fields");
+      return;
+    } else {
+      for (const document of documentData) {
+        if (document.file) {
+          let formData = new FormData();
+          formData.append("doc_image", document.file);
+          formData.append("_id", document._id);
+          formData.append(
+            "status",
+            document.status == "Document Uploaded"
+              ? "Verification Pending"
+              : document.status
+          );
+          await axios.put(baseUrl + "update_user_doc", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+        } else {
+          console.log(`No file uploaded for document ${document._id}`);
+        }
+      }
+      toastAlert("Documents Updated");
+      getDocuments();
     }
   };
 
@@ -1001,7 +1144,7 @@ const UserUpdate = () => {
 
   // After form submittion navigate
   if (isFormSubmitted) {
-    return <Navigate to="/admin/user-overview" />;
+    // return <Navigate to="/admin/user-overview" />;
   }
 
   // Password Auto Genrate
@@ -1018,10 +1161,32 @@ const UserUpdate = () => {
     setPassword(generatePassword);
   };
 
+  // const generateLoginId = () => {
+  //   const randomSuffix = Math.floor(Math.random() * 1000);
+  //   const generatedLoginId = `${username}@${randomSuffix}`;
+  //   setLoginId(generatedLoginId);
+  // };
+
   const generateLoginId = () => {
-    const randomSuffix = Math.floor(Math.random() * 1000);
-    const generatedLoginId = `${username}@${randomSuffix}`;
+    const userName = username.trim().toLowerCase().split(" ");
+
+    const loginIdOption1 = userName[0] + userName[1].charAt(0);
+
+    const loginIdOption2 = userName[0].charAt(0) + userName[1];
+
+    const loginIdOption3 = userName.join(".");
+
+    // Randomly choose one of the options
+    const randomIndex = Math.floor(Math.random() * 3);
+    const generatedLoginId = [loginIdOption1, loginIdOption2, loginIdOption3][
+      randomIndex
+    ];
+
     setLoginId(generatedLoginId);
+
+    if (generatedLoginId.length > 0) {
+      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+    }
   };
 
   const handleLoginIdChange = (event) => {
@@ -1130,16 +1295,30 @@ const UserUpdate = () => {
 
   const accordionButtons = [
     "General",
-    "Personal",
-    "Salary",
-    // "Documents",
-    "Family Details",
-    "Education Details",
+    "Other Details",
+    "Educaiton & Family",
     "Documents Update",
   ];
 
+  const handleCheckboxChange = (e) => {
+    const { checked } = e.target;
+    setSameAsCurrent(checked);
+    if (checked) {
+      setAddress(currentAddress);
+      setCity(currentCity);
+      setState(currentState);
+      setPincode(currentPincode);
+    } else {
+      setAddress("");
+      setCity("");
+      setState("");
+      setPincode("");
+    }
+  };
+
   const genralFields = (
     <>
+      <div className="personal_header">Personal Details</div>
       <FieldContainer
         label="Full Name"
         astric={true}
@@ -1147,6 +1326,120 @@ const UserUpdate = () => {
         value={username}
         onChange={(e) => setUserName(e.target.value)}
       />
+      <FieldContainer
+        label="Personal Email"
+        astric={true}
+        type="email"
+        fieldGrid={3}
+        required={false}
+        value={personalEmail}
+        onChange={(e) => setPersonalEmail(e.target.value)}
+      />
+      <FieldContainer
+        label="Personal Contact "
+        astric={true}
+        type="number"
+        fieldGrid={3}
+        value={personalContact}
+        required={false}
+        onChange={handlePersonalContactChange}
+        onBlur={handleContentBlur}
+      />
+      {isContactTouched1 && !isValidcontact1 && (
+        <p style={{ color: "red" }}>*Please enter a valid Number</p>
+      )}
+      <ContactNumberReact
+        astric={true}
+        label="Alternate Contact"
+        parentComponentContact={alternateContact}
+        setParentComponentContact={setAlternateContact}
+      />
+      <div className="form-group col-3">
+        <label className="form-label">
+          Gender <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={genderData?.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
+          }))}
+          value={{
+            value: gender,
+            label: `${gender}`,
+          }}
+          onChange={(e) => {
+            setGender(e.value);
+          }}
+          required
+        />
+      </div>
+      <div className="from-group col-3">
+        <label className="form-label">
+          DOB <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <input
+          label="DOB"
+          type="date"
+          className="form-control"
+          value={dateOfBirth}
+          onChange={handleDateChange}
+        />
+      </div>
+      {dateOfBirth !== "" && (
+        <FieldContainer fieldGrid={3} label="Age" value={age} />
+      )}
+      <FieldContainer
+        label="Nationality"
+        astric={true}
+        fieldGrid={3}
+        value={nationality}
+        onChange={(e) => setNationality(e.target.value)}
+      />
+      <div className="form-group col-3">
+        <label className="form-label">
+          Maritial Status <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={maritialStatusData?.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
+          }))}
+          value={{
+            value: maritialStatus,
+            label: `${maritialStatus}`,
+          }}
+          onChange={(e) => {
+            setMaritialStatus(e.value);
+          }}
+          required={false}
+        />
+      </div>
+      {maritialStatus == "Married" && (
+        <FieldContainer
+          label="Spouse Name"
+          type="text"
+          fieldGrid={3}
+          value={spouseName}
+          onChange={(e) => setSpouseName(e.target.value)}
+          required={false}
+        />
+      )}
+      {maritialStatus == "Married" && (
+        <FieldContainer
+          label="Date Of Marriage"
+          type="date"
+          fieldGrid={3}
+          value={dateOfMarraige}
+          onChange={(e) => setDateOfMarraige(e.target.value)}
+          required={false}
+        />
+      )}
+      {/* Other Info Inputs------------------------End------------ */}
+
+      {/* Official Info Inputs------------------------Start------------ */}
+      <div className="personal_header">Official Details</div>
       <div className="form-group col-3">
         <label className="form-label">
           Job Type <sup style={{ color: "red" }}>*</sup>
@@ -1167,48 +1460,6 @@ const UserUpdate = () => {
           required
         />
       </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Designation <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={designationData?.map((option) => ({
-            value: option.desi_id,
-            label: `${option.desi_name}`,
-          }))}
-          value={{
-            value: designation,
-            label:
-              designationData?.find((user) => user.desi_id == designation)
-                ?.desi_name || "",
-          }}
-          onChange={(e) => {
-            setDesignation(e.value);
-          }}
-          required
-        />
-      </div>
-
-      <div className="form-group col-3">
-        <label className="form-label">Category</label>
-        <Select
-          className=""
-          options={castOption?.map((option) => ({
-            value: option,
-            label: `${option}`,
-          }))}
-          value={{
-            value: cast,
-            label: cast,
-          }}
-          onChange={(e) => {
-            setCast(e.value);
-          }}
-          required
-        />
-      </div>
-
       <div className="form-group col-3">
         <label className="form-label">
           Department Name <sup style={{ color: "red" }}>*</sup>
@@ -1253,7 +1504,28 @@ const UserUpdate = () => {
           required
         />
       </div>
-
+      <div className="form-group col-3">
+        <label className="form-label">
+          Designation <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={designationData?.map((option) => ({
+            value: option.desi_id,
+            label: `${option.desi_name}`,
+          }))}
+          value={{
+            value: designation,
+            label:
+              designationData?.find((user) => user.desi_id == designation)
+                ?.desi_name || "",
+          }}
+          onChange={(e) => {
+            setDesignation(e.value);
+          }}
+          required
+        />
+      </div>
       <div className="form-group col-3">
         <label className="form-label">
           Report L1 <sup style={{ color: "red" }}>*</sup>
@@ -1276,7 +1548,6 @@ const UserUpdate = () => {
           required
         />
       </div>
-
       <div className="form-group col-3">
         <label className="form-label">Report L2</label>
         <Select
@@ -1318,7 +1589,6 @@ const UserUpdate = () => {
           required={false}
         />
       </div>
-
       <div className="form-group col-3">
         <label className="form-label">
           Role <sup style={{ color: "red" }}>*</sup>
@@ -1338,7 +1608,6 @@ const UserUpdate = () => {
           }}
         ></Select>
       </div>
-
       <FieldContainer
         label="Official Email"
         type="email"
@@ -1348,15 +1617,7 @@ const UserUpdate = () => {
         onChange={handleEmailChange}
       />
       {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
-      <FieldContainer
-        label="Personal Email"
-        astric={true}
-        type="email"
-        fieldGrid={3}
-        required={false}
-        value={personalEmail}
-        onChange={(e) => setPersonalEmail(e.target.value)}
-      />
+
       <FieldContainer
         label="Official Contact"
         type="number"
@@ -1369,70 +1630,6 @@ const UserUpdate = () => {
       {(isContactTouched || contact?.length >= 10) && !isValidcontact && (
         <p style={{ color: "red" }}>*Please enter a valid Number</p>
       )}
-      <FieldContainer
-        label="Personal Contact "
-        astric={true}
-        type="number"
-        fieldGrid={3}
-        value={personalContact}
-        required={false}
-        onChange={handlePersonalContactChange}
-        onBlur={handleContentBlur}
-      />
-      {isContactTouched1 && !isValidcontact1 && (
-        <p style={{ color: "red" }}>*Please enter a valid Number</p>
-      )}
-
-      <ContactNumberReact
-        astric={true}
-        label="Alternate Contact"
-        parentComponentContact={alternateContact}
-        setParentComponentContact={setAlternateContact}
-      />
-
-      <ContactNumberReact
-        label="Emergency Contact1"
-        astric={true}
-        parentComponentContact={emergencyContact}
-        setParentComponentContact={setEmergencyContact}
-      />
-
-      <FieldContainer
-        label="Emergency Contact 1 Person Name"
-        astric={true}
-        fieldGrid={3}
-        value={emergencyContactName}
-        onChange={(e) => setEmergencyContactName(e.target.value)}
-      />
-
-      <FieldContainer
-        label="Emergency Contact 1 Person Relation"
-        astric={true}
-        fieldGrid={3}
-        value={emergencyContactRelation}
-        onChange={(e) => setEmergencyContactRelation(e.target.value)}
-      />
-
-      <ContactNumberReact
-        label="Emergency Contact2"
-        parentComponentContact={emergencyContact2}
-        setParentComponentContact={setEmergencyContact2}
-      />
-
-      <FieldContainer
-        label="Emergency Contact 2 Person Name"
-        fieldGrid={3}
-        value={emergencyContactName2}
-        onChange={(e) => setEmergencyContactName2(e.target.value)}
-      />
-
-      <FieldContainer
-        label="Emergency Contact 2 Person Relation"
-        fieldGrid={3}
-        value={emergencyContactRelation2}
-        onChange={(e) => setEmergencyContactRelation2(e.target.value)}
-      />
-
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
           <label>
@@ -1482,97 +1679,6 @@ const UserUpdate = () => {
       </div>
       <div className="form-group col-3">
         <label className="form-label">
-          Seat Number <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={refrenceData?.map((option) => ({
-            value: `${option?.sitting_id}`,
-            label: `${option?.sitting_ref_no} | ${option?.sitting_area}`,
-          }))}
-          value={sittingValue}
-          onChange={(e) => {
-            const selectedSittingId = e.value;
-            setSitting(selectedSittingId);
-            const selectedOption = refrenceData.find(
-              (option) => option.sitting_id === Number(selectedSittingId)
-            );
-            setRoomId(selectedOption);
-          }}
-          required={false}
-        />
-      </div>
-
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
-        >
-          <ArrowForwardIosIcon />
-        </button>
-      </div>
-    </>
-  );
-
-  const salaryFields = (
-    <>
-      <div className="from-group col-3">
-        <label className="form-label">
-          Joining Date <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <input
-          type="date"
-          className="form-control"
-          value={joiningDate}
-          onChange={(e) => setJoiningDate(e.target.value)}
-        />
-      </div>
-
-      {(jobType === "WFH" || jobType === "WFHD") && (
-        <>
-          <FieldContainer
-            label="Salary"
-            type="number"
-            fieldGrid={3}
-            value={salary}
-            onChange={(e) => setSalary(e.target.value)}
-          />
-          <div className="form-group col-3">
-            <label className="form-label">
-              TDS Applicable<sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              className=""
-              options={tdsApplicableData?.map((option) => ({
-                value: `${option}`,
-                label: `${option}`,
-              }))}
-              value={{
-                value: tdsApplicable,
-                label: tdsApplicable,
-              }}
-              onChange={(e) => {
-                const selectedValue = e.value;
-                setTdsApplicable(e.value);
-                setShowTdsPercentage(selectedValue === "Yes");
-              }}
-              // required
-            />
-          </div>
-          {showTdsPercentage && (
-            <FieldContainer
-              label="TDS Percentage"
-              fieldGrid={3}
-              type="number"
-              value={tdsPercentage}
-              required={false}
-              onChange={(e) => setTdsPercentage(e.target.value)}
-            />
-          )}
-        </>
-      )}
-      <div className="form-group col-3">
-        <label className="form-label">
           Status <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
@@ -1591,7 +1697,19 @@ const UserUpdate = () => {
           required
         />
       </div>
-      {userStatus == "Resign" && (
+      <div className="from-group col-3">
+        <label className="form-label">
+          Joining Date <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <input
+          type="date"
+          className="form-control"
+          value={joiningDate}
+          onChange={(e) => setJoiningDate(e.target.value)}
+        />
+      </div>
+
+      {/* {userStatus == "Resign" && (
         <FieldContainer
           type="date"
           label="Date of Resign"
@@ -1599,38 +1717,15 @@ const UserUpdate = () => {
           value={releavingDate}
           onChange={(e) => setReleavingDate(e.target.value)}
         />
-      )}
+      )} */}
 
-      <FieldContainer
-        label="Bank Name"
-        astric={true}
-        value={bankName}
-        onChange={(e) => setBankName(e.target.value)}
-      />
-      <FieldContainer
-        label="Bank Account Number"
-        astric={true}
-        value={bankAccountNumber}
-        onChange={(e) => setBankAccountNumber(e.target.value)}
-      />
-      <FieldContainer
-        label="IFSC"
-        astric={true}
-        value={IFSC}
-        onChange={(e) => setIFSC(e.target.value.toUpperCase())}
-      />
-      <FieldContainer
-        label="Beneficiary"
-        value={beneficiary}
-        onChange={(e) => setBeneficiary(e.target.value)}
-      />
-
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmit}
         >
-          <ArrowBackIosIcon />
+          Update
         </button>
         <button
           className="btn btn-primary"
@@ -1641,271 +1736,138 @@ const UserUpdate = () => {
       </div>
     </>
   );
+  {
+    /* Official Info Inputs------------------------End------------ */
+  }
 
-  // const documentsFields = (
-  //   <>
-  //     <FieldContainer
-  //       label="UID Number"
-  //       onChange={handleUIDInputChange}
-  //       fieldGrid={5}
-  //       type="text"
-  //       required={false}
-  //       value={uidNo}
-  //     />
-
-  //     <FieldContainer
-  //       label="UID"
-  //       onChange={(e) => setUID(e.target.files[0])}
-  //       fieldGrid={5}
-  //       type="file"
-  //       required={false}
-  //     />
-
-  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-  //       <div className="form-group download_btn">
-  //         <label>&nbsp;</label>
-  //         {uidImage && (
-  //           <a href={uidImage} download>
-  //             <i className="bi bi-cloud-arrow-down"></i> UID Download{" "}
-  //           </a>
-  //         )}
-  //       </div>
-  //     </div>
-  //     <FieldContainer
-  //       label="PAN Number"
-  //       onChange={handlePANChange}
-  //       fieldGrid={5}
-  //       type="text"
-  //       required={false}
-  //       value={panNo}
-  //     />
-
-  //     <FieldContainer
-  //       label="Pan Image"
-  //       onChange={(e) => setPanUpload(e.target.files[0])}
-  //       fieldGrid={5}
-  //       type="file"
-  //       required={false}
-  //     />
-  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-  //       <div className="form-group download_btn">
-  //         <label>&nbsp;</label>
-  //         {panImage && (
-  //           <a href={panImage} download>
-  //             <i className="bi bi-cloud-arrow-down"></i> PAN Download{" "}
-  //           </a>
-  //         )}
-  //       </div>
-  //     </div>
-
-  //     <div className="form-group col-5">
-  //       <label className="form-label">Higest Qualification</label>
-  //       <Select
-  //         className=""
-  //         options={higestQualificationData?.map((option) => ({
-  //           value: `${option}`,
-  //           label: `${option}`,
-  //         }))}
-  //         value={{
-  //           value: higestQualification,
-  //           label: `${higestQualification}`,
-  //         }}
-  //         onChange={(e) => {
-  //           setHigestQualification(e.value);
-  //         }}
-  //         required
-  //       />
-  //     </div>
-  //     <FieldContainer
-  //       label="Highest Qualification"
-  //       onChange={(e) => setHighestUpload(e.target.files[0])}
-  //       fieldGrid={5}
-  //       type="file"
-  //       required={false}
-  //     />
-  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-  //       <div className="form-group download_btn">
-  //         <label>&nbsp;</label>
-  //         {highestQualificationImage && (
-  //           <a href={highestQualificationImage} download>
-  //             <i className="bi bi-cloud-arrow-down"></i> Highest
-  //             QualificationImage Download{" "}
-  //           </a>
-  //         )}
-  //       </div>
-  //     </div>
-  //     <FieldContainer
-  //       label="Other Image"
-  //       onChange={(e) => setOtherUpload(e.target.files[0])}
-  //       fieldGrid={10}
-  //       type="file"
-  //       required={false}
-  //     />
-  //     <div className="col-xl-2 col-lg-2 col-md-2 col-sm-12">
-  //       <div className="form-group download_btn">
-  //         <label>&nbsp;</label>
-  //         {otherImage && (
-  //           <a href={otherImage} download>
-  //             <i className="bi bi-cloud-arrow-down"></i> Highest
-  //             QualificationImage Download{" "}
-  //           </a>
-  //         )}
-  //       </div>
-  //     </div>
-  //     {!isValidPAN && <p style={{ color: "red" }}>Invalid PAN format</p>}
-  //     {!isValidUID && (
-  //       <p style={{ color: "red" }}>Invalid Aadhaar number format</p>
-  //     )}
-
-  //     <div style={{ display: "flex", justifyContent: "space-between" }}>
-  //       <button
-  //         className="btn btn-primary"
-  //         onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
-  //       >
-  //         <ArrowBackIosIcon />
-  //       </button>
-  //       <button
-  //         className="btn btn-primary"
-  //         onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
-  //       >
-  //         <ArrowForwardIosIcon />
-  //       </button>
-  //     </div>
-
-  //     {otherDocuments && (
-  //       <div>
-  //         <h3>Other Documents</h3>
-  //         {otherDocuments?.map((item, index) => {
-  //           return (
-  //             <div key={index} className="d-flex ">
-  //               <input
-  //                 type="text"
-  //                 className="form-control mt-2 col-6 me-2"
-  //                 value={item.field_name}
-  //                 onChange={(e) => otherDocumentNameChangeHandle(e, index)}
-  //               />
-  //               <input
-  //                 className="form-control mt-2 col-6 "
-  //                 label={item.field_name}
-  //                 onChange={(e) => otherDocumentImageChangeHandler(e, index)}
-  //                 type="file"
-  //                 required={false}
-  //               />
-  //             </div>
-  //           );
-  //         })}
-  //       </div>
-  //     )}
-  //   </>
-  // );
-
-  const personalFields = (
+  const otherFields = (
     <>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Spoken Languages <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          isMulti
-          name="langauages"
-          options={colourOptions}
-          className="basic-multi-select"
-          classNamePrefix="select"
-          value={tempLanguage}
-          onChange={handleLanguageSelect}
+      {/* Other Info Inputs------------------------Start------------ */}
+      <div className="personal_header">Other Details</div>
+      {/* Current Address input-- */}
+
+      <div className="row">
+        <FieldContainer
+          label="Current Address"
+          fieldGrid={12}
+          astric={true}
+          value={currentAddress}
+          onChange={(e) => setCurrentAddress(e.target.value)}
           required={false}
         />
-      </div>
-      <div className="form-group col-3">
-        <label className="form-label">
-          Gender <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={genderData?.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: gender,
-            label: `${gender}`,
-          }}
+
+        {console.log(banktype, "-------------bank type")}
+        {console.log(city, "-------------parmanetnt city")}
+        <div className="form-group col-4">
+          <label className="form-label">
+            Current City <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={cityData.map((city) => ({
+              value: city.city_name,
+              label: city.city_name,
+            }))}
+            onChange={(e) => setcurrentCity(e ? e.value : "")}
+            required={true}
+            // value={currentCity}
+            value={{
+              value: currentCity,
+              label:
+                cityData.find((gotCity) => gotCity.city_name == currentCity)
+                  ?.city_name || "",
+            }}
+            placeholder="Select a city..."
+            isClearable
+          />
+        </div>
+
+        <div className="form-group col-4">
+          <IndianStates
+            newValue={currentState}
+            onChange={(option) => setcurrentState(option ? option.value : null)}
+          />
+        </div>
+
+        <FieldContainer
+          label="Current Pincode"
+          type="number"
+          astric={true}
+          fieldGrid={4}
+          maxLength={6}
+          value={currentPincode}
           onChange={(e) => {
-            setGender(e.value);
+            const value = e.target.value;
+            if (/^\d{0,6}$/.test(value)) {
+              setcurrentPincode(value);
+            }
           }}
-          required
+          required={false}
         />
+        {/*  Parmanent Address here------------ */}
+        <div className="board_form form_checkbox">
+          <label className="cstm_check" style={{ color: "red" }}>
+            Same as Current Addresss
+            <input
+              className="form-control"
+              type="checkbox"
+              checked={sameAsCurrent}
+              onChange={handleCheckboxChange}
+            />
+            <span className="checkmark"></span>
+          </label>
+        </div>
       </div>
-
+      <hr className="mb-3" />
       <FieldContainer
-        label="Nationality"
-        astric={true}
-        value={nationality}
-        onChange={(e) => setNationality(e.target.value)}
-      />
-
-      <div className="from-group col-6">
-        <label className="form-label">
-          DOB <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <input
-          label="DOB"
-          type="date"
-          className="form-control"
-          value={dateOfBirth}
-          onChange={handleDateChange}
-        />
-      </div>
-      {dateOfBirth !== "" && <FieldContainer label="Age" value={age} />}
-      <FieldContainer
-        label="Father's Name"
-        astric={true}
-        value={FatherName}
+        label="Parmanent Address"
+        fieldGrid={12}
+        value={address}
+        onChange={(e) => setAddress(e.target.value)}
         required={false}
-        onChange={(e) => setFatherName(e.target.value)}
-      />
-      <FieldContainer
-        label="Mother's Name"
-        astric={true}
-        value={motherName}
-        required={false}
-        onChange={(e) => setMotherName(e.target.value)}
       />
 
-      <div className="form-group col-6">
-        <label className="form-label">Hobbies</label>
+      <div className="form-group col-4">
+        <label className="form-label">Parmanent City</label>
         <Select
-          isMulti
-          options={hobbiesData}
-          value={hobbies}
-          onChange={handleChange}
-          isClearable={true}
-          classNamePrefix="select"
-        />
-      </div>
-      {/* <div className="form-group col-6">
-        <label className="form-label">Hobbies</label>
-        <Select
-          options={hobbiesData.map((option) => ({
-            value: option.hobby_id,
-            label: option.hobby_name,
+          options={cityData?.map((city) => ({
+            value: city.city_name,
+            label: city.city_name,
           }))}
-          value={
-            hobbies
-              ? hobbiesData
-                  .filter((option) => option.hobby_id === Number(hobbies))
-                  .map((option) => ({
-                    value: option.hobby_id,
-                    label: option.hobby_name,
-                  }))[0]
-              : null
-          }
-          onChange={(e) => setHobbies(e ? e.value : null)}
-          isClearable={true}
+          onChange={(e) => setCity(e ? e.value : "")}
+          required={true}
+          value={{
+            value: city,
+            label:
+              cityData.find((gotCity) => gotCity.city_name == city)
+                ?.city_name || "",
+          }}
+          placeholder="Select a city..."
+          isClearable
         />
-      </div> */}
+      </div>
 
-      <div className="form-group col-6">
+      <div className="form-group col-4">
+        <IndianStates
+          newValue={state}
+          onChange={(option) => setState(option ? option.value : null)}
+        />
+      </div>
+      <FieldContainer
+        label="Parmanent Pincode"
+        type="number"
+        value={pincode}
+        fieldGrid={4}
+        maxLength={6}
+        onChange={(e) => {
+          const value = e.target.value;
+          if (/^\d{0,6}$/.test(value)) {
+            setPincode(value);
+          }
+        }}
+        required={false}
+      />
+
+      <div className="form-group col-3">
         <label className="form-label">
           Blood Group <sup style={{ color: "red" }}>*</sup>
         </label>
@@ -1925,115 +1887,148 @@ const UserUpdate = () => {
           required={false}
         />
       </div>
-      <div className="form-group col-6">
+      <div className="form-group col-3">
+        <label className="form-label">Hobbies</label>
+        <Select
+          isMulti
+          options={hobbiesData}
+          value={hobbies}
+          onChange={handleChange}
+          isClearable={true}
+          classNamePrefix="select"
+        />
+      </div>
+      <div className="form-group col-3">
         <label className="form-label">
-          Maritial Status <sup style={{ color: "red" }}>*</sup>
+          Spoken Languages <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
+          isMulti
+          name="langauages"
+          options={colourOptions}
+          className="basic-multi-select"
+          classNamePrefix="select"
+          value={tempLanguage}
+          onChange={handleLanguageSelect}
+          required={false}
+        />
+      </div>
+      <div className="form-group col-3">
+        <label className="form-label">Category</label>
+        <Select
           className=""
-          options={maritialStatusData?.map((option) => ({
+          options={castOption?.map((option) => ({
+            value: option,
+            label: `${option}`,
+          }))}
+          value={{
+            value: cast,
+            label: cast,
+          }}
+          onChange={(e) => {
+            setCast(e.value);
+          }}
+          required
+        />
+      </div>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmitOtherDetails}
+        >
+          Submit Other Details
+        </button>
+      </div>
+      {/* Other Info Inputs------------------------End------------ */}
+
+      {/* Bank Info Inputs------------------------Start------------ */}
+      <div className="personal_header">Bank Details</div>
+      {/* <FieldContainer
+        label="Bank Name"
+        astric={true}
+        value={bankName}
+        onChange={(e) => setBankName(e.target.value)}
+      /> */}
+      <div className="form-group col-6">
+        <label className="form-label">
+          Bank Name <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          options={IndianBankList}
+          onChange={(selectedOption) => {
+            setBankName(selectedOption ? selectedOption.value : null);
+          }}
+          isClearable
+          isSearchable
+          value={
+            bankName
+              ? IndianBankList.find((bank) => bank.value === bankName)
+              : null
+          }
+          getOptionLabel={(option) => option.label}
+          getOptionValue={(option) => option.value}
+          required
+        />
+      </div>
+
+      <div className="form-group col-3">
+        <label className="form-label">
+          Bank Type <sup style={{ color: "red" }}>*</sup>
+        </label>
+        {console.log(banktype, "----------account type")}
+        <Select
+          className=""
+          options={bankTypeData.map((option) => ({
             value: `${option}`,
             label: `${option}`,
           }))}
           value={{
-            value: maritialStatus,
-            label: `${maritialStatus}`,
+            value: banktype,
+            label: `${banktype}`,
           }}
           onChange={(e) => {
-            setMaritialStatus(e.value);
+            setAccountType(e.value);
           }}
-          required={false}
-        />
-      </div>
-      {maritialStatus == "Married" && (
-        <FieldContainer
-          label="Spouse Name"
-          type="text"
-          value={spouseName}
-          onChange={(e) => setSpouseName(e.target.value)}
-          required={false}
-        />
-      )}
-      {maritialStatus == "Married" && (
-        <FieldContainer
-          label="Date Of Marriage"
-          type="date"
-          value={dateOfMarraige}
-          onChange={(e) => setDateOfMarraige(e.target.value)}
-          required={false}
-        />
-      )}
-
-      <FieldContainer
-        label="Address"
-        astric={true}
-        value={address}
-        onChange={(e) => setAddress(e.target.value)}
-        required={false}
-      />
-
-      <div className="form-group col-6">
-        <label className="form-label">
-          City <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          options={cityData?.map((city) => ({
-            value: city.city_name,
-            label: city.city_name,
-          }))}
-          onChange={(e) => setCity(e ? e.value : "")}
-          required={true}
-          value={{
-            value: city,
-            label:
-              cityData.find((gotCity) => gotCity.city_name == city)
-                ?.city_name || "",
-          }}
-          placeholder="Select a city..."
-          isClearable
-        />
-      </div>
-
-      <div className="form-group col-6">
-        <IndianStates
-          newValue={state}
-          onChange={(option) => setState(option ? option.value : null)}
+          required
         />
       </div>
       <FieldContainer
-        label="Pincode"
-        type="number"
+        label="Bank Account Number"
         astric={true}
-        value={pincode}
-        maxLength={6}
-        onChange={(e) => {
-          const value = e.target.value;
-          if (/^\d{0,6}$/.test(value)) {
-            setPincode(value);
-          }
-        }}
-        required={false}
+        fieldGrid={3}
+        value={bankAccountNumber}
+        onChange={(e) => setBankAccountNumber(e.target.value)}
+      />
+      <FieldContainer
+        label="IFSC"
+        astric={true}
+        value={IFSC}
+        onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+      />
+      <FieldContainer
+        label="Beneficiary"
+        value={beneficiary}
+        onChange={(e) => setBeneficiary(e.target.value)}
       />
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmitBank}
         >
-          <ArrowBackIosIcon />
-        </button>
-        <button
-          className="btn btn-primary"
-          onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
-        >
-          <ArrowForwardIosIcon />
+          Submit Bank Details
         </button>
       </div>
+
+      {/* Bank Info Inputs------------------------End------------ */}
     </>
   );
 
-  const familyFields = (
+  const educationFamilyFieald = (
     <>
+      <div className="personal_header">Family Details</div>
       {familyDetails?.map((detail, index) => (
         <div key={index} mb={2}>
           <div className="row">
@@ -2043,7 +2038,7 @@ const UserUpdate = () => {
                   return (
                     <FieldContainer
                       key={key}
-                      fieldGrid={3}
+                      fieldGrid={2}
                       type="date"
                       name={key}
                       label="Date of Birth"
@@ -2056,7 +2051,7 @@ const UserUpdate = () => {
 
                 case "relation":
                   return (
-                    <div className="form-group col-3">
+                    <div className="form-group col-2">
                       <label className="form-label">
                         Relation <sup style={{ color: "red" }}>*</sup>
                       </label>
@@ -2084,7 +2079,7 @@ const UserUpdate = () => {
 
                 case "occupation":
                   return (
-                    <div className="form-group col-3">
+                    <div className="form-group col-2">
                       <label className="form-label">
                         Occupation <sup style={{ color: "red" }}>*</sup>
                       </label>
@@ -2116,7 +2111,7 @@ const UserUpdate = () => {
                       <FieldContainer
                         key={key}
                         type="number"
-                        fieldGrid={3}
+                        fieldGrid={2}
                         name={key}
                         label={familyFieldLabels[key]}
                         value={detail[key]}
@@ -2135,7 +2130,7 @@ const UserUpdate = () => {
                     <FieldContainer
                       key={key}
                       type="number"
-                      fieldGrid={3}
+                      fieldGrid={2}
                       name={key}
                       label={familyFieldLabels[key]}
                       placeholder={familyFieldLabels[key]}
@@ -2149,7 +2144,7 @@ const UserUpdate = () => {
                     return (
                       <FieldContainer
                         key={key}
-                        fieldGrid={3}
+                        fieldGrid={2}
                         name={key}
                         label={familyFieldLabels[key]}
                         value={detail[key]}
@@ -2180,7 +2175,18 @@ const UserUpdate = () => {
         </div>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmitFamily}
+        >
+          Submit Family Details
+        </button>
+      </div>
+      {/* Family Info Inputs------------------------End------------ */}
+
+      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           className="btn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
@@ -2193,12 +2199,10 @@ const UserUpdate = () => {
         >
           <ArrowForwardIosIcon />
         </button>
-      </div>
-    </>
-  );
+      </div> */}
 
-  const educationFields = (
-    <>
+      {/* Education Info Inputs------------------------Start------------ */}
+      <div className="personal_header">Education Details</div>
       {educationDetails?.map((detail, index) => (
         <div key={index} mb={2}>
           <div className="row">
@@ -2243,16 +2247,28 @@ const UserUpdate = () => {
           </button>
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
+      {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
         <button
           className="btn btn-primary"
           onClick={() => setActiveAccordionIndex((prev) => prev - 1)}
         >
           <ArrowBackIosIcon />
         </button>
+      </div> */}
+      <div style={{ display: "flex", justifyContent: "flex-end" }}>
+        <button
+          type="button"
+          className="btn btn-primary mr-2"
+          onClick={handleSubmitEducation}
+        >
+          Submit Education Details
+        </button>
       </div>
+
+      {/* Education Info Inputs------------------------End------------ */}
     </>
   );
+
   const documentFieldsNew = (
     <>
       <DocumentTab
@@ -2266,6 +2282,30 @@ const UserUpdate = () => {
   );
   return (
     <>
+      <div className="mb-2 " style={{}}>
+        <ToastContainer />
+        <div
+          style={{
+            marginTop: 20,
+            width: "100%",
+            backgroundColor: "#ddd",
+            borderRadius: "10px",
+          }}
+        >
+          <div
+            className="progress-bar"
+            style={{
+              width: `${progress}%`,
+              backgroundColor: "blue",
+              height: "20px",
+              color: "white",
+              borderRadius: "10px",
+            }}
+          >
+            {progress.toFixed(0)}%
+          </div>
+        </div>
+      </div>
       <FormContainer
         mainTitle="User Update"
         title="User Registration"
@@ -2276,12 +2316,9 @@ const UserUpdate = () => {
         loading={loading}
       >
         {activeAccordionIndex === 0 && genralFields}
-        {activeAccordionIndex === 1 && personalFields}
-        {activeAccordionIndex === 2 && salaryFields}
-        {/* {activeAccordionIndex === 3 && documentsFields} */}
-        {activeAccordionIndex === 3 && familyFields}
-        {activeAccordionIndex === 4 && educationFields}
-        {activeAccordionIndex === 5 && documentFieldsNew}
+        {activeAccordionIndex === 1 && otherFields}
+        {activeAccordionIndex === 2 && educationFamilyFieald}
+        {activeAccordionIndex === 3 && documentFieldsNew}
       </FormContainer>
     </>
   );

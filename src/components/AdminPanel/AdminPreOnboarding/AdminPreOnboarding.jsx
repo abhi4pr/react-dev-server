@@ -437,7 +437,7 @@ const AdminPreOnboarding = () => {
         title="User Registration"
         handleSubmit={handleSubmit}
         submitButton={false}
-        loading={loading}
+        // loading={loading}
       >
         <FieldContainer
           label="Full Name"

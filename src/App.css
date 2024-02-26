@@ -1,8 +1,18 @@
-.login-success{
+.login-success {
   color: green;
 }
-.login-error{
+.login-error {
   color: red;
+}
+/* this style use for user management  */
+.personal_header {
+  background-color: lightseagreen;
+  padding: 5px;
+  border-radius: 10px;
+  font-weight: bolder;
+  margin-bottom: 5px;
+  margin-top: 8px !important;
+  font-size: 18px;
 }
 
 /* sidebar menu color */
