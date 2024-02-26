@@ -307,7 +307,8 @@ const SidebarLinks = () => {
                     My Team
                   </Link>
 
-                  {!isWFHDManager && (
+                  {/* {!isWFHDManager && ( */}
+                  {isWFHDHRPayrollManager && (
                     <Link className="collapse-item" to="/admin/salaryWFH">
                       Payout Summary
                     </Link>

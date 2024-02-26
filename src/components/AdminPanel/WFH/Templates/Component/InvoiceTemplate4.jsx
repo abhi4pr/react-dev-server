@@ -1,11 +1,46 @@
 import React from "react";
 import headerImg from "../assets/images/photostudio/header-img.svg";
 import footerImg from "../assets/images/photostudio/footer-img.svg";
+
 const InvoiceTemplate4 = ({ data }) => {
   const handleImageError = (e) => {
     console.error("Image failed to load", e);
     e.target.style.display = "none";
   };
+
+  function monthNameToNumber(monthName) {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const monthIndex = months.findIndex(
+      (m) => m.toLowerCase() === monthName.toLowerCase()
+    );
+    return monthIndex !== -1 ? monthIndex + 1 : null;
+  }
+  
+  function getLastDateOfMonth(monthName) {
+    const monthNumber = monthNameToNumber(monthName);
+    if (monthNumber === null) {
+      return "Invalid month name";
+    }
+    const currentYear = new Date().getFullYear();
+    const lastDate = new Date(currentYear, monthNumber, 0).getDate();
+    const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
+    const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
+    return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+  }
+
   return (
     <div className="invoice_wrap photostudio">
       <div className="invoice-container">
@@ -61,10 +96,11 @@ const InvoiceTemplate4 = ({ data }) => {
                           Invoice Date:
                         </div>
                         <div className="font-md-grey color-light-black ">
-                          {data?.Creation_date.split("T")[0]
+                          {/* {data?.Creation_date.split("T")[0]
                             .split("-")
                             .reverse()
-                            .join("-")}
+                            .join("-")} */}
+                            {getLastDateOfMonth(data?.month)}
                         </div>
                       </div>
                     </div>

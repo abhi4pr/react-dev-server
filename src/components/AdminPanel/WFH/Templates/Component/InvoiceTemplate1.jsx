@@ -6,6 +6,40 @@ const InvoiceTemplate1 = ({ data }) => {
     console.error("Image failed to load", e);
     e.target.style.display = "none";
   };
+  
+  function monthNameToNumber(monthName) {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const monthIndex = months.findIndex(
+      (m) => m.toLowerCase() === monthName.toLowerCase()
+    );
+    return monthIndex !== -1 ? monthIndex + 1 : null;
+  }
+  
+  function getLastDateOfMonth(monthName) {
+    const monthNumber = monthNameToNumber(monthName);
+    if (monthNumber === null) {
+      return "Invalid month name";
+    }
+    const currentYear = new Date().getFullYear();
+    const lastDate = new Date(currentYear, monthNumber, 0).getDate();
+    const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
+    const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
+    return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
+  }
+
   return (
     <body>
       <div className="invoiceWrapper">
@@ -41,10 +75,8 @@ const InvoiceTemplate1 = ({ data }) => {
                   <h3>
                     INVOICE DATE{" "}
                     <span>
-                      {data?.Creation_date.split("T")[0]
-                        .split("-")
-                        .reverse()
-                        .join("-")}
+                      {/* { data?.Creation_date.split("T")[0].split("-").reverse().join("-") } */}
+                      {getLastDateOfMonth(data?.month)}
                     </span>
                   </h3>
                 </div>

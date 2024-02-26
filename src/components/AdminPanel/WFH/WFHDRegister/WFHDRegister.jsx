@@ -31,6 +31,7 @@ const WFHDRegister = ({ userUpdateID }) => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
   const deptID = decodedToken.dept_id;
+  const loginRole = decodedToken.role_id
 
   const [username, setUserName] = useState("");
   const [jobType, setJobType] = useState("WFHD");
@@ -160,8 +161,12 @@ const WFHDRegister = ({ userUpdateID }) => {
         });
   }, [userUpdateID]);
 
+  useEffect(()=> {
+    setDepartment(deptID);
+  }, [deptID])
+
   useEffect(() => {
-    console.log(reportL2, "report l2");
+    // console.log(reportL2, "report l2");
   }, [reportL2]);
 
   // Handle change for Monthly Salary
@@ -216,14 +221,14 @@ const WFHDRegister = ({ userUpdateID }) => {
   }, []);
 
   useEffect(() => {
-    if (deptID) {
+    if (department) {
       axios
-        .get(baseUrl + `get_all_designations_by_deptId/${deptID}`)
+        .get(baseUrl + `get_all_designations_by_deptId/${department}`)
         .then((res) => {
           setDesignationData(res.data.data);
         });
     }
-  }, []);
+  }, [department]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -630,20 +635,20 @@ const WFHDRegister = ({ userUpdateID }) => {
           <Select
             className=""
             options={departmentdata.map((option) => ({
-              value: option.deptID,
+              value: option.dept_id,
               label: `${option.dept_name}`,
             }))}
             value={{
               value: department,
               label:
-                departmentdata.find((user) => user.dept_id === deptID)
+                departmentdata.find((user) => user.dept_id === department)
                   ?.dept_name || "",
             }}
-            // onChange={(e) => {
-            //   setDepartment(e.value);
-            // }}
+            onChange={(e) => {
+              setDepartment(e.value);
+            }}
             required
-            isDisabled={true}
+            isDisabled={loginRole==2}
           />
         </div>
 
