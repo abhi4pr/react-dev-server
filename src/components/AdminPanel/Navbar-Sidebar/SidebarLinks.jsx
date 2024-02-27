@@ -1448,7 +1448,7 @@ const SidebarLinks = () => {
 
                       <Link
                         className="collapse-item"
-                        to="/admin/finance-task-done"
+                        to="/admin/finance-task-done/type"
                       >
                         Done
                       </Link>

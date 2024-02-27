@@ -756,7 +756,7 @@ const Admin = () => {
                     path="/finance-task-pending"
                     element={<TaskPending />}
                   />
-                  <Route path="/finance-task-done" element={<TaskDone />} />
+                  <Route path="/finance-task-done/:id" element={<TaskDone />} />
                   {/*  ==============*/}
                   <Route
                     path="/payment-summary/:id"

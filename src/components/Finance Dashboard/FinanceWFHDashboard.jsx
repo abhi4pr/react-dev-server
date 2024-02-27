@@ -1271,8 +1271,8 @@ export default function FinanceWFHDashboard() {
 
       <FormContainer
         submitButton={false}
-        mainTitle="Dashboard"
-        title="Finance"
+        // mainTitle="Dashboard"
+        // title="Finance"
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}

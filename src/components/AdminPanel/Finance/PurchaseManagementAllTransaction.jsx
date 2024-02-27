@@ -52,6 +52,8 @@ export default function PurchaseManagementAllTransaction() {
   const [uniqueVendorCount, setUniqueVendorCount] = useState(0);
   const [withInvoiceCount, setWithInvoiceCount] = useState(0);
   const [withoutInvoiceCount, setWithoutInvoiceCount] = useState(0);
+  const [withInvoiceData, setWithInvoiceData] = useState([]);
+  const [withoutInvoiceData, setWithoutInvoiceData] = useState([]);
 
   const handleCloseBankDetail = () => {
     setBankDetail(false);
@@ -79,10 +81,22 @@ export default function PurchaseManagementAllTransaction() {
           setData(y);
           setFilterData(y);
           // Filter data to find counts
-          const withInvoiceImage = y.filter((item) => item.invc_img.length > 0);
-          const withoutInvoiceImage = y.filter(
-            (item) => item.invc_img.length === 0
+          const withInvoiceImage = y.filter(
+            (item) => item.invc_img && item.invc_img.length > 0
           );
+          const withoutInvoiceImage = y.filter(
+            (item) => !item.invc_img || item.invc_img.length === 0
+          );
+          const withInvoice = y.filter(
+            (item) => item.invc_img && item.invc_img.trim() !== ""
+          );
+          const withoutInvoice = y.filter(
+            (item) => !item.invc_img || item.invc_img.trim() === ""
+          );
+
+          // Update state with the filtered data
+          setWithInvoiceData(withInvoice);
+          setWithoutInvoiceData(withoutInvoice);
           setWithInvoiceCount(withInvoiceImage.length);
           setWithoutInvoiceCount(withoutInvoiceImage.length);
           // setPendingRequestCount(y.length);
@@ -336,6 +350,11 @@ export default function PurchaseManagementAllTransaction() {
 
     return diffDays;
   }
+  // Function to calculate the difference in days between two dates
+  // function calculateDays(startDate, endDate) {
+  //   const diffInMilliseconds = Math.abs(endDate - new Date(startDate));
+  //   return Math.ceil(diffInMilliseconds / (1000 * 60 * 60 * 24));
+  // }
 
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
@@ -439,7 +458,6 @@ export default function PurchaseManagementAllTransaction() {
   const paidRequestCount = phpData.filter(
     (item) => parseInt(item.status) == 1
   ).length;
-  console.log(paidRequestCount, "paidRequestCount");
 
   // total pending  amount data :-
   const totalRequestAmount = data.reduce(
@@ -468,12 +486,12 @@ export default function PurchaseManagementAllTransaction() {
   );
   // ================================================================
   // Calculate GST hold amount and count
-  const gstHoldData = data.filter((item) => item.gst_amount); // Assuming 'gstApplied' is a boolean field indicating if GST is applied
-  const gstHoldCount = gstHoldData.length;
-  const gstHoldAmount = gstHoldData.reduce(
-    (total, item) => total + parseFloat(item.gst_amount),
-    0
-  );
+  // const gstHoldData = data.filter((item) => item.gst_amount); // Assuming 'gstApplied' is a boolean field indicating if GST is applied
+  // const gstHoldCount = gstHoldData.length;
+  // const gstHoldAmount = gstHoldData.reduce(
+  //   (total, item) => total + parseFloat(item.gst_amount),
+  //   0
+  // );
 
   // same Vender columns:-
   const sameVenderColumns = [
@@ -588,7 +606,7 @@ export default function PurchaseManagementAllTransaction() {
       field: "invc_img",
       headerName: "Invoice Image",
       renderCell: (params) => {
-        if (params.row?.length > 0) {
+        if (params.row.invc_img?.length > 0) {
           // Extract file extension and check if it's a PDF
           const fileExtension = params.row.invc_img
             .split(".")
@@ -824,7 +842,8 @@ export default function PurchaseManagementAllTransaction() {
           "NA"
         );
       },
-    },{
+    },
+    {
       field: "gst_hold_amount",
       headerName: "GST Hold Amount",
       width: 150,
@@ -841,7 +860,7 @@ export default function PurchaseManagementAllTransaction() {
       headerName: "TDS Amount",
       width: 150,
       renderCell: (params) => {
-        console.log(params.row.tds_deduction, "tds_deduction")
+        console.log(params.row.tds_deduction, "tds_deduction");
         return params.row.tds_deduction ? (
           <p>&#8377; {params.row.tds_deduction}</p>
         ) : (
@@ -877,7 +896,7 @@ export default function PurchaseManagementAllTransaction() {
         );
         if (matchingItems.length > 0) {
           return matchingItems.map((item, index) => (
-            <p key={index}>
+            <p key={params.row.request_id}>
               {item.status == 0
                 ? "Pending"
                 : item.status == 2
@@ -889,22 +908,91 @@ export default function PurchaseManagementAllTransaction() {
           return "Pending"; // Default value if no matching item is found
         }
       },
-    }, {
-      field:"gst_Hold_Bool",
-      headerName:"GST Hold",
-      renderCell:(params)=>{
-        return params.row.gst_Hold_Bool?"Yes":"No"
-      }
-    }
+    },
+    {
+      field: "gst_Hold_Bool",
+      headerName: "GST Hold",
+      renderCell: (params) => {
+        return params.row.gst_Hold_Bool ? "Yes" : "No";
+      },
+    },
   ];
-  console.log(
-    filterData,
-    "filterData>>",
-    nodeData,
-    "+++++++++nodeData+++++++++++",
-    phpData,
-    "phpdata>>"
+
+  // Combine aging data from filterData and nodeData
+  const allData = [...filterData];
+  const agingFilterData = allData.map((item) =>
+    calculateDays(item.request_date, new Date())
   );
+
+  // Calculate aging sum
+  const agingSum = agingFilterData.reduce((sum, value) => sum + value, 0);
+
+  // Calculate total number of aging count
+  const agingCount = agingFilterData.length;
+
+  // Calculate average aging
+  const averageAging = Math.round(agingSum / agingCount);
+
+  // Output the results
+  console.log("Aging Sum:", agingSum);
+  console.log("Aging Count:", agingCount);
+  console.log("Average Aging:", averageAging);
+
+  // Calculate GST amount and count
+
+  const mergedData = data;
+
+  // Calculate GST amount and count from merged data
+  const gstHoldDataMerged = mergedData.filter((item) => {
+    return item.gstHold == 1;
+  });
+  console.log(gstHoldDataMerged, "sdfsmanoj");
+  const totalGstHoldCount = gstHoldDataMerged.length;
+  const totalGstHoldAmount = gstHoldDataMerged.reduce(
+    (total, item) => total + parseFloat(item.gst_hold),
+    0
+  );
+
+  // Calculate total deducted amount and count from merged data
+  const totalDeductedAmountMerged = data.filter(
+    (item) => item.TDSDeduction == 1
+  );
+  const totalTDSDeductedCount = totalDeductedAmountMerged.length;
+  const totalTDSDeductedAmount = totalDeductedAmountMerged.reduce(
+    (total, item) => total + parseFloat(item.tds_deduction),
+    0
+  );
+
+  // Function to filter data based on GST hold
+  const filterDataByGstHold = () => {
+    const filtered = data.filter((item) => item.gst_hold);
+    setFilterData(gstHoldDataMerged);
+  };
+
+  // Function to filter data based on total deducted amount
+  const filterDataByTotalDeductedAmount = () => {
+    const filtered = mergedData.filter((item) => item.tds_deduction);
+    setFilterData(totalDeductedAmountMerged);
+  };
+
+  // Function to filter data based on invoice presence
+  const filterDataByInvoice = (withInvoice) => {
+    if (withInvoice) {
+      setFilterData(withInvoiceData);
+    } else {
+      setFilterData(withoutInvoiceData);
+    }
+  };
+
+  // Event handler for the "With Invoice" button click
+  const handleWithInvoiceButtonClick = () => {
+    filterDataByInvoice(true);
+  };
+
+  // Event handler for the "Without Invoice" button click
+  const handleWithoutInvoiceButtonClick = () => {
+    filterDataByInvoice(false);
+  };
 
   return (
     <div>
@@ -1208,7 +1296,7 @@ export default function PurchaseManagementAllTransaction() {
               {filterData.length > 0
                 ? filterData
                     .filter(
-                      (item) => 
+                      (item) =>
                         parseInt(item.status) === 1 &&
                         !nodeData.some(
                           (item2) => item.request_id === item2.request_id
@@ -1281,14 +1369,12 @@ export default function PurchaseManagementAllTransaction() {
               With Invoice Count :- {withInvoiceCount}
             </p>
             <p className="fs-6 lead ">
-              {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
-                >
-                  Click Here
-                </Link>
-              }
+              <Link
+                className="link-primary"
+                onClick={handleWithInvoiceButtonClick}
+              >
+                Click Here
+              </Link>
             </p>
           </div>
         </div>
@@ -1299,31 +1385,52 @@ export default function PurchaseManagementAllTransaction() {
               Without Invoice Count :- {withoutInvoiceCount}
             </p>
             <p className="fs-6 lead ">
-              {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
-                >
-                  Click Here
-                </Link>
-              }
+              <Link
+                className="link-primary"
+                onClick={handleWithoutInvoiceButtonClick}
+              >
+                Click Here
+              </Link>
             </p>
           </div>
         </div>
         <div className="card col-2 ms-2">
-          GST Hold{" "}
+          <div className="card-header h4 fs-5">GST Hold </div>
           <div className="card-body">
-            <p className="fs-6 lead ">GST Hold Amount :- {gstHoldAmount}</p>
-            <p className="fs-6 lead ">GST Hold Count :- {gstHoldCount}</p>
             <p className="fs-6 lead ">
-              {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
-                >
-                  Click Here
-                </Link>
-              }
+              GST Hold Amount :- {totalGstHoldAmount}
+            </p>
+            <p className="fs-6 lead ">GST Hold Count :- {totalGstHoldCount}</p>
+            <p className="fs-6 lead ">
+              <Link className="link-primary" onClick={filterDataByGstHold}>
+                Click Here
+              </Link>
+            </p>
+          </div>
+        </div>
+        <div className="card col-2 ms-2">
+          <div className="card-header h4 fs-5"> Average Payment Aging </div>
+          <div className="card-body">
+            <p className="fs-6 lead ">Average Aging :- {averageAging}</p>
+          </div>
+        </div>
+        <div className="card col-2 ms-2">
+          <div className="card-header h4 fs-5">TDS Deducted</div>
+          <div className="card-body">
+            <p className="fs-6 lead ">
+              Total TDS Deduction amount :-{Math.round(totalTDSDeductedAmount)}
+            </p>
+            <p className="fs-6 lead ">
+              {" "}
+              Total TDS Deduction Count :- {totalTDSDeductedCount}
+            </p>
+            <p className="fs-6 lead ">
+              <Link
+                className="link-primary"
+                onClick={filterDataByTotalDeductedAmount}
+              >
+                Click Here
+              </Link>
             </p>
           </div>
         </div>
@@ -1354,7 +1461,7 @@ export default function PurchaseManagementAllTransaction() {
               clearSearchAriaLabel: "clear",
             },
           }}
-          getRowId={(row) => filterData.indexOf(row)}
+          getRowId={(row) => row.request_id}
         />
       </div>
       {paymentHistory && (
@@ -1365,16 +1472,14 @@ export default function PurchaseManagementAllTransaction() {
         />
       )}
 
-{openImageDialog && (
-      <ImageView
-        viewImgSrc={viewImgSrc}
-        setViewImgDialog={setOpenImageDialog}
-      />
-    )}
+      {openImageDialog && (
+        <ImageView
+          viewImgSrc={viewImgSrc}
+          setViewImgDialog={setOpenImageDialog}
+        />
+      )}
 
-
-
-<Dialog
+      <Dialog
         open={bankDetail}
         onClose={handleCloseBankDetail}
         fullWidth={"md"}
@@ -1450,7 +1555,5 @@ export default function PurchaseManagementAllTransaction() {
         </Button>
       </Dialog>
     </div>
-
-
   );
 }
