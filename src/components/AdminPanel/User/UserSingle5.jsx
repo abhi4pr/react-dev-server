@@ -41,7 +41,7 @@ const UserSingleTab5 = ({ familyData, user }) => {
                 <h4>{user.annual_income}</h4>
               </div>
             </div>
-            <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 mb-3">
+            <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
               <div className="profileInfo_box">
                 <h3>Relation *</h3>
                 <h4>{user.relation}</h4>

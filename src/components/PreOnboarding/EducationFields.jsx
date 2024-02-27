@@ -128,16 +128,14 @@ const EducationFields = ({
         </div>
         // </div>
       ))}
-      <div className="row">
-        <div className="col-12">
-          <button
-            type="button"
-            onClick={handleAddEducationDetails}
-            className="btn btn-outline-warning"
-          >
-            Add More Education Details
-          </button>
-        </div>
+      <div className="mb-1">
+        <button
+          type="button"
+          onClick={handleAddEducationDetails}
+          className="btn onboardBtn btn-outline-warning"
+        >
+          Add More Education Details
+        </button>
       </div>
     </>
   );

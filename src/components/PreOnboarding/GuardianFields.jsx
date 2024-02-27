@@ -46,12 +46,12 @@ const GuardianFields = ({
           </div>
         ))}
 
-      <div className="col-12 mb-5">
+      <div className="mb-5">
         <button
           type="button"
           onClick={handleAddGuardianDetails}
           variant="contained"
-          className="btn btn-outline-danger"
+          className="btn onboardBtn btn-outline-danger"
         >
           Add More Guardian Details
         </button>

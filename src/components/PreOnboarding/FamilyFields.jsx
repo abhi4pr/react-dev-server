@@ -166,17 +166,15 @@ const FamilyFields = ({
         </div>
       ))}
 
-      <div className="row">
-        <div className="col-12 mb-5">
-          <button
-            type="button"
-            onClick={handleAddFamilyDetails}
-            variant="contained"
-            className="btn btn-outline-primary me-2"
-          >
-            Add More Family Details
-          </button>
-        </div>
+      <div className="mb-5">
+        <button
+          type="button"
+          onClick={handleAddFamilyDetails}
+          variant="contained"
+          className="btn onboardBtn btn-outline-primary"
+        >
+          Add More Family Details
+        </button>
       </div>
     </>
   );

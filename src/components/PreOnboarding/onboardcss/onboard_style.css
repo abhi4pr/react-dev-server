@@ -131,7 +131,7 @@ img {
 }
 
 .btn_primary:first-child:active,
-:not(.btn-check) + .btn_primary:active {
+:not(.btn-check)+.btn_primary:active {
   border-color: var(--primary-board);
   background-color: var(--primary-board);
   color: var(--text-white);
@@ -158,7 +158,7 @@ img {
 }
 
 .btn_white:first-child:active,
-:not(.btn-check) + .btn_white:active {
+:not(.btn-check)+.btn_white:active {
   border-color: var(--bg-white);
   background-color: var(--bg-white);
   color: var(--primary-board);
@@ -176,8 +176,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url(../../../assets/imgs/bg/auth-bg.png) var(--bg-board) center
-    no-repeat;
+  background: url(../../../assets/imgs/bg/auth-bg.png) var(--bg-board) center no-repeat;
   background-size: cover;
   padding: 40px 40px;
 }
@@ -186,14 +185,11 @@ img {
   width: 460px;
   border-radius: 15px;
   background: rgba(255, 255, 255, 0.07);
-  box-shadow: -22.366666793823242px 22.366666793823242px 22.366666793823242px
-      0px rgba(255, 255, 255, 0.07) inset,
-    22.366666793823242px -22.366666793823242px 22.366666793823242px 0px rgba(
-        194,
-        194,
-        194,
-        0.07
-      ) inset,
+  box-shadow: -22.366666793823242px 22.366666793823242px 22.366666793823242px 0px rgba(255, 255, 255, 0.07) inset,
+    22.366666793823242px -22.366666793823242px 22.366666793823242px 0px rgba(194,
+      194,
+      194,
+      0.07) inset,
     0px 0px 16px 0px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
 }
@@ -326,9 +322,30 @@ img {
 .sidebar_wrapper {
   width: 430px;
   min-width: 430px;
-  background: url(../../../assets/imgs/bg/sidebar-bg.png) center top no-repeat;
+  background: url(/src/assets/imgs/bg/sidebar-bg.png) center top no-repeat;
   background-size: cover;
   position: relative;
+  height: calc(100vh - 0px);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sidebar_wrapper::-webkit-scrollbar {
+  width: 0px;
+}
+
+.sidebar_wrapper::-webkit-scrollbar-track {
+  background: #264559;
+  border-radius: 8px;
+}
+
+.sidebar_wrapper::-webkit-scrollbar-thumb {
+  background: #869299;
+  border-radius: 8px;
+}
+
+.sidebar_wrapper::-webkit-scrollbar-thumb:hover {
+  background: #dcdcdc;
 }
 
 .sidebar_header {
@@ -1326,10 +1343,7 @@ img {
 .sidebar_item_active .progress-circle,
 .sidebar_item_active .progress-circle .progress-circle-border,
 .sidebar_item_active .progress-circle .progress-circle-border .left-half-circle,
-.sidebar_item_active
-  .progress-circle
-  .progress-circle-border
-  .right-half-circle {
+.sidebar_item_active .progress-circle .progress-circle-border .right-half-circle {
   height: 90px;
   width: 90px;
 }
@@ -1483,34 +1497,42 @@ img {
 }
 
 .dashboard_body {
-  height: 100%;
+  /* height: 100%; */
+  height: calc(100vh - 90px);
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: var(--primary-board);
   border-radius: 40px 40px 0px 0px;
   padding: 40px 40px 30px 50px;
 }
 
 .dashboard_body_inner {
-  height: calc(100vh - 160px);
-  overflow-x: hidden;
-  overflow-y: auto;
-  padding-right: 20px;
+  /* height: calc(100vh - 160px); */
+  /* overflow-x: hidden; */
+  /* overflow-y: auto; */
+  /* padding-right: 20px; */
 }
 
-.dashboard_body_inner::-webkit-scrollbar {
-  width: 5px;
+.dashboard_body_inner p {
+  color: var(--text-white);
+  font-weight: 400;
 }
 
-.dashboard_body_inner::-webkit-scrollbar-track {
+.dashboard_body::-webkit-scrollbar {
+  width: 0px;
+}
+
+.dashboard_body::-webkit-scrollbar-track {
   background: #264559;
   border-radius: 8px;
 }
 
-.dashboard_body_inner::-webkit-scrollbar-thumb {
+.dashboard_body::-webkit-scrollbar-thumb {
   background: #869299;
   border-radius: 8px;
 }
 
-.dashboard_body_inner::-webkit-scrollbar-thumb:hover {
+.dashboard_body::-webkit-scrollbar-thumb:hover {
   background: #dcdcdc;
 }
 
@@ -1642,7 +1664,6 @@ img {
   font-size: 18px;
   color: var(--white);
   position: relative;
-  right: -10px;
 }
 
 .spacing_lg {
@@ -1935,10 +1956,7 @@ img {
   fill: var(--white) !important;
 }
 
-.board_form
-  label[data-shrink="false"]
-  + .MuiInputBase-formControl
-  .MuiInputBase-input {
+.board_form label[data-shrink="false"]+.MuiInputBase-formControl .MuiInputBase-input {
   color: transparent !important;
 }
 
@@ -1958,10 +1976,7 @@ img {
   height: 38px;
 }
 
-.board_form
-  .form-group
-  .input-group-append
-  button.btn.btn-outline-primary:hover {
+.board_form .form-group .input-group-append button.btn.btn-outline-primary:hover {
   border-color: transparent;
   color: var(--white);
   background-color: transparent;
@@ -2008,11 +2023,11 @@ img {
   border-radius: 6px;
 }
 
-.cstm_check:hover input ~ .checkmark {
+.cstm_check:hover input~.checkmark {
   background-color: transparent;
 }
 
-.cstm_check input:checked ~ .checkmark {
+.cstm_check input:checked~.checkmark {
   background-color: var(--white);
 }
 
@@ -2022,7 +2037,7 @@ img {
   display: none;
 }
 
-.cstm_check input:checked ~ .checkmark:after {
+.cstm_check input:checked~.checkmark:after {
   display: block;
 }
 
@@ -2358,19 +2373,30 @@ img {
   border: none !important;
   background: transparent !important;
 }
+
+.onboardBtn {
+  box-shadow: none;
+  outline: none;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 60px;
+  font-family: var(--font-recoleta);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  padding: 12px 40px;
+  height: 50px;
+}
+
 /* Responsive Start Here */
 
-@media only screen and (max-width: 1599px) {
-}
+@media only screen and (max-width: 1599px) {}
 
-@media only screen and (max-width: 1399px) {
-}
+@media only screen and (max-width: 1399px) {}
 
-@media only screen and (max-width: 1199px) {
-}
+@media only screen and (max-width: 1199px) {}
 
-@media only screen and (max-width: 991px) {
-}
+@media only screen and (max-width: 991px) {}
 
 @media only screen and (max-width: 767px) {
   .authwrapper {

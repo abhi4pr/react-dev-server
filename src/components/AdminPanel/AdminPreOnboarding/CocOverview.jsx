@@ -109,7 +109,7 @@ const CocOverview = () => {
       </Link>
 
       <div className="card">
-        <div className="data_tbl table-responsive">
+        <div className="data_tbl table-responsive cocTable">
           <DataTable
             title="Coc Overview"
             columns={columns}
