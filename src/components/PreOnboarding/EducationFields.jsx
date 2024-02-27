@@ -41,7 +41,7 @@ const EducationFields = ({
                       type="date"
                       name={key}
                       label={educationFieldLabels[key]}
-                      value={detail[key].split("T")[0]}
+                      value={detail[key]?.split("T")[0]}
                       onChange={(e) => handleEducationDetailsChange(index, e)}
                     />
                   </div>
@@ -55,7 +55,7 @@ const EducationFields = ({
                       type="date"
                       name={key}
                       label={educationFieldLabels[key]}
-                      value={detail[key].split("T")[0]}
+                      value={detail[key]?.split("T")[0]}
                       onChange={(e) => handleEducationDetailsChange(index, e)}
                     />
                   </div>

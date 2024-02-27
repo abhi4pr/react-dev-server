@@ -150,11 +150,8 @@ const OnboardExtendDateOverview = () => {
     },
     {
       name: "Proof Doc",
-      selector: (row) => (
-        <a href={row.joining_extend_document_url}>
-          <CloudDownloadIcon />
-        </a>
-      ),
+      selector: (row) => ( <a href={row.joining_extend_document_url}> <CloudDownloadIcon /> </a> ),
+      // selector: (row) => ( <img src={row.joining_extend_document_url} alt="Proof of Document" /> ),
       sortable: true,
     },
     {

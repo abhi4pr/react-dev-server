@@ -105,7 +105,8 @@ const OnboardExtendDateOverview = () => {
     },
     {
       name: "Prove of Doc",
-      selector: (row) => row.joining_extend_document,
+      // selector: (row) => row.joining_extend_document_url,
+      selector: (row) => `<img src="${row.joining_extend_document_url}" alt="Proof of Document" />`,
       sortable: true,
     },
     {

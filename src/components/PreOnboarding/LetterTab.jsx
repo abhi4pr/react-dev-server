@@ -106,6 +106,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
 
       {reasonField && (
         <>
+        {allUserData.offer_later_reject_reason == '' && (
           <div className="rejectReason board_form">
             <div className="form-group">
               <TextField
@@ -121,6 +122,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
               Submit
             </button>
           </div>
+        )}
         </>
       )}
 
