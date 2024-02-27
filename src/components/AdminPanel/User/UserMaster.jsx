@@ -478,6 +478,8 @@ const UserMaster = () => {
       return toastError("Sub Department is Required");
     } else if (!designation || designation == "") {
       return toastError("Designatoin is Required");
+    } else if (!role || role == "") {
+      return toastError("Role is Required");
     } else if (!reportL1 || reportL1 == "") {
       return toastError("Report L1 Is Required");
     } else if (!personalEmail || personalEmail == "") {
@@ -648,7 +650,7 @@ const UserMaster = () => {
               });
 
             whatsappApi.callWhatsAPI(
-              "Extend Date by User",  
+              "Extend Date by User",
               JSON.stringify(personalContact),
               username,
               ["You have assinge Report L1", "ok"]
@@ -2053,6 +2055,7 @@ const UserMaster = () => {
           astric={true}
           fieldGrid={4}
           maxLength={6}
+          // placeholder="123456"
           value={currentPincode}
           onChange={(e) => {
             const value = e.target.value;
