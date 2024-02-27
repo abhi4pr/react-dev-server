@@ -835,7 +835,7 @@ const UserUpdate = () => {
             console.log(`No file uploaded for document ${document._id}`);
           }
         }
-        toastAlert("Documents Updated");
+        // toastAlert("Documents Updated");
         getDocuments();
       }
 
@@ -944,8 +944,8 @@ const UserUpdate = () => {
           beneficiary: beneficiary,
           account_type: banktype,
           // Bank info payload End
-        },
-        setActiveAccordionIndex((prev) => prev + 1)
+        }
+        // setActiveAccordionIndex((prev) => prev + 1)
       );
       toastAlert("Bank Details Update");
       console.log("Update successful", response.data);
