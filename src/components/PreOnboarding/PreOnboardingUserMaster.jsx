@@ -1349,7 +1349,7 @@ const PreOnboardingUserMaster = () => {
                       <div className="right-half-circle" />
                     </div>
                     <div className="progress-circle-content">
-                      <i className="bi bi-file-earmark-text" />
+                      <i className="bi bi-file-richtext" />
                     </div>
                   </div>
                   <h2 className="document_tab_name">Documents</h2>
@@ -1401,7 +1401,7 @@ const PreOnboardingUserMaster = () => {
                       <div className="right-half-circle" />
                     </div>
                     <div className="progress-circle-content">
-                      <i className="bi bi-book" />
+                      <i className="bi bi-file-earmark-text" />
                     </div>
                   </div>
                   <h2 className="letter_tab_name">Letter</h2>

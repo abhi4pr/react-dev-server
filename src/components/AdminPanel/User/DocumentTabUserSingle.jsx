@@ -140,8 +140,6 @@ const DocumentTabUserSingle = (id) => {
     <>
       <div className={`documentarea  "documentareaLight"`}>
         <div className="document_box">
-          <h2>Documents</h2>
-
           <div
             className={`docTable 
                docTableLight
@@ -172,20 +170,21 @@ const DocumentTabUserSingle = (id) => {
                         <td>
                           <div className="uploadDocBtn">
                             <span>
-                              <a href={item.doc_image_url} download>
-                                <img
-                                  src={item.doc_image_url}
-                                  style={{ width: "60px", height: "60px" }}
-                                  alt="doc image"
-                                />
-                                <i class="fa-solid fa-eye"></i> View
+                              <a
+                                href={item.doc_image_url}
+                                target="_blank"
+                                download
+                              >
+                                <img src={item.doc_image_url} alt="doc image" />
+                                <i class="fa-solid fa-eye"></i>
                               </a>
                             </span>
                           </div>
                         </td>
                         <td>
+                          <ApproveReject data={item.status} />
                           {item.status == "Verification Pending" && (
-                            <div className="docStatus warning_badges ">
+                            <div className="docStatus warning_badges warning_badgesTwo">
                               <button
                                 type="button"
                                 onClick={(e) =>
@@ -228,7 +227,6 @@ const DocumentTabUserSingle = (id) => {
                             </span> */}
                             </div>
                           )}
-                          <ApproveReject data={item.status} />
                           {rejectReasonActive == item._id && (
                             <div className="documentCard_input">
                               <input

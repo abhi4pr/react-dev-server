@@ -325,7 +325,6 @@ const UserSingleTab1 = ({ user, roomId }) => {
                   ? field.value()
                   : field.value}
               </h4>
-              <hr className="mb-4 mt-2" />
             </div>
           </div>
         ))}
