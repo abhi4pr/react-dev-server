@@ -187,7 +187,7 @@ const AdminPreOnboarding = () => {
     formData.append("personal_number", personalContact);
     // formData.append("pe", personalContact);
 
-    // formData.append("user_email_id", email);
+    formData.append("user_email_id", personalEmail);
     formData.append("Personal_email", personalEmail);
     // formData.append("PersonalEmail", personalEmail);
 
