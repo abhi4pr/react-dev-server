@@ -553,15 +553,16 @@ const IncentivePayment = () => {
       },
     },
   ];
-  const columns = useMemo(
-    () => [
+  const columns =
+    [
       {
+        width: 70,
         field: "S.No",
         fieldName: "s_no",
         renderCell: (params, index) => (
           // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
-
-          <div>{[...datas].indexOf(params.row) + 1}</div>
+filterData.indexOf(params.row) + 1 === filterData.length ?(""): (
+          <div>{filterData.indexOf(params.row) + 1}</div>)
         ),
         sortable: true,
       },
@@ -689,9 +690,7 @@ const IncentivePayment = () => {
           return params.row.sales_executive_name !== "Total" ? diffDays : null;
         },
       },
-    ],
-    []
-  );
+    ]
 
   const handlePendingFilterData = () => {
     const result = datas.filter((d) => {

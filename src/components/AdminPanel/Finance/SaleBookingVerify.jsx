@@ -633,7 +633,7 @@ const SaleBookingVerify = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "9%",
+      width: "4%",
       sortable: true,
     },
     {
@@ -650,37 +650,37 @@ const SaleBookingVerify = () => {
       name: "Booking Date",
       // selector: (row) => row.sale_booking_date,
       cell: (row) => convertDateToDDMMYYYY(row.sale_booking_date),
-      width: "10%",
+      width: "6%",
     },
     {
       name: "Campaign Amount",
       selector: (row) => row.campaign_amount,
-      width: "10%",
+      width: "9%",
     },
     {
       name: "Base Amount",
       selector: (row) => row.base_amount,
-      width: "10%",
+      width: "6%",
     },
     {
       name: "GST Amount",
       selector: (row) => row.gst_amount,
-      width: "10%",
+      width: "7%",
     },
     {
       name: "Net Amount",
       selector: (row) => row.net_amount,
-      width: "10%",
+      width: "7%",
     },
     {
       name: "Paid Amount",
       selector: (row) => row.total_paid_amount,
-      width: "10%",
+      width: "7%",
     },
     {
       name: "Refund Amount",
       selector: (row) => row.total_refund_amount,
-      width: "10%",
+      width: "7%",
     },
     {
       name: "Refund Balance Amount",
@@ -688,28 +688,29 @@ const SaleBookingVerify = () => {
       cell: (row) => {
         return row.balance_refund_amount;
       },
-      width: "10%",
+      width: "9%",
     },
     {
       name: "Balance Amount",
       cell: (row) => {
         return row.campaign_amount - row.total_paid_amount;
       },
+      width: "7%",
     },
     {
       name: "Net Bal Cust to pay Amt",
       selector: (row) => row.net_balance_amount_to_pay,
-      width: "15%",
+      width: "9%",
     },
     {
       name: "Net Bal Cust to pay Amt (%)",
       selector: (row) => row.net_balance_amount_to_pay_percentage,
-      width: "15%",
+      width: "12%",
     },
     {
       name: "Booking Created Date",
       cell: (row) => convertDateToDDMMYYYY(row.creation_date),
-      width: "15%",
+      width: "9%",
     },
     {
       name: "Action",

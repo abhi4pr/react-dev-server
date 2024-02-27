@@ -148,12 +148,14 @@ const AllTransactions = () => {
     });
   }
   function convertDateToDDMMYYYY(dateString) {
+    if(String(dateString).startsWith("0000-00-00")){return (" ")}
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
     const year = date.getFullYear();
 
-    return `${day}/${month}/${year}`;
+    if(day == "NaN" || month == "NaN" || year == "NaN"){ return (" ")}else{
+      return `${day}/${month}/${year}`;}
   }
 
   const handleCopyDetail = (detail) => {
@@ -556,8 +558,9 @@ const AllTransactions = () => {
   ];
   const columns = [
     {
-      field: "Id",
-      renderCell: (params, index) => <div>{index + 1}</div>,
+      field: "S.NO",
+      renderCell: ({row}) => <div>{filterData.indexOf(row)+1}</div>,
+      width: 70,
     },
     {
       field: "Requested By",
@@ -614,6 +617,7 @@ const AllTransactions = () => {
       field: "Bank Name",
       fieldName: "payment_mode",
       renderCell: (params) => <div>{params.row.title} </div>,
+      width: 150,
     },
     {
       field: "Screenshot",
@@ -667,11 +671,11 @@ const AllTransactions = () => {
       ),
     },
     {
+      width: 250,
       field: "Bank Detail",
       fieldName: "detail",
       renderCell: (params) => (
         <div>
-          {params.row.detail}
           <Button
             // key={row.detail}
             color="secondary"
@@ -679,7 +683,8 @@ const AllTransactions = () => {
             // style={{ marginLeft: "10px" }}
           >
             <ContentCopyIcon />
-          </Button>
+          </Button> {" "}
+          {params.row.detail}
         </div>
       ),
     },
@@ -884,11 +889,11 @@ const AllTransactions = () => {
           <div className="card-body">
             <p className="fs-6 lead ">
               Total Approved Amount :- ₹{" "}
-              {datas.length > 0
-                ? datas
+              {filterData.length > 0
+                ? filterData
                     .filter((item) => item.payment_approval_status == 1)
                     .reduce((total, currentItem) => {
-                      return total + currentItem.payment_amount * 1;
+                      return total + (currentItem.payment_amount * 1);
                     }, 0)
                 : ""}
             </p>
@@ -909,8 +914,8 @@ const AllTransactions = () => {
           <div className="card-body">
             <p className="fs-6 lead ">
               Total Rejected Amount :- ₹{" "}
-              {datas.length > 0
-                ? datas
+              {filterData.length > 0
+                ? filterData
                     .filter((item) => item.payment_approval_status == 2)
                     .reduce((total, currentItem) => {
                       return total + currentItem.payment_amount * 1;

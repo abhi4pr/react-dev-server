@@ -300,12 +300,12 @@ const PaymentMode = () => {
             />
           </div>
         </div>
-        <div className="col-md-1 mt-4 me-2">
+        <div className="col-md-1 mt-2 mb-3 me-2">
           <Button variant="contained" onClick={handleAllFilters}>
             <i className="fas fa-search"></i> Search
           </Button>
         </div>
-        <div className="col-md-1 mt-4">
+        <div className="col-md-1 mt-2 mb-3">
           <Button variant="contained" onClick={handleClearAllFilter}>
             Clear
           </Button>

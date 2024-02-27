@@ -53,6 +53,16 @@ const PendingApprovalUpdate = () => {
     toastAlert("Detail copied");
   };
 
+  const ddmmyyConvesion = (date) => {
+    if(date.startsWith("0000-00-00")){return (" ")}
+    const date1 = new Date(date);
+    const day = date1.getDate();
+    const month = date1.getMonth() + 1;
+    const year = date1.getFullYear();
+    if(day == "NaN" || month == "NaN" || year == "NaN"){ return (" ")}else{
+    return `${day}/${month}/${year}`;}
+  };
+
   const handleStatusChange = async (row, selectedStatus) => {
     setStatus(selectedStatus);
 
@@ -573,7 +583,7 @@ const PendingApprovalUpdate = () => {
     {
       field: "S.No",
       fieldName: "s_no",
-      width: 180,
+      width: 70,
       renderCell: (params, index) => (
         <div>{[...datas].indexOf(params.row) + 1}</div>
       ),
@@ -691,14 +701,14 @@ const PendingApprovalUpdate = () => {
       width: 490,
       renderCell: (params) => (
         <div>
-          {params.row.detail}
           <button
             className="btn btn-secondary ml-2"
             onClick={() => handleCopyDetail(params.row.detail)}
           >
             <ContentCopyIcon />
             {/* or any other icon */}
-          </button>
+            </button>   {"  "}
+          { params.row.detail}
         </div>
       ),
       // width: 150,
@@ -716,10 +726,37 @@ const PendingApprovalUpdate = () => {
       renderCell: (params) => <div>{params.row.payment_update_remarks} </div>,
     },
     {
+      width: 200,
+      field: "Status",
+      headerName: "Status",
+      renderCell: ({row}) => (
+        <Autocomplete
+        className="my-2"
+        id="combo-box-demo"
+        value={row.statusDropdown}
+        options={[
+          { label: "Approved", value: 1 },
+          { label: "Rejected", value: 2 },
+        ]}
+        getOptionLabel={(option) => option.label}
+        onChange={(event, newValue) => {
+          handleStatusChange(row, newValue.value),
+            console.log(newValue.value);
+        }}
+        style={{ width: 180 }}
+        renderInput={(params) => (
+          <TextField {...params} label="Status" variant="outlined" />
+        )}
+      />
+      ),
+    
+    },
+   
+    {
       field: "Payment Requested Date and Time ",
       fieldName: "balance_payment_ondate",
       width: 180,
-      renderCell: (params) => <div>{params.row.balance_payment_ondate} </div>,
+      renderCell: (params) => <div>{params.row.created_at?ddmmyyConvesion(params.row.created_at):""} </div>,
     },
     {
       field: "Action ",
