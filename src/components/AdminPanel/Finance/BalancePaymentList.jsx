@@ -749,6 +749,7 @@ const BalancePaymentList = () => {
   ];
   const columns = [
     {
+      width: 70,
       field: "S.No",
       fieldName: "s_no",
       renderCell: (params, index) => (

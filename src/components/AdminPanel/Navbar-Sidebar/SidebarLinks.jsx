@@ -1071,7 +1071,7 @@ const SidebarLinks = () => {
           >
             <div className="bg-white collapse-inner">
               <li className="nav-item">
-                <Link
+                {/* <Link
                   className="nav-link collapsed"
                   data-toggle="collapse"
                   data-target="#collapsInnerEightFinanceEditDashboard"
@@ -1079,13 +1079,13 @@ const SidebarLinks = () => {
                   aria-controls="collapsInnerEightFinanceEditDashboard"
                 >
                   <span>Dashboard</span>
-                </Link>
-                <div
+                </Link> */}
+                {/* <div
                   id="collapsInnerEightFinanceEditDashboard"
                   className="collapse"
                   aria-labelledby="headingTwo"
                   // data-parent="#accordionSidebar"
-                >
+                > */}
                   <div className="bg-white collapse-inner">
                     <>
                       <li className="nav-item">
@@ -1098,7 +1098,7 @@ const SidebarLinks = () => {
                       </li>
                     </>
                   </div>
-                </div>
+                {/* </div> */}
 
                 <Link
                   className="nav-link collapsed"
@@ -1133,6 +1133,12 @@ const SidebarLinks = () => {
                           aria-labelledby="headingTwo"
                         >
                           <div className="bg-white collapse-inner">
+                          <Link
+                              className="collapse-item"
+                              to="/admin/finance-alltransactions"
+                            >
+                              Dashboard
+                            </Link>
                             <Link
                               className="collapse-item"
                               to="/admin/finance-paymentmode"
@@ -1145,12 +1151,7 @@ const SidebarLinks = () => {
                             >
                               Pending Approval
                             </Link>
-                            <Link
-                              className="collapse-item"
-                              to="/admin/finance-alltransactions"
-                            >
-                              Dashboard
-                            </Link>
+                           
                           </div>
                         </div>
                       </li>
@@ -1339,6 +1340,12 @@ const SidebarLinks = () => {
                 >
                   <div className="bg-white collapse-inner">
                     <>
+                    <Link
+                        className="collapse-item"
+                        to="/admin/finance-pruchasemanagement-alltransaction"
+                      >
+                        Purchase Dashboard
+                      </Link>
                       <Link
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
@@ -1369,12 +1376,7 @@ const SidebarLinks = () => {
                       >
                         Payment Done
                       </Link>
-                      <Link
-                        className="collapse-item"
-                        to="/admin/finance-pruchasemanagement-alltransaction"
-                      >
-                        Purchase Dashboard
-                      </Link>
+                    
                       <Link
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-discardpayment"

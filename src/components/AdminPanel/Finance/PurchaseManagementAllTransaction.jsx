@@ -595,7 +595,7 @@ export default function PurchaseManagementAllTransaction() {
     {
       field: "S.NO",
       headerName: "S.NO",
-      width: 90,
+      width: 50,
       editable: false,
       renderCell: (params) => {
         const rowIndex = filterData.indexOf(params.row);
@@ -1363,7 +1363,7 @@ export default function PurchaseManagementAllTransaction() {
           </div>
         </div>
         <div className="card col-2 ms-2">
-          <div className="card-header h4  fs-5">With Incoive</div>
+          <div className="card-header h4  fs-5">With Invoice</div>
           <div className="card-body">
             <p className="fs-6 lead ">
               With Invoice Count :- {withInvoiceCount}
@@ -1379,7 +1379,7 @@ export default function PurchaseManagementAllTransaction() {
           </div>
         </div>
         <div className="card col-2 ms-2">
-          <div className="card-header h4 fs-5">Without Invoive</div>
+          <div className="card-header h4 fs-5">Without Invoice</div>
           <div className="card-body">
             <p className="fs-6 lead ">
               Without Invoice Count :- {withoutInvoiceCount}

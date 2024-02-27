@@ -593,7 +593,7 @@ const SaleBookingClose = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "6%",
+      width: "5%",
       sortable: true,
     },
     {
