@@ -63,7 +63,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
         </div>
 
         <div className="letterAction">
-          {allUserData.offer_later_status == false && (
+          {allUserData.offer_later_status == false && allUserData.offer_later_reject_reason == '' &&(
             <div className="letterStatus">
               <button
                 className="btn btn-primary"
@@ -82,7 +82,11 @@ const LetterTab = ({ allUserData, gettingData }) => {
             </div>
           )}
 
-          {console.log(allUserData)}
+          {allUserData.offer_later_reject_reason !== '' && (
+            <p>Reject Reason - {allUserData.offer_later_reject_reason}</p>
+          )}
+
+          {/* {console.log(allUserData)} */}
           {allUserData.offer_later_status && (
             <span className="btn btn-outline-primary">
               <FcDownload
