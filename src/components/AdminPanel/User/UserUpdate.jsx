@@ -307,7 +307,7 @@ const UserUpdate = () => {
       contact,
       loginId,
       password,
-      status,
+      userStatus,
       joiningDate,
       currentAddress,
       currentCity,
@@ -335,7 +335,6 @@ const UserUpdate = () => {
     // Display toast notifications at specific milestones
     const milestones = [25, 50, 75, 100];
     if (milestones.includes(progressPercentage)) {
-      // toast.info(`Progress: ${progressPercentage}%`, { position: "top-right" });
     }
   }, [
     username,
@@ -358,7 +357,7 @@ const UserUpdate = () => {
     contact,
     loginId,
     password,
-    status,
+    userStatus,
     joiningDate,
     currentAddress,
     currentCity,
@@ -636,7 +635,7 @@ const UserUpdate = () => {
   }, [sitting, refrenceData]);
 
   const handleSubmit = async (e) => {
-    // setLoading(true)
+    // setLoading(true);
     e.preventDefault();
     if (!jobType) {
       return toastError("Job Type is Required");
@@ -744,7 +743,7 @@ const UserUpdate = () => {
 
     // formData.append("highest_qualification_name", higestQualification);
     // formData.append("cast_type", cast);
-    // formData.append("att_status", "document_upload");
+    formData.append("att_status", "document_upload");
 
     const formDataa = new FormData();
     if (personalEmail && personalContact) {
@@ -874,25 +873,6 @@ const UserUpdate = () => {
         formDataa.delete("lastupdated_by");
         formDataa.delete("field_value");
       }
-
-      // console.log(uid, "yha uid hai put ke bad");
-      // console.log(panUpload, "pan hai yha");
-      // axios
-      //   .post(baseUrl+"add_send_user_mail", {
-      //     email: email,
-      //     subject: "User Registration",
-      //     text: "A new user has been registered.",
-      //     attachment: profile,
-      //     login_id: loginId,
-      //     name: username,
-      //     password: password,
-      //   })
-      //   .then((res) => {
-      //     console.log("Email sent successfully:", res.data);
-      //   })
-      //   .catch((error) => {
-      //     console.log("Failed to send email:", error);
-      //   });
     } else {
       if (contact.length !== 10) {
         if (isValidcontact == false)
@@ -1021,42 +1001,6 @@ const UserUpdate = () => {
       } catch (error) {
         console.error("Error Updating Education details:", error);
       }
-    }
-  };
-  const handleSubmitDocument = async () => {
-    const isMandatoryDocMissing = documentData.some(
-      (doc) =>
-        mandatoryDocTypes.includes(doc.document.doc_type) &&
-        doc.doc_image &&
-        doc.file
-    );
-
-    if (isMandatoryDocMissing) {
-      toastAlert("Please fill all mandatory fields");
-      return;
-    } else {
-      for (const document of documentData) {
-        if (document.file) {
-          let formData = new FormData();
-          formData.append("doc_image", document.file);
-          formData.append("_id", document._id);
-          formData.append(
-            "status",
-            document.status == "Document Uploaded"
-              ? "Verification Pending"
-              : document.status
-          );
-          await axios.put(baseUrl + "update_user_doc", formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-        } else {
-          console.log(`No file uploaded for document ${document._id}`);
-        }
-      }
-      toastAlert("Documents Updated");
-      getDocuments();
     }
   };
 
