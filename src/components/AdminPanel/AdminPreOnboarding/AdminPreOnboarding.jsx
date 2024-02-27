@@ -183,7 +183,7 @@ const AdminPreOnboarding = () => {
     formData.append("job_type", jobType);
     formData.append("DOB", dateOfBirth);
 
-    // formData.append("user_contact_no", contact);
+    formData.append("user_contact_no", personalContact);
     formData.append("personal_number", personalContact);
     // formData.append("pe", personalContact);
 
