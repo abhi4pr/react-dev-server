@@ -142,7 +142,7 @@ const InvoiceTemplate1 = ({ data }) => {
               <div className="invoiceBodyFooter_right">
                 {/* <h3>Terms & Conditions</h3> */}
                 <h3>Account Details</h3>
-                <h4>Beneficiary Name : {data?.user_name}</h4>
+                <h4>Beneficiary Name : {data?.beneficiary_name}</h4>
                 <h4>Bank Name: {data?.bank_name}</h4>
                 <h4>Account Number :{data?.account_no}</h4>
                 <h4>IFSC Code: {data?.ifsc_code}</h4>

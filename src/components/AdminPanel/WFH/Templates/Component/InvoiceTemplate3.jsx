@@ -289,7 +289,7 @@ const InvoiceTemplate3 = ({ data }) => {
                 <div className="termBox">
                   <h2 className="color-pink">Account Details</h2>
                   <p>
-                    <span>Beneficiary name :-</span> {data?.user_name}
+                    <span>Beneficiary name :-</span> {data?.beneficiary_name}
                   </p>
                   <p>
                     <span>Bank name :-</span> {data?.bank_name}
