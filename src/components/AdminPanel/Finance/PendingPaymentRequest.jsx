@@ -218,7 +218,7 @@ export default function PendingPaymentRequest() {
   };
 
   const handleGstHold = (e) => {
-    console.log(e.target.checked, "checked")
+    console.log(e.target.checked, "checked");
     setGstHold(e.target.checked);
     setGSTHoldAmount(rowData.gst_amount);
   };
@@ -326,8 +326,8 @@ export default function PendingPaymentRequest() {
         phpFormData.append("gst_hold", rowData.gst_amount);
         phpFormData.append("gst_hold_amount", GSTHoldAmount);
         phpFormData.append("tds_deduction", TDSValue);
-        phpFormData.append("gst_Hold_Bool", gstHold?1:0);
-        phpFormData.append("tds_Deduction_Bool", TDSDeduction?1:0);
+        phpFormData.append("gst_Hold_Bool", gstHold ? 1 : 0);
+        phpFormData.append("tds_Deduction_Bool", TDSDeduction ? 1 : 0);
         axios
           .post(
             "https://purchase.creativefuel.io/webservices/RestController.php?view=updatePaymentrequestNew",
@@ -342,7 +342,7 @@ export default function PendingPaymentRequest() {
             toastAlert("Payment Done Successfully");
 
             whatsappApi.callWhatsAPI(
-              "Extend Date by User",  
+              "Extend Date by User",
               JSON.stringify(9109266387),
               rowData.vendor_name,
               [paymentAmout, rowData.vendor_name, rowData.mob1]
@@ -962,9 +962,9 @@ export default function PendingPaymentRequest() {
       },
     },
     {
-      field:"payment_cycle",
-      headerName:"Payment Cycle",
-      width:150,
+      field: "payment_cycle",
+      headerName: "Payment Cycle",
+      width: 150,
     },
     {
       field: "total_paid",
@@ -1846,11 +1846,9 @@ export default function PendingPaymentRequest() {
               )}
             />
             <TextField
-
-InputProps={{
-  readOnly: gstHold || TDSDeduction,
-}}
-  
+              InputProps={{
+                readOnly: gstHold || TDSDeduction,
+              }}
               onChange={(e) => {
                 rowData.request_amount;
 
@@ -1859,7 +1857,7 @@ InputProps={{
                   // setPaymentAmount(currentValue);
                   if (currentValue <= +rowData.request_amount) {
                     setPaymentAmount(currentValue);
-                    setPaymentStatus
+                    setPaymentStatus;
                   } else {
                     toastError(
                       "Payment Amount should be less than or equal to Requested Amount"
