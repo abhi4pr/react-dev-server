@@ -1,7 +1,7 @@
 import React from "react";
 import DateFormattingComponent from "../../DateFormator/DateFormared";
 
-const UserSingleTab2 = ({ user }) => {
+const UserSingleTab2 = ({ user, hobbiesData }) => {
   return (
     <>
       <div className="profileInfo_area">
@@ -53,7 +53,16 @@ const UserSingleTab2 = ({ user }) => {
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
             <div className="profileInfo_box">
               <h3>Hobbies</h3>
-              <h4>{user.Hobbies ? user.Hobbies : "NA"}</h4>
+              <h4>
+                {hobbiesData && user.Hobbies
+                  ? hobbiesData
+                      .filter((object) =>
+                        user.Hobbies.includes(object.hobby_id)
+                      )
+                      .map((hobbyName) => hobbyName.hobby_name)
+                      .join(" | ")
+                  : "NA"}
+              </h4>
             </div>
           </div>
           <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">

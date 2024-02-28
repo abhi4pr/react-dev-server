@@ -1,6 +1,7 @@
-import { IconButton, TextField } from "@mui/material";
+import { Autocomplete, IconButton, TextField } from "@mui/material";
 import React from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
+import EducationList from "../../assets/js/EducationList";
 
 const EducationFields = ({
   educationDetails,
@@ -106,15 +107,31 @@ const EducationFields = ({
                 );
               case "title":
                 return (
-                  <div className="form-group">
-                    <TextField
+                  <div className="form-group form_select">
+                    <Autocomplete
                       key={key}
-                      fieldGrid={3}
-                      type="text"
                       name={key}
-                      label={educationFieldLabels[key]}
-                      value={detail[key] || ""}
-                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                      options={EducationList}
+                      getOptionLabel={(option) => option.label}
+                      value={EducationList.find(
+                        (option) => option.value === detail[key]
+                      )}
+                      onChange={(e, newValue) => {
+                        handleEducationDetailsChange(index, {
+                          target: {
+                            name: key,
+                            value: newValue ? newValue.value : "",
+                          },
+                        });
+                      }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Standard"
+                          variant="outlined"
+                          fullWidth
+                        />
+                      )}
                     />
                   </div>
                 );

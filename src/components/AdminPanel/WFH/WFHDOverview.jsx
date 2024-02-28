@@ -7,10 +7,10 @@ import { baseUrl } from "../../../utils/config";
 import { Link } from "react-router-dom";
 import FieldContainer from "../FieldContainer";
 import jwtDecode from "jwt-decode";
-import Modal from "react-modal"
-import EditIcon from '@mui/icons-material/Edit';
-import UploadIcon from '@mui/icons-material/Upload';
-import DetailsIcon from '@mui/icons-material/Details';
+import Modal from "react-modal";
+import EditIcon from "@mui/icons-material/Edit";
+import UploadIcon from "@mui/icons-material/Upload";
+import DetailsIcon from "@mui/icons-material/Details";
 
 const WFHDOverview = () => {
   const { ContextDept, RoleIDContext } = useAPIGlobalContext();
@@ -27,9 +27,9 @@ const WFHDOverview = () => {
     onboarded: 0,
   });
   const [trainingDate, setTrainingDate] = useState("");
-  const [showOnBoardModal, setShowOnBoardModal] = useState(false)
-  const [activeTab, setActiveTab] = useState(0)
-  const [searchFilter, setSearchFilter] = useState([])
+  const [showOnBoardModal, setShowOnBoardModal] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
+  const [searchFilter, setSearchFilter] = useState([]);
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -40,7 +40,7 @@ const WFHDOverview = () => {
     const response = await axios.get(baseUrl + "get_all_wfh_users");
     if (RoleIDContext == 1 || RoleIDContext == 5) {
       setAllWFHDData(response.data.data);
-      const FinalResonse = response.data.data
+      const FinalResonse = response.data.data;
 
       let filterTabWise = [];
       switch (activeTab) {
@@ -75,15 +75,13 @@ const WFHDOverview = () => {
       }
 
       setFilteredDatas(filterTabWise);
-      setSearchFilter(filterTabWise)
-
+      setSearchFilter(filterTabWise);
     } else {
       const deptWiseData = response.data.data?.filter(
         (d) => d.dept_id == ContextDept
       );
       setAllWFHDData(deptWiseData);
 
-
       let filterTabWise = [];
       switch (activeTab) {
         case 0:
@@ -116,10 +114,8 @@ const WFHDOverview = () => {
           );
       }
 
-
-
       setFilteredDatas(filterTabWise);
-      setSearchFilter(filterTabWise)
+      setSearchFilter(filterTabWise);
 
       setSavedData(response.data.data?.filter((d) => d.dept_id == ContextDept));
     }
@@ -175,15 +171,14 @@ const WFHDOverview = () => {
         att_status: "onboarded",
       });
       setRemark("");
-      setShowOnBoardModal(false)
+      setShowOnBoardModal(false);
       // setActiveTab(prev =>prev + 1);
     } catch (error) {
-      console.error(error)
+      console.error(error);
     } finally {
-      getData()
+      getData();
     }
-  }
-
+  };
 
   useEffect(() => {
     const lowerCaseSearch = search.toLowerCase();
@@ -215,7 +210,9 @@ const WFHDOverview = () => {
 
     switch (filterValue) {
       case "registered":
-        filteredData = allWFHDData.filter((option) => option.att_status == filterValue);
+        filteredData = allWFHDData.filter(
+          (option) => option.att_status == filterValue
+        );
         break;
       case "document_upload":
         filteredData = allWFHDData.filter(
@@ -237,9 +234,8 @@ const WFHDOverview = () => {
     }
 
     setFilteredDatas(filteredData);
-    setSearchFilter(filteredData)
+    setSearchFilter(filteredData);
   };
-
 
   const columns = [
     {
@@ -317,13 +313,29 @@ const WFHDOverview = () => {
         <>
           {row.att_status == "registered" ? (
             <>
-              <button title="Edit user" type="button" className="btn btn-primary mr-1">
-                <Link to={`/admin/wfhd-update/${row.user_id}`}><EditIcon /></Link>
+              <button
+                title="Edit user"
+                type="button"
+                className="btn btn-primary mr-1"
+              >
+                <Link to={`/admin/wfhd-update/${row.user_id}`}>
+                  <EditIcon />
+                </Link>
               </button>
-              <button title="Bank details" type="button" className="btn btn-primary mr-1">
-                <Link to={`/admin/wfhd-bank-update/${row.user_id}`}><DetailsIcon /></Link>
+              <button
+                title="Bank details"
+                type="button"
+                className="btn btn-primary mr-1"
+              >
+                <Link to={`/admin/wfhd-bank-update/${row.user_id}`}>
+                  <DetailsIcon />
+                </Link>
               </button>
-              <button title="Document upload" type="button" className="btn btn-success">
+              <button
+                title="Document upload"
+                type="button"
+                className="btn btn-success"
+              >
                 <Link to={`/admin/wfh-update-document/${row.user_id}`}>
                   <UploadIcon />
                 </Link>
@@ -347,10 +359,9 @@ const WFHDOverview = () => {
               // data-target="#exampleModal2"
 
               onClick={() => {
-                setRowDataFunc(row)
-                setShowOnBoardModal(true)
-              }
-              }
+                setRowDataFunc(row);
+                setShowOnBoardModal(true);
+              }}
             >
               Onboard
             </button>
@@ -402,7 +413,12 @@ const WFHDOverview = () => {
                 data-dismiss="modal"
                 aria-label="Close"
               >
-                <span aria-hidden="true" onClick={() => setShowOnBoardModal(false)}>×</span>
+                <span
+                  aria-hidden="true"
+                  onClick={() => setShowOnBoardModal(false)}
+                >
+                  ×
+                </span>
               </button>
             </div>
             <div className="modal-body">
@@ -489,8 +505,9 @@ const WFHDOverview = () => {
         <div className="card-header d-flex flex-row align-items-center justify-content-between">
           <div className="btn-group w-100">
             <button
-              className={`btn ${activeTab == 0 ? "btn-primary" : "btn-outline-primary"
-                }`}
+              className={`btn ${
+                activeTab == 0 ? "btn-primary" : "btn-outline-primary"
+              }`}
               onClick={() => {
                 FilterTabData("registered"), setActiveTab(0);
               }}
@@ -498,8 +515,9 @@ const WFHDOverview = () => {
               Registered ({statusCounts.registered})
             </button>
             <button
-              className={`btn ${activeTab == 1 ? "btn-primary" : "btn-outline-primary"
-                }`}
+              className={`btn ${
+                activeTab == 1 ? "btn-primary" : "btn-outline-primary"
+              }`}
               onClick={() => {
                 FilterTabData("document_upload"), setActiveTab(1);
               }}
@@ -507,8 +525,9 @@ const WFHDOverview = () => {
               Upload document ({statusCounts.document_upload})
             </button>
             <button
-              className={`btn ${activeTab == 2 ? "btn-primary" : "btn-outline-primary"
-                }`}
+              className={`btn ${
+                activeTab == 2 ? "btn-primary" : "btn-outline-primary"
+              }`}
               onClick={() => {
                 FilterTabData("training"), setActiveTab(2);
               }}
@@ -516,8 +535,9 @@ const WFHDOverview = () => {
               Training ({statusCounts.training})
             </button>
             <button
-              className={`btn ${activeTab == 3 ? "btn-primary" : "btn-outline-primary"
-                }`}
+              className={`btn ${
+                activeTab == 3 ? "btn-primary" : "btn-outline-primary"
+              }`}
               onClick={() => {
                 FilterTabData("onboarded"), setActiveTab(3);
               }}
@@ -584,7 +604,9 @@ const WFHDOverview = () => {
                   type="date"
                   label="Training Date"
                   fieldGrid={12}
-                  min={rowData?.joining_date && rowData?.joining_date.split("T")[0]}
+                  min={
+                    rowData?.joining_date && rowData?.joining_date.split("T")[0]
+                  }
                   value={trainingDate}
                   onChange={(e) => setTrainingDate(e.target.value)}
                 />
