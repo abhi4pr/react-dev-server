@@ -97,6 +97,7 @@ const UserMaster = () => {
   const whatsappApi = WhatsappAPI();
   const { toastAlert, toastError } = useGlobalContext();
   const [userResID, setUserResID] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   // Genral Information Tab-------------------Start------------------------------------
   // ---------------------Prsonal Info State Start
@@ -478,7 +479,7 @@ const UserMaster = () => {
       return toastError("Sub Department is Required");
     } else if (!designation || designation == "") {
       return toastError("Designatoin is Required");
-    } else if (!role || role == "") {
+    } else if (!roles || roles == "") {
       return toastError("Role is Required");
     } else if (!reportL1 || reportL1 == "") {
       return toastError("Report L1 Is Required");
@@ -546,8 +547,8 @@ const UserMaster = () => {
     formData.append("report_L2", reportL2);
     formData.append("report_L3", reportL3);
     formData.append("role_id", roles);
-    formData.append("user_email_id", email);
-    formData.append("user_contact_no", contact);
+    formData.append("user_email_id", personalEmail);
+    formData.append("user_contact_no", personalContact);
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
     formData.append("user_status", status);
@@ -568,12 +569,12 @@ const UserMaster = () => {
             loginId.toLocaleLowerCase()
         );
         const contactNumberExists = usersData.some(
-          (user) => user.user_contact_no == contact
+          (user) => user.personal_number == contact
         );
 
         const emailIdExists = usersData.some(
           (user) =>
-            user.user_email_id?.toLocaleLowerCase() ==
+            user.Personal_email?.toLocaleLowerCase() ==
             email?.toLocaleLowerCase()
         );
 
@@ -584,7 +585,7 @@ const UserMaster = () => {
         } else if (emailIdExists) {
           alert("Official Email Already Exists");
         } else {
-          setLoading(true);
+          setIsLoading(true);
           const response = await axios
             .post(baseUrl + "add_user_for_general_information", formData, {
               headers: {
@@ -598,17 +599,17 @@ const UserMaster = () => {
                 setUserResID(userResponseID);
                 setIsFormSubmitted(true);
                 toastAlert("User Registerd");
-                setLoading(false);
+                setIsLoading(false);
               } else {
                 toastError("Sorry User is Not Created, Please try again later");
-                setLoading(false);
+                setIsLoading(false);
               }
               setIsGeneralSubmitted(true);
               setActiveAccordionIndex((prev) => prev + 1);
             })
             .catch((err) => {
               toastError(err.message);
-              setLoading(false);
+              setIsLoading(false);
             });
 
           axios
@@ -1676,7 +1677,7 @@ const UserMaster = () => {
       </div>
 
       <FieldContainer
-        label="Official Email *"
+        label="Official Email"
         type="email"
         fieldGrid={3}
         value={email}
@@ -1699,7 +1700,7 @@ const UserMaster = () => {
       {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
 
       <FieldContainer
-        label="Official Contact *"
+        label="Official Contact"
         type="number"
         fieldGrid={3}
         value={contact}
@@ -1838,12 +1839,21 @@ const UserMaster = () => {
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <button
+        {/* <button
           type="button"
           className="btn btn-primary mr-2"
           onClick={handleSubmit}
         >
           Submit & Next
+        </button> */}
+        <button
+          type="submit"
+          className="btn btn-primary"
+          onClick={handleSubmit}
+          disabled={isLoading}
+          style={{ width: "20%", marginLeft: "1%" }}
+        >
+          {isLoading ? "Please wait submiting..." : "Submit"}
         </button>
       </div>
 
