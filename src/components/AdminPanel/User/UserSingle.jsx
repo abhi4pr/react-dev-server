@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
 import "./UserView.css";
-import blankProfilePic from "../../../assets/img/product/blankProfilePic.webp";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import FormContainer from "../FormContainer";
-import DataTable from "react-data-table-component";
-import { FcDownload } from "react-icons/fc";
-import DateFormattingComponent from "../../DateFormator/DateFormared";
-import { get } from "jquery";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import UserSingleTab1 from "./UserSingleTab1";
 import UserSingleTab2 from "./UserSingleTab2";
@@ -22,17 +17,14 @@ const UserSingle = () => {
   const whatsappApi = WhatsappAPI();
   const [KRIData, setKRIData] = useState([]);
   const { id } = useParams();
-  const [subDeptId, setSubDeptId] = useState([]);
-  const [subDept, setSubDept] = useState();
-  const [otherDocuments, setOtherDocuments] = useState("");
   const [defaultSeatData, setDefaultSeatData] = useState([]);
   const [roomId, setRoomId] = useState();
-  const [userProfileImage, setUserProfileImage] = useState(null);
 
   const [educationData, setEducationData] = useState([]);
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
 
   const [user, setUser] = useState([]);
+  const [hobbiesData, setHobbiesData] = useState([]);
 
   const [familyData, seFamilyData] = useState([]);
 
@@ -41,20 +33,6 @@ const UserSingle = () => {
       setKRIData(res.data);
     });
   };
-  function userOtherDocuments() {
-    axios.get(`${baseUrl}` + `get_user_other_fields/${id}`).then((res) => {
-      setOtherDocuments(res.data.data);
-    });
-  }
-
-  // const getData = async () => {
-  //   await axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
-  //     const fetchedData = res.data;
-  //     const { dept_id } = fetchedData;
-  //     setUser(fetchedData);
-  //     setSubDeptId(dept_id);
-  //   });
-  // };
 
   useEffect(() => {
     axios.get(baseUrl + "get_all_sittings").then((res) => {
@@ -67,25 +45,22 @@ const UserSingle = () => {
       seFamilyData(res.data.data);
     });
     KRAAPI(id);
+    axios.get(baseUrl + "get_all_hobbies").then((res) => {
+      setHobbiesData(res.data.data);
+    });
   }, []);
 
-  // const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
-
-  // const [user, setUser] = useState([]);
   let fetchedData;
   const getData = () => {
     axios.get(`${baseUrl}` + `get_single_user/${id}`).then((res) => {
       fetchedData = res.data;
       const { dept_id } = fetchedData;
       setUser(fetchedData);
-      setSubDeptId(dept_id);
-      setUserProfileImage(fetchedData.image_url);
     });
   };
 
   useEffect(() => {
     getData();
-    userOtherDocuments();
   }, [id]);
 
   const handleAccordionButtonClick = (index) => {
@@ -102,23 +77,12 @@ const UserSingle = () => {
   const accordionButtons = [
     "General",
     "Professional",
-    "KRA",
+    // "KRA",
     "Documents",
     "Family",
     "Education",
     // "Documents",
   ];
-
-  // This Code for Right Click Disable Purpos ---------------------------------------
-  // useEffect(() => {
-  //   const handleRightClick = (e) => {
-  //     e.preventDefault();
-  //   };
-  //   document.addEventListener("contextmenu", handleRightClick);
-
-  //   // Cleanup the event listener on component unmount
-  //   return () => document.removeEventListener("contextmenu", handleRightClick);
-  // }, []);
 
   return (
     <>
@@ -153,13 +117,15 @@ const UserSingle = () => {
             {activeAccordionIndex === 0 && (
               <UserSingleTab1 user={user} roomId={roomId} />
             )}
-            {activeAccordionIndex === 1 && <UserSingleTab2 user={user} />}
-            {activeAccordionIndex === 2 && <UserSingleTab3 KRIData={KRIData} />}
-            {activeAccordionIndex == 3 && <DocumentTabUserSingle id={id} />}
-            {activeAccordionIndex == 4 && (
+            {activeAccordionIndex === 1 && (
+              <UserSingleTab2 user={user} hobbiesData={hobbiesData} />
+            )}
+            {/* {activeAccordionIndex === 2 && <UserSingleTab3 KRIData={KRIData} />} */}
+            {activeAccordionIndex == 2 && <DocumentTabUserSingle id={id} />}
+            {activeAccordionIndex == 3 && (
               <UserSingleTab5 familyData={familyData} />
             )}
-            {activeAccordionIndex == 5 && (
+            {activeAccordionIndex == 4 && (
               <UserSingleTab6 educationData={educationData} />
             )}
           </FormContainer>

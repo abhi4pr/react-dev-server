@@ -454,7 +454,7 @@ const SalaryWFH = () => {
     } catch (error) {
       // alert('ssssss');
       // console.error("Error submitting data:", error);
-      toastError('Billing header not set for this department')
+      toastError("Billing header not set for this department");
     }
   };
 
@@ -1133,7 +1133,7 @@ const SalaryWFH = () => {
               )}
             <button
               className="btn btn-primary mr-3"
-              onClick={()=>BankExcelConverter(salaryMonthYearData)}
+              onClick={() => BankExcelConverter(salaryMonthYearData)}
             >
               Export Excel
             </button>

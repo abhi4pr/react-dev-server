@@ -242,7 +242,6 @@ import DateFormattingComponent from "../../DateFormator/DateFormared";
 
 const UserSingleTab1 = ({ user, roomId }) => {
   // Expanded user data into a manageable array for drag-and-drop functionality
-  console.log(user, "---uer");
   const getInitialFields = (user) => [
     { id: user.user_id, label: "Name", value: user.user_name },
     { id: user.user_id, label: "Gender", value: user.Gender },
@@ -275,7 +274,30 @@ const UserSingleTab1 = ({ user, roomId }) => {
       value: <DateFormattingComponent date={user.DOB} />,
     },
     { id: user.user_id, label: "Age", value: user.Age || "NA" },
-    // Add other fields as necessary
+    {
+      id: user.user_id,
+      label: "Permanent Address",
+      value:
+        user?.permanent_address +
+        ", " +
+        user?.permanent_city +
+        ", " +
+        user?.permanent_state +
+        ", " +
+        user?.permanent_pin_code,
+    },
+    {
+      id: user.user_id,
+      label: "Current Address",
+      value:
+        user?.current_address +
+        ", " +
+        user?.current_city +
+        ", " +
+        user?.current_state +
+        ", " +
+        user?.current_pin_code,
+    },
   ];
   useEffect(() => {
     setFields(getInitialFields(user));

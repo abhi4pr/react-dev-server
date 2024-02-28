@@ -129,33 +129,33 @@ const familyFieldLabels = {
 
 //Education
 const initialEducationDetailsGroup = {
+  title: "",
   institute_name: "",
   from_year: "",
   to_year: "",
   percentage: "",
   stream: "",
   specialization: "",
-  title: "",
 };
 
 const educationDispalyFields = [
+  "title",
   "institute_name",
   "from_year",
   "to_year",
   "percentage",
   "stream",
   "specialization",
-  "title",
 ];
 
 const educationFieldLabels = {
+  title: "Title",
   institute_name: "Institute Name",
   from_year: "From Year",
   to_year: "To Year",
   percentage: "Percentage",
   stream: "Stream",
   specialization: "Specialization",
-  title: "Title",
 };
 
 const PreOnboardingUserMaster = () => {
@@ -167,7 +167,7 @@ const PreOnboardingUserMaster = () => {
   const decodedToken = jwtDecode(token);
   const loginUserName = decodedToken.name;
   const id = decodedToken.id;
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
 
   const [activeTab, setActiveTab] = useState(0);
   const [cocData, setCocData] = useState([]);
@@ -850,6 +850,7 @@ const PreOnboardingUserMaster = () => {
     ]);
 
     toastAlert("User Update");
+    gettingData();
   };
 
   // useEffect(() => {
@@ -975,12 +976,29 @@ const PreOnboardingUserMaster = () => {
   };
 
   const handleEducationDetailsChange = (index, event) => {
-    const updatedEducationDetails = educationDetails?.map((detail, i) => {
-      if (i === index) {
-        return { ...detail, [event.target.name]: event.target.value };
+    const { name, value } = event.target;
+    const updatedEducationDetails = [...educationDetails];
+    const detailToUpdate = updatedEducationDetails[index];
+
+    if (name === "percentage" && value > 100) {
+      return toastError("Can't input value greater than 100");
+    }
+
+    detailToUpdate[name] = value;
+
+    if (name === "from_year" || name === "to_year") {
+      const fromYear = detailToUpdate["from_year"]
+        ? new Date(detailToUpdate["from_year"])
+        : null;
+      const toYear = detailToUpdate["to_year"]
+        ? new Date(detailToUpdate["to_year"])
+        : null;
+
+      if (fromYear && toYear && fromYear > toYear) {
+        return toastError("'From year' should not be greater than 'To year'");
       }
-      return detail;
-    });
+    }
+
     setEducationDetails(updatedEducationDetails);
   };
 
