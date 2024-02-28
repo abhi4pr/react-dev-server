@@ -633,6 +633,11 @@ export default function TDSdeduct() {
       },
     },
     {
+      field: "page_name",
+      headerName:"Page Name",
+      width: 150,
+    },
+    {
       field: "total_paid",
       headerName: "Total Paid",
       width: 150,
@@ -888,23 +893,10 @@ export default function TDSdeduct() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => sameVendorData.indexOf(row)}
@@ -944,22 +936,10 @@ export default function TDSdeduct() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => uniqueVendorData.indexOf(row)}
@@ -1085,22 +1065,10 @@ export default function TDSdeduct() {
         rowsPerPageOptions={[5]}
         disableSelectionOnClick
         autoHeight
-        disableColumnMenu
-        disableColumnSelector
-        disableColumnFilter
-        disableColumnReorder
-        disableColumnResize
-        disableMultipleColumnsSorting
-        components={{
-          Toolbar: GridToolbar,
-        }}
-        componentsProps={{
+        slots={{ toolbar: GridToolbar }}
+        slotProps={{
           toolbar: {
-            value: search,
-            onChange: (event) => setSearch(event.target.value),
-            placeholder: "Search",
-            clearSearch: true,
-            clearSearchAriaLabel: "clear",
+            showQuickFilter: true,
           },
         }}
         getRowId={(row) => filterData.indexOf(row)}

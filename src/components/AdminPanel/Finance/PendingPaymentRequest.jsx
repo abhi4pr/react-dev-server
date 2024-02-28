@@ -962,6 +962,11 @@ export default function PendingPaymentRequest() {
       },
     },
     {
+      field: "page_name",
+      headerName:"Page Name",
+      width: 150,
+    },
+    {
       field: "payment_cycle",
       headerName: "Payment Cycle",
       width: 150,
@@ -1289,24 +1294,12 @@ export default function PendingPaymentRequest() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
+          slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
           getRowId={(row) => row.request_id}
         />
       </Dialog>
@@ -1345,23 +1338,10 @@ export default function PendingPaymentRequest() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => sameVendorData.indexOf(row)}
@@ -1401,25 +1381,12 @@ export default function PendingPaymentRequest() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
-          }}
-          getRowId={(row) => uniqueVendorData.indexOf(row)}
+          }} getRowId={(row) => uniqueVendorData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -1546,7 +1513,7 @@ export default function PendingPaymentRequest() {
         slots={{ toolbar: GridToolbar }}
         disableSelectionOnClick
         autoHeight
-        disableColumnMenu
+        disableColumnMenu   
         getRowId={(row) => filterData.indexOf(row)}
         slotProps={{
           toolbar: {

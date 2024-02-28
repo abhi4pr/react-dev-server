@@ -969,25 +969,13 @@ export default function TaskDone() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
-          getRowId={(row) => uniqueVendorData.indexOf(row)}
+          slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+        getRowId={(row) => uniqueVendorData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -1109,6 +1097,7 @@ export default function TaskDone() {
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
+        mainTitleRequired= {false}
       >
         <div className="tab-content">
           {activeAccordionIndex === 0 && (
@@ -1120,25 +1109,13 @@ export default function TaskDone() {
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
                 autoHeight
-                disableColumnMenu
-                disableColumnSelector
-                disableColumnFilter
-                disableColumnReorder
-                disableColumnResize
-                disableMultipleColumnsSorting
-                components={{
-                  Toolbar: GridToolbar,
-                }}
-                componentsProps={{
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
                   toolbar: {
-                    value: search,
-                    onChange: (event) => setSearch(event.target.value),
-                    placeholder: "Search",
-                    clearSearch: true,
-                    clearSearchAriaLabel: "clear",
+                    showQuickFilter: true,
                   },
                 }}
-                getRowId={(row) => zohoDoneData.indexOf(row)}
+                 getRowId={(row) => zohoDoneData.indexOf(row)}
               />
             </div>
           )}
@@ -1151,25 +1128,12 @@ export default function TaskDone() {
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
                 autoHeight
-                disableColumnMenu
-                disableColumnSelector
-                disableColumnFilter
-                disableColumnReorder
-                disableColumnResize
-                disableMultipleColumnsSorting
-                components={{
-                  Toolbar: GridToolbar,
-                }}
-                componentsProps={{
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
                   toolbar: {
-                    value: search,
-                    onChange: (event) => setSearch(event.target.value),
-                    placeholder: "Search",
-                    clearSearch: true,
-                    clearSearchAriaLabel: "clear",
+                    showQuickFilter: true,
                   },
-                }}
-                getRowId={(row) => gstDoneData.indexOf(row)}
+                }} getRowId={(row) => gstDoneData.indexOf(row)}
               />
             </div>
           )}
@@ -1182,25 +1146,12 @@ export default function TaskDone() {
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
                 autoHeight
-                disableColumnMenu
-                disableColumnSelector
-                disableColumnFilter
-                disableColumnReorder
-                disableColumnResize
-                disableMultipleColumnsSorting
-                components={{
-                  Toolbar: GridToolbar,
-                }}
-                componentsProps={{
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
                   toolbar: {
-                    value: search,
-                    onChange: (event) => setSearch(event.target.value),
-                    placeholder: "Search",
-                    clearSearch: true,
-                    clearSearchAriaLabel: "clear",
+                    showQuickFilter: true,
                   },
-                }}
-                getRowId={(row) => tdsDoneData.indexOf(row)}
+                }} getRowId={(row) => tdsDoneData.indexOf(row)}
               />
             </div>
           )}

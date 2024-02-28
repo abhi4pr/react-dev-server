@@ -561,15 +561,30 @@ export default function PaymentDone() {
 
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
         return isPdf ? (
-          <iframe
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            src={imgUrl}
-            style={{ width: "100px", height: "100px" }}
-            title="PDF Preview"
-          />
+          <>
+            <iframe
+              allowFullScreen={true}
+              src={imgUrl}
+              title="PDF Viewer"
+              style={{ width: "80px", height: "80px" }}
+            />
+            <div
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              style={{
+                position: "absolute",
+                width: "64%",
+                height: "71%",
+                top: 0,
+                left: "21px",
+                cursor: "pointer",
+                background: "rgba(0, 0, 0, 0)", // This makes the div transparent
+                zIndex: 10, // This ensures the div is placed over the iframe
+              }}
+            ></div>
+          </>
         ) : (
           <img
             onClick={() => {
@@ -626,6 +641,11 @@ export default function PaymentDone() {
           </div>
         );
       },
+    },
+    {
+      field: "page_name",
+      headerName: "Page Name",
+      width: 150,
     },
     {
       field: "total_paid",
@@ -883,23 +903,10 @@ export default function PaymentDone() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => sameVendorData.indexOf(row)}
@@ -939,22 +946,10 @@ export default function PaymentDone() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => uniqueVendorData.indexOf(row)}
@@ -1080,22 +1075,10 @@ export default function PaymentDone() {
         rowsPerPageOptions={[5]}
         disableSelectionOnClick
         autoHeight
-        disableColumnMenu
-        disableColumnSelector
-        disableColumnFilter
-        disableColumnReorder
-        disableColumnResize
-        disableMultipleColumnsSorting
-        components={{
-          Toolbar: GridToolbar,
-        }}
-        componentsProps={{
+        slots={{ toolbar: GridToolbar }}
+        slotProps={{
           toolbar: {
-            value: search,
-            onChange: (event) => setSearch(event.target.value),
-            placeholder: "Search",
-            clearSearch: true,
-            clearSearchAriaLabel: "clear",
+            showQuickFilter: true,
           },
         }}
         getRowId={(row) => filterData.indexOf(row)}

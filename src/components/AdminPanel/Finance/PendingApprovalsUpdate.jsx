@@ -54,13 +54,18 @@ const PendingApprovalUpdate = () => {
   };
 
   const ddmmyyConvesion = (date) => {
-    if(date.startsWith("0000-00-00")){return (" ")}
+    if (date.startsWith("0000-00-00")) {
+      return " ";
+    }
     const date1 = new Date(date);
     const day = date1.getDate();
     const month = date1.getMonth() + 1;
     const year = date1.getFullYear();
-    if(day == "NaN" || month == "NaN" || year == "NaN"){ return (" ")}else{
-    return `${day}/${month}/${year}`;}
+    if (day == "NaN" || month == "NaN" || year == "NaN") {
+      return " ";
+    } else {
+      return `${day}/${month}/${year}`;
+    }
   };
 
   const handleStatusChange = async (row, selectedStatus) => {
@@ -321,7 +326,7 @@ const PendingApprovalUpdate = () => {
       field: "payment_screenshot",
       headerName: "Payment Screenshot",
       renderCell: (params) => (
-        <div
+        params.row.payment_screenshot? <div
           onClick={() => {
             setViewImgSrc(
               params.row.payment_screenshot
@@ -343,7 +348,7 @@ const PendingApprovalUpdate = () => {
             //     : ""
             // }
           />
-        </div>
+        </div>:"No Screenshot Available"
       ),
     },
     {
@@ -477,7 +482,7 @@ const PendingApprovalUpdate = () => {
       field: "payment_screenshot",
       headerName: "Payment Screenshot",
       renderCell: (params) => (
-        <div
+        params.row.payment_screenshot?   <div
           onClick={() => {
             setViewImgSrc(
               params.row.payment_screenshot
@@ -499,7 +504,7 @@ const PendingApprovalUpdate = () => {
             //     : ""
             // }
           />
-        </div>
+        </div>: "No Screenshot Available"
       ),
     },
     {
@@ -636,7 +641,7 @@ const PendingApprovalUpdate = () => {
       fieldName: "payment_screenshot",
       width: 180,
       renderCell: (params) => (
-        <div
+        params.row.payment_screenshot?  <div
           onClick={() => {
             setViewImgSrc(
               params.row.payment_screenshot
@@ -658,7 +663,7 @@ const PendingApprovalUpdate = () => {
             //     : ""
             // }
           />
-        </div>
+        </div>: "No Screenshot Available"
       ),
     },
     {
@@ -707,8 +712,9 @@ const PendingApprovalUpdate = () => {
           >
             <ContentCopyIcon />
             {/* or any other icon */}
-            </button>   {"  "}
-          { params.row.detail}
+          </button>{" "}
+          {"  "}
+          {params.row.detail}
         </div>
       ),
       // width: 150,
@@ -729,34 +735,37 @@ const PendingApprovalUpdate = () => {
       width: 200,
       field: "Status",
       headerName: "Status",
-      renderCell: ({row}) => (
+      renderCell: ({ row }) => (
         <Autocomplete
-        className="my-2"
-        id="combo-box-demo"
-        value={row.statusDropdown}
-        options={[
-          { label: "Approved", value: 1 },
-          { label: "Rejected", value: 2 },
-        ]}
-        getOptionLabel={(option) => option.label}
-        onChange={(event, newValue) => {
-          handleStatusChange(row, newValue.value),
-            console.log(newValue.value);
-        }}
-        style={{ width: 180 }}
-        renderInput={(params) => (
-          <TextField {...params} label="Status" variant="outlined" />
-        )}
-      />
+          className="my-2"
+          id="combo-box-demo"
+          value={row.statusDropdown}
+          options={[
+            { label: "Approved", value: 1 },
+            { label: "Rejected", value: 2 },
+          ]}
+          getOptionLabel={(option) => option.label}
+          onChange={(event, newValue) => {
+            handleStatusChange(row, newValue.value),
+              console.log(newValue.value);
+          }}
+          style={{ width: 180 }}
+          renderInput={(params) => (
+            <TextField {...params} label="Status" variant="outlined" />
+          )}
+        />
       ),
-    
     },
-   
+
     {
       field: "Payment Requested Date and Time ",
       fieldName: "balance_payment_ondate",
       width: 180,
-      renderCell: (params) => <div>{params.row.created_at?ddmmyyConvesion(params.row.created_at):""} </div>,
+      renderCell: (params) => (
+        <div>
+          {params.row.created_at ? ddmmyyConvesion(params.row.created_at) : ""}{" "}
+        </div>
+      ),
     },
     {
       field: "Action ",
@@ -826,23 +835,10 @@ const PendingApprovalUpdate = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => sameCustomerData.indexOf(row)}
@@ -882,22 +878,10 @@ const PendingApprovalUpdate = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => row._id}
@@ -1154,27 +1138,14 @@ const PendingApprovalUpdate = () => {
           <DataGrid
             rows={filterData}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
+            // pageSize={5}
+            // rowsPerPageOptions={[5]}
             disableSelectionOnClick
             autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            fv
-            componentsProps={{
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
               toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
+                showQuickFilter: true,
               },
             }}
             getRowId={(row) => filterData.indexOf(row)}
