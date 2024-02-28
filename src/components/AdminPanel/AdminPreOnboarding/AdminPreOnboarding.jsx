@@ -89,6 +89,7 @@ const AdminPreOnboarding = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [roledata, getRoleData] = useState([]);
   const [dateOfBirth, setDateOfBirth] = useState("");
+  const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
 
   const [isRequired, setIsRequired] = useState({
@@ -167,6 +168,7 @@ const AdminPreOnboarding = () => {
     formData.append("image", selectedImage);
     formData.append("permanent_city", city);
     formData.append("ctc", userCtc);
+    formData.append("Age", Number(age));
     formData.append(
       "offer_letter_send",
       sendLetter.value ? Boolean(sendLetter.value) : false
@@ -427,6 +429,7 @@ const AdminPreOnboarding = () => {
       window.alert("Your age must be greater than 15 years.");
     } else {
       setDateOfBirth(selectedDate);
+      setAge(age);
     }
   };
 

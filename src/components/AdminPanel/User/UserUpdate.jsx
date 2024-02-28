@@ -1240,7 +1240,7 @@ const UserUpdate = () => {
   const accordionButtons = [
     "General",
     "Other Details",
-    "Educaiton & Family",
+    "Education & Family",
     "Documents Update",
   ];
 

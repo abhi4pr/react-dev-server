@@ -721,6 +721,7 @@ const UserMaster = () => {
           cast_type: cast,
         }
       );
+      toastAlert("Other Details Submitted");
       console.log("Update successful", response.data);
     } catch (error) {
       console.error(
@@ -749,10 +750,11 @@ const UserMaster = () => {
           account_no: bankAccountNumber,
           ifsc_code: IFSC,
           beneficiary: beneficiary,
-          bank_type: banktype,
+          account_type: banktype,
           // Bank info payload End
         },
-        setActiveAccordionIndex((prev) => prev + 1)
+        toastAlert("Bank Details Submitted")
+        // setActiveAccordionIndex((prev) => prev + 1)
       );
       console.log("Update successful", response.data);
     } catch (error) {
@@ -1984,22 +1986,22 @@ const UserMaster = () => {
           value={currentAddress}
           onChange={(e) => setCurrentAddress(e.target.value)}
           onBlur={() => {
-            if (address === "") {
+            if (currentAddress === "") {
               // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,address:true});
               return setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
-                address: true,
+                currentAddress: true,
               }));
             } else {
               setMandatoryFieldsEmpty({
                 ...mandatoryFieldsEmpty,
-                address: false,
+                currentAddress: false,
               });
             }
           }}
           required={false}
         />
-        {mandatoryFieldsEmpty.address && (
+        {mandatoryFieldsEmpty.currentAddress && (
           <p style={{ color: "red" }}>Please enter Address</p>
         )}
         <div className="form-group col-4">
