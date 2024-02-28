@@ -1,7 +1,6 @@
 import React from "react";
 import DateFormattingComponent from "../../DateFormator/DateFormared";
 const UserSingleTab5 = ({ familyData, user }) => {
-  console.log(familyData, "---------------------ff");
   return (
     <>
       {familyData.map((user) => (
