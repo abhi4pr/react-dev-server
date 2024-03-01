@@ -5,7 +5,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar,   } from "@mui/x-data-grid";
 import DataTable from "react-data-table-component";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { baseUrl } from "../../../utils/config";
@@ -158,7 +158,7 @@ const PaymentMode = () => {
       },
     },
   ];
-
+console.log(datas,"DATAS",filterData,"FILTERDATA")
   return (
     <>
       <FormContainer
@@ -242,7 +242,9 @@ const PaymentMode = () => {
             <Autocomplete
               value={paymentType}
               onChange={(event, newValue) => setPaymentType(newValue)}
-              options={datas.map((option) => option.payment_type)}
+              options={Array.from(
+                new Set(datas.map((option) => option.payment_type))
+              )}
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -273,8 +275,8 @@ const PaymentMode = () => {
             <Autocomplete
               value={gst}
               onChange={(event, newValue) => setGST(newValue)}
-              options={datas.map((option) =>
-                option.gst_bank === 1 ? "GST" : "Non GST"
+              options={Array.from(
+                new Set(datas.map((option) => option.gst_bank === 1 ? "GST" : "Non GST"))
               )}
               renderInput={(params) => (
                 <TextField
@@ -321,26 +323,12 @@ const PaymentMode = () => {
             rowsPerPageOptions={[5]}
             disableSelectionOnClick
             autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            fv
-            componentsProps={{
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
               toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
+                showQuickFilter: true,
               },
-            }}
-            getRowId={(row) => filterData.indexOf(row)}
+            }} getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>

@@ -119,9 +119,11 @@ export default function PaymentDone() {
 
     return diffDays;
   }
+const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request_id == item.request_id));
   // total requested  amount data :-
-  const totalRequestAmount = data.reduce(
-    (total, item) => total + parseFloat(item.request_amount),
+  console.log(filterPaymentAmount, "filterPaymentAmount")
+  const totalRequestAmount = filterPaymentAmount.reduce(
+    (total, item) => total + parseFloat(Math.round(item.payment_amount)),
     0
   );
 
@@ -561,15 +563,30 @@ export default function PaymentDone() {
 
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
         return isPdf ? (
-          <iframe
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            src={imgUrl}
-            style={{ width: "100px", height: "100px" }}
-            title="PDF Preview"
-          />
+          <>
+            <iframe
+              allowFullScreen={true}
+              src={imgUrl}
+              title="PDF Viewer"
+              style={{ width: "80px", height: "80px" }}
+            />
+            <div
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              style={{
+                position: 'absolute',
+                width: '2.4%',
+                height: '36%',
+                top: "100px",
+                left: "104px",
+                cursor: "pointer",
+                background: "rgba(0, 0, 0, 0)",
+                zIndex: 10
+              }}
+            ></div>
+          </>
         ) : (
           <img
             onClick={() => {
@@ -628,6 +645,11 @@ export default function PaymentDone() {
       },
     },
     {
+      field: "page_name",
+      headerName: "Page Name",
+      width: 150,
+    },
+    {
       field: "total_paid",
       headerName: "Total Paid",
       width: 150,
@@ -646,7 +668,7 @@ export default function PaymentDone() {
                   (e) =>
                     e.vendor_name === params.row.vendor_name && e.status == 1
                 )
-                .reduce((acc, item) => acc + +item.request_amount, 0)}
+                .reduce((acc, item) => acc + +item.payment_amount, 0)}
             </h5>
           </span>
         ) : (
@@ -696,7 +718,7 @@ export default function PaymentDone() {
             {/* Financial Year */}
 
             {dataFY.reduce(
-              (acc, item) => acc + parseFloat(item.request_amount),
+              (acc, item) => acc + parseFloat(item.payment_amount),
               0
             )}
           </h5>
@@ -821,6 +843,18 @@ export default function PaymentDone() {
       },
     },
     {
+      filed: "payment_amount",
+      headerName: "Payment Amount",
+      width: 150,
+      renderCell: (params) => {
+        const paymentAmount = nodeData.filter(
+          (e) => e.request_id == params.row.request_id
+        )[0]?.payment_amount;
+        return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
+
+      },
+    },
+    {
       field: "aging",
       headerName: "Aging",
       width: 150,
@@ -883,23 +917,10 @@ export default function PaymentDone() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => sameVendorData.indexOf(row)}
@@ -939,22 +960,10 @@ export default function PaymentDone() {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => uniqueVendorData.indexOf(row)}
@@ -1080,22 +1089,10 @@ export default function PaymentDone() {
         rowsPerPageOptions={[5]}
         disableSelectionOnClick
         autoHeight
-        disableColumnMenu
-        disableColumnSelector
-        disableColumnFilter
-        disableColumnReorder
-        disableColumnResize
-        disableMultipleColumnsSorting
-        components={{
-          Toolbar: GridToolbar,
-        }}
-        componentsProps={{
+        slots={{ toolbar: GridToolbar }}
+        slotProps={{
           toolbar: {
-            value: search,
-            onChange: (event) => setSearch(event.target.value),
-            placeholder: "Search",
-            clearSearch: true,
-            clearSearchAriaLabel: "clear",
+            showQuickFilter: true,
           },
         }}
         getRowId={(row) => filterData.indexOf(row)}
@@ -1181,6 +1178,48 @@ export default function PaymentDone() {
         >
           Copy
         </Button>
+      </Dialog>
+
+      <Dialog
+        open={paymentHistory}
+        onClose={handleClosePaymentHistory}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Payment History</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClosePaymentHistory}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={historyData}
+          columns={paymentDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => row.request_id}
+        />
       </Dialog>
     </div>
   );

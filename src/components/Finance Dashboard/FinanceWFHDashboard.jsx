@@ -733,13 +733,11 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-        // unstable_ignoreValueFormatterDuringExport
-        // slotProps={{
-        //   toolbar: {
-        //     showQuickFilter: true,
-        //   },
-        // }}
-        // unstable_headerFilters
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
       />
     </div>
   );
@@ -805,6 +803,11 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
       />
     </div>
   );
@@ -883,13 +886,11 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-        // unstable_ignoreValueFormatterDuringExport
-        // slotProps={{
-        //   toolbar: {
-        //     showQuickFilter: true,
-        //   },
-        // }}
-        // unstable_headerFilters
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
       />
     </div>
   );
@@ -930,13 +931,11 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-        // unstable_ignoreValueFormatterDuringExport
-        // slotProps={{
-        //   toolbar: {
-        //     showQuickFilter: true,
-        //   },
-        // }}
-        // unstable_headerFilters
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
       />
     </div>
   );
@@ -992,6 +991,12 @@ export default function FinanceWFHDashboard() {
             // console.log(rowIds);
           }}
           rowSelectionModel={rowSelectionModel}
+
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
         />
       </div>
     </>
@@ -1061,13 +1066,11 @@ export default function FinanceWFHDashboard() {
           // console.log(rowIds);
         }}
         rowSelectionModel={rowSelectionModel}
-        // unstable_ignoreValueFormatterDuringExport
-        // slotProps={{
-        //   toolbar: {
-        //     showQuickFilter: true,
-        //   },
-        // }}
-        // unstable_headerFilters
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
       />
     </div>
   );
@@ -1410,6 +1413,12 @@ export default function FinanceWFHDashboard() {
           // handleMaxWidthChange={handleMaxWidthChange}
           rows={filterData}
           columns={TDSUserCol}
+          slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
         />
       )}
     </div>

@@ -918,26 +918,12 @@ const BalancePaymentList = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
-          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+          slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
         />
       </Dialog>
       {/* Unique Sales Executive Dialog Box */}
@@ -973,25 +959,13 @@ const BalancePaymentList = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
-          getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+          slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+        getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
         />
       </Dialog>
       {/* Same Customer Dialog */}
@@ -1027,26 +1001,13 @@ const BalancePaymentList = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
-          getRowId={(row) => sameCustomerData.indexOf(row)}
+           getRowId={(row) => sameCustomerData.indexOf(row)}
         />
       </Dialog>
 
@@ -1083,25 +1044,13 @@ const BalancePaymentList = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
-          getRowId={(row) => uniqueCustomerData.indexOf(row)}
+           getRowId={(row) => uniqueCustomerData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -1274,26 +1223,13 @@ const BalancePaymentList = () => {
             rowsPerPageOptions={[5]}
             disableSelectionOnClick
             autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            fv
-            componentsProps={{
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
               toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
+                showQuickFilter: true,
               },
             }}
-            getRowId={(row) => filterData.indexOf(row)}
+             getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>

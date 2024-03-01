@@ -89,6 +89,10 @@ const PendingInvoice = () => {
   };
 
   const handleImageUpload = async (row, fileData) => {
+    if(!inoiceNum || !date || !partyName){
+      toastAlert("Please fill all the fields");
+      return;
+    }
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_id", row.sale_booking_id);
@@ -780,7 +784,7 @@ const PendingInvoice = () => {
       field: "Customer Name",
       fieldName: "cust_id",
       width: 220,
-      renderCell: (row) => (
+      renderCell: ({row}) => (
         <>
           <Link
             className="text-primary"
@@ -967,26 +971,13 @@ const PendingInvoice = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
-          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+          slots={{ toolbar: GridToolbar }}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+        getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
         />
       </Dialog>
       {/* Unique Sales Executive Dialog Box */}
@@ -1022,22 +1013,10 @@ const PendingInvoice = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
@@ -1076,23 +1055,10 @@ const PendingInvoice = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => sameCustomerData.indexOf(row)}
@@ -1132,22 +1098,10 @@ const PendingInvoice = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => uniqueCustomerData.indexOf(row)}
@@ -1313,23 +1267,10 @@ const PendingInvoice = () => {
             rowsPerPageOptions={[5]}
             disableSelectionOnClick
             autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            fv
-            componentsProps={{
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
               toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
+                showQuickFilter: true,
               },
             }}
             getRowId={(row) => filterData.indexOf(row)}

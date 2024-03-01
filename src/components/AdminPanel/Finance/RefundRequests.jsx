@@ -596,23 +596,10 @@ const RefundRequests = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => sameCustomerData.indexOf(row)}
@@ -652,22 +639,10 @@ const RefundRequests = () => {
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          componentsProps={{
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
             toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
+              showQuickFilter: true,
             },
           }}
           getRowId={(row) => row._id}
@@ -846,23 +821,10 @@ const RefundRequests = () => {
             rowsPerPageOptions={[5]}
             disableSelectionOnClick
             autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            fv
-            componentsProps={{
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
               toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
+                showQuickFilter: true,
               },
             }}
             getRowId={(row) => filterData.indexOf(row)}
