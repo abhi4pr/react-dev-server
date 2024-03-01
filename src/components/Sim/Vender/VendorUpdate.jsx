@@ -201,6 +201,7 @@ const VendorUpdate = () => {
           </div>
           <FieldContainer
             label="Contact"
+            astric
             value={vendorContact}
             onChange={(e) => {
               if (e.target.value?.length <= 10) {
@@ -209,7 +210,7 @@ const VendorUpdate = () => {
             }}
           />
           <FieldContainer
-            label="Secondary Contact"
+            label="Secondary contact"
             value={secondaryContact}
             required={false}
             onChange={(e) => {
@@ -219,7 +220,7 @@ const VendorUpdate = () => {
             }}
           />
           <FieldContainer
-            label="Secondary Peroson Name"
+            label="Secondary Person Name"
             value={secondaryPersonName}
             required={false}
             onChange={(e) => setSecondaryPersonName(e.target.value)}

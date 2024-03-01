@@ -149,17 +149,18 @@ const SimMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (assetsID === "") {
-      setAssetsIDError("Assets ID is required");
-    }
+
     if (!assetsCategory || !assetsCategory.category_id) {
       setAssetsCategoryError("Assets Category is required");
-    }
-    if (!subCategory || !subCategory.sub_category_id) {
+      toastError("Assets Category is required");
+    } else if (!subCategory || !subCategory.sub_category_id) {
       setSubCategoryError("Assets SubCategory is required");
-    }
-    if (!vendorName || !vendorName.vendor_id) {
-      setVendorNameError("Vendor Name is required");
+      toastError("Assets SubCategory is required");
+    } else if (!assetsID || assetsID === "") {
+      setAssetsIDError("Assets ID is required");
+      toastError("Assets ID is required");
+    } else if (!vendorName || !vendorName.vendor_id) {
+      toastError("Vendor Name is required");
     }
     try {
       const formData = new FormData();
@@ -206,7 +207,7 @@ const SimMaster = () => {
       toastAlert("Form Submitted success");
       setIsFormSubmitted(true);
     } catch (error) {
-      alert(error.response.data.message);
+      toastError(error.response.data.message);
     }
   };
   const handleAssetsIDChange = (e) => {
@@ -302,7 +303,6 @@ const SimMaster = () => {
                   }))}
                   value={subCategory}
                   onChange={(e, newvalue) => {
-
                     if (newvalue !== null) {
                       setSubCategory((pre) => ({
                         label: newvalue.label,

@@ -12,7 +12,7 @@ import AssetSingleuserOverview from "./AssetSingleuserOverview";
 import { baseUrl } from "../../../utils/config";
 
 const AssetSingleUser = () => {
-  const { usersDataContext, getAssetDataContext, toastAlert } =
+  const { usersDataContext, getAssetDataContext, toastAlert, toastError } =
     useGlobalContext();
   const { userID } = useAPIGlobalContext();
   const [search, setSearch] = useState("");
@@ -43,7 +43,7 @@ const AssetSingleUser = () => {
   const handleAccordionButtonClick = (index) => {
     setActiveAccordionIndex(index);
   };
-  const accordionButtons = ["Assigned assets", "Asset requests"];
+  const accordionButtons = ["Assigned Assets", "Asset Requests"];
 
   const tab1 = (
     <AssetSingleuserOverview
@@ -119,6 +119,7 @@ const AssetSingleUser = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
       const formData = new FormData();
       formData.append("repair_request_date_time", repairDate);

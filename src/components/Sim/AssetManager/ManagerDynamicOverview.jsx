@@ -209,32 +209,34 @@ const ManagerDynamicOverview = ({
       name: "Actions",
       cell: (row) => (
         <>
-          {row.asset_new_request_status !== "Approved" && (
-            <>
-              <button
-                type="button"
-                data-toggle="modal"
-                data-target="#resolvedModal"
-                size="small"
-                color="primary"
-                onClick={() => handleStatusUpdate(row, "ApprovedByManager")}
-                className="btn btn-success btn-sm ml-2"
-              >
-                Approval
-              </button>
-              <button
-                type="button"
-                data-toggle="modal"
-                data-target="#exampleModal1"
-                size="small"
-                color="primary"
-                className="btn btn-danger btn-sm ml-2"
-                onClick={() => handleStatusUpdate(row, "RejectedByManager")}
-              >
-                Reject
-              </button>
-            </>
-          )}
+          {row.asset_new_request_status == "Approved" ||
+            row.asset_new_request_status == "ApprovedByManager" ||
+            row.asset_new_request_status == "RejectedByManager" || (
+              <>
+                <button
+                  type="button"
+                  data-toggle="modal"
+                  data-target="#resolvedModal"
+                  size="small"
+                  color="primary"
+                  onClick={() => handleStatusUpdate(row, "ApprovedByManager")}
+                  className="btn btn-success btn-sm ml-2"
+                >
+                  Approval
+                </button>
+                <button
+                  type="button"
+                  data-toggle="modal"
+                  data-target="#exampleModal1"
+                  size="small"
+                  color="primary"
+                  className="btn btn-danger btn-sm ml-2"
+                  onClick={() => handleStatusUpdate(row, "RejectedByManager")}
+                >
+                  Reject
+                </button>
+              </>
+            )}
         </>
       ),
       sortable: true,
@@ -254,7 +256,7 @@ const ManagerDynamicOverview = ({
     },
     {
       name: "Asset ID",
-      selector: (row) => row.sim_id,
+      selector: (row) => row.asset_id,
     },
 
     {
@@ -290,16 +292,20 @@ const ManagerDynamicOverview = ({
     filterData[0]?.asset_return_status !== "RecovedByHR" && {
       name: "Return",
       cell: (row) => (
-        <button
-          type="button"
-          data-toggle="modal"
-          data-target="#return-asset-modal"
-          size="small"
-          className="btn btn-outline-primary btn-sm"
-          onClick={() => handleReturnAssetRecover(row, "RecoverdByManager")}
-        >
-          Recover
-        </button>
+        <>
+          {row.asset_return_status !== "RecoverdByManager" && (
+            <button
+              type="button"
+              data-toggle="modal"
+              data-target="#return-asset-modal"
+              size="small"
+              className="btn btn-outline-primary btn-sm"
+              onClick={() => handleReturnAssetRecover(row, "RecoverdByManager")}
+            >
+              Recover
+            </button>
+          )}
+        </>
       ),
     },
   ];
