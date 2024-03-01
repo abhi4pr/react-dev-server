@@ -89,7 +89,6 @@ const SimOverview = () => {
         const f1 = simAllData?.filter((d) => d.status == "Available");
         setData(f1);
         setFilterData(f1);
-
       }
       if (id == 2) {
         const f2 = simAllData?.filter((d) => d.status == "Allocated");
@@ -171,9 +170,9 @@ const SimOverview = () => {
   useEffect(() => {
     const result = data?.filter((d) => {
       return (
-        d.mobileNumber?.toLowerCase().match(search?.toLowerCase()) ||
-        d.provider?.toLowerCase().match(search?.toLowerCase()) ||
-        d.type?.toLowerCase().match(search?.toLowerCase())
+        d.assetsName?.toLowerCase().match(search?.toLowerCase()) ||
+        d.asset_id?.toLowerCase().match(search?.toLowerCase()) ||
+        d.category_name?.toLowerCase().match(search?.toLowerCase())
       );
     });
     setFilterData(result);
@@ -272,7 +271,7 @@ const SimOverview = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "5%",
+      width: "80px",
       sortable: true,
     },
     {
@@ -306,11 +305,13 @@ const SimOverview = () => {
     },
     {
       name: "Category",
+      width: "130px",
       selector: (row) => row.category_name,
       sortable: true,
     },
     {
-      name: "sub category",
+      name: "Sub Category",
+      width: "150px",
       selector: (row) => row.sub_category_name,
       sortable: true,
     },
@@ -327,7 +328,7 @@ const SimOverview = () => {
     },
 
     {
-      name: "img",
+      name: "image",
       selector: (row) => (
         <button
           className="btn btn-outline-success"

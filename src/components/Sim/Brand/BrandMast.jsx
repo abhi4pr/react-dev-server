@@ -27,7 +27,7 @@ const BrandMast = () => {
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_total_asset_in_category/${row}`
+        `${baseUrl}` + `get_total_asset_in_category/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -42,7 +42,7 @@ const BrandMast = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}`+`get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}` + `get_total_asset_in_category_allocated/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -114,7 +114,7 @@ const BrandMast = () => {
           </button>
           <DeleteButton
             endpoint="delete_asset_brand"
-            id={row.asset_brand_id}
+            id={row._id}
             getData={getBrandData}
           />
         </>
@@ -130,12 +130,9 @@ const BrandMast = () => {
       if (isBrandExist) {
         alert("Brand already Exists");
       } else {
-        const response = await axios.post(
-          baseUrl+"add_asset_brand",
-          {
-            asset_brand_name: brandName,
-          }
-        );
+        const response = await axios.post(baseUrl + "add_asset_brand", {
+          asset_brand_name: brandName,
+        });
         setBrandName("");
         getBrandData();
       }
@@ -144,9 +141,7 @@ const BrandMast = () => {
     }
   };
   async function getBrandData() {
-    const res = await axios.get(
-      baseUrl+"get_all_asset_brands"
-    );
+    const res = await axios.get(baseUrl + "get_all_asset_brands");
     setBrandData(res.data.data);
     setBrnadFilter(res.data.data);
   }
@@ -156,12 +151,12 @@ const BrandMast = () => {
   }, []);
 
   const handleBrandData = (row) => {
-    setBrandId(row.asset_brand_id);
+    setBrandId(row._id);
     setBrandNameUpdate(row.asset_brand_name);
   };
   const handleBrandUpdate = () => {
     axios
-      .put(baseUrl+"update_asset_brand", {
+      .put(baseUrl + "update_asset_brand", {
         asset_brand_id: brandId,
         asset_brand_name: brandNameUpdate,
       })

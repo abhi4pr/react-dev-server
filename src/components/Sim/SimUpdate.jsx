@@ -138,7 +138,9 @@ const SimUpdate = () => {
       const {
         sim_no,
         s_type,
+        asset_type,
         assetsName,
+        asset_id,
         assetsOtherID,
         category_id,
         sub_category_id,
@@ -155,29 +157,26 @@ const SimUpdate = () => {
         Remarks,
       } = fetchedData;
       setAssetsName(assetsName);
-      setAssetsID(sim_no);
+      setAssetsID(asset_id);
+      setAssetType(asset_type);
+      setInvoiceCopy(invoiceCopy);
+      // setAssetType(s_type);
 
       setModalName(asset_modal_id);
       setBrandName(asset_brand_id);
 
       setAssetsOtherID(assetsOtherID);
-      setAssetType(s_type);
       setAssetsCategory(category_id);
       setSubCategory(sub_category_id);
       setVendorName(vendor_id);
       setInWarranty(inWarranty);
       setWarrantyDate(warrantyDate?.split("T")?.[0]);
       setDateOfPurchase(dateOfPurchase?.split("T")?.[0]);
-      // setSelfAuditPeriod(selfAuditPeriod);
-      // setSelfAuditUnit(selfAuditUnit);
-      // setHrSelfAuditPeriod(hrAuditPeriod);
-      // setHrSelfAuditUnit(hrAuditUnit);
       setAssetsValue(assetsValue);
       setAssetsCurrentValue(assetsCurrentValue);
       setFinacialType(asset_financial_type);
       setDescription(depreciation_percentage);
       setRemark(Remarks);
-      // setSimData(fetchedData);
     });
   }, [id]);
 
@@ -485,8 +484,8 @@ const SimUpdate = () => {
               </div>
             </div>
 
-            <h5>User Audit</h5>
-            <hr className="mb-2 mt-2" />
+            <h5 className="mb-3">User Audit</h5>
+            {/* <hr className="mb-3 mt-2" /> */}
             <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="form-group">
                 <TextField
@@ -514,8 +513,8 @@ const SimUpdate = () => {
               </div>
             </div>
             <hr className="mb-2" />
-            <h5>HR Audit</h5>
-            <hr className="mb-2 mt-2" />
+            <h5 className="mb-3">HR Audit</h5>
+            {/* <hr className="mb-4 mt-2" /> */}
 
             <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
               <div className="form-group">
@@ -667,6 +666,7 @@ const SimUpdate = () => {
                   Depreciation Percentage"
                   type="number"
                   value={depreciation}
+                  InputLabelProps={{ shrink: true }}
                   onChange={(e) => setDescription(e.target.value)}
                 />
               </div>

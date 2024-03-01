@@ -14,7 +14,7 @@ import Modal from "react-modal";
 import { baseUrl } from "../../../utils/config";
 
 const ModalMast = () => {
-  const { getBrandDataContext } = useGlobalContext();
+  const { getBrandDataContext, toastAlert, toastError } = useGlobalContext();
   const [modalName, setModalName] = useState("");
   const [modalData, setModalData] = useState([]);
   const [modalFilter, setModalFilter] = useState([]);
@@ -123,7 +123,7 @@ const ModalMast = () => {
           </button>
           <DeleteButton
             endpoint="delete_asset_modal"
-            id={row.asset_modal_id}
+            id={row._id}
             getData={getModalData}
           />
         </>
@@ -132,6 +132,9 @@ const ModalMast = () => {
   ];
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!brandName || brandName == "") {
+      return toastError("Brand Name is Required");
+    }
     try {
       const isModalExists = modalData.some(
         (d) => d.asset_modal_name === modalName
@@ -162,7 +165,7 @@ const ModalMast = () => {
   }, []);
 
   const handleBrandData = (row) => {
-    setModalId(row.asset_modal_id);
+    setModalId(row._id);
     setModalNameUpdate(row.asset_modal_name);
     setBrandNameUpdate(row.asset_brand_id);
   };
