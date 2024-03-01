@@ -456,8 +456,9 @@ const PendingApprovalRefund = () => {
       ),
     },
     {
+      field: "refund_payment_image",
       headerName: "Refund Payment Image",
-      renderCell: (params) => (
+      renderCell: (params,index) => (
         <form method="POST" encType="multipart/form-data" action="">
           <input
             key={index}
@@ -486,6 +487,7 @@ const PendingApprovalRefund = () => {
       ),
     },
     {
+      field: "refund_approval_status",
       headerName: "Action",
       renderCell: (params, index) => (
         <select

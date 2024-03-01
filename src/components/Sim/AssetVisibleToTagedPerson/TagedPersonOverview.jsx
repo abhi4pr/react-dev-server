@@ -18,12 +18,17 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
       name: "Request Date",
       selector: (row) => {
         const date = new Date(row.repair_request_date_time);
-        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+        const formattedDate = `${String(date.getDate()).padStart(
           2,
           "0"
-        )}-${String(date.getDate()).padStart(2, "0")} ${String(
-          date.getHours()
-        ).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
+        )}-${String(date.getMonth() + 1).padStart(
+          2,
+          "0"
+        )}-${date.getFullYear()}`;
+        const time = `${String(date.getHours()).padStart(2, "0")}:${String(
+          date.getMinutes()
+        ).padStart(2, "0")}`;
+        return `${formattedDate} ${time}`;
       },
       sortable: true,
     },

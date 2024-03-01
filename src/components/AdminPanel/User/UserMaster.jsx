@@ -35,7 +35,7 @@ import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import IndianStates from "../../ReusableComponents/IndianStates";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { IconButton } from "@mui/material";
+import { Autocomplete, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { baseUrl } from "../../../utils/config";
 import familyRelationList from "../../../assets/js/familyRelationList";
@@ -43,6 +43,7 @@ import OccupationList from "../../../assets/js/OccupationList";
 import IndianBankList from "../../../assets/js/IndianBankList";
 import { ToastContainer } from "react-toastify";
 import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
+import EducationList from "../../../assets/js/EducationList";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -75,9 +76,9 @@ const colourOptions = [
 ];
 
 const initialFamilyDetailsGroup = {
+  Relation: "",
   Name: "",
   DOB: "",
-  Relation: "",
   Contact: "",
   Occupation: "",
   Income: "",
@@ -91,6 +92,25 @@ const initialEducationDetailsGroup = {
   Percentage: "",
   Stream: "",
   Specialization: "",
+};
+const educationDispalyFields = [
+  "title",
+  "institute_name",
+  "from_year",
+  "to_year",
+  "percentage",
+  "stream",
+  "specialization",
+];
+
+const educationFieldLabels = {
+  title: "Title",
+  institute_name: "Institute Name",
+  from_year: "From Year",
+  to_year: "To Year",
+  percentage: "Percentage",
+  stream: "Stream",
+  specialization: "Specialization",
 };
 
 const UserMaster = () => {
@@ -721,6 +741,7 @@ const UserMaster = () => {
           cast_type: cast,
         }
       );
+      toastAlert("Other Details Submitted");
       console.log("Update successful", response.data);
     } catch (error) {
       console.error(
@@ -749,10 +770,11 @@ const UserMaster = () => {
           account_no: bankAccountNumber,
           ifsc_code: IFSC,
           beneficiary: beneficiary,
-          bank_type: banktype,
+          account_type: banktype,
           // Bank info payload End
         },
-        setActiveAccordionIndex((prev) => prev + 1)
+        toastAlert("Bank Details Submitted")
+        // setActiveAccordionIndex((prev) => prev + 1)
       );
       console.log("Update successful", response.data);
     } catch (error) {
@@ -1984,22 +2006,22 @@ const UserMaster = () => {
           value={currentAddress}
           onChange={(e) => setCurrentAddress(e.target.value)}
           onBlur={() => {
-            if (address === "") {
+            if (currentAddress === "") {
               // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,address:true});
               return setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
-                address: true,
+                currentAddress: true,
               }));
             } else {
               setMandatoryFieldsEmpty({
                 ...mandatoryFieldsEmpty,
-                address: false,
+                currentAddress: false,
               });
             }
           }}
           required={false}
         />
-        {mandatoryFieldsEmpty.address && (
+        {mandatoryFieldsEmpty.currentAddress && (
           <p style={{ color: "red" }}>Please enter Address</p>
         )}
         <div className="form-group col-4">
@@ -2635,7 +2657,6 @@ const UserMaster = () => {
           </div>
         </div>
       ))}
-
       <div className="row">
         <div className="col-12">
           <button
@@ -2720,6 +2741,126 @@ const UserMaster = () => {
           </div>
         </div>
       ))}
+      {/* {educationDetails?.map((detail, index) => (
+        <div key={index} mb={2}>
+          <div className="row">
+            {educationDispalyFields.map((key) => {
+              switch (key) {
+                case "institute_name":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      type="text"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key] || ""}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  );
+
+                case "from_year":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      type="date"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key]?.split("T")[0]}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  );
+                case "to_year":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      type="date"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key]?.split("T")[0]}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  );
+
+                case "percentage":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      type="number"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key] || ""}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  );
+
+                case "stream":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      type="text"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key] || ""}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  );
+                case "specialization":
+                  return (
+                    <FieldContainer
+                      key={key}
+                      fieldGrid={3}
+                      type="text"
+                      name={key}
+                      label={educationFieldLabels[key]}
+                      value={detail[key] || ""}
+                      onChange={(e) => handleEducationDetailsChange(index, e)}
+                    />
+                  );
+                case "title":
+                  return (
+                    <div>
+                      <Autocomplete
+                        key={key}
+                        name={key}
+                        options={EducationList}
+                        getOptionLabel={(option) => option.label}
+                        value={EducationList.find(
+                          (option) => option.value === detail[key]
+                        )}
+                        onChange={(e, newValue) => {
+                          handleEducationDetailsChange(index, {
+                            target: {
+                              name: key,
+                              value: newValue ? newValue.value : "",
+                            },
+                          });
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Standard"
+                            variant="outlined"
+                            fullWidth
+                          />
+                        )}
+                      />
+                    </div>
+                  );
+              }
+            })}
+            {educationDetails?.length > 1 && (
+              <IconButton onClick={() => handleRemoveEducationDetails(index)}>
+                <DeleteIcon />
+              </IconButton>
+            )}
+          </div>
+        </div>
+      ))} */}
       <div className="row">
         <div className="col-12">
           <button

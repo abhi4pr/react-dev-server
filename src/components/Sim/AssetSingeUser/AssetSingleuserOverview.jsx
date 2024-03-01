@@ -66,6 +66,13 @@ const AssetSingleuserOverview = ({
   }, []);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!repairDate || repairDate == "") {
+      return toastError("Repair Request Date is Required");
+    } else if (!reason || reason == "") {
+      return toastError("Reason is Required");
+    } else if (!priority || priority == "") {
+      return toastError("Priority is Required");
+    }
     try {
       const formData = new FormData();
       formData.append("repair_request_date_time", repairDate);
@@ -180,7 +187,7 @@ const AssetSingleuserOverview = ({
     },
     {
       name: "Asset ID",
-      selector: (row) => row.sim_id,
+      selector: (row) => row.sim_no,
       sortable: true,
     },
     {
@@ -230,7 +237,7 @@ const AssetSingleuserOverview = ({
             <span className="badge badge-success">Resolved</span>
           ) : row.asset_repair_request_status === "Requested" ? (
             <span className="badge badge-danger">Requested</span>
-          ) : row.asset_repair_request_status === "ApprovedByManager" ? (
+          ) : row.asset_repair_request_status === "Approved By Manager" ? (
             <span className="badge badge-warning">Approve By Manager</span>
           ) : (
             "N/A"
@@ -347,36 +354,40 @@ const AssetSingleuserOverview = ({
     {
       name: "Action",
       cell: (row) => (
-        <div class="btn-group">
-          <button
-            type="button"
-            class="btn btn-secondary "
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <i class="fa-solid fa-ellipsis"></i>
-          </button>
-          <div className="dropdown-menu dropdown-menu-right">
-            <button
-              onClick={() => handleUpdateNewAssetRow(row)}
-              class="dropdown-item"
-              type="button"
-              data-toggle="modal"
-              data-target="#sidebar-right"
-              size="small"
-            >
-              Edit
-            </button>
-            <button
-              className="dropdown-item"
-              type="button"
-              onClick={() => handleDeleteNewAsset(row._id)}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
+        <>
+          {row.asset_request_status == "Requested" && (
+            <div class="btn-group">
+              <button
+                type="button"
+                class="btn btn-secondary "
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <i class="fa-solid fa-ellipsis"></i>
+              </button>
+              <div className="dropdown-menu dropdown-menu-right">
+                <button
+                  onClick={() => handleUpdateNewAssetRow(row)}
+                  class="dropdown-item"
+                  type="button"
+                  data-toggle="modal"
+                  data-target="#sidebar-right"
+                  size="small"
+                >
+                  Edit
+                </button>
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => handleDeleteNewAsset(row._id)}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       ),
     },
   ];
@@ -522,6 +533,7 @@ const AssetSingleuserOverview = ({
                 <FieldContainer
                   fieldGrid={4}
                   label="Repair Request Date"
+                  astric
                   type="datetime-local"
                   value={repairDate}
                   onChange={(e) => setRepairDate(e.target.value)}
@@ -530,6 +542,7 @@ const AssetSingleuserOverview = ({
                 <FieldContainer
                   fieldGrid={4}
                   label="Asset Name"
+                  astric
                   value={assetsName}
                   onChange={(e) => setAssetName(e.target.value)}
                   required
@@ -643,7 +656,7 @@ const AssetSingleuserOverview = ({
                 type="button"
                 className="btn btn-primary"
                 onClick={handleSubmit}
-                data-dismiss="modal"
+                // data-dismiss="modal"
               >
                 Save changes
               </button>
@@ -672,9 +685,7 @@ const AssetSingleuserOverview = ({
               </div>
               <div className="modal-body">
                 <div className="form-group col-12">
-                  <label className="form-label">
-                    Asset Name <sup style={{ color: "red" }}>*</sup>
-                  </label>
+                  <label className="form-label">Asset Name</label>
                   <Select
                     options={assetSubCategroyData.map((opt) => ({
                       value: opt.sub_category_id,
@@ -694,9 +705,7 @@ const AssetSingleuserOverview = ({
                   />
                 </div>
                 <div className="form-group col-12">
-                  <label className="form-label">
-                    priority <sup style={{ color: "red" }}>*</sup>
-                  </label>
+                  <label className="form-label">priority</label>
                   <Select
                     className=""
                     options={PriorityData.map((option) => ({

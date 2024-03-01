@@ -124,8 +124,10 @@ export default function TDSdeduct() {
     return diffDays;
   }
   // total requested  amount data :-
-  const totalRequestAmount = data.reduce(
-    (total, item) => total + parseFloat(item.request_amount),
+  const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request_id == item.request_id));
+
+  const totalRequestAmount = filterPaymentAmount.reduce(
+    (total, item) => total + parseFloat(Math.round(item.payment_amount)),
     0
   );
 
@@ -656,7 +658,7 @@ export default function TDSdeduct() {
                   (e) =>
                     e.vendor_name === params.row.vendor_name && e.status == 1
                 )
-                .reduce((acc, item) => acc + +item.request_amount, 0)}
+                .reduce((acc, item) => acc + +item.payment_amount, 0)}
             </h5>
           </span>
         ) : (
@@ -706,7 +708,7 @@ export default function TDSdeduct() {
             {/* Financial Year */}
 
             {dataFY.reduce(
-              (acc, item) => acc + parseFloat(item.request_amount),
+              (acc, item) => acc + parseFloat(item.payment_amount),
               0
             )}
           </h5>
@@ -828,6 +830,19 @@ export default function TDSdeduct() {
       width: 150,
       renderCell: (params) => {
         return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+    {
+      filed: "payment_amount",
+      headerName: "Payment Amount",
+      width: 150,
+      renderCell: (params) => {
+        const paymentAmount = nodeData.filter(
+          (e) => e.request_id == params.row.request_id
+        )[0]?.payment_amount;
+        console.log(paymentAmount);
+        return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
+
       },
     },
     {

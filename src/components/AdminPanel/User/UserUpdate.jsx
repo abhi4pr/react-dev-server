@@ -54,60 +54,60 @@ const colourOptions = [
 ];
 
 const initialFamilyDetailsGroup = {
+  relation: "",
   name: "",
   DOB: "",
-  relation: "",
   contact: "",
   occupation: "",
   annual_income: "",
 };
 
 const familyDisplayFields = [
+  "relation",
   "name",
   "DOB",
-  "relation",
   "contact",
   "occupation",
   "annual_income",
 ];
 
 const familyFieldLabels = {
+  relation: "Relationship",
   name: "Full Name",
   DOB: "Date of Birth",
-  relation: "Relationship",
   contact: "Contact Number",
   occupation: "Occupation",
   annual_income: "Annual Income",
 };
 
 const initialEducationDetailsGroup = {
+  title: "",
   institute_name: "",
   from_year: "",
   to_year: "",
   percentage: "",
   stream: "",
   specialization: "",
-  title: "",
 };
 
 const educationDispalyFields = [
+  "title",
   "institute_name",
   "from_year",
   "to_year",
   "percentage",
   "stream",
   "specialization",
-  "title",
 ];
 
 const educationFieldLabels = {
+  title: "Title",
   institute_name: "Institute Name",
   from_year: "From Year",
   to_year: "To Year",
   percentage: "Percentage",
   stream: "Stream",
   specialization: "Specialization",
-  title: "Title",
 };
 
 const UserUpdate = () => {
@@ -1211,12 +1211,29 @@ const UserUpdate = () => {
   };
 
   const handleEducationDetailsChange = (index, event) => {
-    const updatedEducationDetails = educationDetails?.map((detail, i) => {
-      if (i === index) {
-        return { ...detail, [event.target.name]: event.target.value };
+    const { name, value } = event.target;
+    const updatedEducationDetails = [...educationDetails];
+    const detailToUpdate = updatedEducationDetails[index];
+
+    if (name === "percentage" && value > 100) {
+      return toastError("Can't input value greater than 100");
+    }
+
+    detailToUpdate[name] = value;
+
+    if (name === "from_year" || name === "to_year") {
+      const fromYear = detailToUpdate["from_year"]
+        ? new Date(detailToUpdate["from_year"])
+        : null;
+      const toYear = detailToUpdate["to_year"]
+        ? new Date(detailToUpdate["to_year"])
+        : null;
+
+      if (fromYear && toYear && fromYear > toYear) {
+        return toastError("'From year' should not be greater than 'To year'");
       }
-      return detail;
-    });
+    }
+
     setEducationDetails(updatedEducationDetails);
   };
 
@@ -1240,7 +1257,7 @@ const UserUpdate = () => {
   const accordionButtons = [
     "General",
     "Other Details",
-    "Educaiton & Family",
+    "Education & Family",
     "Documents Update",
   ];
 

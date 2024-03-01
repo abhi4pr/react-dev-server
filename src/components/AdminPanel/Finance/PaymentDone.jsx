@@ -119,9 +119,11 @@ export default function PaymentDone() {
 
     return diffDays;
   }
+const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request_id == item.request_id));
   // total requested  amount data :-
-  const totalRequestAmount = data.reduce(
-    (total, item) => total + parseFloat(item.request_amount),
+  console.log(filterPaymentAmount, "filterPaymentAmount")
+  const totalRequestAmount = filterPaymentAmount.reduce(
+    (total, item) => total + parseFloat(Math.round(item.payment_amount)),
     0
   );
 
@@ -574,14 +576,14 @@ export default function PaymentDone() {
                 setViewImgSrc(imgUrl);
               }}
               style={{
-                position: "absolute",
-                width: "64%",
-                height: "71%",
-                top: 0,
-                left: "21px",
+                position: 'absolute',
+                width: '2.4%',
+                height: '36%',
+                top: "100px",
+                left: "104px",
                 cursor: "pointer",
-                background: "rgba(0, 0, 0, 0)", // This makes the div transparent
-                zIndex: 10, // This ensures the div is placed over the iframe
+                background: "rgba(0, 0, 0, 0)",
+                zIndex: 10
               }}
             ></div>
           </>
@@ -666,7 +668,7 @@ export default function PaymentDone() {
                   (e) =>
                     e.vendor_name === params.row.vendor_name && e.status == 1
                 )
-                .reduce((acc, item) => acc + +item.request_amount, 0)}
+                .reduce((acc, item) => acc + +item.payment_amount, 0)}
             </h5>
           </span>
         ) : (
@@ -716,7 +718,7 @@ export default function PaymentDone() {
             {/* Financial Year */}
 
             {dataFY.reduce(
-              (acc, item) => acc + parseFloat(item.request_amount),
+              (acc, item) => acc + parseFloat(item.payment_amount),
               0
             )}
           </h5>
@@ -838,6 +840,18 @@ export default function PaymentDone() {
       width: 150,
       renderCell: (params) => {
         return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+    {
+      filed: "payment_amount",
+      headerName: "Payment Amount",
+      width: 150,
+      renderCell: (params) => {
+        const paymentAmount = nodeData.filter(
+          (e) => e.request_id == params.row.request_id
+        )[0]?.payment_amount;
+        return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
+
       },
     },
     {
@@ -1164,6 +1178,48 @@ export default function PaymentDone() {
         >
           Copy
         </Button>
+      </Dialog>
+
+      <Dialog
+        open={paymentHistory}
+        onClose={handleClosePaymentHistory}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Payment History</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClosePaymentHistory}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={historyData}
+          columns={paymentDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => row.request_id}
+        />
       </Dialog>
     </div>
   );

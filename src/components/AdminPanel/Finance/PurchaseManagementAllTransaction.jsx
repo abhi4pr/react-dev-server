@@ -882,6 +882,18 @@ export default function PurchaseManagementAllTransaction() {
       },
     },
     {
+      filed: "payment_amount",
+      headerName: "Payment Amount",
+      width: 150,
+      renderCell: (params) => {
+        const paymentAmount = nodeData.filter(
+          (e) => e.request_id == params.row.request_id
+        )[0]?.payment_amount;
+        return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
+
+      },
+    },
+    {
       field: "aging",
       headerName: "Aging",
       width: 150,

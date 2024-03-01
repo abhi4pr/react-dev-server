@@ -149,6 +149,7 @@ const VenderMaster = () => {
           </div>
           <FieldContainer
             label="Contact"
+            astric
             value={vendorContact}
             type="number"
             required={false}
@@ -159,8 +160,9 @@ const VenderMaster = () => {
             }}
           />
           <FieldContainer
-            label="Secondary Contact"
+            label="Secondary contact"
             type="number"
+            astric
             value={secondaryContact}
             required={false}
             onChange={(e) => {
@@ -170,7 +172,7 @@ const VenderMaster = () => {
             }}
           />
           <FieldContainer
-            label="Secondary Peroson Name"
+            label="Secondary Person Name"
             value={secondaryPersonName}
             required={false}
             onChange={(e) => setSecondaryPersonName(e.target.value)}

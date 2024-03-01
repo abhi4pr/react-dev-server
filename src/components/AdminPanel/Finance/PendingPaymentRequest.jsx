@@ -3,6 +3,7 @@ import FormContainer from "../FormContainer";
 import axios from "axios";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import pdf from "./pdf-file.png";
+import logo from "./../../../../public/logo.png";
 import {
   Autocomplete,
   Button,
@@ -278,6 +279,7 @@ export default function PendingPaymentRequest() {
   );
 
   const handlePayVendorClick = () => {
+    displayRazorpay(paymentAmout);return
     const formData = new FormData();
     formData.append("request_id", rowData.request_id);
     formData.append("vendor_id", rowData.vendor_id);
@@ -539,77 +541,68 @@ export default function PendingPaymentRequest() {
     }
   });
 
-  // calculate the total amount for vendors with the same name
   let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
     (total, amount) => total + amount,
     0
   );
-  // ================================================================
-  // Bank Detail columns:-
-  const bankDetailColumns = [
-    {
-      field: "S.NO",
-      headerName: "S.NO",
-      width: 90,
-      editable: false,
-      renderCell: (params) => {
-        const rowIndex = bankDetailRowData.indexOf(params.row);
-        return <div>{rowIndex + 1}</div>;
-      },
-    },
-    {
-      field: "account_number",
-      headerName: "Account Number",
-      width: 150,
-      renderCell: (params) => {
-        console.log(params.row, "row");
-        const accountNumber = params.row.payment_details.match(
-          /(?<=account number -)\d+/
-        )[0];
-        return <p>{accountNumber} </p>;
-      },
-    },
-    {
-      field: "accunt_bank_name",
-      headerName: "Account Holder Name",
-      width: 150,
-      renderCell: ({ row }) => {
-        const accountHolderName = row.payment_details.match(
-          /(?<=Account Holder Name -)[^\n]+/
-        )[0];
 
-        return <p>{accountHolderName}</p>;
+  function loadScript(src) {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = src;
+      script.onload = () => {
+        resolve(true);
+      };
+      script.onerror = () => {
+        resolve(false);
+      };
+      document.body.appendChild(script);
+    });
+  }
+
+  async function displayRazorpay(paymentAmout) {
+    const res = await loadScript(
+      "https://checkout.razorpay.com/v1/checkout.js"
+    );
+
+    if (!res) {
+      alert("Razorpay SDK failed to load. Are you online?");
+      return;
+    }
+
+
+    var options = {
+      key: "rzp_test_SIbrnELO2NP7rA", // Enter the Key ID generated from the Dashboard
+      amount: paymentAmout*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      currency: "INR",
+      name: "Your Business Name",
+      description: "Payment to " + "Harshit",
+      image: { logo },
+      handler: function (response) {
+        alert(
+          "Payment Successful! Payment ID: " + response.razorpay_payment_id
+        );
+        // Here you can handle the payment success event, e.g., updating the database, sending notifications, etc.
       },
-    },
-    {
-      field: "ifsc",
-      headerName: "IFSC Number",
-      width: 150,
-      renderCell: (params) => {
-        const ifscCode = params.row.payment_details.match(
-          /(?<=IFSC Code -)[A-Z\d]+/
-        )[0];
-        return <p>{ifscCode}</p>;
+      prefill: {
+        name: "Customer Name",
+        email: "customer@example.com",
+        contact: "9000090000",
       },
-    },
-    {
-      field: "gst",
-      headerName: "GST",
-      width: 150,
-      renderCell: ({ row }) => {
-        return <p> {row.gst}</p>;
+      notes: {
+        vendor_name: "Harshit",
+        vendor_account_number: "12345678901",
       },
-    },
-    {
-      field: "pan_number",
-      headerName: "Pan Number",
-      width: 150,
-      renderCell: ({ row }) => {
-        return <p> {row.pan} </p>;
+      theme: {
+        color: "#3399cc",
       },
-    },
-  ];
-  // bank Payment Detail column:-
+    };
+
+    const paymentObject = new window.Razorpay(options);
+    paymentObject.open();
+  }
+
+  
   const paymentDetailColumns = [
     {
       field: "S.NO",
@@ -963,7 +956,7 @@ export default function PendingPaymentRequest() {
     },
     {
       field: "page_name",
-      headerName:"Page Name",
+      headerName: "Page Name",
       width: 150,
     },
     {
@@ -990,7 +983,7 @@ export default function PendingPaymentRequest() {
                   (e) =>
                     e.vendor_name === params.row.vendor_name && e.status == 1
                 )
-                .reduce((acc, item) => acc + +item.request_amount, 0)}
+                .reduce((acc, item) => acc + +item.payment_amount, 0)}
             </h5>
           </span>
         ) : (
@@ -1040,7 +1033,7 @@ export default function PendingPaymentRequest() {
             {/* Financial Year */}
 
             {dataFY.reduce(
-              (acc, item) => acc + parseFloat(item.request_amount),
+              (acc, item) => acc + parseFloat(item.payment_amount),
               0
             )}
           </h5>
@@ -1152,7 +1145,7 @@ export default function PendingPaymentRequest() {
     },
     {
       headerName: "Action",
-      width: 150,
+      width: 250,
       renderCell: (params) => {
         return (
           <div>
@@ -1167,6 +1160,9 @@ export default function PendingPaymentRequest() {
               onClick={() => handleDiscardClick(params.row)}
             >
               discard
+            </button>   
+            <button className="btn btn-success" onClick={displayRazorpay}>
+              Pay ₹500
             </button>
           </div>
         );
@@ -1295,11 +1291,11 @@ export default function PendingPaymentRequest() {
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
           getRowId={(row) => row.request_id}
         />
       </Dialog>
@@ -1386,7 +1382,8 @@ export default function PendingPaymentRequest() {
             toolbar: {
               showQuickFilter: true,
             },
-          }} getRowId={(row) => uniqueVendorData.indexOf(row)}
+          }}
+          getRowId={(row) => uniqueVendorData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -1513,7 +1510,7 @@ export default function PendingPaymentRequest() {
         slots={{ toolbar: GridToolbar }}
         disableSelectionOnClick
         autoHeight
-        disableColumnMenu   
+        disableColumnMenu
         getRowId={(row) => filterData.indexOf(row)}
         slotProps={{
           toolbar: {
