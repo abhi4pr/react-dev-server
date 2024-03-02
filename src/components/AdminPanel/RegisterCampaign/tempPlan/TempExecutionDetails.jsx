@@ -210,13 +210,20 @@ const TempExecutionDetails = ({ assignmentData, status, HardRender }) => {
     };
 
     const updateExe = async () => {
-        const commitUpdate = await axios.put(`${baseUrl}tempexecution`, instaData)
-        setInstaData({})
-        setLoading(false)
-        setOpen(false)
-        toastAlert("Assignment Verified")
 
-        HardRender()
+        try {
+            
+            const commitUpdate = await axios.put(`${baseUrl}tempexecution`, instaData)
+            setInstaData({})
+            setLoading(false)
+            setOpen(false)
+            toastAlert("Assignment Verified")
+    
+            HardRender()
+        } catch (error) {
+           toastError(error?.response?.data?.message)
+        //    setOpen(false)
+        }
     }
 
     let timer
