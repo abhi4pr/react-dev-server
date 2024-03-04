@@ -584,10 +584,13 @@ export default function PendingPaymentRequest() {
         );
         // Here you can handle the payment success event, e.g., updating the database, sending notifications, etc.
       },
+      // default_payment_method:"cash",
+      callback_url: "https://eneqd3r9zrjok.x.pipedream.net/",
       prefill: {
         name: "Customer Name",
         email: "customer@example.com",
         contact: "9000090000",
+        method:"netbanking"
       },
       notes: {
         vendor_name: "Harshit",
