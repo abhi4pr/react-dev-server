@@ -45,10 +45,6 @@ export default function TDSdeduct() {
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
   const { toastAlert, toastError } = useGlobalContext();
 
-  const handleCloseBankDetail = () => {
-    setBankDetail(false);
-  };
-
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       setNodeData(res.data.modifiedData);
@@ -98,6 +94,9 @@ export default function TDSdeduct() {
     setBankDetail(true);
   };
 
+  const handleCloseBankDetail = () => {
+    setBankDetail(false);
+  };
   useEffect(() => {
     callApi();
   }, []);
@@ -124,7 +123,9 @@ export default function TDSdeduct() {
     return diffDays;
   }
   // total requested  amount data :-
-  const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request_id == item.request_id));
+  const filterPaymentAmount = nodeData.filter((item) =>
+    data.some((e) => e.request_id == item.request_id)
+  );
 
   const totalRequestAmount = filterPaymentAmount.reduce(
     (total, item) => total + parseFloat(Math.round(item.payment_amount)),
@@ -428,46 +429,46 @@ export default function TDSdeduct() {
         return <p> &#8377; {params.row.outstandings}</p>;
       },
     },
-    {
-      field: "invc_img",
-      headerName: "Invoice Image",
-      renderCell: (params) => {
-        if (params.row.invc_img) {
-          // Extract file extension and check if it's a PDF
-          const fileExtension = params.row.invc_img
-            .split(".")
-            .pop()
-            .toLowerCase();
-          const isPdf = fileExtension === "pdf";
+    // {
+    //   field: "invc_img",
+    //   headerName: "Invoice Image",
+    //   renderCell: (params) => {
+    //     if (params.row.invc_img) {
+    //       // Extract file extension and check if it's a PDF
+    //       const fileExtension = params.row.invc_img
+    //         .split(".")
+    //         .pop()
+    //         .toLowerCase();
+    //       const isPdf = fileExtension === "pdf";
 
-          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+    //       const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
 
-          return isPdf ? (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={pdf}
-              style={{ width: "40px", height: "40px" }}
-              title="PDF Preview"
-            />
-          ) : (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={imgUrl}
-              alt="Invoice"
-              style={{ width: "100px", height: "100px" }}
-            />
-          );
-        } else {
-          return null;
-        }
-      },
-    },
+    //       return isPdf ? (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={pdf}
+    //           style={{ width: "40px", height: "40px" }}
+    //           title="PDF Preview"
+    //         />
+    //       ) : (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={imgUrl}
+    //           alt="Invoice"
+    //           style={{ width: "100px", height: "100px" }}
+    //         />
+    //       );
+    //     } else {
+    //       return null;
+    //     }
+    //   },
+    // },
     {
       field: "request_date",
       headerName: "Requested Date",
@@ -568,15 +569,39 @@ export default function TDSdeduct() {
 
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
         return isPdf ? (
-          <iframe
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            src={imgUrl}
-            style={{ width: "100px", height: "100px" }}
-            title="PDF Preview"
-          />
+          // <iframe
+          //   onClick={() => {
+          //     setOpenImageDialog(true);
+          //     setViewImgSrc(imgUrl);
+          //   }}
+          //   src={imgUrl}
+          //   style={{ width: "100px", height: "100px" }}
+          //   title="PDF Preview"
+          // />
+          <>
+            <iframe
+              allowFullScreen={true}
+              src={imgUrl}
+              title="PDF Preview"
+              style={{ width: "80px", height: "80px" }}
+            />
+            <div
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              style={{
+                position: "absolute",
+                width: "4.2%",
+                height: "29%",
+                top: "107px",
+                left: "104px",
+                cursor: "pointer",
+                background: "rgba(0, 0, 0, 0)",
+                zIndex: 10,
+              }}
+            ></div>
+          </>
         ) : (
           <img
             onClick={() => {
@@ -636,7 +661,7 @@ export default function TDSdeduct() {
     },
     {
       field: "page_name",
-      headerName:"Page Name",
+      headerName: "Page Name",
       width: 150,
     },
     {
@@ -842,7 +867,6 @@ export default function TDSdeduct() {
         )[0]?.payment_amount;
         console.log(paymentAmount);
         return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
-
       },
     },
     {
@@ -864,6 +888,7 @@ export default function TDSdeduct() {
       },
     },
   ];
+
   return (
     <div>
       <FormContainer
@@ -1095,7 +1120,8 @@ export default function TDSdeduct() {
         />
       )}
 
-<Dialog
+      {/* Bank Detail */}
+      <Dialog
         open={bankDetail}
         onClose={handleCloseBankDetail}
         fullWidth={"md"}
@@ -1169,6 +1195,49 @@ export default function TDSdeduct() {
         >
           Copy
         </Button>
+      </Dialog>
+
+      {/* Pyament History */}
+      <Dialog
+        open={paymentHistory}
+        onClose={handleClosePaymentHistory}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Payment History</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClosePaymentHistory}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={historyData}
+          columns={paymentDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => row.request_id}
+        />
       </Dialog>
     </div>
   );

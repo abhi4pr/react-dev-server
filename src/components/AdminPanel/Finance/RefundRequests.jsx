@@ -3,7 +3,6 @@ import axios from "axios";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
-import DataTable from "react-data-table-component";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import ImageView from "./ImageView";
@@ -11,6 +10,7 @@ import { baseUrl } from "../../../utils/config";
 import { Autocomplete, TextField, Dialog, DialogTitle } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { Link } from "react-router-dom";
 
 const RefundRequests = () => {
   const { toastAlert } = useGlobalContext();
@@ -264,6 +264,16 @@ const RefundRequests = () => {
     (item) => item.finance_refund_status === 2
   ).length;
 
+  const handleApprovedFilter = () => {
+    const filtered = datas.filter((item) => item.finance_refund_status === 1);
+    setFilterData(filtered);
+  };
+
+  const handleRejectedFilter = () => {
+    const filtered = datas.filter((item) => item.finance_refund_status === 2);
+    setFilterData(filtered);
+  };
+  console.log(datas, "data", filterData, "filterdata>>>");
   const sameCustomercolumn = [
     {
       field: "cust_name",
@@ -296,6 +306,7 @@ const RefundRequests = () => {
       ),
     },
   ];
+
   const uniqueCustomercolumn = [
     {
       field: "cust_name",
@@ -466,6 +477,7 @@ const RefundRequests = () => {
       ),
     },
     {
+      field: "Refund Payment Image",
       headerName: "Refund Payment Image",
       renderCell: (params) => (
         <>
@@ -497,7 +509,8 @@ const RefundRequests = () => {
       ),
     },
     {
-      fieldName: "Refund Payment Image",
+      field: "refund_payment_image",
+      headerName: "View Refund Payment Image",
       renderCell: (params, index) => (
         <>
           {params.row.refund_files && (
@@ -649,7 +662,7 @@ const RefundRequests = () => {
         />
       </Dialog>
       <div className="row">
-        <div className="card col-4">
+        {/* <div className="card col-4">
           <div className="card-header fs-6 lead">Pending</div>
           <div className="card-body">
             <p className="fs-6 lead ">
@@ -662,10 +675,9 @@ const RefundRequests = () => {
                     }, 0)
                 : ""}
             </p>
-            {/* <p className="card-text">0</p> */}
           </div>
-        </div>
-        <div className="card col-4">
+        </div> */}
+        <div className="card col-5 ms-2">
           <div className="card-header fs-6 lead">Approved</div>
           <div className="card-body">
             <p className="fs-6 lead ">
@@ -678,10 +690,14 @@ const RefundRequests = () => {
                     }, 0)
                 : ""}
             </p>
-            {/* <p className="card-text">0</p> */}
+            <p className="fs-6 lead ">
+              <Link className="link-primary" onClick={handleApprovedFilter}>
+                Click Here
+              </Link>
+            </p>
           </div>
         </div>
-        <div className="card col-4">
+        <div className="card col-5 ms-4">
           <div className="card-header fs-6 lead">Rejected</div>
           <div className="card-body">
             <p className="fs-6 lead ">
@@ -694,11 +710,16 @@ const RefundRequests = () => {
                     }, 0)
                 : ""}
             </p>
+            <p className="fs-6 lead ">
+              <Link className="link-primary" onClick={handleRejectedFilter}>
+                Click Here
+              </Link>
+            </p>
           </div>
         </div>
       </div>
 
-      <div className="row">
+      <div className="row mt-4">
         <div className=" col-2">
           <label htmlFor="">Customer Name</label>
           <Autocomplete
@@ -790,7 +811,7 @@ const RefundRequests = () => {
           />
         </div>
 
-        <div className="col-2">
+        <div className="col-2 mt-3">
           <Button
             type="primary"
             variant="contained"
@@ -800,19 +821,20 @@ const RefundRequests = () => {
             Search
           </Button>
         </div>
-        <div className="col-2">
+        <div className="col-2 mt-3">
           <Button
             variant="contained"
             color="error"
             onClick={handleClear}
             className="mt-2 mb-2"
+            style={{ marginLeft: "-130px" }}
           >
             clear
           </Button>
         </div>
       </div>
 
-      <div className="card">
+      <div className="card mt-3">
         <div className="data_tbl table-responsive">
           <DataGrid
             rows={filterData}

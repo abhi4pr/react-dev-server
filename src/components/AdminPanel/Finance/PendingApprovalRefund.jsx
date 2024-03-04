@@ -458,7 +458,7 @@ const PendingApprovalRefund = () => {
     {
       field: "refund_payment_image",
       headerName: "Refund Payment Image",
-      renderCell: (params,index) => (
+      renderCell: (params, index) => (
         <form method="POST" encType="multipart/form-data" action="">
           <input
             key={index}
@@ -562,7 +562,6 @@ const PendingApprovalRefund = () => {
           getRowId={(row) => sameCustomerData.indexOf(row)}
         />
       </Dialog>
-
       {/* Unique Customer Dialog Box */}
       <Dialog
         open={uniqueCustomerDialog}
@@ -602,7 +601,7 @@ const PendingApprovalRefund = () => {
               showQuickFilter: true,
             },
           }}
-           getRowId={(row) => row._id}
+          getRowId={(row) => row._id}
         />
       </Dialog>
       <div className="row">
@@ -733,12 +732,12 @@ const PendingApprovalRefund = () => {
             disableSelectionOnClick
             autoHeight
             slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => row._id}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => row._id}
           />
         </div>
       </div>

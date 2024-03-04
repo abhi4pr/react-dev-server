@@ -43,7 +43,6 @@ const PendingApprovalUpdate = () => {
   const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
   const [sameCustomerData, setSameCustomerData] = useState([]);
   // const []
-  console.log("HII");
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
@@ -230,7 +229,6 @@ const PendingApprovalUpdate = () => {
   };
   const handleOpenUniqueCustomerClick = () => {
     setUniqueCustomerDialog(true);
-    console.log(uniqueCustomerData, "unique cust data");
   };
 
   const handleCloseUniqueCustomer = () => {
@@ -325,31 +323,34 @@ const PendingApprovalUpdate = () => {
     {
       field: "payment_screenshot",
       headerName: "Payment Screenshot",
-      renderCell: (params) => (
-        params.row.payment_screenshot? <div
-          onClick={() => {
-            setViewImgSrc(
-              params.row.payment_screenshot
-                ? `https://sales.creativefuel.io/${params.row.payment_screenshot}`
-                : ""
-            ),
-              setViewImgDialog(true);
-          }}
-          style={{ whiteSpace: "normal" }}
-        >
-          <img
-            src={
-              params.row.payment_screenshot.includes(".pdf")
-                ? pdfImg
-                : `https://sales.creativefuel.io/${params.row.payment_screenshot}`
-            }
-            //   row.payment_screenshot
-            //     ? `https://sales.creativefuel.io/${row.payment_screenshot}`
-            //     : ""
-            // }
-          />
-        </div>:"No Screenshot Available"
-      ),
+      renderCell: (params) =>
+        params.row.payment_screenshot ? (
+          <div
+            onClick={() => {
+              setViewImgSrc(
+                params.row.payment_screenshot
+                  ? `https://sales.creativefuel.io/${params.row.payment_screenshot}`
+                  : ""
+              ),
+                setViewImgDialog(true);
+            }}
+            style={{ whiteSpace: "normal" }}
+          >
+            <img
+              src={
+                params.row.payment_screenshot.includes(".pdf")
+                  ? pdfImg
+                  : `https://sales.creativefuel.io/${params.row.payment_screenshot}`
+              }
+              //   row.payment_screenshot
+              //     ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+              //     : ""
+              // }
+            />
+          </div>
+        ) : (
+          "No Screenshot Available"
+        ),
     },
     {
       field: "payment_amount",
@@ -481,31 +482,34 @@ const PendingApprovalUpdate = () => {
     {
       field: "payment_screenshot",
       headerName: "Payment Screenshot",
-      renderCell: (params) => (
-        params.row.payment_screenshot?   <div
-          onClick={() => {
-            setViewImgSrc(
-              params.row.payment_screenshot
-                ? `https://sales.creativefuel.io/${params.row.payment_screenshot}`
-                : ""
-            ),
-              setViewImgDialog(true);
-          }}
-          style={{ whiteSpace: "normal" }}
-        >
-          <img
-            src={
-              params.row.payment_screenshot.includes(".pdf")
-                ? pdfImg
-                : `https://sales.creativefuel.io/${params.row.payment_screenshot}`
-            }
-            //   row.payment_screenshot
-            //     ? `https://sales.creativefuel.io/${row.payment_screenshot}`
-            //     : ""
-            // }
-          />
-        </div>: "No Screenshot Available"
-      ),
+      renderCell: (params) =>
+        params.row.payment_screenshot ? (
+          <div
+            onClick={() => {
+              setViewImgSrc(
+                params.row.payment_screenshot
+                  ? `https://sales.creativefuel.io/${params.row.payment_screenshot}`
+                  : ""
+              ),
+                setViewImgDialog(true);
+            }}
+            style={{ whiteSpace: "normal" }}
+          >
+            <img
+              src={
+                params.row.payment_screenshot.includes(".pdf")
+                  ? pdfImg
+                  : `https://sales.creativefuel.io/${params.row.payment_screenshot}`
+              }
+              //   row.payment_screenshot
+              //     ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+              //     : ""
+              // }
+            />
+          </div>
+        ) : (
+          "No Screenshot Available"
+        ),
     },
     {
       field: "payment_amount",
@@ -586,16 +590,16 @@ const PendingApprovalUpdate = () => {
   ];
   const columns = [
     {
-      field: "S.No",
-      fieldName: "s_no",
+      field: "s_no",
+      headerName: "S.NO",
       width: 70,
       renderCell: (params, index) => (
         <div>{[...datas].indexOf(params.row) + 1}</div>
       ),
     },
     {
-      field: "Customer Name",
-      fieldName: "cust_name",
+      field: "cust_name",
+      headerName: "Custumer Name",
       width: 260,
       renderCell: (params) => (
         <div
@@ -607,80 +611,83 @@ const PendingApprovalUpdate = () => {
       ),
     },
     {
-      field: "Requested By",
-      fieldName: "user_name",
+      headerName: "Requested By",
+      field: "user_name",
       width: 180,
       name: <div style={{ whiteSpace: "normal" }}>Requested By</div>,
       renderCell: (params, index) => <div>{params.row.user_name} </div>,
     },
 
     {
-      field: "Campaign Amount",
-      fieldName: "campaign_amount",
+      headerName: "Campaign Amount",
+      field: "campaign_amount",
       width: 180,
       renderCell: (params) => <div>{params.row.campaign_amount} </div>,
     },
     {
-      field: "Campaign Amount Without GST",
-      fieldName: "campaign_amount_without_gst",
+      headerName: "Campaign Amount Without GST",
+      field: "campaign_amount_without_gst",
       width: 180,
       renderCell: (params) => (
         <div>{params.row.campaign_amount_without_gst} </div>
       ),
     },
     {
-      field: "Payment On Date",
-      fieldName: "payment_date",
+      headerName: "Payment On Date",
+      field: "payment_date",
       width: 180,
       renderCell: (params, index) => (
         <div>{convertDateToDDMMYYYY(params.row.payment_date)} </div>
       ),
     },
     {
-      field: "Payment Screenshot",
-      fieldName: "payment_screenshot",
+      headerName: "Payment Screenshot",
+      field: "payment_screenshot",
       width: 180,
-      renderCell: (params) => (
-        params.row.payment_screenshot?  <div
-          onClick={() => {
-            setViewImgSrc(
-              params.row.payment_screenshot
-                ? `https://sales.creativefuel.io/${params.row.payment_screenshot}`
-                : ""
-            ),
-              setViewImgDialog(true);
-          }}
-          style={{ whiteSpace: "normal" }}
-        >
-          <img
-            src={
-              params.row.payment_screenshot.includes(".pdf")
-                ? pdfImg
-                : `https://sales.creativefuel.io/${params.row.payment_screenshot}`
-            }
-            //   row.payment_screenshot
-            //     ? `https://sales.creativefuel.io/${row.payment_screenshot}`
-            //     : ""
-            // }
-          />
-        </div>: "No Screenshot Available"
-      ),
+      renderCell: (params) =>
+        params.row.payment_screenshot ? (
+          <div
+            onClick={() => {
+              setViewImgSrc(
+                params.row.payment_screenshot
+                  ? `https://sales.creativefuel.io/${params.row.payment_screenshot}`
+                  : ""
+              ),
+                setViewImgDialog(true);
+            }}
+            style={{ whiteSpace: "normal" }}
+          >
+            <img
+              src={
+                params.row.payment_screenshot.includes(".pdf")
+                  ? pdfImg
+                  : `https://sales.creativefuel.io/${params.row.payment_screenshot}`
+              }
+              //   row.payment_screenshot
+              //     ? `https://sales.creativefuel.io/${row.payment_screenshot}`
+              //     : ""
+              // }
+            />
+          </div>
+        ) : (
+          "No Screenshot Available"
+        ),
     },
     {
-      field: "Payment Amount",
-      fieldName: "payment_amount",
+      headerName: "Payment Amount",
+      field: "payment_amount",
       width: 180,
       renderCell: (params) => <div>{params.row.payment_amount} </div>,
     },
     {
-      field: "Payment Mode",
-      fieldName: "payment_mode",
+      headerName: "Payment Mode",
+      field: "payment_mode",
       width: 180,
       renderCell: (params) => <div>{params.row.payment_mode} </div>,
     },
     {
-      field: "Payment Status",
-      fieldName: "payment_approval_status",
+      headerName: "Payment Status",
+      field: "payment_approval_status",
       width: 190,
       renderCell: (params) => (
         <div>
@@ -695,14 +702,14 @@ const PendingApprovalUpdate = () => {
       ),
     },
     {
-      field: "Bank Name ",
-      fieldName: "title",
+      headerName: "Bank Name ",
+      field: "title",
       width: 180,
       renderCell: (params) => <div>{params.row.title} </div>,
     },
     {
-      field: "Bank Detail ",
-      fieldName: "detail",
+      headerName: "Bank Detail ",
+      field: "detail",
       width: 490,
       renderCell: (params) => (
         <div>
@@ -720,20 +727,20 @@ const PendingApprovalUpdate = () => {
       // width: 150,
     },
     {
-      field: "Reference No ",
-      fieldName: "payment_ref_no",
+      headerName: "Reference No ",
+      field: "payment_ref_no",
       width: 190,
       renderCell: (params) => <div>{params.row.payment_ref_no} </div>,
     },
     {
-      field: "Remarks ",
-      fieldName: "payment_update_remarks",
+      headerName: "Remarks ",
+      field: "payment_update_remarks",
       width: 200,
       renderCell: (params) => <div>{params.row.payment_update_remarks} </div>,
     },
     {
       width: 200,
-      field: "Status",
+      // field: "Status",
       headerName: "Status",
       renderCell: ({ row }) => (
         <Autocomplete
@@ -758,8 +765,8 @@ const PendingApprovalUpdate = () => {
     },
 
     {
-      field: "Payment Requested Date and Time ",
-      fieldName: "balance_payment_ondate",
+      headerName: "Payment Requested Date and Time ",
+      field: "balance_payment_ondate",
       width: 180,
       renderCell: (params) => (
         <div>

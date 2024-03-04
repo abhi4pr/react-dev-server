@@ -5,7 +5,7 @@ import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import { useGlobalContext } from "../../../Context/Context";
-import { DataGrid, GridToolbar,   } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import DataTable from "react-data-table-component";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { baseUrl } from "../../../utils/config";
@@ -109,22 +109,22 @@ const PaymentMode = () => {
   };
   const columns = [
     {
-      field: "S.No",
-      fieldName: "s_no",
+      headerName: "S.No",
+      field: "s_no",
       renderCell: (params, index) => (
         <div>{[...filterData].indexOf(params.row) + 1}</div>
       ),
     },
     {
-      field: "Title",
-      fieldName: "title",
+      field: "title",
+      headerName: "Title",
       width: 200,
-      renderCell: (params) => <div>{params.row.title}</div>,
-      sortable: false,
+      // renderCell: (params) => <div>{params.row.title}</div>,
+      // sortable: false,
     },
     {
-      field: "Detail",
-      fieldName: "detail",
+      headerName: "Detail",
+      field: "detail",
       width: 700,
       // selector: (row) =>  <div style={{ whiteSpace: 'normal' }}>{row.detail}
       //   <Button key={row.detail} variant="contained" color="primary" onClick={console.log('clicked')} style={{marginLeft: "10px"}}>Copy</Button>
@@ -144,21 +144,21 @@ const PaymentMode = () => {
       ),
     },
     {
-      field: "Payment Type",
-      fieldName: "payment_type",
+      field: "payment_type",
+      headerName: "Payment Type",
       width: 200,
       renderCell: (params) => params.row.payment_type,
     },
     {
-      field: "GST Bank",
-      fieldName: "gst_bank",
+      headerName: "GST Bank",
+      field: "gst_bank",
       width: 200,
       renderCell: (params) => {
         return <div>{params.row.gst_bank === 1 ? "GST" : "Non GST"}</div>;
       },
     },
   ];
-console.log(datas,"DATAS",filterData,"FILTERDATA")
+  console.log(datas, "DATAS", filterData, "FILTERDATA");
   return (
     <>
       <FormContainer
@@ -276,7 +276,11 @@ console.log(datas,"DATAS",filterData,"FILTERDATA")
               value={gst}
               onChange={(event, newValue) => setGST(newValue)}
               options={Array.from(
-                new Set(datas.map((option) => option.gst_bank === 1 ? "GST" : "Non GST"))
+                new Set(
+                  datas.map((option) =>
+                    option.gst_bank === 1 ? "GST" : "Non GST"
+                  )
+                )
               )}
               renderInput={(params) => (
                 <TextField
@@ -328,7 +332,8 @@ console.log(datas,"DATAS",filterData,"FILTERDATA")
               toolbar: {
                 showQuickFilter: true,
               },
-            }} getRowId={(row) => filterData.indexOf(row)}
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>

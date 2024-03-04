@@ -148,14 +148,19 @@ const AllTransactions = () => {
     });
   }
   function convertDateToDDMMYYYY(dateString) {
-    if(String(dateString).startsWith("0000-00-00")){return (" ")}
+    if (String(dateString).startsWith("0000-00-00")) {
+      return " ";
+    }
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
     const year = date.getFullYear();
 
-    if(day == "NaN" || month == "NaN" || year == "NaN"){ return (" ")}else{
-      return `${day}/${month}/${year}`;}
+    if (day == "NaN" || month == "NaN" || year == "NaN") {
+      return " ";
+    } else {
+      return `${day}/${month}/${year}`;
+    }
   }
 
   const handleCopyDetail = (detail) => {
@@ -558,49 +563,50 @@ const AllTransactions = () => {
   ];
   const columns = [
     {
-      field: "S.NO",
-      renderCell: ({row}) => <div>{filterData.indexOf(row)+1}</div>,
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: ({ row }) => <div>{filterData.indexOf(row) + 1}</div>,
       width: 70,
     },
     {
-      field: "Requested By",
-      fieldName: "user_name",
+      headerName: "Requested By",
+      field: "user_name",
       renderCell: (params) => <div>{params.row.user_name} </div>,
     },
     {
-      field: " Customer Name",
-      fieldName: "cust_name",
+      headerName: " Customer Name",
+      field: "cust_name",
       renderCell: (params) => <div>{params.row.cust_name}</div>,
     },
     {
-      field: "Campaign Amount",
-      fieldName: "campaign_amount",
+      headerName: "Campaign Amount",
+      field: "campaign_amount",
       renderCell: (params) => <div>{params.row.campaign_amount} </div>,
     },
     {
-      field: "Campaign Amount Without Gst",
-      fieldName: "campaign_amount_without_gst",
+      headerName: "Campaign Amount Without Gst",
+      field: "campaign_amount_without_gst",
       renderCell: (params) => params.row.campaign_amount_without_gst,
     },
     {
-      field: "Payment On Date",
-      fieldName: "payment_date",
+      headerName: "Payment On Date",
+      field: "payment_date",
       renderCell: (params) => (
         <div>{convertDateToDDMMYYYY(params.row.payment_date)}</div>
       ),
     },
     {
-      field: "Payment Amount",
-      fieldName: "payment_amount",
+      headerName: "Payment Amount",
+      field: "payment_amount",
       renderCell: (params) => params.row.payment_amount,
     },
     {
-      field: " Payment Mode",
-      fieldName: "payment_mode",
+      headerName: " Payment Mode",
+      field: "payment_mode",
       renderCell: (params) => params.row.payment_mode,
     },
     {
-      field: "Payment View",
+      headerName: "Payment View",
       // selector: (row) => row.payment_approval_status,
       // cell: (row) => (
       //   <div style={{ whiteSpace: "normal" }}>
@@ -614,13 +620,13 @@ const AllTransactions = () => {
       // </div>)
     },
     {
-      field: "Bank Name",
-      fieldName: "payment_mode",
+      headerName: "Bank Name",
+      field: "payment_mode",
       renderCell: (params) => <div>{params.row.title} </div>,
       width: 150,
     },
     {
-      field: "Screenshot",
+      headerName: "Screenshot",
       renderCell: (params) => (
         <div>
           {params.row.payment_screenshot.includes(".pdf") ? (
@@ -672,8 +678,8 @@ const AllTransactions = () => {
     },
     {
       width: 250,
-      field: "Bank Detail",
-      fieldName: "detail",
+      headerName: "Bank Detail",
+      field: "detail",
       renderCell: (params) => (
         <div>
           <Button
@@ -683,24 +689,24 @@ const AllTransactions = () => {
             // style={{ marginLeft: "10px" }}
           >
             <ContentCopyIcon />
-          </Button> {" "}
+          </Button>{" "}
           {params.row.detail}
         </div>
       ),
     },
     {
-      field: "Reference No",
-      fieldName: "payment_ref_no",
+      headerName: "Reference No",
+      field: "payment_ref_no",
       renderCell: (params) => params.row.payment_ref_no,
     },
     {
-      field: "Remarks",
-      fieldName: "payment_update_remarks",
+      headerName: "Remarks",
+      field: "payment_update_remarks",
       renderCell: (params) => params.row.payment_update_remarks,
     },
     {
-      field: "Status",
-      fieldName: "payment_approval_status",
+      headerName: "Status",
+      field: "payment_approval_status",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {params.row.payment_approval_status === 0
@@ -714,7 +720,7 @@ const AllTransactions = () => {
       ),
     },
     {
-      field: "Action",
+      headerName: "Action",
       renderCell: (params) => (
         <>
           <Link to={`/admin/payment-summary/${params.row.cust_id}`}>
@@ -729,6 +735,19 @@ const AllTransactions = () => {
       ),
     },
   ];
+
+  const handlePendingClick = () => {
+    const filtered = datas.filter((item) => item.payment_approval_status === 0);
+    setFilterData(filtered);
+  };
+  const handleApprovedClick = () => {
+    const filtered = datas.filter((item) => item.payment_approval_status === 1);
+    setFilterData(filtered);
+  };
+  const handleRejectedClick = () => {
+    const filtered = datas.filter((item) => item.payment_approval_status === 2);
+    setFilterData(filtered);
+  };
   return (
     <>
       <FormContainer
@@ -782,12 +801,12 @@ const AllTransactions = () => {
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => sameCustomerData.indexOf(row)}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => sameCustomerData.indexOf(row)}
         />
       </Dialog>
 
@@ -825,16 +844,16 @@ const AllTransactions = () => {
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => row._id}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => row._id}
         />
       </Dialog>
-      <div className="row">
-        <div className="card col-4">
+      <div className="row ms-2 me-1">
+        <div className="card col-4  ">
           <div className="card-header fs-6 lead">Pending</div>
           <div className="card-body">
             <p className="fs-6 lead ">
@@ -849,48 +868,42 @@ const AllTransactions = () => {
             </p>
             <p className="fs-6 lead ">
               {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pendingapproveupdate"
-                >
+                <Link className="link-primary" onClick={handlePendingClick}>
                   Click Here
                 </Link>
               }
             </p>
           </div>
         </div>
-        <div className="card col-4">
+        <div className="card col-4  ">
           <div className="card-header fs-6 lead">Approved</div>
           <div className="card-body">
             <p className="fs-6 lead ">
               Total Approved Amount :- ₹{" "}
-              {filterData.length > 0
-                ? filterData
+              {datas.length > 0
+                ? datas
                     .filter((item) => item.payment_approval_status == 1)
                     .reduce((total, currentItem) => {
-                      return total + (currentItem.payment_amount * 1);
+                      return total + currentItem.payment_amount * 1;
                     }, 0)
                 : ""}
             </p>
             <p className="fs-6 lead ">
               {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pendingapproveupdate"
-                >
+                <Link className="link-primary" onClick={handleApprovedClick}>
                   Click Here
                 </Link>
               }
             </p>
           </div>
         </div>
-        <div className="card col-4">
+        <div className="card col-4 ">
           <div className="card-header fs-6 lead">Rejected</div>
           <div className="card-body">
             <p className="fs-6 lead ">
               Total Rejected Amount :- ₹{" "}
-              {filterData.length > 0
-                ? filterData
+              {datas.length > 0
+                ? datas
                     .filter((item) => item.payment_approval_status == 2)
                     .reduce((total, currentItem) => {
                       return total + currentItem.payment_amount * 1;
@@ -899,10 +912,7 @@ const AllTransactions = () => {
             </p>
             <p className="fs-6 lead ">
               {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pendingapproveupdate"
-                >
+                <Link className="link-primary" onClick={handleRejectedClick}>
                   Click Here
                 </Link>
               }
@@ -910,9 +920,9 @@ const AllTransactions = () => {
           </div>
         </div>
       </div>
-      <div className="card">
+      <div className="card mt-3">
         <div className="data_tbl table-responsive">
-          <div className="row ml-2">
+          <div className="row ml-2 mt-4 me-3">
             <div className="col-md-2">
               <div className="form-group">
                 <label>Requested By</label>
@@ -1118,7 +1128,10 @@ const AllTransactions = () => {
               </div>
             </div>
           </div>
-
+        </div>
+      </div>
+      <div>
+        <div className="card mt-3">
           <DataGrid
             rows={filterData}
             columns={columns}
@@ -1127,11 +1140,12 @@ const AllTransactions = () => {
             disableSelectionOnClick
             autoHeight
             slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}getRowId={(row) => filterData.indexOf(row)}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>

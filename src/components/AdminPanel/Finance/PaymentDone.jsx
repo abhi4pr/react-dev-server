@@ -46,10 +46,6 @@ export default function PaymentDone() {
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
   const { toastAlert, toastError } = useGlobalContext();
 
-  const handleCloseBankDetail = () => {
-    setBankDetail(false);
-  };
-
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       setNodeData(res.data.modifiedData);
@@ -94,6 +90,10 @@ export default function PaymentDone() {
     setBankDetailRowData(x);
     setBankDetail(true);
   };
+  const handleCloseBankDetail = () => {
+    setBankDetail(false);
+  };
+
   useEffect(() => {
     callApi();
   }, []);
@@ -119,9 +119,11 @@ export default function PaymentDone() {
 
     return diffDays;
   }
-const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request_id == item.request_id));
+  const filterPaymentAmount = nodeData.filter((item) =>
+    data.some((e) => e.request_id == item.request_id)
+  );
   // total requested  amount data :-
-  console.log(filterPaymentAmount, "filterPaymentAmount")
+  console.log(filterPaymentAmount, "filterPaymentAmount");
   const totalRequestAmount = filterPaymentAmount.reduce(
     (total, item) => total + parseFloat(Math.round(item.payment_amount)),
     0
@@ -424,46 +426,46 @@ const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request
         return <p> &#8377; {params.row.outstandings}</p>;
       },
     },
-    {
-      field: "invc_img",
-      headerName: "Invoice Image",
-      renderCell: (params) => {
-        if (params.row.invc_img) {
-          // Extract file extension and check if it's a PDF
-          const fileExtension = params.row.invc_img
-            .split(".")
-            .pop()
-            .toLowerCase();
-          const isPdf = fileExtension === "pdf";
+    // {
+    //   field: "invc_img",
+    //   headerName: "Invoice Image",
+    //   renderCell: (params) => {
+    //     if (params.row.invc_img) {
+    //       // Extract file extension and check if it's a PDF
+    //       const fileExtension = params.row.invc_img
+    //         .split(".")
+    //         .pop()
+    //         .toLowerCase();
+    //       const isPdf = fileExtension === "pdf";
 
-          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+    //       const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
 
-          return isPdf ? (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={pdf}
-              style={{ width: "40px", height: "40px" }}
-              title="PDF Preview"
-            />
-          ) : (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={imgUrl}
-              alt="Invoice"
-              style={{ width: "100px", height: "100px" }}
-            />
-          );
-        } else {
-          return null;
-        }
-      },
-    },
+    //       return isPdf ? (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={pdf}
+    //           style={{ width: "40px", height: "40px" }}
+    //           title="PDF Preview"
+    //         />
+    //       ) : (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={imgUrl}
+    //           alt="Invoice"
+    //           style={{ width: "100px", height: "100px" }}
+    //         />
+    //       );
+    //     } else {
+    //       return null;
+    //     }
+    //   },
+    // },
     {
       field: "request_date",
       headerName: "Requested Date",
@@ -576,14 +578,14 @@ const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request
                 setViewImgSrc(imgUrl);
               }}
               style={{
-                position: 'absolute',
-                width: '2.4%',
-                height: '36%',
+                position: "absolute",
+                width: "2.4%",
+                height: "36%",
                 top: "100px",
                 left: "104px",
                 cursor: "pointer",
                 background: "rgba(0, 0, 0, 0)",
-                zIndex: 10
+                zIndex: 10,
               }}
             ></div>
           </>
@@ -851,7 +853,6 @@ const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request
           (e) => e.request_id == params.row.request_id
         )[0]?.payment_amount;
         return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
-
       },
     },
     {
@@ -1103,7 +1104,7 @@ const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request
           setViewImgDialog={setOpenImageDialog}
         />
       )}
-
+      {/* Bank Detail dialog */}
       <Dialog
         open={bankDetail}
         onClose={handleCloseBankDetail}
@@ -1179,7 +1180,7 @@ const filterPaymentAmount = nodeData.filter((item) => data.some((e) => e.request
           Copy
         </Button>
       </Dialog>
-
+      {/* Pyament History */}
       <Dialog
         open={paymentHistory}
         onClose={handleClosePaymentHistory}
