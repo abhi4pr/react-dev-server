@@ -279,7 +279,35 @@ export default function PendingPaymentRequest() {
   );
 
   const handlePayVendorClick = () => {
+<<<<<<< Updated upstream
     displayRazorpay(paymentAmout);
+=======
+    displayRazorpay(paymentAmout);return
+
+    axios.post(`${baseUrl}` + `create_order`,{
+      amount:(1*paymentAmout)
+    }).then((res)=>{
+      // displayRazorpay(paymentAmout);
+      // const orderID =res.data.data.id;
+
+      // axios.post(`${baseUrl}` + `process_payment`,{
+      //   amount:(1+paymentAmout)*100,
+      //   name:rowData.vendor_name,
+      //   account_number:"2345678901",
+      //   ifsc:"ICIC0000001",
+      //   order_id:orderID
+      // }).then((res)=>{  
+      //   console.log(res.data);
+      // }).catch((err)=>{
+      //   console.log(err);
+      // })
+      console.log(res.data.data.id);
+      return
+    }).catch((err)=>{
+      console.log(err);
+      return
+    })
+>>>>>>> Stashed changes
     return;
     const formData = new FormData();
     formData.append("request_id", rowData.request_id);
@@ -572,8 +600,13 @@ export default function PendingPaymentRequest() {
     }
 
     var options = {
+<<<<<<< Updated upstream
       key: "rzp_test_SIbrnELO2NP7rA", // Enter the Key ID generated from the Dashboard
       amount: paymentAmout * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+=======
+      key: "rzp_test_rSd0QdC5SJrnCq", // Enter the Key ID generated from the Dashboard
+      amount: paymentAmout*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+>>>>>>> Stashed changes
       currency: "INR",
       name: "Your Business Name",
       description: "Payment to " + "Harshit",
@@ -584,10 +617,13 @@ export default function PendingPaymentRequest() {
         );
         // Here you can handle the payment success event, e.g., updating the database, sending notifications, etc.
       },
+      // default_payment_method:"cash",
+      callback_url: "https://eneqd3r9zrjok.x.pipedream.net/",
       prefill: {
         name: "Customer Name",
         email: "customer@example.com",
         contact: "9000090000",
+        method:"netbanking"
       },
       notes: {
         vendor_name: "Harshit",
