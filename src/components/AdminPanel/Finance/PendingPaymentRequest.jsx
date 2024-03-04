@@ -279,7 +279,8 @@ export default function PendingPaymentRequest() {
   );
 
   const handlePayVendorClick = () => {
-    displayRazorpay(paymentAmout);return
+    displayRazorpay(paymentAmout);
+    return;
     const formData = new FormData();
     formData.append("request_id", rowData.request_id);
     formData.append("vendor_id", rowData.vendor_id);
@@ -570,10 +571,9 @@ export default function PendingPaymentRequest() {
       return;
     }
 
-
     var options = {
       key: "rzp_test_SIbrnELO2NP7rA", // Enter the Key ID generated from the Dashboard
-      amount: paymentAmout*100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+      amount: paymentAmout * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
       currency: "INR",
       name: "Your Business Name",
       description: "Payment to " + "Harshit",
@@ -602,7 +602,6 @@ export default function PendingPaymentRequest() {
     paymentObject.open();
   }
 
-  
   const paymentDetailColumns = [
     {
       field: "S.NO",
@@ -630,46 +629,46 @@ export default function PendingPaymentRequest() {
         return <p> &#8377; {params.row.outstandings}</p>;
       },
     },
-    {
-      field: "invc_img",
-      headerName: "Invoice Image",
-      renderCell: (params) => {
-        if (params.row.invc_img) {
-          // Extract file extension and check if it's a PDF
-          const fileExtension = params.row.invc_img
-            .split(".")
-            .pop()
-            .toLowerCase();
-          const isPdf = fileExtension === "pdf";
+    // {
+    //   field: "invc_img",
+    //   headerName: "Invoice Image",
+    //   renderCell: (params) => {
+    //     if (params.row.invc_img) {
+    //       // Extract file extension and check if it's a PDF
+    //       const fileExtension = params.row.invc_img
+    //         .split(".")
+    //         .pop()
+    //         .toLowerCase();
+    //       const isPdf = fileExtension === "pdf";
 
-          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+    //       const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
 
-          return isPdf ? (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={pdf}
-              style={{ width: "40px", height: "40px" }}
-              title="PDF Preview"
-            />
-          ) : (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={imgUrl}
-              alt="Invoice"
-              style={{ width: "100px", height: "100px" }}
-            />
-          );
-        } else {
-          return null;
-        }
-      },
-    },
+    //       return isPdf ? (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={pdf}
+    //           style={{ width: "40px", height: "40px" }}
+    //           title="PDF Preview"
+    //         />
+    //       ) : (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={imgUrl}
+    //           alt="Invoice"
+    //           style={{ width: "100px", height: "100px" }}
+    //         />
+    //       );
+    //     } else {
+    //       return null;
+    //     }
+    //   },
+    // },
     {
       field: "request_date",
       headerName: "Requested Date",
@@ -1160,7 +1159,7 @@ export default function PendingPaymentRequest() {
               onClick={() => handleDiscardClick(params.row)}
             >
               discard
-            </button>   
+            </button>
             <button className="btn btn-success" onClick={displayRazorpay}>
               Pay ₹500
             </button>
@@ -1169,6 +1168,7 @@ export default function PendingPaymentRequest() {
       },
     },
   ];
+
   return (
     <div>
       <FormContainer
