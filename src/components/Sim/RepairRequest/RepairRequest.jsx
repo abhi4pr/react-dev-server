@@ -177,6 +177,7 @@ const RepairRequest = () => {
       );
       setAssetName("");
       setRepairDate("");
+      setReason("");
       setPriority("");
       setAssetsImg1("");
       setAssetsImg2("");
