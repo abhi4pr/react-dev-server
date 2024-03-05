@@ -282,9 +282,6 @@ const AssetSingleuserOverview = ({
         <button
           onClick={() => handleRow(row)}
           className="btn btn-outline-warning btn-sm"
-          // data-toggle="modal"
-          // data-target="#exampleModal"
-          // size="small"
           type="button"
         >
           Repair Request
@@ -382,10 +379,10 @@ const AssetSingleuserOverview = ({
                 <button
                   onClick={() => handleUpdateNewAssetRow(row)}
                   class="dropdown-item"
-                  type="button"
-                  data-toggle="modal"
-                  data-target="#sidebar-right"
-                  size="small"
+                  // type="button"
+                  // data-toggle="modal"
+                  // data-target="#sidebar-right"
+                  // size="small"
                 >
                   Edit
                 </button>
@@ -411,7 +408,6 @@ const AssetSingleuserOverview = ({
   };
 
   const handleNewAssetSubmit = async () => {
-    setIsModalOpen(true);
     if (!assetsName || assetsName == "") {
       return toastError("Asset Name is Required");
     } else if (!priority || priority == "") {
@@ -426,7 +422,6 @@ const AssetSingleuserOverview = ({
         multi_tag: tagUser.map((user) => user.value),
       });
 
-      // setIsModalOpen(false);
       closeModal();
       hardRender();
       toastAlert("Request Success");
@@ -441,6 +436,7 @@ const AssetSingleuserOverview = ({
 
   const handleUpdateNewAssetRow = (row) => {
     setIsEditMode(true);
+    setIsModalOpen(true);
     setNewAssetID(row._id);
     setAssetName(row.sub_category_id);
     setProblemDetailing(row.detail);
@@ -487,9 +483,9 @@ const AssetSingleuserOverview = ({
         <>
           <button
             type="button"
-            data-toggle="modal"
-            data-target="#sidebar-right"
-            size="small"
+            // data-toggle="modal"
+            // data-target="#sidebar-right"
+            // size="small"
             className="col-2 ml-3 mb-2 btn btn-outline-primary btn-sm"
             onClick={() => {
               setIsEditMode(false);
@@ -679,7 +675,6 @@ const AssetSingleuserOverview = ({
               <button
                 type="button"
                 className="btn btn-secondary"
-                // data-dismiss="modal"
                 onClick={() => closeRepairModal()}
               >
                 Close

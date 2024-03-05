@@ -206,7 +206,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       width: "150px",
     },
     {
-      name: "img",
+      name: "Img",
       selector: (row) => (
         <button
           className="btn btn-outline-danger"
@@ -740,7 +740,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
                   </div>
                 </div>
               )}
-            {console.log(showAssetsImage, "changes")}
             {typeof showAssetsImage?.img3 === "string" &&
               !showAssetsImage.img3.endsWith("bucket2/") && (
                 <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">

@@ -184,6 +184,7 @@ const BrandMast = () => {
         >
           <FieldContainer
             label="Brand Name"
+            astric
             value={brandName}
             onChange={(e) => setBrandName(e.target.value)}
           />
