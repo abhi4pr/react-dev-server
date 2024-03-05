@@ -100,11 +100,11 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       selector: (row) => (
         <>
           {row?.asset_request_status === "ApprovedByManager" ? (
-            <span className="badge badge-warning">ApproveByManager</span>
+            <span className="badge badge-warning">Approve By Manager</span>
           ) : row.asset_request_status === "Approved" ? (
             <span className="badge badge-success">Assigned</span>
           ) : row.asset_request_status === "RejectedByManager" ? (
-            <span className="badge badge-danger">RejectedByManager</span>
+            <span className="badge badge-danger">Rejected By Manager</span>
           ) : row.asset_request_status === "Requested" ? (
             <span className="badge badge-danger">Requested</span>
           ) : row.asset_request_status === "Rejected" ? (

@@ -132,7 +132,9 @@ const ModalMast = () => {
   ];
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!brandName || brandName == "") {
+    if (!modalName || modalName == "") {
+      return toastError("Modal Name is Required");
+    } else if (!brandName || brandName == "") {
       return toastError("Brand Name is Required");
     }
     try {
@@ -203,6 +205,8 @@ const ModalMast = () => {
           <FieldContainer
             label="Modal Name"
             value={modalName}
+            astric
+            required={false}
             onChange={(e) => setModalName(e.target.value)}
           />
           <div className="form-group col-6">

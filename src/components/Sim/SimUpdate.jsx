@@ -48,6 +48,8 @@ const SimUpdate = () => {
   const [finacialType, setFinacialType] = useState("");
   const [depreciation, setDescription] = useState(0);
 
+  const [invoiceCopyURL, setInvoiceCopyURL] = useState("");
+
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
@@ -69,6 +71,16 @@ const SimUpdate = () => {
 
   const [brandData, setBrandData] = useState([]);
   const [brandName, setBrandName] = useState("");
+
+  useEffect(() => {
+    if (brandName) {
+      axios
+        .get(baseUrl + `get_asset_modal_by_asset_brandId/${brandName}`)
+        .then((res) => {
+          setModalData(res.data);
+        });
+    }
+  }, [brandName]);
 
   // All Category , subcategory and vendor api here
   const getAllCategory = () => {
@@ -99,10 +111,10 @@ const SimUpdate = () => {
     });
   };
 
-  async function getModalData() {
-    const res = await axios.get(baseUrl + "get_all_asset_modals");
-    setModalData(res.data);
-  }
+  // async function getModalData() {
+  //   const res = await axios.get(baseUrl + "get_all_asset_modals");
+  //   setModalData(res.data);
+  // }
   async function getBrandData() {
     const res = await axios.get(baseUrl + "get_all_asset_brands");
     setBrandData(res.data.data);
@@ -120,7 +132,7 @@ const SimUpdate = () => {
   }, [categoryData, assetsCategory]);
   useEffect(() => {
     getBrandData();
-    getModalData();
+    // getModalData();
     getAllCategory();
     // getAllSubCategory();
     getAllVendor();
@@ -155,11 +167,13 @@ const SimUpdate = () => {
         asset_financial_type,
         depreciation_percentage,
         Remarks,
+        invoiceCopy,
       } = fetchedData;
       setAssetsName(assetsName);
       setAssetsID(asset_id);
       setAssetType(asset_type);
       setInvoiceCopy(invoiceCopy);
+      setInvoiceCopyURL(invoiceCopy);
       // setAssetType(s_type);
 
       setModalName(asset_modal_id);
@@ -358,11 +372,12 @@ const SimUpdate = () => {
                   id="combo-box-demo"
                   options={modalData?.map((cat) => ({
                     label: cat?.asset_modal_name,
-                    value: cat?._id,
+                    value: cat?.asset_modal_id,
                   }))}
                   value={
-                    modalData?.find((modal) => modal._id === modalName)
-                      ?.asset_modal_name || ""
+                    modalData?.find(
+                      (modal) => modal.asset_modal_id === modalName
+                    )?.asset_modal_name || ""
                   }
                   onChange={(e, newvalue) => {
                     setModalName(newvalue.value);
@@ -481,6 +496,16 @@ const SimUpdate = () => {
                   type="file"
                   onChange={(e) => setInvoiceCopy(e.target.files[0])}
                 />
+                <span
+                  style={{
+                    color: "green",
+                  }}
+                >
+                  {invoiceCopy?.name}
+                  {","}
+                  <span style={{ color: "red" }}>Old Url:-</span>
+                  {invoiceCopyURL}
+                </span>
               </div>
             </div>
 

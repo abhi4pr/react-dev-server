@@ -696,78 +696,91 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         <>
           {/* <h2>Type : {showAssetsImage?.type}</h2> */}
           <div className="summary_cards flex-row row">
-            <div
-              className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12"
-              // onMouseEnter={handleMouseEnter}
-              // onMouseLeave={handleMouseLeave}
-            >
-              <div className="summary_card">
-                <div className="summary_cardtitle"></div>
-                <div className="summary_cardbody">
-                  <div className="summary_cardrow flex-column">
-                    <div className="summary_box text-center ml-auto mr-auto"></div>
-                    <div className="summary_box col">
-                      <img
-                        src={showAssetsImage?.img1}
-                        width="80px"
-                        height="80px"
-                      />
+            {typeof showAssetsImage?.img1 === "string" &&
+              !showAssetsImage.img1.endsWith("bucket2/") && (
+                <div
+                  className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12"
+                  // onMouseEnter={handleMouseEnter}
+                  // onMouseLeave={handleMouseLeave}
+                >
+                  <div className="summary_card">
+                    <div className="summary_cardtitle"></div>
+                    <div className="summary_cardbody">
+                      <div className="summary_cardrow flex-column">
+                        <div className="summary_box text-center ml-auto mr-auto"></div>
+                        <div className="summary_box col">
+                          <img
+                            src={showAssetsImage?.img1}
+                            width="80px"
+                            height="80px"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-              <div className="summary_card">
-                <div className="summary_cardtitle"></div>
-                <div className="summary_cardbody">
-                  <div className="summary_cardrow flex-column">
-                    <div className="summary_box text-center ml-auto mr-auto"></div>
-                    <div className="summary_box col">
-                      <img
-                        src={showAssetsImage?.img2}
-                        width="80px"
-                        height="80px"
-                      />
+              )}
+            {typeof showAssetsImage?.img2 === "string" &&
+              !showAssetsImage.img2.endsWith("bucket2/") && (
+                <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                  <div className="summary_card">
+                    <div className="summary_cardtitle"></div>
+                    <div className="summary_cardbody">
+                      <div className="summary_cardrow flex-column">
+                        <div className="summary_box text-center ml-auto mr-auto"></div>
+                        <div className="summary_box col">
+                          <img
+                            src={showAssetsImage?.img2}
+                            width="80px"
+                            height="80px"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-              <div className="summary_card">
-                <div className="summary_cardtitle"></div>
-                <div className="summary_cardbody">
-                  <div className="summary_cardrow flex-column">
-                    <div className="summary_box text-center ml-auto mr-auto"></div>
-                    <div className="summary_box col">
-                      <img
-                        src={showAssetsImage?.img3}
-                        width="80px"
-                        height="80px"
-                      />
+              )}
+            {console.log(showAssetsImage, "changes")}
+            {typeof showAssetsImage?.img3 === "string" &&
+              !showAssetsImage.img3.endsWith("bucket2/") && (
+                <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                  <div className="summary_card">
+                    <div className="summary_cardtitle"></div>
+                    <div className="summary_cardbody">
+                      <div className="summary_cardrow flex-column">
+                        <div className="summary_box text-center ml-auto mr-auto"></div>
+                        <div className="summary_box col">
+                          <img
+                            src={showAssetsImage?.img3}
+                            width="80px"
+                            height="80px"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
-              <div className="summary_card">
-                <div className="summary_cardtitle"></div>
-                <div className="summary_cardbody">
-                  <div className="summary_cardrow flex-column">
-                    <div className="summary_box text-center ml-auto mr-auto"></div>
-                    <div className="summary_box col">
-                      <img
-                        src={showAssetsImage?.img4}
-                        width="80px"
-                        height="80px"
-                      />
+              )}
+            {typeof showAssetsImage?.img4 === "string" &&
+              !showAssetsImage.img4.endsWith("bucket2/") && (
+                <div className="col-xl-3 col-lg-3 col-md-6 col-sm-12 col-12">
+                  <div className="summary_card">
+                    <div className="summary_cardtitle"></div>
+                    <div className="summary_cardbody">
+                      <div className="summary_cardrow flex-column">
+                        <div className="summary_box text-center ml-auto mr-auto"></div>
+                        <div className="summary_box col">
+                          <img
+                            src={showAssetsImage?.img4}
+                            width="80px"
+                            height="80px"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+              )}
           </div>
         </>
       </Modal>
@@ -787,6 +800,12 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
           },
         }}
       >
+        <button
+          className="btn btn-success float-left"
+          onClick={handleInvoiceCloseModal}
+        >
+          X
+        </button>
         <img
           src={enlargedImageUrl}
           alt="Enlarged Image"

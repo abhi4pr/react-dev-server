@@ -43,6 +43,16 @@ const AssetSingleuserOverview = ({
   const [isEditMode, setIsEditMode] = useState(false);
   const [assetId, setAssetId] = useState(0);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const [isRepairModalOpen, setIsRepairModalOpen] = useState(false);
+  const closeRepairModal = () => {
+    setIsRepairModalOpen(false);
+  };
+
   async function getRepairReason() {
     const res = await axios.get(baseUrl + "get_all_assetResons");
 
@@ -94,6 +104,7 @@ const AssetSingleuserOverview = ({
       await axios.post(baseUrl + "add_repair_request", formData);
 
       hardRender();
+      closeRepairModal();
       setAssetName("");
       setRepairDate("");
       setPriority("");
@@ -130,6 +141,7 @@ const AssetSingleuserOverview = ({
     }
   };
   const handleRow = (row) => {
+    setIsRepairModalOpen(true);
     setAssetName(row.assetsName);
     setRepairAssetId(row.sim_id);
   };
@@ -254,7 +266,7 @@ const AssetSingleuserOverview = ({
           {row.asset_return_status === "Pending" ? (
             <span className="badge badge-warning">Pending</span>
           ) : row.asset_return_status === "RecoverdByManager" ? (
-            <span className="badge badge-warning">RecoverByManager</span>
+            <span className="badge badge-warning">Recover By Manager</span>
           ) : (
             "N/A"
           )}
@@ -270,8 +282,8 @@ const AssetSingleuserOverview = ({
         <button
           onClick={() => handleRow(row)}
           className="btn btn-outline-warning btn-sm"
-          data-toggle="modal"
-          data-target="#exampleModal"
+          // data-toggle="modal"
+          // data-target="#exampleModal"
           // size="small"
           type="button"
         >
@@ -399,6 +411,12 @@ const AssetSingleuserOverview = ({
   };
 
   const handleNewAssetSubmit = async () => {
+    setIsModalOpen(true);
+    if (!assetsName || assetsName == "") {
+      return toastError("Asset Name is Required");
+    } else if (!priority || priority == "") {
+      return toastError("Priority is Required");
+    }
     try {
       await axios.post(baseUrl + "assetrequest", {
         sub_category_id: assetsName,
@@ -408,6 +426,8 @@ const AssetSingleuserOverview = ({
         multi_tag: tagUser.map((user) => user.value),
       });
 
+      // setIsModalOpen(false);
+      closeModal();
       hardRender();
       toastAlert("Request Success");
       setAssetName("");
@@ -473,6 +493,7 @@ const AssetSingleuserOverview = ({
             className="col-2 ml-3 mb-2 btn btn-outline-primary btn-sm"
             onClick={() => {
               setIsEditMode(false);
+              setIsModalOpen(true);
               // Additional logic if needed
             }}
           >
@@ -497,14 +518,22 @@ const AssetSingleuserOverview = ({
           </div>
         </>
       )}
+
       {/* Repair Requset Modal  */}
-      <div
+      {/* <div
         className="modal fade"
         id="exampleModal"
         tabIndex={-1}
         role="dialog"
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
+      > */}
+      <div
+        className={`modal fade ${isRepairModalOpen ? "show" : ""}`}
+        id="sidebar-right"
+        tabIndex={-1}
+        role="dialog"
+        style={{ display: isRepairModalOpen ? "block" : "none" }}
       >
         <div
           className="modal-dialog"
@@ -525,7 +554,9 @@ const AssetSingleuserOverview = ({
                 data-dismiss="modal"
                 aria-label="Close"
               >
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true" onClick={() => closeRepairModal()}>
+                  ×
+                </span>
               </button>
             </div>
             <div className="modal-body">
@@ -648,7 +679,8 @@ const AssetSingleuserOverview = ({
               <button
                 type="button"
                 className="btn btn-secondary"
-                data-dismiss="modal"
+                // data-dismiss="modal"
+                onClick={() => closeRepairModal()}
               >
                 Close
               </button>
@@ -664,19 +696,31 @@ const AssetSingleuserOverview = ({
           </div>
         </div>
       </div>
-
       {/* Sidebar Right new asset */}
-      <div className="right-modal">
+      {/* {isModalOpen && ( */}
+      <div className="right-modal ">
         <div
-          className="modal fade right"
+          className={`modal fade right ${isModalOpen ? "show" : ""}`}
           id="sidebar-right"
           tabIndex={-1}
           role="dialog"
+          style={{ display: isModalOpen ? "block" : "none" }}
         >
+          {/* <div
+          className="right-modal modal fade right"
+          id="sidebar-right"
+          tabIndex={-1}
+          role="dialog"
+        > */}
           <div className="modal-dialog modal-sm" role="document">
             <div className="modal-content">
               <div className="modal-header">
-                <button type="button" className="close" data-dismiss="modal">
+                <button
+                  type="button"
+                  className="close"
+                  data-dismiss="modal"
+                  onClick={closeModal}
+                >
                   <span aria-hidden="true" style={{ marginRight: "250px" }}>
                     ×
                   </span>
@@ -685,7 +729,9 @@ const AssetSingleuserOverview = ({
               </div>
               <div className="modal-body">
                 <div className="form-group col-12">
-                  <label className="form-label">Asset Name</label>
+                  <label className="form-label">
+                    Asset Name <sup style={{ color: "red" }}>*</sup>
+                  </label>
                   <Select
                     options={assetSubCategroyData.map((opt) => ({
                       value: opt.sub_category_id,
@@ -705,7 +751,9 @@ const AssetSingleuserOverview = ({
                   />
                 </div>
                 <div className="form-group col-12">
-                  <label className="form-label">priority</label>
+                  <label className="form-label">
+                    priority <sup style={{ color: "red" }}>*</sup>
+                  </label>
                   <Select
                     className=""
                     options={PriorityData.map((option) => ({
@@ -755,7 +803,7 @@ const AssetSingleuserOverview = ({
                 ) : (
                   <button
                     type="button"
-                    data-dismiss="modal"
+                    // data-dismiss="modal"
                     className="btn btn-primary ml-2"
                     onClick={handleNewAssetSubmit}
                   >
@@ -767,7 +815,7 @@ const AssetSingleuserOverview = ({
           </div>
         </div>
       </div>
-
+      {/* )} */}
       {/* Return asset modal */}
       <div className="right-modal">
         <div
