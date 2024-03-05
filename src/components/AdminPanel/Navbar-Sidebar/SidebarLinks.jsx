@@ -1086,18 +1086,18 @@ const SidebarLinks = () => {
                   aria-labelledby="headingTwo"
                   // data-parent="#accordionSidebar"
                 > */}
-                  <div className="bg-white collapse-inner">
-                    <>
-                      <li className="nav-item">
-                        <Link
-                          className="collapse-item"
-                          to="/admin/finance-dashboard"
-                        >
-                          <span>Dashboard</span>
-                        </Link>
-                      </li>
-                    </>
-                  </div>
+                <div className="bg-white collapse-inner">
+                  <>
+                    <li className="nav-item">
+                      <Link
+                        className="collapse-item"
+                        to="/admin/finance-dashboard"
+                      >
+                        <span>Dashboard</span>
+                      </Link>
+                    </li>
+                  </>
+                </div>
                 {/* </div> */}
 
                 <Link
@@ -1133,7 +1133,7 @@ const SidebarLinks = () => {
                           aria-labelledby="headingTwo"
                         >
                           <div className="bg-white collapse-inner">
-                          <Link
+                            <Link
                               className="collapse-item"
                               to="/admin/finance-alltransactions"
                             >
@@ -1151,7 +1151,6 @@ const SidebarLinks = () => {
                             >
                               Pending Approval
                             </Link>
-                           
                           </div>
                         </div>
                       </li>
@@ -1340,7 +1339,7 @@ const SidebarLinks = () => {
                 >
                   <div className="bg-white collapse-inner">
                     <>
-                    <Link
+                      <Link
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-alltransaction"
                       >
@@ -1364,7 +1363,7 @@ const SidebarLinks = () => {
                       >
                         TDS Deduction
                       </Link>
-                       <Link
+                      <Link
                         className="collapse-item"
                         to="/admin/payment-GST_hold"
                       >
@@ -1376,7 +1375,6 @@ const SidebarLinks = () => {
                       >
                         Payment Done
                       </Link>
-                    
                       <Link
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-discardpayment"
@@ -1485,35 +1483,35 @@ const SidebarLinks = () => {
             data-parent="#accordionSidebar"
           >
             <div className="bg-white collapse-inner">
-              {/* {RoleId == 5 && ( */}
-              <Link className="collapse-item" to="/admin/asset-dashboard">
-                Dashboard
-              </Link>
-              {/* )} */}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to="/admin/asset-dashboard">
+                  Dashboard
+                </Link>
+              )}
               <Link className="collapse-item" to="/admin/asset-single-user">
                 My Asset
               </Link>
-              {/* {RoleId == 5 && ( */}
-              <Link className="collapse-item" to={`/sim-overview/${0}`}>
-                Asset Management
-              </Link>
-              {/* )} */}
-              {/* {RoleId == 5 && ( */}
-              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                Asset's Request
-              </Link>
-              {/* )} */}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to={`/sim-overview/${0}`}>
+                  Asset Management
+                </Link>
+              )}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                  Asset's Request
+                </Link>
+              )}
               <Link
                 className="collapse-item"
                 to="/admin/asset-visible-to-taged-person"
               >
                 Tagged Asset
               </Link>
-              {/* {RoleId == 2 && ( */}
-              <Link className="collapse-item" to="/admin/asset-manager">
-                Asset Request Approvel
-              </Link>
-              {/* )} */}
+              {RoleId == 2 && (
+                <Link className="collapse-item" to="/admin/asset-manager">
+                  Asset Request Approvel
+                </Link>
+              )}
             </div>
           </div>
         </li>

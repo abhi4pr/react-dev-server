@@ -14,7 +14,7 @@ import Modal from "react-modal";
 import { baseUrl } from "../../../utils/config";
 
 const RepairReason = () => {
-  const { categoryDataContext, toastAlert } = useGlobalContext();
+  const { categoryDataContext, toastAlert, toastError } = useGlobalContext();
   const [reason, setReason] = useState("");
   const [modalData, setModalData] = useState([]);
   const [modalFilter, setModalFilter] = useState([]);
@@ -80,11 +80,6 @@ const RepairReason = () => {
       selector: (row) => row.reason,
       sortable: true,
     },
-    // {
-    //   name: "Request",
-    //   selector: (row) => row.requestCount,
-    //   sortable: true,
-    // },
     {
       name: "Request",
       cell: (row) => (
@@ -112,7 +107,7 @@ const RepairReason = () => {
       cell: (row) => (
         <>
           <button
-            className="btn btn-primary"
+            className="btn btn-primary "
             data-toggle="modal"
             data-target="#exampleModal"
             size="small"
@@ -122,6 +117,7 @@ const RepairReason = () => {
           >
             <FaEdit />
           </button>
+
           <DeleteButton
             endpoint="delete_assetReson"
             id={row.asset_reason_id}
@@ -133,6 +129,13 @@ const RepairReason = () => {
   ];
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!reason || reason == "") {
+      return toastError("Reason is Requried");
+    } else if (!categoryName || categoryName == "") {
+      return toastError("Category is Required");
+    } else if (!subCategoryName || subCategoryName == "") {
+      return toastError("Sub Category is Required");
+    }
     try {
       const response = await axios.post(baseUrl + "add_asset_reason", {
         reason: reason,
@@ -173,6 +176,7 @@ const RepairReason = () => {
         category_id: categoryNameUpdate,
         sub_category_id: subCategoryNameUpdate,
         reason: reasonUpdate,
+        status: "Requested",
       })
       .then((res) => {
         getRepairReason();
@@ -209,9 +213,10 @@ const RepairReason = () => {
           <FieldContainer
             fieldGrid={4}
             label="Reason"
+            astric
             value={reason}
             onChange={(e) => setReason(e.target.value)}
-            required
+            required={false}
           />
           <div className="form-group col-4">
             <label className="form-label">

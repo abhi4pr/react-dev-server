@@ -42,7 +42,13 @@ const VenderMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!vendorContact || vendorContact == "" || vendorContact.length !== 10) {
+    if (!vendorName || vendorName == "") {
+      return toastError("Vendor Name is required");
+    } else if (
+      !vendorContact ||
+      vendorContact == "" ||
+      vendorContact.length !== 10
+    ) {
       return toastError(" Contact is Required and must be 10 digits");
     }
     if (vendorEmail) {
@@ -111,6 +117,8 @@ const VenderMaster = () => {
           <FieldContainer
             label=" Vendor Name"
             value={vendorName}
+            required={false}
+            astric
             onChange={(e) => setVendorName(e.target.value)}
           />
           <div className="form-group col-6">

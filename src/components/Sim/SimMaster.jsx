@@ -76,6 +76,22 @@ const SimMaster = () => {
   const [modalName, setModalName] = useState("");
   const [brandName, setBrandName] = useState("");
 
+  // console.log(getBrandDataContext, "barnd usni");
+  // console.log(brandName.asset_brand_id, "modal name is here");
+
+  useEffect(() => {
+    if (brandName.asset_brand_id) {
+      axios
+        .get(
+          baseUrl +
+            `get_asset_modal_by_asset_brandId/${brandName.asset_brand_id}`
+        )
+        .then((res) => {
+          setModalData(res.data);
+        });
+    }
+  }, [brandName]);
+
   // All Category , subcategory and vendor api here
   // const [categoryData, setCategoryData] = useState([]);
   // const getAllCategory = () => {
@@ -107,6 +123,10 @@ const SimMaster = () => {
     }
   };
   useEffect(() => {
+    getAllSubCategory();
+  }, [assetsCategory]);
+
+  useEffect(() => {
     const selectedSubcat = subcategoryData?.filter(
       (d) => d.sub_category_id === subCategory?.sub_category_id
     );
@@ -120,10 +140,6 @@ const SimMaster = () => {
       setVendorData(res.data);
     });
   };
-  async function getModalData() {
-    const res = await axios.get(baseUrl + "get_all_asset_modals");
-    setModalData(res.data);
-  }
 
   useEffect(() => {
     const selectedCategory = categoryDataContext?.filter(
@@ -137,15 +153,11 @@ const SimMaster = () => {
     }
   }, [assetsCategory?.category_id, categoryDataContext]);
   useEffect(() => {
-    getModalData();
+    // getModalData();
     // getBrandData();
     // getAllCategory();
     getAllVendor();
   }, []);
-
-  useEffect(() => {
-    getAllSubCategory();
-  }, [assetsCategory]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

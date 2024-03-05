@@ -16,7 +16,7 @@ import jwtDecode from "jwt-decode";
 import { baseUrl } from "../../../utils/config";
 
 const RepairRequest = () => {
-  const { toastAlert, getAssetDataContext, usersDataContext } =
+  const { toastAlert, toastError, getAssetDataContext, usersDataContext } =
     useGlobalContext();
 
   const storedToken = sessionStorage.getItem("token");
@@ -56,9 +56,7 @@ const RepairRequest = () => {
   const [reason, setReason] = useState("");
   const [reasonData, setReasonData] = useState([]);
   async function getRepairReason() {
-    const res = await axios.get(
-      baseUrl+"get_all_assetResons"
-    );
+    const res = await axios.get(baseUrl + "get_all_assetResons");
     setReasonData(res?.data.data);
   }
 
@@ -146,6 +144,15 @@ const RepairRequest = () => {
   ];
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!repairDate || repairDate == "") {
+      return toastError("Date is Required");
+    } else if (!assetsName || assetsName == "") {
+      return toastError("Asset Name is Required");
+    } else if (!reason || reason == "") {
+      return toastError("Reason is Required");
+    } else if (!priority || priority == "") {
+      return toastError("Priority is Required");
+    }
     try {
       const formData = new FormData();
       formData.append("repair_request_date_time", repairDate);
@@ -165,7 +172,7 @@ const RepairRequest = () => {
       formData.append("problem_detailing", problemDetailing);
 
       const response = await axios.post(
-        baseUrl+"add_repair_request",
+        baseUrl + "add_repair_request",
         formData
       );
       setAssetName("");
@@ -184,9 +191,7 @@ const RepairRequest = () => {
     }
   };
   async function getRepairRequest() {
-    const res = await axios.get(
-      baseUrl+"get_all_repair_request"
-    );
+    const res = await axios.get(baseUrl + "get_all_repair_request");
     setModalData(res?.data.data);
     setrepairRequestFilter(res?.data.data);
   }
@@ -207,6 +212,7 @@ const RepairRequest = () => {
     }, 1000);
   }, [usersDataContext]);
 
+  console.log(reason, "reason");
   const handleRepairId = (row) => {
     setRepairId(row.repair_id);
     const formattedApiDate = formatApiDate(row.repair_request_date_time);
@@ -214,7 +220,7 @@ const RepairRequest = () => {
     setAssetName(row.sim_id);
     setPriorityUpdate(row.priority);
     setProblemDetailingUpdate(row.problem_detailing);
-    setReason(row.repair_id);
+    setReason(row.asset_reason_id);
     setTagUserUpdate();
   };
 
@@ -235,12 +241,10 @@ const RepairRequest = () => {
     formData.append("img3", assetsImg3Update);
     formData.append("img4", assetsImg4Update);
     formData.append("problem_detailing", problemDetailingUpdate);
-    axios
-      .put(baseUrl+"update_repair_request", formData)
-      .then((res) => {
-        getRepairRequest();
-        toastAlert("Update Success");
-      });
+    axios.put(baseUrl + "update_repair_request", formData).then((res) => {
+      getRepairRequest();
+      toastAlert("Update Success");
+    });
   };
 
   useEffect(() => {
@@ -294,6 +298,7 @@ const RepairRequest = () => {
               fieldGrid={2}
               label="Repair Request Date"
               type="datetime-local"
+              astric
               value={repairDate}
               onChange={(e) => setRepairDate(e.target.value)}
               required
@@ -413,7 +418,7 @@ const RepairRequest = () => {
               Tag="textarea"
               value={problemDetailing}
               onChange={(e) => setProblemDetailing(e.target.value)}
-              required
+              required={false}
             />
           </FormContainer>
         </div>
