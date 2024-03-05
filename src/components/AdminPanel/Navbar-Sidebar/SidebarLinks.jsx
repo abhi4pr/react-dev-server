@@ -1240,7 +1240,7 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/finance-incentivepayment"
                               >
-                                View Incentive Payment
+                                Pending Incentive Payment
                               </Link>
                             </>
                           </div>

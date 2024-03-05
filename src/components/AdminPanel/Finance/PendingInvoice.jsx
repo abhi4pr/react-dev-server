@@ -89,7 +89,7 @@ const PendingInvoice = () => {
   };
 
   const handleImageUpload = async (row, fileData) => {
-    if(!inoiceNum || !date || !partyName){
+    if (!inoiceNum || !date || !partyName) {
       toastAlert("Please fill all the fields");
       return;
     }
@@ -288,7 +288,6 @@ const PendingInvoice = () => {
   const handleCloseSameSalesExecutive = () => {
     setSameSalesExecutiveDialog(false);
   };
-
   // Total base amount:-
   const baseAmountTotal = datas.reduce(
     (total, item) => total + parseFloat(item.base_amount),
@@ -296,30 +295,34 @@ const PendingInvoice = () => {
   );
   const sameSalesExecutivecolumn = [
     {
-      fieldName: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...sameSalesExecutiveData].indexOf(params.row) + 1}</div>
+      ),
     },
     {
-      fieldName: "sales_person_username",
-      field: "Sales Person Name",
+      field: "sales_person_username",
+      headerName: "Sales Person Name",
       renderCell: (params) => params.row.sales_person_username,
     },
 
     {
-      fieldName: "sale_booking_date",
-      field: "Requested On Date",
+      field: "sale_booking_date",
+      headerName: "Requested On Date",
       renderCell: (params) =>
         convertDateToDDMMYYYY(params.row.sale_booking_date),
     },
     {
-      fieldName: "description",
-      field: "Sale Booking Description",
+      field: "description",
+      fieldName: "Sale Booking Description",
       renderCell: (params) => params.row.description,
     },
     {
-      fieldName: "cust_name",
-      field: "Customer Name",
+      field: "cust_name",
+      fieldName: "Customer Name",
       renderCell: (params) => (
         <>
           <Link
@@ -332,18 +335,18 @@ const PendingInvoice = () => {
       ),
     },
     {
-      fieldName: "invoice_particular_name",
-      field: "Invoice Particular Name",
+      field: "invoice_particular_name",
+      headerName: "Invoice Particular Name",
       renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      fieldName: "invoice_type_name",
-      field: "Invoice Type",
+      field: "invoice_type_name",
+      headerName: "Invoice Type",
       renderCell: (params) => params.row.invoice_type_name,
     },
     {
-      fieldName: "base_amount",
-      field: "Base Amount",
+      field: "base_amount",
+      headerName: "Base Amount",
       renderCell: (params) => params.row.base_amount,
     },
     {
@@ -352,8 +355,8 @@ const PendingInvoice = () => {
       renderCell: (params) => params.row.gst_amount,
     },
     {
-      fieldName: "net_amount",
-      field: "Net Amount",
+      field: "net_amount",
+      headerName: "Net Amount",
       renderCell: (params) => params.row.net_amount,
     },
     // {
@@ -371,13 +374,17 @@ const PendingInvoice = () => {
   ];
   const uniqueSalesExecutivecolumn = [
     {
-      fieldName: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...uniqueSalesExecutiveData].indexOf(params.row) + 1}</div>
+      ),
     },
     {
-      fieldName: "sales_person_username",
-      field: "Sales Person Name",
+      field: "sales_person_username",
+      headerName: "Sales Person Name",
       renderCell: (params) => (
         <div
           style={{ cursor: "pointer" }}
@@ -391,19 +398,19 @@ const PendingInvoice = () => {
     },
 
     {
-      fieldName: "sale_booking_date",
-      field: "Requested On Date",
+      field: "sale_booking_date",
+      headerName: "Requested On Date",
       renderCell: (params) =>
         convertDateToDDMMYYYY(params.row.sale_booking_date),
     },
     {
-      fieldName: "description",
-      field: "Sale Booking Description",
+      field: "description",
+      headerName: "Sale Booking Description",
       renderCell: (params) => params.row.description,
     },
     {
-      fieldName: "cust_name",
-      field: "Customer Name",
+      field: "cust_name",
+      headerName: "Customer Name",
       renderCell: (params) => (
         <div
           style={{ cursor: "pointer" }}
@@ -495,57 +502,61 @@ const PendingInvoice = () => {
       ),
     },
     {
-      fieldName: "invoice_particular_name",
-      field: "Invoice Particular Name",
+      field: "invoice_particular_name",
+      headerName: "Invoice Particular Name",
       renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      fieldName: "invoice_type_name",
-      field: "Invoice Type",
+      field: "invoice_type_name",
+      fieldName: "Invoice Type",
       renderCell: (params) => params.row.invoice_type_name,
     },
     {
-      fieldName: "base_amount",
-      field: "Base Amount",
+      field: "base_amount",
+      fieldName: "Base Amount",
       renderCell: (params) => params.row.base_amount,
     },
     {
-      fieldName: "gst_amount",
-      field: "GST Amount",
+      field: "gst_amount",
+      headerName: "GST Amount",
       renderCell: (params) => params.row.gst_amount,
     },
     {
-      fieldName: "net_amount",
-      field: "Net Amount",
+      field: "net_amount",
+      headerName: "Net Amount",
       renderCell: (params) => params.row.net_amount,
     },
   ];
   const sameCustomercolumn = [
     {
-      fieldName: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...sameCustomerData].indexOf(params.row) + 1}</div>
+      ),
     },
     {
-      fieldName: "sales_person_username",
-      field: "Sales Person Name",
+      field: "sales_person_username",
+      headerName: "Sales Person Name",
       renderCell: (params) => params.row.sales_person_username,
     },
 
     {
-      fieldName: "sale_booking_date",
-      field: "Requested On Date",
+      field: "sale_booking_date",
+      headerName: "Requested On Date",
       renderCell: (params) =>
         convertDateToDDMMYYYY(params.row.sale_booking_date),
     },
     {
-      fieldName: "description",
-      field: "Sale Booking Description",
+      field: "description",
+      headerName: "Sale Booking Description",
       renderCell: (params) => params.row.description,
     },
     {
-      fieldName: "cust_name",
-      field: "Customer Name",
+      field: "cust_name",
+      headerName: "Customer Name",
       renderCell: (params) => (
         <>
           <Link
@@ -558,32 +569,32 @@ const PendingInvoice = () => {
       ),
     },
     {
-      fieldName: "invoice_particular_name",
-      field: "Invoice Particular Name",
+      field: "invoice_particular_name",
+      headerName: "Invoice Particular Name",
       renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      fieldName: "invoice_type_name",
-      field: "Invoice Type",
+      field: "invoice_type_name",
+      headerName: "Invoice Type",
       renderCell: (params) => params.row.invoice_type_name,
     },
     {
-      fieldName: "base_amount",
-      field: "Base Amount",
+      field: "base_amount",
+      headerName: "Base Amount",
       renderCell: (params) => params.row.base_amount,
     },
     {
-      fieldName: "gst_amount",
-      field: "GST Amount",
+      field: "gst_amount",
+      headerName: "GST Amount",
       renderCell: (params) => params.row.gst_amount,
     },
     {
-      fieldName: "net_amount",
-      field: "Net Amount",
+      field: "net_amount",
+      headerName: "Net Amount",
       renderCell: (params) => params.row.net_amount,
     },
     // {
-    //   name: "Action",
+    //   field: "Action",
     //   cell: (row) => (
     //     <>
     //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
@@ -597,30 +608,34 @@ const PendingInvoice = () => {
   ];
   const uniqueCustomercolumn = [
     {
-      fieldName: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...uniqueCustomerData].indexOf(params.row) + 1}</div>
+      ),
     },
     {
-      fieldName: "sales_person_username",
-      field: "Sales Person Name",
+      field: "sales_person_username",
+      headerName: "Sales Person Name",
       renderCell: (params) => params.row.sales_person_username,
     },
 
     {
-      fieldName: "sale_booking_date",
-      field: "Requested On Date",
+      field: "sale_booking_date",
+      headerName: "Requested On Date",
       renderCell: (params) =>
         convertDateToDDMMYYYY(params.row.sale_booking_date),
     },
     {
-      fieldName: "description",
-      field: "Sale Booking Description",
+      field: "description",
+      headerName: "Sale Booking Description",
       renderCell: (params) => params.row.description,
     },
     {
-      fieldName: "cust_name",
-      field: "Customer Name",
+      field: "cust_name",
+      headerName: "Customer Name",
       renderCell: (params) => (
         <div
           style={{ cursor: "pointer" }}
@@ -712,32 +727,32 @@ const PendingInvoice = () => {
       ),
     },
     {
-      fieldName: "invoice_particular_name",
-      field: "Invoice Particular Name",
+      field: "invoice_particular_name",
+      headerName: "Invoice Particular Name",
       renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      fieldName: "invoice_type_name",
-      field: "Invoice Type",
+      field: "invoice_type_name",
+      headerName: "Invoice Type",
       renderCell: (params) => params.row.invoice_type_name,
     },
     {
-      fieldName: "base_amount",
-      field: "Base Amount",
+      field: "base_amount",
+      headerName: "Base Amount",
       renderCell: (params) => params.row.base_amount,
     },
     {
-      fieldName: "gst_amount",
-      field: "GST Amount",
+      field: "gst_amount",
+      headerName: "GST Amount",
       renderCell: (params) => params.row.gst_amount,
     },
     {
-      fieldName: "net_amount",
-      field: "Net Amount",
+      field: "net_amount",
+      headerName: "Net Amount",
       renderCell: (params) => params.row.net_amount,
     },
     // {
-    //   name: "Action",
+    //   field: "Action",
     //   cell: (row) => (
     //     <>
     //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
@@ -751,40 +766,40 @@ const PendingInvoice = () => {
   ];
   const columns = [
     {
-      width:60,
-      field: "S.No",
-      fieldName: "s_no",
+      width: 60,
+      headerName: "S.No",
+      field: "s_no",
       renderCell: (params, index) => (
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
 
-        <div>{[...datas].indexOf(params.row) + 1}</div>
+        <div>{index + 1}</div>
       ),
     },
     {
-      field: "Sales Person name",
-      fieldName: "sales_person_username",
+      headerName: "Sales Person name",
+      field: "sales_person_username",
       width: 220,
       renderCell: (params) => params.row.sales_person_username,
       height: "200px",
     },
     {
-      field: "Requested On Date",
-      fieldName: "sale_booking_date",
+      headerName: "Requested On Date",
+      field: "sale_booking_date",
       width: 220,
       renderCell: (params) =>
         convertDateToDDMMYYYY(params.row.sale_booking_date),
     },
     {
-      field: "Sale Booking Description",
-      fieldName: "description",
+      headerName: "Sale Booking Description",
+      field: "description",
       width: 220,
       renderCell: (params) => params.row.description,
     },
     {
-      field: "Customer Name",
-      fieldName: "cust_id",
+      headerName: "Customer Name",
+      field: "cust_name",
       width: 220,
-      renderCell: ({row}) => (
+      renderCell: ({ row }) => (
         <>
           <Link
             className="text-primary"
@@ -877,37 +892,37 @@ const PendingInvoice = () => {
       ),
     },
     {
-      field: "Invoice Particular Name",
-      fieldName: "invoice_particular_name",
+      headerName: "Invoice Particular Name",
+      field: "invoice_particular_name",
       width: 200,
       renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      field: "Invoice Type",
-      fieldName: "invoice_type_name",
+      headerName: "Invoice Type",
+      field: "invoice_type_name",
       width: 180,
       renderCell: (params) => params.row.invoice_type_name,
     },
     {
-      field: "Base Amount",
-      fieldName: "base_amount",
+      headerName: "Base Amount",
+      field: "base_amount",
       width: 180,
       renderCell: (params) => params.row.base_amount,
     },
     {
-      field: "GST Amount",
-      fieldName: "gst_amount",
+      headerName: "GST Amount",
+      field: "gst_amount",
       width: 180,
       renderCell: (params) => params.row.gst_amount,
     },
     {
-      field: "Net Amount",
-      fieldName: "net_amount",
+      headerName: "Net Amount",
+      field: "net_amount",
       width: 180,
       renderCell: (params) => params.row.net_amount,
     },
     // {
-    //   name: "Action",
+    //   field: "Action",
     //   cell: (row) => (
     //     <>
     //     <Link to={`/admin/finance-pendinginvoice/customer-details/${row.cust_id}`}>
@@ -972,12 +987,12 @@ const PendingInvoice = () => {
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
         />
       </Dialog>
       {/* Unique Sales Executive Dialog Box */}

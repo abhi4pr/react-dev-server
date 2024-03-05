@@ -73,7 +73,7 @@ export default function PaymentDone() {
           setUniqueVendorCount(uniqueVendors.size);
           const uvData = [];
           uniqueVendors.forEach((vendorName) => {
-            const vendorRows = y.filter(
+            const vendorRows = u.filter(
               (item) => item.vendor_name === vendorName
             );
             uvData.push(vendorRows[0]);
@@ -123,7 +123,6 @@ export default function PaymentDone() {
     data.some((e) => e.request_id == item.request_id)
   );
   // total requested  amount data :-
-  console.log(filterPaymentAmount, "filterPaymentAmount");
   const totalRequestAmount = filterPaymentAmount.reduce(
     (total, item) => total + parseFloat(Math.round(item.payment_amount)),
     0
@@ -316,7 +315,6 @@ export default function PaymentDone() {
       field: "vendor_name",
       headerName: "Vendor Name",
       // width: "auto",
-      width: 250,
       renderCell: (params) => {
         return params.row.vendorName;
       },
@@ -324,35 +322,27 @@ export default function PaymentDone() {
     {
       field: "request_amount",
       headerName: "Requested Amount",
-      width: 150,
       renderCell: (params) => {
         return <p> &#8377; {params.row.request_amount}</p>;
       },
     },
-    // {
-    //   headerName: "Action",
-    //   width: 150,
-    //   renderCell: (params) => {
-    //     return (
-    //       <div>
-    //         <button
-    //           className="btn btn-sm btn-success"
-    //           onClick={() => handlePayClick(params.row)}
-    //         >
-    //           Pay
-    //         </button>
-    //         <button
-    //           className="btn btn-sm btn-danger mx-2"
-    //           onClick={() => handleDiscardClick(params.row)}
-    //         >
-    //           discard
-    //         </button>
-    //       </div>
-    //     );
-    //   },
-    // },
+    {
+      field: "total_amount",
+      headerName: "Total Amount",
+      width: 150,
+      renderCell: () => {
+        return <p> &#8377; {totalSameVendorAmount}</p>;
+      },
+    },
+    {
+      field: "outstandings",
+      headerName: "OutStanding ",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
   ];
-
   // unique vender column :-
   const uniqueVendorColumns = [
     {
@@ -874,6 +864,7 @@ export default function PaymentDone() {
       },
     },
   ];
+
   return (
     <div>
       <FormContainer

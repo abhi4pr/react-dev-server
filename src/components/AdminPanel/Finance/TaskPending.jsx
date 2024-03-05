@@ -49,10 +49,8 @@ export default function TaskPending() {
   const [dateData, setDateData] = useState("");
   const [remarkData, setRemarkData] = useState("");
   const [rowId, setRowId] = useState("");
-  // const [zohoTaskDone, setZohoTaskDone] = useState("");
-  // const [gstTaskDone, setGstTaskDone] = useState("");
-  // const [tdsTaskDone, setTdsTaskDone] = useState("");
-  const [statusDt, setStatusDT] = useState("");
+  const [bankDetailRowData, setBankDetailRowData] = useState([]);
+  const [reqDate, setReqDate] = useState("");
   const navigate = useNavigate();
 
   const accordionButtons = ["Zoho", "GST", "TDS"];
@@ -80,18 +78,32 @@ export default function TaskPending() {
           setData(u);
           setFilterData(u);
           setPendingRequestCount(u.length);
-          const uniqueVendors = new Set(u.map((item) => item.vendor_name));
-          setUniqueVendorCount(uniqueVendors.size);
-          const uvData = [];
-          uniqueVendors.forEach((vendorName) => {
-            const vendorRows = y.filter(
-              (item) => item.vendor_name === vendorName
-            );
-            uvData.push(vendorRows[0]);
-          });
-          setUniqueVendorData(uvData);
         });
     });
+  };
+
+  const handleUniqueVendor = () => {
+    const uniqueVendors = new Set(filterData.map((item) => item.vendor_name));
+    // setUniqueVendorCount(uniqueVendors.size);
+    const uvData = [];
+    uniqueVendors.forEach((vendorName) => {
+      const vendorRows = nodeData.filter(
+        (item) => item.vendor_name === vendorName
+      );
+      uvData.push(vendorRows[0]);
+    });
+    const uniqueCount = uvData.filter((e) =>
+      activeAccordionIndex == 0
+        ? e?.zoho_status !== "Done"
+        : activeAccordionIndex == 1
+        ? e?.gst_status !== "Done"
+        : e?.tds_status !== "Done"
+    );
+    console.log(uniqueCount.length, "uniqueCount");
+    console.log(uniqueCount, "COUNT");
+
+    setUniqueVendorData(uvData);
+    setUniqueVendorCount(uniqueCount.length);
   };
   // pending data submit
   const handlePendingSubmit = async (id, type) => {
@@ -141,12 +153,13 @@ export default function TaskPending() {
     }
   };
   // ========================
-  const handleOpenBankDetail = () => {
-    setBankDetail(true);
-  };
   useEffect(() => {
     callApi();
   }, []);
+
+  useEffect(() => {
+    handleUniqueVendor();
+  }, [activeAccordionIndex, filterData]);
 
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
@@ -170,12 +183,16 @@ export default function TaskPending() {
 
     return diffDays;
   }
+
   // total requested  amount data :-
-  const totalRequestAmount = data.reduce(
-    (total, item) => total + parseFloat(item.request_amount),
-    0
+  const filterPaymentAmount = nodeData.filter((item) =>
+    data.some((e) => e.request_id == item.request_id)
   );
 
+  const totalRequestAmount = filterPaymentAmount.reduce(
+    (total, item) => total + parseFloat(Math.round(item.payment_amount)),
+    0
+  );
   // ==============================================================
   //iterate for totalAmount of same name venders :-
   const vendorAmounts = [];
@@ -346,20 +363,42 @@ export default function TaskPending() {
   const handleClosePaymentHistory = () => {
     setPaymentHistory(false);
   };
+
   // accordin function:-
   const handleAccordionButtonClick = (index) => {
     setActiveAccordionIndex(index);
   };
 
   // Dialog For Pending :-
-  const handleOpenPendingClick = (id, type) => {
+  const handleOpenPendingClick = (id, data) => {
     setPending(true);
     setRowId(id);
+    setReqDate(data);
   };
 
+  const YYYYMMDDdateConverter = (date) => {
+    let dateObj = new Date(date);
+    let month = String(dateObj.getUTCMonth() + 1).padStart(2, "0"); // Month in 2 digits
+    let day = String(dateObj.getUTCDate()).padStart(2, "0"); // Day in 2 digits
+    let year = dateObj.getUTCFullYear(); // Year in 4 digits
+    let newdate = year + "-" + month + "-" + day;
+    return newdate;
+  };
   const handleClosePending = () => {
     setPending(false);
   };
+
+  const handleOpenBankDetail = (row) => {
+    let x = [];
+    x.push(row);
+
+    setBankDetailRowData(x);
+    setBankDetail(true);
+  };
+  const handleCloseBankDetail = () => {
+    setBankDetail(false);
+  };
+
   // same Vender columns:-
   const sameVenderColumns = [
     {
@@ -368,7 +407,7 @@ export default function TaskPending() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = sameVendorData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -420,7 +459,15 @@ export default function TaskPending() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = uniqueVendorData
+          .filter((e) =>
+            activeAccordionIndex == 0
+              ? e.zoho_status !== "Done"
+              : activeAccordionIndex == 1
+              ? e.gst_status !== "Done"
+              : e.tds_status !== "Done"
+          )
+          .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -485,46 +532,46 @@ export default function TaskPending() {
         return <p> &#8377; {params.row.outstandings}</p>;
       },
     },
-    {
-      field: "invc_img",
-      headerName: "Invoice Image",
-      renderCell: (params) => {
-        if (params.row.invc_img) {
-          // Extract file extension and check if it's a PDF
-          const fileExtension = params.row.invc_img
-            .split(".")
-            .pop()
-            .toLowerCase();
-          const isPdf = fileExtension === "pdf";
+    // {
+    //   field: "invc_img",
+    //   headerName: "Invoice Image",
+    //   renderCell: (params) => {
+    //     if (params.row.invc_img) {
+    //       // Extract file extension and check if it's a PDF
+    //       const fileExtension = params.row.invc_img
+    //         .split(".")
+    //         .pop()
+    //         .toLowerCase();
+    //       const isPdf = fileExtension === "pdf";
 
-          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+    //       const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
 
-          return isPdf ? (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={pdf}
-              style={{ width: "40px", height: "40px" }}
-              title="PDF Preview"
-            />
-          ) : (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={imgUrl}
-              alt="Invoice"
-              style={{ width: "100px", height: "100px" }}
-            />
-          );
-        } else {
-          return null;
-        }
-      },
-    },
+    //       return isPdf ? (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={pdf}
+    //           style={{ width: "40px", height: "40px" }}
+    //           title="PDF Preview"
+    //         />
+    //       ) : (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={imgUrl}
+    //           alt="Invoice"
+    //           style={{ width: "100px", height: "100px" }}
+    //         />
+    //       );
+    //     } else {
+    //       return null;
+    //     }
+    //   },
+    // },
     {
       field: "request_date",
       headerName: "Requested Date",
@@ -607,7 +654,42 @@ export default function TaskPending() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex === 0
+            ? //  filterData.indexOf(params.row)
+              filterData
+                .filter((item) => {
+                  return nodeData.some(
+                    (item2) =>
+                      item.request_id == item2.request_id &&
+                      item2.zoho_status != "Done"
+                  );
+                })
+                .indexOf(params.row)
+            : activeAccordionIndex === 1
+            ? // filterData.indexOf(params.row)
+
+              filterData
+                .filter((item) => {
+                  return nodeData.some(
+                    (item2) =>
+                      item.request_id == item2.request_id &&
+                      item2.gst_status != "Done"
+                  );
+                })
+                .indexOf(params.row)
+            : activeAccordionIndex === 2
+            ? filterData
+                .filter((item) => {
+                  return nodeData.some(
+                    (item2) =>
+                      item.request_id == item2.request_id &&
+                      item2.tds_status != "Done"
+                  );
+                })
+                .indexOf(params.row)
+            : // filterData.indexOf(params.row)
+              "";
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -621,7 +703,10 @@ export default function TaskPending() {
             variant="outlined"
             style={{ cursor: "pointer", marginRight: "20px" }}
             onClick={() => {
-              handleOpenPendingClick(params.row.request_id);
+              handleOpenPendingClick(
+                params.row.request_id,
+                params.row.request_date
+              );
             }}
           >
             Pending
@@ -642,15 +727,28 @@ export default function TaskPending() {
 
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
         return isPdf ? (
-          <iframe
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            src={imgUrl}
-            style={{ width: "100px", height: "100px" }}
-            title="PDF Preview"
-          />
+          <>
+            <iframe
+              allowFullScreen={true}
+              src={imgUrl}
+              title="PDF Viewer"
+              style={{ width: "80px", height: "80px" }}
+            />
+            <div
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              style={{
+                position: "absolute",
+                width: "4.4%",
+                height: " 94%",
+                cursor: "pointer",
+                background: "rgba(0, 0, 0, 0)",
+                zIndex: 10,
+              }}
+            ></div>
+          </>
         ) : (
           <img
             onClick={() => {
@@ -663,7 +761,7 @@ export default function TaskPending() {
           />
         );
       },
-      width: 190,
+      width: 250,
     },
     {
       field: "request_date",
@@ -694,12 +792,24 @@ export default function TaskPending() {
             >
               {params.row.vendor_name}
             </div>
-            <div onClick={() => handleOpenBankDetail()}>
+            <Button
+              disabled={
+                params.row.payment_details
+                  ? !params.row.payment_details.length > 0
+                  : true
+              }
+              onClick={() => handleOpenBankDetail(params.row)}
+            >
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
-            </div>
+            </Button>
           </div>
         );
       },
+    },
+    {
+      field: "page_name",
+      headerName: "Page Name",
+      width: 150,
     },
     {
       field: "total_paid",
@@ -720,7 +830,7 @@ export default function TaskPending() {
                   (e) =>
                     e.vendor_name === params.row.vendor_name && e.status == 1
                 )
-                .reduce((acc, item) => acc + +item.request_amount, 0)}
+                .reduce((acc, item) => acc + +item.payment_amount, 0)}
             </h5>
           </span>
         ) : (
@@ -770,7 +880,7 @@ export default function TaskPending() {
             {/* Financial Year */}
 
             {dataFY.reduce(
-              (acc, item) => acc + parseFloat(item.request_amount),
+              (acc, item) => acc + parseFloat(item.payment_amount),
               0
             )}
           </h5>
@@ -788,9 +898,14 @@ export default function TaskPending() {
       field: "Pan Img",
       headerName: "Pan Img",
       renderCell: (params) => {
-        return params.row.pan_img ? (
+        const ImgUrl = `https://purchase.creativefuel.io/${params.row.pan_img}`;
+        return params.row.pan_img.includes("uploads") ? (
           <img
-            src={params.row.pan_img}
+            onClick={() => {
+              setOpenImageDialog(true);
+              setViewImgSrc(ImgUrl);
+            }}
+            src={ImgUrl}
             alt="Pan"
             style={{ width: "40px", height: "40px" }}
           />
@@ -858,11 +973,46 @@ export default function TaskPending() {
       },
     },
     {
+      field: "gst_hold_amount",
+      headerName: "GST Hold Amount",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.gst_hold_amount ? (
+          <p>&#8377; {params.row.gst_hold_amount}</p>
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "tds_deduction",
+      headerName: "TDS Amount",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.tds_deduction ? (
+          <p>&#8377; {params.row.tds_deduction}</p>
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
       field: "outstandings",
       headerName: "OutStanding ",
       width: 150,
       renderCell: (params) => {
         return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+    {
+      filed: "payment_amount",
+      headerName: "Payment Amount",
+      width: 150,
+      renderCell: (params) => {
+        const paymentAmount = nodeData.filter(
+          (e) => e.request_id == params.row.request_id
+        )[0]?.payment_amount;
+        return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
       },
     },
     {
@@ -875,8 +1025,15 @@ export default function TaskPending() {
         );
       },
     },
+    {
+      field: "gst_Hold_Bool",
+      headerName: "GST Hold",
+      renderCell: (params) => {
+        console.log(params.row.gst_Hold_Bool, "gst_Hold_Bool");
+        return params.row.gstHold == 1 ? "Yes" : "No";
+      },
+    },
   ];
-  console.log(filterData, "filterData?????");
   return (
     <div>
       <FormContainer
@@ -922,6 +1079,7 @@ export default function TaskPending() {
                 type="date"
                 className="form-control"
                 onChange={(e) => setDateData(e.target.value)}
+                min={YYYYMMDDdateConverter(reqDate)}
               />
             </div>
           </div>
@@ -1012,7 +1170,8 @@ export default function TaskPending() {
             toolbar: {
               showQuickFilter: true,
             },
-          }}  getRowId={(row) => sameVendorData.indexOf(row)}
+          }}
+          getRowId={(row) => sameVendorData.indexOf(row)}
         />
       </Dialog>
 
@@ -1043,18 +1202,26 @@ export default function TaskPending() {
         </IconButton>
 
         <DataGrid
-          rows={uniqueVendorData}
+          // rows={uniqueVendorData}
+          rows={uniqueVendorData.filter((e) =>
+            activeAccordionIndex == 0
+              ? e.zoho_status !== "Done"
+              : activeAccordionIndex == 1
+              ? e.gst_status !== "Done"
+              : e.tds_status !== "Done"
+          )}
           columns={uniqueVendorColumns}
           pageSize={5}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}getRowId={(row) => uniqueVendorData.indexOf(row)}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => uniqueVendorData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -1177,7 +1344,6 @@ export default function TaskPending() {
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
         mainTitleRequired={false}
-
       >
         <div className="tab-content">
           {activeAccordionIndex === 0 && (
@@ -1200,7 +1366,8 @@ export default function TaskPending() {
                   toolbar: {
                     showQuickFilter: true,
                   },
-                }} getRowId={(row) => filterData.indexOf(row)}
+                }}
+                getRowId={(row) => filterData.indexOf(row)}
               />
             </div>
           )}
@@ -1236,7 +1403,7 @@ export default function TaskPending() {
                     toolbar: {
                       showQuickFilter: true,
                     },
-                  }} 
+                  }}
                   getRowId={(row) => filterData.indexOf(row)}
                 />
               ) : (
@@ -1276,7 +1443,8 @@ export default function TaskPending() {
                     toolbar: {
                       showQuickFilter: true,
                     },
-                  }} getRowId={(row) => filterData.indexOf(row)}
+                  }}
+                  getRowId={(row) => filterData.indexOf(row)}
                 />
               ) : (
                 ""
@@ -1292,6 +1460,124 @@ export default function TaskPending() {
           setViewImgDialog={setOpenImageDialog}
         />
       )}
+      {/* Bank Detail dialog */}
+      <Dialog
+        open={bankDetail}
+        onClose={handleCloseBankDetail}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Bank Details</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseBankDetail}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        {/* <DataGrid
+          rows={bankDetailRowData}
+          columns={bankDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => filterData.indexOf(row)}
+        /> */}
+
+        <TextField
+          id="outlined-multiline-static"
+          // label="Multiline"
+          multiline
+          value={bankDetailRowData[0]?.payment_details}
+          rows={4}
+          defaultValue="Default Value"
+          variant="outlined"
+        />
+
+        <Button
+          onClick={() => {
+            navigator.clipboard.writeText(
+              bankDetailRowData[0]?.payment_details
+            );
+            toastAlert("Copied to clipboard");
+          }}
+        >
+          Copy
+        </Button>
+      </Dialog>
+      {/* Pyament History */}
+      <Dialog
+        open={paymentHistory}
+        onClose={handleClosePaymentHistory}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Payment History</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClosePaymentHistory}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={historyData}
+          columns={paymentDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => row.request_id}
+        />
+      </Dialog>
     </div>
   );
 }

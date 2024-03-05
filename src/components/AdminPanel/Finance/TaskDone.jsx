@@ -45,6 +45,7 @@ export default function TaskDone() {
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [TDStableData, setTDStableData] = useState([]);
   const [uniqueVendorTDSdoneData, setUniqueVendorTDSdoneData] = useState([]);
+  const [bankDetailRowData, setBankDetailRowData] = useState([]);
 
   const accordionButtons = ["Zoho", "GST", "TDS"];
 
@@ -130,9 +131,6 @@ export default function TaskDone() {
 
   // pending data submit
 
-  const handleOpenBankDetail = () => {
-    setBankDetail(true);
-  };
   useEffect(() => {
     callApi();
   }, []);
@@ -159,9 +157,13 @@ export default function TaskDone() {
 
     return diffDays;
   }
+
+  const filterPaymentAmount = nodeData.filter((item) =>
+    data.some((e) => e.request_id == item.request_id)
+  );
   // total requested  amount data :-
-  const totalRequestAmount = data.reduce(
-    (total, item) => total + parseFloat(item.request_amount),
+  const totalRequestAmount = filterPaymentAmount.reduce(
+    (total, item) => total + parseFloat(Math.round(item.payment_amount)),
     0
   );
 
@@ -333,6 +335,21 @@ export default function TaskDone() {
     setHistoryData(type == "FY" ? dataFY : dataTP);
   };
 
+  const handleClosePaymentHistory = () => {
+    setPaymentHistory(false);
+  };
+  // Bank Detail :-
+  const handleOpenBankDetail = (row) => {
+    let x = [];
+    x.push(row);
+
+    setBankDetailRowData(x);
+    setBankDetail(true);
+  };
+  const handleCloseBankDetail = () => {
+    setBankDetail(false);
+  };
+  // =========================================
   const handleAccordionButtonClick = (index) => {
     setActiveAccordionIndex(index);
   };
@@ -349,12 +366,12 @@ export default function TaskDone() {
   });
   console.log("GST Done Data:", gstDoneData);
   // status for TDS :-
-  
+
+  const tdsDoneData = filterData.filter((item) => {
+    return item.tds_status === "Done";
+  });
 
   useEffect(() => {
-    const tdsDoneData = filterData.filter((item) => {
-      return item.tds_status === "Done";
-    });
     setTDStableData(tdsDoneData);
   }, []);
 
@@ -366,7 +383,7 @@ export default function TaskDone() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = sameVendorData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -374,7 +391,6 @@ export default function TaskDone() {
       field: "vendor_name",
       headerName: "Vendor Name",
       // width: "auto",
-      width: 250,
       renderCell: (params) => {
         return params.row.vendorName;
       },
@@ -382,33 +398,26 @@ export default function TaskDone() {
     {
       field: "request_amount",
       headerName: "Requested Amount",
-      width: 150,
       renderCell: (params) => {
         return <p> &#8377; {params.row.request_amount}</p>;
       },
     },
-    // {
-    //   headerName: "Action",
-    //   width: 150,
-    //   renderCell: (params) => {
-    //     return (
-    //       <div>
-    //         <button
-    //           className="btn btn-sm btn-success"
-    //           onClick={() => handlePayClick(params.row)}
-    //         >
-    //           Pay
-    //         </button>
-    //         <button
-    //           className="btn btn-sm btn-danger mx-2"
-    //           onClick={() => handleDiscardClick(params.row)}
-    //         >
-    //           discard
-    //         </button>
-    //       </div>
-    //     );
-    //   },
-    // },
+    {
+      field: "total_amount",
+      headerName: "Total Amount",
+      width: 150,
+      renderCell: () => {
+        return <p> &#8377; {totalSameVendorAmount}</p>;
+      },
+    },
+    {
+      field: "outstandings",
+      headerName: "OutStanding ",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
   ];
   // unique vender column :-
   const uniqueVendorColumns = [
@@ -418,7 +427,7 @@ export default function TaskDone() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = uniqueVendorData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -483,46 +492,46 @@ export default function TaskDone() {
         return <p> &#8377; {params.row.outstandings}</p>;
       },
     },
-    {
-      field: "invc_img",
-      headerName: "Invoice Image",
-      renderCell: (params) => {
-        if (params.row.invc_img) {
-          // Extract file extension and check if it's a PDF
-          const fileExtension = params.row.invc_img
-            .split(".")
-            .pop()
-            .toLowerCase();
-          const isPdf = fileExtension === "pdf";
+    // {
+    //   field: "invc_img",
+    //   headerName: "Invoice Image",
+    //   renderCell: (params) => {
+    //     if (params.row.invc_img) {
+    //       // Extract file extension and check if it's a PDF
+    //       const fileExtension = params.row.invc_img
+    //         .split(".")
+    //         .pop()
+    //         .toLowerCase();
+    //       const isPdf = fileExtension === "pdf";
 
-          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+    //       const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
 
-          return isPdf ? (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={pdf}
-              style={{ width: "40px", height: "40px" }}
-              title="PDF Preview"
-            />
-          ) : (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={imgUrl}
-              alt="Invoice"
-              style={{ width: "100px", height: "100px" }}
-            />
-          );
-        } else {
-          return null;
-        }
-      },
-    },
+    //       return isPdf ? (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={pdf}
+    //           style={{ width: "40px", height: "40px" }}
+    //           title="PDF Preview"
+    //         />
+    //       ) : (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={imgUrl}
+    //           alt="Invoice"
+    //           style={{ width: "100px", height: "100px" }}
+    //         />
+    //       );
+    //     } else {
+    //       return null;
+    //     }
+    //   },
+    // },
     {
       field: "request_date",
       headerName: "Requested Date",
@@ -613,25 +622,43 @@ export default function TaskDone() {
       field: "invc_img",
       headerName: "Invoice Image",
       renderCell: (params) => {
-        // Extract file extension and check if it's a PDF
-        const fileExtension = params.row.invc_img
-          ?.split(".")
-          ?.pop()
-          ?.toLowerCase();
-        const isPdf = fileExtension === "pdf";
+        const fileExtension = phpData.filter((item) => {
+          return item.request_id == params.row.request_id;
+        });
+        console.log(fileExtension, "manoj");
 
-        const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+        // Extract file extension and check if it's a PDF
+        let f = fileExtension[0]?.invc_img?.split(".").pop().toLowerCase();
+        const isPdf = f === "pdf";
+
+        const imgUrl = `https://purchase.creativefuel.io/${fileExtension[0]?.invc_img}`;
         return isPdf ? (
-          <iframe
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            src={imgUrl}
-            style={{ width: "100px", height: "100px" }}
-            title="PDF Preview"
-          />
-        ) : (
+          <>
+            <iframe
+              allowFullScreen={true}
+              src={imgUrl}
+              title="PDF Viewer"
+              style={{ width: "80px", height: "80px" }}
+            />
+            <div
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              style={{
+                position: "absolute",
+                width: "2.4%",
+                height: "36%",
+                top: "100px",
+                left: "104px",
+                cursor: "pointer",
+                background: "rgba(0, 0, 0, 0)",
+                zIndex: 10,
+              }}
+            ></div>
+          </>
+        ) : fileExtension[0]?.invc_img &&
+          fileExtension[0].invc_img.length > 1 ? (
           <img
             onClick={() => {
               setOpenImageDialog(true);
@@ -641,9 +668,11 @@ export default function TaskDone() {
             alt="Invoice"
             style={{ width: "80px", height: "80px" }}
           />
+        ) : (
+          "No Img"
         );
       },
-      width: 190,
+      width: 250,
     },
     {
       field: "request_date",
@@ -674,12 +703,24 @@ export default function TaskDone() {
             >
               {params.row.vendor_name}
             </div>
-            <div onClick={() => handleOpenBankDetail()}>
+            <Button
+              disabled={
+                params.row.payment_details
+                  ? !params.row.payment_details.length > 0
+                  : true
+              }
+              onClick={() => handleOpenBankDetail(params.row)}
+            >
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
-            </div>
+            </Button>
           </div>
         );
       },
+    },
+    {
+      field: "page_name",
+      headerName: "Page Name",
+      width: 150,
     },
     {
       field: "total_paid",
@@ -700,7 +741,7 @@ export default function TaskDone() {
                   (e) =>
                     e.vendor_name === params.row.vendor_name && e.status == 1
                 )
-                .reduce((acc, item) => acc + +item.request_amount, 0)}
+                .reduce((acc, item) => acc + +item.payment_amount, 0)}
             </h5>
           </span>
         ) : (
@@ -750,7 +791,7 @@ export default function TaskDone() {
             {/* Financial Year */}
 
             {dataFY.reduce(
-              (acc, item) => acc + parseFloat(item.request_amount),
+              (acc, item) => acc + parseFloat(item.payment_amount),
               0
             )}
           </h5>
@@ -764,21 +805,26 @@ export default function TaskDone() {
         );
       },
     },
-    {
-      field: "Pan Img",
-      headerName: "Pan Img",
-      renderCell: (params) => {
-        return params.row.pan_img ? (
-          <img
-            src={params.row.pan_img}
-            alt="Pan"
-            style={{ width: "40px", height: "40px" }}
-          />
-        ) : (
-          "NA"
-        );
-      },
-    },
+    // {
+    //   field: "Pan Img",
+    //   headerName: "Pan Img",
+    //   renderCell: (params) => {
+    //     const ImgUrl = `https://purchase.creativefuel.io/${params.row.pan_img}`;
+    //     return params.row.pan_img.includes("uploads") ? (
+    //       <img
+    //         onClick={() => {
+    //           setOpenImageDialog(true);
+    //           setViewImgSrc(ImgUrl);
+    //         }}
+    //         src={ImgUrl}
+    //         alt="Pan"
+    //         style={{ width: "40px", height: "40px" }}
+    //       />
+    //     ) : (
+    //       "NA"
+    //     );
+    //   },
+    // },
     {
       field: "pan",
       headerName: "PAN",
@@ -838,11 +884,46 @@ export default function TaskDone() {
       },
     },
     {
+      field: "gst_hold_amount",
+      headerName: "GST Hold Amount",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.gst_hold_amount ? (
+          <p>&#8377; {params.row.gst_hold_amount}</p>
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "tds_deduction",
+      headerName: "TDS Amount",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.tds_deduction ? (
+          <p>&#8377; {params.row.tds_deduction}</p>
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
       field: "outstandings",
       headerName: "OutStanding ",
       width: 150,
       renderCell: (params) => {
         return <p> &#8377; {params.row.outstandings}</p>;
+      },
+    },
+    {
+      filed: "payment_amount",
+      headerName: "Payment Amount",
+      width: 150,
+      renderCell: (params) => {
+        const paymentAmount = nodeData.filter(
+          (e) => e.request_id == params.row.request_id
+        )[0]?.payment_amount;
+        return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
       },
     },
     {
@@ -853,6 +934,14 @@ export default function TaskDone() {
         return (
           <p> {calculateDays(params.row.request_date, new Date())} Days</p>
         );
+      },
+    },
+    {
+      field: "gst_Hold_Bool",
+      headerName: "GST Hold",
+      renderCell: (params) => {
+        console.log(params.row.gst_Hold_Bool, "gst_Hold_Bool");
+        return params.row.gstHold == 1 ? "Yes" : "No";
       },
     },
   ];
@@ -926,8 +1015,7 @@ export default function TaskDone() {
     });
 
     console.log(uvData, "uvData"); // Log the uvData array to check its contents
-   return setUniqueVendorTDSdoneData(uvData);
-
+    return setUniqueVendorTDSdoneData(uvData);
   }, [TDStableData]);
 
   return (
@@ -1219,7 +1307,7 @@ export default function TaskDone() {
                     showQuickFilter: true,
                   },
                 }}
-                getRowId={(row) => TDStableData.indexOf(row)}
+                getRowId={(row) => row.request_id}
               />
             </div>
           )}
@@ -1231,6 +1319,124 @@ export default function TaskDone() {
           setViewImgDialog={setOpenImageDialog}
         />
       )}
+      {/* Bank Detail dialog */}
+      <Dialog
+        open={bankDetail}
+        onClose={handleCloseBankDetail}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Bank Details</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseBankDetail}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        {/* <DataGrid
+          rows={bankDetailRowData}
+          columns={bankDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => filterData.indexOf(row)}
+        /> */}
+
+        <TextField
+          id="outlined-multiline-static"
+          // label="Multiline"
+          multiline
+          value={bankDetailRowData[0]?.payment_details}
+          rows={4}
+          defaultValue="Default Value"
+          variant="outlined"
+        />
+
+        <Button
+          onClick={() => {
+            navigator.clipboard.writeText(
+              bankDetailRowData[0]?.payment_details
+            );
+            toastAlert("Copied to clipboard");
+          }}
+        >
+          Copy
+        </Button>
+      </Dialog>
+      {/* Pyament History */}
+      <Dialog
+        open={paymentHistory}
+        onClose={handleClosePaymentHistory}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Payment History</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClosePaymentHistory}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        <DataGrid
+          rows={historyData}
+          columns={paymentDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => row.request_id}
+        />
+      </Dialog>
     </div>
   );
 }

@@ -174,44 +174,51 @@ const InvoiceCreated = () => {
     (total, item) => total + parseFloat(item.campaign_amount),
     0
   );
-
   const sameCustomercolumn = [
     {
-      field: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...sameCustomerData].indexOf(params.row) + 1}</div>
+      ),
     },
     {
-      field: "Customer name",
-      fieldName: "cust_name",
+      headerName: "Customer name",
+      field: "cust_name",
       renderCell: (params) => params.row.cust_name,
     },
     {
-      field: "Invoice Particular",
-      fieldName: "invoice_particular_name",
+      headerName: "Invoice Particular",
+      field: "invoice_particular_name",
       renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      field: "Campaign Amount",
-      fieldName: "campaign_amount",
+      headerName: "Campaign Amount",
+      field: "campaign_amount",
       renderCell: (params) => params.row.campaign_amount,
     },
     {
-      field: "Remark",
-      fieldName: "invoice_remark",
+      headerName: "Remark",
+      field: "invoice_remark",
       renderCell: (params) => params.row.invoice_remark,
       width: "250px",
     },
   ];
   const uniqueCustomercolumn = [
     {
-      field: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...uniqueCustomerData].indexOf(params.row) + 1}</div>
+      ),
     },
     {
-      field: "Customer name",
-      fieldName: "cust_name",
+      headerName: "Customer name",
+      field: "cust_name",
       renderCell: (params) => (
         <div
           style={{ cursor: "pointer" }}
@@ -222,18 +229,18 @@ const InvoiceCreated = () => {
       ),
     },
     {
-      field: "Invoice Particular",
-      fieldName: "invoice_particular_name",
+      headerName: "Invoice Particular",
+      field: "invoice_particular_name",
       renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      field: "Campaign Amount",
-      fieldName: "campaign_amount",
+      headerName: "Campaign Amount",
+      field: "campaign_amount",
       renderCell: (params) => params.row.campaign_amount,
     },
     {
-      field: "Download Invoice",
-      fieldName: "invoice",
+      headerName: "Download Invoice",
+      field: "invoice",
       renderCell: (params) => (
         <a
           className="btn btn-primary"
@@ -272,8 +279,8 @@ const InvoiceCreated = () => {
   const columns = [
     {
       width: 60,
-      field: "S.No",
-      fieldName: "s_no",
+      headerName: "S.No",
+      field: "s_no",
       renderCell: (params, index) => (
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
 
@@ -282,26 +289,26 @@ const InvoiceCreated = () => {
       sortable: true,
     },
     {
-      field: "Customer name",
-      fieldName: "cust_name",
+      headerName: "Customer name",
+      field: "cust_name",
       width: 340,
       renderCell: (params) => params.row.cust_name,
     },
     {
-      field: "Invoice Particular",
-      fieldName: "invoice_particular_name",
+      headerName: "Invoice Particular",
+      field: "invoice_particular_name",
       width: 210,
       renderCell: (params) => params.row.invoice_particular_name,
     },
     {
-      field: "Campaign Amount",
-      fieldName: "campaign_amount",
+      headerName: "Campaign Amount",
+      field: "campaign_amount",
       width: 210,
       renderCell: (params) => params.row.campaign_amount,
     },
     {
-      field: "Download Invoice",
-      fieldName: "invoice",
+      headerName: "Download Invoice",
+      field: "invoice",
       width: 210,
       renderCell: (params) => (
         <a
@@ -316,8 +323,8 @@ const InvoiceCreated = () => {
       ),
     },
     {
-      field: "View Invoice",
-      fieldName: "invoice",
+      headerName: "View Invoice",
+      field: "invoice",
       width: 210,
       renderCell: (params) => (
         <button
@@ -334,8 +341,8 @@ const InvoiceCreated = () => {
       ),
     },
     {
-      field: "Remark",
-      fieldName: "invoice_remark",
+      headerName: "Remark",
+      field: "invoice_remark",
       renderCell: (params) => params.row.invoice_remark,
     },
   ];
@@ -390,12 +397,12 @@ const InvoiceCreated = () => {
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => sameCustomerData.indexOf(row)}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => sameCustomerData.indexOf(row)}
         />
       </Dialog>
 
@@ -437,8 +444,8 @@ const InvoiceCreated = () => {
             toolbar: {
               showQuickFilter: true,
             },
-          }} getRowId={(row) => uniqueCustomerData.indexOf(row)}
-
+          }}
+          getRowId={(row) => uniqueCustomerData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -550,13 +557,13 @@ const InvoiceCreated = () => {
             rowsPerPageOptions={[5]}
             disableSelectionOnClick
             autoHeight
-           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-         getRowId={(row) => filterData.indexOf(row)}
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>
