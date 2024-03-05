@@ -783,6 +783,28 @@ const BalancePaymentList = () => {
       renderCell: (params) => params.row.username,
     },
     {
+      field:"party_mnj_name",
+      headerName: "Party Name",
+      width: 190,
+    },
+    {
+      field:"invoice_mnj_number",
+      headerName: "Invoice Number",
+      width: 190,
+    },
+    {
+      field:"invoice_mnj_date",
+      headerName: "Invoice Date",
+      renderCell: (params) => (
+        params.row.invoice_mnj_date!= "0000-00-00"? <div style={{ whiteSpace: "normal" }}>
+          
+          {convertDateToDDMMYYYY(params.row.invoice_mnj_date)}
+        </div>:""
+      ),
+      width: 190,
+
+    },
+    {
       field: "Sale Booking Date",
       fieldName: "sale_booking_date",
       width: 190,

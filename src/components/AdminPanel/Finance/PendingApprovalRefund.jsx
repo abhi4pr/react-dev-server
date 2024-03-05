@@ -56,9 +56,8 @@ const PendingApprovalRefund = () => {
   function getData() {
     axios
       .post(baseUrl + "add_php_payment_refund_data_in_node")
-      .then((res) => {});
-    setTimeout(() => {
-      axios
+      .then((res) => {
+        axios
         .get(baseUrl + "get_all_php_payment_refund_data_pending")
         .then((res) => {
           setData(res.data.data);
@@ -75,7 +74,8 @@ const PendingApprovalRefund = () => {
           );
           setUniqueCustomerData(uniqueCustomerData);
         });
-    }, 1000);
+      });
+  
   }
 
   useEffect(() => {
@@ -104,7 +104,9 @@ const PendingApprovalRefund = () => {
         }
       )
       .then(() => {
-        getData();
+        setTimeout(() => {
+          getData()
+        }, 1000);
       });
 
     toastAlert("Data updated");
