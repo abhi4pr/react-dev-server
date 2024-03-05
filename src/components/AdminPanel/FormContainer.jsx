@@ -64,7 +64,7 @@ const FormContainer = ({
           {includeAdditionalTitles && (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueVendorClick}>
-                Unique Vender : <a href="#">{uniqueVendorCount}</a>
+                Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
                 Pending Amount : <a href="#"> {totalPendingAmount}</a>
@@ -80,7 +80,7 @@ const FormContainer = ({
           {paymentDoneAdditionalTitles && (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueVendorClick}>
-                Unique Vender : <a href="#">{uniqueVendorCount}</a>
+                Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
                 Payment Done Amount : <a href="#"> {totalRequestAmount}</a>
@@ -93,7 +93,7 @@ const FormContainer = ({
           {allTransactionAdditionalTitles && (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueVendorClick}>
-                Unique Vender : <a href="#">{uniqueVendorCount}</a>
+                Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
                 Requested Amount : <a href="#"> {totalRequestAmount}</a>
@@ -112,7 +112,7 @@ const FormContainer = ({
           {discardAdditionalTitles && (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueVendorClick}>
-                Unique Vender : <a href="#">{uniqueVendorCount}</a>
+                Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
                 Requested Amount : <a href="#"> {totalRequestAmount}</a>

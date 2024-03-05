@@ -42,7 +42,7 @@ export default function Discard() {
   const [nodeData, setNodeData] = useState([]);
   const [phpData, setPhpData] = useState([]);
   const [bankDetail, setBankDetail] = useState(false);
-
+  const [bankDetailRowData, setBankDetailRowData] = useState([]);
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -117,46 +117,46 @@ export default function Discard() {
         return <p> &#8377; {params.row.outstandings}</p>;
       },
     },
-    {
-      field: "invc_img",
-      headerName: "Invoice Image",
-      renderCell: (params) => {
-        if (params.row.invc_img.length > 0) {
-          // Extract file extension and check if it's a PDF
-          const fileExtension = params.row.invc_img
-            .split(".")
-            .pop()
-            .toLowerCase();
-          const isPdf = fileExtension === "pdf";
+    // {
+    //   field: "invc_img",
+    //   headerName: "Invoice Image",
+    //   renderCell: (params) => {
+    //     if (params.row.invc_img.length > 0) {
+    //       // Extract file extension and check if it's a PDF
+    //       const fileExtension = params.row.invc_img
+    //         .split(".")
+    //         .pop()
+    //         .toLowerCase();
+    //       const isPdf = fileExtension === "pdf";
 
-          const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
+    //       const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
 
-          return isPdf ? (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={pdf}
-              style={{ width: "30px", height: "30px" }}
-              title="PDF Preview"
-            />
-          ) : (
-            <img
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
-              src={imgUrl}
-              alt="Invoice"
-              style={{ width: "30px", height: "30px" }}
-            />
-          );
-        } else {
-          return null;
-        }
-      },
-    },
+    //       return isPdf ? (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={pdf}
+    //           style={{ width: "30px", height: "30px" }}
+    //           title="PDF Preview"
+    //         />
+    //       ) : (
+    //         <img
+    //           onClick={() => {
+    //             setOpenImageDialog(true);
+    //             setViewImgSrc(imgUrl);
+    //           }}
+    //           src={imgUrl}
+    //           alt="Invoice"
+    //           style={{ width: "30px", height: "30px" }}
+    //         />
+    //       );
+    //     } else {
+    //       return null;
+    //     }
+    //   },
+    // },
     {
       field: "request_date",
       headerName: "Requested Date",
@@ -232,11 +232,15 @@ export default function Discard() {
       },
     },
   ];
+  const handleOpenBankDetail = (row) => {
+    let x = [];
+    x.push(row);
 
-
-  
-  const handleOpenBankDetail = () => {
+    setBankDetailRowData(x);
     setBankDetail(true);
+  };
+  const handleCloseBankDetail = () => {
+    setBankDetail(false);
   };
 
   const handleOpenPaymentHistory = (row, type) => {
@@ -451,7 +455,6 @@ export default function Discard() {
       renderCell: (params) => {
         return params.row.vendor_name;
       },
-      
     },
     {
       field: "request_amount",
@@ -553,27 +556,31 @@ export default function Discard() {
         const isPdf = fileExtension === "pdf";
 
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
-        return params.row.invc_img? isPdf ? (
-          <iframe
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            src={imgUrl}
-            style={{ width: "100px", height: "100px" }}
-            title="PDF Preview"
-          />
+        return params.row.invc_img ? (
+          isPdf ? (
+            <iframe
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={imgUrl}
+              style={{ width: "100px", height: "100px" }}
+              title="PDF Preview"
+            />
+          ) : (
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(imgUrl);
+              }}
+              src={imgUrl}
+              alt="Invoice"
+              style={{ width: "40px", height: "40px" }}
+            />
+          )
         ) : (
-          <img
-            onClick={() => {
-              setOpenImageDialog(true);
-              setViewImgSrc(imgUrl);
-            }}
-            src={imgUrl}
-            alt="Invoice"
-            style={{ width: "40px", height: "40px" }}
-          />
-        ):""
+          ""
+        );
       },
       width: 250,
     },
@@ -606,16 +613,26 @@ export default function Discard() {
             >
               {params.row.vendor_name}
             </div>
-            <div onClick={() => handleOpenBankDetail()}>
+            {/* <div onClick={() => handleOpenBankDetail()}>
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
-            </div>
+            </div> */}
+            <Button
+              disabled={
+                params.row.payment_details
+                  ? !params.row.payment_details.length > 0
+                  : true
+              }
+              onClick={() => handleOpenBankDetail(params.row)}
+            >
+              <AccountBalanceIcon style={{ fontSize: "25px" }} />
+            </Button>
           </div>
         );
       },
     },
     {
       field: "page_name",
-      headerName:"Page Name",
+      headerName: "Page Name",
       width: 150,
     },
     {
@@ -705,15 +722,16 @@ export default function Discard() {
       field: "Pan Img",
       headerName: "Pan Img",
       renderCell: (params) => {
-        return (
-        params.row.pan_img?  <img
+        return params.row.pan_img ? (
+          <img
             src={params.row.pan_img}
             alt="Pan"
             style={{ width: "40px", height: "40px" }}
-          />:"NA"
+          />
+        ) : (
+          "NA"
         );
-      
-      }
+      },
     },
     {
       field: "remark_audit",
@@ -832,7 +850,7 @@ export default function Discard() {
               showQuickFilter: true,
             },
           }}
-            getRowId={(row) => sameVendorData.indexOf(row)}
+          getRowId={(row) => sameVendorData.indexOf(row)}
         />
       </Dialog>
 
@@ -870,12 +888,12 @@ export default function Discard() {
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => uniqueVendorData.indexOf(row)}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => uniqueVendorData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -1004,7 +1022,7 @@ export default function Discard() {
             showQuickFilter: true,
           },
         }}
-         getRowId={(row) => filterData.indexOf(row)}
+        getRowId={(row) => filterData.indexOf(row)}
       />
       {openImageDialog && (
         <ImageView
@@ -1012,13 +1030,89 @@ export default function Discard() {
           setViewImgDialog={setOpenImageDialog}
         />
       )}
-       {paymentHistory && (
+      {paymentHistory && (
         <PaymentHistoryDialog
           handleClose={setPaymentHistory}
           paymentDetailColumns={paymentDetailColumns}
           filterData={historyData}
         />
       )}
+      {/* Bank Detail dialog */}
+      <Dialog
+        open={bankDetail}
+        onClose={handleCloseBankDetail}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Bank Details</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseBankDetail}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        {/* <DataGrid
+          rows={bankDetailRowData}
+          columns={bankDetailColumns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          disableColumnMenu
+          disableColumnSelector
+          disableColumnFilter
+          disableColumnReorder
+          disableColumnResize
+          disableMultipleColumnsSorting
+          components={{
+            Toolbar: GridToolbar,
+          }}
+          fv
+          componentsProps={{
+            toolbar: {
+              value: search,
+              onChange: (event) => setSearch(event.target.value),
+              placeholder: "Search",
+              clearSearch: true,
+              clearSearchAriaLabel: "clear",
+            },
+          }}
+          getRowId={(row) => filterData.indexOf(row)}
+        /> */}
+
+        <TextField
+          id="outlined-multiline-static"
+          // label="Multiline"
+          multiline
+          value={bankDetailRowData[0]?.payment_details}
+          rows={4}
+          defaultValue="Default Value"
+          variant="outlined"
+        />
+
+        <Button
+          onClick={() => {
+            navigator.clipboard.writeText(
+              bankDetailRowData[0]?.payment_details
+            );
+            toastAlert("Copied to clipboard");
+          }}
+        >
+          Copy
+        </Button>
+      </Dialog>
     </div>
   );
 }

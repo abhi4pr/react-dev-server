@@ -388,9 +388,14 @@ const BalancePaymentList = () => {
 
   const sameSalesExecutivecolumn = [
     {
-      field: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = sameSalesExecutiveData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
     },
     {
       fieldName: "sale_booking_date",
@@ -404,18 +409,18 @@ const BalancePaymentList = () => {
       },
     },
     {
-      fieldName: "cust_name",
-      field: "Customer Name",
+      field: "cust_name",
+      headerName: "Customer Name",
       renderCell: (params) => params.row.cust_name,
     },
     {
-      fieldName: "username",
-      field: "Sales Executive Name",
+      field: "username",
+      headerName: "Sales Executive Name",
       renderCell: (params) => params.row.username,
     },
     {
-      fieldName: "sale_booking_date",
-      field: "Sale Booking Date",
+      field: "sale_booking_date",
+      headerName: "Sale Booking Date",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {convertDateToDDMMYYYY(params.row.sale_booking_date)}
@@ -423,13 +428,13 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      fieldName: "campaign_amount",
-      field: "Campaign Amount",
+      field: "campaign_amount",
+      headerName: "Campaign Amount",
       selector: (params) => params.row.campaign_amount,
     },
     {
-      fieldName: "total_paid_amount",
-      field: "Paid Amount",
+      field: "total_paid_amount",
+      headerName: "Paid Amount",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {params.row.total_paid_amount ? params.row.total_paid_amount : 0}
@@ -437,12 +442,12 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      field: "Balance Amount",
+      headerName: "Balance Amount",
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
     {
-      field: "Status",
+      headerName: "Status",
       cell: (params) => (
         <button
           className="btn btn-sm btn-outline-info"
@@ -455,13 +460,18 @@ const BalancePaymentList = () => {
   ];
   const uniqueSalesExecutivecolumn = [
     {
-      field: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = uniqueSalesExecutiveData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
     },
     {
-      fieldName: "sale_booking_date",
-      field: "Aging",
+      field: "sale_booking_date",
+      headerName: "Aging",
       renderCell: (params) => {
         const date = new Date(params.row.sale_booking_date);
         const today = new Date();
@@ -471,13 +481,13 @@ const BalancePaymentList = () => {
       },
     },
     {
-      fieldName: "cust_name",
-      field: "Customer Name",
+      field: "cust_name",
+      headerName: "Customer Name",
       renderCell: (params) => params.row.cust_name,
     },
     {
-      fieldName: "username",
-      field: "Sales Executive Name",
+      field: "username",
+      headerName: "Sales Executive Name",
       renderCell: (params) => (
         <div
           style={{ cursor: "pointer" }}
@@ -488,8 +498,8 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      fieldName: "sale_booking_date",
-      field: "Sale Booking Date",
+      field: "sale_booking_date",
+      headerName: "Sale Booking Date",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {convertDateToDDMMYYYY(params.row.sale_booking_date)}
@@ -497,13 +507,13 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      fieldName: "campaign_amount",
-      field: "Campaign Amount",
+      field: "campaign_amount",
+      headerName: "Campaign Amount",
       selector: (params) => params.row.campaign_amount,
     },
     {
-      fieldName: "total_paid_amount",
-      field: "Paid Amount",
+      field: "total_paid_amount",
+      headerName: "Paid Amount",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {params.row.total_paid_amount ? params.row.total_paid_amount : 0}
@@ -511,13 +521,13 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      field: "Balance Amount",
+      headerName: "Balance Amount",
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
     {
-      fieldName: "invoice",
-      field: "Screen Shot",
+      field: "invoice",
+      headerName: "Screen Shot",
       renderCell: (params) =>
         params.row.invoice ? (
           params.row.invoice.includes(".pdf") ? (
@@ -552,7 +562,7 @@ const BalancePaymentList = () => {
         ),
     },
     {
-      field: "Status",
+      headerName: "Status",
       cell: (params) => (
         <button
           className="btn btn-sm btn-outline-info"
@@ -565,13 +575,18 @@ const BalancePaymentList = () => {
   ];
   const sameCustomercolumn = [
     {
-      field: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = sameCustomerData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
     },
     {
-      fieldName: "sale_booking_date",
-      field: "Aging",
+      field: "sale_booking_date",
+      headerName: "Aging",
       renderCell: (params) => {
         const date = new Date(params.row.sale_booking_date);
         const today = new Date();
@@ -581,18 +596,18 @@ const BalancePaymentList = () => {
       },
     },
     {
-      fieldName: "cust_name",
-      field: "Customer Name",
+      field: "cust_name",
+      headerName: "Customer Name",
       renderCell: (params) => params.row.cust_name,
     },
     {
-      fieldName: "username",
-      field: "Sales Executive Name",
+      field: "username",
+      headerName: "Sales Executive Name",
       renderCell: (params) => params.row.username,
     },
     {
-      fieldName: "sale_booking_date",
-      field: "Sale Booking Date",
+      field: "sale_booking_date",
+      headerName: "Sale Booking Date",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {convertDateToDDMMYYYY(params.row.sale_booking_date)}
@@ -600,13 +615,13 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      fieldName: "campaign_amount",
-      field: "Campaign Amount",
+      field: "campaign_amount",
+      headerName: "Campaign Amount",
       selector: (params) => params.row.campaign_amount,
     },
     {
-      fieldName: "total_paid_amount",
-      field: "Paid Amount",
+      field: "total_paid_amount",
+      headerName: "Paid Amount",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {params.row.total_paid_amount ? params.row.total_paid_amount : 0}
@@ -614,12 +629,12 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      field: "Balance Amount",
+      headerName: "Balance Amount",
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
     {
-      field: "Status",
+      headerName: "Status",
       cell: (params) => (
         <button
           className="btn btn-sm btn-outline-info"
@@ -632,13 +647,18 @@ const BalancePaymentList = () => {
   ];
   const uniqueCustomercolumn = [
     {
-      field: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
-      sortable: true,
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = uniqueCustomerData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
     },
     {
-      fieldName: "sale_booking_date",
-      field: "Aging",
+      field: "sale_booking_date",
+      headerName: "Aging",
       renderCell: (params) => {
         const date = new Date(params.row.sale_booking_date);
         const today = new Date();
@@ -648,8 +668,8 @@ const BalancePaymentList = () => {
       },
     },
     {
-      fieldName: "cust_name",
-      field: "Customer Name",
+      field: "cust_name",
+      headerName: "Customer Name",
       renderCell: (params) => (
         <div
           style={{ cursor: "pointer" }}
@@ -660,8 +680,8 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      fieldName: "username",
-      field: "Sales Executive Name",
+      field: "username",
+      headerName: "Sales Executive Name",
       renderCell: (params) => (
         <div
           style={{ cursor: "pointer" }}
@@ -672,8 +692,8 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      fieldName: "sale_booking_date",
-      field: "Sale Booking Date",
+      field: "sale_booking_date",
+      headerName: "Sale Booking Date",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {convertDateToDDMMYYYY(params.row.sale_booking_date)}
@@ -681,13 +701,13 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      fieldName: "campaign_amount",
-      field: "Campaign Amount",
+      field: "campaign_amount",
+      headerName: "Campaign Amount",
       selector: (params) => params.row.campaign_amount,
     },
     {
-      fieldName: "total_paid_amount",
-      field: "Paid Amount",
+      field: "total_paid_amount",
+      headerName: "Paid Amount",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {params.row.total_paid_amount ? params.row.total_paid_amount : 0}
@@ -695,13 +715,13 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      field: "Balance Amount",
+      headerName: "Balance Amount",
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
     {
-      fieldName: "invoice",
-      field: "Screen Shot",
+      field: "invoice",
+      headerName: "Screen Shot",
       renderCell: (params) =>
         params.row.invoice ? (
           params.row.invoice.includes(".pdf") ? (
@@ -736,7 +756,7 @@ const BalancePaymentList = () => {
         ),
     },
     {
-      field: "Status",
+      headerName: "Status",
       cell: (params) => (
         <button
           className="btn btn-sm btn-outline-info"
@@ -750,8 +770,8 @@ const BalancePaymentList = () => {
   const columns = [
     {
       width: 70,
-      field: "S.No",
-      fieldName: "s_no",
+      field: "s_no",
+      headerName: "S.No",
       renderCell: (params, index) => (
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
 
@@ -760,7 +780,8 @@ const BalancePaymentList = () => {
       sortable: true,
     },
     {
-      field: "Aging",
+      field: "aging",
+      headerName: "Aging",
       renderCell: (params) => {
         const date = new Date(params.row.sale_booking_date);
         const today = new Date();
@@ -770,14 +791,15 @@ const BalancePaymentList = () => {
       },
     },
     {
-      field: "Customer Name",
-      fieldName: "cust_name",
+      field: "cust_name",
+      headerName: "Customer Name",
       width: 320,
       renderCell: (params) => params.row.cust_name,
       sortable: true,
     },
     {
-      field: "Sales Executive Name",
+      field: "username",
+      headerName: "Sales Executive Name",
       width: 190,
       fieldName: "username",
       renderCell: (params) => params.row.username,
@@ -805,8 +827,8 @@ const BalancePaymentList = () => {
 
     },
     {
-      field: "Sale Booking Date",
-      fieldName: "sale_booking_date",
+      headerName: "Sale Booking Date",
+      field: "sale_booking_date",
       width: 190,
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
@@ -815,14 +837,14 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      field: "Campaign Amount",
-      fieldName: "campaign_amount",
+      field: "campaign_amount",
+      headerName: "Campaign Amount",
       width: 190,
       renderCell: (params) => params.row.campaign_amount,
     },
     {
-      field: "Paid Amount",
-      fieldName: "total_paid_amount",
+      field: "total_paid_amount",
+      headerName: "Paid Amount",
       width: 190,
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
@@ -831,13 +853,15 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      field: "Balance Amount",
+      field: "total_paid_amount",
+      headerName: "Balance Amount",
       width: 190,
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
     {
-      field: "Screen Shot",
+      field: "invoice",
+      headerName: "Screen Shot",
       width: 190,
       renderCell: (params) =>
         params.row.invoice ? (
@@ -873,7 +897,7 @@ const BalancePaymentList = () => {
         ),
     },
     {
-      field: "Status",
+      headerName: "Status",
       width: 190,
       renderCell: (params) => (
         <button
@@ -941,11 +965,12 @@ const BalancePaymentList = () => {
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
         />
       </Dialog>
       {/* Unique Sales Executive Dialog Box */}
@@ -982,12 +1007,12 @@ const BalancePaymentList = () => {
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
         />
       </Dialog>
       {/* Same Customer Dialog */}
@@ -1029,7 +1054,7 @@ const BalancePaymentList = () => {
               showQuickFilter: true,
             },
           }}
-           getRowId={(row) => sameCustomerData.indexOf(row)}
+          getRowId={(row) => sameCustomerData.indexOf(row)}
         />
       </Dialog>
 
@@ -1072,7 +1097,7 @@ const BalancePaymentList = () => {
               showQuickFilter: true,
             },
           }}
-           getRowId={(row) => uniqueCustomerData.indexOf(row)}
+          getRowId={(row) => uniqueCustomerData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -1251,7 +1276,7 @@ const BalancePaymentList = () => {
                 showQuickFilter: true,
               },
             }}
-             getRowId={(row) => filterData.indexOf(row)}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>
@@ -1319,9 +1344,31 @@ const BalancePaymentList = () => {
                   />
                 </div>
 
+                <Autocomplete
+                  className="my-2 mt-3"
+                  id="combo-box-demo"
+                  // value={row.statusDropdown}
+                  options={dropdownData.map((item) => ({
+                    label: item.title,
+                    value: item.id,
+                  }))}
+                  // style={{ width: 180, zIndex: 1, position: "relative" }}
+                  onChange={(e, value) => {
+                    setPaymentDetails(value);
+                  }}
+                  getOptionLabel={(option) => option.label}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Payment Details *"
+                      variant="outlined"
+                    />
+                  )}
+                />
                 <TextField
                   variant="outlined"
                   label="Paid Amount *"
+                  className="form-control "
                   value={paidAmount}
                   onChange={(e) => {
                     const inputValue = e.target.value;
@@ -1345,9 +1392,8 @@ const BalancePaymentList = () => {
                     }
                   }}
                 />
-
                 <Autocomplete
-                  className="my-2"
+                  className="my-2 mt-3"
                   id="combo-box-demo"
                   value={paymentType}
                   // disabled
@@ -1356,7 +1402,7 @@ const BalancePaymentList = () => {
                     { label: "Full", value: "full" },
                     { label: "Partial", value: "partial" },
                   ]}
-                  style={{ width: 180, zIndex: 1, position: "relative" }}
+                  // style={{ width: 328, zIndex: 1, position: "relative" }}
                   onChange={(e, value) => {
                     setPaymentType(value);
                   }}
@@ -1365,30 +1411,9 @@ const BalancePaymentList = () => {
                     <TextField {...params} label="Status" variant="outlined" />
                   )}
                 />
-
-                <Autocomplete
-                  className="my-2"
-                  id="combo-box-demo"
-                  // value={row.statusDropdown}
-                  options={dropdownData.map((item) => ({
-                    label: item.title,
-                    value: item.id,
-                  }))}
-                  style={{ width: 180, zIndex: 1, position: "relative" }}
-                  onChange={(e, value) => {
-                    setPaymentDetails(value);
-                  }}
-                  getOptionLabel={(option) => option.label}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="Payment Details *"
-                      variant="outlined"
-                    />
-                  )}
-                />
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
+                    className="form-control mt-3"
                     label="Payment Date"
                     value={paymentDate}
                     format="DD/MM/YYYY"

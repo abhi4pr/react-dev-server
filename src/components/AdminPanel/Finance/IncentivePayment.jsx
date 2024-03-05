@@ -307,13 +307,16 @@ const IncentivePayment = () => {
 
   const sameSalesExecutivecolumn = [
     {
-      field: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
+      field: "s._no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        <div>{[...sameSalesExecutiveData].indexOf(params.row) + 1}</div>
+      ),
       sortable: true,
     },
     {
-      fieldName: "sales_executive_name",
-      field: "Sales executive name",
+      field: "sales_executive_name",
+      headerName: "Sales Executive Name",
       renderCell: (params) => {
         return (
           <div
@@ -328,8 +331,8 @@ const IncentivePayment = () => {
       },
     },
     {
-      field: "Requested Date & Time",
-      fieldName: "request_creation_date",
+      headerName: "Requested Date & Time",
+      field: "request_creation_date",
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total"
           ? new Date(params.row.request_creation_date).toLocaleDateString(
@@ -342,8 +345,8 @@ const IncentivePayment = () => {
           : null,
     },
     {
-      field: "Request Amount",
-      fieldName: "sales_executive_name",
+      headerName: "Request Amount",
+      field: "request_amount",
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total" ? (
           params.row.request_amount
@@ -355,8 +358,8 @@ const IncentivePayment = () => {
         ),
     },
     {
-      field: "Released Amount",
-      fieldName: "released_amount",
+      headerName: "Released Amount",
+      field: "released_amount",
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total" ? (
           <Link
@@ -374,8 +377,8 @@ const IncentivePayment = () => {
         ),
     },
     {
-      field: "Balance Release Amount",
-      fieldName: "balance_release_amount",
+      headerName: "Balance Release Amount",
+      field: "balance_release_amount",
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total" ? (
           params.row.balance_release_amount?.toLocaleString("en-IN")
@@ -386,7 +389,7 @@ const IncentivePayment = () => {
         ),
     },
     {
-      field: "Status",
+      headerName: "Status",
       width: "15%",
       renderCell: (params) => {
         return params.row.action == "Complete Release Button" ? (
@@ -410,7 +413,7 @@ const IncentivePayment = () => {
       },
     },
     {
-      field: "Aging",
+      headerName: "Aging",
       renderCell: (params) => {
         const currentDate = new Date(
           params.row.action == "Complete Release Button"
@@ -431,14 +434,18 @@ const IncentivePayment = () => {
   ];
   const uniqueSalesExecutivecolumn = [
     {
-      field: "S.No",
-      renderCell: (params, index) => <div>{index + 1}</div>,
+      field: "s._no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        <div>{[...uniqueSalesExecutiveData].indexOf(params.row) + 1}</div>
+      ),
       sortable: true,
     },
     {
-      fieldName: "sales_executive_name",
-      field: "Sales executive name",
+      field: "sales_executive_name",
+      headerName: "Sales Executive name",
       renderCell: (params) => {
+        console.log(params.row);
         return (
           <div
             style={{ cursor: "pointer" }}
@@ -452,8 +459,8 @@ const IncentivePayment = () => {
       },
     },
     {
-      field: "Requested Date & Time",
-      fieldName: "request_creation_date",
+      field: "request_creation_date",
+      headerName: "Requested Date & Time",
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total"
           ? new Date(params.row.request_creation_date).toLocaleDateString(
@@ -466,8 +473,8 @@ const IncentivePayment = () => {
           : null,
     },
     {
-      field: "Request Amount",
-      fieldName: "sales_executive_name",
+      field: "request_amount",
+      headerName: "Request Amount",
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total" ? (
           params.row.request_amount
@@ -479,8 +486,8 @@ const IncentivePayment = () => {
         ),
     },
     {
-      field: "Released Amount",
-      fieldName: "released_amount",
+      field: "released_amount",
+      headerName: "Released Amount",
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total" ? (
           <Link
@@ -498,8 +505,8 @@ const IncentivePayment = () => {
         ),
     },
     {
-      field: "Balance Release Amount",
-      fieldName: "balance_release_amount",
+      field: "balance_release_amount",
+      headerName: "Balance Release Amount",
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total" ? (
           params.row.balance_release_amount?.toLocaleString("en-IN")
@@ -553,144 +560,145 @@ const IncentivePayment = () => {
       },
     },
   ];
-  const columns =
-    [
-      {
-        width: 70,
-        field: "S.No",
-        fieldName: "s_no",
-        renderCell: (params, index) => (
-          // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
-filterData.indexOf(params.row) + 1 === filterData.length ?(""): (
-          <div>{filterData.indexOf(params.row) + 1}</div>)
+  const columns = [
+    {
+      width: 70,
+      headerName: "S.No",
+      field: "s_no",
+      renderCell: (params, index) =>
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+        filterData.indexOf(params.row) + 1 === filterData.length ? (
+          ""
+        ) : (
+          <div>{filterData.indexOf(params.row) + 1}</div>
         ),
-        sortable: true,
+      sortable: true,
+    },
+    {
+      headerName: "Sales Executive Name",
+      width: 230,
+      field: "sales_executive_name",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          <Link
+            to={`/admin/Incentive-Request-Released-List/${params.row.incentive_request_id}`}
+            className="link-primary"
+          >
+            {params.row.sales_executive_name}
+          </Link>
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {" "}
+            {params.row.sales_executive_name}
+          </div>
+        ),
+    },
+    {
+      headerName: "Requested Date & Time",
+      width: 230,
+      field: "request_creation_date",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total"
+          ? new Date(params.row.request_creation_date).toLocaleDateString(
+              "en-IN"
+            ) +
+            " " +
+            new Date(params.row.request_creation_date).toLocaleTimeString(
+              "en-IN"
+            )
+          : null,
+    },
+    {
+      headerName: "Request Amount",
+      width: 230,
+      field: "request_amount",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          params.row.request_amount
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {" "}
+            {params.row.request_amount}
+          </div>
+        ),
+    },
+    {
+      headerName: "Released Amount",
+      width: 230,
+      field: "released_amount",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          <Link
+            to={`/admin/Incentive-Request-Released-List/${params.row.incentive_request_id}`}
+            className="link-primary"
+          >
+            {params.row.released_amount
+              ? params.row.released_amount?.toLocaleString("en-IN")
+              : 0}
+          </Link>
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {params.row.released_amount?.toLocaleString("en-IN")}
+          </div>
+        ),
+    },
+    {
+      headerName: "Balance Release Amount",
+      width: 230,
+      field: "balance_release_amount",
+      renderCell: (params) =>
+        params.row.sales_executive_name !== "Total" ? (
+          params.row.balance_release_amount?.toLocaleString("en-IN")
+        ) : (
+          <div className="fs-6 font-bold text-black-50">
+            {params.row.balance_release_amount}
+          </div>
+        ),
+    },
+    {
+      field: "Status",
+      width: 230,
+      renderCell: (params) => {
+        return params.row.action == "Complete Release Button" ? (
+          <button
+            className="btn btn-sm btn-outline-info"
+            data-toggle="modal"
+            data-target="#incentiveModal"
+            onClick={() => {
+              setSelectedData(params.row),
+                setBalanceReleaseAmount(params.row.balance_release_amount);
+              setAccountNo("");
+              setRemarks("");
+              setModalOpen(true);
+            }}
+          >
+            Complete Release
+          </button>
+        ) : (
+          <span>{params.row.action}</span>
+        );
       },
-      {
-        field: "Sales executive name",
-        width: 230,
-        fieldName: "sales_executive_name",
-        renderCell: (params) =>
-          params.row.sales_executive_name !== "Total" ? (
-            <Link
-              to={`/admin/Incentive-Request-Released-List/${params.row.incentive_request_id}`}
-              className="link-primary"
-            >
-              {params.row.sales_executive_name}
-            </Link>
-          ) : (
-            <div className="fs-6 font-bold text-black-50">
-              {" "}
-              {params.row.sales_executive_name}
-            </div>
-          ),
-      },
-      {
-        field: "Requested Date & Time",
-        width: 230,
-        fieldName: "request_creation_date",
-        renderCell: (params) =>
-          params.row.sales_executive_name !== "Total"
-            ? new Date(params.row.request_creation_date).toLocaleDateString(
-                "en-IN"
-              ) +
-              " " +
-              new Date(params.row.request_creation_date).toLocaleTimeString(
-                "en-IN"
-              )
-            : null,
-      },
-      {
-        field: "Request Amount",
-        width: 230,
-        fieldName: "request_amount",
-        renderCell: (params) =>
-          params.row.sales_executive_name !== "Total" ? (
-            params.row.request_amount
-          ) : (
-            <div className="fs-6 font-bold text-black-50">
-              {" "}
-              {params.row.request_amount}
-            </div>
-          ),
-      },
-      {
-        field: "Released Amount",
-        width: 230,
-        fieldName: "released_amount",
-        renderCell: (params) =>
-          params.row.sales_executive_name !== "Total" ? (
-            <Link
-              to={`/admin/Incentive-Request-Released-List/${params.row.incentive_request_id}`}
-              className="link-primary"
-            >
-              {params.row.released_amount
-                ? params.row.released_amount?.toLocaleString("en-IN")
-                : 0}
-            </Link>
-          ) : (
-            <div className="fs-6 font-bold text-black-50">
-              {params.row.released_amount?.toLocaleString("en-IN")}
-            </div>
-          ),
-      },
-      {
-        field: "Balance Release Amount",
-        width: 230,
-        fieldName: "balance_release_amount",
-        renderCell: (params) =>
-          params.row.sales_executive_name !== "Total" ? (
-            params.row.balance_release_amount?.toLocaleString("en-IN")
-          ) : (
-            <div className="fs-6 font-bold text-black-50">
-              {params.row.balance_release_amount}
-            </div>
-          ),
-      },
-      {
-        field: "Status",
-        width: 230,
-        renderCell: (params) => {
-          return params.row.action == "Complete Release Button" ? (
-            <button
-              className="btn btn-sm btn-outline-info"
-              data-toggle="modal"
-              data-target="#incentiveModal"
-              onClick={() => {
-                setSelectedData(params.row),
-                  setBalanceReleaseAmount(params.row.balance_release_amount);
-                setAccountNo("");
-                setRemarks("");
-                setModalOpen(true);
-              }}
-            >
-              Complete Release
-            </button>
-          ) : (
-            <span>{params.row.action}</span>
-          );
-        },
-      },
-      {
-        field: "Aging",
-        renderCell: (params) => {
-          const currentDate = new Date(
-            params.row.action == "Complete Release Button"
-              ? new Date()
-              : params.row.request_creation_date
-          );
-          const requestedDate = new Date(
-            params.row.action == "Complete Release Button"
-              ? params.row.request_creation_date
-              : params.row.payment_date
-          );
-          const diffTime = Math.abs(currentDate - requestedDate);
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    },
+    {
+      field: "Aging",
+      renderCell: (params) => {
+        const currentDate = new Date(
+          params.row.action == "Complete Release Button"
+            ? new Date()
+            : params.row.request_creation_date
+        );
+        const requestedDate = new Date(
+          params.row.action == "Complete Release Button"
+            ? params.row.request_creation_date
+            : params.row.payment_date
+        );
+        const diffTime = Math.abs(currentDate - requestedDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-          return params.row.sales_executive_name !== "Total" ? diffDays : null;
-        },
+        return params.row.sales_executive_name !== "Total" ? diffDays : null;
       },
-    ]
+    },
+  ];
 
   const handlePendingFilterData = () => {
     const result = datas.filter((d) => {
@@ -803,12 +811,12 @@ filterData.indexOf(params.row) + 1 === filterData.length ?(""): (
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
         />
       </Dialog>
       {/* Unique Sales Executive Dialog Box */}
@@ -840,6 +848,7 @@ filterData.indexOf(params.row) + 1 === filterData.length ?(""): (
         <DataGrid
           rows={uniqueSalesExecutiveData}
           columns={uniqueSalesExecutivecolumn}
+          fullWidth={"md"}
           pageSize={5}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
@@ -850,7 +859,7 @@ filterData.indexOf(params.row) + 1 === filterData.length ?(""): (
               showQuickFilter: true,
             },
           }}
-           getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+          getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -861,7 +870,11 @@ filterData.indexOf(params.row) + 1 === filterData.length ?(""): (
               value={salesExecutive}
               onChange={(event, newValue) => setSalesExecutive(newValue)}
               options={Array.from(
-                new Set(datas.map((option) => option.sales_executive_name))
+                new Set(
+                  datas
+                    .filter((option) => option.sales_executive_name !== "Total")
+                    .map((option) => option.sales_executive_name)
+                )
               )}
               renderInput={(params) => (
                 <TextField
@@ -1213,7 +1226,7 @@ filterData.indexOf(params.row) + 1 === filterData.length ?(""): (
                 showQuickFilter: true,
               },
             }}
-             getRowId={(row) => filterData.indexOf(row)}
+            getRowId={(row) => filterData.indexOf(row)}
           />
         </div>
       </div>
