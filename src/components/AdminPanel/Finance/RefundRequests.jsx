@@ -347,7 +347,7 @@ const RefundRequests = () => {
     },
     {
       headerName: "Refund Payment Image",
-      renderCell: (params) => (
+      renderCell: (params,index) => (
         <>
           {params.row.finance_refund_status === 0 && (
             <form method="POST" encType="multipart/form-data" action="">
@@ -367,8 +367,8 @@ const RefundRequests = () => {
                 key={index}
                 disabled={!refundImage[index] ? true : false}
                 onClick={(e) => {
-                  setSingleRow(row);
-                  uploadImage(e, row, index);
+                  setSingleRow(params.row);
+                  uploadImage(e, params.row, index);
                 }}
               />
             </form>
@@ -479,7 +479,7 @@ const RefundRequests = () => {
     {
       field: "Refund Payment Image",
       headerName: "Refund Payment Image",
-      renderCell: (params) => (
+      renderCell: (params,index) => (
         <>
           {params.row.finance_refund_status === 0 && (
             <form method="POST" encType="multipart/form-data" action="">
@@ -499,8 +499,8 @@ const RefundRequests = () => {
                 key={index}
                 disabled={!refundImage[index] ? true : false}
                 onClick={(e) => {
-                  setSingleRow(row);
-                  uploadImage(e, row, index);
+                  setSingleRow(params.row);
+                  uploadImage(e, params.row, index);
                 }}
               />
             </form>

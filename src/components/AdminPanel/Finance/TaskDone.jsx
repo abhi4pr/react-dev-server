@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
@@ -15,7 +15,6 @@ import {
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import { useLocation, useParams } from "react-router-dom";
 
 export default function TaskDone() {
   const [search, setSearch] = useState("");
@@ -35,7 +34,7 @@ export default function TaskDone() {
   const [uniqueVendorData, setUniqueVendorData] = useState([]);
   const [sameVendorDialog, setSameVendorDialog] = useState(false);
   const [sameVendorData, setSameVendorData] = useState([]);
-  const [paymentHistoryOpen, setPaymentHistoryOpen] = useState(false);
+
   const [paymentHistory, setPaymentHistory] = useState(false);
   const [bankDetail, setBankDetail] = useState(false);
   const [nodeData, setNodeData] = useState([]);
@@ -44,10 +43,10 @@ export default function TaskDone() {
   const [historyData, setHistoryData] = useState([]);
   const [phpData, setPhpData] = useState([]);
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+  const [TDStableData, setTDStableData] = useState([]);
+  const [uniqueVendorTDSdoneData, setUniqueVendorTDSdoneData] = useState([]);
 
   const accordionButtons = ["Zoho", "GST", "TDS"];
-
-  const { id } = useParams();
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -78,12 +77,11 @@ export default function TaskDone() {
           setData(y);
           setFilterData(y);
           setPendingRequestCount(u.length);
-          const uniqueVendors = new Set(u.map((item) => item.vendor_name));
-          setUniqueVendorCount(uniqueVendors.size);
+          const uniqueVendors = new Set(y.map((item) => item.vendor_name));
           const uvData = [];
           uniqueVendors.forEach((vendorName) => {
             const vendorRows = y.filter(
-              (item) => item.vendor_name === vendorName
+              (item) => item.vendor_name == vendorName
             );
             uvData.push(vendorRows[0]);
           });
@@ -91,6 +89,45 @@ export default function TaskDone() {
         });
     });
   };
+
+  let uniqueVendorCountFun = () => {
+    let uniqueVendorCountae = new Set(
+      activeAccordionIndex == 0
+        ? zohoDoneData.map((item) => item.vendor_name)
+        : activeAccordionIndex == 1
+        ? gstDoneData.map((item) => item.vendor_name)
+        : TDStableData.map((item) => item.vendor_name)
+    );
+    let uvData = [];
+    uniqueVendorCountae.forEach((vendorName) => {
+      const vendorRows =
+        activeAccordionIndex !== 2
+          ? nodeData
+          : TDStableData.filter((item) => item.vendor_name === vendorName);
+      uvData.push(vendorRows[0]);
+    });
+
+    console.log(uvData, "uvData"); // Log the uvData array to check its contents
+
+    let lengthData = uvData.filter((item) => {
+      return activeAccordionIndex === 0
+        ? item?.zoho_status === "Done"
+        : activeAccordionIndex === 1
+        ? item?.gst_status === "Done"
+        : activeAccordionIndex === 2
+        ? item?.tds_status === "Done"
+        : "";
+    });
+
+    console.log(lengthData, "lengthData"); // Log the filtered data to check its contents
+
+    setUniqueVendorCount(lengthData.length);
+  };
+
+  useEffect(() => {
+    uniqueVendorCountFun();
+  }, [activeAccordionIndex, filterData]);
+
   // pending data submit
 
   const handleOpenBankDetail = () => {
@@ -295,9 +332,6 @@ export default function TaskDone() {
 
     setHistoryData(type == "FY" ? dataFY : dataTP);
   };
-  const handleClosePaymentHistory = () => {
-    setPaymentHistory(false);
-  };
 
   const handleAccordionButtonClick = (index) => {
     setActiveAccordionIndex(index);
@@ -315,10 +349,15 @@ export default function TaskDone() {
   });
   console.log("GST Done Data:", gstDoneData);
   // status for TDS :-
-  const tdsDoneData = filterData.filter((item) => {
-    return item.tds_status === "Done";
-  });
-  console.log("TDS Done Data:", tdsDoneData);
+  
+
+  useEffect(() => {
+    const tdsDoneData = filterData.filter((item) => {
+      return item.tds_status === "Done";
+    });
+    setTDStableData(tdsDoneData);
+  }, []);
+
   // same Vender columns:-
   const sameVenderColumns = [
     {
@@ -874,6 +913,23 @@ export default function TaskDone() {
       },
     },
   ];
+
+  useEffect(() => {
+    let newData = new Set(TDStableData.map((item) => item.vendor_name));
+
+    let uvData = [];
+    newData.forEach((vendorName) => {
+      const vendorRows = TDStableData.filter(
+        (item) => item.vendor_name === vendorName
+      );
+      uvData.push(vendorRows[0]);
+    });
+
+    console.log(uvData, "uvData"); // Log the uvData array to check its contents
+   return setUniqueVendorTDSdoneData(uvData);
+
+  }, [TDStableData]);
+
   return (
     <div>
       <FormContainer
@@ -963,19 +1019,29 @@ export default function TaskDone() {
         </IconButton>
 
         <DataGrid
-          rows={uniqueVendorData}
+          rows={
+            activeAccordionIndex != 2
+              ? uniqueVendorData.filter((e) =>
+                  activeAccordionIndex == 0
+                    ? e.zoho_status == "Done"
+                    : activeAccordionIndex == 1
+                    ? e.gst_status == "Done"
+                    : e.tds_status == "Done"
+                )
+              : uniqueVendorTDSdoneData
+          }
           columns={uniqueVendorColumns}
           pageSize={5}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
           autoHeight
           slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => uniqueVendorData.indexOf(row)}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => uniqueVendorData.indexOf(row)}
         />
       </Dialog>
       <div className="row">
@@ -1097,7 +1163,7 @@ export default function TaskDone() {
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
-        mainTitleRequired= {false}
+        mainTitleRequired={false}
       >
         <div className="tab-content">
           {activeAccordionIndex === 0 && (
@@ -1115,7 +1181,7 @@ export default function TaskDone() {
                     showQuickFilter: true,
                   },
                 }}
-                 getRowId={(row) => zohoDoneData.indexOf(row)}
+                getRowId={(row) => zohoDoneData.indexOf(row)}
               />
             </div>
           )}
@@ -1133,14 +1199,15 @@ export default function TaskDone() {
                   toolbar: {
                     showQuickFilter: true,
                   },
-                }} getRowId={(row) => gstDoneData.indexOf(row)}
+                }}
+                getRowId={(row) => gstDoneData.indexOf(row)}
               />
             </div>
           )}
           {activeAccordionIndex === 2 && (
             <div className="mt-3">
               <DataGrid
-                rows={tdsDoneData}
+                rows={TDStableData}
                 columns={tdsColumn}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
@@ -1151,137 +1218,13 @@ export default function TaskDone() {
                   toolbar: {
                     showQuickFilter: true,
                   },
-                }} getRowId={(row) => tdsDoneData.indexOf(row)}
+                }}
+                getRowId={(row) => TDStableData.indexOf(row)}
               />
             </div>
           )}
         </div>
       </FormContainer>
-
-      {/* {id !== "Zoho" && id !== "GST" && id !== "TDS" && (
-        <div className="mt-3">
-          <DataGrid
-            rows={filterData}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            componentsProps={{
-              toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
-              },
-            }}
-            getRowId={(row) => filterData.indexOf(row)}
-          />
-        </div>
-      )}
-      {id === "Zoho" && (
-        <div className="mt-3">
-          <DataGrid
-            rows={zohoDoneData}
-            columns={zohocolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            componentsProps={{
-              toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
-              },
-            }}
-            getRowId={(row) => zohoDoneData.indexOf(row)}
-          />
-        </div>
-      )}
-      {id === "GST" && (
-        <div className="mt-3">
-          <DataGrid
-            rows={gstDoneData}
-            columns={gstColumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            componentsProps={{
-              toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
-              },
-            }}
-            getRowId={(row) => gstDoneData.indexOf(row)}
-          />
-        </div>
-      )}
-      {id === "TDS" && (
-        <div className="mt-3">
-          <DataGrid
-            rows={tdsDoneData}
-            columns={tdsColumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            componentsProps={{
-              toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
-              },
-            }}
-            getRowId={(row) => tdsDoneData.indexOf(row)}
-          />
-        </div> */}
-      {/* )} */}
       {openImageDialog && (
         <ImageView
           viewImgSrc={viewImgSrc}

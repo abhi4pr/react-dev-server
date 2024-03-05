@@ -1922,6 +1922,9 @@ export default function PendingPaymentRequest() {
           columns={remainderDialogColumns}
           aknowledgementDialog={aknowledgementDialog}
           setAknowledgementDialog={setAknowledgementDialog}
+          userName={userName}
+          callApi={callApi}
+          setRemainderDialo={setRemainderDialog}
         />
       )}
     </div>

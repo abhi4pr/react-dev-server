@@ -1236,7 +1236,8 @@ export default function TaskPending() {
                     toolbar: {
                       showQuickFilter: true,
                     },
-                  }} getRowId={(row) => filterData.indexOf(row)}
+                  }} 
+                  getRowId={(row) => filterData.indexOf(row)}
                 />
               ) : (
                 ""

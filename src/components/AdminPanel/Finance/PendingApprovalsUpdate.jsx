@@ -89,7 +89,7 @@ const PendingApprovalUpdate = () => {
         }
       )
       .then((res) => {
-        getData();
+          getData();
       });
 
     toastAlert("Data updated");
@@ -97,22 +97,25 @@ const PendingApprovalUpdate = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {});
-    setTimeout(() => {
-      axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
-        const custData = res.data.data;
-        setData(res.data.data);
-        setFilterData(res.data.data);
-        const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
-        setUniqueCustomerCount(uniqueCustomers.size);
-        const uniqueCustomerData = Array.from(uniqueCustomers).map(
-          (customerName) => {
-            return custData.find((item) => item.cust_name === customerName);
-          }
-        );
-        setUniqueCustomerData(uniqueCustomerData);
-      });
-    }, 1000);
+    axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
+
+      setTimeout(() => {
+        axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
+          const custData = res.data.data;
+          setData(res.data.data);
+          setFilterData(res.data.data);
+          const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
+          setUniqueCustomerCount(uniqueCustomers.size);
+          const uniqueCustomerData = Array.from(uniqueCustomers).map(
+            (customerName) => {
+              return custData.find((item) => item.cust_name === customerName);
+            }
+          );
+          setUniqueCustomerData(uniqueCustomerData);
+        });
+      }, 1000);
+    });
+   
   }
 
   function convertDateToDDMMYYYY(dateString) {
@@ -990,9 +993,9 @@ const PendingApprovalUpdate = () => {
                   datas.map((option) =>
                     option.payment_approval_status === 0
                       ? "Pending"
-                      : row.payment_approval_status === 1
+                      : option.payment_approval_status === 1
                       ? "Approved"
-                      : row.payment_approval_status === 2
+                      : option.payment_approval_status === 2
                       ? "Rejected"
                       : ""
                   )
