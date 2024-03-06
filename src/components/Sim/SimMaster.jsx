@@ -168,6 +168,10 @@ const SimMaster = () => {
     } else if (!subCategory || !subCategory.sub_category_id) {
       setSubCategoryError("Assets SubCategory is required");
       toastError("Assets SubCategory is required");
+    } else if (!brandName || brandName == "") {
+      toastError("Brand Name is Required");
+    } else if (!modalName || modalName == "") {
+      toastError("Modal Name is Required");
     } else if (!assetsID || assetsID === "") {
       setAssetsIDError("Assets ID is required");
       toastError("Assets ID is required");
@@ -381,7 +385,7 @@ const SimMaster = () => {
                   id="combo-box-demo"
                   options={modalData?.map((cat) => ({
                     label: cat.asset_modal_name,
-                    value: cat._id,
+                    value: cat.asset_modal_id,
                   }))}
                   onChange={(e, newvalue) => {
                     if (newvalue != null) {

@@ -35,7 +35,11 @@ const AssetSubCategoryMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!inWarranty || inWarranty == "") {
+    if (!subCategoryName || subCategoryName == "") {
+      return toastError("Sub Category is Mendatory");
+    } else if (!selectedCat || selectedCat == "") {
+      return toastError("Category is Mendatory");
+    } else if (!inWarranty || inWarranty == "") {
       return toastError("In Warranty is Mendatory");
     }
     try {
@@ -71,6 +75,8 @@ const AssetSubCategoryMaster = () => {
         >
           <FieldContainer
             label="Sub Category"
+            astric
+            required={false}
             value={subCategoryName}
             onChange={(e) => setSubCategoryName(e.target.value)}
           />
