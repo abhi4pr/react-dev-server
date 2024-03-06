@@ -141,19 +141,23 @@ const ManagerDynamicOverview = ({
       name: "Actions",
       cell: (row) => (
         <>
-          {row.asset_repair_request_status !== "Resolved" && (
-            <button
-              type="button"
-              data-toggle="modal"
-              data-target="#resolvedModal"
-              size="small"
-              color="primary"
-              onClick={() => handleRepairStatusUpdate(row, "ApprovedByManager")}
-              className="btn btn-success btn-sm ml-2"
-            >
-              Approval
-            </button>
-          )}
+          {row.asset_repair_request_status !== "Resolved" &&
+            row.asset_repair_request_status !== "Accept" &&
+            row.asset_repair_request_status !== "ApprovedByManager" && (
+              <button
+                type="button"
+                data-toggle="modal"
+                data-target="#resolvedModal"
+                size="small"
+                color="primary"
+                onClick={() =>
+                  handleRepairStatusUpdate(row, "ApprovedByManager")
+                }
+                className="btn btn-success btn-sm ml-2"
+              >
+                Approval
+              </button>
+            )}
         </>
       ),
       sortable: true,

@@ -254,7 +254,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       cell: (row) => (
         <a
           style={{ cursor: "pointer" }}
-          target=""
+          target="blank"
           href={row.invoiceCopy}
           download
         >
