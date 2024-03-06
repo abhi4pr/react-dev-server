@@ -502,8 +502,8 @@ const SimUpdate = () => {
                   }}
                 >
                   {invoiceCopy?.name}
-                  {","}
-                  <span style={{ color: "red" }}>Old Url:-</span>
+
+                  <span style={{ color: "red" }}></span>
                   {invoiceCopyURL}
                 </span>
               </div>

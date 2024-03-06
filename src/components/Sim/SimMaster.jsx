@@ -193,9 +193,9 @@ const SimMaster = () => {
       formData.append("sub_category_id", subCategory.sub_category_id);
       formData.append("vendor_id", vendorName.vendor_id);
       formData.append("invoiceCopy", invoiceCopy);
-      formData.append("selfAuditPeriod", selfAuditPeriod);
+      formData.append("selfAuditPeriod", Number(selfAuditPeriod));
       formData.append("selfAuditUnit", selfAuditUnit);
-      formData.append("hrselfAuditPeriod", hrselfAuditPeriod);
+      formData.append("hrselfAuditPeriod", Number(hrselfAuditPeriod));
       formData.append("hrselfAuditUnit", hrselfAuditUnit);
       formData.append("assetsValue", assetsValue);
       formData.append("assetsCurrentValue", assetsCurrentValue);
