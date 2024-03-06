@@ -47,6 +47,11 @@ const SimOverview = () => {
   const [subcategoryData, setSubCategoryData] = useState([]);
   const [subcategory, setSubCategory] = useState("");
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
   const [showAssetsImage, setShowAssetImages] = useState([]);
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -179,6 +184,7 @@ const SimOverview = () => {
   }, [search]);
 
   function handleParticularSimData(simId) {
+    setIsModalOpen(true);
     axios.get(`${baseUrl}` + `get_single_sim/${simId}`).then((res) => {
       setModalData(res?.data.data);
     });
@@ -258,6 +264,7 @@ const SimOverview = () => {
           remark: modalData.Remarks,
         })
         .then(() => {
+          closeModal();
           getData();
           toastAlert("Asset Allocated Successfully");
           setSelectedUserTransfer("");
@@ -413,9 +420,9 @@ const SimOverview = () => {
               type="button"
               title="Allocation"
               className="btn btn-outline-primary btn-sm user-button"
-              data-toggle="modal"
-              data-target="#AllocationModal"
-              data-whatever="@mdo"
+              // data-toggle="modal"
+              // data-target="#AllocationModal"
+              // data-whatever="@mdo"
               onClick={() => handleParticularSimData(row.sim_id)}
             >
               A
@@ -827,12 +834,17 @@ const SimOverview = () => {
       </div>
 
       <div
-        className="modal fade"
-        id="AllocationModal"
+        // className="modal fade"
+        // id="AllocationModal"
+        // tabIndex={-1}
+        // role="dialog"
+        // aria-labelledby="AllocationModal"
+        // aria-hidden="true"
+        className={`modal fade ${isModalOpen ? "show" : ""}`}
+        id="sidebar-right"
         tabIndex={-1}
         role="dialog"
-        aria-labelledby="AllocationModal"
-        aria-hidden="true"
+        style={{ display: isModalOpen ? "block" : "none" }}
       >
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -929,7 +941,8 @@ const SimOverview = () => {
               <button
                 type="button"
                 className="btn btn-secondary"
-                data-dismiss="modal"
+                // data-dismiss="modal"
+                onClick={() => closeModal()}
               >
                 Close
               </button>
