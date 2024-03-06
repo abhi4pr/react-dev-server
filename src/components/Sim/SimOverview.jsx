@@ -328,7 +328,7 @@ const SimOverview = () => {
     },
 
     {
-      name: "image",
+      name: "Image",
       selector: (row) => (
         <button
           className="btn btn-outline-success"
@@ -342,7 +342,12 @@ const SimOverview = () => {
       name: "Invoice",
       selector: (row) => (
         <>
-          <a style={{ cursor: "pointer" }} href={row.invoiceCopy_url} download>
+          <a
+            style={{ cursor: "pointer" }}
+            target="blank"
+            href={row.invoiceCopy_url}
+            download
+          >
             {/* <img
               style={{ width: "100px" }}
               src={row.invoiceCopy_url}
