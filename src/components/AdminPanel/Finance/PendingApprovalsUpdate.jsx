@@ -6,7 +6,7 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 // import DataTable from "react-data-table-component";
-import { Autocomplete, TextField, Dialog, DialogTitle } from "@mui/material";
+import { Autocomplete, TextField, Dialog, DialogTitle, Skeleton } from "@mui/material";
 import { get } from "jquery";
 import ImageView from "./ImageView";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -15,6 +15,7 @@ import pdfImg from "./pdf-file.png";
 import { Button } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import { set } from "date-fns";
 
 const PendingApprovalUpdate = () => {
   const { toastAlert } = useGlobalContext();
@@ -42,6 +43,7 @@ const PendingApprovalUpdate = () => {
   const [uniqueCustomerData, setUniqueCustomerData] = useState([]);
   const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
   const [sameCustomerData, setSameCustomerData] = useState([]);
+  const [loading, setLoading] = useState(false);
   // const []
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -97,13 +99,14 @@ const PendingApprovalUpdate = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_finance_data_in_node").then((res) => {
-
+    setLoading(true);
+    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {
       setTimeout(() => {
         axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
           const custData = res.data.data;
           setData(res.data.data);
           setFilterData(res.data.data);
+          setLoading(false);
           const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
           setUniqueCustomerCount(uniqueCustomers.size);
           const uniqueCustomerData = Array.from(uniqueCustomers).map(
@@ -1145,7 +1148,7 @@ const PendingApprovalUpdate = () => {
 
       <div className="card">
         <div className="data_tbl table-responsive">
-          <DataGrid
+    {!loading   ?   <DataGrid
             rows={filterData}
             columns={columns}
             // pageSize={5}
@@ -1159,7 +1162,12 @@ const PendingApprovalUpdate = () => {
               },
             }}
             getRowId={(row) => filterData.indexOf(row)}
-          />
+          />:<Skeleton
+          sx={{ bgcolor: 'grey.900' , borderRadius: '0.25rem'}}
+          variant="rectangular"
+          width="100%"
+          height={200}
+        />}
         </div>
         {viewImgDialog && (
           <ImageView
