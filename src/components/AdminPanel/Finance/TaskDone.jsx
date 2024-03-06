@@ -15,6 +15,8 @@ import {
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import { set } from "date-fns";
+import { useGlobalContext } from "../../../Context/Context";
 
 export default function TaskDone() {
   const [search, setSearch] = useState("");
@@ -48,6 +50,8 @@ export default function TaskDone() {
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
 
   const accordionButtons = ["Zoho", "GST", "TDS"];
+
+  const { toastAlert } = useGlobalContext();
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -97,14 +101,14 @@ export default function TaskDone() {
         ? zohoDoneData.map((item) => item.vendor_name)
         : activeAccordionIndex == 1
         ? gstDoneData.map((item) => item.vendor_name)
-        : TDStableData.map((item) => item.vendor_name)
+        : tdsDoneData.map((item) => item.vendor_name)
     );
     let uvData = [];
     uniqueVendorCountae.forEach((vendorName) => {
       const vendorRows =
         activeAccordionIndex !== 2
           ? nodeData
-          : TDStableData.filter((item) => item.vendor_name === vendorName);
+          : tdsDoneData.filter((item) => item.vendor_name === vendorName);
       uvData.push(vendorRows[0]);
     });
 
@@ -120,11 +124,11 @@ export default function TaskDone() {
         : "";
     });
 
-    console.log(lengthData, "lengthData"); // Log the filtered data to check its contents
+    console.log(lengthData, "lengthData",uvData,"uvData"); // Log the filtered data to check its contents
 
     setUniqueVendorCount(lengthData.length);
   };
-
+console.log(uniqueVendorData,"uniqueVendorCount",uniqueVendorTDSdoneData,"unique vendor tds data>>");
   useEffect(() => {
     uniqueVendorCountFun();
   }, [activeAccordionIndex, filterData]);
@@ -366,19 +370,21 @@ export default function TaskDone() {
   });
   console.log("GST Done Data:", gstDoneData);
   // status for TDS :-
-
   const tdsDoneData = filterData.filter((item) => {
     return item.tds_status === "Done";
   });
 
+
   useEffect(() => {
     setTDStableData(tdsDoneData);
   }, []);
-
+  useEffect(() => {
+    setTDStableData(tdsDoneData);
+  }, [activeAccordionIndex]);
   // same Vender columns:-
   const sameVenderColumns = [
     {
-      field: "S.NO",
+      field: "s._no",
       headerName: "S.NO",
       width: 90,
       editable: false,
@@ -422,15 +428,30 @@ export default function TaskDone() {
   // unique vender column :-
   const uniqueVendorColumns = [
     {
-      field: "S.NO",
+      field: "s._no",
       headerName: "S.NO",
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = uniqueVendorData.indexOf(params.row);
-        return <div>{rowIndex + 1}</div>;
-      },
-    },
+        let rowIndex;
+        if (activeAccordionIndex === 0) {
+          rowIndex = uniqueVendorData
+            .filter((e) => e.zoho_status === "Done")
+            .indexOf(params.row);
+        } else if (activeAccordionIndex === 1) {
+          rowIndex = uniqueVendorData
+            .filter((e) => e.gst_status === "Done")
+            .indexOf(params.row);
+        } else if (activeAccordionIndex === 2) {
+          rowIndex = uniqueVendorTDSdoneData.indexOf(params.row);
+        } else {
+          rowIndex = -1; // default case when activeAccordionIndex is neither 0 nor 1 nor 2
+        }
+    
+        return <div>{rowIndex !== -1 ? rowIndex + 1 : ""}</div>;
+      }
+    }
+,    
     {
       field: "vendor_name",
       headerName: "Vendor Name",
@@ -609,12 +630,12 @@ export default function TaskDone() {
   ];
   const columns = [
     {
-      field: "S.NO",
+      field: "s._no",
       headerName: "S.NO",
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex =activeAccordionIndex === 0 ? zohoDoneData.indexOf(params.row): activeAccordionIndex === 1 ?gstDoneData.indexOf(params.row): activeAccordionIndex === 2 ? tdsDoneData.indexOf(params.row) :"";
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -645,11 +666,13 @@ export default function TaskDone() {
                 setOpenImageDialog(true);
                 setViewImgSrc(imgUrl);
               }}
+
+            
               style={{
                 position: "absolute",
-                width: "2.4%",
-                height: "36%",
-                top: "100px",
+                width: "2.9%",
+                height: "19%",
+                top: "258px",
                 left: "104px",
                 cursor: "pointer",
                 background: "rgba(0, 0, 0, 0)",
@@ -1009,14 +1032,15 @@ export default function TaskDone() {
     let uvData = [];
     newData.forEach((vendorName) => {
       const vendorRows = TDStableData.filter(
-        (item) => item.vendor_name === vendorName
+        (item) => item.vendor_name == vendorName
       );
       uvData.push(vendorRows[0]);
     });
 
     console.log(uvData, "uvData"); // Log the uvData array to check its contents
-    return setUniqueVendorTDSdoneData(uvData);
-  }, [TDStableData]);
+   return setUniqueVendorTDSdoneData(uvData);
+
+  }, [activeAccordionIndex, TDStableData]);
 
   return (
     <div>
@@ -1108,16 +1132,16 @@ export default function TaskDone() {
 
         <DataGrid
           rows={
-            activeAccordionIndex != 2
-              ? uniqueVendorData.filter((e) =>
-                  activeAccordionIndex == 0
-                    ? e.zoho_status == "Done"
-                    : activeAccordionIndex == 1
-                    ? e.gst_status == "Done"
-                    : e.tds_status == "Done"
-                )
-              : uniqueVendorTDSdoneData
-          }
+            activeAccordionIndex ==2 ?
+            uniqueVendorTDSdoneData
+             :
+             uniqueVendorData.filter((e) =>
+                activeAccordionIndex == 0
+                  ? e.zoho_status == "Done"
+                  : activeAccordionIndex == 1
+                  ? e.gst_status == "Done"
+                  : ""
+  )}
           columns={uniqueVendorColumns}
           pageSize={5}
           rowsPerPageOptions={[5]}
@@ -1129,7 +1153,7 @@ export default function TaskDone() {
               showQuickFilter: true,
             },
           }}
-          getRowId={(row) => uniqueVendorData.indexOf(row)}
+          getRowId={(row) => row.request_id}
         />
       </Dialog>
       <div className="row">
@@ -1295,7 +1319,7 @@ export default function TaskDone() {
           {activeAccordionIndex === 2 && (
             <div className="mt-3">
               <DataGrid
-                rows={TDStableData}
+                rows={tdsDoneData}
                 columns={tdsColumn}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
