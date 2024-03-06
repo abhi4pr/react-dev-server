@@ -89,6 +89,7 @@ const AssetCategoryMaster = () => {
           <FieldContainer
             fieldGrid={12}
             label="Category Name"
+            astric
             value={categoryName}
             onChange={(e) => setCategoryName(e.target.value)}
           />
@@ -96,12 +97,11 @@ const AssetCategoryMaster = () => {
             type="number"
             label="Self Audit Period"
             value={selfAuditPeriod}
+            required={false}
             onChange={(e) => setSelfAuditPeriod(e.target.value)}
           />
           <div className="form-group col-6">
-            <label className="form-label">
-              Self Audit Unit <sup style={{ color: "red" }}>*</sup>
-            </label>
+            <label className="form-label">Self Audit Unit</label>
             <Select
               className=""
               options={Unit.map((option) => ({
@@ -115,19 +115,18 @@ const AssetCategoryMaster = () => {
               onChange={(e) => {
                 setSelfAuditUnit(e.value);
               }}
-              required
+              // required
             />
           </div>
           <FieldContainer
             type="number"
             label="Hr Audit Period"
+            required={false}
             value={hrselfAuditPeriod}
             onChange={(e) => setHrSelfAuditPeriod(e.target.value)}
           />
           <div className="form-group col-6">
-            <label className="form-label">
-              HR Audit Unit <sup style={{ color: "red" }}>*</sup>
-            </label>
+            <label className="form-label">HR Audit Unit</label>
             <Select
               className=""
               options={Unit.map((option) => ({
@@ -141,7 +140,7 @@ const AssetCategoryMaster = () => {
               onChange={(e) => {
                 setHrSelfAuditUnit(e.value);
               }}
-              required
+              // required
             />
           </div>
           {/* <FieldContainer

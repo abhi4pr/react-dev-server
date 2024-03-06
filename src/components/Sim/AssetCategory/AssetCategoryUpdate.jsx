@@ -32,35 +32,30 @@ const AssetCategoryUpdate = () => {
   }, [id]);
 
   const getData = () => {
-    axios
-      .get(`${baseUrl}`+`get_single_asset_category/${id}`)
-      .then((res) => {
-        const response = res.data.data;
-        setCategoryName(response.category_name);
-        setDescription(response.description);
-        setSelfAuditPeriod(response.selfAuditPeriod);
-        setSelfAuditUnit(response.selfAuditUnit);
-        setHrSelfAuditPeriod(response.hrAuditPeriod);
-        setHrSelfAuditUnit(response.hrAuditUnit);
-      });
+    axios.get(`${baseUrl}` + `get_single_asset_category/${id}`).then((res) => {
+      const response = res.data.data;
+      setCategoryName(response.category_name);
+      setDescription(response.description);
+      setSelfAuditPeriod(response.selfAuditPeriod);
+      setSelfAuditUnit(response.selfAuditUnit);
+      setHrSelfAuditPeriod(response.hrAuditPeriod);
+      setHrSelfAuditUnit(response.hrAuditUnit);
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(
-        baseUrl+"update_asset_category",
-        {
-          category_id: id,
-          category_name: categoryName,
-          description: description,
-          selfAuditPeriod: selfAuditPeriod,
-          selfAuditUnit: selfAuditUnit,
-          hrAuditPeriod: hrselfAuditPeriod,
-          hrAuditUnit: hrselfAuditUnit,
-          last_updated_by: loginUserId,
-        }
-      );
+      const response = await axios.put(baseUrl + "update_asset_category", {
+        category_id: id,
+        category_name: categoryName,
+        description: description,
+        selfAuditPeriod: selfAuditPeriod,
+        selfAuditUnit: selfAuditUnit,
+        hrAuditPeriod: hrselfAuditPeriod,
+        hrAuditUnit: hrselfAuditUnit,
+        last_updated_by: loginUserId,
+      });
       toastAlert("Data Updated Successfully");
       setCategoryName("");
       setDescription("");
@@ -86,6 +81,7 @@ const AssetCategoryUpdate = () => {
             fieldGrid={12}
             label="Category Name"
             value={categoryName}
+            astric
             onChange={(e) => setCategoryName(e.target.value)}
           />
 
@@ -93,12 +89,11 @@ const AssetCategoryUpdate = () => {
             type="number"
             label="Self Audit Period"
             value={selfAuditPeriod}
+            required={false}
             onChange={(e) => setSelfAuditPeriod(e.target.value)}
           />
           <div className="form-group col-6">
-            <label className="form-label">
-              Self Audit Unit <sup style={{ color: "red" }}>*</sup>
-            </label>
+            <label className="form-label">Self Audit Unit</label>
             <Select
               className=""
               options={Unit.map((option) => ({
@@ -118,13 +113,12 @@ const AssetCategoryUpdate = () => {
           <FieldContainer
             type="number"
             label="Hr Audit Period"
+            required={false}
             value={hrselfAuditPeriod}
             onChange={(e) => setHrSelfAuditPeriod(e.target.value)}
           />
           <div className="form-group col-6">
-            <label className="form-label">
-              HR Audit Unit <sup style={{ color: "red" }}>*</sup>
-            </label>
+            <label className="form-label">HR Audit Unit</label>
             <Select
               className=""
               options={Unit.map((option) => ({
