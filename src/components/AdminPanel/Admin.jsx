@@ -237,7 +237,11 @@ import GSThold from "./Finance/GSThold";
 import NewExcelFile from "./RegisterCampaign/Plan/NewExcelFile";
 
 import TempExecution from "./RegisterCampaign/tempPlan/TempExecution";
-
+import VendorType from "./PageMS/VendorType";
+import PmsPlatform from "./PageMS/PmsPlatform";
+import PayMethod from "./PageMS/PayMethod";
+import PayCycle from "./PageMS/PayCycle";
+import GroupLinkType from "./PageMS/GroupLinkType";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1159,6 +1163,12 @@ const Admin = () => {
                     element={<TaskStatusDeptWiseUpdate />}
                   />
                   {/* TASK MANAGEMENT */}
+
+                  <Route path="/pms-vendor-type" element={<VendorType />} />
+                  <Route path="/pms-platform" element={<PmsPlatform />} />
+                  <Route path="/pms-pay-method" element={<PayMethod />} />
+                  <Route path="/pms-pay-cycle" element={<PayCycle />} />
+                  <Route path="/pms-group-link-type" element={<GroupLinkType />} />
                 </Route>
               </Routes>
             </div>
