@@ -29,7 +29,7 @@ const AssetSubCategoryOverview = () => {
   };
   useEffect(() => {
     const result = data.filter((d) => {
-      return d.sub_category_nam?.toLowerCase().match(search.toLowerCase());
+      return d.sub_category_name?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);

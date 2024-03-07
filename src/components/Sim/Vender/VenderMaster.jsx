@@ -44,6 +44,10 @@ const VenderMaster = () => {
     e.preventDefault();
     if (!vendorName || vendorName == "") {
       return toastError("Vendor Name is required");
+    } else if (!type || type == "") {
+      return toastError("Type is required");
+    } else if (!selectedCategory || selectedCategory == "") {
+      return toastError("Selected Category is required");
     } else if (
       !vendorContact ||
       vendorContact == "" ||

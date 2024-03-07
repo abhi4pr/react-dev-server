@@ -38,7 +38,7 @@ const SimAllocationOverview = () => {
 
   useEffect(() => {
     const result = data?.filter((d) => {
-      return d.mobileNo?.toLowerCase().match(search.toLowerCase());
+      return d.assetsName?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);

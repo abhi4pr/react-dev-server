@@ -10,7 +10,7 @@ import Select from "react-select";
 import { baseUrl } from "../../../utils/config";
 
 const AssetCategoryMaster = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const token = sessionStorage.getItem("token");
@@ -43,7 +43,18 @@ const AssetCategoryMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (selfAuditPeriod && !selfAuditUnit) {
+      toastError(
+        "Please select a Self Audit Unit when a Self Audit Period is given."
+      );
+      return;
+    }
+    if (hrselfAuditPeriod && !hrselfAuditUnit) {
+      toastError(
+        "Please select a HR Audit Unit when a HR Audit Period is given."
+      );
+      return;
+    }
     try {
       const isCategoryExist = categoryData.some(
         (d) => d.category_name === categoryName
@@ -100,8 +111,12 @@ const AssetCategoryMaster = () => {
             required={false}
             onChange={(e) => setSelfAuditPeriod(e.target.value)}
           />
+
           <div className="form-group col-6">
-            <label className="form-label">Self Audit Unit</label>
+            <label className="form-label">
+              Self Audit Unit{" "}
+              {selfAuditPeriod && <span style={{ color: "red" }}> *</span>}
+            </label>
             <Select
               className=""
               options={Unit.map((option) => ({
@@ -126,7 +141,10 @@ const AssetCategoryMaster = () => {
             onChange={(e) => setHrSelfAuditPeriod(e.target.value)}
           />
           <div className="form-group col-6">
-            <label className="form-label">HR Audit Unit</label>
+            <label className="form-label">
+              HR Audit Unit{" "}
+              {hrselfAuditPeriod && <span style={{ color: "red" }}> *</span>}{" "}
+            </label>
             <Select
               className=""
               options={Unit.map((option) => ({
@@ -143,11 +161,6 @@ const AssetCategoryMaster = () => {
               // required
             />
           </div>
-          {/* <FieldContainer
-            label="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          /> */}
         </FormContainer>
       </div>
     </>

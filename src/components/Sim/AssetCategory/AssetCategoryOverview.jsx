@@ -13,7 +13,7 @@ import Select from "react-select";
 import { baseUrl } from "../../../utils/config";
 
 const AssetCategoryOverview = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [filterData, setFilterData] = useState([]);
   const [data, setData] = useState([]);
@@ -91,6 +91,9 @@ const AssetCategoryOverview = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!inWarranty || inWarranty == "") {
+      toastError("In Warranty is Required");
+    }
     try {
       const isSubCategoryExist = subCategoryData.some(
         (d) => d.sub_category_name === subCategoryName
@@ -105,14 +108,16 @@ const AssetCategoryOverview = () => {
           // description: description,
           // created_by: loginUserId,
         });
+        if (response.status === 200) {
+          handleCloseModal();
+          toastAlert("Data  posted successfully!");
+          getData();
+        }
         setSubCategoryName("");
         setInWarranty("");
-        setIsModalOpen(false);
-        toastAlert("Data posted successfully!");
-        getData();
       }
     } catch (error) {
-      toastAlert(error.message);
+      // toastAlert(error.message);
     }
   };
 
@@ -333,13 +338,14 @@ const AssetCategoryOverview = () => {
           </div>
           <FormContainer
             mainTitle="Sub Category"
-            title="create SubCategory "
+            title="Create SubCategory "
             handleSubmit={handleSubmit}
             buttonAccess={false}
           >
             <FieldContainer
               label="Sub Category"
               value={subCategoryName}
+              astric
               onChange={(e) => setSubCategoryName(e.target.value)}
             />
 

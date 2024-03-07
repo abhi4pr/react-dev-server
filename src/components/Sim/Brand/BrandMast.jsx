@@ -10,8 +10,10 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { baseUrl } from "../../../utils/config";
+import { useGlobalContext } from "../../../Context/Context";
 
 const BrandMast = () => {
+  const { toastAlert } = useGlobalContext();
   const [brandName, setBrandName] = useState("");
   const [brnadData, setBrandData] = useState([]);
   const [Brnadfilter, setBrnadFilter] = useState([]);
@@ -29,7 +31,8 @@ const BrandMast = () => {
       const response = await axios.get(
         `${baseUrl}` + `get_total_asset_in_category/${row}`
       );
-      setTotalAssets(response.data.data);
+      setTotalAssets(response?.data.data);
+      console.log(response.data.data, "response here ");
       seAssetModel(true);
     } catch (error) {
       console.log("total asset not working", error);
@@ -90,7 +93,7 @@ const BrandMast = () => {
       name: "Add Modal",
       cell: (row) => (
         <>
-          <Link to="/modal-mast">
+          <Link to={`/modal-mast/${2}`}>
             <button className="btn btn-outline-success">Add Modal</button>
           </Link>
         </>
@@ -133,6 +136,7 @@ const BrandMast = () => {
         const response = await axios.post(baseUrl + "add_asset_brand", {
           asset_brand_name: brandName,
         });
+        toastAlert("Brand Created");
         setBrandName("");
         getBrandData();
       }
@@ -167,7 +171,9 @@ const BrandMast = () => {
 
   useEffect(() => {
     const result = brnadData.filter((d) => {
-      return d.asset_brand_name.toLowerCase().match(search.toLocaleLowerCase());
+      return d.asset_brand_name
+        ?.toLowerCase()
+        .match(search.toLocaleLowerCase());
     });
     setBrnadFilter(result);
   }, [search]);
@@ -299,28 +305,22 @@ const BrandMast = () => {
             columns={[
               {
                 name: "S.No",
-                cell: (row, index) => <div>{index + 1}</div>,
+                selector: (row, index) => <div>{index + 1}</div>,
                 width: "10%",
               },
-              { name: "Asset Name", selector: "assetsName" },
-              { name: "Category Name", selector: "category_name" },
-              { name: "Subcategory Name", selector: "sub_category_name" },
-              { name: "Status", selector: "status" },
-              { name: "Asset Type", selector: "asset_type" },
-              { name: "Asset ID", selector: "asset_id" },
+              { name: "Asset Name", selector: (row) => row.assetsName },
+              { name: "Category Name", selector: (row) => row.category_name },
+              {
+                name: "Subcategory Name",
+                selector: (row) => row.sub_category_name,
+              },
+              { name: "Status", selector: (row) => row.status },
+              { name: "Asset Type", selector: (row) => row.asset_type },
+              { name: "Asset ID", selector: (row) => row.asset_id },
             ]}
             data={totalAssets}
             highlightOnHover
             subHeader
-            // subHeaderComponent={
-            //   <input
-            //     type="text"
-            //     placeholder="Search..."
-            //     className="w-50 form-control"
-            //     value={modalSearch}
-            //     onChange={(e) => setModalSearch(e.target.value)}
-            //   />
-            // }
           />
         </div>
         {/* )} */}

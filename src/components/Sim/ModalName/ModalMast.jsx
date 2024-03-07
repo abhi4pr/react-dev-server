@@ -41,7 +41,7 @@ const ModalMast = () => {
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}` + `get_total_asset_in_category/${row}`
+        `${baseUrl}` + `get_asset_available_count_in_modal/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -56,7 +56,7 @@ const ModalMast = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}` + `get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}` + `get_asset_allocated_count_in_modal/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -366,12 +366,15 @@ const ModalMast = () => {
                 cell: (row, index) => <div>{index + 1}</div>,
                 width: "10%",
               },
-              { name: "Asset Name", selector: "assetsName" },
-              { name: "Category Name", selector: "category_name" },
-              { name: "Subcategory Name", selector: "sub_category_name" },
-              { name: "Status", selector: "status" },
-              { name: "Asset Type", selector: "asset_type" },
-              { name: "Asset ID", selector: "asset_id" },
+              { name: "Asset Name", selector: (row) => row.assetsName },
+              { name: "Category Name", selector: (row) => row.category_name },
+              {
+                name: "Subcategory Name",
+                selector: (row) => row.sub_category_name,
+              },
+              { name: "Status", selector: (row) => row.status },
+              { name: "Asset Type", selector: (row) => row.asset_type },
+              { name: "Asset ID", selector: (row) => row.asset_id },
             ]}
             data={totalAssets}
             highlightOnHover
