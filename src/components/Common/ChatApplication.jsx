@@ -100,8 +100,8 @@ const ChatApplication = () => {
               <CloseIcon />
             </IconButton>
           </Box>
-          {/* {data.length > 0 && <UserChatData data={filteredRows} />} */}
-          <UserChatData data={filteredRows} />
+          {data.length > 0 && <UserChatData data={filteredRows} />}
+          {/* <UserChatData data={filteredRows} /> */}
           {/* < */}
         </Box>
       </Modal>

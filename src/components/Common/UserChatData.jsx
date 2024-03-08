@@ -6,36 +6,27 @@ import jwtDecode from "jwt-decode";
 
 const UserChatData = ({ data }) => {
   const [selectedItem, setSelectedItem] = useState(null);
-  const [chatIdData, setChatIdData] = useState();
-  const [dataChat, setDataChat] = useState([]);
+  const [chatIdData, setChatIdData] = useState(null); // Explicitly set to null for clarity
+  
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
-console.log(dataChat,"00000000");
-
-
-
 
   const handleItemClick = async (item) => {
-    const PostUserChat = await axios.post(`http://192.168.1.45:3005/api/chat`, {
-      userFromChatId: loginUserId,
-      userToChatId: item?.user_id,
-    });
-   
-    const ids = PostUserChat?.data?._id;
-    setChatIdData(ids);
-    setSelectedItem(item);
-    if(PostUserChat.status == 200){
-      getChatData()
+    try {
+      const response = await axios.post(`http://192.168.1.45:3005/api/chat`, {
+        userFromChatId: loginUserId,
+        userToChatId: item?.user_id,
+      });
+      if (response.status === 200) {
+        setChatIdData(response.data._id);
+        setSelectedItem(item);
+      } else {
+        console.error("Failed to post chat data");
+      }
+    } catch (error) {
+      console.error("Error posting chat data", error);
     }
-  };
-
-  const getChatData = async () => {
-    const getData = await axios.get(
-      `http://192.168.1.45:3005/api/message/${chatIdData}`
-    );
-    console.log(getData?.data,"getData>>")
-    setDataChat(getData)
   };
 
   return (
@@ -48,13 +39,13 @@ console.log(dataChat,"00000000");
               style={{ padding: "10px", color: "#fff", cursor: "pointer" }}
               onClick={() => handleItemClick(item)}
             >
-              <b> {item?.user_name}</b>
+              <b>{item?.user_name}</b>
               <hr style={{ width: "30%", background: "orange" }} />
             </div>
           ))}
         </div>
       </Box>
-      <ConversationChat selectedItem={selectedItem} chatIdData={chatIdData} dataChat={dataChat} />
+      <ConversationChat selectedItem={selectedItem} chatIdData={chatIdData}  />
     </div>
   );
 };

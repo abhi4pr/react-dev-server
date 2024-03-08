@@ -7,14 +7,20 @@ import { baseUrl } from "../../utils/config";
 import jwtDecode from "jwt-decode";
 
 const ENDPOINT = "http://192.168.1.45:8098";
-var socket;
-const ConversationChat = ({ selectedItem, chatIdData,dataChat }) => {
+var socket ;
+const ConversationChat = ({ selectedItem, chatIdData }) => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginObjId = decodedToken._id;
   const [message, setMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
-  // const [messages, setMessages] = useState([]); // New state for storing messages
+  const [dataChat, setDataChat] = useState([]);
+
+  useEffect(() => {
+    if (chatIdData) {
+      getChatData();
+    }
+  }, [chatIdData]);
 
   const handleChange = (event) => {
     setMessage(event.target.value);
@@ -32,25 +38,11 @@ const ConversationChat = ({ selectedItem, chatIdData,dataChat }) => {
       currentUserId: loginObjId,
     });
 
-    // if (message.trim()) {
-    //   // Ensure that the message is not just whitespace
-    //   const newMessage = {
-    //     id: messages.length + 1, // Simple ID (you might want to use something more sophisticated)
-    //     text: message,
-    //     sender: "You", // You can replace this with dynamic sender info if needed
-    //   };
-    //   setMessages([...messages, newMessage]); // Add the new message to the messages state
-    //   setMessage(""); // Clear the input field
-    // }
-    console.log(chatPostApi, "Response data");
-
     socket.emit("new-message", chatPostApi);
     console.log("Saimyual calls");
     setMessage("");
+    getChatData();
   };
-
- 
-
 
   useEffect(() => {
     // Directly assign to the outer `socket` variable without `const`
@@ -65,13 +57,28 @@ const ConversationChat = ({ selectedItem, chatIdData,dataChat }) => {
 
     socket.emit("setup", decodedToken);
     // socket.on("typing", () => setIsTyping(true));
-      // socket.on("stop typing", () => setIsTyping(false));
-        // Cleanup on component unmount
+    // socket.on("stop typing", () => setIsTyping(false));
+    // Cleanup on component unmount
     return () => {
       socket.disconnect();
       setSocketConnected(false);
     };
   }, []);
+
+  const getChatData = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.1.45:3005/api/message/${chatIdData}`
+      );
+      if (response.status === 200) {
+        setDataChat(response.data);
+      }
+      socket.emit("join chat",chatIdData )
+    } catch (error) {
+      console.error("Error fetching chat data", error);
+    }
+  };
+
 
   if (!selectedItem) {
     return (
@@ -104,7 +111,7 @@ const ConversationChat = ({ selectedItem, chatIdData,dataChat }) => {
     >
       <div>{selectedItem?.user_name}</div>
       <div style={{ overflowY: "auto" }}>
-        {dataChat?.data?.map((msg) => (
+        {dataChat?.map((msg) => (
           <div key={msg._id}>
             <strong>{msg?.content}</strong>
           </div>
