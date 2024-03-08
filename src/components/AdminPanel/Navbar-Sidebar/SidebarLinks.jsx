@@ -1568,21 +1568,70 @@ const SidebarLinks = () => {
             data-parent="#accordionSidebar"
           >
             <div className="bg-white collapse-inner">
-              <Link className="collapse-item" to="/admin/pms-vendor-type">
-                Vendor Type
-              </Link>
-              <Link className="collapse-item" to="/admin/pms-platform">
-                Platform
-              </Link>
-              <Link
-                className="collapse-item"
-                to="/admin/pms-pay-method"
-              >
-                Payment Method
-              </Link>
-              <Link className="collapse-item" to="/admin/pms-pay-cycle">
-                Payment Cycle
-              </Link>
+              {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-vendor-type">
+                    Vendor Type
+                  </Link>
+                )}
+
+              {contextData &&
+                contextData[21] &&
+                contextData[21].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-platform">
+                    Platform
+                  </Link>
+                )}
+
+              {contextData &&
+                contextData[1] &&
+                contextData[1].view_value === 1 && (
+                  <Link
+                    className="collapse-item"
+                    to="/admin/pms-pay-method"
+                  >
+                    Payment Method
+                  </Link>
+                )}
+              {contextData &&
+                contextData[2] &&
+                contextData[2].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-pay-cycle">
+                    Payment Cycle
+                  </Link>
+                )}
+
+              {contextData &&
+                contextData[6] &&
+                contextData[6].view_value === 1 && (
+                  <Link
+                    className="collapse-item"
+                    to="/admin/pms-group-link-type"
+                  >
+                    Group Link Type
+                  </Link>
+                )}
+                 {contextData &&
+                contextData[6] &&
+                contextData[6].view_value === 1 && (
+                  <Link
+                    className="collapse-item"
+                    to="/admin/pms-price-type"
+                  >
+                    Price
+                  </Link>
+                )} 
+                 {contextData &&
+                contextData[6] &&
+                contextData[6].view_value === 1 && (
+                  <Link
+                    className="collapse-item"
+                    to="/admin/pms-platform-price-type"
+                  >
+                    Platform Price
+                  </Link>
+                )}
 
               <Link
                 className="collapse-item"
