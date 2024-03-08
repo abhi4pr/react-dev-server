@@ -242,6 +242,9 @@ import PmsPlatform from "./PageMS/PmsPlatform";
 import PayMethod from "./PageMS/PayMethod";
 import PayCycle from "./PageMS/PayCycle";
 import GroupLinkType from "./PageMS/GroupLinkType";
+import VendorMaster from './PageMS/VendorMaster'
+import VendorOverview from './PageMS/VendorOverview'
+import VendorEdit from './PageMS/VendorEdit'
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1169,6 +1172,9 @@ const Admin = () => {
                   <Route path="/pms-pay-method" element={<PayMethod />} />
                   <Route path="/pms-pay-cycle" element={<PayCycle />} />
                   <Route path="/pms-group-link-type" element={<GroupLinkType />} />
+                  <Route path="/pms-vendor-edit/:_id" element={<VendorEdit />} />
+                  <Route path="/pms-vendor-master" element={<VendorMaster />} />
+                  <Route path="/pms-vendor-overview" element={<VendorOverview />} />
                 </Route>
               </Routes>
             </div>
