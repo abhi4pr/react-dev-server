@@ -17,8 +17,8 @@ const VendorOverview = () => {
   const getData = () => {
     axios.get(baseUrl+"vendorAllData")
       .then((res) => {
-        setVendorTypes(res.data.data);
-        setFilterData(res.data.data);
+        setVendorTypes(res.data.tmsVendorkMastList);
+        setFilterData(res.data.tmsVendorkMastList);
       });
   };
 
@@ -27,7 +27,7 @@ const VendorOverview = () => {
   },[])
 
   useEffect(() => {
-    const result = vendorTypes.filter((d) => {
+    const result = vendorTypes?.filter((d) => {
       return d.vendorMast_name.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
@@ -79,7 +79,15 @@ const VendorOverview = () => {
 
   return (
     <>
-      
+      <Link to={`/admin/pms-vendor-master`}>
+        <button
+          title="Add"
+          className="btn btn-outline-primary"
+          style={{marginBottom:'10px'}}
+        >
+        Add Vendor
+        </button>
+      </Link>
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable

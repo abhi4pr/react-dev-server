@@ -154,6 +154,10 @@ const VendorMaster = () => {
           onChange={(e) => setPerAddress(e.target.value)}
         />
 
+        <div className="form-group col-6">
+        <label className="form-label">
+          Vendor Type <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           options={typeData.map((option) => ({
             value: option._id,
@@ -168,7 +172,12 @@ const VendorMaster = () => {
             setTypeId(e.value);
           }}
         ></Select>
-
+        </div>
+        
+        <div className="form-group col-6">
+        <label className="form-label">
+          Platform <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           options={platformData.map((option) => ({
             value: option._id,
@@ -183,7 +192,12 @@ const VendorMaster = () => {
             setPlatformId(e.value);
           }}
         ></Select>
-
+        </div>
+        
+        <div className="form-group col-6">
+        <label className="form-label">
+          Payment Method <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           options={payData.map((option) => ({
             value: option._id,
@@ -198,7 +212,12 @@ const VendorMaster = () => {
             setPayId(e.value);
           }}
         ></Select>
-
+        </div>
+        
+        <div className="form-group col-6">
+        <label className="form-label">
+          Pay Cycle <sup style={{ color: "red" }}>*</sup>
+        </label>
         <Select
           options={cycleData.map((option) => ({
             value: option._id,
@@ -213,6 +232,7 @@ const VendorMaster = () => {
             setCycleId(e.value);
           }}
         ></Select>
+        </div>
 
         <FieldContainer
           label="PAN"
