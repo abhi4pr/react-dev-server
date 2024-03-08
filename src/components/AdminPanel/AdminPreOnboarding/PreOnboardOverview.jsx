@@ -133,12 +133,12 @@ const PreOnboardingOverview = () => {
       width: "16%",
       reorder: true,
     },
-    {
-      name: "City",
-      selector: (row) => row.permanent_city,
-      width: "16%",
-      reorder: true,
-    },
+    // {
+    //   name: "City",
+    //   selector: (row) => row.permanent_city,
+    //   width: "16%",
+    //   reorder: true,
+    // },
     {
       name: "Status",
       selector: (row) => row.user_status,

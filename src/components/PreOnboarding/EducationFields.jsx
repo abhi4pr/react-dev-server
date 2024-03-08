@@ -151,7 +151,7 @@ const EducationFields = ({
           onClick={handleAddEducationDetails}
           className="btn onboardBtn btn-outline-warning"
         >
-          Add More Education Details
+          Add {educationDetails?.length > 0 && "More"} Education Details
         </button>
       </div>
     </>

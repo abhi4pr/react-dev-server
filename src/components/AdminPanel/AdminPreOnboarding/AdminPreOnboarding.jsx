@@ -8,7 +8,7 @@ import { AiOutlineReload } from "react-icons/ai";
 import { useGlobalContext } from "../../../Context/Context";
 import Select from "react-select";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
-import { City } from "country-state-city";
+// import { City } from "country-state-city";
 import { baseUrl } from "../../../utils/config";
 import IndianCitiesReact from "../../ReusableComponents/IndianCitiesReact";
 
@@ -40,7 +40,7 @@ const AdminPreOnboarding = () => {
   const [reportL3, setReportL3] = useState("");
   const [email, setEmail] = useState("");
   const [validEmail, setValidEmail] = useState(true);
-  const [city, setCity] = useState("");
+  // const [city, setCity] = useState("");
 
   const [personalEmail, setPersonalEmail] = useState("");
   const [validPersonalEmail, setValidPersonalEmail] = useState(true);
@@ -145,8 +145,6 @@ const AdminPreOnboarding = () => {
       if (!sendLetter.label || sendLetter.label == "") {
         return toastError("Select letter options");
       }
-    } else if (!city || city == "") {
-      return toastError("City is Required");
     } else if (!loginId || loginId == "") {
       return toastError("Login Id is Required");
     } else if (!password || password == "") {
@@ -166,7 +164,6 @@ const AdminPreOnboarding = () => {
     formData.append("user_name", username);
     formData.append("role_id", roles);
     formData.append("image", selectedImage);
-    formData.append("permanent_city", city);
     formData.append("ctc", userCtc);
     formData.append("Age", Number(age));
     formData.append(
@@ -281,7 +278,6 @@ const AdminPreOnboarding = () => {
         setSitting("");
         setRoomId("");
         setPersonalContact("");
-        setCity("");
         setSendLetter("");
         setAnnexurePdf("");
         setPersonalEmail("");
@@ -713,12 +709,12 @@ const AdminPreOnboarding = () => {
         {(isContactTouched || contact.length >= 10) && !isValidcontact && (
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
         )} */}
-
+        {/* 
         <IndianCitiesReact
           selectedCity={city}
           onChange={setCity}
           fieldGrid={3}
-        />
+        /> */}
 
         <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
           <div className="form-group">

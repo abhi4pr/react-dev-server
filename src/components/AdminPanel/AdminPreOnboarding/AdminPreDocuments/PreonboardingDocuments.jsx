@@ -34,7 +34,7 @@ const mandatoryOption = [
 ];
 
 const PreonboardingDocuments = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
   const [documentType, setDocumentType] = useState("");
   const [period, setPeriod] = useState(null);
@@ -53,10 +53,10 @@ const PreonboardingDocuments = () => {
     getJobtTypes();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    axios
-      .post(baseUrl + "add_doc", {
+    try {
+      const response = await axios.post(baseUrl + "add_doc", {
         doc_type: documentType,
         priority: priority,
         period: Number(period),
@@ -64,15 +64,17 @@ const PreonboardingDocuments = () => {
         isRequired: mandatory,
         doc_number: documentNumber,
         job_type: jobType,
-      })
-      .then(() => {
-        setDocumentType("");
-        setPeriod(null);
-        setDescription("");
-        setPriority(null);
-        toastAlert("Document Created");
-        navigate("/admin/preonboarding-documents-overview");
       });
+
+      setDocumentType("");
+      setPeriod(null);
+      setDescription("");
+      setPriority(null);
+      toastAlert("Document Created");
+      navigate("/admin/preonboarding-documents-overview");
+    } catch (error) {
+      if (error) return toastError("Document Type Already Exists");
+    }
   };
   return (
     <>
@@ -104,16 +106,20 @@ const PreonboardingDocuments = () => {
             label={priority}
             options={selectOptions}
             onChange={(e) => setPriority(e.value)}
+            required
           />
         </div>
 
         <div className="form-group col-3">
-          <label className="form-label">Mandatory</label>
+          <label className="form-label">
+            Mandatory <sup style={{ color: "red" }}>*</sup>
+          </label>
           <Select
             value={mandatoryOption.find((option) => option.value === mandatory)}
             label={mandatory}
             options={mandatoryOption}
             onChange={(e) => setMandatory(e.value)}
+            required
           />
         </div>
         <FieldContainer

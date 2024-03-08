@@ -53,7 +53,7 @@ const GuardianFields = ({
           variant="contained"
           className="btn onboardBtn btn-outline-danger"
         >
-          Add More Guardian Details
+          Add {guardianDetails.length > 0 && "More"} Guardian Details
         </button>
       </div>
     </>

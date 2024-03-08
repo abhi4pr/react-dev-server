@@ -11,8 +11,10 @@ import Modal from "react-modal";
 import EditIcon from "@mui/icons-material/Edit";
 import UploadIcon from "@mui/icons-material/Upload";
 import DetailsIcon from "@mui/icons-material/Details";
+import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 
 const WFHDOverview = () => {
+  const whatsappApi = WhatsappAPI();
   const { ContextDept, RoleIDContext } = useAPIGlobalContext();
   const [allWFHDData, setAllWFHDData] = useState([]);
   const [savedData, setSavedData] = useState([]);
@@ -30,6 +32,18 @@ const WFHDOverview = () => {
   const [showOnBoardModal, setShowOnBoardModal] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [searchFilter, setSearchFilter] = useState([]);
+
+  const [username, setUserName] = useState("");
+  const [usercontact, setUserContact] = useState("");
+  const [separationReasonGet, setSeparationReasonGet] = useState([]);
+  const [separationUserID, setSeparationUserID] = useState(null);
+  const [separationStatus, setSeparationStatus] = useState("");
+  const [separationReason, setSeparationReason] = useState("");
+  const [separationRemark, setSeparationRemark] = useState("");
+  const [separationReinstateDate, setSeparationReinstateDate] = useState("");
+  const [separationResignationDate, setSeparationResignationDate] =
+    useState("");
+  const [separationLWD, setSeparationLWD] = useState("");
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -179,6 +193,34 @@ const WFHDOverview = () => {
       getData();
     }
   };
+
+  function handleSeprationReason(userId, username, user_contact_no) {
+    setSeparationUserID(userId);
+    setUserName(username);
+    setUserContact(user_contact_no);
+    axios
+      .get(baseUrl + "get_all_reasons")
+      .then((res) => setSeparationReasonGet(res.data));
+  }
+
+  function handleSeparationDataPost() {
+    axios.post(baseUrl + "add_separation", {
+      user_id: separationUserID,
+      status: separationStatus,
+      created_by: userID,
+      resignation_date: separationResignationDate,
+      last_working_day: separationLWD,
+      remark: separationRemark,
+      reason: separationReason,
+    });
+    getData();
+    whatsappApi.callWhatsAPI(
+      "CF_Separation",
+      JSON.stringify(usercontact),
+      username,
+      [username, separationStatus]
+    );
+  }
 
   useEffect(() => {
     const lowerCaseSearch = search.toLowerCase();
@@ -366,7 +408,23 @@ const WFHDOverview = () => {
               Onboard
             </button>
           ) : row.att_status == "onboarded" ? (
-            "User Onboarded"
+            <button
+              className="btn btn-primary"
+              data-toggle="modal"
+              data-target="#sepmodal"
+              size="small"
+              variant="contained"
+              color="primary"
+              onClick={() =>
+                handleSeprationReason(
+                  row.user_id,
+                  row.user_name,
+                  row.user_contact_no
+                )
+              }
+            >
+              Sep
+            </button>
           ) : null}
         </>
       ),
@@ -685,6 +743,115 @@ const WFHDOverview = () => {
               </div>
             </div>
           </div> */}
+        </div>
+      </div>
+
+      {/* SEP Modal */}
+      <div
+        className="modal fade"
+        id="sepmodal"
+        tabIndex={-1}
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="exampleModalLabel">
+                Separation
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <FieldContainer
+                label="Status"
+                Tag="select"
+                value={separationStatus}
+                onChange={(e) => setSeparationStatus(e.target.value)}
+              >
+                <option value="" disabled>
+                  Choose...
+                </option>
+                <option value="Resigned">Resigned</option>
+                <option value="Resign Accepted">Resign Accepted</option>
+                <option value="On Long Leave">On Long Leave</option>
+                <option value="Subatical">Subatical</option>
+                <option value="Suspended">Suspended</option>
+              </FieldContainer>
+              <FieldContainer
+                label="Reason"
+                Tag="select"
+                value={separationReason}
+                onChange={(e) => setSeparationReason(e.target.value)}
+              >
+                {separationReasonGet.map((option) => (
+                  <option value={option.id} key={option.id}>
+                    {" "}
+                    {option.reason}
+                  </option>
+                ))}
+              </FieldContainer>
+              <FieldContainer
+                label="Remark"
+                value={separationRemark}
+                onChange={(e) => setSeparationRemark(e.target.value)}
+              />
+              {(separationStatus === "On Long Leave" ||
+                separationStatus === "Subatical" ||
+                separationStatus === "Suspended") && (
+                <FieldContainer
+                  label="Reinstated Date"
+                  type="date"
+                  value={separationReinstateDate}
+                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                />
+              )}
+              {separationStatus == "Resign Accepted" && (
+                <input
+                  label="Last Working Day"
+                  className="form-control"
+                  style={{ width: "220px" }}
+                  type="date"
+                  value={separationLWD}
+                  max={today}
+                  onChange={(e) => setSeparationLWD(e.target.value)}
+                />
+              )}
+              {separationStatus == "Resigned" && (
+                <FieldContainer
+                  label="Resignation Date"
+                  type="date"
+                  value={separationResignationDate}
+                  onChange={(e) => setSeparationResignationDate(e.target.value)}
+                />
+              )}
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => handleSeparationDataPost()}
+                data-dismiss="modal"
+              >
+                Save changes
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>
