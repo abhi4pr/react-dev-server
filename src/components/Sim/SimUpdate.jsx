@@ -214,9 +214,9 @@ const SimUpdate = () => {
     formData.append("sub_category_id", subCategory);
     formData.append("vendor_id", vendorName);
     formData.append("invoiceCopy", invoiceCopy);
-    formData.append("selfAuditPeriod", selfAuditPeriod);
+    formData.append("selfAuditPeriod", Number(selfAuditPeriod));
     formData.append("selfAuditUnit", selfAuditUnit);
-    formData.append("hrselfAuditPeriod", hrselfAuditPeriod);
+    formData.append("hrselfAuditPeriod", Number(hrselfAuditPeriod));
     formData.append("hrselfAuditUnit", hrselfAuditUnit);
     formData.append("assetsValue", Number(assetsValue));
     formData.append("assetsCurrentValue", Number(assetsCurrentValue));
@@ -347,7 +347,7 @@ const SimUpdate = () => {
                     // }
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Brand Name" />
+                    <TextField {...params} label="Brand Name *" />
                   )}
                 />
               </div>
@@ -358,7 +358,7 @@ const SimUpdate = () => {
                 <TextField
                   fullWidth={true}
                   id="outlined-basic"
-                  label="Assets Name"
+                  label="Assets Name *"
                   type="text"
                   value={assetsName}
                   onChange={(e) => setAssetsName(e.target.value)}
@@ -383,7 +383,7 @@ const SimUpdate = () => {
                     setModalName(newvalue.value);
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Add Model" />
+                    <TextField {...params} label="Add Model *" />
                   )}
                 />
               </div>
@@ -395,7 +395,7 @@ const SimUpdate = () => {
                   fullWidth={true}
                   id="outlined-basic"
                   label="Assets ID *"
-                  type="number"
+                  type="text"
                   value={assetsID}
                   onChange={(e) => setAssetsID(e.target.value)}
                 />
@@ -407,7 +407,7 @@ const SimUpdate = () => {
                   fullWidth={true}
                   id="outlined-basic"
                   label="Assets Other ID"
-                  type="number"
+                  type="text"
                   value={assetsOtherID}
                   onChange={(e) => setAssetsOtherID(e.target.value)}
                 />

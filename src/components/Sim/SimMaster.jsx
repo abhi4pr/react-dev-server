@@ -76,6 +76,8 @@ const SimMaster = () => {
   const [modalName, setModalName] = useState("");
   const [brandName, setBrandName] = useState("");
 
+  const today = new Date().toISOString().split("T")[0];
+
   // console.log(getBrandDataContext, "barnd usni");
   // console.log(brandName.asset_brand_id, "modal name is here");
 
@@ -162,7 +164,22 @@ const SimMaster = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!assetsCategory || !assetsCategory.category_id) {
+    if (inWarranty == "Yes" && (!warrantyDate || warrantyDate == "")) {
+      toastError("Warrnaty Date is Required");
+      return;
+    }
+    if (inWarranty == "Yes" && !dateOfPurchase) {
+      toastError("Date Of Purchase is Required");
+      return;
+    }
+    if (inWarranty == "Yes" && !invoiceCopy) {
+      toastError("Invoice Copy is Required");
+      return;
+    }
+
+    if (!assetType || assetType == "") {
+      toastError("Asset Type is Required");
+    } else if (!assetsCategory || !assetsCategory.category_id) {
       setAssetsCategoryError("Assets Category is required");
       toastError("Assets Category is required");
     } else if (!subCategory || !subCategory.sub_category_id) {
@@ -172,6 +189,8 @@ const SimMaster = () => {
       toastError("Brand Name is Required");
     } else if (!modalName || modalName == "") {
       toastError("Modal Name is Required");
+    } else if (!assetsName || assetsName == "") {
+      toastError("Asset Name is Required");
     } else if (!assetsID || assetsID === "") {
       setAssetsIDError("Assets ID is required");
       toastError("Assets ID is required");
@@ -271,7 +290,7 @@ const SimMaster = () => {
                   value={assetType}
                   onChange={(e, newvalue) => setAssetType(newvalue)}
                   renderInput={(params) => (
-                    <TextField {...params} label="Asset Type" />
+                    <TextField {...params} label="Asset Type *" />
                   )}
                 />
               </div>
@@ -359,21 +378,8 @@ const SimMaster = () => {
                     }
                   }}
                   renderInput={(params) => (
-                    <TextField {...params} label="Brand Name" />
+                    <TextField {...params} label="Brand Name *" />
                   )}
-                />
-              </div>
-            </div>
-
-            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-              <div className="form-group ">
-                <TextField
-                  fullWidth={true}
-                  id="outlined-basic"
-                  label="Assets Name"
-                  type="text"
-                  value={assetsName}
-                  onChange={(e) => setAssetsName(e.target.value)}
                 />
               </div>
             </div>
@@ -401,6 +407,18 @@ const SimMaster = () => {
                 />
               </div>
             </div>
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group ">
+                <TextField
+                  fullWidth={true}
+                  id="outlined-basic"
+                  label="Asset Name *"
+                  type="text"
+                  value={assetsName}
+                  onChange={(e) => setAssetsName(e.target.value)}
+                />
+              </div>
+            </div>
 
             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
               <div className="form-group">
@@ -408,7 +426,7 @@ const SimMaster = () => {
                   fullWidth={true}
                   id="outlined-basic"
                   label="Assets ID *"
-                  type="number"
+                  type="text"
                   value={assetsID}
                   // onChange={(e) => setAssetsID(e.target.value)}
                   onChange={handleAssetsIDChange}
@@ -423,7 +441,7 @@ const SimMaster = () => {
                   fullWidth={true}
                   id="outlined-basic"
                   label="Assets Other ID"
-                  type="number"
+                  type="text"
                   value={assetsOtherID}
                   onChange={(e) => setAssetsOtherID(e.target.value)}
                 />
@@ -458,6 +476,9 @@ const SimMaster = () => {
                     type="date"
                     value={warrantyDate}
                     onChange={(e) => setWarrantyDate(e.target.value)}
+                    inputProps={{
+                      min: dateOfPurchase, // Ensure warranty date is on or after purchase date
+                    }}
                   />
                 </div>
               </div>
@@ -473,6 +494,9 @@ const SimMaster = () => {
                   type="date"
                   value={dateOfPurchase}
                   onChange={(e) => setDateOfPurchase(e.target.value)}
+                  inputProps={{
+                    min: today, // Restrict dates before today
+                  }}
                 />
               </div>
             </div>

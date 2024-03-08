@@ -12,7 +12,7 @@ import { baseUrl } from "../../../utils/config";
 const AssetCategoryUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
@@ -45,6 +45,18 @@ const AssetCategoryUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (selfAuditPeriod && !selfAuditUnit) {
+      toastError(
+        "Please select a Self Audit Unit when a Self Audit Period is given."
+      );
+      return;
+    }
+    if (hrselfAuditPeriod && !hrselfAuditUnit) {
+      toastError(
+        "Please select a HR Audit Unit when a HR Audit Period is given."
+      );
+      return;
+    }
     try {
       const response = await axios.put(baseUrl + "update_asset_category", {
         category_id: id,
@@ -93,7 +105,10 @@ const AssetCategoryUpdate = () => {
             onChange={(e) => setSelfAuditPeriod(e.target.value)}
           />
           <div className="form-group col-6">
-            <label className="form-label">Self Audit Unit</label>
+            <label className="form-label">
+              Self Audit Unit
+              {selfAuditPeriod && <span style={{ color: "red" }}> *</span>}
+            </label>
             <Select
               className=""
               options={Unit.map((option) => ({
@@ -118,7 +133,10 @@ const AssetCategoryUpdate = () => {
             onChange={(e) => setHrSelfAuditPeriod(e.target.value)}
           />
           <div className="form-group col-6">
-            <label className="form-label">HR Audit Unit</label>
+            <label className="form-label">
+              HR Audit Unit{" "}
+              {hrselfAuditPeriod && <span style={{ color: "red" }}> *</span>}{" "}
+            </label>
             <Select
               className=""
               options={Unit.map((option) => ({
