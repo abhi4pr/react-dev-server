@@ -278,11 +278,16 @@ const BrandCaseStudy = () => {
   const handleFileChange = (event) => {
     setFileDetails((prev) => [...prev, event.target.files]);
     const files = Array.from(event.target.files);
-    setImages(files);
 
     const details = files.map((file) => {
       const { name, size } = file;
       const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      if (parseFloat(sizeInMB) > 30) {
+        toastError(`File size is greater than 30MB: ${name}`);
+        return;
+      }
+      console.log(sizeInMB, " creative fuel");
+      setImages(files);
       const fileType = name.split(".").pop().toLowerCase();
 
       if (
@@ -317,7 +322,10 @@ const BrandCaseStudy = () => {
         });
       }
     });
-
+    if (details[0] == undefined) {
+      console.log("come");
+      return setFileDetails([]);
+    }
     Promise.all(details).then((detailsArray) => {
       setLogoVsCf(true);
       setDetails(detailsArray);
@@ -332,6 +340,11 @@ const BrandCaseStudy = () => {
     const details = files.map((file) => {
       const { name, size } = file;
       const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      if (parseFloat(sizeInMB) > 30) {
+        toastError(`File size is greater than 30MB: ${name}`);
+        return;
+      }
+      console.log(sizeInMB, " mmc fuel");
       const fileType = name.split(".").pop().toLowerCase();
 
       if (
@@ -366,6 +379,10 @@ const BrandCaseStudy = () => {
         });
       }
     });
+    if (details[0] == undefined) {
+      console.log("come");
+      return setFileDetails([]);
+    }
 
     Promise.all(details).then((detailsArray) => {
       setMMCDetails(detailsArray);
@@ -380,6 +397,10 @@ const BrandCaseStudy = () => {
     const details = files.map((file) => {
       const { name, size } = file;
       const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      if (parseFloat(sizeInMB) > 30) {
+        toastError(`File size is greater than 30MB: ${name}`);
+        return;
+      }
       const fileType = name.split(".").pop().toLowerCase();
 
       if (
@@ -414,7 +435,9 @@ const BrandCaseStudy = () => {
         });
       }
     });
-
+    if (details[0] == undefined) {
+      return setFileDetails([]);
+    }
     Promise.all(details).then((detailsArray) => {
       setSarcasmDetails(detailsArray);
     });
@@ -428,6 +451,10 @@ const BrandCaseStudy = () => {
     const details = files.map((file) => {
       const { name, size } = file;
       const sizeInMB = (size / (1024 * 1024)).toFixed(2);
+      if (parseFloat(sizeInMB) > 30) {
+        toastError(`File size is greater than 30MB: ${name}`);
+        return;
+      }
       const fileType = name.split(".").pop().toLowerCase();
 
       if (
@@ -462,7 +489,9 @@ const BrandCaseStudy = () => {
         });
       }
     });
-
+    if (details[0] == undefined) {
+      return setFileDetails([]);
+    }
     Promise.all(details).then((detailsArray) => {
       setLogoVsCf(true);
       setNologoDetails(detailsArray);
@@ -816,6 +845,7 @@ const BrandCaseStudy = () => {
             label="CreativeFuel *"
             type="file"
             multiple
+            value={fileDetails.length > 0 ? fileDetails[0].file : ""}
             accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
             onChange={handleFileChange}
             fieldGrid={4}
@@ -827,6 +857,7 @@ const BrandCaseStudy = () => {
               label="MMC "
               type="file"
               multiple
+              value={fileDetails.length > 0 ? fileDetails[0].file : ""}
               accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
               onChange={handleMMCFileChange}
               fieldGrid={4}
@@ -837,6 +868,7 @@ const BrandCaseStudy = () => {
               label="Sarcasm "
               multiple
               type="file"
+              value={fileDetails.length > 0 ? fileDetails[0].file : ""}
               accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
               onChange={handleSarcasmFileChange}
               fieldGrid={4}
@@ -847,6 +879,7 @@ const BrandCaseStudy = () => {
               label="No Logo *"
               multiple
               type="file"
+              value={fileDetails.length > 0 ? fileDetails[0].file : ""}
               accept="image/*,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,video/*"
               onChange={handleNologoFileChange}
               fieldGrid={4}

@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { baseUrl } from "../../../utils/config";
+import { Box, Button } from "@mui/material";
+import ChatApplication from "../../Common/ChatApplication";
 
 function Dashboard() {
   const [renderCount, setRenderCount] = useState(0);
@@ -320,6 +322,8 @@ function Dashboard() {
             navigate("/admin/finance-dashboard")}
         </div>
       </div>
+      <ChatApplication />
+      
     </>
   );
 }

@@ -277,7 +277,7 @@ const SummaryDetails = ({ payload, campName }) => {
             <Typography>Total Stories: {totalStoryPerPage}</Typography>
           </Box>
           <DataGrid
-            rows={payload ? payload : filteredData}
+            rows={filteredData ? filteredData : payload}
             columns={columns}
             getRowId={(row) => row.p_id}
             pageSizeOptions={[5]}
