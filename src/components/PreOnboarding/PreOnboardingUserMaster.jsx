@@ -472,8 +472,36 @@ const PreOnboardingUserMaster = () => {
   };
 
   useEffect(() => {
+    const MandatoryDocuments = documentData.filter(
+      (doc) => doc.document.isRequired == true
+    );
+
+    const MandatoryDocumentsFilledCount = MandatoryDocuments.filter(
+      (doc) => doc.file || doc.doc_image !== ""
+    )?.length;
+
+    const ManDocFilledPer = Math.ceil(
+      (MandatoryDocumentsFilledCount / MandatoryDocuments?.length) * 100
+    );
+    setShowMandotaryPer(ManDocFilledPer);
+
+    const nonManDocs = documentData.filter(
+      (doc) => doc.document.isRequired == false
+    );
+
+    const nonMandatoryFilledCount = nonManDocs.filter(
+      (item) => item.doc_image !== "" || item.file
+    );
+
+    const nonMandoatoryPercentageTemp = Math.ceil(
+      (nonMandatoryFilledCount?.length / nonManDocs?.length) * 100
+    );
+    setShowNonMandotaryPer(nonMandoatoryPercentageTemp);
+  }, [documentData]);
+
+  useEffect(() => {
     const approveCount = documentData.filter(
-      (item) => item.status == "Approved"
+      (doc) => doc.status == "Approved"
     ).length;
 
     const documentPercentageTemp = Math.ceil(
@@ -481,33 +509,6 @@ const PreOnboardingUserMaster = () => {
     );
 
     setDocumentPercentage(documentPercentageTemp);
-
-    const mandatoryCount = documentData.filter(
-      (item) => item.document.isRequired == true
-    ).length;
-
-    const mandatoryFilledCount = documentData.filter(
-      (item) => item.document.isRequired == true && item.doc_image
-    ).length;
-
-    const mandoatoryPercentageTemp = Math.ceil(
-      (mandatoryFilledCount / mandatoryCount) * 100
-    );
-    setShowMandotaryPer(mandoatoryPercentageTemp);
-
-    const nonMandatoryCount = documentData.filter(
-      (item) => item.document.isRequired == false
-    ).length;
-
-    const nonMandatoryFilledCount = documentData.filter(
-      (item) => item.document.isRequired == false && item.doc_image
-    )?.length;
-
-    const nonMandoatoryPercentageTemp = Math.ceil(
-      (nonMandatoryFilledCount / nonMandatoryCount) * 100
-    );
-    setShowMandotaryPer(mandoatoryPercentageTemp);
-    setShowNonMandotaryPer(nonMandoatoryPercentageTemp);
   }, [getDocuments]);
 
   const gettingData = () => {
@@ -1100,7 +1101,7 @@ const PreOnboardingUserMaster = () => {
 
   const formFieldProgressPercentage = calculateProgressPercentage(
     filledFields,
-    ["", null, 0]
+    ["", null, 0, undefined]
   );
 
   function daysUntil(isoDateString) {
@@ -1371,6 +1372,7 @@ const PreOnboardingUserMaster = () => {
                     </div>
                   </div>
                   <h2 className="document_tab_name">Documents</h2>
+                  (verified)
                   <h3>{documentPercentage}%</h3>
                 </div>
                 <div className="sidebar_iteminfo">
@@ -1385,7 +1387,6 @@ const PreOnboardingUserMaster = () => {
                   </h3>
                 </div>
               </div>
-
               <div
                 className={`sidebar_itembox  ${
                   activeTab == 3 ? "sidebar_item_active" : ""
@@ -1393,7 +1394,7 @@ const PreOnboardingUserMaster = () => {
                 id="sidebarPolicyBox"
                 onClick={() => setActiveTab(3)}
               >
-                <div className="progress-circle progressing p-26">
+                <div className="progress-circle progressing p-100">
                   <div className="progress-circle-border">
                     <div className="left-half-circle" />
                     <div className="right-half-circle" />
@@ -1408,7 +1409,7 @@ const PreOnboardingUserMaster = () => {
               {allUserData.offer_letter_send && (
                 <div
                   className={`sidebar_itembox ${
-                    activeTab == 7 ? "sidebar_item_active" : ""
+                    activeTab == 5 ? "sidebar_item_active" : ""
                   }`}
                   id="sidebarLetterBox"
                   onClick={() => setActiveTab(5)}
@@ -1861,8 +1862,9 @@ const PreOnboardingUserMaster = () => {
                                 value={currentPincode}
                                 onChange={(e) => {
                                   const value = e.target.value;
-                                  if (/^\d{0,6}$/.test(value)) {
-                                    setcurrentPincode(value);
+                                  const cleanedValue = value.replace(/\D/g, "");
+                                  if (cleanedValue.length <= 6) {
+                                    setcurrentPincode(cleanedValue);
                                   }
                                 }}
                               />
@@ -1871,7 +1873,7 @@ const PreOnboardingUserMaster = () => {
 
                           <div className="board_form form_checkbox">
                             <label className="cstm_check">
-                              Same as Current Addresss
+                              Same as Current Address
                               <input
                                 className="form-control"
                                 type="checkbox"
@@ -1928,8 +1930,9 @@ const PreOnboardingUserMaster = () => {
                                 value={permanentPincode}
                                 onChange={(e) => {
                                   const value = e.target.value;
-                                  if (/^\d{0,6}$/.test(value)) {
-                                    setPermanentPincode(value);
+                                  const cleanedValue = value.replace(/\D/g, "");
+                                  if (cleanedValue.length <= 6) {
+                                    setPermanentPincode(cleanedValue);
                                   }
                                 }}
                               />
@@ -1970,6 +1973,9 @@ const PreOnboardingUserMaster = () => {
                     documentData={documentData}
                     setDocumentData={setDocumentData}
                     getDocuments={getDocuments}
+                    showMandotaryPer={showMandotaryPer}
+                    showNonMandotaryPer={showNonMandotaryPer}
+                    id={id}
                   />
                 )}
 

@@ -8,6 +8,9 @@ const DocumentTab = ({
   documentData,
   setDocumentData,
   getDocuments,
+  showMandotaryPer,
+  showNonMandotaryPer,
+  id,
   submitButton = true,
   normalUserLayout = false,
 }) => {
@@ -41,46 +44,34 @@ const DocumentTab = ({
 
   const handleSubmit = async () => {
     try {
-      const mandatoryDocTypes = ["10th", "12th"];
-
-      const isMandatoryDocMissing = documentData.some(
-        (doc) =>
-          mandatoryDocTypes.includes(doc.document.doc_type) &&
-          doc.doc_image &&
-          doc.file
-      );
-
-      if (isMandatoryDocMissing) {
-        toastAlert("Please fill all mandatory fields");
-        return;
-      } else {
-        for (const document of documentData) {
-          if (document.file) {
-            let formData = new FormData();
-            formData.append("doc_image", document.file);
-            formData.append("_id", document._id);
-            formData.append(
-              "status",
-              document.status == "Document Uploaded"
-                ? "Verification Pending"
-                : document.status
-            );
-            const response = await axios.put(
-              baseUrl + "update_user_doc",
-              formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            );
-          } else {
-            console.log(`No file uploaded for document ${document._id}`);
-          }
+      for (const document of documentData) {
+        if (document.file) {
+          let formData = new FormData();
+          formData.append("doc_image", document.file);
+          formData.append("_id", document._id);
+          formData.append(
+            "status",
+            document.status == "Document Uploaded"
+              ? "Verification Pending"
+              : document.status
+          );
+          await axios.put(baseUrl + "update_user_doc", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+        } else {
+          console.log(`No file uploaded for document ${document._id}`);
         }
-        toastAlert("Documents Updated");
-        getDocuments();
       }
+
+      await axios.put(`${baseUrl}` + `update_user`, {
+        user_id: id,
+        document_percentage_mandatory: showMandotaryPer,
+        document_percentage_non_mandatory: showNonMandotaryPer,
+      });
+      toastAlert("Documents Updated");
+      getDocuments();
     } catch (error) {
       console.error("Error submitting documents", error);
     }

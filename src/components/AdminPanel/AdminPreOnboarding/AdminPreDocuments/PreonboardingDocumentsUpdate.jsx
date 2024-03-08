@@ -43,7 +43,7 @@ const PreonboardingDocumentsUpdate = () => {
       setPriority(data.priority);
       setDescription(data.description);
     } catch (error) {
-      console.log("", error);
+      console.log(error);
     }
   };
 
@@ -74,11 +74,13 @@ const PreonboardingDocumentsUpdate = () => {
         handleSubmit={handleSubmit}
       >
         <FieldContainer
+          astric
           label="Document Type"
           value={documentType}
           onChange={(e) => setDocumentType(e.target.value)}
         />
         <FieldContainer
+          astric
           label="Period (days)"
           type="number"
           fieldGrid={3}
@@ -88,6 +90,7 @@ const PreonboardingDocumentsUpdate = () => {
 
         <div className="form-group col-3">
           <label className="form-label">Priority</label>
+          <sup style={{ color: "red" }}>*</sup>
           <Select
             value={selectOptions.find((option) => option.value === priority)}
             label={selectOptions.find((option) => option.value === priority)}
@@ -96,6 +99,7 @@ const PreonboardingDocumentsUpdate = () => {
           />
         </div>
         <FieldContainer
+          astric
           Tag="textarea"
           label="Description"
           value={description}
