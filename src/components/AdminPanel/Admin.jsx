@@ -245,6 +245,8 @@ import GroupLinkType from "./PageMS/GroupLinkType";
 import VendorMaster from './PageMS/VendorMaster'
 import VendorOverview from './PageMS/VendorOverview'
 import VendorEdit from './PageMS/VendorEdit'
+import PMSpriceTypeMast from "./PageMS/PMSpriceTypeMast";
+import PMSplatformPriceTypeMast from "./PageMS/PMSplatformPriceTypeMast";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1175,6 +1177,8 @@ const Admin = () => {
                   <Route path="/pms-vendor-edit/:_id" element={<VendorEdit />} />
                   <Route path="/pms-vendor-master" element={<VendorMaster />} />
                   <Route path="/pms-vendor-overview" element={<VendorOverview />} />
+                  <Route path="/pms-price-type" element={<PMSpriceTypeMast />} />
+                  <Route path="/pms-platform-price-type" element={<PMSplatformPriceTypeMast />} />
                 </Route>
               </Routes>
             </div>
