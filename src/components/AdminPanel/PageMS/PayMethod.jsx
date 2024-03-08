@@ -39,7 +39,7 @@ const PayMethod = () => {
 
   useEffect(() => {
     const result = vendorTypes.filter((d) => {
-      return d.pay_method_name.toLowerCase().match(search.toLowerCase());
+      return d.payMethod_name.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
@@ -47,7 +47,7 @@ const PayMethod = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.post(baseUrl + "addpayMethod", {
-      pay_method_name: payMethodName,
+      payMethod_name: payMethodName,
       description: description,
       created_by: userID
     })
@@ -68,7 +68,7 @@ const PayMethod = () => {
     },
     {
       name: "Pay Method",
-      selector: (row) => row.pay_method_name,
+      selector: (row) => row.payMethod_name,
     },
     {
       name: "Description",
@@ -102,13 +102,13 @@ const PayMethod = () => {
 
   const handleRowData = (row) =>{
     setRowData(row);
-    setPayMethodUpdate(row.pay_method_name);
+    setPayMethodUpdate(row.payMethod_name);
     setDescriptionUpdate(row.description);
   }
 
   const handleModalUpdate = () => {
     axios.put(baseUrl+`updatePay/${rowData._id}`, {
-      pay_method_name: payMethodUpdate,
+      payMethod_name: payMethodUpdate,
       description: descriptionUpdate,
       updated_by: userID
     })

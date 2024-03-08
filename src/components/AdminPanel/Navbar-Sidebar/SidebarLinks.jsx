@@ -1549,6 +1549,75 @@ const SidebarLinks = () => {
         </li>
       )}
 
+      {/* {isUserManagementVisible && ( */}
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseTwom8"
+            aria-expanded="true"
+            aria-controls="collapseTwom8"
+          >
+            <i className="bi bi-person-gear" />
+            <span>Page Management</span>
+          </Link>
+          <div
+            id="collapseTwom8"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="bg-white collapse-inner">
+              {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-vendor-type">
+                    Vendor Type
+                  </Link>
+                )}
+
+              {contextData &&
+                contextData[21] &&
+                contextData[21].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-platform">
+                    Platform
+                  </Link>
+                )}
+
+              {contextData &&
+                contextData[1] &&
+                contextData[1].view_value === 1 && (
+                  <Link
+                    className="collapse-item"
+                    to="/admin/pms-pay-method"
+                  >
+                    Payment Method
+                  </Link>
+                )}
+              {contextData &&
+                contextData[2] &&
+                contextData[2].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-pay-cycle">
+                    Payment Cycle
+                  </Link>
+                )}
+
+              {contextData &&
+                contextData[6] &&
+                contextData[6].view_value === 1 && (
+                  <Link
+                    className="collapse-item"
+                    to="/admin/pms-group-link-type"
+                  >
+                    Group Link Type
+                  </Link>
+                )}
+
+            </div>
+          </div>
+        </li>
+      {/* )} */}
+
       {/* {isInstaApiVisible && (
         <li className="nav-item">
           <Link
