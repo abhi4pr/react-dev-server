@@ -52,7 +52,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     setStatushere(status);
     setRepairId(row.repair_id);
   };
-  console.log(resolvedDate, resolvedRemark, "-------------------lllllll");
 
   const handleAcceptUpdate = async (row, status) => {
     const swalWithBootstrapButtons = Swal.mixin({
@@ -217,12 +216,27 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       name: "Img",
       selector: (row) => (
         <>
-          <button
-            className="btn btn-outline-danger"
-            onClick={() => handleImageClick(row)}
-          >
-            <i className="bi bi-images"></i>
-          </button>
+          {row.img1 && row.img2 && row.img3 && row.img4 && (
+            <>
+              {row.img1 !==
+                "https://storage.googleapis.com/dev-backend-bucket/" ||
+              row.img2 !==
+                "https://storage.googleapis.com/dev-backend-bucket/" ||
+              row.img3 !==
+                "https://storage.googleapis.com/dev-backend-bucket/" ||
+              row.img4 !==
+                "https://storage.googleapis.com/dev-backend-bucket/" ? (
+                <button
+                  className="btn btn-outline-danger"
+                  onClick={() => handleImageClick(row)}
+                >
+                  <i className="bi bi-images"></i>
+                </button>
+              ) : (
+                "N/A"
+              )}
+            </>
+          )}
         </>
       ),
     },
@@ -250,30 +264,44 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       selector: (row) => (
         <>
           {row.invoiceCopy && (
-            <img
-              onClick={() => handleInvoiceImageClick(row.invoiceCopy)}
-              style={{ width: "100px" }}
-              src={row.invoiceCopy}
-              alt="invoice copy"
-            />
+            <>
+              {row.invoiceCopy !==
+              "https://storage.googleapis.com/dev-backend-bucket/" ? (
+                <img
+                  onClick={() => handleInvoiceImageClick(row.invoiceCopy)}
+                  style={{ width: "100px" }}
+                  src={row.invoiceCopy}
+                  alt="invoice copy"
+                />
+              ) : (
+                "N/A"
+              )}
+            </>
           )}
         </>
       ),
       sortable: true,
     },
     {
-      name: "invoice Download",
+      name: "invoice",
       cell: (row) => (
         <>
           {row.invoiceCopy && (
-            <a
-              style={{ cursor: "pointer" }}
-              target="blank"
-              href={row.invoiceCopy}
-              download
-            >
-              <FcDownload style={{ fontSize: "25px" }} />
-            </a>
+            <>
+              {row.invoiceCopy !==
+              "https://storage.googleapis.com/dev-backend-bucket/" ? (
+                <a
+                  style={{ cursor: "pointer" }}
+                  target="blank"
+                  href={row.invoiceCopy}
+                  download
+                >
+                  <FcDownload style={{ fontSize: "25px" }} />
+                </a>
+              ) : (
+                "N/A"
+              )}
+            </>
           )}
         </>
       ),

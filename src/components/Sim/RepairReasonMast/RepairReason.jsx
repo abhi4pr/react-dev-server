@@ -166,6 +166,7 @@ const RepairReason = () => {
     setReasonUpdate(row.reason);
     setCategoryNameUpdate(row.category_id);
     setSubCategoryNameUpdate(row.sub_category_id);
+    console.log(row.sub_category_id, "-----------kjhgfd");
   };
 
   // Update Function here with submittion

@@ -93,6 +93,7 @@ const AssetCategoryOverview = () => {
     e.preventDefault();
     if (!inWarranty || inWarranty == "") {
       toastError("In Warranty is Required");
+      return;
     }
     try {
       const isSubCategoryExist = subCategoryData.some(

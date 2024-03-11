@@ -91,7 +91,7 @@ const AssetSubCategoryOverview = () => {
       cell: (row) => (
         <button
           className="btn btn-outline-warning"
-          onClick={() => handleTotalasset(row.category_id)}
+          onClick={() => handleTotalasset(row.sub_category_id)}
         >
           {row.available_assets_count}
         </button>
@@ -103,7 +103,7 @@ const AssetSubCategoryOverview = () => {
       cell: (row) => (
         <button
           className="btn btn-outline-warning"
-          onClick={() => handleAllocatedAsset(row.category_id)}
+          onClick={() => handleAllocatedAsset(row.sub_category_id)}
         >
           {row.allocated_assets_count}
         </button>

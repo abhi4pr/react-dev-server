@@ -244,14 +244,18 @@ import PmsPlatform from "./PageMS/PmsPlatform";
 import PayMethod from "./PageMS/PayMethod";
 import PayCycle from "./PageMS/PayCycle";
 import GroupLinkType from "./PageMS/GroupLinkType";
-import VendorMaster from './PageMS/VendorMaster'
-import VendorOverview from './PageMS/VendorOverview'
-import VendorEdit from './PageMS/VendorEdit'
+import VendorMaster from "./PageMS/VendorMaster";
+import VendorOverview from "./PageMS/VendorOverview";
+import VendorEdit from "./PageMS/VendorEdit";
 import PMSpriceTypeMast from "./PageMS/PMSpriceTypeMast";
 import PMSplatformPriceTypeMast from "./PageMS/PMSplatformPriceTypeMast";
+<<<<<<< Updated upstream
 import VendorGroupLink from "./PageMS/VendorGroupLink";
 import PageMaster from "./PageMS/PageMaster";
 import PageOverview from "./PageMS/PageOverview";
+=======
+import RepairRetrunSummary from "../Sim/RepairRetrunSummary";
+>>>>>>> Stashed changes
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -583,6 +587,10 @@ const Admin = () => {
                       path="/asset-single-user"
                       element={<AssetSingleUser />}
                     />
+                    <Route
+                      path="/asset-repair-return-summary"
+                      element={<RepairRetrunSummary />}
+                    />
                   </>
                   {/* )} */}
                   {contextData &&
@@ -694,13 +702,9 @@ const Admin = () => {
                   <Route
                     path="/finance-paymentmode"
                     element={<PaymentMode />}
-                  /><Route
-                    path="/payment-TDS_deduct"
-                    element={<TDSdeduct />}
-                  /><Route
-                    path="/payment-GST_hold"
-                    element={<GSThold />}
                   />
+                  <Route path="/payment-TDS_deduct" element={<TDSdeduct />} />
+                  <Route path="/payment-GST_hold" element={<GSThold />} />
                   <Route
                     path="/finance-pendingapproverefund"
                     element={<PendingApprovalRefund />}
@@ -902,10 +906,7 @@ const Admin = () => {
                     path="/planCreation/:id"
                     element={<PlancreationNew />}
                   />
-                   <Route
-                    path="/tempExcel"
-                    element={<NewExcelFile />}
-                  />
+                  <Route path="/tempExcel" element={<NewExcelFile />} />
                   <Route path="/phase/:id" element={<PhaseCreation />} />
                   <Route
                     path="/planCreation/:id"
@@ -947,10 +948,7 @@ const Admin = () => {
                     path="/excusionCampaign"
                     element={<ExcusionCampaign />}
                   />
-                  <Route
-                    path="/tempexcusion"
-                    element={<TempExecution />}
-                  />
+                  <Route path="/tempexcusion" element={<TempExecution />} />
                   {/* ----------------------lead source routes -----------------------------*/}
                   <Route
                     path="/exploreleads"
@@ -1180,15 +1178,36 @@ const Admin = () => {
                   <Route path="/pms-platform" element={<PmsPlatform />} />
                   <Route path="/pms-pay-method" element={<PayMethod />} />
                   <Route path="/pms-pay-cycle" element={<PayCycle />} />
-                  <Route path="/pms-group-link-type" element={<GroupLinkType />} />
-                  <Route path="/pms-vendor-edit/:_id" element={<VendorEdit />} />
+                  <Route
+                    path="/pms-group-link-type"
+                    element={<GroupLinkType />}
+                  />
+                  <Route
+                    path="/pms-vendor-edit/:_id"
+                    element={<VendorEdit />}
+                  />
                   <Route path="/pms-vendor-master" element={<VendorMaster />} />
+<<<<<<< Updated upstream
                   <Route path="/pms-vendor-overview" element={<VendorOverview />} />
                   <Route path="/pms-price-type" element={<PMSpriceTypeMast />} />
                   <Route path="/pms-platform-price-type" element={<PMSplatformPriceTypeMast />} />
                   <Route path="/pms-vendor-group-link" element={<VendorGroupLink />} />
                   <Route path="/pms-page-master" element={<PageMaster />} />
                   <Route path="/pms-page-overview" element={<PageOverview />} />
+=======
+                  <Route
+                    path="/pms-vendor-overview"
+                    element={<VendorOverview />}
+                  />
+                  <Route
+                    path="/pms-price-type"
+                    element={<PMSpriceTypeMast />}
+                  />
+                  <Route
+                    path="/pms-platform-price-type"
+                    element={<PMSplatformPriceTypeMast />}
+                  />
+>>>>>>> Stashed changes
                 </Route>
               </Routes>
             </div>

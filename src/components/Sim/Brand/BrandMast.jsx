@@ -7,13 +7,14 @@ import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import Select from "react-select";
 import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { baseUrl } from "../../../utils/config";
 import { useGlobalContext } from "../../../Context/Context";
 
 const BrandMast = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError, getBrandDataContext } = useGlobalContext();
   const [brandName, setBrandName] = useState("");
   const [brnadData, setBrandData] = useState([]);
   const [Brnadfilter, setBrnadFilter] = useState([]);
@@ -25,11 +26,25 @@ const BrandMast = () => {
   const [totalAssets, setTotalAssets] = useState([]);
   //Asset Count Modal
   const [assetModal, seAssetModel] = useState(false);
+  const [brandNameModal, setBrandNameModal] = useState("");
+
+  const [modalName, setModalName] = useState("");
+  const [isAddModalOpen, setIsOpenAddModal] = useState(false);
+  const handleCloseAddModalModal = () => {
+    setIsOpenAddModal(false);
+  };
+  console.log(brandNameModal, "brand");
+
+  const handleRowClick = (row) => {
+    console.log(row.asset_brand_name, "row hai ");
+    setBrandNameModal(row._id);
+    setIsOpenAddModal(true);
+  };
 
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}` + `get_total_asset_in_category/${row}`
+        `${baseUrl}` + `get_asset_available_count_in_brand/${row}`
       );
       setTotalAssets(response?.data.data);
       console.log(response.data.data, "response here ");
@@ -45,12 +60,49 @@ const BrandMast = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}` + `get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}` + `get_asset_allocated_count_in_brand/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
     } catch (error) {
       console.log("total asset not working", error);
+    }
+  };
+
+  const [modalData, setModalData] = useState([]);
+  async function getModalData() {
+    const res = await axios.get(baseUrl + "get_all_asset_modals");
+    setModalData(res.data);
+  }
+  useEffect(() => {
+    getModalData();
+  }, []);
+
+  const handleAddModalSubmit = async (e) => {
+    e.preventDefault();
+    if (!modalName || modalName == "") {
+      return toastError("Modal Name is Required");
+    } else if (!brandNameModal || brandNameModal == "") {
+      return toastError("Brand Name is Required");
+    }
+    try {
+      const isModalExists = modalData.some(
+        (d) => d.asset_modal_name === modalName
+      );
+      if (isModalExists) {
+        alert("Brand already Exists");
+      } else {
+        const response = await axios.post(baseUrl + "add_asset_modal", {
+          asset_modal_name: modalName,
+          asset_brand_id: brandNameModal,
+        });
+        toastAlert("Modal Created");
+        setModalName("");
+        setBrandName("");
+        setIsOpenAddModal(false);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
   const columns = [
@@ -93,9 +145,12 @@ const BrandMast = () => {
       name: "Add Modal",
       cell: (row) => (
         <>
-          <Link to={`/modal-mast/${2}`}>
-            <button className="btn btn-outline-success">Add Modal</button>
-          </Link>
+          <button
+            className="btn btn-outline-success"
+            onClick={() => handleRowClick(row)}
+          >
+            Add Modal
+          </button>
         </>
       ),
       sortable: true,
@@ -322,6 +377,85 @@ const BrandMast = () => {
             highlightOnHover
             subHeader
           />
+        </div>
+        {/* )} */}
+      </Modal>
+
+      <Modal
+        isOpen={isAddModalOpen}
+        onRequestClose={handleCloseAddModalModal}
+        style={{
+          content: {
+            width: "80%",
+            height: "80%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        {/* {selectedRow && ( */}
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            {/* <h2>Department: {selectedRow.dept_name}</h2> */}
+
+            <button
+              className="btn btn-success float-left"
+              onClick={handleCloseAddModalModal}
+            >
+              X
+            </button>
+          </div>
+          <FormContainer
+            mainTitle="Sub Category"
+            title="Create SubCategory "
+            // handleSubmit={handleSubmit}
+            submitButton={false}
+            buttonAccess={false}
+          >
+            <FieldContainer
+              label="Modal Name"
+              value={modalName}
+              astric
+              required={false}
+              onChange={(e) => setModalName(e.target.value)}
+            />
+            <div className="form-group col-6">
+              <label className="form-label">
+                Brand Name <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={getBrandDataContext.map((opt) => ({
+                  value: opt._id,
+                  label: opt.asset_brand_name,
+                }))}
+                value={{
+                  value: brandNameModal,
+                  label:
+                    getBrandDataContext.find(
+                      (user) => user._id === brandNameModal
+                    )?.asset_brand_name || "",
+                }}
+                onChange={(e) => {
+                  setBrandNameModal(e.value);
+                }}
+                isDisabled
+                required
+              />
+            </div>
+            <div className="form-group col-2">
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={handleAddModalSubmit}
+              >
+                Submit
+              </button>
+            </div>
+          </FormContainer>
         </div>
         {/* )} */}
       </Modal>

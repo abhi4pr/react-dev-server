@@ -180,15 +180,14 @@ function App() {
           <Route path="/brand-update/:id" element={<BrandUpdate />} />
           <Route path="/brand-view/:id" element={<BrandView />} />
 
+          {/* ------------------------------ case Study start----------------------------------------- */}
+          <Route path="/case-study/brand" element={<BrandCaseStudy />} />
+          <Route path="/casestudy-dashboard" element={<CaseStudyDashboard />} />
+          <Route path="/case-platform" element={<CaseStudyplateform />} />
+          <Route path="/casestudy-update/:id" element={<UpdateCaseStudy />} />
+          <Route path="/caseStudy-view/:id" element={<CaseStudyView />} />
 
-{/* ------------------------------ case Study start----------------------------------------- */}
-<Route path="/case-study/brand" element={<BrandCaseStudy />} />
-<Route path="/casestudy-dashboard" element={<CaseStudyDashboard />} />
-<Route path="/case-platform" element={<CaseStudyplateform />} />
-<Route path="/casestudy-update/:id" element={<UpdateCaseStudy />} />
-<Route path="/caseStudy-view/:id" element={<CaseStudyView />} />
-
-{/* ------------------------------ case Study end----------------------------------------- */}
+          {/* ------------------------------ case Study end----------------------------------------- */}
 
           <Route path="/data-brand-dashboard" element={<Dashboard />} />
           <Route path="/data-brand-master" element={<DataBrandMaster />} />

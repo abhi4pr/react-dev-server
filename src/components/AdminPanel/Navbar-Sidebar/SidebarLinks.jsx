@@ -1512,6 +1512,14 @@ const SidebarLinks = () => {
                 Asset Request Approvel
               </Link>
               {/* )} */}
+              {RoleId == 5 && (
+              <Link
+                className="collapse-item"
+                to="/admin/asset-repair-return-summary"
+              >
+                Repair & Return Summary
+              </Link>
+              {/* )} */}
             </div>
           </div>
         </li>
@@ -1550,32 +1558,33 @@ const SidebarLinks = () => {
       )}
 
       {/* {isUserManagementVisible && ( */}
-        <li className="nav-item">
-          <Link
-            className="nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseTwom8"
-            aria-expanded="true"
-            aria-controls="collapseTwom8"
-          >
-            <i className="bi bi-person-gear" />
-            <span>Page Management</span>
-          </Link>
-          <div
-            id="collapseTwom8"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
-              {contextData &&
-                contextData[0] &&
-                contextData[0].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/pms-vendor-type">
-                    Vendor Type
-                  </Link>
-                )}
+      <li className="nav-item">
+        <Link
+          className="nav-link collapsed"
+          data-toggle="collapse"
+          data-target="#collapseTwom8"
+          aria-expanded="true"
+          aria-controls="collapseTwom8"
+        >
+          <i className="bi bi-person-gear" />
+          <span>Page Management</span>
+        </Link>
+        <div
+          id="collapseTwom8"
+          className="collapse"
+          aria-labelledby="headingTwo"
+          data-parent="#accordionSidebar"
+        >
+          <div className="bg-white collapse-inner">
+            {contextData &&
+              contextData[0] &&
+              contextData[0].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-vendor-type">
+                  Vendor Type
+                </Link>
+              )}
 
+<<<<<<< Updated upstream
                {contextData &&
                 contextData[0] &&
                 contextData[0].view_value === 1 && (
@@ -1601,56 +1610,57 @@ const SidebarLinks = () => {
                     Platform
                   </Link>
                 )}
+=======
+            {contextData &&
+              contextData[21] &&
+              contextData[21].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-platform">
+                  Platform
+                </Link>
+              )}
+>>>>>>> Stashed changes
 
-              {contextData &&
-                contextData[1] &&
-                contextData[1].view_value === 1 && (
-                  <Link
-                    className="collapse-item"
-                    to="/admin/pms-pay-method"
-                  >
-                    Payment Method
-                  </Link>
-                )}
-              {contextData &&
-                contextData[2] &&
-                contextData[2].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/pms-pay-cycle">
-                    Payment Cycle
-                  </Link>
-                )}
+            {contextData &&
+              contextData[1] &&
+              contextData[1].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-pay-method">
+                  Payment Method
+                </Link>
+              )}
+            {contextData &&
+              contextData[2] &&
+              contextData[2].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-pay-cycle">
+                  Payment Cycle
+                </Link>
+              )}
 
-              {contextData &&
-                contextData[6] &&
-                contextData[6].view_value === 1 && (
-                  <Link
-                    className="collapse-item"
-                    to="/admin/pms-group-link-type"
-                  >
-                    Group Link Type
-                  </Link>
-                )}
-                 {contextData &&
-                contextData[6] &&
-                contextData[6].view_value === 1 && (
-                  <Link
-                    className="collapse-item"
-                    to="/admin/pms-price-type"
-                  >
-                    Price
-                  </Link>
-                )} 
-                 {contextData &&
-                contextData[6] &&
-                contextData[6].view_value === 1 && (
-                  <Link
-                    className="collapse-item"
-                    to="/admin/pms-platform-price-type"
-                  >
-                    Platform Price
-                  </Link>
-                )}
+            {contextData &&
+              contextData[6] &&
+              contextData[6].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-group-link-type">
+                  Group Link Type
+                </Link>
+              )}
+            {contextData &&
+              contextData[6] &&
+              contextData[6].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-price-type">
+                  Price
+                </Link>
+              )}
+            {contextData &&
+              contextData[6] &&
+              contextData[6].view_value === 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pms-platform-price-type"
+                >
+                  Platform Price
+                </Link>
+              )}
 
+<<<<<<< Updated upstream
               <Link className="collapse-item" to="/admin/pms-vendor-overview">
                 Vendor Overview
               </Link>
@@ -1661,8 +1671,17 @@ const SidebarLinks = () => {
                 Page Overview
               </Link>
             </div>
+=======
+            <Link className="collapse-item" to="/admin/pms-group-link-type">
+              Group Link Type
+            </Link>
+            <Link className="collapse-item" to="/admin/pms-vendor-overview">
+              Vendor Overview
+            </Link>
+>>>>>>> Stashed changes
           </div>
-        </li>
+        </div>
+      </li>
       {/* )} */}
 
       {/* {isInstaApiVisible && (
