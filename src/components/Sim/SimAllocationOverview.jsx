@@ -78,7 +78,7 @@ const SimAllocationOverview = () => {
         status: "Available",
         submitted_by: userID,
         Last_updated_by: userID,
-        Reason: currentReason,
+        reason: currentReason,
         submitted_at: currSubDate,
       });
 
@@ -126,7 +126,7 @@ const SimAllocationOverview = () => {
       sortable: true,
     },
     {
-      name: "sub category",
+      name: "Sub Category",
       selector: (row) => row.sub_category_name,
       sortable: true,
     },
@@ -175,30 +175,6 @@ const SimAllocationOverview = () => {
       ),
       sortable: true,
     },
-
-    // {
-    //   name: "Action",
-    //   cell: (row) => (
-    //     <>
-    //       <Link to={`/sim-allocation-update/${row.allo_id}`}>
-    //         <button
-    //           title="Edit"
-    //           className="btn btn-outline-primary btn-sm user-button"
-    //         >
-    //           <FaEdit />{" "}
-    //         </button>
-    //       </Link>
-
-    //       <DeleteButton
-    //         endpoint="simdatadelete"
-    //         id={row.sim_id}
-    //         getData={getData}
-    //       />
-    //     </>
-    //   ),
-    //   allowOverflow: true,
-    //   width: "22%",
-    // },
   ];
 
   const [buttonAccess, setButtonAccess] = useState(false);

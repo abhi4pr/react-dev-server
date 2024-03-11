@@ -83,6 +83,7 @@ const AssetSubCategoryUpdate = () => {
           <FieldContainer
             label="Sub Category"
             value={subCategoryName}
+            astric
             onChange={(e) => setSubCategoryName(e.target.value)}
           />
           <div className="form-group col-6">

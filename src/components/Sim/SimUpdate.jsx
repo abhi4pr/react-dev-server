@@ -150,8 +150,6 @@ const SimUpdate = () => {
       //if (fetchedData.length > 0) {
 
       const {
-        sim_no,
-        s_type,
         asset_type,
         assetsName,
         asset_id,
@@ -208,6 +206,31 @@ const SimUpdate = () => {
     }
     if (inWarranty == "Yes" && !invoiceCopy) {
       toastError("Invoice Copy is Required");
+      return;
+    }
+    if (!assetType || assetType == "") {
+      toastError("Asset Type is Required");
+      return;
+    } else if (!assetsCategory || !assetsCategory.category_id == "") {
+      toastError("Assets Category is required");
+      return;
+    } else if (!subCategory || !subCategory.sub_category_id == "") {
+      toastError("Assets SubCategory is required");
+      return;
+    } else if (!brandName || brandName == "") {
+      toastError("Brand Name is Required");
+      return;
+    } else if (!modalName || modalName == "") {
+      toastError("Modal Name is Required");
+      return;
+    } else if (!assetsName || assetsName == "") {
+      toastError("Asset Name is Required");
+      return;
+    } else if (!assetsID || assetsID === "") {
+      toastError("Assets ID is required");
+      return;
+    } else if (!vendorName || !vendorName.vendor_id == "") {
+      toastError("Vendor Name is required");
       return;
     }
 

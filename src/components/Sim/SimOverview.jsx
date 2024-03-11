@@ -58,6 +58,11 @@ const SimOverview = () => {
     setIsTransferModal(false);
   };
 
+  // const[isAllocationModal , setIsAllocationModal] = useState(false)
+  // const closeAllocationModal = ()=>{
+  //   setIsAllocationModal(false)
+  // }
+
   const [showAssetsImage, setShowAssetImages] = useState([]);
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -195,6 +200,12 @@ const SimOverview = () => {
       setModalData(res?.data.data);
     });
   }
+  function handleParticularAllocationData(simId) {
+    setIsModalOpen(true);
+    axios.get(`${baseUrl}` + `get_single_sim/${simId}`).then((res) => {
+      setModalData(res?.data.data);
+    });
+  }
 
   useEffect(() => {
     if (modalData) {
@@ -240,6 +251,7 @@ const SimOverview = () => {
 
       setSelectedUserTransfer("");
       closeTransferModal();
+
       getData();
     } else {
       alert("Please Select User");
@@ -452,9 +464,9 @@ const SimOverview = () => {
             <button
               type="button"
               className="btn btn-outline-primary btn-sm user-button"
-              data-toggle="modal"
-              data-target="#exampleModal11"
-              data-whatever="@mdo"
+              // data-toggle="modal"
+              // data-target="#exampleModal11"
+              // data-whatever="@mdo"
               onClick={() => handleParticularSimData(row.sim_id)}
             >
               <i className="bi bi-arrow-up-right"></i>
@@ -469,7 +481,7 @@ const SimOverview = () => {
               // data-toggle="modal"
               // data-target="#AllocationModal"
               // data-whatever="@mdo"
-              onClick={() => handleParticularSimData(row.sim_id)}
+              onClick={() => handleParticularAllocationData(row.sim_id)}
             >
               A
             </button>
@@ -774,7 +786,9 @@ const SimOverview = () => {
                 data-dismiss="modal"
                 aria-label="Close"
               >
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true" onClick={() => closeTransferModal()}>
+                  ×
+                </span>
               </button>
             </div>
 
@@ -909,7 +923,9 @@ const SimOverview = () => {
                 data-dismiss="modal"
                 aria-label="Close"
               >
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true" onClick={() => closeModal()}>
+                  ×
+                </span>
               </button>
             </div>
             <div className="modal-body">

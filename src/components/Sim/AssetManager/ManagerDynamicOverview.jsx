@@ -143,6 +143,7 @@ const ManagerDynamicOverview = ({
         <>
           {row.asset_repair_request_status !== "Resolved" &&
             row.asset_repair_request_status !== "Accept" &&
+            row.asset_repair_request_status !== "Recover" &&
             row.asset_repair_request_status !== "ApprovedByManager" && (
               <button
                 type="button"
@@ -293,25 +294,25 @@ const ManagerDynamicOverview = ({
       sortable: true,
     },
     // console.log(filterData.asset_return_status == "RecovedByHR", "fsfafasfsd"),
-    filterData[0]?.asset_return_status !== "RecovedByHR" && {
-      name: "Return",
-      cell: (row) => (
-        <>
-          {row.asset_return_status !== "RecoverdByManager" && (
-            <button
-              type="button"
-              data-toggle="modal"
-              data-target="#return-asset-modal"
-              size="small"
-              className="btn btn-outline-primary btn-sm"
-              onClick={() => handleReturnAssetRecover(row, "RecoverdByManager")}
-            >
-              Recover
-            </button>
-          )}
-        </>
-      ),
-    },
+    // filterData[0]?.asset_return_status !== "RecovedByHR" && {
+    //   name: "Return",
+    //   cell: (row) => (
+    //     <>
+    //       {row.asset_return_status !== "RecoverdByManager" && (
+    //         <button
+    //           type="button"
+    //           data-toggle="modal"
+    //           data-target="#return-asset-modal"
+    //           size="small"
+    //           className="btn btn-outline-primary btn-sm"
+    //           onClick={() => handleReturnAssetRecover(row, "RecoverdByManager")}
+    //         >
+    //           Recover
+    //         </button>
+    //       )}
+    //     </>
+    //   ),
+    // },
   ];
 
   //   const activeColumns = tabOne ? columnsTab1 : columnsTab2;

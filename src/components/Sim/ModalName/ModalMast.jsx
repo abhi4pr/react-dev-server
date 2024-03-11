@@ -148,6 +148,7 @@ const ModalMast = () => {
           asset_modal_name: modalName,
           asset_brand_id: brandName,
         });
+        toastAlert("Modal Created");
         setModalName("");
         setBrandName("");
         getModalData();

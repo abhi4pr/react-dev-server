@@ -165,7 +165,7 @@ const SimMaster = () => {
     e.preventDefault();
 
     if (inWarranty == "Yes" && (!warrantyDate || warrantyDate == "")) {
-      toastError("Warrnaty Date is Required");
+      toastError("warranty Date is Required");
       return;
     }
     if (inWarranty == "Yes" && !dateOfPurchase) {
@@ -306,15 +306,15 @@ const SimMaster = () => {
                   }))}
                   // value={assetsCategory}
                   onChange={(e, newvalue) => {
-                    // if (newvalue != null) {
-                    setAssetsCategory({
-                      label: newvalue.label,
-                      category_id: newvalue.value,
-                    });
-                    if (assetsCategoryError) {
-                      setAssetsCategoryError("");
+                    if (newvalue != null) {
+                      setAssetsCategory({
+                        label: newvalue.label,
+                        category_id: newvalue.value,
+                      });
+                      if (assetsCategoryError) {
+                        setAssetsCategoryError("");
+                      }
                     }
-                    // }
                   }}
                   renderInput={(params) => (
                     <TextField
@@ -343,9 +343,9 @@ const SimMaster = () => {
                         label: newvalue.label,
                         sub_category_id: newvalue.value,
                       }));
-                    }
-                    if (subcategoryError) {
-                      setSubCategoryError("");
+                      if (subcategoryError) {
+                        setSubCategoryError("");
+                      }
                     }
                   }}
                   renderInput={(params) => (

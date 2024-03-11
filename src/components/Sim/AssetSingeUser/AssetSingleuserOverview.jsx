@@ -796,7 +796,7 @@ const AssetSingleuserOverview = ({
                   Tag="textarea"
                   value={problemDetailing}
                   onChange={(e) => setProblemDetailing(e.target.value)}
-                  required
+                  required={false}
                 />
                 {isEditMode ? (
                   <button
