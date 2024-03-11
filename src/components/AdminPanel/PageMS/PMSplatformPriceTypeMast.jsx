@@ -82,26 +82,34 @@ export default function PMSplatformPriceTypeMast() {
   };
 
   const handleRowData = (row) => {
-    setRowData(row);
-    setPlatformUpdateId(row.platform_id);
-    setPriceTypeId(row.price_type_id);
+    let platform = platformList.find((option) => option._id === row.PMS_Platform_data.pmsPlatform_id,"platformList")
+    setPlatformUpdateId({
+      platformName: platform.platform_name,
+      value: row.PMS_Platform_data.pmsPlatform_id,
+    });
+    console.log({
+      platformName:  platform.platform_name,
+      value: row.PMS_Platform_data.pmsPlatform_id,
+    });
+    setPriceTypeId(row.PMS_Pricetypes_data.pmsPriceType_id);
     setDescriptionUpdate(row.description);
+    setRowData(row);
   };
 
   const handleModalUpdate = () => {
     axios
       .put(baseUrl + `updatePlatformPrice/${rowData._id}`, {
         platform_id: Platform.value,
-        price_type_id: priceTypeId,
+        price_type_id: priceTypeId.value,
         description: descriptionUpdate,
         updated_by: userID,
       })
       .then(() => {
         toastAlert("Successfully Update");
+        setPlatformUpdateId(" ");
+        setPriceTypeId(" ");
+        setDescriptionUpdate(" ");
         getData();
-        setPlatformUpdateId("");
-        setPriceTypeId("");
-        setDescriptionUpdate("");
       });
   };
 
@@ -110,6 +118,14 @@ export default function PMSplatformPriceTypeMast() {
       name: "S.NO",
       selector: (row, index) => <div>{index + 1}</div>,
       sortable: true,
+    },
+    {
+      name: "Price Type",
+      selector: (row) => row.PMS_Pricetypes_data.price_type,
+    },
+    {
+      name: "Platform",
+      selector: (row) => row.PMS_Platform_data.platform_name,
     },
     {
       name: "Description",
@@ -155,7 +171,9 @@ export default function PMSplatformPriceTypeMast() {
             priceType: option.price_type,
             value: option._id,
           }))}
-          value={priceList.find((option) => option._id === platformPriceType.value)}
+          value={priceList.find(
+            (option) => option._id === platformPriceType.value
+          )}
           getOptionLabel={(option) => option.priceType}
           style={{ width: 300 }}
           onChange={(e, value) => {
@@ -214,7 +232,7 @@ export default function PMSplatformPriceTypeMast() {
         </div>
       </div>
 
-      <div id="myModal" className="modal fade" role="dialog">
+      {/* <div id="myModal" className="modal fade" role="dialog">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
@@ -230,11 +248,12 @@ export default function PMSplatformPriceTypeMast() {
                   priceType: option.price_type,
                   value: option._id,
                 }))}
-                value={priceList.find((option) => option._id === priceTypeId)}
+                
+                value={priceList?.find((option) => option?._id === priceTypeId)}
                 getOptionLabel={(option) => option.priceType}
                 style={{ width: 300 }}
                 onChange={(e, value) => {
-                  setPriceTypeId(value);
+                  setPriceTypeId(value.value);
                 }}
                 renderInput={(params) => (
                   <TextField
@@ -251,8 +270,10 @@ export default function PMSplatformPriceTypeMast() {
                   platformName: option.platform_name,
                   value: option._id,
                 }))}
-                value={platformList.find((option) => option._id === rowData.platform_id)}
-                getOptionLabel={(option) => option.platformName || ""}
+                value={platformList.find(
+                  (option) => option._id === platformUpdateId
+                )}
+                getOptionLabel={(option) => option.platformName}
                 style={{ width: 300 }}
                 onChange={(e, value) => {
                   setPlatform(value);
@@ -265,7 +286,6 @@ export default function PMSplatformPriceTypeMast() {
                   />
                 )}
               />
-
               <FieldContainer
                 label="Description"
                 value={descriptionUpdate}
@@ -292,7 +312,117 @@ export default function PMSplatformPriceTypeMast() {
             </div>
           </div>
         </div>
+      </div> */}
+
+<div id="myModal" className="modal fade" role="dialog">
+  <div className="modal-dialog">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h4 className="modal-title">Update</h4>
+        <button type="button" className="close" data-dismiss="modal">
+          &times;
+        </button>
       </div>
+      <div className="modal-body">
+        <Autocomplete
+          id="price-type-autocomplete-update"
+          options={priceList.map((option) => ({
+            priceType: option.price_type,
+            value: option._id,
+          }))}
+          value={priceList.find((option) => option._id === priceTypeId)}
+          getOptionLabel={(option) => option.priceType}
+          style={{ width: 300 }}
+          onChange={(e, value) => {
+            setPriceTypeId(value ? value.value : ''); // Ensure to handle the case when value is null
+          }}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Price Type *"
+              variant="outlined"
+            />
+          )}
+        />
+{/* 
+<Autocomplete
+  id="platform-autocomplete-update"
+  options={platformList.map((option) => ({
+    platformName: option.platform_name,
+    value: option._id,
+  }))}
+  // inputValue={Platform.platformName}
+  value={platformList.find((option) => option._id === platformUpdateId)} // Set default value to null if not found
+  getOptionLabel={(option) => option.platformName}
+  style={{ width: 300 }}
+  onChange={(e, value) => {
+    setPlatform(value ? value : ''); // Ensure to handle the case when value is null
+    console.log(value)
+  }}
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label="Platform *"
+      variant="outlined"
+    />
+  )}
+/> */}
+
+<Autocomplete
+  id="platform-autocomplete-update"
+  options={platformList.map((option) => ({
+    platformName: option.platform_name,
+    value: option._id,
+  }))}
+  inputValue={Platform.platformName}
+  value={platformList.find((option) => option._id === platformUpdateId.value)}
+  getOptionLabel={(option) => option.platformName}
+  style={{ width: 300 }}
+  onChange={(e, value) => {
+    setPlatformUpdateId(value);
+  }
+
+  }
+  renderInput={(params) => (
+    <TextField
+      {...params}
+      label="Platform *"
+      variant="outlined"
+
+    />  
+  )}
+/>
+
+
+
+        <FieldContainer
+          label="Description"
+          value={descriptionUpdate}
+          required={false}
+          onChange={(e) => setDescriptionUpdate(e.target.value)}
+        />
+      </div>
+      <div className="modal-footer">
+        <button
+          type="button"
+          className="btn btn-primary"
+          data-dismiss="modal"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={handleModalUpdate}
+          data-dismiss="modal"
+        >
+          Update
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
     </>
   );
 }
