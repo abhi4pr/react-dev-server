@@ -99,9 +99,9 @@ const VendorMaster = () => {
     formData.append("platform_id", platformId);
     formData.append("payMethod_id", payId);
     formData.append("cycle_id", cycleId);
-    formData.append("pan", pan);
+    formData.append("pan_no", pan);
     formData.append("upload_pan_image", panImage);
-    formData.append("gst", gst);
+    formData.append("gst_no", gst);
     formData.append("upload_gst_image", gstImage);
     formData.append("company_name", compName);
     formData.append("company_address", compAddress);
