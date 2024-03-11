@@ -1657,6 +1657,9 @@ const SidebarLinks = () => {
               <Link className="collapse-item" to="/admin/pms-vendor-group-link">
                 Vendor Group Link
               </Link>
+              <Link className="collapse-item" to="/admin/pms-page-overview">
+                Page Overview
+              </Link>
             </div>
           </div>
         </li>
