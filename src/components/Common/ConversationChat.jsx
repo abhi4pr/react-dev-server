@@ -5,13 +5,17 @@ import io from "socket.io-client";
 import axios from "axios";
 import { baseUrl } from "../../utils/config";
 import jwtDecode from "jwt-decode";
+// import ScrollableChat from "./ScrollableChat";
 
 const ENDPOINT = "http://192.168.1.45:8098";
-var socket ;
-const ConversationChat = ({ selectedItem, chatIdData }) => {
+var socket, selectedChatCompare;
+
+const ConversationChat = (props) => {
+  const { selectedItem, chatIdData } = props;
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginObjId = decodedToken._id;
+
   const [message, setMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
   const [dataChat, setDataChat] = useState([]);
@@ -31,6 +35,10 @@ const ConversationChat = ({ selectedItem, chatIdData }) => {
       console.log("Socket not connected");
       return;
     }
+    if (!message.trim()) {
+      console.log("Message is empty");
+      return;
+    }
     // sending message post data----->
     const chatPostApi = await axios.post(`${baseUrl}message`, {
       chatId: chatIdData,
@@ -38,10 +46,20 @@ const ConversationChat = ({ selectedItem, chatIdData }) => {
       currentUserId: loginObjId,
     });
 
-    socket.emit("new-message", chatPostApi);
-    console.log("Saimyual calls");
+    if (chatPostApi.status === 200) {
+      socket.emit("new-message", chatPostApi.data);
+    }
+    setDataChat((prevDataChat) => [...prevDataChat, chatPostApi.data]);
     setMessage("");
     getChatData();
+  };
+
+  // While Pressing Enter Key :-
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSend(); // Call handleSend function when Enter key is pressed
+    }
   };
 
   useEffect(() => {
@@ -51,8 +69,13 @@ const ConversationChat = ({ selectedItem, chatIdData }) => {
     });
 
     socket.on("connect", () => {
-      console.log("Connected to Socket.IO server");
       setSocketConnected(true); // Set connection status
+    });
+
+    socket.emit("amanSocket", {
+      name: "palak",
+      email: "palak@gmail.com",
+      age: "24",
     });
 
     socket.emit("setup", decodedToken);
@@ -65,6 +88,24 @@ const ConversationChat = ({ selectedItem, chatIdData }) => {
     };
   }, []);
 
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      setDataChat((prevDataChat) => [...prevDataChat, newMessageReceived]);
+      // if (
+      //   !selectedChatCompare ||
+      //   selectedChatCompare._id !== newMessageReceived.chatId._id
+      // ) {
+      //   if (!notification.includes()) {
+      //     console.log("in if !notification.includes() 11");
+      //     setNotification([newMessageReceived, ...notification]);
+      //     setFetchAgain(!fetchAgain);
+      //   }
+      // } else {
+      //   console.log("in else 111");
+      //   setMessages([...messages, newMessageReceived]);
+      // }
+    });
+  }, []);
   const getChatData = async () => {
     try {
       const response = await axios.get(
@@ -73,12 +114,11 @@ const ConversationChat = ({ selectedItem, chatIdData }) => {
       if (response.status === 200) {
         setDataChat(response.data);
       }
-      socket.emit("join chat",chatIdData )
+      socket.emit("join chat", chatIdData);
     } catch (error) {
       console.error("Error fetching chat data", error);
     }
   };
-
 
   if (!selectedItem) {
     return (
@@ -117,11 +157,15 @@ const ConversationChat = ({ selectedItem, chatIdData }) => {
           </div>
         ))}
       </div>
+      {/* <div>
+        <ScrollableChat />
+      </div> */}
       <TextField
         fullWidth
         placeholder="Type Message here ....."
         variant="outlined"
         value={message}
+        onKeyDown={handleKeyPress}
         onChange={handleChange}
         InputProps={{
           endAdornment: (

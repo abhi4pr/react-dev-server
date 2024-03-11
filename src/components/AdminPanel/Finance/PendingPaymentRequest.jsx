@@ -273,7 +273,7 @@ export default function PendingPaymentRequest() {
     return diffDays;
   }
 
-  const totalPendingAmount = data.reduce(
+  const totalPendingAmount = filterData.reduce(
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
@@ -590,7 +590,7 @@ export default function PendingPaymentRequest() {
         name: "Customer Name",
         email: "customer@example.com",
         contact: "9000090000",
-        method:"netbanking"
+        method: "netbanking",
       },
       notes: {
         vendor_name: "Harshit",

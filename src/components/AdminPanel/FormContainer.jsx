@@ -67,7 +67,7 @@ const FormContainer = ({
                 Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
-                Pending Amount : <a href="#"> {totalPendingAmount}</a>
+                Pending Request Amount : <a href="#"> {totalPendingAmount}</a>
               </h2>
               <h2>
                 Pending Request : <a href="#"> {pendingRequestCount}</a>
