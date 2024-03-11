@@ -12,6 +12,7 @@ import Select from "react-select";
 import Modal from "react-modal";
 import { useGlobalContext } from "../../Context/Context";
 import { baseUrl } from "../../utils/config";
+import AllAssetExcel from "../../utils/AllAssetsExcel";
 
 const SimOverview = () => {
   const { id } = useParams();
@@ -50,6 +51,11 @@ const SimOverview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const [isTransferModal, setIsTransferModal] = useState(false);
+  const closeTransferModal = () => {
+    setIsTransferModal(false);
   };
 
   const [showAssetsImage, setShowAssetImages] = useState([]);
@@ -184,7 +190,7 @@ const SimOverview = () => {
   }, [search]);
 
   function handleParticularSimData(simId) {
-    setIsModalOpen(true);
+    setIsTransferModal(true);
     axios.get(`${baseUrl}` + `get_single_sim/${simId}`).then((res) => {
       setModalData(res?.data.data);
     });
@@ -208,7 +214,7 @@ const SimOverview = () => {
     }
   }, [simAllocationTransferData, userData]);
 
-  function handleTransfer() {
+  async function handleTransfer() {
     if (selectedUserTransfer != "") {
       const currDate = new Date().toISOString();
       const dateString = currDate.replace("T", " ").replace("Z", "");
@@ -224,14 +230,17 @@ const SimOverview = () => {
       //   submitted_at: dateString,
       // });
 
-      axios.put(baseUrl + "update_allocationsim", {
+      await axios.put(baseUrl + "update_allocationsim", {
         user_id: Number(selectedUserTransfer),
         sim_id: Number(simAllocationTransferData[0].sim_id),
         // dept_id: Number(modalSelectedUserData[0].dept_id),
         created_by: userID,
         status: "Allocated",
       });
+
       setSelectedUserTransfer("");
+      closeTransferModal();
+      getData();
     } else {
       alert("Please Select User");
     }
@@ -299,17 +308,23 @@ const SimOverview = () => {
       selector: (row) => row.asset_id,
       sortable: true,
     },
-    {
-      name: "Allocated To",
-      selector: (row) => row.allocated_username,
-      sortable: true,
-      width: "150px",
-    },
-    {
-      name: "Duration",
-      selector: (row) => row.date_difference + " " + " Days",
-      sortable: true,
-    },
+    // {
+    //   name: "Allocated To",
+    //   selector: (row) => row.allocated_username,
+    //   sortable: true,
+    //   width: "150px",
+    // },
+    ...(id == 2
+      ? [
+          {
+            name: "Allocated To",
+            selector: (row) => row.allocated_username,
+            sortable: true,
+            width: "150px",
+          },
+        ]
+      : []),
+
     {
       name: "Category",
       width: "130px",
@@ -340,36 +355,65 @@ const SimOverview = () => {
         <button
           className="btn btn-outline-success"
           onClick={() => handleImageClick(row.sim_id)}
+          // disabled={showAssetsImage?.length != 0}
         >
           <i className="bi bi-images"></i>
         </button>
       ),
     },
+
     {
       name: "Invoice",
-      selector: (row) => (
-        <>
-          <a
-            style={{ cursor: "pointer" }}
-            target="blank"
-            href={row.invoiceCopy_url}
-            download
-          >
-            {/* <img
-              style={{ width: "100px" }}
-              src={row.invoiceCopy_url}
-              alt="invoice copy"
-            /> */}
-            <i
-              class="fa fa-download"
-              aria-hidden="true"
-              style={{ fontSize: "25px", color: "blue" }}
-            ></i>
-          </a>
-        </>
-      ),
+      selector: (row) => {
+        const baseUrl = "https://storage.googleapis.com/dev-backend-bucket/";
+        // Check if the URL is not just the base URL (indicating there's additional info, thus, a file exists)
+        const hasInvoice =
+          row.invoiceCopy_url &&
+          row.invoiceCopy_url !== baseUrl &&
+          row.invoiceCopy_url.startsWith(baseUrl);
+
+        return (
+          <>
+            {hasInvoice && (
+              <a
+                style={{ cursor: "pointer" }}
+                target="_blank" // Corrected "blank" to "_blank"
+                href={row.invoiceCopy_url}
+                download
+              >
+                <i
+                  className="fa fa-download" // Corrected "class" to "className"
+                  aria-hidden="true"
+                  style={{ fontSize: "25px", color: "blue" }}
+                ></i>
+              </a>
+            )}
+          </>
+        );
+      },
       sortable: true,
     },
+
+    // {
+    //   name: "Invoice",
+    //   selector: (row) => (
+    //     <>
+    //       <a
+    //         style={{ cursor: "pointer" }}
+    //         target="blank"
+    //         href={row.invoiceCopy_url}
+    //         download
+    //       >
+    //         <i
+    //           class="fa fa-download"
+    //           aria-hidden="true"
+    //           style={{ fontSize: "25px", color: "blue" }}
+    //         ></i>
+    //       </a>
+    //     </>
+    //   ),
+    //   sortable: true,
+    // },
 
     {
       name: "Action",
@@ -387,11 +431,13 @@ const SimOverview = () => {
             </button>
           </Link>
 
-          <DeleteButton
-            endpoint="delete_sim"
-            id={row.sim_id}
-            getData={getData}
-          />
+          {row.status !== "Allocated" && (
+            <DeleteButton
+              endpoint="delete_sim"
+              id={row.sim_id}
+              getData={getData}
+            />
+          )}
 
           <Link to={`/sim-summary/${row.sim_id}`}>
             <button
@@ -407,7 +453,7 @@ const SimOverview = () => {
               type="button"
               className="btn btn-outline-primary btn-sm user-button"
               data-toggle="modal"
-              data-target="#exampleModal"
+              data-target="#exampleModal11"
               data-whatever="@mdo"
               onClick={() => handleParticularSimData(row.sim_id)}
             >
@@ -437,23 +483,21 @@ const SimOverview = () => {
 
   // const [buttonAccess, setButtonAccess] = useState(false);
 
-  const handleExport = () => {
-    const fileName = "data.xlsx";
-    const worksheet = XLSX.utils.json_to_sheet(data);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, fileName);
-  };
-
   const handleImageClick = (row) => {
     axios
       .post(`${baseUrl}` + `get_single_assets_image`, {
         sim_id: row,
       })
       .then((res) => {
-        setShowAssetImages(res.data.data);
+        const images = res.data.data;
+        if (images.length > 0) {
+          setShowAssetImages(images);
+          setImageModalOpen(true);
+        } else {
+          // No images available, handle accordingly
+          alert("No images available for this asset."); // For demonstration, consider a more user-friendly feedback mechanism
+        }
       });
-    setImageModalOpen(true);
   };
   const handleCloseImageModal = () => {
     setImageModalOpen(false);
@@ -688,11 +732,17 @@ const SimOverview = () => {
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                         />
-                        <button
+                        {/* <button
                           className="btn btn-outline-success ml-2 btn-sm"
                           onClick={handleExport}
                         >
                           Export TO Excel
+                        </button> */}
+                        <button
+                          className="btn btn-primary ml-2"
+                          onClick={() => AllAssetExcel(filterdata)}
+                        >
+                          Export Excel
                         </button>
                       </>
                     }
@@ -704,13 +754,13 @@ const SimOverview = () => {
         </div>
       </div>
       {/* Modal Start */}
+
       <div
-        className="modal fade"
-        id="exampleModal"
+        className={`modal fade ${isTransferModal ? "show" : ""}`}
+        id="sidebar-right"
         tabIndex={-1}
         role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+        style={{ display: isTransferModal ? "block" : "none" }}
       >
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -817,7 +867,8 @@ const SimOverview = () => {
               <button
                 type="button"
                 className="btn btn-secondary"
-                data-dismiss="modal"
+                // data-dismiss="modal"
+                onClick={() => closeTransferModal()}
               >
                 Close
               </button>
@@ -1002,6 +1053,7 @@ const SimOverview = () => {
                           style={{ cursor: "pointer" }}
                           href={showAssetsImage[0]?.img1_url}
                           download
+                          target="blank"
                         >
                           <img
                             src={showAssetsImage[0]?.img1_url}
@@ -1025,6 +1077,7 @@ const SimOverview = () => {
                           style={{ cursor: "pointer" }}
                           href={showAssetsImage[0]?.img2_url}
                           download
+                          target="blank"
                         >
                           <img
                             src={showAssetsImage[0]?.img2_url}
@@ -1048,6 +1101,7 @@ const SimOverview = () => {
                           style={{ cursor: "pointer" }}
                           href={showAssetsImage[0]?.img3_url}
                           download
+                          target="blank"
                         >
                           <img
                             src={showAssetsImage[0]?.img3_url}
@@ -1071,6 +1125,7 @@ const SimOverview = () => {
                           style={{ cursor: "pointer" }}
                           href={showAssetsImage[0]?.img4_url}
                           download
+                          target="blank"
                         >
                           <img
                             src={showAssetsImage[0]?.img4_url}

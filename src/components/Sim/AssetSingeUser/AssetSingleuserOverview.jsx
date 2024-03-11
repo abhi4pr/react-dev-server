@@ -249,7 +249,7 @@ const AssetSingleuserOverview = ({
             <span className="badge badge-success">Resolved</span>
           ) : row.asset_repair_request_status === "Requested" ? (
             <span className="badge badge-danger">Requested</span>
-          ) : row.asset_repair_request_status === "Approved By Manager" ? (
+          ) : row.asset_repair_request_status === "ApprovedByManager" ? (
             <span className="badge badge-warning">Approve By Manager</span>
           ) : (
             "N/A"
@@ -279,29 +279,41 @@ const AssetSingleuserOverview = ({
     {
       name: "Repair",
       cell: (row) => (
-        <button
-          onClick={() => handleRow(row)}
-          className="btn btn-outline-warning btn-sm"
-          type="button"
-        >
-          Repair Request
-        </button>
+        <>
+          {row.asset_repair_request_status !== "Requested" &&
+            row.asset_repair_request_status !== "Accept" &&
+            row.asset_repair_request_status !== "Recover" &&
+            row.asset_repair_request_status !== "ApprovedByManager" && (
+              <button
+                onClick={() => handleRow(row)}
+                className="btn btn-outline-warning btn-sm"
+                type="button"
+              >
+                Repair Request
+              </button>
+            )}
+        </>
       ),
       width: "180px",
     },
     {
       name: "Return",
       cell: (row) => (
-        <button
-          type="button"
-          data-toggle="modal"
-          data-target="#return-asset-modal"
-          size="small"
-          className="btn btn-outline-primary btn-sm"
-          onClick={() => handleReturnAsset(row)}
-        >
-          Return Asset
-        </button>
+        <>
+          {row.asset_return_status !== "Pending" &&
+            row.asset_return_status !== "RecoverdByManager" && (
+              <button
+                type="button"
+                data-toggle="modal"
+                data-target="#return-asset-modal"
+                size="small"
+                className="btn btn-outline-primary btn-sm"
+                onClick={() => handleReturnAsset(row)}
+              >
+                Return Asset
+              </button>
+            )}
+        </>
       ),
     },
   ];

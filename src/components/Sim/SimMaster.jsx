@@ -464,6 +464,22 @@ const SimMaster = () => {
                 />
               </div>
             </div>
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group">
+                <TextField
+                  fullWidth={true}
+                  id="outlined-basic"
+                  InputLabelProps={{ shrink: true }}
+                  label="Date of Purchase"
+                  type="date"
+                  value={dateOfPurchase}
+                  onChange={(e) => setDateOfPurchase(e.target.value)}
+                  inputProps={{
+                    min: today, // Restrict dates before today
+                  }}
+                />
+              </div>
+            </div>
 
             {inWarranty == "Yes" && (
               <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
@@ -483,23 +499,6 @@ const SimMaster = () => {
                 </div>
               </div>
             )}
-
-            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-              <div className="form-group">
-                <TextField
-                  fullWidth={true}
-                  id="outlined-basic"
-                  InputLabelProps={{ shrink: true }}
-                  label="Date of Purchase"
-                  type="date"
-                  value={dateOfPurchase}
-                  onChange={(e) => setDateOfPurchase(e.target.value)}
-                  inputProps={{
-                    min: today, // Restrict dates before today
-                  }}
-                />
-              </div>
-            </div>
 
             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
               <div className="form-group form_select">
@@ -679,7 +678,14 @@ const SimMaster = () => {
                   label="Assets Value"
                   type="number"
                   value={assetsValue}
-                  onChange={(e) => setAssetsValue(e.target.value)}
+                  // onChange={(e) => setAssetsValue(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setAssetsValue(value);
+                    if (assetType == "New") {
+                      setAssetsCurrentValue(value);
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -718,7 +724,13 @@ const SimMaster = () => {
                   Depreciation Percentage"
                   type="number"
                   value={depreciation}
-                  onChange={(e) => setDescription(e.target.value)}
+                  // onChange={(e) => setDescription(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value <= 100) {
+                      setDescription(value);
+                    }
+                  }}
                 />
               </div>
             </div>
