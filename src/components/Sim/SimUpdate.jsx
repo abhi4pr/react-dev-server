@@ -72,6 +72,8 @@ const SimUpdate = () => {
   const [brandData, setBrandData] = useState([]);
   const [brandName, setBrandName] = useState("");
 
+  const today = new Date().toISOString().split("T")[0];
+
   useEffect(() => {
     if (brandName) {
       axios
@@ -196,6 +198,19 @@ const SimUpdate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (inWarranty == "Yes" && (!warrantyDate || warrantyDate == "")) {
+      toastError("Warrnaty Date is Required");
+      return;
+    }
+    if (inWarranty == "Yes" && !dateOfPurchase) {
+      toastError("Date Of Purchase is Required");
+      return;
+    }
+    if (inWarranty == "Yes" && !invoiceCopy) {
+      toastError("Invoice Copy is Required");
+      return;
+    }
+
     const formData = new FormData();
 
     formData.append("id", id);
@@ -214,9 +229,9 @@ const SimUpdate = () => {
     formData.append("sub_category_id", subCategory);
     formData.append("vendor_id", vendorName);
     formData.append("invoiceCopy", invoiceCopy);
-    formData.append("selfAuditPeriod", Number(selfAuditPeriod));
+    formData.append("selfAuditPeriod", Number(selfAuditPeriod) || 0);
     formData.append("selfAuditUnit", selfAuditUnit);
-    formData.append("hrselfAuditPeriod", Number(hrselfAuditPeriod));
+    formData.append("hrselfAuditPeriod", Number(hrselfAuditPeriod) || 0);
     formData.append("hrselfAuditUnit", hrselfAuditUnit);
     formData.append("assetsValue", Number(assetsValue));
     formData.append("assetsCurrentValue", Number(assetsCurrentValue));
@@ -432,6 +447,23 @@ const SimUpdate = () => {
               </div>
             </div>
 
+            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+              <div className="form-group">
+                <TextField
+                  fullWidth={true}
+                  id="outlined-basic"
+                  InputLabelProps={{ shrink: true }}
+                  label="Date of Purchase"
+                  type="date"
+                  value={dateOfPurchase}
+                  onChange={(e) => setDateOfPurchase(e.target.value)}
+                  inputProps={{
+                    min: today, // Restrict dates before today
+                  }}
+                />
+              </div>
+            </div>
+
             {inWarranty == "Yes" && (
               <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
                 <div className="form-group">
@@ -443,24 +475,13 @@ const SimUpdate = () => {
                     type="date"
                     value={warrantyDate}
                     onChange={(e) => setWarrantyDate(e.target.value)}
+                    inputProps={{
+                      min: dateOfPurchase, // Ensure warranty date is on or after purchase date
+                    }}
                   />
                 </div>
               </div>
             )}
-
-            <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
-              <div className="form-group">
-                <TextField
-                  fullWidth={true}
-                  id="outlined-basic"
-                  InputLabelProps={{ shrink: true }}
-                  label="Date of Purchase"
-                  type="date"
-                  value={dateOfPurchase}
-                  onChange={(e) => setDateOfPurchase(e.target.value)}
-                />
-              </div>
-            </div>
 
             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
               <div className="form-group form_select">
@@ -640,7 +661,14 @@ const SimUpdate = () => {
                   label="Assets Value"
                   type="number"
                   value={assetsValue}
-                  onChange={(e) => setAssetsValue(e.target.value)}
+                  // onChange={(e) => setAssetsValue(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    setAssetsValue(value);
+                    if (assetType == "New") {
+                      setAssetsCurrentValue(value);
+                    }
+                  }}
                 />
               </div>
             </div>
@@ -692,7 +720,13 @@ const SimUpdate = () => {
                   type="number"
                   value={depreciation}
                   InputLabelProps={{ shrink: true }}
-                  onChange={(e) => setDescription(e.target.value)}
+                  // onChange={(e) => setDescription(e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value <= 100) {
+                      setDescription(value);
+                    }
+                  }}
                 />
               </div>
             </div>

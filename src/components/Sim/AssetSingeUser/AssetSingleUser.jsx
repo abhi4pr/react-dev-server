@@ -112,6 +112,16 @@ const AssetSingleUser = () => {
   const userMultiChangeHandler = (e, op) => {
     setTagUser(op);
   };
+  console.log(usersDataContext, "userdsata");
+  const TagUserData = usersDataContext
+    .filter(
+      (category) =>
+        !tagUser.find((selected) => selected.value === category.user_id)
+    )
+    .map((category) => ({
+      label: category.user_name,
+      value: category.user_id,
+    }));
 
   const handleRow = (row) => {
     setAssetName(row?.sim_id);
@@ -290,7 +300,7 @@ const AssetSingleUser = () => {
                 </div>
 
                 <div className="col-sm-12 col-lg-8 p-2">
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                     id="combo-box-demo"
                     options={usersDataContext.map((d) => ({
@@ -301,6 +311,18 @@ const AssetSingleUser = () => {
                       <TextField {...params} label="Tag" />
                     )}
                     onChange={userMultiChangeHandler}
+                  /> */}
+                  <Autocomplete
+                    multiple
+                    id="combo-box-demo"
+                    options={TagUserData}
+                    getOptionLabel={(option) => option.label}
+                    InputLabelProps={{ shrink: true }}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Tag" />
+                    )}
+                    onChange={userMultiChangeHandler}
+                    value={tagUser}
                   />
                 </div>
 

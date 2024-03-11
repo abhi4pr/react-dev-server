@@ -18,7 +18,10 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const [recoveryRemark, setRecoveryRemark] = useState("");
   const [recoveryImg1, setRecoveryImg1] = useState(null);
   const [recoveryImg2, setRecoveryImg2] = useState(null);
+
   const [resolvedRemark, setResolvedRemark] = useState("");
+  const [resolvedDate, setResolvedDate] = useState("");
+
   const [scrapRemark, setScrapRemark] = useState("");
 
   const [repairId, setRepairId] = useState(0);
@@ -39,7 +42,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const [showAssetsImage, setShowAssetImages] = useState("");
   const handleImageClick = (row) => {
     setShowAssetImages(row);
-
     setImageModalOpen(true);
   };
   const handleCloseImageModal = () => {
@@ -47,9 +49,11 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   };
 
   const handleStatusUpdate = (row, status) => {
-    setRepairId(row.repair_id);
     setStatushere(status);
+    setRepairId(row.repair_id);
   };
+  console.log(resolvedDate, resolvedRemark, "-------------------lllllll");
+
   const handleAcceptUpdate = async (row, status) => {
     const swalWithBootstrapButtons = Swal.mixin({
       customClass: {
@@ -74,6 +78,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       formData.append("repair_id", row.repair_id);
       formData.append("status", status);
       formData.append("recovery_remark", recoveryRemark);
+
       formData.append("scrap_remark", scrapRemark);
       formData.append("recovery_image_upload1", recoveryImg1);
       formData.append("recovery_image_upload2", recoveryImg2);
@@ -108,6 +113,9 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     formData.append("recovery_image_upload1", recoveryImg1);
     formData.append("recovery_image_upload2", recoveryImg2);
     formData.append("recovery_by", userID);
+
+    formData.append("resolved_remark", resolvedRemark);
+    formData.append("resolved_date", resolvedDate);
 
     await axios.put(baseUrl + "update_repair_request", formData).then(() => {
       hardRender();
@@ -208,12 +216,14 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     {
       name: "Img",
       selector: (row) => (
-        <button
-          className="btn btn-outline-danger"
-          onClick={() => handleImageClick(row)}
-        >
-          <i className="bi bi-images"></i>
-        </button>
+        <>
+          <button
+            className="btn btn-outline-danger"
+            onClick={() => handleImageClick(row)}
+          >
+            <i className="bi bi-images"></i>
+          </button>
+        </>
       ),
     },
 
@@ -239,12 +249,14 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       name: "Invoice",
       selector: (row) => (
         <>
-          <img
-            onClick={() => handleInvoiceImageClick(row.invoiceCopy)}
-            style={{ width: "100px" }}
-            src={row.invoiceCopy}
-            alt="invoice copy"
-          />
+          {row.invoiceCopy && (
+            <img
+              onClick={() => handleInvoiceImageClick(row.invoiceCopy)}
+              style={{ width: "100px" }}
+              src={row.invoiceCopy}
+              alt="invoice copy"
+            />
+          )}
         </>
       ),
       sortable: true,
@@ -252,14 +264,18 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     {
       name: "invoice Download",
       cell: (row) => (
-        <a
-          style={{ cursor: "pointer" }}
-          target="blank"
-          href={row.invoiceCopy}
-          download
-        >
-          <FcDownload style={{ fontSize: "25px" }} />
-        </a>
+        <>
+          {row.invoiceCopy && (
+            <a
+              style={{ cursor: "pointer" }}
+              target="blank"
+              href={row.invoiceCopy}
+              download
+            >
+              <FcDownload style={{ fontSize: "25px" }} />
+            </a>
+          )}
+        </>
       ),
       width: "150px",
     },
@@ -580,6 +596,13 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
               </button>
             </div>
             <div className="modal-body">
+              <FieldContainer
+                label="Resolved Remark"
+                type="date"
+                value={resolvedDate}
+                onChange={(e) => setResolvedDate(e.target.value)}
+                fieldGrid={12}
+              />
               <FieldContainer
                 label="Resolved Remark"
                 Tag="textarea"
