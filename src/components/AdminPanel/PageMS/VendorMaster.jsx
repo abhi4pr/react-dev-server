@@ -38,6 +38,7 @@ const VendorMaster = () => {
   const [platformData, setPlatformData] = useState([]);
   const [payData, setPayData] = useState([]);
   const [cycleData, setCycleData] = useState([]);
+  const [emailIsInvalid, setEmailIsInvalid] = useState(false);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -63,11 +64,30 @@ const VendorMaster = () => {
 
   useEffect(() => {
     getData();
-  },[])
+  }, []);
+
+  const handleMobileNumSet = (e, setState) => {
+    const re = /^[0-9\b]+$/;
+    if (
+      e.target.value === "" ||
+      (re.test(e.target.value) && e.target.value.length <= 10)
+    ) {
+      setState(e.target.value);
+    }
+  };
+
+  const handleEmailSet = (e, setState) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setState(e.target.value);
+    if (re.test(e.target.value) || e.target.value === "") {
+      return setEmailIsInvalid(false);
+    }
+    return setEmailIsInvalid(true);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData();
     formData.append("vendorMast_name", vendorName);
     formData.append("country_code", countryCode);
@@ -93,13 +113,12 @@ const VendorMaster = () => {
     formData.append("home_city", homeCity);
     formData.append("home_state", homeState);
     formData.append("created_by", userID);
-    
-    axios.post(baseUrl + "addPayCycle", formData)
-      .then(() => {
-        setIsFormSubmitted(true);
-        toastAlert("Submitted");
-      });
-  };  
+
+    axios.post(baseUrl + "addVendorMast", formData).then(() => {
+      setIsFormSubmitted(true);
+      toastAlert("Submitted");
+    });
+  };
 
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-vendor-overview" />;
@@ -130,22 +149,28 @@ const VendorMaster = () => {
           label="Mobile *"
           value={mobile}
           required={true}
-          onChange={(e) => setMobile(e.target.value)}
+          onChange={(e) => handleMobileNumSet(e, setMobile)}
         />
-        
+
         <FieldContainer
           label="Alternate Mobile"
           value={altMobile}
           required={false}
-          onChange={(e) => setAltMobile(e.target.value)}
+          onChange={(e) => handleMobileNumSet(e, setAltMobile)}
         />
 
         <FieldContainer
           label="Email *"
           value={email}
           required={true}
-          onChange={(e) => setEmail(e.target.value)}
+          type="email"
+          onChange={(e) => handleEmailSet(e, setEmail)}
         />
+        {emailIsInvalid && (
+          <span style={{ color: "red", fontSize: "12px" }}>
+            Please enter a valid email
+          </span>
+        )}
 
         <FieldContainer
           label="Personal Address"
@@ -155,83 +180,86 @@ const VendorMaster = () => {
         />
 
         <div className="form-group col-6">
-        <label className="form-label">
-          Vendor Type <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          options={typeData.map((option) => ({
-            value: option._id,
-            label: option.type_name,
-          }))}
-          value={{
-            value: typeId,
-            label:
-              typeData.find((role) => role._id === typeId)?.type_name || "",
-          }}
-          onChange={(e) => {
-            setTypeId(e.value);
-          }}
-        ></Select>
+          <label className="form-label">
+            Vendor Type <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={typeData.map((option) => ({
+              value: option._id,
+              label: option.type_name,
+            }))}
+            value={{
+              value: typeId,
+              label:
+                typeData.find((role) => role._id === typeId)?.type_name || "",
+            }}
+            onChange={(e) => {
+              setTypeId(e.value);
+            }}
+          ></Select>
         </div>
-        
+
         <div className="form-group col-6">
-        <label className="form-label">
-          Platform <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          options={platformData.map((option) => ({
-            value: option._id,
-            label: option.platform_name,
-          }))}
-          value={{
-            value: platformId,
-            label:
-              platformData.find((role) => role._id === platformId)?.platform_name || "",
-          }}
-          onChange={(e) => {
-            setPlatformId(e.value);
-          }}
-        ></Select>
+          <label className="form-label">
+            Platform <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={platformData.map((option) => ({
+              value: option._id,
+              label: option.platform_name,
+            }))}
+            value={{
+              value: platformId,
+              label:
+                platformData.find((role) => role._id === platformId)
+                  ?.platform_name || "",
+            }}
+            onChange={(e) => {
+              setPlatformId(e.value);
+            }}
+          ></Select>
         </div>
-        
+
         <div className="form-group col-6">
-        <label className="form-label">
-          Payment Method <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          options={payData.map((option) => ({
-            value: option._id,
-            label: option.payMethod_name,
-          }))}
-          value={{
-            value: payId,
-            label:
-              payData.find((role) => role._id === payId)?.payMethod_name || "",
-          }}
-          onChange={(e) => {
-            setPayId(e.value);
-          }}
-        ></Select>
+          <label className="form-label">
+            Payment Method <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={payData.map((option) => ({
+              value: option._id,
+              label: option.payMethod_name,
+            }))}
+            value={{
+              value: payId,
+              label:
+                payData.find((role) => role._id === payId)?.payMethod_name ||
+                "",
+            }}
+            onChange={(e) => {
+              setPayId(e.value);
+            }}
+          ></Select>
         </div>
-        
+
         <div className="form-group col-6">
-        <label className="form-label">
-          Pay Cycle <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          options={cycleData.map((option) => ({
-            value: option._id,
-            label: option.cycle_name,
-          }))}
-          value={{
-            value: cycleId,
-            label:
-              cycleData.find((role) => role._id === cycleId)?.cycle_name || "",
-          }}
-          onChange={(e) => {
-            setCycleId(e.value);
-          }}
-        ></Select>
+          <label className="form-label">
+            Pay Cycle <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={cycleData.map((option) => ({
+              value: option._id,
+              label: option.cycle_name,
+            }))}
+            value={{
+              value: cycleId,
+              label:
+                cycleData.find((role) => role._id === cycleId)?.cycle_name ||
+                "",
+            }}
+            onChange={(e) => {
+              setCycleId(e.value);
+            }}
+          ></Select>
         </div>
 
         <FieldContainer
@@ -324,7 +352,6 @@ const VendorMaster = () => {
           required={false}
           onChange={(e) => setHomeState(e.target.value)}
         />
-
       </FormContainer>
     </>
   );
