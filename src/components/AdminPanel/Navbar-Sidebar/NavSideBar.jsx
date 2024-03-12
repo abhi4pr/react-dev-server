@@ -64,25 +64,25 @@ const NavSideBar = () => {
       });
 
       // Toggle Active Class on Sidebars
-      $(document).ready(function () {
-        $("#accordionSidebar .nav-item").click(function () {
-          $(".nav-item").removeClass("active");
-          // $('.nav-item .collapse').removeClass("show");
-          $(this).addClass("active");
-        });
-      });
+      // $(document).ready(function () {
+      //   $("#accordionSidebar .nav-item").click(function () {
+      //     $(".nav-item").removeClass("active");
+      //     // $('.nav-item .collapse').removeClass("show");
+      //     $(this).addClass("active");
+      //   });
+      // });
 
       //
-      $(document).ready(function () {
-        $("#accordionSidebar .nav-item-single").click(function () {
-          $("#accordionSidebar .nav-item")
-            .find(".nav-link")
-            .addClass("collapsed");
-          $("#accordionSidebar .nav-item")
-            .find(".collapse")
-            .removeClass("show");
-        });
-      });
+      // $(document).ready(function () {
+      //   $("#accordionSidebar .nav-item-single").click(function () {
+      //     $("#accordionSidebar .nav-item")
+      //       .find(".nav-link")
+      //       .addClass("collapsed");
+      //     $("#accordionSidebar .nav-item")
+      //       .find(".collapse")
+      //       .removeClass("show");
+      //   });
+      // });
     })($); // End of use strict
   }, []);
 

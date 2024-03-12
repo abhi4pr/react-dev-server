@@ -1057,20 +1057,21 @@ const WFHDRegister = ({ userUpdateID }) => {
           />
         </div>
 
-        <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+      </FormContainer>
+        {/* <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12"> */}
           <div className="form-group">
             <button
               type="button"
               className="btn btn-primary"
-              style={{ width: "10%", height: "15%" }}
+              style={{marginBottom:"12px"  , padding: "14px 28px 14px 28", display:"flex",flexDirection:"row",justifyContent:"space-between", alignItems:"center" ,gap:"10px"}}
               disabled={loading}
               onClick={handleSubmit}
             >
-              {loading ? "Submitting..." : "Submit"}
+              {loading ? "Submitting..." : "Submit"} 
+              {loading ? <i className="bi bi-arrow-clockwise"></i> : <i className="bi bi-arrow-right"></i>} 
             </button>
           </div>
-        </div>
-      </FormContainer>
+        {/* </div> */}
     </>
   );
 };

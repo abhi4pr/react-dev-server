@@ -1,5 +1,6 @@
 .d_infocard {
   margin-bottom: 24px;
+  align-items: normal;
 }
 
 .d_infocard .card-body {

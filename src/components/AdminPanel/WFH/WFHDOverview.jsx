@@ -49,7 +49,14 @@ const WFHDOverview = () => {
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
   const roleID = decodedToken.role_id;
-
+  // useEffect(() => {
+    
+  //   const lab=document.querySelector(".hkULGy");
+  //     lab.innerText="Showing Entries";
+   
+  // }, [])
+  
+ 
   const getData = async () => {
     const response = await axios.get(baseUrl + "get_all_wfh_users");
     if (RoleIDContext == 1 || RoleIDContext == 5) {
@@ -283,7 +290,7 @@ const WFHDOverview = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "80px",
+      // width: "80px",
       sortable: true,
     },
     {
@@ -293,7 +300,7 @@ const WFHDOverview = () => {
     {
       name: "Employee ID",
       cell: (row) => row.emp_id,
-      width: "120px",
+      // width: "120px",
     },
     {
       name: "Profile status",
@@ -304,15 +311,15 @@ const WFHDOverview = () => {
       cell: (row) => (
         <>
           {row.user_status === "Active" ? (
-            <span className="badge badge-success">Active</span>
+            <span className="badge badge-success" style={{borderRadius:"50px"}}>Active</span>
           ) : row.user_status === "Exit" || row.user_status === "On Leave" ? (
-            <span className="badge badge-warning">{row.user_status}</span>
+            <span className="badge badge-warning" style={{borderRadius:"50px"}}>{row.user_status}</span>
           ) : row.user_status === "Resign" ? (
-            <span className="badge badge-danger">Resigned</span>
+            <span className="badge badge-danger" style={{borderRadius:"50px"}}>Resigned</span>
           ) : null}
         </>
       ),
-      width: "100px",
+      // width: "100px",
     },
     {
       name: "Login ID",
@@ -329,17 +336,17 @@ const WFHDOverview = () => {
     {
       name: "Department",
       cell: (row) => row.department_name,
-      width: "120px",
+      // width: "120px",
     },
     {
       name: "Designation",
       cell: (row) => row.designation_name,
-      width: "170px",
+      // width: "170px",
     },
     {
       name: "Job Type",
       cell: (row) => row.job_type,
-      width: "100px",
+      // width: "100px",
     },
     {
       name: "Email",
@@ -355,33 +362,42 @@ const WFHDOverview = () => {
         <>
           {row.att_status == "registered" ? (
             <>
-              <button
+              {/* <button
                 title="Edit user"
                 type="button"
                 className="btn btn-primary mr-1"
               >
+              </button> */}
                 <Link to={`/admin/wfhd-update/${row.user_id}`}>
-                  <EditIcon />
+                  {/* <EditIcon /> */}
+                  <div className="icon-1"  title="Edit User">
+                    <i class="bi bi-pencil"></i>
+                  </div>
                 </Link>
-              </button>
-              <button
+              {/* <button
                 title="Bank details"
                 type="button"
                 className="btn btn-primary mr-1"
               >
+              </button> */}
                 <Link to={`/admin/wfhd-bank-update/${row.user_id}`}>
-                  <DetailsIcon />
+                  {/* <DetailsIcon /> */}
+                  <div className="icon-1" title="Bank details" >
+                    <i class="bi bi-info-square"></i>
+                  </div>
                 </Link>
-              </button>
-              <button
+              {/* <button
                 title="Document upload"
                 type="button"
                 className="btn btn-success"
               >
+              </button> */}
                 <Link to={`/admin/wfh-update-document/${row.user_id}`}>
-                  <UploadIcon />
+                  {/* <UploadIcon /> */}
+                  <div className="icon-1"  title="Document upload">
+                    <i class="bi bi-upload"></i>
+                  </div>
                 </Link>
-              </button>
             </>
           ) : row.att_status == "document_upload" ? (
             <button
@@ -510,7 +526,7 @@ const WFHDOverview = () => {
           </div>
         </div>
       </Modal>
-      <div>
+      <div style={{display:"flex",flexDirection:"column" ,gap:"16px"}}>
         {console.log(activeTab)}
         <FormContainer mainTitle="My Team" link={"/admin/"} />
         {/* <ul
@@ -560,52 +576,53 @@ const WFHDOverview = () => {
             </a>
           </li>
         </ul> */}
-        <div className="card-header d-flex flex-row align-items-center justify-content-between">
-          <div className="btn-group w-100">
-            <button
-              className={`btn ${
-                activeTab == 0 ? "btn-primary" : "btn-outline-primary"
+        <div className="tab">
+          
+            <div
+              className={` named-tab  ${
+                activeTab == 0 ? "active-tab" : ""
               }`}
               onClick={() => {
                 FilterTabData("registered"), setActiveTab(0);
               }}
             >
               Registered ({statusCounts.registered})
-            </button>
-            <button
-              className={`btn ${
-                activeTab == 1 ? "btn-primary" : "btn-outline-primary"
+            </div>
+            <div
+              className={`named-tab  ${
+                activeTab == 1 ? "active-tab" : ""
               }`}
               onClick={() => {
                 FilterTabData("document_upload"), setActiveTab(1);
               }}
             >
               Upload document ({statusCounts.document_upload})
-            </button>
-            <button
-              className={`btn ${
-                activeTab == 2 ? "btn-primary" : "btn-outline-primary"
+            </div>
+            <div
+              className={`named-tab  ${
+                activeTab == 2 ? "active-tab" : ""
               }`}
               onClick={() => {
                 FilterTabData("training"), setActiveTab(2);
               }}
             >
               Training ({statusCounts.training})
-            </button>
-            <button
-              className={`btn ${
-                activeTab == 3 ? "btn-primary" : "btn-outline-primary"
+            </div>
+            <div
+              className={`named-tab  ${
+                activeTab == 3 ? "active-tab" : ""
               }`}
               onClick={() => {
                 FilterTabData("onboarded"), setActiveTab(3);
               }}
             >
               Onboarded ({statusCounts.onboarded})
-            </button>
-          </div>
+            </div>
+         
         </div>
         <div className="card">
-          <div className="data_tbl table-responsive">
+          {/* <div className="data_tbl table-responsive" >
+            
             <DataTable
               title="Payout Users"
               columns={columns}
@@ -614,15 +631,41 @@ const WFHDOverview = () => {
               fixedHeaderScrollHeight="64vh"
               highlightOnHover
               subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search Here"
-                  className="w-50 form-control"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
+              striped="true"
+                subHeaderComponent={
+                  <input
+                    type="text"
+                    placeholder="Search Here"
+                    className="w-50 form-control"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                }
+            />
+          </div> */}
+          <div className="card-header" style={{justifyContent:"space-between"}}>
+          Payout User
+          <input
+                    type="text"
+                    placeholder="Search Here"
+                    className="form-control"
+                    value={search}
+                    style={{width:"300px"}}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+          </div>
+          <div className="card-body body-padding">
+          <DataTable
+              columns={columns}
+              data={filterDataS}
+             pagination
+             selectableRows={true}
+             paginationDefaultPage={1}
+
+              highlightOnHover
+             paginationResetDefaultPage={true}
+              striped="true"
+              
             />
           </div>
         </div>
