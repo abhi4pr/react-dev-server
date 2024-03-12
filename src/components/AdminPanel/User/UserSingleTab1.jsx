@@ -277,26 +277,18 @@ const UserSingleTab1 = ({ user, roomId }) => {
     {
       id: user.user_id,
       label: "Permanent Address",
-      value:
-        user?.permanent_address +
-        ", " +
-        user?.permanent_city +
-        ", " +
-        user?.permanent_state +
-        ", " +
-        user?.permanent_pin_code,
+      value: `${user?.permanent_address && user?.permanent_address + ","}
+        ${user?.permanent_city && user?.permanent_city + ","}
+        ${user?.permanent_state && user?.permanent_state + ","} 
+        ${user?.permanent_pin_code ? user?.permanent_pin_code + "." : "NA"}`,
     },
     {
       id: user.user_id,
       label: "Current Address",
-      value:
-        user?.current_address +
-        ", " +
-        user?.current_city +
-        ", " +
-        user?.current_state +
-        ", " +
-        user?.current_pin_code,
+      value: `${user?.current_address && user?.current_address + ","}
+      ${user?.current_city && user?.current_city + ","}
+      ${user?.current_state && user?.current_state + ","} 
+      ${user?.current_pin_code ? user?.current_pin_code + "." : "NA"}`,
     },
   ];
   useEffect(() => {
