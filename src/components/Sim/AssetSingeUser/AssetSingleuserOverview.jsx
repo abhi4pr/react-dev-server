@@ -419,6 +419,15 @@ const AssetSingleuserOverview = ({
     setTagUser(op);
   };
 
+  const filteredOptions = usersDataContext
+    .filter(
+      (user) => !tagUser.some((selected) => selected.value === user.user_id)
+    )
+    .map((user) => ({
+      label: user.user_name,
+      value: user.user_id,
+    }));
+
   const handleNewAssetSubmit = async () => {
     if (!assetsName || assetsName == "") {
       return toastError("Asset Name is Required");
@@ -632,7 +641,7 @@ const AssetSingleuserOverview = ({
                 </div>
 
                 <div className="col-sm-12 col-lg-8 p-2">
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                     id="combo-box-demo"
                     options={usersDataContext.map((d) => ({
@@ -643,6 +652,21 @@ const AssetSingleuserOverview = ({
                       <TextField {...params} label="Tag" />
                     )}
                     onChange={userMultiChangeHandler}
+                  /> */}
+                  <Autocomplete
+                    multiple
+                    id="combo-box-demo"
+                    options={filteredOptions}
+                    getOptionLabel={(option) => option.label}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Tag" />
+                    )}
+                    onChange={userMultiChangeHandler}
+                    value={tagUser}
+                    // Ensure that the comparison between option and value works for objects
+                    isOptionEqualToValue={(option, value) =>
+                      option.value === value.value
+                    }
                   />
                 </div>
 
@@ -778,7 +802,7 @@ const AssetSingleuserOverview = ({
                   />
                 </div>
                 <div className="col-sm-12 col-lg-12 p-2">
-                  <Autocomplete
+                  {/* <Autocomplete
                     multiple
                     id="combo-box-demo"
                     options={usersDataContext.map((d) => ({
@@ -789,6 +813,21 @@ const AssetSingleuserOverview = ({
                       <TextField {...params} label="Tag" />
                     )}
                     onChange={userMultiChangeHandler}
+                  /> */}
+                  <Autocomplete
+                    multiple
+                    id="combo-box-demo"
+                    options={filteredOptions}
+                    getOptionLabel={(option) => option.label}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Tag" />
+                    )}
+                    onChange={userMultiChangeHandler}
+                    value={tagUser}
+                    // Ensure that the comparison between option and value works for objects
+                    isOptionEqualToValue={(option, value) =>
+                      option.value === value.value
+                    }
                   />
                 </div>
                 <FieldContainer

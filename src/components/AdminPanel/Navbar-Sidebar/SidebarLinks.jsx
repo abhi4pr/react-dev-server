@@ -1483,43 +1483,43 @@ const SidebarLinks = () => {
             data-parent="#accordionSidebar"
           >
             <div className="bg-white collapse-inner">
-              {/* {RoleId == 5 && ( */}
-              <Link className="collapse-item" to="/admin/asset-dashboard">
-                Dashboard
-              </Link>
-              {/* )} */}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to="/admin/asset-dashboard">
+                  Dashboard
+                </Link>
+              )}
               <Link className="collapse-item" to="/admin/asset-single-user">
                 My Asset
               </Link>
-              {/* {RoleId == 5 && ( */}
-              <Link className="collapse-item" to={`/sim-overview/${0}`}>
-                Asset Management
-              </Link>
-              {/* )} */}
-              {/* {RoleId == 5 && ( */}
-              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                Assets Request
-              </Link>
-              {/* )} */}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to={`/sim-overview/${0}`}>
+                  Asset Management
+                </Link>
+              )}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                  Assets Request
+                </Link>
+              )}
               <Link
                 className="collapse-item"
                 to="/admin/asset-visible-to-taged-person"
               >
                 Tagged Asset
               </Link>
-              {/* {RoleId == 2 && ( */}
-              <Link className="collapse-item" to="/admin/asset-manager">
-                Asset Request Approvel
-              </Link>
-              {/* )} */}
-              {/* {RoleId == 5 && ( */}
-              <Link
-                className="collapse-item"
-                to="/admin/asset-repair-return-summary"
-              >
-                Repair & Return Summary
-              </Link>
-              {/* )} */}
+              {RoleId == 2 && (
+                <Link className="collapse-item" to="/admin/asset-manager">
+                  Asset Request Approvel
+                </Link>
+              )}
+              {RoleId == 5 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/asset-repair-return-summary"
+                >
+                  Repair & Return Summary
+                </Link>
+              )}
             </div>
           </div>
         </li>
@@ -1584,31 +1584,29 @@ const SidebarLinks = () => {
                 </Link>
               )}
 
-               {contextData &&
-                contextData[0] &&
-                contextData[0].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/pms-page-category">
-                    Page Category
-                  </Link>
-                )}
+            {contextData &&
+              contextData[0] &&
+              contextData[0].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-page-category">
+                  Page Category
+                </Link>
+              )}
 
-               {contextData &&
-                contextData[0] &&
-                contextData[0].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/pms-profile-type">
-                    Profile Type
-                  </Link>
-                )}
+            {contextData &&
+              contextData[0] &&
+              contextData[0].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-profile-type">
+                  Profile Type
+                </Link>
+              )}
 
-
-
-              {contextData &&
-                contextData[21] &&
-                contextData[21].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/pms-platform">
-                    Platform
-                  </Link>
-                )}
+            {contextData &&
+              contextData[21] &&
+              contextData[21].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-platform">
+                  Platform
+                </Link>
+              )}
 
             {contextData &&
               contextData[1] &&
@@ -1649,7 +1647,7 @@ const SidebarLinks = () => {
                   Platform Price
                 </Link>
               )}
-              {contextData &&
+            {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link
@@ -1660,15 +1658,15 @@ const SidebarLinks = () => {
                 </Link>
               )}
 
-              <Link className="collapse-item" to="/admin/pms-vendor-overview">
-                Vendor Overview
-              </Link>
-              <Link className="collapse-item" to="/admin/pms-vendor-group-link">
-                Vendor Group Link
-              </Link>
-              <Link className="collapse-item" to="/admin/pms-page-overview">
-                Page Overview
-              </Link>
+            <Link className="collapse-item" to="/admin/pms-vendor-overview">
+              Vendor Overview
+            </Link>
+            <Link className="collapse-item" to="/admin/pms-vendor-group-link">
+              Vendor Group Link
+            </Link>
+            <Link className="collapse-item" to="/admin/pms-page-overview">
+              Page Overview
+            </Link>
           </div>
         </div>
       </li>
