@@ -1498,7 +1498,7 @@ const SidebarLinks = () => {
               {/* )} */}
               {/* {RoleId == 5 && ( */}
               <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                Asset's Request
+                Assets Request
               </Link>
               {/* )} */}
               <Link
@@ -1512,7 +1512,7 @@ const SidebarLinks = () => {
                 Asset Request Approvel
               </Link>
               {/* )} */}
-              {RoleId == 5 && (
+              {/* {RoleId == 5 && ( */}
               <Link
                 className="collapse-item"
                 to="/admin/asset-repair-return-summary"
@@ -1584,7 +1584,6 @@ const SidebarLinks = () => {
                 </Link>
               )}
 
-<<<<<<< Updated upstream
                {contextData &&
                 contextData[0] &&
                 contextData[0].view_value === 1 && (
@@ -1610,15 +1609,6 @@ const SidebarLinks = () => {
                     Platform
                   </Link>
                 )}
-=======
-            {contextData &&
-              contextData[21] &&
-              contextData[21].view_value === 1 && (
-                <Link className="collapse-item" to="/admin/pms-platform">
-                  Platform
-                </Link>
-              )}
->>>>>>> Stashed changes
 
             {contextData &&
               contextData[1] &&
@@ -1659,8 +1649,17 @@ const SidebarLinks = () => {
                   Platform Price
                 </Link>
               )}
+              {contextData &&
+              contextData[6] &&
+              contextData[6].view_value === 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pms-vendor-page-price-overview"
+                >
+                  Vendor Page Price Overview
+                </Link>
+              )}
 
-<<<<<<< Updated upstream
               <Link className="collapse-item" to="/admin/pms-vendor-overview">
                 Vendor Overview
               </Link>
@@ -1670,15 +1669,6 @@ const SidebarLinks = () => {
               <Link className="collapse-item" to="/admin/pms-page-overview">
                 Page Overview
               </Link>
-            </div>
-=======
-            <Link className="collapse-item" to="/admin/pms-group-link-type">
-              Group Link Type
-            </Link>
-            <Link className="collapse-item" to="/admin/pms-vendor-overview">
-              Vendor Overview
-            </Link>
->>>>>>> Stashed changes
           </div>
         </div>
       </li>
