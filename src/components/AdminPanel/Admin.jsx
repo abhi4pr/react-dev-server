@@ -240,6 +240,7 @@ import TempExecution from "./RegisterCampaign/tempPlan/TempExecution";
 import VendorType from "./PageMS/VendorType";
 import PageCategory from "./PageMS/PageCategory";
 import ProfileType from "./PageMS/ProfileType";
+import PageOwnership from "./PageMS/PageOwnership";
 import PmsPlatform from "./PageMS/PmsPlatform";
 import PayMethod from "./PageMS/PayMethod";
 import PayCycle from "./PageMS/PayCycle";
@@ -1175,6 +1176,7 @@ const Admin = () => {
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />
                   <Route path="/pms-profile-type" element={<ProfileType />} />
+                  <Route path="/pms-page-ownership" element={<PageOwnership />} />
                   <Route path="/pms-platform" element={<PmsPlatform />} />
                   <Route path="/pms-pay-method" element={<PayMethod />} />
                   <Route path="/pms-pay-cycle" element={<PayCycle />} />
