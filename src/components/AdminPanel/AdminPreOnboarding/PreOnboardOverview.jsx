@@ -149,7 +149,7 @@ const PreOnboardingOverview = () => {
             sx={{ marginRight: "10px" }}
             size="small"
             disabled={
-              row.document_percentage_mandatory < 70 ||
+              row.document_percentage_mandatory < 100 ||
               row.document_percentage_mandatory === undefined
             }
             onClick={() => handleStatusChange(row.user_id, row.onboard_status)}

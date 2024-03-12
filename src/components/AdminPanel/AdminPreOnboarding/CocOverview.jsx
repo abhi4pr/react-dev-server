@@ -9,6 +9,7 @@ import DeleteButton from "../../AdminPanel/DeleteButton";
 import DataTable from "react-data-table-component";
 import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
+import DateISOtoNormal from "../../../utils/DateISOtoNormal";
 
 const CocOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -47,20 +48,22 @@ const CocOverview = () => {
     },
     {
       name: "Coc content",
-      selector: (row) => row.coc_content,
-      // width: "50%",
+      selector: (row) => (
+        <div dangerouslySetInnerHTML={{ __html: row.coc_content }}></div>
+      ),
+      minWidth: "50%",
       sortable: true,
     },
     {
       name: "Created by",
       selector: (row) => row.created_by,
-      width: "10%",
+      width: "auto",
       sortable: true,
     },
     {
       name: "Creation date",
-      selector: (row) => row.creation_date,
-      width: "10%",
+      selector: (row) => DateISOtoNormal(row.creation_date),
+      width: "auto",
       sortable: true,
     },
     {
@@ -91,7 +94,7 @@ const CocOverview = () => {
         </>
       ),
       allowOverflow: true,
-      width: "20%",
+      width: "auto",
     },
   ];
 

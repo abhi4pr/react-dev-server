@@ -560,7 +560,7 @@ const PreOnboardingUserMaster = () => {
         current_city,
         current_state,
         current_pin_code,
-        emergency_contact,
+        emergency_contact1,
         image_url,
         nick_name,
         showOnboardingModal,
@@ -638,7 +638,7 @@ const PreOnboardingUserMaster = () => {
       setcurrentCity(current_city);
       setcurrentState(current_state);
       setcurrentPincode(current_pin_code);
-      setEmergencyContact(emergency_contact);
+      setEmergencyContact(emergency_contact1);
       setGetProfile(image_url);
       setGetNickName(nick_name);
       setProfileImage(image);
@@ -672,7 +672,7 @@ const PreOnboardingUserMaster = () => {
     formData.append("user_contact_no", Number(contact));
     formData.append("personal_number", personalContact);
     formData.append("Personal_email", personalEmail);
-    formData.append("emergency_contact", Number(emergencyContact));
+    formData.append("emergency_contact1", Number(emergencyContact));
 
     // document open ---------->
     formData.append("tenth_marksheet", XMarksheet);
@@ -743,25 +743,12 @@ const PreOnboardingUserMaster = () => {
     formData.append("document_percentage", documentPercentage);
     formData.append("document_percentage_mandatory", showMandotaryPer);
     formData.append("document_percentage_non_mandatory", showNonMandotaryPer);
-    await axios
-      .put(`${baseUrl}` + `update_user`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then(() => {
-        setXIIMarksheet(null);
-        setXIIMarksheet(null);
-        setUnderGraduationDoc(null);
-        setUID(null);
-        setPanUpload(null);
-        setPassport(null);
-        setExperienceDoc(null);
-        setPreviousOfferLetter(null);
-        setPreviousRelievingLetter(null);
-        setPassbookCheque(null);
-      })
-      .then(() => gettingData());
+
+    await axios.put(`${baseUrl}` + `update_user`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
     //Posting/Update Guardian Details
     for (const elements of guardianDetails) {
@@ -827,6 +814,18 @@ const PreOnboardingUserMaster = () => {
       }
     }
 
+    setXIIMarksheet(null);
+    setXIIMarksheet(null);
+    setUnderGraduationDoc(null);
+    setUID(null);
+    setPanUpload(null);
+    setPassport(null);
+    setExperienceDoc(null);
+    setPreviousOfferLetter(null);
+    setPreviousRelievingLetter(null);
+    setPassbookCheque(null);
+
+    gettingData();
     setIsSubmitting(false);
 
     // After update send mail
@@ -851,7 +850,7 @@ const PreOnboardingUserMaster = () => {
     ]);
 
     toastAlert("User Update");
-    gettingData();
+    // gettingData();
   };
 
   // useEffect(() => {

@@ -151,9 +151,9 @@ const OnboardExtendDateOverview = () => {
     {
       name: "Proof Doc",
       selector: (row) =>
-        row.joining_extend_document ? (
+        row?.joining_extend_document ? (
           <a
-            href={row.joining_extend_document_url}
+            href={row?.joining_extend_document_url}
             target="_blank"
             rel="noopener noreferrer"
           >
