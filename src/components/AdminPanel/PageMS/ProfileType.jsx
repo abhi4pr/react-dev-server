@@ -90,7 +90,7 @@ const ProfileType = () => {
             <FaEdit />
           </button>
           <DeleteButton
-            endpoint="deleteProfile" // Adjust the endpoint to match your API for deleting a profile type
+            endpoint="deleteProfile" 
             id={row._id}
             getData={getData}
           />

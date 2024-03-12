@@ -1584,13 +1584,29 @@ const SidebarLinks = () => {
                 </Link>
               )}
 
-            {contextData &&
-              contextData[0] &&
-              contextData[0].view_value === 1 && (
-                <Link className="collapse-item" to="/admin/pms-page-category">
-                  Page Category
-                </Link>
-              )}
+  {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-page-category">
+                    Page Category
+                  </Link>
+                )}
+
+               {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-profile-type">
+                    Profile Type
+                  </Link>
+                )}
+
+               {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-page-ownership">
+                    Page Ownership
+                  </Link>
+                )}
 
             {contextData &&
               contextData[0] &&
