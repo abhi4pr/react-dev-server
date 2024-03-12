@@ -256,6 +256,7 @@ import RepairRetrunSummary from "../Sim/RepairRetrunSummary";
 import VendorPagePriceOverview from "./PageMS/VendorPagePriceOverview";
 import VendorPagePriceMaster from "./PageMS/VendorPagePriceMaster";
 import EditVendorPagePrice from "./PageMS/EditVendorPagePrice";
+import PageEdit from './PageMS/PageEdit'
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1193,6 +1194,7 @@ const Admin = () => {
                   <Route path="/pms-vendor-group-link" element={<VendorGroupLink />} />
                   <Route path="/pms-page-master" element={<PageMaster />} />
                   <Route path="/pms-page-overview" element={<PageOverview />} />
+                  <Route path="/pms-page-edit/:id" element={<PageEdit />} />
                   <Route path="/pms-vendor-page-price-overview" element={<VendorPagePriceOverview />} />
                   <Route path="/pms-vendor-page-price-master" element={<VendorPagePriceMaster/>} />
                   <Route path="/pms-vendor-page-price-master/:id" element={<EditVendorPagePrice/>} />

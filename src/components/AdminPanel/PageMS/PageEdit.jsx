@@ -5,10 +5,10 @@ import FieldContainer from "../FieldContainer";
 import FormContainer from "../FormContainer";
 import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
-import { Navigate } from "react-router";
+import { Navigate, useParams } from "react-router";
 import Select from "react-select";
 
-const PageMaster = () => {
+const PageEdit = () => {
   const { toastAlert } = useGlobalContext();
   const [pageName, setPageName] = useState("");
   const [link, setLink] = useState("");
@@ -38,6 +38,8 @@ const PageMaster = () => {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
 
+  const { _id } = useParams();
+
   const PageLevels =  [
     { value: "English", label: "English" },
     { value: "Hindi", label: "Hindi" }
@@ -59,6 +61,27 @@ const PageMaster = () => {
   ];
 
   const getData = () => {
+    axios.get(baseUrl + `getPageDetail/${_id}`).then((res) => {
+      const data = res.data.tmsVendorkMastList;
+        setPageName(pageName);
+        setLink(link);
+        setPlatformId(platformId);
+        setCategoryId(categoryId);
+        setTag(tag);
+        setPageLevel(pageLevel);
+        setPageStatus(pageStatus);
+        setCloseBy(closeBy);
+        setPageType(pageType);
+        setContent(content);
+        setOwnerType(ownerType);
+        setVendorId(vendorId);
+        setFollowCount(followCount);
+        setProfileId(profileId);
+        setPlatformActive(platformActive);
+        setRate(rate);
+        description(description);
+    });
+
     axios.get(baseUrl + "getAllPlatform").then((res) => {
     setPlatformData(res.data.data);
     });
@@ -105,10 +128,10 @@ const PageMaster = () => {
         platform_active_on: platformActive,
         engagment_rate: rate,
         description: description,
-        created_by: userID,
+        updated_by: userID,
     }   
 
-    axios.post(baseUrl + "addPageMast", payload).then(() => {
+    axios.put(baseUrl + `updatePage/${_id}`, payload).then(() => {
       setIsFormSubmitted(true);
       toastAlert("Submitted");
     });
@@ -121,8 +144,8 @@ const PageMaster = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Page Master"
-        title="Page Master"
+        mainTitle="Page Edit"
+        title="Page Edit"
         handleSubmit={handleSubmit}
       >
         <FieldContainer
@@ -349,4 +372,4 @@ const PageMaster = () => {
   );
 };
 
-export default PageMaster;
+export default PageEdit;
