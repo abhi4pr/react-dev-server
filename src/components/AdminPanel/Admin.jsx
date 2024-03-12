@@ -249,13 +249,13 @@ import VendorOverview from "./PageMS/VendorOverview";
 import VendorEdit from "./PageMS/VendorEdit";
 import PMSpriceTypeMast from "./PageMS/PMSpriceTypeMast";
 import PMSplatformPriceTypeMast from "./PageMS/PMSplatformPriceTypeMast";
-<<<<<<< Updated upstream
 import VendorGroupLink from "./PageMS/VendorGroupLink";
 import PageMaster from "./PageMS/PageMaster";
 import PageOverview from "./PageMS/PageOverview";
-=======
 import RepairRetrunSummary from "../Sim/RepairRetrunSummary";
->>>>>>> Stashed changes
+import VendorPagePriceOverview from "./PageMS/VendorPagePriceOverview";
+import VendorPagePriceMaster from "./PageMS/VendorPagePriceMaster";
+import EditVendorPagePrice from "./PageMS/EditVendorPagePrice";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1187,27 +1187,16 @@ const Admin = () => {
                     element={<VendorEdit />}
                   />
                   <Route path="/pms-vendor-master" element={<VendorMaster />} />
-<<<<<<< Updated upstream
                   <Route path="/pms-vendor-overview" element={<VendorOverview />} />
                   <Route path="/pms-price-type" element={<PMSpriceTypeMast />} />
                   <Route path="/pms-platform-price-type" element={<PMSplatformPriceTypeMast />} />
                   <Route path="/pms-vendor-group-link" element={<VendorGroupLink />} />
                   <Route path="/pms-page-master" element={<PageMaster />} />
                   <Route path="/pms-page-overview" element={<PageOverview />} />
-=======
-                  <Route
-                    path="/pms-vendor-overview"
-                    element={<VendorOverview />}
-                  />
-                  <Route
-                    path="/pms-price-type"
-                    element={<PMSpriceTypeMast />}
-                  />
-                  <Route
-                    path="/pms-platform-price-type"
-                    element={<PMSplatformPriceTypeMast />}
-                  />
->>>>>>> Stashed changes
+                  <Route path="/pms-vendor-page-price-overview" element={<VendorPagePriceOverview />} />
+                  <Route path="/pms-vendor-page-price-master" element={<VendorPagePriceMaster/>} />
+                  <Route path="/pms-vendor-page-price-master/:id" element={<EditVendorPagePrice/>} />
+
                 </Route>
               </Routes>
             </div>
