@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { FaUserPlus } from "react-icons/fa";
-
+import titleimg from '/bg-img.png'
 const FormContainer = ({
   mainTitle,
   title,
@@ -54,12 +54,18 @@ const FormContainer = ({
   pendingpaymentRemainder = 0,
   mainTitleRequired = true,
 }) => {
+  const location = useLocation();
+  const activeLink = location.pathname;
   return (
     <>
       {mainTitleRequired && (
         <div className="form-heading">
+           <img className="img-bg" src={titleimg} alt="" width={160} />
           <div className="form_heading_title ">
             <h2>{mainTitle}</h2>
+            <div className="pack">
+            <i class="bi bi-house"></i> {activeLink.slice(1).charAt(0).toUpperCase()+ activeLink.slice(2)}
+            </div>
           </div>
           {includeAdditionalTitles && (
             <div className="additional-titles ">
@@ -330,7 +336,7 @@ const FormContainer = ({
                         style={{ marginRight: "5px" }}
                         type="submit"
                       >
-                        Submit
+                        Submit 
                       </button>
                     )}
 

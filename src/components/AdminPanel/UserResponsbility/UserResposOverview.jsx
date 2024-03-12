@@ -155,7 +155,38 @@ const UserResposOverview = () => {
 
       <div className="page_height">
         <div className="card mb-4">
-          <div className="data_tbl table-responsive">
+          <div className="card-header" style={{justifyContent:"space-between"}}>
+          Responsibility
+          <input
+                  type="text"
+                  placeholder="Search here"
+                  className="w-50 form-control "
+                  style={{width:"300px"}}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+          </div>
+          <div className="card-body body-padding">
+          <DataTable
+              
+              columns={columns}
+              data={filterdata}
+              pagination
+              selectableRows={true}
+              paginationDefaultPage={1}
+ 
+               highlightOnHover
+              paginationResetDefaultPage={true}
+               striped="true"
+              // pagination
+              // fixedHeaderScrollHeight="64vh"
+             
+             
+                
+              
+            />
+          </div>
+          {/* <div className="data_tbl table-responsive">
             <DataTable
               title="Responsibility"
               columns={columns}
@@ -175,7 +206,8 @@ const UserResposOverview = () => {
                 />
               }
             />
-          </div>
+          </div> */}
+
         </div>
       </div>
     </>

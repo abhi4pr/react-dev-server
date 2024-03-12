@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import imageTest1 from "../../../assets/img/product/Avtrar1.png";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import DoneIcon from "@mui/icons-material/Done";
-import {baseUrl} from '../../../utils/config'
-
+import { baseUrl } from '../../../utils/config'
+import logo from "../../../assets/logo.png";
 const Navbar = () => {
   const [count, setCount] = useState(0);
   const [loginUserData, setLoginUserData] = useState([]);
@@ -25,7 +25,7 @@ const Navbar = () => {
 
   useEffect(() => {
     axios
-      .post(baseUrl+"login_user_data", {
+      .post(baseUrl + "login_user_data", {
         user_id: loginUserId,
       })
       .then((res) => setLoginUserData(res.data));
@@ -33,7 +33,7 @@ const Navbar = () => {
 
   const fetchData = async () => {
     await axios
-      .get(baseUrl+"get_all_unreden_notifications")
+      .get(baseUrl + "get_all_unreden_notifications")
       .then((res) => {
         setNotificationData(res.data.data);
         setCount(res.data.data.length);
@@ -51,7 +51,7 @@ const Navbar = () => {
 
   const NotificationsOff = async (_id) => {
     // e.preventDefault();
-    await axios.put(`${baseUrl}`+`update_notification/`, {
+    await axios.put(`${baseUrl}` + `update_notification/`, {
       _id: _id,
       readen: true,
     });
@@ -61,10 +61,18 @@ const Navbar = () => {
   return (
     <>
       {/* Topbar Start */}
-      <nav className="navbar navbar-expand topbar shadow">
-        <button className="btn sidebar_tglbtn" id="sidebarToggle">
+      <nav className="navbar navbar-expand topbar ">
+        {/* <button className="btn sidebar_tglbtn" id="sidebarToggle">
           <i className="bi bi-list" />
-        </button>
+        </button> */}
+        <div className="branding">
+          <div className="logo-1">
+            <img className="logo-img" src={logo} alt="logo" width={40} />
+          </div>
+          <div className="brandtext">
+            Creative <span>fuel</span>
+          </div>
+        </div>
         <ul className="navbar-nav align-items-center ml-auto">
           <li className="nav-item dropdown no-arrow d-sm-none">
             <a
@@ -99,11 +107,24 @@ const Navbar = () => {
               </form>
             </div>
           </li>
+          
+          <li className="nav-item">
+            <div className="theme-switch">
+              <input type="checkbox" id="theme-toggle" />
+
+              <label htmlFor="theme-toggle">
+                <div className="theme-sw">
+                  <i className="bi bi-brightness-high"></i>
+                  <i className="bi bi-moon-stars-fill"></i>
+                </div>
+              </label>
+            </div>
+          </li>
           <li>
             {(RoleID == 1 || RoleID == 5) && (
               <div className="nav-item dropdown">
                 <a
-                  className="nav-link dropdown-toggle"
+                  className="nav-link"
                   href="#"
                   id="navbarDropdown"
                   role="button"
@@ -111,11 +132,44 @@ const Navbar = () => {
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <NotificationsActiveIcon />
-                  <span>{count}</span>
+                  <div className="icon" data-bs-toggle="collapse" data-bs-target="#Notificationbar" aria-expanded="false" aria-controls="Notificationbar" alt="" width={20} >
+                    <i class="bi bi-bell"></i>
+                  </div>
+                  {/* <NotificationsActiveIcon /> */}
+                  {/* <span>{count}</span> */}
                 </a>
-                <div className="dropdown-menu">
-                  {notificationData.map((notification) => (
+                <div className="dropdown-menu notification  dropdown-menu-right shadow animated--grow-in mt1">
+
+                  <div className="pack">
+                    <div className="head-label">
+                      Notification
+                      <span>{count}</span>
+                    </div>
+                    <div className="pack-1">
+
+                      {notificationData.map((notification) => (
+
+                        <div className="message" id={notificationData._id} onClick={() => NotificationsOff(notification._id)}>
+                          <div className="ppimg">
+                            <img src={imageTest1} alt="" w={34} />
+                          </div>
+                          <div className="txt">
+                            {notification.notification_message}
+                          </div>
+                        </div>
+
+
+                      ))}
+
+                    </div>
+                  </div>
+                  <Link to={`/admin/pre-onboard-all-notifications/`}>
+
+                    <div className="all-notification">
+                      See all notifications
+                    </div>
+                  </Link>
+                  {/* {notificationData.map((notification) => (
                     <div>
                       <div
                         id={notificationData._id}
@@ -127,24 +181,18 @@ const Navbar = () => {
                         />
                       </div>
                     </div>
-                  ))}
+                  ))} */}
 
-                  <button type="button" className="btn btn-success btn-xs">
+                  {/* <button type="button" className="btn btn-success btn-xs">
                     <Link to={`/admin/pre-onboard-all-notifications/`}>
                       See All
                     </Link>
-                  </button>
+                  </button> */}
                 </div>
               </div>
             )}
-          </li>
-          <li className="nav-item">
-            <div className="theme-switch">
-              <input type="checkbox" id="theme-toggle" />
-              <label htmlFor="theme-toggle" />
-            </div>
-          </li>
-          <li className="nav-item dropdown no-arrow user_dropdown">
+          </li>   
+          {/* <li className="nav-item dropdown no-arrow user_dropdown">
             <a
               className="nav-link dropdown-toggle"
               id="userDropdown"
@@ -171,16 +219,107 @@ const Navbar = () => {
               className="dropdown-menu dropdown-menu-right shadow animated--grow-in mt16"
               aria-labelledby="userDropdown"
             >
+               <Link to="/profile">
+                <a className="dropdown-item">
+                  <i className="bi bi-person" />
+                  Profile
+                </a>
+              </Link>   
+              <a onClick={handleLogOut} className="dropdown-item">
+                <i className="bi bi-box-arrow-left" />
+                Logout
+              </a>
+            </div>
+          </li> */}
+          <li className="nav-item dropdown no-arrow user_dropdown">
+            {/* <a
+              className="nav-link dropdown-toggle"
+              id="userDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span>{userName}</span>
+              {loginUserData[0]?.image == null ? (
+                <img className="img-profile" src={lalit} />
+              ) : (
+                // loginUserData.map((d) => (
+                <img
+                  key={1}
+                  className="img-profile"
+                  src={loginUserData[0]?.image}
+                  alt="user"
+                />
+                // ))
+              )}
+            </a> */}
+            <div
+              className="profile-sec nav-link dropdown-toggle"
+              id="userDropdown"
+              data-toggle="dropdown"
+              data-bs-toggle="collapse"
+              data-bs-target="#Profilebar"
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-controls="Profilebar"
+            >
+              {loginUserData[0]?.image == null ? (
+                <div className="profile-img">
+                  <img src={imageTest1} alt="" width={40} />
+                </div>
+              ) : (
+                // loginUserData.map((d) => (
+                <img
+                  key={1}
+                  className="img-profile"
+                  src={loginUserData[0]?.image}
+                  alt="user"
+                />
+                // ))
+              )}
+              <div className="profile-name">
+                <p>{userName}r</p>
+                <span>Admin</span>
+              </div>
+            </div>
+            <div
+              className="dropdown-menu profilebar dropdown-menu-right shadow animated--grow-in mt16"
+              aria-labelledby="userDropdown"
+            >
               {/* <Link to="/profile">
                 <a className="dropdown-item">
                   <i className="bi bi-person" />
                   Profile
                 </a>
               </Link> */}
-              <a onClick={handleLogOut} className="dropdown-item">
+              <div className="profile-tab">
+                <div className="profile-img">
+                  <img className="logo-img" src={imageTest1} alt="" width={40} />
+                </div>
+                <div className="profile-name">
+                  <p>Lalit Gour</p>
+                  <span>Admin</span>
+                </div>
+              </div>
+              <div className="pack">
+                <div className="pro-btn">
+                  <i class="bi bi-person"></i>
+                  <p>My profile</p>
+                </div>
+                <div className="pro-btn">
+                  <i class="bi bi-gear"></i>
+                  <p>Settings</p>
+                </div>
+                <div className="pro-btn" onClick={handleLogOut}>
+                  <i class="bi bi-box-arrow-right"></i>
+                  <p>Logout</p>
+                </div>
+              </div>
+              {/* <a onClick={handleLogOut} className="dropdown-item">
                 <i className="bi bi-box-arrow-left" />
                 Logout
-              </a>
+              </a> */}
             </div>
           </li>
         </ul>

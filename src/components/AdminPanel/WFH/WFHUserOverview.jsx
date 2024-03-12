@@ -135,7 +135,7 @@ const WFHUserOverview = () => {
     {
       field: "designation_name",
       headerName: "Designation",
-      width: 180,
+      width: 0,
       sortable: true,
     },
     {
@@ -176,7 +176,7 @@ const WFHUserOverview = () => {
   return (
     <>
       <div className="action_heading">
-        <div className="action_title">
+        <div className="action_title" >
           <FormContainer
             mainTitle="User"
             link="/admin/user"
@@ -238,9 +238,9 @@ const WFHUserOverview = () => {
           <span>Loading</span>
         </div>
       ) : (
-        <div className="page_height">
-          <div className="card mb-4">
-            <div className="data_tbl" style={{ height: "64vh", width: "100%" }}>
+        <div className="page_height" >
+          <div className="card mb-4" >
+            <div className="data_tbl" style={{ height: "10vh", width: "100%" }}>
               <DataGrid
                 rows={filterdata.map((data, index) => ({ ...data, id: index }))}
                 columns={columns}

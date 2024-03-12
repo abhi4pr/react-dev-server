@@ -99,7 +99,7 @@ function Dashboard() {
             </button>
           </Link> */}
         </div>
-        <div className="row">
+        <div className="row" style={{marginTop:"16px"}}>
           {contextData && contextData[8] && contextData[8].view_value === 1 && (
             <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <div className="d_infocard card shadow">
