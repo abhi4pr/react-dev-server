@@ -130,7 +130,7 @@ const SidebarLinks = () => {
                 contextData[0] &&
                 contextData[0].view_value === 1 && (
                   <Link className="collapse-item" to="/admin/user-overview">
-                    <i class="bi bi-dot"></i> User
+                    <i className="bi bi-dot"></i> User
                   </Link>
                 )}
 
@@ -145,7 +145,7 @@ const SidebarLinks = () => {
                 contextData[21] &&
                 contextData[21].view_value === 1 && (
                   <Link className="collapse-item" to="/admin/user-directory">
-                    <i class="bi bi-dot"></i> User Directory
+                    <i className="bi bi-dot"></i> User Directory
                   </Link>
                 )}
 
@@ -156,14 +156,14 @@ const SidebarLinks = () => {
                     className="collapse-item"
                     to="/admin/user-respons-overivew"
                   >
-                    <i class="bi bi-dot"></i> User Responsibility
+                    <i className="bi bi-dot"></i> User Responsibility
                   </Link>
                 )}
               {contextData &&
                 contextData[2] &&
                 contextData[2].view_value === 1 && (
                   <Link className="collapse-item" to="/admin/object-overview">
-                    <i class="bi bi-dot"></i> Object
+                    <i className="bi bi-dot"></i> Object
                   </Link>
                 )}
 
@@ -174,7 +174,7 @@ const SidebarLinks = () => {
                     className="collapse-item"
                     to="/admin/office-mast-overview"
                   >
-                    <i class="bi bi-dot"></i> Office
+                    <i className="bi bi-dot"></i> Office
                   </Link>
                 )}
 
@@ -186,25 +186,25 @@ const SidebarLinks = () => {
                       className="collapse-item"
                       to="/admin/responsibility-overview"
                     >
-                      <i class="bi bi-dot"></i> Responsibility Register
+                      <i className="bi bi-dot"></i> Responsibility Register
                     </Link>
                   </>
                 )}
 
               <Link className="collapse-item" to="/admin/jobType">
-                <i class="bi bi-dot"></i> Job Type
+                <i className="bi bi-dot"></i> Job Type
               </Link>
               {/* <Link className="collapse-item" to="/sim-overview">
                 Asset Management
               </Link> */}
               <Link className="collapse-item" to="/admin/user-graph">
-                <i class="bi bi-dot"></i> User Graphs
+                <i className="bi bi-dot"></i> User Graphs
               </Link>
               <Link
                 className="collapse-item"
                 to="/admin/email-template-overview"
               >
-                <i class="bi bi-dot"></i> Email Templates
+                <i className="bi bi-dot"></i> Email Templates
               </Link>
             </div>
           </div>
@@ -245,7 +245,7 @@ const SidebarLinks = () => {
               </Link> */}
 
               <Link className="collapse-item" to="/admin/wfh-single-user">
-                <i class="bi bi-dot"></i> Payout Summary
+                <i className="bi bi-dot"></i> Payout Summary
               </Link>
 
               {/* <Link
@@ -287,7 +287,7 @@ const SidebarLinks = () => {
                 aria-expanded="true"
                 aria-controls="collapseFourcc"
               >
-                <i class="bi bi-dash"></i>
+                <i className="bi bi-dash"></i>
                 <span>Payout</span>
               </Link>
               <div
@@ -298,37 +298,37 @@ const SidebarLinks = () => {
               >
                 <div className="internal collapse-inner">
                   <Link className="collapse-item" to="/admin/wfhd-register">
-                    <i class="bi bi-dot"></i> Add Buddy
+                    <i className="bi bi-dot"></i> Add Buddy
                   </Link>
                   {/* <Link className="collapse-item" to="/admin/billing-overview">
                     Billing Header Overview
                   </Link> */}
                   <Link className="collapse-item" to="/admin/wfhd-overview">
-                    <i class="bi bi-dot"></i> My Team
+                    <i className="bi bi-dot"></i> My Team
                   </Link>
 
                   {/* {!isWFHDManager && ( */}
                   {isWFHDHRPayrollManager && (
                     <Link className="collapse-item" to="/admin/salaryWFH">
-                      <i class="bi bi-dot"></i> Payout Summary
+                      <i className="bi bi-dot"></i> Payout Summary
                     </Link>
                   )}
                   <Link className="collapse-item" to="/admin/attendence-mast">
-                    <i class="bi bi-dot"></i> Create Attendance
+                    <i className="bi bi-dot"></i> Create Attendance
                   </Link>
                   {RoleId == 1 && (
                     <Link
                       className="collapse-item"
                       to="/admin/hr-template-overview"
                     >
-                      <i class="bi bi-dot"></i> Invoice Template Summary
+                      <i className="bi bi-dot"></i> Invoice Template Summary
                     </Link>
                   )}
                   <Link className="collapse-item" to="/admin/dispute-overview">
-                    <i class="bi bi-dot"></i>Dispute Summary
+                    <i className="bi bi-dot"></i>Dispute Summary
                   </Link>
                   <Link className="collapse-item" to="/admin/total-NDG">
-                    <i class="bi bi-dot"></i> total & NDG
+                    <i className="bi bi-dot"></i> total & NDG
                   </Link>
                 </div>
               </div>
@@ -343,7 +343,7 @@ const SidebarLinks = () => {
                   aria-expanded="true"
                   aria-controls="collapseThree"
                 >
-                  <i class="bi bi-dash"></i>
+                  <i className="bi bi-dash"></i>
                   <span>Pantry Management</span>
                 </Link>
                 <div
@@ -360,7 +360,7 @@ const SidebarLinks = () => {
                           className="collapse-item"
                           to="/admin/product-overview"
                         >
-                          <i class="bi bi-dot"></i> Product
+                          <i className="bi bi-dot"></i> Product
                         </Link>
                       )}
 
@@ -368,14 +368,14 @@ const SidebarLinks = () => {
                       contextData[8] &&
                       contextData[8].view_value === 1 && (
                         <Link className="collapse-item" to="/pantry-user">
-                          <i class="bi bi-dot"></i> Pantry User
+                          <i className="bi bi-dot"></i> Pantry User
                         </Link>
                       )}
                     {contextData &&
                       contextData[9] &&
                       contextData[9].view_value === 1 && (
                         <Link className="collapse-item" to="/pantry-delivery">
-                          <i class="bi bi-dot"></i> Pantry Delivery
+                          <i className="bi bi-dot"></i> Pantry Delivery
                         </Link>
                       )}
                   </div>
@@ -392,7 +392,7 @@ const SidebarLinks = () => {
                   aria-expanded="true"
                   aria-controls="collapseEight"
                 >
-                  <i class="bi bi-dash"></i>
+                  <i className="bi bi-dash"></i>
                   <span>Asset Notifier</span>
                 </Link>
                 <div
@@ -406,7 +406,7 @@ const SidebarLinks = () => {
                 contextData[5] &&
                 contextData[5].view_value === 1 && ( */}
                     <Link className="collapse-item" to="/admin/self-audit">
-                      <i class="bi bi-dot"></i> Audit asset
+                      <i className="bi bi-dot"></i> Audit asset
                     </Link>
                   </div>
                 </div>
@@ -427,7 +427,7 @@ const SidebarLinks = () => {
                   aria-expanded="true"
                   aria-controls="collapseFive"
                 >
-                  <i class="bi bi-dash"></i>
+                  <i className="bi bi-dash"></i>
                   <span>Org</span>
                 </Link>
                 <div
@@ -444,7 +444,7 @@ const SidebarLinks = () => {
                           className="collapse-item"
                           to="/admin/pre-onboarding"
                         >
-                          <i class="bi bi-dot"></i> Add Pre Onboarding
+                          <i className="bi bi-dot"></i> Add Pre Onboarding
                         </Link>
                       )}
 
@@ -453,7 +453,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/pre-onboarding-overview"
                       >
-                        <i class="bi bi-dot"></i> Overview
+                        <i className="bi bi-dot"></i> Overview
                       </Link>
                     )}
                     {contextData && contextData[18]?.view_value == 1 && (
@@ -461,7 +461,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/pre-onboard-extend-date-overview"
                       >
-                        <i class="bi bi-dot"></i> Extend Date Overview
+                        <i className="bi bi-dot"></i> Extend Date Overview
                       </Link>
                     )}
                     {contextData && contextData[18]?.view_value == 1 && (
@@ -469,7 +469,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/pre-onboard-coc-master"
                       >
-                        <i class="bi bi-dot"></i> Coc Master
+                        <i className="bi bi-dot"></i> Coc Master
                       </Link>
                     )}
                     {contextData && contextData[18]?.view_value == 1 && (
@@ -477,7 +477,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/pre-onboard-coc-overview"
                       >
-                        <i class="bi bi-dot"></i> Coc Overview
+                        <i className="bi bi-dot"></i> Coc Overview
                       </Link>
                     )}
                     {contextData && contextData[18]?.view_value == 1 && (
@@ -485,7 +485,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/pre-onboard-user-login-history"
                       >
-                        <i class="bi bi-dot"></i> Login History
+                        <i className="bi bi-dot"></i> Login History
                       </Link>
                     )}
                     {contextData && contextData[18]?.view_value == 1 && (
@@ -493,7 +493,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/pre-onboard-all-notifications"
                       >
-                        <i class="bi bi-dot"></i> All Notifications
+                        <i className="bi bi-dot"></i> All Notifications
                       </Link>
                     )}
 
@@ -501,7 +501,7 @@ const SidebarLinks = () => {
                       className="collapse-item"
                       to="/admin/preonboarding-documents-overview"
                     >
-                      <i class="bi bi-dot"></i> Documents
+                      <i className="bi bi-dot"></i> Documents
                     </Link>
 
                     {/* {contextData &&
@@ -558,7 +558,7 @@ const SidebarLinks = () => {
                     aria-expanded="true"
                     aria-controls="collapsInnerOneThree"
                   >
-                    <i class="bi bi-dash"></i>
+                    <i className="bi bi-dash"></i>
                     <span>Inventory</span>
                   </a>
                   <div
@@ -571,31 +571,31 @@ const SidebarLinks = () => {
                           Dashboard
                         </Link> */}
                       <Link className="collapse-item" to="/admin/cityMsater">
-                        <i class="bi bi-dot"></i> City Mast
+                        <i className="bi bi-dot"></i> City Mast
                       </Link>{" "}
                       <Link
                         className="collapse-item"
                         to="/admin/exeexecution/PagePerformanceAnalytics"
                       >
-                        <i class="bi bi-dot"></i> Analytics
+                        <i className="bi bi-dot"></i> Analytics
                       </Link>{" "}
                       <Link
                         to="/admin/exeexecution/dashboard"
                         className="collapse-item"
                       >
-                        <i class="bi bi-dot"></i> Dashboard
+                        <i className="bi bi-dot"></i> Dashboard
                       </Link>
                       <Link
                         to="/admin/exeexecution/PagePerformanceDashboard"
                         className="collapse-item"
                       >
-                        <i class="bi bi-dot"></i> Page Performance Dashboard
+                        <i className="bi bi-dot"></i> Page Performance Dashboard
                       </Link>
                       <Link
                         className="collapse-item"
                         to="/admin/exeexecution/allpagesdetail"
                       >
-                        <i class="bi bi-dot"></i> All Pages Detailed
+                        <i className="bi bi-dot"></i> All Pages Detailed
                       </Link>{" "}
                       {/* <Link
                         to="/admin/exeexecution/dashboard"
@@ -607,19 +607,19 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/exeexecution/all"
                       >
-                        <i class="bi bi-dot"></i> All ({allCount})
+                        <i className="bi bi-dot"></i> All ({allCount})
                       </Link>{" "}
                       <Link
                         className="collapse-item"
                         to="/admin/exeexecution/own"
                       >
-                        <i class="bi bi-dot"></i> Own ({ownCount})
+                        <i className="bi bi-dot"></i> Own ({ownCount})
                       </Link>{" "}
                       <Link
                         className="collapse-item"
                         to="/admin/exeexecution/other"
                       >
-                        <i class="bi bi-dot"></i> Other ({otherCount})
+                        <i className="bi bi-dot"></i> Other ({otherCount})
                       </Link>
                     </div>
                   </div>
@@ -635,7 +635,7 @@ const SidebarLinks = () => {
                   aria-expanded="true"
                   aria-controls="collapseSeven"
                 >
-                  <i class="bi bi-dash"></i>
+                  <i className="bi bi-dash"></i>
                   <span>Plan & Operation</span>
                 </Link>
                 <div
@@ -661,7 +661,7 @@ const SidebarLinks = () => {
                             aria-expanded="true"
                             aria-controls="collapsInnerOne"
                           >
-                            <i class="bi bi-dash"></i>
+                            <i className="bi bi-dash"></i>
                             {/* <i className="bi bi-person-gear" /> */}
                             <span>Execution</span>
                           </a>
@@ -676,19 +676,19 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/execution"
                               >
-                                <i class="bi bi-dot"></i> Dashboard
+                                <i className="bi bi-dot"></i> Dashboard
                               </Link>
                               <Link
                                 className="collapse-item"
                                 to="/admin/exeexecution/pending"
                               >
-                                <i class="bi bi-dot"></i> Pending
+                                <i className="bi bi-dot"></i> Pending
                               </Link>{" "}
                               <Link
                                 className="collapse-item"
                                 to="/admin/exeexecution/done"
                               >
-                                <i class="bi bi-dot"></i> Executed
+                                <i className="bi bi-dot"></i> Executed
                               </Link>{" "}
                               {/* <Link
                           className="collapse-item"
@@ -700,7 +700,7 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/exeexecution/rejected"
                               >
-                                <i class="bi bi-dot"></i> Rejected
+                                <i className="bi bi-dot"></i> Rejected
                               </Link>
                             </div>
                           </div>
@@ -718,7 +718,7 @@ const SidebarLinks = () => {
                             aria-expanded="true"
                             aria-controls="collapsInnerTwo"
                           >
-                            <i class="bi bi-dash"></i>
+                            <i className="bi bi-dash"></i>
                             <span>Register a Campaign</span>
                           </Link>
                           <div
@@ -735,7 +735,7 @@ const SidebarLinks = () => {
                                 aria-expanded="true"
                                 aria-controls="collapsInnerTwoForu"
                               >
-                                <i class="bi bi-dash"></i>
+                                <i className="bi bi-dash"></i>
                                 <span>Masters</span>
                               </Link>
                               <div
@@ -749,58 +749,60 @@ const SidebarLinks = () => {
                                     className="collapse-item"
                                     to="/admin/register-campaign"
                                   >
-                                    <i class="bi bi-dot"></i> Add Campaign
+                                    <i className="bi bi-dot"></i> Add Campaign
                                   </Link>
                                   <Link
                                     className="collapse-item"
                                     to="/admin/experties-overview"
                                   >
-                                    <i class="bi bi-dot"></i> Expert
+                                    <i className="bi bi-dot"></i> Expert
                                   </Link>
 
                                   <Link
                                     className="collapse-item"
                                     to="/admin/brandmaster"
                                   >
-                                    <i class="bi bi-dot"></i> Brand Master
+                                    <i className="bi bi-dot"></i> Brand Master
                                   </Link>
                                   <Link
                                     className="collapse-item"
                                     to="/admin/overview/agency"
                                   >
-                                    <i class="bi bi-dot"></i> Agency Master
+                                    <i className="bi bi-dot"></i> Agency Master
                                   </Link>
                                   <Link
                                     className="collapse-item"
                                     to="/admin/overview/industry"
                                   >
-                                    <i class="bi bi-dot"></i> Indusrty Master
+                                    <i className="bi bi-dot"></i> Indusrty
+                                    Master
                                   </Link>
                                   <Link
                                     className="collapse-item"
                                     to="/admin/overview/goal"
                                   >
-                                    <i class="bi bi-dot"></i> Goal Master
+                                    <i className="bi bi-dot"></i> Goal Master
                                   </Link>
                                   <Link
                                     className="collapse-item"
                                     to="/admin/overview/service"
                                   >
-                                    <i class="bi bi-dot"></i> Service Master
+                                    <i className="bi bi-dot"></i> Service Master
                                   </Link>
 
                                   <Link
                                     className="collapse-item"
                                     to="/admin/contenttype"
                                   >
-                                    <i class="bi bi-dot"></i> Content Type
+                                    <i className="bi bi-dot"></i> Content Type
                                     Master
                                   </Link>
                                   <Link
                                     className="collapse-item"
                                     to="/admin/campaigncommitment"
                                   >
-                                    <i class="bi bi-dot"></i> Campaign Master
+                                    <i className="bi bi-dot"></i> Campaign
+                                    Master
                                   </Link>
 
                                   {/* <Link
@@ -819,7 +821,8 @@ const SidebarLinks = () => {
                                     className="collapse-item"
                                     to="/admin/contentcreater"
                                   >
-                                    <i class="bi bi-dot"></i> Commitment Master
+                                    <i className="bi bi-dot"></i> Commitment
+                                    Master
                                   </Link>
                                 </div>
                               </div>
@@ -829,7 +832,7 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/manager-campaign"
                                 >
-                                  <i class="bi bi-dot"></i> Manager Campaign
+                                  <i className="bi bi-dot"></i> Manager Campaign
                                   Dashboard
                                 </Link>
 
@@ -837,13 +840,13 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/phase-dashboard"
                                 >
-                                  <i class="bi bi-dot"></i> Phase Dashboard
+                                  <i className="bi bi-dot"></i> Phase Dashboard
                                 </Link>
                                 <Link
                                   className="collapse-item"
                                   to="/admin/replacement-dashboard"
                                 >
-                                  <i class="bi bi-dot"></i> Replacement
+                                  <i className="bi bi-dot"></i> Replacement
                                   Dashboard
                                 </Link>
 
@@ -851,14 +854,16 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/assignment-dashboard"
                                 >
-                                  <i class="bi bi-dot"></i> Assignment Dashboard
+                                  <i className="bi bi-dot"></i> Assignment
+                                  Dashboard
                                 </Link>
 
                                 <Link
                                   className="collapse-item"
                                   to="/admin/registered-campaign"
                                 >
-                                  <i class="bi bi-dot"></i> Registered Campaign
+                                  <i className="bi bi-dot"></i> Registered
+                                  Campaign
                                 </Link>
 
                                 {/* <Link
@@ -878,7 +883,8 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/checkPageFollowers"
                                 >
-                                  <i class="bi bi-dot"></i> Check Page Follower
+                                  <i className="bi bi-dot"></i> Check Page
+                                  Follower
                                 </Link>
                                 {/* <Link
                             className="collapse-item"
@@ -903,7 +909,7 @@ const SidebarLinks = () => {
                             // aria-expanded="true"
                             // aria-controls="collapsInnerThree"
                           >
-                            <i class="bi bi-dash"></i>
+                            <i className="bi bi-dash"></i>
                             <span>Create Plan </span>
                           </Link>
                         </li>
@@ -920,7 +926,7 @@ const SidebarLinks = () => {
                             // aria-expanded="true"
                             // aria-controls="collapsInnerThree"
                           >
-                            <i class="bi bi-dash"></i>
+                            <i className="bi bi-dash"></i>
                             <span> Temp. Execution</span>
                           </Link>
                         </li>
@@ -933,7 +939,7 @@ const SidebarLinks = () => {
                             className="nav-btn nav-link collapsed"
                             to="/admin/operation/case-study"
                           >
-                            <i class="bi bi-dash"></i>
+                            <i className="bi bi-dash"></i>
                             <span>Case Study </span>
                           </Link>
                         </li>
@@ -949,7 +955,7 @@ const SidebarLinks = () => {
                             aria-expanded="true"
                             aria-controls="collapsInnerTwo"
                           >
-                            <i class="bi bi-dash"></i>
+                            <i className="bi bi-dash"></i>
                             <span>Content Creation </span>
                           </Link>
                           <div
@@ -976,13 +982,15 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/createrdashboard"
                                 >
-                                  <i class="bi bi-dot"></i> Creator Dashborad
+                                  <i className="bi bi-dot"></i> Creator
+                                  Dashborad
                                 </Link>
                                 <Link
                                   className="collapse-item"
                                   to="/admin/excusionCampaign"
                                 >
-                                  <i class="bi bi-dot"></i> Execution Campaign
+                                  <i className="bi bi-dot"></i> Execution
+                                  Campaign
                                 </Link>
                               </>
                             </div>
@@ -1000,7 +1008,7 @@ const SidebarLinks = () => {
                             aria-expanded="true"
                             aria-controls="collapsInnerThree"
                           >
-                            <i class="bi bi-dash"></i>
+                            <i className="bi bi-dash"></i>
                             <span>Content Creation Admin</span>
                           </Link>
                           <div
@@ -1015,7 +1023,7 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/campaign-admin"
                                 >
-                                  <i class="bi bi-dot"></i> Campaign Admin
+                                  <i className="bi bi-dot"></i> Campaign Admin
                                 </Link>
                               </>
                             </div>
@@ -1104,7 +1112,7 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/finance-dashboard"
                       >
-                        <i class="bi bi-dot"></i> <span>Dashboard</span>
+                        <i className="bi bi-dot"></i> <span>Dashboard</span>
                       </Link>
                     </li>
                   </>
@@ -1118,7 +1126,7 @@ const SidebarLinks = () => {
                   aria-expanded="true"
                   aria-controls="collapsInnerEightFinanceEdit"
                 >
-                  <i class="bi bi-dash"></i>
+                  <i className="bi bi-dash"></i>
                   <span>Sales Management</span>
                 </Link>
                 <div
@@ -1137,7 +1145,7 @@ const SidebarLinks = () => {
                           aria-expanded="true"
                           aria-controls="collapsInnerOneFinance"
                         >
-                          <i class="bi bi-dash"></i>
+                          <i className="bi bi-dash"></i>
                           <span>Payment Update</span>
                         </a>
                         <div
@@ -1150,19 +1158,19 @@ const SidebarLinks = () => {
                               className="collapse-item"
                               to="/admin/finance-alltransactions"
                             >
-                              <i class="bi bi-dot"></i> Dashboard
+                              <i className="bi bi-dot"></i> Dashboard
                             </Link>
                             <Link
                               className="collapse-item"
                               to="/admin/finance-paymentmode"
                             >
-                              <i class="bi bi-dot"></i> Payment Mode
+                              <i className="bi bi-dot"></i> Payment Mode
                             </Link>
                             <Link
                               className="collapse-item"
                               to="/admin/finance-pendingapproveupdate"
                             >
-                              <i class="bi bi-dot"></i> Pending Approval
+                              <i className="bi bi-dot"></i> Pending Approval
                             </Link>
                           </div>
                         </div>
@@ -1177,7 +1185,7 @@ const SidebarLinks = () => {
                           aria-controls="collapsInnerOneFinanceSecound"
                         >
                           {/* <i className="bi bi-person-gear" /> */}
-                          <i class="bi bi-dash"></i>
+                          <i className="bi bi-dash"></i>
                           <span>Payment Refund</span>
                         </a>
                         <div
@@ -1191,13 +1199,14 @@ const SidebarLinks = () => {
                               className="collapse-item"
                               to="/admin/finance-pendingapproverefund"
                             >
-                              <i class="bi bi-dot"></i> Pending Approval Refund
+                              <i className="bi bi-dot"></i> Pending Approval
+                              Refund
                             </Link>
                             <Link
                               className="collapse-item"
                               to="/admin/finance-pendingrequests"
                             >
-                              <i class="bi bi-dot"></i> All Refund Request
+                              <i className="bi bi-dot"></i> All Refund Request
                             </Link>
                           </div>
                         </div>
@@ -1211,7 +1220,7 @@ const SidebarLinks = () => {
                           aria-expanded="true"
                           aria-controls="collapsInnerThree"
                         >
-                          <i class="bi bi-dash"></i>
+                          <i className="bi bi-dash"></i>
                           <span>Balance Payment Update</span>
                         </Link>
                         <div
@@ -1226,7 +1235,7 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/finance-balancepayment"
                               >
-                                <i class="bi bi-dot"></i> List
+                                <i className="bi bi-dot"></i> List
                               </Link>
                             </>
                           </div>
@@ -1241,7 +1250,7 @@ const SidebarLinks = () => {
                           aria-expanded="true"
                           aria-controls="collapsInnerFourFinance"
                         >
-                          <i class="bi bi-dash"></i>
+                          <i className="bi bi-dash"></i>
                           <span>Incentive Payment</span>
                         </Link>
                         <div
@@ -1256,7 +1265,7 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/finance-incentivepayment"
                               >
-                                <i class="bi bi-dot"></i> Pending Incentive
+                                <i className="bi bi-dot"></i> Pending Incentive
                                 Payment
                               </Link>
                             </>
@@ -1272,7 +1281,7 @@ const SidebarLinks = () => {
                           aria-expanded="true"
                           aria-controls="collapsInnerFiveFinance"
                         >
-                          <i class="bi bi-dash"></i>
+                          <i className="bi bi-dash"></i>
                           <span>Invoice</span>
                         </Link>
                         <div
@@ -1287,14 +1296,14 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/finance-pendinginvoice"
                               >
-                                <i class="bi bi-dot"></i> Pending Invoice
+                                <i className="bi bi-dot"></i> Pending Invoice
                                 Creation
                               </Link>
                               <Link
                                 className="collapse-item"
                                 to="/admin/finance-createdinvoice"
                               >
-                                <i class="bi bi-dot"></i> Invoice Created
+                                <i className="bi bi-dot"></i> Invoice Created
                               </Link>
                             </>
                           </div>
@@ -1309,7 +1318,7 @@ const SidebarLinks = () => {
                           aria-expanded="true"
                           aria-controls="collapsInnerSevenFinance"
                         >
-                          <i class="bi bi-dash"></i>
+                          <i className="bi bi-dash"></i>
                           <span>TDS</span>
                         </Link>
                         <div
@@ -1324,13 +1333,14 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/finance-salebookingclose"
                               >
-                                <i class="bi bi-dot"></i> Sales Booking Closing
+                                <i className="bi bi-dot"></i> Sales Booking
+                                Closing
                               </Link>
                               <Link
                                 className="collapse-item"
                                 to="/admin/finance-salebookingverify"
                               >
-                                <i class="bi bi-dot"></i> Sales Booking
+                                <i className="bi bi-dot"></i> Sales Booking
                                 Verification
                               </Link>
                             </>
@@ -1350,7 +1360,7 @@ const SidebarLinks = () => {
                   aria-expanded="true"
                   aria-controls="collapsInnerEightFinance"
                 >
-                  <i class="bi bi-dash"></i>
+                  <i className="bi bi-dash"></i>
                   <span>Purchase Management</span>
                 </Link>
                 <div
@@ -1365,43 +1375,43 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-alltransaction"
                       >
-                        <i class="bi bi-dot"></i> Purchase Dashboard
+                        <i className="bi bi-dot"></i> Purchase Dashboard
                       </Link>
                       <Link
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
                       >
-                        <i class="bi bi-dot"></i> Pending Payment Request
+                        <i className="bi bi-dot"></i> Pending Payment Request
                       </Link>{" "}
                       <Link
                         className="collapse-item"
                         to="/admin/payment-mode-master"
                       >
-                        <i class="bi bi-dot"></i> Payment Mode Master
+                        <i className="bi bi-dot"></i> Payment Mode Master
                       </Link>
                       <Link
                         className="collapse-item"
                         to="/admin/payment-TDS_deduct"
                       >
-                        <i class="bi bi-dot"></i> TDS Deduction
+                        <i className="bi bi-dot"></i> TDS Deduction
                       </Link>
                       <Link
                         className="collapse-item"
                         to="/admin/payment-GST_hold"
                       >
-                        <i class="bi bi-dot"></i> GST Hold
+                        <i className="bi bi-dot"></i> GST Hold
                       </Link>
                       <Link
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-paymentdone"
                       >
-                        <i class="bi bi-dot"></i> Payment Done
+                        <i className="bi bi-dot"></i> Payment Done
                       </Link>
                       <Link
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-discardpayment"
                       >
-                        <i class="bi bi-dot"></i> Discard Payment
+                        <i className="bi bi-dot"></i> Discard Payment
                       </Link>
                     </>
                   </div>
@@ -1416,7 +1426,7 @@ const SidebarLinks = () => {
                   aria-expanded="true"
                   aria-controls="collapsInnerEightFinancePayout"
                 >
-                  <i class="bi bi-dash"></i>
+                  <i className="bi bi-dash"></i>
                   <span>WFHD Salary</span>
                 </Link>
                 <div
@@ -1431,14 +1441,14 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/accounts-finance-dashboard"
                       >
-                        <i class="bi bi-dot"></i> Payout Summary
+                        <i className="bi bi-dot"></i> Payout Summary
                       </Link>
 
                       <Link
                         className="collapse-item"
                         to="/admin/accounts-finance-overview"
                       >
-                        <i class="bi bi-dot"></i> Account Overview
+                        <i className="bi bi-dot"></i> Account Overview
                       </Link>
                     </>
                   </div>
@@ -1452,7 +1462,7 @@ const SidebarLinks = () => {
                   aria-expanded="true"
                   aria-controls="collapsInnerEightFinanceTask"
                 >
-                  <i class="bi bi-dash"></i>
+                  <i className="bi bi-dash"></i>
                   <span>Task</span>
                 </Link>
                 <div
@@ -1467,14 +1477,14 @@ const SidebarLinks = () => {
                         className="collapse-item"
                         to="/admin/finance-task-pending"
                       >
-                        <i class="bi bi-dot"></i> Pending
+                        <i className="bi bi-dot"></i> Pending
                       </Link>
 
                       <Link
                         className="collapse-item"
                         to="/admin/finance-task-done/type"
                       >
-                        <i class="bi bi-dot"></i> Done
+                        <i className="bi bi-dot"></i> Done
                       </Link>
                     </>
                   </div>
@@ -1507,43 +1517,43 @@ const SidebarLinks = () => {
             data-parent="#accordionSidebar"
           >
             <div className="internal collapse-inner">
-              {/* {RoleId == 5 && ( */}
-              <Link className="collapse-item" to="/admin/asset-dashboard">
-                <i class="bi bi-dot"></i> Dashboard
-              </Link>
-              {/* )} */}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to="/admin/asset-dashboard">
+                  <i className="bi bi-dot"></i> Dashboard
+                </Link>
+              )}
               <Link className="collapse-item" to="/admin/asset-single-user">
-                <i class="bi bi-dot"></i> My Asset
+                <i className="bi bi-dot"></i> My Asset
               </Link>
-              {/* {RoleId == 5 && ( */}
-              <Link className="collapse-item" to={`/sim-overview/${0}`}>
-                <i class="bi bi-dot"></i> Asset Management
-              </Link>
-              {/* )} */}
-              {/* {RoleId == 5 && ( */}
-              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                <i class="bi bi-dot"></i> Asset's Request
-              </Link>
-              {/* )} */}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to={`/sim-overview/${0}`}>
+                  <i className="bi bi-dot"></i> Asset Management
+                </Link>
+              )}
+              {RoleId == 5 && (
+                <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                  <i className="bi bi-dot"></i> Asset's Request
+                </Link>
+              )}
               <Link
                 className="collapse-item"
                 to="/admin/asset-visible-to-taged-person"
               >
-                <i class="bi bi-dot"></i> Tagged Asset
+                <i className="bi bi-dot"></i> Tagged Asset
               </Link>
-              {/* {RoleId == 2 && ( */}
-              <Link className="collapse-item" to="/admin/asset-manager">
-                <i class="bi bi-dot"></i> Asset Request Approvel
-              </Link>
-              {/* )} */}
-              {/* {RoleId == 5 && ( */}
-              <Link
-                className="collapse-item"
-                to="/admin/asset-repair-return-summary"
-              >
-                <i class="bi bi-dot"></i> Repair & Return Summary
-              </Link>
-              {/* )} */}
+              {RoleId == 2 && (
+                <Link className="collapse-item" to="/admin/asset-manager">
+                  <i className="bi bi-dot"></i> Asset Request Approvel
+                </Link>
+              )}
+              {RoleId == 5 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/asset-repair-return-summary"
+                >
+                  <i className="bi bi-dot"></i> Repair & Return Summary
+                </Link>
+              )}
             </div>
           </div>
         </li>
@@ -1573,7 +1583,7 @@ const SidebarLinks = () => {
                   className="collapse-item"
                   to="/admin/task-status-dept-wise-overview"
                 >
-                  <i class="bi bi-dot"></i> Task Status
+                  <i className="bi bi-dot"></i> Task Status
                 </Link>
               </>
             </div>
@@ -1611,7 +1621,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-category">
-                  <i className="bi bi-dot"></i>Page Category
+                  <i className="bi bi-dot"></i> Page Category
                 </Link>
               )}
 
@@ -1619,7 +1629,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-profile-type">
-                  <i className="bi bi-dot"></i>Profile Type
+                  <i className="bi bi-dot"></i> Profile Type
                 </Link>
               )}
 
@@ -1627,7 +1637,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-ownership">
-                  <i className="bi bi-dot"></i>Page Ownership
+                  <i className="bi bi-dot"></i> Page Ownership
                 </Link>
               )}
 

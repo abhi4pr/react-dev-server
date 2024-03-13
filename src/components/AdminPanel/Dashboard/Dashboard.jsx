@@ -9,6 +9,8 @@ import jwtDecode from "jwt-decode";
 import { baseUrl } from "../../../utils/config";
 import { Box, Button } from "@mui/material";
 import ChatApplication from "../../Common/ChatApplication";
+import { useLocation } from 'react-router-dom';
+import titleimg from '/bg-img.png'
 
 function Dashboard() {
   const [renderCount, setRenderCount] = useState(0);
@@ -86,12 +88,18 @@ function Dashboard() {
   const AllLogoBrandData = logoBrandData.length;
   const AllIntellectualProperty = IntellectualProperty.length;
   const AllData = allData;
+  const location = useLocation();
+  const activeLink = location.pathname;
   return (
     <>
       <div>
         <div className="form-heading">
+        <img className="img-bg" src={titleimg} alt="" width={160} />
           <div className="form_heading_title">
-            <h2>Dashboard</h2>
+          <h1>Dashboard</h1>
+            <div className="pack">
+            <i class="bi bi-house"></i> {activeLink.slice(1).charAt(0).toUpperCase()+ activeLink.slice(2)}
+            </div>
           </div>
           {/* <Link to={`/admin/kra/${userId}`}>
             <button type="button" className="btn btn-outline-primary btn-sm">

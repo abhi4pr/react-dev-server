@@ -1132,7 +1132,7 @@ const AllTransactions = () => {
         </div>
       </div>
       <div>
-        <div className="card mt-3">
+        <div className="card mt-3" >
           <DataGrid
             rows={filterData}
             columns={columns}

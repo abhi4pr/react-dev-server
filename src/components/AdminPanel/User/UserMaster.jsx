@@ -2965,7 +2965,7 @@ const UserMaster = () => {
       </div>
       <FormContainer
         mainTitle="User"
-        title="User Registration"
+        title="User Registration" 
         // handleSubmit={handleSubmit}
         submitButton={false}
         accordionButtons={accordionButtons}

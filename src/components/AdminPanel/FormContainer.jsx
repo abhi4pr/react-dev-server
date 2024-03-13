@@ -53,11 +53,13 @@ const FormContainer = ({
   loading = false,
   pendingpaymentRemainder = 0,
   mainTitleRequired = true,
+  Titleheadercomponent,
+  TitleHeaderComponentDisplay="none"
 }) => {
   const location = useLocation();
   const activeLink = location.pathname;
   return (
-    <>
+    <div style={{display:"flex",gap:"10px",flexDirection:"column"}}>
       {mainTitleRequired && (
         <div className="form-heading">
            <img className="img-bg" src={titleimg} alt="" width={160} />
@@ -306,8 +308,10 @@ const FormContainer = ({
                 <h2>{title}</h2>
               </div>
             )}
-
-            <div className="btn-group w-100">
+              <div className="input-component" style={{display:`${TitleHeaderComponentDisplay}`,width:"100%",justifyContent:"flex-end",alignItems:"flex-end",gap:"10px"}}>
+                {Titleheadercomponent}
+              </div>
+            <div className="btn-group w-100" style={{display:`${TitleHeaderComponentDisplay ==="none"?"":"none"}`}}>
               {accordionButtons.map((buttonName, index) => (
                 <button
                   key={index}
@@ -360,7 +364,7 @@ const FormContainer = ({
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

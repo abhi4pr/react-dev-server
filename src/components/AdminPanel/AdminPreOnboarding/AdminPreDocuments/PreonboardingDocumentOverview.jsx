@@ -49,14 +49,15 @@ const PreonboardingDocumentOverview = () => {
       cell: (row) => (
         <>
           <Link to={`/admin/preonboarding-documents-update/${row?._id}`}>
-            <button
-              title="edit"
-              className="btn btn-outline-primary btn-sm user-button"
-            >
-              <FaEdit />
-            </button>
+          <div className="icon-1"  title="Edit User">
+                    <i className="bi bi-pencil"></i>
+                  </div>
           </Link>
+         
+          
+                
           <DeleteButton
+          
             endpoint={"delete_doc"}
             id={row._id}
             getData={getData}
@@ -99,28 +100,29 @@ const PreonboardingDocumentOverview = () => {
         buttonAccess={true}
       />
       <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title=" Overview"
-              columns={columns}
-              data={filterData}
-              fixedHeader
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <>
-                  <input
+        <div className="card">
+          <div className="card-header sb">
+          Overview 
+          <input
                     type="text"
                     placeholder="Search here"
                     className="w-50 form-control "
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
-                </>
-              }
+          </div>
+          <div className="card-body body-padding">
+            <DataTable
+              
+              columns={columns}
+              data={filterData}
+              pagination
+              selectableRows
+             
             />
+
+          </div>
+          <div className="data_tbl table-responsive">
           </div>
         </div>
       </div>
