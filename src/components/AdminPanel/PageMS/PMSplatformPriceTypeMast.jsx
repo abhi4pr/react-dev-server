@@ -9,6 +9,7 @@ import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import DataTable from "react-data-table-component";
 import { Autocomplete, TextField } from "@mui/material";
+import Select from "react-select";
 
 export default function PMSplatformPriceTypeMast() {
   const { toastAlert } = useGlobalContext();
@@ -82,16 +83,23 @@ export default function PMSplatformPriceTypeMast() {
   };
 
   const handleRowData = (row) => {
-    let platform = platformList.find((option) => option._id === row.PMS_Platform_data.pmsPlatform_id,"platformList")
-    setPlatformUpdateId({
+    let platform = platformList.find(
+      (option) => option.platform_name === row.PMS_Platform_data.platform_name,
+      "platformList"
+    );
+    console.log(platform, "platform Name");
+    setPlatform({
+      value: platform._id,
       platformName: platform.platform_name,
-      value: row.PMS_Platform_data.pmsPlatform_id,
     });
     console.log({
-      platformName:  platform.platform_name,
-      value: row.PMS_Platform_data.pmsPlatform_id,
+      platformName: platform.platform_name,
+      value: platform._id,
     });
-    setPriceTypeId(row.PMS_Pricetypes_data.pmsPriceType_id);
+    setPriceTypeId({
+      value: row.PMS_Pricetypes_data._id,
+      priceType: row.PMS_Pricetypes_data.price_type,
+    });
     setDescriptionUpdate(row.description);
     setRowData(row);
   };
@@ -190,7 +198,7 @@ export default function PMSplatformPriceTypeMast() {
             platformName: option.platform_name,
             value: option._id,
           }))}
-          value={platformList.find((option) => option._id === Platform.value)}
+          value={Platform}
           getOptionLabel={(option) => option.platformName || ""}
           style={{ width: 300 }}
           onChange={(e, value) => {
@@ -314,45 +322,48 @@ export default function PMSplatformPriceTypeMast() {
         </div>
       </div> */}
 
-<div id="myModal" className="modal fade" role="dialog">
-  <div className="modal-dialog">
-    <div className="modal-content">
-      <div className="modal-header">
-        <h4 className="modal-title">Update</h4>
-        <button type="button" className="close" data-dismiss="modal">
-          &times;
-        </button>
-      </div>
-      <div className="modal-body">
-        <Autocomplete
-          id="price-type-autocomplete-update"
-          options={priceList.map((option) => ({
-            priceType: option.price_type,
-            value: option._id,
-          }))}
-          value={priceList.find((option) => option._id === priceTypeId)}
-          getOptionLabel={(option) => option.priceType}
-          style={{ width: 300 }}
-          onChange={(e, value) => {
-            setPriceTypeId(value ? value.value : ''); // Ensure to handle the case when value is null
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Price Type *"
-              variant="outlined"
-            />
-          )}
-        />
-{/* 
-<Autocomplete
+      <div id="myModal" className="modal fade" role="dialog">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h4 className="modal-title">Update</h4>
+              <button type="button" className="close" data-dismiss="modal">
+                &times;
+              </button>
+            </div>
+            <div className="modal-body row justify-content-cneter">
+              <Autocomplete
+              className="mb-3"
+                id="price-type-autocomplete-update"
+                options={priceList.map((option) => ({
+                  priceType: option.price_type,
+                  value: option._id,
+                }))}
+                value={priceTypeId}
+                getOptionLabel={(option) => option.priceType}
+                style={{ width: 300 }}
+                onChange={(e, value) => {
+                  setPriceTypeId(value ? value.value : ""); // Ensure to handle the case when value is null
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Price Type *"
+                    variant="outlined"
+                  />
+                )}
+              />
+
+              {/* <Autocomplete
   id="platform-autocomplete-update"
   options={platformList.map((option) => ({
     platformName: option.platform_name,
     value: option._id,
   }))}
   // inputValue={Platform.platformName}
-  value={platformList.find((option) => option._id === platformUpdateId)} // Set default value to null if not found
+  value={{
+    platformName: platformList.find((option) => option._id === platformUpdateId)?.platform_name,
+  }} // Set default value to null if not found
   getOptionLabel={(option) => option.platformName}
   style={{ width: 300 }}
   onChange={(e, value) => {
@@ -368,61 +379,77 @@ export default function PMSplatformPriceTypeMast() {
   )}
 /> */}
 
-<Autocomplete
-  id="platform-autocomplete-update"
-  options={platformList.map((option) => ({
-    platformName: option.platform_name,
-    value: option._id,
-  }))}
-  inputValue={Platform.platformName}
-  value={platformList.find((option) => option._id === platformUpdateId.value)}
-  getOptionLabel={(option) => option.platformName}
-  style={{ width: 300 }}
-  onChange={(e, value) => {
-    setPlatformUpdateId(value);
-  }
+              <Autocomplete
+                id="platform-autocomplete"
+                options={platformList.map((option) => ({
+                  platformName: option.platform_name,
+                  value: option._id,
+                }))}
+                value={Platform}
+                getOptionLabel={(option) => option.platformName || ""}
+                style={{ width: 300 }}
+                onChange={(e, value) => {
+                  setPlatform(value);
+                  console.log(value, "value");
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Platform *"
+                    variant="outlined"
+                  />
+                )}
+              />
 
-  }
-  renderInput={(params) => (
-    <TextField
-      {...params}
-      label="Platform *"
-      variant="outlined"
+              {/* <Autocomplete
+                id="platform-autocomplete-update"
+                options={platformList.map((option) => ({
+                  platformName: option.platform_name,
+                  value: option._id,
+                }))}
+                value={platformUpdateId}
+                // inputValue={Platform.platformName}
+                // getOptionLabel={(option) => option.platformName}
+                style={{ width: 300 }}
+                onChange={(e, value) => {
+                  setPlatformUpdateId(value);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Platform *"
+                    variant="outlined"
+                  />
+                )}
+              /> */}
 
-    />  
-  )}
-/>
-
-
-
-        <FieldContainer
-          label="Description"
-          value={descriptionUpdate}
-          required={false}
-          onChange={(e) => setDescriptionUpdate(e.target.value)}
-        />
+              <FieldContainer
+                label="Description"
+                value={descriptionUpdate}
+                required={false}
+                onChange={(e) => setDescriptionUpdate(e.target.value)}
+              />
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                className="btn btn-success"
+                onClick={handleModalUpdate}
+                data-dismiss="modal"
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="modal-footer">
-        <button
-          type="button"
-          className="btn btn-primary"
-          data-dismiss="modal"
-        >
-          Close
-        </button>
-        <button
-          type="button"
-          className="btn btn-success"
-          onClick={handleModalUpdate}
-          data-dismiss="modal"
-        >
-          Update
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
     </>
   );
 }
