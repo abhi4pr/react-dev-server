@@ -406,7 +406,7 @@ body[theme="dark"] .summary_cardtitle {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  /* justify-content: space-between; */
 }
 
 .summary_box h4 span {

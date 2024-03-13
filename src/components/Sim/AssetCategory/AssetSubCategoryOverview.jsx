@@ -43,7 +43,7 @@ const AssetSubCategoryOverview = () => {
   const handleTotalasset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}` + `get_total_asset_in_category/${row}`
+        `${baseUrl}` + `get_total_asset_in_sub_category/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);
@@ -58,7 +58,7 @@ const AssetSubCategoryOverview = () => {
   const handleAllocatedAsset = async (row) => {
     try {
       const response = await axios.get(
-        `${baseUrl}` + `get_total_asset_in_category_allocated/${row}`
+        `${baseUrl}` + `get_total_asset_in_sub_category_allocated/${row}`
       );
       setTotalAssets(response.data.data);
       seAssetModel(true);

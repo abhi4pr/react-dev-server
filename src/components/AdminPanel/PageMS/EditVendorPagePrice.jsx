@@ -44,7 +44,7 @@ export default function EditVendorPagePrice() {
       const vendorPagePriceData = vendorPagePriceRes.data.data.filter(
         (e) => e._id == id
       )[0];
-      console.log(vendorPagePriceData, "vendorPagePriceData");
+      console.log(vendorPagePriceData.pageMast_id, "vendorPagePriceData.pageMast_id");
       setPlatformPriceId(vendorPagePriceData.platform_price_id);
       setPageMastId(vendorPagePriceData.pageMast_id);
       setVendorId(vendorPagePriceData.vendorMast_id);
@@ -123,7 +123,12 @@ export default function EditVendorPagePrice() {
               value: option._id,
               label: option._id,
             }))}
-            value={platformPriceId}
+            value={{
+                value: platformPriceId,
+                label:
+                    platformPriceList.find((role) => role._id === platformPriceId)
+                    ?._id || "",
+            }}
             onChange={handlePlatformPriceChange}
           />
         </div>
@@ -137,7 +142,13 @@ export default function EditVendorPagePrice() {
               value: option.pageMast_id,
               label: option.page_user_name,
             }))}
-            value={pageMastId}
+            // defaultValue={pageMastList.filter(e=>e.pageMast_id == pageMastId)[0]}
+            value={{
+                value: pageMastId,
+                label:
+                    pageMastList.filter((role) => role.pageMast_id === pageMastId)
+                    ?.page_user_name || "",
+            }}
             onChange={handlePageMastChange}
           />
         </div>
@@ -151,7 +162,12 @@ export default function EditVendorPagePrice() {
               value: option.vendorMast_id,
               label: option.vendorMast_name,
             }))}
-            value={vendorId}
+            value={{
+                value: vendorId,
+                label:
+                    vendorList.find((role) => role.vendorMast_id === vendorId)
+                    ?.vendorMast_name || "",
+            }}
             onChange={handleVendorChange}
           />
         </div>
@@ -165,7 +181,13 @@ export default function EditVendorPagePrice() {
               value: option._id,
               label: option.price_type,
             }))}
-            value={priceTypeId}
+            value={{
+value: priceTypeId,
+label:
+priceTypeList.find((role) => role._id === priceTypeId)
+?.price_type || "",
+
+            }}
             onChange={handlePriceTypeChange}
           />
         </div>

@@ -4,3 +4,4 @@ export const baseUrl = "http://34.173.148.74:8080/api/"; // for development
 
 // export const baseUrl = "http://192.168.1.27:8080/api/"; //Bhaiyu Dada
 // export const baseUrl = "http://192.168.1.45:8080/api/";
+// export const baseUrl = "http://192.168.1.6:8080/api/"; //Bhaiyu Dada
