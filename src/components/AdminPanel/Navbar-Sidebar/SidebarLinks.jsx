@@ -1507,43 +1507,43 @@ const SidebarLinks = () => {
             data-parent="#accordionSidebar"
           >
             <div className="internal collapse-inner">
-              {RoleId == 5 && (
-                <Link className="collapse-item" to="/admin/asset-dashboard">
-                  <i class="bi bi-dot"></i> Dashboard
-                </Link>
-              )}
+              {/* {RoleId == 5 && ( */}
+              <Link className="collapse-item" to="/admin/asset-dashboard">
+                <i class="bi bi-dot"></i> Dashboard
+              </Link>
+              {/* )} */}
               <Link className="collapse-item" to="/admin/asset-single-user">
                 <i class="bi bi-dot"></i> My Asset
               </Link>
-              {RoleId == 5 && (
-                <Link className="collapse-item" to={`/sim-overview/${0}`}>
-                  <i class="bi bi-dot"></i> Asset Management
-                </Link>
-              )}
-              {RoleId == 5 && (
-                <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                  <i class="bi bi-dot"></i> Asset's Request
-                </Link>
-              )}
+              {/* {RoleId == 5 && ( */}
+              <Link className="collapse-item" to={`/sim-overview/${0}`}>
+                <i class="bi bi-dot"></i> Asset Management
+              </Link>
+              {/* )} */}
+              {/* {RoleId == 5 && ( */}
+              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                <i class="bi bi-dot"></i> Asset's Request
+              </Link>
+              {/* )} */}
               <Link
                 className="collapse-item"
                 to="/admin/asset-visible-to-taged-person"
               >
                 <i class="bi bi-dot"></i> Tagged Asset
               </Link>
-              {RoleId == 2 && (
-                <Link className="collapse-item" to="/admin/asset-manager">
-                  <i class="bi bi-dot"></i> Asset Request Approvel
-                </Link>
-              )}
-              {RoleId == 5 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/asset-repair-return-summary"
-                >
-                  <i class="bi bi-dot"></i> Repair & Return Summary
-                </Link>
-              )}
+              {/* {RoleId == 2 && ( */}
+              <Link className="collapse-item" to="/admin/asset-manager">
+                <i class="bi bi-dot"></i> Asset Request Approvel
+              </Link>
+              {/* )} */}
+              {/* {RoleId == 5 && ( */}
+              <Link
+                className="collapse-item"
+                to="/admin/asset-repair-return-summary"
+              >
+                <i class="bi bi-dot"></i> Repair & Return Summary
+              </Link>
+              {/* )} */}
             </div>
           </div>
         </li>
