@@ -389,12 +389,12 @@ const SimOverview = () => {
             {hasInvoice && (
               <a
                 style={{ cursor: "pointer" }}
-                target="_blank" // Corrected "blank" to "_blank"
+                target="_blank"
                 href={row.invoiceCopy_url}
                 download
               >
                 <i
-                  className="fa fa-download" // Corrected "class" to "className"
+                  className="fa fa-download"
                   aria-hidden="true"
                   style={{ fontSize: "25px", color: "blue" }}
                 ></i>
@@ -502,12 +502,17 @@ const SimOverview = () => {
       })
       .then((res) => {
         const images = res.data.data;
-        if (images.length > 0) {
+        // if (images?.length > 0) {
+        if (
+          images[0].img1_url !== null ||
+          images[0].img2_url !== null ||
+          images[0].img3_url !== null ||
+          images[0].img4_url !== null
+        ) {
           setShowAssetImages(images);
           setImageModalOpen(true);
         } else {
-          // No images available, handle accordingly
-          alert("No images available for this asset."); // For demonstration, consider a more user-friendly feedback mechanism
+          alert("No images available for this asset.");
         }
       });
   };

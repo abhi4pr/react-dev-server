@@ -18,7 +18,7 @@ const SimSummary = () => {
 
   function getData() {
     axios
-      .get(`${baseUrl}`+`get_allocation_data_by_id/${id}`)
+      .get(`${baseUrl}` + `get_allocation_data_by_id/${id}`)
       .then((res) => setShowInfo(res.data));
   }
 
@@ -29,7 +29,7 @@ const SimSummary = () => {
   function handleDelete(e, sum) {
     e.preventDefault();
     axios
-      .put(baseUrl+"update_allocationsim", {
+      .put(baseUrl + "update_allocationsim", {
         sim_id: sum.sim_id,
         allo_id: sum.allo_id,
         user_id: sum.user_id,
@@ -81,9 +81,16 @@ const SimSummary = () => {
                   return (
                     <div className="summary_card" key={sum.id}>
                       <div className="summary_cardtitle">
-                        <h5>
-                          Allocated user - <span>{sum.user_name}</span>
-                        </h5>
+                        <div className="summary_box summary_numbox">
+                          <h4>
+                            <span>Asset Name</span>
+                            {"  :- "}
+                            {sum.assetsName}
+                          </h4>
+                        </div>
+                        {/* <h5>
+                          Allocated user : <span>{sum.userName}</span>
+                        </h5> */}
                         <button
                           className="btn btn-sm btn-outline-danger"
                           title="Delete"
@@ -96,13 +103,13 @@ const SimSummary = () => {
                         <div className="summary_cardrow">
                           <div className="summary_box summary_allocatebox">
                             <h4>
-                              <span>Allocated date : </span>
+                              <span>Allocated date {" :- "} </span>
                               {sum.Creation_date ? reversedCreationDate : ""}
                             </h4>
                           </div>
                           <div className="summary_box summary_returnbox">
                             <h4>
-                              <span>Returned date : </span>
+                              <span>Returned date {" :- "} </span>
                               {sum.submitted_at
                                 ? sum.submitted_at
                                     .split("-")
@@ -111,16 +118,10 @@ const SimSummary = () => {
                                 : ""}
                             </h4>
                           </div>
-                          <div className="summary_box summary_numbox">
-                            <h4>
-                              <span>Asset Name</span>
-                              {sum.assetsName}
-                            </h4>
-                          </div>
                         </div>
                         <div className="summary_box summary_reasonbox">
                           <h4>
-                            <span>Reason</span>
+                            <span>Reason {" :- "}</span>
                             {sum.reason}
                           </h4>
                         </div>

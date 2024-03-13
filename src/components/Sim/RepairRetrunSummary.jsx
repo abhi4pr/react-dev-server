@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import FormContainer from "../AdminPanel/FormContainer";
 import { baseUrl } from "../../utils/config";
+import DateISOtoNormal from "../../utils/DateISOtoNormal";
 
 const RepairRetrunSummary = () => {
   const [search, setSearch] = useState("");
@@ -38,6 +39,10 @@ const RepairRetrunSummary = () => {
     {
       name: "Asset Return By",
       selector: (row) => row.asset_return_by_name,
+    },
+    {
+      name: "Retun Date",
+      selector: (row) => DateISOtoNormal(row.return_asset_data_time),
     },
     {
       name: "Return Remark",

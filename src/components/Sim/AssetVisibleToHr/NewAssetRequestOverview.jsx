@@ -14,12 +14,29 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   const [assetStatus, setAssetStatus] = useState("");
   const [row, setRow] = useState("");
   const [getAssetDataContext, setAssetData] = useState([]);
+
   const [selectedAsset, setSelectedAsset] = useState([]);
 
   const handleStatusUpdate = (row, status) => {
     setAssetStatus(status);
     setRow(row);
   };
+  useEffect(() => {
+    async function getShowAssetWithStatus() {
+      if (row && row.sub_category_id) {
+        try {
+          const response = await axios.get(
+            `${baseUrl}get_asset_by_sub_cat/${row.sub_category_id}`
+          );
+          setAssetData(response.data.data);
+        } catch (error) {
+          console.error("Failed to fetch asset data:", error);
+        }
+      }
+    }
+
+    getShowAssetWithStatus();
+  }, [row, assetsName]);
 
   const getAllAssetData = async () => {
     try {
@@ -33,13 +50,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   }, [assetsName]);
   // const text = getAssetDataContext.filter((d) => d.sim_id === assetsName);
 
-  async function getShowAssetWithStatus() {
-    const res = await axios.get(baseUrl + "show_asset_with_status");
-    setAssetData(res?.data.data);
-  }
-  useEffect(() => {
-    getShowAssetWithStatus();
-  }, []);
+  // console.log(row.sub_category_id, "------------------");
 
   const handleRejectStatus = async (row, status) => {
     try {
@@ -220,14 +231,14 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
                   <Select
                     options={getAssetDataContext.map((opt) => ({
                       value: opt.sim_id,
-                      label: opt.assetName,
+                      label: opt.assetsName,
                     }))}
                     value={{
                       value: assetsName,
                       label:
                         getAssetDataContext.find(
                           (user) => user.sim_id === assetsName
-                        )?.assetName || "",
+                        )?.assetsName || "",
                     }}
                     onChange={(e) => {
                       setAssetName(e.value);
