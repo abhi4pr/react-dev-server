@@ -26,13 +26,13 @@ export default function PaymentModeMast() {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-   const handleEditPaymentMode = (e) => {
+  const handleEditPaymentMode = (e) => {
     setEditPaymentMode(e.target.value);
   };
 
   const handleSaveEditPaymentMode = () => {
     axios
-      .put(baseUrl + `edit_payment_mode/${rowData._id}`,{
+      .put(baseUrl + `edit_payment_mode/${rowData._id}`, {
         payment_mode: editPaymetMode,
       })
       .then((res) => {
@@ -103,7 +103,6 @@ export default function PaymentModeMast() {
     setOpenEditPaymentMode(false);
   };
 
-
   useEffect(() => {
     filterRows();
   }, [searchInput, row]);
@@ -144,13 +143,11 @@ export default function PaymentModeMast() {
             style={{ marginLeft: 16 }}
             onClick={() => handleEditClick(params.row)}
             startIcon={<EditIcon />}
-          >
-            
-          </Button>
+          ></Button>
           <DeleteButton
-          endpoint={`delete_payment_mode`}
-          id={params.row._id}
-          getData={callApi}
+            endpoint={`delete_payment_mode`}
+            id={params.row._id}
+            getData={callApi}
           />
         </>
       ),
@@ -193,7 +190,8 @@ export default function PaymentModeMast() {
           </button>
         </Page>
       </Paper>
-      <Box>
+
+      <Box className="card body-padding ">
         <DataGrid
           rows={filteredRows}
           columns={cityColumns}

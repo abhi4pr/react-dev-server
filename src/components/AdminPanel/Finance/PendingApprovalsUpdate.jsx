@@ -6,7 +6,14 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 // import DataTable from "react-data-table-component";
-import { Autocomplete, TextField, Dialog, DialogTitle, Skeleton } from "@mui/material";
+import {
+  Autocomplete,
+  TextField,
+  Dialog,
+  DialogTitle,
+  Skeleton,
+  DialogContent,
+} from "@mui/material";
 import { get } from "jquery";
 import ImageView from "./ImageView";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
@@ -91,7 +98,7 @@ const PendingApprovalUpdate = () => {
         }
       )
       .then((res) => {
-          getData();
+        getData();
       });
 
     toastAlert("Data updated");
@@ -107,7 +114,9 @@ const PendingApprovalUpdate = () => {
           setData(res.data.data);
           setFilterData(res.data.data);
           setLoading(false);
-          const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
+          const uniqueCustomers = new Set(
+            custData.map((item) => item.cust_name)
+          );
           setUniqueCustomerCount(uniqueCustomers.size);
           const uniqueCustomerData = Array.from(uniqueCustomers).map(
             (customerName) => {
@@ -118,7 +127,6 @@ const PendingApprovalUpdate = () => {
         });
       }, 1000);
     });
-   
   }
 
   function convertDateToDDMMYYYY(dateString) {
@@ -261,26 +269,28 @@ const PendingApprovalUpdate = () => {
     setSameCustomerDialog(false);
   };
 
-  const calculateRequestedAmountTotal = () => {
-    let totalAmount = 0;
-    uniqueCustomerData.forEach((customer) => {
-      totalAmount += parseFloat(customer.payment_amount);
-    });
-    return totalAmount;
-  };
+  // const calculateRequestedAmountTotal = () => {
+  //   let totalAmount = 0;
+  //   uniqueCustomerData.forEach((customer) => {
+  //     totalAmount += parseFloat(customer.payment_amount);
+  //   });
+  //   return totalAmount;
+  // };
 
   // Call the function to get the total sum of requested amount
-  const requestedAmountTotal = calculateRequestedAmountTotal();
-
+  const requestedAmountTotal = filterData.reduce(
+    (total, item) => total + parseFloat(item.payment_amount_show),
+    0
+  );
   // All Counts:-
   const pendingCount = datas.filter(
-    (item) => item.payment_approval_status === 0
+    (item) => item.payment_approval_status === "0"
   ).length;
   const approvedCount = datas.filter(
-    (item) => item.payment_approval_status === 1
+    (item) => item.payment_approval_status === "1"
   ).length;
   const rejectedCount = datas.filter(
-    (item) => item.payment_approval_status === 2
+    (item) => item.payment_approval_status === "2"
   ).length;
 
   const sameCustomerColumn = [
@@ -290,7 +300,7 @@ const PendingApprovalUpdate = () => {
       renderCell: (params, index) => (
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
 
-        <div>{[...filterData].indexOf(params.row) + 1}</div>
+        <div>{[...sameCustomerData].indexOf(params.row) + 1}</div>
       ),
     },
     {
@@ -442,7 +452,7 @@ const PendingApprovalUpdate = () => {
       renderCell: (params, index) => (
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
 
-        <div>{[...filterData].indexOf(params.row) + 1}</div>
+        <div>{[...uniqueCustomerData].indexOf(params.row) + 1}</div>
       ),
     },
     {
@@ -683,7 +693,7 @@ const PendingApprovalUpdate = () => {
       headerName: "Payment Amount",
       field: "payment_amount",
       width: 180,
-      renderCell: (params) => <div>{params.row.payment_amount} </div>,
+      renderCell: (params) => <div>{params.row.payment_amount_show} </div>,
     },
     {
       headerName: "Payment Mode",
@@ -697,11 +707,11 @@ const PendingApprovalUpdate = () => {
       width: 190,
       renderCell: (params) => (
         <div>
-          {params.row.payment_approval_status === 0
+          {params.row.payment_approval_status === "0"
             ? "Pending"
-            : params.row.payment_approval_status === 1
+            : params.row.payment_approval_status === "1"
             ? "Approved"
-            : params.row.payment_approval_status === 2
+            : params.row.payment_approval_status === "2"
             ? "Rejected"
             : ""}
         </div>
@@ -840,22 +850,26 @@ const PendingApprovalUpdate = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameCustomerData}
-          columns={sameCustomerColumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameCustomerData}
+            columns={sameCustomerColumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
 
       {/* Unique Customer Dialog Box */}
@@ -883,276 +897,15 @@ const PendingApprovalUpdate = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueCustomerData}
-          columns={uniqueCustomerColumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => row._id}
-        />
-      </Dialog>
-      <div className="row">
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Customer Name</label>
-            <Autocomplete
-              value={customerName}
-              style={{ border: "1px solid var(--border)" }}
-              onChange={(event, newValue) => setCustomerName(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.cust_name))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Vendor Name"
-                  type="text"
-                  style={{ color: "var(--gray-600)" }}
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                />
-              )}
-            />
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Requested By</label>
-
-            <Autocomplete
-              value={requestedBy}
-              onChange={(event, newValue) => setRequestedBy(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.user_name))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Requested By"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                />
-              )}
-            />
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Bank Name</label>
-            <Autocomplete
-              value={bankName}
-              onChange={(event, newValue) => setBankName(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.detail))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Bank Name"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control",
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Payment Status</label>
-            <Autocomplete
-              value={paymentStatus}
-              onChange={(event, newValue) => setPaymentStatus(newValue)}
-              options={Array.from(
-                new Set(
-                  datas.map((option) =>
-                    option.payment_approval_status === 0
-                      ? "Pending"
-                      : option.payment_approval_status === 1
-                      ? "Approved"
-                      : option.payment_approval_status === 2
-                      ? "Rejected"
-                      : ""
-                  )
-                )
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Payment Status"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                />
-              )}
-            />
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Payment Mode</label>
-            <Autocomplete
-              value={paymentMode}
-              onChange={(event, newValue) => setPaymetMode(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.payment_mode))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Payment Mode"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>From Date</label>
-            <input
-              value={fromDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => setFromDate(e.target.value)}
-            />
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>To Date</label>
-            <input
-              value={toDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => {
-                setToDate(e.target.value);
-              }}
-            />
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Pay Amount Filter</label>
-            <select
-              value={paymentAmountFilter}
-              className="form-control"
-              onChange={(e) => setPaymentAmountFilter(e.target.value)}
-            >
-              <option value="">Select Amount</option>
-              <option value="greaterThan">Greater Than</option>
-              <option value="lessThan">Less Than</option>
-              <option value="equalTo">Equal To</option>
-            </select>
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Payment Amount</label>
-            <input
-              value={paymentAmountField}
-              type="number"
-              placeholder="Request Amount"
-              className="form-control"
-              onChange={(e) => {
-                setPaymentAmountField(e.target.value);
-              }}
-            />
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Campaign Amount Filter</label>
-            <select
-              value={campaignAmountFilter}
-              className="form-control"
-              onChange={(e) => setCampaignAmountFilter(e.target.value)}
-            >
-              <option value="">Select Amount</option>
-              <option value="greaterThan">Greater Than</option>
-              <option value="lessThan">Less Than</option>
-              <option value="equalTo">Equal To</option>
-            </select>
-          </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Campaign Amount</label>
-            <input
-              value={campaignAmountField}
-              type="number"
-              placeholder="Campaign Amount"
-              className="form-control"
-              onChange={(e) => {
-                setcampaignAmountField(e.target.value);
-              }}
-            />
-          </div>
-        </div>
-        <div className="col-md-1 mt-4 me-2">
-          <Button variant="contained" onClick={handleAllFilters}>
-            <i className="fas fa-search"></i> Search
-          </Button>
-        </div>
-        <div className="col-md-1 mt-4">
-          <Button variant="contained" onClick={handleClearAllFilter}>
-            Clear
-          </Button>
-        </div>
-      </div>
-
-      <div className="card">
-        <div className="data_tbl table-responsive">
-    {!loading   ?   <DataGrid
-            rows={filterData}
-            columns={columns}
-            // pageSize={5}
-            // rowsPerPageOptions={[5]}
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueCustomerData}
+            columns={uniqueCustomerColumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
             disableSelectionOnClick
             autoHeight
             slots={{ toolbar: GridToolbar }}
@@ -1161,13 +914,283 @@ const PendingApprovalUpdate = () => {
                 showQuickFilter: true,
               },
             }}
-            getRowId={(row) => filterData.indexOf(row)}
-          />:<Skeleton
-          sx={{ bgcolor: 'grey.900' , borderRadius: '0.25rem'}}
-          variant="rectangular"
-          width="100%"
-          height={200}
-        />}
+            getRowId={(row) => row._id}
+          />
+        </DialogContent>
+      </Dialog>
+      <div className="card body-padding">
+        <div className="row">
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Customer Name</label>
+              <Autocomplete
+                value={customerName}
+                style={{ border: "1px solid var(--border)" }}
+                onChange={(event, newValue) => setCustomerName(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.cust_name))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Vendor Name"
+                    type="text"
+                    style={{ color: "var(--gray-600)" }}
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                  />
+                )}
+              />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Requested By</label>
+
+              <Autocomplete
+                value={requestedBy}
+                onChange={(event, newValue) => setRequestedBy(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.user_name))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Requested By"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                  />
+                )}
+              />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Bank Name</label>
+              <Autocomplete
+                value={bankName}
+                onChange={(event, newValue) => setBankName(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.detail))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Bank Name"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control",
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Payment Status</label>
+              <Autocomplete
+                value={paymentStatus}
+                onChange={(event, newValue) => setPaymentStatus(newValue)}
+                options={Array.from(
+                  new Set(
+                    datas.map((option) =>
+                      option.payment_approval_status === 0
+                        ? "Pending"
+                        : option.payment_approval_status === 1
+                        ? "Approved"
+                        : option.payment_approval_status === 2
+                        ? "Rejected"
+                        : ""
+                    )
+                  )
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Payment Status"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                  />
+                )}
+              />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Payment Mode</label>
+              <Autocomplete
+                value={paymentMode}
+                onChange={(event, newValue) => setPaymetMode(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.payment_mode))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Payment Mode"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>From Date</label>
+              <input
+                value={fromDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>To Date</label>
+              <input
+                value={toDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => {
+                  setToDate(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Pay Amount Filter</label>
+              <select
+                value={paymentAmountFilter}
+                className="form-control"
+                onChange={(e) => setPaymentAmountFilter(e.target.value)}
+              >
+                <option value="">Select Amount</option>
+                <option value="greaterThan">Greater Than</option>
+                <option value="lessThan">Less Than</option>
+                <option value="equalTo">Equal To</option>
+              </select>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Payment Amount</label>
+              <input
+                value={paymentAmountField}
+                type="number"
+                placeholder="Request Amount"
+                className="form-control"
+                onChange={(e) => {
+                  setPaymentAmountField(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Campaign Amount Filter</label>
+              <select
+                value={campaignAmountFilter}
+                className="form-control"
+                onChange={(e) => setCampaignAmountFilter(e.target.value)}
+              >
+                <option value="">Select Amount</option>
+                <option value="greaterThan">Greater Than</option>
+                <option value="lessThan">Less Than</option>
+                <option value="equalTo">Equal To</option>
+              </select>
+            </div>
+          </div>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Campaign Amount</label>
+              <input
+                value={campaignAmountField}
+                type="number"
+                placeholder="Campaign Amount"
+                className="form-control"
+                onChange={(e) => {
+                  setcampaignAmountField(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+          <div className="col-md-1 mt-4 me-2">
+            <Button variant="contained" onClick={handleAllFilters}>
+              <i className="fas fa-search"></i> Search
+            </Button>
+          </div>
+          <div className="col-md-1 mt-4">
+            <Button variant="contained" onClick={handleClearAllFilter}>
+              Clear
+            </Button>
+          </div>
+        </div>
+      </div>
+      <div className="card">
+        <div className="data_tbl table-responsive">
+          {!loading ? (
+            <DataGrid
+              rows={filterData}
+              columns={columns}
+              // pageSize={5}
+              // rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => filterData.indexOf(row)}
+            />
+          ) : (
+            <Skeleton
+              sx={{ bgcolor: "grey.900", borderRadius: "0.25rem" }}
+              variant="rectangular"
+              width="100%"
+              height={200}
+            />
+          )}
         </div>
         {viewImgDialog && (
           <ImageView

@@ -5,6 +5,7 @@ import {
   Autocomplete,
   Button,
   Dialog,
+  DialogContent,
   DialogTitle,
   TextField,
 } from "@mui/material";
@@ -320,7 +321,7 @@ export default function Discard() {
     return diffDays;
   }
 
-  const totalRequestAmount = data.reduce(
+  const totalRequestAmount = filterData.reduce(
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
@@ -836,22 +837,26 @@ export default function Discard() {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameVendorData}
-          columns={sameVenderColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameVendorData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameVendorData}
+            columns={sameVenderColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameVendorData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
 
       {/* Unique Vendor Dialog Box */}
@@ -879,22 +884,26 @@ export default function Discard() {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueVendorData}
-          columns={uniqueVendorColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => uniqueVendorData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueVendorData}
+            columns={uniqueVendorColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => uniqueVendorData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
       <div className="row">
         <div className="col-md-3">

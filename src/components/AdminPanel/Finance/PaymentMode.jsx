@@ -158,7 +158,6 @@ const PaymentMode = () => {
       },
     },
   ];
-  console.log(datas, "DATAS", filterData, "FILTERDATA");
   return (
     <>
       <FormContainer
@@ -171,153 +170,156 @@ const PaymentMode = () => {
           false
         }
       />
-      <div className="row">
-        <div className="col-md-3">
-          <div className="form-group">
-            <label> Title</label>
-            <Autocomplete
-              value={title}
-              onChange={(event, newValue) => setTitle(newValue)}
-              options={Array.from(new Set(datas.map((option) => option.title)))}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Title"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
+      <div className="card body-padding">
+        <div className="row">
+          <div className="col-md-3">
+            <div className="form-group">
+              <label> Title</label>
+              <Autocomplete
+                value={title}
+                onChange={(event, newValue) => setTitle(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.title))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Title"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label> Bank Name</label>
-            <Autocomplete
-              value={bankName}
-              onChange={(event, newValue) => setBankName(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.detail))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Bank Name"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label> Bank Name</label>
+              <Autocomplete
+                value={bankName}
+                onChange={(event, newValue) => setBankName(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.detail))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Bank Name"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label> Payment Type</label>
-            <Autocomplete
-              value={paymentType}
-              onChange={(event, newValue) => setPaymentType(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.payment_type))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Payment Type"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label> Payment Type</label>
+              <Autocomplete
+                value={paymentType}
+                onChange={(event, newValue) => setPaymentType(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.payment_type))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Payment Type"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label> GST</label>
-            <Autocomplete
-              value={gst}
-              onChange={(event, newValue) => setGST(newValue)}
-              options={Array.from(
-                new Set(
-                  datas.map((option) =>
-                    option.gst_bank === 1 ? "GST" : "Non GST"
+          <div className="col-md-3">
+            <div className="form-group">
+              <label> GST</label>
+              <Autocomplete
+                value={gst}
+                onChange={(event, newValue) => setGST(newValue)}
+                options={Array.from(
+                  new Set(
+                    datas.map((option) =>
+                      option.gst_bank === 1 ? "GST" : "Non GST"
+                    )
                   )
-                )
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Payment Type"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Payment Type"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-1 mt-2 mb-3 me-2">
-          <Button variant="contained" onClick={handleAllFilters}>
-            <i className="fas fa-search"></i> Search
-          </Button>
-        </div>
-        <div className="col-md-1 mt-2 mb-3">
-          <Button variant="contained" onClick={handleClearAllFilter}>
-            Clear
-          </Button>
+          <div className="col-md-1 mt-2 mb-3 me-2">
+            <Button variant="contained" onClick={handleAllFilters}>
+              <i className="fas fa-search"></i> Search
+            </Button>
+          </div>
+          <div className="col-md-1 mt-2 mb-3">
+            <Button variant="contained" onClick={handleClearAllFilter}>
+              Clear
+            </Button>
+          </div>
         </div>
       </div>
-
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataGrid

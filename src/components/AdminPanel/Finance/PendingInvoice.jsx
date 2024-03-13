@@ -13,6 +13,7 @@ import {
   Autocomplete,
   Dialog,
   DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -289,7 +290,7 @@ const PendingInvoice = () => {
     setSameSalesExecutiveDialog(false);
   };
   // Total base amount:-
-  const baseAmountTotal = datas.reduce(
+  const baseAmountTotal = filterData.reduce(
     (total, item) => total + parseFloat(item.base_amount),
     0
   );
@@ -770,9 +771,7 @@ const PendingInvoice = () => {
       headerName: "S.No",
       field: "s_no",
       renderCell: (params, index) => (
-        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
-
-        <div>{index + 1}</div>
+        <div>{[...filterData].indexOf(params.row) + 1}</div>
       ),
     },
     {
@@ -813,6 +812,7 @@ const PendingInvoice = () => {
 
     {
       field: "Input",
+      headerName: "Input",
       width: 600,
       renderCell: (params, index) => (
         <div className="mt-2 d-flex">
@@ -868,6 +868,7 @@ const PendingInvoice = () => {
     },
     {
       field: "Upload Invoice",
+      headerName: "Upload Invoice",
       width: 380,
       renderCell: (params, index) => (
         <div key={params.row.sale_booking_id} className="d-flex">
@@ -978,22 +979,26 @@ const PendingInvoice = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameSalesExecutiveData}
-          columns={sameSalesExecutivecolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameSalesExecutiveData}
+            columns={sameSalesExecutivecolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
       {/* Unique Sales Executive Dialog Box */}
       <Dialog
@@ -1020,22 +1025,26 @@ const PendingInvoice = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueSalesExecutiveData}
-          columns={uniqueSalesExecutivecolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueSalesExecutiveData}
+            columns={uniqueSalesExecutivecolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
       {/* Same Customer Dialog */}
       <Dialog
@@ -1062,22 +1071,26 @@ const PendingInvoice = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameCustomerData}
-          columns={sameCustomercolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameCustomerData}
+            columns={sameCustomercolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
 
       {/* Unique Customer Dialog Box */}
@@ -1105,153 +1118,159 @@ const PendingInvoice = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueCustomerData}
-          columns={uniqueCustomercolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => uniqueCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueCustomerData}
+            columns={uniqueCustomercolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => uniqueCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
-      <div className="row">
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Sales Person Name</label>
-            <Autocomplete
-              value={salesPersonName}
-              onChange={(event, newValue) => setSalesPersonName(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.sales_person_username))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Sales Executive Name"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
+      <div className="card body-padding">
+        <div className="row">
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Sales Person Name</label>
+              <Autocomplete
+                value={salesPersonName}
+                onChange={(event, newValue) => setSalesPersonName(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.sales_person_username))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Sales Executive Name"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Customer Name</label>
-            <Autocomplete
-              value={customerName}
-              onChange={(event, newValue) => setCustomerName(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.cust_name))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="customer Name"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Customer Name</label>
+              <Autocomplete
+                value={customerName}
+                onChange={(event, newValue) => setCustomerName(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.cust_name))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="customer Name"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>From Date</label>
-            <input
-              value={fromDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => setFromDate(e.target.value)}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>From Date</label>
+              <input
+                value={fromDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>To Date</label>
-            <input
-              value={toDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => {
-                setToDate(e.target.value);
-              }}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>To Date</label>
+              <input
+                value={toDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => {
+                  setToDate(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Requested Amount Filter</label>
-            <select
-              value={baseAmountFilter}
-              className="form-control"
-              onChange={(e) => setBaseAmountFilter(e.target.value)}
-            >
-              <option value="">Select Amount</option>
-              <option value="greaterThan">Greater Than</option>
-              <option value="lessThan">Less Than</option>
-              <option value="equalTo">Equal To</option>
-            </select>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Requested Amount Filter</label>
+              <select
+                value={baseAmountFilter}
+                className="form-control"
+                onChange={(e) => setBaseAmountFilter(e.target.value)}
+              >
+                <option value="">Select Amount</option>
+                <option value="greaterThan">Greater Than</option>
+                <option value="lessThan">Less Than</option>
+                <option value="equalTo">Equal To</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Requested Amount</label>
-            <input
-              value={baseAmountField}
-              type="number"
-              placeholder="Request Amount"
-              className="form-control"
-              onChange={(e) => {
-                setBaseAmountField(e.target.value);
-              }}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Requested Amount</label>
+              <input
+                value={baseAmountField}
+                type="number"
+                placeholder="Request Amount"
+                className="form-control"
+                onChange={(e) => {
+                  setBaseAmountField(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-1 mt-4 me-2">
-          <Button variant="contained" onClick={handleAllFilters}>
-            <i className="fas fa-search"></i> Search
-          </Button>
-        </div>
-        <div className="col-md-1 mt-4">
-          <Button variant="contained" onClick={handleClearAllFilter}>
-            Clear
-          </Button>
+          <div className="col-md-1 mt-4 me-2">
+            <Button variant="contained" onClick={handleAllFilters}>
+              <i className="fas fa-search"></i> Search
+            </Button>
+          </div>
+          <div className="col-md-1 mt-4">
+            <Button variant="contained" onClick={handleClearAllFilter}>
+              Clear
+            </Button>
+          </div>
         </div>
       </div>
       <div className="card">

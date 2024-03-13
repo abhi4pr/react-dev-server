@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import axios from "axios";
 import { baseUrl } from "../../utils/config";
 import jwtDecode from "jwt-decode";
-// import ScrollableChat from "./ScrollableChat";
+import ScrollableChat from "./ScrollableChat";
 
 const ENDPOINT = "http://192.168.1.45:8098";
 var socket, selectedChatCompare;
@@ -39,20 +39,29 @@ const ConversationChat = (props) => {
       console.log("Message is empty");
       return;
     }
+
     // sending message post data----->
     const chatPostApi = await axios.post(`${baseUrl}message`, {
       chatId: chatIdData,
       content: message,
       currentUserId: loginObjId,
     });
+    console.log(chatPostApi, "chatPostApi");
 
     if (chatPostApi.status === 200) {
-      socket.emit("new-message", chatPostApi.data);
+      socket.emit("new-message", chatPostApi.data.data);
     }
-    setDataChat((prevDataChat) => [...prevDataChat, chatPostApi.data]);
+    setDataChat((prevDataChat) => [...prevDataChat, chatPostApi.data.data]);
     setMessage("");
     getChatData();
   };
+
+  // const scrollToBottom = () => {
+  //   if (messagesEndRef.current) {
+  //     console.log("Scrolling to bottom");
+  //     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  //   }
+  // };
 
   // While Pressing Enter Key :-
 
@@ -106,13 +115,13 @@ const ConversationChat = (props) => {
       // }
     });
   }, []);
+
   const getChatData = async () => {
     try {
-      const response = await axios.get(
-        `http://192.168.1.45:3005/api/message/${chatIdData}`
-      );
+      const response = await axios.get(`${baseUrl}message/${chatIdData}`);
+      console.log(response, "response>>> ");
       if (response.status === 200) {
-        setDataChat(response.data);
+        setDataChat(response.data.data);
       }
       socket.emit("join chat", chatIdData);
     } catch (error) {
@@ -149,17 +158,18 @@ const ConversationChat = (props) => {
         height: "390px",
       }}
     >
-      <div>{selectedItem?.user_name}</div>
+      {/* <div>{selectedItem?.user_name}</div>
       <div style={{ overflowY: "auto" }}>
         {dataChat?.map((msg) => (
           <div key={msg._id}>
             <strong>{msg?.content}</strong>
           </div>
         ))}
-      </div>
-      {/* <div>
-        <ScrollableChat />
       </div> */}
+      <div className="message">
+        <ScrollableChat dataChat={dataChat} selectedItem={selectedItem} />
+        {/* <div ref={messagesEndRef} /> */}
+      </div>
       <TextField
         fullWidth
         placeholder="Type Message here ....."

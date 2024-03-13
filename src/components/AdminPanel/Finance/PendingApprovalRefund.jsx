@@ -5,7 +5,7 @@ import FormContainer from "../FormContainer";
 import { useGlobalContext } from "../../../Context/Context";
 import DataTable from "react-data-table-component";
 import { baseUrl } from "../../../utils/config";
-import { Button } from "@mui/material";
+import { Button, DialogContent } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Autocomplete, TextField, Dialog, DialogTitle } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
@@ -54,10 +54,8 @@ const PendingApprovalRefund = () => {
   };
 
   function getData() {
-    axios
-      .post(baseUrl + "add_php_payment_refund_data_in_node")
-      .then((res) => {
-        axios
+    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then((res) => {
+      axios
         .get(baseUrl + "get_all_php_payment_refund_data_pending")
         .then((res) => {
           setData(res.data.data);
@@ -74,8 +72,7 @@ const PendingApprovalRefund = () => {
           );
           setUniqueCustomerData(uniqueCustomerData);
         });
-      });
-  
+    });
   }
 
   useEffect(() => {
@@ -105,7 +102,7 @@ const PendingApprovalRefund = () => {
       )
       .then(() => {
         setTimeout(() => {
-          getData()
+          getData();
         }, 1000);
       });
 
@@ -240,8 +237,10 @@ const PendingApprovalRefund = () => {
     });
     return totalAmount;
   };
-  const refundAmountTotal = calculateRequestedAmountTotal();
-  console.log("Total Requested Amount Total:", refundAmountTotal);
+  const refundAmountTotal = filterData.reduce(
+    (total, item) => total + parseFloat(item.refund_amount),
+    0
+  );
 
   const sameCustomerColumn = [
     {
@@ -250,7 +249,7 @@ const PendingApprovalRefund = () => {
       renderCell: (params, index) => (
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
 
-        <div>{[...filterData].indexOf(params.row) + 1}</div>
+        <div>{[...sameCustomerData].indexOf(params.row) + 1}</div>
       ),
     },
     {
@@ -339,7 +338,7 @@ const PendingApprovalRefund = () => {
       renderCell: (params, index) => (
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
 
-        <div>{[...filterData].indexOf(params.row) + 1}</div>
+        <div>{[...uniqueCustomerData].indexOf(params.row) + 1}</div>
       ),
     },
     {
@@ -547,22 +546,26 @@ const PendingApprovalRefund = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameCustomerData}
-          columns={sameCustomerColumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameCustomerData}
+            columns={sameCustomerColumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
       {/* Unique Customer Dialog Box */}
       <Dialog
@@ -589,58 +592,63 @@ const PendingApprovalRefund = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueCustomerData}
-          columns={uniqueCustomersColumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => row._id}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueCustomerData}
+            columns={uniqueCustomersColumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => row._id}
+          />
+        </DialogContent>
       </Dialog>
-      <div className="row">
-        <div className="col-md-4">
-          <div className="form-group">
-            <label>Customer Name</label>
-            <Autocomplete
-              value={customerName}
-              onChange={(event, newValue) => setCustomerName(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.cust_name))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Vendor Name"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
+      <div className="card body-padding">
+        <div className="row">
+          <div className="col-md-4">
+            <div className="form-group">
+              <label>Customer Name</label>
+              <Autocomplete
+                value={customerName}
+                onChange={(event, newValue) => setCustomerName(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.cust_name))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Vendor Name"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        {/* <div className="col-md-3">
+          {/* <div className="col-md-3">
           <div className="form-group">
             <label>Sales Executive Name</label>
             <Autocomplete
@@ -658,70 +666,71 @@ const PendingApprovalRefund = () => {
             />
           </div>
         </div> */}
-        <div className="col-md-4">
-          <div className="form-group">
-            <label>From Date</label>
-            <input
-              value={fromDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => {
-                setFromDate(e.target.value);
-              }}
-            />
+          <div className="col-md-4">
+            <div className="form-group">
+              <label>From Date</label>
+              <input
+                value={fromDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => {
+                  setFromDate(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-4">
-          <div className="form-group">
-            <label>To Date</label>
-            <input
-              value={toDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => {
-                setToDate(e.target.value);
-              }}
-            />
+          <div className="col-md-4">
+            <div className="form-group">
+              <label>To Date</label>
+              <input
+                value={toDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => {
+                  setToDate(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Request Amount Filter</label>
-            <select
-              value={refundAmountFilter}
-              className="form-control"
-              onChange={(e) => setRefundAmountFilter(e.target.value)}
-            >
-              <option value="">Select Amount</option>
-              <option value="greaterThan">Greater Than</option>
-              <option value="lessThan">Less Than</option>
-              <option value="equalTo">Equal To</option>
-            </select>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Request Amount Filter</label>
+              <select
+                value={refundAmountFilter}
+                className="form-control"
+                onChange={(e) => setRefundAmountFilter(e.target.value)}
+              >
+                <option value="">Select Amount</option>
+                <option value="greaterThan">Greater Than</option>
+                <option value="lessThan">Less Than</option>
+                <option value="equalTo">Equal To</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Requested Amount</label>
-            <input
-              value={refundAmountField}
-              type="number"
-              placeholder="Refund Amount"
-              className="form-control"
-              onChange={(e) => {
-                setRefundAmountField(e.target.value);
-              }}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Requested Amount</label>
+              <input
+                value={refundAmountField}
+                type="number"
+                placeholder="Refund Amount"
+                className="form-control"
+                onChange={(e) => {
+                  setRefundAmountField(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-1 mt-4 me-2">
-          <Button variant="contained" onClick={handleAllFilter}>
-            <i className="fas fa-search"></i> Search
-          </Button>
-        </div>
-        <div className="col-md-1 mt-4">
-          <Button variant="contained" onClick={handleClearAllFilter}>
-            Clear
-          </Button>
+          <div className="col-md-1 mt-4 me-2">
+            <Button variant="contained" onClick={handleAllFilter}>
+              <i className="fas fa-search"></i> Search
+            </Button>
+          </div>
+          <div className="col-md-1 mt-4">
+            <Button variant="contained" onClick={handleClearAllFilter}>
+              Clear
+            </Button>
+          </div>
         </div>
       </div>
       <div className="card">

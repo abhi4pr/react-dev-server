@@ -11,6 +11,7 @@ import {
   TextField,
   Dialog,
   DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { baseUrl } from "../../../utils/config";
@@ -210,15 +211,19 @@ const AllTransactions = () => {
 
   const calculateRequestedAmountTotal = () => {
     let totalAmount = 0;
-    uniqueCustomerData.forEach((customer) => {
-      totalAmount += parseFloat(customer.payment_amount);
+    filterData.forEach((customer) => {
+      totalAmount += parseFloat(customer.payment_amount_show);
     });
     return totalAmount;
   };
 
   // Call the function to get the total sum of requested amount
   const requestedAmountTotal = calculateRequestedAmountTotal();
-  console.log("Total Requested Amount Total:", requestedAmountTotal);
+  console.log(
+    "Total Requested Amount Total:",
+    requestedAmountTotal,
+    filterData
+  );
 
   // Counts According to status:-
   const pendingCount = filterData.filter(
@@ -238,7 +243,7 @@ const AllTransactions = () => {
       renderCell: (params, index) => (
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
 
-        <div>{[...filterData].indexOf(params.row) + 1}</div>
+        <div>{[...sameCustomerData].indexOf(params.row) + 1}</div>
       ),
     },
     {
@@ -403,7 +408,7 @@ const AllTransactions = () => {
       renderCell: (params, index) => (
         // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
 
-        <div>{[...filterData].indexOf(params.row) + 1}</div>
+        <div>{[...uniqueCustomerData].indexOf(params.row) + 1}</div>
       ),
     },
     {
@@ -584,8 +589,8 @@ const AllTransactions = () => {
       renderCell: (params) => <div>{params.row.campaign_amount} </div>,
     },
     {
-      headerName: "Campaign Amount Without Gst",
       field: "campaign_amount_without_gst",
+      headerName: "Campaign Amount Without Gst",
       renderCell: (params) => params.row.campaign_amount_without_gst,
     },
     {
@@ -606,26 +611,13 @@ const AllTransactions = () => {
       renderCell: (params) => params.row.payment_mode,
     },
     {
-      headerName: "Payment View",
-      // selector: (row) => row.payment_approval_status,
-      // cell: (row) => (
-      //   <div style={{ whiteSpace: "normal" }}>
-      //   {row.payment_approval_status === 0
-      //     ? "Pending"
-      //     : row.payment_approval_status === 1
-      //     ? "Approved"
-      //     : row.payment_approval_status === 2
-      //     ? "Rejected"
-      //     : ""}
-      // </div>)
-    },
-    {
       headerName: "Bank Name",
-      field: "payment_mode",
+      field: "title",
       renderCell: (params) => <div>{params.row.title} </div>,
       width: 150,
     },
     {
+      field: "Screenshot",
       headerName: "Screenshot",
       renderCell: (params) => (
         <div>
@@ -709,17 +701,18 @@ const AllTransactions = () => {
       field: "payment_approval_status",
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
-          {params.row.payment_approval_status === 0
+          {params.row.payment_approval_status === "0"
             ? "Pending"
-            : params.row.payment_approval_status === 1
+            : params.row.payment_approval_status === "1"
             ? "Approved"
-            : params.row.payment_approval_status === 2
+            : params.row.payment_approval_status === "2"
             ? "Rejected"
             : ""}
         </div>
       ),
     },
     {
+      field: "Action",
       headerName: "Action",
       renderCell: (params) => (
         <>
@@ -792,22 +785,26 @@ const AllTransactions = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameCustomerData}
-          columns={sameCustomerColumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameCustomerData}
+            columns={sameCustomerColumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
 
       {/* Unique Customer Dialog Box */}
@@ -835,22 +832,26 @@ const AllTransactions = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueCustomerData}
-          columns={uniqueCustomerColumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => row._id}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueCustomerData}
+            columns={uniqueCustomerColumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => row._id}
+          />
+        </DialogContent>
       </Dialog>
       <div className="row ms-2 me-1">
         <div className="card col-4  ">
@@ -862,7 +863,7 @@ const AllTransactions = () => {
                 ? datas
                     .filter((item) => item.payment_approval_status == 0)
                     .reduce((total, currentItem) => {
-                      return total + currentItem.payment_amount * 1;
+                      return total + currentItem.payment_amount_show * 1;
                     }, 0)
                 : ""}
             </p>
@@ -884,7 +885,7 @@ const AllTransactions = () => {
                 ? datas
                     .filter((item) => item.payment_approval_status == 1)
                     .reduce((total, currentItem) => {
-                      return total + currentItem.payment_amount * 1;
+                      return total + currentItem.payment_amount_show * 1;
                     }, 0)
                 : ""}
             </p>
@@ -906,7 +907,7 @@ const AllTransactions = () => {
                 ? datas
                     .filter((item) => item.payment_approval_status == 2)
                     .reduce((total, currentItem) => {
-                      return total + currentItem.payment_amount * 1;
+                      return total + currentItem.payment_amount_show * 1;
                     }, 0)
                 : ""}
             </p>

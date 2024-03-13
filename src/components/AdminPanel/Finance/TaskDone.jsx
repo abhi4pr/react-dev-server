@@ -9,6 +9,7 @@ import {
   Button,
   // ButtonGroupButtonContext,
   Dialog,
+  DialogContent,
   DialogTitle,
   TextField,
 } from "@mui/material";
@@ -124,11 +125,16 @@ export default function TaskDone() {
         : "";
     });
 
-    console.log(lengthData, "lengthData",uvData,"uvData"); // Log the filtered data to check its contents
+    console.log(lengthData, "lengthData", uvData, "uvData"); // Log the filtered data to check its contents
 
     setUniqueVendorCount(lengthData.length);
   };
-console.log(uniqueVendorData,"uniqueVendorCount",uniqueVendorTDSdoneData,"unique vendor tds data>>");
+  console.log(
+    uniqueVendorData,
+    "uniqueVendorCount",
+    uniqueVendorTDSdoneData,
+    "unique vendor tds data>>"
+  );
   useEffect(() => {
     uniqueVendorCountFun();
   }, [activeAccordionIndex, filterData]);
@@ -374,7 +380,6 @@ console.log(uniqueVendorData,"uniqueVendorCount",uniqueVendorTDSdoneData,"unique
     return item.tds_status === "Done";
   });
 
-
   useEffect(() => {
     setTDStableData(tdsDoneData);
   }, []);
@@ -447,11 +452,10 @@ console.log(uniqueVendorData,"uniqueVendorCount",uniqueVendorTDSdoneData,"unique
         } else {
           rowIndex = -1; // default case when activeAccordionIndex is neither 0 nor 1 nor 2
         }
-    
+
         return <div>{rowIndex !== -1 ? rowIndex + 1 : ""}</div>;
-      }
-    }
-,    
+      },
+    },
     {
       field: "vendor_name",
       headerName: "Vendor Name",
@@ -635,7 +639,14 @@ console.log(uniqueVendorData,"uniqueVendorCount",uniqueVendorTDSdoneData,"unique
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex =activeAccordionIndex === 0 ? zohoDoneData.indexOf(params.row): activeAccordionIndex === 1 ?gstDoneData.indexOf(params.row): activeAccordionIndex === 2 ? tdsDoneData.indexOf(params.row) :"";
+        const rowIndex =
+          activeAccordionIndex === 0
+            ? zohoDoneData.indexOf(params.row)
+            : activeAccordionIndex === 1
+            ? gstDoneData.indexOf(params.row)
+            : activeAccordionIndex === 2
+            ? tdsDoneData.indexOf(params.row)
+            : "";
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -666,8 +677,6 @@ console.log(uniqueVendorData,"uniqueVendorCount",uniqueVendorTDSdoneData,"unique
                 setOpenImageDialog(true);
                 setViewImgSrc(imgUrl);
               }}
-
-            
               style={{
                 position: "absolute",
                 width: "2.9%",
@@ -1038,12 +1047,11 @@ console.log(uniqueVendorData,"uniqueVendorCount",uniqueVendorTDSdoneData,"unique
     });
 
     console.log(uvData, "uvData"); // Log the uvData array to check its contents
-   return setUniqueVendorTDSdoneData(uvData);
-
+    return setUniqueVendorTDSdoneData(uvData);
   }, [activeAccordionIndex, TDStableData]);
 
   return (
-    <div>
+    <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
       <FormContainer
         mainTitle="Done"
         link="/admin/finance-pruchasemanagement-paymentdone"
@@ -1073,35 +1081,39 @@ console.log(uniqueVendorData,"uniqueVendorCount",uniqueVendorTDSdoneData,"unique
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameVendorData}
-          columns={sameVenderColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
-          getRowId={(row) => sameVendorData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameVendorData}
+            columns={sameVenderColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            disableColumnMenu
+            disableColumnSelector
+            disableColumnFilter
+            disableColumnReorder
+            disableColumnResize
+            disableMultipleColumnsSorting
+            components={{
+              Toolbar: GridToolbar,
+            }}
+            fv
+            componentsProps={{
+              toolbar: {
+                value: search,
+                onChange: (event) => setSearch(event.target.value),
+                placeholder: "Search",
+                clearSearch: true,
+                clearSearchAriaLabel: "clear",
+              },
+            }}
+            getRowId={(row) => sameVendorData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
 
       {/* Unique Vendor Dialog Box */}
@@ -1129,144 +1141,150 @@ console.log(uniqueVendorData,"uniqueVendorCount",uniqueVendorTDSdoneData,"unique
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={
-            activeAccordionIndex ==2 ?
-            uniqueVendorTDSdoneData
-             :
-             uniqueVendorData.filter((e) =>
-                activeAccordionIndex == 0
-                  ? e.zoho_status == "Done"
-                  : activeAccordionIndex == 1
-                  ? e.gst_status == "Done"
-                  : ""
-  )}
-          columns={uniqueVendorColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => row.request_id}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={
+              activeAccordionIndex == 2
+                ? uniqueVendorTDSdoneData
+                : uniqueVendorData.filter((e) =>
+                    activeAccordionIndex == 0
+                      ? e.zoho_status == "Done"
+                      : activeAccordionIndex == 1
+                      ? e.gst_status == "Done"
+                      : ""
+                  )
+            }
+            columns={uniqueVendorColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => row.request_id}
+          />
+        </DialogContent>
       </Dialog>
-      <div className="row">
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Vendor Name</label>
-            <Autocomplete
-              value={vendorName}
-              onChange={(event, newValue) => setVendorName(newValue)}
-              options={Array.from(
-                new Set(data.map((option) => option.vendor_name))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Vendor Name"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                  style={{
-                    borderRadius: "0.25rem",
-                    transition:
-                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                    "&:focus": {
-                      borderColor: "#80bdff",
-                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                    },
-                  }}
-                />
-              )}
-            />
+      <div className="card body-padding">
+        <div className="row">
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Vendor Name</label>
+              <Autocomplete
+                value={vendorName}
+                onChange={(event, newValue) => setVendorName(newValue)}
+                options={Array.from(
+                  new Set(data.map((option) => option.vendor_name))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Vendor Name"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                    style={{
+                      borderRadius: "0.25rem",
+                      transition:
+                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                      "&:focus": {
+                        borderColor: "#80bdff",
+                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>From Date</label>
-            <input
-              value={fromDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => setFromDate(e.target.value)}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>From Date</label>
+              <input
+                value={fromDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>To Date</label>
-            <input
-              value={toDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => {
-                setToDate(e.target.value);
-              }}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>To Date</label>
+              <input
+                value={toDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => {
+                  setToDate(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Priority</label>
-            <select
-              value={priorityFilter}
-              className="form-control"
-              onChange={(e) => setPriorityFilter(e.target.value)}
-            >
-              <option value="">Select Priority</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-              <option value="High">High</option>
-            </select>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Priority</label>
+              <select
+                value={priorityFilter}
+                className="form-control"
+                onChange={(e) => setPriorityFilter(e.target.value)}
+              >
+                <option value="">Select Priority</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+                <option value="High">High</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Request Amount Filter</label>
-            <select
-              value={requestAmountFilter}
-              className="form-control"
-              onChange={(e) => setRequestAmountFilter(e.target.value)}
-            >
-              <option value="">Select Amount</option>
-              <option value="greaterThan">Greater Than</option>
-              <option value="lessThan">Less Than</option>
-              <option value="equalTo">Equal To</option>
-            </select>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Request Amount Filter</label>
+              <select
+                value={requestAmountFilter}
+                className="form-control"
+                onChange={(e) => setRequestAmountFilter(e.target.value)}
+              >
+                <option value="">Select Amount</option>
+                <option value="greaterThan">Greater Than</option>
+                <option value="lessThan">Less Than</option>
+                <option value="equalTo">Equal To</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Requested Amount</label>
-            <input
-              value={requestedAmountField}
-              type="number"
-              placeholder="Request Amount"
-              className="form-control"
-              onChange={(e) => {
-                setRequestedAmountField(e.target.value);
-              }}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Requested Amount</label>
+              <input
+                value={requestedAmountField}
+                type="number"
+                placeholder="Request Amount"
+                className="form-control"
+                onChange={(e) => {
+                  setRequestedAmountField(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-1 mt-4 me-2">
-          <Button variant="contained" onClick={handleDateFilter}>
-            <i className="fas fa-search"></i> Search
-          </Button>
-        </div>
-        <div className="col-md-1 mt-4">
-          <Button variant="contained" onClick={handleClearDateFilter}>
-            Clear
-          </Button>
+          <div className="col-md-1 mt-4 me-2">
+            <Button variant="contained" onClick={handleDateFilter}>
+              <i className="fas fa-search"></i> Search
+            </Button>
+          </div>
+          <div className="col-md-1 mt-4">
+            <Button variant="contained" onClick={handleClearDateFilter}>
+              Clear
+            </Button>
+          </div>
         </div>
       </div>
 
