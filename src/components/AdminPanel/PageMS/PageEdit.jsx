@@ -63,24 +63,38 @@ const PageEdit = () => {
 
   const getData = () => {
     axios.get(baseUrl + `getPageDetail/${pageMast_id}`).then((res) => {
-      const data = res.data.tmsVendorkMastList;
-        setPageName(pageName);
-        setLink(link);
-        setPlatformId(platformId);
-        setCategoryId(categoryId);
-        setTag(tag);
-        setPageLevel(pageLevel);
-        setPageStatus(pageStatus);
-        setCloseBy(closeBy);
-        setPageType(pageType);
-        setContent(content);
-        setOwnerType(ownerType);
-        setVendorId(vendorId);
-        setFollowCount(followCount);
-        setProfileId(profileId);
-        setPlatformActive(platformActive);
-        setRate(rate);
-        description(description);
+      const data= res.data.data;
+      // platform_price_id: platformPriceId,
+      // pageMast_id: pageMastId,
+      // vendorMast_id: vendorId,
+      // price_type_id: priceTypeId,
+      // price_cal_type: pricecalType,
+      // variable_type: variableType,
+      // price_fixed: priceFixed,
+      // price_variable: priceVariable,
+      // description: description,
+  
+      setPlatformId(data[0].platform_id);
+      setPageName(data[0].page_user_name);
+      console.log(data[0].page_user_name, "page_user_name")
+      setLink(data[0].link);
+      setCategoryId(data[0].page_catg_id);
+      setTag(data.tag_category);
+      setPageLevel(data[0].page_level);
+      setPageStatus(data[0].page_status);
+      setCloseBy(data[0].page_closed_by);
+      setPageType(data[0].page_name_type);
+      setContent(data[0].content_creation);
+      setOwnerType(data[0].ownership_type);
+      setVendorId(data[0].vendorMast_id);
+      setFollowCount(data[0].followers_count);
+      setProfileId(data[0].profile_type_id);
+      setPlatformActive(data[0].platform_active_on);
+      setRate(data[0].engagment_rate);
+      setDescription(data[0].description);
+
+
+
     });
 
     axios.get(baseUrl + "getAllPlatform").then((res) => {
@@ -123,7 +137,7 @@ const PageEdit = () => {
         page_name_type: pageType,
         content_creation: content,
         ownership_type: ownerType,
-        owner_vendor_id: vendorId,
+        vendorMast_id: vendorId,
         followers_count: followCount,
         profile_type_id: profileId,
         platform_active_on: platformActive,
@@ -229,8 +243,8 @@ const PageEdit = () => {
           Tags
         </label>
         <div className="tags-input-container">
-            { tag.map((tag, index) => (
-                <div className="tag-item" key={index}>
+            { tag?.map((tag, index) => (
+              <div className="tag-item" key={index}>
                     <span className="text">{tag}</span>
                     <span className="close" onClick={() => removeTag(index)}>&times;</span>
                 </div>

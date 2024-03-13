@@ -58,7 +58,7 @@ const PageOverview = () => {
       name: "Action",
       cell: (row) => (
         <>
-          <Link to={`/admin/pms-page-edit/${row.pageMast_id}`}>
+          <Link to={`/admin/pms-page-edit/${row._id}`}>
             <button
               title="Edit"
               className="btn btn-outline-primary btn-sm user-button"
