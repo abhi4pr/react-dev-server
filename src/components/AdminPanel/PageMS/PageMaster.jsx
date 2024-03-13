@@ -7,6 +7,7 @@ import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import { Navigate } from "react-router";
 import Select from "react-select";
+import './Tagcss.css';
 
 const PageMaster = () => {
   const { toastAlert } = useGlobalContext();
@@ -72,7 +73,7 @@ const PageMaster = () => {
     });
 
     axios.get(baseUrl + "vendorAllData").then((res) => {
-      setVendorData(res.data.data);
+      setVendorData(res.data.tmsVendorkMastList);
     });
 
     axios.get(baseUrl + "getProfileList").then((res) => {
@@ -116,6 +117,18 @@ const PageMaster = () => {
 
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-page-overview" />;
+  }
+
+  function handleKeyDown(e){
+    if (e.key === ',' && e.target.value.trim()) {
+      e.preventDefault();
+      setTag([...tag, e.target.value.trim()]);
+      e.target.value = '';
+    }
+  }
+
+  function removeTag(index){
+      setTag(tag.filter((el, i) => i !== index))
   }
 
   return (
@@ -180,13 +193,25 @@ const PageMaster = () => {
           ></Select>
         </div>
 
-        <FieldContainer
+        {/* <FieldContainer
           label="Tag"
           value={tag}
           required={false}
           placeholder="Comma separated values"
           onChange={(e) => setTag(e.target.value.split(','))}
-        />
+        /> */}
+        <label className="form-label">
+          Tags
+        </label>
+        <div className="tags-input-container">
+            { tag.map((tag, index) => (
+                <div className="tag-item" key={index}>
+                    <span className="text">{tag}</span>
+                    <span className="close" onClick={() => removeTag(index)}>&times;</span>
+                </div>
+            )) }
+            <input onKeyDown={handleKeyDown} type="text" className="tags-input" placeholder="comma separated values" />
+        </div>
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -276,7 +301,7 @@ const PageMaster = () => {
           <label className="form-label">
             Vendor <sup style={{ color: "red" }}>*</sup>
           </label>
-          {/* <Select
+          <Select
             options={vendorData.map((option) => ({
               value: option.vendorMast_id,
               label: option.vendorMast_name,
@@ -290,7 +315,7 @@ const PageMaster = () => {
             onChange={(e) => {
               setVendorId(e.value);
             }}
-          ></Select> */}
+          ></Select>
         </div>
 
         <FieldContainer

@@ -7,6 +7,7 @@ import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import { Navigate, useParams } from "react-router";
 import Select from "react-select";
+import './Tagcss.css';
 
 const PageEdit = () => {
   const { toastAlert } = useGlobalContext();
@@ -38,7 +39,7 @@ const PageEdit = () => {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
 
-  const { _id } = useParams();
+  const { pageMast_id } = useParams();
 
   const PageLevels =  [
     { value: "English", label: "English" },
@@ -61,7 +62,7 @@ const PageEdit = () => {
   ];
 
   const getData = () => {
-    axios.get(baseUrl + `getPageDetail/${_id}`).then((res) => {
+    axios.get(baseUrl + `getPageDetail/${pageMast_id}`).then((res) => {
       const data = res.data.tmsVendorkMastList;
         setPageName(pageName);
         setLink(link);
@@ -95,7 +96,7 @@ const PageEdit = () => {
     });
 
     axios.get(baseUrl + "vendorAllData").then((res) => {
-      setVendorData(res.data.data);
+      setVendorData(res.data.tmsVendorkMastList);
     });
 
     axios.get(baseUrl + "getProfileList").then((res) => {
@@ -131,7 +132,7 @@ const PageEdit = () => {
         updated_by: userID,
     }   
 
-    axios.put(baseUrl + `updatePage/${_id}`, payload).then(() => {
+    axios.put(baseUrl + `updatePage/${pageMast_id}`, payload).then(() => {
       setIsFormSubmitted(true);
       toastAlert("Submitted");
     });
@@ -139,6 +140,19 @@ const PageEdit = () => {
 
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-page-overview" />;
+  }
+
+  function handleKeyDown(e){
+    if (e.key === ',' && e.target.value.trim()) {
+      e.preventDefault();
+      setTag([...tag, e.target.value.trim()]);
+      e.target.value = '';
+    }
+    console.log('ffffffffff',tag)
+  }
+
+  function removeTag(index){
+      setTag(tag.filter((el, i) => i !== index))
   }
 
   return (
@@ -203,13 +217,26 @@ const PageEdit = () => {
           ></Select>
         </div>
 
-        <FieldContainer
+        {/* <FieldContainer
           label="Tag"
           value={tag}
           required={false}
           placeholder="Comma separated values"
           onChange={(e) => setTag(e.target.value.split(','))}
-        />
+        /> */}
+
+        <label className="form-label">
+          Tags
+        </label>
+        <div className="tags-input-container">
+            { tag.map((tag, index) => (
+                <div className="tag-item" key={index}>
+                    <span className="text">{tag}</span>
+                    <span className="close" onClick={() => removeTag(index)}>&times;</span>
+                </div>
+            )) }
+            <input onKeyDown={handleKeyDown} type="text" className="tags-input" placeholder="comma separated values" />
+        </div>
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -299,7 +326,7 @@ const PageEdit = () => {
           <label className="form-label">
             Vendor <sup style={{ color: "red" }}>*</sup>
           </label>
-          {/* <Select
+          <Select
             options={vendorData.map((option) => ({
               value: option.vendorMast_id,
               label: option.vendorMast_name,
@@ -313,7 +340,7 @@ const PageEdit = () => {
             onChange={(e) => {
               setVendorId(e.value);
             }}
-          ></Select> */}
+          ></Select>
         </div>
 
         <FieldContainer
