@@ -4,6 +4,7 @@ import DataTable from "react-data-table-component";
 import FormContainer from "../AdminPanel/FormContainer";
 import { baseUrl } from "../../utils/config";
 import DateISOtoNormal from "../../utils/DateISOtoNormal";
+import Modal from "react-modal";
 
 const RepairRetrunSummary = () => {
   const [search, setSearch] = useState("");
@@ -13,13 +14,34 @@ const RepairRetrunSummary = () => {
 
   async function getData() {
     try {
-      const response = await axios.get(baseUrl + "get_summary_of_asset_return");
+      const response = await axios.get(
+        baseUrl + "get_summary_for_asset_repair_request"
+      );
       setData(response.data.data);
       setFilterData(response.data.data);
     } catch (error) {
       console.error("An error occurred:", error);
     }
   }
+  const [returnImageModalOpen, setReturnImageModalOpen] = useState(false);
+  const [showReturnImages, setShowReturnImages] = useState("");
+  const handleReturnImage = (row) => {
+    setShowReturnImages(row);
+    setReturnImageModalOpen(true);
+  };
+  const handleCloseReturnImageModal = () => {
+    setReturnImageModalOpen(false);
+  };
+
+  const [repairImageModalOpen, setRepairImageModalOpen] = useState(false);
+  const [showRepairImages, setShowRepairImages] = useState("");
+  const handleRepairImage = (row) => {
+    setShowRepairImages(row);
+    setRepairImageModalOpen(true);
+  };
+  const handleCloseRepairImageModal = () => {
+    setRepairImageModalOpen(false);
+  };
 
   const columns = [
     {
@@ -31,7 +53,7 @@ const RepairRetrunSummary = () => {
     },
     {
       name: "Asset Name",
-      selector: (row) => row.assetName,
+      selector: (row) => row.asset_name,
 
       sortable: true,
     },
@@ -41,8 +63,65 @@ const RepairRetrunSummary = () => {
       selector: (row) => row.asset_return_by_name,
     },
     {
+      name: "Asset Repair By",
+      selector: (row) => row.req_by_name,
+    },
+    {
+      name: "Asset Return Img",
+      selector: (row) => (
+        <>
+          {row.return_asset_image_1 && row.return_asset_image_2 && (
+            <>
+              {row.return_asset_image_1 !==
+                "https://storage.googleapis.com/dev-backend-bucket/" ||
+              row.return_asset_image_1 !==
+                "https://storage.googleapis.com/dev-backend-bucket/" ? (
+                <button
+                  className="btn btn-outline-danger"
+                  onClick={() => handleReturnImage(row)}
+                >
+                  <i className="bi bi-images"></i>
+                </button>
+              ) : (
+                "N/A"
+              )}
+            </>
+          )}
+        </>
+      ),
+    },
+    {
       name: "Retun Date",
       selector: (row) => DateISOtoNormal(row.return_asset_data_time),
+    },
+    {
+      name: "Asset Reocver Img",
+      selector: (row) => (
+        <>
+          {row.recovery_image_upload1 && row.recovery_image_upload2 && (
+            <>
+              {row.recovery_image_upload1 !==
+                "https://storage.googleapis.com/dev-backend-bucket/" ||
+              row.recovery_image_upload2 !==
+                "https://storage.googleapis.com/dev-backend-bucket/" ? (
+                <button
+                  className="btn btn-outline-danger"
+                  onClick={() => handleRepairImage(row)}
+                >
+                  <i className="bi bi-images"></i>
+                </button>
+              ) : (
+                "N/A"
+              )}
+            </>
+          )}
+        </>
+      ),
+    },
+
+    {
+      name: "Repair Date",
+      selector: (row) => DateISOtoNormal(row.recovery_date_time),
     },
     {
       name: "Return Remark",
@@ -88,6 +167,184 @@ const RepairRetrunSummary = () => {
         </div>
       </div>
       {/* </FormContainer> */}
+
+      {/* This is a Retun image modal  */}
+      <Modal
+        isOpen={returnImageModalOpen}
+        onRequestClose={handleCloseReturnImageModal}
+        style={{
+          content: {
+            width: "60%",
+            height: "50%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            <h2>Return Images</h2>
+
+            <button
+              className="btn btn-success float-left"
+              onClick={handleCloseReturnImageModal}
+            >
+              X
+            </button>
+          </div>
+        </div>
+        <div className="summary_cards flex-row row">
+          {typeof showReturnImages?.return_asset_image_1 === "string" &&
+            !showReturnImages.return_asset_image_1.endsWith("bucket2/") && (
+              <div
+                className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"
+                // onMouseEnter={handleMouseEnter}
+                // onMouseLeave={handleMouseLeave}
+              >
+                <div className="summary_card">
+                  <div className="summary_cardtitle"></div>
+                  <div className="summary_cardbody">
+                    <div className="summary_cardrow flex-column">
+                      <div className="summary_box text-center ml-auto mr-auto"></div>
+                      <div className="summary_box col">
+                        <a
+                          href={showReturnImages?.return_asset_image_1}
+                          target="blank"
+                        >
+                          <img
+                            src={showReturnImages?.return_asset_image_1}
+                            width="80px"
+                            height="80px"
+                          />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          {typeof showReturnImages?.return_asset_image_2 === "string" &&
+            !showReturnImages.return_asset_image_2.endsWith("bucket2/") && (
+              <div
+                className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"
+                // onMouseEnter={handleMouseEnter}
+                // onMouseLeave={handleMouseLeave}
+              >
+                <div className="summary_card">
+                  <div className="summary_cardtitle"></div>
+                  <div className="summary_cardbody">
+                    <div className="summary_cardrow flex-column">
+                      <div className="summary_box text-center ml-auto mr-auto"></div>
+                      <div className="summary_box col">
+                        <a
+                          href={showReturnImages?.return_asset_image_2}
+                          target="blank"
+                        >
+                          <img
+                            src={showReturnImages?.return_asset_image_2}
+                            width="80px"
+                            height="80px"
+                          />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+        </div>
+      </Modal>
+
+      {/* This is a Repair image modal  */}
+      <Modal
+        isOpen={repairImageModalOpen}
+        onRequestClose={handleCloseRepairImageModal}
+        style={{
+          content: {
+            width: "60%",
+            height: "50%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            <h2>Repair Images</h2>
+
+            <button
+              className="btn btn-success float-left"
+              onClick={handleCloseRepairImageModal}
+            >
+              X
+            </button>
+          </div>
+        </div>
+        <div className="summary_cards flex-row row">
+          {typeof showRepairImages?.recovery_image_upload1 === "string" &&
+            !showRepairImages.recovery_image_upload1.endsWith("bucket2/") && (
+              <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                <div className="summary_card">
+                  <div className="summary_cardtitle"></div>
+                  <div className="summary_cardbody">
+                    <div className="summary_cardrow flex-column">
+                      <div className="summary_box text-center ml-auto mr-auto"></div>
+                      <div className="summary_box col">
+                        <a
+                          href={showRepairImages?.recovery_image_upload1}
+                          target="blank"
+                        >
+                          <img
+                            src={showRepairImages?.recovery_image_upload1}
+                            width="80px"
+                            height="80px"
+                          />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          {typeof showRepairImages?.recovery_image_upload2 === "string" &&
+            !showRepairImages.recovery_image_upload2.endsWith("bucket2/") && (
+              <div
+                className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"
+                // onMouseEnter={handleMouseEnter}
+                // onMouseLeave={handleMouseLeave}
+              >
+                <div className="summary_card">
+                  <div className="summary_cardtitle"></div>
+                  <div className="summary_cardbody">
+                    <div className="summary_cardrow flex-column">
+                      <div className="summary_box text-center ml-auto mr-auto"></div>
+                      <div className="summary_box col">
+                        <a
+                          href={showRepairImages?.recovery_image_upload2}
+                          target="blank"
+                        >
+                          <img
+                            src={showRepairImages?.recovery_image_upload2}
+                            width="80px"
+                            height="80px"
+                          />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+        </div>
+      </Modal>
     </>
   );
 };

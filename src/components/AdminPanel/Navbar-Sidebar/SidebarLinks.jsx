@@ -774,7 +774,8 @@ const SidebarLinks = () => {
                                     className="collapse-item"
                                     to="/admin/overview/industry"
                                   >
-                                    <i className="bi bi-dot"></i> Indusrty Master
+                                    <i className="bi bi-dot"></i> Indusrty
+                                    Master
                                   </Link>
                                   <Link
                                     className="collapse-item"
@@ -800,7 +801,8 @@ const SidebarLinks = () => {
                                     className="collapse-item"
                                     to="/admin/campaigncommitment"
                                   >
-                                    <i className="bi bi-dot"></i> Campaign Master
+                                    <i className="bi bi-dot"></i> Campaign
+                                    Master
                                   </Link>
 
                                   {/* <Link
@@ -819,7 +821,8 @@ const SidebarLinks = () => {
                                     className="collapse-item"
                                     to="/admin/contentcreater"
                                   >
-                                    <i className="bi bi-dot"></i> Commitment Master
+                                    <i className="bi bi-dot"></i> Commitment
+                                    Master
                                   </Link>
                                 </div>
                               </div>
@@ -851,14 +854,16 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/assignment-dashboard"
                                 >
-                                  <i className="bi bi-dot"></i> Assignment Dashboard
+                                  <i className="bi bi-dot"></i> Assignment
+                                  Dashboard
                                 </Link>
 
                                 <Link
                                   className="collapse-item"
                                   to="/admin/registered-campaign"
                                 >
-                                  <i className="bi bi-dot"></i> Registered Campaign
+                                  <i className="bi bi-dot"></i> Registered
+                                  Campaign
                                 </Link>
 
                                 {/* <Link
@@ -878,7 +883,8 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/checkPageFollowers"
                                 >
-                                  <i className="bi bi-dot"></i> Check Page Follower
+                                  <i className="bi bi-dot"></i> Check Page
+                                  Follower
                                 </Link>
                                 {/* <Link
                             className="collapse-item"
@@ -976,13 +982,15 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/createrdashboard"
                                 >
-                                  <i className="bi bi-dot"></i> Creator Dashborad
+                                  <i className="bi bi-dot"></i> Creator
+                                  Dashborad
                                 </Link>
                                 <Link
                                   className="collapse-item"
                                   to="/admin/excusionCampaign"
                                 >
-                                  <i className="bi bi-dot"></i> Execution Campaign
+                                  <i className="bi bi-dot"></i> Execution
+                                  Campaign
                                 </Link>
                               </>
                             </div>
@@ -1191,7 +1199,8 @@ const SidebarLinks = () => {
                               className="collapse-item"
                               to="/admin/finance-pendingapproverefund"
                             >
-                              <i className="bi bi-dot"></i> Pending Approval Refund
+                              <i className="bi bi-dot"></i> Pending Approval
+                              Refund
                             </Link>
                             <Link
                               className="collapse-item"
@@ -1324,7 +1333,8 @@ const SidebarLinks = () => {
                                 className="collapse-item"
                                 to="/admin/finance-salebookingclose"
                               >
-                                <i className="bi bi-dot"></i> Sales Booking Closing
+                                <i className="bi bi-dot"></i> Sales Booking
+                                Closing
                               </Link>
                               <Link
                                 className="collapse-item"
@@ -1611,7 +1621,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-category">
-                 <i className="bi bi-dot"></i> Page Category
+                  <i className="bi bi-dot"></i> Page Category
                 </Link>
               )}
 
@@ -1619,7 +1629,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-profile-type">
-                 <i className="bi bi-dot"></i> Profile Type
+                  <i className="bi bi-dot"></i> Profile Type
                 </Link>
               )}
 
@@ -1627,7 +1637,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-ownership">
-                 <i className="bi bi-dot"></i> Page Ownership
+                  <i className="bi bi-dot"></i> Page Ownership
                 </Link>
               )}
 
