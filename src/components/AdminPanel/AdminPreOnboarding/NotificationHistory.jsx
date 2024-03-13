@@ -99,7 +99,30 @@ const NotificationHistory = () => {
       <FormContainer mainTitle="Notifications" link="/" />
 
       <div className="card">
-        <div className="data_tbl table-responsive">
+        <div className="card-header sb">
+        Notification History
+        <input
+                type="text"
+                placeholder="Search here"
+                className="w-50 form-control "
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+        </div>
+        <div className="card-body">
+          
+            <DataTable
+           
+              columns={columns}
+              data={filterdata}
+              // fixedHeader
+              pagination
+             selectableRows
+              highlightOnHover
+            />
+          
+        </div>
+        {/* <div className="data_tbl table-responsive">
           <DataTable
             title="Notification History"
             columns={columns}
@@ -108,18 +131,9 @@ const NotificationHistory = () => {
             // pagination
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control "
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+           
           />
-        </div>
+        </div> */}
       </div>
     </>
   );

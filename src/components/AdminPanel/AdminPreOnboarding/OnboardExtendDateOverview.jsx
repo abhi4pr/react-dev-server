@@ -248,7 +248,30 @@ const OnboardExtendDateOverview = () => {
       />
       <div className="page_height">
         <div className="card mb-4">
-          <div className="data_tbl table-responsive">
+          <div className="card-header sb">
+          Overview
+          <input
+                  type="text"
+                  placeholder="Search here"
+                  className="w-50 form-control "
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+          </div>
+          <div className="card-body">
+          <DataTable
+              
+              columns={columns}
+              data={filterdata}
+              
+             pagination
+             selectableRows
+              highlightOnHover
+              
+            
+            />
+          </div>
+          {/* <div className="data_tbl table-responsive">
             <DataTable
               title=" Overview"
               columns={columns}
@@ -267,7 +290,7 @@ const OnboardExtendDateOverview = () => {
                 />
               }
             />
-          </div>
+          </div> */}
         </div>
       </div>
     </>

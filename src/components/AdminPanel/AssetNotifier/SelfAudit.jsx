@@ -156,27 +156,43 @@ export const SelfAudit = () => {
       />
 
       <div className="card">
-        <div className="data_tbl table-responsive">
-          <DataTable
-            title="Self Audit"
-            columns={columns}
-            data={filterData}
-            fixedHeader
-            pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
+        <div className="card-header sb">
+        Self Audit
+        <input
                 type="text"
                 placeholder="Search here"
                 className="w-50 form-control"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-            }
+        </div>
+        <div className="card-body">
+       < DataTable
+            // title="Self Audit"
+            columns={columns}
+            data={filterData}
+            // fixedHeader
+            pagination
+            selectableRows
+            // fixedHeaderScrollHeight="64vh"
+            // highlightOnHover
+            // subHeader
+            
           />
         </div>
+        {/* <div className="data_tbl table-responsive">
+          <DataTable
+            // title="Self Audit"
+            columns={columns}
+            data={filterData}
+            fixedHeader
+            pagination
+            // fixedHeaderScrollHeight="64vh"
+            // highlightOnHover
+            // subHeader
+            
+          /> */}
+        {/* </div> */}
       </div>
       <Modal
         isOpen={ImageModalOpen}

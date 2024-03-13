@@ -430,7 +430,7 @@ const AdminPreOnboarding = () => {
   };
 
   return (
-    <>
+    <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
       <FormContainer
         mainTitle="User"
         title="User Registration"
@@ -850,16 +850,20 @@ const AdminPreOnboarding = () => {
             <p style={{ color: "red" }}>*Please select a Gender</p>
           )}
         </div>
+      </FormContainer>
+     
         <button
           type="submit"
           className="btn btn-primary"
-          style={{ width: "10%", height: "15%" }}
+          style={{   padding: "14px 28px 14px 28", display:"flex",flexDirection:"row",justifyContent:"space-between", alignItems:"center" ,gap:"10px",width:"100px"}}
+         
           disabled={loading}
         >
           {loading ? "Submitting..." : "Submit"}
+          {loading ? <i className="bi bi-arrow-clockwise"></i> : <i className="bi bi-arrow-right"></i>} 
+           
         </button>
-      </FormContainer>
-    </>
+    </div>
   );
 };
 
