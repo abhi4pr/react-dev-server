@@ -100,7 +100,7 @@ const PageMaster = () => {
         page_name_type: pageType,
         content_creation: content,
         ownership_type: ownerType,
-        owner_vendor_id: vendorId,
+        vendorMast_id: vendorId,
         followers_count: followCount,
         profile_type_id: profileId,
         platform_active_on: platformActive,

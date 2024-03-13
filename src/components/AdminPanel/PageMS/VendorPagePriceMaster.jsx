@@ -108,7 +108,7 @@ export default function VendorPagePriceMaster() {
             value={{
               value: pageMastId,
               label:
-                pageMastList.find((role) => role.pageMast_id === pageMastId)
+                pageMastList.find((role) => role.pageMast_id === pageMastId.value)
                   ?.page_user_name || "",
             }}
             onChange={(e) => {
@@ -130,7 +130,7 @@ export default function VendorPagePriceMaster() {
             value={{
               value: vendorId,
               label:
-                vendorList.find((role) => role.vendorMast_id === vendorId)
+                vendorList.find((role) => role.vendorMast_id === vendorId.value)
                   ?.vendorMast_name || "",
             }}
             onChange={(e) => {
@@ -152,7 +152,7 @@ export default function VendorPagePriceMaster() {
             value={{
               value: priceTypeId,
               label:
-                priceTypeList.find((role) => role._id === priceTypeId)
+                priceTypeList.find((role) => role._id === priceTypeId.value)
                   ?.price_type || "",
             }}
             onChange={(e) => {

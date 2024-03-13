@@ -12,7 +12,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import Select from "react-select";
 
 export default function PMSplatformPriceTypeMast() {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert ,toastError} = useGlobalContext();
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [search, setSearch] = useState("");
@@ -64,6 +64,9 @@ export default function PMSplatformPriceTypeMast() {
         setPlatformUpdateId("");
         setPlatform({ value: "", platformName: "" });
         getData();
+      }).catch((error) => {
+        console.log(error, "error")
+      toastError("PMS platform-price alredy exist!");
       });
   };
 
