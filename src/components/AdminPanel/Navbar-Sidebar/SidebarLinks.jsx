@@ -1603,7 +1603,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-vendor-type">
-                  <i class="bi bi-dot"></i>Vendor Type
+                  <i className="bi bi-dot"></i>Vendor Type
                 </Link>
               )}
 
@@ -1611,7 +1611,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-category">
-                  Page Category
+                  <i className="bi bi-dot"></i>Page Category
                 </Link>
               )}
 
@@ -1619,7 +1619,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-profile-type">
-                  Profile Type
+                  <i className="bi bi-dot"></i>Profile Type
                 </Link>
               )}
 
@@ -1627,7 +1627,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-ownership">
-                  Page Ownership
+                  <i className="bi bi-dot"></i>Page Ownership
                 </Link>
               )}
 
@@ -1635,7 +1635,7 @@ const SidebarLinks = () => {
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-profile-type">
-                  <i class="bi bi-dot"></i> Profile Type
+                  <i className="bi bi-dot"></i> Profile Type
                 </Link>
               )}
 
@@ -1643,7 +1643,7 @@ const SidebarLinks = () => {
               contextData[21] &&
               contextData[21].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-platform">
-                  <i class="bi bi-dot"></i> Platform
+                  <i className="bi bi-dot"></i> Platform
                 </Link>
               )}
 
@@ -1651,14 +1651,14 @@ const SidebarLinks = () => {
               contextData[1] &&
               contextData[1].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-pay-method">
-                  <i class="bi bi-dot"></i> Payment Method
+                  <i className="bi bi-dot"></i> Payment Method
                 </Link>
               )}
             {contextData &&
               contextData[2] &&
               contextData[2].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-pay-cycle">
-                  <i class="bi bi-dot"></i> Payment Cycle
+                  <i className="bi bi-dot"></i> Payment Cycle
                 </Link>
               )}
 
@@ -1666,14 +1666,14 @@ const SidebarLinks = () => {
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-group-link-type">
-                  <i class="bi bi-dot"></i> Group Link Type
+                  <i className="bi bi-dot"></i> Group Link Type
                 </Link>
               )}
             {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-price-type">
-                  <i class="bi bi-dot"></i> Price
+                  <i className="bi bi-dot"></i> Price
                 </Link>
               )}
             {contextData &&
@@ -1683,7 +1683,7 @@ const SidebarLinks = () => {
                   className="collapse-item"
                   to="/admin/pms-platform-price-type"
                 >
-                  <i class="bi bi-dot"></i>Platform Price
+                  <i className="bi bi-dot"></i>Platform Price
                 </Link>
               )}
             {contextData &&
@@ -1693,18 +1693,18 @@ const SidebarLinks = () => {
                   className="collapse-item"
                   to="/admin/pms-vendor-page-price-overview"
                 >
-                  <i class="bi bi-dot"></i> Vendor Page Price Overview
+                  <i className="bi bi-dot"></i> Vendor Page Price Overview
                 </Link>
               )}
 
             <Link className="collapse-item" to="/admin/pms-vendor-overview">
-              <i class="bi bi-dot"></i> Vendor Overview
+              <i className="bi bi-dot"></i> Vendor Overview
             </Link>
             <Link className="collapse-item" to="/admin/pms-vendor-group-link">
-              <i class="bi bi-dot"></i>Vendor Group Link
+              <i className="bi bi-dot"></i>Vendor Group Link
             </Link>
             <Link className="collapse-item" to="/admin/pms-page-overview">
-              <i class="bi bi-dot"></i> Page Overview
+              <i className="bi bi-dot"></i> Page Overview
             </Link>
           </div>
         </div>
