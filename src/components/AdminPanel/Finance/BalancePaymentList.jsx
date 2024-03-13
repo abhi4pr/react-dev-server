@@ -368,7 +368,7 @@ const BalancePaymentList = () => {
 
   const calculateRequestedAmountTotal = () => {
     let totalAmount = 0;
-    uniqueCustomerData.forEach((customer) => {
+    filterData.forEach((customer) => {
       totalAmount += parseFloat(
         customer.campaign_amount - customer.total_paid_amount
       );
@@ -442,7 +442,7 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      headerName: "Balance Amount",
+      field: "Balance Amount",
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
@@ -521,7 +521,7 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      headerName: "Balance Amount",
+      field: "Balance Amount",
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
@@ -629,7 +629,7 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      headerName: "Balance Amount",
+      field: "Balance Amount",
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
@@ -715,7 +715,7 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      headerName: "Balance Amount",
+      field: "Balance Amount",
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
@@ -805,30 +805,31 @@ const BalancePaymentList = () => {
       renderCell: (params) => params.row.username,
     },
     {
-      field:"party_mnj_name",
+      field: "party_mnj_name",
       headerName: "Party Name",
       width: 190,
     },
     {
-      field:"invoice_mnj_number",
+      field: "invoice_mnj_number",
       headerName: "Invoice Number",
       width: 190,
     },
     {
-      field:"invoice_mnj_date",
+      field: "invoice_mnj_date",
       headerName: "Invoice Date",
-      renderCell: (params) => (
-        params.row.invoice_mnj_date!= "0000-00-00"? <div style={{ whiteSpace: "normal" }}>
-          
-          {convertDateToDDMMYYYY(params.row.invoice_mnj_date)}
-        </div>:""
-      ),
+      renderCell: (params) =>
+        params.row.invoice_mnj_date != "0000-00-00" ? (
+          <div style={{ whiteSpace: "normal" }}>
+            {convertDateToDDMMYYYY(params.row.invoice_mnj_date)}
+          </div>
+        ) : (
+          ""
+        ),
       width: 190,
-
     },
     {
-      headerName: "Sale Booking Date",
       field: "sale_booking_date",
+      headerName: "Sale Booking Date",
       width: 190,
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
@@ -853,9 +854,8 @@ const BalancePaymentList = () => {
       ),
     },
     {
-      field: "total_paid_amount",
+      field: "Balance Amount",
       headerName: "Balance Amount",
-      width: 190,
       renderCell: (params) =>
         params.row.campaign_amount - params.row.total_paid_amount,
     },
@@ -897,6 +897,7 @@ const BalancePaymentList = () => {
         ),
     },
     {
+      field: "status",
       headerName: "Status",
       width: 190,
       renderCell: (params) => (
@@ -956,22 +957,26 @@ const BalancePaymentList = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameSalesExecutiveData}
-          columns={sameSalesExecutivecolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameSalesExecutiveData}
+            columns={sameSalesExecutivecolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
       {/* Unique Sales Executive Dialog Box */}
       <Dialog
@@ -998,22 +1003,26 @@ const BalancePaymentList = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueSalesExecutiveData}
-          columns={uniqueSalesExecutivecolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueSalesExecutiveData}
+            columns={uniqueSalesExecutivecolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
       {/* Same Customer Dialog */}
       <Dialog
@@ -1040,22 +1049,26 @@ const BalancePaymentList = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameCustomerData}
-          columns={sameCustomercolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameCustomerData}
+            columns={sameCustomercolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
 
       {/* Unique Customer Dialog Box */}
@@ -1083,163 +1096,169 @@ const BalancePaymentList = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueCustomerData}
-          columns={uniqueCustomercolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => uniqueCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueCustomerData}
+            columns={uniqueCustomercolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => uniqueCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
-      <div className="row">
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Customer Name</label>
-            <Autocomplete
-              value={customerName}
-              onChange={(event, newValue) => setCustomerName(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.cust_name))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="customer Name"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control",
-                  }}
-                />
-              )}
-            />
+      <div className="card body-padding">
+        <div className="row">
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Customer Name</label>
+              <Autocomplete
+                value={customerName}
+                onChange={(event, newValue) => setCustomerName(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.cust_name))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="customer Name"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control",
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Sales Executive Name</label>
-            <Autocomplete
-              value={salesExecutiveName}
-              onChange={(event, newValue) => setSalesExecutiveName(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.username))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Sales Executive Name"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                />
-              )}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Sales Executive Name</label>
+              <Autocomplete
+                value={salesExecutiveName}
+                onChange={(event, newValue) => setSalesExecutiveName(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.username))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Sales Executive Name"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>From Date</label>
-            <input
-              value={fromDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => setFromDate(e.target.value)}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>From Date</label>
+              <input
+                value={fromDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => setFromDate(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>To Date</label>
-            <input
-              value={toDate}
-              type="date"
-              className="form-control"
-              onChange={(e) => {
-                setToDate(e.target.value);
-              }}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>To Date</label>
+              <input
+                value={toDate}
+                type="date"
+                className="form-control"
+                onChange={(e) => {
+                  setToDate(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Campaign Amount Filter</label>
-            <select
-              value={campaignAmountFilter}
-              className="form-control"
-              onChange={(e) => setCampaignAmountFilter(e.target.value)}
-            >
-              <option value="">Select Amount</option>
-              <option value="greaterThan">Greater Than</option>
-              <option value="lessThan">Less Than</option>
-              <option value="equalTo">Equal To</option>
-            </select>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Campaign Amount Filter</label>
+              <select
+                value={campaignAmountFilter}
+                className="form-control"
+                onChange={(e) => setCampaignAmountFilter(e.target.value)}
+              >
+                <option value="">Select Amount</option>
+                <option value="greaterThan">Greater Than</option>
+                <option value="lessThan">Less Than</option>
+                <option value="equalTo">Equal To</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Campaign Amount</label>
-            <input
-              value={campaignAmountField}
-              type="number"
-              placeholder="Request Amount"
-              className="form-control"
-              onChange={(e) => {
-                setCampaignAmountField(e.target.value);
-              }}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Campaign Amount</label>
+              <input
+                value={campaignAmountField}
+                type="number"
+                placeholder="Request Amount"
+                className="form-control"
+                onChange={(e) => {
+                  setCampaignAmountField(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Balance Amount Filter</label>
-            <select
-              value={balanceAmountFilter}
-              className="form-control"
-              onChange={(e) => setBalanceAmountFilter(e.target.value)}
-            >
-              <option value="">Select Amount</option>
-              <option value="greaterThan">Greater Than</option>
-              <option value="lessThan">Less Than</option>
-              <option value="equalTo">Equal To</option>
-            </select>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Balance Amount Filter</label>
+              <select
+                value={balanceAmountFilter}
+                className="form-control"
+                onChange={(e) => setBalanceAmountFilter(e.target.value)}
+              >
+                <option value="">Select Amount</option>
+                <option value="greaterThan">Greater Than</option>
+                <option value="lessThan">Less Than</option>
+                <option value="equalTo">Equal To</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Balance Amount</label>
-            <input
-              value={balanceAmountField}
-              type="number"
-              placeholder="Request Amount"
-              className="form-control"
-              onChange={(e) => {
-                setBalanceAmountField(e.target.value);
-              }}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Balance Amount</label>
+              <input
+                value={balanceAmountField}
+                type="number"
+                placeholder="Request Amount"
+                className="form-control"
+                onChange={(e) => {
+                  setBalanceAmountField(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-1 mt-1 me-2">
-          <Button variant="contained" onClick={handleAllFilters}>
-            <i className="fas fa-search"></i> Search
-          </Button>
-        </div>
-        <div className="col-md-1 mt-1">
-          <Button variant="contained" onClick={handleClearAllFilter}>
-            Clear
-          </Button>
+          <div className="col-md-1 mt-1 me-2">
+            <Button variant="contained" onClick={handleAllFilters}>
+              <i className="fas fa-search"></i> Search
+            </Button>
+          </div>
+          <div className="col-md-1 mt-1">
+            <Button variant="contained" onClick={handleClearAllFilter}>
+              Clear
+            </Button>
+          </div>
         </div>
       </div>
       <div className="card mt-3">

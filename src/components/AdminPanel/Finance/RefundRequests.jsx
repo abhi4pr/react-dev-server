@@ -7,7 +7,13 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import ImageView from "./ImageView";
 import { baseUrl } from "../../../utils/config";
-import { Autocomplete, TextField, Dialog, DialogTitle } from "@mui/material";
+import {
+  Autocomplete,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { Link } from "react-router-dom";
@@ -247,7 +253,7 @@ const RefundRequests = () => {
 
   const calculateRequestedAmountTotal = () => {
     let totalAmount = 0;
-    uniqueCustomerData.forEach((customer) => {
+    filterData.forEach((customer) => {
       totalAmount += parseFloat(customer.refund_amount);
     });
     return totalAmount;
@@ -275,6 +281,15 @@ const RefundRequests = () => {
   };
   console.log(datas, "data", filterData, "filterdata>>>");
   const sameCustomercolumn = [
+    {
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...sameCustomerData].indexOf(params.row) + 1}</div>
+      ),
+    },
     {
       field: "cust_name",
       headerName: "Customer Name",
@@ -308,6 +323,15 @@ const RefundRequests = () => {
   ];
 
   const uniqueCustomercolumn = [
+    {
+      field: "s_no",
+      headerName: "S.No",
+      renderCell: (params, index) => (
+        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+
+        <div>{[...uniqueCustomerData].indexOf(params.row) + 1}</div>
+      ),
+    },
     {
       field: "cust_name",
       headerName: "Customer Name",
@@ -347,7 +371,7 @@ const RefundRequests = () => {
     },
     {
       headerName: "Refund Payment Image",
-      renderCell: (params,index) => (
+      renderCell: (params, index) => (
         <>
           {params.row.finance_refund_status === 0 && (
             <form method="POST" encType="multipart/form-data" action="">
@@ -479,7 +503,7 @@ const RefundRequests = () => {
     {
       field: "Refund Payment Image",
       headerName: "Refund Payment Image",
-      renderCell: (params,index) => (
+      renderCell: (params, index) => (
         <>
           {params.row.finance_refund_status === 0 && (
             <form method="POST" encType="multipart/form-data" action="">
@@ -531,6 +555,7 @@ const RefundRequests = () => {
     },
     {
       field: "Action",
+      headerName: "Action",
       renderCell: (params) => (
         <div>
           {" "}
@@ -601,22 +626,26 @@ const RefundRequests = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameCustomerData}
-          columns={sameCustomercolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameCustomerData}
+            columns={sameCustomercolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
 
       {/* Unique Customer Dialog Box */}
@@ -644,22 +673,26 @@ const RefundRequests = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueCustomerData}
-          columns={uniqueCustomercolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => row._id}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueCustomerData}
+            columns={uniqueCustomercolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => row._id}
+          />
+        </DialogContent>
       </Dialog>
       <div className="row">
         {/* <div className="card col-4">
@@ -718,119 +751,120 @@ const RefundRequests = () => {
           </div>
         </div>
       </div>
+      <div className="card body-padding">
+        <div className="row mt-4">
+          <div className=" col-2">
+            <label htmlFor="">Customer Name</label>
+            <Autocomplete
+              value={custName}
+              onChange={(event, newValue) => setCustName(newValue)}
+              // options={datas.map((option) => option.cust_name)}
+              options={Array.from(
+                new Set(datas.map((option) => option.cust_name))
+              )}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="customer Name"
+                  type="text"
+                  variant="outlined"
+                  InputProps={{
+                    ...params.InputProps,
+                    className: "form-control", // Apply Bootstrap's form-control class
+                  }}
+                  style={{
+                    borderRadius: "0.25rem",
+                    transition:
+                      "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                    "&:focus": {
+                      borderColor: "#80bdff",
+                      boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    },
+                  }}
+                />
+              )}
+            />
+          </div>
+          <div className=" col-2">
+            <label htmlFor="">Refund Amount</label>
+            <input
+              type="text"
+              className="form-control"
+              value={refundAmount}
+              // disabled
+              onChange={(e) => {
+                setRefundAmount(e.target.value);
+              }}
+            />
+          </div>
 
-      <div className="row mt-4">
-        <div className=" col-2">
-          <label htmlFor="">Customer Name</label>
-          <Autocomplete
-            value={custName}
-            onChange={(event, newValue) => setCustName(newValue)}
-            // options={datas.map((option) => option.cust_name)}
-            options={Array.from(
-              new Set(datas.map((option) => option.cust_name))
-            )}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="customer Name"
-                type="text"
-                variant="outlined"
-                InputProps={{
-                  ...params.InputProps,
-                  className: "form-control", // Apply Bootstrap's form-control class
-                }}
-                style={{
-                  borderRadius: "0.25rem",
-                  transition:
-                    "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                  "&:focus": {
-                    borderColor: "#80bdff",
-                    boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                  },
-                }}
-              />
-            )}
-          />
-        </div>
-        <div className=" col-2">
-          <label htmlFor="">Refund Amount</label>
-          <input
-            type="text"
-            className="form-control"
-            value={refundAmount}
-            // disabled
-            onChange={(e) => {
-              setRefundAmount(e.target.value);
-            }}
-          />
-        </div>
+          <div className=" col-2">
+            <label htmlFor="">Refund Request From Date </label>
+            <input
+              type="date"
+              className="form-control"
+              value={refundRequestFromDate}
+              onChange={(e) => {
+                setRefundRequestFromDate(e.target.value);
+              }}
+            />
+          </div>
+          <div className=" col-2">
+            <label htmlFor="">Refund Request To Date </label>
+            <input
+              type="date"
+              className="form-control"
+              value={refundRequestToDate}
+              onChange={(e) => {
+                setRefundRequestToDate(e.target.value);
+              }}
+            />
+          </div>
 
-        <div className=" col-2">
-          <label htmlFor="">Refund Request From Date </label>
-          <input
-            type="date"
-            className="form-control"
-            value={refundRequestFromDate}
-            onChange={(e) => {
-              setRefundRequestFromDate(e.target.value);
-            }}
-          />
-        </div>
-        <div className=" col-2">
-          <label htmlFor="">Refund Request To Date </label>
-          <input
-            type="date"
-            className="form-control"
-            value={refundRequestToDate}
-            onChange={(e) => {
-              setRefundRequestToDate(e.target.value);
-            }}
-          />
-        </div>
+          <div className=" col-2">
+            <label htmlFor="">Refund Update From Date </label>
+            <input
+              type="date"
+              className="form-control"
+              value={refundUpdateFromDate}
+              onChange={(e) => {
+                setRefundUpdateFromDate(e.target.value);
+              }}
+            />
+          </div>
+          <div className=" col-2">
+            <label htmlFor="">Refund Update To Date </label>
+            <input
+              type="date"
+              className="form-control"
+              value={refundUpdateToDate}
+              onChange={(e) => {
+                setRefundUpdateToDate(e.target.value);
+              }}
+            />
+          </div>
 
-        <div className=" col-2">
-          <label htmlFor="">Refund Update From Date </label>
-          <input
-            type="date"
-            className="form-control"
-            value={refundUpdateFromDate}
-            onChange={(e) => {
-              setRefundUpdateFromDate(e.target.value);
-            }}
-          />
-        </div>
-        <div className=" col-2">
-          <label htmlFor="">Refund Update To Date </label>
-          <input
-            type="date"
-            className="form-control"
-            value={refundUpdateToDate}
-            onChange={(e) => {
-              setRefundUpdateToDate(e.target.value);
-            }}
-          />
-        </div>
-
-        <div className="col-2 mt-3">
-          <Button
-            type="primary"
-            variant="contained"
-            onClick={handleFilter}
-            className="mt-2 mb-2 "
-          >
-            Search
-          </Button>
-        </div>
-        <div className="col-2 mt-3">
-          <Button
-            variant="contained"
-            color="error"
-            onClick={handleClear}
-            className="mt-2 mb-2"
-            style={{ marginLeft: "-130px" }}
-          >
-            clear
-          </Button>
+          <div className="col-2 mt-3">
+            <Button
+              type="primary"
+              variant="contained"
+              onClick={handleFilter}
+              className="mt-2 mb-2 "
+            >
+              Search
+            </Button>
+          </div>
+          <div className="col-2 mt-3 ms-3">
+            <Button
+              variant="contained"
+              color="error"
+              onClick={handleClear}
+              className="mt-2 mb-2"
+              style={{ marginLeft: "-130px" }}
+            >
+              clear
+            </Button>
+          </div>
         </div>
       </div>
 

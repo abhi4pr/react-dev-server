@@ -672,7 +672,8 @@ export default function FinanceWFHDashboard() {
   }
 
   const NonTDS = (
-    <div>
+    <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
+      
       <div style={{ height: "50px" }}>
         {rowForPayment.length > 0 && (
           <Button

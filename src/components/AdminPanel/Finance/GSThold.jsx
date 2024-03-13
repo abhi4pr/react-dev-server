@@ -9,6 +9,7 @@ import {
   Autocomplete,
   Button,
   Dialog,
+  DialogContent,
   DialogTitle,
   TextField,
 } from "@mui/material";
@@ -124,7 +125,7 @@ export default function GSThold() {
   }
   // total requested  amount data :-
   const filterPaymentAmount = nodeData.filter((item) =>
-    data.some((e) => e.request_id == item.request_id)
+    filterData.some((e) => e.request_id == item.request_id)
   );
 
   const totalRequestAmount = filterPaymentAmount.reduce(
@@ -311,7 +312,7 @@ export default function GSThold() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = sameVendorData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -364,7 +365,7 @@ export default function GSThold() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = uniqueVendorData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -545,7 +546,6 @@ export default function GSThold() {
     },
   ];
 
-  console.log(filterData, "FilterData >>");
   const columns = [
     {
       field: "s_no",
@@ -886,7 +886,7 @@ export default function GSThold() {
   ];
 
   return (
-    <div>
+    <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
       <FormContainer
         mainTitle="GST Hold"
         link="/admin/finance-pruchasemanagement-paymentdone"
@@ -921,22 +921,26 @@ export default function GSThold() {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameVendorData}
-          columns={sameVenderColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameVendorData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameVendorData}
+            columns={sameVenderColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameVendorData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
 
       {/* Unique Vendor Dialog Box */}
@@ -965,23 +969,29 @@ export default function GSThold() {
           <CloseIcon />
         </IconButton>
 
-        <DataGrid
-          rows={uniqueVendorData}
-          columns={uniqueVendorColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => uniqueVendorData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueVendorData}
+            columns={uniqueVendorColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => uniqueVendorData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
-      <div className="row">
+      <div className="card body-padding">
+              <div className="row">
         <div className="col-md-3">
           <div className="form-group">
             <label>Vendor Name</label>
@@ -1094,21 +1104,25 @@ export default function GSThold() {
           </Button>
         </div>
       </div>
-      <DataGrid
-        rows={filterData}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        disableSelectionOnClick
-        autoHeight
-        slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => filterData.indexOf(row)}
-      />
+      </div>
+
+      <div className="card">
+        <DataGrid
+          rows={filterData}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => filterData.indexOf(row)}
+        />
+      </div>
       {openImageDialog && (
         <ImageView
           viewImgSrc={viewImgSrc}

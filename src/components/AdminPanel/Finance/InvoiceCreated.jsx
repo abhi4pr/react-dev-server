@@ -14,6 +14,7 @@ import {
   TextField,
   Dialog,
   DialogTitle,
+  DialogContent,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
@@ -170,7 +171,7 @@ const InvoiceCreated = () => {
   };
 
   // Total base amount:-
-  const campaignAmountTotal = datas.reduce(
+  const campaignAmountTotal = filterData.reduce(
     (total, item) => total + parseFloat(item.campaign_amount),
     0
   );
@@ -308,7 +309,7 @@ const InvoiceCreated = () => {
     },
     {
       headerName: "Download Invoice",
-      field: "invoice",
+      field: "download_invoice",
       width: 210,
       renderCell: (params) => (
         <a
@@ -388,22 +389,26 @@ const InvoiceCreated = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={sameCustomerData}
-          columns={sameCustomercolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => sameCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameCustomerData}
+            columns={sameCustomercolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
 
       {/* Unique Customer Dialog Box */}
@@ -431,121 +436,129 @@ const InvoiceCreated = () => {
         >
           <CloseIcon />
         </IconButton>
-
-        <DataGrid
-          rows={uniqueCustomerData}
-          columns={uniqueCustomercolumn}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => uniqueCustomerData.indexOf(row)}
-        />
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueCustomerData}
+            columns={uniqueCustomercolumn}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => uniqueCustomerData.indexOf(row)}
+          />
+        </DialogContent>
       </Dialog>
-      <div className="row">
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Customer Name</label>
-            <Autocomplete
-              value={customerName}
-              onChange={(event, newValue) => setCustomerName(newValue)}
-              options={Array.from(
-                new Set(datas.map((option) => option.cust_name))
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Customer Name"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control", // Apply Bootstrap's form-control class
-                  }}
-                />
-              )}
-            />
+      <div className="card body-padding">
+        <div className="row">
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Customer Name</label>
+              <Autocomplete
+                value={customerName}
+                onChange={(event, newValue) => setCustomerName(newValue)}
+                options={Array.from(
+                  new Set(datas.map((option) => option.cust_name))
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Customer Name"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control", // Apply Bootstrap's form-control class
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Invoice Particular</label>
-            <Autocomplete
-              value={invoiceParticularName}
-              onChange={(event, newValue) => setInvoiceParticularName(newValue)}
-              options={Array.from(
-                new Set(
-                  datas
-                    .filter(
-                      (option) =>
-                        option &&
-                        option.invoice_particular_name !== null &&
-                        option.invoice_particular_name !== undefined
-                    ) // Filter out null or undefined values
-                    .map((option) =>
-                      option.invoice_particular_name.toLowerCase()
-                    ) // Convert to lowercase here
-                )
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Invoice Particular"
-                  type="text"
-                  variant="outlined"
-                  InputProps={{
-                    ...params.InputProps,
-                    className: "form-control",
-                  }}
-                />
-              )}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Invoice Particular</label>
+              <Autocomplete
+                value={invoiceParticularName}
+                onChange={(event, newValue) =>
+                  setInvoiceParticularName(newValue)
+                }
+                options={Array.from(
+                  new Set(
+                    datas
+                      .filter(
+                        (option) =>
+                          option &&
+                          option.invoice_particular_name !== null &&
+                          option.invoice_particular_name !== undefined
+                      ) // Filter out null or undefined values
+                      .map((option) =>
+                        option.invoice_particular_name.toLowerCase()
+                      ) // Convert to lowercase here
+                  )
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Invoice Particular"
+                    type="text"
+                    variant="outlined"
+                    InputProps={{
+                      ...params.InputProps,
+                      className: "form-control",
+                    }}
+                  />
+                )}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Campaign Amount Filter</label>
-            <select
-              value={campaignAmountFilter}
-              className="form-control"
-              onChange={(e) => setCampaignAmountFilter(e.target.value)}
-            >
-              <option value="">Select Amount</option>
-              <option value="greaterThan">Greater Than</option>
-              <option value="lessThan">Less Than</option>
-              <option value="equalTo">Equal To</option>
-            </select>
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Campaign Amount Filter</label>
+              <select
+                value={campaignAmountFilter}
+                className="form-control"
+                onChange={(e) => setCampaignAmountFilter(e.target.value)}
+              >
+                <option value="">Select Amount</option>
+                <option value="greaterThan">Greater Than</option>
+                <option value="lessThan">Less Than</option>
+                <option value="equalTo">Equal To</option>
+              </select>
+            </div>
           </div>
-        </div>
-        <div className="col-md-3">
-          <div className="form-group">
-            <label>Campaign Amount</label>
-            <input
-              value={campaignAmountField}
-              type="number"
-              placeholder="Request Amount"
-              className="form-control"
-              onChange={(e) => {
-                setCampaignAmountField(e.target.value);
-              }}
-            />
+          <div className="col-md-3">
+            <div className="form-group">
+              <label>Campaign Amount</label>
+              <input
+                value={campaignAmountField}
+                type="number"
+                placeholder="Request Amount"
+                className="form-control"
+                onChange={(e) => {
+                  setCampaignAmountField(e.target.value);
+                }}
+              />
+            </div>
           </div>
-        </div>
-        <div className="col-md-1 mt-1 me-2">
-          <Button variant="contained" onClick={handleAllFilters}>
-            <i className="fas fa-search"></i> Search
-          </Button>
-        </div>
-        <div className="col-md-1 mt-1">
-          <Button variant="contained" onClick={handleClearAllFilter}>
-            Clear
-          </Button>
+          <div className="col-md-1 mt-1 me-2">
+            <Button variant="contained" onClick={handleAllFilters}>
+              <i className="fas fa-search"></i> Search
+            </Button>
+          </div>
+          <div className="col-md-1 mt-1">
+            <Button variant="contained" onClick={handleClearAllFilter}>
+              Clear
+            </Button>
+          </div>
         </div>
       </div>
       <div className="card mt-3">

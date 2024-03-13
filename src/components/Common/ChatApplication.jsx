@@ -12,6 +12,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
 import UserChatData from "./UserChatData";
 import jwtDecode from "jwt-decode";
+import { baseUrl } from "../../utils/config";
 
 const style = {
   position: "relative",
@@ -33,16 +34,17 @@ const ChatApplication = () => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
+
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [filteredRows, setFilteredRows] = useState([]);
 
+  console.log(baseUrl, "baseURL >>>");
+
   const chatUserData = async () => {
-    const res = await axios.get(
-      `http://192.168.1.45:3005/api/get_chating_users/${loginUserId}`
-    );
-    setData(res?.data);
+    const res = await axios.get(`${baseUrl}get_chating_users/${loginUserId}`);
+    setData(res?.data?.data);
   };
 
   const handleOpen = () => setOpen(true);
@@ -62,7 +64,7 @@ const ChatApplication = () => {
   return (
     <>
       {!open && (
-        <div style={{ position: "fixed", right: 20, bottom: 50 }}>
+        <div style={{ position: "fixed", right: 20, bottom: 90 }}>
           <Button
             sx={{
               color: "#141452",
@@ -93,7 +95,11 @@ const ChatApplication = () => {
                 variant="outlined"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                sx={{ background: "#fff", borderRadius: "10px",width:"180px" }}
+                sx={{
+                  background: "#fff",
+                  borderRadius: "10px",
+                  width: "180px",
+                }}
               />
             </Box>
             <IconButton onClick={handleClose}>

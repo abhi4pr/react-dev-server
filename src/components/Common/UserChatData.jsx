@@ -3,23 +3,26 @@ import { Box } from "@mui/material";
 import ConversationChat from "./ConversationChat";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import { baseUrl } from "../../utils/config";
 
-const UserChatData = ({ data }) => {
+const UserChatData = (props) => {
+  const { data } = props;
   const [selectedItem, setSelectedItem] = useState(null);
   const [chatIdData, setChatIdData] = useState(null); // Explicitly set to null for clarity
-  
+
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
-
+  console.log(baseUrl, "baseUrl>>");
   const handleItemClick = async (item) => {
     try {
-      const response = await axios.post(`http://192.168.1.45:3005/api/chat`, {
+      const response = await axios.post(`${baseUrl}chat`, {
         userFromChatId: loginUserId,
         userToChatId: item?.user_id,
       });
+      console.log(response, "PPPPPPPP");
       if (response.status === 200) {
-        setChatIdData(response.data._id);
+        setChatIdData(response.data.data._id);
         setSelectedItem(item);
       } else {
         console.error("Failed to post chat data");
@@ -45,7 +48,7 @@ const UserChatData = ({ data }) => {
           ))}
         </div>
       </Box>
-      <ConversationChat selectedItem={selectedItem} chatIdData={chatIdData}  />
+      <ConversationChat selectedItem={selectedItem} chatIdData={chatIdData} />
     </div>
   );
 };
