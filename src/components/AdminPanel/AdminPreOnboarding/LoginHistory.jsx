@@ -265,15 +265,18 @@ const LoginHistory = () => {
 
   return (
     <>
-      <FormContainer
-        mainTitle="Login History"
-        title="Onboarding user login history"
+     
+        <FormContainer
+        mainTitle="Onboarding user login history"
+        title="Pre Onboard User Login History"
+        // title=""
         // handleSubmit={handleSubmit}
-        submitButton={false}
-      >
-        <div className="d-flex">
+        TitleHeaderComponentDisplay="flex"
+        Titleheadercomponent={
+          <div style={{display:"flex",width:"100%",justifyContent:"center",alignItems:"center" ,flexDirection:"row",gap:"10px"}} >
+        <div className="d-flex" style={{display:"flex",gap:"10px"}}>
           <Autocomplete
-            className="col-md-3"
+            className=""
             disablePortal
             id="combo-box-demo"
             value={durationFilter}
@@ -289,9 +292,9 @@ const LoginHistory = () => {
 
           {durationFilter === "Start To End Date" && (
             <>
-              {" "}
+              
               <LocalizationProvider
-                className="col-md-3"
+                className=""
                 dateAdapter={AdapterDayjs}
               >
                 <DatePicker
@@ -301,7 +304,7 @@ const LoginHistory = () => {
                   label="From"
                 />
               </LocalizationProvider>
-              <span className="ms-3 col-md-3">
+              <span className="">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     value={endDate}
@@ -316,7 +319,7 @@ const LoginHistory = () => {
               <Button
                 variant="contained"
                 disabled={!startDate || !endDate}
-                className="ms-3 col-md-3"
+                className="w-40"
                 onClick={handleFindCunstomDate}
               >
                 Find
@@ -338,28 +341,34 @@ const LoginHistory = () => {
             </LocalizationProvider>
           )}
         </div>
-        <div className="page_height">
-          <div className="card mb-4">
-            <div className="data_tbl table-responsive">
-              <DataTable
-                title="Pre Onboard User Login History"
-                columns={columns}
-                data={filterdata}
-                fixedHeader
-                // pagination
-                fixedHeaderScrollHeight="64vh"
-                highlightOnHover
-                subHeader
-                subHeaderComponent={
-                  <input
+        <input
                     type="text"
                     placeholder="Search here"
                     className="w-50 form-control "
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
-                }
-              />
+          </div>
+        }
+        submitButton={false}
+      >
+         
+      
+        <div className="page_height">
+          <div className="card">
+            <div className="data_tbl table-responsive">
+              <DataTable
+                
+                columns={columns}
+                data={filterdata}
+                // fixedHeader
+                pagination
+                selectableRows
+                // fixedHeaderScrollHeight="64vh"
+                // highlightOnHover
+                
+               
+                />
             </div>
           </div>
         </div>

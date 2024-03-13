@@ -17,7 +17,23 @@ const Navbar = () => {
   const userName = decodedToken.name;
   const loginUserId = decodedToken.id;
   const RoleID = decodedToken.role_id;
-
+  const user_role=()=>{
+    if(RoleID==1){
+      return "Admin"
+    }
+    else if(RoleID==2){
+      return "Manager"
+    }
+    else if(RoleID==3){
+      return "Office Boy"
+    }
+    else if(RoleID==4){
+      return "User"
+    }
+    else if(RoleID==5){
+      return "HR"
+    }
+  }
   const handleLogOut = () => {
     sessionStorage.clear("token");
     navigate("/login");
@@ -279,8 +295,8 @@ const Navbar = () => {
                 // ))
               )}
               <div className="profile-name">
-                <p>{userName}r</p>
-                <span>Admin</span>
+                <p>{userName}</p>
+                <span>{user_role()}</span>
               </div>
             </div>
             <div
@@ -299,7 +315,7 @@ const Navbar = () => {
                 </div>
                 <div className="profile-name">
                   <p>Lalit Gour</p>
-                  <span>Admin</span>
+                  <span>{user_role()}</span>
                 </div>
               </div>
               <div className="pack">

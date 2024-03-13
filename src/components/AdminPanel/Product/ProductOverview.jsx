@@ -104,10 +104,7 @@ const ProductOverview = () => {
             contextData[5] &&
             contextData[5].update_value === 1 && (
               <Link to="/admin/product-update">
-                <button
-                  title="Edit"
-                  className="btn btn-outline-primary btn-sm user-button"
-                  onClick={() => {
+                <div className="icon-1"  title="Edit" onClick={() => {
                     setToLocalStorage(
                       row.product_id,
                       row.Product_name,
@@ -127,10 +124,16 @@ const ProductOverview = () => {
                       row.Last_updated_by,
                       row.Last_updated_date
                     );
-                  }}
+                  }}>
+                    <i class="bi bi-pencil"></i>
+                  </div>
+                {/* <button
+                  title="Edit"
+                  className="btn btn-outline-primary btn-sm user-button"
+                  
                 >
                   <FaEdit />{" "}
-                </button>
+                </button> */}
               </Link>
             )}
           {contextData &&
@@ -211,25 +214,28 @@ const ProductOverview = () => {
       />
 
       <div className="card">
-        <div className="data_tbl table-responsive">
+        <div className="card-header sb">
+          Product Overview
+
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-50 form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="card-body">
+
           <DataTable
-            title="Product Overview"
+         
             columns={columns}
             data={filterData}
-            fixedHeader
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+            pagination 
+            selectableRows
           />
+        </div>
+        <div className="data_tbl table-responsive">
         </div>
       </div>
 

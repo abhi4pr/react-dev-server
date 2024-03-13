@@ -5602,6 +5602,7 @@ input[type="button"].btn-block {
   flex: 1 1 auto;
   min-height: 1px;
   padding: 16px 24px 24px;
+  width: 100%;
 }
 .body-padding {
   padding: 20px !important;
@@ -5661,7 +5662,10 @@ input[type="button"].btn-block {
     border-bottom-left-radius: 16px;
   }
 }
-
+.sb{
+  display: flex;
+  justify-content: space-between !important;
+}
 .card-header {
   /* padding: 16px 24px;
   margin-bottom: 0;
