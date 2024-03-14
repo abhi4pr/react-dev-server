@@ -1090,9 +1090,9 @@ const SalaryWFH = () => {
               <h2>
                 {data.month} <span>{data.year}</span>
               </h2>
-              <h3>
+              <h4>
                 {data.deptCount}/{departmentdata?.length}
-              </h3>
+              </h4>
               <h3>
                 {data?.atdGenerated == 1 ? (
                   <span>
@@ -1121,36 +1121,47 @@ const SalaryWFH = () => {
       <div className="card mb24">
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
-          <span>
+          <span className="d-flex gap4">
+          {data?.length == 0 && department && selectedMonth && selectedYear && (
+      
+      <button
+        onClick={handleAttendance}
+        className="btn btn-danger" style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px"}}
+        // style={{ marginTop: "25px" }}
+      >
+        No Absents, Create Attendance <i className="bi bi-arrow-right"></i>
+      </button>
+  
+    )}
             {contextData &&
               contextData[38] &&
               contextData[38].view_value === 1 && (
                 <Link to="/admin/salary-summary">
-                  <button className="btn btn-warning mr-3">
-                    Payout Summary
+                  <button className="btn btn-outline-primary " style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"4px"}} >
+                    Payout Summary <i className="bi bi-file-earmark-text"></i>
                   </button>
                 </Link>
               )}
             <button
-              className="btn btn-primary mr-3"
+              className="btn btn-outline-primary "style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"4px"}}
               onClick={() => BankExcelConverter(salaryMonthYearData)}
             >
-              Export Excel
+              Export Excel btn <i className="bi bi-file-spreadsheet"></i>
             </button>
 
             {deptSalary?.length !== departmentdata?.length &&
               (RoleIDContext == 1 || RoleIDContext == 5) && (
                 <button
-                  className="btn btn-primary"
+                className="btn btn-primary"style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"4px"}}
                   onClick={handleAllDepartmentSalary}
                 >
-                  Create All Department Salary
+                  Create All Department Salary <i className="bi bi-check-all"></i>
                 </button>
               )}
           </span>
         </div>
         <div className="card-body">
-          <div className="d-flex gap4 h_scroller mb24">
+          <div className="d-flex gap4" style={{flexWrap:"wrap",gap:"10px"}}>
             {departmentdata.map((option) => {
               const isDeptInSalary =
                 Array.isArray(deptSalary) &&
@@ -1165,36 +1176,32 @@ const SalaryWFH = () => {
               }`;
 
               return (
-                <button
-                  className={className}
+                <div
+                  className="card hover body-padding" style={{height:"100px" ,minWidth:"300px",display:"flex",justifyContent:"center",alignItems:"flex-start", gap:"10px",cursor:"pointer",border:"1px solid var(--primary)",padding:"10px"}}
+                 
                   onClick={() => setDepartment(option.dept_id)}
                 >
+                   <div className="pack  " style={{width:"100%",display:"flex",flexDirection:"row" ,justifyContent:"flex-start",alignItems:"center",gap:"20px"}}>
+                    <div className="rounded-circle circle-card" >
+                    <i class="bi bi-bounding-box"></i>
+                    </div>
                   {option.dept_name}
-                </button>
+                  </div>
+                </div>
               );
             })}
           </div>
 
           <h6>
-            <span style={{ color: "green" }}>Active : {activeusers}</span>
+            <span style={{ color: "green",padding:"10px" }}>Active : {activeusers}</span>
           </h6>
         </div>
       </div>
 
-      <div className="form-group col-3">
-        {data?.length == 0 && department && selectedMonth && selectedYear && (
-          <button
-            onClick={handleAttendance}
-            className="btn btn-warning"
-            style={{ marginTop: "25px" }}
-          >
-            No Absents, Create Attendance
-          </button>
-        )}
-      </div>
+        
 
-      <div className="card mb24">
-        <div className="card-body">
+      <div className="card p-0" style={{background:"transparent",border:"none"}}>
+        <div className="card-body p-0">
           <div className="row gap_24_0">
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">

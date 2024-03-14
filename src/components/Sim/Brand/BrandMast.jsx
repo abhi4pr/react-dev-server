@@ -33,7 +33,6 @@ const BrandMast = () => {
   const handleCloseAddModalModal = () => {
     setIsOpenAddModal(false);
   };
-  console.log(brandNameModal, "brand");
 
   const handleRowClick = (row) => {
     console.log(row.asset_brand_name, "row hai ");
@@ -142,14 +141,14 @@ const BrandMast = () => {
       sortable: true,
     },
     {
-      name: "Add Modal",
+      name: "Add Model",
       cell: (row) => (
         <>
           <button
             className="btn btn-outline-success"
             onClick={() => handleRowClick(row)}
           >
-            Add Modal
+            Add Model
           </button>
         </>
       ),
@@ -417,7 +416,7 @@ const BrandMast = () => {
             buttonAccess={false}
           >
             <FieldContainer
-              label="Modal Name"
+              label="Model Name"
               value={modalName}
               astric
               required={false}

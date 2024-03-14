@@ -118,8 +118,16 @@ export default function TotalNDG() {
       <DataGrid
         rows={filterData}
         columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 10,
+              page: 4,
+            },
+          },  
+        }}
+        rowsPerPageOptions={[10,20,30]}
+       
         checkboxSelection
         disableSelectionOnClick
         slotProps={{
@@ -245,8 +253,15 @@ export default function TotalNDG() {
       <DataGrid
         rows={previousSalaryFilterData}
         columns={PreviousSalarycolumns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        // pageSize={5}
+        // rowsPerPageOptions={[5]}
         checkboxSelection
         disableSelectionOnClick
         slotProps={{

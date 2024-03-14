@@ -72,7 +72,7 @@ const ModalMast = () => {
       sortable: true,
     },
     {
-      name: "Modal Name",
+      name: "Model Name",
       selector: (row) => row.asset_modal_name,
       sortable: true,
     },
@@ -199,12 +199,12 @@ const ModalMast = () => {
         <UserNav />
 
         <FormContainer
-          mainTitle="Modal"
-          title="Add Modal"
+          mainTitle="Model"
+          title="Add Model"
           handleSubmit={handleSubmit}
         >
           <FieldContainer
-            label="Modal Name"
+            label="Model Name"
             value={modalName}
             astric
             required={false}
@@ -236,7 +236,7 @@ const ModalMast = () => {
         <div className="card">
           <div className="data_tbl table-responsive">
             <DataTable
-              title="Modal Overview"
+              title="Model Overview"
               columns={columns}
               data={modalFilter}
               fixedHeader
@@ -270,7 +270,7 @@ const ModalMast = () => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="exampleModalLabel">
-                Modal Update
+                Model Update
               </h5>
               <button
                 type="button"
@@ -283,7 +283,7 @@ const ModalMast = () => {
             </div>
             <div className="modal-body">
               <FieldContainer
-                label="Modal Name"
+                label="Model Name"
                 fieldGrid={12}
                 value={modalNameUpdate}
                 onChange={(e) => setModalNameUpdate(e.target.value)}

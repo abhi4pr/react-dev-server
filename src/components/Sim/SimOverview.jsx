@@ -442,15 +442,6 @@ const SimOverview = () => {
               <FaEdit />{" "}
             </button>
           </Link>
-
-          {row.status !== "Allocated" && (
-            <DeleteButton
-              endpoint="delete_sim"
-              id={row.sim_id}
-              getData={getData}
-            />
-          )}
-
           <Link to={`/sim-summary/${row.sim_id}`}>
             <button
               title="Summary"
@@ -459,6 +450,15 @@ const SimOverview = () => {
               <i className="bi bi-journal-text"></i>
             </button>
           </Link>
+          {row.status !== "Allocated" && (
+            <DeleteButton
+              endpoint="delete_sim"
+              id={row.sim_id}
+              getData={getData}
+            />
+          )}
+
+          
 
           {id == 2 && (
             <button
@@ -532,11 +532,11 @@ const SimOverview = () => {
 
   return (
     <>
-      <div>
-        <UserNav />
+      <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+        <UserNav  />
 
         <div className="section section_padding sec_bg h100vh">
-          <div className="container mt-2">
+          <div className="container mt-2" style={{display:"flex",flexDirection:"column",gap:"16px"}}>
             <div className="action_heading">
               <div className="action_title">
                 <FormContainer
@@ -728,20 +728,10 @@ const SimOverview = () => {
               </div>
             </div>
             <div className="page_height">
-              <div className="card mb-4">
-                <div className="data_tbl table-responsive">
-                  <DataTable
-                    title="Assets Overview"
-                    columns={columns}
-                    data={filterdata}
-                    fixedHeader
-                    // pagination
-                    fixedHeaderScrollHeight="64vh"
-                    exportToCSV
-                    highlightOnHover
-                    subHeader
-                    subHeaderComponent={
-                      <>
+              <div className="card">
+                <div className="card-header sb p-4">
+                  <h5>Assets Overview</h5>
+                  <div className="pack sb ">
                         <input
                           type="text"
                           placeholder="Search here"
@@ -761,9 +751,47 @@ const SimOverview = () => {
                         >
                           Export Excel
                         </button>
-                      </>
-                    }
+                      </div>
+                </div>
+                <div className="card-body body-padding">
+                <DataTable
+                    // title="Assets Overview"
+                    columns={columns}
+                    data={filterdata}
+                    // fixedHeader
+                    pagination
+                    // fixedHeaderScrollHeight="64vh"
+                    exportToCSV
+                    highlightOnHover
+                    selectableRows
+                    // subHeader
+                    // subHeaderComponent={
+                    //   <>
+                    //     <input
+                    //       type="text"
+                    //       placeholder="Search here"
+                    //       className="w-50 form-control "
+                    //       value={search}
+                    //       onChange={(e) => setSearch(e.target.value)}
+                    //     />
+                    //     {/* <button
+                    //       className="btn btn-outline-success ml-2 btn-sm"
+                    //       onClick={handleExport}
+                    //     >
+                    //       Export TO Excel
+                    //     </button> */}
+                    //     <button
+                    //       className="btn btn-primary ml-2"
+                    //       onClick={() => AllAssetExcel(filterdata)}
+                    //     >
+                    //       Export Excel
+                    //     </button>
+                    //   </>
+                    // }
                   />
+                </div>
+                <div className="data_tbl table-responsive">
+                  
                 </div>
               </div>
             </div>
