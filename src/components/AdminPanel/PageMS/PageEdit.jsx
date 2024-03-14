@@ -76,10 +76,9 @@ const PageEdit = () => {
   
       setPlatformId(data[0].platform_id);
       setPageName(data[0].page_user_name);
-      console.log(data[0].page_user_name, "page_user_name")
       setLink(data[0].link);
       setCategoryId(data[0].page_catg_id);
-      setTag(data.tag_category);
+      setTag(data[0].tag_category);
       setPageLevel(data[0].page_level);
       setPageStatus(data[0].page_status);
       setCloseBy(data[0].page_closed_by);
@@ -244,7 +243,9 @@ const PageEdit = () => {
         </label>
         <div className="tags-input-container">
             { tag?.map((tag, index) => (
+
               <div className="tag-item" key={index}>
+                {console.log('tags', tag)}
                     <span className="text">{tag}</span>
                     <span className="close" onClick={() => removeTag(index)}>&times;</span>
                 </div>

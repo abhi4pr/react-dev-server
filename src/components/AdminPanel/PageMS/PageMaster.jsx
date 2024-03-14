@@ -10,7 +10,7 @@ import Select from "react-select";
 import './Tagcss.css';
 
 const PageMaster = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [pageName, setPageName] = useState("");
   const [link, setLink] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -112,7 +112,10 @@ const PageMaster = () => {
     axios.post(baseUrl + "addPageMast", payload).then(() => {
       setIsFormSubmitted(true);
       toastAlert("Submitted");
-    });
+    }).catch((error) => {
+      toastError(error.response.data.message);
+    }
+    );
   };
 
   if (isFormSubmitted) {

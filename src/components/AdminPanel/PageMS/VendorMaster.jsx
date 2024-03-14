@@ -9,7 +9,7 @@ import { Navigate } from "react-router";
 import Select from "react-select";
 
 const VendorMaster = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert,toastError } = useGlobalContext();
   const [vendorName, setVendorName] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -83,6 +83,18 @@ const VendorMaster = () => {
       return setEmailIsInvalid(false);
     }
     return setEmailIsInvalid(true);
+  };
+
+  const handlePanChange = (e) => {
+    const inputValue = e.target.value.toUpperCase();
+    // Validate PAN format
+    const panRegex = /[A-Z]{5}[0-9]{4}[A-Z]{1}/;
+    if (!panRegex.test(inputValue)) {
+      toastError('Please enter a valid PAN number');
+    } else{
+      setPan(inputValue);
+
+    }
   };
 
   const handleSubmit = (e) => {
@@ -266,7 +278,7 @@ const VendorMaster = () => {
           label="PAN"
           value={pan}
           required={false}
-          onChange={(e) => setPan(e.target.value)}
+          onChange={ handlePanChange}
         />
         <FieldContainer
           type="file"
@@ -280,7 +292,7 @@ const VendorMaster = () => {
           label="GST"
           value={gst}
           required={false}
-          onChange={(e) => setGst(e.target.value)}
+          onChange={(e) => setGst((e.target.value).toUpperCase())}
         />
         <FieldContainer
           type="file"

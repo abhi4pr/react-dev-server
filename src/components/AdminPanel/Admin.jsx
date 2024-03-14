@@ -1200,6 +1200,7 @@ const Admin = () => {
                   <Route path="/pms-vendor-page-price-overview" element={<VendorPagePriceOverview />} />
                   <Route path="/pms-vendor-page-price-master" element={<VendorPagePriceMaster/>} />
                   <Route path="/pms-vendor-page-price-master/:id" element={<EditVendorPagePrice/>} />
+                  <Route path="/download-offer-latter/:id" element={<OfferLetter/>} />
 
                 </Route>
               </Routes>

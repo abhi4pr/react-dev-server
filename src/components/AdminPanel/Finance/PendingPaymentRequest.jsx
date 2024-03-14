@@ -935,12 +935,6 @@ export default function PendingPaymentRequest() {
       renderCell: (params) => {
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{ cursor: "pointer", marginRight: "20px" }}
-              onClick={() => handleOpenSameVender(params.row.vendor_name)}
-            >
-              {params.row.vendor_name}
-            </div>
             {/* Hold for confirmation of sourabh sir */}
             <Button
               disabled={
@@ -952,6 +946,12 @@ export default function PendingPaymentRequest() {
             >
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
             </Button>
+            <div
+              style={{ cursor: "pointer", marginRight: "20px" }}
+              onClick={() => handleOpenSameVender(params.row.vendor_name)}
+            >
+              {params.row.vendor_name}
+            </div>
           </div>
         );
       },
@@ -1208,45 +1208,23 @@ export default function PendingPaymentRequest() {
           <CloseIcon />
         </IconButton>
 
-        {/* <DataGrid
-          rows={bankDetailRowData}
-          columns={bankDetailColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
-          getRowId={(row) => filterData.indexOf(row)}
-        /> */}
-
         <TextField
           id="outlined-multiline-static"
-          // label="Multiline"
           multiline
-          value={bankDetailRowData[0]?.payment_details}
+          value={
+            bankDetailRowData[0]?.payment_details +
+            "\n" +
+            "Mob:" +
+            bankDetailRowData[0]?.mob1 +
+            "\n" +
+            (bankDetailRowData[0]?.email
+              ? "Email:" + bankDetailRowData[0]?.email
+              : "")
+          }
           rows={4}
           defaultValue="Default Value"
           variant="outlined"
         />
-
         <Button
           onClick={() => {
             navigator.clipboard.writeText(
