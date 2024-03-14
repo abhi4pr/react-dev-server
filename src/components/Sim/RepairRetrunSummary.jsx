@@ -14,11 +14,20 @@ const RepairRetrunSummary = () => {
 
   async function getData() {
     try {
-      const response = await axios.get(
-        baseUrl + "get_summary_for_asset_repair_request"
-      );
-      setData(response.data.data);
-      setFilterData(response.data.data);
+      const [assetReturnResponse, assetRepairResponse] = await Promise.all([
+        axios.get(baseUrl + "get_summary_of_asset_return"),
+        axios.get(baseUrl + "get_summary_for_asset_repair_request"),
+      ]);
+      // const response = await axios.get(
+      //   baseUrl + "get_summary_of_asset_return"
+      //   //"get_summary_for_asset_repair_request"
+      // );
+      const assetReturns = assetReturnResponse.data.data;
+      const assetRepairs = assetRepairResponse.data.data;
+
+      const combieData = [...assetReturns, ...assetRepairs];
+      setData(combieData);
+      setFilterData(combieData);
     } catch (error) {
       console.error("An error occurred:", error);
     }
@@ -53,7 +62,7 @@ const RepairRetrunSummary = () => {
     },
     {
       name: "Asset Name",
-      selector: (row) => row.asset_name,
+      selector: (row) => row.assetName,
 
       sortable: true,
     },
@@ -70,11 +79,11 @@ const RepairRetrunSummary = () => {
       name: "Asset Return Img",
       selector: (row) => (
         <>
-          {row.return_asset_image_1 && row.return_asset_image_2 && (
+          {row.recover_asset_image_1 && row.recover_asset_image_2 && (
             <>
-              {row.return_asset_image_1 !==
+              {row.recover_asset_image_1 !==
                 "https://storage.googleapis.com/dev-backend-bucket/" ||
-              row.return_asset_image_1 !==
+              row.recover_asset_image_2 !==
                 "https://storage.googleapis.com/dev-backend-bucket/" ? (
                 <button
                   className="btn btn-outline-danger"
@@ -92,7 +101,7 @@ const RepairRetrunSummary = () => {
     },
     {
       name: "Retun Date",
-      selector: (row) => DateISOtoNormal(row.return_asset_data_time),
+      selector: (row) => row.return_asset_data_time?.split("T")?.[0],
     },
     {
       name: "Asset Reocver Img",
@@ -121,12 +130,16 @@ const RepairRetrunSummary = () => {
 
     {
       name: "Repair Date",
-      selector: (row) => DateISOtoNormal(row.recovery_date_time),
+      selector: (row) => row.repair_request_date_time?.split("T")?.[0],
     },
     {
       name: "Return Remark",
       selector: (row) => row.asset_return_remark,
     },
+    // {
+    //   name: "Repair Remark",
+    //   selector: (row) => row.recovery_remark,
+    // },
   ];
 
   useEffect(() => {
@@ -198,8 +211,8 @@ const RepairRetrunSummary = () => {
           </div>
         </div>
         <div className="summary_cards flex-row row">
-          {typeof showReturnImages?.return_asset_image_1 === "string" &&
-            !showReturnImages.return_asset_image_1.endsWith("bucket2/") && (
+          {typeof showReturnImages?.recover_asset_image_1 === "string" &&
+            !showReturnImages.recover_asset_image_1.endsWith("bucket2/") && (
               <div
                 className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"
                 // onMouseEnter={handleMouseEnter}
@@ -212,11 +225,11 @@ const RepairRetrunSummary = () => {
                       <div className="summary_box text-center ml-auto mr-auto"></div>
                       <div className="summary_box col">
                         <a
-                          href={showReturnImages?.return_asset_image_1}
+                          href={showReturnImages?.recover_asset_image_1}
                           target="blank"
                         >
                           <img
-                            src={showReturnImages?.return_asset_image_1}
+                            src={showReturnImages?.recover_asset_image_1}
                             width="80px"
                             height="80px"
                           />
@@ -227,8 +240,8 @@ const RepairRetrunSummary = () => {
                 </div>
               </div>
             )}
-          {typeof showReturnImages?.return_asset_image_2 === "string" &&
-            !showReturnImages.return_asset_image_2.endsWith("bucket2/") && (
+          {typeof showReturnImages?.recover_asset_image_2 === "string" &&
+            !showReturnImages.recover_asset_image_2.endsWith("bucket2/") && (
               <div
                 className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"
                 // onMouseEnter={handleMouseEnter}
@@ -241,11 +254,11 @@ const RepairRetrunSummary = () => {
                       <div className="summary_box text-center ml-auto mr-auto"></div>
                       <div className="summary_box col">
                         <a
-                          href={showReturnImages?.return_asset_image_2}
+                          href={showReturnImages?.recover_asset_image_2}
                           target="blank"
                         >
                           <img
-                            src={showReturnImages?.return_asset_image_2}
+                            src={showReturnImages?.recover_asset_image_2}
                             width="80px"
                             height="80px"
                           />

@@ -82,6 +82,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       formData.append("recovery_image_upload1", recoveryImg1);
       formData.append("recovery_image_upload2", recoveryImg2);
       formData.append("recovery_by", userID);
+      formData.append("resolved_remark", resolvedRemark);
       formData.append("accept_by", userID);
 
       try {
