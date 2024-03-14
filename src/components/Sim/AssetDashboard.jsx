@@ -133,9 +133,30 @@ const AssetDashboard = () => {
   };
 
   return (
-    <div>
-      <div className="section section_padding sec_bg h100vh">
-        <div className="">
+    <div style={{
+      display: "flex",
+      justifyContent: "center",
+      // alignItems: "center",
+      flexDirection: "column",
+      gap: "16px",
+      width: "100%",
+    }}>
+      <div className="section section_padding " style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+        gap: "16px",
+        width: "100%",
+      }}>
+        <div className="" style={{
+          display: "flex",
+          justifyContent: "center",
+          // alignItems: "center",
+          flexDirection: "column",
+          gap: "16px",
+          width: "100%",
+        }}>
           <div className="action_heading">
             <div className="action_title">
               <FormContainer
@@ -144,8 +165,103 @@ const AssetDashboard = () => {
               />
             </div>
           </div>
+          
+          <div className="card asset-card body-padding ">
+           
+
+
+            <div className=" flex-direct">
+              <div className="Asset-info-card d_infocard_col">
+                <Link to={`/sim-overview/${0}`}>
+                  <div
+                    className=" card shadow "
+                    style={{
+                      background: "#88EF98"
+                    }}
+                  >
+                    <div className="card-body sb ">
+                      <div className="pack gap">
+
+                        <div className="asset-d_infocard_icon">
+                          <h1>{simData.length}</h1>
+                        </div>
+                        <div className="asset-d_infocard_txt">
+                          <h3>Total</h3>
+                        </div>
+                      </div>
+                      <i class="bi bi-box-arrow-up-right"></i>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              <div className="Asset-info-card d_infocard_col">
+                <Link to={`/sim-overview/${1}`}>
+                  <div
+                    className="card shadow "
+                    style={{
+                      background: "#EB846C"
+                    }}
+                  >
+                    <div className="card-body sb ">
+                      <div className="pack gap"> 
+                      <div className="asset-d_infocard_icon">
+                        <h1>{availableObjects.length}</h1>
+                      </div>
+                      <div className="asset-d_infocard_txt">
+                        <h3>Available</h3>
+                      </div>
+                      </div>
+                      <i class="bi bi-box-arrow-up-right"></i>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              <div className="Asset-info-card d_infocard_col">
+                <div
+                  className="card shadow "
+                  style={{
+                    background: "#EFC973"
+                  }}
+                >
+                  <Link to={`/sim-overview/${2}`}>
+                    <div className="card-body sb">
+                      <div className="pack gap">
+
+                     
+                      <div className="asset-d_infocard_icon">
+                        <h1>{allocatedObjects.length}</h1>
+                      </div>
+                      <div className="asset-d_infocard_txt">
+                        <h3>Allocated</h3>
+                        {/* <SimOverview allocated={isAllocation} /> */}
+                      </div>
+                      </div>
+                      <i class="bi bi-box-arrow-up-right"></i>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card asset-card body-padding ">
+            <div className="pack sb">
+          <h1>Asset Details</h1>
+          <Link to="/admin/asset_summary">
+          <button className="btn btn-primary sb" style={{justifyContent:"center", alignItems:"center",gap:"10px"}}>Asset Summary <i className="bi bi-file-earmark-text"></i></button>
+          </Link>
+          </div>
+          </div>
           <div className="asset_chart">
-            <div className="chart_container">
+            <div className="card" style={{
+              width: "50%",
+              height: "100%",
+            }}>
+            <div className="chart_container body-padding">
+            <h5 style={{ fontWeight: "600",color:"var(--gray-700)" }}>
+                Total Asset - {simData.length}
+              </h5>
               <PieChart
                 series={[
                   {
@@ -162,24 +278,27 @@ const AssetDashboard = () => {
                         label: "Allocated",
                       },
                     ],
-                    innerRadius: 0,
+                    innerRadius: 30,
+                    outerRadius: 70,
                     cornerRadius: 5,
+                    paddingAngle:1,
                     highlightScope: { faded: "global", highlighted: "item" },
                     faded: {
                       innerRadius: 30,
                       additionalRadius: -30,
                       color: "gray",
                     },
+                    
                   },
                 ]}
                 height={200}
               />
-              <h5 style={{ fontWeight: "bold" }}>
-                Total Asset - {simData.length}
-              </h5>
+              
             </div>
-
-            <div className="chart_container ml-5">
+            </div>
+            
+            <div className="chart_container p-0" style={{width:"50%",height:"100% "}}>
+              <div className="card">
               <BarChart
                 xAxis={[
                   {
@@ -206,89 +325,25 @@ const AssetDashboard = () => {
                 height={300}
               />
             </div>
+            </div>
 
             {/* ----------------------------------------------- */}
 
-            <div
+            {/* <div
               className="panel panel-default bootcards-summary p-3"
               style={{
                 background: "ligh",
                 borderRadius: "50px",
               }}
             >
-              <Link to="/admin/asset_summary">
+              
                 <i className="fa fa-3x fa-bar-chart"></i>
                 <h4>Asset Summary</h4>
-              </Link>
-            </div>
+              
+            </div> */}
           </div>
 
-          <div className="row">
-            <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <Link to={`/sim-overview/${0}`}>
-                <div
-                  className="d_infocard card shadow p-1"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(240deg, #fc8ebe 0%, #fce5c3 100%)",
-                  }}
-                >
-                  <div className="card-body">
-                    <div className="d_infocard_txt">
-                      <h2>Total</h2>
-                    </div>
-                    <div className="d_infocard_icon">
-                      <span>{simData.length}</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <Link to={`/sim-overview/${1}`}>
-                <div
-                  className="d_infocard card shadow p-1"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(240deg, rgb(124, 136, 224) 0%, #c3f4fc 100%)",
-                  }}
-                >
-                  <div className="card-body">
-                    <div className="d_infocard_txt">
-                      <h2>Available</h2>
-                    </div>
-                    <div className="d_infocard_icon">
-                      <span>{availableObjects.length}</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-xxl-4 col-xl-4 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <div
-                className="d_infocard card shadow p-1"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(240deg, #97e7d1 0%, #ecfcc3 100%)",
-                }}
-              >
-                <Link to={`/sim-overview/${2}`}>
-                  <div className="card-body">
-                    <div className="d_infocard_txt">
-                      <h2>Allocated</h2>
-                      {/* <SimOverview allocated={isAllocation} /> */}
-                    </div>
-                    <div className="d_infocard_icon">
-                      <span>{allocatedObjects.length}</span>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            </div>
-          </div>
-          <hr className="mb-3" />
+          
           <div className="row">
             <div className="form-group col-2">
               <label className="form-label">
@@ -306,12 +361,12 @@ const AssetDashboard = () => {
                   departmentFilter === ""
                     ? { value: "", label: "All" }
                     : {
-                        value: departmentFilter,
-                        label:
-                          departmentData.find(
-                            (dept) => dept.dept_id === departmentFilter
-                          )?.dept_name || "Select...",
-                      }
+                      value: departmentFilter,
+                      label:
+                        departmentData.find(
+                          (dept) => dept.dept_id === departmentFilter
+                        )?.dept_name || "Select...",
+                    }
                 }
                 onChange={(selectedOption) => {
                   const selectedValue = selectedOption
@@ -451,7 +506,19 @@ const AssetDashboard = () => {
                 X
               </button>
             </div>
-            <DataTable
+            <div className="card">
+              <div className="card-header sb">
+               <h5>Assigned Assets</h5>
+              <input
+                  type="text"
+                  placeholder="Search..."
+                  className="w-50 form-control"
+                  value={modalSearch}
+                  onChange={(e) => setModalSearch(e.target.value)}
+                />
+              </div>
+              <div className="card-body body padding">
+              <DataTable
               columns={[
                 {
                   name: "S.No",
@@ -470,18 +537,12 @@ const AssetDashboard = () => {
               data={selectedUserData.filter((user) =>
                 user.user_name.toLowerCase().includes(modalSearch.toLowerCase())
               )}
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-50 form-control"
-                  value={modalSearch}
-                  onChange={(e) => setModalSearch(e.target.value)}
-                />
-              }
+              pagination
+              selectableRows
             />
+              </div>
+            </div>
+            
           </div>
         )}
       </Modal>
