@@ -11,7 +11,7 @@ import DeleteButton from "../DeleteButton";
 import Select from "react-select";
 
 const VendorGroupLink = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert,toastError } = useGlobalContext();
   const [groupLink, setGroupLink] = useState("");
   const [description, setDescription] = useState("");
   const [vendorId, setVendorId] = useState("")
@@ -71,8 +71,14 @@ const VendorGroupLink = () => {
       toastAlert("Submitted");
       setGroupLink("")
       setDescription("")
+      setVendorId('')
+      setLinkTypeId('')
       getData()
-    });
+    }).catch((error) => {
+      toastError(error.response.data.message);
+      console.log(error.response.data.message)
+    }
+    );
   };
 
   const columns = [
@@ -116,17 +122,18 @@ const VendorGroupLink = () => {
   ];
 
   const handleRowData = (row) =>{
+    console.log(row.PMS_VendorMasts_data.PMSGroupLinks_data.group_link_type_id," row.PMSGroupLinks_data.link_type")
     setRowData(row);
     setGroupLinkUpdate(row.group_link);
     setDescriptionUpdate(row.description);
-    setVendorIdUpdate(row.PMSVendorMasts_data.type_id);
-    setLinkTypeIdUpdate(row.PMSGroupLinks_data.link_type);
+    setVendorIdUpdate(row.vendorMast_id);
+    setLinkTypeIdUpdate(row.PMS_VendorMasts_data.PMSGroupLinks_data.group_link_type_id);
   }
 
   const handleModalUpdate = () => {
     axios.put(baseUrl+`updateVendorGroup/${rowData._id}`, {
       vendorMast_id: vendorIdUpdate,
-      group_link_type_id: groupLinkUpdate,
+      group_link_type_id: linkTypeIdUpdate,
       group_link: groupLinkUpdate,
       description: descriptionUpdate,
       updated_by: userID
@@ -168,16 +175,17 @@ const VendorGroupLink = () => {
           </label>
           <Select
             options={vendorData.map((option) => ({
-              value: option._id,
+              value: option.vendorMast_id,
               label: option.vendorMast_name,
             }))}
             value={{
               value: vendorId,
               label:
-                vendorData.find((role) => role._id === vendorId)?.vendorMast_name ||
+                vendorData.find((role) => role.vendorMast_id === vendorId)?.vendorMast_name ||
                 "",
             }}
             onChange={(e) => {
+              console.log(vendorData[0])
               setVendorId(e.value);
             }}
           ></Select>
@@ -258,16 +266,17 @@ const VendorGroupLink = () => {
               </label>
               <Select
                 options={vendorData.map((option) => ({
-                  value: option._id,
+                  value: option.vendorMast_id,
                   label: option.vendorMast_name,
                 }))}
                 value={{
                   value: vendorId,
                   label:
-                    vendorData.find((role) => role._id === vendorIdUpdate)?.vendorMast_name ||
+                    vendorData.find((role) => role.vendorMast_id === vendorIdUpdate)?.vendorMast_name ||
                     "",
                 }}
                 onChange={(e) => {
+                  console.log(e.value," e.value")
                   setVendorIdUpdate(e.value);
                 }}
               ></Select>

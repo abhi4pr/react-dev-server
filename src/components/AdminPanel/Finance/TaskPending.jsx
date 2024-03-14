@@ -17,9 +17,10 @@ import {
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import TaskDone from "./TaskDone";
+import { useGlobalContext } from "../../../Context/Context";
 
 export default function TaskPending() {
+  const { toastAlert } = useGlobalContext();
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);

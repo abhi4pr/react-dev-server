@@ -16,8 +16,10 @@ import {
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import { useGlobalContext } from "../../../Context/Context";
 
 export default function GSThold() {
+  const { toastAlert } = useGlobalContext();
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -860,7 +862,6 @@ export default function GSThold() {
         const paymentAmount = nodeData.filter(
           (e) => e.request_id == params.row.request_id
         )[0]?.payment_amount;
-        console.log(paymentAmount);
         return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
       },
     },
@@ -878,8 +879,6 @@ export default function GSThold() {
       field: "gst_Hold_Bool",
       headerName: "GST Hold",
       renderCell: (params) => {
-        console.log(params.row.gstHold, "gstHold");
-        console.log(params.row.gst_Hold_Bool, "gst_Hold_Bool");
         return params.row.gstHold == 1 ? "Yes" : "No";
       },
     },
@@ -1189,6 +1188,15 @@ export default function GSThold() {
           // label="Multiline"
           multiline
           value={bankDetailRowData[0]?.payment_details}
+          rows={4}
+          defaultValue="Default Value"
+          variant="outlined"
+        />
+         <TextField
+          id="outlined-multiline-static"
+          // label="Multiline"
+          multiline
+          value={bankDetailRowData[0]?.mob1}
           rows={4}
           defaultValue="Default Value"
           variant="outlined"

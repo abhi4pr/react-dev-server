@@ -13,7 +13,7 @@ const VendorEdit = () => {
   const [cycleName, setCycleName] = useState("");
   const [description, setDescription] = useState("");
 
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [vendorName, setVendorName] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -157,6 +157,17 @@ const VendorEdit = () => {
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-vendor-overview" />;
   }
+
+  const handlePanChange = (e) => {
+    const inputValue = e.target.value.toUpperCase();
+    
+    setPan(inputValue);
+    // Validate PAN format
+    const panRegex = /[A-Z]{5}[0-9]{4}[A-Z]{1}/;
+    if (!panRegex.test(inputValue)) {
+      toastError('Please enter a valid PAN number');
+    } 
+  };
 
   return (
     <>
@@ -302,7 +313,7 @@ const VendorEdit = () => {
           // value={panImage.files}
           // value={panImage}
           required={false}
-          onChange={(e) => setPanImage(e.target.files[0])}
+          onChange={handlePanChange}
         />
 
         <FieldContainer
