@@ -7,7 +7,6 @@ import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 
 
-
 export default function VendorPagePriceMaster() {
     const Navigate = useNavigate();
     const [platformPriceList, setPlatformPriceList] = useState([]);
