@@ -237,6 +237,9 @@ import GSThold from "./Finance/GSThold";
 import NewExcelFile from "./RegisterCampaign/Plan/NewExcelFile";
 
 import TempExecution from "./RegisterCampaign/tempPlan/TempExecution";
+import CustomerMaster from "./Customer/CustomerMaster";
+import AccountMaster from "./Customer/AccountMaster";
+import OwnershipMaster from "./Customer/OwnershipMaster";
 import VendorType from "./PageMS/VendorType";
 import PageCategory from "./PageMS/PageCategory";
 import ProfileType from "./PageMS/ProfileType";
@@ -1173,6 +1176,12 @@ const Admin = () => {
                     element={<TaskStatusDeptWiseUpdate />}
                   />
                   {/* TASK MANAGEMENT */}
+
+                  <Route path="/customer-master" element={<CustomerMaster />} />
+                  <Route path="/account-master" element={<AccountMaster />} />
+                  <Route path="/ownership-master" element={<OwnershipMaster />} />
+
+
 
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />

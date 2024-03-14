@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import FieldContainer from "../FieldContainer";
@@ -9,33 +9,26 @@ import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
-const PageOwnership = () => {
+const OwnershipMaster = () => {
   const { toastAlert } = useGlobalContext();
-  const [pageId, setPageId] = useState("");
-  const [ownerVendorId, setOwnerVendorId] = useState("");
-  const [sharingPer, setSharingPer] = useState("");
-  const [ownerships, setOwnerships] = useState(""); 
+  const [ownershipName, setOwnershipName] = useState("");
   const [description, setDescription] = useState("");
-  const [data, setData] = useState([]);
-  const [filterData, setFilterData] = useState([]);
+  const [ownerships, setOwnerships] = useState([]);
   const [search, setSearch] = useState("");
+  const [filterData, setFilterData] = useState([]);
   const [rowData, setRowData] = useState({});
-  const [ownerUpdate, setOwnerUpdate] = useState("");
+  const [ownershipNameUpdate, setOwnershipNameUpdate] = useState("");
   const [descriptionUpdate, setDescriptionUpdate] = useState("");
-  const [pageIdUpdate, setPageIdUpdate] = useState("");
-  const [ownerVendorIdUpdate, setOwnerVendorIdUpdate] = useState("");
-  const [sharingPerUpdate, setSharingPerUpdate] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
 
   const getData = () => {
-    axios.get(`${baseUrl}getPageOwnerList`)
+    axios.get(baseUrl + "get_all_ownership")
       .then((res) => {
+        setOwnerships(res.data.data);
         setFilterData(res.data.data);
-        setData(res.data.data);
-        console.log("dddddddd",res.data.data)
       });
   };
 
@@ -43,34 +36,27 @@ const PageOwnership = () => {
     getData();
   }, []);
 
-   useEffect(() => {
-    const result = data.filter((d) => {
-       return d.ownership_type?.toLowerCase().includes(search.toLowerCase());
-     });
-     setFilterData(result);
-   }, [search]);
+  useEffect(() => {
+    const result = ownerships.filter((d) => {
+      return d.ownership_name?.toLowerCase().match(search.toLowerCase()); 
+    });
+    setFilterData(result);
+  }, [search]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(`${baseUrl}addPageOwner`, {
-      ownership_type: ownerships,
-      description: description,
-      pageMast_id: pageId,
-      vendorMast_id: ownerVendorId,
-      sharing_per: sharingPer,
-      created_by: userID
-    })
-    .then(() => {
-      toastAlert("Submitted");
-      setOwnerships("");
-      setDescription("");
-      setPageId("");
-      setOwnerVendorId("");
-      setSharingPer("");
-      getData();
-    });
+    axios.post(baseUrl + "add_ownership", {
+        ownership_name: ownershipName,
+        description: description,
+        created_by: userID
+      })
+      .then(() => {
+        toastAlert("Submitted");
+        setOwnershipName("");
+        setDescription("");
+        getData(); 
+      });   
   };
-
 
   const columns = [
     {
@@ -78,26 +64,17 @@ const PageOwnership = () => {
       selector: (row, index) => <div>{index + 1}</div>,
       sortable: true,
     },
-    
     {
       name: "Ownership",
-      selector: (row) => row.ownership_type, 
+      selector: (row) => row.ownership_name, 
     },
     {
       name: "Description",
-      selector: (row) => row.description, 
+      selector: (row) => row.description,
     },
     {
-      name: "PageMast Id",
-      selector: (row) => row.pageMast_id, 
-    },
-    {
-      name: "VendorMast Id",
-      selector: (row) => row.vendorMast_id, 
-    },
-    {
-      name: "Sharing Per",
-      selector: (row) => row.sharing_per, 
+      name: "Created By",
+      selector: (row) => row.created_by_name,
     },
     {
       name: "Action",
@@ -112,88 +89,57 @@ const PageOwnership = () => {
             <FaEdit />{" "}
           </button>
           <DeleteButton
-            endpoint="deletePageOwner" 
+            endpoint="delete_ownership" 
             id={row._id}
             getData={getData}
           />
         </>
       ),
     },
-  ]
+  ];
 
   const handleRowData = (row) => {
     setRowData(row);
-    setOwnerUpdate(row.ownership_type); 
+    setOwnershipNameUpdate(row.ownership_name); 
     setDescriptionUpdate(row.description);
-    setPageIdUpdate(row.pageMast_id);
-    setOwnerVendorIdUpdate(row.vendorMast_id);
-    setSharingPerUpdate(row.sharing_per);
-};
+  };
 
   const handleModalUpdate = () => {
-    axios.put(baseUrl + `updatePageOwner/${rowData._id}`, { 
-      ownership_type: ownerUpdate, 
+    axios.put(baseUrl + `update_ownership/${rowData._id}`, { 
+      ownership_name: ownershipNameUpdate, 
       description: descriptionUpdate,
-      pageMast_id: pageIdUpdate,
-      vendorMast_id: ownerVendorIdUpdate,
-      sharing_per: sharingPerUpdate,
       updated_by: userID
     })
     .then(() => {
-      toastAlert("Successfully Update");
+      toastAlert("Successfully Updated");
       getData();
-      setOwnerUpdate("");
+      setOwnershipNameUpdate("");
       setDescriptionUpdate("");
-      setPageIdUpdate("");
-      setOwnerVendorIdUpdate("");
-      setSharingPerUpdate("");
-
     });
   };
-
 
   return (
     <>
       <FormContainer
-        mainTitle="Page Ownership"
-        title="Add New Ownership"
+        mainTitle="Ownership Master" 
+        title="Ownership" 
         handleSubmit={handleSubmit}
       >
         <FieldContainer
-          label="Ownership Name *"
-          value={ownerships}
+          label="Ownership *" 
+          value={ownershipName}
           required={true}
-          onChange={(e) => setOwnerships(e.target.value)}
+          onChange={(e) => setOwnershipName(e.target.value)}
         />
+        
         <FieldContainer
           label="Description"
           value={description}
+          required={true}
           onChange={(e) => setDescription(e.target.value)}
-        />
-        <FieldContainer
-          label="Page ID *"
-          type="number"
-          value={pageId} 
-          required={true}
-          onChange={(e) => setPageId(e.target.value)}
-        />
-        <FieldContainer
-          label="Owner Vendor ID *"
-          type="number"
-          value={ownerVendorId} 
-          required={true}
-          onChange={(e) => setOwnerVendorId(e.target.value)}
-        />
-        <FieldContainer
-          label="Sharing Per *"
-          type="number"
-          value={sharingPer}
-          required={true}
-          onChange={(e) => setSharingPer(e.target.value)}
         />
       </FormContainer>
 
-    
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
@@ -227,10 +173,10 @@ const PageOwnership = () => {
             </div>
             <div className="modal-body">
               <FieldContainer
-                label="ownerships *"
-                value={ownerUpdate}
+                label="Ownership Type *"
+                value={ownershipNameUpdate}
                 required={true}
-                onChange={(e) => setOwnerUpdate(e.target.value)}
+                onChange={(e) => setOwnershipNameUpdate(e.target.value)}
               />
 
               <FieldContainer
@@ -239,31 +185,6 @@ const PageOwnership = () => {
                 required={true}
                 onChange={(e) => setDescriptionUpdate(e.target.value)}
               />
-
-               <FieldContainer
-                label="Page ID"
-                type="number"
-                value={pageIdUpdate}
-                required={true}
-                onChange={(e) => setPageIdUpdate(e.target.value)}
-              />
-
-               <FieldContainer
-                label="Vendor ID"
-                type="number"
-                value={ownerVendorIdUpdate}
-                required={true}
-                onChange={(e) => setOwnerVendorIdUpdate(e.target.value)}
-              />
-
-               <FieldContainer
-                label="Sharing Per"
-                type="number"
-                value={sharingPerUpdate}
-                required={true}
-                onChange={(e) => setSharingPerUpdate(e.target.value)}
-              />
-              
             </div>
             <div className="modal-footer">
               <button type="button" 
@@ -284,4 +205,4 @@ const PageOwnership = () => {
   );
 };
 
-export default PageOwnership;
+export default OwnershipMaster;

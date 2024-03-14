@@ -1591,6 +1591,54 @@ const SidebarLinks = () => {
         </li>
       )}
       {/* {isUserManagementVisible && ( */}
+
+      {/* {isCustomer && ( */}
+        <li className="nav-item">
+          <Link
+            className="nav-btn nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#customer"
+            aria-expanded="true"
+            aria-controls="customer"
+          >
+            <i className="bi bi-person-gear" />
+            <span>Customer</span>
+          </Link>
+          <div
+            id="customer"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            // data-parent="#accordionSidebar"
+          >
+            <div className="internal collapse-inner">
+              <>
+                <Link
+                  className="collapse-item"
+                  to="/admin/customer-master"
+                >
+                  <i class="bi bi-dot"></i> Customer Master
+                </Link>
+
+                <Link
+                  className="collapse-item"
+                  to="/admin/account-master"
+                >
+                  <i class="bi bi-dot"></i> Account Master
+                </Link>
+
+                <Link
+                  className="collapse-item"
+                  to="/admin/ownership-master"
+                >
+                  <i class="bi bi-dot"></i> Ownership Master
+                </Link>
+              </>
+            </div>
+          </div>
+        </li>
+      {/* )} */}
+
+
       <li className="nav-item">
         <Link
           className="nav-link collapsed"
