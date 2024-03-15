@@ -856,7 +856,7 @@ const AdminPreOnboarding = () => {
           type="submit"
           className="btn btn-primary"
           style={{   padding: "14px 28px 14px 28", display:"flex",flexDirection:"row",justifyContent:"space-between", alignItems:"center" ,gap:"10px",width:"100px"}}
-         
+          onClick={handleSubmit}
           disabled={loading}
         >
           {loading ? "Submitting..." : "Submit"}
