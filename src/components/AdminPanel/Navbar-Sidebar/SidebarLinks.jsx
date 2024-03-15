@@ -504,20 +504,26 @@ const SidebarLinks = () => {
                       <i className="bi bi-dot"></i> Documents
                     </Link>
 
-                    {/* {contextData &&
-                contextData[20] &&
-                contextData[20].insert_value === 1 && (
-                  <Link className="collapse-item" to="/admin/announcement-post">
-                    Announcement Post
-                  </Link>
-                )}
-              {contextData &&
-                contextData[21] &&
-                contextData[21].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/announcement-view">
-                    Announcement View
-                  </Link>
-                )} */}
+                    {contextData &&
+                      contextData[20] &&
+                      contextData[20].insert_value === 1 && (
+                        <Link
+                          className="collapse-item"
+                          to="/admin/announcement-post"
+                        >
+                          <i className="bi bi-dot"></i> Announcement Post
+                        </Link>
+                      )}
+                    {contextData &&
+                      contextData[21] &&
+                      contextData[21].view_value === 1 && (
+                        <Link
+                          className="collapse-item"
+                          to="/admin/announcement-view"
+                        >
+                          <i className="bi bi-dot"></i> Announcement View
+                        </Link>
+                      )}
                   </div>
                 </div>
               </li>

@@ -1,148 +1,223 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import { Navigate } from "react-router-dom";
-import jwtDecode from "jwt-decode";
-import { useGlobalContext } from "../../../Context/Context";
+import React, { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
+import Select from "react-select";
+import axios from "axios";
+import { baseUrl } from "../../../utils/config";
+import TextEditor from "../../ReusableComponents/TextEditor";
 import FieldContainer from "../FieldContainer";
-import {baseUrl} from '../../../utils/config'
+import { useGlobalContext } from "../../../Context/Context";
 
-const AnnouncementPost = () => {
-  const { toastAlert } = useGlobalContext;
-
-  const token = sessionStorage.getItem("token");
-  const decodedToken = jwtDecode(token);
-  const loginUserID = decodedToken.id;
-
-  const [announcementFor, setAnnoucementFor] = useState(0);
-  const [error, setError] = useState("");
-
-  const [departmentData, setDepartmentData] = useState([]);
-  const [department, setDepartment] = useState("");
-
-  const [designation, setDesignation] = useState("");
+const announcementForList = [
+  { value: "yes", label: "All Employees" },
+  { value: "no", label: "Only Selected Employees" },
+];
+const AnnoucementPost = () => {
+  const { toastAlert, toastError } = useGlobalContext();
+  const [announcementFor, setAnnouncementFor] = useState("");
+  const [department, setDepartment] = useState([]);
+  const [departmentdata, setDepartmentData] = useState([]);
+  const [designation, setDesignation] = useState([]);
   const [designationData, setDesignationData] = useState([]);
+  const [jobType, setJobType] = useState("");
+  const [jobTypeData, setJobTypeData] = useState([]);
+  const [announcementTitle, setAnnouncementTitle] = useState("");
+  const [announcementContent, setAnnouncementContect] = useState("");
+  const [attachments, setAttachments] = useState([]);
 
-  const [heading, setHeading] = useState("");
-
-  const [subHeading, setSubHeading] = useState("");
-  const [content, setContent] = useState("");
-
-  const [isFormSubmitted, setIsFormSubmited] = useState(false);
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setError("");
-    axios
-      .post(baseUrl+"annomastpost", {
-        dept_id: department,
-        desi_id: designation,
-        onboard_status: announcementFor,
-        heading: heading,
-        sub_heading: subHeading,
-        content: content,
-        created_by: loginUserID,
-      })
-      .then(() => {
-        setDepartment("");
-        setDesignation("");
-        setAnnoucementFor(0);
-        setHeading("");
-        setSubHeading("");
-        setContent("");
-        toastAlert("Form Submitted Success");
-        setIsFormSubmited(true);
-      })
-      .catch((error) => {
-        setError("An Error has Occurred while submitting the form");
-        console.log(error);
-      });
-  };
   useEffect(() => {
-    axios
-      .get(baseUrl+"get_all_departments")
-      .then((res) => {
+    if (announcementFor?.value === "no") {
+      axios.get(baseUrl + "get_all_departments").then((res) => {
         setDepartmentData(res.data);
       });
-
-    axios
-      .get(baseUrl+"get_all_designations")
-      .then((res) => {
-        setDesignationData(res.data.data);
+      axios.get(baseUrl + "get_all_job_types").then((res) => {
+        setJobTypeData(res.data.data);
       });
-  }, []);
-  if (isFormSubmitted) {
-    return <Navigate to="/admin/sitting-overview" />;
-  }
+    }
+
+    if (department.length > 0) {
+      axios
+        .get(
+          baseUrl +
+            `get_all_designations_by_deptId/${
+              department[department.length - 1]
+            }`
+        )
+        .then((res) => {
+          const newDesignations = res.data.data;
+
+          const updatedDesignationData = [
+            ...new Set([...designationData, ...newDesignations]),
+          ];
+          setDesignationData(updatedDesignationData);
+        });
+    }
+  }, [announcementFor, department]);
+
+  const handleAttachmentSelect = (event) => {
+    const files = event.target.files;
+
+    setAttachments([...files]);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("all_emp", announcementFor?.value);
+    formData.append("dept_id", department);
+    formData.append("desi_id", designation);
+    formData.append("job_type", jobType);
+
+    for (let i = 0; i < attachments.length; i++) {
+      formData.append(`attachment`, attachments[i]);
+    }
+
+    formData.append("post_content", announcementContent);
+    formData.append("post_subject", announcementTitle);
+    formData.append("notify_by_user_email", false);
+    formData.append("email_response", "lsfkj;aljf;lasfl");
+
+    try {
+      const response = await axios.post(
+        // `${baseUrl}add_announcement`,
+        `http://192.168.29.163:8080/api/add_announcement`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      toastAlert(response.data.message);
+    } catch (error) {
+      toastError(response.data.message);
+    }
+  };
+
   return (
     <>
       <FormContainer
-        mainTitle="Annoucement"
-        title="Annoucement here"
+        title="Post"
+        mainTitle="Announcement"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Annoucement For"
-          Tag="select"
-          value={announcementFor}
-          onChange={(e) => setAnnoucementFor(e.target.value)}
-        >
-          <option value={0}>All</option>
-          <option value={1}>Onboarded</option>
-          <option value={2}>Pre Onboard</option>
-        </FieldContainer>
+        <div className="form-group col-3">
+          <label className="form-label">
+            Announcement for <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={announcementForList}
+            value={announcementFor}
+            onChange={(e) => {
+              setAnnouncementFor(e);
+            }}
+            required
+          />
+        </div>
+
+        {announcementFor?.value == "no" && (
+          <>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Department Name <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={departmentdata.map((option) => ({
+                  value: option.dept_id,
+                  label: `${option.dept_name}`,
+                }))}
+                value={departmentdata
+                  .filter((option) => department.includes(option.dept_id))
+                  .map((option) => ({
+                    value: option.dept_id,
+                    label: option.dept_name,
+                  }))}
+                onChange={(e) => {
+                  setDepartment(e.map((option) => option.value));
+                }}
+                isMulti
+                required
+              />
+            </div>
+
+            <div className="form-group col-3">
+              <label className="form-label">
+                Designation <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={designationData.map((option) => ({
+                  value: option.desi_id,
+                  label: `${option.desi_name}`,
+                }))}
+                value={designationData
+                  .filter((option) => designation.includes(option.desi_id))
+                  .map((option) => ({
+                    value: option.desi_id,
+                    label: option.desi_name,
+                  }))}
+                onChange={(e) => {
+                  setDesignation(e.map((option) => option.value));
+                }}
+                isDisabled={!department.length}
+                isMulti
+                required
+              />
+            </div>
+
+            <div className="form-group col-3">
+              <label className="form-label">
+                Job Type <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={jobTypeData.map((option) => ({
+                  value: option.job_type,
+                  label: `${option.job_type}`,
+                }))}
+                value={jobTypeData
+                  .filter((option) => jobType.includes(option.job_type))
+                  .map((option) => ({
+                    value: option.job_type,
+                    label: option.job_type,
+                  }))}
+                onChange={(e) => {
+                  setJobType(e.map((option) => option.value));
+                }}
+                isMulti
+                required
+              />
+            </div>
+          </>
+        )}
 
         <FieldContainer
-          label="Department"
-          Tag="select"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-        >
-          <option value="">Choose</option>
-          {departmentData.map((option) => (
-            <option key={option.dept_id} value={option.dept_id}>
-              {option.dept_name}
-            </option>
-          ))}
-        </FieldContainer>
-
-        <FieldContainer
-          label="Designation"
-          Tag="select"
-          value={designation}
-          required={false}
-          onChange={(e) => setDesignation(e.target.value)}
-        >
-          <option selected disabled value="">
-            Choose...
-          </option>
-          {designationData.map((option) => (
-            <option key={option.desi_id} value={option.desi_id}>
-              {option.desi_name}
-            </option>
-          ))}
-        </FieldContainer>
-
-        <FieldContainer
-          label="Heading"
-          value={heading}
-          onChange={(e) => setHeading(e.target.value)}
+          label="Title"
+          type="text"
+          placeholder="Enter title here"
+          fieldGrid={12}
+          required={true}
+          value={announcementTitle}
+          onChange={(e) => setAnnouncementTitle(e.target.value)}
         />
 
-        <FieldContainer
-          label="Subheading"
-          value={subHeading}
-          onChange={(e) => setSubHeading(e.target.value)}
+        <TextEditor
+          value={announcementContent}
+          onChange={setAnnouncementContect}
         />
 
-        <FieldContainer
-          label="Content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-        />
+        <div className="form-group col-3">
+          <label className="form-label">
+            Attachments <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <input
+            type="file"
+            multiple
+            onChange={handleAttachmentSelect}
+            className="form-control"
+          />
+        </div>
       </FormContainer>
     </>
   );
 };
 
-export default AnnouncementPost;
+export default AnnoucementPost;
