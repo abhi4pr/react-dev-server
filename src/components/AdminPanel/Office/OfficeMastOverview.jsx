@@ -80,9 +80,9 @@ const OfficeMastOverview = () => {
             contextData[6] &&
             contextData[6].update_value === 1 && (
               <Link to="/admin/office-mast-update">
-                <button
+                <div
                   title="Edit"
-                  className="btn btn-outline-primary btn-sml"
+                  className="icon"
                   onClick={() =>
                     setToLocalStorage(
                       row.room_id,
@@ -92,8 +92,8 @@ const OfficeMastOverview = () => {
                     )
                   }
                 >
-                  <FaEdit />{" "}
-                </button>
+                  <i className="bi bi-pencil"></i>
+                </div>
               </Link>
             )}
           {contextData &&
@@ -148,7 +148,6 @@ const OfficeMastOverview = () => {
         className="btn btn-primary"
         style={{
           float: "right",
-          margin: "-70px 75px 0 0",
           position: "relative",
         }}
       >
@@ -156,27 +155,30 @@ const OfficeMastOverview = () => {
       </button>
 
       <div className="card">
-        <div className="data_tbl table-responsive">
-          <DataTable
-            title="Office Overview"
-            columns={columns}
-            data={filterdata}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="62vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
+        <div className="card-header sb">
+<h5>Office Overview</h5>
+<input
                 type="text"
                 placeholder="Search here"
                 className="w-50 form-control"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-            }
+        </div>
+        <div className="card-body">
+
+          <DataTable
+            
+            columns={columns}
+            data={filterdata}
+            // fixedHeader
+            pagination
+           
+            selectableRows
           />
         </div>
+        {/* <div className="data_tbl table-responsive">
+        </div> */}
       </div>
     </>
   );
