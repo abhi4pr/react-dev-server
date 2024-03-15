@@ -303,7 +303,22 @@ button,
 [type="submit"] {
   -webkit-appearance: button;
 }
-
+.circle-card{
+  width:50px;
+  height:50px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border:1px solid var(--primary);
+}
+.hover:hover{
+background-color: var(--primary);
+color: var(--white);
+.circle-card{
+  background-color: var(--white);
+  color: var(--primary);
+}
+}
 button:not(:disabled),
 [type="button"]:not(:disabled),
 [type="reset"]:not(:disabled),
@@ -3677,7 +3692,7 @@ input[type="button"].btn-block {
 
   border: 1px solid var(--border);
   cursor: pointer;
-  width: 40px;
+  min-width: 40px;
   height: 40px;
   border-radius: 50%;
   background-color: var(--white);

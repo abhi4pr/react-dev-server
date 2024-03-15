@@ -108,27 +108,41 @@ const AssetSummary = () => {
       />
 
       <div className="card">
-        <div className="data_tbl table-responsive">
-          <DataTable
-            title="Asset Summary"
-            columns={columns}
-            data={filterData}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
+        <div className="card-header sb">
+       <h5>Asset Summary </h5> 
+        <input
                 type="text"
                 placeholder="Search here"
                 className="w-50 form-control"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-            }
+        </div>
+        <div className="card-body body-padding">
+        <DataTable
+          
+            columns={columns}
+            data={filterData}
+            
+            pagination
+            selectableRows
+            // fixedHeaderScrollHeight="64vh"
+            // highlightOnHover
+            // subHeader
+            // subHeaderComponent={
+            //   <input
+            //     type="text"
+            //     placeholder="Search here"
+            //     className="w-50 form-control"
+            //     value={search}
+            //     onChange={(e) => setSearch(e.target.value)}
+            //   />
+            // }
           />
         </div>
+        {/* <div className="data_tbl table-responsive">
+          
+        </div> */}
       </div>
       <Modal
         isOpen={historyModal}

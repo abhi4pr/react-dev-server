@@ -497,23 +497,44 @@ const Attendence = () => {
           ))}
         </Slider>
       </div>
-      <div className="card mb24">
+      <div className="card">
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
-          <span>
+          <span className="d-flex gap4">
+          {filterData?.length !== 0 && filterData[0]?.attendence_generated == 0 && (
+        <button
+        onClick={(e) => handleCreateSalary(e)}
+          className="btn btn-success" style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px"}}
+           
+        >
+          Complete Attendance
+        </button>
+      )}
+        {filterData?.length == 0 &&
+          department &&
+          selectedMonth &&
+          selectedYear && (
+            
+            <button onClick={handleAttendence}  className="btn btn-danger" style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px"}}
+            // style={{ marginTop: "25px" }}
+          >
+            No Absents, Create Attendance <i className="bi bi-arrow-right"></i>
+            </button>
+  
+          )}
             {deptSalary?.length !== departmentdata?.length &&
               (RoleIDContext == 1 || RoleIDContext == 5) && (
                 <button
-                  className="btn btn-primary"
+                className="btn btn-primary" style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"4px"}}
                   onClick={handleAllDepartmentAttendance}
                 >
-                  Create All Department Attendance
+                  Create All Department Attendance <i className="bi bi-check-all"></i>
                 </button>
               )}
           </span>
         </div>
         <div className="card-body">
-          <div className="d-flex gap4 h_scroller mb24">
+          <div className="d-flex gap4" style={{flexWrap:"wrap",gap:"10px"}}>
             {departmentdata.map((option) => {
               const isDeptInSalary =
                 Array.isArray(deptSalary) &&
@@ -528,39 +549,28 @@ const Attendence = () => {
               }`;
 
               return (
-                <button
-                  className={className}
+                <div
+                  className="card hover body-padding"
+                  style={{height:"100px" ,minWidth:"300px",display:"flex",justifyContent:"center",alignItems:"flex-start", gap:"10px",cursor:"pointer",border:"1px solid var(--primary)",padding:"10px"}}
                   onClick={() => setDepartment(option.dept_id)}
                 >
+                  <div className="pack  " style={{width:"100%",display:"flex",flexDirection:"row" ,justifyContent:"flex-start",alignItems:"center",gap:"20px"}}>
+                    <div className="rounded-circle circle-card"  >
+                    <i class="bi bi-bounding-box"></i>
+                    </div>
                   {option.dept_name}
-                </button>
+                  </div>
+                </div>
               );
             })}
           </div>
 
           <h6>
-            <span style={{ color: "green" }}>Active : {activeusers}</span>
+            <span style={{ color: "green",padding:"10px" }}>Active : {activeusers}</span>
           </h6>
         </div>
       </div>
-      {filterData?.length !== 0 && filterData[0]?.attendence_generated == 0 && (
-        <button
-          className="btn btn-primary"
-          onClick={(e) => handleCreateSalary(e)}
-        >
-          Complete Attendance
-        </button>
-      )}
-      <div className="form-group col-3">
-        {filterData?.length == 0 &&
-          department &&
-          selectedMonth &&
-          selectedYear && (
-            <button onClick={handleAttendence} className="btn btn-warning">
-              No Absents, Create Attendance
-            </button>
-          )}
-      </div>
+      
       <div className="card">
         <div className="data_tbl table-responsive footer_none">
           {filterData?.length > 0 && (

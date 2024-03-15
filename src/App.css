@@ -33,9 +33,10 @@
 
 /* sidebar menu color */
 .asset_chart {
-  margin-top: -50px;
+  
   display: flex;
   justify-content: space-evenly;
+  gap:10px;
   align-items: center;
 }
 
@@ -211,6 +212,7 @@ i.bi{
 .additional-titles {
   display: flex;
   gap: 20px;
+  z-index: 3;
 }
 
 .additional-titles h2 {
@@ -226,7 +228,9 @@ i.bi{
 .additional-titles h2 a {
   color: #007bff;
 }
-
+.form_heading_action{
+  z-index: 1;
+}
 .form_heading_action button {
   box-shadow: none;
   outline: none;
@@ -1048,7 +1052,7 @@ label.checkbox-inline.propscss {
   background-color: var(--bg-white);
   background-clip: border-box;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 24px;
   padding: 16px 16px;
 }
 
@@ -1061,10 +1065,18 @@ label.checkbox-inline.propscss {
   background-color: var(--bg-white);
   background-clip: border-box;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px 12px;
+  /* border-radius: var(--radius); */
+  /* padding: 16px 12px; */
   gap: 16px 0px;
   min-width: 140px;
+  /* cursor: pointer; */
+  /* min-width: 135px; */
+  height: 100%;
+  border-radius: 12px;
+  /* border: 1px solid var(--border); */
+  
+  gap: 16px;
+  padding: 20px;
 }
 
 .timeline_slideItem h2 {
@@ -1072,10 +1084,13 @@ label.checkbox-inline.propscss {
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 20px;
+  /* font-size: 20px; */
   line-height: 24px;
   font-weight: 500;
   text-transform: uppercase;
+  font-size: 12px;
+                /* font-weight: 500; */
+                margin: 0;
 }
 
 .timeline_slideItem h2 span {
@@ -1083,7 +1098,18 @@ label.checkbox-inline.propscss {
   line-height: 30px;
   font-weight: 500;
 }
-
+.timeline_slideItem h4{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 54px;
+  height: 28px;
+  border-radius: 60px;
+  padding: 8px 12px 8px 12px;
+  background-color: var(--gray-100);
+  color: var(--medium);
+  font-size: 12px;
+}
 .timeline_slideItem h3 {
   color: var(--gray-500);
   font-size: 14px;
@@ -1092,6 +1118,7 @@ label.checkbox-inline.propscss {
   display: flex;
   align-items: center;
   gap: 0px 6px;
+ 
 }
 
 .timeline_slideItem h3 span {
@@ -1226,7 +1253,7 @@ label.checkbox-inline.propscss {
   background-color: var(--bg-white);
   background-clip: border-box;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 24px;
   height: 100%;
 }
 
@@ -1235,8 +1262,8 @@ label.checkbox-inline.propscss {
   margin-bottom: 0;
   background-color: transparent;
   border-bottom: 1px solid var(--border);
-  background: rgb(95 69 255 / 20%);
-  border-radius: var(--radius) var(--radius) 0 0;
+  /* background: rgb(95 69 255 / 20%); */
+  border-radius: 24px 24px 0 0;
 }
 
 .salary_dtlCard_head h2 {
@@ -1282,6 +1309,11 @@ label.checkbox-inline.propscss {
 
 .css-5wly58-MuiDataGrid-root .MuiDataGrid-columnHeader--moving {
   background-color: transparent !important;
+}
+
+.custom-btn-2{
+  pointer-events: none;
+  
 }
 .form-group {
   position: relative;
