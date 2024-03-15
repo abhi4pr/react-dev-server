@@ -403,8 +403,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
           )}
 
           {allUserData.offer_later_status && (
-            <span className="btn btn-outline-primary">
-              <FcDownload onClick={downloadOfferLetter} />
+            <span  onClick={downloadOfferLetter}  className="btn btn-outline-primary">
+              <FcDownload/>
               Download
             </span>
           )}
