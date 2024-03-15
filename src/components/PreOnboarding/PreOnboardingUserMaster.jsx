@@ -1370,11 +1370,13 @@ const PreOnboardingUserMaster = () => {
                       <i className="bi bi-file-richtext" />
                     </div>
                   </div>
+                </div>
+                <div className="sidebar_iteminfo">
+                  <div className="pack" style={{flexDirection:"row"}}>
                   <h2 className="document_tab_name">Documents</h2>
                   (verified)
                   <h3>{documentPercentage}%</h3>
-                </div>
-                <div className="sidebar_iteminfo">
+                  </div>
                   <h3>
                     Mandatory <span>{showMandotaryPer}%</span>
                   </h3>
@@ -1748,8 +1750,8 @@ const PreOnboardingUserMaster = () => {
                                 value={dateOfBirth}
                                 onChange={(e) => setDateOfBirth(e.target.value)}
                               />
+                                     
                             </div>
-
                             <div className="form-group">
                               <TextField
                                 id="outlined-basic"
