@@ -41,7 +41,7 @@ const DocumentTabUserSingle = (id) => {
       const response = await axios.put(baseUrl + "update_user_doc", payload);
       setRejectReason("");
       setRejectReasonActive("");
-      status == "Approved" && toastAlert(Approved);
+      status == "Approved" && toastAlert(status);
       status == "Rejected" && toastError(status);
       getDocuments();
     } catch (error) {

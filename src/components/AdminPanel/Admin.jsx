@@ -55,8 +55,6 @@ import PlatformUpdate from "./Platform/PlatformUpdate";
 import DeclinedOrder from "../Pantry/DeclinedOrder/DeclinedOrder";
 import UserDirectory from "./User/UserDirectory";
 import AdminPreOnboarding from "./AdminPreOnboarding/AdminPreOnboarding";
-import AnnoucementPost from "./Announcement/AnnoucementPost";
-import AnnouncementView from "./Announcement/AnnouncementView";
 import Attendence from "./WFH/Attendence";
 import AttendanceOverview from "./WFH/AttendanceOverview";
 import UserDashboard from "./User/UserDashboard/UserDashboard";
@@ -260,7 +258,9 @@ import RepairRetrunSummary from "../Sim/RepairRetrunSummary";
 import VendorPagePriceOverview from "./PageMS/VendorPagePriceOverview";
 import VendorPagePriceMaster from "./PageMS/VendorPagePriceMaster";
 import EditVendorPagePrice from "./PageMS/EditVendorPagePrice";
-import PageEdit from './PageMS/PageEdit'
+import PageEdit from "./PageMS/PageEdit";
+import AnnouncementPost from "./Announcement/AnnoucementPost";
+import AnnouncementView from "./Announcement/AnnouncementView";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -822,11 +822,11 @@ const Admin = () => {
                     element={<PreonboardingDocumentsUpdate />}
                   />
                   <Route
-                    path="/annoucement-post"
-                    element={<AnnoucementPost />}
+                    path="/announcement-post"
+                    element={<AnnouncementPost />}
                   />
                   <Route
-                    path="/annoucement-view"
+                    path="/announcement-view"
                     element={<AnnouncementView />}
                   />
                   <Route path="/reason" element={<Reason />} />
@@ -1186,7 +1186,10 @@ const Admin = () => {
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />
                   <Route path="/pms-profile-type" element={<ProfileType />} />
-                  <Route path="/pms-page-ownership" element={<PageOwnership />} />
+                  <Route
+                    path="/pms-page-ownership"
+                    element={<PageOwnership />}
+                  />
                   <Route path="/pms-platform" element={<PmsPlatform />} />
                   <Route path="/pms-pay-method" element={<PayMethod />} />
                   <Route path="/pms-pay-cycle" element={<PayCycle />} />
@@ -1199,17 +1202,40 @@ const Admin = () => {
                     element={<VendorEdit />}
                   />
                   <Route path="/pms-vendor-master" element={<VendorMaster />} />
-                  <Route path="/pms-vendor-overview" element={<VendorOverview />} />
-                  <Route path="/pms-price-type" element={<PMSpriceTypeMast />} />
-                  <Route path="/pms-platform-price-type" element={<PMSplatformPriceTypeMast />} />
-                  <Route path="/pms-vendor-group-link" element={<VendorGroupLink />} />
+                  <Route
+                    path="/pms-vendor-overview"
+                    element={<VendorOverview />}
+                  />
+                  <Route
+                    path="/pms-price-type"
+                    element={<PMSpriceTypeMast />}
+                  />
+                  <Route
+                    path="/pms-platform-price-type"
+                    element={<PMSplatformPriceTypeMast />}
+                  />
+                  <Route
+                    path="/pms-vendor-group-link"
+                    element={<VendorGroupLink />}
+                  />
                   <Route path="/pms-page-master" element={<PageMaster />} />
                   <Route path="/pms-page-overview" element={<PageOverview />} />
-                  <Route path="/pms-page-edit/:pageMast_id" element={<PageEdit />} />
-                  <Route path="/pms-vendor-page-price-overview" element={<VendorPagePriceOverview />} />
-                  <Route path="/pms-vendor-page-price-master" element={<VendorPagePriceMaster/>} />
-                  <Route path="/pms-vendor-page-price-master/:id" element={<EditVendorPagePrice/>} />
-
+                  <Route
+                    path="/pms-page-edit/:pageMast_id"
+                    element={<PageEdit />}
+                  />
+                  <Route
+                    path="/pms-vendor-page-price-overview"
+                    element={<VendorPagePriceOverview />}
+                  />
+                  <Route
+                    path="/pms-vendor-page-price-master"
+                    element={<VendorPagePriceMaster />}
+                  />
+                  <Route
+                    path="/pms-vendor-page-price-master/:id"
+                    element={<EditVendorPagePrice />}
+                  />
                 </Route>
               </Routes>
             </div>
