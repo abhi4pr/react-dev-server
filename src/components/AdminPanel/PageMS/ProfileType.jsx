@@ -10,7 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
 const ProfileType = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
  // const [typeName, setTypeName] = useState("");
   const [description, setDescription] = useState("");
   const [data,setData]=useState([]);  
@@ -39,7 +39,7 @@ const ProfileType = () => {
 
   useEffect(() => {
     const result = data?.filter((d) => {
-      return d.type_name?.toLowerCase().match(search.toLowerCase()); 
+      return d.profile_type?.toLowerCase().match(search.toLowerCase()); 
     });
     setFilterData(result);
   }, [search]);
@@ -107,6 +107,10 @@ const ProfileType = () => {
   };
 
   const handleModalUpdate = () => {
+    if (profileUpdate === "") {
+      toastError("Profile Type is required");
+      return;
+    }
     axios.put(baseUrl + `updateProfile/${rowData._id}`, { 
       profile_type: profileUpdate, 
       description: descriptionUpdate,
@@ -190,7 +194,7 @@ const ProfileType = () => {
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-primary" data-dismiss="modal">Close</button>
-              <button type="button" className="btn btn-success" onClick={handleModalUpdate} data-dismiss="modal">Update</button>
+              <button type="button" className="btn btn-success" onClick={handleModalUpdate} data-dismiss={`${profileUpdate === "" ?"": 'modal'}`} >Update</button>
             </div>
           </div>
 

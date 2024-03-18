@@ -11,7 +11,8 @@ import { DataGrid } from "@mui/x-data-grid";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import axios from "axios";
-import { set } from "date-fns";
+import { baseUrl } from "../../../utils/config";
+
 
 export default function ShowDataModal({
   handleClose,
@@ -52,14 +53,20 @@ export default function ShowDataModal({
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        },
+        }
       )
       .then((res) => {
         console.log(res);
         if (res.data.message === "Update successful.") {
-
-          setAknowledgementDialog(false)
-          handleClose(false)
+          axios
+            .delete(baseUrl+"deletephpvendorpaymentrequest/" + rows[0].request_id
+            )
+            .then((res) => {
+              console.log(res);
+              console.log("Deleted");
+            });
+          setAknowledgementDialog(false);
+          handleClose(false);
           callApi();
         }
       })

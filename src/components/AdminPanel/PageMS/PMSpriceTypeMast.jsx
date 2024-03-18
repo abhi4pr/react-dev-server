@@ -10,7 +10,7 @@ import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../Context/Context";
 
 export default function PMSpriceTypeMast() {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert , toastError } = useGlobalContext();
   const [priceType, setPriceType] = useState("");
   const [description, setDescription] = useState("");
   const [data, setData] = useState([]);
@@ -64,6 +64,10 @@ export default function PMSpriceTypeMast() {
   };
 
   const handleModalUpdate = () => {
+    if (priceTypeUpdate === "") {
+      toastError("Please fill all the fields");
+      return;
+    }
     axios
       .put(baseUrl + `updatePrice/${rowData._id}`, {
         price_type: priceTypeUpdate,
@@ -197,7 +201,7 @@ export default function PMSpriceTypeMast() {
                 type="button"
                 className="btn btn-success"
                 onClick={handleModalUpdate}
-                data-dismiss="modal"
+                data-dismiss={`${priceTypeUpdate === "" ?"": 'modal'}`}
               >
                 Update
               </button>

@@ -7,6 +7,7 @@ import {
   TextField,
   DialogTitle,
   DialogContent,
+  Badge,
 } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import axios from "axios";
@@ -20,8 +21,19 @@ import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useGlobalContext } from "../../../Context/Context";
+import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsActiveTwoTone";
+import ShowDataModal from "./ShowDataModal";
+import jwtDecode from "jwt-decode";
 
 export default function PurchaseManagementAllTransaction() {
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const userID = decodedToken.id;
+  const [aknowledgementDialog, setAknowledgementDialog] = useState(false);
+  const [remainderDialog, setRemainderDialog] = useState(false);
+  const [reminderData, setReminderData] = useState([]);
+  const [phpRemainderData, setPhpRemainderData] = useState([]);
+  const [userName, setUserName] = useState("");
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -72,12 +84,7 @@ export default function PurchaseManagementAllTransaction() {
         )
         .then((res) => {
           setPhpData(res.data.body);
-          // let y = res.data.body.filter((item) => {
-          //   return x.some((item2) =>( item.request_id == item2.request_id));
-          // });
-          // console.log(res.data.body.filter((item) => {
-          //   return x.some((item2) =>( item.request_id == item2.request_id));
-          // }),'y')
+
           let y = res.data.body;
           setData(y);
           setFilterData(y);
@@ -112,38 +119,83 @@ export default function PurchaseManagementAllTransaction() {
           });
           setUniqueVendorData(uvData);
         });
-    });
-    // console.log(y, "y");
-    // let y = x;
 
-    // let u = res.data.body.filter((item) => {
-    //   return !y.some((item2) => item.request_id == item2.request_id);
-    // });
-    // console.log(u, "u");
-    // setData(u);
-    // setFilterData(u);
+        axios
+        .get(
+          "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
+        )
+        .then((res) => {
+          setPhpRemainderData(res.data.body);
+        });
+  
+      axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
+        setUserName(res.data.user_name);
+      });
+    });
+    
   };
 
-  // const handleOpenSameVender = (vendorName) => {
-  //   setSameVendorDialog(true);
 
-  //   const sameNameVendors = data.filter(
-  //     (item) => item.vendor_name === vendorName
-  //   );
-  // Calculate the total amount for vendors with the same name
-  // const totalAmount = sameNameVendors.reduce(
-  //   (total, item) => total + item.request_amount,
-  //   0
-  // );
+  const remainderDialogColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = reminderData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "request_date",
+      headerName: "Requested Date",
+      width: 150,
+      renderCell: (params) => {
+        return convertDateToDDMMYYYY(params.row.request_date);
+      },
+    },
+    {
+      field: "remind_remark",
 
-  // Set the selected vendor data including the vendor name, data, and total amount
-  //   setSameVendorData(sameNameVendors);
-  // };
+      headerName: "Remark",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.remark_audit;
+      },
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            <button
+              className="btn btn-sm btn-success"
+              onClick={() => handleAcknowledgeClick(params.row)}
+            >
+              Acknowledge
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
 
+  var handleAcknowledgeClick = () => {
+    setAknowledgementDialog(true);
+  };
+
+  const handleRemainderModal = (reaminderData) => {
+    setReminderData(reaminderData);
+    setRemainderDialog(true);
+  };
+
+ 
   const handleOpenBankDetail = (row) => {
     let x = [];
     x.push(row);
-
     setBankDetailRowData(x);
     setBankDetail(true);
   };
@@ -663,7 +715,26 @@ export default function PurchaseManagementAllTransaction() {
       headerName: "Requested By",
       width: 150,
       renderCell: (params) => {
-        return params.row.name;
+        const reminder = phpRemainderData.filter(
+          (item) => item.request_id == params.row.request_id
+        );
+
+        return (
+          <>
+            <span>{params.row.name}</span> &nbsp;{" "}
+            <span>
+              {reminder.length > 0 ? (
+                <Badge badgeContent={reminder.length} color="primary">
+                  <NotificationsActiveTwoToneIcon
+                    onClick={() => handleRemainderModal(reminder)}
+                  />{" "}
+                </Badge>
+              ) : (
+                ""
+              )}
+            </span>
+          </>
+        );
       },
     },
     {
@@ -673,12 +744,7 @@ export default function PurchaseManagementAllTransaction() {
       renderCell: (params) => {
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{ cursor: "pointer", marginRight: "20px" }}
-              onClick={() => handleOpenSameVender(params.row.vendor_name)}
-            >
-              {params.row.vendor_name}
-            </div>
+            {/* Hold for confirmation of sourabh sir */}
             <Button
               disabled={
                 params.row.payment_details
@@ -689,6 +755,12 @@ export default function PurchaseManagementAllTransaction() {
             >
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
             </Button>
+            <div
+              style={{ cursor: "pointer", marginRight: "20px" }}
+              onClick={() => handleOpenSameVender(params.row.vendor_name)}
+            >
+              {params.row.vendor_name}
+            </div>
           </div>
         );
       },
@@ -1471,7 +1543,7 @@ export default function PurchaseManagementAllTransaction() {
         />
       )}
 
-      <Dialog
+<Dialog
         open={bankDetail}
         onClose={handleCloseBankDetail}
         fullWidth={"md"}
@@ -1496,45 +1568,23 @@ export default function PurchaseManagementAllTransaction() {
           <CloseIcon />
         </IconButton>
 
-        {/* <DataGrid
-          rows={bankDetailRowData}
-          columns={bankDetailColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
-          getRowId={(row) => filterData.indexOf(row)}
-        /> */}
-
         <TextField
           id="outlined-multiline-static"
-          // label="Multiline"
           multiline
-          value={bankDetailRowData[0]?.payment_details}
+          value={
+            bankDetailRowData[0]?.payment_details +
+            "\n" +
+            "Mob:" +
+            bankDetailRowData[0]?.mob1 +
+            "\n" +
+            (bankDetailRowData[0]?.email
+              ? "Email:" + bankDetailRowData[0]?.email
+              : "")
+          }
           rows={4}
           defaultValue="Default Value"
           variant="outlined"
         />
-
         <Button
           onClick={() => {
             navigator.clipboard.writeText(
@@ -1546,6 +1596,20 @@ export default function PurchaseManagementAllTransaction() {
           Copy
         </Button>
       </Dialog>
+
+      {remainderDialog && (
+        <ShowDataModal
+          handleClose={setRemainderDialog}
+          rows={reminderData}
+          columns={remainderDialogColumns}
+          aknowledgementDialog={aknowledgementDialog}
+          setAknowledgementDialog={setAknowledgementDialog}
+          userName={userName}
+          callApi={callApi}
+          setRemainderDialo={setRemainderDialog}
+        />
+      )}
+
     </div>
   );
 }

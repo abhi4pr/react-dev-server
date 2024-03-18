@@ -9,7 +9,7 @@ import { Navigate } from "react-router";
 import Select from "react-select";
 
 const VendorMaster = () => {
-  const { toastAlert,toastError } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [vendorName, setVendorName] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -88,17 +88,42 @@ const VendorMaster = () => {
   const handlePanChange = (e) => {
     const inputValue = e.target.value.toUpperCase();
     // Validate PAN format
-    const panRegex = /[A-Z]{5}[0-9]{4}[A-Z]{1}/;
-    if (!panRegex.test(inputValue)) {
-      toastError('Please enter a valid PAN number');
-    } else{
-      setPan(inputValue);
+    // const panRegex = /[A-Z]{5}[0-9]{4}[A-Z]{1}/;
+    // if (!panRegex.test(inputValue)) {
+    //   toastError('Please enter a valid PAN number');
+    // } else{
+    setPan(inputValue);
 
-    }
+    // }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!vendorName) {
+      toastError("Please enter vendor name");
+      return;
+    } else if (!countryCode) {
+      toastError("Please enter country code");
+      return;
+    } else if (!mobile) {
+      toastError("Please enter mobile number");
+      return;
+    } else if (!email) {
+      toastError("Please enter email");
+      return;
+    } else if (!typeId) {
+      toastError("Please select vendor type");
+      return;
+    } else if (!platformId) {
+      toastError("Please select platform");
+      return;
+    } else if (!payId) {
+      toastError("Please select payment method");
+      return;
+    } else if (!cycleId) {
+      toastError("Please select pay cycle");
+      return;
+    }
 
     const formData = new FormData();
     formData.append("vendorMast_name", vendorName);
@@ -200,6 +225,7 @@ const VendorMaster = () => {
               value: option._id,
               label: option.type_name,
             }))}
+            required={true}
             value={{
               value: typeId,
               label:
@@ -220,6 +246,7 @@ const VendorMaster = () => {
               value: option._id,
               label: option.platform_name,
             }))}
+            required={true}
             value={{
               value: platformId,
               label:
@@ -241,6 +268,7 @@ const VendorMaster = () => {
               value: option._id,
               label: option.payMethod_name,
             }))}
+            required={true}
             value={{
               value: payId,
               label:
@@ -262,6 +290,7 @@ const VendorMaster = () => {
               value: option._id,
               label: option.cycle_name,
             }))}
+            required={true}
             value={{
               value: cycleId,
               label:
@@ -278,7 +307,7 @@ const VendorMaster = () => {
           label="PAN"
           value={pan}
           required={false}
-          onChange={ handlePanChange}
+          onChange={handlePanChange}
         />
         <FieldContainer
           type="file"
@@ -292,7 +321,7 @@ const VendorMaster = () => {
           label="GST"
           value={gst}
           required={false}
-          onChange={(e) => setGst((e.target.value).toUpperCase())}
+          onChange={(e) => setGst(e.target.value.toUpperCase())}
         />
         <FieldContainer
           type="file"
@@ -340,6 +369,7 @@ const VendorMaster = () => {
         <FieldContainer
           label="Threshold Limit"
           value={limit}
+          type="number"
           required={false}
           onChange={(e) => setLimit(e.target.value)}
         />
@@ -364,6 +394,20 @@ const VendorMaster = () => {
           required={false}
           onChange={(e) => setHomeState(e.target.value)}
         />
+        {panImage && (
+          <img
+            src={URL.createObjectURL(panImage)}
+            alt="pan"
+            style={{ width: "100px", height: "100px" }}
+          />
+        )}
+        {gstImage && (
+          <img
+            src={URL.createObjectURL(gstImage)}
+            alt="gst"
+            style={{ width: "100px", height: "100px" }}
+          />
+        )}
       </FormContainer>
     </>
   );

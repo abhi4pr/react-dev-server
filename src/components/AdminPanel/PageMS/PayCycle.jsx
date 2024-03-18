@@ -10,7 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
 const PayCycle = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [cycleName, setCycleName] = useState("");
   const [description, setDescription] = useState("");
   // const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -107,6 +107,10 @@ const PayCycle = () => {
   }
 
   const handleModalUpdate = () => {
+    if(cycleUpdate === ""){
+      toastError("Please fill the required field");
+      return;
+    }
     axios.put(baseUrl+`updatePayCycle/${rowData._id}`, {
       cycle_name: cycleUpdate,
       description: descriptionUpdate,
@@ -197,7 +201,7 @@ const PayCycle = () => {
               <button type="button" 
                 className="btn btn-success" 
                 onClick={handleModalUpdate}
-                data-dismiss="modal"
+                data-dismiss={`${cycleUpdate === "" ?"": 'modal'}`}
               >Update</button>
             </div>
           </div>

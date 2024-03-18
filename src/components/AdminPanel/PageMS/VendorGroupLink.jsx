@@ -59,6 +59,19 @@ const VendorGroupLink = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if(groupLink === "" ){  
+      toastError("Please Fill  Group Link  ");
+      return;
+    }
+    else if(vendorId === "" ){
+      toastError("Please Fill  Vendor Id  ");
+      return;
+    }
+    else if(linkTypeId === "" ){
+      toastError("Please Fill  Group Link Type Id  ");
+      return;
+    }
+
     axios.post(baseUrl + "addVendorGroup", {
       vendorMast_id: vendorId,
       group_link_type_id: linkTypeId,
@@ -131,6 +144,19 @@ const VendorGroupLink = () => {
   }
 
   const handleModalUpdate = () => {
+    if(groupLinkUpdate === "" ){
+      toastError("Please Fill  Group Link  ");
+      return;
+    }
+    else if(vendorIdUpdate === "" ){  
+      toastError("Please Fill  Vendor Id  ");
+      return;
+    }
+    else if(linkTypeIdUpdate === "" ){  
+      toastError("Please Fill  Group Link Type Id  ");
+      return;
+    }
+
     axios.put(baseUrl+`updateVendorGroup/${rowData._id}`, {
       vendorMast_id: vendorIdUpdate,
       group_link_type_id: linkTypeIdUpdate,
@@ -178,6 +204,7 @@ const VendorGroupLink = () => {
               value: option.vendorMast_id,
               label: option.vendorMast_name,
             }))}
+            required={true}
             value={{
               value: vendorId,
               label:
@@ -200,6 +227,7 @@ const VendorGroupLink = () => {
               value: option._id,
               label: option.link_type,
             }))}
+            required={true}
             value={{
               value: linkTypeId,
               label:
@@ -312,7 +340,7 @@ const VendorGroupLink = () => {
               <button type="button" 
                 className="btn btn-success" 
                 onClick={handleModalUpdate}
-                data-dismiss="modal"
+                  data-dismiss={`${groupLinkUpdate === "" ?"": 'modal'}`}
               >Update</button>
             </div>
           </div>

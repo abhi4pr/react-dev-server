@@ -1599,51 +1599,41 @@ const SidebarLinks = () => {
       {/* {isUserManagementVisible && ( */}
 
       {/* {isCustomer && ( */}
-        <li className="nav-item">
-          <Link
-            className="nav-btn nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#customer"
-            aria-expanded="true"
-            aria-controls="customer"
-          >
-            <i className="bi bi-person-gear" />
-            <span>Customer</span>
-          </Link>
-          <div
-            id="customer"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            // data-parent="#accordionSidebar"
-          >
-            <div className="internal collapse-inner">
-              <>
-                <Link
-                  className="collapse-item"
-                  to="/admin/customer-master"
-                >
-                  <i class="bi bi-dot"></i> Customer Master
-                </Link>
+      <li className="nav-item">
+        <Link
+          className="nav-btn nav-link collapsed"
+          data-toggle="collapse"
+          data-target="#customer"
+          aria-expanded="true"
+          aria-controls="customer"
+        >
+          <i className="bi bi-person-gear" />
+          <span>Customer</span>
+        </Link>
+        <div
+          id="customer"
+          className="collapse"
+          aria-labelledby="headingTwo"
+          // data-parent="#accordionSidebar"
+        >
+          <div className="internal collapse-inner">
+            <>
+              <Link className="collapse-item" to="/admin/customer-master">
+                <i class="bi bi-dot"></i> Customer Master
+              </Link>
 
-                <Link
-                  className="collapse-item"
-                  to="/admin/account-master"
-                >
-                  <i class="bi bi-dot"></i> Account Master
-                </Link>
+              <Link className="collapse-item" to="/admin/account-master">
+                <i class="bi bi-dot"></i> Account Master
+              </Link>
 
-                <Link
-                  className="collapse-item"
-                  to="/admin/ownership-master"
-                >
-                  <i class="bi bi-dot"></i> Ownership Master
-                </Link>
-              </>
-            </div>
+              <Link className="collapse-item" to="/admin/ownership-master">
+                <i class="bi bi-dot"></i> Ownership Master
+              </Link>
+            </>
           </div>
-        </li>
+        </div>
+      </li>
       {/* )} */}
-
 
       <li className="nav-item">
         <Link
@@ -1666,81 +1656,102 @@ const SidebarLinks = () => {
             {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
+                <Link className="collapse-item" to="/admin/pms-master">
+                  <i className="bi bi-dot"></i>Master
+                </Link>
+              )}
+            {contextData &&
+              contextData[0] &&
+              contextData[0].view_value === 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pms-page-overview"
+                >
+                  <i className="bi bi-dot"></i>Page
+                </Link>
+              )} 
+              {contextData &&
+              contextData[0] &&
+              contextData[0].view_value === 1 && (
+                <Link
+                  className="collapse-item"
+                  to="/admin/pms-vendor-overview"
+                >
+                  <i className="bi bi-dot"></i>Vendor
+                </Link>
+              )}
+            {/* {contextData &&
+              contextData[0] &&
+              contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-vendor-type">
                   <i className="bi bi-dot"></i>Vendor Type
                 </Link>
-              )}
+              )} */}
 
-            {contextData &&
+
+
+            {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-category">
                   <i className="bi bi-dot"></i> Page Category
                 </Link>
-              )}
+              )} */} 
 
-            {contextData &&
+            {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-profile-type">
                   <i className="bi bi-dot"></i> Profile Type
                 </Link>
-              )}
+              )} */}
 
-            {contextData &&
+            {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-ownership">
                   <i className="bi bi-dot"></i> Page Ownership
                 </Link>
-              )}
+              )} */}
 
-            {contextData &&
-              contextData[0] &&
-              contextData[0].view_value === 1 && (
-                <Link className="collapse-item" to="/admin/pms-profile-type">
-                  <i className="bi bi-dot"></i> Profile Type
-                </Link>
-              )}
-
-            {contextData &&
+            {/* {contextData &&
               contextData[21] &&
               contextData[21].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-platform">
                   <i className="bi bi-dot"></i> Platform
                 </Link>
-              )}
+              )} */}
 
-            {contextData &&
+            {/* {contextData &&
               contextData[1] &&
               contextData[1].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-pay-method">
                   <i className="bi bi-dot"></i> Payment Method
                 </Link>
-              )}
-            {contextData &&
+              )} */}
+            {/* {contextData &&
               contextData[2] &&
               contextData[2].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-pay-cycle">
                   <i className="bi bi-dot"></i> Payment Cycle
                 </Link>
-              )}
+              )} */}
 
-            {contextData &&
+            {/* {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-group-link-type">
                   <i className="bi bi-dot"></i> Group Link Type
                 </Link>
-              )}
-            {contextData &&
+              )} */}
+            {/* {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-price-type">
                   <i className="bi bi-dot"></i> Price
                 </Link>
-              )}
-            {contextData &&
+              )} */}
+            {/* {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link
@@ -1749,8 +1760,8 @@ const SidebarLinks = () => {
                 >
                   <i className="bi bi-dot"></i>Platform Price
                 </Link>
-              )}
-            {contextData &&
+              )} */}
+            {/* {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link
@@ -1759,17 +1770,17 @@ const SidebarLinks = () => {
                 >
                   <i className="bi bi-dot"></i> Vendor Page Price Overview
                 </Link>
-              )}
+              )} */}
 
-            <Link className="collapse-item" to="/admin/pms-vendor-overview">
+            {/* <Link className="collapse-item" to="/admin/pms-vendor-overview">
               <i className="bi bi-dot"></i> Vendor Overview
-            </Link>
-            <Link className="collapse-item" to="/admin/pms-vendor-group-link">
+            </Link> */}
+            {/* <Link className="collapse-item" to="/admin/pms-vendor-group-link">
               <i className="bi bi-dot"></i>Vendor Group Link
-            </Link>
-            <Link className="collapse-item" to="/admin/pms-page-overview">
+            </Link> */}
+            {/* <Link className="collapse-item" to="/admin/pms-page-overview">
               <i className="bi bi-dot"></i> Page Overview
-            </Link>
+            </Link> */}
           </div>
         </div>
       </li>

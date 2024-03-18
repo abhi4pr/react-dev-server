@@ -7,7 +7,7 @@ import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import { Navigate, useParams } from "react-router";
 import Select from "react-select";
-import './Tagcss.css';
+import "./Tagcss.css";
 
 const PageEdit = () => {
   const { toastAlert } = useGlobalContext();
@@ -21,16 +21,16 @@ const PageEdit = () => {
   const [tag, setTag] = useState([]);
   const [pageLevel, setPageLevel] = useState("");
   const [pageStatus, setPageStatus] = useState("");
-  const [userData, setUserData] = useState([])
-  const [closeBy, setCloseBy] = useState("")
+  const [userData, setUserData] = useState([]);
+  const [closeBy, setCloseBy] = useState("");
   const [pageType, setPageType] = useState("");
   const [content, setContent] = useState("");
-  const [ownerType, setOwnerType] = useState("")
-  const [vendorData, setVendorData] = useState([])
-  const [vendorId, setVendorId] = useState("")
-  const [followCount, setFollowCount] = useState("")
-  const [profileData, setProfileData] = useState([])
-  const [profileId, setProfileId] = useState("")
+  const [ownerType, setOwnerType] = useState("");
+  const [vendorData, setVendorData] = useState([]);
+  const [vendorId, setVendorId] = useState("");
+  const [followCount, setFollowCount] = useState("");
+  const [profileData, setProfileData] = useState([]);
+  const [profileId, setProfileId] = useState("");
   const [platformActive, setPlatformActive] = useState("");
   const [rate, setRate] = useState("");
   const [description, setDescription] = useState("");
@@ -41,39 +41,29 @@ const PageEdit = () => {
 
   const { pageMast_id } = useParams();
 
-  const PageLevels =  [
+  const PageLevels = [
     { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" }
+    { value: "Hindi", label: "Hindi" },
   ];
 
-  const PageStatus =  [
+  const PageStatus = [
     { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" }
+    { value: "Hindi", label: "Hindi" },
   ];
 
-  const PageTypes =  [
+  const PageTypes = [
     { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" }
+    { value: "Hindi", label: "Hindi" },
   ];
-  
-  const Contents =  [
+
+  const Contents = [
     { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" }
+    { value: "Hindi", label: "Hindi" },
   ];
 
   const getData = () => {
     axios.get(baseUrl + `getPageDetail/${pageMast_id}`).then((res) => {
-      const data= res.data.data;
-      // platform_price_id: platformPriceId,
-      // pageMast_id: pageMastId,
-      // vendorMast_id: vendorId,
-      // price_type_id: priceTypeId,
-      // price_cal_type: pricecalType,
-      // variable_type: variableType,
-      // price_fixed: priceFixed,
-      // price_variable: priceVariable,
-      // description: description,
-  
+      const data = res.data.data;
       setPlatformId(data[0].platform_id);
       setPageName(data[0].page_user_name);
       setLink(data[0].link);
@@ -91,13 +81,10 @@ const PageEdit = () => {
       setPlatformActive(data[0].platform_active_on);
       setRate(data[0].engagment_rate);
       setDescription(data[0].description);
-
-
-
     });
 
     axios.get(baseUrl + "getAllPlatform").then((res) => {
-    setPlatformData(res.data.data);
+      setPlatformData(res.data.data);
     });
 
     axios.get(baseUrl + "getPageCatgList").then((res) => {
@@ -124,26 +111,88 @@ const PageEdit = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    if(!pageName) {
+      toastAlert("Page Name is required");
+      return;
+    }
+    else if(!link) {
+      toastAlert("Link is required");
+      return;
+    }
+    else if(!platformId) {
+      toastAlert("Platform ID is required");
+      return;
+    }
+    else if(!categoryId) {
+      toastAlert("Category is required");
+      return;
+    }
+    else if(!pageLevel) {
+      toastAlert("Page Level is required");
+      return;
+    }
+    else if(!pageStatus) {
+      toastAlert("Page Status is required");
+      return;
+    }
+    else if(!closeBy) {
+      toastAlert("Close by is required");
+      return;
+    }
+    else if(!pageType) {
+      toastAlert("Page Name Type is required");
+      return;
+    }
+    else if(!content) {
+      toastAlert("Content Creation is required");
+      return;
+    }
+    else if(!ownerType) {
+      toastAlert("Ownership type is required");
+      return;
+    }
+    else if(!vendorId) {
+      toastAlert("Vendor is required");
+      return;
+
+    }
+    else if(!followCount) {
+      toastAlert("Followers Count is required");
+      return;
+    }
+    else if(!profileId) {
+      toastAlert("Profile Type is required");
+      return;
+    }
+    else if(!platformActive) {
+      toastAlert("Platform active on is required");
+      return;
+    }
+    else if(!rate) {
+      toastAlert("Engagement Rate is required");
+      return;
+    }
+
     const payload = {
-        page_user_name: pageName,
-        link: link,
-        platform_id: platformId,
-        page_catg_id: categoryId,
-        tag_category: tag,
-        page_level: pageLevel,
-        page_status: pageStatus,
-        page_closed_by: closeBy,
-        page_name_type: pageType,
-        content_creation: content,
-        ownership_type: ownerType,
-        vendorMast_id: vendorId,
-        followers_count: followCount,
-        profile_type_id: profileId,
-        platform_active_on: platformActive,
-        engagment_rate: rate,
-        description: description,
-        updated_by: userID,
-    }   
+      page_user_name: pageName,
+      link: link,
+      platform_id: platformId,
+      page_catg_id: categoryId,
+      tag_category: tag,
+      page_level: pageLevel,
+      page_status: pageStatus,
+      page_closed_by: closeBy,
+      page_name_type: pageType,
+      content_creation: content,
+      ownership_type: ownerType,
+      vendorMast_id: vendorId,
+      followers_count: followCount,
+      profile_type_id: profileId,
+      platform_active_on: platformActive,
+      engagment_rate: rate,
+      description: description,
+      updated_by: userID,
+    };
 
     axios.put(baseUrl + `updatePage/${pageMast_id}`, payload).then(() => {
       setIsFormSubmitted(true);
@@ -155,17 +204,16 @@ const PageEdit = () => {
     return <Navigate to="/admin/pms-page-overview" />;
   }
 
-  function handleKeyDown(e){
-    if (e.key === ',' && e.target.value.trim()) {
+  function handleKeyDown(e) {
+    if (e.key === "," && e.target.value.trim()) {
       e.preventDefault();
       setTag([...tag, e.target.value.trim()]);
-      e.target.value = '';
+      e.target.value = "";
     }
-    console.log('ffffffffff',tag)
   }
 
-  function removeTag(index){
-      setTag(tag.filter((el, i) => i !== index))
+  function removeTag(index) {
+    setTag(tag.filter((el, i) => i !== index));
   }
 
   return (
@@ -201,7 +249,8 @@ const PageEdit = () => {
             value={{
               value: platformId,
               label:
-                platformData.find((role) => role._id === platformId)?.platform_name || "",
+                platformData.find((role) => role._id === platformId)
+                  ?.platform_name || "",
             }}
             onChange={(e) => {
               setPlatformId(e.value);
@@ -230,27 +279,22 @@ const PageEdit = () => {
           ></Select>
         </div>
 
-        {/* <FieldContainer
-          label="Tag"
-          value={tag}
-          required={false}
-          placeholder="Comma separated values"
-          onChange={(e) => setTag(e.target.value.split(','))}
-        /> */}
-
-        <label className="form-label">
-          Tags
-        </label>
+        <label className="form-label">Tags</label>
         <div className="tags-input-container">
-            { tag?.map((tag, index) => (
-
-              <div className="tag-item" key={index}>
-                {console.log('tags', tag)}
-                    <span className="text">{tag}</span>
-                    <span className="close" onClick={() => removeTag(index)}>&times;</span>
-                </div>
-            )) }
-            <input onKeyDown={handleKeyDown} type="text" className="tags-input" placeholder="comma separated values" />
+          {tag?.map((tag, index) => (
+            <div className="tag-item" key={index}>
+              <span className="text">{tag}</span>
+              <span className="close" onClick={() => removeTag(index)}>
+                &times;
+              </span>
+            </div>
+          ))}
+          <input
+            onKeyDown={handleKeyDown}
+            type="text"
+            className="tags-input"
+            placeholder="comma separated values"
+          />
         </div>
 
         <div className="form-group col-6">
@@ -262,7 +306,7 @@ const PageEdit = () => {
             options={PageLevels}
             className="basic-multi-select"
             classNamePrefix="select"
-            value={PageLevels.find(option => option.value === pageLevel)}
+            value={PageLevels.find((option) => option.value === pageLevel)}
             onChange={(selectedOption) => setPageLevel(selectedOption.value)}
           />
         </div>
@@ -276,8 +320,8 @@ const PageEdit = () => {
             options={PageStatus}
             className="basic-multi-select"
             classNamePrefix="select"
-            value={PageStatus.find(option => option.value == pageStatus)}
-            onChange={(selectedOption)=> setPageStatus(selectedOption.value)}
+            value={PageStatus.find((option) => option.value == pageStatus)}
+            onChange={(selectedOption) => setPageStatus(selectedOption.value)}
           />
         </div>
 
@@ -293,8 +337,8 @@ const PageEdit = () => {
             value={{
               value: closeBy,
               label:
-                userData.find((role) => role.user_id === closeBy)
-                  ?.user_name || "",
+                userData.find((role) => role.user_id === closeBy)?.user_name ||
+                "",
             }}
             onChange={(e) => {
               setCloseBy(e.value);
@@ -311,8 +355,8 @@ const PageEdit = () => {
             options={PageTypes}
             className="basic-multi-select"
             classNamePrefix="select"
-            value={PageTypes.find(option=>option.value == pageType)}
-            onChange={(selectedOption)=> setPageType(selectedOption.value)}
+            value={PageTypes.find((option) => option.value == pageType)}
+            onChange={(selectedOption) => setPageType(selectedOption.value)}
           />
         </div>
 
@@ -325,8 +369,8 @@ const PageEdit = () => {
             options={Contents}
             className="basic-multi-select"
             classNamePrefix="select"
-            value={Contents.find(option => option.value == content)}
-            onChange={(selectedOption)=> setContent(selectedOption.value)}
+            value={Contents.find((option) => option.value == content)}
+            onChange={(selectedOption) => setContent(selectedOption.value)}
           />
         </div>
 
@@ -408,7 +452,6 @@ const PageEdit = () => {
           required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
-
       </FormContainer>
     </>
   );

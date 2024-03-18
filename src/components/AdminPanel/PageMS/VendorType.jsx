@@ -10,7 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
 const VendorType = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [typeName, setTypeName] = useState("");
   const [description, setDescription] = useState("");
   // const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -107,6 +107,10 @@ const VendorType = () => {
   }
 
   const handleModalUpdate = () => {
+    if(typeNameUpdate === "" ){
+      toastError("Please Fill  Type Name  ");
+      return;
+    }
     axios.put(baseUrl+`updateVendor/${rowData._id}`, {
       type_name: typeNameUpdate,
       description: descriptionUpdate,
@@ -197,7 +201,7 @@ const VendorType = () => {
               <button type="button" 
                 className="btn btn-success" 
                 onClick={handleModalUpdate}
-                data-dismiss="modal"
+                 data-dismiss={`${typeNameUpdate === "" ?"": 'modal'}`}
               >Update</button>
             </div>
           </div>

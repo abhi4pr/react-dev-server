@@ -10,7 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
 const GroupLinkType = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [groupLink, setGroupLink] = useState("");
   const [description, setDescription] = useState("");
   // const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -107,6 +107,10 @@ const GroupLinkType = () => {
   }
 
   const handleModalUpdate = () => {
+    if(groupLinkUpdate === ""){
+      toastError("Group Link Type is required");
+      return;
+    }
     axios.put(baseUrl+`updateGroupLink/${rowData._id}`, {
       link_type: groupLinkUpdate,
       description: descriptionUpdate,
@@ -197,7 +201,7 @@ const GroupLinkType = () => {
               <button type="button" 
                 className="btn btn-success" 
                 onClick={handleModalUpdate}
-                data-dismiss="modal"
+                data-dismiss={`${groupLinkUpdate === "" ?"": 'modal'}`}
               >Update</button>
             </div>
           </div>

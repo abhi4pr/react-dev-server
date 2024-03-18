@@ -6,6 +6,7 @@ import ImageView from "./ImageView";
 import { baseUrl } from "../../../utils/config";
 import {
   Autocomplete,
+  Badge,
   Button,
   Dialog,
   DialogContent,
@@ -15,10 +16,20 @@ import {
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
-import PaymentHistoryDialog from "../../PaymentHistory/PaymentHistoryDialog";
 import { useGlobalContext } from "../../../Context/Context";
+import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsActiveTwoTone";
+import ShowDataModal from "./ShowDataModal";
+import jwtDecode from "jwt-decode";
 
 export default function PaymentDone() {
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const userID = decodedToken.id;
+  const [aknowledgementDialog, setAknowledgementDialog] = useState(false);
+  const [remainderDialog, setRemainderDialog] = useState(false);
+  const [reminderData, setReminderData] = useState([]);
+  const [phpRemainderData, setPhpRemainderData] = useState([]);
+  const [userName, setUserName] = useState("");
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -82,6 +93,74 @@ export default function PaymentDone() {
           setUniqueVendorData(uvData);
         });
     });
+
+    axios
+      .get(
+        "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
+      )
+      .then((res) => {
+        setPhpRemainderData(res.data.body);
+      });
+
+    axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
+      setUserName(res.data.user_name);
+    });
+  };
+
+  const remainderDialogColumns = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      width: 90,
+      editable: false,
+      renderCell: (params) => {
+        const rowIndex = reminderData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "request_date",
+      headerName: "Requested Date",
+      width: 150,
+      renderCell: (params) => {
+        return convertDateToDDMMYYYY(params.row.request_date);
+      },
+    },
+    {
+      field: "remind_remark",
+
+      headerName: "Remark",
+      width: 150,
+      renderCell: (params) => {
+        return params.row.remark_audit;
+      },
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            <button
+              className="btn btn-sm btn-success"
+              onClick={() => handleAcknowledgeClick(params.row)}
+            >
+              Acknowledge
+            </button>
+          </div>
+        );
+      },
+    },
+  ];
+
+  var handleAcknowledgeClick = () => {
+    setAknowledgementDialog(true);
+  };
+
+  const handleRemainderModal = (reaminderData) => {
+    setReminderData(reaminderData);
+    setRemainderDialog(true);
   };
 
   const handleOpenBankDetail = (row) => {
@@ -607,7 +686,26 @@ export default function PaymentDone() {
       headerName: "Requested By",
       width: 150,
       renderCell: (params) => {
-        return params.row.name;
+        const reminder = phpRemainderData.filter(
+          (item) => item.request_id == params.row.request_id
+        );
+
+        return (
+          <>
+            <span>{params.row.name}</span> &nbsp;{" "}
+            <span>
+              {reminder.length > 0 ? (
+                <Badge badgeContent={reminder.length} color="primary">
+                  <NotificationsActiveTwoToneIcon
+                    onClick={() => handleRemainderModal(reminder)}
+                  />{" "}
+                </Badge>
+              ) : (
+                ""
+              )}
+            </span>
+          </>
+        );
       },
     },
     {
@@ -617,12 +715,7 @@ export default function PaymentDone() {
       renderCell: (params) => {
         return (
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{ cursor: "pointer", marginRight: "20px" }}
-              onClick={() => handleOpenSameVender(params.row.vendor_name)}
-            >
-              {params.row.vendor_name}
-            </div>
+            {/* Hold for confirmation of sourabh sir */}
             <Button
               disabled={
                 params.row.payment_details
@@ -633,6 +726,12 @@ export default function PaymentDone() {
             >
               <AccountBalanceIcon style={{ fontSize: "25px" }} />
             </Button>
+            <div
+              style={{ cursor: "pointer", marginRight: "20px" }}
+              onClick={() => handleOpenSameVender(params.row.vendor_name)}
+            >
+              {params.row.vendor_name}
+            </div>
           </div>
         );
       },
@@ -1086,23 +1185,22 @@ export default function PaymentDone() {
         </div>
       </div>
       <div className="card">
-
-      <DataGrid
-        rows={filterData}
-        columns={columns}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
-        disableSelectionOnClick
-        autoHeight
-        slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => filterData.indexOf(row)}
+        <DataGrid
+          rows={filterData}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          autoHeight
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+          getRowId={(row) => filterData.indexOf(row)}
         />
-        </div>
+      </div>
       {openImageDialog && (
         <ImageView
           viewImgSrc={viewImgSrc}
@@ -1135,45 +1233,23 @@ export default function PaymentDone() {
           <CloseIcon />
         </IconButton>
 
-        {/* <DataGrid
-          rows={bankDetailRowData}
-          columns={bankDetailColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
-          getRowId={(row) => filterData.indexOf(row)}
-        /> */}
-
         <TextField
           id="outlined-multiline-static"
-          // label="Multiline"
           multiline
-          value={bankDetailRowData[0]?.payment_details}
+          value={
+            bankDetailRowData[0]?.payment_details +
+            "\n" +
+            "Mob:" +
+            bankDetailRowData[0]?.mob1 +
+            "\n" +
+            (bankDetailRowData[0]?.email
+              ? "Email:" + bankDetailRowData[0]?.email
+              : "")
+          }
           rows={4}
           defaultValue="Default Value"
           variant="outlined"
         />
-
         <Button
           onClick={() => {
             navigator.clipboard.writeText(
@@ -1227,6 +1303,20 @@ export default function PaymentDone() {
           getRowId={(row) => row.request_id}
         />
       </Dialog>
+
+      
+      {remainderDialog && (
+        <ShowDataModal
+          handleClose={setRemainderDialog}
+          rows={reminderData}
+          columns={remainderDialogColumns}
+          aknowledgementDialog={aknowledgementDialog}
+          setAknowledgementDialog={setAknowledgementDialog}
+          userName={userName}
+          callApi={callApi}
+          setRemainderDialo={setRemainderDialog}
+        />
+      )}
     </div>
   );
 }

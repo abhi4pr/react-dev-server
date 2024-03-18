@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 import DeleteButton from "../DeleteButton";
 import { FaEdit } from "react-icons/fa";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 export default function VendorPagePriceOverview() {
   const [data, setData] = React.useState([]);
@@ -94,6 +95,84 @@ export default function VendorPagePriceOverview() {
     },
   ];
 
+  const dataGridcolumns = [
+    {
+      field: "sno",
+      headerName: "S.NO",
+      renderCell: (params) => <div>{filterData.indexOf(params.row) + 1}</div>,
+    },
+    {
+      field: "_id",
+      headerName: "ID",
+      width: 200,
+    },
+    {
+      field: "platform_price_id",
+      headerName: "Platform Price",
+      width: 200,
+    },
+    {
+      field: "pageMast_id",
+      headerName: "Page Master",
+      width: 200,
+    },
+    {
+      field: "vendorMast_id",
+      headerName: "Vendor Master",
+      width: 200,
+    },
+    {
+      field: "price_type_id",
+      headerName: "Price Type",
+      width: 200,
+    },
+    {
+      field: "price_cal_type",
+      headerName: "Price Cal Type",
+      width: 200,
+    },
+    {
+      field: "variable_type",
+      headerName: "Variable Type",
+      width: 200,
+    },
+    {
+      field: "price_fixed",
+      headerName: "Price Fixed",
+      width: 200,
+    },
+    {
+      field: "price_variable",
+      headerName: "Price Variable",
+      width: 200,
+    },
+    {
+      field: "description",
+      headerName: "Description",
+      width: 200,
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 200,
+      renderCell: (params) => (
+        <div className="d-flex">
+          <Link to={`/admin/pms-vendor-page-price-master/${params.row._id}`}>
+            <button title="Edit" className="btn btn-outline-primary">
+              <FaEdit />
+            </button>
+          </Link>
+          <DeleteButton
+            id={params.row._id}
+            endpoint="deleteVendorPagePrice"
+            cid={params.row._id}
+            getData={getData}
+          />
+        </div>
+      ),
+    },
+  ];
+
   return (
     <>
       <Link to={`/admin/pms-vendor-page-price-master`}>
@@ -108,7 +187,7 @@ export default function VendorPagePriceOverview() {
 
       <div className="card">
         <div className="data_tbl table-responsive">
-          <DataTable
+          {/* <DataTable
             title="Vendor Overview"
             columns={columns}
             data={filterData}
@@ -125,6 +204,19 @@ export default function VendorPagePriceOverview() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             }
+          /> */}
+          <DataGrid
+            rows={filterData}
+            columns={dataGridcolumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            getRowId={(row) => row._id}
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
           />
         </div>
       </div>

@@ -5,40 +5,37 @@ import axios from "axios";
 import { baseUrl } from "../../../utils/config";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
-
+import { useGlobalContext } from "../../../Context/Context";
 
 export default function VendorPagePriceMaster() {
-    const Navigate = useNavigate();
-    const [platformPriceList, setPlatformPriceList] = useState([]);
-    const [platformPriceId, setPlatformPriceId] = useState("");
-    const [pageMastList, setPageMastList] = useState([]);
-    const [vendorList, setVendorList] = useState([]);
-    const [pageMastId, setPageMastId] = useState("");
-    const [vendorId, setVendorId] = useState("");
-    const [priceTypeList, setPriceTypeList] = useState([]);
-    const [priceTypeId, setPriceTypeId] = useState("");
-    const [pricecalType, setPriceCalType] = useState("");
-    const [variableType, setVariableType] = useState("");
-    const [priceFixed, setPriceFixed] = useState("");
-    const [priceVariable, setPriceVariable] = useState("");
-    const [description, setDescription] = useState("");
+  const { toastAlert, toastError } = useGlobalContext();
+  const Navigate = useNavigate();
+  const [platformPriceList, setPlatformPriceList] = useState([]);
+  const [platformPriceId, setPlatformPriceId] = useState("");
+  const [pageMastList, setPageMastList] = useState([]);
+  const [vendorList, setVendorList] = useState([]);
+  const [pageMastId, setPageMastId] = useState("");
+  const [vendorId, setVendorId] = useState("");
+  const [priceTypeList, setPriceTypeList] = useState([]);
+  const [priceTypeId, setPriceTypeId] = useState("");
+  const [pricecalType, setPriceCalType] = useState("");
+  const [variableType, setVariableType] = useState("");
+  const [priceFixed, setPriceFixed] = useState("");
+  const [priceVariable, setPriceVariable] = useState("");
+  const [description, setDescription] = useState("");
 
   const getData = () => {
     axios.get(baseUrl + "getPlatformPriceList").then((res) => {
       setPlatformPriceList(res.data.data);
-      console.log(res.data.data, "platform price list");
     });
     axios.get(baseUrl + "getPageMastList").then((res) => {
       setPageMastList(res.data.data);
-      console.log(res.data.data, "page mast list");
     });
     axios.get(baseUrl + "vendorAllData").then((res) => {
       setVendorList(res.data.tmsVendorkMastList);
-      console.log(res.data.tmsVendorkMastList, "vendorAllData list");
     });
     axios.get(baseUrl + "getPriceList").then((res) => {
       setPriceTypeList(res.data.data);
-      //   console.log(res.data.data, "page mast list");
     });
   };
 
@@ -48,26 +45,45 @@ export default function VendorPagePriceMaster() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!platformPriceId) {
+      toastError("Please Fill Platform Price List");
+      return;
+    } else if (!pageMastId) {
+      toastError("Please Fill Page");
+      return;
+    } else if (!vendorId) {
+      toastError("Please Fill Owner Vendor");
+      return;
+    } else if (!priceTypeId) {
+      toastError("Please Fill Price Type");
+      return;
+    } else if (!pricecalType) {
+      toastError("Please Fill Price Cal Type");
+      return;
+    } else if (!priceFixed) {
+      toastError("Please Fill Price Fixed");
+      return;
+    } else if (!priceVariable) {
+      toastError("Please Fill Price Variable");
+      return;
+    }
+
     axios
       .post(baseUrl + "addVendorPagePrice", {
-        platform_price_id: platformPriceId,
-        pageMast_id: pageMastId,
-        vendorMast_id: vendorId,
-        price_type_id: priceTypeId,
+        platform_price_id: platformPriceId.value,
+        pageMast_id: pageMastId.value,
+        vendorMast_id: vendorId.value,
+        price_type_id: priceTypeId.value,
         price_cal_type: pricecalType,
         variable_type: variableType,
         price_fixed: priceFixed,
         price_variable: priceVariable,
         description: description,
-
       })
       .then((res) => {
-        console.log(res.status);
-  if (res.status === 200) {
-    // alert("Data Submitted");
-    Navigate("/admin/pms-vendor-page-price-overview");
-    }
-       
+        if (res.status === 200) {
+          Navigate("/admin/pms-vendor-page-price-overview");
+        }
       });
   };
 
@@ -87,9 +103,9 @@ export default function VendorPagePriceMaster() {
               value: option._id,
               label: option._id,
             }))}
+            required={true}
             value={platformPriceId}
             onChange={(selectedOption) => {
-              console.log(selectedOption, "selectedOption.value");
               setPlatformPriceId(selectedOption);
             }}
           />
@@ -104,14 +120,15 @@ export default function VendorPagePriceMaster() {
               value: option.pageMast_id,
               label: option.page_user_name,
             }))}
+            required={true}
             value={{
               value: pageMastId,
               label:
-                pageMastList.find((role) => role.pageMast_id === pageMastId.value)
-                  ?.page_user_name || "",
+                pageMastList.find(
+                  (role) => role.pageMast_id === pageMastId.value
+                )?.page_user_name || "",
             }}
             onChange={(e) => {
-              console.log(e, "e.target.value");
               setPageMastId(e);
             }}
           ></Select>
@@ -126,6 +143,7 @@ export default function VendorPagePriceMaster() {
               value: option.vendorMast_id,
               label: option.vendorMast_name,
             }))}
+            required={true}
             value={{
               value: vendorId,
               label:
@@ -134,7 +152,6 @@ export default function VendorPagePriceMaster() {
             }}
             onChange={(e) => {
               setVendorId(e);
-              console.log(e, "e.target.value");
             }}
           ></Select>
         </div>
@@ -148,6 +165,7 @@ export default function VendorPagePriceMaster() {
               value: option._id,
               label: option.price_type,
             }))}
+            required={true}
             value={{
               value: priceTypeId,
               label:

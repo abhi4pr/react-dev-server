@@ -8,19 +8,30 @@ import { Navigate, useNavigate } from "react-router-dom";
 import {
   Autocomplete,
   Button,
+  Checkbox,
   // ButtonGroupButtonContext,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
+  FormControlLabel,
   TextField,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { useGlobalContext } from "../../../Context/Context";
+import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
+import jwtDecode from "jwt-decode";
+import dayjs from "dayjs";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 export default function TaskPending() {
-  const { toastAlert } = useGlobalContext();
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const userID = decodedToken.id;
+  const { toastAlert, toastError } = useGlobalContext();
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -53,7 +64,119 @@ export default function TaskPending() {
   const [rowId, setRowId] = useState("");
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
   const [reqDate, setReqDate] = useState("");
+  const [paymentAmout, setPaymentAmount] = useState("");
+  const [baseAmount, setBaseAmount] = useState(0);
+  const [payDialog, setPayDialog] = useState(false);
+  const [paymentMode, setPaymentMode] = useState("");
+  const [payRemark, setPayRemark] = useState("");
+  const [payMentProof, setPayMentProof] = useState("");
+  const [TDSDeduction, setTDSDeduction] = useState(false);
+  const [gstHold, setGstHold] = useState(false);
+  const [GSTHoldAmount, setGSTHoldAmount] = useState(0);
+  const [TDSValue, setTDSValue] = useState(0);
+  const [TDSPercentage, setTDSPercentage] = useState(1);
+  const [paymentStatus, setPaymentStatus] = useState("Fully Paid");
+  const [userName, setUserName] = useState("");
+  const [paymentDate, setPaymentDate] = useState(
+    dayjs(new Date()).add(5, "hours").add(30, "minutes").$d.toGMTString()
+  );
+  const [paymentModeData, setPaymentModeData] = useState([]);
+
+
   const navigate = useNavigate();
+
+  const handleClosePayDialog = () => {
+    setPayDialog(false);
+    setPaymentMode("");
+    setPayRemark("");
+    setPayMentProof("");
+    setPaymentAmount("");
+    setTDSDeduction(false);
+    setGstHold(false);
+  };
+
+  const handlePayVendorClick = () => {
+    // displayRazorpay(paymentAmout);
+    // return;
+    const formData = new FormData();
+    formData.append("request_id", row.request_id);
+    formData.append("vendor_id", row.vendor_id);
+    formData.append("request_by", row.request_by);
+    formData.append("request_amount", row.request_amount);
+    formData.append("priority", row.priority);
+    formData.append("status", 1); //status will be Change Soon
+    formData.append("evidence", payMentProof);
+    formData.append("payment_mode", paymentMode);
+    formData.append("payment_amount", paymentAmout);
+    formData.append("payment_by", userID);
+    formData.append("remark_finance", payRemark);
+    formData.append("invc_no", row.invc_no);
+    formData.append("invc_Date", row.invc_Date);
+    formData.append("invc_remark", row.invc_remark);
+    formData.append("remark_audit", row.remark_audit);
+    formData.append("outstandings", row.outstandings);
+    formData.append("vendor_name", row.vendor_name);
+    formData.append("name", row.name);
+    formData.append("request_date", row.request_date);
+    formData.append("payment_date", paymentDate);
+    formData.append("gst_hold", row.gst_amount);
+    formData.append("gst_hold_amount", GSTHoldAmount);
+    formData.append("tds_deduction", TDSValue);
+    formData.append("gst_Hold_Bool", gstHold);
+    formData.append("tds_Deduction_Bool", TDSDeduction);
+    axios
+      .post(baseUrl + "phpvendorpaymentrequest", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        const phpFormData = new FormData();
+        phpFormData.append("request_id", row.request_id);
+        phpFormData.append("payment_amount", paymentAmout);
+        phpFormData.append(
+          "payment_date",
+          new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " ")
+        );
+        phpFormData.append("payment_by", userName);
+        phpFormData.append("evidence", payMentProof);
+        phpFormData.append("finance_remark", payRemark);
+        phpFormData.append("status", 1);
+        phpFormData.append("payment_mode", paymentMode);
+        phpFormData.append("gst_hold", row.gst_amount);
+        phpFormData.append("gst_hold_amount", GSTHoldAmount);
+        phpFormData.append("tds_deduction", TDSValue);
+        phpFormData.append("gst_Hold_Bool", gstHold ? 1 : 0);
+        phpFormData.append("tds_Deduction_Bool", TDSDeduction ? 1 : 0);
+        axios
+          .post(
+            "https://purchase.creativefuel.io/webservices/RestController.php?view=updatePaymentrequestNew",
+            phpFormData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          )
+          .then(() => {
+            toastAlert("Payment Done Successfully");
+
+            WhatsappAPI.callWhatsAPI(
+              "Extend Date by User",
+              JSON.stringify(9109266387),
+              row.vendor_name,
+              [paymentAmout, row.vendor_name, row.mob1]
+            );
+          });
+
+        setPaymentMode("");
+        setPayRemark("");
+        setPayMentProof("");
+        handleClosePayDialog();
+        setPaymentAmount("");
+        callApi();
+      });
+  };
 
   const accordionButtons = ["Zoho", "GST", "TDS"];
 
@@ -82,6 +205,10 @@ export default function TaskPending() {
           setPendingRequestCount(u.length);
         });
     });
+    axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
+      setUserName(res.data.user_name);
+    });
+
   };
 
   const handleUniqueVendor = () => {
@@ -1036,6 +1163,82 @@ export default function TaskPending() {
       },
     },
   ];
+
+//  {activeAccordionIndex == 1 && columns.push({
+    
+//       field: "Action",
+//       headerName: "Action",
+//       width: 250,
+//       renderCell: (params) => {
+//         return (
+//           <div>
+//             <button
+//               className="btn btn-sm btn-success"
+//               onClick={() => handlePayClick(params.row)}
+//             >
+//               Pay
+//             </button>
+//             <button
+//               className="btn btn-sm btn-danger mx-2"
+//               onClick={() => handleDiscardClick(params.row)}
+//             >
+//               discard
+//             </button>
+//           </div>
+//         );
+//       },
+    
+//   });}
+
+const handleGSTHoldInputChange = (e) => {
+  if (e.target.value > row.gst_amount) {
+    toastError("GST Hold Amount can't be greater than GST Amount");
+  } else {
+    setGSTHoldAmount(e.target.value);
+  }
+};
+const handleTDSDeduction = (e) => {
+  setTDSDeduction(e.target.checked);
+  setTDSPercentage(1);
+};
+const handleGstHold = (e) => {
+  console.log(e.target.checked, "checked");
+  setGstHold(e.target.checked);
+  setGSTHoldAmount(row.gst_amount);
+};
+
+const handlePayClick = (row,e) => {
+e.preventDefault()
+  setRowData(row);
+  setPaymentAmount(row.request_amount);
+  setBaseAmount(row.base_amount != 0 ? row.base_amount : row.request_amount);
+  setPayDialog(true);
+};
+
+
+  {activeAccordionIndex == 1 && columns.splice(1  , 1,    {
+    field: "Action",
+    headerName: "Action",
+    width: 250,
+    renderCell: (params) => {
+      return (
+        <div>
+          <button
+            className="btn btn-sm btn-success"
+            onClick={(e) => handlePayClick(params.row,e)}
+          >
+            Pay
+          </button>
+          {/* <button
+            className="btn btn-sm btn-danger mx-2"
+            onClick={() => handleDiscardClick(params.row)}
+          >
+            discard
+          </button> */}
+        </div>
+      );
+    },
+  },)}
   return (
     <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
       <FormContainer
@@ -1589,6 +1792,383 @@ export default function TaskPending() {
           getRowId={(row) => row.request_id}
         />
       </Dialog>
+
+
+      <Dialog open={payDialog} onClose={handleClosePayDialog}>
+        <DialogTitle>Vendor Payment</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleClosePayDialog}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent>
+          <div className="row">
+            <TextField
+              className="col-md-6 me-3"
+              value={row.vendor_name}
+              autoFocus
+              margin="dense"
+              id="name"
+              readOnly={true}
+              label="Vendor Name"
+              type="text"
+              InputProps={{
+                readOnly: true,
+              }}
+              variant="outlined"
+            />
+            <TextField
+              className="col-md-5 ml-2"
+              value={row.address}
+              autoFocus
+              margin="dense"
+              id="name"
+              // disabled
+              readOnly
+              label="Address"
+              type="text"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </div>
+          <div className="row">
+            <TextField
+              className="col-md-6 me-3"
+              value={row.mob1}
+              autoFocus
+              margin="dense"
+              // disabledreadOnly
+              readOnly
+              label="Mobile"
+              type="text"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+            <TextField
+              className="col-md-5 ml-2"
+              value={row.pan}
+              autoFocus
+              margin="dense"
+              // disabled
+              readOnly
+              label="Pan"
+              type="text"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </div>
+          <div className="row">
+            <TextField
+              className="col-md-6 me-3"
+              value={row.gst}
+              autoFocus
+              margin="dense"
+              // disabled
+              readOnly
+              label="GST"
+              type="text"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+            <TextField
+              className="col-md-5 ml-2"
+              value={`₹${row.outstandings}`}
+              autoFocus
+              margin="dense"
+              // disabled
+              readOnly
+              label="Outstanding"
+              type="text"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+          </div>
+          <div className="row">
+            <TextField
+              className="col-md-3 me-3"
+              value={`₹${row.request_amount}`}
+              autoFocus
+              margin="dense"
+              id="name"
+              // disabled
+              readOnly
+              label="Amount Requested"
+              type="text"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+
+            <TextField
+              className="col-md-4 me-3"
+              value={`₹${baseAmount}`}
+              autoFocus
+              margin="dense"
+              id="name"
+              // disabled
+              readOnly
+              label="Base Amount"
+              type="text"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+            <TextField
+              className="col-md-4 "
+              value={`₹${row.gst_amount ? row.gst_amount : 0}`}
+              autoFocus
+              margin="dense"
+              id="name"
+              // disabled
+              readOnly
+              label="GST Amount"
+              type="text"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+              }}
+            />
+            <FormControlLabel
+              className="col-md-5"
+              control={
+                <Checkbox
+                  onChange={handleGstHold}
+                  disabled={row.gst_amount == 0}
+                />
+              }
+              label="GST Hold"
+            />
+            <FormControlLabel
+              className="col-md-5"
+              control={<Checkbox onChange={handleTDSDeduction} />}
+              label="TDS Deduction"
+            />
+            {gstHold && (
+              <TextField
+                className="col-md-5 me-3"
+                value={GSTHoldAmount}
+                onChange={handleGSTHoldInputChange}
+                autoFocus
+                margin="dense"
+                id="name"
+                label="GST Hold"
+              />
+            )}
+            {TDSDeduction && (
+              <>
+                <Autocomplete
+                  onChange={(e, value) => setTDSPercentage(value)}
+                  disablePortal
+                  className="col-md-3 mt-2"
+                  value={TDSPercentage}
+                  id="combo-box-demo"
+                  options={[
+                    1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                    19, 20,
+                  ]}
+                  renderInput={(params) => (
+                    <TextField {...params} label="TDS %" placeholder="TDS %" />
+                  )}
+                />
+                <TextField
+                  className="col-md-3 mt-2"
+                  value={TDSValue}
+                  autoFocus
+                  readOnly
+                  margin="dense"
+                  id="name"
+                  label="TDS Amount"
+                />
+              </>
+            )}
+
+            <TextField
+              className="col-md-6 me-3"
+              value={row.name}
+              autoFocus
+              margin="dense"
+              id="name"
+              // disabled
+              readOnly
+              label="Requested By"
+              type="text"
+              variant="outlined"
+            />
+            <TextField
+              className="col-md-5 ml-2"
+              value={convertDateToDDMMYYYY(row.request_date)}
+              autoFocus
+              margin="dense"
+              id="name"
+              // disabled
+              readOnly
+              label="Request Date"
+              type="text"
+              variant="outlined"
+            />
+          </div>
+          <div className="row">
+            <TextField
+              className="col-md-11 ml-3"
+              value={row.t3}
+              autoFocus
+              margin="dense"
+              id="name"
+              disabled
+              label="Remark"
+              type="text"
+              variant="outlined"
+            />
+          </div>
+          <div className="me-3">
+            <Autocomplete
+              onChange={(e, value) => setPaymentMode(value)}
+              disablePortal
+              className=" mt-2"
+              id="combo-box-demo"
+              options={
+                paymentModeData.length > 0
+                  ? paymentModeData.map((item) => item.payment_mode)
+                  : []
+              }
+              fullWidth={true}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Payment Mode *"
+                  placeholder="Payment Mode"
+                />
+              )}
+            />
+
+            <Autocomplete
+              onChange={(e, value) => setPaymentStatus(value)}
+              value={paymentStatus}
+              disablePortal
+              disabled
+              className=" mt-2"
+              id="combo-box-demo"
+              options={[
+                "Fully Paid",
+                "Fully Paid(TDS Deducted)",
+                "Fully Paid(GST Hold)",
+                "Fully Paid(TDS Deducted & GST Hold)",
+                "Partially Paid",
+              ]}
+              fullWidth={true}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Payment Status *"
+                  placeholder="Payment Status"
+                />
+              )}
+            />
+            <TextField
+              InputProps={{
+                readOnly: gstHold || TDSDeduction,
+              }}
+              onChange={(e) => {
+                row.request_amount;
+
+                const currentValue = e.target.value;
+                if (/^\d+$/.test(currentValue) || currentValue === "") {
+                  // setPaymentAmount(currentValue);
+                  if (currentValue <= +row.request_amount) {
+                    setPaymentAmount(currentValue);
+                    setPaymentStatus;
+                  } else {
+                    toastError(
+                      "Payment Amount should be less than or equal to Requested Amount"
+                    );
+                  }
+                }
+              }}
+              className="mt-3"
+              autoFocus
+              type="number"
+              margin="dense"
+              id="name"
+              label="Amount *"
+              variant="outlined"
+              fullWidth
+              value={paymentAmout}
+            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                format="DD/MM/YYYY"
+                className="mt-3"
+                defaultValue={dayjs()}
+                autoFocus
+                label="Payment Date "
+                onChange={(newValue) => {
+                  setPaymentDate(
+                    newValue.add(5, "hours").add(30, "minutes").$d.toGMTString()
+                  );
+                }}
+                disableFuture
+                views={["year", "month", "day"]}
+              />
+            </LocalizationProvider>
+
+            <TextField
+              onChange={(e) => setPayRemark(e.target.value)}
+              multiline
+              className="mt-3"
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Remark"
+              type="text"
+              variant="outlined"
+              fullWidth
+              value={payRemark}
+            />
+            <div className="form-group mt-3">
+              <label htmlFor="paymentProof">Payment Proof/ScreenShot</label>
+              <input
+                type="file"
+                className="form-control"
+                id="paymentProof"
+                onChange={(e) => setPayMentProof(e.target.files[0])}
+              />
+            </div>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          {/* <Button onClick={handleClosePayDialog}>Cancel</Button> */}
+          <Button
+            variant="contained"
+            className="mx-2"
+            fullWidth
+            onClick={handlePayVendorClick}
+            disabled={!paymentMode || !paymentAmout}
+          >
+            Pay Vendor
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+
     </div>
   );
 }

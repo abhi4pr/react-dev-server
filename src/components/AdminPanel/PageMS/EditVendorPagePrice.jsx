@@ -6,9 +6,11 @@ import axios from "axios";
 import Select from "react-select";
 import FieldContainer from "../FieldContainer";
 import { useNavigate, useParams } from "react-router-dom";
+import { useGlobalContext } from "../../../Context/Context";
 
 export default function EditVendorPagePrice() {
-    const Navigate = useNavigate();
+  const { toastAlert, toastError } = useGlobalContext();
+  const Navigate = useNavigate();
   const [platformPriceList, setPlatformPriceList] = useState([]);
   const [platformPriceId, setPlatformPriceId] = useState("");
   const [pageMastList, setPageMastList] = useState([]);
@@ -44,7 +46,6 @@ export default function EditVendorPagePrice() {
       const vendorPagePriceData = vendorPagePriceRes.data.data.filter(
         (e) => e._id == id
       )[0];
-      console.log(vendorPagePriceData.pageMast_id, "vendorPagePriceData.pageMast_id");
       setPlatformPriceId(vendorPagePriceData.platform_price_id);
       setPageMastId(vendorPagePriceData.pageMast_id);
       setVendorId(vendorPagePriceData.vendorMast_id);
@@ -60,7 +61,7 @@ export default function EditVendorPagePrice() {
       setVendorList(vendorRes.data.tmsVendorkMastList);
       setPriceTypeList(priceRes.data.data);
     } catch (error) {
-      console.error("Error fetching data:", error);
+     toastError("Something went wrong");
     }
   };
 
@@ -86,6 +87,28 @@ export default function EditVendorPagePrice() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!platformPriceId) {
+      toastError("Please Fill Platform Price List");
+      return;
+    } else if (!pageMastId) {
+      toastError("Please Fill Page");
+      return;
+    } else if (!vendorId) {
+      toastError("Please Fill Owner Vendor");
+      return;
+    } else if (!priceTypeId) {
+      toastError("Please Fill Price Type");
+      return;
+    } else if (!pricecalType) {
+      toastError("Please Fill Price Cal Type");
+      return;
+    } else if (!priceFixed) {
+      toastError("Please Fill Price Fixed");
+      return;
+    } else if (!priceVariable) {
+      toastError("Please Fill Price Variable");
+      return;
+    }
     axios
       .put(baseUrl + `updateVendorPagePrice/${id}`, {
         platform_price_id: platformPriceId,
@@ -99,9 +122,8 @@ export default function EditVendorPagePrice() {
         description: description,
       })
       .then((res) => {
-        console.log(res.status);
         if (res.status === 200) {
-
+          toastAlert("Successfully Updated");
           Navigate("/admin/pms-vendor-page-price-overview");
         }
       });
@@ -123,11 +145,12 @@ export default function EditVendorPagePrice() {
               value: option._id,
               label: option._id,
             }))}
+            required={true}
             value={{
-                value: platformPriceId,
-                label:
-                    platformPriceList.find((role) => role._id === platformPriceId)
-                    ?._id || "",
+              value: platformPriceId,
+              label:
+                platformPriceList.find((role) => role._id === platformPriceId)
+                  ?._id || "",
             }}
             onChange={handlePlatformPriceChange}
           />
@@ -142,12 +165,12 @@ export default function EditVendorPagePrice() {
               value: option.pageMast_id,
               label: option.page_user_name,
             }))}
-            // defaultValue={pageMastList.filter(e=>e.pageMast_id == pageMastId)[0]}
+            required={true}
             value={{
-                value: pageMastId,
-                label:
-                    pageMastList.filter((role) => role.pageMast_id === pageMastId)
-                    ?.page_user_name || "",
+              value: pageMastId,
+              label:
+                pageMastList.find((role) => role.pageMast_id == pageMastId)
+                  ?.page_user_name || "",
             }}
             onChange={handlePageMastChange}
           />
@@ -162,11 +185,12 @@ export default function EditVendorPagePrice() {
               value: option.vendorMast_id,
               label: option.vendorMast_name,
             }))}
+            required={true}
             value={{
-                value: vendorId,
-                label:
-                    vendorList.find((role) => role.vendorMast_id === vendorId)
-                    ?.vendorMast_name || "",
+              value: vendorId,
+              label:
+                vendorList.find((role) => role.vendorMast_id === vendorId)
+                  ?.vendorMast_name || "",
             }}
             onChange={handleVendorChange}
           />
@@ -181,12 +205,12 @@ export default function EditVendorPagePrice() {
               value: option._id,
               label: option.price_type,
             }))}
+            required={true}
             value={{
-value: priceTypeId,
-label:
-priceTypeList.find((role) => role._id === priceTypeId)
-?.price_type || "",
-
+              value: priceTypeId,
+              label:
+                priceTypeList.find((role) => role._id === priceTypeId)
+                  ?.price_type || "",
             }}
             onChange={handlePriceTypeChange}
           />
@@ -202,7 +226,7 @@ priceTypeList.find((role) => role._id === priceTypeId)
         <FieldContainer
           label="Variable Type *"
           value={variableType}
-          required={false}
+          required={true}
           onChange={(e) => setVariableType(e.target.value)}
         />
 
