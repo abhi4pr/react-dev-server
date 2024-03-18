@@ -84,7 +84,6 @@ export default function RegisterCampaign() {
     setShowPageDetails(!showPageDetails);
   };
 
-  console.log(campaignModalPayload)
   const navigate = useNavigate();
   const createExcel = () => {
     const ws = XLSX.utils.json_to_sheet(xlxsData);
@@ -111,10 +110,14 @@ export default function RegisterCampaign() {
       hasError = true;
     }
 
-    const hasEmptyCommitment = fields.some(
-      (field) => !field.selectValue || !field.textValue
-    );
-    if (hasEmptyCommitment) {
+    // const hasEmptyCommitment = fields.some(
+    //   (field) => !field.selectValue || !field.textValue
+    // );
+    // if (hasEmptyCommitment) {
+    //   hasError = true;
+    // }
+
+    if(!campaignClosedBy){
       hasError = true;
     }
 
@@ -126,7 +129,6 @@ export default function RegisterCampaign() {
     setShowAlert(false);
 
     const blob = createExcel();
-    console.log(typeof selectedDate.toString());
     const form = new FormData();
     form.append("brand_id", brandName);
     form.append("brnad_dt", selectedDate);
@@ -145,7 +147,6 @@ export default function RegisterCampaign() {
 
     //form.append("service", selectedService);
 
-    console.log(form, "<--------------------this is form");
     axios
       .post(baseUrl + "register_campaign", form)
       .then(() => {
@@ -183,12 +184,6 @@ export default function RegisterCampaign() {
     const updatedFields = [...fields];
     updatedFields[index].selectValue = event.target.value;
     setFields(updatedFields);
-
-    console.log(
-      campaignList.filter(
-        (e) => !fields.map((e) => e.selectValue).includes(e.campaign_name)
-      )
-    );
   };
 
   const handleTextChange = (event, index) => {
@@ -263,7 +258,6 @@ export default function RegisterCampaign() {
       .get(baseUrl + "exe_campaign")
       .then((response) => {
         const data = response.data.data;
-        console.log(data, "<----data");
         setCampignData(data);
       })
       .catch((err) => {
@@ -273,7 +267,6 @@ export default function RegisterCampaign() {
       .get(baseUrl + "agency")
       .then((response) => {
         const data = response?.data?.result;
-        console.log(data, "<----agency");
         setAgencyList(data);
       })
       .catch((err) => {
@@ -283,7 +276,6 @@ export default function RegisterCampaign() {
       .get(baseUrl + "goal")
       .then((response) => {
         const data = response.data.result;
-        console.log(data, "<----goal");
         setGoal(data);
       })
       .catch((err) => {
@@ -293,7 +285,6 @@ export default function RegisterCampaign() {
       .get(baseUrl + "industry")
       .then((response) => {
         const data = response.data.result;
-        console.log(data, "<----industry");
         setIndustry(data);
       })
       .catch((err) => {
@@ -351,7 +342,6 @@ export default function RegisterCampaign() {
     axios.get(`${baseUrl}get_all_sales_users`)
       .then((response) => {
         setSalesUsers(response.data); // Assuming the API returns an array of sales users
-        console.log(response.data, '------------------------data-----')
       })
       .catch((err) => {
         console.log(err);
@@ -383,7 +373,6 @@ export default function RegisterCampaign() {
 
   const categoryData = () => {
     axios.get(baseUrl + "projectxCategory").then((res) => {
-      console.log(res.data.data, "-------> cat data");
       setCategoryOptions(res.data.data);
     });
   };
@@ -393,13 +382,10 @@ export default function RegisterCampaign() {
   }, []);
 
   const subCategoryDataOnEdit = () => {
-    // console.log("calling the subcategory data on Edit");
     axios.get(baseUrl + "projectxSubCategory").then((res) => {
-      console.log(res.data.data, "-------> subcat data");
       const filteredData = res.data.data.filter((item) => {
         return item.category_id == postData.category_id;
       });
-      // console.log(filteredData, "filteredData meeee");
 
       setSubCategoryOptions(filteredData);
       // setLoading(false);
@@ -425,7 +411,6 @@ export default function RegisterCampaign() {
       ...postData,
       platform: platformsData,
     };
-    console.log(updatedPostData)
     if (
       !updatedPostData.brand_name ||
       !updatedPostData.category_id ||
@@ -591,7 +576,7 @@ export default function RegisterCampaign() {
                 value={selectedIndustry}
                 onChange={handleIndusrtyChange}
                 renderInput={(params) => (
-                  <TextField {...params} label="Industry *" />
+                  <TextField {...params} label="Industry" />
                 )}
               />
             </Box>
@@ -610,7 +595,7 @@ export default function RegisterCampaign() {
                 value={selectedAgency}
                 onChange={handleAgencyChange}
                 renderInput={(params) => (
-                  <TextField {...params} label="Agency *" />
+                  <TextField {...params} label="Agency" />
                 )}
               />
 
@@ -624,12 +609,12 @@ export default function RegisterCampaign() {
                 value={selectedGoal}
                 onChange={handleGoalChange}
                 renderInput={(params) => (
-                  <TextField {...params} label="Goal *" />
+                  <TextField {...params} label="Goal" />
                 )}
               />
 
               <TextField
-                label="Hashtag *"
+                label="Hashtag"
                 value={hashtag}
                 onChange={handleHashtagChange}
                 sx={{ width: 300, mt: 1, justifyContent: "space-around" }}
@@ -719,13 +704,7 @@ export default function RegisterCampaign() {
                               },
                             },
                             index
-                          ),
-                            console.log(
-                              campaignList.filter(
-                                (e) => e.cmtName == newValue
-                              )[0].cmtId,
-                              "field.selectValue"
-                            );
+                          )
                         }}
                         options={campaignList
                           .filter(
@@ -892,7 +871,6 @@ export default function RegisterCampaign() {
                       <TextField {...params} label="  * Category" />
                     )}
                     onChange={(event, newValue) => {
-                      console.log(newValue.value);
                       setPostData({
                         ...postData,
                         category_id: newValue.value,
@@ -911,7 +889,6 @@ export default function RegisterCampaign() {
                       <TextField {...params} label="  * Subcategory" />
                     )}
                     onChange={(event, newValue) => {
-                      console.log(newValue.value);
                       if (newValue) {
                         setPostData({
                           ...postData,

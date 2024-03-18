@@ -725,7 +725,7 @@ const SidebarLinks = () => {
                             aria-controls="collapsInnerTwo"
                           >
                             <i className="bi bi-dash"></i>
-                            <span>Register a Campaign</span>
+                            <span>Campaign</span>
                           </Link>
                           <div
                             id="collapsInnerTwo"
@@ -733,171 +733,45 @@ const SidebarLinks = () => {
                             aria-labelledby="headingTwo"
                             // data-parent="#accordionSidebar"
                           >
-                            <div className="bg-white collapse-inner">
-                              <Link
-                                className="nav-btn nav-link collapsed"
-                                data-toggle="collapse"
-                                data-target="#collapsInnerTwoFour"
-                                aria-expanded="true"
-                                aria-controls="collapsInnerTwoForu"
-                              >
-                                <i className="bi bi-dash"></i>
-                                <span>Masters</span>
-                              </Link>
-                              <div
-                                id="collapsInnerTwoFour"
-                                className="collapse"
-                                aria-labelledby="headingTwoFour"
-                                // data-parent="#accordionSidebar"
-                              >
-                                <div className="internal collapse-inner">
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/register-campaign"
-                                  >
-                                    <i className="bi bi-dot"></i> Add Campaign
-                                  </Link>
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/experties-overview"
-                                  >
-                                    <i className="bi bi-dot"></i> Expert
-                                  </Link>
-
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/brandmaster"
-                                  >
-                                    <i className="bi bi-dot"></i> Brand Master
-                                  </Link>
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/overview/agency"
-                                  >
-                                    <i className="bi bi-dot"></i> Agency Master
-                                  </Link>
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/overview/industry"
-                                  >
-                                    <i className="bi bi-dot"></i> Indusrty
-                                    Master
-                                  </Link>
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/overview/goal"
-                                  >
-                                    <i className="bi bi-dot"></i> Goal Master
-                                  </Link>
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/overview/service"
-                                  >
-                                    <i className="bi bi-dot"></i> Service Master
-                                  </Link>
-
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/contenttype"
-                                  >
-                                    <i className="bi bi-dot"></i> Content Type
-                                    Master
-                                  </Link>
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/campaigncommitment"
-                                  >
-                                    <i className="bi bi-dot"></i> Campaign
-                                    Master
-                                  </Link>
-
-                                  {/* <Link
-                                    className="collapse-item"
-                                    to="/admin/categorymaster"
-                                  >
-                                    Category Master
-                                  </Link>
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/subcategory"
-                                  >
-                                    Subcategory Master
-                                  </Link> */}
-                                  <Link
-                                    className="collapse-item"
-                                    to="/admin/contentcreater"
-                                  >
-                                    <i className="bi bi-dot"></i> Commitment
-                                    Master
-                                  </Link>
-                                </div>
-                              </div>
-
+                            <div className="bg-white collapse-inner">   
                               <>
                                 <Link
                                   className="collapse-item"
-                                  to="/admin/manager-campaign"
+                                  to="/admin/operation-dashboards"
                                 >
-                                  <i className="bi bi-dot"></i> Manager Campaign
-                                  Dashboard
-                                </Link>
-
-                                <Link
-                                  className="collapse-item"
-                                  to="/admin/phase-dashboard"
-                                >
-                                  <i className="bi bi-dot"></i> Phase Dashboard
+                                  <i className="bi bi-dot"></i> Dashboards
                                 </Link>
                                 <Link
                                   className="collapse-item"
-                                  to="/admin/replacement-dashboard"
+                                  to="/admin/operation-campaigns"
                                 >
-                                  <i className="bi bi-dot"></i> Replacement
-                                  Dashboard
+                                  <i className="bi bi-dot"></i> Campaign Masters
                                 </Link>
-
                                 <Link
                                   className="collapse-item"
-                                  to="/admin/assignment-dashboard"
+                                  to="/admin/operation-contents"
                                 >
-                                  <i className="bi bi-dot"></i> Assignment
-                                  Dashboard
+                                  <i className="bi bi-dot"></i> Contents
                                 </Link>
-
+                                <Link
+                                  className="collapse-item"
+                                  to="/admin/experties-overview"
+                                >
+                                  <i className="bi bi-dot"></i> Expert
+                                </Link>
                                 <Link
                                   className="collapse-item"
                                   to="/admin/registered-campaign"
                                 >
-                                  <i className="bi bi-dot"></i> Registered
-                                  Campaign
+                                  <i className="bi bi-dot"></i> Registered Campaign
                                 </Link>
-
-                                {/* <Link
-                            className="collapse-item"
-                            to="/admin/planOverview"
-                          >
-                            Plan Overview
-                          </Link> */}
-                                {/* <Link
-                            className="collapse-item"
-                            to="/admin/phase"
-                          >
-                           PhaseCreation
-                          </Link> */}
 
                                 <Link
                                   className="collapse-item"
                                   to="/admin/checkPageFollowers"
                                 >
-                                  <i className="bi bi-dot"></i> Check Page
-                                  Follower
+                                  <i className="bi bi-dot"></i> Check Page Follower
                                 </Link>
-                                {/* <Link
-                            className="collapse-item"
-                            to="/admin/createAssign"
-                          >
-                            createAssign
-                          </Link> */}
                               </>
                             </div>
                           </div>

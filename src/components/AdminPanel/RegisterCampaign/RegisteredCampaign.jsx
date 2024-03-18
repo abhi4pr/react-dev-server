@@ -4,7 +4,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import SendTwoToneIcon from "@mui/icons-material/SendTwoTone";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 
 import {
   Autocomplete,
@@ -843,6 +843,7 @@ export default function RegisteredCampaign() {
   const accordionButtons = ["Pending", "Sent for Content Creation"];
   return (
     <div>
+      <Link to='/admin/register-campaign'>Add Campaign</Link>
       <FormContainer
         submitButton={false}
         mainTitle="Registered Campaign"

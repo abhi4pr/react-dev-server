@@ -262,6 +262,9 @@ import PageEdit from "./PageMS/PageEdit";
 import AnnouncementPost from "./Announcement/AnnoucementPost";
 import AnnouncementView from "./Announcement/AnnouncementView";
 import PMSmaster from "./PageMS/PMSmaster";
+import OperationCampaigns from "./RegisterCampaign/OperationCampaigns";
+import OperationDashboards from "./RegisterCampaign/OperationDashboards";
+import OperationContents from "./RegisterCampaign/OperationContents";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -843,6 +846,9 @@ const Admin = () => {
                     path="/sub-department-update/:id"
                     element={<SubDepartmentUpdate />}
                   />
+                  <Route path="/operation-campaigns" element={<OperationCampaigns />} />
+                  <Route path="/operation-dashboards" element={<OperationDashboards />} />
+                  <Route path="/operation-contents" element={<OperationContents />} />
                   <Route
                     path="/register-campaign"
                     element={<RegisterCampaign />}
