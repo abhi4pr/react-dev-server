@@ -10,7 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
 const PayMethod = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert , toastError } = useGlobalContext();
   const [payMethodName, setPayMethodName] = useState("");
   const [description, setDescription] = useState("");
   // const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -107,6 +107,10 @@ const PayMethod = () => {
   }
 
   const handleModalUpdate = () => {
+    if (payMethodUpdate === "") {
+      toastError("Please fill the required fields");
+      return
+    }
     axios.put(baseUrl+`updatePay/${rowData._id}`, {
       payMethod_name: payMethodUpdate,
       description: descriptionUpdate,
@@ -197,7 +201,7 @@ const PayMethod = () => {
               <button type="button" 
                 className="btn btn-success" 
                 onClick={handleModalUpdate}
-                data-dismiss="modal"
+                data-dismiss={`${payMethodUpdate === "" ?"": 'modal'}`}
               >Update</button>
             </div>
           </div>

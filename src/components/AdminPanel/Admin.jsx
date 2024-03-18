@@ -261,6 +261,7 @@ import EditVendorPagePrice from "./PageMS/EditVendorPagePrice";
 import PageEdit from "./PageMS/PageEdit";
 import AnnouncementPost from "./Announcement/AnnoucementPost";
 import AnnouncementView from "./Announcement/AnnouncementView";
+import PMSmaster from "./PageMS/PMSmaster";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1235,6 +1236,10 @@ const Admin = () => {
                   <Route
                     path="/pms-vendor-page-price-master/:id"
                     element={<EditVendorPagePrice />}
+                  />
+                     <Route
+                    path="/pms-master"
+                    element={<PMSmaster />}
                   />
                 </Route>
               </Routes>

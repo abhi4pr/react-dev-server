@@ -10,7 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
 const PageCategory = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [categoryName, setCategoryName] = useState("");
   const [description, setDescription] = useState("");
   // const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -106,6 +106,10 @@ const PageCategory = () => {
   };
 
   const handleModalUpdate = () => {
+    if (categoryUpdate === "") {
+      toastError("Please Fill  Category Name ");
+      return;
+    }
     axios.put(baseUrl + `updatePageCatg/${rowData._id}`, { 
       page_category: categoryUpdate, 
       description: descriptionUpdate,
@@ -136,7 +140,6 @@ const PageCategory = () => {
         <FieldContainer
           label="Description"
           value={description}
-          required={true}
           onChange={(e) => setDescription(e.target.value)}
         />
       </FormContainer>
@@ -183,7 +186,6 @@ const PageCategory = () => {
               <FieldContainer
                 label="Description"
                 value={descriptionUpdate}
-                required={true}
                 onChange={(e) => setDescriptionUpdate(e.target.value)}
               />
             </div>
@@ -195,7 +197,7 @@ const PageCategory = () => {
               <button type="button" 
                 className="btn btn-success" 
                 onClick={handleModalUpdate}
-                data-dismiss="modal"
+                data-dismiss={`${categoryUpdate === "" ?"": 'modal'}`}
               >Update</button>
             </div>
           </div>

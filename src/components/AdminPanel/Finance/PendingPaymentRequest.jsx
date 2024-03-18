@@ -144,6 +144,17 @@ export default function PendingPaymentRequest() {
   ];
 
   const callApi = () => {
+    //Reminder API
+    let remindData = "";
+    axios
+      .get(
+        "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
+      )
+      .then((res) => {
+        setPhpRemainderData(res.data.body);
+        remindData = res.data.body;
+      });
+
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       const x = res.data.modifiedData;
       setNodeData(x);
@@ -152,12 +163,49 @@ export default function PendingPaymentRequest() {
           "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
         )
         .then((res) => {
+          //       let y = res.data.body.filter((item) => {
+          //         return !x.some((item2) => item.request_id == item2.request_id);
+          //       });
+          //       setPhpData(res.data.body);
+          //       setData(y);
+          //       setFilterData(y);
+          //       setPendingRequestCount(y.length);
+          //       const uniqueVendors = new Set(y.map((item) => item.vendor_name));
+          //       setUniqueVendorCount(uniqueVendors.size);
+          //       const uvData = [];
+          //       uniqueVendors.forEach((vendorName) => {
+          //         const vendorRows = y.filter(
+          //           (item) => item.vendor_name === vendorName
+          //         );
+          //         uvData.push(vendorRows[0]);
+          //       });
+          //       setUniqueVendorData(uvData);
+          //     });
+          // });
           let y = res.data.body.filter((item) => {
-            return !x.some((item2) => item.request_id == item2.request_id);
+            return !x.some((item2) => item.request_id === item2.request_id);
           });
-          setPhpData(res.data.body);
-          setData(y);
-          setFilterData(y);
+          setPhpData(y); // Setting the filtered data to state
+
+          let c = res.data.body.filter((item) => {
+            return remindData.some(
+              (item2) => item.request_id === item2.request_id
+            );
+          });
+
+          y.push(...c); // Merging the filtered items with items matching certain conditions
+
+          let mergedArray = [...y, ...c];
+
+          // Creating a set of unique request_ids from the merged data
+          let t = new Set(mergedArray.map((item) => item.request_id));
+          mergedArray = Array.from(t).map((request_id) => {
+            return mergedArray.find((item) => item.request_id === request_id);
+          });
+
+        mergedArray= mergedArray.filter((item) => item.status == 0);
+          setData(mergedArray);
+          setFilterData(mergedArray);
           setPendingRequestCount(y.length);
           const uniqueVendors = new Set(y.map((item) => item.vendor_name));
           setUniqueVendorCount(uniqueVendors.size);
@@ -173,22 +221,12 @@ export default function PendingPaymentRequest() {
     });
 
     axios.get(`${baseUrl}` + `get_all_payment_mode`).then((res) => {
-      console.log(res.data, "payment mode");
       setPaymentModeData(res.data);
     });
 
     axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
       setUserName(res.data.user_name);
     });
-
-    //Reminder API
-    axios
-      .get(
-        "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
-      )
-      .then((res) => {
-        setPhpRemainderData(res.data.body);
-      });
   };
 
   const handleRemainderModal = (reaminderData) => {
@@ -219,7 +257,6 @@ export default function PendingPaymentRequest() {
   };
 
   const handleGstHold = (e) => {
-    console.log(e.target.checked, "checked");
     setGstHold(e.target.checked);
     setGSTHoldAmount(rowData.gst_amount);
   };
@@ -449,6 +486,16 @@ export default function PendingPaymentRequest() {
   };
 
   const handlePayClick = (row) => {
+    let x = phpRemainderData.filter(
+      (item) => item.request_id == row.request_id
+    );
+    if (x.length > 0) {
+      toastError(
+        `You can't pay this request as it has been reminded ${x.length} times`
+      );
+      return;
+    }
+
     setRowData(row);
     setPaymentAmount(row.request_amount);
     setBaseAmount(row.base_amount != 0 ? row.base_amount : row.request_amount);

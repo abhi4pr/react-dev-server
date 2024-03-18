@@ -10,7 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
 const PageOwnership = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [pageId, setPageId] = useState("");
   const [ownerVendorId, setOwnerVendorId] = useState("");
   const [sharingPer, setSharingPer] = useState("");
@@ -131,6 +131,21 @@ const PageOwnership = () => {
 };
 
   const handleModalUpdate = () => {
+    if (ownerUpdate === "") {
+      toastError("Ownership is required");
+      return;
+    }else if (pageIdUpdate === "") {
+      toastError("Page ID is required");
+      return;
+    }
+    else if (ownerVendorIdUpdate === "") {
+      toastError("Vendor ID is required");
+      return;
+    }else if (sharingPerUpdate === "") {
+      toastError("Sharing Per is required");
+      return;
+    }
+
     axios.put(baseUrl + `updatePageOwner/${rowData._id}`, { 
       ownership_type: ownerUpdate, 
       description: descriptionUpdate,
@@ -151,6 +166,15 @@ const PageOwnership = () => {
     });
   };
 
+  const hanleSetSharingPer = (e,setState) => {
+    if (e.target.value < 0) {
+      setSharingPer(0);
+    } else if (e.target.value > 100) {
+      setSharingPer(100);
+    } else {
+      setState(e.target.value);
+    }
+  }
 
   return (
     <>
@@ -168,18 +192,17 @@ const PageOwnership = () => {
         <FieldContainer
           label="Description"
           value={description}
+          required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
         <FieldContainer
           label="Page ID *"
-          type="number"
           value={pageId} 
           required={true}
           onChange={(e) => setPageId(e.target.value)}
         />
         <FieldContainer
           label="Owner Vendor ID *"
-          type="number"
           value={ownerVendorId} 
           required={true}
           onChange={(e) => setOwnerVendorId(e.target.value)}
@@ -189,7 +212,7 @@ const PageOwnership = () => {
           type="number"
           value={sharingPer}
           required={true}
-          onChange={(e) => setSharingPer(e.target.value)}
+          onChange={e=>hanleSetSharingPer(e,setSharingPer)}
         />
       </FormContainer>
 
@@ -227,7 +250,7 @@ const PageOwnership = () => {
             </div>
             <div className="modal-body">
               <FieldContainer
-                label="ownerships *"
+                label="Ownerships *"
                 value={ownerUpdate}
                 required={true}
                 onChange={(e) => setOwnerUpdate(e.target.value)}
@@ -241,27 +264,25 @@ const PageOwnership = () => {
               />
 
                <FieldContainer
-                label="Page ID"
-                type="number"
+                label="Page ID *"
                 value={pageIdUpdate}
                 required={true}
                 onChange={(e) => setPageIdUpdate(e.target.value)}
               />
 
                <FieldContainer
-                label="Vendor ID"
-                type="number"
+                label="Vendor ID *"
                 value={ownerVendorIdUpdate}
                 required={true}
                 onChange={(e) => setOwnerVendorIdUpdate(e.target.value)}
               />
 
                <FieldContainer
-                label="Sharing Per"
+                label="Sharing Per *"
                 type="number"
                 value={sharingPerUpdate}
                 required={true}
-                onChange={(e) => setSharingPerUpdate(e.target.value)}
+                onChange={(e) => hanleSetSharingPer(e,setSharingPerUpdate)}
               />
               
             </div>
@@ -273,7 +294,7 @@ const PageOwnership = () => {
               <button type="button" 
                 className="btn btn-success" 
                 onClick={handleModalUpdate}
-                data-dismiss="modal"
+                data-dismiss={`${ownerUpdate ==="" || pageIdUpdate=== "" || ownerVendorIdUpdate== "" || sharingPerUpdate == "" ?"": 'modal'}`}
               >Update</button>
             </div>
           </div>

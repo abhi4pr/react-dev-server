@@ -42,6 +42,8 @@ const VendorEdit = () => {
   const [platformData, setPlatformData] = useState([]);
   const [payData, setPayData] = useState([]);
   const [cycleData, setCycleData] = useState([]);
+  const [panImglink, setPanImglink] = useState("");
+  const [gstImglink, setGstImglink] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -56,6 +58,7 @@ const VendorEdit = () => {
         "data"
       );
       const data = res.data.tmsVendorkMastList.filter((e) => e._id === _id);
+      console.log(data, "data")
       setVendorName(data[0].vendorMast_name);
       setCountryCode(data[0].country_code);
       setMobile(data[0].mobile);
@@ -79,6 +82,8 @@ const VendorEdit = () => {
       setPlatformId(data[0].platform_id);
       setPayId(data[0].payMethod_id);
       setCycleId(data[0].cycle_id);
+      setPanImglink(data[0].upload_pan_image);
+      setGstImglink(data[0].upload_gst_image);
       // setTypeData(res.data.tmsVendorTypeList)
       // setPlatformData(res.data.tmsVendorPlatformList)
       // setPayData(res.data.tmsVendorPayList)
@@ -110,8 +115,41 @@ const VendorEdit = () => {
   useEffect(() => {
     getData();
   }, []);
-
+  
   const handleSubmit = (e) => {
+    e.preventDefault();
+    if(!vendorName){
+      toastError('Please enter vendor name');
+      return;
+    }
+    else if(!countryCode){
+      toastError('Please enter country code');
+      return;
+    }
+    else if(!mobile){
+      toastError('Please enter mobile number');
+      return;
+    }
+    else if(!email){
+      toastError('Please enter email');
+      return;
+    }
+    else if(!typeId){
+      toastError('Please select vendor type');
+      return;
+    }
+    else if(!platformId){
+      toastError('Please select platform');
+      return;
+    }
+    else if(!payId){
+      toastError('Please select payment method');
+      return;
+    }
+    else if(!cycleId){
+      toastError('Please select pay cycle');
+      return;
+    }
     const formData = new FormData();
     formData.append("vendorMast_name", vendorName);
     formData.append("country_code", countryCode);
@@ -138,7 +176,6 @@ const VendorEdit = () => {
     formData.append("cycle_id", cycleId);
     formData.append("created_by", userID);
     
-    e.preventDefault();
     axios
       .put(baseUrl + `updateVendorMast/${_id}`, formData,{
         headers: {
@@ -305,7 +342,7 @@ const VendorEdit = () => {
           label="PAN"
           value={pan}
           required={false}
-          onChange={(e) => setPan(e.target.value)}
+          onChange={(e) => setPan((e.target.value).toUpperCase())}
         />
         <FieldContainer
           type="file"
@@ -320,7 +357,7 @@ const VendorEdit = () => {
           label="GST"
           value={gst}
           required={false}
-          onChange={(e) => setGst(e.target.value)}
+          onChange={(e) => setGst((e.target.value).toUpperCase())}
         />
         <FieldContainer
           type="file"
@@ -369,6 +406,7 @@ const VendorEdit = () => {
           label="Threshold Limit"
           value={limit}
           required={false}
+          type="number"
           onChange={(e) => setLimit(e.target.value)}
         />
 
@@ -392,6 +430,8 @@ const VendorEdit = () => {
           required={false}
           onChange={(e) => setHomeState(e.target.value)}
         />
+     {panImglink.length>0 &&   <img  style={{ width: "100px", height: "100px" }} src={panImglink} alt="pan" />}
+     {  gstImglink.length>0 && <img   style={{ width: "100px", height: "100px" }} src={gstImglink} alt="gst" />}
       </FormContainer>
     </>
   );

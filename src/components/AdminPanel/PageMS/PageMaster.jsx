@@ -87,6 +87,67 @@ const PageMaster = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+if (pageName === "" ) {
+
+      toastError("Please Fill Page Name");
+      return;
+    }
+    else if (link === "" ) {
+      toastError("Please Fill Link");
+      return;
+    }
+    else if (platformId === "" ) {
+      toastError("Please Fill Platform ID");
+      return;
+    }
+    else if (categoryId === "" ) {
+      toastError("Please Fill Category");
+      return;
+    }
+    else if (pageLevel === "" ) {
+      toastError("Please Fill Page Level");
+      return;
+    }
+    else if (pageStatus === "" ) {
+      toastError("Please Fill Page Status");
+      return;
+    }
+    else if (closeBy === "" ) {
+      toastError("Please Fill Close By");
+      return;
+    }
+    else if (pageType === "" ) {
+      toastError("Please Fill Page Name Type");
+      return;
+    }
+    else if (content === "" ) {
+      toastError("Please Fill Content Creation");
+      return;
+    }
+    else if (ownerType === "" ) {
+      toastError("Please Fill Ownership Type");
+      return;
+    }
+    else if (vendorId === "" ) {
+      toastError("Please Fill Vendor");
+      return;
+    }
+    else if (followCount === "" ) {
+      toastError("Please Fill Followers Count");
+      return;
+    }
+    else if (profileId === "" ) {
+      toastError("Please Fill Profile Type");
+      return;
+    }
+    else if (platformActive === "" ) {
+      toastError("Please Fill Platform Active On");
+      return;
+    }
+    else if (rate === "" ) {
+      toastError("Please Fill Engagement Rate");
+      return;
+    }
 
     const payload = {
         page_user_name: pageName,
@@ -164,6 +225,7 @@ const PageMaster = () => {
               value: option._id,
               label: option.platform_name,
             }))}
+            required={true}
             value={{
               value: platformId,
               label:
@@ -184,6 +246,7 @@ const PageMaster = () => {
               value: option._id,
               label: option.page_category,
             }))}
+            required={true}
             value={{
               value: categoryId,
               label:
@@ -223,6 +286,7 @@ const PageMaster = () => {
           <Select
             name="page level"
             options={PageLevels}
+            required={true}
             className="basic-multi-select"
             classNamePrefix="select"
             value={PageLevels.find(option => option.value === pageLevel)}
@@ -237,6 +301,7 @@ const PageMaster = () => {
           <Select
             name="page status"
             options={PageStatus}
+            required={true}
             className="basic-multi-select"
             classNamePrefix="select"
             value={PageStatus.find(option => option.value == pageStatus)}
@@ -253,6 +318,7 @@ const PageMaster = () => {
               value: option.user_id,
               label: option.user_name,
             }))}
+            required={true}
             value={{
               value: closeBy,
               label:
@@ -272,6 +338,7 @@ const PageMaster = () => {
           <Select
             name="page name type"
             options={PageTypes}
+            required={true}
             className="basic-multi-select"
             classNamePrefix="select"
             value={PageTypes.find(option=>option.value == pageType)}
@@ -286,6 +353,7 @@ const PageMaster = () => {
           <Select
             name="Content creation"
             options={Contents}
+            required={true}
             className="basic-multi-select"
             classNamePrefix="select"
             value={Contents.find(option => option.value == content)}
@@ -309,6 +377,7 @@ const PageMaster = () => {
               value: option.vendorMast_id,
               label: option.vendorMast_name,
             }))}
+            required={true}
             value={{
               value: vendorId,
               label:
@@ -338,6 +407,7 @@ const PageMaster = () => {
               value: option._id,
               label: option.profile_type,
             }))}
+            required={true}
             value={{
               value: profileId,
               label:

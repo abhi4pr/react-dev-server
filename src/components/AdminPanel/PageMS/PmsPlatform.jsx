@@ -10,7 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
 const PmsPlatform = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [platformName, setPlatformName] = useState("");
   const [description, setDescription] = useState("");
   // const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -107,6 +107,10 @@ const PmsPlatform = () => {
   }
 
   const handleModalUpdate = () => {
+    if (platformUpdate === "") {
+      toastError("Please fill the platform name");
+      return
+    }
     axios.put(baseUrl+`updatePlatform/${rowData._id}`, {
       platform_name: platformUpdate,
       description: descriptionUpdate,
@@ -197,7 +201,8 @@ const PmsPlatform = () => {
               <button type="button" 
                 className="btn btn-success" 
                 onClick={handleModalUpdate}
-                data-dismiss="modal"
+
+                data-dismiss={`${platformUpdate === "" ?"": 'modal'}`}
               >Update</button>
             </div>
           </div>
