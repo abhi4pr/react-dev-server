@@ -58,8 +58,8 @@ export default function RegisteredCampaign() {
   const [deleteRowId, setDeleteRowId] = useState("");
   const [dateFilter, setDateFilter] = useState("year");
   const [filteredTable1DataLength, setFilteredTable1DataLength] = useState(0);
-  const [filteredTable1Data, setFilterTable1Data] = useState([])
-  const [filteredTable2Data, setFilterTable2Data] = useState([])
+  const [filteredTable1Data, setFilterTable1Data] = useState([]);
+  const [filteredTable2Data, setFilterTable2Data] = useState([]);
 
   const handleDateFilterChange = (e) => {
     const newFilter = e.target.value;
@@ -70,10 +70,10 @@ export default function RegisteredCampaign() {
     const updatedFilteredData = filterDataByDateRange(table1Data);
     setFilteredTable1DataLength(updatedFilteredData.length);
     if (table1Data) {
-      setFilterTable1Data(updatedFilteredData)
+      setFilterTable1Data(updatedFilteredData);
     }
     if (table2Data) {
-      setFilterTable2Data(table2Data)
+      setFilterTable2Data(table2Data);
     }
   }, [table1Data, dateFilter, table2Data]);
 
@@ -276,8 +276,8 @@ export default function RegisteredCampaign() {
     }
   };
 
-  console.log(filteredTable1Data)
-  console.log(filteredTable2Data)
+  console.log(filteredTable1Data);
+  console.log(filteredTable2Data);
   const handlePlan = (event) => {
     const path = `/admin/tempplanCreation/${event._id}`;
     navigate(path);
@@ -749,9 +749,7 @@ export default function RegisteredCampaign() {
     }
   };
 
-
-  console.log(filteredTable1Data)
-
+  console.log(filteredTable1Data);
 
   const commitColumns = [
     {
@@ -842,39 +840,65 @@ export default function RegisteredCampaign() {
 
   const accordionButtons = ["Pending", "Sent for Content Creation"];
   return (
-    <div>
-      <Link to='/admin/register-campaign'>Add Campaign</Link>
-      <FormContainer
-        submitButton={false}
-        mainTitle="Registered Campaign"
-        title="Registered Campaign"
-        accordionButtons={accordionButtons}
-        activeAccordionIndex={activeAccordionIndex}
-        onAccordionButtonClick={handleAccordionButtonClick}
-      >
-        <Box sx={{ display: "flex" }}>
-          <FormControl style={{ width: "300px", margin: "10px" }}>
-            <InputLabel id="date-filter-select-label">Date Filter</InputLabel>
-            <Select
-              labelId="date-filter-select-label"
-              id="date-filter-select"
-              value={dateFilter}
-              label="Date filter"
-              onChange={handleDateFilterChange}
-            >
-              <MenuItem value="today">Today</MenuItem>
-              <MenuItem value="thisWeek"> Week</MenuItem>
-              <MenuItem value="thisMonth"> This Month</MenuItem>
-              <MenuItem value="last3Months">Last 3 Months</MenuItem>
-              <MenuItem value="thisYear"> Year</MenuItem>
-            </Select>
-          </FormControl>
-          <Box sx={{ m: 3 }}>Count: {filteredTable1DataLength}</Box>
-        </Box>
-        {activeAccordionIndex === 0 && tab1}
-        {activeAccordionIndex === 1 && tab2}
-      </FormContainer>
+    <div className="master-card-css">
+      <div className="action_heading master-card-css">
+        <div className="action_title">
+          <FormContainer
+            submitButton={false}
+            mainTitle="Registered Campaign"
+            title="Registered Campaign"
+            link="Admin/Registered Campaign"
+            accordionButtons={accordionButtons}
+            activeAccordionIndex={activeAccordionIndex}
+            onAccordionButtonClick={handleAccordionButtonClick}
+         />
+            
+        </div>
+        <div className="action_btns ">
+          <Link to="/admin/register-campaign">
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Add campagin{" "}
+            </button>
+          </Link>
+        </div>
+      </div>
+      <div className="tab mt-4">
+      {accordionButtons.map((button, index) => (<div className={`named-tab ${(activeAccordionIndex === index) ? "active-tab" : "" }`} onClick={()=>{handleAccordionButtonClick(index)}} >{button}</div>))}
+        
+      </div>
 
+      <div className="card mt-3">
+        <div className="card-header sb">
+          <div></div>
+          <div className="pack mt-1">        <Box sx={{ display: "flex" }}>
+              <FormControl style={{ width: "300px", margin: "10px" }}>
+                <InputLabel id="date-filter-select-label">
+                  Date Filter
+                </InputLabel>
+                <Select
+                  labelId="date-filter-select-label"
+                  id="date-filter-select"
+                  value={dateFilter}
+                  label="Date filter"
+                  onChange={handleDateFilterChange}
+                >
+                  <MenuItem value="today">Today</MenuItem>
+                  <MenuItem value="thisWeek"> Week</MenuItem>
+                  <MenuItem value="thisMonth"> This Month</MenuItem>
+                  <MenuItem value="last3Months">Last 3 Months</MenuItem>
+                  <MenuItem value="thisYear"> Year</MenuItem>
+                </Select>
+              </FormControl>
+              <Box sx={{ m: 3 }}>Count: {filteredTable1DataLength}</Box>
+            </Box>
+            </div>
+
+        </div>
+        <div className="card-body body-padding">
+        {activeAccordionIndex === 0 && tab1}
+            {activeAccordionIndex === 1 && tab2}
+        </div>
+      </div>
       {/* Modal section */}
       <Modal
         open={open}
@@ -1023,15 +1047,15 @@ export default function RegisteredCampaign() {
                   {videoType?.filter(
                     (e) => !fields?.map((e) => e.selectValue).includes(e)
                   ).length > 0 && (
-                      <Button
-                        variant="outlined"
-                        sx={{ marginBottom: "10px", marginRight: "10px" }}
-                        color="primary"
-                        onClick={handleAddField}
-                      >
-                        Add Row
-                      </Button>
-                    )}
+                    <Button
+                      variant="outlined"
+                      sx={{ marginBottom: "10px", marginRight: "10px" }}
+                      color="primary"
+                      onClick={handleAddField}
+                    >
+                      Add Row
+                    </Button>
+                  )}
                 </div>
               </div>
               <div className="d-flex justify-content-between">
