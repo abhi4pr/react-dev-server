@@ -9,13 +9,24 @@ import { baseUrl } from "../../../utils/config";
 
 const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   const { userID } = useAPIGlobalContext();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [assetsName, setAssetName] = useState("");
   const [assetStatus, setAssetStatus] = useState("");
   const [row, setRow] = useState("");
   const [getAssetDataContext, setAssetData] = useState([]);
 
   const [selectedAsset, setSelectedAsset] = useState([]);
+
+  const [isModalOpenRemark, setIsModalOpenRemark] = useState(false);
+  const closeModalRemark = () => {
+    setIsModalOpenRemark(false);
+  };
+  const [rejectRemark, setRejectRemark] = useState("");
+  const [idForReject, setIdForReject] = useState("");
+  const handleRejectRemarkOpen = (row) => {
+    setIdForReject(row._id);
+    setIsModalOpenRemark(true);
+  };
 
   const handleStatusUpdate = (row, status) => {
     setAssetStatus(status);
@@ -50,15 +61,19 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
   }, [assetsName]);
   // const text = getAssetDataContext.filter((d) => d.sim_id === assetsName);
 
-  // console.log(row.sub_category_id, "------------------");
-
-  const handleRejectStatus = async (row, status) => {
+  const handleRejectStatus = async () => {
+    if (!rejectRemark || rejectRemark == "") {
+      toastError("Remark is Required");
+      return;
+    }
     try {
       await axios.put(baseUrl + "assetrequest", {
-        _id: row._id,
-        asset_request_status: status,
+        _id: idForReject,
+        asset_request_status: "Rejected",
+        reject_reason: rejectRemark,
       });
 
+      setIsModalOpenRemark(false);
       handleRelodenewData();
       toastAlert("Request Success");
     } catch (error) {
@@ -137,7 +152,6 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       sortable: true,
       width: "150px",
     },
-
     {
       name: "Detail",
       cell: (row) => (
@@ -148,10 +162,17 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       width: "250px",
       sortable: true,
     },
+
     {
       name: "Request Date",
       selector: (row) => row.date_and_time_of_asset_request?.split("T")?.[0],
       sortable: true,
+    },
+    {
+      name: "Reject Reason",
+      selector: (row) => row.reject_reason,
+      sortable: true,
+      width: "150px",
     },
 
     (newAssetData[0]?.asset_request_status === "ApprovedByManager" ||
@@ -171,13 +192,9 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
           </button>
           <button
             type="button"
-            data-toggle="modal"
-            data-target="#exampleModal1"
-            size="small"
-            variant="contained"
-            color="primary"
             className="btn btn-danger btn-sm ml-2"
-            onClick={() => handleRejectStatus(row, "Rejected")}
+            // onClick={() => handleRejectStatus(row, "Rejected")}
+            onClick={() => handleRejectRemarkOpen(row)}
           >
             Reject
           </button>
@@ -312,6 +329,61 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
                   Submit
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Reject Modal  */}
+      <div
+        className={`modal fade ${isModalOpenRemark ? "show" : ""}`}
+        id="sidebar-right"
+        tabIndex={-1}
+        role="dialog"
+        style={{ display: isModalOpenRemark ? "block" : "none" }}
+      >
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title" id="AllocationModal">
+                Remark
+              </h5>
+              <button
+                type="button"
+                className="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true" onClick={() => closeModalRemark()}>
+                  ×
+                </span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <form className="modal_formdata">
+                <div className="modal_formbx row thm_form">
+                  <div className="form-group col-12">
+                    <label className="form-label">
+                      Reject Remark <sup style={{ color: "red" }}>*</sup>
+                    </label>
+                    <input
+                      value={rejectRemark}
+                      onChange={(e) => setRejectRemark(e.target.value)}
+                      className="form-control"
+                      type="textarea"
+                    />
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={handleRejectStatus}
+              >
+                Submit
+              </button>
             </div>
           </div>
         </div>

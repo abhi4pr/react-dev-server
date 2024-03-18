@@ -458,8 +458,6 @@ const SimOverview = () => {
             />
           )}
 
-          
-
           {id == 2 && (
             <button
               type="button"
@@ -532,11 +530,14 @@ const SimOverview = () => {
 
   return (
     <>
-      <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
-        <UserNav  />
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <UserNav />
 
         <div className="section section_padding sec_bg h100vh">
-          <div className="container mt-2" style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+          <div
+            className="container mt-2"
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
             <div className="action_heading">
               <div className="action_title">
                 <FormContainer
@@ -732,29 +733,29 @@ const SimOverview = () => {
                 <div className="card-header sb p-4">
                   <h5>Assets Overview</h5>
                   <div className="pack sb ">
-                        <input
-                          type="text"
-                          placeholder="Search here"
-                          className="w-50 form-control "
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                        />
-                        {/* <button
+                    <input
+                      type="text"
+                      placeholder="Search here"
+                      className="w-50 form-control "
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                    {/* <button
                           className="btn btn-outline-success ml-2 btn-sm"
                           onClick={handleExport}
                         >
                           Export TO Excel
                         </button> */}
-                        <button
-                          className="btn btn-primary ml-2"
-                          onClick={() => AllAssetExcel(filterdata)}
-                        >
-                          Export Excel
-                        </button>
-                      </div>
+                    <button
+                      className="btn btn-primary ml-2"
+                      onClick={() => AllAssetExcel(filterdata)}
+                    >
+                      Export Excel
+                    </button>
+                  </div>
                 </div>
                 <div className="card-body body-padding">
-                <DataTable
+                  <DataTable
                     // title="Assets Overview"
                     columns={columns}
                     data={filterdata}
@@ -790,9 +791,7 @@ const SimOverview = () => {
                     // }
                   />
                 </div>
-                <div className="data_tbl table-responsive">
-                  
-                </div>
+                <div className="data_tbl table-responsive"></div>
               </div>
             </div>
           </div>
@@ -932,12 +931,6 @@ const SimOverview = () => {
       </div>
 
       <div
-        // className="modal fade"
-        // id="AllocationModal"
-        // tabIndex={-1}
-        // role="dialog"
-        // aria-labelledby="AllocationModal"
-        // aria-hidden="true"
         className={`modal fade ${isModalOpen ? "show" : ""}`}
         id="sidebar-right"
         tabIndex={-1}
@@ -979,22 +972,6 @@ const SimOverview = () => {
                     </li>
                   </ul>
                 </div>
-                {/* <div className="modal_formbx row thm_form">
-                  <FieldContainer
-                    label="Users"
-                    Tag="select"
-                    fieldGrid={12}
-                    value={selectedUserTransfer}
-                    onChange={(e) => setSelectedUserTransfer(e.target.value)}
-                  >
-                    <option value="">Please Select</option>
-                    {userData.map((data) => (
-                      <option value={data.user_id} key={data.user_id}>
-                        {data.user_name}
-                      </option>
-                    ))}
-                  </FieldContainer>
-                </div> */}
                 <div className="modal_formbx row thm_form">
                   <div className="form-group col-12">
                     <label className="form-label">

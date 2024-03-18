@@ -28,9 +28,7 @@ const VenderOverView = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        baseUrl+"get_all_vendor"
-      );
+      const response = await axios.get(baseUrl + "get_all_vendor");
       setFilterData(response.data);
       setData(response.data);
     } catch (error) {
@@ -56,16 +54,19 @@ const VenderOverView = () => {
       name: "Vender Contect",
       selector: (row) => row.vendor_contact_no,
       sortable: true,
+      width: "150px",
     },
     {
       name: "Secondery Contect",
       selector: (row) => row.secondary_contact_no,
       sortable: true,
+      width: "150px",
     },
     {
       name: "Secondery Person",
       selector: (row) => row.secondary_person_name,
       sortable: true,
+      width: "180px",
     },
     {
       name: "Type",
@@ -76,7 +77,13 @@ const VenderOverView = () => {
       name: " Email",
       selector: (row) => row.vendor_email_id,
       sortable: true,
-      width: "18%",
+      width: "150px",
+    },
+    {
+      name: "Company Name",
+      selector: (row) => row.company_name,
+      sortable: true,
+      width: "150px",
     },
     {
       name: " Address",

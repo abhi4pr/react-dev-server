@@ -372,6 +372,12 @@ const AssetSingleuserOverview = ({
       selector: (row) => row.multi_tag_names.join(", "),
       sortable: true,
     },
+
+    {
+      name: "Reject Reason",
+      selector: (row) => row.reject_reason,
+      sortable: true,
+    },
     {
       name: "Action",
       cell: (row) => (

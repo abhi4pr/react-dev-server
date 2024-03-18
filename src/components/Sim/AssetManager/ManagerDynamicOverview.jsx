@@ -216,7 +216,8 @@ const ManagerDynamicOverview = ({
         <>
           {row.asset_new_request_status == "Approved" ||
             row.asset_new_request_status == "ApprovedByManager" ||
-            row.asset_new_request_status == "RejectedByManager" || (
+            row.asset_new_request_status == "RejectedByManager" ||
+            row.asset_new_request_status == "Rejected" || (
               <>
                 <button
                   type="button"

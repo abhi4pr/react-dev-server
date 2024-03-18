@@ -12,9 +12,11 @@ import EditIcon from "@mui/icons-material/Edit";
 import UploadIcon from "@mui/icons-material/Upload";
 import DetailsIcon from "@mui/icons-material/Details";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
+import { useGlobalContext } from "../../../Context/Context";
 
 const WFHDOverview = () => {
   const whatsappApi = WhatsappAPI();
+  const { toastAlert } = useGlobalContext();
   const { ContextDept, RoleIDContext } = useAPIGlobalContext();
   const [allWFHDData, setAllWFHDData] = useState([]);
   const [savedData, setSavedData] = useState([]);
@@ -50,13 +52,12 @@ const WFHDOverview = () => {
   const userID = decodedToken.id;
   const roleID = decodedToken.role_id;
   // useEffect(() => {
-    
+
   //   const lab=document.querySelector(".hkULGy");
   //     lab.innerText="Showing Entries";
-   
+
   // }, [])
-  
- 
+
   const getData = async () => {
     const response = await axios.get(baseUrl + "get_all_wfh_users");
     if (RoleIDContext == 1 || RoleIDContext == 5) {
@@ -221,6 +222,7 @@ const WFHDOverview = () => {
       reason: separationReason,
     });
     getData();
+    toastAlert("Separation Added Success");
     whatsappApi.callWhatsAPI(
       "CF_Separation",
       JSON.stringify(usercontact),
@@ -311,11 +313,26 @@ const WFHDOverview = () => {
       cell: (row) => (
         <>
           {row.user_status === "Active" ? (
-            <span className="badge badge-success" style={{borderRadius:"50px"}}>Active</span>
+            <span
+              className="badge badge-success"
+              style={{ borderRadius: "50px" }}
+            >
+              Active
+            </span>
           ) : row.user_status === "Exit" || row.user_status === "On Leave" ? (
-            <span className="badge badge-warning" style={{borderRadius:"50px"}}>{row.user_status}</span>
+            <span
+              className="badge badge-warning"
+              style={{ borderRadius: "50px" }}
+            >
+              {row.user_status}
+            </span>
           ) : row.user_status === "Resign" ? (
-            <span className="badge badge-danger" style={{borderRadius:"50px"}}>Resigned</span>
+            <span
+              className="badge badge-danger"
+              style={{ borderRadius: "50px" }}
+            >
+              Resigned
+            </span>
           ) : null}
         </>
       ),
@@ -368,36 +385,36 @@ const WFHDOverview = () => {
                 className="btn btn-primary mr-1"
               >
               </button> */}
-                <Link to={`/admin/wfhd-update/${row.user_id}`}>
-                  {/* <EditIcon /> */}
-                  <div className="icon-1"  title="Edit User">
-                    <i class="bi bi-pencil"></i>
-                  </div>
-                </Link>
+              <Link to={`/admin/wfhd-update/${row.user_id}`}>
+                {/* <EditIcon /> */}
+                <div className="icon-1" title="Edit User">
+                  <i class="bi bi-pencil"></i>
+                </div>
+              </Link>
               {/* <button
                 title="Bank details"
                 type="button"
                 className="btn btn-primary mr-1"
               >
               </button> */}
-                <Link to={`/admin/wfhd-bank-update/${row.user_id}`}>
-                  {/* <DetailsIcon /> */}
-                  <div className="icon-1" title="Bank details" >
-                    <i class="bi bi-info-square"></i>
-                  </div>
-                </Link>
+              <Link to={`/admin/wfhd-bank-update/${row.user_id}`}>
+                {/* <DetailsIcon /> */}
+                <div className="icon-1" title="Bank details">
+                  <i class="bi bi-info-square"></i>
+                </div>
+              </Link>
               {/* <button
                 title="Document upload"
                 type="button"
                 className="btn btn-success"
               >
               </button> */}
-                <Link to={`/admin/wfh-update-document/${row.user_id}`}>
-                  {/* <UploadIcon /> */}
-                  <div className="icon-1"  title="Document upload">
-                    <i class="bi bi-upload"></i>
-                  </div>
-                </Link>
+              <Link to={`/admin/wfh-update-document/${row.user_id}`}>
+                {/* <UploadIcon /> */}
+                <div className="icon-1" title="Document upload">
+                  <i class="bi bi-upload"></i>
+                </div>
+              </Link>
             </>
           ) : row.att_status == "document_upload" ? (
             <button
@@ -526,7 +543,7 @@ const WFHDOverview = () => {
           </div>
         </div>
       </Modal>
-      <div style={{display:"flex",flexDirection:"column" ,gap:"16px"}}>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
         {console.log(activeTab)}
         <FormContainer mainTitle="My Team" link={"/admin/"} />
         {/* <ul
@@ -577,48 +594,38 @@ const WFHDOverview = () => {
           </li>
         </ul> */}
         <div className="tab">
-          
-            <div
-              className={` named-tab  ${
-                activeTab == 0 ? "active-tab" : ""
-              }`}
-              onClick={() => {
-                FilterTabData("registered"), setActiveTab(0);
-              }}
-            >
-              Registered ({statusCounts.registered})
-            </div>
-            <div
-              className={`named-tab  ${
-                activeTab == 1 ? "active-tab" : ""
-              }`}
-              onClick={() => {
-                FilterTabData("document_upload"), setActiveTab(1);
-              }}
-            >
-              Upload document ({statusCounts.document_upload})
-            </div>
-            <div
-              className={`named-tab  ${
-                activeTab == 2 ? "active-tab" : ""
-              }`}
-              onClick={() => {
-                FilterTabData("training"), setActiveTab(2);
-              }}
-            >
-              Training ({statusCounts.training})
-            </div>
-            <div
-              className={`named-tab  ${
-                activeTab == 3 ? "active-tab" : ""
-              }`}
-              onClick={() => {
-                FilterTabData("onboarded"), setActiveTab(3);
-              }}
-            >
-              Onboarded ({statusCounts.onboarded})
-            </div>
-         
+          <div
+            className={` named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
+            onClick={() => {
+              FilterTabData("registered"), setActiveTab(0);
+            }}
+          >
+            Registered ({statusCounts.registered})
+          </div>
+          <div
+            className={`named-tab  ${activeTab == 1 ? "active-tab" : ""}`}
+            onClick={() => {
+              FilterTabData("document_upload"), setActiveTab(1);
+            }}
+          >
+            Upload document ({statusCounts.document_upload})
+          </div>
+          <div
+            className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
+            onClick={() => {
+              FilterTabData("training"), setActiveTab(2);
+            }}
+          >
+            Training ({statusCounts.training})
+          </div>
+          <div
+            className={`named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
+            onClick={() => {
+              FilterTabData("onboarded"), setActiveTab(3);
+            }}
+          >
+            Onboarded ({statusCounts.onboarded})
+          </div>
         </div>
         <div className="card">
           {/* <div className="data_tbl table-responsive" >
@@ -643,29 +650,30 @@ const WFHDOverview = () => {
                 }
             />
           </div> */}
-          <div className="card-header" style={{justifyContent:"space-between"}}>
-          Payout User
-          <input
-                    type="text"
-                    placeholder="Search Here"
-                    className="form-control"
-                    value={search}
-                    style={{width:"300px"}}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
+          <div
+            className="card-header"
+            style={{ justifyContent: "space-between" }}
+          >
+            Payout User
+            <input
+              type="text"
+              placeholder="Search Here"
+              className="form-control"
+              value={search}
+              style={{ width: "300px" }}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
           <div className="card-body body-padding">
-          <DataTable
+            <DataTable
               columns={columns}
               data={filterDataS}
-             pagination
-             selectableRows={true}
-             paginationDefaultPage={1}
-
+              pagination
+              selectableRows={true}
+              paginationDefaultPage={1}
               highlightOnHover
-             paginationResetDefaultPage={true}
+              paginationResetDefaultPage={true}
               striped="true"
-              
             />
           </div>
         </div>

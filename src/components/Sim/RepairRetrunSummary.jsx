@@ -15,8 +15,8 @@ const RepairRetrunSummary = () => {
   async function getData() {
     try {
       const [assetReturnResponse, assetRepairResponse] = await Promise.all([
-        axios.get(baseUrl + "get_summary_of_asset_return"),
-        axios.get(baseUrl + "get_summary_for_asset_repair_request"),
+        axios.get(baseUrl + "get_all_repair_summary_data"),
+        axios.get(baseUrl + "get_all_return_summary_data"),
       ]);
       // const response = await axios.get(
       //   baseUrl + "get_summary_of_asset_return"
@@ -62,7 +62,7 @@ const RepairRetrunSummary = () => {
     },
     {
       name: "Asset Name",
-      selector: (row) => row.assetName,
+      selector: (row) => row.asset_name,
 
       sortable: true,
     },
@@ -79,7 +79,7 @@ const RepairRetrunSummary = () => {
       name: "Asset Return Img",
       selector: (row) => (
         <>
-          {row.recover_asset_image_1 && row.recover_asset_image_2 && (
+          {row?.recover_asset_image_1 && row.recover_asset_image_2 && (
             <>
               {row.recover_asset_image_1 !==
                 "https://storage.googleapis.com/dev-backend-bucket/" ||
@@ -102,6 +102,10 @@ const RepairRetrunSummary = () => {
     {
       name: "Retun Date",
       selector: (row) => row.return_asset_data_time?.split("T")?.[0],
+    },
+    {
+      name: "Retun By Name",
+      selector: (row) => row.asset_return_recover_by_name,
     },
     {
       name: "Asset Reocver Img",
@@ -133,6 +137,10 @@ const RepairRetrunSummary = () => {
       selector: (row) => row.repair_request_date_time?.split("T")?.[0],
     },
     {
+      name: "Recover By Name",
+      selector: (row) => row.recovery_by_name,
+    },
+    {
       name: "Return Remark",
       selector: (row) => row.asset_return_remark,
     },
@@ -148,7 +156,7 @@ const RepairRetrunSummary = () => {
 
   useEffect(() => {
     const result = datas.filter((d) => {
-      return d.Role_name?.toLowerCase().match(search.toLowerCase());
+      return d.asset_name?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);

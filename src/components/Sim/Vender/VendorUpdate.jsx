@@ -28,6 +28,8 @@ const VendorUpdate = () => {
   const [secondaryPersonName, setSecondaryPersonName] = useState("");
   const [type, setType] = useState("");
 
+  const [companyName, setCompanyName] = useState("");
+
   const Type = ["Self", "Service", "Both"];
   const [filteredCategories, setFilteredCategories] = useState([]);
 
@@ -81,6 +83,7 @@ const VendorUpdate = () => {
       setSecondaryContact(response.secondary_contact_no);
       setSecondaryPersonName(response.secondary_person_name);
       setType(response.vendor_type);
+      setCompanyName(response.company_name);
 
       // console.log(
       //   response.vendor_category?.map((category) => ({
@@ -120,6 +123,7 @@ const VendorUpdate = () => {
         secondary_person_name: secondaryPersonName,
         vendor_type: type,
         vendor_category: selectedCategory?.map((category) => category.value),
+        company_name: companyName,
       });
       toastAlert("Data Updated Successfully");
       setVendorName("");
@@ -233,6 +237,13 @@ const VendorUpdate = () => {
             value={vendorEmail}
             onChange={(e) => setVendorEmail(e.target.value)}
             required={false}
+          />
+
+          <FieldContainer
+            label="Company Name"
+            value={companyName}
+            required={false}
+            onChange={(e) => setCompanyName(e.target.value)}
           />
           <FieldContainer
             label="Address"

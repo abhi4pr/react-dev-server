@@ -25,20 +25,11 @@ const VenderMaster = () => {
   const [secondaryContact, setSecondaryContact] = useState("");
   const [secondaryPersonName, setSecondaryPersonName] = useState("");
 
+  const [companyName, setCompanyName] = useState("");
+
   const [type, setType] = useState("");
 
   const Type = ["Sales", "Service", "Both"];
-  // const [categoryData, setCategoryData] = useState([]);
-  // const getCategoryData = () => {
-  //   axios
-  //     .get(baseUrl+"get_all_asset_category")
-  //     .then((res) => {
-  //       setCategoryData(res.data);
-  //     });
-  // };
-  // useEffect(() => {
-  //   getCategoryData();
-  // }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,6 +68,8 @@ const VenderMaster = () => {
         description: description,
         created_by: loginUserId,
         last_updated_by: loginUserId,
+
+        company_name: companyName,
       });
       toastAlert("Data posted successfully!");
       setVendorName("");
@@ -194,6 +187,12 @@ const VenderMaster = () => {
             required={false}
             value={vendorEmail}
             onChange={(e) => setVendorEmail(e.target.value)}
+          />
+          <FieldContainer
+            label="Company Name"
+            value={companyName}
+            required={false}
+            onChange={(e) => setCompanyName(e.target.value)}
           />
           <FieldContainer
             label="Address"
