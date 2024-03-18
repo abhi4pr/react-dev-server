@@ -21,7 +21,7 @@ import axios from "axios";
 import * as XLSX from "xlsx";
 import dayjs from "dayjs";
 import { useGlobalContext } from "../../../Context/Context";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { baseUrl } from "../../../utils/config";
 
 const platform = [
@@ -458,6 +458,33 @@ export default function RegisterCampaign() {
       <div>
         <div className="form_heading_title">
           <h2 className="form-heading">Register Campaign</h2>
+          <div style={{float:'right',marginTop:'10px'}}>
+          <Link to="/admin/brandmaster" style={{marginRight:'5px'}}>
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Brand Master
+            </button>
+          </Link>
+          <Link to="/admin/overview/agency" style={{marginRight:'5px'}}>
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Agency Master
+            </button>
+          </Link>
+          <Link to="/admin/overview/industry" style={{marginRight:'5px'}}>
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Industry Master
+            </button>
+          </Link>
+          <Link to="/admin/overview/goal" style={{marginRight:'5px'}}>
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Goal Master
+            </button>
+          </Link>
+          <Link to="/admin/contentcreater" style={{marginRight:'5px'}}>
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Commitment Master
+            </button>
+          </Link>
+          </div>
         </div>
       </div>
       <div style={{ height: "30px" }}>
@@ -468,7 +495,7 @@ export default function RegisterCampaign() {
           </div>
         )}
       </div>
-      <div>
+      <div style={{marginTop:'30px'}}>
         <Paper sx={{}}>
           <Box>
             <Box
