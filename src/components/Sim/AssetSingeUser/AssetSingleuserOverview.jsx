@@ -211,12 +211,14 @@ const AssetSingleuserOverview = ({
       name: "Asset Category",
       selector: (row) => row.category_name,
       sortable: true,
+      width:"150px"
     },
 
     {
       name: "Asset SubCategory",
       selector: (row) => row.sub_category_name,
       sortable: true,
+      width:"150px"
     },
 
     {
@@ -242,15 +244,15 @@ const AssetSingleuserOverview = ({
       selector: (row) => (
         <>
           {row.asset_repair_request_status === "Accept" ? (
-            <span className="badge badge-success">Accepted</span>
+            <span className="badge badge-success border-round">Accepted</span>
           ) : row.asset_repair_request_status === "Recover" ? (
-            <span className="badge badge-warning">Recoverd</span>
+            <span className="badge badge-warning border-round">Recoverd</span>
           ) : row.asset_repair_request_status === "Resolved" ? (
-            <span className="badge badge-success">Resolved</span>
+            <span className="badge badge-success border-round">Resolved</span>
           ) : row.asset_repair_request_status === "Requested" ? (
-            <span className="badge badge-danger">Requested</span>
+            <span className="badge badge-danger border-round">Requested</span>
           ) : row.asset_repair_request_status === "ApprovedByManager" ? (
-            <span className="badge badge-warning">Approve By Manager</span>
+            <span className="badge badge-warning border-round">Approve By Manager</span>
           ) : (
             "N/A"
           )}
@@ -264,9 +266,9 @@ const AssetSingleuserOverview = ({
       selector: (row) => (
         <>
           {row.asset_return_status === "Pending" ? (
-            <span className="badge badge-warning">Pending</span>
+            <span className="badge badge-warning border-round">Pending</span>
           ) : row.asset_return_status === "RecoverdByManager" ? (
-            <span className="badge badge-warning">Recover By Manager</span>
+            <span className="badge badge-warning border-round">Recover By Manager</span>
           ) : (
             "N/A"
           )}
@@ -315,6 +317,7 @@ const AssetSingleuserOverview = ({
             )}
         </>
       ),
+      width:"140px"
     },
   ];
 
@@ -337,15 +340,15 @@ const AssetSingleuserOverview = ({
       selector: (row) => (
         <>
           {row?.asset_request_status === "Requested" ? (
-            <span className="badge badge-danger">Requested</span>
+            <span className="badge badge-danger border-round">Requested</span>
           ) : row.asset_request_status === "Approved" ? (
-            <span className="badge badge-success">Assigned</span>
+            <span className="badge badge-success border-round">Assigned</span>
           ) : row.asset_request_status === "Rejected" ? (
-            <span className="badge badge-warning">Rejected</span>
+            <span className="badge badge-warning border-round">Rejected</span>
           ) : row.asset_request_status === "ApprovedByManager" ? (
-            <span className="badge badge-warning">Approve By Manager</span>
+            <span className="badge badge-warning border-round">Approve By Manager</span>
           ) : row.asset_request_status === "RejectedByManager" ? (
-            <span className="badge badge-warning">Reject By Manager</span>
+            <span className="badge badge-warning border-round">Reject By Manager</span>
           ) : null}
         </>
       ),
@@ -368,7 +371,7 @@ const AssetSingleuserOverview = ({
     },
 
     {
-      name: "Taged Person",
+      name: "Tagged Person",
       selector: (row) => row.multi_tag_names.join(", "),
       sortable: true,
     },
@@ -380,13 +383,14 @@ const AssetSingleuserOverview = ({
     },
     {
       name: "Action",
+     
       cell: (row) => (
         <>
           {row.asset_request_status == "Requested" && (
             <div class="btn-group">
               <button
                 type="button"
-                class="btn btn-secondary "
+                class=" icon-1 "
                 data-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="false"
@@ -396,7 +400,7 @@ const AssetSingleuserOverview = ({
               <div className="dropdown-menu dropdown-menu-right">
                 <button
                   onClick={() => handleUpdateNewAssetRow(row)}
-                  class="dropdown-item"
+                  class="dropdown-item "
                   // type="button"
                   // data-toggle="modal"
                   // data-target="#sidebar-right"
@@ -490,22 +494,23 @@ const AssetSingleuserOverview = ({
   return (
     <>
       {tab ? (
-        <div className="page_height">
+       
           <div className="card mb-4">
             <div className="data_tbl table-responsive">
               <DataTable
-                title="Assets"
+            
                 columns={columns}
                 data={filterData}
-                fixedHeader
-                fixedHeaderScrollHeight="64vh"
+                // fixedHeader
+                // fixedHeaderScrollHeight="64vh"
+                pagination
                 exportToCSV
                 highlightOnHover
                 subHeader
               />
             </div>
           </div>
-        </div>
+      
       ) : (
         <>
           <button
@@ -514,6 +519,7 @@ const AssetSingleuserOverview = ({
             // data-target="#sidebar-right"
             // size="small"
             className="col-2 ml-3 mb-2 btn btn-outline-primary btn-sm"
+            style={{ height:"30px",minWidth:"200px" }}
             onClick={() => {
               setIsEditMode(false);
               setIsModalOpen(true);
@@ -523,14 +529,15 @@ const AssetSingleuserOverview = ({
             New Asset Request
           </button>
 
-          <div className="page_height">
+          
             <div className="card mb-4">
               <div className="data_tbl table-responsive">
                 <DataTable
-                  title="Assets"
+                 
                   columns={NewAssetcolumns}
                   data={newAssetRequestData}
-                  fixedHeader
+                  // fixedHeader
+                  pagination
                   fixedHeaderScrollHeight="50vh"
                   exportToCSV
                   highlightOnHover
@@ -538,7 +545,7 @@ const AssetSingleuserOverview = ({
                 />
               </div>
             </div>
-          </div>
+
         </>
       )}
 
@@ -627,7 +634,7 @@ const AssetSingleuserOverview = ({
 
                 <div className="form-group col-4">
                   <label className="form-label">
-                    priority <sup style={{ color: "red" }}>*</sup>
+                    Priority <sup style={{ color: "red" }}>*</sup>
                   </label>
                   <Select
                     className=""
@@ -646,7 +653,7 @@ const AssetSingleuserOverview = ({
                   />
                 </div>
 
-                <div className="col-sm-12 col-lg-8 p-2">
+                <div className="col-sm-12 col-lg-8 p-2" style={{display:"flex",alignItems:"center"}}>
                   {/* <Autocomplete
                     multiple
                     id="combo-box-demo"
@@ -752,17 +759,17 @@ const AssetSingleuserOverview = ({
           <div className="modal-dialog modal-sm" role="document">
             <div className="modal-content">
               <div className="modal-header">
+                <h4 className="modal-title">Asset Request</h4>
                 <button
                   type="button"
                   className="close"
                   data-dismiss="modal"
                   onClick={closeModal}
                 >
-                  <span aria-hidden="true" style={{ marginRight: "250px" }}>
+                  <span aria-hidden="true" style={{ marginLeft: "250px" }}>
                     ×
                   </span>
                 </button>
-                <h4 className="modal-title">Asset Request</h4>
               </div>
               <div className="modal-body">
                 <div className="form-group col-12">
@@ -789,7 +796,7 @@ const AssetSingleuserOverview = ({
                 </div>
                 <div className="form-group col-12">
                   <label className="form-label">
-                    priority <sup style={{ color: "red" }}>*</sup>
+                    Priority <sup style={{ color: "red" }}>*</sup>
                   </label>
                   <Select
                     className=""
@@ -837,7 +844,7 @@ const AssetSingleuserOverview = ({
                   />
                 </div>
                 <FieldContainer
-                  label="Asset Detailing"
+                  label="Asset Details"
                   Tag="textarea"
                   value={problemDetailing}
                   onChange={(e) => setProblemDetailing(e.target.value)}
@@ -879,12 +886,12 @@ const AssetSingleuserOverview = ({
           <div className="modal-dialog modal-sm" role="document">
             <div className="modal-content">
               <div className="modal-header">
+                <h4 className="modal-title">Return Asset</h4>
                 <button type="button" className="close" data-dismiss="modal">
-                  <span aria-hidden="true" style={{ marginRight: "250px" }}>
+                  <span aria-hidden="true" style={{ marginLeft: "250px" }}>
                     ×
                   </span>
                 </button>
-                <h4 className="modal-title">Return Asset</h4>
               </div>
               <div className="modal-body">
                 <FieldContainer

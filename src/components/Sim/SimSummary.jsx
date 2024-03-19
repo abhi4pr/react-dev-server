@@ -51,7 +51,7 @@ const SimSummary = () => {
         <UserNav />
 
         <div className="section section_padding sec_bg h100vh">
-          <div className="container">
+          <div className="container master-card-css ">
             <div className="action_heading">
               <div className="action_title">
                 <FormContainer mainTitle="Summary" link="/sim-master" />
@@ -83,16 +83,17 @@ const SimSummary = () => {
                       <div className="summary_cardtitle">
                         <div className="summary_box summary_numbox">
                           <h4>
-                            <span>Asset Name</span>
+                            Allocated Summary
+                            {/* <span>Asset Name</span>
                             {"  :- "}
-                            {sum.assetsName}
+                            {sum.assetsName} */}
                           </h4>
                         </div>
                         <h5>
                           Allocated user : <span>{sum.userName}</span>
                         </h5>
                         <button
-                          className="btn btn-sm btn-outline-danger"
+                          className=" btn-outline-black icon-1"
                           title="Delete"
                           onClick={(e) => handleDelete(e, sum)}
                         >
@@ -101,30 +102,46 @@ const SimSummary = () => {
                       </div>
                       <div className="summary_cardbody">
                         <div className="summary_cardrow">
+                          <div className="summary_box summary_numbox">
+                            <h4>
+
+                              <span>Asset Name</span>
+                              {"  :- "}
+                              {sum.assetsName}
+                            </h4>
+                          </div>
                           <div className="summary_box summary_allocatebox">
                             <h4>
-                              <span>Allocated date {" :- "} </span>
+                              <span>Allocated Date {" :-"} </span> &nbsp;
                               {sum.Creation_date ? reversedCreationDate : ""}
                             </h4>
                           </div>
-                          <div className="summary_box summary_returnbox">
-                            <h4>
-                              <span>Returned date {" :- "} </span>
-                              {sum.submitted_at
-                                ? sum.submitted_at
+
+                        </div>
+                    
+
+                          <div className="summary_cardrow summary_box summary_reasonbox">
+                            <div className="summary_box summary_returnbox">
+
+                              <h4>
+                                <span>Returned Date {" :- "} </span> &nbsp;
+                            
+                                {sum.submitted_at
+                                  ? sum.submitted_at.slice(0,10)
                                     .split("-")
                                     .reverse()
                                     .join("-")
-                                : ""}
+                                  : ""}
+                              </h4>
+                            </div>
+                            <div className="summary_box summary_returnbox">
+                            <h4>
+                              <span>Reason {" :- "}</span> &nbsp;
+                              {sum.reason}
                             </h4>
+                            </div>
                           </div>
-                        </div>
-                        <div className="summary_box summary_reasonbox">
-                          <h4>
-                            <span>Reason {" :- "}</span>
-                            {sum.reason}
-                          </h4>
-                        </div>
+                      
                       </div>
                     </div>
                   );

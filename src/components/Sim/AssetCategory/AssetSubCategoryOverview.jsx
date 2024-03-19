@@ -70,7 +70,7 @@ const AssetSubCategoryOverview = () => {
     {
       name: "S.No",
       cell: (row, index) => <>{index + 1}</>,
-      width: "10%",
+      width: "80px",
       sortable: true,
     },
 
@@ -78,13 +78,13 @@ const AssetSubCategoryOverview = () => {
       name: "Sub Category Name",
       selector: (row) => row.sub_category_name,
       sortable: true,
-      width: "23%",
+      width: "170px",
     },
     {
       name: "Category Name",
       selector: (row) => row.category_name,
       sortable: true,
-      width: "23%",
+      width: "150px",
     },
     {
       name: "Available Asset",
@@ -93,10 +93,11 @@ const AssetSubCategoryOverview = () => {
           className="btn btn-outline-warning"
           onClick={() => handleTotalasset(row.sub_category_id)}
         >
-          {row.available_assets_count}
+          {row.available_assets_count?"":0}
         </button>
       ),
       sortable: true,
+      width: "150px",
     },
     {
       name: "Allocated Asset",
@@ -105,16 +106,17 @@ const AssetSubCategoryOverview = () => {
           className="btn btn-outline-warning"
           onClick={() => handleAllocatedAsset(row.sub_category_id)}
         >
-          {row.allocated_assets_count}
+          {row.allocated_assets_count?"":0}
         </button>
       ),
       sortable: true,
+      width: "150px",
     },
     {
       name: "In Warranty",
       cell: (row) => row.inWarranty,
       sortable: true,
-      width: "23%",
+      width: "150px",
     },
 
     // {
@@ -125,17 +127,17 @@ const AssetSubCategoryOverview = () => {
     // },
     {
       name: "Action",
-      width: "23%",
+      width: "150px",
 
       cell: (row) => (
         <>
           <Link to={`/asset/subcategory-update/${row.sub_category_id}`}>
-            <button
+            <div 
               title="Edit"
-              className="btn btn-outline-primary btn-sm user-button"
+              className="icon-1"
             >
-              <FaEdit />
-            </button>
+              <i className="bi bi-pencil"></i>
+            </div>
           </Link>
           <DeleteButton
             endpoint="delete_asset_sub_category"
@@ -151,7 +153,7 @@ const AssetSubCategoryOverview = () => {
       <div>
         <UserNav />
         <div className="section section_padding sec_bg h100vh">
-          <div className="container">
+          <div className="container master-card-css">
             <div className="action_heading">
               <div className="action_title">
                 <FormContainer
@@ -175,28 +177,34 @@ const AssetSubCategoryOverview = () => {
                 </button>
               </div>
             </div>
-            <div className="page_height">
+            <div className="">
               <div className="card mb-4">
-                <div className="data_tbl table-responsive">
-                  <DataTable
-                    title="Sub Category Overview "
-                    columns={columns}
-                    data={filterData}
-                    fixedHeader
-                    // pagination
-                    fixedHeaderScrollHeight="64vh"
-                    exportToCSV
-                    highlightOnHover
-                    subHeader
-                    subHeaderComponent={
-                      <>
-                        <input
+                <div className="card-header sb">
+                  <h5>Sub Category Overview</h5>
+                  <input
                           type="text"
                           placeholder="Search here"
                           className="w-50 form-control "
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                         />
+
+                </div>
+                <div className="card-body body-padding">
+                  <DataTable
+                 
+                    columns={columns}
+                    data={filterData}
+                    // fixedHeader
+                    // pagination
+                    // fixedHeaderScrollHeight="64vh"
+                    exportToCSV
+                    highlightOnHover
+                    subHeader
+                    pagination
+                    subHeaderComponent={
+                      <>
+                        
                       </>
                     }
                   />
@@ -256,6 +264,7 @@ const AssetSubCategoryOverview = () => {
             data={totalAssets}
             highlightOnHover
             subHeader
+            
             // subHeaderComponent={
             //   <input
             //     type="text"

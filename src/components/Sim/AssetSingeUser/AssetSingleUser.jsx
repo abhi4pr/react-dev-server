@@ -182,15 +182,29 @@ const AssetSingleUser = () => {
             submitButton={false}
             mainTitle="Asset"
             title=""
-            accordionButtons={accordionButtons}
-            activeAccordionIndex={activeAccordionIndex}
-            onAccordionButtonClick={handleAccordionButtonClick}
-          >
-            {activeAccordionIndex === 0 && tab1}
-            {activeAccordionIndex === 1 && tab2}
-          </FormContainer>
+            link="true"
+          />
+            
         </div>
       </div>
+        <div className="tab">
+          {
+            accordionButtons.map((button ,index)=>(
+              <div className={`named-tab ${activeAccordionIndex === index? "active-tab":""}`}  onClick={()=>{handleAccordionButtonClick(index)}} >{button}</div>
+              
+            ))
+          }
+        </div>
+        <div className="card">
+          <div className="card-header sb">
+            Asset
+          </div>
+          <div className="card-body body-padding">
+
+        {activeAccordionIndex === 0 && tab1}
+            {activeAccordionIndex === 1 && tab2}
+          </div>
+        </div>
 
       {/* Repair Requset Modal  */}
       <div

@@ -111,7 +111,7 @@ const ModalMast = () => {
       cell: (row) => (
         <>
           <button
-            className="btn btn-primary"
+            className="icon-1"
             data-toggle="modal"
             data-target="#exampleModal"
             size="small"
@@ -119,7 +119,7 @@ const ModalMast = () => {
             color="primary"
             onClick={() => handleBrandData(row)}
           >
-            <FaEdit />
+           <i className="bi bi-pencil"></i>
           </button>
           <DeleteButton
             endpoint="delete_asset_modal"
@@ -240,7 +240,7 @@ const ModalMast = () => {
               columns={columns}
               data={modalFilter}
               fixedHeader
-              // pagination
+              pagination
               fixedHeaderScrollHeight="64vh"
               highlightOnHover
               subHeader
@@ -337,7 +337,7 @@ const ModalMast = () => {
         style={{
           content: {
             width: "80%",
-            height: "80%",
+            height: "max-content",
             top: "50%",
             left: "50%",
             right: "auto",
@@ -349,7 +349,7 @@ const ModalMast = () => {
       >
         {/* {selectedRow && ( */}
         <div>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-end mb-2">
             {/* <h2>Department: {selectedRow.dept_name}</h2> */}
 
             <button
@@ -368,18 +368,19 @@ const ModalMast = () => {
                 width: "10%",
               },
               { name: "Asset Name", selector: (row) => row.assetsName },
+              { name: "Asset ID", selector: (row) => row.asset_id },
+              { name: "Asset Type", selector: (row) => row.asset_type },
               { name: "Category Name", selector: (row) => row.category_name },
               {
-                name: "Subcategory Name",
+                name: "Sub Category Name",
                 selector: (row) => row.sub_category_name,
               },
               { name: "Status", selector: (row) => row.status },
-              { name: "Asset Type", selector: (row) => row.asset_type },
-              { name: "Asset ID", selector: (row) => row.asset_id },
             ]}
             data={totalAssets}
             highlightOnHover
             subHeader
+            pagination
             // subHeaderComponent={
             //   <input
             //     type="text"

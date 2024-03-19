@@ -592,12 +592,16 @@ const WFHDRegister = ({ userUpdateID }) => {
   };
 
   return (
-    <>
-      <FormContainer
+    <div className="master-card-css">
+        <FormContainer 
         mainTitle="WFHD Register"
-        title="WFHD User Registration"
-        // handleSubmit={handleSubmit}
         submitButton={false}
+        link={"/admin/wfhd-overview"}
+        />
+    
+    <div className="card body-padding">
+      <div className="row"
+        
       >
         <FieldContainer
           label="Full Name *"
@@ -1057,9 +1061,12 @@ const WFHDRegister = ({ userUpdateID }) => {
           />
         </div>
 
-      </FormContainer>
+      </div>
         {/* <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12"> */}
-          <div className="form-group">
+          
+        {/* </div> */}
+    </div>
+    <div className="form-group">
             <button
               type="button"
               className="btn btn-primary"
@@ -1067,12 +1074,11 @@ const WFHDRegister = ({ userUpdateID }) => {
               disabled={loading}
               onClick={handleSubmit}
             >
-              {loading ? "Submitting..." : "Submit"} 
+              {loading ? "Submitting" : "Submit"} 
               {loading ? <i className="bi bi-arrow-clockwise"></i> : <i className="bi bi-arrow-right"></i>} 
             </button>
           </div>
-        {/* </div> */}
-    </>
+    </div>
   );
 };
 

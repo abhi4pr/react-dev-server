@@ -64,24 +64,24 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
       sortable: true,
     },
     {
+      name: "Asset Name",
+      selector: (row) => row.sub_category_name,
+      // selector: (row) => row.asset_name,
+      sortable: true,
+    },
+    {
       name: "Request By",
       selector: (row) => row.req_by_name,
       sortable: true,
     },
     {
       name: "Request Date",
-      selector: (row) => row.req_date?.split("T")?.[0],
+      selector: (row) => row.req_date?.split("T")?.[0].split("-").reverse().join("-"),
       sortable: true,
     },
     {
       name: "Priority",
       selector: (row) => row.priority,
-      sortable: true,
-    },
-    {
-      name: "Asset Name",
-      selector: (row) => row.sub_category_name,
-      // selector: (row) => row.asset_name,
       sortable: true,
     },
     // {
@@ -105,14 +105,15 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
 
   return (
     <>
-      <div className="page_height">
+      
         <div className="card mb-4">
           <div className="data_tbl table-responsive">
             <DataTable
-              title="Assets"
+             
               columns={activeColumns}
               data={filterData}
-              fixedHeader
+              // fixedHeader
+              pagination
               fixedHeaderScrollHeight="64vh"
               exportToCSV
               highlightOnHover
@@ -120,7 +121,7 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
             />
           </div>
         </div>
-      </div>
+     
     </>
   );
 };

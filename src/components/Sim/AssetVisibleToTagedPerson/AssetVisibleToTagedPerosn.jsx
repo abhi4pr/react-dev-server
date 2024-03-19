@@ -60,12 +60,13 @@ const AssetVisibleToTagedPerosn = () => {
 
   return (
     <>
-      <div className="action_heading">
+      <div className="master-card-css">
         <div className="action_title">
           <FormContainer
             submitButton={false}
-            mainTitle="Taged Asset Request"
+            mainTitle="Tagged Asset Request"
             title=""
+            link="true"
             accordionButtons={accordionButtons}
             activeAccordionIndex={activeAccordionIndex}
             onAccordionButtonClick={handleAccordionButtonClick}
@@ -73,6 +74,28 @@ const AssetVisibleToTagedPerosn = () => {
             {activeAccordionIndex === 0 && tab1}
             {activeAccordionIndex === 1 && tab2}
           </FormContainer>
+        </div>
+        <div className="tab">
+          {
+            accordionButtons.map((button, index) => (
+              <div
+                key={index}
+                className={`named-tab ${activeAccordionIndex === index ? "active-tab" : ""}`}
+                onClick={() => handleAccordionButtonClick(index)}
+              >
+                {button}
+              </div>
+            ))
+          }
+        </div>
+        <div className="card">
+          <div className="card-header">
+            Assets
+          </div>
+          <div className="card-body body-padding">
+          {activeAccordionIndex === 0 && tab1}
+            {activeAccordionIndex === 1 && tab2}
+          </div>
         </div>
       </div>
     </>

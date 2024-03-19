@@ -256,11 +256,11 @@ const AssetVisibleToHr = () => {
       selector: (row) => (
         <>
           {row?.asset_return_status === "RecovedByHR" ? (
-            <span className="badge badge-success">Recover By HR</span>
+            <span className="badge badge-success border-round">Recover By HR</span>
           ) : row.asset_return_status === "RecoverdByManager" ? (
-            <span className="badge badge-warning">Recovered By Manager</span>
+            <span className="badge badge-warning border-round">Recovered By Manager</span>
           ) : row.asset_return_status === "Pending" ? (
-            <span className="badge badge-warning">Pending</span>
+            <span className="badge badge-warning border-round">Pending</span>
           ) : (
             "N/A"
           )}
@@ -286,52 +286,88 @@ const AssetVisibleToHr = () => {
           )}
         </>
       ),
+      width:"150px"
     },
   ];
 
   return (
     <>
       {/* parent toggle */}
-      <FormContainer
+      <div className="tab">
+      {accordionButtonsParent.map((button, index) => (
+        <div className={`named-tab ${activeAccordionIndexParent=== index ? "active-tab":""}`} id={index}  onClick={()=>{
+          setActiveAccordionIndexParent(index)
+        }}>{button}</div>
+      ))}
+      </div>
+      {/* <FormContainer
         submitButton={false}
         mainTitle=""
         title=""
         accordionButtons={accordionButtonsParent}
         activeAccordionIndex={activeAccordionIndexParent}
         onAccordionButtonClick={handleAccordionButtonClickParent}
-      ></FormContainer>
-      <div className="action_heading">
-        <div className="action_title">
+      ></FormContainer> */}
+      <div className="action_heading ">
+        <div className="action_title master-card-css">
           {isButton1Active && (
+            <>
             <FormContainer
               submitButton={false}
               mainTitle="Repair Request To Hr"
               title=""
+              link="true"
               accordionButtons={accordionButtons}
               activeAccordionIndex={activeAccordionIndex}
               onAccordionButtonClick={handleAccordionButtonClick}
-            >
+            />
+            <div className="tab">
+              {
+                accordionButtons.map((button, index) =>(<div key={index} className={`named-tab ${activeAccordionIndex === index?"active-tab":""}`} onClick={()=>{handleAccordionButtonClick(index)}}>{button}</div>))
+              }
+            </div>
+            <div className="card">
+              <div className="card-header">
+              <h5>Repair Request Overview</h5>
+              </div>
+              <div className="card-body body-padding">
               {activeAccordionIndex === 0 && tab1}
               {activeAccordionIndex === 1 && tab2}
               {activeAccordionIndex === 2 && tab3}
               {activeAccordionIndex === 3 && tab4}
               {activeAccordionIndex === 4 && tab5}
-            </FormContainer>
+              </div>
+            </div>
+            </>
           )}
           {isButton2Active && (
+            <>
             <FormContainer
               submitButton={false}
               mainTitle="New Asset Request"
               title=""
-              accordionButtons={accordionButtons1}
-              activeAccordionIndex={activeAccordionIndex1}
-              onAccordionButtonClick={handleAccordionButtonClick1}
-            >
+              link="true"
+              // accordionButtons={accordionButtons1}
+              // activeAccordionIndex={activeAccordionIndex1}
+              // onAccordionButtonClick={handleAccordionButtonClick1}
+            />
+            <div className="tab">
+              {
+                accordionButtons1.map((button, index) =>(<div key={index} className={`named-tab ${activeAccordionIndex1 === index?"active-tab":""}`} onClick={()=>{handleAccordionButtonClick1(index)}}>{button}</div>))
+              }
+            </div>
+            <div className="card">
+              <div className="card-header">
+              <h5>New Asset Request Overview</h5>
+              </div>
+              <div className="card-body body-padding">
               {activeAccordionIndex1 === 0 && newAssetTab1}
               {activeAccordionIndex1 === 1 && newAssetTab2}
               {activeAccordionIndex1 === 2 && newAssetTab3}
               {activeAccordionIndex1 === 3 && newAssetTab4}
-            </FormContainer>
+              </div>
+            </div>
+              </>
           )}
           {isButton3Active && (
             <div className="page_height">
@@ -365,12 +401,12 @@ const AssetVisibleToHr = () => {
           <div className="modal-dialog modal-sm" role="document">
             <div className="modal-content">
               <div className="modal-header">
+                <h4 className="modal-title">Recover Asset</h4>
                 <button type="button" className="close" data-dismiss="modal">
-                  <span aria-hidden="true" style={{ marginRight: "250px" }}>
+                  <span aria-hidden="true" style={{ marginLeft: "250px" }}>
                     ×
                   </span>
                 </button>
-                <h4 className="modal-title">Recover Asset</h4>
               </div>
               <div className="modal-body">
                 <FieldContainer

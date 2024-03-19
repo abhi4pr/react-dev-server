@@ -105,12 +105,12 @@ const SimAllocationOverview = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "9%",
+      width: "80px",
       sortable: true,
     },
     {
       name: "Assets Name",
-      // width: "15%",
+      width: "150px",
       selector: (row) => row.assetsName,
       sortable: true,
     },
@@ -129,6 +129,7 @@ const SimAllocationOverview = () => {
       name: "Sub Category",
       selector: (row) => row.sub_category_name,
       sortable: true,
+      width:"150px"
     },
 
     // {
@@ -138,7 +139,9 @@ const SimAllocationOverview = () => {
     // sortable: true,
     // },
     {
-      name: "Submission date",
+      name: "Submission Date",
+      width:"150px",
+
       selector: (row) => (
         <input
           type="date"
@@ -162,7 +165,7 @@ const SimAllocationOverview = () => {
         <input
           type="text"
           className="form-control"
-          placeholder="Sel date, Type & Enter"
+          placeholder="Type & Enter"
           value={reason[row.sim_id] || ""} // Use the reason state with the key of row.sim_id
           onChange={(e) => {
             setReason((prevReason) => ({
@@ -180,7 +183,7 @@ const SimAllocationOverview = () => {
   const [buttonAccess, setButtonAccess] = useState(false);
 
   return (
-    <div style={{ margin: "0 0 0 10%", width: "80%" }}>
+    <div className="master-card-css" style={{ margin: "0 0 0 10%", width: "80%" }}>
       <UserNav />
       <FormContainer
         mainTitle="Allocation"
@@ -188,27 +191,28 @@ const SimAllocationOverview = () => {
         buttonAccess={buttonAccess}
       />
 
-      <div className="page_height">
+      <div className="">
         <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title="Sim Allocation Overview"
-              columns={columns}
-              data={filterdata}
-              fixedHeader
-              // pagination
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
+          <div className="card-header sb">
+            <h5>Sim Allocation Overview</h5>
+            <input
                   type="text"
                   placeholder="Search here"
                   className="w-50 form-control "
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
-              }
+          </div>
+          <div className="data_tbl table-responsive card-body bdy-padding">
+            <DataTable
+              
+              columns={columns}
+              data={filterdata}
+              // fixedHeader
+              pagination
+              // fixedHeaderScrollHeight="64vh"
+              // highlightOnHover
+              
             />
           </div>
         </div>

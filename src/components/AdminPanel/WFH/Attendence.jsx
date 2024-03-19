@@ -338,11 +338,14 @@ const Attendence = () => {
       field: "dept_name",
       headerName: "Department",
       type: "text",
+      width: 200,
+
     },
     {
       field: "designation_name",
       headerName: "Designation",
       type: "text",
+      width: 200,
     },
     // {
     //   field: "Report_L1Name",
@@ -425,6 +428,7 @@ const Attendence = () => {
           isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
           if (isInEditMode) {
             return [
+              
               <GridActionsCellItem
                 icon={<ClearIcon />}
                 label="Cancel"
@@ -565,13 +569,13 @@ const Attendence = () => {
             })}
           </div>
 
-          <h6>
-            <span style={{ color: "green",padding:"10px" }}>Active : {activeusers}</span>
+          <h6 style={{ color: "green",paddingTop:"10px" }}>
+            <span >Active : {activeusers}</span>
           </h6>
         </div>
       </div>
       
-      <div className="card">
+      <div className="card body-padding">
         <div className="data_tbl table-responsive footer_none">
           {filterData?.length > 0 && (
             <DataGrid
@@ -581,13 +585,15 @@ const Attendence = () => {
               slots={{
                 toolbar: GridToolbar,
               }}
+             
               editMode="row"
               rowModesModel={rowModesModel}
               onRowModesModelChange={handleRowModesModelChange}
               onRowEditStop={handleRowEditStop}
               processRowUpdate={processRowUpdate}
-            />
-          )}
+              />
+              )}
+              {/* <Pagination count={10} /> */}
         </div>
       </div>
     </>

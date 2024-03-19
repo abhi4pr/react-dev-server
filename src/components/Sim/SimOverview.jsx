@@ -365,8 +365,9 @@ const SimOverview = () => {
       name: "Image",
       selector: (row) => (
         <button
-          className="btn btn-outline-success"
+          className="icon-1"
           onClick={() => handleImageClick(row.sim_id)}
+          title="View Images"
           // disabled={showAssetsImage?.length != 0}
         >
           <i className="bi bi-images"></i>
@@ -391,12 +392,14 @@ const SimOverview = () => {
                 style={{ cursor: "pointer" }}
                 target="_blank"
                 href={row.invoiceCopy_url}
+                title="Invoice"
                 download
+                className="icon-1"
               >
                 <i
-                  className="fa fa-download"
+                  className="bi bi-receipt"
                   aria-hidden="true"
-                  style={{ fontSize: "25px", color: "blue" }}
+                  style={{ fontSize: "25px", color: "gray" }}
                 ></i>
               </a>
             )}
@@ -437,15 +440,15 @@ const SimOverview = () => {
           <Link to={`/sim-update/${row.sim_id}`}>
             <button
               title="Edit"
-              className="btn btn-outline-primary btn-sm user-button"
+              className="icon-1"
             >
-              <FaEdit />{" "}
+              <i className=" bi bi-pencil"></i>
             </button>
           </Link>
           <Link to={`/sim-summary/${row.sim_id}`}>
             <button
               title="Summary"
-              className="btn btn-outline-primary btn-sm user-button"
+              className="icon-1"
             >
               <i className="bi bi-journal-text"></i>
             </button>
@@ -461,7 +464,8 @@ const SimOverview = () => {
           {id == 2 && (
             <button
               type="button"
-              className="btn btn-outline-primary btn-sm user-button"
+              className="btn btn-outline-black btn-sm  icon-1"
+              title="Transfer"
               // data-toggle="modal"
               // data-target="#exampleModal11"
               // data-whatever="@mdo"
@@ -475,7 +479,7 @@ const SimOverview = () => {
             <button
               type="button"
               title="Allocation"
-              className="btn btn-outline-primary btn-sm user-button"
+              className="icon-1"
               // data-toggle="modal"
               // data-target="#AllocationModal"
               // data-whatever="@mdo"
@@ -487,7 +491,7 @@ const SimOverview = () => {
         </>
       ),
       allowOverflow: true,
-      width: "25%",
+      width: "250px",
     },
   ];
 
@@ -569,7 +573,7 @@ const SimOverview = () => {
                     type="button"
                     className="btn btn-outline-primary btn-sm"
                   >
-                    Assets SubCategory
+                    Assets Sub Category
                   </button>
                 </Link>
                 <Link to="/venderOverView">
@@ -732,15 +736,15 @@ const SimOverview = () => {
               <div className="card">
                 <div className="card-header sb p-4">
                   <h5>Assets Overview</h5>
-                  <div className="pack sb ">
-                    <input
-                      type="text"
-                      placeholder="Search here"
-                      className="w-50 form-control "
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    />
-                    {/* <button
+                  <div className="pack">
+                        <input
+                          type="text"
+                          placeholder="Search here"
+                          className="w-50 form-control "
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                        />
+                        {/* <button
                           className="btn btn-outline-success ml-2 btn-sm"
                           onClick={handleExport}
                         >
@@ -764,7 +768,7 @@ const SimOverview = () => {
                     // fixedHeaderScrollHeight="64vh"
                     exportToCSV
                     highlightOnHover
-                    selectableRows
+                    // selectableRows
                     // subHeader
                     // subHeaderComponent={
                     //   <>
@@ -835,19 +839,19 @@ const SimOverview = () => {
                       {modalData?.assetsName}
                     </li>
                     <li>
-                      <span>Registered TO: </span>
+                      <span>Registered To : </span>
                       {modalData?.register}
                     </li>
                     <li>
-                      <span>Status: </span>
+                      <span>Status : </span>
                       {modalData?.status}
                     </li>
                     <li>
-                      <span>Allocated To: </span>
+                      <span>Allocated To : </span>
                       {particularUserName}
                     </li>
                     <li>
-                      <span>Sim Type: </span>
+                      <span>Sim Type : </span>
                       {modalData?.s_type}
                     </li>
                   </ul>

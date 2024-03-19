@@ -99,6 +99,7 @@ const SalarySummary = () => {
       name: "User Count",
       cell: (row) => (
         <button
+        style={{width: "60px"}}
           className="btn btn-outline-warning"
           onClick={() => handleUserModal(row)}
         >
@@ -148,27 +149,29 @@ const SalarySummary = () => {
 
   return (
     <>
-      <div>
+      <div className="master-card-css">
         <FormContainer mainTitle="Salary Summary" link={"/admin/"} />
         <div className="card">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title="Total Salary Summary"
-              columns={columns}
-              data={allSalaryData}
-              fixedHeader
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
+          <div className="card-header sb">
+            <h5>Total Salary Summary</h5>
+            <input
                   type="text"
                   placeholder="Search Here"
                   className="w-50 form-control"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
-              }
+          </div>
+          <div className="data_tbl table-responsive card-body body-padding">
+            <DataTable
+              
+              columns={columns}
+              data={allSalaryData}
+              // fixedHeader
+              // fixedHeaderScrollHeight="64vh"
+              highlightOnHover
+pagination
+             
             />
           </div>
         </div>
@@ -190,11 +193,15 @@ const SalarySummary = () => {
             },
           }}
         >
+            <button
+            className="btn btn-success mb-3 float-right"
+            onClick={handleCloseSubCat}
+            >x</button>
           <DataTable
             columns={SubCatColumns}
             data={userCount}
             highlightOnHover
-            subHeader
+            pagination
             // subHeaderComponent={
             //   <input
             //     type="text"

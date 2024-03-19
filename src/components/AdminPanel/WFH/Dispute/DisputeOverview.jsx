@@ -26,16 +26,20 @@ const DisputeOverview = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "6%",
+      width: "80px",
       sortable: true,
     },
     {
       name: "Employee Name",
       cell: (row) => row.user_name,
+      width: "150px",
+
     },
     {
       name: "Department",
       cell: (row) => row.dept_name,
+      width: "120px",
+
     },
 
     {
@@ -49,14 +53,20 @@ const DisputeOverview = () => {
     {
       name: "Absent Days",
       cell: (row) => row.noOfabsent,
+      width: "120px",
+
     },
     {
       name: "Present Days",
       cell: (row) => 30 - Number(row.noOfabsent),
+      width: "120px",
+
     },
     {
       name: "Total Salary",
       cell: (row) => row.total_salary + " ₹",
+      width: "120px",
+
       footer: {
         cell: (row) =>
           row.reduce((total, rows) => {
@@ -98,6 +108,8 @@ const DisputeOverview = () => {
     {
       name: "Disputed Date",
       cell: (row) => row.dispute_date,
+      width: "120px",
+
     },
     {
       name: "Reason",
@@ -105,6 +117,8 @@ const DisputeOverview = () => {
     },
     (!id || loginUserRole == 2) && {
       name: "Actions",
+      width: "300px",
+
       cell: (row) => (
         <>
           {row.dispute_status == "Disputed" && (
@@ -188,33 +202,34 @@ const DisputeOverview = () => {
         title="Dispute Overview"
         // handleSubmit={handleSubmit}
         submitButton={false}
-      >
-        <div className="page_height">
-          <div className="card mb-4">
-            <div className="data_tbl table-responsive">
-              <DataTable
-                title="Disputed Status Employees"
-                columns={columns}
-                data={filterData}
-                fixedHeader
-                // pagination
-                fixedHeaderScrollHeight="64vh"
-                highlightOnHover
-                subHeader
-                subHeaderComponent={
-                  <input
+        link="/admin/wfh/dispute/add-dispute"
+      />
+       
+      <div className="card">
+        <div className="card-header sb">
+        <h5>Dispute Overview</h5>
+        <input
                     type="text"
                     placeholder="Search here"
                     className="w-50 form-control "
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                   />
-                }
-              />
-            </div>
-          </div>
+
         </div>
-      </FormContainer>
+        <div className="card-body body-padding">
+        <DataTable
+               
+                columns={columns}
+                data={filterData}
+                // fixedHeader
+                pagination
+                fixedHeaderScrollHeight="64vh"
+                highlightOnHover
+                
+              />
+        </div>
+      </div>
     </>
   );
 };

@@ -183,7 +183,7 @@ const VenderMaster = () => {
             onChange={(e) => setSecondaryPersonName(e.target.value)}
           />
           <FieldContainer
-            label="Email"
+            label="Email ID"
             required={false}
             value={vendorEmail}
             onChange={(e) => setVendorEmail(e.target.value)}

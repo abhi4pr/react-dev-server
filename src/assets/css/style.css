@@ -5688,7 +5688,8 @@ input[type="button"].btn-block {
   border-bottom: 1px solid var(--border); */
   display: flex;
   flex-direction: row;
-  height: 60px;
+  height: max-content;
+  min-height: 60px;
   background-color: var(--bg-white);
   border-radius: 24px 24px 0 0;
   border-bottom: 1px solid rgb(232, 232, 232);
@@ -5697,6 +5698,17 @@ input[type="button"].btn-block {
   width: 100%;
   padding: 11px 20px 11px 20px;
   gap: 10px;
+  .pack{
+    width: 100%;  
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  .form-group{
+    margin-bottom: 0;
+  
+  }
 }
 
 .card-header:first-child {
@@ -6984,7 +6996,11 @@ a.close.disabled {
 .modal-backdrop.show {
   opacity: 0.5;
 }
-
+.pack{
+  .css-b62m3t-container{
+    width: 300px!important;
+  }
+}
 .modal-header {
   display: flex;
   align-items: flex-start;
@@ -6994,7 +7010,9 @@ a.close.disabled {
   border-top-left-radius: calc(0.3rem - 1px);
   border-top-right-radius: calc(0.3rem - 1px);
 }
-
+.css-1h51icj-MuiAutocomplete-root{
+  width: 100%;
+}
 .modal-header .close {
   padding: 1rem 1rem;
   margin: -1rem -1rem -1rem auto;
@@ -14160,14 +14178,20 @@ body.sidebar-toggled .sidebar_toggle .footer_cprgt {
 .rdt_TableHeadRow .rdt_TableCol:nth-last-child(1),
 .rdt_TableRow .rdt_TableCell:nth-last-child(1) {
   /* justify-content: center; */
-  min-width: 12.5%;
-  max-width: 12.5%;
+  /* min-width: 12.5%;
+  max-width: 12.5%; */
+}
+.sc-ikkxIA,.clxJSV{
+  display: none!important;
 }
 
 .rdt_TableCell {
   word-break: keep-all;
+ 
 }
-
+.border-round{
+  border-radius: 500px !important;
+}
 .data_tbl .btn-sm.user-button,
 .data_tbl .btn-sml.user-button {
   font-size: 14px;

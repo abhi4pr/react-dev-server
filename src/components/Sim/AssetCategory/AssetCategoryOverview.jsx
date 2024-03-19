@@ -164,13 +164,14 @@ const AssetCategoryOverview = () => {
       sortable: true,
     },
     {
-      name: "Subcat",
+      name: "Add Sub Category",
       cell: (row) => (
         <button
           className="btn btn-outline-primary btn-sm"
           onClick={() => handleRowClick(row)}
+          title="Add Sub Category"
         >
-          Add Sub
+          <i className="bi bi-plus"></i>
         </button>
       ),
     },
@@ -221,12 +222,12 @@ const AssetCategoryOverview = () => {
       cell: (row) => (
         <>
           <Link to={`/asset-category-update/${row.category_id}`}>
-            <button
+            <div
               title="Edit"
-              className="btn btn-outline-primary btn-sm user-button"
+              className="icon-1"
             >
-              <FaEdit />{" "}
-            </button>
+              <i className="bi bi-pencil"></i>
+            </div>
           </Link>
           <DeleteButton
             endpoint="delete_asset_category"
@@ -247,7 +248,7 @@ const AssetCategoryOverview = () => {
       <div>
         <UserNav />
         <div className="section section_padding sec_bg h100vh">
-          <div className="container">
+          <div className="container master-card-css">
             <div className="action_heading">
               <div className="action_title">
                 <FormContainer
@@ -277,30 +278,29 @@ const AssetCategoryOverview = () => {
                 </button>
               </div>
             </div>
-            <div className="page_height">
-              <div className="card mb-4">
-                <div className="data_tbl table-responsive">
-                  <DataTable
-                    title="Asset Categroy"
-                    columns={columns}
-                    data={filterData}
-                    fixedHeader
-                    // pagination
-                    fixedHeaderScrollHeight="64vh"
-                    exportToCSV
-                    highlightOnHover
-                    subHeader
-                    subHeaderComponent={
-                      <>
-                        <input
+            <div className="">
+              <div className="card mb-1">
+                <div className="card-header sb">
+                  <h5>Asset Category</h5>
+                  <input
                           type="text"
                           placeholder="Search here"
                           className="w-50 form-control "
                           value={search}
                           onChange={(e) => setSearch(e.target.value)}
                         />
-                      </>
-                    }
+                </div>
+                <div className="card-body body-padding">
+                  <DataTable
+                   
+                    columns={columns}
+                    data={filterData}
+                    // fixedHeader
+                    pagination
+                    // fixedHeaderScrollHeight="64vh"
+                    exportToCSV
+                    highlightOnHover
+                    
                   />
                 </div>
               </div>
@@ -327,7 +327,7 @@ const AssetCategoryOverview = () => {
       >
         {/* {selectedRow && ( */}
         <div>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-end mb-2">
             {/* <h2>Department: {selectedRow.dept_name}</h2> */}
 
             <button
@@ -339,7 +339,7 @@ const AssetCategoryOverview = () => {
           </div>
           <FormContainer
             mainTitle="Sub Category"
-            title="Create SubCategory "
+            title="Create Sub Category "
             handleSubmit={handleSubmit}
             buttonAccess={false}
           >
@@ -389,7 +389,7 @@ const AssetCategoryOverview = () => {
         style={{
           content: {
             width: "80%",
-            height: "80%",
+            height: "max-content",
             top: "50%",
             left: "50%",
             right: "auto",
@@ -401,7 +401,7 @@ const AssetCategoryOverview = () => {
       >
         {/* {selectedRow && ( */}
         <div>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-end mb-2">
             {/* <h2>Department: {selectedRow.dept_name}</h2> */}
 
             <button
@@ -411,7 +411,7 @@ const AssetCategoryOverview = () => {
               X
             </button>
           </div>
-          <h1></h1>
+          
           <DataTable
             columns={[
               {
@@ -420,14 +420,14 @@ const AssetCategoryOverview = () => {
                 width: "10%",
               },
               { name: "Asset Name", selector: (row) => row.assetsName },
+              { name: "Asset ID", selector: (row) => row.asset_id },
+              { name: "Asset Type", selector: (row) => row.asset_type },
               { name: "Category Name", selector: (row) => row.category_name },
               {
-                name: "Subcategory Name",
+                name: "Sub Category Name",
                 selector: (row) => row.sub_category_name,
               },
               { name: "Status", selector: (row) => row.status },
-              { name: "Asset Type", selector: (row) => row.asset_type },
-              { name: "Asset ID", selector: (row) => row.asset_id },
             ]}
             data={totalAssets}
             highlightOnHover
@@ -452,8 +452,8 @@ const AssetCategoryOverview = () => {
         onRequestClose={handleCloseSubCat}
         style={{
           content: {
-            width: "80%",
-            height: "80%",
+            width: "max-content",
+            height: "max-content",
             top: "50%",
             left: "50%",
             right: "auto",
@@ -465,7 +465,7 @@ const AssetCategoryOverview = () => {
       >
         {/* {selectedRow && ( */}
         <div>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-end mb-2">
             {/* <h2>Department: {selectedRow.dept_name}</h2> */}
 
             <button
@@ -475,18 +475,19 @@ const AssetCategoryOverview = () => {
               X
             </button>
           </div>
-          <h1></h1>
+         
           <DataTable
             columns={[
               {
                 name: "S.No",
                 cell: (row, index) => <div>{index + 1}</div>,
-                width: "10%",
+               width: "100px",
               },
               {
                 name: "Sub Category Name",
-                width: "40%",
+               
                 selector: (row) => row.sub_category_name,
+                width: "300px",
               },
               // { name: "Category Name", selector: (row) => row.category_name },
             ]}

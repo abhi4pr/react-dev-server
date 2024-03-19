@@ -126,15 +126,15 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       selector: (row) => (
         <>
           {row?.asset_request_status === "ApprovedByManager" ? (
-            <span className="badge badge-warning">Approve By Manager</span>
+            <span className="badge badge-warning border-round">Approve By Manager</span>
           ) : row.asset_request_status === "Approved" ? (
-            <span className="badge badge-success">Assigned</span>
+            <span className="badge badge-success border-round">Assigned</span>
           ) : row.asset_request_status === "RejectedByManager" ? (
-            <span className="badge badge-danger">Rejected By Manager</span>
+            <span className="badge badge-danger border-round">Rejected By Manager</span>
           ) : row.asset_request_status === "Requested" ? (
-            <span className="badge badge-danger">Requested</span>
+            <span className="badge badge-danger border-round">Requested</span>
           ) : row.asset_request_status === "Rejected" ? (
-            <span className="badge badge-danger">Rejected</span>
+            <span className="badge badge-danger border-round">Rejected</span>
           ) : null}
         </>
       ),
@@ -165,7 +165,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
 
     {
       name: "Request Date",
-      selector: (row) => row.date_and_time_of_asset_request?.split("T")?.[0],
+      selector: (row) => row.date_and_time_of_asset_request.split("-").reverse().join("-").substring(0,row.date_and_time_of_asset_request.split("-").reverse().join("-").indexOf("T"))+row.date_and_time_of_asset_request.split("-").reverse().join("-").substring(row.date_and_time_of_asset_request.split("-").reverse().join("-").indexOf("Z")+1),
       sortable: true,
     },
     {
@@ -186,7 +186,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
             data-target="#sidebar-right"
             size="small"
             onClick={() => handleStatusUpdate(row, "Approved")}
-            className="btn btn-success btn-sm ml-2"
+            className="btn btn-success btn-sm"
           >
             Assign
           </button>
@@ -200,20 +200,22 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
           </button>
         </>
       ),
+      width: "250px",
     },
   ];
 
   return (
     <>
-      <div className="page_height">
+      <div className="">
         <div className="card mb-4">
           <div className="data_tbl table-responsive">
             <DataTable
-              title="New Asset Request Overview"
+             
               columns={columns}
               data={newAssetData}
-              fixedHeader
-              fixedHeaderScrollHeight="50vh"
+              // fixedHeader
+              pagination
+              // fixedHeaderScrollHeight="50vh"
               exportToCSV
               highlightOnHover
               subHeader

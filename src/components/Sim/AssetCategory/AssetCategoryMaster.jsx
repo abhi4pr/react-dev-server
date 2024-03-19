@@ -24,7 +24,7 @@ const AssetCategoryMaster = () => {
   const [selfAuditUnit, setSelfAuditUnit] = useState("");
   const [hrselfAuditPeriod, setHrSelfAuditPeriod] = useState("");
   const [hrselfAuditUnit, setHrSelfAuditUnit] = useState("");
-  const Unit = ["Month(s)", "Day(s)", "Year(s)"];
+  const Unit = ["Day(s)","Month(s)", "Year(s)"];
   const [categoryData, setCategoryData] = useState([]);
 
   const getData = async () => {

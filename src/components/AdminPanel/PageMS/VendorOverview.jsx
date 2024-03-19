@@ -57,12 +57,12 @@ const VendorOverview = () => {
       cell: (row) => (
         <>
           <Link to={`/admin/pms-vendor-edit/${row._id}`}>
-            <button
+            <div 
               title="Edit"
-              className="btn btn-outline-primary btn-sm user-button"
+              className="icon-1"
             >
-              <FaEdit />{" "}
-            </button>
+              <i className="bi bi-pencil"></i>
+            </div>
           </Link>
           <DeleteButton
             endpoint="deleteVendorMast"
