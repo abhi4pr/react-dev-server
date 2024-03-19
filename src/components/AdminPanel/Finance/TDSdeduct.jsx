@@ -205,6 +205,17 @@ export default function TDSdeduct() {
       return allFiltersPassed;
     });
     setFilterData(filterData);
+
+    const uniqueVendors = new Set(filterData.map((item) => item.vendor_name));
+    setUniqueVendorCount(uniqueVendors.size);
+    const uvData = [];
+    uniqueVendors.forEach((vendorName) => {
+      const vendorRows = filterData.filter(
+        (item) => item.vendor_name === vendorName
+      );
+      uvData.push(vendorRows[0]);
+    });
+    setUniqueVendorData(uvData);
   };
 
   const handleClearDateFilter = () => {
@@ -215,6 +226,14 @@ export default function TDSdeduct() {
     setPriorityFilter("");
     setRequestAmountFilter("");
     setRequestedAmountField("");
+    const uniqueVendors = new Set(data.map((item) => item.vendor_name));
+    setUniqueVendorCount(uniqueVendors.size);
+    const uvData = [];
+    uniqueVendors.forEach((vendorName) => {
+      const vendorRows = data.filter((item) => item.vendor_name === vendorName);
+      uvData.push(vendorRows[0]);
+    });
+    setUniqueVendorData(uvData);
   };
 
   const handleOpenUniqueVendorClick = () => {

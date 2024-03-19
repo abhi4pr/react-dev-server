@@ -1370,6 +1370,16 @@ const SidebarLinks = () => {
                   </div>
                 </div>
               </li>
+              <li className="nav-item">
+                <>
+                  <Link
+                    className="collapse-item"
+                    to="/admin/finance-gst-nongst-incentive-report"
+                  >
+                    <i className="bi bi-dot"></i> GST NonGST Incentive Report
+                  </Link>
+                </>
+              </li>
             </div>
           </div>
         </li>
@@ -1537,20 +1547,14 @@ const SidebarLinks = () => {
             {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/pms-page-overview"
-                >
+                <Link className="collapse-item" to="/admin/pms-page-overview">
                   <i className="bi bi-dot"></i>Page
                 </Link>
-              )} 
-              {contextData &&
+              )}
+            {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/pms-vendor-overview"
-                >
+                <Link className="collapse-item" to="/admin/pms-vendor-overview">
                   <i className="bi bi-dot"></i>Vendor
                 </Link>
               )}
@@ -1562,15 +1566,13 @@ const SidebarLinks = () => {
                 </Link>
               )} */}
 
-
-
             {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-category">
                   <i className="bi bi-dot"></i> Page Category
                 </Link>
-              )} */} 
+              )} */}
 
             {/* {contextData &&
               contextData[0] &&

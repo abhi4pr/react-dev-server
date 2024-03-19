@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { FaUserPlus } from "react-icons/fa";
-import titleimg from '/bg-img.png'
+import titleimg from "/bg-img.png";
 const FormContainer = ({
   mainTitle,
   title,
@@ -34,6 +34,7 @@ const FormContainer = ({
   rejectedCount,
   baseAmountTotal,
   campaignAmountTotal,
+  totalBaseAmount,
   uniqueSalesExecutiveCount,
   handleOpenUniqueSalesExecutive,
   pendingApprovalAdditionalTitles = false,
@@ -50,23 +51,26 @@ const FormContainer = ({
   incentivePaymentAdditionalTitles = false,
   saleBookingVerifyPaymentAdditionalTitles = false,
   pendingInvoicePaymentAdditionalTitles = false,
+  gstNongstIncentiveReport = false,
   loading = false,
   pendingpaymentRemainder = 0,
   mainTitleRequired = true,
   Titleheadercomponent,
-  TitleHeaderComponentDisplay="none"
+  TitleHeaderComponentDisplay = "none",
 }) => {
   const location = useLocation();
   const activeLink = location.pathname;
   return (
-    <div style={{display:"flex",gap:"10px",flexDirection:"column"}}>
+    <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
       {mainTitleRequired && (
         <div className="form-heading">
-           <img className="img-bg" src={titleimg} alt="" width={160} />
+          <img className="img-bg" src={titleimg} alt="" width={160} />
           <div className="form_heading_title ">
             <h2>{mainTitle}</h2>
             <div className="pack">
-            <i class="bi bi-house"></i> {activeLink.slice(1).charAt(0).toUpperCase()+ activeLink.slice(2)}
+              <i class="bi bi-house"></i>{" "}
+              {activeLink.slice(1).charAt(0).toUpperCase() +
+                activeLink.slice(2)}
             </div>
           </div>
           {includeAdditionalTitles && (
@@ -271,6 +275,20 @@ const FormContainer = ({
               </h2>
             </div>
           )}
+          {gstNongstIncentiveReport && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueCustomerClick}>
+                Unique Customer : <a href="#">{uniqueCustomerCount}</a>
+              </h2>
+              <h2 onClick={handleOpenUniqueSalesExecutive}>
+                Unique Sales Executive :{" "}
+                <a href="#">{uniqueSalesExecutiveCount}</a>
+              </h2>
+              <h2>
+                Base Amount : <a href="#">{totalBaseAmount}</a>
+              </h2>
+            </div>
+          )}
           {link && buttonAccess && (
             <div className="form_heading_action d-flex ">
               <Link to={link}>
@@ -308,10 +326,26 @@ const FormContainer = ({
                 <h2>{title}</h2>
               </div>
             )}
-              <div className="input-component" style={{display:`${TitleHeaderComponentDisplay}`,width:"100%",justifyContent:"flex-end",alignItems:"flex-end",gap:"10px"}}>
-                {Titleheadercomponent}
-              </div>
-            <div className="btn-group w-100" style={{display:`${TitleHeaderComponentDisplay ==="none"?"":"none"}`}}>
+            <div
+              className="input-component"
+              style={{
+                display: `${TitleHeaderComponentDisplay}`,
+                width: "100%",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+                gap: "10px",
+              }}
+            >
+              {Titleheadercomponent}
+            </div>
+            <div
+              className="btn-group w-100"
+              style={{
+                display: `${
+                  TitleHeaderComponentDisplay === "none" ? "" : "none"
+                }`,
+              }}
+            >
               {accordionButtons.map((buttonName, index) => (
                 <button
                   key={index}
@@ -340,7 +374,7 @@ const FormContainer = ({
                         style={{ marginRight: "5px" }}
                         type="submit"
                       >
-                        Submit 
+                        Submit
                       </button>
                     )}
 

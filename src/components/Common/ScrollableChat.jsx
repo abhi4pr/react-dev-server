@@ -36,30 +36,33 @@ const ScrollableChat = (props) => {
             {(isSameSender(dataChat, message, index, loginObjId) ||
               isLastMessage(dataChat, index, loginObjId)) && (
               <Tooltip
-                label={message?.sender.name}
+                label={message?.sender?.name}
                 placement="bottom-start"
                 hasArrow
               >
-                {/* <Avatar
+                <Avatar
                   mt="20px"
                   mr="1"
                   size="xs"
+                  className="chakra-avatar css-212wue"
                   cursor="pointer"
-                  name={message.sender.name}
-                  //   src={message.sender.image}
-                /> */}
+                  name={message?.sender?.name}
+                  src={message?.sender?.image}
+                />
               </Tooltip>
             )}
             <span
               style={{
                 backgroundColor:
-                  message.sender._id === loginObjId ? "#BEE3F8" : "#B9F5D0",
+                  message?.sender?._id === loginObjId ? "#BEE3F8" : "#B9F5D0",
                 borderRadius:
-                  message.sender._id !== loginObjId
+                  message?.sender?._id !== loginObjId
                     ? "0.8rem 0.8rem 0.8rem 0"
                     : "0.8rem 0.8rem 0 0.8rem",
                 padding: "0.5rem 1rem",
-                maxWidth: "66%",
+                maxWidth: "60%",
+                display: "inline-block",
+                wordWrap: "break-word",
                 marginLeft: isSameSenderMargin(
                   dataChat,
                   message,

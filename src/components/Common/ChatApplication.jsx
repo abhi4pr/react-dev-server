@@ -3,9 +3,9 @@ import {
   Box,
   Button,
   Modal,
-  Paper,
   IconButton,
   TextField,
+  Autocomplete,
 } from "@mui/material";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import CloseIcon from "@mui/icons-material/Close";
@@ -13,21 +13,21 @@ import axios from "axios";
 import UserChatData from "./UserChatData";
 import jwtDecode from "jwt-decode";
 import { baseUrl } from "../../utils/config";
+import GroupChatModal from "./GroupChatModal";
 
 const style = {
   position: "relative",
-  top: "63%",
-  left: "80%",
+  top: "58%",
+  left: "71%",
   transform: "translate(-50%, -50%)",
-  width: 600,
+  width: 950,
   bgcolor: "background.paper",
   boxShadow: 24,
-  height: 500,
+  height: 600,
   p: 4,
-  mb: 4,
+  mb: 30,
   mr: 2,
-  borderRadius: "50px",
-  backgroundImage: `linear-gradient(to left, darkblue, lightblue)`,
+  borderRadius: 3,
 };
 
 const ChatApplication = () => {
@@ -37,30 +37,73 @@ const ChatApplication = () => {
 
   const [data, setData] = useState([]);
   const [open, setOpen] = useState(false);
-  const [searchInput, setSearchInput] = useState("");
+  const [searchInput, setSearchInput] = useState(null);
   const [filteredRows, setFilteredRows] = useState([]);
+  const [chattingUserData, setChattingUserData] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [chatIdData, setChatIdData] = useState(null);
 
-  console.log(baseUrl, "baseURL >>>");
-
-  const chatUserData = async () => {
+  const searchingUserData = async () => {
     const res = await axios.get(`${baseUrl}get_chating_users/${loginUserId}`);
     setData(res?.data?.data);
+  };
+
+
+
+  const getChattingUserData = async () => {
+    try {
+      const res = await axios.get(`${baseUrl}chat/${loginUserId}`);
+      setChattingUserData(res?.data?.data);
+    } catch (error) {
+      console.error("Error fetching chattingUserData:", error);
+    }
   };
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const filterRows = () => {
+  useEffect(() => {
+    searchingUserData();
+    getChattingUserData();
+  }, []);
+
+  // console.log(chattingUserData, "chattingUserData?>>>>>");
+
+  const handleSearchInputChange = (e, newValue) => {
+    // console.log(newValue, "newValue>>>");
+    // setSelectedUserId(newValue?.value);
+    setSearchInput(newValue);
+    filterRows(newValue);
+  };
+
+  const filterRows = (input) => {
     const filtered = data.filter((row) =>
-      row.user_name.toLowerCase().includes(searchInput.toLowerCase())
+      row?.user_name.toLowerCase().includes(input?.label.toLowerCase())
     );
     setFilteredRows(filtered);
   };
 
-  useEffect(() => {
-    filterRows();
-  }, [searchInput, data]);
+  const handleItemClick = async (idData) => {
+    try {
+      const response = await axios.post(`${baseUrl}chat`, {
+        userFromChatId: loginUserId,
+        userToChatId: idData?.value?.user_id,
+      });
+      console.log(response?.data?.data, "idData ddddddddddddddddddd>>>");
+      if (response.status === 200) {
+        setChatIdData(response?.data?.data?._id);
+        setSelectedItem(idData?.value);
+        getChattingUserData();
+      } else {
+        console.error("Failed to post chat data");
+      }
+    } catch (error) {
+      console.error("Error posting chat data", error);
+    }
+  };
 
+  console.log(chattingUserData, "CHAT APPPLICATION COMPONENT ");
   return (
     <>
       {!open && (
@@ -77,7 +120,8 @@ const ChatApplication = () => {
               },
             }}
             onClick={() => {
-              chatUserData();
+              searchingUserData();
+              getChattingUserData();
               handleOpen();
             }}
           >
@@ -87,26 +131,86 @@ const ChatApplication = () => {
       )}
 
       <Modal open={open} onClose={handleClose}>
-        <Box sx={style}>
-          <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Box sx={style} className="chatContainer">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
             <Box>
-              <TextField
+              {/* <TextField
                 placeholder="Search user"
                 variant="outlined"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 sx={{
                   background: "#fff",
+                  color: "black",
                   borderRadius: "10px",
-                  width: "180px",
+                  width: "188px",
+                  marginBottom: "28px",
                 }}
+              /> */}
+              <Autocomplete
+                disablePortal
+                id={data.map((data) => data.user_id)}
+                // value={searchInput}
+                // onChange={handleSearchInputChange}
+                onChange={(event, newValue) => {
+                  if (newValue !== null) {
+                    handleItemClick(newValue);
+                    handleSearchInputChange(newValue);
+                  }
+                }}
+                options={data.map((option) => ({
+                  label: option.user_name,
+                  value: option,
+                }))}
+                getOptionLabel={(option) => option.label}
+                // options={Array.from(
+                //   new Set(data.map((option) => option?.user_name))
+                // )}
+                sx={{
+                  background: "#fff",
+                  width: 190,
+                  color: "black",
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    value={searchInput}
+                    label="Search user"
+                    variant="outlined"
+                  />
+                )}
               />
             </Box>
-            <IconButton onClick={handleClose}>
-              <CloseIcon />
+            {/* Group Chat Component*/}
+            <GroupChatModal />
+            {/* =============== */}
+            <IconButton
+              onClick={handleClose}
+              style={{
+                color: "white",
+                backgroundColor: "grey",
+                marginTop: 10,
+                height: 30,
+                width: 30,
+              }}
+            >
+              <CloseIcon style={{ fontSize: "20px" }} />
             </IconButton>
           </Box>
-          {data.length > 0 && <UserChatData data={filteredRows} />}
+          {data.length > 0 && (
+            <UserChatData
+              data={filteredRows}
+              chatIdData={chatIdData}
+              chattingUserData={chattingUserData}
+              selectedItem={selectedItem}
+              getChattingUserData={getChattingUserData}
+            />
+          )}
           {/* <UserChatData data={filteredRows} /> */}
           {/* < */}
         </Box>
