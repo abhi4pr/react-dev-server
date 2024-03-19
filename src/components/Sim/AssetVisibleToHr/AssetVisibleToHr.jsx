@@ -44,7 +44,21 @@ const AssetVisibleToHr = () => {
   const isButton2Active = activeAccordionIndexParent === 1;
   const isButton3Active = activeAccordionIndexParent === 2;
 
-  const accordionButtons1 = ["All", "Requested", "Assigned", "Rejected"];
+  const accordionButtons1 = [
+    `All (${newAsseRequesttData.length})`,
+    `Requested (${
+      newAsseRequesttData.filter((d) => d.asset_request_status == "Requested")
+        .length
+    })`,
+    `Assigned (${
+      newAsseRequesttData.filter((d) => d.asset_request_status == "Approved")
+        .length
+    })`,
+    `Rejected (${
+      newAsseRequesttData.filter((d) => d.asset_request_status == "Rejected")
+        .length
+    })`,
+  ];
 
   const handleRelodenewData = () => {
     getData();
@@ -90,11 +104,11 @@ const AssetVisibleToHr = () => {
     setActiveAccordionIndex(index);
   };
   const accordionButtons = [
-    "All",
-    "Requested",
-    "Accepted",
-    "Recovered",
-    "Resolved",
+    `All (${data.length})`,
+    `Requested (${data.filter((d) => d.status == "Requested").length})`,
+    `Accepted (${data.filter((d) => d.status == "Accept").length})`,
+    `Recovered (${data.filter((d) => d.status == "Recover").length})`,
+    `Resolved (${data.filter((d) => d.status == "Resolved").length})`,
   ];
 
   const [activeAccordionIndex1, setActiveAccordionIndex1] = useState(0);
