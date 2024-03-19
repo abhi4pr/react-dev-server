@@ -15,7 +15,8 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../../Context/Context";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
+import FormContainer from "../../FormContainer";
 
 let fieldInRows = [];
 const OverView = ({ name, data, hardReload }) => {
@@ -32,7 +33,7 @@ const OverView = ({ name, data, hardReload }) => {
     setCurrentRow(params.row);
     setIsPutOpen(true);
     // window.location.reload(); // Full page reload
-}
+  };
   const deleteHandler = (params) => {
     setDeleteParams(params);
     setIsDeleteDialogOpen(true);
@@ -43,33 +44,25 @@ const OverView = ({ name, data, hardReload }) => {
   const confirmDelete = async () => {
     try {
       if (name == "Agency") {
-        await axios.delete(
-          `${baseUrl}`+`agency/${deleteParams.row._id}`
-        );
+        await axios.delete(`${baseUrl}` + `agency/${deleteParams.row._id}`);
       }
       if (name == "Goal") {
-        await axios.delete(
-          `${baseUrl}`+`goal/${deleteParams.row._id}`
-        );
+        await axios.delete(`${baseUrl}` + `goal/${deleteParams.row._id}`);
       }
       if (name == "Industry") {
-        await axios.delete(
-          `${baseUrl}`+`industry/${deleteParams.row._id}`
-        );
+        await axios.delete(`${baseUrl}` + `industry/${deleteParams.row._id}`);
       }
       if (name == "Service") {
-        await axios.delete(
-          `${baseUrl}`+`services/${deleteParams.row._id}`
-        );
+        await axios.delete(`${baseUrl}` + `services/${deleteParams.row._id}`);
       }
 
       hardReload();
-      toastAlert(`${name} Delete Successfully`)
+      toastAlert(`${name} Delete Successfully`);
       setIsDeleteDialogOpen(false);
     } catch (error) {}
   };
   const floodColumn = () => {
-    fieldInRows=[]
+    fieldInRows = [];
     const x = data[0];
     let val = [];
     for (const key in x) {
@@ -101,7 +94,6 @@ const OverView = ({ name, data, hardReload }) => {
               onClick={() => deleteHandler(params)}
               variant="text"
               color="error"
-              
             >
               <DeleteOutlineIcon />
             </Button>
@@ -137,56 +129,56 @@ const OverView = ({ name, data, hardReload }) => {
     try {
       if (name == "Agency") {
         const data = await axios.put(
-          `${baseUrl}`+`agency/${currentRow._id}`,
+          `${baseUrl}` + `agency/${currentRow._id}`,
           updatePayload
         );
       }
       if (name == "Goal") {
         const data = await axios.put(
-          `${baseUrl}`+`goal/${currentRow._id}`,
+          `${baseUrl}` + `goal/${currentRow._id}`,
           updatePayload
         );
       }
       if (name == "Industry") {
         const data = await axios.put(
-          `${baseUrl}`+`industry/${currentRow._id}`,
+          `${baseUrl}` + `industry/${currentRow._id}`,
           updatePayload
         );
       }
       if (name == "Service") {
         const data = await axios.put(
-          `${baseUrl}`+`services/${currentRow._id}`,
+          `${baseUrl}` + `services/${currentRow._id}`,
           updatePayload
         );
       }
-      fieldInRows = []
+      fieldInRows = [];
       setUpdatePayload({});
       setIsPutOpen(false);
       // hardReload();
       toastAlert("Update Successfully");
-
     } catch (error) {}
   };
   return (
-    <>
-      <Paper>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2> {name} Overview</h2>
+    <div className="master-card-css">
+      <FormContainer mainTitle={name} link="true" />
+
+      <div className="card">
+        <div className="card-header">
+          <div className="pack">
+            <Button
+              variant="outlined"
+              color="error"
+              sx={{ m: 1, mr: 2 }}
+              onClick={() => navigate(`/admin/${name}`)}
+            >
+              create {name}
+            </Button>
           </div>
         </div>
-      </Paper>
-      <Paper sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button
-          variant="outlined"
-          color="error"
-          sx={{ m: 1, mr:2 }}
-          onClick={() => navigate(`/admin/${name}`)}
-        >
-          create {name}
-        </Button>
-      </Paper>
-      <DataGrid rows={data} columns={columns} getRowId={(row) => row._id} />
+        <div className="card-body body-padding">
+          <DataGrid rows={data} columns={columns} getRowId={(row) => row._id} />
+        </div>
+      </div>
 
       <Dialog open={isPutOpen} onClose={() => setIsPutOpen(false)}>
         <DialogTitle>Edit Record</DialogTitle>
@@ -198,10 +190,10 @@ const OverView = ({ name, data, hardReload }) => {
             }}
           >
             <div>
-              {fieldInRows.map((item,index) => {
+              {fieldInRows.map((item, index) => {
                 return (
                   <TextField
-                  key={index}
+                    key={index}
                     label={item}
                     type="text"
                     name={item}
@@ -228,28 +220,39 @@ const OverView = ({ name, data, hardReload }) => {
           >
             Cancel
           </Button>
-          <Button onClick={handleUpdatePayload} color="primary" variant="outlined">
+          <Button
+            onClick={handleUpdatePayload}
+            color="primary"
+            variant="outlined"
+          >
             Save
           </Button>
         </DialogActions>
       </Dialog>
       <>
-      <Dialog open={isDeleteDialogOpen} onClose={() => setIsDeleteDialogOpen(false)}>
-        <DialogTitle color="secondary">Confirm Delete</DialogTitle>
-        <DialogContent>
-          Are you sure you want to delete this record
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsDeleteDialogOpen(false)}  variant="outlined" color="primary">
-            Cancel
-          </Button>
-          <Button onClick={confirmDelete} variant="outlined" color="error">
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <Dialog
+          open={isDeleteDialogOpen}
+          onClose={() => setIsDeleteDialogOpen(false)}
+        >
+          <DialogTitle color="secondary">Confirm Delete</DialogTitle>
+          <DialogContent>
+            Are you sure you want to delete this record
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => setIsDeleteDialogOpen(false)}
+              variant="outlined"
+              color="primary"
+            >
+              Cancel
+            </Button>
+            <Button onClick={confirmDelete} variant="outlined" color="error">
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </>
-    </>
+    </div>
   );
 };
 
