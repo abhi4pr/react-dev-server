@@ -257,10 +257,11 @@ const SimMaster = () => {
     return <Navigate to={`/sim-overview/${0}`} />;
   }
   return (
-    <div style={{ width: "80%", margin: "0 0 0 10%" }}>
+    <div className="master-card-css" style={{ width: "80%", margin: "0 0 0 10%" }}>
       <UserNav />
       <div className="form-heading">
         <div className="action_heading">
+
           <div className="form_heading_title">
             <h2>Assets Registration</h2>
           </div>
@@ -279,7 +280,7 @@ const SimMaster = () => {
         </div>
       </div>
       <form mainTitle="Assets" title="Assets Register" onSubmit={handleSubmit}>
-        <div className="formarea">
+        <div className="formarea card body-padding">
           <div className="row">
             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
               <div className="form-group form_select">

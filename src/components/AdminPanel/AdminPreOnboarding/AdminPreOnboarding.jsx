@@ -851,18 +851,20 @@ const AdminPreOnboarding = () => {
           )}
         </div>
       </FormContainer>
-     
+            <div className="form-group">
+
         <button
           type="submit"
           className="btn btn-primary"
-          style={{   padding: "14px 28px 14px 28", display:"flex",flexDirection:"row",justifyContent:"space-between", alignItems:"center" ,gap:"10px",width:"100px"}}
+          style={{   padding: "14px 28px 14px 28", display:"flex",flexDirection:"row",justifyContent:"space-between", alignItems:"center" ,gap:"10px"}}
           onClick={handleSubmit}
           disabled={loading}
-        >
-          {loading ? "Submitting..." : "Submit"}
+          >
+          {loading ? "Submitting" : "Submit"}
           {loading ? <i className="bi bi-arrow-clockwise"></i> : <i className="bi bi-arrow-right"></i>} 
            
         </button>
+          </div>
     </div>
   );
 };

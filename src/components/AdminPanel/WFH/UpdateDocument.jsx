@@ -7,6 +7,8 @@ import { baseUrl } from "../../../utils/config";
 import DocumentTab from "../../PreOnboarding/DocumentTab";
 import { useParams, useNavigate } from "react-router-dom";
 import Select from "react-select";
+import { useLocation } from 'react-router-dom';
+import titleimg from '/bg-img.png'
 const normalUserLayout = true;
 
 const UpdateDocument = () => {
@@ -16,8 +18,8 @@ const UpdateDocument = () => {
   const [mandatoryFilter, setMandatoryFillter] = useState("");
   const mandatoryOptions = [
     { value: "all", label: "ALL" },
-    { value: true, label: "isRequired" },
-    { value: false, label: "nonRequired" },
+    { value: true, label: "Mandatory" },
+    { value: false, label: "Non-Mandatory" },
   ];
 
   const token = sessionStorage.getItem("token");
@@ -209,14 +211,28 @@ const UpdateDocument = () => {
       setDocumentData(result);
     }
   }, [mandatoryFilter, filterData, user.job_type]);
-
+  const location = useLocation();
+  const activeLink = location.pathname;
   return (
     <>
       <div
         className={`documentarea ${normalUserLayout && "documentareaLight"}`}
       >
-        <div className="document_box">
-          <h2>Documents</h2>
+        <div className="document_box master-card-css">
+        <div className="form-heading">
+        <img className="img-bg" src={titleimg} alt="" width={160} />
+          <div className="form_heading_title">
+          <h1>Documents</h1>
+            <div className="pack">
+            <i class="bi bi-house"></i> {activeLink.slice(1).charAt(0).toUpperCase()+ activeLink.slice(2)}
+            </div>
+          </div>
+          {/* <Link to={`/admin/kra/${userId}`}>
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              KRA
+            </button>
+          </Link> */}
+        </div>
           {/* <select
             onChange={(e) => handleFilterChange(e.target.value)}
             className="form-select"
@@ -226,7 +242,13 @@ const UpdateDocument = () => {
             <option value="required">Required Documents</option>
             <option value="nonRequired">Non-Required Documents</option>
           </select> */}
+          <div className="card">
+            <div className="card-header">
+
+<div className="pack" >
+
           <Select
+              style={{width:"300px"}}
             value={mandatoryOptions.find(
               (option) => option.value === mandatoryFilter
             )}
@@ -235,6 +257,10 @@ const UpdateDocument = () => {
             }}
             options={mandatoryOptions}
           />
+</div>
+
+            </div>
+            <div className="card-body body-padding">
 
           <div
             className={`docTable ${
@@ -246,7 +272,7 @@ const UpdateDocument = () => {
                 <tr>
                   <th scope="col">Document Type</th>
                   <th scope="col">Period (Days)</th>
-                  <th scope="col">Time</th>
+                  {/* <th scope="col">Time</th> */}
                   <th scope="col">Upload</th>
                   <th scope="col" className="text-center">
                     Status
@@ -264,11 +290,11 @@ const UpdateDocument = () => {
                         )}
                     </td>
                     <td>{item.document.period} days</td>
-                    <td>1 Day</td>
+                    {/* <td>1 Day</td> */}
                     <td>
-                      <div className="uploadDocBtn">
-                        <span>
-                          <i className="bi bi-cloud-arrow-up" /> Upload
+                      <div className="uploadDocBtn " >
+                        <span style={{display:"flex",justifyContent:"center",alignItems:"center",flexDirection:"row",gap:"10px"}}>
+                        Upload  <i className="bi bi-cloud-arrow-up" />
                         </span>
                         <input
                           type="file"
@@ -279,7 +305,7 @@ const UpdateDocument = () => {
                       </div>
                     </td>
                     <td>
-                      <div className="docStatus">
+                      <div className="docStatus" >
                         <span
                           className={`warning_badges 
                         ${item.status == "" && "not_uploaded"}
@@ -291,7 +317,7 @@ const UpdateDocument = () => {
                         ${item.status == "Approved" && "approve"}
                         ${item.status == "Rejected" && "reject"}
                         `}
-                        >
+                        style={{zIndex:"0"}}>
                           <h4>
                             {item.status == "" && "Not Uploaded"}
                             {item.status !== "" && item.status}
@@ -310,7 +336,10 @@ const UpdateDocument = () => {
               </tbody>
             </table>
           </div>
-          <div className="ml-auto mr-auto text-center">
+            </div>
+          </div>
+
+          <div className="text-left">
             <button
               type="submit"
               className="btn btn_pill btn_cmn btn_success"

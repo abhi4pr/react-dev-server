@@ -99,19 +99,21 @@ const RepairRequest = () => {
     },
     {
       name: "Repair Date & Time",
-      selector: (row) => row.repair_request_date_time?.slice(0, 16),
+      selector: (row) => row.repair_request_date_time?.slice(0, 16).replace("T", " "),
       sortable: true,
     },
     {
       name: "Problem Detailing",
       selector: (row) => row.problem_detailing,
       sortable: true,
+      height: "max-content",
     },
     {
-      name: "img",
+      name: "Image",
       selector: (row) => (
         <button
-          className="btn btn-outline-success"
+        title="View Images"
+          className="btn btn-outline-success icon-1"
           onClick={() => handleImageClick(row)}
         >
           <i className="bi bi-images"></i>
@@ -123,15 +125,16 @@ const RepairRequest = () => {
       cell: (row) => (
         <>
           <button
-            className="btn btn-primary"
+            className="btn btn-black icon-1"
             data-toggle="modal"
             data-target="#exampleModal"
             size="small"
             variant="contained"
             color="primary"
+            title="Edit"
             onClick={() => handleRepairId(row)}
           >
-            <FaEdit />
+            <i className="bi bi-pencil"></i>
           </button>
           <DeleteButton
             endpoint="delete_repair_request"
@@ -278,7 +281,7 @@ const RepairRequest = () => {
 
   return (
     <div>
-      <div style={{ width: "80%", margin: "0px 0 0 10%" }}>
+      <div className="master-card-css" style={{ width: "80%", margin: "0px 0 0 10%" }}>
         <UserNav />
         <Link to="/repair-reason">
           <button
@@ -293,6 +296,7 @@ const RepairRequest = () => {
           <FormContainer
             mainTitle="Repair Request"
             title="Add Repair Request"
+            
             handleSubmit={handleSubmit}
           >
             <FieldContainer
@@ -350,7 +354,7 @@ const RepairRequest = () => {
             </div>
             <div className="form-group col-2">
               <label className="form-label">
-                priority <sup style={{ color: "red" }}>*</sup>
+                Priority <sup style={{ color: "red" }}>*</sup>
               </label>
               <Select
                 className=""
@@ -423,26 +427,27 @@ const RepairRequest = () => {
             />
           </FormContainer>
         </div>
-        <div className="card" style={{ marginTop: "-18px" }}>
-          <div className="data_tbl table-responsive mb-2">
-            <DataTable
-              title="Repair Request Overview"
-              columns={columns}
-              data={repairRequestFilter}
-              fixedHeader
-              // pagination
-              fixedHeaderScrollHeight="36vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
+        <div className="card" >
+          <div className="card-header sb">
+            <h5>Repair Request Overview</h5>
+            <input
                   type="text"
                   placeholder="Search here"
                   className="w-50 form-control"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
-              }
+          </div>
+          <div className="data_tbl table-responsive  card-body body-padding">
+            <DataTable
+              title="Repair Request Overview"
+              columns={columns}
+              data={repairRequestFilter}
+              // fixedHeader
+              pagination
+              // fixedHeaderScrollHeight="36vh"
+              highlightOnHover
+              
             />
           </div>
         </div>
@@ -535,7 +540,7 @@ const RepairRequest = () => {
 
                 <div className="form-group col-4">
                   <label className="form-label">
-                    priority <sup style={{ color: "red" }}>*</sup>
+                    Priority <sup style={{ color: "red" }}>*</sup>
                   </label>
                   <Select
                     className=""

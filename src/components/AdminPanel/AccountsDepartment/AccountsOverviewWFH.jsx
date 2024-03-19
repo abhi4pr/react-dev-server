@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+  import React, { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import DataTable from "react-data-table-component";
 import axios from "axios";
@@ -114,7 +114,7 @@ const AccountsOverviewWFH = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "5%",
+      width: "80px",
       sortable: true,
     },
     {
@@ -151,6 +151,7 @@ const AccountsOverviewWFH = () => {
       name: "TDS Deduction",
       selector: (row) => row.tds_deduction + " ₹",
       sortable: true,
+      width:"150px"
     },
     {
       name: "To Pay",
@@ -159,6 +160,7 @@ const AccountsOverviewWFH = () => {
     },
     {
       name: "Action",
+      width:"200px",
       cell: (row) => (
         <>
           {salaryStatusToggle == 0 && (
@@ -174,7 +176,7 @@ const AccountsOverviewWFH = () => {
 
           {row?.invoice_template_no !== "0" && (
             <button
-              className="btn btn-outline-primary btn-sm"
+              className="btn btn-outline-primary btn-sm icon-1"
               title="Download Invoice"
               type="button"
               onClick={() => generatePDF(row)}
@@ -198,7 +200,7 @@ const AccountsOverviewWFH = () => {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Finance"
+            mainTitle="Acount Overview"
             link="/admin/user"
             submitButton={false}
           />
@@ -243,21 +245,12 @@ const AccountsOverviewWFH = () => {
           <span>Loading</span>
         </div>
       ) : (
-        <div className="page_height">
+        <div className="">
           <div className="card mb-4">
-            <div className="data_tbl table-responsive">
-              <DataTable
-                title="WFH salary "
-                columns={columns}
-                data={filterData}
-                fixedHeader
-                // pagination
-                fixedHeaderScrollHeight="64vh"
-                highlightOnHover
-                subHeader
-                subHeaderComponent={
-                  <>
-                    <div className="btn-group" role="group">
+            <div className="card-header">
+              <h6>WFH Salary</h6>
+              <div className="pack"> 
+              <div className="btn-group mr-2" role="group">
                       <button
                         type="button"
                         className={`btn btn-${
@@ -288,9 +281,18 @@ const AccountsOverviewWFH = () => {
                       className="w-50 form-control "
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                    />
-                  </>
-                }
+                    /></div>
+            </div>
+            <div className="data_tbl table-responsive card-body body-padding">
+              <DataTable
+                
+                columns={columns}
+                data={filterData}
+                // fixedHeader
+                pagination
+                // fixedHeaderScrollHeight="64vh"
+                
+                        
               />
             </div>
           </div>

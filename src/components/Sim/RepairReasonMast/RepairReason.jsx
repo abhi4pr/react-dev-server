@@ -107,7 +107,7 @@ const RepairReason = () => {
       cell: (row) => (
         <>
           <button
-            className="btn btn-primary "
+            className="btn btn-black  icon-1"
             data-toggle="modal"
             data-target="#exampleModal"
             size="small"
@@ -403,7 +403,7 @@ const RepairReason = () => {
       >
         {/* {selectedRow && ( */}
         <div>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-end mb-2">
             {/* <h2>Department: {selectedRow.dept_name}</h2> */}
 
             <button

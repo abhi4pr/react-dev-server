@@ -812,60 +812,6 @@ const SalaryWFH = () => {
       sortable: true,
     },
     {
-      name: "Action",
-      cell: (row) => (
-        <>
-          {!row?.invoice_template_no ? (
-            <button
-              type="button"
-              title="Select Invoice"
-              className="btn btn-primary btn-sm"
-              data-toggle="modal"
-              data-target="#exampleModalCenter"
-              onClick={() => handleInvoice(row)}
-            >
-              <FileOpenIcon />
-            </button>
-          ) : (
-            !row?.sendToFinance && (
-              <button
-                title="Send to Finance"
-                className="btn-outline-primary btn-sm ml-2"
-                onClick={(e) => handleSendToFinance(e, row)}
-              >
-                <IosShareIcon />
-              </button>
-            )
-          )}
-
-          {row.sendToFinance == 1 && row.status_ == 1 && (
-            <button
-              className="btn btn-outline-primary ml-2"
-              data-toggle="modal"
-              data-target="#exampleModal"
-              onClick={() => setRowDataModal(row)}
-            >
-              Paid
-            </button>
-          )}
-          {row.sendToFinance == 1 && row.status_ == 0 && (
-            <button className="btn btn-danger ml-2">Pending</button>
-          )}
-
-          {row?.invoice_template_no !== "0" && row?.digital_signature_image && (
-            <button
-              className="btn btn-outline-primary btn-sm"
-              title="Download Invoice"
-              type="button"
-              onClick={() => generatePDF(row)}
-            >
-              <CloudDownloadIcon />
-            </button>
-          )}
-        </>
-      ),
-    },
-    {
       name: "Employee Name",
       cell: (row) => row.user_name,
       width: "150px",
@@ -873,10 +819,13 @@ const SalaryWFH = () => {
     {
       name: "Department",
       cell: (row) => row.dept_name,
+      width: "120px",
     },
     {
       name: "Designation",
       cell: (row) => row.designation_name,
+      width: "120px",
+
     },
     {
       name: "DOJ",
@@ -903,20 +852,26 @@ const SalaryWFH = () => {
     {
       name: "Absent Days",
       cell: (row) => row.noOfabsent,
+      width: "120px",
+      
     },
     {
       name: "Present Days",
       cell: (row) => Number(row.present_days) - Number(row.noOfabsent),
+      width: "120px",
+
     },
     {
       name: "Total Salary",
+      width: "120px",
+
       cell: (row) => row.total_salary + " ₹",
       footer: {
         cell: (row) =>
-          row.reduce((total, rows) => {
-            // Assuming row.bonus is a numeric value
-            return total + Number(rows.total_salary);
-          }, 0),
+        row.reduce((total, rows) => {
+          // Assuming row.bonus is a numeric value
+          return total + Number(rows.total_salary);
+        }, 0),
       },
     },
     {
@@ -951,6 +906,61 @@ const SalaryWFH = () => {
     {
       name: "Status",
       cell: (row) => row.attendence_status_flow,
+    },
+    {
+      name: "Action",
+      width:"200px",
+      cell: (row) => (
+        <>
+          {!row?.invoice_template_no ? (
+            <button
+              type="button"
+              title="Select Invoice"
+              className="btn btn-primary btn-sm icon-1"
+              data-toggle="modal"
+              data-target="#exampleModalCenter"
+              onClick={() => handleInvoice(row)}
+            >
+              <FileOpenIcon />
+            </button>
+          ) : (
+            !row?.sendToFinance && (
+              <button
+                title="Send to Finance"
+                className="btn-outline-primary btn-sm ml-2 icon-1"
+                onClick={(e) => handleSendToFinance(e, row)}
+              >
+                <IosShareIcon />
+              </button>
+            )
+          )}
+
+          {row.sendToFinance == 1 && row.status_ == 1 && (
+            <button
+              className="btn btn-outline-primary ml-2 "
+              data-toggle="modal"
+              data-target="#exampleModal"
+              onClick={() => setRowDataModal(row)}
+            >
+              Paid
+            </button>
+          )}
+          {row.sendToFinance == 1 && row.status_ == 0 && (
+            <button className="btn btn-danger ml-2 ">Pending</button>
+          )}
+
+          {row?.invoice_template_no !== "0" && row?.digital_signature_image && (
+            <button
+              className="btn btn-outline-primary btn-sm icon-1"
+              title="Download Invoice"
+              type="button"
+              onClick={() => generatePDF(row)}
+            >
+              <CloudDownloadIcon />
+            </button>
+          )}
+        </>
+      ),
     },
     roleID == 2 && {
       name: "separation",
@@ -1050,6 +1060,7 @@ const SalaryWFH = () => {
 
   return (
     <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
+      <FormContainer mainTitle="Salary" link="/admin" />
       <div className="modal fade" id="myModal" role="dialog">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -1146,7 +1157,7 @@ const SalaryWFH = () => {
               className="btn btn-outline-primary "style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"4px"}}
               onClick={() => BankExcelConverter(salaryMonthYearData)}
             >
-              Export Excel btn <i className="bi bi-file-spreadsheet"></i>
+              Export Excel Button <i className="bi bi-file-spreadsheet"></i>
             </button>
 
             {deptSalary?.length !== departmentdata?.length &&
@@ -1192,8 +1203,8 @@ const SalaryWFH = () => {
             })}
           </div>
 
-          <h6>
-            <span style={{ color: "green",padding:"10px" }}>Active : {activeusers}</span>
+          <h6 style={{ color: "green",paddingTop:"10px" }}>
+            <span >Active : {activeusers}</span>
           </h6>
         </div>
       </div>
@@ -1308,13 +1319,13 @@ const SalaryWFH = () => {
 
       {data?.length > 0 && (
         <>
-          <FormContainer mainTitle="Salary" link="/admin" />
+          
 
-          <div className="card-header d-flex flex-row align-items-center justify-content-between">
-            <div className="btn-group w-100">
+          <div className="tab">
+           
               <button
-                className={`btn ${
-                  activeTab == 0 ? "btn-primary" : "btn-outline-primary"
+                className={`named-tab ${
+                  activeTab == 0 ? "active-tab" : ""
                 }`}
                 onClick={() => {
                   FilterTabData("Send To Finance"), setActiveTab(0);
@@ -1323,8 +1334,8 @@ const SalaryWFH = () => {
                 Approved and Send To Finance
               </button>
               <button
-                className={`btn ${
-                  activeTab == 1 ? "btn-primary" : "btn-outline-primary"
+                className={`named-tab ${
+                  activeTab == 1 ? "active-tab" : ""
                 }`}
                 onClick={() => {
                   FilterTabData("Verification Pending"), setActiveTab(1);
@@ -1333,8 +1344,8 @@ const SalaryWFH = () => {
                 Verification Pending
               </button>
               <button
-                className={`btn ${
-                  activeTab == 2 ? "btn-primary" : "btn-outline-primary"
+                className={`named-tab ${
+                  activeTab == 2 ? "active-tab" : ""
                 }`}
                 onClick={() => {
                   FilterTabData("Verified"), setActiveTab(2);
@@ -1342,25 +1353,13 @@ const SalaryWFH = () => {
               >
                 Verified
               </button>
-            </div>
+          
           </div>
           <div className="card">
-            <div className="data_tbl table-responsive">
-              <DataTable
-                title="Salary Overview"
-                columns={columns}
-                data={filterData}
-                fixedHeader
-                fixedHeaderScrollHeight="64vh"
-                highlightOnHover
-                exportToCSV
-                subHeader
-                conditionalRowStyles={conditionalRowStyles}
-                selectableRows={activeTab == 0 ? true : false}
-                onSelectedRowsChange={handleRowSelected}
-                subHeaderComponent={
-                  <>
-                    {selectedRows.length > 0 && (
+            <div className="card-header">
+              <h5>Salary Overview</h5>
+              <div className="pack">
+              {selectedRows.length > 0 && (
                       <>
                         <button
                           className="btn btn-primary mr-2"
@@ -1410,19 +1409,39 @@ const SalaryWFH = () => {
                           color: "#4a4a4a",
                         }}
                       >
-                        <button className="btn btn-primary me-3" type="button">
+                        <button className="btn btn-primary me-3 mt-1" type="button">
                           Download
                         </button>
                       </PDFDownloadLink>
 
                       <input
+                      style={{width:"300px"}}
                         type="text"
                         placeholder="Search here"
-                        className="w-50 form-control"
+                        className=" form-control"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                       />
                     </div>
+              </div>
+            </div>
+            <div className="data_tbl table-responsive card-body body-padding">
+              <DataTable
+                // title="Salary Overview"
+                columns={columns}
+                data={filterData}
+                // fixedHeader
+                // fixedHeaderScrollHeight="64vh"
+                highlightOnHover
+                pagination
+                exportToCSV
+                // subHeader
+                conditionalRowStyles={conditionalRowStyles}
+                // selectableRows={activeTab == 0 ? true : false}
+                onSelectedRowsChange={handleRowSelected}
+                subHeaderComponent={
+                  <>
+                    
                   </>
                 }
               />

@@ -8,7 +8,8 @@ import Select from "react-select";
 import FieldContainer from "../FieldContainer";
 import IndianBankList from "../../../assets/js/IndianBankList";
 import IndianStates from "../../ReusableComponents/IndianStates";
-
+import { useLocation } from 'react-router-dom';
+import titleimg from '/bg-img.png'  
 const WFHDBankUpdate = () => {
   const { user_id } = useParams();
   const { toastAlert, toastError } = useGlobalContext();
@@ -119,12 +120,28 @@ const WFHDBankUpdate = () => {
     const panPattern = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
     return panPattern.test(pan);
   };
-
+  const location = useLocation();
+  const activeLink = location.pathname;
   return (
     <>
       <div className={`documentarea`}>
-        <div className="document_box">
-          <div className="personal_header">Bank Details & Address</div>
+        <div className="document_box master-card-css">
+        <div className="form-heading">
+        <img className="img-bg" src={titleimg} alt="" width={160} />
+          <div className="form_heading_title">
+          <h1>Bank Details & Address</h1>
+            <div className="pack">
+            <i class="bi bi-house"></i> {activeLink.slice(1).charAt(0).toUpperCase()+ activeLink.slice(2)}
+            </div>
+          </div>
+          {/* <Link to={`/admin/kra/${userId}`}>
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              KRA
+            </button>
+          </Link> */}
+        </div>
+          <div className="card body-padding">
+
           <div className="row mt-5">
             <div className="form-group col-3">
               <label className="form-label">
@@ -139,7 +156,7 @@ const WFHDBankUpdate = () => {
                 isSearchable
                 value={
                   bankName
-                    ? IndianBankList.find((bank) => bank.value === bankName)
+                  ? IndianBankList.find((bank) => bank.value === bankName)
                     : null
                 }
                 getOptionLabel={(option) => option.label}
@@ -167,7 +184,7 @@ const WFHDBankUpdate = () => {
               fieldGrid={3}
               value={panNo}
               onChange={handlePANChange}
-            />
+              />
             {!isValidPAN && <p style={{ color: "red" }}>PAN is not valid</p>}
             <FieldContainer
               label="Beneficiary"
@@ -180,7 +197,13 @@ const WFHDBankUpdate = () => {
               fieldGrid={3}
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-            />
+              />
+             <div className="form-group col-3">
+              <IndianStates
+                newValue={state}
+                onChange={(option) => setState(option ? option.value : null)}
+              />
+            </div>
             <div className="form-group col-3">
               <label className="form-label">City</label>
               {/* <Select
@@ -193,8 +216,8 @@ const WFHDBankUpdate = () => {
                 value={{
                   value: city,
                   label:
-                    cityData.find((gotCity) => gotCity.city_name == city)
-                      ?.city_name || "",
+                  cityData.find((gotCity) => gotCity.city_name == city)
+                  ?.city_name || "",
                 }}
                 placeholder="Select a city..."
                 isClearable
@@ -209,19 +232,14 @@ const WFHDBankUpdate = () => {
                 value={{
                   value: city,
                   label:
-                    cityData.find((gotCity) => gotCity.city_name == city)
+                  cityData.find((gotCity) => gotCity.city_name == city)
                       ?.city_name || "",
-                }}
+                    }}
                 placeholder="Select a city..."
                 isClearable
               />
             </div>
-            <div className="form-group col-3">
-              <IndianStates
-                newValue={state}
-                onChange={(option) => setState(option ? option.value : null)}
-              />
-            </div>
+           
             <FieldContainer
               label="Current Pincode"
               type="number"
@@ -246,13 +264,14 @@ const WFHDBankUpdate = () => {
               onChange={(e) => setUpi(e.target.value)}
             />
           </div>
+          </div>
 
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <button
               type="button"
               className="btn btn-primary mr-2"
               onClick={handleSubmit}
-            >
+              >
               Update
             </button>
           </div>

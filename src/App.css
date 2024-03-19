@@ -390,8 +390,8 @@ body[theme="dark"] .summary_cardtitle {
 }
 
 .summary_box {
-  flex: 0 0 33.33333%;
-  max-width: 33.33333%;
+  flex: 0 0 50%;
+  max-width: 50%;
 }
 
 .summary_box.summary_reasonbox {
@@ -1293,7 +1293,11 @@ label.checkbox-inline.propscss {
   font-size: 16px;
   list-style: 22px;
 }
-
+.master-card-css{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 .userSalary_modal h3 {
   color: var(--gray-800);
   font-size: 20px;
@@ -1301,16 +1305,34 @@ label.checkbox-inline.propscss {
   font-weight: 500;
   margin: 0px 0px 4px;
 }
-
+.css-ptkaw2-MuiDataGrid-root {
+  border-radius: 15px!important;
+}
+.css-wop1k0-MuiDataGrid-footerContainer{
+  background-color: var(--body-bg);
+  border-radius: 0 0 15px 15px !important;
+}
+.css-1iyq7zh-MuiDataGrid-columnHeaders{
+  background-color: var(--body-bg);
+  border-radius:0 !important; 
+}
+.css-128fb87-MuiDataGrid-toolbarContainer{
+  background-color: var(--body-bg);
+  border-radius:15px 15px 0 0; 
+}
 .MuiDataGrid-row--editing .MuiDataGrid-cell--editable {
   background: rgb(95 69 255 / 20%) !important;
   border-right: 1px solid rgb(95 69 255 / 20%) !important;
 }
-
+.MuiDataGrid-row:nth-of-type(even){
+  background-color: var(--body-bg);
+}
 .css-5wly58-MuiDataGrid-root .MuiDataGrid-columnHeader--moving {
   background-color: transparent !important;
 }
-
+.css-1kwdphh-MuiDataGrid-virtualScrollerContent{
+  min-height: 45px!important;
+}
 .custom-btn-2{
   pointer-events: none;
   

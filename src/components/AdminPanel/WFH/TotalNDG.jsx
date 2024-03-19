@@ -87,8 +87,8 @@ export default function TotalNDG() {
   const columns = [
     { field: "user_name", headerName: "User Name", width: 200 },
     { field: "dept_name", headerName: "Department", width: 200 },
-  ]; 
-   const PreviousSalarycolumns = [
+  ];
+  const PreviousSalarycolumns = [
     { field: "user_name", headerName: "User Name", width: 200 },
     { field: "dept_name", headerName: "Department", width: 200 },
     { field: "month", headerName: "Month", width: 200 },
@@ -124,12 +124,11 @@ export default function TotalNDG() {
               pageSize: 10,
               page: 4,
             },
-          },  
+          },
         }}
-        rowsPerPageOptions={[10,20,30]}
-       
-        checkboxSelection
-        disableSelectionOnClick
+        rowsPerPageOptions={[10, 20, 30]}
+
+
         slotProps={{
           toolbar: {
             showQuickFilter: true,
@@ -145,42 +144,93 @@ export default function TotalNDG() {
 
   const seePreviousSalary = (
     <div>
-      <div className="row thm_form">
-        <div className="form-group col-3">
-          <label className="form-label">
-            Department Name<sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={[
-              { value: "", label: "All" },
-              ...departmentData.map((option) => ({
-                value: option.dept_id,
-                label: option.dept_name,
-              })),
-            ]}
-            value={
-              departmentFilter === ""
-                ? { value: "", label: "" }
-                : {
-                    value: departmentFilter,
-                    label:
-                      departmentData.find(
-                        (dept) => dept.dept_id === departmentFilter
-                      )?.dept_name || "Select...",
-                  }
-            }
-            onChange={(selectedOption) => {
-              const selectedValue = selectedOption ? selectedOption.value : "";
-              setDepartmentFilter(selectedValue);
-              if (selectedValue === "") {
-                getData();
-              }
-            }}
-            required
-          />
-        </div>
 
-        {/* <div className="form-group col-3">
+      <DataGrid
+        rows={previousSalaryFilterData}
+        columns={PreviousSalarycolumns}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        // pageSize={5}
+        // rowsPerPageOptions={[5]}
+        
+        disableSelectionOnClick
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+        getRowId={(row) => row._id}
+        components={{
+          Toolbar: GridToolbar,
+        }}
+      />
+    </div>
+  );
+  return (
+    <div className="master-card-css">
+      <FormContainer
+        submitButton={false}
+        mainTitle="Dashboard"
+        link="finance"
+      >
+        {/* {activeAccordionIndex === 0 && nonDigitalSignature}
+        {activeAccordionIndex === 1 && seePreviousSalary} */}
+        {/* {activeAccordionIndex === 2 && payoutReleased}
+        {activeAccordionIndex === 3 && TDS}
+        {activeAccordionIndex === 4 && NonTDS} */}
+      </FormContainer>
+
+      <div className="tab">
+        <div className={`named-tab ${activeAccordionIndex === 0 ? "active-tab" : ""}`} onClick={() => { handleAccordionButtonClick(0) }}>
+          {accordionButtons[0]}
+        </div>
+        <div className={`named-tab ${activeAccordionIndex === 1 ? "active-tab" : ""}`} onClick={() => { handleAccordionButtonClick(1) }}>
+          {accordionButtons[1]}
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header sb">
+          Finance    <div className="pack">{activeAccordionIndex === 1 ? <>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Department Name<sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                options={[
+                  { value: "", label: "All" },
+                  ...departmentData.map((option) => ({
+                    value: option.dept_id,
+                    label: option.dept_name,
+                  })),
+                ]}
+                value={
+                  departmentFilter === ""
+                    ? { value: "", label: "" }
+                    : {
+                      value: departmentFilter,
+                      label:
+                        departmentData.find(
+                          (dept) => dept.dept_id === departmentFilter
+                        )?.dept_name || "Select...",
+                    }
+                }
+                onChange={(selectedOption) => {
+                  const selectedValue = selectedOption ? selectedOption.value : "";
+                  setDepartmentFilter(selectedValue);
+                  if (selectedValue === "") {
+                    getData();
+                  }
+                }}
+                required
+              />
+            </div>
+
+            {/* <div className="form-group col-3">
                   <label className="form-label">
                     Designation<sup style={{ color: "red" }}>*</sup>
                   </label>
@@ -216,82 +266,49 @@ export default function TotalNDG() {
                   />
                 </div> */}
 
-        <div className="form-group col-3">
-          <label className="form-label">
-            Years<sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            value={yearOptions.find((option) => option.value === years)}
-            onChange={(selectedOption) => {
-              setYears(selectedOption.value);
-            }}
-            options={yearOptions}
-          />
+            <div className="form-group col-3">
+              <label className="form-label">
+                Years<sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                value={yearOptions.find((option) => option.value === years)}
+                onChange={(selectedOption) => {
+                  setYears(selectedOption.value);
+                }}
+                options={yearOptions}
+              />
+            </div>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Months<sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                value={monthOptions.find((option) => option.value === months)}
+                onChange={(selectedOption) => {
+                  setMonths(selectedOption.value);
+                }}
+                options={monthOptions}
+              />
+            </div>
+            <div className="form-group mt-4">
+            <button
+              onClick={handSearchleClick}
+              disabled={!years || !months || !departmentFilter}
+              className="btn btn-primary"
+            >
+              Show Salary
+            </button>
+            </div>
+            {/* <div className="form-group col-3 ">
+        </div> */}
+          </> : ""}
+          </div>
         </div>
-        <div className="form-group col-3">
-          <label className="form-label">
-            Months<sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            value={monthOptions.find((option) => option.value === months)}
-            onChange={(selectedOption) => {
-              setMonths(selectedOption.value);
-            }}
-            options={monthOptions}
-          />
-        </div>
-        <div className="form-group col-3 mt-4">
-          <button
-            onClick={handSearchleClick}
-            disabled={!years || !months || !departmentFilter}
-            className="btn btn-primary"
-          >
-            Show Salary
-          </button>
+        <div className="card-body body-padding">
+          {activeAccordionIndex === 0 && nonDigitalSignature}
+          {activeAccordionIndex === 1 && seePreviousSalary}
         </div>
       </div>
-      <DataGrid
-        rows={previousSalaryFilterData}
-        columns={PreviousSalarycolumns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
-            },
-          },
-        }}
-        // pageSize={5}
-        // rowsPerPageOptions={[5]}
-        checkboxSelection
-        disableSelectionOnClick
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        getRowId={(row) => row._id}
-        components={{
-          Toolbar: GridToolbar,
-        }}
-      />
-    </div>
-  );
-  return (
-    <div>
-      <FormContainer
-        submitButton={false}
-        mainTitle="Dashboard"
-        title="Finance"
-        accordionButtons={accordionButtons}
-        activeAccordionIndex={activeAccordionIndex}
-        onAccordionButtonClick={handleAccordionButtonClick}
-      >
-        {activeAccordionIndex === 0 && nonDigitalSignature}
-        {activeAccordionIndex === 1 && seePreviousSalary}
-        {/* {activeAccordionIndex === 2 && payoutReleased}
-        {activeAccordionIndex === 3 && TDS}
-        {activeAccordionIndex === 4 && NonTDS} */}
-      </FormContainer>
 
       {/* <FormContainer mainTitle="NGD" link="#" />
 

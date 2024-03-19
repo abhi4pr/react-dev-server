@@ -41,32 +41,32 @@ const VenderOverView = () => {
     {
       name: "S.No",
       cell: (row, index) => <>{index + 1}</>,
-      width: "6%",
+      width: "80px",
       sortable: true,
     },
     {
-      name: "Vender Name",
+      name: "Vendor Name",
       selector: (row) => row.vendor_name,
       sortable: true,
-      width: "14%",
+      width: "150px",
     },
     {
-      name: "Vender Contect",
+      name: "Vendor Contact",
       selector: (row) => row.vendor_contact_no,
       sortable: true,
       width: "150px",
     },
     {
-      name: "Secondery Contect",
+      name: "Secondary Contact",
       selector: (row) => row.secondary_contact_no,
       sortable: true,
-      width: "150px",
+      width: "160px",
     },
     {
-      name: "Secondery Person",
+      name: "Secondary Person",
       selector: (row) => row.secondary_person_name,
       sortable: true,
-      width: "180px",
+      width: "160px",
     },
     {
       name: "Type",
@@ -74,22 +74,16 @@ const VenderOverView = () => {
       sortable: true,
     },
     {
-      name: " Email",
+      name: " Email ID",
       selector: (row) => row.vendor_email_id,
       sortable: true,
-      width: "150px",
-    },
-    {
-      name: "Company Name",
-      selector: (row) => row.company_name,
-      sortable: true,
-      width: "150px",
+      
     },
     {
       name: " Address",
       selector: (row) => row.vendor_address,
       sortable: true,
-      width: "12%",
+      width: "200px",
     },
     // {
     //   name: "Description",
@@ -99,16 +93,16 @@ const VenderOverView = () => {
     // },
     {
       name: "Action",
-      width: "15%",
+      width: "150px",
 
       cell: (row) => (
         <>
           <Link to={`/vendorUpdate/${row.vendor_id}`}>
             <button
               title="Edit"
-              className="btn btn-outline-primary btn-sm user-button"
+              className="icon-1"
             >
-              <FaEdit />{" "}
+             <i className="bi bi-pencil"></i>
             </button>
           </Link>
           <DeleteButton
@@ -126,7 +120,7 @@ const VenderOverView = () => {
       <div>
         <UserNav />
         <div className="section section_padding sec_bg h100vh">
-          <div className="container">
+          <div className="container master-card-css">
             <div className="action_heading">
               <div className="action_title">
                 <FormContainer
@@ -150,14 +144,24 @@ const VenderOverView = () => {
                 </button>
               </div>
             </div>
-            <div className="page_height">
+            <div className="">
               <div className="card mb-4">
-                <div className="data_tbl table-responsive">
+                <div className="card-header sb">
+                  <h5>Vendor Overview</h5>
+                  <input
+                          type="text"
+                          placeholder="Search here"
+                          className="w-50 form-control "
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                        />
+                </div>
+                <div className="data_tbl table-responsive card-body body-padding">
                   <DataTable
-                    title="Vender Overview"
+                   
                     columns={columns}
                     data={filterData}
-                    fixedHeader
+                    // fixedHeader
                     pagination
                     fixedHeaderScrollHeight="64vh"
                     exportToCSV
@@ -165,13 +169,7 @@ const VenderOverView = () => {
                     subHeader
                     subHeaderComponent={
                       <>
-                        <input
-                          type="text"
-                          placeholder="Search here"
-                          className="w-50 form-control "
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                        />
+                        
                       </>
                     }
                   />

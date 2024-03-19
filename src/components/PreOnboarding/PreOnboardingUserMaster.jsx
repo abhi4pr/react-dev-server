@@ -1233,7 +1233,7 @@ const PreOnboardingUserMaster = () => {
       content: "From here you can logout",
     },
   ];
-
+  console.log("documentPercentage", documentPercentage)
   return (
     <>
       <Modal
@@ -1335,9 +1335,10 @@ const PreOnboardingUserMaster = () => {
                 id="sidebarFormBox"
                 onClick={() => setActiveTab(1)}
               >
-                {/* p-100 is percentage of document procedure */}
+                {/* pp-100 is percentage of document procedure */}
                 <div
-                  className={`progress-circle progressing p-${formFieldProgressPercentage}`}
+                  className={`progress-circle progressing pp-${formFieldProgressPercentage}`}
+              
                 >
                   <div className="progress-circle-border">
                     <div className="left-half-circle" />
@@ -1360,7 +1361,9 @@ const PreOnboardingUserMaster = () => {
               >
                 <div className="sidebar_itemboxColIn">
                   <div
-                    className={`progress-circle progressing p-${documentPercentage}`}
+                  
+                    className={`progress-circle progressing pp-${documentPercentage}`}
+                
                   >
                     <div className="progress-circle-border">
                       <div className="left-half-circle" />
@@ -1369,7 +1372,9 @@ const PreOnboardingUserMaster = () => {
                     <div className="progress-circle-content">
                       <i className="bi bi-file-richtext" />
                     </div>
+                    
                   </div>
+                 
                 </div>
                 <div className="sidebar_iteminfo">
                   <div className="pack" style={{flexDirection:"row"}}>
@@ -1395,7 +1400,7 @@ const PreOnboardingUserMaster = () => {
                 id="sidebarPolicyBox"
                 onClick={() => setActiveTab(3)}
               >
-                <div className="progress-circle progressing p-100">
+                <div className="progress-circle progressing pp-100">
                   <div className="progress-circle-border">
                     <div className="left-half-circle" />
                     <div className="right-half-circle" />
@@ -1415,7 +1420,7 @@ const PreOnboardingUserMaster = () => {
                   id="sidebarLetterBox"
                   onClick={() => setActiveTab(5)}
                 >
-                  <div className="progress-circle progressing p-26">
+                  <div className="progress-circle progressing pp-26">
                     <div className="progress-circle-border">
                       <div className="left-half-circle" />
                       <div className="right-half-circle" />
@@ -1435,7 +1440,7 @@ const PreOnboardingUserMaster = () => {
                 id="sidebarFaqBox"
                 onClick={() => setActiveTab(4)}
               >
-                <div className="progress-circle progressing p-100">
+                <div className="progress-circle progressing pp-100">
                   <div className="progress-circle-border">
                     <div className="left-half-circle" />
                     <div className="right-half-circle" />

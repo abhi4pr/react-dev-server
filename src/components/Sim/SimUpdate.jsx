@@ -1,13 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
 import Autocomplete from "@mui/material/Autocomplete";
 import { TextField } from "@mui/material";
 import { baseUrl } from "../../utils/config";
-
+import titleimg from '/bg-img.png'
 const SimUpdate = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const [assetsName, setAssetsName] = useState("");
@@ -290,16 +290,22 @@ const SimUpdate = () => {
   if (isFormSubmitted) {
     return <Navigate to={`/sim-overview/${0}`} />;
   }
+  const location = useLocation();
+  const activeLink = location.pathname;
   return (
-    <div style={{ margin: "0 0 0 10%", width: "80%" }}>
+    <div className="master-card-css" style={{ margin: "0 0 0 10%", width: "80%" }}>
       <UserNav />
       <div className="form-heading">
+      <img className="img-bg" src={titleimg} alt="" width={160} />
         <div className="form_heading_title">
-          <h2>Assets Update</h2>
+          <h1>Assets Update</h1>
+          <div className="pack">
+            <i class="bi bi-house"></i> {activeLink.slice(1).charAt(0).toUpperCase()+ activeLink.slice(2)}
+            </div>
         </div>
       </div>
       <form mainTitle="Assets" title="Assets Register" onSubmit={handleSubmit}>
-        <div className="formarea">
+        <div className="card body-padding">
           <div className="row">
             <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
               <div className="form-group form_select">

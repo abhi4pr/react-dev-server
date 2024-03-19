@@ -51,9 +51,13 @@ const AssetSummary = () => {
 
   useEffect(() => {
     const result = datas.filter((d) => {
-      return (
-        d.obj_name?.toLowerCase().match(search.toLowerCase()) ||
-        d.soft_name?.toLowerCase().match(search.toLowerCase())
+      console.log(d);
+      // return (
+      //   d.obj_name?.toLowerCase().includes(search.toLowerCase()) ||
+      //   d.soft_name?.toLowerCase().match(search.toLowerCase())
+      // );
+      return Object.values(d).some(value =>
+        value?.toString().toLowerCase().includes(search.toLowerCase())
       );
     });
     setFilterData(result);
@@ -162,7 +166,7 @@ const AssetSummary = () => {
       >
         {/* {selectedRow && ( */}
         <div>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-end mb-2">
             {/* <h2>Department: {selectedRow.dept_name}</h2> */}
 
             <button
@@ -172,7 +176,7 @@ const AssetSummary = () => {
               X
             </button>
           </div>
-          <h1></h1>
+         
           <DataTable
             columns={[
               {
@@ -190,7 +194,7 @@ const AssetSummary = () => {
                 selector: (row) => row.asset_action,
               },
               {
-                name: "Asset Action",
+                name: "Asset Action Date",
                 selector: (row) => DateISOtoNormal(row.asset_action_date_time),
               },
               {
@@ -200,7 +204,8 @@ const AssetSummary = () => {
             ]}
             data={historyData}
             highlightOnHover
-            subHeader
+            // subHeade
+            pagination
             // subHeaderComponent={
             //   <input
             //     type="text"

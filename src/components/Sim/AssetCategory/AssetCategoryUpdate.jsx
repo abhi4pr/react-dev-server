@@ -40,6 +40,7 @@ const AssetCategoryUpdate = () => {
       setSelfAuditUnit(response.selfAuditUnit);
       setHrSelfAuditPeriod(response.hrAuditPeriod);
       setHrSelfAuditUnit(response.hrAuditUnit);
+      
     });
   };
 
@@ -135,7 +136,7 @@ const AssetCategoryUpdate = () => {
           <div className="form-group col-6">
             <label className="form-label">
               HR Audit Unit{" "}
-              {hrselfAuditPeriod && <span style={{ color: "red" }}> *</span>}{" "}
+              {hrselfAuditUnit && <span style={{ color: "red" }}> *</span>}{" "}
             </label>
             <Select
               className=""

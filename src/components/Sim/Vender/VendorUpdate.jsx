@@ -233,7 +233,7 @@ const VendorUpdate = () => {
           />
 
           <FieldContainer
-            label="Email"
+            label="Email ID"
             value={vendorEmail}
             onChange={(e) => setVendorEmail(e.target.value)}
             required={false}

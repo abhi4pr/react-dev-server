@@ -208,7 +208,7 @@ const WFHDUpdate = () => {
         className={`documentarea ${normalUserLayout && "documentareaLight"}`}
       >
         <div className="document_box">
-          <h2>Documents</h2>
+          
           {/* <select
             onChange={(e) => handleFilterChange(e.target.value)}
             className="form-select"
@@ -238,7 +238,7 @@ const WFHDUpdate = () => {
                 <tr>
                   <th scope="col">Document Type</th>
                   <th scope="col">Period (Days)</th>
-                  <th scope="col">Time</th>
+                  {/* <th scope="col">Time</th> */}
                   <th scope="col">Upload</th>
                   <th scope="col" className="text-center">
                     Status
@@ -256,11 +256,11 @@ const WFHDUpdate = () => {
                         )}
                     </td>
                     <td>{item.document.period} days</td>
-                    <td>1 Day</td>
+                    {/* <td>1 Day</td> */}
                     <td>
                       <div className="uploadDocBtn">
-                        <span>
-                          <i className="bi bi-cloud-arrow-up" /> Upload
+                        <span style={{display:"flex",justifyContent:"center",flex:"row",alignItems:"center",gap:"10px"}}>
+                        Upload  <i className="bi bi-cloud-arrow-up" />
                         </span>
                         <input
                           type="file"
@@ -302,7 +302,7 @@ const WFHDUpdate = () => {
               </tbody>
             </table>
           </div>
-          <div className="ml-auto mr-auto text-center">
+          <div className="ml-auto mr-auto text-left">
             <button
               type="submit"
               className="btn btn_pill btn_cmn btn_success"
@@ -320,20 +320,34 @@ const WFHDUpdate = () => {
 
   return (
     <>
-      <div className="action_heading">
+      <div className="action_heading master-card-css">
         <div className="action_title">
           <FormContainer
             submitButton={false}
-            mainTitle=""
+            mainTitle="Update"
             title=""
-            accordionButtons={accordionButtons}
-            activeAccordionIndex={activeAccordionIndex}
-            onAccordionButtonClick={handleAccordionButtonClick}
-          >
-            {activeAccordionIndex === 0 && tab1}
-            {activeAccordionIndex === 1 && tab2}
-          </FormContainer>
+           link="admin/wfhd-overview"
+          />
+            
+
         </div>
+        <div className="tab">
+         { accordionButtons.map((button,index)=>(
+            <div className={`named-tab ${activeAccordionIndex === index ? "active-tab":""}`} onClick={()=>{handleAccordionButtonClick(index)}}>{button}</div>
+          ))}
+        </div>
+        <div className="card">
+          <div className="card-header ">
+           
+             <h5>{accordionButtons[activeAccordionIndex]}</h5>
+          
+            
+          </div>
+          <div className="card-body">
+          {activeAccordionIndex === 0 && tab1}
+            {activeAccordionIndex === 1 && tab2}
+        </div>
+      </div>
       </div>
     </>
   );

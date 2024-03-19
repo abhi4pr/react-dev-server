@@ -521,7 +521,7 @@ export default function FinanceWFHDashboard() {
     {
       headerName: "Status",
       field: "attendence_status_flow",
-      width: 150,
+      width: 250,
       renderCell: (params) => {
         return params.row.attendence_status_flow;
       },
@@ -589,17 +589,18 @@ export default function FinanceWFHDashboard() {
   if (activeAccordionIndex === 1) {
     pendingColumns.push({
       headerName: "UTR",
-      width: 250,
+      width: 350,
       renderCell: (params) => {
         return (
-          <div>
+          <div style={{width:"500px"}}>
             <form
               method="post"
               // onSubmit={(e)=>handleUTRupload(e,params.row)}
               className="d-flex "
             >
               <input
-                className="form-control"
+              style={{backgroundColor: "white"}}
+                className="form-control mr-2"
                 value={
                   params.row.utr
                     ? params.row.utr
@@ -616,7 +617,8 @@ export default function FinanceWFHDashboard() {
                 }}
               />
               <button
-                className="btn btn-primary "
+              style={{width:"200px"}}
+                className="btn btn-primary"
                 //  type="submit"
                 onClick={(e) => handleUTRupload(e, params.row)}
                 disabled={params.row.utr}
@@ -655,7 +657,7 @@ export default function FinanceWFHDashboard() {
 
             {params.row?.invoice_template_no !== "0" && (
               <button
-                className="btn btn-outline-primary btn-sm"
+                className="btn btn-outline-primary btn-sm icon-1"
                 title="Download Invoice"
                 type="button"
                 onClick={() => {
@@ -815,57 +817,58 @@ export default function FinanceWFHDashboard() {
 
   const pending = (
     <div>
-      <div style={{ height: "50px" }}>
+      <div >
         {rowForPayment.length > 0 && (
           <>
-            <Button
+            <button
+            className="btn btn-primary ml-3 mb-2"
               variant="contained"
               color="primary"
               size="small"
-              sx={{ width: "200px" }}
-              className="ml-3 mb-2"
+              
               onClick={handleDownloadInvoices}
             >
               Download PDF Zip
-            </Button>
-            <Button
+            </button>
+            <button
+               className="btn btn-primary ml-3 mb-2"
               variant="contained"
               color="primary"
               size="lg"
-              sx={{ width: "200px" }}
-              className="ml-3 mb-2"
+              
               onClick={() => BankExcelConverter(rowForPayment)}
             >
               Export Bank Excel
-            </Button>
+            </button>
           </>
-        )}
+        )} 
 
         {rowForPayment.length > 0 && (
-          <Button
+          <button
             variant="contained"
             color="primary"
             size="small"
-            sx={{ width: "200px" }}
-            className="ml-3 mb-2"
+       
+            className="btn btn-primary ml-3 mb-2"
+         
             onClick={handleDownloadExcel}
           >
             Download Excel
-          </Button>
+          </button>
         )}
 
-        {rowForPayment.length > 0 && (
-          <Button
+         {rowForPayment.length > 0 && ( 
+          <button
             variant="contained"
             color="primary"
             size="small"
-            sx={{ width: "200px" }}
-            className="ml-3 mb-2"
+            sx={{ width: "200px",height:"50px" }}
+            className=" btn btn-primary ml-3 mb-2"
             onClick={handleSendToBank}
           >
             Send to Bank
-          </Button>
-        )}
+          </button>
+        )} 
       </div>
       <DataGrid
         rows={filterData?.filter((item) => item.status_ === 0)}
@@ -945,17 +948,17 @@ export default function FinanceWFHDashboard() {
     <>
       <div>
       {rowForPayment.length > 0 && (
-          <Button
+          <button
             variant="contained"
             color="primary"
             size="small"
             sx={{ width: "200px" }}
-            className="ml-3 mb-2"
+            className=" btn btn-primary ml-3 mb-2"
             onClick={handleDownloadExcel}
           >
             Download Excel
-          </Button>
-        )}
+          </button>
+         )} 
         {/* <div style={{ height: "50px" }} className="d-flex">
           {rowForPayment.length > 0 && (
             <Button
@@ -1162,10 +1165,14 @@ export default function FinanceWFHDashboard() {
   // );
 
   return (
-    <div>
-      <div className="card-body pb0 pb4">
-        <div className="row thm_form">
-          <div className="form-group col-3">
+    <div className="master-card-css">
+       <FormContainer
+        submitButton={false}
+       link="true"
+      />
+      <div className="card body-padding">
+        <div className="row thm_form ">
+          <div className="form-group col-3 ">
             <label className="form-label">
               Department Name<sup style={{ color: "red" }}>*</sup>
             </label>
@@ -1273,45 +1280,53 @@ export default function FinanceWFHDashboard() {
         </div>
       </div>
 
-      <FormContainer
-        submitButton={false}
-        // mainTitle="Dashboard"
-        // title="Finance"
-        accordionButtons={accordionButtons}
-        activeAccordionIndex={activeAccordionIndex}
-        onAccordionButtonClick={handleAccordionButtonClick}
-        handleSubmit={handleCSVFlieupload}
-      >
-        {activeAccordionIndex === 1 && (
+     
+      
+      <div className="tab">
+        {
+          accordionButtons.map((button, index) => (
+            <div className={`named-tab ${activeAccordionIndex === index? "active-tab":""}`} onClick={()=>{
+              handleAccordionButtonClick(index);
+            }}>{button}</div>
+          ))
+        }
+      </div>
+      <div className={`card ${activeAccordionIndex === 1?"":"body-padding"}`}>
+      {activeAccordionIndex === 1 && (
           // <FormContainer {handleCSVFlieupload}>
-          <div className="d-flex">
+          <div className="card-header p-1">
+            <div className="pack " style={{alignItem:"center"}}>
             <FieldContainer
               // label="Upload UTR"
+            
               type="file"
               accept=".xls,.xlsx"
               fieldGrid={6}
               onChange={(e) => setCSVFile(e.target.files[0])}
-            />
+              />
             <input
+              onClick={handleCSVFlieupload}
               type="submit"
-              value={"Upload utr"}
+              value={"Upload UTR"}
               className="btn btn-primary h-50 mt-3 "
               disabled={!CSVFile}
             />
+            </div>
           </div>
+          
           // </FormContainer>
         )}
+        <div className={`${activeAccordionIndex === 1 ?"card-body body-padding":""}`}>
+      {invoice}
 
-        {invoice}
-
-        {activeAccordionIndex === 0 && pending}
-        {/* {activeAccordionIndex === 1 && verified} */}
-        {activeAccordionIndex === 1 && payoutReleased}
-        {activeAccordionIndex === 2 && failedTransaction}
-        {/* {activeAccordionIndex === 3 && TDS}
-        {activeAccordionIndex === 4 && NonTDS} */}
-      </FormContainer>
-
+{activeAccordionIndex === 0 && pending}
+{/* {activeAccordionIndex === 1 && verified} */}
+{activeAccordionIndex === 1 && payoutReleased}
+{activeAccordionIndex === 2 && failedTransaction}
+{/* {activeAccordionIndex === 3 && TDS}
+{activeAccordionIndex === 4 && NonTDS} */}
+      </div>
+      </div>
       {showModal && (
         <div
           className={`modal fade ${showModal ? "show" : ""}`}
