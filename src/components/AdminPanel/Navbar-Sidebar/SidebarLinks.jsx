@@ -328,7 +328,7 @@ const SidebarLinks = () => {
                     <i className="bi bi-dot"></i>Dispute Summary
                   </Link>
                   <Link className="collapse-item" to="/admin/total-NDG">
-                    <i className="bi bi-dot"></i> total & NDG
+                    <i className="bi bi-dot"></i> Total & NDG
                   </Link>
                 </div>
               </div>
