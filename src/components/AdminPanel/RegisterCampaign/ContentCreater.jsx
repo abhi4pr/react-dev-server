@@ -23,6 +23,8 @@ import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 import { toolbarStyles } from "./CampaignCommitment";
 import { baseUrl } from "../../../utils/config";
+import FormContainer from "../FormContainer";
+import FieldContainer from "../FieldContainer";
 
 export default function CampaignCommitment() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -48,12 +50,8 @@ export default function CampaignCommitment() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button
-          color="error"
-          variant="outlined"
-          onClick={handleClick}
-        >
-         create commitment
+        <Button color="error" variant="outlined" onClick={handleClick}>
+          create commitment
         </Button>
       </GridToolbarContainer>
     );
@@ -81,7 +79,7 @@ export default function CampaignCommitment() {
       return;
     }
     axios
-      .post(baseUrl+"add_commitment", postData)
+      .post(baseUrl + "add_commitment", postData)
       .then((response) => {
         setIsModalOpen(false);
         setPostData("");
@@ -102,25 +100,23 @@ export default function CampaignCommitment() {
 
   // get api ========>
   const getData = () => {
-    axios
-      .get(baseUrl+"get_all_commitments")
-      .then((res) => {
-        const data = res.data.data;
-        const uniqueCmtNames = new Set();
-        const uniqueRows = data.filter((row) => {
-          if (uniqueCmtNames.has(row.cmtName)) {
-            console.log(
-              "Brand name already exists. Duplicate values are not allowed."
-            );
-            return false;
-          } else {
-            uniqueCmtNames.add(row.cmtName);
-            return true;
-          }
-        });
-        const sortedData = uniqueRows.sort((a, b) => b.cmtId - a.cmtId);
-        setRows(sortedData);
+    axios.get(baseUrl + "get_all_commitments").then((res) => {
+      const data = res.data.data;
+      const uniqueCmtNames = new Set();
+      const uniqueRows = data.filter((row) => {
+        if (uniqueCmtNames.has(row.cmtName)) {
+          console.log(
+            "Brand name already exists. Duplicate values are not allowed."
+          );
+          return false;
+        } else {
+          uniqueCmtNames.add(row.cmtName);
+          return true;
+        }
       });
+      const sortedData = uniqueRows.sort((a, b) => b.cmtId - a.cmtId);
+      setRows(sortedData);
+    });
   };
 
   useEffect(() => {
@@ -137,7 +133,7 @@ export default function CampaignCommitment() {
   const handlePutData = () => {
     if (editData.cmtName !== "") {
       axios
-        .put(`${baseUrl}`+`update_commitment`, {
+        .put(`${baseUrl}` + `update_commitment`, {
           cmtId: editData.cmtId,
           cmtName: editData.cmtName,
         })
@@ -174,9 +170,7 @@ export default function CampaignCommitment() {
   const handleConfirmDelete = () => {
     if (itemToDeleteId) {
       axios
-        .delete(
-          `${baseUrl}`+`delete_commitment/${itemToDeleteId}`
-        )
+        .delete(`${baseUrl}` + `delete_commitment/${itemToDeleteId}`)
         .then(() => {
           setReload(!reload);
           console.log("Data deleted successfully");
@@ -235,9 +229,10 @@ export default function CampaignCommitment() {
         return [
           // eslint-disable-next-line react/jsx-key
           <GridActionsCellItem
-            icon={<EditIcon />}
+            icon={<EditIcon  />}
             label="Edit"
-            className="textPrimary"
+            // className=" "
+            className="icon-1"
             onClick={handleEditClick(id, row)}
             color="inherit"
           />,
@@ -245,6 +240,7 @@ export default function CampaignCommitment() {
           <GridActionsCellItem
             icon={<DeleteIcon />}
             label="Delete"
+            className="icon-1"
             onClick={handleDeleteClick(id)}
             color="inherit"
           />,
@@ -265,40 +261,38 @@ export default function CampaignCommitment() {
 
   return (
     <>
-      <Paper>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2> Commitment </h2>
+      <FormContainer mainTitle="Commitment Master" link="true" />
+      <div className="card">
+        <div className="card-header">
+          <div className="pack">
+            <div className="form-group ">
+              <FieldContainer
+                fieldGrid={12}
+                label=""
+                placeholder="Search Here"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+            </div>
           </div>
         </div>
-      </Paper>
+        <div className="card-body body-padding">
+          <Box sx={{ height: "400px" }}>
+            <DataGrid
+              rows={filteredRows}
+              columns={columns}
+              editMode="row"
+              onRowEditStop={handleRowEditStop}
+              getRowId={(row) => row.cmtId}
+              slots={{
+                toolbar: EditToolbar,
+              }}
+            />
+          </Box>
+        </div>
+      </div>
 
-      <TextField
-        label="Search"
-        variant="outlined"
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        style={{ marginBottom: "10px" }}
-      />
-
-      <Box>
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          editMode="row"
-          getRowId={(row) => row.cmtId}
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
-        />
-      </Box>
+     
 
       {/* AddRecordModal post data */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>

@@ -26,6 +26,7 @@ import {baseUrl} from '../../../utils/config'
 export const toolbarStyles = {
   display: 'flex',
   justifyContent: 'flex-end', 
+  padding:"10px"
 };
 export default function CampaignCommitment() {
   const { toastAlert, toastError } = useGlobalContext();

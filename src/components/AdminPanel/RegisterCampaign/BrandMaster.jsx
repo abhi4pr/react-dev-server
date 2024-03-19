@@ -25,9 +25,11 @@ import { toolbarStyles } from "./CampaignCommitment";
 import { baseUrl } from "../../../utils/config";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { useNavigate } from "react-router-dom";
+import FieldContainer from "../FieldContainer";
+import FormContainer from "../FormContainer";
 
 export default function BrandMaster() {
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [whatsappOptions, setWhatsappOptions] = useState([]);
   const [igusernameOptions, setIgusernameOptions] = useState([]);
   const { toastAlert, toastError } = useGlobalContext();
@@ -56,15 +58,7 @@ export default function BrandMaster() {
     brand_name: "",
     category_id: "",
     sub_category_id: "",
-    // major_category: "",
   });
-  // const majorcategoryoption = [
-  //   { major_cat_id: 1, major_cat_name: "Brands" },
-  //   { major_cat_id: 2, major_cat_name: "Normal" },
-  //   { major_cat_id: 3, major_cat_name: "Negative" },
-  //   { major_cat_id: 4, major_cat_name: "NBFRS" },
-  //   { major_cat_id: 5, major_cat_name: "Entertainment" },
-  // ];
 
   const platform = [
     { plt_id: 1, plat_name: "Instagram" },
@@ -87,7 +81,7 @@ export default function BrandMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button color="error" variant="outlined" onClick={handleClick}>
+        <Button color="primary" variant="outlined" onClick={handleClick}>
           create brand
         </Button>
 
@@ -99,18 +93,18 @@ export default function BrandMaster() {
           Create Category
         </Button>
         <Button
-          color="secondary"
+          color="primary"
           variant="outlined"
           onClick={() => navigate("/admin/subcategory")}
         >
           Create Subcategory
         </Button>
         <Button
-          color="secondary"
+          color="primary"
           variant="outlined"
           onClick={() => navigate("/case-platform")}
         >
-         Platfrom
+          Platfrom
         </Button>
       </GridToolbarContainer>
     );
@@ -148,7 +142,7 @@ export default function BrandMaster() {
     if (
       !postData.brand_name ||
       !postData.category_id ||
-      !postData.sub_category_id 
+      !postData.sub_category_id
       // !postData.major_category
     ) {
       toastError(" * Please fill in all required fields ");
@@ -209,18 +203,12 @@ export default function BrandMaster() {
   }, [postData.category_id, postData]);
   // put api ------
   const handlePutData = () => {
-    const onlyCharacters = /^[A-Za-z]+$/;
     if (
       !editData.brand_name ||
       !editData.category_id ||
-      !editData.sub_category_id ||
-      !editData.major_category
+      !editData.sub_category_id
     ) {
       toastError("Please fill required fields.");
-      return;
-    }
-    if (!onlyCharacters.test(editData.brand_name)) {
-      toastError("Brand name should contain only characters.");
       return;
     }
 
@@ -230,7 +218,6 @@ export default function BrandMaster() {
         brand_name: editData.brand_name,
         category_id: editData.category_id,
         sub_category_id: editData.sub_category_id,
-        major_category: editData.major_category,
       })
       .then((res) => {
         if (res.data.success === false) {
@@ -259,7 +246,6 @@ export default function BrandMaster() {
   }, [editData.category_id]);
 
   const handlePlatformData = (params) => {
-
     console.log("new ");
   };
 
@@ -350,11 +336,6 @@ export default function BrandMaster() {
       headerName: "SubCategory",
       width: 180,
     },
-    // {
-    //   field: "major_category",
-    //   headerName: "Major Category",
-    //   width: 180,
-    // },
     {
       field: "platform",
       headerName: "Platfrom",
@@ -362,13 +343,7 @@ export default function BrandMaster() {
       renderCell: (params) => {
         return (
           <div>
-            <Button
-              onClick={
-                () => handlePlatformData(params)
-                //  console.log(params?.row?.platform)
-              }
-              variant="text"
-            >
+            <Button onClick={() => handlePlatformData(params)} variant="text">
               <ModeCommentTwoToneIcon />
             </Button>
           </div>
@@ -410,8 +385,6 @@ export default function BrandMaster() {
     setFilteredRows(filtered);
   };
 
-  console.log(fields);
-
   useEffect(() => {
     filterRows();
   }, [searchInput, rows]);
@@ -422,41 +395,48 @@ export default function BrandMaster() {
       setDataPlatforms(response?.data);
     } catch (error) {}
   };
-  const handlePlatfromChange = (index, value) => {
-    const updatedpages = [...userName];
-    updatedpages[index] = value;
-    setUserName(updatedpages);
-  };
-  console.log(userName);
+
   return (
     <>
-      <Paper>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2> Brand </h2>
+      {/* <div className="form-heading">
+        <img className="img-bg" src="/bg-img.png" alt="" width="160" />
+        <div className="form_heading_title ">
+          <div className="pack">
+            <i className="bi bi-house"></i> Brand Master
           </div>
         </div>
-      </Paper>
-      <TextField
-        label="Search"
-        variant="outlined"
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        style={{ marginBottom: "10px" }}
-      />
-      <Box>
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          editMode="row"
-          onRowEditStop={handleRowEditStop}
-          getRowId={(row) => row.brand_id}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-        />
-      </Box>
+      </div> */}
+      <FormContainer mainTitle="Brand Master" link="true" />
 
+      <div className="card">
+        <div className="card-header">
+          <div className="pack">
+            <div className="form-group ">
+              <FieldContainer
+                fieldGrid={12}
+                label=""
+                placeholder="Search Here"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="card-body body-padding">
+          <Box sx={{ height: "400px" }}>
+            <DataGrid
+              rows={filteredRows}
+              columns={columns}
+              editMode="row"
+              onRowEditStop={handleRowEditStop}
+              getRowId={(row) => row.brand_id}
+              slots={{
+                toolbar: EditToolbar,
+              }}
+            />
+          </Box>
+        </div>
+      </div>
       {/* AddRecordModal post data */}
       <Dialog open={isModalOpen} onClose={handleClose}>
         <DialogTitle>Add Record</DialogTitle>
@@ -479,25 +459,7 @@ export default function BrandMaster() {
                 />
                 <span style={{ color: "red" }}>{errBrandName}</span>
               </>
-              {/* <Autocomplete
-                id="combo-box-demo"
-                options={majorcategoryoption.map((item) => ({
-                  label: item.major_cat_name,
-                  value: item.major_cat_id,
-                }))}
-                renderInput={(params) => (
-                  <TextField {...params} label="  * Major Category" />
-                )}
-                onChange={(event, newValue) => {
-                  console.log(newValue.value);
-                  if (newValue) {
-                    setPostData({
-                      ...postData,
-                      major_category: newValue.label,
-                    });
-                  }
-                }}
-              /> */}
+
               <>
                 <Autocomplete
                   disablePortal
@@ -664,24 +626,6 @@ export default function BrandMaster() {
                     }));
                   }}
                 />
-                {/* <Autocomplete
-                  disablePortal
-                  options={majorcategoryoption}
-                  getOptionLabel={(option) => option.major_cat_name}
-                  renderInput={(params) => (
-                    <TextField {...params} label="Major Category *" />
-                  )}
-                  value={majorcategoryoption.find(
-                    (option) =>
-                      option.major_cat_name === editData.major_category
-                  )}
-                  onChange={(event, newValue) => {
-                    setEditData((prev) => ({
-                      ...prev,
-                      major_category: newValue && newValue.major_cat_name,
-                    }));
-                  }}
-                /> */}
               </div>
             )}
           </Box>

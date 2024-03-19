@@ -862,15 +862,15 @@ export default function RegisteredCampaign() {
           </Link>
         </div>
       </div>
-      <div className="tab mt-4">
+      <div className="tab">
       {accordionButtons.map((button, index) => (<div className={`named-tab ${(activeAccordionIndex === index) ? "active-tab" : "" }`} onClick={()=>{handleAccordionButtonClick(index)}} >{button}</div>))}
         
       </div>
 
-      <div className="card mt-3">
+      <div className="card">
         <div className="card-header sb">
           <div></div>
-          <div className="pack mt-1">        <Box sx={{ display: "flex" }}>
+          <div className="pack  ">        <Box sx={{ display: "flex" }}>
               <FormControl style={{ width: "300px", margin: "10px" }}>
                 <InputLabel id="date-filter-select-label">
                   Date Filter

@@ -41,7 +41,7 @@ export default function CategoryMaster() {
     // brand_id: "",
   });
 
-  
+
   function EditToolbar() {
     const handleClick = () => {
       setIsModalOpen(true);
@@ -67,7 +67,7 @@ export default function CategoryMaster() {
   const handleSave = (e) => {
     e.preventDefault();
     axios
-      .post(baseUrl+"projectxCategory", postData)
+      .post(baseUrl + "projectxCategory", postData)
       .then((response) => {
         if (response.data.success === false) {
           toastError(response.data.message);
@@ -88,7 +88,7 @@ export default function CategoryMaster() {
 
   // get api ========>
   const getData = () => {
-    axios.get(baseUrl+"projectxCategory").then((res) => {
+    axios.get(baseUrl + "projectxCategory").then((res) => {
       console.log(res.data.data);
       const sortedData = res.data.data.sort(
         (a, b) => b.category_id - a.category_id
@@ -108,7 +108,7 @@ export default function CategoryMaster() {
   // put api =============>
   const handlePutData = () => {
     axios
-      .put(`${baseUrl}`+`projectxCategory`, {
+      .put(`${baseUrl}` + `projectxCategory`, {
         id: editData.category_id,
         category_name: editData.category_name,
         // brand_id: editData.brand_id,
@@ -122,7 +122,7 @@ export default function CategoryMaster() {
           toastAlert("Update successfully");
         }
       })
-      
+
       .then(() => {
         setIsPutOpen(false);
         getData();
@@ -153,7 +153,7 @@ export default function CategoryMaster() {
     if (itemToDeleteId) {
       axios
         .delete(
-          `${baseUrl}`+`projectxCategory/${itemToDeleteId}`
+          `${baseUrl}` + `projectxCategory/${itemToDeleteId}`
         )
         .then(() => {
           getData();
@@ -246,50 +246,55 @@ export default function CategoryMaster() {
 
   return (
     <>
-      <Paper>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2> Category Master</h2>
+      <div className="form-heading">
+        <img className="img-bg" src="/bg-img.png" alt="" width="160"/>
+        <div className="form_heading_title ">
+          <div className="pack">
+            <i className="bi bi-house"></i> Category Master
           </div>
         </div>
-      </Paper>
-      <TextField
-        label="Search"
-        variant="outlined"
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        style={{ marginBottom: "10px" }}
-      />
+      </div>
 
-      <Box
-      // sx={{
-      //   height: 500,
-      //   width: "100%",
-      //   "& .actions": {
-      //     color: "text.secondary",
-      //   },
-      //   "& .textPrimary": {
-      //     color: "text.primary",
-      //   },
-      // }}
-      >
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          editMode="row"
-          getRowId={(row) => row.category_id}
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
+      <TextField
+          label="Search"
+          variant="outlined"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
+          style={{ marginBottom: "10px" }}
         />
-      </Box>
+      <div className="card">
+      
+
+        <Box
+        // sx={{
+        //   height: 500,
+        //   width: "100%",
+        //   "& .actions": {
+        //     color: "text.secondary",
+        //   },
+        //   "& .textPrimary": {
+        //     color: "text.primary",
+        //   },
+        // }}
+        >
+          <DataGrid
+            rows={filteredRows}
+            columns={columns}
+            editMode="row"
+            getRowId={(row) => row.category_id}
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStop={handleRowEditStop}
+            processRowUpdate={processRowUpdate}
+            slots={{
+              toolbar: EditToolbar,
+            }}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+          />
+        </Box>
+      </div>
 
       {/* AddRecordModal post data */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
