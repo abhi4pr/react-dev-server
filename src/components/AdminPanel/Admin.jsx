@@ -265,6 +265,7 @@ import PMSmaster from "./PageMS/PMSmaster";
 import OperationCampaigns from "./RegisterCampaign/OperationCampaigns";
 import OperationDashboards from "./RegisterCampaign/OperationDashboards";
 import OperationContents from "./RegisterCampaign/OperationContents";
+import GstNongstIncentiveReport from "./Finance/GstNongstIncentiveReport";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -785,6 +786,12 @@ const Admin = () => {
                   />
                   <Route path="/finance-task-done/:id" element={<TaskDone />} />
                   {/*  ==============*/}
+                  {/* GST Nongst Incentive Report */}
+                  <Route
+                    path="/finance-gst-nongst-incentive-report"
+                    element={<GstNongstIncentiveReport />}
+                  />
+                  {/* ========================== */}
                   <Route
                     path="/payment-summary/:id"
                     element={<PaymentSummary />}
@@ -846,9 +853,18 @@ const Admin = () => {
                     path="/sub-department-update/:id"
                     element={<SubDepartmentUpdate />}
                   />
-                  <Route path="/operation-campaigns" element={<OperationCampaigns />} />
-                  <Route path="/operation-dashboards" element={<OperationDashboards />} />
-                  <Route path="/operation-contents" element={<OperationContents />} />
+                  <Route
+                    path="/operation-campaigns"
+                    element={<OperationCampaigns />}
+                  />
+                  <Route
+                    path="/operation-dashboards"
+                    element={<OperationDashboards />}
+                  />
+                  <Route
+                    path="/operation-contents"
+                    element={<OperationContents />}
+                  />
                   <Route
                     path="/register-campaign"
                     element={<RegisterCampaign />}
@@ -1186,9 +1202,10 @@ const Admin = () => {
 
                   <Route path="/customer-master" element={<CustomerMaster />} />
                   <Route path="/account-master" element={<AccountMaster />} />
-                  <Route path="/ownership-master" element={<OwnershipMaster />} />
-
-
+                  <Route
+                    path="/ownership-master"
+                    element={<OwnershipMaster />}
+                  />
 
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />
@@ -1243,10 +1260,7 @@ const Admin = () => {
                     path="/pms-vendor-page-price-master/:id"
                     element={<EditVendorPagePrice />}
                   />
-                     <Route
-                    path="/pms-master"
-                    element={<PMSmaster />}
-                  />
+                  <Route path="/pms-master" element={<PMSmaster />} />
                 </Route>
               </Routes>
             </div>

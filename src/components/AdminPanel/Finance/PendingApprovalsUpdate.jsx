@@ -142,6 +142,7 @@ const PendingApprovalUpdate = () => {
     getData();
     // handleAllFilters();
   }, []);
+
   useEffect(() => {
     const result = datas.filter((d) => {
       return d.user_name?.toLowerCase().match(search.toLowerCase());
@@ -633,6 +634,16 @@ const PendingApprovalUpdate = () => {
       name: <div style={{ whiteSpace: "normal" }}>Requested By</div>,
       renderCell: (params, index) => <div>{params.row.user_name} </div>,
     },
+    {
+      headerName: "Requested Date & Time",
+      field: "creation_date",
+      width: 180,
+      renderCell: (params) => {
+        new Date(params.row.creation_date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(params.row.creation_date).toLocaleTimeString("en-IN");
+      },
+    },
 
     {
       headerName: "Campaign Amount",
@@ -806,6 +817,8 @@ const PendingApprovalUpdate = () => {
       ),
     },
   ];
+
+  console.log(filterData, "filterData >>>", datas, "datas>>>");
   return (
     <>
       <FormContainer
@@ -918,6 +931,7 @@ const PendingApprovalUpdate = () => {
           />
         </DialogContent>
       </Dialog>
+
       <div className="card body-padding">
         <div className="row">
           <div className="col-md-3">
@@ -1165,6 +1179,7 @@ const PendingApprovalUpdate = () => {
           </div>
         </div>
       </div>
+
       <div className="card">
         <div className="data_tbl table-responsive">
           {!loading ? (

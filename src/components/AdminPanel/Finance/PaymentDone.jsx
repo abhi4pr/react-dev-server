@@ -56,6 +56,9 @@ export default function PaymentDone() {
   const [historyData, setHistoryData] = useState([]);
   const [phpData, setPhpData] = useState([]);
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
+  const [invoiceDialog, setInvoiceDialog] = useState([]);
+  const [imageFile, setImageFile] = useState([]);
+  const [invoiceId, setInvoiceId] = useState(null);
   const { toastAlert, toastError } = useGlobalContext();
 
   const callApi = () => {
@@ -177,6 +180,7 @@ export default function PaymentDone() {
   useEffect(() => {
     callApi();
   }, []);
+
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
     const day = String(date1.getDate()).padStart(2, "0");
@@ -280,6 +284,18 @@ export default function PaymentDone() {
       return allFiltersPassed;
     });
     setFilterData(filterData);
+
+    setPendingRequestCount(filterData.length);
+    const uniqueVendors = new Set(filterData.map((item) => item.vendor_name));
+    setUniqueVendorCount(uniqueVendors.size);
+    const uvData = [];
+    uniqueVendors.forEach((vendorName) => {
+      const vendorRows = filterData.filter(
+        (item) => item.vendor_name === vendorName
+      );
+      uvData.push(vendorRows[0]);
+    });
+    setUniqueVendorData(uvData);
   };
 
   const handleClearDateFilter = () => {
@@ -290,6 +306,15 @@ export default function PaymentDone() {
     setPriorityFilter("");
     setRequestAmountFilter("");
     setRequestedAmountField("");
+    setPendingRequestCount(data.length);
+    const uniqueVendors = new Set(data.map((item) => item.vendor_name));
+    setUniqueVendorCount(uniqueVendors.size);
+    const uvData = [];
+    uniqueVendors.forEach((vendorName) => {
+      const vendorRows = data.filter((item) => item.vendor_name === vendorName);
+      uvData.push(vendorRows[0]);
+    });
+    setUniqueVendorData(uvData);
   };
 
   const handleOpenUniqueVendorClick = () => {
@@ -377,6 +402,44 @@ export default function PaymentDone() {
   };
   const handleClosePaymentHistory = () => {
     setPaymentHistory(false);
+  };
+
+  const handleOpenEditInvoice = (row) => {
+    setInvoiceDialog(true);
+    setInvoiceId(row.request_id);
+    console.log(row.request_id, "ddddddd");
+  };
+  console.log(filterData, "FFFFFFFFFFFFFFFFFFF");
+
+  const handleCloseEditInvoice = () => {
+    setInvoiceDialog(false);
+  };
+
+  console.log(invoiceId, "invoiceId>>>", imageFile, "imageFile>>>");
+  const handleUpdateInvoice = async () => {
+    console.log("================================");
+    console.log(invoiceId, "HII");
+
+    const formData = new FormData();
+
+    formData.append("request_id", invoiceId);
+    formData.append("evidence", imageFile);
+
+    await axios
+      .put(
+        baseUrl + "updatePhpVendorPaymentRequestImage",
+        formData
+        //  {
+        // headers: {
+        //   "Content-Type": "multipart/form-data",
+        // },
+        // }
+      )
+      .then((res) => {
+        console.log(res, "RESPONSE<<>>>>>>>>>>>");
+        handleCloseEditInvoice();
+        callApi();
+      });
   };
 
   // same Vender columns:-
@@ -649,9 +712,8 @@ export default function PaymentDone() {
               }}
               style={{
                 position: "absolute",
-                width: "2.4%",
+                width: "5%",
                 height: "36%",
-                top: "100px",
                 left: "104px",
                 cursor: "pointer",
                 background: "rgba(0, 0, 0, 0)",
@@ -673,6 +735,23 @@ export default function PaymentDone() {
       },
       width: 250,
     },
+    // {
+    //   field: "Action",
+    //   headerName: "Action",
+    //   width: 250,
+    //   renderCell: (params) => {
+    //     return (
+    //       <div>
+    //         <button
+    //           className="btn btn-sm btn-success"
+    //           onClick={() => handleOpenEditInvoice(params.row)}
+    //         >
+    //           Edit Invoice
+    //         </button>
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       field: "request_date",
       headerName: "Requested Date",
@@ -1069,6 +1148,54 @@ export default function PaymentDone() {
           />
         </DialogContent>
       </Dialog>
+
+      {/* Edit Invoice Button */}
+      {/* <Dialog
+        open={invoiceDialog}
+        onClose={handleCloseEditInvoice}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Edit Invoice</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseEditInvoice}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <div className="form-group mt-3">
+            <label htmlFor="paymentProof">Payment Proof/ScreenShot</label>
+            <input
+              type="file"
+              className="form-control"
+              id="paymentProof"
+              onChange={(e) => setImageFile(e.target.files[0])}
+            />
+          </div>
+          <button
+            type="button"
+            className="btn btn-sm btn-success"
+            onClick={handleUpdateInvoice}
+          >
+            Update Invoice
+          </button>
+        </DialogContent>
+      </Dialog> */}
       <div className="card body-padding">
         <div className="row">
           <div className="col-md-3">
@@ -1304,7 +1431,6 @@ export default function PaymentDone() {
         />
       </Dialog>
 
-      
       {remainderDialog && (
         <ShowDataModal
           handleClose={setRemainderDialog}

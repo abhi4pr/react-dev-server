@@ -203,15 +203,17 @@ export default function PendingPaymentRequest() {
             return mergedArray.find((item) => item.request_id === request_id);
           });
 
-        mergedArray= mergedArray.filter((item) => item.status == 0);
+          mergedArray = mergedArray.filter((item) => item.status == 0);
           setData(mergedArray);
           setFilterData(mergedArray);
-          setPendingRequestCount(y.length);
-          const uniqueVendors = new Set(y.map((item) => item.vendor_name));
+          setPendingRequestCount(mergedArray.length);
+          const uniqueVendors = new Set(
+            mergedArray.map((item) => item.vendor_name)
+          );
           setUniqueVendorCount(uniqueVendors.size);
           const uvData = [];
           uniqueVendors.forEach((vendorName) => {
-            const vendorRows = y.filter(
+            const vendorRows = mergedArray.filter(
               (item) => item.vendor_name === vendorName
             );
             uvData.push(vendorRows[0]);
@@ -408,6 +410,7 @@ export default function PendingPaymentRequest() {
     //     callApi();
     //   });
   };
+
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
       const date = new Date(item.request_date);
@@ -463,18 +466,20 @@ export default function PendingPaymentRequest() {
     });
 
     setFilterData(filterData);
-  };
+    setPendingRequestCount(filterData.length);
 
-  const handleClosePayDialog = () => {
-    setPayDialog(false);
-    setPaymentMode("");
-    setPayRemark("");
-    setPayMentProof("");
-    setPaymentAmount("");
-    setTDSDeduction(false);
-    setGstHold(false);
+    // uniqye vendor count and data
+    const uniqueVendors = new Set(filterData.map((item) => item.vendor_name));
+    setUniqueVendorCount(uniqueVendors.size);
+    const uvData = [];
+    uniqueVendors.forEach((vendorName) => {
+      const vendorRows = filterData.filter(
+        (item) => item.vendor_name === vendorName
+      );
+      uvData.push(vendorRows[0]);
+    });
+    setUniqueVendorData(uvData);
   };
-
   const handleClearDateFilter = () => {
     setFilterData(data);
     setFromDate("");
@@ -483,6 +488,25 @@ export default function PendingPaymentRequest() {
     setPriorityFilter("");
     setRequestAmountFilter("");
     setRequestedAmountField("");
+    setPendingRequestCount(data.length);
+
+    const uniqueVendors = new Set(data.map((item) => item.vendor_name));
+    setUniqueVendorCount(uniqueVendors.size);
+    const uvData = [];
+    uniqueVendors.forEach((vendorName) => {
+      const vendorRows = data.filter((item) => item.vendor_name === vendorName);
+      uvData.push(vendorRows[0]);
+    });
+    setUniqueVendorData(uvData);
+  };
+  const handleClosePayDialog = () => {
+    setPayDialog(false);
+    setPaymentMode("");
+    setPayRemark("");
+    setPayMentProof("");
+    setPaymentAmount("");
+    setTDSDeduction(false);
+    setGstHold(false);
   };
 
   const handlePayClick = (row) => {

@@ -108,6 +108,8 @@ export default function PurchaseManagementAllTransaction() {
           setWithInvoiceCount(withInvoiceImage.length);
           setWithoutInvoiceCount(withoutInvoiceImage.length);
           // setPendingRequestCount(y.length);
+
+          // =========================================
           const uniqueVendors = new Set(y.map((item) => item.vendor_name));
           setUniqueVendorCount(uniqueVendors.size);
           const uvData = [];
@@ -120,21 +122,19 @@ export default function PurchaseManagementAllTransaction() {
           setUniqueVendorData(uvData);
         });
 
-        axios
+      axios
         .get(
           "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
         )
         .then((res) => {
           setPhpRemainderData(res.data.body);
         });
-  
+
       axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
         setUserName(res.data.user_name);
       });
     });
-    
   };
-
 
   const remainderDialogColumns = [
     {
@@ -192,7 +192,6 @@ export default function PurchaseManagementAllTransaction() {
     setRemainderDialog(true);
   };
 
- 
   const handleOpenBankDetail = (row) => {
     let x = [];
     x.push(row);
@@ -461,7 +460,22 @@ export default function PurchaseManagementAllTransaction() {
 
       return allFiltersPassed;
     });
+
     setFilterData(filterData);
+
+    // Unique vendors count and data :-
+    const uniqueVendors = new Set(filterData.map((item) => item.vendor_name));
+    setUniqueVendorCount(uniqueVendors.size);
+
+    const uvData = [];
+    uniqueVendors.forEach((vendorName) => {
+      const vendorRows = filterData.filter(
+        (item) => item.vendor_name === vendorName
+      );
+      uvData.push(vendorRows[0]);
+    });
+    setUniqueVendorData(uvData);
+    // ================================
   };
   const handleClearDateFilter = () => {
     setFilterData(data);
@@ -471,6 +485,17 @@ export default function PurchaseManagementAllTransaction() {
     setPriorityFilter("");
     setRequestAmountFilter("");
     setRequestedAmountField("");
+
+    const uniqueVendors = new Set(data.map((item) => item.vendor_name));
+    setUniqueVendorCount(uniqueVendors.size);
+
+    const uvData = [];
+    uniqueVendors.forEach((vendorName) => {
+      const vendorRows = data.filter((item) => item.vendor_name === vendorName);
+      uvData.push(vendorRows[0]);
+    });
+
+    setUniqueVendorData(uvData);
   };
   const handleOpenUniqueVendorClick = () => {
     setUniqueVenderDialog(true);
@@ -508,7 +533,7 @@ export default function PurchaseManagementAllTransaction() {
   const discardedRequestCount = data.filter(
     (item) => parseInt(item.status) == 2
   ).length;
-  const paidRequestCount = phpData.filter(
+  const paidRequestCount = data.filter(
     (item) => parseInt(item.status) == 1
   ).length;
 
@@ -1543,7 +1568,7 @@ export default function PurchaseManagementAllTransaction() {
         />
       )}
 
-<Dialog
+      <Dialog
         open={bankDetail}
         onClose={handleCloseBankDetail}
         fullWidth={"md"}
@@ -1609,7 +1634,6 @@ export default function PurchaseManagementAllTransaction() {
           setRemainderDialo={setRemainderDialog}
         />
       )}
-
     </div>
   );
 }
