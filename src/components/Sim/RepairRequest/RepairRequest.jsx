@@ -250,7 +250,7 @@ const RepairRequest = () => {
 
   useEffect(() => {
     const result = modalData.filter((d) => {
-      return d.category_name?.toLowerCase().match(search.toLocaleLowerCase());
+      return d.asset_name?.toLowerCase().match(search.toLocaleLowerCase());
     });
     setrepairRequestFilter(result);
   }, [search]);

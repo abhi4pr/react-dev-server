@@ -88,9 +88,9 @@ const SimSummary = () => {
                             {sum.assetsName}
                           </h4>
                         </div>
-                        {/* <h5>
+                        <h5>
                           Allocated user : <span>{sum.userName}</span>
-                        </h5> */}
+                        </h5>
                         <button
                           className="btn btn-sm btn-outline-danger"
                           title="Delete"
