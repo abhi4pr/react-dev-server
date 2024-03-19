@@ -853,7 +853,7 @@ const SalaryWFH = () => {
       name: "Absent Days",
       cell: (row) => row.noOfabsent,
       width: "120px",
-      
+
     },
     {
       name: "Present Days",
@@ -868,10 +868,10 @@ const SalaryWFH = () => {
       cell: (row) => row.total_salary + " ₹",
       footer: {
         cell: (row) =>
-        row.reduce((total, rows) => {
-          // Assuming row.bonus is a numeric value
-          return total + Number(rows.total_salary);
-        }, 0),
+          row.reduce((total, rows) => {
+            // Assuming row.bonus is a numeric value
+            return total + Number(rows.total_salary);
+          }, 0),
       },
     },
     {
@@ -909,7 +909,7 @@ const SalaryWFH = () => {
     },
     {
       name: "Action",
-      width:"200px",
+      width: "200px",
       cell: (row) => (
         <>
           {!row?.invoice_template_no ? (
@@ -1090,11 +1090,9 @@ const SalaryWFH = () => {
         <Slider {...settings} className="timeline_slider">
           {completedYearsMonths.map((data, index) => (
             <div
-              className={`timeline_slideItem ${
-                data.atdGenerated && "completed"
-              } ${selectedCardIndex === index ? "selected" : ""} ${
-                currentMonth == data.month && "current"
-              }`}
+              className={`timeline_slideItem ${data.atdGenerated && "completed"
+                } ${selectedCardIndex === index ? "selected" : ""} ${currentMonth == data.month && "current"
+                }`}
               onClick={() => handleCardSelect(index, data)}
               key={index}
             >
@@ -1121,8 +1119,8 @@ const SalaryWFH = () => {
                 {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
-                  ? "Upcoming"
-                  : "Pending"}
+                    ? "Upcoming"
+                    : "Pending"}
               </h3>
             </div>
           ))}
@@ -1133,28 +1131,28 @@ const SalaryWFH = () => {
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
           <span className="d-flex gap4">
-          {data?.length == 0 && department && selectedMonth && selectedYear && (
-      
-      <button
-        onClick={handleAttendance}
-        className="btn btn-danger" style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px"}}
-        // style={{ marginTop: "25px" }}
-      >
-        No Absents, Create Attendance <i className="bi bi-arrow-right"></i>
-      </button>
-  
-    )}
+            {data?.length == 0 && department && selectedMonth && selectedYear && (
+
+              <button
+                onClick={handleAttendance}
+                className="btn btn-danger" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
+              // style={{ marginTop: "25px" }}
+              >
+                No Absents, Create Attendance <i className="bi bi-arrow-right"></i>
+              </button>
+
+            )}
             {contextData &&
               contextData[38] &&
               contextData[38].view_value === 1 && (
                 <Link to="/admin/salary-summary">
-                  <button className="btn btn-outline-primary " style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"4px"}} >
+                  <button className="btn btn-outline-primary " style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "4px" }} >
                     Payout Summary <i className="bi bi-file-earmark-text"></i>
                   </button>
                 </Link>
               )}
             <button
-              className="btn btn-outline-primary "style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"4px"}}
+              className="btn btn-outline-primary " style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "4px" }}
               onClick={() => BankExcelConverter(salaryMonthYearData)}
             >
               Export Excel Button <i className="bi bi-file-spreadsheet"></i>
@@ -1163,7 +1161,7 @@ const SalaryWFH = () => {
             {deptSalary?.length !== departmentdata?.length &&
               (RoleIDContext == 1 || RoleIDContext == 5) && (
                 <button
-                className="btn btn-primary"style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"4px"}}
+                  className="btn btn-primary" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "4px" }}
                   onClick={handleAllDepartmentSalary}
                 >
                   Create All Department Salary <i className="bi bi-check-all"></i>
@@ -1172,46 +1170,45 @@ const SalaryWFH = () => {
           </span>
         </div>
         <div className="card-body">
-          <div className="d-flex gap4" style={{flexWrap:"wrap",gap:"10px"}}>
+          <div className="d-flex gap4" style={{ flexWrap: "wrap", gap: "10px" }}>
             {departmentdata.map((option) => {
               const isDeptInSalary =
                 Array.isArray(deptSalary) &&
                 deptSalary.some((d) => d.dept === option.dept_id);
 
-              const className = `btn ${
-                department === option.dept_id
+              const className = `btn ${department === option.dept_id
                   ? "btn-primary"
                   : isDeptInSalary
-                  ? "btn-success"
-                  : "btn-outline-primary"
-              }`;
+                    ? "btn-success"
+                    : "btn-outline-primary"
+                }`;
 
               return (
                 <div
-                  className="card hover body-padding" style={{height:"100px" ,minWidth:"300px",display:"flex",justifyContent:"center",alignItems:"flex-start", gap:"10px",cursor:"pointer",border:"1px solid var(--primary)",padding:"10px"}}
-                 
+                  className="card hover body-padding" style={{ height: "100px", minWidth: "300px", display: "flex", justifyContent: "center", alignItems: "flex-start", gap: "10px", cursor: "pointer", border: "1px solid var(--primary)", padding: "10px" }}
+
                   onClick={() => setDepartment(option.dept_id)}
                 >
-                   <div className="pack  " style={{width:"100%",display:"flex",flexDirection:"row" ,justifyContent:"flex-start",alignItems:"center",gap:"20px"}}>
+                  <div className="pack  " style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", gap: "20px" }}>
                     <div className="rounded-circle circle-card" >
-                    <i class="bi bi-bounding-box"></i>
+                      <i class="bi bi-bounding-box"></i>
                     </div>
-                  {option.dept_name}
+                    {option.dept_name}
                   </div>
                 </div>
               );
             })}
           </div>
 
-          <h6 style={{ color: "green",paddingTop:"10px" }}>
+          <h6 style={{ color: "green", paddingTop: "10px" }}>
             <span >Active : {activeusers}</span>
           </h6>
         </div>
       </div>
 
-        
 
-      <div className="card p-0" style={{background:"transparent",border:"none"}}>
+
+      <div className="card p-0" style={{ background: "transparent", border: "none" }}>
         <div className="card-body p-0">
           <div className="row gap_24_0">
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
@@ -1319,110 +1316,108 @@ const SalaryWFH = () => {
 
       {data?.length > 0 && (
         <>
-          
+
 
           <div className="tab">
-           
-              <button
-                className={`named-tab ${
-                  activeTab == 0 ? "active-tab" : ""
+
+            <button
+              className={`named-tab ${activeTab == 0 ? "active-tab" : ""
                 }`}
-                onClick={() => {
-                  FilterTabData("Send To Finance"), setActiveTab(0);
-                }}
-              >
-                Approved and Send To Finance
-              </button>
-              <button
-                className={`named-tab ${
-                  activeTab == 1 ? "active-tab" : ""
+              onClick={() => {
+                FilterTabData("Send To Finance"), setActiveTab(0);
+              }}
+            >
+              Approved and Send To Finance
+            </button>
+            <button
+              className={`named-tab ${activeTab == 1 ? "active-tab" : ""
                 }`}
-                onClick={() => {
-                  FilterTabData("Verification Pending"), setActiveTab(1);
-                }}
-              >
-                Verification Pending
-              </button>
-              <button
-                className={`named-tab ${
-                  activeTab == 2 ? "active-tab" : ""
+              onClick={() => {
+                FilterTabData("Verification Pending"), setActiveTab(1);
+              }}
+            >
+              Verification Pending
+            </button>
+            <button
+              className={`named-tab ${activeTab == 2 ? "active-tab" : ""
                 }`}
-                onClick={() => {
-                  FilterTabData("Verified"), setActiveTab(2);
-                }}
-              >
-                Verified
-              </button>
-          
+              onClick={() => {
+                FilterTabData("Verified"), setActiveTab(2);
+              }}
+            >
+              Verified
+            </button>
+
           </div>
           <div className="card">
             <div className="card-header">
               <h5>Salary Overview</h5>
               <div className="pack">
-              {selectedRows.length > 0 && (
-                      <>
-                        <button
-                          className="btn btn-primary mr-2"
-                          onClick={handleBulkSendToFinance}
-                        >
-                          Send to Finance
-                        </button>
-                        <button
-                          className="btn btn-primary mr-2"
-                          onClick={handleInvoiceDownload}
-                        >
-                          Download Invoices
-                        </button>
-                      </>
-                    )}
-                    {/* <button
+                {selectedRows.length > 0 && activeTab === 0 && (
+
+                  <>
+                    <button
+                      className="btn btn-primary mr-2"
+                      onClick={handleBulkSendToFinance}
+                    >
+                      Send to Finance
+                    </button>
+                    <button
+                      className="btn btn-primary mr-2"
+                      onClick={handleInvoiceDownload}
+                    >
+                      Download Invoices
+                    </button>
+                  </>
+                )}
+                {/* <button
                       className="btn btn-primary mr-2"
                       onClick={handleBankDepartmentExcel}
                     >
                       Export Bank Excel
                     </button> */}
-                    <Button
-                      sx={{ marginRight: "10px" }}
-                      size="medium"
-                      onClick={handleExport}
-                      variant="outlined"
-                      color="secondary"
-                    >
-                      Export Excel
-                    </Button>
-                    <div className="d-flex">
-                      <PDFDownloadLink
-                        document={pdfTemplate()}
-                        fileName={
-                          departmentdata?.find(
-                            (user) => user?.dept_id === department
-                          )?.dept_name +
-                          " " +
-                          month +
-                          " " +
-                          year +
-                          " " +
-                          " invoice" +
-                          "pdf"
-                        }
-                        style={{
-                          color: "#4a4a4a",
-                        }}
-                      >
-                        <button className="btn btn-primary me-3 mt-1" type="button">
-                          Download
-                        </button>
-                      </PDFDownloadLink>
+                <Button
+                  sx={{ marginRight: "10px" }}
+                  size="medium"
+                  onClick={handleExport}
+                  variant="outlined"
+                  color="secondary"
+                >
+                  Export Excel
+                </Button>
+                <div className="d-flex">
+                  <PDFDownloadLink
+                    document={pdfTemplate()}
+                    fileName={
+                      departmentdata?.find(
+                        (user) => user?.dept_id === department
+                      )?.dept_name +
+                      " " +
+                      month +
+                      " " +
+                      year +
+                      " " +
+                      " invoice" +
+                      "pdf"
+                    }
+                    style={{
+                      color: "#4a4a4a",
+                    }}
+                  >
+                    <button className="btn btn-primary me-3 mt-1" type="button">
+                      Download
+                    </button>
+                  </PDFDownloadLink>
 
-                      <input
-                      style={{width:"300px"}}
-                        type="text"
-                        placeholder="Search here"
-                        className=" form-control"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                      />
-                    </div>
+                  <input
+                    style={{ width: "300px" }}
+                    type="text"
+                    placeholder="Search here"
+                    className=" form-control"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
             <div className="data_tbl table-responsive card-body body-padding">
@@ -1437,13 +1432,9 @@ const SalaryWFH = () => {
                 exportToCSV
                 // subHeader
                 conditionalRowStyles={conditionalRowStyles}
-                // selectableRows={activeTab == 0 ? true : false}
+                selectableRows={activeTab == 0 ? true : false}
                 onSelectedRowsChange={handleRowSelected}
-                subHeaderComponent={
-                  <>
-                    
-                  </>
-                }
+
               />
             </div>
           </div>
@@ -1738,13 +1729,13 @@ const SalaryWFH = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                <FieldContainer
-                  label="Reinstated Date"
-                  type="date"
-                  value={separationReinstateDate}
-                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                />
-              )}
+                  <FieldContainer
+                    label="Reinstated Date"
+                    type="date"
+                    value={separationReinstateDate}
+                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                  />
+                )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"
