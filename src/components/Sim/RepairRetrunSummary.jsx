@@ -57,26 +57,31 @@ const RepairRetrunSummary = () => {
       name: "S.No",
       // selector: (row) => row.Role_id,
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "10%",
+      width: "80px",
       sortable: true,
     },
     {
       name: "Asset Name",
       selector: (row) => row.asset_name,
-
+      width: "150px",
       sortable: true,
     },
 
     {
       name: "Asset Return By",
       selector: (row) => row.asset_return_by_name,
+      width: "150px",
     },
     {
       name: "Asset Repair By",
       selector: (row) => row.req_by_name,
+      width: "150px",
+
     },
     {
       name: "Asset Return Img",
+      width: "150px",
+
       selector: (row) => (
         <>
           {row?.recover_asset_image_1 && row.recover_asset_image_2 && (
@@ -93,7 +98,9 @@ const RepairRetrunSummary = () => {
                 </button>
               ) : (
                 "N/A"
+                
               )}
+              
             </>
           )}
         </>
@@ -106,9 +113,13 @@ const RepairRetrunSummary = () => {
     {
       name: "Retun Recover HR",
       selector: (row) => row.asset_return_recover_by_name,
+      width: "150px",
+
     },
     {
       name: "Asset Reocver Img",
+      width: "150px",
+
       selector: (row) => (
         <>
           {row.recovery_image_upload1 && row.recovery_image_upload2 && (
@@ -139,14 +150,19 @@ const RepairRetrunSummary = () => {
     {
       name: "Repair Recover HR",
       selector: (row) => row.recovery_by_name,
+      width: "150px",
+
     },
     {
       name: "Return Remark",
-      selector: (row) => row.asset_return_recover_by_remark,
-    },
-    {
-      name: "Repair Remark",
-      selector: (row) => row.recovery_remark,
+      cell: (row) => (
+        <div style={{ maxHeight: "100px", overflowY: "auto" ,margin:"5px"}}>
+          {row.asset_return_remark}
+        </div>
+      ),
+     
+      width: "150px",
+
     },
     // {
     //   name: "Repair Remark",
@@ -166,28 +182,37 @@ const RepairRetrunSummary = () => {
   }, [search]);
 
   return (
-    <>
+    <div className="master-card-css">
       {/* <FormContainer mainTitle="Repair & Return" link="" submitButton={false}> */}
+      <FormContainer
+      link="true"
+      submitButton={false}
+      mainTitle={"Repair & Return Summary"}
+      />
       <div className="card">
-        <div className="data_tbl table-responsive">
-          <DataTable
-            title="Repair & Return Summary"
-            columns={columns}
-            data={filterdata}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="62vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
+        <div className="card-header sb">
+          <h5>Overview</h5>
+          <input
                 type="text"
                 placeholder="Search here"
                 className="w-50 form-control"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-            }
+        </div>
+        <div className="data_tbl table-responsive card-body body-padding">
+          <DataTable
+            title=""
+            columns={columns}
+            data={filterdata}
+            // fixedHeader
+            pagination
+            // fixedHeaderScrollHeight="62vh"
+            // highlightOnHover
+            // subHeader
+            // subHeaderComponent={
+             
+            // }
           />
         </div>
       </div>
@@ -370,7 +395,7 @@ const RepairRetrunSummary = () => {
             )}
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
 
