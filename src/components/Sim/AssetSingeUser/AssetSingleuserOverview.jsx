@@ -486,6 +486,7 @@ const AssetSingleuserOverview = ({
 
       toastAlert("Request Success");
       hardRender();
+      closeModal();
     } catch (error) {
       console.log(error);
     }

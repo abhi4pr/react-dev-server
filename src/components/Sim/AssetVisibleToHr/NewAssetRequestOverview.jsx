@@ -168,7 +168,9 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
       selector: (row) => row.date_and_time_of_asset_request.split("-").reverse().join("-").substring(0,row.date_and_time_of_asset_request.split("-").reverse().join("-").indexOf("T"))+row.date_and_time_of_asset_request.split("-").reverse().join("-").substring(row.date_and_time_of_asset_request.split("-").reverse().join("-").indexOf("Z")+1),
       sortable: true,
     },
-    {
+
+    (newAssetData[0]?.asset_request_status === "Rejected" ||
+      newAssetData[0]?.asset_request_status === "ApprovedByManager") && {
       name: "Reject Reason",
       selector: (row) => row.reject_reason,
       sortable: true,
