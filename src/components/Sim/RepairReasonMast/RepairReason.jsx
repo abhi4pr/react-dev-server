@@ -421,10 +421,13 @@ const RepairReason = () => {
                 cell: (row, index) => <div>{index + 1}</div>,
                 width: "10%",
               },
-              { name: "Reason Name", selector: "reason_name" },
-              { name: "Asset Name", selector: "asset_name" },
-              { name: "Priority", selector: "priority" },
-              { name: "Problem Detailing", selector: "problem_detailing" },
+              { name: "Reason Name", selector: (row) => row.reason_name },
+              { name: "Asset Name", selector: (row) => row.asset_name },
+              { name: "Priority", selector: (row) => row.priority },
+              {
+                name: "Problem Detailing",
+                selector: (row) => row.problem_detailing,
+              },
             ]}
             data={totalRepariData}
             highlightOnHover

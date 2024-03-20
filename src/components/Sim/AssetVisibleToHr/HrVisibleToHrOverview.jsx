@@ -143,8 +143,10 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             <span className="badge badge-success border-round">Resolved</span>
           ) : row.status === "Requested" ? (
             <span className="badge badge-danger border-round">Requested</span>
-          ) : row.status === "ApprovedByManager "  ? (
-            <span className="badge badge-warning border-round">Approve By Manager</span>
+          ) : row.status === "ApprovedByManager " ? (
+            <span className="badge badge-warning border-round">
+              Approve By Manager
+            </span>
           ) : (
             "N/A"
           )}
@@ -161,8 +163,22 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
     },
     {
       name: "Request Date",
-      selector: (row) => row.req_date.split("-").reverse().join("-").substring(0,row.req_date.split("-").reverse().join("-").indexOf("T"))
-      +row.req_date.split("-").reverse().join("-").substring(row.req_date.split("-").reverse().join("-").indexOf("Z")+1),
+      selector: (row) =>
+        row.req_date
+          .split("-")
+          .reverse()
+          .join("-")
+          .substring(
+            0,
+            row.req_date.split("-").reverse().join("-").indexOf("T")
+          ) +
+        row.req_date
+          .split("-")
+          .reverse()
+          .join("-")
+          .substring(
+            row.req_date.split("-").reverse().join("-").indexOf("Z") + 1
+          ),
       sortable: true,
       width: "150px",
     },
@@ -248,17 +264,19 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       name: "In Warranty",
       selector: (row) => row.inWarranty,
       sortable: true,
-      width: "150px",   
+      width: "150px",
     },
     {
       name: "Date Of Purchase",
-      selector: (row) => row.dateOfPurchase.split("-").reverse().join("-")?.split("T")?.[0],
+      selector: (row) =>
+        row.dateOfPurchase.split("-").reverse().join("-")?.split("T")?.[0],
       sortable: true,
       width: "150px",
     },
     {
       name: "Warranty Date",
-      selector: (row) => row.warrantyDate.split("-").reverse().join("-")?.split("T")?.[0],
+      selector: (row) =>
+        row.warrantyDate.split("-").reverse().join("-")?.split("T")?.[0],
       sortable: true,
       width: "150px",
     },
@@ -273,7 +291,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
               "https://storage.googleapis.com/dev-backend-bucket/" ? (
                 <img
                   onClick={() => handleInvoiceImageClick(row.invoiceCopy)}
-                  style={{ width: "50px", height:"40px", borderRadius: "5px"}}
+                  style={{ width: "50px", height: "40px", borderRadius: "5px" }}
                   src={row.invoiceCopy}
                   alt="invoice copy"
                 />
@@ -285,7 +303,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         </>
       ),
       sortable: true,
-      width:"150px"
+      width: "150px",
     },
     {
       name: "Invoice",
@@ -302,7 +320,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
                   download
                   className="icon-1"
                 >
-                  <FcDownload style={{  fontSize: "20px" }} />
+                  <FcDownload style={{ fontSize: "20px" }} />
                 </a>
               ) : (
                 "N/A"
@@ -313,7 +331,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       ),
       width: "150px",
     },
-    (hrOverviewData[0]?.status == "Requested " ||
+    (hrOverviewData[0]?.status == "Requested" ||
       hrOverviewData[0]?.status == "ApprovedByManager") && {
       name: "Actions",
       cell: (row) => (
@@ -456,7 +474,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         <div className="card mb-4">
           <div className="data_tbl table-responsive">
             <DataTable
-              
               columns={columns}
               data={hrOverviewData}
               // fixedHeader
@@ -489,12 +506,9 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         <div>
           <div className="d-flex justify-content-between mb-2">
             {/* <h2>Department: {selectedRow.dept_name}</h2> */}
-              <h3>Vendor Information</h3>
+            <h3>Vendor Information</h3>
             <div className="d-flex">
-              <button
-                className="btn btn-success"
-                onClick={handleModalClose}
-              >
+              <button className="btn btn-success" onClick={handleModalClose}>
                 X
               </button>
             </div>

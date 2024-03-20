@@ -36,6 +36,10 @@ const ModalMast = () => {
   //   getBrandData();
   // }, []);
   const [totalAssets, setTotalAssets] = useState([]);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const closeUpdateModal = () => {
+    setIsUpdateModalOpen(false);
+  };
   //Asset Count Modal
   const [assetModal, seAssetModel] = useState(false);
   const handleTotalasset = async (row) => {
@@ -168,11 +172,16 @@ const ModalMast = () => {
   }, []);
 
   const handleBrandData = (row) => {
+    setIsUpdateModalOpen(true);
     setModalId(row._id);
     setModalNameUpdate(row.asset_modal_name);
     setBrandNameUpdate(row.asset_brand_id);
   };
   const handleModalUpdate = () => {
+    if (!modalNameUpdate || modalNameUpdate == "") {
+      toastError("Modal Name is Required");
+      return;
+    }
     axios
       .put(baseUrl + "update_asset_modal", {
         asset_modal_id: modalId,
@@ -181,6 +190,7 @@ const ModalMast = () => {
       })
       .then((res) => {
         getModalData();
+        closeUpdateModal();
       });
   };
 
@@ -259,12 +269,14 @@ const ModalMast = () => {
       </div>
       {/* Update  */}
       <div
-        className="modal fade"
-        id="exampleModal"
+        // className="modal fade"
+        className={`modal fade ${isUpdateModalOpen ? "show" : ""}`}
+        // id="exampleModal"
         tabIndex={-1}
         role="dialog"
+        style={{ display: isUpdateModalOpen ? "block" : "none" }}
         aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+        // aria-hidden="true"
       >
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -278,7 +290,9 @@ const ModalMast = () => {
                 data-dismiss="modal"
                 aria-label="Close"
               >
-                <span aria-hidden="true">×</span>
+                <span aria-hidden="true" onClick={() => closeUpdateModal()}>
+                  ×
+                </span>
               </button>
             </div>
             <div className="modal-body">
@@ -312,13 +326,13 @@ const ModalMast = () => {
               </div>
             </div>
             <div className="modal-footer">
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-secondary"
                 data-dismiss="modal"
               >
                 Close
-              </button>
+              </button> */}
               <button
                 type="button"
                 className="btn btn-primary"

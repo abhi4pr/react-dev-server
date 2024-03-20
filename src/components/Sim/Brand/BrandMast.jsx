@@ -34,6 +34,11 @@ const BrandMast = () => {
     setIsOpenAddModal(false);
   };
 
+  const [isUpdateBrandOpen, setIsUpdateBrandOpen] = useState(false);
+  const closeUpdateBrandModal = () => {
+    setIsUpdateBrandOpen(false);
+  };
+
   const handleRowClick = (row) => {
     console.log(row.asset_brand_name, "row hai ");
     setBrandNameModal(row._id);
@@ -161,10 +166,10 @@ const BrandMast = () => {
           <button
             className="icon-1"
             data-toggle="modal"
-            data-target="#exampleModal"
-            size="small"
-            variant="contained"
-            color="primary"
+            // data-target="#exampleModal"
+            // size="small"
+            // variant="contained"
+            // color="primary"
             onClick={() => handleBrandData(row)}
           >
             <i className="bi bi-pencil"></i>
@@ -209,10 +214,15 @@ const BrandMast = () => {
   }, []);
 
   const handleBrandData = (row) => {
+    setIsUpdateBrandOpen(true);
     setBrandId(row._id);
     setBrandNameUpdate(row.asset_brand_name);
   };
   const handleBrandUpdate = () => {
+    if (!brandNameUpdate || brandNameUpdate == "") {
+      toastError("Brand Name is Required");
+      return;
+    }
     axios
       .put(baseUrl + "update_asset_brand", {
         asset_brand_id: brandId,
@@ -220,6 +230,8 @@ const BrandMast = () => {
       })
       .then((res) => {
         getBrandData();
+        toastAlert("Updated Successfully");
+        closeUpdateBrandModal();
       });
   };
 
@@ -276,12 +288,14 @@ const BrandMast = () => {
       </div>
       {/* Update  */}
       <div
-        className="modal fade"
+        // className="modal fade"
+        className={`modal fade ${isUpdateBrandOpen ? "show" : ""}`}
         id="exampleModal"
         tabIndex={-1}
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
+        // role="dialog"
+        // aria-labelledby="exampleModalLabel"
+        style={{ display: isUpdateBrandOpen ? "block" : "none" }}
+        // aria-hidden="true"
       >
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -295,7 +309,12 @@ const BrandMast = () => {
                 data-dismiss="modal"
                 aria-label="Close"
               >
-                <span aria-hidden="true">×</span>
+                <span
+                  aria-hidden="true"
+                  onClick={() => closeUpdateBrandModal()}
+                >
+                  ×
+                </span>
               </button>
             </div>
             <div className="modal-body">
@@ -307,13 +326,13 @@ const BrandMast = () => {
               ></FieldContainer>
             </div>
             <div className="modal-footer">
-              <button
+              {/* <button
                 type="button"
                 className="btn btn-secondary"
                 data-dismiss="modal"
               >
                 Close
-              </button>
+              </button> */}
               <button
                 type="button"
                 className="btn btn-primary"
