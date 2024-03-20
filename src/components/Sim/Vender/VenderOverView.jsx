@@ -77,7 +77,12 @@ const VenderOverView = () => {
       name: " Email ID",
       selector: (row) => row.vendor_email_id,
       sortable: true,
-      
+    },
+    {
+      name: "Company Name",
+      selector: (row) => row.company_name,
+      sortable: true,
+      width: "200px",
     },
     {
       name: " Address",
@@ -98,11 +103,8 @@ const VenderOverView = () => {
       cell: (row) => (
         <>
           <Link to={`/vendorUpdate/${row.vendor_id}`}>
-            <button
-              title="Edit"
-              className="icon-1"
-            >
-             <i className="bi bi-pencil"></i>
+            <button title="Edit" className="icon-1">
+              <i className="bi bi-pencil"></i>
             </button>
           </Link>
           <DeleteButton
@@ -149,16 +151,15 @@ const VenderOverView = () => {
                 <div className="card-header sb">
                   <h5>Vendor Overview</h5>
                   <input
-                          type="text"
-                          placeholder="Search here"
-                          className="w-50 form-control "
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                        />
+                    type="text"
+                    placeholder="Search here"
+                    className="w-50 form-control "
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
                 </div>
                 <div className="data_tbl table-responsive card-body body-padding">
                   <DataTable
-                   
                     columns={columns}
                     data={filterData}
                     // fixedHeader
@@ -167,11 +168,7 @@ const VenderOverView = () => {
                     exportToCSV
                     highlightOnHover
                     subHeader
-                    subHeaderComponent={
-                      <>
-                        
-                      </>
-                    }
+                    subHeaderComponent={<></>}
                   />
                 </div>
               </div>

@@ -104,7 +104,7 @@ const RepairRetrunSummary = () => {
       selector: (row) => row.return_asset_data_time?.split("T")?.[0],
     },
     {
-      name: "Retun By Name",
+      name: "Retun Recover HR",
       selector: (row) => row.asset_return_recover_by_name,
     },
     {
@@ -137,12 +137,16 @@ const RepairRetrunSummary = () => {
       selector: (row) => row.repair_request_date_time?.split("T")?.[0],
     },
     {
-      name: "Recover By Name",
+      name: "Repair Recover HR",
       selector: (row) => row.recovery_by_name,
     },
     {
       name: "Return Remark",
-      selector: (row) => row.asset_return_remark,
+      selector: (row) => row.asset_return_recover_by_remark,
+    },
+    {
+      name: "Repair Remark",
+      selector: (row) => row.recovery_remark,
     },
     // {
     //   name: "Repair Remark",
