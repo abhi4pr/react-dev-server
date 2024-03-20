@@ -430,8 +430,8 @@ const VendorEdit = () => {
           required={false}
           onChange={(e) => setHomeState(e.target.value)}
         />
-     {panImglink.length>0 &&   <img  style={{ width: "100px", height: "100px" }} src={panImglink} alt="pan" />}
-     {  gstImglink.length>0 && <img   style={{ width: "100px", height: "100px" }} src={gstImglink} alt="gst" />}
+     {panImglink?.length>0 &&   <img  style={{ width: "100px", height: "100px" }} src={panImglink} alt="pan" />}
+     {  gstImglink?.length>0 && <img   style={{ width: "100px", height: "100px" }} src={gstImglink} alt="gst" />}
       </FormContainer>
     </>
   );

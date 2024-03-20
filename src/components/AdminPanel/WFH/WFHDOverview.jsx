@@ -849,10 +849,10 @@ const WFHDOverview = () => {
                   Choose...
                 </option>
                 <option value="Resigned">Resigned</option>
-                <option value="Resign Accepted">Resign Accepted</option>
+                {/* <option value="Resign Accepted">Resign Accepted</option>
                 <option value="On Long Leave">On Long Leave</option>
                 <option value="Subatical">Subatical</option>
-                <option value="Suspended">Suspended</option>
+                <option value="Suspended">Suspended</option> */}
               </FieldContainer>
               <FieldContainer
                 label="Reason"

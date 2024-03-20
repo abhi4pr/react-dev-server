@@ -140,6 +140,7 @@ const PageCategory = () => {
         <FieldContainer
           label="Description"
           value={description}
+          required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
       </FormContainer>

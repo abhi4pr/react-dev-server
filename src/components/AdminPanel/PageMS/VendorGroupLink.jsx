@@ -9,8 +9,12 @@ import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 import Select from "react-select";
+import { useNavigate, useParams } from "react-router-dom";
+
 
 const VendorGroupLink = () => {
+  const navigate = useNavigate();
+  const {vendorMast_name}= useParams();
   const { toastAlert,toastError } = useGlobalContext();
   const [groupLink, setGroupLink] = useState("");
   const [description, setDescription] = useState("");
@@ -45,6 +49,18 @@ const VendorGroupLink = () => {
         setGroupData(res.data.data);
     });
   };
+
+  useEffect(() => {
+    if(vendorMast_name?.length>0) {
+     let vendordata= vendorData?.find((role) => role.vendorMast_name === vendorMast_name?.replace(/-/g, " "));
+      setVendorId(vendordata?.vendorMast_id)
+
+      let result = vendorTypes?.filter((d) => {
+        return d.vendorMast_id === vendordata?.vendorMast_id;
+      });
+      setFilterData(result);
+    }
+  },[vendorData])
 
   useEffect(() => {
     getData();
@@ -87,6 +103,7 @@ const VendorGroupLink = () => {
       setVendorId('')
       setLinkTypeId('')
       getData()
+      navigate("/admin/pms-vendor-overview")
     }).catch((error) => {
       toastError(error.response.data.message);
       console.log(error.response.data.message)
@@ -99,6 +116,14 @@ const VendorGroupLink = () => {
       name: "S.NO",
       selector: (row, index) => <div>{index + 1}</div>,
       sortable: true,
+    },
+    {
+      name: "Vendor Name",
+      selector: (row) => row.PMS_VendorMasts_data.vendorMast_name,
+    },
+    {
+      name: "Group Link Type",
+      selector: (row) => row.PMS_VendorMasts_data.PMSGroupLinks_data.link_type,
     },
     {
       name: "Vendor Group Link",
@@ -177,50 +202,13 @@ const VendorGroupLink = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Vendor group link"
-        title="Vendor group link"
+        mainTitle="Vendor Group Link"
+        title="Vendor Group Link"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Group Link *"
-          value={groupLink}
-          required={true}
-          onChange={(e) => setGroupLink(e.target.value)}
-        />
-        
-        <FieldContainer
-          label="Description"
-          value={description}
-          required={false}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-
-        <div className="form-group col-6">
+   <div className="form-group col-6">
           <label className="form-label">
-            Vendor id <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={vendorData.map((option) => ({
-              value: option.vendorMast_id,
-              label: option.vendorMast_name,
-            }))}
-            required={true}
-            value={{
-              value: vendorId,
-              label:
-                vendorData.find((role) => role.vendorMast_id === vendorId)?.vendorMast_name ||
-                "",
-            }}
-            onChange={(e) => {
-              console.log(vendorData[0])
-              setVendorId(e.value);
-            }}
-          ></Select>
-        </div>
-
-        <div className="form-group col-6">
-          <label className="form-label">
-            Group link type id <sup style={{ color: "red" }}>*</sup>
+            Group Link Type  <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
             options={groupData.map((option) => ({
@@ -239,6 +227,46 @@ const VendorGroupLink = () => {
             }}
           ></Select>
         </div>
+
+        <FieldContainer
+          label="Group Link *"
+          value={groupLink}
+          required={true}
+          onChange={(e) => setGroupLink(e.target.value)}
+        />
+        
+        <FieldContainer
+          label="Description"
+          value={description}
+          required={false}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+
+        <div className="form-group col-6">
+          <label className="form-label">
+            Vendor  <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+          isDisabled={vendorMast_name?.length > 0}
+            options={vendorData.map((option) => ({
+              value: option.vendorMast_id,
+              label: option.vendorMast_name,
+            }))}
+            required={true}
+            value={{
+              value: vendorId,
+              label:
+                vendorData.find((role) => role.vendorMast_id === vendorId)?.vendorMast_name ||
+                "",
+            }}
+            onChange={(e) => {
+              console.log(vendorData[0])
+              setVendorId(e.value);
+            }}
+          ></Select>
+        </div>
+
+     
 
       </FormContainer>
 

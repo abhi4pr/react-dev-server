@@ -88,6 +88,18 @@ const PageOverview = () => {
     { field: "page_status", headerName: "Page status", width: 200 },
     { field: "ownership_type", headerName: "Ownership type", width: 200 },
     {
+      field:"link", header:"Link", width:200, renderCell: (params) => (
+        <Link to={params.row.link} target="_blank" className="text-primary">
+          {/* <button
+            title="Edit"
+            className="btn btn-outline-primary btn-sm user-button"
+          > */}
+           {params.row.link}
+          {/* </button> */}
+        </Link>
+      )
+    },
+    {
       field: "Action",
       headerName: "Action",
       width: 300,
@@ -182,6 +194,15 @@ const PageOverview = () => {
                       id="pageName"
                     >
                       Platform
+                    </Link>
+                  </div>
+                  <div className="col-md-2">
+                    <Link
+                      to="/admin/pms-platform-price-type"
+                      className="btn btn-primary btn-sm mt-2"
+                      id="pageName"
+                    >
+                      Platform Price
                     </Link>
                   </div>
                 </div>
