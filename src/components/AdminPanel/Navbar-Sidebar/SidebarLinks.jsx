@@ -733,7 +733,7 @@ const SidebarLinks = () => {
                             aria-labelledby="headingTwo"
                             // data-parent="#accordionSidebar"
                           >
-                            <div className="bg-white collapse-inner">   
+                            <div className="bg-white collapse-inner">
                               <>
                                 <Link
                                   className="collapse-item"
@@ -763,14 +763,16 @@ const SidebarLinks = () => {
                                   className="collapse-item"
                                   to="/admin/registered-campaign"
                                 >
-                                  <i className="bi bi-dot"></i> Registered Campaign
+                                  <i className="bi bi-dot"></i> Registered
+                                  Campaign
                                 </Link>
 
                                 <Link
                                   className="collapse-item"
                                   to="/admin/checkPageFollowers"
                                 >
-                                  <i className="bi bi-dot"></i> Check Page Follower
+                                  <i className="bi bi-dot"></i> Check Page
+                                  Follower
                                 </Link>
                               </>
                             </div>
@@ -1407,43 +1409,43 @@ const SidebarLinks = () => {
             data-parent="#accordionSidebar"
           >
             <div className="internal collapse-inner">
-              {RoleId == 5 && (
-                <Link className="collapse-item" to="/admin/asset-dashboard">
-                  <i className="bi bi-dot"></i> Dashboard
-                </Link>
-              )}
+              {/* {RoleId == 5 && ( */}
+              <Link className="collapse-item" to="/admin/asset-dashboard">
+                <i className="bi bi-dot"></i> Dashboard
+              </Link>
+              {/* )} */}
               <Link className="collapse-item" to="/admin/asset-single-user">
                 <i className="bi bi-dot"></i> My Asset
               </Link>
-              {RoleId == 5 && (
-                <Link className="collapse-item" to={`/sim-overview/${0}`}>
-                  <i className="bi bi-dot"></i> Asset Management
-                </Link>
-              )}
-              {RoleId == 5 && (
-                <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                  <i className="bi bi-dot"></i> Asset's Request
-                </Link>
-              )}
+              {/* {RoleId == 5 && ( */}
+              <Link className="collapse-item" to={`/sim-overview/${0}`}>
+                <i className="bi bi-dot"></i> Asset Management
+              </Link>
+              {/* )} */}
+              {/* {RoleId == 5 && ( */}
+              <Link className="collapse-item" to="/admin/asset-visible-to-hr">
+                <i className="bi bi-dot"></i> Asset's Request
+              </Link>
+              {/* )} */}
               <Link
                 className="collapse-item"
                 to="/admin/asset-visible-to-taged-person"
               >
                 <i className="bi bi-dot"></i> Tagged Asset
               </Link>
-              {RoleId == 2 && (
-                <Link className="collapse-item" to="/admin/asset-manager">
-                  <i className="bi bi-dot"></i> Asset Request Approvel
-                </Link>
-              )}
-              {RoleId == 5 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/asset-repair-return-summary"
-                >
-                  <i className="bi bi-dot"></i> Repair & Return Summary
-                </Link>
-              )}
+              {/* {RoleId == 2 && ( */}
+              <Link className="collapse-item" to="/admin/asset-manager">
+                <i className="bi bi-dot"></i> Asset Request Approvel
+              </Link>
+              {/* )} */}
+              {/* {RoleId == 5 && ( */}
+              <Link
+                className="collapse-item"
+                to="/admin/asset-repair-return-summary"
+              >
+                <i className="bi bi-dot"></i> Repair & Return Summary
+              </Link>
+              {/* )} */}
             </div>
           </div>
         </li>
