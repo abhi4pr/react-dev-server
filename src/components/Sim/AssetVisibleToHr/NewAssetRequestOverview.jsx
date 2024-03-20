@@ -155,7 +155,7 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
     {
       name: "Detail",
       cell: (row) => (
-        <div style={{ maxHeight: "100px", overflowY: "auto" }}>
+        <div style={{ maxHeight: "100px", overflowY: "auto" ,margin:"5px"}}>
           {row.detail}
         </div>
       ),
@@ -172,9 +172,12 @@ const NewAssetRequestOverview = ({ newAssetData, handleRelodenewData }) => {
     (newAssetData[0]?.asset_request_status === "Rejected" ||
       newAssetData[0]?.asset_request_status === "ApprovedByManager") && {
       name: "Reject Reason",
-      selector: (row) => row.reject_reason,
+        cell: (row) =>(
+        <div style={{ maxHeight: "100px", overflowY: "auto" }}> {row.reject_reason}</div>
+       ),
       sortable: true,
-      width: "150px",
+      width: "200px",
+      
     },
 
     (newAssetData[0]?.asset_request_status === "ApprovedByManager" ||

@@ -1060,7 +1060,7 @@ const SalaryWFH = () => {
 
   return (
     <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
-      <FormContainer mainTitle="Salary" link="/admin" />
+      <FormContainer mainTitle="Payout Summary" link="/admin" />
       <div className="modal fade" id="myModal" role="dialog">
         <div className="modal-dialog">
           <div className="modal-content">

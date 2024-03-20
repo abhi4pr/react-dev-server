@@ -175,7 +175,7 @@ export default function TotalNDG() {
     <div className="master-card-css">
       <FormContainer
         submitButton={false}
-        mainTitle="Dashboard"
+        mainTitle="Total & NDG"
         link="finance"
       >
         {/* {activeAccordionIndex === 0 && nonDigitalSignature}
@@ -278,7 +278,7 @@ export default function TotalNDG() {
                 options={yearOptions}
               />
             </div>
-            <div className="form-group col-3">
+            <div className="form-group col-3 mr-3">
               <label className="form-label">
                 Months<sup style={{ color: "red" }}>*</sup>
               </label>
