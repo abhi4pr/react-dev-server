@@ -543,6 +543,9 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
                   {d.secondary_contact_no}
                 </p>
                 <p>
+                  <strong>Company Name:</strong> {d.company_name}
+                </p>
+                <p>
                   <strong>Address:</strong> {d.vendor_address}
                 </p>
               </div>
