@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../utils/config";
-import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 import { Link } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import RouteIcon from "@mui/icons-material/Route";
+import PriceChangeIcon from "@mui/icons-material/PriceChange";
 
 const VendorOverview = () => {
   const [vendorTypes, setVendorTypes] = useState([]);
@@ -57,10 +58,7 @@ const VendorOverview = () => {
       cell: (row) => (
         <>
           <Link to={`/admin/pms-vendor-edit/${row._id}`}>
-            <div 
-              title="Edit"
-              className="icon-1"
-            >
+            <div title="Edit" className="icon-1">
               <i className="bi bi-pencil"></i>
             </div>
           </Link>
@@ -111,6 +109,26 @@ const VendorOverview = () => {
       width: 200,
       renderCell: (params) => (
         <>
+          <Link
+            to={`/admin/pms-vendor-page-price-master/${params.row.vendorMast_name}`}
+          >
+            <button
+              title="Update Price"
+              className="btn btn-outline-primary btn-sm user-button"
+            >
+              <PriceChangeIcon />
+            </button>
+          </Link>
+          <Link
+            to={`/admin/pms-vendor-group-link/${params.row.vendorMast_name}`}
+          >
+            <button
+              title="Group Link"
+              className="btn btn-outline-primary btn-sm user-button"
+            >
+              <RouteIcon />
+            </button>
+          </Link>
           <Link to={`/admin/pms-vendor-edit/${params.row._id}`}>
             <button
               title="Edit"
@@ -231,15 +249,6 @@ const VendorOverview = () => {
                       Price
                     </Link>
                   </div>{" "}
-                  <div className="col-md-2">
-                    <Link
-                      to="/admin/pms-platform-price-type"
-                      className="btn btn-primary btn-sm mt-2"
-                      id="pageName"
-                    >
-                      Platform Price
-                    </Link>
-                  </div>
                 </div>
               </div>
             </div>

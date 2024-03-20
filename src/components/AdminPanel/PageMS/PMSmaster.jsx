@@ -247,7 +247,7 @@ export default function PMSmaster() {
               </Link>
             </div>
             <div
-              className="d-flex gap4 col mb-2-md-6"
+              className="d-flex gap4 col mb-2 md-6"
               style={{ flexWrap: "wrap", gap: "10px" }}
             >
               <Link to="/admin/pms-platform">
@@ -283,7 +283,83 @@ export default function PMSmaster() {
                   </div>
                 </div>
               </Link>
+            </div>  
+            <div
+              className="d-flex gap4 col mb-2 md-6"
+              style={{ flexWrap: "wrap", gap: "10px" }}
+            >
+              <Link to="/admin/pms-platform-price-type">
+                <div
+                  className="card hover body-padding"
+                  style={{
+                    height: "100px",
+                    minWidth: "300px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    gap: "10px",
+                    cursor: "pointer",
+                    border: "1px solid var(--primary)",
+                    padding: "10px",
+                  }}
+                >
+                  <div
+                    className="pack  "
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      gap: "20px",
+                    }}
+                  >
+                    <div className="rounded-circle circle-card">
+                      <i className="bi bi-bounding-box"></i>
+                    </div>
+                    Platform Price
+                  </div>
+                </div>
+              </Link>
             </div>
+            {/* <div
+              className="d-flex gap4 col mb-2 md-6"
+              style={{ flexWrap: "wrap", gap: "10px" }}
+            >
+              <Link to="/admin/pms-platform-price-type">
+                <div
+                  className="card hover body-padding"
+                  style={{
+                    height: "100px",
+                    minWidth: "300px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    gap: "10px",
+                    cursor: "pointer",
+                    border: "1px solid var(--primary)",
+                    padding: "10px",
+                  }}
+                >
+                  <div
+                    className="pack  "
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      gap: "20px",
+                    }}
+                  >
+                    <div className="rounded-circle circle-card">
+                      <i className="bi bi-bounding-box"></i>
+                    </div>
+                    Platform Price
+                  </div>
+                </div>
+              </Link>
+            </div> */}
           </div>
           <div className="card-header"> Vendor </div>
 
@@ -516,44 +592,7 @@ export default function PMSmaster() {
                 </div>
               </Link>
             </div>{" "}
-            <div
-              className="d-flex gap4 col mb-2"
-              style={{ flexWrap: "wrap", gap: "10px" }}
-            >
-              <Link to="/admin/pms-platform-price-type">
-                <div
-                  className="card hover body-padding"
-                  style={{
-                    height: "100px",
-                    minWidth: "300px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    gap: "10px",
-                    cursor: "pointer",
-                    border: "1px solid var(--primary)",
-                    padding: "10px",
-                  }}
-                >
-                  <div
-                    className="pack  "
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: "20px",
-                    }}
-                  >
-                    <div className="rounded-circle circle-card">
-                      <i className="bi bi-bounding-box"></i>
-                    </div>
-                    Platform Price
-                  </div>
-                </div>
-              </Link>
-            </div>
+         
           </div>
         </div>
       </div>

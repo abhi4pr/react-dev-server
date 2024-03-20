@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
 import axios from "axios";
 import { baseUrl } from "../../../utils/config";
 import Select from "react-select";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useGlobalContext } from "../../../Context/Context";
 
 export default function VendorPagePriceMaster() {
+  const { vendorMast_name } = useParams();
+  // console.log(vendorMast_name,"vendorMast_name")
   const { toastAlert, toastError } = useGlobalContext();
   const Navigate = useNavigate();
   const [platformPriceList, setPlatformPriceList] = useState([]);
@@ -23,6 +25,22 @@ export default function VendorPagePriceMaster() {
   const [priceFixed, setPriceFixed] = useState("");
   const [priceVariable, setPriceVariable] = useState("");
   const [description, setDescription] = useState("");
+
+  const paramsVendorName = () => {
+    if (!vendorMast_name?.length > 0) return;
+    const findVendor =
+      vendorList?.find(
+        (vendor) => vendor?.vendorMast_name == vendorMast_name
+      ) || {};
+    return setVendorId({
+      value: findVendor?.vendorMast_id,
+      label: findVendor?.vendorMast_name,
+    });
+  };
+
+  useEffect(() => {
+    paramsVendorName();
+  }, [vendorList]);
 
   const getData = () => {
     axios.get(baseUrl + "getPlatformPriceList").then((res) => {
@@ -82,6 +100,9 @@ export default function VendorPagePriceMaster() {
       })
       .then((res) => {
         if (res.status === 200) {
+          if(vendorMast_name?.length > 0){
+            return Navigate(`/admin/pms-vendor-overview`);
+          }
           Navigate("/admin/pms-vendor-page-price-overview");
         }
       });
@@ -139,6 +160,7 @@ export default function VendorPagePriceMaster() {
             Owner Vendor <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
+          isDisabled={vendorMast_name?.length > 0}
             options={vendorList.map((option) => ({
               value: option.vendorMast_id,
               label: option.vendorMast_name,
@@ -147,8 +169,9 @@ export default function VendorPagePriceMaster() {
             value={{
               value: vendorId,
               label:
-                vendorList.find((role) => role.vendorMast_id === vendorId.value)
-                  ?.vendorMast_name || "",
+                vendorList.find(
+                  (role) => role.vendorMast_id === vendorId?.value
+                )?.vendorMast_name || "",
             }}
             onChange={(e) => {
               setVendorId(e);
