@@ -238,6 +238,14 @@ import TempExecution from "./RegisterCampaign/tempPlan/TempExecution";
 import CustomerMaster from "./Customer/CustomerMaster";
 import AccountMaster from "./Customer/AccountMaster";
 import OwnershipMaster from "./Customer/OwnershipMaster";
+import OpsCustomerMast from "./Customer/OpsCustomerMast";
+import OpsCustomerOverview from "./Customer/OpsCustomerOverview";
+ import OpsCustomerUpdate from "./Customer/OpsCustomerUpdate";
+ import CustomerContOverview from "./Customer/CustomerContOverview";
+ import CustomerContMaster from "./Customer/CustomerContMaster";
+ import CustomerContUpdate from "./Customer/CustomerContUpdate";
+ import OpsDocMast from "./Customer/OpsDocMast";
+
 import VendorType from "./PageMS/VendorType";
 import PageCategory from "./PageMS/PageCategory";
 import ProfileType from "./PageMS/ProfileType";
@@ -1202,10 +1210,20 @@ const Admin = () => {
 
                   <Route path="/customer-master" element={<CustomerMaster />} />
                   <Route path="/account-master" element={<AccountMaster />} />
-                  <Route
-                    path="/ownership-master"
-                    element={<OwnershipMaster />}
-                  />
+                  <Route path="/ownership-master" element={<OwnershipMaster />} />
+                  <Route path="/ops-customer-mast" element={<OpsCustomerMast />} />
+                  <Route path="/ops-customer-overview" element={<OpsCustomerOverview />} />
+                   <Route path="/ops-customer-update/:id" element={<OpsCustomerUpdate />} /> 
+                   <Route path="/customer-cont-overview" element={<CustomerContOverview />} /> 
+                   <Route path="/customer-cont-master" element={<CustomerContMaster />} /> 
+                   <Route path="/customer-cont-update/:id" element={<CustomerContUpdate />} /> 
+                   <Route path="/ops-doc-mast" element={<OpsDocMast />} /> 
+
+
+
+
+
+
 
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />

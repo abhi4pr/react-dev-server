@@ -28,6 +28,7 @@ const CustomerMaster = () => {
     axios.get(baseUrl + "get_all_customer_type") 
       .then((res) => {
         setCustomers(res.data.data);
+        console.log(res.data.data);
         setFilterData(res.data.data);
       });
   };
@@ -160,7 +161,7 @@ const CustomerMaster = () => {
               />
             }
           />
-        </div>
+        </div>[]
       </div>
 
       <div id="myModal" className="modal fade" role="dialog">
