@@ -8,13 +8,15 @@ import {
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
+import FormContainer from "../../FormContainer";
 
 let options = [];
 let plateformvar = [];
 
 const ExpertiesUpdate = () => {
   const { id } = useParams();
+  console.log(id, "exp-id");
   const [allPageData, setAllPageData] = useState([]);
   const [getUserData, setGetUserData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
@@ -23,7 +25,7 @@ const ExpertiesUpdate = () => {
   const [platform, setPlatfrom] = useState([]);
   const [expertdata, setExpertData] = useState([]);
 
-  const [expertiesusername, setExpertiesUserName] = useState("");
+  const [expertiesusername, setExpertiesUserName] = useState([]);
   const [expertiessingledata, setExpertiesSingleData] = useState([]);
 
   const Follower_Count = [
@@ -43,19 +45,16 @@ const ExpertiesUpdate = () => {
   };
 
   const getAllUsers = async () => {
-    const alluser = await axios.get(
-      baseUrl+"get_all_users"
-    );
+    const alluser = await axios.get(baseUrl + "get_all_users");
     setGetUserData(alluser.data.data);
   };
   const ExsingleData = async () => {
-    const singledata = await axios.get(
-      `${baseUrl}`+`expertise/${id}`
-    );
+    const singledata = await axios.get(`${baseUrl}` + `expertise/${id}`);
     const fetcheData = singledata?.data.data;
     console.log(fetcheData, "single data ");
     const { exp_name, user_id, area_of_expertise } = fetcheData;
-    console.log(category);
+    // console.log(category);
+    setExpertiesUserName(fetcheData)
     setExpertiesUserName(area_of_expertise.category);
     // setSelectedCategory(category);
   };
@@ -103,7 +102,7 @@ const ExpertiesUpdate = () => {
   const handleSubmit = async () => {
     try {
       const response = await axios.put(
-        `${baseUrl}`+`expertise/${expertiesusername.user_id}`,
+        `${baseUrl}` + `expertise/${expertiesusername.user_id}`,
         {
           user_id: expertiesusername.user_id,
           area_of_expertise: {
@@ -115,98 +114,96 @@ const ExpertiesUpdate = () => {
           updated_by: "hello",
         }
       );
-    } catch {}
+    } catch { }
   };
 
   return (
     <>
-      <div>
-        <div className="form_heading_title">
-          <h2 className="form-heading">Expert</h2>
-        </div>
+      <FormContainer mainTitle="Update Expert" link="flase" />
+
+      <div className="card">
+        <FormControl sx={{ width: "100%" }}>
+          <div className="row " sx={{ width: "100vw" }}>
+            <div className="col-sm-12 col-lg-12 mb-4 mt-2">
+              <Autocomplete
+                fullWidth={true}
+                disablePortal
+                value={expertiesusername?.exp_name}
+                id="combo-box-demo"
+                options={getUserData.map((user) => ({
+                  label: user.user_name,
+                  value: user.user_id,
+                }))}
+                onChange={(e, newvalue) => {
+                  if (newvalue != null) {
+                    setExpertiesUserName((prev) => ({
+                      label: newvalue.label,
+                      user_id: newvalue.value,
+                    }));
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="User Name" />
+                )}
+              />
+            </div>
+            <div className="col-sm-12 col-lg-3">
+              <Autocomplete
+                multiple
+                id="combo-box-demo"
+                value={selectedCategory}
+                options={options}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category" />
+                )}
+                onChange={categoryChangeHandler}
+              />
+            </div>
+
+            <div className="col-sm-12 col-lg-3">
+              <Autocomplete
+                multiple
+                id="combo-box-demo"
+                options={plateformvar}
+                renderInput={(params) => (
+                  <TextField {...params} label="Platform" />
+                )}
+                onChange={plateformHandler}
+              />
+            </div>
+            <div className="col-sm-12 col-lg-3">
+              <Autocomplete
+                multiple
+                id="combo-box-demo"
+                options={Follower_Count}
+                getOptionLabel={(option) => option}
+                renderInput={(params) => (
+                  <TextField {...params} label="Follower Count" />
+                )}
+                onChange={followerChangeHandler}
+              />
+            </div>
+            <div className="col-sm-12 col-lg-3">
+              <Autocomplete
+                multiple
+                id="combo-box-demo"
+                options={page_health}
+                value={pageHealth}
+                onChange={(e, newvalue) => setPageHealth(newvalue)}
+                getOptionLabel={(option) => option}
+                renderInput={(params) => (
+                  <TextField {...params} label="Page health" />
+                )}
+              />
+            </div>
+          </div>
+          <div className="col-sm-12 col-lg-3 mt-2">
+            <Button onClick={handleSubmit} variant="contained" color="primary">
+              Submit
+            </Button>
+          </div>
+        </FormControl>
       </div>
-
-      <FormControl sx={{ width: "100%" }}>
-        <div className="row " sx={{ width: "100vw" }}>
-          <div className="col-sm-12 col-lg-12 mb-4">
-            <Autocomplete
-              fullWidth={true}
-              disablePortal
-              value={expertiesusername}
-              id="combo-box-demo"
-              options={getUserData.map((user) => ({
-                label: user.user_name,
-                value: user.user_id,
-              }))}
-              onChange={(e, newvalue) => {
-                if (newvalue != null) {
-                  setExpertiesUserName((prev) => ({
-                    label: newvalue.label,
-                    user_id: newvalue.value,
-                  }));
-                }
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="User Name" />
-              )}
-            />
-          </div>
-          <div className="col-sm-12 col-lg-3">
-            <Autocomplete
-              multiple
-              id="combo-box-demo"
-              value={selectedCategory}
-              options={options}
-              renderInput={(params) => (
-                <TextField {...params} label="Category" />
-              )}
-              onChange={categoryChangeHandler}
-            />
-          </div>
-
-          <div className="col-sm-12 col-lg-3">
-            <Autocomplete
-              multiple
-              id="combo-box-demo"
-              options={plateformvar}
-              renderInput={(params) => (
-                <TextField {...params} label="Platform" />
-              )}
-              onChange={plateformHandler}
-            />
-          </div>
-          <div className="col-sm-12 col-lg-3">
-            <Autocomplete
-              multiple
-              id="combo-box-demo"
-              options={Follower_Count}
-              getOptionLabel={(option) => option}
-              renderInput={(params) => (
-                <TextField {...params} label="Follower Count" />
-              )}
-              onChange={followerChangeHandler}
-            />
-          </div>
-          <div className="col-sm-12 col-lg-3">
-            <Autocomplete
-              multiple
-              id="combo-box-demo"
-              options={page_health}
-              value={pageHealth}
-              onChange={(e, newvalue) => setPageHealth(newvalue)}
-              getOptionLabel={(option) => option}
-              renderInput={(params) => (
-                <TextField {...params} label="Page health" />
-              )}
-            />
-          </div>
-        </div>
-        <div className="col-sm-12 col-lg-3 mt-2">
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            Submit
-          </Button>
-        </div>
-      </FormControl>
     </>
   );
 };
