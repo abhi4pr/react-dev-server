@@ -7,9 +7,10 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../../../Context/Context";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from "../../../../utils/config";
+import FormContainer from "../../FormContainer";
 
 let options = [];
 let plateformvar = [];
@@ -42,12 +43,9 @@ const Experties = () => {
   };
 
   const getAllUsers = async () => {
-    const alluser = await axios.get(
-      baseUrl+"get_all_users"
-    );
+    const alluser = await axios.get(baseUrl + "get_all_users");
     setGetUserData(alluser.data.data);
   };
-
 
   useEffect(() => {
     getPageData();
@@ -57,8 +55,7 @@ const Experties = () => {
   const categorySet = () => {
     allPageData?.forEach((data) => {
       if (!options.includes(data.cat_name)) {
-        if(data.cat_name!=null){
-
+        if (data.cat_name != null) {
           options.push(data.cat_name);
         }
       }
@@ -93,117 +90,112 @@ const Experties = () => {
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(
-        baseUrl+"expertise",
-        {
-          exp_name: expertiesusername.label,
-          user_id: expertiesusername.user_id,
-          area_of_expertise: {
-            category: selectedCategory,
-            follower_count: selectedFollower,
-            platform: platform,
-            pageHealth: pageHealth,
-          },
-        }
-      );
-      toastAlert("Experties Created Successfully")
-      navigate('/admin/experties-overview');
+      const response = await axios.post(baseUrl + "expertise", {
+        exp_name: expertiesusername.label,
+        user_id: expertiesusername.user_id,
+        area_of_expertise: {
+          category: selectedCategory,
+          follower_count: selectedFollower,
+          platform: platform,
+          pageHealth: pageHealth,
+        },
+      });
+      toastAlert("Experties Created Successfully");
+      navigate("/admin/experties-overview");
     } catch (error) {
-      if(error.message){
-        toastError("Fill * Required Data ")
+      if (error.message) {
+        toastError("Fill * Required Data ");
       }
     }
   };
 
   return (
     <>
-      <div>
-        <div className="form_heading_title">
-          <h2 className="form-heading">Expert</h2>
-        </div>
-      </div>
+           <FormContainer mainTitle=" Expert" link="flase" />
 
-      <FormControl sx={{ width: "100%" }}>
-        <div className="row " sx={{ width: "100vw" }}>
-          <div className="col-sm-12 col-lg-12 mb-4">
-            <Autocomplete
-              fullWidth={true}
-              disablePortal
-              id="combo-box-demo"
-              options={getUserData.map((user) => ({
-                label: user.user_name,
-                value: user.user_id,
-              }))}
-              onChange={(e, newvalue) => {
-                if (newvalue != null) {
-                  setExpertiesUserName((prev) => ({
-                    label: newvalue.label,
-                    user_id: newvalue.value,
-                  }));
-                }
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="User Name *" />
-              )}
-            />
+      <div className="card">
+        <FormControl sx={{ width: "100%" }}>
+          <div className="row " sx={{ width: "100vw" }}>
+            <div className="col-sm-12 col-lg-12 mb-4 mt-2">
+              <Autocomplete
+                fullWidth={true}
+                disablePortal
+                id="combo-box-demo"
+                options={getUserData.map((user) => ({
+                  label: user.user_name,
+                  value: user.user_id,
+                }))}
+                onChange={(e, newvalue) => {
+                  if (newvalue != null) {
+                    setExpertiesUserName((prev) => ({
+                      label: newvalue.label,
+                      user_id: newvalue.value,
+                    }));
+                  }
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} label="User Name *" />
+                )}
+              />
+            </div>
+            <div className="col-sm-12 col-lg-3">
+              <Autocomplete
+                multiple
+                id="combo-box-demo"
+                options={options}
+                renderInput={(params) => (
+                  <TextField {...params} label="Category *" />
+                )}
+                onChange={categoryChangeHandler}
+              />
+            </div>
+            <div className="col-sm-12 col-lg-3">
+              <Autocomplete
+                multiple
+                id="combo-box-demo"
+                options={plateformvar}
+                renderInput={(params) => (
+                  <TextField {...params} label="Platform *" />
+                )}
+                onChange={plateformHandler}
+              />
+            </div>
+            <div className="col-sm-12 col-lg-3">
+              <Autocomplete
+                multiple
+                id="combo-box-demo"
+                options={Follower_Count}
+                getOptionLabel={(option) => option}
+                renderInput={(params) => (
+                  <TextField {...params} label="Follower Count" />
+                )}
+                onChange={followerChangeHandler}
+              />
+            </div>
+            <div className="col-sm-12 col-lg-3">
+              <Autocomplete
+                multiple
+                id="combo-box-demo"
+                options={page_health}
+                value={pageHealth}
+                onChange={(e, newvalue) => setPageHealth(newvalue)}
+                getOptionLabel={(option) => option}
+                renderInput={(params) => (
+                  <TextField {...params} label="Page health" />
+                )}
+              />
+            </div>
           </div>
-          <div className="col-sm-12 col-lg-3">
-            <Autocomplete
-              multiple
-              id="combo-box-demo"
-              options={options}
-              renderInput={(params) => (
-                <TextField {...params} label="Category *" />
-              )}
-              onChange={categoryChangeHandler}
-            />
-          </div>
-          <div className="col-sm-12 col-lg-3">
-            <Autocomplete
-              multiple
-              id="combo-box-demo"
-              options={plateformvar}
-              renderInput={(params) => (
-                <TextField {...params} label="Platform *" />
-              )}
-              onChange={plateformHandler}
-            />
-          </div>
-          <div className="col-sm-12 col-lg-3">
-            <Autocomplete
-              multiple
-              id="combo-box-demo"
-              options={Follower_Count}
-              getOptionLabel={(option) => option}
-              renderInput={(params) => (
-                <TextField {...params} label="Follower Count" />
-              )}
-              onChange={followerChangeHandler}
-            />
-          </div>
-          <div className="col-sm-12 col-lg-3">
-            <Autocomplete
-              multiple
-              id="combo-box-demo"
-              options={page_health}
-              value={pageHealth}
-              onChange={(e, newvalue) => setPageHealth(newvalue)}
-              getOptionLabel={(option) => option}
-              renderInput={(params) => (
-                <TextField {...params} label="Page health" />
-              )}
-            />
-          </div>
-        </div>
-        <div className="col-sm-12 col-lg-3 mt-2">
-          {/* <button className="btn btn-primary" onClick={handleSubmit}>
+          <div className="col-sm-12 col-lg-3 mt-2">
+            {/* <button className="btn btn-primary" onClick={handleSubmit}>
             Submit
           </button> */}
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            Submit
-          </Button>
-        </div>
-      </FormControl>
+            <Button onClick={handleSubmit} variant="contained" color="primary">
+              Submit
+            </Button>
+          </div>
+        </FormControl>
+      </div>
     </>
   );
 };

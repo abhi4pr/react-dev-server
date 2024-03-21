@@ -23,6 +23,8 @@ import { useEffect, useState } from "react";
 import { toolbarStyles } from "./CampaignCommitment";
 import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
+import FormContainer from "../FormContainer";
+import FieldContainer from "../FieldContainer";
 
 export default function CategoryMaster() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -40,7 +42,6 @@ export default function CategoryMaster() {
     category_name: "",
     // brand_id: "",
   });
-
 
   function EditToolbar() {
     const handleClick = () => {
@@ -152,9 +153,7 @@ export default function CategoryMaster() {
   const handleConfirmDelete = () => {
     if (itemToDeleteId) {
       axios
-        .delete(
-          `${baseUrl}` + `projectxCategory/${itemToDeleteId}`
-        )
+        .delete(`${baseUrl}` + `projectxCategory/${itemToDeleteId}`)
         .then(() => {
           getData();
           console.log("Data deleted successfully");
@@ -246,54 +245,41 @@ export default function CategoryMaster() {
 
   return (
     <>
-      <div className="form-heading">
-        <img className="img-bg" src="/bg-img.png" alt="" width="160"/>
-        <div className="form_heading_title ">
+      <FormContainer mainTitle="Category Master" link="true" />
+      <div className="card">
+        <div className="card-header">
           <div className="pack">
-            <i className="bi bi-house"></i> Category Master
+            <div className="form-group ">
+              <FieldContainer
+                fieldGrid={12}
+                label=""
+                placeholder="Search Here"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+              />
+            </div>
           </div>
         </div>
-      </div>
-
-      <TextField
-          label="Search"
-          variant="outlined"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          style={{ marginBottom: "10px" }}
-        />
-      <div className="card">
-      
-
-        <Box
-        // sx={{
-        //   height: 500,
-        //   width: "100%",
-        //   "& .actions": {
-        //     color: "text.secondary",
-        //   },
-        //   "& .textPrimary": {
-        //     color: "text.primary",
-        //   },
-        // }}
-        >
-          <DataGrid
-            rows={filteredRows}
-            columns={columns}
-            editMode="row"
-            getRowId={(row) => row.category_id}
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            processRowUpdate={processRowUpdate}
-            slots={{
-              toolbar: EditToolbar,
-            }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-          />
-        </Box>
+        <div className="card-body body-padding ">
+          <Box sx={{ height: "400px" }}>
+            <DataGrid
+              rows={filteredRows}
+              columns={columns}
+              editMode="row"
+              getRowId={(row) => row.category_id}
+              rowModesModel={rowModesModel}
+              onRowModesModelChange={handleRowModesModelChange}
+              onRowEditStop={handleRowEditStop}
+              processRowUpdate={processRowUpdate}
+              slots={{
+                toolbar: EditToolbar,
+              }}
+              slotProps={{
+                toolbar: { setRows, setRowModesModel },
+              }}
+            />
+          </Box>
+        </div>
       </div>
 
       {/* AddRecordModal post data */}
@@ -317,15 +303,6 @@ export default function CategoryMaster() {
                 value={postData.category_name}
                 onChange={handleChange}
               />
-
-              {/* <TextField
-                id="outlined-password-input"
-                label="brand_id"
-                name="brand_id"
-                type="text"
-                value={postData.brand_id}
-                onChange={handleChange}
-              /> */}
             </div>
           </Box>
         </DialogContent>
@@ -366,19 +343,6 @@ export default function CategoryMaster() {
                 }
               />
 
-              {/* <TextField
-                id="outlined-password-input"
-                label="brand_id"
-                name="brand_id"
-                type="text"
-                value={editData.brand_id}
-                onChange={(e) =>
-                  setEditData((prev) => ({
-                    ...prev,
-                    brand_id: e.target.value,
-                  }))
-                }
-              /> */}
             </div>
           </Box>
         </DialogContent>

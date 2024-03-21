@@ -327,12 +327,12 @@ export default function BrandMaster() {
       },
     },
     {
-      field: "projectx_category_name",
+      field: "category_name",
       headerName: "Category",
       width: 180,
     },
     {
-      field: "projectx_subcategory_name",
+      field: "sub_category_name",
       headerName: "SubCategory",
       width: 180,
     },
