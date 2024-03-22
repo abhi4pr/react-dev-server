@@ -13,6 +13,9 @@ import Modal from "react-modal";
 import { useGlobalContext } from "../../Context/Context";
 import { baseUrl } from "../../utils/config";
 import AllAssetExcel from "../../utils/AllAssetsExcel";
+import FieldContainer from "../AdminPanel/FieldContainer";
+import AssetSendToVendorReusable from "./AssetSendToVendorReusable";
+import ScrapReusable from "./ScrapReusable";
 
 const SimOverview = () => {
   const { id } = useParams();
@@ -294,6 +297,101 @@ const SimOverview = () => {
       alert("Please select user first");
     }
   };
+  const [vendorModalOpen, setVendorModalOpen] = useState(false);
+  const [currentRow, setCurrentRow] = useState(null);
+
+  const [stolenModalOpen, setStolenModalOpen] = useState(false);
+  const [stolenDate, setStolenDate] = useState("");
+  const [stolenRemark, setStolenRemark] = useState("");
+
+  const [lostModalOpen, setLostnModalOpen] = useState(false);
+  const [lostAssetDate, setLostAssetDate] = useState("");
+  const [lostAssetRemark, setLostAssetRemark] = useState("");
+
+  const [scrapModalOpen, setScrapModalOpen] = useState(false);
+
+  const handleSelectionChange = (row) => (e) => {
+    const selectedOption = e.target.value;
+    setCurrentRow(row);
+
+    switch (selectedOption) {
+      case "send-to-vendor":
+        handleSendToVendor(row);
+        break;
+      case "stolen":
+        handleStolen(row);
+        break;
+      case "lost":
+        handleLost(row);
+        break;
+      case "scrap":
+        handleScrap(row);
+        break;
+      default:
+    }
+  };
+
+  const handleSendToVendor = (row) => {
+    setVendorModalOpen(true);
+  };
+  const handleSendToVendorModalClose = () => {
+    return setVendorModalOpen(!vendorModalOpen);
+  };
+
+  // stolen section Start-----------------
+  const handleStolen = (row) => {
+    // console.log(currentRow, "stolen modal open");
+
+    setStolenModalOpen(true);
+  };
+  const handleStolenModalClose = () => {
+    setStolenModalOpen(false);
+  };
+  const handleSubmitStolen = async () => {
+    try {
+      await axios.put(baseUrl + "update_sim", {
+        id: currentRow.sim_id,
+        status: "Stolen",
+        all_status_date: stolenDate,
+        all_status_remark: stolenRemark,
+      });
+      getData();
+      toastAlert("Status Updated");
+      handleStolenModalClose();
+    } catch {}
+  };
+  // stolen section End------------------
+
+  //Lost asset seciton Start------------
+  const handleLost = (row) => {
+    setLostnModalOpen(true);
+  };
+  const handleLostModalClose = () => {
+    setLostnModalOpen(false);
+  };
+  const handleSubmitLostAsset = async () => {
+    try {
+      await axios.put(baseUrl + "update_sim", {
+        id: currentRow.sim_id,
+        status: "Lost",
+        all_status_date: lostAssetDate,
+        all_status_remark: lostAssetRemark,
+      });
+      getData();
+      toastAlert("Status Updated");
+      handleLostModalClose();
+    } catch {}
+  };
+  //Lost asset section End--------------
+
+  //Scrap Asset section Start
+  const handleScrap = (row) => {
+    setScrapModalOpen(true);
+  };
+  const handleScrapModalClose = () => {
+    return setScrapModalOpen(!scrapModalOpen);
+  };
+  //Scrap Asset Modal End
 
   const columns = [
     {
@@ -408,48 +506,31 @@ const SimOverview = () => {
       },
       sortable: true,
     },
-
-    // {
-    //   name: "Invoice",
-    //   selector: (row) => (
-    //     <>
-    //       <a
-    //         style={{ cursor: "pointer" }}
-    //         target="blank"
-    //         href={row.invoiceCopy_url}
-    //         download
-    //       >
-    //         <i
-    //           class="fa fa-download"
-    //           aria-hidden="true"
-    //           style={{ fontSize: "25px", color: "blue" }}
-    //         ></i>
-    //       </a>
-    //     </>
-    //   ),
-    //   sortable: true,
-    // },
+    {
+      name: "Status",
+      selector: (row) => (
+        <select className="form-control" onChange={handleSelectionChange(row)}>
+          <option>Select...</option>
+          <option value="send-to-vendor">Send To Vendor</option>
+          <option value="stolen">Stolen</option>
+          <option value="lost">Lost</option>
+          <option value="scrap">Scrap</option>
+        </select>
+      ),
+      width: "150px",
+    },
 
     {
       name: "Action",
       cell: (row) => (
         <>
-          {/* <button className="btn btn-outline-success">
-            <i className="bi bi-images"></i>
-          </button> */}
           <Link to={`/sim-update/${row.sim_id}`}>
-            <button
-              title="Edit"
-              className="icon-1"
-            >
+            <button title="Edit" className="icon-1">
               <i className=" bi bi-pencil"></i>
             </button>
           </Link>
           <Link to={`/sim-summary/${row.sim_id}`}>
-            <button
-              title="Summary"
-              className="icon-1"
-            >
+            <button title="Summary" className="icon-1">
               <i className="bi bi-journal-text"></i>
             </button>
           </Link>
@@ -590,7 +671,6 @@ const SimOverview = () => {
                   className={`btn ${
                     id == 1 ? "btn-primary" : "btn-outline-primary"
                   } btn-sm`}
-                  // onClick={() => getData(1)}
                   onClick={() => navigate(`/sim-overview/${1}`)}
                 >
                   Available
@@ -600,7 +680,6 @@ const SimOverview = () => {
                   className={`btn ${
                     id == 2 ? "btn-primary" : "btn-outline-primary"
                   } btn-sm`}
-                  // onClick={() => getData(2)}
                   onClick={() => navigate(`/sim-overview/${2}`)}
                 >
                   Allocated
@@ -610,7 +689,6 @@ const SimOverview = () => {
                   className={`btn ${
                     id == 0 ? "btn-primary" : "btn-outline-primary"
                   } btn-sm`}
-                  // onClick={() => getData(0)}
                   onClick={() => navigate(`/sim-overview/${0}`)}
                 >
                   All Assets
@@ -737,14 +815,14 @@ const SimOverview = () => {
                 <div className="card-header sb p-4">
                   <h5>Assets Overview</h5>
                   <div className="pack">
-                        <input
-                          type="text"
-                          placeholder="Search here"
-                          className="w-50 form-control "
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                        />
-                        {/* <button
+                    <input
+                      type="text"
+                      placeholder="Search here"
+                      className="w-50 form-control "
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                    />
+                    {/* <button
                           className="btn btn-outline-success ml-2 btn-sm"
                           onClick={handleExport}
                         >
@@ -768,31 +846,6 @@ const SimOverview = () => {
                     // fixedHeaderScrollHeight="64vh"
                     exportToCSV
                     highlightOnHover
-                    // selectableRows
-                    // subHeader
-                    // subHeaderComponent={
-                    //   <>
-                    //     <input
-                    //       type="text"
-                    //       placeholder="Search here"
-                    //       className="w-50 form-control "
-                    //       value={search}
-                    //       onChange={(e) => setSearch(e.target.value)}
-                    //     />
-                    //     {/* <button
-                    //       className="btn btn-outline-success ml-2 btn-sm"
-                    //       onClick={handleExport}
-                    //     >
-                    //       Export TO Excel
-                    //     </button> */}
-                    //     <button
-                    //       className="btn btn-primary ml-2"
-                    //       onClick={() => AllAssetExcel(filterdata)}
-                    //     >
-                    //       Export Excel
-                    //     </button>
-                    //   </>
-                    // }
                   />
                 </div>
                 <div className="data_tbl table-responsive"></div>
@@ -1171,6 +1224,122 @@ const SimOverview = () => {
             </div>
           </>
         )}
+      </Modal>
+
+      {/* There is Vendor Send Modal  */}
+      <AssetSendToVendorReusable
+        getData={getData}
+        isModalOpenSend={vendorModalOpen}
+        onClose={handleSendToVendorModalClose}
+        rowData={currentRow}
+      />
+      <ScrapReusable
+        getData={getData}
+        isModalOpenSend={scrapModalOpen}
+        onClose={handleScrapModalClose}
+        rowData={currentRow}
+      />
+
+      {/* //There is Stole Modal Start  */}
+      <Modal
+        isOpen={stolenModalOpen}
+        onRequestClose={handleStolenModalClose}
+        style={{
+          content: {
+            width: "30%",
+            height: "40%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            <h3>Stolen Detials</h3>
+            <div className="d-flex">
+              <button
+                className="btn btn-danger"
+                onClick={handleStolenModalClose}
+              >
+                X
+              </button>
+            </div>
+          </div>
+          <div>
+            <FieldContainer
+              label="Sotlen Date"
+              type="date"
+              value={stolenDate}
+              onChange={(e) => setStolenDate(e.target.value)}
+              fieldGrid={12}
+            />
+            <FieldContainer
+              label="Stolen Remark"
+              Tag="textarea"
+              value={stolenRemark}
+              onChange={(e) => setStolenRemark(e.target.value)}
+              fieldGrid={12}
+            />
+          </div>
+          <button className="btn btn-success ml-3" onClick={handleSubmitStolen}>
+            Submit
+          </button>
+        </div>
+      </Modal>
+
+      {/* //There is Lost Asset Modal Start  */}
+      <Modal
+        isOpen={lostModalOpen}
+        onRequestClose={handleLostModalClose}
+        style={{
+          content: {
+            width: "30%",
+            height: "40%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            <h3>Lost Asset Detials</h3>
+            <div className="d-flex">
+              <button className="btn btn-danger" onClick={handleLostModalClose}>
+                X
+              </button>
+            </div>
+          </div>
+          <div>
+            <FieldContainer
+              label="Lost Asset Date"
+              type="date"
+              value={lostAssetDate}
+              onChange={(e) => setLostAssetDate(e.target.value)}
+              fieldGrid={12}
+            />
+            <FieldContainer
+              label="Lost Asset Remark"
+              Tag="textarea"
+              value={lostAssetRemark}
+              onChange={(e) => setLostAssetRemark(e.target.value)}
+              fieldGrid={12}
+            />
+          </div>
+          <button
+            className="btn btn-success ml-3"
+            onClick={handleSubmitLostAsset}
+          >
+            Submit
+          </button>
+        </div>
       </Modal>
     </>
   );

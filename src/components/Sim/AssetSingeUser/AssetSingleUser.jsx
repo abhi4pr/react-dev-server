@@ -112,7 +112,6 @@ const AssetSingleUser = () => {
   const userMultiChangeHandler = (e, op) => {
     setTagUser(op);
   };
-  console.log(usersDataContext, "userdsata");
   const TagUserData = usersDataContext
     .filter(
       (category) =>
@@ -184,27 +183,29 @@ const AssetSingleUser = () => {
             title=""
             link="true"
           />
-            
         </div>
       </div>
-        <div className="tab">
-          {
-            accordionButtons.map((button ,index)=>(
-              <div className={`named-tab ${activeAccordionIndex === index? "active-tab":""}`}  onClick={()=>{handleAccordionButtonClick(index)}} >{button}</div>
-              
-            ))
-          }
-        </div>
-        <div className="card">
-          <div className="card-header sb">
-            Asset
+      <div className="tab">
+        {accordionButtons.map((button, index) => (
+          <div
+            className={`named-tab ${
+              activeAccordionIndex === index ? "active-tab" : ""
+            }`}
+            onClick={() => {
+              handleAccordionButtonClick(index);
+            }}
+          >
+            {button}
           </div>
-          <div className="card-body body-padding">
-
-        {activeAccordionIndex === 0 && tab1}
-            {activeAccordionIndex === 1 && tab2}
-          </div>
+        ))}
+      </div>
+      <div className="card">
+        <div className="card-header sb">Asset</div>
+        <div className="card-body body-padding">
+          {activeAccordionIndex === 0 && tab1}
+          {activeAccordionIndex === 1 && tab2}
         </div>
+      </div>
 
       {/* Repair Requset Modal  */}
       <div
@@ -314,18 +315,6 @@ const AssetSingleUser = () => {
                 </div>
 
                 <div className="col-sm-12 col-lg-8 p-2">
-                  {/* <Autocomplete
-                    multiple
-                    id="combo-box-demo"
-                    options={usersDataContext.map((d) => ({
-                      label: d.user_name,
-                      value: d.user_id,
-                    }))}
-                    renderInput={(params) => (
-                      <TextField {...params} label="Tag" />
-                    )}
-                    onChange={userMultiChangeHandler}
-                  /> */}
                   <Autocomplete
                     multiple
                     id="combo-box-demo"
