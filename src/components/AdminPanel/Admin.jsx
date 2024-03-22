@@ -274,6 +274,8 @@ import OperationCampaigns from "./RegisterCampaign/OperationCampaigns";
 import OperationDashboards from "./RegisterCampaign/OperationDashboards";
 import OperationContents from "./RegisterCampaign/OperationContents";
 import GstNongstIncentiveReport from "./Finance/GstNongstIncentiveReport";
+import AssetRepairSummary from "../Sim/AssetRepairSummaryHR";
+import VendorSummary from "../Sim/VendorSummary";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -608,6 +610,14 @@ const Admin = () => {
                     <Route
                       path="/asset-repair-return-summary"
                       element={<RepairRetrunSummary />}
+                    />
+                    <Route
+                      path="/asset-repair-summary"
+                      element={<AssetRepairSummary />}
+                    />
+                    <Route
+                      path="/asset-vendor-summary"
+                      element={<VendorSummary />}
                     />
                   </>
                   {/* )} */}
@@ -1259,7 +1269,7 @@ const Admin = () => {
                   <Route
                     path="/pms-vendor-group-link"
                     element={<VendorGroupLink />}
-                  /> 
+                  />
                   <Route
                     path="/pms-vendor-group-link/:vendorMast_name"
                     element={<VendorGroupLink />}
@@ -1277,7 +1287,7 @@ const Admin = () => {
                   <Route
                     path="/pms-vendor-page-price-master"
                     element={<VendorPagePriceMaster />}
-                  /> 
+                  />
                   <Route
                     path="/pms-vendor-page-price-master/:vendorMast_name"
                     element={<VendorPagePriceMaster />}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import Modal from "react-modal";
 import { FcDownload } from "react-icons/fc";
@@ -8,6 +8,7 @@ import FieldContainer from "../../AdminPanel/FieldContainer";
 import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
+import AssetSendToVendorReusable from "../AssetSendToVendorReusable";
 
 const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const { userID } = useAPIGlobalContext();
@@ -26,6 +27,19 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
 
   const [repairId, setRepairId] = useState(0);
   const [statusHere, setStatushere] = useState("");
+
+  const [isModalOpenSend, setIsModalOpenSend] = useState(false);
+  const [currentRow, setCurrentRow] = useState(null);
+
+  const handleAssetSend = (row) => {
+    setCurrentRow(row);
+    setIsModalOpenSend(true);
+  };
+
+  const handleCloseModalSend = () => {
+    console.log("close modal call");
+    return setIsModalOpenSend(!isModalOpenSend);
+  };
 
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [enlargedImageUrl, setEnlargedImageUrl] = useState("");
@@ -448,6 +462,13 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             className="btn btn-danger btn-sm ml-2"
           >
             Scrap
+          </button>
+          <button
+            type="button"
+            onClick={() => handleAssetSend(row)}
+            className="btn btn-info btn-sm ml-2"
+          >
+            Send To Vendor
           </button>
         </>
       ),
@@ -887,6 +908,12 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
           style={{height: "80vh", width: "80vw"}}
         />
       </Modal>
+
+      <AssetSendToVendorReusable
+        isModalOpenSend={isModalOpenSend}
+        onClose={handleCloseModalSend}
+        rowData={currentRow}
+      />
     </>
   );
 };
