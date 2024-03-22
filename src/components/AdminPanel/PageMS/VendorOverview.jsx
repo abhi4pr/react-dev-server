@@ -52,6 +52,7 @@ const VendorOverview = () => {
     {
       name: "Home City",
       selector: (row) => row.home_city,
+      width: "max-content",
     },
     {
       name: "Action",

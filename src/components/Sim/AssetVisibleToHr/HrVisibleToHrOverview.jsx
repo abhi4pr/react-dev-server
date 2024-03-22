@@ -229,6 +229,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       name: "Model",
       selector: (row) => row.asset_modal_name,
       sortable: true,
+      width: "200px",
     },
     {
       name: "Vendor Name",
@@ -498,7 +499,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
               columns={columns}
               data={hrOverviewData}
               // fixedHeader
-              // pagination
+              pagination
               fixedHeaderScrollHeight="64vh"
               exportToCSV
               highlightOnHover
@@ -525,7 +526,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       >
         {/* {selectedRow && ( */}
         <div>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-end mb-2">
             {/* <h2>Department: {selectedRow.dept_name}</h2> */}
             <h3>Vendor Information</h3>
             <div className="d-flex">
@@ -777,11 +778,11 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         }}
       >
         <div>
-          <div className="d-flex justify-content-between mb-2">
+          <div className="d-flex justify-content-end mb-2">
             <h2>Repair Images</h2>
 
             <button
-              className="btn btn-success float-left"
+              className="btn btn-success float-right"
               onClick={handleCloseImageModal}
             >
               X
@@ -896,7 +897,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         }}
       >
         <button
-          className="btn btn-success float-left"
+          className="btn btn-success float-right"
           onClick={handleInvoiceCloseModal}
         >
           X
@@ -904,7 +905,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         <img
           src={enlargedImageUrl}
           alt="Enlarged Image"
-          style={{ maxWidth: "100%", maxHeight: "100%" }}
+          style={{height: "80vh", width: "80vw"}}
         />
       </Modal>
 

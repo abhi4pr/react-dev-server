@@ -9,15 +9,15 @@ import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
-const CustomerMaster = () => {
+const OpsDocMast = () => {
   const { toastAlert } = useGlobalContext();
-  const [customerType, setCustomerType] = useState("");
+  const [docName, setDocName] = useState(""); 
   const [description, setDescription] = useState("");
-  const [customers, setCustomers] = useState([]);
+  const [documents, setDocuments] = useState([]); 
   const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
   const [rowData, setRowData] = useState({});
-  const [customerTypeUpdate, setCustomerTypeUpdate] = useState("");
+  const [docNameUpdate, setDocNameUpdate] = useState(""); 
   const [descriptionUpdate, setDescriptionUpdate] = useState("");
 
   const token = sessionStorage.getItem("token");
@@ -25,9 +25,9 @@ const CustomerMaster = () => {
   const userID = decodedToken.id;
 
   const getData = () => {
-    axios.get(baseUrl + "get_all_customer_type") 
+    axios.get(baseUrl + "get_all_doc_mast") 
       .then((res) => {
-        setCustomers(res.data.data);
+        setDocuments(res.data.data); 
         console.log(res.data.data);
         setFilterData(res.data.data);
       });
@@ -37,23 +37,29 @@ const CustomerMaster = () => {
     getData();
   }, []);
 
+  const handleRowData = (row) => {
+    setRowData(row);
+    setDocNameUpdate(row.doc_name); 
+    setDescriptionUpdate(row.description);
+  };
+
   useEffect(() => {
-    const result = customers.filter((d) => {
-      return d.customer_type_name?.toLowerCase().match(search.toLowerCase()); 
+    const result = documents.filter((d) => {
+      return d.doc_name?.toLowerCase().match(search.toLowerCase()); 
     });
     setFilterData(result);
   }, [search]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(baseUrl + "add_customer_type", {
-        customer_type_name: customerType,
+    axios.post(baseUrl + "add_doc_mast", { 
+        doc_name: docName, 
         description: description,
         created_by: userID
       })
       .then(() => {
         toastAlert("Submitted");
-        setCustomerType("");
+        setDocName("");
         setDescription("");
         getData(); 
       });   
@@ -66,55 +72,51 @@ const CustomerMaster = () => {
       sortable: true,
     },
     {
-      name: "Customer Type",
-      selector: (row) => row.customer_type_name, 
+      name: "Doc Name", 
+      selector: (row) => row.doc_name, 
     },
     {
-      name: "Description",
-      selector: (row) => row.description,
-    },
-    {
-      name: "Created By",
-      selector: (row) => row.created_by_name,
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <>
-          <button
-            title="Edit"
-            className="btn btn-outline-primary btn-sm user-button"
-            onClick={() => handleRowData(row)}
-            data-toggle="modal" data-target="#myModal"
-          >
-            <FaEdit />{" "}
-          </button>
-          <DeleteButton
-            endpoint="delete_customer_type" 
-            id={row._id}
-            getData={getData}
-          />
-        </>
-      ),
-    },
+        name: "Description",
+        selector: (row) => row.description,
+      },
+      {
+        name: "Created By",
+        selector: (row) => row.created_by_name,
+      },
+      {
+        name: "Action",
+        cell: (row) => (
+          <>
+            <button
+              title="Edit"
+              className="btn btn-outline-primary btn-sm user-button"
+              onClick={() => handleRowData(row)}
+              data-toggle="modal" data-target="#myModal"
+            >
+              <FaEdit />{" "}
+            </button>
+            <DeleteButton
+              endpoint="delete_doc_mast" 
+              id={row._id}
+              getData={getData}
+            />
+          </>
+        ),
+      },
   ];
 
-  const handleRowData = (row) => {
-    setRowData(row);
-    setCustomerTypeUpdate(row.customer_type_name); 
-    setDescriptionUpdate(row.description);
-  };
+  
 
   const handleModalUpdate = () => {
-    axios.put(baseUrl + `update_customer_type/${rowData._id}`, { 
-      customer_type_name: customerTypeUpdate, 
+    axios.put(baseUrl + `update_doc_mast/${rowData._id}`, { 
+      doc_name: docNameUpdate, 
       decription: descriptionUpdate,
       updated_by: userID
     })
     .then(() => {
       toastAlert("Successfully Update");
       getData();
-      setCustomerTypeUpdate("");
+      setDocNameUpdate("");
       setDescriptionUpdate("");
     });
   };
@@ -122,15 +124,15 @@ const CustomerMaster = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Customer Master" 
-        title="Customer" 
+        mainTitle="Ops Document Master" 
+        title="Document" 
         handleSubmit={handleSubmit}
       >
         <FieldContainer
-          label="Customer Type *" 
-          value={customerType}
+          label="Doc Name *" 
+          value={docName}
           required={true}
-          onChange={(e) => setCustomerType(e.target.value)}
+          onChange={(e) => setDocName(e.target.value)}
         />
         
         <FieldContainer
@@ -138,7 +140,7 @@ const CustomerMaster = () => {
           value={description}
           required={true}
           onChange={(e) => setDescription(e.target.value)}
-        />
+        />        
       </FormContainer>
 
       <div className="card">
@@ -174,10 +176,10 @@ const CustomerMaster = () => {
             </div>
             <div className="modal-body">
               <FieldContainer
-                label="Customer Type *"
-                value={customerTypeUpdate}
+                label="Doc Name *"
+                value={docNameUpdate}
                 required={true}
-                onChange={(e) => setCustomerTypeUpdate(e.target.value)}
+                onChange={(e) => setDocNameUpdate(e.target.value)}
               />
 
               <FieldContainer
@@ -202,8 +204,9 @@ const CustomerMaster = () => {
 
         </div>
       </div>
+      
     </>
   );
 };
 
-export default CustomerMaster;
+export default OpsDocMast;

@@ -7019,7 +7019,24 @@ a.close.disabled {
   padding: 1rem 1rem;
   margin: -1rem -1rem -1rem auto;
 }
-
+.eguvnT{
+  border-radius: 12px 12px 0 0 !important ;
+}
+.css-1knaqv7-MuiButtonBase-root-MuiButton-root{
+  border-radius: 5px !important ;
+  padding: 7px !important ;
+  margin-left: 10px!important ;
+  margin-top: 10px !important;
+  background-color: var(--white) !important ;
+  color: var(--primary) !important ;
+  border: 1px solid transparent !important ;
+  &:hover{
+    color: var(--white) !important ;
+    background-color: var(--primary) !important ;
+    border: 1px solid var(--primary) !important ;
+  
+  }
+}
 .modal-title {
   margin-bottom: 0;
   line-height: 1.5;

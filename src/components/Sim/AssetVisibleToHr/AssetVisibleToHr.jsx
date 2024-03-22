@@ -377,11 +377,11 @@ const AssetVisibleToHr = () => {
                     title="Asset Return Request"
                     columns={returnDataColumns}
                     data={returnAssetData}
-                    fixedHeader
-                    fixedHeaderScrollHeight="64vh"
+                    // fixedHeader
+                    // fixedHeaderScrollHeight="64vh"
                     exportToCSV
                     highlightOnHover
-                    subHeader
+                    pagination
                   />
                 </div>
               </div>

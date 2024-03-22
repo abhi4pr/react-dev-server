@@ -201,11 +201,15 @@ const AssetSingleuserOverview = ({
       name: "Asset ID",
       selector: (row) => row.sim_no,
       sortable: true,
+      width:"150px"
+
     },
     {
       name: "Asset Name",
       selector: (row) => row.assetsName,
       sortable: true,
+      width:"150px"
+
     },
     {
       name: "Asset Category",
@@ -218,13 +222,14 @@ const AssetSingleuserOverview = ({
       name: "Asset SubCategory",
       selector: (row) => row.sub_category_name,
       sortable: true,
-      width:"150px"
+      width:"170px"
     },
 
     {
       name: "Assigned Duration",
       selector: (row) => row.submitted_at,
       sortable: true,
+      width:"170px",
       cell: (row) => {
         // Get the assigned date from the row
         const assignedDate = new Date(row.submitted_at);
@@ -317,7 +322,7 @@ const AssetSingleuserOverview = ({
             )}
         </>
       ),
-      width:"140px"
+      width:"200px"
     },
   ];
 
@@ -372,14 +377,19 @@ const AssetSingleuserOverview = ({
 
     {
       name: "Tagged Person",
-      selector: (row) => row.multi_tag_names.join(", "),
+      cell: (row) => (
+        <div style={{ maxHeight: "100px", overflowY: "auto" }}>
+       { row.multi_tag_names.join(", ")}</div>),
       sortable: true,
     },
 
     {
       name: "Reject Reason",
-      selector: (row) => row.reject_reason,
+      cell: (row) => (
+        <div style={{ maxHeight: "100px", overflowY: "auto" }}>
+       { row.reject_reason}</div>),
       sortable: true,
+      width:"200px",
     },
     {
       name: "Action",

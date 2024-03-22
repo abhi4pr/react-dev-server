@@ -82,7 +82,8 @@ const VenderOverView = () => {
       name: "Company Name",
       selector: (row) => row.company_name,
       sortable: true,
-      width: "200px",
+      width: "250px",
+      
     },
     {
       name: " Address",
@@ -167,8 +168,9 @@ const VenderOverView = () => {
                     fixedHeaderScrollHeight="64vh"
                     exportToCSV
                     highlightOnHover
-                    subHeader
-                    subHeaderComponent={<></>}
+                
+                   
+                    
                   />
                 </div>
               </div>

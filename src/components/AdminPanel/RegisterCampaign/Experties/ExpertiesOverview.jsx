@@ -152,6 +152,7 @@ const ExpertiesOverview = () => {
       width: 150,
       renderCell: (params) => (
         <>
+        {console.log(params.row,"vijjj")}
           <Link to={`/admin/expeties-update/${params.row.exp_id}`}>
             <EditIcon sx={{ gap: "4px", margin: "5px", color: "blue" }} />
           </Link>
@@ -167,18 +168,36 @@ const ExpertiesOverview = () => {
   ];
 
   return (
-    <div>
+    <div className="master-card-css">
       <FormContainer
         mainTitle="Expert Overview"
         link="/admin/experties"
         buttonAccess={true}
       />
-      <div className="data_tbl" style={{ height: "64vh", width: "100%" }}>
-        <DataGrid
-          rows={getExpertiesData}
-          columns={columns}
-          getRowId={(row) => row.exp_id}
-        />
+      {/* <div className="card">
+        <div className="card-header">
+          <div className="data_tbl" style={{ height: "64vh", width: "100%" }}>
+            <div className="card-body body-padding">
+
+              <DataGrid
+                rows={getExpertiesData}
+                columns={columns}
+                getRowId={(row) => row.exp_id}
+              />
+            </div>
+          </div>
+        </div>
+      </div> */}
+      <div className="card">
+        <div className="card-body body-padding mt-2">
+          <Box sx={{ height: "400px" }}>
+            <DataGrid
+              rows={getExpertiesData}
+              columns={columns}
+              getRowId={(row) => row.exp_id}
+            />
+          </Box>
+        </div>
       </div>
       <Modal
         open={open2}

@@ -14,6 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveAsIcon from "@mui/icons-material/SaveAs";
 import ClearIcon from "@mui/icons-material/Clear";
 import { baseUrl } from "../../../utils/config";
+import FormContainer from "../FormContainer";
 
 const Attendence = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -462,6 +463,10 @@ const Attendence = () => {
   return (
     <>
       {/* Cards */}
+        <FormContainer 
+        mainTitle="Create Attendence"
+        link="true"
+        ></FormContainer>
       <div className="timeline_wrapper mb24">
         <Slider {...settings} className="timeline_slider">
           {completedYearsMonths.map((data, index) => (

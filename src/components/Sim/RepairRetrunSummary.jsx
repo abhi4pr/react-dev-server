@@ -50,22 +50,25 @@ const RepairRetrunSummary = () => {
       name: "S.No",
       // selector: (row) => row.Role_id,
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "10%",
+      width: "80px",
       sortable: true,
     },
     {
       name: "Asset Name",
       selector: (row) => row.asset_name,
-
+      width: "150px",
       sortable: true,
     },
 
     {
       name: "Asset Return By",
       selector: (row) => row.asset_return_by_name,
+      width: "150px",
     },
     {
       name: "Asset Return Img",
+      width: "150px",
+
       selector: (row) => (
         <>
           {row?.recover_asset_image_1 && row.recover_asset_image_2 && (
@@ -82,7 +85,9 @@ const RepairRetrunSummary = () => {
                 </button>
               ) : (
                 "N/A"
+                
               )}
+              
             </>
           )}
         </>
@@ -95,6 +100,8 @@ const RepairRetrunSummary = () => {
     {
       name: "Retun Recover HR",
       selector: (row) => row.asset_return_recover_by_name,
+      width: "150px",
+
     },
     {
       name: "Return Remark",
@@ -134,7 +141,20 @@ const RepairRetrunSummary = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
-            }
+        </div>
+        <div className="data_tbl table-responsive card-body body-padding">
+          <DataTable
+            title=""
+            columns={columns}
+            data={filterdata}
+            // fixedHeader
+            pagination
+            // fixedHeaderScrollHeight="62vh"
+            // highlightOnHover
+            // subHeader
+            // subHeaderComponent={
+             
+            // }
           />
         </div>
       </div>
