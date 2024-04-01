@@ -1,11 +1,8 @@
 import axios from "axios";
-import React, { useEffect } from "react";
-import UserNav from "../Pantry/UserPanel/UserNav";
+import  { useEffect } from "react";
 import FormContainer from "../AdminPanel/FormContainer";
 import { DataGrid, GridColumnMenu, GridToolbar } from "@mui/x-data-grid";
 import { useState } from "react";
-import { set } from "date-fns";
-import { Button } from "antd";
 import InsertPhotoTwoToneIcon from "@mui/icons-material/InsertPhotoTwoTone";
 import OndemandVideoTwoToneIcon from "@mui/icons-material/OndemandVideoTwoTone";
 import DeleteHistoryConfirmation from "./DeleteHistoryConfirmation";
@@ -19,7 +16,6 @@ export default function StatsAllPagesDetail() {
   const [rowData, setRowData] = useState([]);
   const [openDeleteHistoryConFirmation, setOpenDeleteHistoryConFirmation] =
     useState(false);
-  const [updatePercentage, setSetUpdatePercentage] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [copiedData, setCopiedData] = useState("");
   const [loading, setLoading] = useState(false);
@@ -707,13 +703,17 @@ export default function StatsAllPagesDetail() {
           <DataGrid
             rows={allPagesDetail}
             columns={columns}
-            // pageSize={10}
             getRowId={(row) => row._id}
             initialState={{
               pagination: {
                 paginationModel: {
                   pageSize: 50,
                 },
+              },
+            }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
               },
             }}
             slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}

@@ -7,7 +7,7 @@ import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import { Navigate } from "react-router";
 import Select from "react-select";
-import './Tagcss.css';
+import "./Tagcss.css";
 
 const PageMaster = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -21,16 +21,16 @@ const PageMaster = () => {
   const [tag, setTag] = useState([]);
   const [pageLevel, setPageLevel] = useState("");
   const [pageStatus, setPageStatus] = useState("");
-  const [userData, setUserData] = useState([])
-  const [closeBy, setCloseBy] = useState("")
+  const [userData, setUserData] = useState([]);
+  const [closeBy, setCloseBy] = useState("");
   const [pageType, setPageType] = useState("");
   const [content, setContent] = useState("");
-  const [ownerType, setOwnerType] = useState("")
-  const [vendorData, setVendorData] = useState([])
-  const [vendorId, setVendorId] = useState("")
-  const [followCount, setFollowCount] = useState("")
-  const [profileData, setProfileData] = useState([])
-  const [profileId, setProfileId] = useState("")
+  const [ownerType, setOwnerType] = useState("");
+  const [vendorData, setVendorData] = useState([]);
+  const [vendorId, setVendorId] = useState("");
+  const [followCount, setFollowCount] = useState("");
+  const [profileData, setProfileData] = useState([]);
+  const [profileId, setProfileId] = useState("");
   const [platformActive, setPlatformActive] = useState("");
   const [rate, setRate] = useState("");
   const [description, setDescription] = useState("");
@@ -39,29 +39,30 @@ const PageMaster = () => {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
 
-  const PageLevels =  [
-    { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" }
+  const PageLevels = [
+    { value: "Level 1", label: "Level 1" },
+    { value: "Level 2", label: "Level 2" },
+    { value: "Level 3", label: "Level 3" },
   ];
 
-  const PageStatus =  [
-    { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" }
+  const PageStatus = [
+    { value: "Active", label: "Active" },
+    { value: "Inactive", label: "Inactive" },
   ];
 
-  const PageTypes =  [
-    { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" }
-  ];
-  
-  const Contents =  [
-    { value: "English", label: "English" },
-    { value: "Hindi", label: "Hindi" }
+  const PageTypes = [
+    { value: "Clear", label: "Clear" },
+    { value: "Shreddy", label: "Shreddy" },
+  ];  
+
+  const Contents = [
+    { value: "Own", label: "Own" },
+    { value: "CF", label: "CF" },
   ];
 
   const getData = () => {
     axios.get(baseUrl + "getAllPlatform").then((res) => {
-    setPlatformData(res.data.data);
+      setPlatformData(res.data.data);
     });
 
     axios.get(baseUrl + "getPageCatgList").then((res) => {
@@ -87,112 +88,99 @@ const PageMaster = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-if (pageName === "" ) {
-
+    if (pageName === "") {
       toastError("Please Fill Page Name");
       return;
-    }
-    else if (link === "" ) {
+    } else if (link === "") {
       toastError("Please Fill Link");
       return;
-    }
-    else if (platformId === "" ) {
+    } else if (platformId === "") {
       toastError("Please Fill Platform ID");
       return;
-    }
-    else if (categoryId === "" ) {
+    } else if (categoryId === "") {
       toastError("Please Fill Category");
       return;
-    }
-    else if (pageLevel === "" ) {
+    } else if (pageLevel === "") {
       toastError("Please Fill Page Level");
       return;
-    }
-    else if (pageStatus === "" ) {
+    } else if (pageStatus === "") {
       toastError("Please Fill Page Status");
       return;
-    }
-    else if (closeBy === "" ) {
+    } else if (closeBy === "") {
       toastError("Please Fill Close By");
       return;
-    }
-    else if (pageType === "" ) {
+    } else if (pageType === "") {
       toastError("Please Fill Page Name Type");
       return;
-    }
-    else if (content === "" ) {
+    } else if (content === "") {
       toastError("Please Fill Content Creation");
       return;
-    }
-    else if (ownerType === "" ) {
+    } else if (ownerType === "") {
       toastError("Please Fill Ownership Type");
       return;
-    }
-    else if (vendorId === "" ) {
+    } else if (vendorId === "") {
       toastError("Please Fill Vendor");
       return;
-    }
-    else if (followCount === "" ) {
+    } else if (followCount === "") {
       toastError("Please Fill Followers Count");
       return;
-    }
-    else if (profileId === "" ) {
+    } else if (profileId === "") {
       toastError("Please Fill Profile Type");
       return;
-    }
-    else if (platformActive === "" ) {
+    } else if (platformActive === "") {
       toastError("Please Fill Platform Active On");
       return;
-    }
-    else if (rate === "" ) {
+    } else if (rate === "") {
       toastError("Please Fill Engagement Rate");
       return;
     }
 
     const payload = {
-        page_user_name: pageName,
-        link: link,
-        platform_id: platformId,
-        page_catg_id: categoryId,
-        tag_category: tag,
-        page_level: pageLevel,
-        page_status: pageStatus,
-        page_closed_by: closeBy,
-        page_name_type: pageType,
-        content_creation: content,
-        ownership_type: ownerType,
-        vendorMast_id: vendorId,
-        followers_count: followCount,
-        profile_type_id: profileId,
-        platform_active_on: platformActive,
-        engagment_rate: rate,
-        description: description,
-        created_by: userID,
-    }   
+      page_user_name: pageName,
+      link: link,
+      platform_id: platformId,
+      page_catg_id: categoryId,
+      tag_category: tag,
+      page_level: pageLevel,
+      page_status: pageStatus,
+      page_closed_by: closeBy,
+      page_name_type: pageType,
+      content_creation: content,
+      ownership_type: ownerType,
+      vendorMast_id: vendorId,
+      followers_count: followCount,
+      profile_type_id: profileId,
+      platform_active_on: platformActive,
+      engagment_rate: rate,
+      description: description,
+      created_by: userID,
+    };
 
-    axios.post(baseUrl + "addPageMast", payload).then(() => {
-      setIsFormSubmitted(true);
-      toastAlert("Submitted");
-    }).catch((error) => {
-      toastError(error.response.data.message);
-    }
-    );
+    axios
+      .post(baseUrl + "addPageMast", payload)
+      .then(() => {
+        setIsFormSubmitted(true);
+        toastAlert("Submitted");
+      })
+      .catch((error) => {
+        toastError(error.response.data.message);
+      });
   };
 
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-page-overview" />;
   }
 
-  function handleKeyDown(e){
-    if (e.key === ',' && e.target.value.trim()) {
+  function handleKeyDown(e) {
+    if (e.key === "," && e.target.value.trim()) {
       e.preventDefault();
       setTag([...tag, e.target.value.trim()]);
-      e.target.value = '';
+      e.target.value = "";
     }
   }
 
-  function removeTag(index){
-      setTag(tag.filter((el, i) => i !== index))
+  function removeTag(index) {
+    setTag(tag.filter((el, i) => i !== index));
   }
 
   return (
@@ -218,7 +206,7 @@ if (pageName === "" ) {
 
         <div className="form-group col-6">
           <label className="form-label">
-            Platform ID <sup style={{ color: "red" }}>*</sup>
+            Platform  <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
             options={platformData.map((option) => ({
@@ -229,7 +217,8 @@ if (pageName === "" ) {
             value={{
               value: platformId,
               label:
-                platformData.find((role) => role._id === platformId)?.platform_name || "",
+                platformData.find((role) => role._id === platformId)
+                  ?.platform_name || "",
             }}
             onChange={(e) => {
               setPlatformId(e.value);
@@ -266,17 +255,22 @@ if (pageName === "" ) {
           placeholder="Comma separated values"
           onChange={(e) => setTag(e.target.value.split(','))}
         /> */}
-        <label className="form-label">
-          Tags
-        </label>
+        <label className="form-label">Tags</label>
         <div className="tags-input-container">
-            { tag.map((tag, index) => (
-                <div className="tag-item" key={index}>
-                    <span className="text">{tag}</span>
-                    <span className="close" onClick={() => removeTag(index)}>&times;</span>
-                </div>
-            )) }
-            <input onKeyDown={handleKeyDown} type="text" className="tags-input" placeholder="comma separated values" />
+          {tag.map((tag, index) => (
+            <div className="tag-item" key={index}>
+              <span className="text">{tag}</span>
+              <span className="close" onClick={() => removeTag(index)}>
+                &times;
+              </span>
+            </div>
+          ))}
+          <input
+            onKeyDown={handleKeyDown}
+            type="text"
+            className="tags-input"
+            placeholder="comma separated values"
+          />
         </div>
 
         <div className="form-group col-6">
@@ -289,7 +283,7 @@ if (pageName === "" ) {
             required={true}
             className="basic-multi-select"
             classNamePrefix="select"
-            value={PageLevels.find(option => option.value === pageLevel)}
+            value={PageLevels.find((option) => option.value === pageLevel)}
             onChange={(selectedOption) => setPageLevel(selectedOption.value)}
           />
         </div>
@@ -304,8 +298,8 @@ if (pageName === "" ) {
             required={true}
             className="basic-multi-select"
             classNamePrefix="select"
-            value={PageStatus.find(option => option.value == pageStatus)}
-            onChange={(selectedOption)=> setPageStatus(selectedOption.value)}
+            value={PageStatus.find((option) => option.value == pageStatus)}
+            onChange={(selectedOption) => setPageStatus(selectedOption.value)}
           />
         </div>
 
@@ -322,8 +316,8 @@ if (pageName === "" ) {
             value={{
               value: closeBy,
               label:
-                userData.find((role) => role.user_id === closeBy)
-                  ?.user_name || "",
+                userData.find((role) => role.user_id === closeBy)?.user_name ||
+                "",
             }}
             onChange={(e) => {
               setCloseBy(e.value);
@@ -341,8 +335,8 @@ if (pageName === "" ) {
             required={true}
             className="basic-multi-select"
             classNamePrefix="select"
-            value={PageTypes.find(option=>option.value == pageType)}
-            onChange={(selectedOption)=> setPageType(selectedOption.value)}
+            value={PageTypes.find((option) => option.value == pageType)}
+            onChange={(selectedOption) => setPageType(selectedOption.value)}
           />
         </div>
 
@@ -356,8 +350,8 @@ if (pageName === "" ) {
             required={true}
             className="basic-multi-select"
             classNamePrefix="select"
-            value={Contents.find(option => option.value == content)}
-            onChange={(selectedOption)=> setContent(selectedOption.value)}
+            value={Contents.find((option) => option.value == content)}
+            onChange={(selectedOption) => setContent(selectedOption.value)}
           />
         </div>
 
@@ -441,7 +435,6 @@ if (pageName === "" ) {
           required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
-
       </FormContainer>
     </>
   );
