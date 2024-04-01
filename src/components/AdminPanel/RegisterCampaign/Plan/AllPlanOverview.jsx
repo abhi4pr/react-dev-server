@@ -3,13 +3,15 @@ import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import FormContainer from "../../FormContainer";
+import { baseUrl } from "../../../../utils/config";
 
 const AllPlanOverview = () => {
   const { id } = useParams();
   const [allPlan, setAllPlan] = useState([]);
   const getData = async () => {
     const res = await axios.get(
-      `http://192.168.1.11:3000/api/directplan/${id}`
+      `${baseUrl}directplan/${id}`
     );
     setAllPlan(res?.data?.result?.pages);
   };
@@ -48,7 +50,7 @@ const AllPlanOverview = () => {
     {
       field: "page_link",
       headerName: "Link",
-      width: 200,
+      width: 500,
     },
 
     // {
@@ -70,16 +72,13 @@ const AllPlanOverview = () => {
   ];
 
   return (
-    <>
-      <Paper>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2> All Plan Overview</h2>
-          </div>
-        </div>
-      </Paper>
+    <div className="master-card-css">
+      <FormContainer mainTitle=" All Plan Overview" link="true"/>
+      <div className="card body-padding">
+
       <DataGrid rows={allPlan} columns={col} getRowId={(row) => row?.p_id} />
-    </>
+      </div>
+    </div>
   );
 };
 

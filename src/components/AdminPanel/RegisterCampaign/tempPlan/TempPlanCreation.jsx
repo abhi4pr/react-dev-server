@@ -2,6 +2,7 @@ import CampaignDetailes from "../CampaignDetailes";
 import { useParams } from "react-router-dom";
 import { useState} from "react";
 import PageDetailingNew from "../PageDetailingNew";
+import FormContainer from "../../FormContainer";
 
 const TempPlanCreation = () => {
 
@@ -17,11 +18,11 @@ const TempPlanCreation = () => {
 
     return (
         <>
-            <div>
-                <div className="form_heading_title">
-                    <h2 className="form-heading">Plan Creation</h2>
-                </div>
-            </div>
+           
+            <FormContainer 
+            mainTitle="Plan Creation"
+            link="true"
+            />
             <CampaignDetailes cid={id} getCampaign={getCampaignName} />
 
             <PageDetailingNew

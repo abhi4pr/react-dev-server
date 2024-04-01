@@ -74,7 +74,7 @@ const CampaignDetailes = ({
 
   useEffect(() => {
     if (commitmentCompleteData.length > 0 && getCampaign) {
-      getCampaign(commitmentCompleteData, cmpName.exeCmpName,campaignData);
+      getCampaign(commitmentCompleteData, cmpName?.exeCmpName,campaignData);
     }
   }, [commitmentCompleteData, cmpName]);
 
@@ -92,7 +92,7 @@ const CampaignDetailes = ({
   return (
     <>
       {/* Non editable campaigning detailes */}
-      <Paper sx={{ p: 1 }}>
+      <div className="card body-padding">
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6} md={4}>
             <TextField
@@ -113,7 +113,7 @@ const CampaignDetailes = ({
               fullWidth
               label="Campaign"
               InputLabelProps={{ shrink: true }}
-              value={cmpName.exeCmpName}
+              value={cmpName?.exeCmpName}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -155,7 +155,7 @@ const CampaignDetailes = ({
             </>
             })}
         </Grid>
-      </Paper>
+      </div>
     </>
   );
 };

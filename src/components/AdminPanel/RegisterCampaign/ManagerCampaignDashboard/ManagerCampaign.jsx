@@ -38,13 +38,31 @@ const ManagerCampaign = () => {
       <FormContainer
         submitButton={false}
         mainTitle="Manager Dashboard"
-        accordionButtons={accordionButtons}
-        activeAccordionIndex={activeAccordionIndex}
-        onAccordionButtonClick={handleAccordionButtonClick}
+       handleSubmit={false}
+       link={true}
       >
-        {activeAccordionIndex === 0 && tab1}
-        {activeAccordionIndex === 1 && tab2}
+       
       </FormContainer>
+      <div className="tab">
+        {
+          accordionButtons.map((button, index) => (
+
+          <div className={`named-tab ${activeAccordionIndex === index ?"active-tab":""}` } onClick={()=>{
+            handleAccordionButtonClick(index)
+          }} >
+            {
+              button
+            }
+          </div>
+          
+
+          ))
+        }
+      </div>
+      <div className="card body-padding">
+      {activeAccordionIndex === 0 && tab1}
+        {activeAccordionIndex === 1 && tab2}
+      </div>
     </>
   );
 };

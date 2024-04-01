@@ -99,11 +99,20 @@ const ManagerDashboard = () => {
       <FormContainer
         submitButton={false}
         mainTitle=" Campaign Progress Tab "
-        accordionButtons={accordionButtons}
-        activeAccordionIndex={activeAccordionIndex}
-        onAccordionButtonClick={handleAccordionButtonClick}
+       link={true}
+       handleSubmit={false}
       >
-        <div>
+      
+      </FormContainer>
+      <div className="tab">
+      {accordionButtons.map((item, index) => (
+        <div className={`named-tab ${activeAccordionIndex === index ?"active-tab":""}`}
+        onClick={()=>{handleAccordionButtonClick(index)}}>{item}</div>
+      ))}
+      </div>
+      <div className="card">
+        <div className="card-header">
+          <div className="pack">
           <TextField
             label="Search Experts"
             type="text"
@@ -111,12 +120,15 @@ const ManagerDashboard = () => {
             onChange={handleFilterChange}
             sx={{ mb: 2, width: "20%" }}
           />
+          </div>
         </div>
-        {activeAccordionIndex === 0 && tab1}
-        {activeAccordionIndex === 1 && tab2}
-        {activeAccordionIndex === 2 && tab3}
-        {activeAccordionIndex === 3 && tab4}
-      </FormContainer>
+        <div className="card-body">
+          {activeAccordionIndex === 0 && tab1}
+          {activeAccordionIndex === 1 && tab2}
+          {activeAccordionIndex === 2 && tab3}
+          {activeAccordionIndex === 3 && tab4}
+        </div>
+      </div>
     </>
   );
 };

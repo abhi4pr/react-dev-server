@@ -42,7 +42,7 @@ const CaseStudyplateform = () => {
       cell: (row) => (
         <>
           <button
-            className="btn btn-primary"
+            className="icon-1"
             data-toggle="modal"
             data-target="#exampleModal"
             size="small"
@@ -50,7 +50,7 @@ const CaseStudyplateform = () => {
             color="primary"
             onClick={() => handleBrandData(row)}
           >
-            <FaEdit />
+           <i className="bi bi-pencil"></i>
           </button>
           <DeleteButton
             endpoint="delete_data_platform"
@@ -122,41 +122,51 @@ const CaseStudyplateform = () => {
 
   return (
     <div>
-      <div style={{ width: "80%", margin: "0 0 0 10%" }}>
+      <div className="master-card-css" style={{ width: "80%", margin: "0 0 0 10%" }}>
         <UserNav />
 
         <FormContainer
           mainTitle="Data Platform"
           title="Platform"
-          handleSubmit={handleSubmit}
+          link="true"
+          handleSubmit={false}
         >
-          <FieldContainer
+         
+        </FormContainer>
+        <div className="card body-padding">
+          <div className="d-flex" style={{justifyContent:"space-between",alignItems:"center"}}>
+
+        <FieldContainer
             label="Platform Name"
             value={platformName}
             onChange={(e) => setPlatformName(e.target.value)}
-          />
-        </FormContainer>
+            />
+           <button className="btn btn-outline-primary">Submit</button>
+            </div>
+        </div>
 
         <div className="card">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title="Modal Overview"
-              columns={columns}
-              data={modalFilter}
-              fixedHeader
-              // pagination
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
+          <div className="card-header
+          sb">
+         <h6> Modal Overview</h6>  
+         <input
                   type="text"
                   placeholder="Search here"
                   className="w-50 form-control"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
-              }
+          </div>
+          <div className="data_tbl table-responsive card-body body-padding">
+            <DataTable
+            
+              columns={columns}
+              data={modalFilter}
+             
+              pagination
+              fixedHeaderScrollHeight="64vh"
+              highlightOnHover
+             
             />
           </div>
         </div>

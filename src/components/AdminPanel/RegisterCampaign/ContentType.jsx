@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 import { toolbarStyles } from "./CampaignCommitment";
 import { baseUrl } from "../../../utils/config";
+import FormContainer from "../FormContainer";
 
 export default function ContentType() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -50,14 +51,12 @@ export default function ContentType() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button
-          color="error"
-          variant="outlined"
-          startIcon={<AddIcon />}
+        <button
+         className="btn btn-outline-primary btn-sm"
           onClick={handleClick}
         >
           create content
-        </Button>
+        </button>
       </GridToolbarContainer>
     );
   }
@@ -218,20 +217,25 @@ export default function ContentType() {
         const { id, row } = params;
         return [
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
-            icon={<EditIcon />}
+          <button
+           
             label="Edit"
-            className="textPrimary"
+            className="icon-1"
             onClick={handleEditClick(id, row)}
             color="primary"
-          />,
+          >
+            <i className="bi bi-pencil"></i>
+          </button>,
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
+          <button
+          className="icon-1"
+           
             label="Delete"
             onClick={handleDeleteClick(id)}
             color="error"
-          />,
+          >
+            <i className="bi bi-trash"></i>
+          </button>,
         ];
       },
     },
@@ -249,20 +253,25 @@ export default function ContentType() {
 
   return (
     <>
-      <Paper>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2> Content </h2>
-          </div>
-        </div>
-      </Paper>
-      <TextField
+    <FormContainer
+      link={"true"}
+      submitButton={false}
+      mainTitle={"Content"}
+    />
+      
+      <div className="card">
+        <div className="card-header">
+            <div className="pack">
+            <TextField
         label="Search"
         variant="outlined"
         value={searchInput}
         onChange={(e) => setSearchInput(e.target.value)}
         style={{ marginBottom: "10px" }}
       />
+            </div>
+        </div>
+        <div className="card-body body-padding">
 
       <Box>
         <DataGrid
@@ -282,6 +291,10 @@ export default function ContentType() {
           }}
         />
       </Box>
+        </div>
+      </div>
+      
+
 
       {/* AddRecordModal post data */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -370,20 +383,21 @@ export default function ContentType() {
           <DialogContentText>Are you sure ...?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
+          <div className="d-flex sb w-100">
+
+          <button
             onClick={() => setIsDeleteConfirmationOpen(false)}
-            color="primary"
-            variant="outlined"
-          >
+            className="btn btn-outline-primary btn-sm"
+            >
             Cancel
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={handleConfirmDelete}
-            color="error"
-            variant="outlined"
-          >
+            className="btn  btn-outline-danger btn-sm"
+            >
             Delete
-          </Button>
+          </button>
+            </div>
         </DialogActions>
       </Dialog>
     </>

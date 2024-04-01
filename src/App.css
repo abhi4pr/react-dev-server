@@ -51,7 +51,8 @@
   padding: 10px;
 }
 
-.sidebar .nav-item.active .nav-link {
+
+ .nav-item.active .nav-link {
   color: #6f737c !important;
   background-image: none !important;
   transition: none !important;
@@ -1321,7 +1322,7 @@ label.checkbox-inline.propscss {
 }
 .css-1iyq7zh-MuiDataGrid-columnHeaders{
   background-color: var(--body-bg);
-  border-radius:0 !important; 
+  border-radius:14px 12px 0 0 !important; 
 }
 .css-128fb87-MuiDataGrid-toolbarContainer{
   background-color: var(--body-bg);

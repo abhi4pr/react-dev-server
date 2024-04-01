@@ -6,7 +6,7 @@
   --white: #ffffff;
   --color-white: #ffffff;
   --bg-white: #ffffff;
-  --body-bg: #cfd9fe;
+  --body-bg: #f1f5f9;
   --gray-50: #f9fafb;
   --gray-100: #f3f4f6;
   --gray-200: #e5e7eb;
@@ -162,7 +162,13 @@ dd {
 blockquote {
   margin: 0 0 1rem;
 }
-
+.row-align{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
 b,
 strong {
   font-weight: bolder;
@@ -2153,7 +2159,25 @@ pre code {
 .table-responsive > .table-bordered {
   border: 0;
 }
+.css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root,.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input,.css-1d8u07g-MuiInputBase-root-MuiOutlinedInput-root {
+  height: 48px !important;
+  /* padding: 0!important; */
+  padding:  0  0  0  10px !important;
+  box-shadow: none !important;
+  
+}
 
+.css-154xyx0-MuiInputBase-root-MuiOutlinedInput-root,.css-md26zr-MuiInputBase-root-MuiOutlinedInput-root,.MuiAutocomplete-hasClearIcon.css-1wuilmg-MuiAutocomplete-root .MuiOutlinedInput-root.css-wb57ya-MuiFormControl-root-MuiTextField-root,.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root,.css-8ewcdo-MuiInputBase-root-MuiOutlinedInput-root,.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input ,.css-1h51icj-MuiAutocomplete-root .MuiAutocomplete-inputRoot,.css-8ewcdo-MuiInputBase-root-MuiOutlinedInput-root,.css-8ewcdo-MuiInputBase-root-MuiOutlinedInput-root, .css-18vzdy4-MuiInputBase-root-MuiOutlinedInput-root,.thm_form .MuiFormControl-root ,.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root{
+  
+  -webkit-box-flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  border-radius: 12px !important;
+  height: 48px;
+ 
+
+}
 .form-control {
   display: block;
   width: 100%;
@@ -12641,13 +12665,36 @@ body.sidebar-toggled .topbar {
   height: 100vh;
   gap: 16px;
 }
-
+.grid-con{
+  display: grid;
+  grid-gap: 16px 20px;
+  grid-template-columns: repeat(3, calc(100% / 3 - 13px));
+    width: 100%;
+    height: 100%;
+}
+/* .css-1gywuxd-MuiInputBase-root-MuiOutlinedInput-root{
+  width: 100% !important;
+  height: 48px !important;
+  display: flex;
+  flex-direction: row !important; 
+  overflow-y: scroll;
+} */
+.css-1gywuxd-MuiInputBase-root-MuiOutlinedInput-root{
+  width: 100% !important;
+  height:max-content !important;
+  display: flex;
+  flex-direction: row !important; 
+  overflow-y: scroll;
+}
+.css-gin0dw-MuiDataGrid-root{
+  border-radius: 12px !important;
+}
 .sidebar {
   width: 300px;
   height: calc(100vh - 100px);
   overflow: visible;
   position: fixed;
-  z-index: 9999;
+  z-index: 0;
   top: 80px;
   left: 20px;
   bottom: 0;

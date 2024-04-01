@@ -4,6 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../../../Context/Context";
 import {baseUrl} from '../../../../utils/config'
+import FormContainer from "../../FormContainer";
 
 const CreateMaster = ({ name, data }) => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -66,15 +67,14 @@ const CreateMaster = ({ name, data }) => {
  
   console.log(payload);
   return (
-    <>
-      <Paper>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2> Create {name} </h2>
-          </div>
-        </div>
-      </Paper>
-      <Box>
+    <div className="master-card-css">
+      <FormContainer mainTitle={`Create ${name}`}
+      link={"true"}
+      submitButton={false}
+      
+      />
+      
+      <div className="card body-padding">
         <Grid container spacing={2}>
           {data &&
             data.map((field, index) => (
@@ -93,13 +93,15 @@ const CreateMaster = ({ name, data }) => {
             ))}
         </Grid>
 
-        <Box sx={{ display: "flex", justifyContent: "flex-start", mt: 2 }}>
-          <Button variant="outlined" color="error" onClick={handleSubmit}>
+        
+      </div>
+        <div className="pack">
+
+          <button className="btn btn-outline-primary" onClick={handleSubmit}>
             submit
-          </Button>
-        </Box>
-      </Box>
-    </>
+          </button>
+        </div>
+    </div>
   );
 };
 

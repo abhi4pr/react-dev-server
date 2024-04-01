@@ -24,6 +24,7 @@ import axios from "axios";
 import { toolbarStyles } from "./CampaignCommitment";
 import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
+import FormContainer from "../FormContainer";
 
 export default function SubCategoryMaster() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -222,20 +223,24 @@ export default function SubCategoryMaster() {
         const { id, row } = params;
         return [
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
-            icon={<EditIcon />}
+          <button
+        
             label="Edit"
-            className="textPrimary"
+            className="icon-1"
             onClick={handleEditClick(id, row)}
             color="secondary"
-          />,
+          >
+            <i className=" bi bi-pencil"></i>
+          </button>,
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
+          <button
+            className="icon-1"
             label="Delete"
             onClick={handleDeleteClick(id)}
             color="error"
-          />,
+          >
+            <i className="bi bi-trash"></i>
+          </button>,
         ];
       },
     },
@@ -254,14 +259,17 @@ export default function SubCategoryMaster() {
   }, [searchInput, rows]);
 
   return (
-    <>
-      <Paper>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2> Sub Category </h2>
-          </div>
-        </div>
-      </Paper>
+    <div className="master-card-css">
+      <FormContainer
+         mainTitle={"Sub Category Master"}
+         submitButton={false}
+         link={"/admin-panel"}
+      />
+      <div className="card">
+        <div className="card-header">
+          <div></div>
+          <div className="pack">
+
       <TextField
         id="outlined-basic"
         label="Search"
@@ -270,18 +278,9 @@ export default function SubCategoryMaster() {
         onChange={(e) => setSearchInput(e.target.value)}
         style={{ marginBottom: "10px" }}
       />
-      <Box
-      // sx={{
-      //   // height: 500,
-      //   width: "100%",
-      //   "& .actions": {
-      //     color: "text.secondary",
-      //   },
-      //   "& .textPrimary": {
-      //     color: "text.primary",
-      //   },
-      // }}
-      >
+          </div>
+        </div>
+        <div className="card-body body-padding" style={{height:"700px"}}>
         <DataGrid
           rows={filteredRows}
           columns={columns}
@@ -298,7 +297,9 @@ export default function SubCategoryMaster() {
             toolbar: { setRows, setRowModesModel },
           }}
         />
-      </Box>
+        </div>
+      </div>
+      
 
       {/* AddRecordModal post data */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -425,22 +426,23 @@ export default function SubCategoryMaster() {
           <DialogContentText>Are you sure ...?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
+          <div className="d-flex sb w-100">
+
+          <button
             onClick={() => setIsDeleteConfirmationOpen(false)}
-            color="primary"
-            variant="outlined"
-          >
+            className="btn btn-outline-primary btn-sm"
+            >
             Cancel
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={handleConfirmDelete}
-            color="error"
-            variant="outlined"
-          >
+            className="btn btn-outline-danger btn-sm"
+            >
             Delete
-          </Button>
+          </button>
+            </div>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }

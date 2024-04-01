@@ -50,9 +50,9 @@ export default function CampaignCommitment() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button color="error" variant="outlined" onClick={handleClick}>
+        <button className="btn btn-outline-danger" onClick={handleClick}>
           create commitment
-        </Button>
+        </button>
       </GridToolbarContainer>
     );
   }
@@ -228,22 +228,27 @@ export default function CampaignCommitment() {
         const { id, row } = params;
         return [
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
+          <button
             icon={<EditIcon  />}
             label="Edit"
             // className=" "
             className="icon-1"
             onClick={handleEditClick(id, row)}
             color="inherit"
-          />,
+          >
+            <i className="bi bi-pencil"></i>
+          </button>,
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
+          <button
             icon={<DeleteIcon />}
             label="Delete"
             className="icon-1"
             onClick={handleDeleteClick(id)}
             color="inherit"
-          />,
+          >
+            <i className="bi bi-trash"></i>
+
+          </button>,
         ];
       },
     },
@@ -263,9 +268,10 @@ export default function CampaignCommitment() {
     <>
       <FormContainer mainTitle="Commitment Master" link="true" />
       <div className="card">
-        <div className="card-header">
-          <div className="pack">
-            <div className="form-group ">
+        <div className="card-header sb">
+          <div></div>
+          <div className="pack w-25">
+            
               <FieldContainer
                 fieldGrid={12}
                 label=""
@@ -273,11 +279,11 @@ export default function CampaignCommitment() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
-            </div>
+           
           </div>
         </div>
         <div className="card-body body-padding">
-          <Box sx={{ height: "400px" }}>
+          <Box sx={{ height: "max-content",maxHeight:"700px"}}>
             <DataGrid
               rows={filteredRows}
               columns={columns}

@@ -4,8 +4,10 @@ import { DataGrid } from "@mui/x-data-grid";
 import millify from "millify";
 import * as XLSX from "xlsx";
 import { SiMicrosoftexcel } from "react-icons/si";
+import generatePDF from "../../../utils/PdfConverter";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
-const SummaryDetails = ({ payload, campName }) => {
+const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
   console.log(payload)
   const [summaryData, setSummaryData] = useState({
     total: 0,
@@ -151,7 +153,7 @@ const SummaryDetails = ({ payload, campName }) => {
     const overviewWorksheet = XLSX.utils.aoa_to_sheet(overviewData);
 
     overviewWorksheet["!cols"] = [
-      { wch: 10 },
+      { wch: 12 },
       { wch: 20 },
       { wch: 15 },
       { wch: 15 },
@@ -199,38 +201,23 @@ const SummaryDetails = ({ payload, campName }) => {
   return (
     <>
       {payload?.length > 0 && (
-        <Box sx={{ height: 500, width: "500px" }}>
-          <Paper elevation={12} sx={{ mb: 4, height: "150px", width: "100%" }}>
-            <Typography
-              sx={{ textAlign: "center", fontSize: "20px", mb: 2 }}
-              color="secondary"
+        <Box sx={{ height: `${drawer === true ?"100%":"700px"}`, width:`${drawer === true ? "100%":"40%"}`,border:"1px solid var(--gray-200)",overflow:"hidden",borderRadius:"12px" }}>
+          <Paper elevation={1} sx={{ mb: 1, height: "130px", width: "100%" ,background:"var(--body-bg)"}}>
+            <h5
+              
+              style={{ textAlign: "center", padding: "10px" ,color:"var(--gray-700)"}}
             >
               Summary
-            </Typography>
-            <Box>
-              <Button
-                onClick={downloadExcel}
-                variant="text"
-                color="success"
-                title="Download Excel"
-                sx={{ fontSize: "25px" }}
-              >
-                <SiMicrosoftexcel />
-              </Button>
-              {/* <Button
-                onMouseEnter={downloadExcel} 
-                variant="contained"
-                color="primary"
-              >
-                Excel
-              </Button> */}
-            </Box>
+            </h5>
+            
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-around",
+                justifyContent: "space-between",
                 gap: 1,
                 mt: 2,
+                background:"var(--white)",
+                color:"var(--gray-500)",
               }}
             >
               <Typography variant="6"> Pages: {summaryData.lent}</Typography>
@@ -244,16 +231,48 @@ const SummaryDetails = ({ payload, campName }) => {
                 Story: {summaryData.totalStory || 0}
               </Typography>
             </Box>
+            <Box className="sb gap4 pb-2">
+              <div className="pack" style={{display:"flex",flexDirection:"row",alignItems:"center"}}>
+              
+
+              <button
+                onClick={downloadExcel}
+                variant="text"
+                color="success"
+                title="Download Excel"
+                className="btn btn-outline-success icon-1 p-1 "
+                >
+                <SiMicrosoftexcel />
+              </button>
+              <button
+            onClick={() => generatePDF(filteredData)}
+            variant="text"
+            color="error"
+            title="Download Pdf"
+            className="btn btn-outline-danger icon-1 p-1 "
+            
+            >
+            <PictureAsPdfIcon />
+          </button>
+            </div>
+              {/* <Button
+                onMouseEnter={downloadExcel} 
+                variant="contained"
+                color="primary"
+              >
+                Excel
+              </Button> */}
+            </Box>
           </Paper>
 
           <Box>
-            <div className="summaryDetailingwebkit">
+            <div className="summaryDetailingwebkit mb-2">
               <ul
                 style={{
                   display: "flex",
                   overflowX: "auto",
                   whiteSpace: "nowrap",
-                  marginBottom: "20px",
+                  // marginBottom: "20px",
                 }}
               >
                 {Object.entries(catNameLengths).map(([catName, count]) => (
@@ -271,10 +290,10 @@ const SummaryDetails = ({ payload, campName }) => {
             </div>
           </Box>
 
-          <Box sx={{ display: "flex", gap: 2, ml: 2 }}>
-            <Typography>Total Followers: {totalFollowerCount}</Typography>
-            <Typography>Total Posts: {totalPostPerPage}</Typography>
-            <Typography>Total Stories: {totalStoryPerPage}</Typography>
+          <Box className="mb-2"  sx={{ display: "flex",display:"flex",justifyContent:"space-between",padding:"5px",background:"var(--body-bg)"}}>
+            <div sx={{ fontSize:"14px"}}style={{color:"var(--gray-500)"}}>Followers: {totalFollowerCount}</div>
+            <div sx={{ fontSize:"14px"}}style={{color:"var(--gray-500)"}}>Posts: {totalPostPerPage}</div>
+            <div sx={{ fontSize:"14px"}}style={{color:"var(--gray-500)"}}>Stories: {totalStoryPerPage}</div>
           </Box>
           <DataGrid
             rows={filteredData ? filteredData : payload}

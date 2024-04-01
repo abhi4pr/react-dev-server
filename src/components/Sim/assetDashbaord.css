@@ -40,8 +40,13 @@
     }
 }
 .asset-d_infocard_txt h3{
-    color: var(--bg-white   );
+    color: var(--bg-white   )!important;
     font-size: 25px;
+}
+.asset-d_infocard_txt p{
+    font-size: 90%;
+    color: var(--bg-white   )!important;
+
 }
 .asset-d_infocard_icon h1{
     color: var(--bg-white);

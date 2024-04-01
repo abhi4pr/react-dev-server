@@ -81,31 +81,28 @@ export default function BrandMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button color="primary" variant="outlined" onClick={handleClick}>
-          create brand
-        </Button>
+        <button className="btn btn-outline-primary btn-sm" onClick={handleClick}>
+          Create Brand
+        </button>
 
-        <Button
-          color="primary"
-          variant="outlined"
+        <button
+         className="btn btn-outline-primary btn-sm"
           onClick={() => navigate("/admin/categorymaster")}
         >
           Create Category
-        </Button>
-        <Button
-          color="primary"
-          variant="outlined"
+        </button>
+        <button
+         className="btn btn-outline-primary btn-sm"
           onClick={() => navigate("/admin/subcategory")}
         >
           Create Subcategory
-        </Button>
-        <Button
-          color="primary"
-          variant="outlined"
+        </button>
+        <button
+         className="btn btn-outline-primary btn-sm"
           onClick={() => navigate("/case-platform")}
         >
           Platfrom
-        </Button>
+        </button>
       </GridToolbarContainer>
     );
   }
@@ -343,9 +340,9 @@ export default function BrandMaster() {
       renderCell: (params) => {
         return (
           <div>
-            <Button onClick={() => handlePlatformData(params)} variant="text">
-              <ModeCommentTwoToneIcon />
-            </Button>
+            <button className="icon-1" onClick={() => handlePlatformData(params)} variant="text">
+              <i className="bi bi-chat-left-text"></i>
+            </button>
           </div>
         );
       },
@@ -359,19 +356,24 @@ export default function BrandMaster() {
       getActions: (params) => {
         const { id, row } = params;
         return [
-          <GridActionsCellItem
-            icon={<EditIcon />}
+          <button
+        className="icon-1"
+           
             label="Edit"
-            className="textPrimary"
+            
             onClick={handleEditClick(id, row)}
             color="primary"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
+          >
+            <i className=" bi bi-pencil"></i>
+          </button>,
+          <button
+            className="icon-1"
             label="Delete"
             onClick={handleDeleteClick(id)}
-            sx={{ color: "red" }}
-          />,
+          
+          >
+            <i className="bi bi-trash"></i>
+          </button>,
         ];
       },
     },
@@ -409,9 +411,10 @@ export default function BrandMaster() {
       <FormContainer mainTitle="Brand Master" link="true" />
 
       <div className="card">
-        <div className="card-header">
-          <div className="pack">
-            <div className="form-group ">
+        <div className="card-header sb">
+          <div></div>
+          <div className="pack w-25">
+           
               <FieldContainer
                 fieldGrid={12}
                 label=""
@@ -419,11 +422,11 @@ export default function BrandMaster() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
-            </div>
+           
           </div>
         </div>
         <div className="card-body body-padding">
-          <Box sx={{ height: "400px" }}>
+          <Box sx={{ height: "700px" }}>
             <DataGrid
               rows={filteredRows}
               columns={columns}
@@ -644,26 +647,32 @@ export default function BrandMaster() {
       <Dialog
         open={isDeleteConfirmationOpen}
         onClose={() => setIsDeleteConfirmationOpen(false)}
+        
       >
         <DialogTitle>Delete Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText>Are you sure ...?</DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
+          <div className="sb w-100">
+             
+          <button
+          className="btn btn-outline-danger btn-sm"
             onClick={() => setIsDeleteConfirmationOpen(false)}
             color="primary"
             variant="outlined"
-          >
+            >
             Cancel
-          </Button>
-          <Button
+          </button>
+          <button
+          className="btn btn-outline-primary btn-sm"
             onClick={handleConfirmDelete}
             color="error"
             variant="outlined"
-          >
+            >
             Delete
-          </Button>
+          </button>
+            </div>
         </DialogActions>
       </Dialog>
     </>

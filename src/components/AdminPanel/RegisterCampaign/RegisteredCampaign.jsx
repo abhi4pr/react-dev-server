@@ -490,9 +490,9 @@ export default function RegisteredCampaign() {
       renderCell: (params) => {
         return (
           <div>
-            <Button onClick={() => handleOpen2(params)} variant="text">
-              <ModeCommentTwoToneIcon />
-            </Button>
+            <button className="icon-1" onClick={() => handleOpen2(params)} variant="text">
+             <i className="bi bi-chat-left-text"></i>
+            </button>
           </div>
         );
       },
@@ -519,9 +519,9 @@ export default function RegisteredCampaign() {
       renderCell: (params) => {
         return (
           <div className="d-flex text-center align-item-center justify-content-center">
-            <Button type="button" onClick={() => handleOpen(params)}>
-              <SendTwoToneIcon />
-            </Button>
+            <button className="icon-1" type="button" onClick={() => handleOpen(params)}>
+             <i className="bi bi-send"></i>
+            </button>
           </div>
         );
       },
@@ -565,13 +565,12 @@ export default function RegisteredCampaign() {
       renderCell: (params) => {
         return (
           <div>
-            <Button
-              type="button"
-              color="error"
+            <button
+             className="icon-1"
               onClick={() => handleDeleteRow(params)}
             >
-              <DeleteIcon />
-            </Button>
+             <i className="bi bi-trash"></i>
+            </button>
           </div>
         );
       },
@@ -868,9 +867,10 @@ export default function RegisteredCampaign() {
       </div>
 
       <div className="card">
-        <div className="card-header sb">
-          <div></div>
-          <div className="pack  ">        <Box sx={{ display: "flex" }}>
+        <div className="card-header">
+         
+                  <h6 style={{width:"100px"}}>Count: {filteredTable1DataLength}</h6>
+          <div className="pack  ">       
               <FormControl style={{ width: "300px", margin: "10px" }}>
                 <InputLabel id="date-filter-select-label">
                   Date Filter
@@ -889,8 +889,7 @@ export default function RegisteredCampaign() {
                   <MenuItem value="thisYear"> Year</MenuItem>
                 </Select>
               </FormControl>
-              <Box sx={{ m: 3 }}>Count: {filteredTable1DataLength}</Box>
-            </Box>
+          
             </div>
 
         </div>
@@ -917,7 +916,7 @@ export default function RegisteredCampaign() {
           </Typography>
 
           <Typography id="modal-modal-description" sx={{ mt: 2, mb: 3 }}>
-            <Paper sx={{ padding: "10px" }}>
+            <>
               <div className="d-flex justify-content-between">
                 <TextField
                   sx={{ width: "100%" }}
@@ -941,7 +940,7 @@ export default function RegisteredCampaign() {
                 helperText={errors.campaignBrief}
               />
 
-              <Paper sx={{ padding: "10px", marginBottom: "10px" }}>
+              <div className="mt-2 mb-2">
                 <FormControl>
                   {formData?.fields?.map((field, index) => (
                     <>
@@ -1041,7 +1040,7 @@ export default function RegisteredCampaign() {
                     </>
                   ))}
                 </FormControl>
-              </Paper>
+              </div>
               <div className="d-flex justify-content-between">
                 <div>
                   {videoType?.filter(
@@ -1059,22 +1058,21 @@ export default function RegisteredCampaign() {
                 </div>
               </div>
               <div className="d-flex justify-content-between">
-                <Button variant="contained" onClick={handleClose} color="error">
+                <button className="btn btn-outline-danger" onClick={handleClose}>
                   Cancle
-                </Button>
-                <Button
+                </button>
+                <button
                   type="submit"
                   onClick={() => {
                     handleSubmit();
                   }}
-                  variant="contained"
-                  sx={{ marginLeft: "10px" }}
+                   className="btn btn-outline-primary"
                   color="primary"
                 >
                   Submit
-                </Button>
+                </button>
               </div>
-            </Paper>
+            </>
           </Typography>
         </Box>
       </Modal>
@@ -1094,8 +1092,8 @@ export default function RegisteredCampaign() {
           >
             Commits
           </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2, mb: 3 }}>
-            <Paper sx={{ padding: "10px" }}>
+          <div id="modal-modal-description" className=" mt-4" >
+            
               <div className="d-flex justify-content-between">
                 <DataGrid
                   rows={commitmentModalData}
@@ -1104,16 +1102,15 @@ export default function RegisteredCampaign() {
                   getRowId={(row) => row?.selectValue}
                 />
               </div>
-              <Button
-                sx={{ marginTop: "10px" }}
-                variant="contained"
+              <button
+                className="btn btn-outline-primary btn-sm mt-2"
                 onClick={handleClose2}
-                color="primary"
+                
               >
                 Cancle
-              </Button>
-            </Paper>
-          </Typography>
+              </button>
+          
+          </div>
         </Box>
       </Modal>
     </div>
@@ -1141,9 +1138,9 @@ const PlanCreationComponent = ({ row, handlePlan, handleShowPlan }) => {
   return (
     <div className="d-flex text-center align-item-center justify-content-center">
       {!planData?.data?.data.length > 0 ? (
-        <Button type="button" onClick={() => handlePlan(row)}>
-          <SendTwoToneIcon />
-        </Button>
+        <button className="icon-1" type="button" onClick={() => handlePlan(row)}>
+          <i className="bi bi-send"></i>
+        </button>
       ) : (
         <Button variant="outlined" onClick={() => handleShowPlan(row)}>
           Show plan
@@ -1173,9 +1170,9 @@ const PhaseCreationComponent = ({ row, handlePhase }) => {
   return (
     <div className="d-flex text-center align-item-center justify-content-center">
       {planData?.data?.data.length > 0 ? (
-        <Button type="button" onClick={() => handlePhase(row)}>
-          <SendTwoToneIcon />
-        </Button>
+        <button className="icon-1" type="button" onClick={() => handlePhase(row)}>
+          <i className="bi bi-send"></i>
+        </button>
       ) : (
         <div
           style={{

@@ -29,6 +29,7 @@ import PageOverview from "./PageOverview";
 import PageDetailingNew from "./PageDetailingNew";
 import { baseUrl } from "../../../utils/config";
 import { useGlobalContext } from "../../../Context/Context";
+import FormContainer from "../FormContainer";
 
 const PhasecreationNew = () => {
   const param = useParams();
@@ -112,14 +113,16 @@ const PhasecreationNew = () => {
   };
 
   return (
-    <>
-      <div className="form_heading_title">
-        <h2 className="form-heading">Phase Creation</h2>
-      </div>
+    <div className="master-card-css">
+    <FormContainer
+      mainTitle="Phase Creation"
+      link="true"
+    />
+      
       <CampaignDetailes cid={id} getCampaign={getCampaignName} />
       {/* add Accordion for show phase------------------- */}
       <Paper>
-        {allPhaseData?.map((item, index) => (
+        {allPhaseData?.map((item,index)=>(
           <Paper key={index}>
             <Link
               to={`/admin/createAssign/${item.phase_id}`}
@@ -301,7 +304,7 @@ const PhasecreationNew = () => {
           />
         </>
       )}
-    </>
+    </div>
   );
 };
 

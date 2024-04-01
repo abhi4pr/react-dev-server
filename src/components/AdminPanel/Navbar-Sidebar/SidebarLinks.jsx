@@ -733,7 +733,7 @@ const SidebarLinks = () => {
                             aria-labelledby="headingTwo"
                             // data-parent="#accordionSidebar"
                           >
-                            <div className="bg-white collapse-inner">
+                            <div className="internal collapse-inner">
                               <>
                                 <Link
                                   className="collapse-item"

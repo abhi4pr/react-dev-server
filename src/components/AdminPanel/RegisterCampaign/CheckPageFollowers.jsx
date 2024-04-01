@@ -5,6 +5,7 @@ import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
 import axios from "axios";
 import {baseUrl} from '../../../utils/config' 
+import FormContainer from "../FormContainer";
 
 export default function CheckPageFollowers() {
   const [gridRows, setGridRows] = useState([]);
@@ -114,55 +115,42 @@ export default function CheckPageFollowers() {
   // Template file --* End*---
 
   return (
-    <Paper sx={{ height: 400, width: "100%" }}>
-      <div
-        className="form_heading_title"
-        style={{
-          display: "flex",
-          justifyContent: "right",
-        }}
-      >
-        <Box style={{ flexGrow: 1 }}>
-          <Typography
-            style={{
-              // color: "#fff",
-              fontSize: "20px",
-              paddingTop: "10px",
-              marginLeft: "20px",
-            }}
-          >
-            Follower Count
-          </Typography>
-        </Box>
-        <Button
-          size="md"
-          variant="contained"
-          color="success"
-          style={{ marginRight: "16px", margin: "8px", color: "#fff" }}
+    <div className="master-card-css">
+        <FormContainer
+      
+        mainTitle={"Check Page Followers"}
+        handleSubmit={false}
+        link={true}
+        />
+      <div className="card">
+        <div className="card-header sb">
+        
+        <div className="pack gap4">
+        <button
+          className="btn btn-outline-primary btn-sm"
+         
           onClick={handleUploadClick}
-        >
+          >
           Upload
-        </Button>
-        <Button
-          size="md"
+        </button>
+          <input
+            type="file"
+            accept=".xlsx"
+            ref={fileInputRef}
+            style={{ display: "none" }}
+            onChange={handleFileUpload}
+            />
+        <button
+          
           onClick={createExcelTemplate}
-          variant="contained"
-          color="success"
-          style={{ marginRight: "16px", margin: "8px", color: "#fff" }}
-        >
+          className="btn btn-outline-primary btn-sm"
+          >
           Template
-        </Button>
-      </div>
-
-      <input
-        type="file"
-        accept=".xlsx"
-        ref={fileInputRef}
-        style={{ display: "none" }}
-        onChange={handleFileUpload}
-      />
-
-      <DataGrid
+        </button>
+        </div>
+        </div>
+        <div className="card-body body-padding" style={{height:"max-content",maxHeight:"700px"}}>
+        <DataGrid
         rows={addSerialNumber(followerData)}
         columns={columns}
         pageSize={10}
@@ -171,24 +159,28 @@ export default function CheckPageFollowers() {
           toolbar: GridToolbar,
         }}
         checkboxSelection
-      />
-    </Paper>
+        />
+        </div>
+      </div>
+    
+</div>
   );
 }
 
 //     const handleAddRecordClick = async () => {
-//      try {
-//        const newRecordData = {
-//          content_type: "add Content Type",
-
-//        };
-
-//        const response = await axios.post(baseUrl+"content",
-//        newRecordData);
-//        const newRecord = response.data;
-
-//        setRows((prevRows) => [...prevRows, newRecord]);
-//      } catch (error) {
-//        console.error("Error adding record:", error);
-//      }
-//    };
+  //      try {
+    //        const newRecordData = {
+      //          content_type: "add Content Type",
+      
+      //        };
+      
+      //        const response = await axios.post(baseUrl+"content",
+      //        newRecordData);
+      //        const newRecord = response.data;
+      
+      //        setRows((prevRows) => [...prevRows, newRecord]);
+      //      } catch (error) {
+        //        console.error("Error adding record:", error);
+        //      }
+        //    };
+        

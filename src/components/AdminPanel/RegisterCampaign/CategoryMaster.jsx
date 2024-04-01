@@ -49,9 +49,9 @@ export default function CategoryMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button color="error" variant="outlined" onClick={handleClick}>
+        <button className="btn btn-outline-primary" onClick={handleClick}>
           create category{" "}
-        </Button>
+        </button>
       </GridToolbarContainer>
     );
   }
@@ -210,20 +210,24 @@ export default function CategoryMaster() {
         const { id, row } = params;
         return [
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
-            icon={<EditIcon />}
+          <button
+
             label="Edit"
-            className="textPrimary"
+            className="icon-1"
             onClick={handleEditClick(id, row)}
             color="primary"
-          />,
+          >
+            <i className="bi bi-pencil"></i>
+          </button>,
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
-            icon={<DeleteIcon />}
+          <button
+           className="icon-1"
             label="Delete"
             onClick={handleDeleteClick(id)}
             color="error"
-          />,
+          >
+            <i className="bi bi-trash"></i>
+          </button>,
         ];
       },
     },
@@ -247,9 +251,10 @@ export default function CategoryMaster() {
     <>
       <FormContainer mainTitle="Category Master" link="true" />
       <div className="card">
-        <div className="card-header">
-          <div className="pack">
-            <div className="form-group ">
+        <div className="card-header sb">
+          <div></div>
+          <div className="pack w-25">
+           
               <FieldContainer
                 fieldGrid={12}
                 label=""
@@ -257,11 +262,11 @@ export default function CategoryMaster() {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
-            </div>
+            
           </div>
         </div>
         <div className="card-body body-padding ">
-          <Box sx={{ height: "400px" }}>
+          <Box sx={{ height: "700px" }}>
             <DataGrid
               rows={filteredRows}
               columns={columns}

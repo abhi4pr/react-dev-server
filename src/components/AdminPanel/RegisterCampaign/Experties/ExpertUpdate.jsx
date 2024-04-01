@@ -121,10 +121,10 @@ const ExpertiesUpdate = () => {
     <>
       <FormContainer mainTitle="Update Expert" link="flase" />
 
-      <div className="card">
-        <FormControl sx={{ width: "100%" }}>
-          <div className="row " sx={{ width: "100vw" }}>
-            <div className="col-sm-12 col-lg-12 mb-4 mt-2">
+      <div className="card body-padding">
+        <FormControl className="gap4" sx={{ width: "100%" }}>
+          <div className="grid-con ">
+            {/* <div className="col-sm-12 col-lg-12 "> */}
               <Autocomplete
                 fullWidth={true}
                 disablePortal
@@ -146,8 +146,8 @@ const ExpertiesUpdate = () => {
                   <TextField {...params} label="User Name" />
                 )}
               />
-            </div>
-            <div className="col-sm-12 col-lg-3">
+            {/* </div> */}
+            {/* <div className="col-sm-12 col-lg-3"> */}
               <Autocomplete
                 multiple
                 id="combo-box-demo"
@@ -158,9 +158,9 @@ const ExpertiesUpdate = () => {
                 )}
                 onChange={categoryChangeHandler}
               />
-            </div>
+            {/* </div> */}
 
-            <div className="col-sm-12 col-lg-3">
+            {/* <div className="col-sm-12 col-lg-3"> */}
               <Autocomplete
                 multiple
                 id="combo-box-demo"
@@ -170,8 +170,8 @@ const ExpertiesUpdate = () => {
                 )}
                 onChange={plateformHandler}
               />
-            </div>
-            <div className="col-sm-12 col-lg-3">
+            {/* </div> */}
+            {/* <div className="col-sm-12 col-lg-3"> */}
               <Autocomplete
                 multiple
                 id="combo-box-demo"
@@ -182,8 +182,8 @@ const ExpertiesUpdate = () => {
                 )}
                 onChange={followerChangeHandler}
               />
-            </div>
-            <div className="col-sm-12 col-lg-3">
+            {/* </div> */}
+            {/* <div className="col-sm-12 col-lg-3"> */}
               <Autocomplete
                 multiple
                 id="combo-box-demo"
@@ -195,13 +195,16 @@ const ExpertiesUpdate = () => {
                   <TextField {...params} label="Page health" />
                 )}
               />
-            </div>
+            {/* </div> */}
           </div>
-          <div className="col-sm-12 col-lg-3 mt-2">
-            <Button onClick={handleSubmit} variant="contained" color="primary">
+          
+                  <div className="pack mt-2">
+
+            <button onClick={handleSubmit}className="btn btn-outline-primary">
               Submit
-            </Button>
-          </div>
+            </button>
+                  </div>
+         
         </FormControl>
       </div>
     </>

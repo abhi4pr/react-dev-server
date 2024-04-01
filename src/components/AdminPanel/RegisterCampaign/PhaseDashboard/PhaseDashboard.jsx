@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import CampaignDetailes from "../CampaignDetailes";
 import { Link } from "react-router-dom";
 import { baseUrl } from "../../../../utils/config";
-
+import FormContainer from "../../../AdminPanel/FormContainer";
 const PhaseDashboard = () => {
   const [allPhaseData, setAllPhaseData] = useState([]);
   const [singlePhaseData, setSinglePhaseData] = useState([]);
@@ -62,19 +62,33 @@ const PhaseDashboard = () => {
 
   return (
     <>
-      <div>
-        <h3>Campaign Details</h3>
+    <FormContainer
+    mainTitle={"Phase Dashboard"}
+    link={true}
+    handleSubmit={false}
+    />
+      
+        <div className="card">
+          <div className="card-header">
+            Campaign Detail
+          </div>
+          <div className="card-body">
+
         <CampaignDetailes cid={singlePhaseData} />
-      </div>
-      <div className="section">
+          </div>
+        </div>
+      
+      {/* <div className="section">
         <h3>Phase Dashboard</h3>
 
-        {/* <div className="data-card">
+        <div className="data-card">
           <div className="data-card__val">17,933</div>
           <div className="data-card__label">All Saleable</div>
           <div className="data-card__color is-green"></div>
-        </div> */}
-      </div>
+        </div>
+      </div> */}
+      <div className="card body-padding">
+
       <div className="section">
         {/* <h3>Hoverable</h3> */}
 
@@ -183,6 +197,7 @@ const PhaseDashboard = () => {
           <div className="data-card__color is-orange"></div>
         </div>
       </div>
+        </div>
       <div className="phase-list">
         <h4>Phase Links </h4>
         {allPhaseData.map((d) => (
