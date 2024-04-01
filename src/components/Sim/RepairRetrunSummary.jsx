@@ -141,6 +141,8 @@ const RepairRetrunSummary = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
+            }
+              />
         </div>
         <div className="data_tbl table-responsive card-body body-padding">
           <DataTable

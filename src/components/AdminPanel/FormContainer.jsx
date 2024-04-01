@@ -65,7 +65,8 @@ const FormContainer = ({
       {mainTitleRequired && (
         <div className="form-heading">
           <img className="img-bg" src={titleimg} alt="" width={160} />
-          <div className="form_heading_title ">
+          <div className="form
+          _heading_title ">
             <h2>{mainTitle}</h2>
             <div className="pack">
               <i class="bi bi-house"></i>{" "}

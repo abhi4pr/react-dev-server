@@ -698,18 +698,21 @@ export default function PaymentDone() {
 
         const imgUrl = `https://purchase.creativefuel.io/${params.row.invc_img}`;
         return isPdf ? (
-          <>
-            <iframe
+          <div style={{position:"relative"}}  onClick={() => {
+            console.log("clicked")
+            setOpenImageDialog(true);
+            setViewImgSrc(imgUrl);
+          }}>
+            <embed
               allowFullScreen={true}
               src={imgUrl}
               title="PDF Viewer"
-              style={{ width: "80px", height: "80px" }}
+              scrollbar="0"
+              type="application/pdf"    
+              style={{ width: "80px", height: "80px",cursor:"pointer",pointerEvents:"none" }}
             />
-            <div
-              onClick={() => {
-                setOpenImageDialog(true);
-                setViewImgSrc(imgUrl);
-              }}
+            {/* <div
+             
               style={{
                 position: "absolute",
                 width: "5%",
@@ -719,8 +722,8 @@ export default function PaymentDone() {
                 background: "rgba(0, 0, 0, 0)",
                 zIndex: 10,
               }}
-            ></div>
-          </>
+            ></div> */}
+          </div>
         ) : (
           <img
             onClick={() => {

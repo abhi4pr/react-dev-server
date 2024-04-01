@@ -76,6 +76,9 @@ const NewPages = ({ pages }) => {
       field: "brnad_dt",
       headerName: "Date",
       width: 180,
+      renderCell: (params) => {
+        return new Date(params.row.brnad_dt).toLocaleDateString();
+      }
     },
 
     {
@@ -85,14 +88,12 @@ const NewPages = ({ pages }) => {
       renderCell: (params) => {
         return (
           <div>
-            <Button
+            <button
               onClick={() => handleVerification(params)}
-              variant="text"
-              color="secondary"
-              title="Move to Manager Dashborad"
+             className="icon-1"
             >
-              <ArrowCircleRightOutlinedIcon sx={{ fontSize: "30px" }} />
-            </Button>
+              <i className="bi bi-arrow-right"></i>
+            </button>
           </div>
         );
       },

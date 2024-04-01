@@ -4,6 +4,7 @@
     width: 80px;
     top: 72px;
     height: calc(100vh - 72px);
+    z-index: 2;
   }
 
   #wrapper #content-wrapper {

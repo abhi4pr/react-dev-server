@@ -51,7 +51,8 @@ let timer;
 let text;
 let rejectedPages = [];
 
-const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
+const 
+PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
   const campValue = data?.campaignName;
 
   const { toastAlert, toastError } = useGlobalContext();
@@ -850,17 +851,21 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
       renderCell: (params) => {
         return (
+          <div className="form-group m-0 pt-3 pb-3" >
+
           <input
-            style={{ width: "60%" }}
+          className="form-control pl-1"
+            style={{ width: "100%", padding:"0px", height:"20px"}}
             type="number"
             value={
               params.row.postPerPage !== null
-                ? params.row.postPerPage
-                : params.value || ""
+              ? params.row.postPerPage
+              : params.value || ""
             }
             placeholder={params.row.postPerPage || ""}
             onChange={(e) => handlePostPerPageChange(e, params, "post")}
-          />
+            />
+            </div>
         );
       },
     },
@@ -870,12 +875,16 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       width: 150,
       renderCell: (params) => {
         return (
+          <div className="form-group  m-0 pt-3 pb-3">
+
           <input
-            style={{ width: "60%" }}
-            type="number"
-            disabled
-            placeholder={params.row.postRemaining}
+          className="form-control pl-1"
+          style={{ width: "100%" }}
+          type="number"
+          disabled
+          placeholder={params.row.postRemaining}
           />
+          </div>
         );
       },
     },
@@ -886,8 +895,13 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
       renderCell: (params) => {
         return (
+              
+         
+         
+<div className="form-group  m-0 pt-3 pb-3">
           <input
-            style={{ width: "60%" }}
+          className="form-control pl-1"
+            style={{ width: "100%" }}
             type="number"
             value={
               params.row.storyPerPage !== null
@@ -897,6 +911,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             placeholder={params.row.storyPerPage || ""}
             onChange={(e) => handlePostPerPageChange(e, params, "story")}
           />
+          </div>
         );
       },
     },
@@ -906,12 +921,15 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       width: 150,
       renderCell: (params) => {
         return (
+          <div className="form-group  m-0 pt-3 pb-3">
           <input
-            style={{ width: "60%" }}
+            className="form-control pl-1"
+            style={{ width: "100%" }}
             type="number"
             disabled
             placeholder={params.row.storyRemaining}
           />
+          </div>
         );
       },
     },
@@ -1011,7 +1029,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
   return (
     <>
-      <Paper sx={{ marginTop: "2rem", padding: "1rem" }}>
+      <div className="card body-padding">
         <FormControl>
           <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
           <RadioGroup
@@ -1039,15 +1057,11 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             />
           </RadioGroup>
         </FormControl>
-      </Paper>
-      <Paper
-        sx={{
-          display: "flex",
-          justifyContent: "space-around",
-          marginTop: "1rem",
-          padding: "1rem",
-        }}
-      >
+      </div>
+      <div className="card body-padding">
+        <div className="d-flex justify-content-between gap4">
+
+      
         <Autocomplete
           multiple
           id="combo-box-demo"
@@ -1055,7 +1069,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           sx={{ width: 200 }}
           renderInput={(params) => <TextField {...params} label="Category" />}
           onChange={categoryChangeHandler}
-        />
+          />
         <Autocomplete
           id="combo-box-demo"
           options={Follower_Count}
@@ -1063,9 +1077,9 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           sx={{ width: 200 }}
           renderInput={(params) => (
             <TextField {...params} label="Follower Count" />
-          )}
-          onChange={followerChangeHandler}
-        />
+            )}
+            onChange={followerChangeHandler}
+            />
         <Autocomplete
           id="combo-box-demo"
           options={page_health}
@@ -1073,33 +1087,38 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           sx={{ width: 200 }}
           renderInput={(params) => (
             <TextField {...params} label="Page health" />
-          )}
-        />
+            )}
+            />
         <TextField
           label="Search"
           variant="outlined"
           onChange={handleSearchChange}
-        />
-        <Box>
-          <Button variant="contained" onClick={handleCP} sx={{ m: 1 }}>
-            Copy / paste
-          </Button>
-
-          <Button variant="contained" sx={{ width: "5rem" }}>
-            <label for="fileInput" class="btn" style={{ color: "white" }}>
-              upload excel
+          />
+            <label for="fileInput" className="btn btn-outline-primary"
+            style={{margin:"0",display:"flex",alignItems:"center"}}>
+              Upload Excel
             </label>
+          <button className="btn btn-outline-primary" onClick={handleCP} >
+            Copy / Paste
+          </button>
+        
+
+        
             <input
               type="file"
               id="fileInput"
-              style={{ visibility: "hidden" }}
+              style={{ display:"none"}}
               onChange={handleFileInputChange}
-            />
-          </Button>
-        </Box>
-      </Paper>
-      <Box sx={{ p: 2 }}>
+              />
+              </div>
+          
+       
+      </div>
+      <div className="body-padding card">
+      <div className="d-flex justify-content-between gap4">
+
         <TextField
+         sx={{ width:"50%"}}
           id="outlined-basic"
           InputLabelProps={{ shrink: true }}
           label="Post/pages"
@@ -1107,15 +1126,15 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           onChange={(e) => handlePost(e, "post")}
         />
         <TextField
-          sx={{ ml: 2 }}
+          sx={{ ml: 2 ,width:"50%"}}
           id="outlined-basic"
           InputLabelProps={{ shrink: true }}
           label="story/pages"
           variant="outlined"
           onChange={(e) => handlePost(e, "story")}
         />
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <Button
+       
+          {/* <Button
             onClick={() => exportToCSV(payload)}
             variant="text"
             color="success"
@@ -1123,22 +1142,17 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             title="Download Excel"
           >
             <SiMicrosoftexcel />
-          </Button>
-          <Button
-            onClick={() => generatePDF(payload)}
-            variant="text"
-            color="error"
-            title="Download Pdf"
-            sx={{ mr: 3 }}
-          >
-            <PictureAsPdfIcon sx={{ fontSize: "35px" }} />
-          </Button>
-        </Box>
-      </Box>
-      <Paper
-        sx={{ display: "flex", justifyContent: "space-between", gap: 1.5 }}
+          </Button> */}
+         
+       
+        </div>
+      </div>
+      <div className="card body-padding">
+      <div
+        style={{ display: "flex", justifyContent: "space-between", gap: 0.5 }}
       >
-        <Box sx={{ height: 700, width: "63%" }}>
+        {console.log(selectedRows.length)}
+        <div style={{ height:"700px", width:`${selectedRows.length !== 0?"60%":"100%"}`}}>
           <DataGrid
             rows={unregisteredPages || searchedPages || filteredPages || []}
             columns={columnForPages}
@@ -1160,18 +1174,19 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
               },
             }}
           />
-          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <div style={{ display: "flex", justifyContent: "flex-start" }}>
             <Button
               variant="contained"
-              sx={{ mt: 2, mb: 4 }}
+              sx={{ mt: 4, mb:1 }}
               onClick={submitPlan}
             >
               submit
             </Button>{" "}
           </div>
-        </Box>
-        <SummrayDetailes payload={payload} campName={campValue} />
-      </Paper>
+        </div>
+        <SummrayDetailes payload={payload} generatePDF={generatePDF} campName={campValue} drawer={false} />
+      </div>
+      </div>
       {
         //copy paste modal contents
       }

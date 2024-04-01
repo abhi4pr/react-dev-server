@@ -1,19 +1,20 @@
 import { Link } from "react-router-dom";
+import FormContainer from "../FormContainer";
 
 export default function OperationCampaigns() {
   return (
     <>
+    <FormContainer
+    mainTitle={"Campaign Master"}
+    submitButton={false}
+    link={true}
+    />
       <div className="card body-padding">
-        <div className="header">
-          <div className="h3">Master</div>
-        </div>
-        <div className="card-body">
-          {/* <div className="card-header"> Page</div> */}
-          <div className="card-body row">
-            <div
-              className="d-flex gap4 col mb-2"
-              style={{ flexWrap: "wrap", gap: "10px" }}
-            >
+       
+        
+          <div className="grid-con">
+
+         
               <Link to="/admin/brandmaster">
                 <div
                   className="card hover body-padding"
@@ -28,7 +29,7 @@ export default function OperationCampaigns() {
                     border: "1px solid var(--primary)",
                     padding: "10px",
                   }}
-                >
+                  >
                   <div
                     className="pack  "
                     style={{
@@ -47,11 +48,7 @@ export default function OperationCampaigns() {
                   </div>
                 </div>
               </Link>
-            </div>{" "}
-            <div
-              className="d-flex gap4 col mb-2-md-6"
-              style={{ flexWrap: "wrap", gap: "10px" }}
-            >
+           
               <Link to="/admin/overview/agency">
                 <div
                   className="card hover body-padding"
@@ -77,7 +74,7 @@ export default function OperationCampaigns() {
                       alignItems: "center",
                       gap: "20px",
                     }}
-                  >
+                    >
                     <div className="rounded-circle circle-card">
                       <i className="bi bi-bounding-box"></i>
                     </div>
@@ -85,11 +82,7 @@ export default function OperationCampaigns() {
                   </div>
                 </div>
               </Link>
-            </div>
-            <div
-              className="d-flex gap4 col mb-2-md-6"
-              style={{ flexWrap: "wrap", gap: "10px" }}
-            >
+           
               <Link to="/admin/overview/industry">
                 <div
                   className="card hover body-padding"
@@ -115,7 +108,7 @@ export default function OperationCampaigns() {
                       alignItems: "center",
                       gap: "20px",
                     }}
-                  >
+                    >
                     <div className="rounded-circle circle-card">
                       <i className="bi bi-bounding-box"></i>
                     </div>
@@ -123,11 +116,7 @@ export default function OperationCampaigns() {
                   </div>
                 </div>
               </Link>
-            </div>
-            <div
-              className="d-flex gap4 col mb-2-md-6"
-              style={{ flexWrap: "wrap", gap: "10px" }}
-            >
+           
               <Link to="/admin/overview/goal">
                 <div
                   className="card hover body-padding"
@@ -142,7 +131,7 @@ export default function OperationCampaigns() {
                     border: "1px solid var(--primary)",
                     padding: "10px",
                   }}
-                >
+                  >
                   <div
                     className="pack  "
                     style={{
@@ -153,7 +142,7 @@ export default function OperationCampaigns() {
                       alignItems: "center",
                       gap: "20px",
                     }}
-                  >
+                    >
                     <div className="rounded-circle circle-card">
                       <i className="bi bi-bounding-box"></i>
                     </div>
@@ -161,11 +150,7 @@ export default function OperationCampaigns() {
                   </div>
                 </div>
               </Link>
-            </div>
-            <div
-              className="d-flex gap4 col mb-2-md-6"
-              style={{ flexWrap: "wrap", gap: "10px" }}
-            >
+           
               <Link to="/admin/contentcreater">
                 <div
                   className="card hover body-padding"
@@ -199,10 +184,11 @@ export default function OperationCampaigns() {
                   </div>
                 </div>
               </Link>
-            </div>
-          </div>
+           
+          
+                      </div>
         </div>
-      </div>
+   
     </>
   );
 }

@@ -17,6 +17,8 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import SummaryDetails from "../SummrayDetailes";
 import { DataGrid } from "@mui/x-data-grid";
 import { useGlobalContext } from "../../../../Context/Context";
+import FormItem from "antd/es/form/FormItem";
+import FormContainer from "../../../AdminPanel/FormContainer"
 
 
 const AllPlanData = () => {
@@ -89,13 +91,12 @@ const AllPlanData = () => {
       headerName: "Action",
       width: 200,
       renderCell: (params) => (
-        <Button
-          variant="outlined"
-          color="secondary"
+        <button
+          className="btn btn-outline-primary"
           onClick={() => goAllPlanOverview(params)}
         >
           Plan Overview
-        </Button>
+        </button>
       ),
     },
     {
@@ -103,13 +104,12 @@ const AllPlanData = () => {
       headerName: "Summary",
       width: 200,
       renderCell: (params) => (
-        <Button
-          variant="outlined"
-          color="success"
+        <button
+        className="btn btn-outline-success"
           onClick={() => excelDownload(params)}
         >
           Summary
-        </Button>
+        </button>
       ),
     },
     {
@@ -117,32 +117,43 @@ const AllPlanData = () => {
       headerName: "Delete",
       width: 200,
       renderCell: (params) => (
-        <Button
-          variant="text"
-          color="error"
+        <button
+          className="btn btn-outline-danger icon-1"
           onClick={() => handleOpenDialog(params.row)}
         >
-          <DeleteOutlineIcon />
-        </Button>
+         <i className=" bi bi-trash"></i>
+        </button>
       ),
     },
   ];
 
   return (
-    <>
-      <Paper>
-        <div className="form-heading">
-          <h2>All Plan</h2>
-        </div>
-      </Paper>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", m: 1 }}>
-        <Button variant="outlined" color="error" onClick={createDirectPlan}>
+    <div className="master-card-css">
+
+      <FormContainer mainTitle="All Plan" link="true" />
+
+      <div className="card">
+        <div className="card-header sb">
+          {/* <h5>Plans</h5> */}
+          <div className="pack">
+
+          <button  className=" btn btn-outline-danger" onClick={createDirectPlan}>
           Create Plan
-        </Button>
-      </Box>
-      <DataGrid rows={allPlan} columns={col} getRowId={(row) => row._id} pageSize={5} />
+        </button>
+          </div>
+        </div>
+        <div className="card-body body-padding">
+        <DataGrid rows={allPlan} columns={col} getRowId={(row) => row._id} pageSize={5} />
+
+        </div>
+      </div>
+      
+      
       <Drawer anchor={"right"} open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <SummaryDetails payload={excelData.pages} campName={excelData.planName} />
+        <div className="body-padding h-100">
+
+        <SummaryDetails payload={excelData.pages} campName={excelData.planName} drawer={true} />
+        </div>
       </Drawer>
 
       <Dialog
@@ -164,7 +175,7 @@ const AllPlanData = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 };
 

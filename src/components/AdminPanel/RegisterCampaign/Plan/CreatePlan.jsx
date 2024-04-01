@@ -1,16 +1,17 @@
 import { useState } from "react";
 import PageDetailingForDirect from "./PageDetailingForDirect";
+import FormContainer from "../../FormContainer";
 
 
 
 const CreatePlan = () => {
   return (
     <>
-      <div>
-        <div className="form_heading_title">
-          <h2 className="form-heading">Plan Creation</h2>
-        </div>
-      </div>
+    <FormContainer
+        mainTitle="Plan Creation"
+        link="true"
+    />
+     
 
 
       <PageDetailingForDirect

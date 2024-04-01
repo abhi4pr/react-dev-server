@@ -602,20 +602,20 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
     const handlePost = (e, field) => {
         let updatedValue
-      
-         updatedValue = e.target.value;
- 
-         if(payload.length==0){
+
+        updatedValue = e.target.value;
+
+        if (payload.length == 0) {
             if (field == "post") {
                 setExternalPPP(e.target.value)
-              
+
             } else {
                 setExternalSPP(e.target.value)
-               
+
             }
-         }
-         const postperpage = payload.map((page) => {
-             if (field == "post") {
+        }
+        const postperpage = payload.map((page) => {
+            if (field == "post") {
                 setExternalPPP(e.target.value)
                 return { ...page, postPerPage: updatedValue };
             } else {
@@ -825,8 +825,10 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
             renderCell: (params) => {
                 return (
+                    <div className="form-group m-0 pt-3 pb-3">
                     <input
-                        style={{ width: "60%" }}
+                        style={{ width: "100%" }}
+                        className="form-control" 
                         type="number"
                         min="0"
                         oninput="validity.valid||(value='');"
@@ -838,6 +840,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                         placeholder={params.row.postPerPage || ""}
                         onChange={(e) => handlePostPerPageChange(e, params, "post")}
                     />
+                    </div>
                 );
             },
         },
@@ -847,13 +850,16 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             width: 150,
             renderCell: (params) => {
                 return (
+                    <div className="form-group m-0 pt-3 pb-3">
                     <input
-                        style={{ width: "60%" }}
+                        style={{ width: "100%" }}
+                        className="form-control"
                         type="number"
                         min="0.000001"
                         disabled
                         placeholder={params.row.postRemaining}
                     />
+                    </div>
                 );
             },
         },
@@ -864,8 +870,10 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
             renderCell: (params) => {
                 return (
+                    <div className="form-group m-0 pt-3 pb-3">
                     <input
-                        style={{ width: "60%" }}
+                        style={{ width: "100%" }}
+                        className="form-control"
                         type="number"
                         min="0"
                         value={
@@ -876,6 +884,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                         placeholder={params.row.storyPerPage || ""}
                         onChange={(e) => handlePostPerPageChange(e, params, "story")}
                     />
+                    </div>
                 );
             },
         },
@@ -885,12 +894,16 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             width: 150,
             renderCell: (params) => {
                 return (
-                    <input
-                        style={{ width: "60%" }}
-                        type="number"
-                        disabled
-                        placeholder={params.row.storyRemaining}
-                    />
+                    <div className="form-group m-0 pt-3 pb-3">
+
+                        <input
+                            className="form-control"
+                            style={{ width: "100%" }}
+                            type="number"
+                            disabled
+                            placeholder={params.row.storyRemaining}
+                        />
+                    </div>
                 );
             },
         },
@@ -1015,72 +1028,77 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
     return (
         <>
-            <TextField label='Plan Name*' onChange={(e) => {
-                setPlanName(e.target.value)
-            }} />
+            <div className="card  body-padding ">
+                <div className="row-align gap4">
 
-            <Button sx={{ ml: 5 }} variant="outlined" onClick={() => {
-                navigate(`/admin/direct_allplan`);
-            }}>
-                All plans
-            </Button>
-            <Paper sx={{ marginTop: "2rem", padding: "1rem" }}>
+                    <TextField className="w-100" label='Plan Name*' onChange={(e) => {
+                        setPlanName(e.target.value)
+                    }} />
 
-                <FormControl>
-                    <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
-                    <RadioGroup
-                        row
-                        aria-labelledby="demo-row-radio-buttons-group-label"
-                        name="row-radio-buttons-group"
-                        value={radioSelected}
-                        onChange={handleRadioChange}
-                    >
-                        <FormControlLabel value="all" control={<Radio />} label="all" />
-                        <FormControlLabel
-                            value="selected"
-                            control={<Radio />}
-                            label="selected"
-                        />
-                        <FormControlLabel
-                            value="unselected"
-                            control={<Radio />}
-                            label="unselected"
-                        />
-                        <FormControlLabel
-                            value="unregistered"
-                            control={<Radio />}
-                            label="unregistered"
-                        />
-                    </RadioGroup>
-                </FormControl>
-            </Paper>
-            <Paper
-                sx={{
-                    display: "flex",
-                    justifyContent: "space-around",
-                    marginTop: "1rem",
-                    padding: "1rem",
-                }}
-            >
-                <Autocomplete
-                    multiple
-                    id="combo-box-demo"
-                    options={options ? options : []}
-                    sx={{ width: 200 }}
-                    renderInput={(params) => <TextField {...params} label="Category" />}
-                    onChange={categoryChangeHandler}
-                />
-                <Autocomplete
-                    id="combo-box-demo"
-                    options={Follower_Count}
-                    getOptionLabel={(option) => option}
-                    sx={{ width: 200 }}
-                    renderInput={(params) => (
-                        <TextField {...params} label="Follower Count" />
-                    )}
-                    onChange={followerChangeHandler}
-                />
-                {/* <Autocomplete
+                    <button className=" btn btn-outline-primary" style={{width:"150px"}} onClick={() => {
+                        navigate(`/admin/direct_allplan`);
+                    }}>
+                        All plans
+                    </button>
+                </div>
+
+                <>
+
+                    <FormControl>
+                        <FormLabel id="demo-row-radio-buttons-group-label"></FormLabel>
+                        <RadioGroup
+                            row
+                            aria-labelledby="demo-row-radio-buttons-group-label"
+                            name="row-radio-buttons-group"
+                            value={radioSelected}
+                            onChange={handleRadioChange}
+                        >
+                            <FormControlLabel value="all" control={<Radio />} label="all" />
+                            <FormControlLabel
+                                value="selected"
+                                control={<Radio />}
+                                label="selected"
+                            />
+                            <FormControlLabel
+                                value="unselected"
+                                control={<Radio />}
+                                label="unselected"
+                            />
+                            <FormControlLabel
+                                value="unregistered"
+                                control={<Radio />}
+                                label="unregistered"
+                            />
+                        </RadioGroup>
+                    </FormControl>
+                </>
+            </div>
+            <div className="card body-padding">
+                <div className="row-align gap4">
+
+                    <Autocomplete
+                        className="w-100"
+
+                        multiple
+                        id="combo-box-demo"
+                        options={options ? options : []}
+                        sx={{ width: 200 }}
+                        renderInput={(params) => <TextField {...params} label="Category" />}
+                        onChange={categoryChangeHandler}
+                    />
+                    <Autocomplete
+                        className="w-100"
+
+                        id="combo-box-demo"
+                        options={Follower_Count}
+                        getOptionLabel={(option) => option}
+                        sx={{ width: 200 }}
+                        renderInput={(params) => (
+                            <TextField {...params} label="Follower Count" />
+                        )}
+                        onChange={followerChangeHandler}
+                    />
+                    {/* <Autocomplete
                     id="combo-box-demo"
                     options={page_health}
                     getOptionLabel={(option) => option}
@@ -1089,48 +1107,55 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                         <TextField {...params} label="Page health" />
                     )}
                 /> */}
-                <TextField
-                    label="Search"
-                    variant="outlined"
-                    onChange={handleSearchChange}
-                />
-                <Box>
-                    <Button variant="contained" onClick={handleCP} sx={{ m: 1 }}>
-                        Copy / paste
-                    </Button>
+                    <TextField
+                        className="w-100"
+                        label="Search"
+                        variant="outlined"
+                        onChange={handleSearchChange}
+                    />
+                    <div className="row-align w-50 gap4">
+                        <button className="btn btn-outline-primary" onClick={handleCP} style={{ width: "130px" }} >
+                            Copy / paste
+                        </button>
 
-                    <Button variant="contained" sx={{ width: "5rem" }}>
-                        <label for="fileInput" class="btn" style={{ color: "white" }}>
+
+                        <label for="fileInput" class="btn btn-outline-primary" style={{ width: "130px", margin: "0", display: "flex", alignItems: "center", justifyContent: "center" }} >
                             upload excel
                         </label>
                         <input
+                            style={{ display: "none" }}
                             type="file"
                             id="fileInput"
-                            style={{ visibility: "hidden" }}
+
                             onChange={handleFileInputChange}
                         />
-                    </Button>
-                </Box>
-            </Paper>
-            <Box sx={{ p: 2, pl: 0 }}>
-                <TextField
-                    id="outlined-basic"
-                    InputLabelProps={{ shrink: true }}
-                    type="number"
-                    label="Post/pages"
-                    variant="outlined"
-                    onChange={(e) => handlePost(e, "post")}
-                    InputProps={{ inputProps: { min: 0 } }}
-                />
-                <TextField
-                    sx={{ ml: 2 }}
-                    id="outlined-basic"
-                    type="number"
-                    InputLabelProps={{ shrink: true }}
-                    label="story/pages"
-                    variant="outlined"
-                    onChange={(e) => handlePost(e, "story")}
-                />
+
+                    </div>
+                </div>
+            </div>
+            <div className="card body-padding">
+                <div className="d-flex justify-content-between gap4">
+
+                    <TextField
+                        sx={{ width: "50%" }}
+                        id="outlined-basic"
+                        InputLabelProps={{ shrink: true }}
+                        type="number"
+                        label="Post/pages"
+                        variant="outlined"
+                        onChange={(e) => handlePost(e, "post")}
+                        InputProps={{ inputProps: { min: 0 } }}
+                    />
+                    <TextField
+                        sx={{ width: "50%" }}
+                        id="outlined-basic"
+                        type="number"
+                        InputLabelProps={{ shrink: true }}
+                        label="story/pages"
+                        variant="outlined"
+                        onChange={(e) => handlePost(e, "story")}
+                    />
+                </div>
                 {/* <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                     <Button
                         onClick={() => exportToCSV(payload)}
@@ -1151,44 +1176,49 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                         <PictureAsPdfIcon sx={{ fontSize: "35px" }} />
                     </Button>
                 </Box> */}
-            </Box>
-            <Paper
-                sx={{ display: "flex", justifyContent: "space-between", gap: 1.5 }}
-            >
-                <Box sx={{ height: 700, width: "63%" }}>
-                    <DataGrid
-                        rows={unregisteredPages || searchedPages || filteredPages || []}
-                        columns={columnForPages}
-                        getRowId={(row) => row.p_id}
-                        pageSizeOptions={[5]}
-                        checkboxSelection
-                        disableRowSelectionOnClick
-                        onRowSelectionModelChange={(row) => handleSelectionChange(row)}
-                        rowSelectionModel={selectedRows?.map((row) => row)}
-                        getRowClassName={(params) => {
-                            return params.row.status == false ? "unavailable" : "available";
-                        }}
-                        sx={{
-                            ".unavailable": {
-                                bgcolor: " #FF4433",
-                                "&:hover": {
-                                    bgcolor: "#E30B5C",
-                                },
-                            },
-                        }}
-                    />
-                    <div style={{ display: "flex", justifyContent: "flex-end" }}>
-                        <Button
-                            variant="contained"
-                            sx={{ mt: 2, mb: 4 }}
-                            onClick={submitPlan}
-                        >
-                            submit
-                        </Button>{" "}
+            </div>
+            <div className="card body-padding">
+
+                <Paper
+                    sx={{ display: "flex", justifyContent: "space-between", gap: 1.5 }}
+                    elevation={0}
+                >
+                    <div style={{ height: 700, width: `${selectedRows.length === 0 ? "100%" : "60%"}`, border: "none" }}
+
+                    >
+                        <DataGrid
+                            rows={unregisteredPages || searchedPages || filteredPages || []}
+                            columns={columnForPages}
+                            getRowId={(row) => row.p_id}
+                            pageSizeOptions={[5]}
+                            checkboxSelection
+                            disableRowSelectionOnClick
+                            onRowSelectionModelChange={(row) => handleSelectionChange(row)}
+                            rowSelectionModel={selectedRows?.map((row) => row)}
+                            getRowClassName={(params) => {
+                                return params.row.status == false ? "unavailable" : "available";
+                            }}
+                        // sx={{
+                        //     ".unavailable": {
+                        //         bgcolor: " #FF4433",
+                        //         "&:hover": {
+                        //             bgcolor: "#E30B5C",
+                        //         },
+                        //     },
+                        // }}
+                        />
+                        <div style={{ display: "flex", justifyContent: "flex-start" }}>
+                            <button
+                              className="btn btn-primary mt-5 mb-3"
+                                onClick={submitPlan}
+                            >
+                                submit
+                            </button>{" "}
+                        </div>
                     </div>
-                </Box>
-                <SummrayDetailes payload={payload} campName={planName} />
-            </Paper>
+                    <SummrayDetailes payload={payload} campName={planName} />
+                </Paper>
+            </div>
             {
                 //copy paste modal contents
             }

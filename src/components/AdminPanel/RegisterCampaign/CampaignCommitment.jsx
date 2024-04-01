@@ -22,6 +22,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
 import {baseUrl} from '../../../utils/config'
+import FormContainer from "../FormContainer";
 
 export const toolbarStyles = {
   display: 'flex',
@@ -55,13 +56,12 @@ export default function CampaignCommitment() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button
-          color="error"
-          variant="outlined"
+        <button
+          className="btn btn-outline-primary"
           onClick={handleClick}
         >
           create campaign
-        </Button>
+        </button>
       </GridToolbarContainer>
     );
   }
@@ -222,20 +222,25 @@ export default function CampaignCommitment() {
         const { id, row } = params;
         return [
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
+          <button
             icon={<EditIcon />}
             label="Edit"
-            className="textPrimary"
+            className="icon-1"
             onClick={handleEditClick(id, row)}
             color="primary"
-          />,
+          >
+            <i className="bi bi-pencil"></i>
+          </button>,
           // eslint-disable-next-line react/jsx-key
-          <GridActionsCellItem
+          <button
             icon={<DeleteIcon />}
+            className="icon-1"
             label="Delete"
             onClick={handleDeleteClick(id)}
             color="error"
-          />,
+          >
+            <i className="bi bi-trash"></i>
+          </button>,
         ];
       },
     },
@@ -252,15 +257,15 @@ export default function CampaignCommitment() {
   }, [searchInput, rows]);
 
   return (
-    <>
-      <Paper>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2> Campaign </h2>
-          </div>
-        </div>
-      </Paper>
-
+    <div className="master-card-css">
+    <FormContainer
+    mainTitle={"Campaign Commitment"}
+    link={true}
+    submitButton={false}
+    />
+     <div className="card">
+      <div className="card-header sb">
+      <div></div>
       <TextField
         label="Search"
         variant="outlined"
@@ -268,6 +273,11 @@ export default function CampaignCommitment() {
         onChange={(e) => setSearchInput(e.target.value)}
         style={{ marginBottom: "10px" }}
       />
+     
+      </div>
+      <div className="card-body body-padding">
+
+      
 
       <Box>
         <DataGrid
@@ -284,8 +294,10 @@ export default function CampaignCommitment() {
           slotProps={{
             toolbar: { setRows, setRowModesModel },
           }}
-        />
+          />
       </Box>
+          </div>
+         </div>
 
       {/* AddRecordModal post data */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -419,23 +431,24 @@ export default function CampaignCommitment() {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button
+            <div className="d-flex sb w-100">
+
+            <button
               onClick={() => setIsDeleteConfirmationOpen(false)}
-              color="primary"
-              variant="outlined"
-            >
+              className="btn btn-outline-primary btn-sm"
+              >
               Cancel
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={handleConfirmDelete}
-              color="error"
-              variant="outlined"
-            >
+              className="btn btn-outline-danger btn-sm"
+              >
               Delete
-            </Button>
+            </button>
+              </div>
           </DialogActions>
         </Dialog>
       </>
-    </>
+    </div>
   );
 }

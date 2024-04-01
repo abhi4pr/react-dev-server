@@ -18,14 +18,33 @@ const ExpertiesOverview = () => {
   // const handleClose = () => setOpen(false);
   const [open2, setOpen2] = React.useState(false);
   const [expertieareadata, setExpertieAreaData] = useState([]);
+  // console.log(getExpertiesData?.area_of_expertise[0], "expertieareadata");
   const [platform, setPlatform] = useState([]);
   const [followercount, setFollowerCount] = useState([]);
+  const [areaofexp, setAreaofexp] = useState();
   const handleOpen2 = (params) => {
+    console.log(params);
     setOpen2(true);
     setExpertieAreaData(params.row.area_of_expertise.category);
     setFollowerCount(params.row.area_of_expertise.follower_count);
     setPlatform(params.row.area_of_expertise.platform);
+    const maxLength = Math.max(...Object.values(params.row.area_of_expertise).map(arr => arr.length));
+    const keys = Object.keys(params.row.area_of_expertise);
+    
+    const transformedData = Array.from({ length: maxLength }, (_, index) => {
+    
+      let obj = { id: index };
+    
+     
+      keys.forEach(key => {
+        obj[key] = params.row.area_of_expertise[key][index] || null;
+      });
+  
+      return obj;
+    });
+    setAreaofexp(transformedData);
   };
+  console.log(areaofexp,"lol");
 
   const handleClose2 = () => setOpen2(false);
 
@@ -42,12 +61,12 @@ const ExpertiesOverview = () => {
   const style = {
     position: "absolute",
     top: "50%",
-    left: "60%",
+    left: "50%",
     borderRadius: "10px",
     transform: "translate(-50%, -50%)",
-    width: "70%",
+    width: "60%",
     bgcolor: "background.paper",
-    border: "2px solid #000",
+    // border: "2px solid #000",
     boxShadow: 24,
     p: 1,
   };
@@ -119,9 +138,9 @@ const ExpertiesOverview = () => {
       renderCell: (params) => {
         return (
           <div>
-            <Button onClick={() => handleOpen2(params)} variant="text">
-              <ModeCommentTwoToneIcon />
-            </Button>
+            <button className="icon-1" onClick={() => handleOpen2(params)} variant="text">
+             <i className="bi bi-chat-left-text"></i>
+            </button>
           </div>
         );
       },
@@ -152,16 +171,17 @@ const ExpertiesOverview = () => {
       width: 150,
       renderCell: (params) => (
         <>
-        {console.log(params.row,"vijjj")}
+        {/* {console.log(params.row,"vijjj")} */}
           <Link to={`/admin/expeties-update/${params.row.exp_id}`}>
-            <EditIcon sx={{ gap: "4px", margin: "5px", color: "blue" }} />
-          </Link>
+          <div className="icon-1">
+            <i className="bi bi-pencil"></i>
+          </div>
+                    </Link>
 
-          <DeleteOutlineIcon
-            sx={{ gap: "4px", margin: "15px" }}
-            color="error"
-            onClick={() => handleDelete(params.row.user_id)}
-          />
+          <div className="icon-1"
+            onClick={() => handleDelete(params.row.user_id)}>
+            <i className="bi bi-trash"></i>
+          </div>
         </>
       ),
     },
@@ -199,25 +219,50 @@ const ExpertiesOverview = () => {
           </Box>
         </div>
       </div>
+      {/* {console.log(areaofexp)} */}
       <Modal
         open={open2}
         onClose={handleClose2}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
+         
         <Box sx={style}>
-          <h2>Category</h2>
-          {expertieareadata.map((d) => (
-            <h4>{d}</h4>
-          ))}
-          <h2>Follower Count</h2>
-          {followercount.map((d) => (
-            <h4>{d}</h4>
-          ))}
-          <h2>Platform</h2>
-          {platform.map((d) => (
-            <h4>{d}</h4>
-          ))}
+        
+        
+        <DataGrid
+          rows={areaofexp}
+            columns={[{
+              field: "S.NO",
+              headerName: "S.NO",
+              width: 90,
+              renderCell: (params) => {
+                const rowIndex = areaofexp.indexOf(params.row);
+                return <div>{rowIndex + 1}</div>;
+              }
+             
+            },
+              {
+                field: "category",
+                headerName: "Category",
+                width: 180,
+                sortable: true,
+              },
+              {
+                field: "followers Count",
+                headerName: "Followers Count",
+                width: 180,
+                sortable: true,
+              },
+              {
+                field: "Platform",
+                headerName: "Platform",
+                width: 180,
+                sortable: true,
+              },
+            ]}     
+            getRowId={(row) => row.id}   
+        />
         </Box>
       </Modal>
     </div>

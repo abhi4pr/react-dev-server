@@ -83,20 +83,19 @@ const OverView = ({ name, data, hardReload }) => {
       renderCell: (params) => {
         return (
           <>
-            <Button
+            <button
               onClick={() => updateHandler(params)}
               variant="text"
-              sx={{ mr: 2 }}
+             className="icon-1"
             >
-              <BorderColorIcon />
-            </Button>
-            <Button
+             <i className="bi bi-pencil"></i>
+            </button>
+            <button
               onClick={() => deleteHandler(params)}
-              variant="text"
-              color="error"
+             className="icon-1"
             >
-              <DeleteOutlineIcon />
-            </Button>
+              <i className="bi bi-trash"></i>
+            </button>
           </>
         );
       },
@@ -165,14 +164,12 @@ const OverView = ({ name, data, hardReload }) => {
       <div className="card">
         <div className="card-header">
           <div className="pack">
-            <Button
-              variant="outlined"
-              color="error"
-              sx={{ m: 1, mr: 2 }}
+            <button
+              className="btn btn-outline-primary btn-sm"
               onClick={() => navigate(`/admin/${name}`)}
             >
-              create {name}
-            </Button>
+              Create {name}
+            </button>
           </div>
         </div>
         <div className="card-body body-padding">
@@ -210,23 +207,24 @@ const OverView = ({ name, data, hardReload }) => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button
+          <div className="d-flex sb w-100">
+
+          <button
             onClick={() => {
               setUpdatePayload({});
               setIsPutOpen(false);
             }}
-            color="error"
-            variant="outlined"
-          >
+           className="btn btn-outline-primary btn-sm"
+            >
             Cancel
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={handleUpdatePayload}
-            color="primary"
-            variant="outlined"
-          >
+            className="btn btn-outline-success btn-sm"
+            >
             Save
-          </Button>
+          </button>
+            </div>
         </DialogActions>
       </Dialog>
       <>
@@ -239,16 +237,17 @@ const OverView = ({ name, data, hardReload }) => {
             Are you sure you want to delete this record
           </DialogContent>
           <DialogActions>
-            <Button
+            <div className="d-flex sb w-100">
+            <button
               onClick={() => setIsDeleteDialogOpen(false)}
-              variant="outlined"
-              color="primary"
+              className="btn btn-outline-primary btn-sm"
             >
               Cancel
-            </Button>
-            <Button onClick={confirmDelete} variant="outlined" color="error">
+            </button>
+            <button onClick={confirmDelete} className="btn btn-outline-danger btn-sm">
               Delete
-            </Button>
+            </button>
+            </div>
           </DialogActions>
         </Dialog>
       </>
