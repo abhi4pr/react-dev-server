@@ -1269,6 +1269,10 @@ const Admin = () => {
                   <Route
                     path="/pms-vendor-group-link"
                     element={<VendorGroupLink />}
+                  /> 
+                  <Route
+                    path="/pms-vendor-group-link/:vendorMast_name"
+                    element={<VendorGroupLink />}
                   />
                   <Route
                     path="/pms-vendor-group-link/:vendorMast_name"
@@ -1286,6 +1290,10 @@ const Admin = () => {
                   />
                   <Route
                     path="/pms-vendor-page-price-master"
+                    element={<VendorPagePriceMaster />}
+                  /> 
+                  <Route
+                    path="/pms-vendor-page-price-master/:vendorMast_name"
                     element={<VendorPagePriceMaster />}
                   />
                   <Route

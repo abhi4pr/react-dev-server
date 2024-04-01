@@ -402,6 +402,7 @@ const IncentivePayment = () => {
                 setBalanceReleaseAmount(params.row.balance_release_amount);
               setAccountNo("");
               setRemarks("");
+              setPaymentRef("");
               setModalOpen(true);
             }}
           >
@@ -530,6 +531,7 @@ const IncentivePayment = () => {
                 setBalanceReleaseAmount(params.row.balance_release_amount);
               setAccountNo("");
               setRemarks("");
+              setPaymentRef("");
               setModalOpen(true);
             }}
           >
@@ -670,6 +672,7 @@ const IncentivePayment = () => {
                 setBalanceReleaseAmount(params.row.balance_release_amount);
               setAccountNo("");
               setRemarks("");
+              setPaymentRef("");
               setModalOpen(true);
             }}
           >
@@ -1163,11 +1166,11 @@ const IncentivePayment = () => {
             />
             <label>Payment ref number </label>
             <input
-              type="number"
+              type="text"
               className="form-control"
               id="images"
               name="images"
-              value={accountNo}
+              value={paymentRef}
               onChange={(e) => setPaymentRef(e.target.value)}
               required
             />

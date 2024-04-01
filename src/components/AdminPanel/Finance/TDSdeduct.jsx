@@ -134,25 +134,7 @@ export default function TDSdeduct() {
   );
 
   // ==============================================================
-  //iterate for totalAmount of same name venders :-
-  const vendorAmounts = [];
-  uniqueVendorData.forEach((item) => {
-    const vendorName = item.vendor_name;
-    const requestAmount = item.request_amount;
 
-    if (vendorAmounts[vendorName]) {
-      vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
-    } else {
-      vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
-    }
-  });
-
-  // calculate the total amount for vendors with the same name
-  let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
-    (total, amount) => total + amount,
-    0
-  );
-  // ================================================================
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
       const date = new Date(item.request_date);
@@ -409,7 +391,7 @@ export default function TDSdeduct() {
       headerName: "Total Amount",
       width: 150,
       renderCell: () => {
-        return <p> &#8377; {totalSameVendorAmount}</p>;
+        // return <p> &#8377; {totalSameVendorAmount}</p>;
       },
     },
     {

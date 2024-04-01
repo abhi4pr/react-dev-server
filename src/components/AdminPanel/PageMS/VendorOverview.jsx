@@ -7,16 +7,40 @@ import { Link } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import RouteIcon from "@mui/icons-material/Route";
 import PriceChangeIcon from "@mui/icons-material/PriceChange";
+import { Box, Button, Grid, Skeleton, Stack } from "@mui/material";
+import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
+import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 
 const VendorOverview = () => {
   const [vendorTypes, setVendorTypes] = useState([]);
   const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
+  const [typeData, setTypeData] = useState([{}]);
+  const [platformData, setPlatformData] = useState([{}]);
+  const [cycleData, setCycleData] = useState([{}]);
+  const [payData, setPayData] = useState([{}]);
+  const [loading, setLoading] = useState(false);
 
   const getData = () => {
+    setLoading(true);
     axios.get(baseUrl + "vendorAllData").then((res) => {
       setVendorTypes(res.data.tmsVendorkMastList);
       setFilterData(res.data.tmsVendorkMastList);
+      setLoading(false);
+    });
+    axios.get(baseUrl + "getAllVendor").then((res) => {
+      setTypeData(res.data.data);
+    });
+    axios.get(baseUrl + "getAllPlatform").then((res) => {
+      setPlatformData(res.data.data);
+    });
+    axios.get(baseUrl + "getAllPayCycle").then((res) => {
+      setCycleData(res.data.data);
+    });
+
+    axios.get(baseUrl + "getAllPay").then((res) => {
+      setPayData(res.data.data);
     });
   };
 
@@ -30,48 +54,6 @@ const VendorOverview = () => {
     });
     setFilterData(result);
   }, [search]);
-
-  const columns = [
-    {
-      name: "S.NO",
-      selector: (row, index) => <div>{index + 1}</div>,
-      sortable: true,
-    },
-    {
-      name: "Vendor Name",
-      selector: (row) => row.vendorMast_name,
-    },
-    {
-      name: "Mobile",
-      selector: (row) => row.mobile,
-    },
-    {
-      name: "Email",
-      selector: (row) => row.email,
-    },
-    {
-      name: "Home City",
-      selector: (row) => row.home_city,
-      width: "max-content",
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <>
-          <Link to={`/admin/pms-vendor-edit/${row._id}`}>
-            <div title="Edit" className="icon-1">
-              <i className="bi bi-pencil"></i>
-            </div>
-          </Link>
-          <DeleteButton
-            endpoint="deleteVendorMast"
-            id={row._id}
-            getData={getData}
-          />
-        </>
-      ),
-    },
-  ];
 
   const dataGridcolumns = [
     {
@@ -93,6 +75,12 @@ const VendorOverview = () => {
       editable: true,
     },
     {
+      field: "alternate_mobile",
+      headerName: "Alternate Mobile",
+      width: 200,
+      editable: true,
+    },
+    {
       field: "email",
       headerName: "Email",
       width: 200,
@@ -102,6 +90,126 @@ const VendorOverview = () => {
       field: "home_city",
       headerName: "Home City",
       width: 200,
+      editable: true,
+    },
+    {
+      field: "gst_no",
+      headerName: "GST No",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "threshold_limit",
+      headerName: "Threshold Limit",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "country_code",
+      headerName: "Country Code",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "company_pincode",
+      headerName: "Company Pincode",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "company_address",
+      headerName: "Company Address",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "company_city",
+      headerName: "Company City",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "company_name",
+      headerName: "Company Name",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "company_state",
+      headerName: "Company State",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "home_address",
+      headerName: "Home Address",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "home_state",
+      headerName: "Home State",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "pan_no",
+      headerName: "Pan No",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "personal_address",
+      headerName: "Personal Address",
+      width: 200,
+      editable: true,
+    },
+    {
+      field: "type_id",
+      headerName: "Vendor Type",
+      width: 200,
+      renderCell: (params) => {
+        let name = typeData?.find(
+          (item) => item?._id == params.row?.type_id
+        )?.type_name;
+        return <div>{name}</div>;
+      },
+      editable: true,
+    },
+    {
+      field: "platform_id",
+      headerName: "Platform",
+      width: 200,
+      renderCell: (params) => {
+        let name = platformData?.find(
+          (item) => item?._id == params.row?.platform_id
+        )?.platform_name;
+        return <div>{name}</div>;
+      },
+      editable: true,
+    },
+    {
+      field: "payMethod_id",
+      headerName: "Paymen Method",
+      width: 200,
+      renderCell: (params) => {
+        let name = payData?.find(
+          (item) => item?._id == params.row?.payMethod_id
+        )?.payMethod_name;
+        return <div>{name}</div>;
+      },
+      editable: true,
+    },
+    {
+      field: "cycle_id",
+      headerName: "Cycle",
+      width: 200,
+      renderCell: (params) => {
+        let name = cycleData?.find(
+          (item) => item?._id == params.row?.cycle_id
+        )?.cycle_name;
+        return <div>{name}</div>;
+      },
       editable: true,
     },
     {
@@ -148,6 +256,57 @@ const VendorOverview = () => {
     },
   ];
 
+  const copySelectedRows = (type) => {
+    let selectedRows = Array.from(
+      document.getElementsByClassName("MuiDataGrid-row")
+    ).filter((row) => row.classList.contains("Mui-selected"));
+
+    let data = selectedRows.map((row) => {
+      let rowData = {};
+      for (let j = 1; j < row.children.length - 1; j++) {
+        if (dataGridcolumns[j].field !== "Action") {
+          rowData[dataGridcolumns[j].field] = row.children[j].innerText;
+        }
+      }
+      return rowData;
+    });
+
+    if (type === 1) {
+      let excelData = Object.keys(data[0]).join("\t") + "\n";
+      data.forEach((row) => {
+        let values = Object.values(row).join("\t");
+        excelData += values + "\n";
+      });
+      navigator.clipboard.writeText(excelData);
+    } else {
+      let copyData = data.map((row) => {
+        return {
+          "Page User Name": row.page_user_name,
+          Link: row.link,
+        };
+      });
+      let excelData = Object.keys(copyData[0]).join("\t") + "\n";
+      copyData.forEach((row) => {
+        let values = Object.values(row).join("\t");
+        excelData += values + "\n";
+      });
+      navigator.clipboard.writeText(excelData);
+    }
+  };
+
+  const copyAllRows = () => {
+    let data = [];
+    for (let i = 0; i < filterData.length; i++) {
+      let row = filterData[i];
+      let rowData = {};
+      for (let j = 1; j < dataGridcolumns.length - 1; j++) {
+        rowData[dataGridcolumns[j].field] = row[dataGridcolumns[j].field];
+      }
+      data.push(rowData);
+    }
+    navigator.clipboard.writeText(JSON.stringify(data));
+  };
+
   return (
     <>
       <div className="d-flex ">
@@ -160,7 +319,6 @@ const VendorOverview = () => {
             Add Vendor
           </button>
         </Link>
-
         <Link to={`/admin/pms-vendor-page-price-overview`}>
           <button
             title="Add"
@@ -170,27 +328,39 @@ const VendorOverview = () => {
             Vendor Page Price Overview
           </button>
         </Link>
+        <Stack direction="row" spacing={1}>
+          <button
+            title="Add"
+            className="btn btn-outline-primary ml-3"
+            style={{ marginBottom: "10px" }}
+            onClick={() => copySelectedRows(1)}
+          >
+            <ContentCopyOutlinedIcon />
+
+            Copy Selected Pages
+          </button>
+          <button
+            title="Add"
+            className="btn btn-outline-primary ml-3"
+            style={{ marginBottom: "10px" }}
+            onClick={copyAllRows}
+          >
+          
+            <CopyAllOutlinedIcon />
+            Copy All Pages
+          </button>
+          {/* <Button
+                size="small"
+                variant="outlined"
+                startIcon={<ContentPasteIcon />}
+                onClick={() => copySelectedRows(0)}
+              >
+                Copy Page Name & Links
+              </Button> */}
+        </Stack>
       </div>
       <div className="card">
         <div className="data_tbl table-responsive">
-          {/* <DataTable
-            title="Vendor Overview"
-            columns={columns}
-            data={filterData}
-            fixedHeader
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search Here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
-          /> */}
           <div className="card">
             <div className="card-body">
               <h5 className="card-title">Vendor Type</h5>
@@ -254,20 +424,58 @@ const VendorOverview = () => {
               </div>
             </div>
           </div>
-          <DataGrid
-            rows={filterData}
-            columns={dataGridcolumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            getRowId={(row) => row._id}
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-          />
+
+          {loading ? (
+            <Box mt={2} ml={2} mb={3} sx={{ width: "95%" }}>
+              <Grid
+                container
+                spacing={{ xs: 1, md: 10 }}
+                columns={{ xs: 4, sm: 8, md: 12 }}
+              >
+                {Array.from(Array(5)).map((_, index) => (
+                  <Grid item md={1} key={index}>
+                    <Skeleton
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+              <Grid
+                container
+                spacing={{ xs: 2, md: 3 }}
+                columns={{ xs: 4, sm: 8, md: 12 }}
+              >
+                {Array.from(Array(30)).map((_, index) => (
+                  <Grid item xs={2} sm={2} md={2} key={index}>
+                    <Skeleton
+                      animation="wave"
+                      sx={{
+                        width: "100%",
+                      }}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </Box>
+          ) : (
+            <DataGrid
+              rows={filterData}
+              columns={dataGridcolumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              getRowId={(row) => row._id}
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              checkboxSelection
+            />
+          )}
         </div>
       </div>
     </>

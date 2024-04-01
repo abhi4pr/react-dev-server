@@ -23,7 +23,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const PendingInvoice = () => {
   const navigate = useNavigate();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [datas, setData] = useState([]);
   const [search, setSearch] = useState("");
@@ -90,8 +90,18 @@ const PendingInvoice = () => {
   };
 
   const handleImageUpload = async (row, fileData) => {
-    if (!inoiceNum || !date || !partyName) {
-      toastAlert("Please fill all the fields");
+    // if (!inoiceNum || !date || !partyName) {
+    //   toastError("Please fill all the fields");
+    //   return;
+    // }
+    if (!inoiceNum) {
+      toastError("Please fill Invoice Number");
+      return;
+    } else if (!date) {
+      toastError("Please fill Invoice Date");
+      return;
+    } else if (!partyName) {
+      toastError("Please fill Party Name");
       return;
     }
     const formData = new FormData();

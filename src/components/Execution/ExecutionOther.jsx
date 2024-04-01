@@ -256,9 +256,6 @@ function ExecutionOther() {
     setEndDate(null);
   };
 
-
-  
-
   const handleStoryViewDateChange = (newValue) => {
     const date = new Date(newValue.$d);
     const offset = date.getTimezoneOffset();
@@ -354,10 +351,10 @@ function ExecutionOther() {
       setCityListTemp(res.data.data.map((city) => city.city_name));
       setCityList(res.data.data.map((city) => city.city_name));
     });
-  }
+  };
 
   useEffect(() => {
-    callDataForLoad()
+    callDataForLoad();
   }, []);
   const converttoclipboard = (copydata) => {
     const copyData = copydata
@@ -385,16 +382,11 @@ function ExecutionOther() {
   };
   const option = ["Story", "Post", "Both", "Note"];
   const copySelectedRows = (id) => {
-    console.log(id);
-    // console.log(rowSelectionModel);
     let copydata = [];
     let set = new Set();
-
     for (let i = 0; i < rowSelectionModel.length; i++) {
       set.add(rowSelectionModel[i]);
     }
-
-    // console.log(set);
     for (let i = 0; i < rows.length; i++) {
       if (set.has(rows[i].p_id)) {
         let temp = [
@@ -758,7 +750,7 @@ function ExecutionOther() {
     formData.append("user_id", userID);
 
     axios
-      .post(`${baseUrl}`+`add_exe_pid_history`, formData, {
+      .post(`${baseUrl}` + `add_exe_pid_history`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -845,7 +837,7 @@ function ExecutionOther() {
 
   return (
     <>
-        <ThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
         <div className="form-heading">
           <div className="form_heading_title">
             <h2>Pages</h2>
@@ -982,20 +974,19 @@ function ExecutionOther() {
           </Stack>
         </Paper>
         {/* Third Paper */}
-        <Box sx={{display:"flex"}}>
-
-        <TextField
-          label="Search by Page Name"
-          onChange={(e) => {
-            const temp = alldata.filter((ele) => {
-              return ele.page_name
-                .toLowerCase()
-                .includes(e.target.value.toLowerCase());
-            });
-            setRows(temp);
-          }}
-        />
-         <Autocomplete
+        <Box sx={{ display: "flex" }}>
+          <TextField
+            label="Search by Page Name"
+            onChange={(e) => {
+              const temp = alldata.filter((ele) => {
+                return ele.page_name
+                  .toLowerCase()
+                  .includes(e.target.value.toLowerCase());
+              });
+              setRows(temp);
+            }}
+          />
+          <Autocomplete
             disablePortal
             value={viewType}
             // defaultValue={compareFlagOptions[0].label}
@@ -1010,11 +1001,11 @@ function ExecutionOther() {
 
               setViewType(newValue);
             }}
-            sx={{ width: 250,ml:2 }}
+            sx={{ width: 250, ml: 2 }}
             renderInput={(params) => <TextField {...params} label="View In" />}
             // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
           />
-                  </Box>
+        </Box>
 
         <Paper
           justifyContent="space-between"
