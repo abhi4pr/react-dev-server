@@ -34,7 +34,7 @@ const AnnoucementPost = () => {
       });
     }
 
-    if (department.length > 0) {
+    if (department.length > 0 && departmentdata.length !== department.length) {
       axios
         .get(
           baseUrl +
@@ -57,6 +57,15 @@ const AnnoucementPost = () => {
     const files = event.target.files;
 
     setAttachments([...files]);
+  };
+
+  const handleSelectAllDepartments = () => {
+    const allDepartmentIds = departmentdata.map((dept) => dept.dept_id);
+    setDepartment(allDepartmentIds);
+
+    axios.get(baseUrl + "get_all_designations").then((res) => {
+      setDesignationData(res.data.data, "designaation");
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -121,20 +130,25 @@ const AnnoucementPost = () => {
               <label className="form-label">
                 Department Name <sup style={{ color: "red" }}>*</sup>
               </label>
+              <button
+                type="button"
+                onClick={handleSelectAllDepartments}
+                className="btn btn-primary btn-sm"
+              >
+                Select All Departments
+              </button>
               <Select
-                options={departmentdata.map((option) => ({
+                options={departmentdata?.map((option) => ({
                   value: option.dept_id,
-                  label: `${option.dept_name}`,
+                  label: option.dept_name,
                 }))}
                 value={departmentdata
-                  .filter((option) => department.includes(option.dept_id))
-                  .map((option) => ({
+                  ?.filter((option) => department?.includes(option.dept_id))
+                  ?.map((option) => ({
                     value: option.dept_id,
                     label: option.dept_name,
                   }))}
-                onChange={(e) => {
-                  setDepartment(e.map((option) => option.value));
-                }}
+                onChange={(e) => setDepartment(e.map((option) => option.value))}
                 isMulti
                 required
               />

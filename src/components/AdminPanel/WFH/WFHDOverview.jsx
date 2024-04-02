@@ -308,7 +308,6 @@ const WFHDOverview = () => {
       name: "Profile Status",
       cell: (row) => row.profile_status + " %",
       width: "120px",
-
     },
     {
       name: "Status",
@@ -348,7 +347,6 @@ const WFHDOverview = () => {
       name: "Personal Contact Number",
       cell: (row) => row.PersonalNumber,
       width: "200px",
-
     },
     // {
     //   name: "Alternate Contact Number",
@@ -447,23 +445,31 @@ const WFHDOverview = () => {
               Onboard
             </button>
           ) : row.att_status == "onboarded" ? (
-            <button
-              className="btn btn-primary"
-              data-toggle="modal"
-              data-target="#sepmodal"
-              size="small"
-              variant="contained"
-              color="primary"
-              onClick={() =>
-                handleSeprationReason(
-                  row.user_id,
-                  row.user_name,
-                  row.user_contact_no
-                )
-              }
-            >
-              Sep
-            </button>
+            <>
+              <button
+                className="btn btn-primary"
+                data-toggle="modal"
+                data-target="#sepmodal"
+                size="small"
+                variant="contained"
+                color="primary"
+                onClick={() =>
+                  handleSeprationReason(
+                    row.user_id,
+                    row.user_name,
+                    row.user_contact_no
+                  )
+                }
+              >
+                Sep
+              </button>
+              <Link to={`/admin/wfhd-update/${row.user_id}`}>
+                {/* <EditIcon /> */}
+                <div className="icon-1" title="Edit User">
+                  <i class="bi bi-pencil"></i>
+                </div>
+              </Link>
+            </>
           ) : null}
         </>
       ),
@@ -491,10 +497,9 @@ const WFHDOverview = () => {
             height: "max-content",
             border: "1px solid #ccc",
             background: "#fff",
-            
+
             borderRadius: "4px",
             outline: "none",
-      
           },
         }}
       >
@@ -600,48 +605,38 @@ const WFHDOverview = () => {
           </li>
         </ul> */}
         <div className="tab">
-          
-            <div
-              className={` named-tab  ${
-                activeTab == 0 ? "active-tab" : ""
-              }`}
-              onClick={() => {
-                FilterTabData("registered"), setActiveTab(0);
-              }}
-            >
-              Registered ({statusCounts.registered})
-            </div>
-            <div
-              className={`named-tab  ${
-                activeTab == 1 ? "active-tab" : ""
-              }`}
-              onClick={() => {
-                FilterTabData("document_upload"), setActiveTab(1);
-              }}
-            >
-              Upload Document ({statusCounts.document_upload})
-            </div>
-            <div
-              className={`named-tab  ${
-                activeTab == 2 ? "active-tab" : ""
-              }`}
-              onClick={() => {
-                FilterTabData("training"), setActiveTab(2);
-              }}
-            >
-              Training ({statusCounts.training})
-            </div>
-            <div
-              className={`named-tab  ${
-                activeTab == 3 ? "active-tab" : ""
-              }`}
-              onClick={() => {
-                FilterTabData("onboarded"), setActiveTab(3);
-              }}
-            >
-              Onboarded ({statusCounts.onboarded})
-            </div>
-         
+          <div
+            className={` named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
+            onClick={() => {
+              FilterTabData("registered"), setActiveTab(0);
+            }}
+          >
+            Registered ({statusCounts.registered})
+          </div>
+          <div
+            className={`named-tab  ${activeTab == 1 ? "active-tab" : ""}`}
+            onClick={() => {
+              FilterTabData("document_upload"), setActiveTab(1);
+            }}
+          >
+            Upload Document ({statusCounts.document_upload})
+          </div>
+          <div
+            className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
+            onClick={() => {
+              FilterTabData("training"), setActiveTab(2);
+            }}
+          >
+            Training ({statusCounts.training})
+          </div>
+          <div
+            className={`named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
+            onClick={() => {
+              FilterTabData("onboarded"), setActiveTab(3);
+            }}
+          >
+            Onboarded ({statusCounts.onboarded})
+          </div>
         </div>
         <div className="card">
           {/* <div className="data_tbl table-responsive" >
@@ -684,10 +679,9 @@ const WFHDOverview = () => {
             <DataTable
               columns={columns}
               data={filterDataS}
-             pagination
-            //  selectableRows={true}
-             paginationDefaultPage={1}
-
+              pagination
+              //  selectableRows={true}
+              paginationDefaultPage={1}
               highlightOnHover
               paginationResetDefaultPage={true}
               striped="true"
@@ -707,7 +701,7 @@ const WFHDOverview = () => {
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title" id="exampleModalLabel">
-                  Training Done 
+                  Training Done
                 </h5>
                 <button
                   type="button"
