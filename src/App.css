@@ -1305,6 +1305,7 @@ label.checkbox-inline.propscss {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding-bottom: 20px;
 }
 .userSalary_modal h3 {
   color: var(--gray-800);

@@ -30,7 +30,7 @@ const FieldContainer = ({
           : `col-xl-${fieldGrid} col-lg-${fieldGrid} col-md-${fieldGrid} col-sm-12`
       }
     >
-      <div className="form-group">
+      <div className="form-group m-0">
         <label htmlFor={label} className="form-label">
           {label} {astric === true && <sup style={{ color: "red" }}>*</sup>}
         </label>

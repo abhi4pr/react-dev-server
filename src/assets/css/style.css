@@ -347,7 +347,9 @@ input[type="checkbox"] {
   box-sizing: border-box;
   padding: 0;
 }
-
+label{
+  margin: 0;
+}
 textarea {
   overflow: auto;
   resize: vertical;
@@ -5706,6 +5708,26 @@ input[type="button"].btn-block {
 .sb{
   display: flex;
   justify-content: space-between !important;
+  align-items: center;
+}
+.card-foot{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  min-height: 60px;
+  max-height: max-content;
+
+  padding: 11px 20px 11px 20px;
+  
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 24px 24px;
+  background-color: var(--white);
+  .rec-com{
+    color: var(--gray-500)!important;
+  }
+
 }
 .card-header {
   /* padding: 16px 24px;
@@ -12679,6 +12701,16 @@ body.sidebar-toggled .topbar {
   flex-direction: row !important; 
   overflow-y: scroll;
 } */
+.img-upload{
+  width:25px;
+}
+.ql-container{
+  border-radius: 0 0 12px 12px !important;
+
+}
+.ql-toolbar{
+  border-radius: 12px 12px 0 0 !important;
+}
 .css-1gywuxd-MuiInputBase-root-MuiOutlinedInput-root{
   width: 100% !important;
   height:max-content !important;
