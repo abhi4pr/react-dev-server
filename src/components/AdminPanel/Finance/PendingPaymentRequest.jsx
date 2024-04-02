@@ -1175,6 +1175,22 @@ export default function PendingPaymentRequest() {
       },
     },
     {
+      field: "paid_amount",
+      headerName: "Paid Amount",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.paid_amount}</p>;
+      },
+    },
+    {
+      field: "balance_amount",
+      headerName: "Balance Amount",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.balance_amount}</p>;
+      },
+    },
+    {
       field: "base_amount",
       headerName: "Base Amount",
       width: 150,
@@ -1215,6 +1231,24 @@ export default function PendingPaymentRequest() {
           <p> {calculateDays(params.row.request_date, new Date())} Days</p>
         );
       },
+    },
+    {
+      field: "Status",
+      headerName: "Status",
+      width: 150,
+      renderCell: (params) => (
+        <div>
+          {params.row.status === "0"
+            ? "Pending"
+            : params.row.status === "1"
+            ? "Paid"
+            : params.row.status === "2"
+            ? "Discard"
+            : params.row.status === "3"
+            ? "Partial"
+            : ""}
+        </div>
+      ),
     },
     {
       field: "Action",
