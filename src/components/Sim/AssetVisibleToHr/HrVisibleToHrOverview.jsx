@@ -9,6 +9,7 @@ import { useAPIGlobalContext } from "../../AdminPanel/APIContext/APIContext";
 import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
 import AssetSendToVendorReusable from "../AssetSendToVendorReusable";
+import ScrapReusable from "../ScrapReusable";
 
 const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const { userID } = useAPIGlobalContext();
@@ -37,7 +38,6 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   };
 
   const handleCloseModalSend = () => {
-    console.log("close modal call");
     return setIsModalOpenSend(!isModalOpenSend);
   };
 
@@ -50,6 +50,16 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const handleInvoiceCloseModal = () => {
     setIsInvoiceModalOpen(false);
     setEnlargedImageUrl("");
+  };
+
+  const [scrapModalOpen, setScrapModalOpen] = useState(false);
+
+  const handleScrap = (row) => {
+    setScrapModalOpen(true);
+    setCurrentRow(row);
+  };
+  const handleScrapModalClose = () => {
+    return setScrapModalOpen(!scrapModalOpen);
   };
 
   const [ImageModalOpen, setImageModalOpen] = useState(false);
@@ -385,7 +395,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-target="#scrapModal"
             size="small"
             color="primary"
-            onClick={() => handleStatusUpdate(row)}
+            onClick={() => handleScrap(row)}
             className="btn btn-danger btn-sm ml-2"
           >
             Scrap
@@ -427,7 +437,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-target="#scrapModal"
             size="small"
             color="primary"
-            onClick={() => handleStatusUpdate(row)}
+            onClick={() => handleScrap(row)}
             className="btn btn-danger btn-sm ml-2"
           >
             Scrap
@@ -458,7 +468,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             data-target="#scrapModal"
             size="small"
             color="primary"
-            onClick={() => handleStatusUpdate(row)}
+            onClick={() => handleScrap(row)}
             className="btn btn-danger btn-sm ml-2"
           >
             Scrap
@@ -707,7 +717,14 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       </div>
 
       {/* Scrap Remark modal */}
-      <div
+      <ScrapReusable
+        getData={hardRender}
+        isModalOpenSend={scrapModalOpen}
+        onClose={handleScrapModalClose}
+        rowData={currentRow}
+      />
+
+      {/* <div
         className="modal fade"
         id="scrapModal"
         tabIndex={-1}
@@ -758,7 +775,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Hanlde image modal  */}
       <Modal
@@ -905,7 +922,7 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
         <img
           src={enlargedImageUrl}
           alt="Enlarged Image"
-          style={{height: "80vh", width: "80vw"}}
+          style={{ height: "80vh", width: "80vw" }}
         />
       </Modal>
 
