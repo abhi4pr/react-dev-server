@@ -555,7 +555,6 @@ const WFHDOverview = () => {
         </div>
       </Modal>
       <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        {console.log(activeTab)}
         <FormContainer mainTitle="My Team" link={"/admin/"} />
         {/* <ul
           className="nav nav-pills nav-fill navtop"
@@ -611,7 +610,8 @@ const WFHDOverview = () => {
               FilterTabData("registered"), setActiveTab(0);
             }}
           >
-            Registered ({statusCounts.registered})
+            Registered (
+            {statusCounts?.registered ? statusCounts?.registered : 0})
           </div>
           <div
             className={`named-tab  ${activeTab == 1 ? "active-tab" : ""}`}
@@ -619,7 +619,8 @@ const WFHDOverview = () => {
               FilterTabData("document_upload"), setActiveTab(1);
             }}
           >
-            Upload Document ({statusCounts.document_upload})
+            Upload Document (
+            {statusCounts?.document_upload ? statusCounts?.document_upload : 0})
           </div>
           <div
             className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
@@ -627,7 +628,7 @@ const WFHDOverview = () => {
               FilterTabData("training"), setActiveTab(2);
             }}
           >
-            Training ({statusCounts.training})
+            Training ({statusCounts?.training ? statusCounts?.training : 0})
           </div>
           <div
             className={`named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
@@ -635,7 +636,7 @@ const WFHDOverview = () => {
               FilterTabData("onboarded"), setActiveTab(3);
             }}
           >
-            Onboarded ({statusCounts.onboarded})
+            Onboarded ({statusCounts?.onboarded ? statusCounts?.onboarded : 0})
           </div>
         </div>
         <div className="card">
