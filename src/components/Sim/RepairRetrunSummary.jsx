@@ -85,9 +85,7 @@ const RepairRetrunSummary = () => {
                 </button>
               ) : (
                 "N/A"
-                
               )}
-              
             </>
           )}
         </>
@@ -101,7 +99,6 @@ const RepairRetrunSummary = () => {
       name: "Retun Recover HR",
       selector: (row) => row.asset_return_recover_by_name,
       width: "150px",
-
     },
     {
       name: "Return Remark",
@@ -142,7 +139,7 @@ const RepairRetrunSummary = () => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             }
-              />
+          />
         </div>
         <div className="data_tbl table-responsive card-body body-padding">
           <DataTable
@@ -155,7 +152,7 @@ const RepairRetrunSummary = () => {
             // highlightOnHover
             // subHeader
             // subHeaderComponent={
-             
+
             // }
           />
         </div>
