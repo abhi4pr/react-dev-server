@@ -16,6 +16,7 @@ import AllAssetExcel from "../../utils/AllAssetsExcel";
 import FieldContainer from "../AdminPanel/FieldContainer";
 import AssetSendToVendorReusable from "./AssetSendToVendorReusable";
 import ScrapReusable from "./ScrapReusable";
+import ReciveToVendorReusable from "./ReciveToVendorReusable";
 
 const SimOverview = () => {
   const { id } = useParams();
@@ -77,8 +78,8 @@ const SimOverview = () => {
     { value: "Old", label: "Old" },
   ];
 
-  function getData(buttonID) {
-    axios.get(baseUrl + "get_all_sims").then((res) => {
+  async function getData(buttonID) {
+    await axios.get(baseUrl + "get_all_sims").then((res) => {
       const simAllData = res?.data.data;
 
       // if (status != "") {
@@ -355,6 +356,16 @@ const SimOverview = () => {
         all_status_date: stolenDate,
         all_status_remark: stolenRemark,
       });
+
+      await axios.put(baseUrl + "update_allocationsim", {
+        sim_id: currentRow.sim_id,
+        allo_id: currentRow.allo_id,
+        status: "Stolen",
+        submitted_by: userID,
+        Last_updated_by: userID,
+        // Reason: returnRecoverRemark,
+      });
+
       getData();
       toastAlert("Status Updated");
       handleStolenModalClose();
@@ -377,6 +388,15 @@ const SimOverview = () => {
         all_status_date: lostAssetDate,
         all_status_remark: lostAssetRemark,
       });
+      await axios.put(baseUrl + "update_allocationsim", {
+        sim_id: currentRow.sim_id,
+        allo_id: currentRow.allo_id,
+        status: "Lost",
+        submitted_by: userID,
+        Last_updated_by: userID,
+        // Reason: returnRecoverRemark,
+      });
+
       getData();
       toastAlert("Status Updated");
       handleLostModalClose();
@@ -386,12 +406,23 @@ const SimOverview = () => {
 
   //Scrap Asset section Start
   const handleScrap = (row) => {
+    setCurrentRow(row);
     setScrapModalOpen(true);
   };
   const handleScrapModalClose = () => {
     return setScrapModalOpen(!scrapModalOpen);
   };
   //Scrap Asset Modal End
+
+  //vendor recive modal open
+  const [reciveVendorModalOpen, setReciveVendorModalOpen] = useState(false);
+  const handleReciveModalVednor = (row) => {
+    setCurrentRow(row);
+    setReciveVendorModalOpen(true);
+  };
+  const handleReciveVednorModalClose = () => {
+    return setReciveVendorModalOpen(!reciveVendorModalOpen);
+  };
 
   const columns = [
     {
@@ -509,38 +540,71 @@ const SimOverview = () => {
     {
       name: "Status",
       selector: (row) => (
-        <select className="form-control" onChange={handleSelectionChange(row)}>
-          <option>Select...</option>
-          <option value="send-to-vendor">Send To Vendor</option>
-          <option value="stolen">Stolen</option>
-          <option value="lost">Lost</option>
-          <option value="scrap">Scrap</option>
-        </select>
+        <>
+          {row.status !== "Scrap" &&
+            row.status !== "Stolen" &&
+            row.status !== "Lost" && (
+              <>
+                <select
+                  className="form-control"
+                  onChange={handleSelectionChange(row)}
+                >
+                  <option>Select...</option>
+                  <option value="send-to-vendor">Send To Vendor</option>
+                  <option value="stolen">Stolen</option>
+                  <option value="lost">Lost</option>
+                  <option value="scrap">Scrap</option>
+                </select>
+              </>
+            )}
+        </>
       ),
       width: "150px",
+    },
+    {
+      name: "Vendor Status",
+      selector: (row) => (
+        <>
+          {row.vendor_status == "1" && (
+            <button
+              onClick={() => handleReciveModalVednor(row)}
+              className="btn btn-danger btn-sm"
+            >
+              Recive from Vendor
+            </button>
+          )}
+        </>
+      ),
+      width: "200px",
     },
 
     {
       name: "Action",
       cell: (row) => (
         <>
-          <Link to={`/sim-update/${row.sim_id}`}>
-            <button title="Edit" className="icon-1">
-              <i className=" bi bi-pencil"></i>
-            </button>
-          </Link>
-          <Link to={`/sim-summary/${row.sim_id}`}>
-            <button title="Summary" className="icon-1">
-              <i className="bi bi-journal-text"></i>
-            </button>
-          </Link>
-          {row.status !== "Allocated" && (
-            <DeleteButton
-              endpoint="delete_sim"
-              id={row.sim_id}
-              getData={getData}
-            />
-          )}
+          {row.status !== "Scrap" &&
+            row.status !== "Stolen" &&
+            row.status !== "Lost" && (
+              <>
+                <Link to={`/sim-update/${row.sim_id}`}>
+                  <button title="Edit" className="icon-1">
+                    <i className=" bi bi-pencil"></i>
+                  </button>
+                </Link>
+                <Link to={`/sim-summary/${row.sim_id}`}>
+                  <button title="Summary" className="icon-1">
+                    <i className="bi bi-journal-text"></i>
+                  </button>
+                </Link>
+                {row.status !== "Allocated" && (
+                  <DeleteButton
+                    endpoint="delete_sim"
+                    id={row.sim_id}
+                    getData={getData}
+                  />
+                )}
+              </>
+            )}
 
           {id == 2 && (
             <button
@@ -1237,6 +1301,13 @@ const SimOverview = () => {
         getData={getData}
         isModalOpenSend={scrapModalOpen}
         onClose={handleScrapModalClose}
+        rowData={currentRow}
+      />
+
+      <ReciveToVendorReusable
+        getData={getData}
+        isModalOpenSend={reciveVendorModalOpen}
+        onClose={handleReciveVednorModalClose}
         rowData={currentRow}
       />
 

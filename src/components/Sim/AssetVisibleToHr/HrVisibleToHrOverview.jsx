@@ -10,6 +10,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import { baseUrl } from "../../../utils/config";
 import AssetSendToVendorReusable from "../AssetSendToVendorReusable";
 import ScrapReusable from "../ScrapReusable";
+import ReciveToVendorReusable from "../ReciveToVendorReusable";
 
 const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const { userID } = useAPIGlobalContext();
@@ -75,6 +76,16 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
   const handleStatusUpdate = (row, status) => {
     setStatushere(status);
     setRepairId(row.repair_id);
+  };
+
+  //vendor recive modal open
+  const [reciveVendorModalOpen, setReciveVendorModalOpen] = useState(false);
+  const handleReciveModalVednor = (row) => {
+    setCurrentRow(row);
+    setReciveVendorModalOpen(true);
+  };
+  const handleReciveVednorModalClose = () => {
+    return setReciveVendorModalOpen(!reciveVendorModalOpen);
   };
 
   const handleAcceptUpdate = async (row, status) => {
@@ -473,18 +484,34 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
           >
             Scrap
           </button>
-          <button
+          {/* <button
             type="button"
             onClick={() => handleAssetSend(row)}
             className="btn btn-info btn-sm ml-2"
           >
             Send To Vendor
-          </button>
+          </button> */}
         </>
       ),
       sortable: true,
       width: "350px",
     },
+    // {
+    //   name: "Vendor Status",
+    //   selector: (row) => (
+    //     <>
+    //       {row.vendor_status == "1" && (
+    //         <button
+    //           onClick={() => handleReciveModalVednor(row)}
+    //           className="btn btn-danger btn-sm"
+    //         >
+    //           Recive from Vendor
+    //         </button>
+    //       )}
+    //     </>
+    //   ),
+    //   width: "200px",
+    // },
   ];
   const handleVendorDetails = async (id) => {
     try {
@@ -929,6 +956,12 @@ const HrVisibleToHrOverview = ({ hrOverviewData, hardRender }) => {
       <AssetSendToVendorReusable
         isModalOpenSend={isModalOpenSend}
         onClose={handleCloseModalSend}
+        rowData={currentRow}
+      />
+      <ReciveToVendorReusable
+        // getData={getData}
+        isModalOpenSend={reciveVendorModalOpen}
+        onClose={handleReciveVednorModalClose}
         rowData={currentRow}
       />
     </>
