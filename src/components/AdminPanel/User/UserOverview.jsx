@@ -247,7 +247,8 @@ const UserOverview = () => {
     const result1 = datas.filter((d) => {
       return (
         d.user_name?.toLowerCase().includes(search.toLowerCase()) ||
-        d.department_name?.toLowerCase().includes(search.toLowerCase())
+        d.department_name?.toLowerCase().includes(search.toLowerCase()) ||
+        d.user_status?.toLowerCase().includes(search.toLowerCase())
       );
     });
     setFilterData(result1);
@@ -598,7 +599,6 @@ const UserOverview = () => {
     <>
       <div className="action_heading">
         <div className="action_title">
-        
           <FormContainer
             mainTitle="User"
             link="/admin/user"
