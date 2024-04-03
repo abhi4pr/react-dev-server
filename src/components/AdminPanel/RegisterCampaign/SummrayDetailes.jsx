@@ -290,7 +290,7 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
             </div>
           </Box>
 
-          <Box className="mb-2"  sx={{ display: "flex",display:"flex",justifyContent:"space-between",padding:"5px",background:"var(--body-bg)"}}>
+          <Box className="mb-2"  sx={{display:"flex",justifyContent:"space-between",padding:"5px",background:"var(--body-bg)"}}>
             <div sx={{ fontSize:"14px"}}style={{color:"var(--gray-500)"}}>Followers: {totalFollowerCount}</div>
             <div sx={{ fontSize:"14px"}}style={{color:"var(--gray-500)"}}>Posts: {totalPostPerPage}</div>
             <div sx={{ fontSize:"14px"}}style={{color:"var(--gray-500)"}}>Stories: {totalStoryPerPage}</div>

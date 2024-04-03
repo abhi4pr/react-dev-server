@@ -5710,6 +5710,35 @@ input[type="button"].btn-block {
   justify-content: space-between !important;
   align-items: center;
 }
+.rec-btn .card{
+  display: none !important;
+  transition: all 0.3s ease;
+}
+.rec-btn:hover .card{
+  display: flex !important;
+  transition: all 0.3s ease;
+
+}
+
+
+@keyframes moveUp {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+.emoji {
+  transition: all 0.3s ease !important;
+  &:hover {
+    transform: translateY(-10px)!important;
+    transition: all 0.3s ease !important;
+  }
+}
 .card-foot{
   display: flex;
   flex-direction: column;

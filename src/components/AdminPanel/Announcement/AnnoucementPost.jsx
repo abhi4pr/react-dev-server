@@ -101,8 +101,8 @@ const AnnoucementPost = () => {
     console.log(Object.fromEntries(formData.entries()));
     try {
       const response = await axios.post(
-        // `${baseUrl}add_announcement`,
-        `http://192.168.29.163:8080/api/add_announcement`,
+        `${baseUrl}add_announcement`,
+        // `http://192.168.29.163:8080/api/add_announcement`,
         formData,
         {
           headers: {
