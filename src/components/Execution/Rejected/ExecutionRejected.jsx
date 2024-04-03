@@ -145,19 +145,21 @@ export default function ExecutionRejected() {
           width: 300,
           cellClassName: "actions",
           getActions: (params) => {
-            const { id } = params;
+            const id  = params.row._id;
             return [
               <GridActionsCellItem
                 key={id}
                 icon={<PointOfSaleTwoToneIcon />}
                 onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
                 color="inherit"
+                title="Payment Details"
               />,
               <Link key={id} to={`/admin/exeexecution/${id}`}>
                 <GridActionsCellItem
                   icon={<ListAltOutlinedIcon />}
                   label="Delete"
                   color="inherit"
+                  title="Record Service Detail"
                 />
               </Link>,
             ];

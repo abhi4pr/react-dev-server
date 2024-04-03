@@ -5,7 +5,7 @@ import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-import { Button, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import Confirmation from "./Confirmation";
 import jwtDecode from "jwt-decode";
 import { GridToolbar } from "@mui/x-data-grid";
@@ -27,7 +27,6 @@ function ExecutionPending() {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
-  const [searchQuery, setSearchQuery] = useState("");
   const [openPaymentDetailDialog, setOpenPaymentDetaliDialog] = useState(false);
   const [paymentDialogDetails, setPaymentDialogDetails] = useState([{}]);
 
@@ -40,9 +39,7 @@ function ExecutionPending() {
     setOpenPaymentDetaliDialog(false);
   };
 
-  const handleSearchChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
+
 
   const handleAccept = (row) => {
     setRowData(row);
@@ -69,9 +66,7 @@ function ExecutionPending() {
     try {
       if (userID && contextData == false) {
         axios
-          .get(
-            `${baseUrl}`+`get_single_user_auth_detail/${userID}`
-          )
+          .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
           .then((res) => {
             if (res.data[42].view_value == 1) {
               setContextData(true);
@@ -79,19 +74,17 @@ function ExecutionPending() {
             }
           });
       }
-      const response = axios
-        .get(baseUrl+"get_exe_sum")
-        .then((res) => {
-          setData(
-            res.data.filter(
-              (ele) => ele.execution_status == 1 || ele.execution_status == 2
-            )
-          );
-        });
+      const response = axios.get(baseUrl + "get_exe_sum").then((res) => {
+        setData(
+          res.data.filter(
+            (ele) => ele.execution_status == 1 || ele.execution_status == 2
+          ).reverse()
+        );
+      });
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-    axios.post(baseUrl+"exe_sum_post", {
+    axios.post(baseUrl + "exe_sum_post", {
       loggedin_user_id: 52,
     });
   };
@@ -228,12 +221,6 @@ function ExecutionPending() {
           month: "2-digit",
           day: "2-digit",
         };
-        const timeOptions = {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        };
 
         const formattedDate = startDate.toLocaleDateString(
           "en-GB",
@@ -307,12 +294,14 @@ function ExecutionPending() {
       headerName: "Time passed",
       type: "number",
       width: 110,
-      renderCell: (params) => {
+      renderCell: (params) => {   
+     
         if (params.row.execution_status == "2") {
+          let time =
+          Math.abs((new Date(params.row.start_date) - new Date()) / 36e5).toFixed(1)
+        + " hours"
           return (
-            Math.floor(
-              Math.abs((new Date(params.row.start_date_) - new Date()) / 36e5)
-            ) + " hours"
+time.includes(".0")?time.split(".")[0]:time
           );
         }
       },
@@ -338,14 +327,22 @@ function ExecutionPending() {
                   icon={<PointOfSaleTwoToneIcon />}
                   onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
                   color="inherit"
+                  title="Payment Detail"
                 />,
                 <Link key={id} to={`/admin/exeexecution/${id}`}>
                   <GridActionsCellItem
                     icon={<ListAltOutlinedIcon />}
                     onClick={handleViewClick(id)}
                     color="inherit"
+                    title="Record Service Detail"
                   />
                 </Link>,
+                <GridActionsCellItem
+                  key={id}
+                  icon={<Button variant="outlined">Accept</Button>}
+                  onClick={() => handleAccept(row)}
+                  color="inherit"
+                />,
                 <GridActionsCellItem
                   key={id}
                   icon={
@@ -358,12 +355,6 @@ function ExecutionPending() {
                   }
                   color="inherit"
                 />,
-                <GridActionsCellItem
-                  key={id}
-                  icon={<Button variant="outlined">Accept</Button>}
-                  onClick={() => handleAccept(row)}
-                  color="inherit"
-                />,
               ];
             } else if (executionStatus == "2") {
               // Show "Done" button when execution_status is "2"
@@ -371,15 +362,16 @@ function ExecutionPending() {
                 <GridActionsCellItem
                   key={id}
                   icon={<PointOfSaleTwoToneIcon />}
-                  onClick={handleClickOpenPaymentDetailDialog}
+                  onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
                   color="inherit"
+                  title="Payment Detail"
                 />,
                 <Link key={id} to={`/admin/exeexecution/${id}`}>
                   <GridActionsCellItem
                     icon={<ListAltOutlinedIcon />}
-                    label="Delete"
                     onClick={handleViewClick(id)}
                     color="inherit"
+                    title="Record Service Detail"
                   />
                 </Link>,
                 <GridActionsCellItem
@@ -459,12 +451,6 @@ function ExecutionPending() {
             } else if (executionStatus == "2") {
               // Show "Done" button when execution_status is "2"
               return [
-                // <GridActionsCellItem
-                //   key={id}
-                //   icon={<PointOfSaleTwoToneIcon />}
-                //   onClick={handleClickOpenPaymentDetailDialog}
-                //   color="inherit"
-                // />,
                 <Link key={id} to={`/admin/exeexecution/${id}`}>
                   <GridActionsCellItem
                     icon={<ListAltOutlinedIcon />}
@@ -489,14 +475,7 @@ function ExecutionPending() {
                 />,
               ];
             } else {
-              // Default case, no special buttons
               return [
-                // <GridActionsCellItem
-                //   key={id}
-                //   icon={<PointOfSaleTwoToneIcon />}
-                //   onClick={handleClickOpenPaymentDetailDialog}
-                //   color="inherit"
-                // />,
                 <Link key={id} to={`/admin/exeexecution/${id}`}>
                   <GridActionsCellItem
                     icon={<ListAltOutlinedIcon />}
@@ -536,40 +515,18 @@ function ExecutionPending() {
           </div>
         </div>
         <div>
-          <TextField
-            label="Search by Client Name"
-            variant="outlined"
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
+          
           <DataGrid
             rows={addSerialNumber(data)}
             columns={columns}
             getRowId={(row) => row._id}
             slots={{ toolbar: GridToolbar }}
-          >
-            {/* <DataGridToolbar> */}
-            {/* <div>
-            <TextField
-              label="Search by Client Name"
-              variant="outlined"
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
-
-            <TextField
-              label="Filter by Date"
-              type="date"
-              variant="outlined"
-              value={dateFilter}
-              onChange={handleDateFilterChange}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </div> */}
-            {/* </DataGridToolbar> */}
-          </DataGrid>
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+          ></DataGrid>
         </div>
       </ThemeProvider>
       <PaymentDetailDailog

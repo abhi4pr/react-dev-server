@@ -1,12 +1,8 @@
-import React from "react";
 import {
-  Autocomplete,
   Button,
-  Checkbox,
   Grid,
   Paper,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
 import { useParams } from "react-router-dom";
@@ -14,7 +10,6 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
-import { set } from "date-fns";
 import {baseUrl} from '../../utils/config'
 
 function ExecutionDetail() {
@@ -23,28 +18,20 @@ function ExecutionDetail() {
   const [pageIds, setPageIds] = useState([]);
   const [pageNames, setPageNames] = useState([]);
   useEffect(() => {
-    // Fetch data when the component mounts
     axios
       .get(`${baseUrl}`+`get_exe_sum`)
       .then((res) => {
-        // console.log(
-        //   res.data
-        //     .filter((ele) => ele.sale_booking_execution_id == id)[0]
-        //     .page_ids.split(",")
-        // );
-
-        // const data=res.data.filter((ele) => ele.sale_booking_execution_id == id)
         setData(
-          ...res.data.filter((ele) => ele.sale_booking_execution_id == id)
+          ...res.data.filter((ele) => ele._id == id)
         );
+        console.log(res.data
+          .filter((ele) => ele._id == id)[0],'filter data')
         setPageIds(() =>
           res.data
-            .filter((ele) => ele.sale_booking_execution_id == id)[0]
+            .filter((ele) => ele._id == id)[0]
             .page_ids?.split(",")
         );
       });
-
-    // console.log(data.page_ids?.split(","));
   }, []);
 
   useEffect(() => {
@@ -57,12 +44,6 @@ function ExecutionDetail() {
         form
       )
       .then((res) => {
-        // console.log(res.data.body);
-        // console.log(pageIds);
-        // console.log(
-        //   pageIds?.map((e) => res.data.body.filter((ele) => ele.p_id == e)[0])
-        // );
-        console.log(res.data.body);
         setPageNames(
           pageIds.map((e) => res.data.body.filter((ele) => ele.p_id == e)[0])
         );
@@ -123,7 +104,7 @@ function ExecutionDetail() {
         // justifyContent="space-between"
         sx={{ flexWrap: "wrap", flexDirection: "row", p: 2 }}
       >
-        <Typography>Sales booking invoice detail</Typography>
+        <Typography>Sales Booking Invoice Detail</Typography>
         <Stack direction="row" sx={{ mt: 2 }} justifyContent="space-evenly">
           <Stack direction="row" spacing={4}>
             <Button
@@ -170,7 +151,7 @@ function ExecutionDetail() {
           <Grid item xs={6}>
             <Typography>
               Start Date:{" "}
-              {new Date(data.start_date_).toLocaleDateString("en-GB", {
+              {new Date(data.start_date).toLocaleDateString("en-GB", {
                 day: "2-digit",
                 month: "2-digit",
                 year: "2-digit",

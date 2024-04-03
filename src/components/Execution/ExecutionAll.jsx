@@ -653,7 +653,6 @@ function ExecutionAll() {
             disabled={
               totalPercentage == 0 || totalPercentage == 100 ? false : true
             }
-            onClick={() => handleRowClick(params.row)}
           >
             Set Stats
           </button>
@@ -722,11 +721,6 @@ function ExecutionAll() {
       },
     },
   ];
-
-  const handleRowClick = (row) => {
-    setRowData(row);
-    handleClickOpenExeDialog();
-  };
 
   const saveStats = async (e) => {
     e.preventDefault();

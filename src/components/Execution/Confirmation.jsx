@@ -45,12 +45,6 @@ const Confirmation = ({
   }
 
   const handleYes = () => {
-    const date = new Date();
-    const datePart = date.toDateString();
-    const timePart = date.toLocaleTimeString();
-
-    console.log(`Date: ${datePart}, Time: ${timePart}`);
-
     if (status == 2) {
       const payload = {
         loggedin_user_id: userID,
