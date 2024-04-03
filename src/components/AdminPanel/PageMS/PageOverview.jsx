@@ -11,8 +11,10 @@ import { Button, Grid, Stack } from "@mui/material";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import { useGlobalContext } from "../../../Context/Context";
 
 const PageOverview = () => {
+  const { toastAlert } = useGlobalContext();
   const [vendorTypes, setVendorTypes] = useState([]);
   const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
@@ -69,7 +71,7 @@ const PageOverview = () => {
     { field: "ownership_type", headerName: "Ownership type", width: 200 },
     {
       field: "link",
-      header: "Link",
+      headerNa: "Link",
       width: 200,
       renderCell: (params) => (
         <Link to={params.row.link} target="_blank" className="text-primary">
@@ -181,49 +183,10 @@ const PageOverview = () => {
     },
   ];
 
-  //  const copySelectedRows = (type) => {
-  //   let selectedRows = Array.from(document.getElementsByClassName("MuiDataGrid-row"))
-  //     .filter(row => row.classList.contains("Mui-selected"));
-
-  //   let data = selectedRows.map(row => {
-  //     let rowData = {};
-  //     for (let j = 1; j < row.children.length - 1; j++) {
-  //       if (dataGridcolumns[j].field !== "Action") {
-  //         rowData[dataGridcolumns[j].field] = row.children[j].innerText;
-  //       }
-  //     }
-  //     return rowData;
-  //   });
-
-  //   if (type === 1) {
-  //     navigator.clipboard.writeText(JSON.stringify(data));
-  //   } else {
-  //     let copyData = data.map(row => {
-  //       return {
-  //         'Page User Name': row.page_user_name,
-  //         "Page Level": row.page_level,
-  //         "Page Status": row.page_status,
-  //         "Ownership Type": row.ownership_type,
-  //         "Link": row.link,
-  //         Platform: row.platform_id,
-  //         "Page Category": row.page_catg_id,
-  //         "Followers Count": row.followers_count,
-  //         vendorMast: row.vendorMast_id,
-  //         "Platform Active On": row.platform_active_on,
-  //         "Engagement Rate": row.engagment_rate,
-  //        "Page Closed By": row.page_closed_by,
-  //         "Page Name Type": row.page_name_type,
-  //         "Content Creation": row.content_creation
-  //       };
-  //     });
-  //     navigator.clipboard.writeText(JSON.stringify(copyData));
-  //   }
-  // };
-
   // const copySelectedRows = (type) => {
-  //   let selectedRows = Array.from(document.getElementsByClassName("MuiDataGrid-row"))
-
-  //     .filter((row) => row.classList.contains("Mui-selected"));
+  //   let selectedRows = Array.from(
+  //     document.getElementsByClassName("MuiDataGrid-row")
+  //   ).filter((row) => row.classList.contains("Mui-selected"));
 
   //   let data = selectedRows.map((row) => {
   //     let rowData = {};
@@ -236,7 +199,12 @@ const PageOverview = () => {
   //   });
 
   //   if (type === 1) {
-  //     navigator.clipboard.writeText(JSON.stringify(data));
+  //     let excelData = Object.keys(data[0]).join("\t") + "\n";
+  //     data.forEach((row) => {
+  //       let values = Object.values(row).join("\t");
+  //       excelData += values + "\n";
+  //     });
+  //     navigator.clipboard.writeText(excelData);
   //   } else {
   //     let copyData = data.map((row) => {
   //       return {
@@ -244,9 +212,36 @@ const PageOverview = () => {
   //         Link: row.link,
   //       };
   //     });
-  //     navigator.clipboard.writeText(JSON.stringify(copyData));
+  //     let excelData = Object.keys(copyData[0]).join("\t") + "\n";
+  //     copyData.forEach((row) => {
+  //       let values = Object.values(row).join("\t");
+  //       excelData += values + "\n";
+  //     });
+  //     navigator.clipboard.writeText(excelData);
   //   }
   // };
+
+  // const copySelectedRows = () => {
+  //   let selectedRows = Array.from(document.getElementsByClassName("MuiDataGrid-row"))
+  //   .filter(row => row.classList.contains("Mui-selected"));
+
+  //   let data = selectedRows.map(row => {
+  //   let rowData = {};
+  //   for (let j = 1; j < row.children.length - 1; j++) {
+  //   if (dataGridcolumns[j].field !== "Action") {
+  //   rowData[dataGridcolumns[j].field] = row.children[j].innerText;
+  //   }
+  //   }
+  //   return rowData;
+  //   });
+
+  //   let formattedData = data.map((row) => {
+  //   let formattedRow = `Page Name: ${row["page_user_name"]}\n Followers: ${row["followers_count"]}\n Page Link: ${row["link"]}\n Platform: ${row["platform_id"]}\n Category: ${row["page_catg_id"]}\n Vendor: ${row["vendorMast_id"]}\n Platform Active On: ${row["platform_active_on"]}\n Engagment Rate: ${row["engagment_rate"]}\n Closed By: ${row["page_closed_by"]}\n Page Name Type: ${row["page_name_type"]}\n Content Creation: ${row["content_creation"]} \n \n`;
+  //   return formattedRow;
+  //   });
+
+  //   navigator.clipboard.writeText(formattedData.join("\n"));
+  //   };
 
   const copySelectedRows = (type) => {
     let selectedRows = Array.from(
@@ -263,41 +258,66 @@ const PageOverview = () => {
       return rowData;
     });
 
-    if (type === 1) {
-      let excelData = Object.keys(data[0]).join("\t") + "\n";
-      data.forEach((row) => {
-        let values = Object.values(row).join("\t");
-        excelData += values + "\n";
-      });
-      navigator.clipboard.writeText(excelData);
-    } else {
+    if (type === 0) {
       let copyData = data.map((row) => {
         return {
-          "Page User Name": row.page_user_name,
-          Link: row.link,
+          "Page Name": row.page_level,
+          Link: row.platform_id,
         };
       });
-      let excelData = Object.keys(copyData[0]).join("\t") + "\n";
-      copyData.forEach((row) => {
-        let values = Object.values(row).join("\t");
-        excelData += values + "\n";
+
+      let formattedData = copyData.map((row) => {
+        let formattedRow = `Page Name: ${row["Page Name"]}\nPage Link: ${row["Link"]} \n`;
+        return formattedRow;
       });
-      navigator.clipboard.writeText(excelData);
+
+      navigator.clipboard.writeText(formattedData.join("\n"));
+      toastAlert("Data Copied Successfully", "success");
+      return;
     }
+    let formattedData = data.map((row) => {
+      let formattedRow =
+        `Page Name: ${row["page_level"]}\n` +
+        `Followers: ${row["followers_count"]}\n` +
+        `Page Link: ${row["platform_id"]}\n` +
+        `Platform: ${row["page_catg_id"]}\n` +
+        `Category: ${row["followers_count"]}\n` +
+        `Ownership Type":${row["link"]}\n` +
+        `Page Status: ${row["ownership_type"]}\n`;
+      return formattedRow;
+    });
+    toastAlert("Data Copied Successfully", "success");
+
+    navigator.clipboard.writeText(formattedData.join("\n"));
   };
 
   const copyAllRows = () => {
-    let data = [];
-    for (let i = 0; i < filterData.length; i++) {
-      let row = filterData[i];
-      let rowData = {};
-      for (let j = 1; j < dataGridcolumns.length - 1; j++) {
-        rowData[dataGridcolumns[j].field] = row[dataGridcolumns[j].field];
-      }
-      data.push(rowData);
-    }
-    navigator.clipboard.writeText(JSON.stringify(data));
+    let copyData = filterData.map((row) => {
+      return {
+        "Page Name": row.page_user_name,
+        Followers: row.followers_count,
+        "Page Link": row.link,
+        Platform: row.PMS_paform_data.platform_name,
+        Category: row.PMS_Pagecategories.page_category,
+        Vendor: venodr.find((item) => item.vendorMast_id == row.vendorMast_id)
+          ?.vendorMast_name,
+        "Platform Active On": row.platform_active_on,
+        "Engagment Rate": row.engagment_rate,
+        "Closed By": row.page_closed_by,
+        "Page Name Type": row.page_name_type,
+        "Content Creation": row.content_creation,
+      };
+    });
+
+    let formattedData = copyData.map((row) => {
+      let formattedRow = `Page Name: ${row["Page Name"]}\n   Followers: ${row["Followers"]}\n   Page Link: ${row["Page Link"]} \n   Platform: ${row["Platform"]}\n   Category: ${row["Category"]}\n   Vendor: ${row["Vendor"]}\n   Platform Active On: ${row["Platform Active On"]}\n   Engagment Rate: ${row["Engagment Rate"]}\n   Closed By: ${row["Closed By"]}\n   Page Name Type: ${row["Page Name Type"]}\n   Content Creation: ${row["Content Creation"]}\n`;
+      return formattedRow;
+    });
+
+    navigator.clipboard.writeText(formattedData.join("\n\n"));
+    toastAlert("Data Copied Successfully", "success");
   };
+
   return (
     <>
       <Link to={`/admin/pms-page-master`}>
@@ -335,7 +355,7 @@ const PageOverview = () => {
           onClick={() => copySelectedRows(0)}
         >
           <ContentPasteIcon />
-          Copy Page Name & Links
+          Copy Selected Page Name & Links
         </button>
       </Stack>
       <div className="card">

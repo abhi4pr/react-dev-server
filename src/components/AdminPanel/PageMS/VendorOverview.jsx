@@ -11,8 +11,10 @@ import { Box, Button, Grid, Skeleton, Stack } from "@mui/material";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import { useGlobalContext } from "../../../Context/Context";
 
 const VendorOverview = () => {
+  const { toastAlert } = useGlobalContext();
   const [vendorTypes, setVendorTypes] = useState([]);
   const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
@@ -257,54 +259,101 @@ const VendorOverview = () => {
   ];
 
   const copySelectedRows = (type) => {
-    let selectedRows = Array.from(
-      document.getElementsByClassName("MuiDataGrid-row")
-    ).filter((row) => row.classList.contains("Mui-selected"));
+    let data = [];
+    let selectedRows = [];
+    if (type === 1) {
+      selectedRows = Array.from(
+        document.getElementsByClassName("MuiDataGrid-row")
+      ).filter((row) => row.classList.contains("Mui-selected"));
 
-    let data = selectedRows.map((row) => {
+      console.log(selectedRows, "selectedRows");
+    }
+    data = selectedRows.map((row) => {
       let rowData = {};
       for (let j = 1; j < row.children.length - 1; j++) {
-        if (dataGridcolumns[j].field !== "Action") {
-          rowData[dataGridcolumns[j].field] = row.children[j].innerText;
+        if (dataGridcolumns[j].field) {
+          rowData[dataGridcolumns[j].field] = row.children[j + 1].innerText;
         }
       }
       return rowData;
     });
+    console.log(data, "data");
+    console.log(selectedRows, "selectedRows");
+    let copyData = data.map((item) => {
+      let formattedData =
+        `Vendor Name: ${item.vendorMast_name}\n` +
+        `Mobile: ${item.mobile}\n` +
+        `Alternate Mobile: ${item.alternate_mobile}\n` +
+        `Email: ${item.email}\n` +
+        `Home City: ${item.home_city}\n` +
+        `GST No: ${item.gst_no}\n` +
+        `Threshold Limit: ${item.threshold_limit}\n` +
+        `Country Code: ${item.country_code}\n` +
+        `Company Pincode: ${item.company_pincode}\n` +
+        `Company Address: ${item.company_address}\n` +
+        `Company City: ${item.company_city}\n` +
+        `Company Name: ${item.company_name}\n` +
+        `Company State: ${item.company_state}\n` +
+        `Home Address: ${item.home_address}\n` +
+        `Home State: ${item.home_state}\n` +
+        `Pan No: ${item.pan_no}\n` +
+        `Personal Address: ${item.personal_address}\n` +
+        `Vendor Type: ${
+          typeData?.find((type) => type._id == item.type_id)?.type_name
+        }\n` +
+        `Platform: ${item.platform_id}\n` +
+        `Payment Method: ${
+          payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
+        }\n` +
+        `Cycle: ${
+          cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
+        }\n`;
+      return formattedData;
+    });
 
-    if (type === 1) {
-      let excelData = Object.keys(data[0]).join("\t") + "\n";
-      data.forEach((row) => {
-        let values = Object.values(row).join("\t");
-        excelData += values + "\n";
-      });
-      navigator.clipboard.writeText(excelData);
-    } else {
-      let copyData = data.map((row) => {
-        return {
-          "Page User Name": row.page_user_name,
-          Link: row.link,
-        };
-      });
-      let excelData = Object.keys(copyData[0]).join("\t") + "\n";
-      copyData.forEach((row) => {
-        let values = Object.values(row).join("\t");
-        excelData += values + "\n";
-      });
-      navigator.clipboard.writeText(excelData);
-    }
+    console.log(copyData, "copyData");
+    console.log(data, "data");
+
+    navigator.clipboard.writeText(copyData.join("\n"));
+    toastAlert("Copied Selected Pages");
   };
 
   const copyAllRows = () => {
-    let data = [];
-    for (let i = 0; i < filterData.length; i++) {
-      let row = filterData[i];
-      let rowData = {};
-      for (let j = 1; j < dataGridcolumns.length - 1; j++) {
-        rowData[dataGridcolumns[j].field] = row[dataGridcolumns[j].field];
-      }
-      data.push(rowData);
-    }
-    navigator.clipboard.writeText(JSON.stringify(data));
+  let data = filterData.map((item) => {
+    let formattedData =
+      `Vendor Name: ${item.vendorMast_name}\n` +
+      `Mobile: ${item.mobile}\n` +
+      `Alternate Mobile: ${item.alternate_mobile}\n` +
+      `Email: ${item.email}\n` +
+      `Home City: ${item.home_city}\n` +
+      `GST No: ${item.gst_no}\n` +
+      `Threshold Limit: ${item.threshold_limit}\n` +
+      `Country Code: ${item.country_code}\n` +
+      `Company Pincode: ${item.company_pincode}\n` +
+      `Company Address: ${item.company_address}\n` +
+      `Company City: ${item.company_city}\n` +
+      `Company Name: ${item.company_name}\n` +
+      `Company State: ${item.company_state}\n` +
+      `Home Address: ${item.home_address}\n` +
+      `Home State: ${item.home_state}\n` +
+      `Pan No: ${item.pan_no}\n` +
+      `Personal Address: ${item.personal_address}\n` +
+      `Vendor Type: ${
+        typeData?.find((type) => type._id == item.type_id)?.type_name
+      }\n` +
+      `Platform: ${item.platform_id}\n` +
+      `Payment Method: ${
+        payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
+      }\n` +
+      `Cycle: ${
+        cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
+      }\n`;
+    return formattedData;
+  }
+  );
+  console.log(data, "data");
+  navigator.clipboard.writeText(data.join("\n"));
+  toastAlert("Copied All Pages");
   };
 
   return (
@@ -336,7 +385,6 @@ const VendorOverview = () => {
             onClick={() => copySelectedRows(1)}
           >
             <ContentCopyOutlinedIcon />
-
             Copy Selected Pages
           </button>
           <button
@@ -345,7 +393,6 @@ const VendorOverview = () => {
             style={{ marginBottom: "10px" }}
             onClick={copyAllRows}
           >
-          
             <CopyAllOutlinedIcon />
             Copy All Pages
           </button>

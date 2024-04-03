@@ -1,7 +1,7 @@
 import { DataGrid, GridActionsCellItem } from "@mui/x-data-grid";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { createTheme } from "react-data-table-component";
 import { Link } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
@@ -23,7 +23,6 @@ export default function ExecutionDone() {
   const [paymentDialogDetails, setPaymentDialogDetails] = useState([{}]);
 
   const handleClickOpenPaymentDetailDialog = (data) => {
-    console.log(data);
     setPaymentDialogDetails(data);
     setOpenPaymentDetaliDialog(true);
   };
@@ -46,18 +45,16 @@ export default function ExecutionDone() {
             if (res.data[26].view_value == 1) {
               setContextData(true);
             }
-            console.log(res.data[26].view_value);
           });
       }
       const formData = new URLSearchParams();
       formData.append("loggedin_user_id", 36);
-      console.log(formData);
       const response = axios
         .get(baseUrl+"get_exe_sum", {
           loggedin_user_id: 52,
         })
         .then((res) => {
-          setData(res.data.filter((ele) => ele.execution_status == "3"));
+          setData(res.data.filter((ele) => ele.execution_status == "3").reverse());
         });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -102,7 +99,7 @@ export default function ExecutionDone() {
         if (params.row.execution_status == "3") {
           return (
             <Button size="small" color="success" variant="outlined">
-              Done
+              executed
             </Button>
           );
         }
@@ -119,23 +116,6 @@ export default function ExecutionDone() {
         );
       },
     },
-    // {
-    //   field: "start_date_",
-    //   headerName: "Start Date",
-    //   width: 150,
-    //   renderCell: (params) => {
-    //     return new Date(params?.row.start_date_).toLocaleDateString("en-GB");
-    //   },
-    // },
-    // {
-    //   field: "end_date",
-    //   headerName: "End Date",
-    //   width: 150,
-    //   renderCell: (params) => {
-    //     return new Date(params?.row.end_date).toLocaleDateString("en-GB");
-    //   },
-    // },
-
     {
       field: "start_date",
       headerName: "Start Date",
@@ -147,13 +127,6 @@ export default function ExecutionDone() {
           month: "2-digit",
           day: "2-digit",
         };
-        const timeOptions = {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        };
-
         const formattedDate = startDate.toLocaleDateString(
           "en-GB",
           dateOptions
@@ -191,13 +164,6 @@ export default function ExecutionDone() {
           month: "2-digit",
           day: "2-digit",
         };
-        const timeOptions = {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        };
-
         const formattedDate = startDate.toLocaleDateString(
           "en-GB",
           dateOptions
@@ -263,20 +229,20 @@ export default function ExecutionDone() {
       type: "number",
       width: 110,
       renderCell: (params) => {
-        if (params.row.execution_status == "1") {
+        let time =Math.abs(
+          (new Date(params.row.start_date) -
+            new Date(params.row.end_date)) /
+            36e5
+        ).toFixed(1)
           return (
             <div>
-              {Math.floor(
-                Math.abs(
-                  (new Date(params.row.start_date_) -
-                    new Date(params.row.execution_date)) /
-                    36e5
-                )
-              )}{" "}
+              {
+                time.includes(".0")?time.split(".")[0]:time
+              }{" "}
               hours
             </div>
           );
-        }
+        
       },
     },
 
@@ -288,19 +254,20 @@ export default function ExecutionDone() {
           width: 300,
           cellClassName: "actions",
           getActions: (params) => {
-            const { id } = params;
+            const id  = params.row._id
             return [
               <GridActionsCellItem
                 key={id}
                 icon={<PointOfSaleTwoToneIcon />}
                 onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
                 color="inherit"
+                title="Payment Details"
               />,
               <Link key={id} to={`/admin/exeexecution/${id}`}>
                 <GridActionsCellItem
                   icon={<ListAltOutlinedIcon />}
-                  label="Delete"
                   color="inherit"
+                  title="Record Service Detail"
                 />
               </Link>,
             ];

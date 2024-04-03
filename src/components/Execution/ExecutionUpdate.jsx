@@ -82,15 +82,8 @@ export default function ExecutionUpdate({ id, rowData, setReload, status,executi
         }}
         color={rowData?.execution_status == 1 ? "error" : "success"}
       >
-        {rowData?.execution_status == 1 ? "Reject" : "Done"}
+        {rowData?.execution_status == 1 ? "Reject" : "Execute"}
       </Button>
-      {/* <EditIcon
-        onClick={() => {
-          // console.log(rowData);
-          setOpen(true);
-        }}
-      /> */}
-      {/* </Button> */}
       {confirmation && (
         <Confirmation
           rowData={rowData}
