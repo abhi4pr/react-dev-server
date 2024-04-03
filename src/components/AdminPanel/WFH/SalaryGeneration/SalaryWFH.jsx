@@ -175,7 +175,7 @@ const SalaryWFH = () => {
           }
         );
 
-        const ActiveUsersCount = ActiveUsers.data.message[0].count;
+        const ActiveUsersCount = ActiveUsers?.data?.message[0]?.count;
 
         setActiveUsers(ActiveUsersCount);
       } catch (error) {
@@ -618,6 +618,7 @@ const SalaryWFH = () => {
       await axios.put(`${baseUrl}update_salary`, {
         attendence_id: row.attendence_id,
         sendToFinance: 1,
+        month: row.month,
       });
 
       handleSubmit();
@@ -635,7 +636,6 @@ const SalaryWFH = () => {
       console.error("Error Downloading Invoices", error);
     }
   }
-
   async function handleBulkSendToFinance() {
     try {
       for (const row of selectedRows) {
@@ -646,6 +646,7 @@ const SalaryWFH = () => {
         await axios.put(`${baseUrl}update_salary`, {
           attendence_id: row.attendence_id,
           sendToFinance: 1,
+          month: row.month,
         });
       }
 
@@ -825,7 +826,6 @@ const SalaryWFH = () => {
       name: "Designation",
       cell: (row) => row.designation_name,
       width: "120px",
-
     },
     {
       name: "DOJ",
@@ -853,13 +853,11 @@ const SalaryWFH = () => {
       name: "Absent Days",
       cell: (row) => row.noOfabsent,
       width: "120px",
-
     },
     {
       name: "Present Days",
       cell: (row) => Number(row.present_days) - Number(row.noOfabsent),
       width: "120px",
-
     },
     {
       name: "Total Salary",
@@ -1090,9 +1088,11 @@ const SalaryWFH = () => {
         <Slider {...settings} className="timeline_slider">
           {completedYearsMonths.map((data, index) => (
             <div
-              className={`timeline_slideItem ${data.atdGenerated && "completed"
-                } ${selectedCardIndex === index ? "selected" : ""} ${currentMonth == data.month && "current"
-                }`}
+              className={`timeline_slideItem ${
+                data.atdGenerated && "completed"
+              } ${selectedCardIndex === index ? "selected" : ""} ${
+                currentMonth == data.month && "current"
+              }`}
               onClick={() => handleCardSelect(index, data)}
               key={index}
             >
@@ -1119,8 +1119,8 @@ const SalaryWFH = () => {
                 {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
-                    ? "Upcoming"
-                    : "Pending"}
+                  ? "Upcoming"
+                  : "Pending"}
               </h3>
             </div>
           ))}
@@ -1131,28 +1131,50 @@ const SalaryWFH = () => {
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
           <span className="d-flex gap4">
-            {data?.length == 0 && department && selectedMonth && selectedYear && (
-
-              <button
-                onClick={handleAttendance}
-                className="btn btn-danger" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
-              // style={{ marginTop: "25px" }}
-              >
-                No Absents, Create Attendance <i className="bi bi-arrow-right"></i>
-              </button>
-
-            )}
+            {data?.length == 0 &&
+              department &&
+              selectedMonth &&
+              selectedYear && (
+                <button
+                  onClick={handleAttendance}
+                  className="btn btn-danger"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "10px",
+                  }}
+                  // style={{ marginTop: "25px" }}
+                >
+                  No Absents, Create Attendance{" "}
+                  <i className="bi bi-arrow-right"></i>
+                </button>
+              )}
             {contextData &&
               contextData[38] &&
               contextData[38].view_value === 1 && (
                 <Link to="/admin/salary-summary">
-                  <button className="btn btn-outline-primary " style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "4px" }} >
+                  <button
+                    className="btn btn-outline-primary "
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: "4px",
+                    }}
+                  >
                     Payout Summary <i className="bi bi-file-earmark-text"></i>
                   </button>
                 </Link>
               )}
             <button
-              className="btn btn-outline-primary " style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "4px" }}
+              className="btn btn-outline-primary "
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: "4px",
+              }}
               onClick={() => BankExcelConverter(salaryMonthYearData)}
             >
               Export Excel Button <i className="bi bi-file-spreadsheet"></i>
@@ -1161,36 +1183,67 @@ const SalaryWFH = () => {
             {deptSalary?.length !== departmentdata?.length &&
               (RoleIDContext == 1 || RoleIDContext == 5) && (
                 <button
-                  className="btn btn-primary" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "4px" }}
+                  className="btn btn-primary"
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "4px",
+                  }}
                   onClick={handleAllDepartmentSalary}
                 >
-                  Create All Department Salary <i className="bi bi-check-all"></i>
+                  Create All Department Salary{" "}
+                  <i className="bi bi-check-all"></i>
                 </button>
               )}
           </span>
         </div>
         <div className="card-body">
-          <div className="d-flex gap4" style={{ flexWrap: "wrap", gap: "10px" }}>
+          <div
+            className="d-flex gap4"
+            style={{ flexWrap: "wrap", gap: "10px" }}
+          >
             {departmentdata.map((option) => {
               const isDeptInSalary =
                 Array.isArray(deptSalary) &&
                 deptSalary.some((d) => d.dept === option.dept_id);
 
-              const className = `btn ${department === option.dept_id
+              const className = `btn ${
+                department === option.dept_id
                   ? "btn-primary"
                   : isDeptInSalary
-                    ? "btn-success"
-                    : "btn-outline-primary"
-                }`;
+                  ? "btn-success"
+                  : "btn-outline-primary"
+              }`;
 
               return (
                 <div
-                  className="card hover body-padding" style={{ height: "100px", minWidth: "300px", display: "flex", justifyContent: "center", alignItems: "flex-start", gap: "10px", cursor: "pointer", border: "1px solid var(--primary)", padding: "10px" }}
-
+                  className="card hover body-padding"
+                  style={{
+                    height: "100px",
+                    minWidth: "300px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "flex-start",
+                    gap: "10px",
+                    cursor: "pointer",
+                    border: "1px solid var(--primary)",
+                    padding: "10px",
+                  }}
                   onClick={() => setDepartment(option.dept_id)}
                 >
-                  <div className="pack  " style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", gap: "20px" }}>
-                    <div className="rounded-circle circle-card" >
+                  <div
+                    className="pack  "
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "flex-start",
+                      alignItems: "center",
+                      gap: "20px",
+                    }}
+                  >
+                    <div className="rounded-circle circle-card">
                       <i class="bi bi-bounding-box"></i>
                     </div>
                     {option.dept_name}
@@ -1201,14 +1254,15 @@ const SalaryWFH = () => {
           </div>
 
           <h6 style={{ color: "green", paddingTop: "10px" }}>
-            <span >Active : {activeusers}</span>
+            <span>Active : {activeusers}</span>
           </h6>
         </div>
       </div>
 
-
-
-      <div className="card p-0" style={{ background: "transparent", border: "none" }}>
+      <div
+        className="card p-0"
+        style={{ background: "transparent", border: "none" }}
+      >
         <div className="card-body p-0">
           <div className="row gap_24_0">
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
@@ -1316,13 +1370,9 @@ const SalaryWFH = () => {
 
       {data?.length > 0 && (
         <>
-
-
           <div className="tab">
-
             <button
-              className={`named-tab ${activeTab == 0 ? "active-tab" : ""
-                }`}
+              className={`named-tab ${activeTab == 0 ? "active-tab" : ""}`}
               onClick={() => {
                 FilterTabData("Send To Finance"), setActiveTab(0);
               }}
@@ -1330,8 +1380,7 @@ const SalaryWFH = () => {
               Approved and Send To Finance
             </button>
             <button
-              className={`named-tab ${activeTab == 1 ? "active-tab" : ""
-                }`}
+              className={`named-tab ${activeTab == 1 ? "active-tab" : ""}`}
               onClick={() => {
                 FilterTabData("Verification Pending"), setActiveTab(1);
               }}
@@ -1339,22 +1388,19 @@ const SalaryWFH = () => {
               Verification Pending
             </button>
             <button
-              className={`named-tab ${activeTab == 2 ? "active-tab" : ""
-                }`}
+              className={`named-tab ${activeTab == 2 ? "active-tab" : ""}`}
               onClick={() => {
                 FilterTabData("Verified"), setActiveTab(2);
               }}
             >
               Verified
             </button>
-
           </div>
           <div className="card">
             <div className="card-header">
               <h5>Salary Overview</h5>
               <div className="pack">
                 {selectedRows.length > 0 && activeTab === 0 && (
-
                   <>
                     <button
                       className="btn btn-primary mr-2"
@@ -1434,7 +1480,6 @@ const SalaryWFH = () => {
                 conditionalRowStyles={conditionalRowStyles}
                 selectableRows={activeTab == 0 ? true : false}
                 onSelectedRowsChange={handleRowSelected}
-
               />
             </div>
           </div>
@@ -1729,13 +1774,13 @@ const SalaryWFH = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                  <FieldContainer
-                    label="Reinstated Date"
-                    type="date"
-                    value={separationReinstateDate}
-                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                  />
-                )}
+                <FieldContainer
+                  label="Reinstated Date"
+                  type="date"
+                  value={separationReinstateDate}
+                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                />
+              )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"

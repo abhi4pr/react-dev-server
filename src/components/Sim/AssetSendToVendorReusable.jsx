@@ -15,10 +15,19 @@ const AssetSendToVendorReusable = ({
   const { toastAlert } = useGlobalContext();
   const [vendorName, setVendorName] = useState("");
   const [vendorData, setVendorData] = useState([]);
+  const [sendByData, setSendByData] = useState([]);
   const [sendDate, setSendDate] = useState("");
   const [sendBYName, setSendBYName] = useState("");
   const [expectedDate, setExpectedDate] = useState("");
 
+  const SendBYDatas = async () => {
+    try {
+      const response = await axios.get(baseUrl + "get_all_hr");
+      setSendByData(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   const vendorDatas = async () => {
     try {
       const response = await axios.get(baseUrl + "get_all_vendor");
@@ -29,14 +38,15 @@ const AssetSendToVendorReusable = ({
   };
   useEffect(() => {
     vendorDatas();
+    SendBYDatas();
   }, []);
 
-  const handleSubmitVendor = () => {
+  const handleSubmitVendor = async () => {
     try {
-      axios.post(baseUrl + "vendorsum", {
+      await axios.post(baseUrl + "vendorsum", {
         sim_id: rowData?.sim_id,
         vendor_id: vendorName,
-        send_by: 712,
+        send_by: sendBYName,
         send_date: sendDate,
         expected_date_of_repair: expectedDate,
         vendor_status: 1,
@@ -110,15 +120,15 @@ const AssetSendToVendorReusable = ({
             </label>
             <Select
               className=""
-              options={vendorData.map((opt) => ({
-                value: opt._id,
-                label: opt.vendor_name,
+              options={sendByData.map((opt) => ({
+                value: opt.user_id,
+                label: opt.user_name,
               }))}
               value={{
                 value: sendBYName,
                 label:
-                  vendorData.find((user) => user._id === sendBYName)
-                    ?.vendor_name || "",
+                  sendByData.find((user) => user.user_id === sendBYName)
+                    ?.user_name || "",
               }}
               onChange={(e) => {
                 setSendBYName(e.value);
