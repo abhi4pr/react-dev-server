@@ -4,8 +4,11 @@ import { baseUrl } from "../../../utils/config";
 import getDecodedToken from "../../../utils/DecodedToken";
 import { useGlobalContext } from "../../../Context/Context";
 import Announcement from "./Announcement";
-
+import FormContainer from "../FormContainer";
+import { useNavigate } from "react-router-dom";
+import imageTest1 from "../../../assets/img/product/Avtrar1.png";
 const AnnouncementView = () => {
+  const navigate = useNavigate();
   const { toastError } = useGlobalContext();
   const loginUserId = getDecodedToken().id;
   const [announcements, setAnnouncements] = useState([]);
@@ -75,9 +78,30 @@ const AnnouncementView = () => {
       toastError(error.response?.data?.error || "Error fetching comments");
     }
   };
+  // console.log(announcements);
 
   return (
-    <div>
+    <div className="master-card-css">
+      <FormContainer
+        mainTitle={"Announcement"}
+        link={true}
+        handleSubmit={false}
+      />
+
+<div className="card body-padding gap4">
+          <div className="pack sb">
+            <div className="d-flex flex-row">
+
+            <h5 >Announcement</h5> &nbsp; <span><h5 style={{color:"var(--gray-500)"}} >{announcements.length}</h5></span>
+            </div>
+            <button className="btn btn-outline-primary" onClick={()=>{navigate("/admin/announcement-post")}} >+ Add Announcement</button>
+          </div>
+          <div className="pack" style={{width:"300px"}}>
+           
+              <input type="text" className="form-control" placeholder="Search Announcement" />
+            
+          </div>
+      </div>
       {announcements.map((announcement) => (
         <Announcement
           key={announcement._id}

@@ -46,7 +46,7 @@ const Navbar = () => {
       })
       .then((res) => setLoginUserData(res.data));
   }, []);
-
+console.log(loginUserData);
   const fetchData = async () => {
     await axios
       .get(baseUrl + "get_all_unreden_notifications")

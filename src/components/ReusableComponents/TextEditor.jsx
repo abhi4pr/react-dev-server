@@ -39,7 +39,7 @@ const formats = [
 
 const TextEditor = ({ value, onChange }) => {
   return (
-    <div style={{ marginBottom: "5%" }}>
+    <div>
       <ReactQuill
         theme="snow"
         value={value}
