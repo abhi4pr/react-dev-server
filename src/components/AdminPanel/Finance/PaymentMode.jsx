@@ -10,7 +10,16 @@ import DataTable from "react-data-table-component";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { baseUrl } from "../../../utils/config";
 // import { Autocomplete } from "@mui/material";
-import { Autocomplete, Button, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Button,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 // import { AutoComplete, Button, TextField } from "@mui/material";
 
 const PaymentMode = () => {
@@ -27,7 +36,7 @@ const PaymentMode = () => {
   const [bankName, setBankName] = useState("");
   const [paymentType, setPaymentType] = useState("");
   const [gst, setGST] = useState("");
-  const [hiddenRows, setHiddenRows] = useState([]);
+  const [hideRowDialog, setHideRowDialog] = useState(false);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -108,15 +117,56 @@ const PaymentMode = () => {
     setGST("");
     setTitle("");
   };
-
-  const handleHideRowData = (data) => {
-    setHiddenRows((prevHiddenRows) => [...prevHiddenRows, data.id]);
-    toastAlert("Row Hidden Successfully");
+  // HIDE/SHOW ROW
+  const handleOpenHideRowData = () => {
+    setHideRowDialog(true);
   };
-  const visibleRows = filterData.filter((row) => !hiddenRows.includes(row.id));
+  const handleCloseHideRowData = () => {
+    setHideRowDialog(false);
+  };
+  // =================================
+  const handleHideRowData = async (data) => {
+    console.log(data._id, "ID>>>");
 
-  console.log(visibleRows, "visiblesRows data >>>>");
+    // formData.append("loggedin_user_id", 36);
 
+    await axios
+      .put(
+        baseUrl + `update_hide_status_php_payment_acc_data/${data._id}`,
+        {
+          is_hide: true,
+        }
+        // headers: {
+        //   "Content-Type": "multipart/form-data",
+        // },
+      )
+      .then((res) => {
+        console.log(res, "RES DATA>>>");
+        getData();
+        // setHiddenRows((prevHiddenRows) => [...prevHiddenRows, data.id]);
+        toastAlert("Row Hidden Successfully");
+      });
+  };
+  const handleUnHideRowData = async (data) => {
+    await axios
+      .put(
+        baseUrl + `update_hide_status_php_payment_acc_data/${data._id}`,
+        {
+          is_hide: false,
+        }
+        // headers: {
+        //   "Content-Type": "multipart/form-data",
+        // },
+      )
+      .then((res) => {
+        getData();
+        handleCloseHideRowData();
+        // setHiddenRows((prevHiddenRows) => [...prevHiddenRows, data.id]);
+        toastAlert("Row UnHide Successfully");
+      });
+  };
+
+  console.log(filterData, "FD===");
   const columns = [
     {
       headerName: "S.No",
@@ -185,6 +235,74 @@ const PaymentMode = () => {
       },
     },
   ];
+  const HiddenRowColumns = [
+    {
+      headerName: "S.No",
+      field: "s_no",
+      renderCell: (params, index) => (
+        <div>{[...filterData].indexOf(params.row) + 1}</div>
+      ),
+    },
+    {
+      field: "title",
+      headerName: "Title",
+      width: 200,
+      // renderCell: (params) => <div>{params.row.title}</div>,
+      // sortable: false,
+    },
+    {
+      headerName: "Detail",
+      field: "detail",
+      width: 700,
+      // selector: (row) =>  <div style={{ whiteSpace: 'normal' }}>{row.detail}
+      //   <Button key={row.detail} variant="contained" color="primary" onClick={console.log('clicked')} style={{marginLeft: "10px"}}>Copy</Button>
+      // </div>,
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {params.row.detail}
+          <Button
+            key={params.row.detail}
+            color="secondary"
+            onClick={() => handleCopyDetail(params.row.detail)}
+            style={{ marginLeft: "10px" }}
+          >
+            <ContentCopyIcon />
+          </Button>
+        </div>
+      ),
+    },
+    {
+      field: "payment_type",
+      headerName: "Payment Type",
+      width: 200,
+      renderCell: (params) => params.row.payment_type,
+    },
+    {
+      headerName: "GST Bank",
+      field: "gst_bank",
+      width: 200,
+      renderCell: (params) => {
+        return <div>{params.row.gst_bank === 1 ? "GST" : "Non GST"}</div>;
+      },
+    },
+    {
+      headerName: "Action",
+      field: "Action",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <div>
+            <Button
+              variant="contained"
+              onClick={() => handleUnHideRowData(params.row)}
+            >
+              UnHide
+            </Button>
+          </div>
+        );
+      },
+    },
+  ];
 
   return (
     <div className="master-card-css ">
@@ -210,6 +328,53 @@ const PaymentMode = () => {
           />
         </div>
       </div>
+      {/* Show Hide Dialog */}
+      <Dialog
+        open={hideRowDialog}
+        onClose={handleCloseHideRowData}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Hidden Data</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseHideRowData}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={filterData.filter((row) => row.is_hide)}
+            columns={HiddenRowColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
+          />
+        </DialogContent>
+      </Dialog>
+      {/* ============================= */}
       <div className="master-card-css p-1" style={{ marginTop: "114px" }}>
         <div className="card body-padding">
           <div className="row">
@@ -359,6 +524,15 @@ const PaymentMode = () => {
                 Clear
               </Button>
             </div>
+            <div className="col-md-1 mt-2 mb-3">
+              <Button
+                variant="contained"
+                style={{ width: "140px" }}
+                onClick={handleOpenHideRowData}
+              >
+                Hidden Data
+              </Button>
+            </div>
           </div>
         </div>
         <div className="card">
@@ -367,8 +541,8 @@ const PaymentMode = () => {
             style={{ height: "700px" }}
           >
             <DataGrid
-              // rows={filterData}
-              rows={visibleRows}
+              rows={filterData.filter((row) => !row.is_hide)}
+              // rows={visibleRows}
               columns={columns}
               pageSize={5}
               rowsPerPageOptions={[5]}
