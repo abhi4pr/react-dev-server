@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import imageTest1 from "../../../assets/img/product/Avtrar1.png";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import DoneIcon from "@mui/icons-material/Done";
-import { baseUrl } from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 import logo from "../../../assets/logo.png";
 const Navbar = () => {
   const [count, setCount] = useState(0);
@@ -17,23 +17,19 @@ const Navbar = () => {
   const userName = decodedToken.name;
   const loginUserId = decodedToken.id;
   const RoleID = decodedToken.role_id;
-  const user_role=()=>{
-    if(RoleID==1){
-      return "Admin"
+  const user_role = () => {
+    if (RoleID == 1) {
+      return "Admin";
+    } else if (RoleID == 2) {
+      return "Manager";
+    } else if (RoleID == 3) {
+      return "Office Boy";
+    } else if (RoleID == 4) {
+      return "User";
+    } else if (RoleID == 5) {
+      return "HR";
     }
-    else if(RoleID==2){
-      return "Manager"
-    }
-    else if(RoleID==3){
-      return "Office Boy"
-    }
-    else if(RoleID==4){
-      return "User"
-    }
-    else if(RoleID==5){
-      return "HR"
-    }
-  }
+  };
   const handleLogOut = () => {
     sessionStorage.clear("token");
     navigate("/login");
@@ -46,14 +42,11 @@ const Navbar = () => {
       })
       .then((res) => setLoginUserData(res.data));
   }, []);
-console.log(loginUserData);
   const fetchData = async () => {
-    await axios
-      .get(baseUrl + "get_all_unreden_notifications")
-      .then((res) => {
-        setNotificationData(res.data.data);
-        setCount(res.data.data.length);
-      });
+    await axios.get(baseUrl + "get_all_unreden_notifications").then((res) => {
+      setNotificationData(res.data.data);
+      setCount(res.data.data.length);
+    });
   };
 
   useEffect(() => {
@@ -123,7 +116,7 @@ console.log(loginUserData);
               </form>
             </div>
           </li>
-          
+
           <li className="nav-item">
             <div className="theme-switch">
               <input type="checkbox" id="theme-toggle" />
@@ -148,24 +141,33 @@ console.log(loginUserData);
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  <div className="icon" data-bs-toggle="collapse" data-bs-target="#Notificationbar" aria-expanded="false" aria-controls="Notificationbar" alt="" width={20} >
+                  <div
+                    className="icon"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#Notificationbar"
+                    aria-expanded="false"
+                    aria-controls="Notificationbar"
+                    alt=""
+                    width={20}
+                  >
                     <i class="bi bi-bell"></i>
                   </div>
                   {/* <NotificationsActiveIcon /> */}
                   {/* <span>{count}</span> */}
                 </a>
                 <div className="dropdown-menu notification  dropdown-menu-right shadow animated--grow-in mt1">
-
                   <div className="pack">
                     <div className="head-label">
                       Notification
                       <span>{count}</span>
                     </div>
                     <div className="pack-1">
-
                       {notificationData.map((notification) => (
-
-                        <div className="message" id={notificationData._id} onClick={() => NotificationsOff(notification._id)}>
+                        <div
+                          className="message"
+                          id={notificationData._id}
+                          onClick={() => NotificationsOff(notification._id)}
+                        >
                           <div className="ppimg">
                             <img src={imageTest1} alt="" w={34} />
                           </div>
@@ -173,14 +175,10 @@ console.log(loginUserData);
                             {notification.notification_message}
                           </div>
                         </div>
-
-
                       ))}
-
                     </div>
                   </div>
                   <Link to={`/admin/pre-onboard-all-notifications/`}>
-
                     <div className="all-notification">
                       See all notifications
                     </div>
@@ -207,7 +205,7 @@ console.log(loginUserData);
                 </div>
               </div>
             )}
-          </li>   
+          </li>
           {/* <li className="nav-item dropdown no-arrow user_dropdown">
             <a
               className="nav-link dropdown-toggle"
@@ -311,7 +309,12 @@ console.log(loginUserData);
               </Link> */}
               <div className="profile-tab">
                 <div className="profile-img">
-                  <img className="logo-img" src={imageTest1} alt="" width={40} />
+                  <img
+                    className="logo-img"
+                    src={imageTest1}
+                    alt=""
+                    width={40}
+                  />
                 </div>
                 <div className="profile-name">
                   <p>Lalit Gour</p>

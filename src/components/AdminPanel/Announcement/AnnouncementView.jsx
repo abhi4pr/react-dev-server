@@ -78,7 +78,6 @@ const AnnouncementView = () => {
       toastError(error.response?.data?.error || "Error fetching comments");
     }
   };
-  // console.log(announcements);
 
   return (
     <div className="master-card-css">
@@ -88,19 +87,32 @@ const AnnouncementView = () => {
         handleSubmit={false}
       />
 
-<div className="card body-padding gap4">
-          <div className="pack sb">
-            <div className="d-flex flex-row">
-
-            <h5 >Announcement</h5> &nbsp; <span><h5 style={{color:"var(--gray-500)"}} >{announcements.length}</h5></span>
-            </div>
-            <button className="btn btn-outline-primary" onClick={()=>{navigate("/admin/announcement-post")}} >+ Add Announcement</button>
+      <div className="card body-padding gap4">
+        <div className="pack sb">
+          <div className="d-flex flex-row">
+            <h5>Announcement</h5> &nbsp;{" "}
+            <span>
+              <h5 style={{ color: "var(--gray-500)" }}>
+                {announcements.length}
+              </h5>
+            </span>
           </div>
-          <div className="pack" style={{width:"300px"}}>
-           
-              <input type="text" className="form-control" placeholder="Search Announcement" />
-            
-          </div>
+          <button
+            className="btn btn-outline-primary"
+            onClick={() => {
+              navigate("/admin/announcement-post");
+            }}
+          >
+            + Add Announcement
+          </button>
+        </div>
+        <div className="pack" style={{ width: "300px" }}>
+          <input
+            type="text"
+            className="form-control"
+            placeholder="Search Announcement"
+          />
+        </div>
       </div>
       {announcements.map((announcement) => (
         <Announcement
