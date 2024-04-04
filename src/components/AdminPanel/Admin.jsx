@@ -280,6 +280,7 @@ import SalesDashboard from "./Sales/SalesDashboard";
 import SalesServicesOverview from "./Sales/SalesServices/SalesServicesOverview";
 import SalesServicesCreate from "./Sales/SalesServices/SalesServicesCreate";
 import SalesServicesUpdate from "./Sales/SalesServices/SalesServicesUpdate";
+import Invoice from "./Finance/Invoice";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -749,6 +750,7 @@ const Admin = () => {
                     path="/finance-pendinginvoice"
                     element={<PendingInvoice />}
                   />
+                  <Route path="/finance-invoice" element={<Invoice />} />
                   <Route
                     path="/finance-pendinginvoice/customer-details/:id"
                     element={<PendingInvoiceCustomerDeatils />}

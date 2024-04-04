@@ -21,6 +21,7 @@ import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsAct
 import ShowDataModal from "./ShowDataModal";
 import { useGlobalContext } from "../../../Context/Context";
 import jwtDecode from "jwt-decode";
+import moment from "moment";
 
 export default function Discard() {
   const token = sessionStorage.getItem("token");
@@ -57,6 +58,7 @@ export default function Discard() {
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
   const [phpRemainderData, setPhpRemainderData] = useState([]);
   const [userName, setUserName] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -90,6 +92,9 @@ export default function Discard() {
             uvData.push(vendorRows[0]);
           });
           setUniqueVendorData(uvData);
+
+          const dateFilterData = filterDataBasedOnSelection(u);
+          setFilterData(dateFilterData);
         });
     });
 
@@ -163,7 +168,7 @@ export default function Discard() {
   };
   useEffect(() => {
     callApi();
-  }, []);
+  }, [dateFilter]);
 
   const paymentDetailColumns = [
     {
@@ -478,7 +483,7 @@ export default function Discard() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = sameVendorData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -531,23 +536,23 @@ export default function Discard() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        const rowIndex = uniqueVendorData.indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
     {
       field: "vendor_name",
       headerName: "Vendor Name",
-      // width: "auto",
       width: 250,
       renderCell: (params) => {
         return (
-          <div
-            style={{ cursor: "pointer" }}
+          <a
+            href="#"
+            style={{ cursor: "pointer", color: "#" }}
             onClick={() => handleOpenSameVender(params.row.vendor_name)}
           >
             {params.row.vendor_name}
-          </div>
+          </a>
         );
       },
     },
@@ -555,8 +560,17 @@ export default function Discard() {
       field: "total_amount",
       headerName: "Total Amount",
       width: 150,
-      renderCell: () => {
-        return <p> &#8377; {totalSameVendorAmount}</p>;
+      renderCell: ({ row }) => {
+        const sameVendor = filterData.filter(
+          (e) => e.vendor_name === row.vendor_name
+        );
+
+        const reduceAmt = sameVendor.reduce(
+          (a, b) => a + 1 * b.request_amount,
+          0
+        );
+
+        return <p> &#8377; {reduceAmt}</p>;
       },
     },
     {
@@ -624,7 +638,9 @@ export default function Discard() {
       headerName: "Requested Date",
       width: 150,
       renderCell: (params) => {
-        return convertDateToDDMMYYYY(params.row.request_date);
+        new Date(params.row.request_date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(params.row.request_date).toLocaleTimeString("en-IN");
       },
     },
     {
@@ -854,6 +870,91 @@ export default function Discard() {
       },
     },
   ];
+
+  const filterDataBasedOnSelection = (apiData) => {
+    const now = moment();
+    switch (dateFilter) {
+      case "last7Days":
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            now.clone().subtract(7, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "last30Days":
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            now.clone().subtract(30, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "thisWeek":
+        const startOfWeek = now.clone().startOf("week");
+        const endOfWeek = now.clone().endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfWeek,
+            endOfWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "lastWeek":
+        const startOfLastWeek = now
+          .clone()
+          .subtract(1, "weeks")
+          .startOf("week");
+        const endOfLastWeek = now.clone().subtract(1, "weeks").endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfLastWeek,
+            endOfLastWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "currentMonth":
+        const startOfMonth = now.clone().startOf("month");
+        const endOfMonth = now.clone().endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfMonth,
+            endOfMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "nextMonth":
+        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfNextMonth,
+            endOfNextMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "currentQuarter":
+        const quarterStart = moment().startOf("quarter");
+        const quarterEnd = moment().endOf("quarter");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            quarterStart,
+            quarterEnd,
+            "day",
+            "[]"
+          )
+        );
+      default:
+        return apiData; // No filter applied
+    }
+  };
+
   return (
     <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
       <FormContainer
@@ -958,6 +1059,7 @@ export default function Discard() {
           />
         </DialogContent>
       </Dialog>
+
       <div className="card body-padding">
         <div className="row">
           <div className="col-md-3">
@@ -1070,6 +1172,25 @@ export default function Discard() {
             <Button variant="contained" onClick={handleClearDateFilter}>
               Clear
             </Button>
+          </div>
+          <div className="col-md-6">
+            <div className="form-group">
+              <label>Select Date Range:</label>
+              <select
+                className="form-control"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="last7Days">Last 7 Days</option>
+                <option value="last30Days">Last 30 Days</option>
+                <option value="thisWeek">This Week</option>
+                <option value="lastWeek">Last Week</option>
+                <option value="currentMonth">Current Month</option>
+                <option value="nextMonth">Next Month</option>
+                <option value="currentQuarter">This Quarter</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>

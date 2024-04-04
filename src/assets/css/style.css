@@ -12785,7 +12785,7 @@ body.sidebar-toggled .topbar {
 .page_content {
   display: flex;
   flex-direction: column;
-  padding: 82px 20px 20px 50px;
+  padding: 81px 20px 20px 50px;
   height: 100vh;
   gap: 16px;
 }
@@ -13096,7 +13096,9 @@ body.sidebar-toggled .sidebar .nav-item .collapsing .collapse-inner {
   font-weight: 800;
   font-size: 0.65rem;
 }
-
+.MuiDataGrid-toolbarContainer{
+  position: sticky;
+}
 .sidebar .sidebar-card {
   display: flex;
   flex-direction: column;

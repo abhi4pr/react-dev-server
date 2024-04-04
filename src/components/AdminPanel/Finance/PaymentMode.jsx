@@ -27,6 +27,7 @@ const PaymentMode = () => {
   const [bankName, setBankName] = useState("");
   const [paymentType, setPaymentType] = useState("");
   const [gst, setGST] = useState("");
+  const [hiddenRows, setHiddenRows] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -107,6 +108,15 @@ const PaymentMode = () => {
     setGST("");
     setTitle("");
   };
+
+  const handleHideRowData = (data) => {
+    setHiddenRows((prevHiddenRows) => [...prevHiddenRows, data.id]);
+    toastAlert("Row Hidden Successfully");
+  };
+  const visibleRows = filterData.filter((row) => !hiddenRows.includes(row.id));
+
+  console.log(visibleRows, "visiblesRows data >>>>");
+
   const columns = [
     {
       headerName: "S.No",
@@ -157,189 +167,224 @@ const PaymentMode = () => {
         return <div>{params.row.gst_bank === 1 ? "GST" : "Non GST"}</div>;
       },
     },
+    {
+      headerName: "Action",
+      field: "Action",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <div>
+            <Button
+              variant="contained"
+              onClick={() => handleHideRowData(params.row)}
+            >
+              Hide
+            </Button>
+          </div>
+        );
+      },
+    },
   ];
+
   return (
-    <>
-      <FormContainer
-        mainTitle="Payment Mode"
-        link="/admin/finance-paymentmode"
-        buttonAccess={
-          contextData &&
-          contextData[2] &&
-          contextData[2].insert_value === 1 &&
-          false
-        }
-      />
-      <div className="card body-padding">
-        <div className="row">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label> Title</label>
-              <Autocomplete
-                value={title}
-                onChange={(event, newValue) => setTitle(newValue)}
-                options={Array.from(
-                  new Set(datas.map((option) => option.title))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Title"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label> Bank Name</label>
-              <Autocomplete
-                value={bankName}
-                onChange={(event, newValue) => setBankName(newValue)}
-                options={Array.from(
-                  new Set(datas.map((option) => option.detail))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Bank Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label> Payment Type</label>
-              <Autocomplete
-                value={paymentType}
-                onChange={(event, newValue) => setPaymentType(newValue)}
-                options={Array.from(
-                  new Set(datas.map((option) => option.payment_type))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Payment Type"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label> GST</label>
-              <Autocomplete
-                value={gst}
-                onChange={(event, newValue) => setGST(newValue)}
-                options={Array.from(
-                  new Set(
-                    datas.map((option) =>
-                      option.gst_bank === 1 ? "GST" : "Non GST"
-                    )
-                  )
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Payment Type"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-1 mt-2 mb-3 me-2">
-            <Button variant="contained" onClick={handleAllFilters}>
-              <i className="fas fa-search"></i> Search
-            </Button>
-          </div>
-          <div className="col-md-1 mt-2 mb-3">
-            <Button variant="contained" onClick={handleClearAllFilter}>
-              Clear
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div className="card">
-        <div className="data_tbl table-responsive">
-          <DataGrid
-            rows={filterData}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => filterData.indexOf(row)}
+    <div className="master-card-css ">
+      <div className="action_heading w-100">
+        <div
+          className="action_title "
+          style={{
+            position: "fixed",
+            zIndex: "500",
+            background: "var(--body-bg)",
+            width: "calc(100% - 379px)",
+          }}
+        >
+          <FormContainer
+            mainTitle="Payment Mode"
+            link="/admin/finance-paymentmode"
+            buttonAccess={
+              contextData &&
+              contextData[2] &&
+              contextData[2].insert_value === 1 &&
+              false
+            }
           />
         </div>
       </div>
-    </>
+      <div className="master-card-css p-1" style={{ marginTop: "114px" }}>
+        <div className="card body-padding">
+          <div className="row">
+            <div className="col-md-3">
+              <div className="form-group">
+                <label> Title</label>
+                <Autocomplete
+                  value={title}
+                  onChange={(event, newValue) => setTitle(newValue)}
+                  options={Array.from(
+                    new Set(datas.map((option) => option.title))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Title"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label> Bank Name</label>
+                <Autocomplete
+                  value={bankName}
+                  onChange={(event, newValue) => setBankName(newValue)}
+                  options={Array.from(
+                    new Set(datas.map((option) => option.detail))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Bank Name"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label> Payment Type</label>
+                <Autocomplete
+                  value={paymentType}
+                  onChange={(event, newValue) => setPaymentType(newValue)}
+                  options={Array.from(
+                    new Set(datas.map((option) => option.payment_type))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Payment Type"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label> GST</label>
+                <Autocomplete
+                  value={gst}
+                  onChange={(event, newValue) => setGST(newValue)}
+                  options={Array.from(
+                    new Set(
+                      datas.map((option) =>
+                        option.gst_bank === 1 ? "GST" : "Non GST"
+                      )
+                    )
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Payment Type"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-1 mt-2 mb-3 me-2">
+              <Button variant="contained" onClick={handleAllFilters}>
+                <i className="fas fa-search"></i> Search
+              </Button>
+            </div>
+            <div className="col-md-1 mt-2 mb-3">
+              <Button variant="contained" onClick={handleClearAllFilter}>
+                Clear
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div
+            className="data_tbl table-responsive"
+            style={{ height: "700px" }}
+          >
+            <DataGrid
+              // rows={filterData}
+              rows={visibleRows}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => filterData.indexOf(row)}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

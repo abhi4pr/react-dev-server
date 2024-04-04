@@ -24,6 +24,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsActiveTwoTone";
 import ShowDataModal from "./ShowDataModal";
 import jwtDecode from "jwt-decode";
+import moment from "moment";
 
 export default function PurchaseManagementAllTransaction() {
   const token = sessionStorage.getItem("token");
@@ -67,6 +68,7 @@ export default function PurchaseManagementAllTransaction() {
   const [withoutInvoiceCount, setWithoutInvoiceCount] = useState(0);
   const [withInvoiceData, setWithInvoiceData] = useState([]);
   const [withoutInvoiceData, setWithoutInvoiceData] = useState([]);
+  const [dateFilter, setDateFilter] = useState("");
 
   const handleCloseBankDetail = () => {
     setBankDetail(false);
@@ -120,6 +122,8 @@ export default function PurchaseManagementAllTransaction() {
             uvData.push(vendorRows[0]);
           });
           setUniqueVendorData(uvData);
+          const dateFilterData = filterDataBasedOnSelection(y);
+          setFilterData(dateFilterData);
         });
 
       axios
@@ -378,7 +382,7 @@ export default function PurchaseManagementAllTransaction() {
 
   useEffect(() => {
     callApi();
-  }, []);
+  }, [dateFilter]);
 
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
@@ -543,33 +547,20 @@ export default function PurchaseManagementAllTransaction() {
     0
   );
 
+  console.log(
+    sameVendorData,
+    "same vendor data>>>",
+    uniqueVendorData,
+    "unique vendor data>>>>"
+  );
   // ==============================================================
-  //iterate for totalAmount of same name venders :-
-  const vendorAmounts = [];
-  uniqueVendorData.forEach((item) => {
-    const vendorName = item.vendor_name;
-    const requestAmount = item.request_amount;
-
-    if (vendorAmounts[vendorName]) {
-      vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
-    } else {
-      vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
-    }
-  });
-
-  // calculate the total amount for vendors with the same name
-  let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
-    (total, amount) => total + amount,
+  // Calculate GST hold amount and count
+  const gstHoldData = data.filter((item) => item.gst_amount); // Assuming 'gstApplied' is a boolean field indicating if GST is applied
+  const gstHoldCount = gstHoldData.length;
+  const gstHoldAmount = gstHoldData.reduce(
+    (total, item) => total + parseFloat(item.gst_amount),
     0
   );
-  // ================================================================
-  // Calculate GST hold amount and count
-  // const gstHoldData = data.filter((item) => item.gst_amount); // Assuming 'gstApplied' is a boolean field indicating if GST is applied
-  // const gstHoldCount = gstHoldData.length;
-  // const gstHoldAmount = gstHoldData.reduce(
-  //   (total, item) => total + parseFloat(item.gst_amount),
-  //   0
-  // );
 
   // same Vender columns:-
   const sameVenderColumns = [
@@ -643,12 +634,13 @@ export default function PurchaseManagementAllTransaction() {
       width: 250,
       renderCell: (params) => {
         return (
-          <div
-            style={{ cursor: "pointer" }}
+          <a
+            href="#"
+            style={{ cursor: "pointer", color: "blue" }}
             onClick={() => handleOpenSameVender(params.row.vendor_name)}
           >
             {params.row.vendor_name}
-          </div>
+          </a>
         );
       },
     },
@@ -656,8 +648,17 @@ export default function PurchaseManagementAllTransaction() {
       field: "total_amount",
       headerName: "Total Amount",
       width: 150,
-      renderCell: () => {
-        return <p> &#8377; {totalSameVendorAmount}</p>;
+      renderCell: ({ row }) => {
+        const sameVendor = filterData.filter(
+          (e) => e.vendor_name === row.vendor_name
+        );
+
+        const reduceAmt = sameVendor.reduce(
+          (a, b) => a + 1 * b.request_amount,
+          0
+        );
+
+        return <p> &#8377; {reduceAmt}</p>;
       },
     },
     {
@@ -729,10 +730,12 @@ export default function PurchaseManagementAllTransaction() {
     },
     {
       field: "request_date",
-      headerName: "Requested Date",
+      headerName: "Requested Date & Time",
       width: 150,
       renderCell: (params) => {
-        return convertDateToDDMMYYYY(params.row.request_date);
+        new Date(params.row.request_date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(params.row.request_date).toLocaleTimeString("en-IN");
       },
     },
     {
@@ -1060,7 +1063,6 @@ export default function PurchaseManagementAllTransaction() {
   const gstHoldDataMerged = mergedData.filter((item) => {
     return item.gstHold == 1;
   });
-  console.log(gstHoldDataMerged, "sdfsmanoj");
   const totalGstHoldCount = gstHoldDataMerged.length;
   const totalGstHoldAmount = gstHoldDataMerged.reduce(
     (total, item) => total + parseFloat(item.gst_hold),
@@ -1108,276 +1110,390 @@ export default function PurchaseManagementAllTransaction() {
     filterDataByInvoice(false);
   };
 
+  const filterDataBasedOnSelection = (apiData) => {
+    const now = moment();
+    switch (dateFilter) {
+      case "last7Days":
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            now.clone().subtract(7, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "last30Days":
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            now.clone().subtract(30, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "thisWeek":
+        const startOfWeek = now.clone().startOf("week");
+        const endOfWeek = now.clone().endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfWeek,
+            endOfWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "lastWeek":
+        const startOfLastWeek = now
+          .clone()
+          .subtract(1, "weeks")
+          .startOf("week");
+        const endOfLastWeek = now.clone().subtract(1, "weeks").endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfLastWeek,
+            endOfLastWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "currentMonth":
+        const startOfMonth = now.clone().startOf("month");
+        const endOfMonth = now.clone().endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfMonth,
+            endOfMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "nextMonth":
+        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfNextMonth,
+            endOfNextMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "currentQuarter":
+        const quarterStart = moment().startOf("quarter");
+        const quarterEnd = moment().endOf("quarter");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            quarterStart,
+            quarterEnd,
+            "day",
+            "[]"
+          )
+        );
+      default:
+        return apiData; // No filter applied
+    }
+  };
+
   return (
-    <div style={{ display: "flex", gap: "16px", flexDirection: "column" }} p>
-      <FormContainer
-        mainTitle="Purchase Dashboard"
-        link="/admin/finance-pruchasemanagement-alltransaction"
-        uniqueVendorCount={uniqueVendorCount}
-        totalRequestAmount={totalRequestAmount}
-        pendingRequestCount={pendingRequestCount}
-        discardedRequestCount={discardedRequestCount}
-        paidRequestCount={paidRequestCount}
-        handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
-        allTransactionAdditionalTitles={true}
-      />
-
-      <Dialog
-        open={sameVendorDialog}
-        onClose={handleCloseSameVender}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+    <div className="master-card-css  ">
+      <div
+        className="action_heading mr-3"
+        style={{
+          position: "fixed",
+          zIndex: "500",
+          background: "var(--body-bg)",
         }}
       >
-        <DialogTitle>Same Vendors</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameVender}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameVendorData}
-            columns={sameVenderColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => sameVendorData.indexOf(row)}
+        <div className="action_title">
+          <FormContainer
+            mainTitle="Purchase Dashboard"
+            link="/admin/finance-pruchasemanagement-alltransaction"
+            uniqueVendorCount={uniqueVendorCount}
+            totalRequestAmount={totalRequestAmount}
+            pendingRequestCount={pendingRequestCount}
+            discardedRequestCount={discardedRequestCount}
+            paidRequestCount={paidRequestCount}
+            handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
+            allTransactionAdditionalTitles={true}
           />
-        </DialogContent>
-      </Dialog>
-
-      {/* Unique Vendor Dialog Box */}
-      <Dialog
-        open={uniqueVenderDialog}
-        onClose={handleCloseUniqueVendor}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Vendors</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniqueVendor}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={uniqueVendorData}
-            columns={uniqueVendorColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => uniqueVendorData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      <div className="card body-padding">
-        <div className="row">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Vendor Name</label>
-              <Autocomplete
-                value={vendorName}
-                onChange={(event, newValue) => setVendorName(newValue)}
-                options={Array.from(
-                  new Set(data.map((option) => option.vendor_name))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>From Date</label>
-              <input
-                value={fromDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>To Date</label>
-              <input
-                value={toDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => {
-                  setToDate(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Priority</label>
-              <select
-                value={priorityFilter}
-                className="form-control"
-                onChange={(e) => setPriorityFilter(e.target.value)}
-              >
-                <option value="">Select Priority</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-                <option value="High">High</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Request Amount Filter</label>
-              <select
-                value={requestAmountFilter}
-                className="form-control"
-                onChange={(e) => setRequestAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Requested Amount</label>
-              <input
-                value={requestedAmountField}
-                type="number"
-                placeholder="Request Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setRequestedAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-1 mt-4 me-2">
-            <Button variant="contained" onClick={handleDateFilter}>
-              <i className="fas fa-search"></i> Search
-            </Button>
-          </div>
-          <div className="col-md-1 mt-4">
-            <Button variant="contained" onClick={handleClearDateFilter}>
-              Clear
-            </Button>
-          </div>
         </div>
       </div>
-      <div className="row">
-        <div className="card col-2 ms-2">
-          <div className="card-header h4  fs-5">Pending</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total Requested Amount :-{" "}
-              {/* {filterData.length > 0
+      <div className="master-card-css p-1" style={{ marginTop: "140px" }}>
+        <Dialog
+          open={sameVendorDialog}
+          onClose={handleCloseSameVender}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Same Vendors</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseSameVender}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={sameVendorData}
+              columns={sameVenderColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameVendorData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Unique Vendor Dialog Box */}
+        <Dialog
+          open={uniqueVenderDialog}
+          onClose={handleCloseUniqueVendor}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Unique Vendors</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseUniqueVendor}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={uniqueVendorData}
+              columns={uniqueVendorColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueVendorData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+        <div className="card body-padding">
+          <div className="row">
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Vendor Name</label>
+                <Autocomplete
+                  value={vendorName}
+                  onChange={(event, newValue) => setVendorName(newValue)}
+                  options={Array.from(
+                    new Set(data.map((option) => option.vendor_name))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>From Date</label>
+                <input
+                  value={fromDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>To Date</label>
+                <input
+                  value={toDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => {
+                    setToDate(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Priority</label>
+                <select
+                  value={priorityFilter}
+                  className="form-control"
+                  onChange={(e) => setPriorityFilter(e.target.value)}
+                >
+                  <option value="">Select Priority</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Request Amount Filter</label>
+                <select
+                  value={requestAmountFilter}
+                  className="form-control"
+                  onChange={(e) => setRequestAmountFilter(e.target.value)}
+                >
+                  <option value="">Select Amount</option>
+                  <option value="greaterThan">Greater Than</option>
+                  <option value="lessThan">Less Than</option>
+                  <option value="equalTo">Equal To</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Requested Amount</label>
+                <input
+                  value={requestedAmountField}
+                  type="number"
+                  placeholder="Request Amount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setRequestedAmountField(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-1 mt-4 me-2">
+              <Button variant="contained" onClick={handleDateFilter}>
+                <i className="fas fa-search"></i> Search
+              </Button>
+            </div>
+            <div className="col-md-1 mt-4">
+              <Button variant="contained" onClick={handleClearDateFilter}>
+                Clear
+              </Button>
+            </div>
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>Select Date Range:</label>
+                <select
+                  className="form-control"
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                >
+                  <option value="">All</option>
+                  <option value="last7Days">Last 7 Days</option>
+                  <option value="last30Days">Last 30 Days</option>
+                  <option value="thisWeek">This Week</option>
+                  <option value="lastWeek">Last Week</option>
+                  <option value="currentMonth">Current Month</option>
+                  <option value="nextMonth">Next Month</option>
+                  <option value="currentQuarter">This Quarter</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="card col-2 ms-2">
+            <div className="card-header h4  fs-5">Pending</div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                Total Requested Amount :-{" "}
+                {/* {filterData.length > 0
                 ? filterData
                     .filter((item) => item.status == 0)
                     .reduce((total, currentItem) => {
                       return total + currentItem.request_amount * 1;
                     }, 0)
                 : ""} */}
-              {filterData.length > 0
-                ? filterData
-                    .filter((item) => {
-                      return !nodeData.some(
-                        (item2) => item.request_id == item2.request_id
-                      );
-                    })
-                    .reduce((total, currentItem) => {
-                      return total + parseFloat(currentItem.request_amount);
-                    }, 0)
-                : ""}
-            </p>
-            <p className="fs-6 lead ">
-              {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
-                >
-                  Click Here
-                </Link>
-              }
-            </p>
+                {filterData.length > 0
+                  ? filterData
+                      .filter((item) => {
+                        return !nodeData.some(
+                          (item2) => item.request_id == item2.request_id
+                        );
+                      })
+                      .reduce((total, currentItem) => {
+                        return total + parseFloat(currentItem.request_amount);
+                      }, 0)
+                  : ""}
+              </p>
+              <p className="fs-6 lead ">
+                {
+                  <Link
+                    className="link-primary"
+                    to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+                  >
+                    Click Here
+                  </Link>
+                }
+              </p>
+            </div>{" "}
           </div>{" "}
-        </div>{" "}
-        <div className="card col-2 ms-2">
-          <div className="card-header h4  fs-5">Done</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total Requested Amount :-{" "}
-              {/* {filterData.length > 0
+          <div className="card col-2 ms-2">
+            <div className="card-header h4  fs-5">Done</div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                Total Requested Amount :-{" "}
+                {/* {filterData.length > 0
                 ? filterData
                     .filter((item) => item.status == 1)
                     .reduce((total, currentItem) => {
                       return total + currentItem.request_amount * 1;
                     }, 0)
                 : ""} */}
-              {/* {filterData.length > 0
+                {/* {filterData.length > 0
                 ? filterData
                     .filter((item) => {
                       // Adjust condition to filter for paid requests (assuming status code for paid requests is 1)
@@ -1393,247 +1509,250 @@ export default function PurchaseManagementAllTransaction() {
                       return total + parseFloat(currentItem.request_amount);
                     }, 0)
                 : ""} */}
-              {filterData.length > 0
-                ? filterData
-                    .filter(
-                      (item) =>
-                        parseInt(item.status) === 1 &&
-                        !nodeData.some(
-                          (item2) => item.request_id === item2.request_id
-                        )
-                    )
-                    .reduce(
-                      (total, currentItem) =>
-                        total + parseFloat(currentItem.request_amount),
-                      0
-                    )
-                : 0}
-            </p>
-            <p className="fs-6 lead ">
-              {
-                <Link
-                  className="link-primary"
-                  to="/admin/finance-pruchasemanagement-paymentdone"
-                >
-                  Click Here
-                </Link>
-              }
-            </p>
+                {filterData.length > 0
+                  ? filterData
+                      .filter(
+                        (item) =>
+                          parseInt(item.status) === 1 &&
+                          !nodeData.some(
+                            (item2) => item.request_id === item2.request_id
+                          )
+                      )
+                      .reduce(
+                        (total, currentItem) =>
+                          total + parseFloat(currentItem.request_amount),
+                        0
+                      )
+                  : 0}
+              </p>
+              <p className="fs-6 lead ">
+                {
+                  <Link
+                    className="link-primary"
+                    to="/admin/finance-pruchasemanagement-paymentdone"
+                  >
+                    Click Here
+                  </Link>
+                }
+              </p>
+            </div>{" "}
           </div>{" "}
-        </div>{" "}
-        <div className="card col-2 ms-2">
-          <div className="card-header h4  fs-5">Discard</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total Requested Amount :-{" "}
-              {/* {filterData.length > 0
+          <div className="card col-2 ms-2">
+            <div className="card-header h4  fs-5">Discard</div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                Total Requested Amount :-{" "}
+                {/* {filterData.length > 0
                 ? filterData
                     .filter((item) => item.status == 0)
                     .reduce((total, currentItem) => {
                       return total + currentItem.request_amount * 1;
                     }, 0)
                 : ""} */}
-              {filterData.length > 0
-                ? filterData
-                    .filter((item) => {
-                      // Adjust condition to filter for paid requests (assuming status code for paid requests is 1)
-                      return (
-                        parseFloat(item.status) === 2 &&
-                        !nodeData.some(
-                          (item2) => item.request_id === item2.request_id
-                        )
-                      );
-                      // This condition checks if the item is paid and if its request_id is not found in nodeData
-                    })
-                    .reduce((total, currentItem) => {
-                      return total + parseFloat(currentItem.request_amount);
-                    }, 0)
-                : ""}
-            </p>
-            <p className="fs-6 lead ">
-              {
+                {filterData.length > 0
+                  ? filterData
+                      .filter((item) => {
+                        // Adjust condition to filter for paid requests (assuming status code for paid requests is 1)
+                        return (
+                          parseFloat(item.status) === 2 &&
+                          !nodeData.some(
+                            (item2) => item.request_id === item2.request_id
+                          )
+                        );
+                        // This condition checks if the item is paid and if its request_id is not found in nodeData
+                      })
+                      .reduce((total, currentItem) => {
+                        return total + parseFloat(currentItem.request_amount);
+                      }, 0)
+                  : ""}
+              </p>
+              <p className="fs-6 lead ">
+                {
+                  <Link
+                    className="link-primary"
+                    to="/admin/finance-pruchasemanagement-discardpayment"
+                  >
+                    Click Here
+                  </Link>
+                }
+              </p>
+            </div>
+          </div>
+          <div className="card col-2 ms-2">
+            <div className="card-header h4  fs-5">With Invoice</div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                With Invoice Count :- {withInvoiceCount}
+              </p>
+              <p className="fs-6 lead ">
                 <Link
                   className="link-primary"
-                  to="/admin/finance-pruchasemanagement-discardpayment"
+                  onClick={handleWithInvoiceButtonClick}
                 >
                   Click Here
                 </Link>
-              }
-            </p>
+              </p>
+            </div>
+          </div>
+          <div className="card col-2 ms-2">
+            <div className="card-header h4 fs-5">Without Invoice</div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                Without Invoice Count :- {withoutInvoiceCount}
+              </p>
+              <p className="fs-6 lead ">
+                <Link
+                  className="link-primary"
+                  onClick={handleWithoutInvoiceButtonClick}
+                >
+                  Click Here
+                </Link>
+              </p>
+            </div>
+          </div>
+          <div className="card col-2 ms-2">
+            <div className="card-header h4 fs-5">GST Hold </div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                GST Hold Amount :- {totalGstHoldAmount}
+              </p>
+              <p className="fs-6 lead ">
+                GST Hold Count :- {totalGstHoldCount}
+              </p>
+              <p className="fs-6 lead ">
+                <Link className="link-primary" onClick={filterDataByGstHold}>
+                  Click Here
+                </Link>
+              </p>
+            </div>
+          </div>
+          <div className="card col-2 ms-2">
+            <div className="card-header h4 fs-5"> Average Payment Aging </div>
+            <div className="card-body">
+              <p className="fs-6 lead ">Average Aging :- {averageAging}</p>
+            </div>
+          </div>
+          <div className="card col-2 ms-2">
+            <div className="card-header h4 fs-5">TDS Deducted</div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                Total TDS Deduction amount :-
+                {Math.round(totalTDSDeductedAmount)}
+              </p>
+              <p className="fs-6 lead ">
+                {" "}
+                Total TDS Deduction Count :- {totalTDSDeductedCount}
+              </p>
+              <p className="fs-6 lead ">
+                <Link
+                  className="link-primary"
+                  onClick={filterDataByTotalDeductedAmount}
+                >
+                  Click Here
+                </Link>
+              </p>
+            </div>
           </div>
         </div>
-        <div className="card col-2 ms-2">
-          <div className="card-header h4  fs-5">With Invoice</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              With Invoice Count :- {withInvoiceCount}
-            </p>
-            <p className="fs-6 lead ">
-              <Link
-                className="link-primary"
-                onClick={handleWithInvoiceButtonClick}
-              >
-                Click Here
-              </Link>
-            </p>
-          </div>
+        <div className="card mt-3" style={{ height: "700px" }}>
+          <DataGrid
+            rows={filterData}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            disableMultipleColumnsSorting
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => row.request_id}
+          />
         </div>
-        <div className="card col-2 ms-2">
-          <div className="card-header h4 fs-5">Without Invoice</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Without Invoice Count :- {withoutInvoiceCount}
-            </p>
-            <p className="fs-6 lead ">
-              <Link
-                className="link-primary"
-                onClick={handleWithoutInvoiceButtonClick}
-              >
-                Click Here
-              </Link>
-            </p>
-          </div>
-        </div>
-        <div className="card col-2 ms-2">
-          <div className="card-header h4 fs-5">GST Hold </div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              GST Hold Amount :- {totalGstHoldAmount}
-            </p>
-            <p className="fs-6 lead ">GST Hold Count :- {totalGstHoldCount}</p>
-            <p className="fs-6 lead ">
-              <Link className="link-primary" onClick={filterDataByGstHold}>
-                Click Here
-              </Link>
-            </p>
-          </div>
-        </div>
-        <div className="card col-2 ms-2">
-          <div className="card-header h4 fs-5"> Average Payment Aging </div>
-          <div className="card-body">
-            <p className="fs-6 lead ">Average Aging :- {averageAging}</p>
-          </div>
-        </div>
-        <div className="card col-2 ms-2">
-          <div className="card-header h4 fs-5">TDS Deducted</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total TDS Deduction amount :-{Math.round(totalTDSDeductedAmount)}
-            </p>
-            <p className="fs-6 lead ">
-              {" "}
-              Total TDS Deduction Count :- {totalTDSDeductedCount}
-            </p>
-            <p className="fs-6 lead ">
-              <Link
-                className="link-primary"
-                onClick={filterDataByTotalDeductedAmount}
-              >
-                Click Here
-              </Link>
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="card mt-3">
-        <DataGrid
-          rows={filterData}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          disableMultipleColumnsSorting
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => row.request_id}
-        />
-      </div>
-      {paymentHistory && (
-        <PaymentHistoryDialog
-          handleClose={setPaymentHistory}
-          paymentDetailColumns={paymentDetailColumns}
-          filterData={historyData}
-        />
-      )}
+        {paymentHistory && (
+          <PaymentHistoryDialog
+            handleClose={setPaymentHistory}
+            paymentDetailColumns={paymentDetailColumns}
+            filterData={historyData}
+          />
+        )}
 
-      {openImageDialog && (
-        <ImageView
-          viewImgSrc={viewImgSrc}
-          setViewImgDialog={setOpenImageDialog}
-        />
-      )}
+        {openImageDialog && (
+          <ImageView
+            viewImgSrc={viewImgSrc}
+            setViewImgDialog={setOpenImageDialog}
+          />
+        )}
 
-      <Dialog
-        open={bankDetail}
-        onClose={handleCloseBankDetail}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Bank Details</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseBankDetail}
+        <Dialog
+          open={bankDetail}
+          onClose={handleCloseBankDetail}
+          fullWidth={"md"}
+          maxWidth={"md"}
           sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <CloseIcon />
-        </IconButton>
+          <DialogTitle>Bank Details</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseBankDetail}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
 
-        <TextField
-          id="outlined-multiline-static"
-          multiline
-          value={
-            bankDetailRowData[0]?.payment_details +
-            "\n" +
-            "Mob:" +
-            bankDetailRowData[0]?.mob1 +
-            "\n" +
-            (bankDetailRowData[0]?.email
-              ? "Email:" + bankDetailRowData[0]?.email
-              : "")
-          }
-          rows={4}
-          defaultValue="Default Value"
-          variant="outlined"
-        />
-        <Button
-          onClick={() => {
-            navigator.clipboard.writeText(
-              bankDetailRowData[0]?.payment_details
-            );
-            toastAlert("Copied to clipboard");
-          }}
-        >
-          Copy
-        </Button>
-      </Dialog>
+          <TextField
+            id="outlined-multiline-static"
+            multiline
+            value={
+              bankDetailRowData[0]?.payment_details +
+              "\n" +
+              "Mob:" +
+              bankDetailRowData[0]?.mob1 +
+              "\n" +
+              (bankDetailRowData[0]?.email
+                ? "Email:" + bankDetailRowData[0]?.email
+                : "")
+            }
+            rows={4}
+            defaultValue="Default Value"
+            variant="outlined"
+          />
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(
+                bankDetailRowData[0]?.payment_details
+              );
+              toastAlert("Copied to clipboard");
+            }}
+          >
+            Copy
+          </Button>
+        </Dialog>
 
-      {remainderDialog && (
-        <ShowDataModal
-          handleClose={setRemainderDialog}
-          rows={reminderData}
-          columns={remainderDialogColumns}
-          aknowledgementDialog={aknowledgementDialog}
-          setAknowledgementDialog={setAknowledgementDialog}
-          userName={userName}
-          callApi={callApi}
-          setRemainderDialo={setRemainderDialog}
-        />
-      )}
+        {remainderDialog && (
+          <ShowDataModal
+            handleClose={setRemainderDialog}
+            rows={reminderData}
+            columns={remainderDialogColumns}
+            aknowledgementDialog={aknowledgementDialog}
+            setAknowledgementDialog={setAknowledgementDialog}
+            userName={userName}
+            callApi={callApi}
+            setRemainderDialo={setRemainderDialog}
+          />
+        )}
+      </div>
     </div>
   );
 }

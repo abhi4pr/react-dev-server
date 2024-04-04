@@ -741,487 +741,501 @@ const SaleBookingVerify = () => {
   ];
 
   return (
-    <>
-      <FormContainer
-        mainTitle="Sale Booking "
-        link="/admin/incentive-payment-list"
-        buttonAccess={
-          contextData &&
-          contextData[2] &&
-          contextData[2].insert_value === 1 &&
-          false
-        }
-        uniqueCustomerCount={uniqueCustomerCount}
-        baseAmountTotal={baseAmountTotal}
-        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
-        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
-        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
-        saleBookingVerifyPaymentAdditionalTitles={true}
-      />
-      {/* Same Sales Executive Dialog Box */}
-
-      <Dialog
-        open={sameSalesExecutiveDialog}
-        onClose={handleCloseSameSalesExecutive}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Sales Executive</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameSalesExecutive}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
+    <div className="master-card-css ">
+      <div className="action_heading w-100">
+        <div
+          className="action_title "
+          style={{
+            position: "fixed",
+            zIndex: "500",
+            background: "var(--body-bg)",
+            width: "calc(100% - 379px)",
           }}
         >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameSalesExecutiveData}
-            columns={sameSalesExecutivecolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            fv
-            componentsProps={{
-              toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
-              },
-            }}
-            getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      {/* Unique Sales Executive Dialog Box */}
-      <Dialog
-        open={uniqueSalesExecutiveDialog}
-        onClose={handleCloseUniquesalesExecutive}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Sales Executive</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniquesalesExecutive}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={uniqueSalesExecutiveData}
-            columns={uniqueSalesExecutivecolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            componentsProps={{
-              toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
-              },
-            }}
-            getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      {/* Same Customer Dialog */}
-      <Dialog
-        open={sameCustomerDialog}
-        onClose={handleCloseSameCustomer}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Customers</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameCustomer}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameCustomerData}
-            columns={sameCustomercolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            fv
-            componentsProps={{
-              toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
-              },
-            }}
-            getRowId={(row) => sameCustomerData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-
-      {/* Unique Customer Dialog Box */}
-      <Dialog
-        open={uniqueCustomerDialog}
-        onClose={handleCloseUniqueCustomer}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Customers</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniqueCustomer}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={uniqueCustomerData}
-            columns={uniqueCustomercolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            disableColumnMenu
-            disableColumnSelector
-            disableColumnFilter
-            disableColumnReorder
-            disableColumnResize
-            disableMultipleColumnsSorting
-            components={{
-              Toolbar: GridToolbar,
-            }}
-            componentsProps={{
-              toolbar: {
-                value: search,
-                onChange: (event) => setSearch(event.target.value),
-                placeholder: "Search",
-                clearSearch: true,
-                clearSearchAriaLabel: "clear",
-              },
-            }}
-            getRowId={(row) => uniqueCustomerData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      <div className="card body-padding">
-        <div className="row">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Customer Name</label>
-              <Autocomplete
-                value={customerName}
-                onChange={(event, newValue) => setCustomerName(newValue)}
-                options={Array.from(
-                  new Set(datas.map((option) => option.cust_name))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Customer Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Sales Executive Name</label>
-              <Autocomplete
-                value={salesExecutive}
-                onChange={(event, newValue) => setSalesExecutive(newValue)}
-                options={datas.map((option) => option.sales_exe_name || "")}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Sales Executive Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>From Date</label>
-              <input
-                value={fromDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>To Date</label>
-              <input
-                value={toDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => {
-                  setToDate(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Campaign Amount Filter</label>
-              <select
-                value={campaignAmountFilter}
-                className="form-control"
-                onChange={(e) => setCampaignAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Campaign Amount</label>
-              <input
-                value={campaignAmountField}
-                type="number"
-                placeholder="Request Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setcampaignAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-1 mt-4 me-2">
-            <Button variant="contained" onClick={handleAllFilters}>
-              <i className="fas fa-search"></i> Search
-            </Button>
-          </div>
-          <div className="col-md-1 mt-4">
-            <Button variant="contained" onClick={handleClearAllFilter}>
-              Clear
-            </Button>
-          </div>
-        </div>
-      </div>
-      <div className="card">
-        <div className="data_tbl table-responsive">
-          <DataTable
-            title="Sale Booking Close"
-            columns={columns}
-            data={filterData}
-            fixedHeader
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <FormContainer
+            mainTitle="Sale Booking "
+            link="/admin/incentive-payment-list"
+            buttonAccess={
+              contextData &&
+              contextData[2] &&
+              contextData[2].insert_value === 1 &&
+              false
             }
+            uniqueCustomerCount={uniqueCustomerCount}
+            baseAmountTotal={baseAmountTotal}
+            handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+            handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
+            uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
+            saleBookingVerifyPaymentAdditionalTitles={true}
           />
         </div>
       </div>
+      <div className="master-card-css p-1" style={{ marginTop: "114px" }}>
+        {/* Same Sales Executive Dialog Box */}
 
-      <Modal
-        isOpen={ImageModalOpen}
-        onRequestClose={handleCloseImageModal}
-        style={{
-          content: {
-            width: "30%",
-            height: "80%",
-            top: "50%",
-            left: "50%",
-            right: "auto",
-            bottom: "auto",
-            marginRight: "-50%",
-            transform: "translate(-50%, -50%)",
-          },
-        }}
-      >
-        <div>
-          <div className="d-flex justify-content-between mb-2">
-            <h2>Sale Booking Verify</h2>
+        <Dialog
+          open={sameSalesExecutiveDialog}
+          onClose={handleCloseSameSalesExecutive}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Same Sales Executive</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseSameSalesExecutive}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={sameSalesExecutiveData}
+              columns={sameSalesExecutivecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              disableColumnMenu
+              disableColumnSelector
+              disableColumnFilter
+              disableColumnReorder
+              disableColumnResize
+              disableMultipleColumnsSorting
+              components={{
+                Toolbar: GridToolbar,
+              }}
+              fv
+              componentsProps={{
+                toolbar: {
+                  value: search,
+                  onChange: (event) => setSearch(event.target.value),
+                  placeholder: "Search",
+                  clearSearch: true,
+                  clearSearchAriaLabel: "clear",
+                },
+              }}
+              getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+        {/* Unique Sales Executive Dialog Box */}
+        <Dialog
+          open={uniqueSalesExecutiveDialog}
+          onClose={handleCloseUniquesalesExecutive}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Unique Sales Executive</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseUniquesalesExecutive}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={uniqueSalesExecutiveData}
+              columns={uniqueSalesExecutivecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              disableColumnMenu
+              disableColumnSelector
+              disableColumnFilter
+              disableColumnReorder
+              disableColumnResize
+              disableMultipleColumnsSorting
+              components={{
+                Toolbar: GridToolbar,
+              }}
+              componentsProps={{
+                toolbar: {
+                  value: search,
+                  onChange: (event) => setSearch(event.target.value),
+                  placeholder: "Search",
+                  clearSearch: true,
+                  clearSearchAriaLabel: "clear",
+                },
+              }}
+              getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+        {/* Same Customer Dialog */}
+        <Dialog
+          open={sameCustomerDialog}
+          onClose={handleCloseSameCustomer}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Same Customers</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseSameCustomer}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={sameCustomerData}
+              columns={sameCustomercolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              disableColumnMenu
+              disableColumnSelector
+              disableColumnFilter
+              disableColumnReorder
+              disableColumnResize
+              disableMultipleColumnsSorting
+              components={{
+                Toolbar: GridToolbar,
+              }}
+              fv
+              componentsProps={{
+                toolbar: {
+                  value: search,
+                  onChange: (event) => setSearch(event.target.value),
+                  placeholder: "Search",
+                  clearSearch: true,
+                  clearSearchAriaLabel: "clear",
+                },
+              }}
+              getRowId={(row) => sameCustomerData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
 
-            <button
-              className="btn btn-success float-left"
-              onClick={handleCloseImageModal}
-            >
-              X
-            </button>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-12 ">
-            <form onSubmit={handleSubmit}>
-              <div className="form-group col-12"></div>
-
+        {/* Unique Customer Dialog Box */}
+        <Dialog
+          open={uniqueCustomerDialog}
+          onClose={handleCloseUniqueCustomer}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Unique Customers</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseUniqueCustomer}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={uniqueCustomerData}
+              columns={uniqueCustomercolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              disableColumnMenu
+              disableColumnSelector
+              disableColumnFilter
+              disableColumnReorder
+              disableColumnResize
+              disableMultipleColumnsSorting
+              components={{
+                Toolbar: GridToolbar,
+              }}
+              componentsProps={{
+                toolbar: {
+                  value: search,
+                  onChange: (event) => setSearch(event.target.value),
+                  placeholder: "Search",
+                  clearSearch: true,
+                  clearSearchAriaLabel: "clear",
+                },
+              }}
+              getRowId={(row) => uniqueCustomerData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+        <div className="card body-padding">
+          <div className="row">
+            <div className="col-md-3">
               <div className="form-group">
-                <label htmlFor="images">Amount:</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  id="images"
-                  name="images"
-                  value={balAmount}
-                  onChange={(e) => {
-                    if (e.target.value > row.net_balance_amount_to_pay) {
-                      toastError(
-                        "Amount is greater than balance amount to pay"
-                      );
-                      return;
-                    }
-                    setBalAmount(e.target.value);
-                  }}
-                  required
+                <label>Customer Name</label>
+                <Autocomplete
+                  value={customerName}
+                  onChange={(event, newValue) => setCustomerName(newValue)}
+                  options={Array.from(
+                    new Set(datas.map((option) => option.cust_name))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Customer Name"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
                 />
               </div>
-
+            </div>
+            <div className="col-md-3">
               <div className="form-group">
-                <label htmlFor="images">Remark:</label>
+                <label>Sales Executive Name</label>
+                <Autocomplete
+                  value={salesExecutive}
+                  onChange={(event, newValue) => setSalesExecutive(newValue)}
+                  options={datas.map((option) => option.sales_exe_name || "")}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Sales Executive Name"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>From Date</label>
+                <input
+                  value={fromDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>To Date</label>
+                <input
+                  value={toDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => {
+                    setToDate(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Campaign Amount Filter</label>
+                <select
+                  value={campaignAmountFilter}
+                  className="form-control"
+                  onChange={(e) => setCampaignAmountFilter(e.target.value)}
+                >
+                  <option value="">Select Amount</option>
+                  <option value="greaterThan">Greater Than</option>
+                  <option value="lessThan">Less Than</option>
+                  <option value="equalTo">Equal To</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Campaign Amount</label>
+                <input
+                  value={campaignAmountField}
+                  type="number"
+                  placeholder="Request Amount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setcampaignAmountField(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-1 mt-4 me-2">
+              <Button variant="contained" onClick={handleAllFilters}>
+                <i className="fas fa-search"></i> Search
+              </Button>
+            </div>
+            <div className="col-md-1 mt-4">
+              <Button variant="contained" onClick={handleClearAllFilter}>
+                Clear
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="card">
+          <div className="data_tbl table-responsive">
+            <DataTable
+              title="Sale Booking Close"
+              columns={columns}
+              data={filterData}
+              fixedHeader
+              fixedHeaderScrollHeight="64vh"
+              highlightOnHover
+              subHeader
+              subHeaderComponent={
                 <input
                   type="text"
-                  className="form-control"
-                  id="images"
-                  name="images"
-                  value={remark}
-                  onChange={(e) => setRemark(e.target.value)}
+                  placeholder="Search here"
+                  className="w-50 form-control"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
-              </div>
-
-              <button type="submit" className="btn btn-primary">
-                Submit
-              </button>
-            </form>
+              }
+            />
           </div>
         </div>
-      </Modal>
-    </>
+
+        <Modal
+          isOpen={ImageModalOpen}
+          onRequestClose={handleCloseImageModal}
+          style={{
+            content: {
+              width: "30%",
+              height: "80%",
+              top: "50%",
+              left: "50%",
+              right: "auto",
+              bottom: "auto",
+              marginRight: "-50%",
+              transform: "translate(-50%, -50%)",
+            },
+          }}
+        >
+          <div>
+            <div className="d-flex justify-content-between mb-2">
+              <h2>Sale Booking Verify</h2>
+
+              <button
+                className="btn btn-success float-left"
+                onClick={handleCloseImageModal}
+              >
+                X
+              </button>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-12 ">
+              <form onSubmit={handleSubmit}>
+                <div className="form-group col-12"></div>
+
+                <div className="form-group">
+                  <label htmlFor="images">Amount:</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="images"
+                    name="images"
+                    value={balAmount}
+                    onChange={(e) => {
+                      if (e.target.value > row.net_balance_amount_to_pay) {
+                        toastError(
+                          "Amount is greater than balance amount to pay"
+                        );
+                        return;
+                      }
+                      setBalAmount(e.target.value);
+                    }}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="images">Remark:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="images"
+                    name="images"
+                    value={remark}
+                    onChange={(e) => setRemark(e.target.value)}
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-primary">
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </Modal>
+      </div>
+    </div>
   );
 };
 

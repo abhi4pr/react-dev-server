@@ -20,6 +20,7 @@ import { baseUrl } from "../../../utils/config";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import moment from "moment";
 
 const IncentivePayment = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -56,6 +57,7 @@ const IncentivePayment = () => {
   const [uniqueSalesExecutiveData, setUniqueSalesExecutiveData] = useState("");
   const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
   const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
 
   const DateFormateToYYYYMMDD = (date) => {
     const d = new Date(date);
@@ -167,6 +169,9 @@ const IncentivePayment = () => {
         // Append total row to the end of the data
         setData((prevData) => [...prevData, totalRow]);
         setFilterData((prevData) => [...prevData, totalRow]);
+
+        const dateFilterData = filterDataBasedOnSelection(res.data.body);
+        setFilterData(dateFilterData);
       })
       .catch((error) => {
         console.error("Error fetching data: ", error);
@@ -175,7 +180,7 @@ const IncentivePayment = () => {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [dateFilter]);
 
   useEffect(() => {
     const result = datas.filter((d) => {
@@ -764,490 +769,609 @@ const IncentivePayment = () => {
     setPartialPaymentReason("");
   }, [balanceReleaseAmount]);
 
+  const filterDataBasedOnSelection = (apiData) => {
+    const now = moment();
+    switch (dateFilter) {
+      case "last7Days":
+        return apiData.filter((item) =>
+          moment(item.request_creation_date).isBetween(
+            now.clone().subtract(7, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "last30Days":
+        return apiData.filter((item) =>
+          moment(item.request_creation_date).isBetween(
+            now.clone().subtract(30, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "thisWeek":
+        const startOfWeek = now.clone().startOf("week");
+        const endOfWeek = now.clone().endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_creation_date).isBetween(
+            startOfWeek,
+            endOfWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "lastWeek":
+        const startOfLastWeek = now
+          .clone()
+          .subtract(1, "weeks")
+          .startOf("week");
+        const endOfLastWeek = now.clone().subtract(1, "weeks").endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_creation_date).isBetween(
+            startOfLastWeek,
+            endOfLastWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "currentMonth":
+        const startOfMonth = now.clone().startOf("month");
+        const endOfMonth = now.clone().endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_creation_date).isBetween(
+            startOfMonth,
+            endOfMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "nextMonth":
+        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_creation_date).isBetween(
+            startOfNextMonth,
+            endOfNextMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "currentQuarter":
+        const quarterStart = moment().startOf("quarter");
+        const quarterEnd = moment().endOf("quarter");
+        return apiData.filter((item) =>
+          moment(item.request_creation_date).isBetween(
+            quarterStart,
+            quarterEnd,
+            "day",
+            "[]"
+          )
+        );
+      default:
+        return apiData; // No filter applied
+    }
+  };
   return (
-    <>
-      <FormContainer
-        mainTitle="Incentive Disbursement Request"
-        link="/admin/incentive-payment-list"
-        buttonAccess={
-          contextData &&
-          contextData[2] &&
-          contextData[2].insert_value === 1 &&
-          false
-        }
-        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
-        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
-        requestedAmountTotal={requestedAmountTotal}
-        incentivePaymentAdditionalTitles={true}
-      />
-
-      {/* Same Sales Executive Dialog Box */}
-
-      <Dialog
-        open={sameSalesExecutiveDialog}
-        onClose={handleCloseSameSalesExecutive}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Vendors</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameSalesExecutive}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
+    <div className="master-card-css ">
+      <div className="action_heading w-100">
+        <div
+          className="action_title "
+          style={{
+            position: "fixed",
+            zIndex: "500",
+            background: "var(--body-bg)",
+            width: "calc(100% - 379px)",
           }}
         >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameSalesExecutiveData}
-            columns={sameSalesExecutivecolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+          <FormContainer
+            mainTitle="Incentive Disbursement Request"
+            link="/admin/incentive-payment-list"
+            buttonAccess={
+              contextData &&
+              contextData[2] &&
+              contextData[2].insert_value === 1 &&
+              false
+            }
+            handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
+            uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
+            requestedAmountTotal={requestedAmountTotal}
+            incentivePaymentAdditionalTitles={true}
           />
-        </DialogContent>
-      </Dialog>
-      {/* Unique Sales Executive Dialog Box */}
-      <Dialog
-        open={uniqueSalesExecutiveDialog}
-        onClose={handleCloseUniquesalesExecutive}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Sales Executive</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniquesalesExecutive}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={uniqueSalesExecutiveData}
-            columns={uniqueSalesExecutivecolumn}
-            fullWidth={"md"}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      <div className="card body-padding">
-        <div className="row">
-          <div className="col-md-4">
-            <div className="form-group">
-              <label>Sales Executive</label>
-              <Autocomplete
-                value={salesExecutive}
-                onChange={(event, newValue) => setSalesExecutive(newValue)}
-                options={Array.from(
-                  new Set(
-                    datas
-                      .filter(
-                        (option) => option.sales_executive_name !== "Total"
-                      )
-                      .map((option) => option.sales_executive_name)
-                  )
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Sales Executive Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="form-group">
-              <label>From Date</label>
-              <input
-                value={fromDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="form-group">
-              <label>To Date</label>
-              <input
-                value={toDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => {
-                  setToDate(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Requested Amount Filter</label>
-              <select
-                value={requestAmountFilter}
-                className="form-control"
-                onChange={(e) => setRequestAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Requested Amount</label>
-              <input
-                value={requestedAmountField}
-                type="number"
-                placeholder="Requested Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setRequestAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Released Amount Filter</label>
-              <select
-                value={releasedAmountFilter}
-                className="form-control"
-                onChange={(e) => setReleasedAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Released Amount</label>
-              <input
-                value={releasedAmountField}
-                type="number"
-                placeholder="Released Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setReleasedAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label> Balance Released Amount Filter</label>
-              <select
-                value={balanceAmountFilter}
-                className="form-control"
-                onChange={(e) => setBalanceAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label> Balance Released Amount</label>
-              <input
-                value={balanceAmountField}
-                type="number"
-                placeholder="Request Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setBalanceAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-1 mt-4 me-2">
-            <Button variant="contained" onClick={handleAllFilters}>
-              <i className="fas fa-search"></i> Search
-            </Button>
-          </div>
-          <div className="col-md-1 mt-4">
-            <Button variant="contained" onClick={handleClearAllFilter}>
-              Clear
-            </Button>
-          </div>
         </div>
       </div>
-      <Dialog
-        fullWidth={true}
-        maxWidth={"sm"}
-        open={isModalOpen}
-        onClose={() => setModalOpen(false)}
-      >
-        <DialogTitle>Balance Release</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={() => setModalOpen(false)}
+      <div className="master-card-css p-1" style={{ marginTop: "114px" }}>
+        {/* Same Sales Executive Dialog Box */}
+
+        <Dialog
+          open={sameSalesExecutiveDialog}
+          onClose={handleCloseSameSalesExecutive}
+          fullWidth={"md"}
+          maxWidth={"md"}
           sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent>
-          <form onSubmit={(e) => handleSubmit(e)}>
-            <label>Request Amount</label>
-            <input
-              type="number"
-              className="form-control"
-              value={selectedData.request_amount}
-              readOnly
-            />
-
-            <label>Balance To Release</label>
-            <input
-              type="number"
-              className="form-control"
-              value={
-                selectedData.balance_release_amount
-                  ? selectedData.balance_release_amount
-                  : 0
-              }
-              readOnly
-            />
-
-            <label>
-              Paid Amount <sup className="text-danger">*</sup>
-            </label>
-            <input
-              className="form-control"
-              id="images"
-              name="images"
-              required
-              // type="number"
-              value={balanceReleaseAmount}
-              onChange={(e) => {
-                const enteredValue = e.target.value;
-
-                // Check if the value is a non-empty string and a valid number
-                if (enteredValue !== "" && !isNaN(enteredValue)) {
-                  const numericValue = parseFloat(enteredValue);
-
-                  // Check if the numeric value is within the allowed range
-                  if (numericValue <= selectedData.balance_release_amount) {
-                    setBalanceReleaseAmount(numericValue);
-                  } else {
-                    // Handle the case where the value exceeds the maximum
-                    toastError(
-                      `Please enter a valid amount that does not exceed the maximum limit ${selectedData.balance_release_amount}.`
-                    );
-                    setBalanceReleaseAmount("");
-                  }
-                } else {
-                  // Reset if the input is not a valid number
-                  setBalanceReleaseAmount("");
-                }
+          <DialogTitle>Same Vendors</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseSameSalesExecutive}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={sameSalesExecutiveData}
+              columns={sameSalesExecutivecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
               }}
+              getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
             />
-
-            <label> Payment Type</label>
-            <input
-              className="form-control"
-              type="text"
-              value={paymentType}
-              readOnly
+          </DialogContent>
+        </Dialog>
+        {/* Unique Sales Executive Dialog Box */}
+        <Dialog
+          open={uniqueSalesExecutiveDialog}
+          onClose={handleCloseUniquesalesExecutive}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Unique Sales Executive</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseUniquesalesExecutive}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={uniqueSalesExecutiveData}
+              columns={uniqueSalesExecutivecolumn}
+              fullWidth={"md"}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
             />
-
-            {paymentType === "Partial Payment" && (
-              <div>
-                <label>
-                  Partial Payment Reason <sup className="text-danger">*</sup>
-                </label>
+          </DialogContent>
+        </Dialog>
+        <div className="card body-padding">
+          <div className="row">
+            <div className="col-md-4">
+              <div className="form-group">
+                <label>Sales Executive</label>
                 <Autocomplete
-                  placeholder="Partial Payment Reason"
-                  disablePortal
-                  value={partialPaymentReason}
-                  onChange={(e, value) => setPartialPaymentReason(value)}
-                  options={[
-                    "Fund Management",
-                    "Tax Deduction",
-                    "Bad Depth Adjustment",
-                  ]}
+                  value={salesExecutive}
+                  onChange={(event, newValue) => setSalesExecutive(newValue)}
+                  options={Array.from(
+                    new Set(
+                      datas
+                        .filter(
+                          (option) => option.sales_executive_name !== "Total"
+                        )
+                        .map((option) => option.sales_executive_name)
+                    )
+                  )}
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      required={paymentType === "Partial Payment"}
+                      label="Sales Executive Name"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
                     />
                   )}
                 />
               </div>
-            )}
-
-            <label>
-              Last 4 digit of account Number{" "}
-              <sup className="text-danger">*</sup>
-            </label>
-            <input
-              type="number"
-              className="form-control"
-              id="images"
-              name="images"
-              value={accountNo}
-              onChange={(e) => {
-                return e.target.value.length <= 4
-                  ? setAccountNo(e.target.value)
-                  : toastError("Please enter valid account number");
-              }}
-              required
-            />
-            <label>Payment ref number </label>
-            <input
-              type="text"
-              className="form-control"
-              id="images"
-              name="images"
-              value={paymentRef}
-              onChange={(e) => setPaymentRef(e.target.value)}
-              required
-            />
-            <label>Remarks</label>
-            <input
-              type="text"
-              className="form-control"
-              value={remarks}
-              onChange={(e) => setRemarks(e.target.value)}
-            />
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                value={paymentDate}
-                className="mt-3 w-100 mb"
-                format="DD/MM/YYYY"
-                onChange={(e) => setPaymentDate(e)}
-                label="Payment Date"
-              />
-            </LocalizationProvider>
-            <button
-              type="submit"
-              className="btn btn-primary d-block"
-              style={{ marginTop: "15px" }}
-            >
-              Submit
-            </button>
-          </form>
-        </DialogContent>
-      </Dialog>
-      <div className="card">
-        <div className="data_tbl table-responsive">
-          <div>
-            <div className="float-end">
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => getData()}
-              >
-                Refresh
+            </div>
+            <div className="col-md-4">
+              <div className="form-group">
+                <label>From Date</label>
+                <input
+                  value={fromDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-md-4">
+              <div className="form-group">
+                <label>To Date</label>
+                <input
+                  value={toDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => {
+                    setToDate(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Requested Amount Filter</label>
+                <select
+                  value={requestAmountFilter}
+                  className="form-control"
+                  onChange={(e) => setRequestAmountFilter(e.target.value)}
+                >
+                  <option value="">Select Amount</option>
+                  <option value="greaterThan">Greater Than</option>
+                  <option value="lessThan">Less Than</option>
+                  <option value="equalTo">Equal To</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Requested Amount</label>
+                <input
+                  value={requestedAmountField}
+                  type="number"
+                  placeholder="Requested Amount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setRequestAmountField(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Released Amount Filter</label>
+                <select
+                  value={releasedAmountFilter}
+                  className="form-control"
+                  onChange={(e) => setReleasedAmountFilter(e.target.value)}
+                >
+                  <option value="">Select Amount</option>
+                  <option value="greaterThan">Greater Than</option>
+                  <option value="lessThan">Less Than</option>
+                  <option value="equalTo">Equal To</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Released Amount</label>
+                <input
+                  value={releasedAmountField}
+                  type="number"
+                  placeholder="Released Amount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setReleasedAmountField(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label> Balance Released Amount Filter</label>
+                <select
+                  value={balanceAmountFilter}
+                  className="form-control"
+                  onChange={(e) => setBalanceAmountFilter(e.target.value)}
+                >
+                  <option value="">Select Amount</option>
+                  <option value="greaterThan">Greater Than</option>
+                  <option value="lessThan">Less Than</option>
+                  <option value="equalTo">Equal To</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label> Balance Released Amount</label>
+                <input
+                  value={balanceAmountField}
+                  type="number"
+                  placeholder="Request Amount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setBalanceAmountField(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-1 mt-4 me-2">
+              <Button variant="contained" onClick={handleAllFilters}>
+                <i className="fas fa-search"></i> Search
               </Button>
             </div>
-            <div>
-              <Button
-                variant="contained"
-                color="primary"
-                className="me-2"
-                onClick={handlePendingFilterData}
-              >
-                Pending
+            <div className="col-md-1 mt-4">
+              <Button variant="contained" onClick={handleClearAllFilter}>
+                Clear
               </Button>
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleCompleteFilterData}
-              >
-                Completed
-              </Button>
+            </div>
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>Select Date Range:</label>
+                <select
+                  className="form-control"
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                >
+                  <option value="">All</option>
+                  <option value="last7Days">Last 7 Days</option>
+                  <option value="last30Days">Last 30 Days</option>
+                  <option value="thisWeek">This Week</option>
+                  <option value="lastWeek">Last Week</option>
+                  <option value="currentMonth">Current Month</option>
+                  <option value="nextMonth">Next Month</option>
+                  <option value="currentQuarter">This Quarter</option>
+                </select>
+              </div>
             </div>
           </div>
-          <DataGrid
-            rows={filterData}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
+        </div>
+        <Dialog
+          fullWidth={true}
+          maxWidth={"sm"}
+          open={isModalOpen}
+          onClose={() => setModalOpen(false)}
+        >
+          <DialogTitle>Balance Release</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={() => setModalOpen(false)}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
             }}
-            getRowId={(row) => filterData.indexOf(row)}
-          />
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <form onSubmit={(e) => handleSubmit(e)}>
+              <label>Request Amount</label>
+              <input
+                type="number"
+                className="form-control"
+                value={selectedData.request_amount}
+                readOnly
+              />
+
+              <label>Balance To Release</label>
+              <input
+                type="number"
+                className="form-control"
+                value={
+                  selectedData.balance_release_amount
+                    ? selectedData.balance_release_amount
+                    : 0
+                }
+                readOnly
+              />
+
+              <label>
+                Paid Amount <sup className="text-danger">*</sup>
+              </label>
+              <input
+                className="form-control"
+                id="images"
+                name="images"
+                required
+                // type="number"
+                value={balanceReleaseAmount}
+                onChange={(e) => {
+                  const enteredValue = e.target.value;
+
+                  // Check if the value is a non-empty string and a valid number
+                  if (enteredValue !== "" && !isNaN(enteredValue)) {
+                    const numericValue = parseFloat(enteredValue);
+
+                    // Check if the numeric value is within the allowed range
+                    if (numericValue <= selectedData.balance_release_amount) {
+                      setBalanceReleaseAmount(numericValue);
+                    } else {
+                      // Handle the case where the value exceeds the maximum
+                      toastError(
+                        `Please enter a valid amount that does not exceed the maximum limit ${selectedData.balance_release_amount}.`
+                      );
+                      setBalanceReleaseAmount("");
+                    }
+                  } else {
+                    // Reset if the input is not a valid number
+                    setBalanceReleaseAmount("");
+                  }
+                }}
+              />
+
+              <label> Payment Type</label>
+              <input
+                className="form-control"
+                type="text"
+                value={paymentType}
+                readOnly
+              />
+
+              {paymentType === "Partial Payment" && (
+                <div>
+                  <label>
+                    Partial Payment Reason <sup className="text-danger">*</sup>
+                  </label>
+                  <Autocomplete
+                    placeholder="Partial Payment Reason"
+                    disablePortal
+                    value={partialPaymentReason}
+                    onChange={(e, value) => setPartialPaymentReason(value)}
+                    options={[
+                      "Fund Management",
+                      "Tax Deduction",
+                      "Bad Depth Adjustment",
+                    ]}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        required={paymentType === "Partial Payment"}
+                      />
+                    )}
+                  />
+                </div>
+              )}
+
+              <label>
+                Last 4 digit of account Number{" "}
+                <sup className="text-danger">*</sup>
+              </label>
+              <input
+                type="number"
+                className="form-control"
+                id="images"
+                name="images"
+                value={accountNo}
+                onChange={(e) => {
+                  return e.target.value.length <= 4
+                    ? setAccountNo(e.target.value)
+                    : toastError("Please enter valid account number");
+                }}
+                required
+              />
+              <label>Payment ref number </label>
+              <input
+                type="number"
+                className="form-control"
+                id="images"
+                name="images"
+                value={accountNo}
+                onChange={(e) => setPaymentRef(e.target.value)}
+                required
+              />
+              <label>Remarks</label>
+              <input
+                type="text"
+                className="form-control"
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={paymentDate}
+                  className="mt-3 w-100 mb"
+                  format="DD/MM/YYYY"
+                  onChange={(e) => setPaymentDate(e)}
+                  label="Payment Date"
+                />
+              </LocalizationProvider>
+              <button
+                type="submit"
+                className="btn btn-primary d-block"
+                style={{ marginTop: "15px" }}
+              >
+                Submit
+              </button>
+            </form>
+          </DialogContent>
+        </Dialog>
+        <div className="card">
+          <div className="data_tbl table-responsive">
+            <div>
+              <div className="float-end">
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => getData()}
+                >
+                  Refresh
+                </Button>
+              </div>
+              <div>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="me-2"
+                  onClick={handlePendingFilterData}
+                >
+                  Pending
+                </Button>
+                <Button
+                  variant="contained"
+                  color="success"
+                  onClick={handleCompleteFilterData}
+                >
+                  Completed
+                </Button>
+              </div>
+            </div>
+            <div
+              className="data_tbl table-responsive"
+              // style={{ height: "700px" }}
+            >
+              <DataGrid
+                rows={filterData}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                getRowId={(row) => filterData.indexOf(row)}
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

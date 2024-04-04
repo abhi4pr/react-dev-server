@@ -20,6 +20,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsActiveTwoTone";
 import ShowDataModal from "./ShowDataModal";
 import jwtDecode from "jwt-decode";
+import moment from "moment";
 
 export default function PaymentDone() {
   const token = sessionStorage.getItem("token");
@@ -57,8 +58,11 @@ export default function PaymentDone() {
   const [phpData, setPhpData] = useState([]);
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
   const [invoiceDialog, setInvoiceDialog] = useState([]);
+  const [withInvoiceCount, setWithInvoiceCount] = useState(0);
+  const [withoutInvoiceCount, setWithoutInvoiceCount] = useState(0);
   const [imageFile, setImageFile] = useState([]);
   const [invoiceId, setInvoiceId] = useState(null);
+  const [dateFilter, setDateFilter] = useState("");
   const { toastAlert, toastError } = useGlobalContext();
 
   const callApi = () => {
@@ -84,6 +88,16 @@ export default function PaymentDone() {
           setData(u);
           setFilterData(u);
           setPendingRequestCount(u.length);
+          // with nd without invoice count
+          const withInvoiceImage = u.filter(
+            (item) => item.invc_img && item.invc_img.length > 0
+          );
+          const withoutInvoiceImage = u.filter(
+            (item) => !item.invc_img || item.invc_img.length === 0
+          );
+          setWithInvoiceCount(withInvoiceImage.length);
+          setWithoutInvoiceCount(withoutInvoiceImage.length);
+          // ==============================================================
           const uniqueVendors = new Set(u.map((item) => item.vendor_name));
           setUniqueVendorCount(uniqueVendors.size);
           const uvData = [];
@@ -94,6 +108,9 @@ export default function PaymentDone() {
             uvData.push(vendorRows[0]);
           });
           setUniqueVendorData(uvData);
+
+          const dateFilterData = filterDataBasedOnSelection(u);
+          setFilterData(dateFilterData);
         });
     });
 
@@ -109,7 +126,6 @@ export default function PaymentDone() {
       setUserName(res.data.user_name);
     });
   };
-
   const remainderDialogColumns = [
     {
       field: "S.NO",
@@ -179,7 +195,7 @@ export default function PaymentDone() {
 
   useEffect(() => {
     callApi();
-  }, []);
+  }, [dateFilter]);
 
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
@@ -203,6 +219,26 @@ export default function PaymentDone() {
 
     return diffDays;
   }
+
+  function calculateHours(date1, date2) {
+    const oneHour = 60 * 60 * 1000; // minutes * seconds * milliseconds
+    const firstDate = new Date(date1);
+    const secondDate = new Date(date2);
+
+    const diffHours = Math.round(Math.abs((firstDate - secondDate) / oneHour));
+
+    return diffHours;
+  }
+
+  function calculateHours(date1, date2) {
+    const oneHour = 60 * 60 * 1000; // minutes * seconds * milliseconds
+    const firstDate = new Date(date1);
+    const secondDate = new Date(date2);
+    const diffHours = Math.round(Math.abs((firstDate - secondDate) / oneHour));
+
+    return diffHours;
+  }
+
   const filterPaymentAmount = nodeData.filter((item) =>
     filterData.some((e) => e.request_id == item.request_id)
   );
@@ -213,25 +249,6 @@ export default function PaymentDone() {
   );
 
   // ==============================================================
-  //iterate for totalAmount of same name venders :-
-  const vendorAmounts = [];
-  uniqueVendorData.forEach((item) => {
-    const vendorName = item.vendor_name;
-    const requestAmount = item.request_amount;
-
-    if (vendorAmounts[vendorName]) {
-      vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
-    } else {
-      vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
-    }
-  });
-
-  // calculate the total amount for vendors with the same name
-  let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
-    (total, amount) => total + amount,
-    0
-  );
-  // ================================================================
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
       const date = new Date(item.request_date);
@@ -297,7 +314,7 @@ export default function PaymentDone() {
     });
     setUniqueVendorData(uvData);
   };
-
+  console.log(filterData, "filterData >>");
   const handleClearDateFilter = () => {
     setFilterData(data);
     setFromDate("");
@@ -331,13 +348,6 @@ export default function PaymentDone() {
     const sameNameVendors = data.filter(
       (item) => item.vendor_name === vendorName
     );
-    // Calculate the total amount for vendors with the same name
-    // const totalAmount = sameNameVendors.reduce(
-    //   (total, item) => total + item.request_amount,
-    //   0
-    // );
-
-    // Set the selected vendor data including the vendor name, data, and total amount
     setSameVendorData(sameNameVendors);
   };
 
@@ -409,15 +419,12 @@ export default function PaymentDone() {
     setInvoiceId(row.request_id);
     console.log(row.request_id, "ddddddd");
   };
-  console.log(filterData, "FFFFFFFFFFFFFFFFFFF");
 
   const handleCloseEditInvoice = () => {
     setInvoiceDialog(false);
   };
 
-  console.log(invoiceId, "invoiceId>>>", imageFile, "imageFile>>>");
   const handleUpdateInvoice = async () => {
-    console.log("================================");
     console.log(invoiceId, "HII");
 
     const formData = new FormData();
@@ -436,7 +443,6 @@ export default function PaymentDone() {
         // }
       )
       .then((res) => {
-        console.log(res, "RESPONSE<<>>>>>>>>>>>");
         handleCloseEditInvoice();
         callApi();
       });
@@ -457,7 +463,7 @@ export default function PaymentDone() {
     {
       field: "vendor_name",
       headerName: "Vendor Name",
-      // width: "auto",
+      width: 150,
       renderCell: (params) => {
         return params.row.vendorName;
       },
@@ -465,16 +471,9 @@ export default function PaymentDone() {
     {
       field: "request_amount",
       headerName: "Requested Amount",
+      width: 100,
       renderCell: (params) => {
         return <p> &#8377; {params.row.request_amount}</p>;
-      },
-    },
-    {
-      field: "total_amount",
-      headerName: "Total Amount",
-      width: 150,
-      renderCell: () => {
-        return <p> &#8377; {totalSameVendorAmount}</p>;
       },
     },
     {
@@ -505,12 +504,13 @@ export default function PaymentDone() {
       width: 250,
       renderCell: (params) => {
         return (
-          <div
-            style={{ cursor: "pointer" }}
+          <a
+            href="#"
+            style={{ cursor: "pointer", color: "#" }}
             onClick={() => handleOpenSameVender(params.row.vendor_name)}
           >
             {params.row.vendor_name}
-          </div>
+          </a>
         );
       },
     },
@@ -518,8 +518,17 @@ export default function PaymentDone() {
       field: "total_amount",
       headerName: "Total Amount",
       width: 150,
-      renderCell: () => {
-        return <p> &#8377; {totalSameVendorAmount}</p>;
+      renderCell: ({ row }) => {
+        const sameVendor = filterData.filter(
+          (e) => e.vendor_name === row.vendor_name
+        );
+
+        const reduceAmt = sameVendor.reduce(
+          (a, b) => a + 1 * b.request_amount,
+          0
+        );
+
+        return <p> &#8377; {reduceAmt}</p>;
       },
     },
     {
@@ -760,7 +769,9 @@ export default function PaymentDone() {
       headerName: "Requested Date",
       width: 150,
       renderCell: (params) => {
-        return convertDateToDDMMYYYY(params.row.request_date);
+        new Date(params.row.request_date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(params.row.request_date).toLocaleTimeString("en-IN");
       },
     },
     {
@@ -1033,19 +1044,127 @@ export default function PaymentDone() {
       width: 150,
       renderCell: (params) => {
         return (
-          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
+          <p>
+            {" "}
+            {Math.round(
+              (
+                calculateHours(params.row.request_date, new Date()) / 24
+              ).toFixed(1)
+            )}{" "}
+            Days
+          </p>
         );
       },
     },
     {
-      field: "gst_Hold_Bool",
+      field: "Aging (in hours)",
+      headerName: "Aging (in hours)",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <p> {calculateHours(params.row.request_date, new Date())} Hours</p>
+        );
+      },
+    },
+    {
+      field: "gstHold",
       headerName: "GST Hold",
       renderCell: (params) => {
-        console.log(params.row.gst_Hold_Bool, "gst_Hold_Bool");
         return params.row.gstHold == 1 ? "Yes" : "No";
       },
     },
+    {
+      field: "TDSDeduction",
+      headerName: "TDS Deduction",
+      renderCell: (params) => {
+        return params.row.TDSDeduction == 1 ? "Yes" : "No";
+      },
+    },
   ];
+
+  const filterDataBasedOnSelection = (apiData) => {
+    const now = moment();
+    switch (dateFilter) {
+      case "last7Days":
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            now.clone().subtract(7, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "last30Days":
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            now.clone().subtract(30, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "thisWeek":
+        const startOfWeek = now.clone().startOf("week");
+        const endOfWeek = now.clone().endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfWeek,
+            endOfWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "lastWeek":
+        const startOfLastWeek = now
+          .clone()
+          .subtract(1, "weeks")
+          .startOf("week");
+        const endOfLastWeek = now.clone().subtract(1, "weeks").endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfLastWeek,
+            endOfLastWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "currentMonth":
+        const startOfMonth = now.clone().startOf("month");
+        const endOfMonth = now.clone().endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfMonth,
+            endOfMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "nextMonth":
+        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfNextMonth,
+            endOfNextMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "currentQuarter":
+        const quarterStart = moment().startOf("quarter");
+        const quarterEnd = moment().endOf("quarter");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            quarterStart,
+            quarterEnd,
+            "day",
+            "[]"
+          )
+        );
+      default:
+        return apiData; // No filter applied
+    }
+  };
 
   return (
     <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
@@ -1055,6 +1174,8 @@ export default function PaymentDone() {
         uniqueVendorCount={uniqueVendorCount}
         totalRequestAmount={totalRequestAmount}
         pendingRequestCount={pendingRequestCount}
+        withInvoiceCount={withInvoiceCount}
+        withoutInvoiceCount={withoutInvoiceCount}
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
         paymentDoneAdditionalTitles={true}
       />
@@ -1312,16 +1433,37 @@ export default function PaymentDone() {
               Clear
             </Button>
           </div>
+          <div className="col-md-6">
+            <div className="form-group">
+              <label>Select Date Range:</label>
+              <select
+                className="form-control"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="last7Days">Last 7 Days</option>
+                <option value="last30Days">Last 30 Days</option>
+                <option value="thisWeek">This Week</option>
+                <option value="lastWeek">Last Week</option>
+                <option value="currentMonth">Current Month</option>
+                <option value="nextMonth">Next Month</option>
+                <option value="currentQuarter">This Quarter</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="card">
+      <div
+        className="card"
+        // style={{ height: "700px" }}
+      >
         <DataGrid
           rows={filterData}
           columns={columns}
           pageSize={5}
           rowsPerPageOptions={[5]}
           disableSelectionOnClick
-          autoHeight
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
