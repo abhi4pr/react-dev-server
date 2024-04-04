@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import jwtDecode from "jwt-decode";
 import axios from "axios";
 import { baseUrl } from "../../../utils/config";
+import SalesSidebarLinks from "./SalesSidebarLinks";
 
 const SidebarLinks = () => {
   const [contextData, setData] = useState([]);
@@ -1538,16 +1539,15 @@ const SidebarLinks = () => {
                 <i class="bi bi-dot"></i> Ops Customer Update
               </Link> */}
 
-              <Link className="collapse-item" to="/admin/customer-cont-overview">
+              <Link
+                className="collapse-item"
+                to="/admin/customer-cont-overview"
+              >
                 <i class="bi bi-dot"></i> Customer Contact Overview
               </Link>
               <Link className="collapse-item" to="/admin/ops-doc-mast">
                 <i class="bi bi-dot"></i> OpsDocMast
               </Link>
-
-
-
-
             </>
           </div>
         </div>
@@ -1695,53 +1695,8 @@ const SidebarLinks = () => {
           </div>
         </div>
       </li>
-      {/* )} */}
-      {/* {isInstaApiVisible && (
-        <li className="nav-item">
-          <Link
-            className="nav-btn nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#collapseEight"
-            aria-expanded="true"
-            aria-controls="collapseEight"
-          >
-            <i className="bi bi-person-gear" />
-            <span>Insta API</span>
-          </Link>
-          <div
-            id="collapseEight"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="bg-white collapse-inner">
-              {contextData &&
-                contextData[25] &&
-                contextData[25].view_value === 1 && (
-                  <>
-                    <Link
-                      className="collapse-item"
-                      to="/admin/instaapi/analytic"
-                    >
-                      Analytics
-                    </Link>
-                    <Link className="collapse-item" to="/admin/instaapi">
-                      Explore
-                    </Link>
-                  </>
-                )}
-              {contextData &&
-                contextData[29] &&
-                contextData[29].view_value === 1 && (
-                  <Link className="collapse-item" to="/admin/instaapi/track">
-                    Track Page
-                  </Link>
-                )}
-              
-            </div>
-          </div>
-        </li>
-      )} */}
+
+      <SalesSidebarLinks />
     </>
   );
 };
