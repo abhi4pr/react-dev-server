@@ -8,6 +8,8 @@ import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import AnnoucementComments from "./AnnoucementComments";
 import Interactions from "./Interactions";
+import { Drawer, Modal } from "@mui/material";
+import AnnoucementReactionView from "./AnnoucementReactionView";
 
 const Announcement = ({
   announcement,
@@ -19,6 +21,7 @@ const Announcement = ({
   const [loginUserData, setLoginUserData] = useState([]);
   const [showCommentlist, setShowCommentlist] = useState(false);
   const [showCommentForm, setShowCommentForm] = useState(false);
+  const [reactionData, setReactionData] = useState({});
   const reactionObj = {
     like: "👍",
     haha: "😂",
@@ -27,6 +30,28 @@ const Announcement = ({
     clap: "👏",
   };
   const reactionTypes = ["like", "haha", "love", "sad", "clap"];
+  const [isOpen, setIsOpen] = React.useState(false);
+  const [idsToShow, setIdsToShow] = useState(
+    Object.values(announcement.reactions).flat()
+  );
+
+  const handleFilter = (reaction) => {
+    if (reaction === "all") {
+      // Flatten all ID arrays into one
+      setIdsToShow(Object.values(announcement.reactions).flat());
+    } else {
+      setIdsToShow(announcement.reactions[reaction]);
+    }
+  };
+  const toggleDrawer = (open) => (event) => {
+    if (
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
+    ) {
+      return;
+    }
+    setIsOpen(open);
+  };
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
 
@@ -69,7 +94,6 @@ const Announcement = ({
       })
       .then((res) => setLoginUserData(res.data));
   }, []);
-
   return (
     <div className="card">
       <div className="card-header sb">
@@ -115,6 +139,8 @@ const Announcement = ({
       </div>
       <div className="card-body">
         <div dangerouslySetInnerHTML={{ __html: announcement.post_content }} />
+        <br />
+        <p className="rec-com">Published by {announcement.created_by}</p>
       </div>
       <div className="card-foot">
         <div className="pack w-100 sb">
@@ -128,7 +154,7 @@ const Announcement = ({
                   {reactionObj[selectedReaction]} {selectedReaction}
                 </div>
               ) : (
-                " Like"
+                "👍🏼 Like"
               )}
 
               <div
@@ -161,7 +187,11 @@ const Announcement = ({
             </p>
           </div>
           <div className="pack d-flex flex-row gap4 rec-com">
-            <p className="rec-com">
+            <p
+              className="rec-com"
+              style={{ cursor: "pointer" }}
+              onClick={toggleDrawer(true)}
+            >
               {announcement.reactions.like.length +
                 announcement.reactions.clap.length +
                 announcement.reactions.haha.length +
@@ -211,6 +241,33 @@ const Announcement = ({
           </div>
         )}
       </div>
+      <Drawer anchor="right" open={isOpen} onClose={toggleDrawer(false)}>
+        <div
+          className="card h-100"
+          style={{ width: "500px", borderRadius: "0px" }}
+        >
+          <div
+            className="d-flex p-1 flex-row sb pr-3 pl-3"
+            style={{ background: "var(--gray-900)", height: "50px" }}
+          >
+            <h4 style={{ color: "var(--white)" }}>Reactions</h4>
+            <h4
+              style={{ color: "var(--white)", cursor: "pointer" }}
+              onClick={toggleDrawer(false)}
+            >
+              x
+            </h4>
+          </div>
+
+          <AnnoucementReactionView
+            announcementId={announcement._id}
+            isOpen={isOpen}
+            reactionType={reactionTypes}
+            reactionObj={reactionObj}
+            reactionData={reactionData}
+          />
+        </div>
+      </Drawer>
     </div>
   );
 };
