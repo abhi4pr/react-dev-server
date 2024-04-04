@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import moment from "moment";
 
 const SaleBookingClose = () => {
   const { toastAlert } = useGlobalContext();
@@ -46,6 +47,7 @@ const SaleBookingClose = () => {
   const [uniqueSalesExecutiveData, setUniqueSalesExecutiveData] = useState("");
   const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
   const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
+  const [dateFilter, setDateFilter] = useState("");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -118,12 +120,15 @@ const SaleBookingClose = () => {
           );
         });
         setUniqueSalesExecutiveData(uniqueSEData);
+
+        const dateFilterData = filterDataBasedOnSelection(res.data.body);
+        setFilterData(dateFilterData);
       });
   }
 
   useEffect(() => {
     getData();
-  }, [tdsStatus, aboutToClose]);
+  }, [tdsStatus, aboutToClose, dateFilter]);
 
   const aboutClose = () => {
     // const allData = datas;
@@ -671,378 +676,494 @@ const SaleBookingClose = () => {
       },
     },
   ];
-
+  const filterDataBasedOnSelection = (apiData) => {
+    const now = moment();
+    switch (dateFilter) {
+      case "last7Days":
+        return apiData.filter((item) =>
+          moment(item.sale_booking_date).isBetween(
+            now.clone().subtract(7, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "last30Days":
+        return apiData.filter((item) =>
+          moment(item.sale_booking_date).isBetween(
+            now.clone().subtract(30, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "thisWeek":
+        const startOfWeek = now.clone().startOf("week");
+        const endOfWeek = now.clone().endOf("week");
+        return apiData.filter((item) =>
+          moment(item.sale_booking_date).isBetween(
+            startOfWeek,
+            endOfWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "lastWeek":
+        const startOfLastWeek = now
+          .clone()
+          .subtract(1, "weeks")
+          .startOf("week");
+        const endOfLastWeek = now.clone().subtract(1, "weeks").endOf("week");
+        return apiData.filter((item) =>
+          moment(item.sale_booking_date).isBetween(
+            startOfLastWeek,
+            endOfLastWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "currentMonth":
+        const startOfMonth = now.clone().startOf("month");
+        const endOfMonth = now.clone().endOf("month");
+        return apiData.filter((item) =>
+          moment(item.sale_booking_date).isBetween(
+            startOfMonth,
+            endOfMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "nextMonth":
+        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+        return apiData.filter((item) =>
+          moment(item.sale_booking_date).isBetween(
+            startOfNextMonth,
+            endOfNextMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "currentQuarter":
+        const quarterStart = moment().startOf("quarter");
+        const quarterEnd = moment().endOf("quarter");
+        return apiData.filter((item) =>
+          moment(item.sale_booking_date).isBetween(
+            quarterStart,
+            quarterEnd,
+            "day",
+            "[]"
+          )
+        );
+      default:
+        return apiData; // No filter applied
+    }
+  };
   return (
-    <>
-      <FormContainer
-        mainTitle="Sale Booking "
-        link="/admin/incentive-payment-list"
-        buttonAccess={
-          contextData &&
-          contextData[2] &&
-          contextData[2].insert_value === 1 &&
-          false
-        }
-        uniqueCustomerCount={uniqueCustomerCount}
-        baseAmountTotal={baseAmountTotal}
-        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
-        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
-        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
-        saleBookingClosePaymentAdditionalTitles={true}
-      />
-      {/* Same Sales Executive Dialog Box */}
-
-      <Dialog
-        open={sameSalesExecutiveDialog}
-        onClose={handleCloseSameSalesExecutive}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Sales Executive</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameSalesExecutive}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
+    <div className="master-card-css ">
+      <div className="action_heading w-100">
+        <div
+          className="action_title "
+          style={{
+            position: "fixed",
+            zIndex: "500",
+            background: "var(--body-bg)",
+            width: "calc(100% - 379px)",
           }}
         >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameSalesExecutiveData}
-            columns={sameSalesExecutivecolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      {/* Unique Sales Executive Dialog Box */}
-      <Dialog
-        open={uniqueSalesExecutiveDialog}
-        onClose={handleCloseUniquesalesExecutive}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Sales Executive</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniquesalesExecutive}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={uniqueSalesExecutiveData}
-            columns={uniqueSalesExecutivecolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      {/* Same Customer Dialog */}
-      <Dialog
-        open={sameCustomerDialog}
-        onClose={handleCloseSameCustomer}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Customers</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameCustomer}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameCustomerData}
-            columns={sameCustomercolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => sameCustomerData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-
-      {/* Unique Customer Dialog Box */}
-      <Dialog
-        open={uniqueCustomerDialog}
-        onClose={handleCloseUniqueCustomer}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Customers</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniqueCustomer}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={uniqueCustomerData}
-            columns={uniqueCustomercolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => uniqueCustomerData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-      <div className="card body-padding">
-        <div className="row">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Customer Name</label>
-              <Autocomplete
-                value={customerName}
-                onChange={(event, newValue) => setCustomerName(newValue)}
-                options={Array.from(
-                  new Set(datas.map((option) => option.cust_name))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Customer Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Sales Executive Name</label>
-              <Autocomplete
-                value={salesExecutive}
-                onChange={(event, newValue) => setSalesExecutive(newValue)}
-                options={Array.from(
-                  new Set(datas.map((option) => option.sales_exe_name))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Sales Executive Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>From Date</label>
-              <input
-                value={fromDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>To Date</label>
-              <input
-                value={toDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => {
-                  setToDate(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Campaign Amount Filter</label>
-              <select
-                value={campaignAmountFilter}
-                className="form-control"
-                onChange={(e) => setCampaignAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Campaign Amount</label>
-              <input
-                value={campaignAmountField}
-                type="number"
-                placeholder="Request Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setcampaignAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-1 mt-4 me-2">
-            <Button variant="contained" onClick={handleAllFilters}>
-              <i className="fas fa-search"></i> Search
-            </Button>
-          </div>
-          <div className="col-md-1 mt-4">
-            <Button variant="contained" onClick={handleClearAllFilter}>
-              Clear
-            </Button>
-          </div>
-        </div>
-      </div>
-      <button className="btn btn-success" onClick={open}>
-        Open
-      </button>
-      <button className="btn btn-warning" onClick={close}>
-        Closed
-      </button>
-      <button className="btn btn-primary" onClick={aboutClose}>
-        About to close
-      </button>
-
-      <div className="card">
-        <div className="data_tbl table-responsive">
-          <DataTable
-            title="Sale Booking"
-            columns={columns}
-            data={filterData}
-            fixedHeader
-            // pagination
-            fixedHeaderScrollHeight="64vh"
-            highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <FormContainer
+            mainTitle="Sale Booking "
+            link="/admin/incentive-payment-list"
+            buttonAccess={
+              contextData &&
+              contextData[2] &&
+              contextData[2].insert_value === 1 &&
+              false
             }
+            uniqueCustomerCount={uniqueCustomerCount}
+            baseAmountTotal={baseAmountTotal}
+            handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+            handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
+            uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
+            saleBookingClosePaymentAdditionalTitles={true}
           />
         </div>
       </div>
-    </>
+      <div className="master-card-css p-1" style={{ marginTop: "114px" }}>
+        {/* Same Sales Executive Dialog Box */}
+
+        <Dialog
+          open={sameSalesExecutiveDialog}
+          onClose={handleCloseSameSalesExecutive}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Same Sales Executive</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseSameSalesExecutive}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={sameSalesExecutiveData}
+              columns={sameSalesExecutivecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+        {/* Unique Sales Executive Dialog Box */}
+        <Dialog
+          open={uniqueSalesExecutiveDialog}
+          onClose={handleCloseUniquesalesExecutive}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Unique Sales Executive</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseUniquesalesExecutive}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={uniqueSalesExecutiveData}
+              columns={uniqueSalesExecutivecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+        {/* Same Customer Dialog */}
+        <Dialog
+          open={sameCustomerDialog}
+          onClose={handleCloseSameCustomer}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Same Customers</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseSameCustomer}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={sameCustomerData}
+              columns={sameCustomercolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameCustomerData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Unique Customer Dialog Box */}
+        <Dialog
+          open={uniqueCustomerDialog}
+          onClose={handleCloseUniqueCustomer}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Unique Customers</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseUniqueCustomer}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={uniqueCustomerData}
+              columns={uniqueCustomercolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueCustomerData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+        <div className="card body-padding">
+          <div className="row">
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Customer Name</label>
+                <Autocomplete
+                  value={customerName}
+                  onChange={(event, newValue) => setCustomerName(newValue)}
+                  options={Array.from(
+                    new Set(datas.map((option) => option.cust_name))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Customer Name"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Sales Executive Name</label>
+                <Autocomplete
+                  value={salesExecutive}
+                  onChange={(event, newValue) => setSalesExecutive(newValue)}
+                  options={Array.from(
+                    new Set(datas.map((option) => option.sales_exe_name))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Sales Executive Name"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>From Date</label>
+                <input
+                  value={fromDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>To Date</label>
+                <input
+                  value={toDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => {
+                    setToDate(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Campaign Amount Filter</label>
+                <select
+                  value={campaignAmountFilter}
+                  className="form-control"
+                  onChange={(e) => setCampaignAmountFilter(e.target.value)}
+                >
+                  <option value="">Select Amount</option>
+                  <option value="greaterThan">Greater Than</option>
+                  <option value="lessThan">Less Than</option>
+                  <option value="equalTo">Equal To</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Campaign Amount</label>
+                <input
+                  value={campaignAmountField}
+                  type="number"
+                  placeholder="Request Amount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setcampaignAmountField(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-1 mt-4 me-2">
+              <Button variant="contained" onClick={handleAllFilters}>
+                <i className="fas fa-search"></i> Search
+              </Button>
+            </div>
+            <div className="col-md-1 mt-4">
+              <Button variant="contained" onClick={handleClearAllFilter}>
+                Clear
+              </Button>
+            </div>
+
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>Select Date Range:</label>
+                <select
+                  className="form-control"
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                >
+                  <option value="">All</option>
+                  <option value="last7Days">Last 7 Days</option>
+                  <option value="last30Days">Last 30 Days</option>
+                  <option value="thisWeek">This Week</option>
+                  <option value="lastWeek">Last Week</option>
+                  <option value="currentMonth">Current Month</option>
+                  <option value="nextMonth">Next Month</option>
+                  <option value="currentQuarter">This Quarter</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button className="btn btn-success" onClick={open}>
+          Open
+        </button>
+        <button className="btn btn-warning" onClick={close}>
+          Closed
+        </button>
+        <button className="btn btn-primary" onClick={aboutClose}>
+          About to close
+        </button>
+
+        <div className="card">
+          <div className="data_tbl table-responsive">
+            <DataTable
+              title="Sale Booking"
+              columns={columns}
+              data={filterData}
+              fixedHeader
+              // pagination
+              fixedHeaderScrollHeight="64vh"
+              highlightOnHover
+              subHeader
+              subHeaderComponent={
+                <input
+                  type="text"
+                  placeholder="Search here"
+                  className="w-50 form-control"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              }
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -39,10 +39,9 @@
 
 /* sidebar menu color */
 .asset_chart {
-  
   display: flex;
   justify-content: space-evenly;
-  gap:10px;
+  gap: 10px;
   align-items: center;
 }
 
@@ -51,8 +50,7 @@
   padding: 10px;
 }
 
-
- .nav-item.active .nav-link {
+.nav-item.active .nav-link {
   color: #6f737c !important;
   background-image: none !important;
   transition: none !important;
@@ -163,7 +161,7 @@ i.bi {
   padding: 10px 18px;
   margin: 0px 0px 25px; */
   position: relative;
- 
+
   display: flex;
   flex-direction: row;
 
@@ -236,7 +234,7 @@ i.bi {
 .additional-titles h2 a {
   color: #007bff;
 }
-.form_heading_action{
+.form_heading_action {
   z-index: 1;
 }
 .form_heading_action button {
@@ -1082,7 +1080,7 @@ label.checkbox-inline.propscss {
   height: 100%;
   border-radius: 12px;
   /* border: 1px solid var(--border); */
-  
+
   gap: 16px;
   padding: 20px;
 }
@@ -1097,8 +1095,8 @@ label.checkbox-inline.propscss {
   font-weight: 500;
   text-transform: uppercase;
   font-size: 12px;
-                /* font-weight: 500; */
-                margin: 0;
+  /* font-weight: 500; */
+  margin: 0;
 }
 
 .timeline_slideItem h2 span {
@@ -1106,7 +1104,7 @@ label.checkbox-inline.propscss {
   line-height: 30px;
   font-weight: 500;
 }
-.timeline_slideItem h4{
+.timeline_slideItem h4 {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1126,7 +1124,6 @@ label.checkbox-inline.propscss {
   display: flex;
   align-items: center;
   gap: 0px 6px;
- 
 }
 
 .timeline_slideItem h3 span {
@@ -1301,11 +1298,12 @@ label.checkbox-inline.propscss {
   font-size: 16px;
   list-style: 22px;
 }
-.master-card-css{
+.master-card-css {
   display: flex;
   flex-direction: column;
   gap: 16px;
   padding-bottom: 20px;
+  position: relative;
 }
 .userSalary_modal h3 {
   color: var(--gray-800);
@@ -1315,36 +1313,35 @@ label.checkbox-inline.propscss {
   margin: 0px 0px 4px;
 }
 .css-ptkaw2-MuiDataGrid-root {
-  border-radius: 15px!important;
+  border-radius: 15px !important;
 }
-.css-wop1k0-MuiDataGrid-footerContainer{
+.css-wop1k0-MuiDataGrid-footerContainer {
   background-color: var(--body-bg);
   border-radius: 0 0 15px 15px !important;
 }
-.css-1iyq7zh-MuiDataGrid-columnHeaders{
+.css-1iyq7zh-MuiDataGrid-columnHeaders {
   background-color: var(--body-bg);
-  border-radius:14px 12px 0 0 !important; 
+  border-radius: 14px 12px 0 0 !important;
 }
-.css-128fb87-MuiDataGrid-toolbarContainer{
+.css-128fb87-MuiDataGrid-toolbarContainer {
   background-color: var(--body-bg);
-  border-radius:15px 15px 0 0; 
+  border-radius: 15px 15px 0 0;
 }
 .MuiDataGrid-row--editing .MuiDataGrid-cell--editable {
   background: rgb(95 69 255 / 20%) !important;
   border-right: 1px solid rgb(95 69 255 / 20%) !important;
 }
-.MuiDataGrid-row:nth-of-type(even){
+.MuiDataGrid-row:nth-of-type(even) {
   background-color: var(--body-bg);
 }
 .css-5wly58-MuiDataGrid-root .MuiDataGrid-columnHeader--moving {
   background-color: transparent !important;
 }
-.css-1kwdphh-MuiDataGrid-virtualScrollerContent{
-  min-height: 45px!important;
+.css-1kwdphh-MuiDataGrid-virtualScrollerContent {
+  min-height: 45px !important;
 }
-.custom-btn-2{
+.custom-btn-2 {
   pointer-events: none;
-  
 }
 .form-group {
   position: relative;

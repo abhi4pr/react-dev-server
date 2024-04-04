@@ -13,6 +13,8 @@ const FormContainer = ({
   paidRequestCount,
   totalRequestAmount,
   handleOpenUniqueVendorClick,
+  uniqueCustomerInvoiceCount,
+  uniqueSalesExecutiveInvoiceCount,
   link,
   buttonAccess,
   newbutton,
@@ -20,11 +22,14 @@ const FormContainer = ({
   newbuttonName,
   children,
   handleSubmit,
+  withInvoiceCount,
+  withoutInvoiceCount,
   handleOpenUniqueCustomerClick,
   submitButton = true,
+  activeAccordionIndex,
   addNewButtonName,
   accordionButtons = [],
-  activeAccordionIndex,
+  accIndex,
   onAccordionButtonClick,
   refundAmountTotal,
   balanceAmountTotal,
@@ -40,6 +45,8 @@ const FormContainer = ({
   pendingApprovalAdditionalTitles = false,
   includeAdditionalTitles = false,
   paymentDoneAdditionalTitles = false,
+  gstHoldAdditionalTitles = false,
+  tdsDeductionAdditionalTitles = false,
   allTransactionAdditionalTitles = false,
   discardAdditionalTitles = false,
   dashboardAdditionalTitles = false,
@@ -85,12 +92,44 @@ const FormContainer = ({
               <h2>
                 Pending Request : <a href="#"> {pendingRequestCount}</a>
               </h2>
-              <h2>
+              {/* <h2>
                 Reminder : <a href="#">{pendingpaymentRemainder}</a>
-              </h2>
+              </h2> */}
             </div>
           )}
           {paymentDoneAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueVendorClick}>
+                Unique Vendor : <a href="#">{uniqueVendorCount}</a>
+              </h2>
+              <h2>
+                Payment Done Amount : <a href="#"> {totalRequestAmount}</a>
+              </h2>
+              <h2>
+                Payment Done : <a href="#"> {pendingRequestCount}</a>
+              </h2>
+              <h2>
+                With Invoice Count : <a href="#"> {withInvoiceCount}</a>
+              </h2>
+              <h2>
+                Without Invoice Count : <a href="#"> {withoutInvoiceCount}</a>
+              </h2>
+            </div>
+          )}
+          {gstHoldAdditionalTitles && (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueVendorClick}>
+                Unique Vendor : <a href="#">{uniqueVendorCount}</a>
+              </h2>
+              <h2>
+                Payment Done Amount : <a href="#"> {totalRequestAmount}</a>
+              </h2>
+              <h2>
+                Payment Done : <a href="#"> {pendingRequestCount}</a>
+              </h2>
+            </div>
+          )}
+          {tdsDeductionAdditionalTitles && (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueVendorClick}>
                 Unique Vendor : <a href="#">{uniqueVendorCount}</a>
@@ -224,7 +263,7 @@ const FormContainer = ({
               </h2>
             </div>
           )}
-          {pendingInvoicePaymentAdditionalTitles && (
+          {pendingInvoicePaymentAdditionalTitles && accIndex === 0 ? (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueSalesExecutive}>
                 Unique Sales Executive :{" "}
@@ -237,6 +276,22 @@ const FormContainer = ({
                 Base Amount : <a href="#">{baseAmountTotal}</a>
               </h2>
             </div>
+          ) : (
+            pendingInvoicePaymentAdditionalTitles && (
+              <div className="additional-titles ">
+                <h2 onClick={handleOpenUniqueCustomerClick}>
+                  Unique Customers :{" "}
+                  <a href="#">{uniqueCustomerInvoiceCount}</a>
+                </h2>
+                <h2 onClick={handleOpenUniqueSalesExecutive}>
+                  Unique Sales Executive :{" "}
+                  <a href="#">{uniqueSalesExecutiveInvoiceCount}</a>
+                </h2>
+                <h2>
+                  Campaign Amount : <a href="#">{campaignAmountTotal}</a>
+                </h2>
+              </div>
+            )
           )}
           {invoiceCreatedPaymentAdditionalTitles && (
             <div className="additional-titles ">

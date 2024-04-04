@@ -89,7 +89,7 @@ export default function TaskPending() {
     // setUniqueVendorCount(uniqueVendors.size);
     const uvData = [];
     uniqueVendors.forEach((vendorName) => {
-      const vendorRows = nodeData.filter(
+      const vendorRows = filterData.filter(
         (item) => item.vendor_name === vendorName
       );
       uvData.push(vendorRows[0]);
@@ -107,6 +107,7 @@ export default function TaskPending() {
     setUniqueVendorData(uvData);
     setUniqueVendorCount(uniqueCount.length);
   };
+
   // pending data submit
   const handlePendingSubmit = async (id, type) => {
     console.log(id, "ID");
@@ -116,21 +117,21 @@ export default function TaskPending() {
       // Construct payload based on the dialogType and other factors
       if (type === "Zoho") {
         payload = {
-          request_id: parseFloat(id),
+          _id: parseFloat(id),
           zoho_remark: remarkData,
           zoho_date: dateData,
           zoho_status: "Done",
         };
       } else if (type === "GST") {
         payload = {
-          request_id: parseFloat(id),
+          _id: parseFloat(id),
           gst_remark: remarkData,
           gst_date: dateData,
           gst_status: "Done",
         };
       } else if (type === "TDS") {
         payload = {
-          request_id: parseFloat(id),
+          _id: parseFloat(id),
           tds_remark: remarkData,
           tds_date: dateData,
           tds_status: "Done",
@@ -154,6 +155,7 @@ export default function TaskPending() {
       console.error("Error:", error);
     }
   };
+  console.log(filterData, "filterData >>>> Pending");
   // ========================
   useEffect(() => {
     callApi();
@@ -161,7 +163,7 @@ export default function TaskPending() {
 
   useEffect(() => {
     handleUniqueVendor();
-  }, [activeAccordionIndex, filterData]);
+  }, [filterData, activeAccordionIndex]);
 
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
@@ -197,23 +199,23 @@ export default function TaskPending() {
   );
   // ==============================================================
   //iterate for totalAmount of same name venders :-
-  const vendorAmounts = [];
-  uniqueVendorData.forEach((item) => {
-    const vendorName = item.vendor_name;
-    const requestAmount = item.request_amount;
+  // const vendorAmounts = [];
+  // uniqueVendorData.forEach((item) => {
+  //   const vendorName = item.vendor_name;
+  //   const requestAmount = item.request_amount;
 
-    if (vendorAmounts[vendorName]) {
-      vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
-    } else {
-      vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
-    }
-  });
+  //   if (vendorAmounts[vendorName]) {
+  //     vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
+  //   } else {
+  //     vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
+  //   }
+  // });
 
-  // calculate the total amount for vendors with the same name
-  let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
-    (total, amount) => total + amount,
-    0
-  );
+  // // calculate the total amount for vendors with the same name
+  // let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
+  //   (total, amount) => total + amount,
+  //   0
+  // );
   // ================================================================
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
@@ -293,11 +295,6 @@ export default function TaskPending() {
     const sameNameVendors = data.filter(
       (item) => item.vendor_name === vendorName
     );
-    // Calculate the total amount for vendors with the same name
-    // const totalAmount = sameNameVendors.reduce(
-    //   (total, item) => total + item.request_amount,
-    //   0
-    // );
 
     // Set the selected vendor data including the vendor name, data, and total amount
     setSameVendorData(sameNameVendors);
@@ -706,7 +703,7 @@ export default function TaskPending() {
             style={{ cursor: "pointer", marginRight: "20px" }}
             onClick={() => {
               handleOpenPendingClick(
-                params.row.request_id,
+                params.row._id,
                 params.row.request_date
               );
             }}
@@ -1036,6 +1033,7 @@ export default function TaskPending() {
       },
     },
   ];
+
   return (
     <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
       <FormContainer

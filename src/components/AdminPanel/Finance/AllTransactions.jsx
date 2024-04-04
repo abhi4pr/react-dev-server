@@ -19,6 +19,7 @@ import ImageView from "./ImageView";
 import pdfImg from "./pdf-file.png";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import moment from "moment";
 
 const AllTransactions = () => {
   const { toastAlert } = useGlobalContext();
@@ -44,9 +45,72 @@ const AllTransactions = () => {
   const [uniqueCustomerData, setUniqueCustomerData] = useState([]);
   const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
   const [sameCustomerData, setSameCustomerData] = useState([]);
+  const [dateFilter, setDateFilter] = useState("");
+
   // const [priorityFilter, setPriorityFilter] = useState("");
   // const [requestAmountFilter, setRequestAmountFilter] = useState("");
   // const [requestedAmountField, setRequestedAmountField] = useState("");
+
+  function getData() {
+    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
+    axios.get(baseUrl + "get_all_php_finance_data").then((res) => {
+      setData(res.data.data);
+      setFilterData(res.data.data);
+      const custData = res.data.data;
+      const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
+      setUniqueCustomerCount(uniqueCustomers.size);
+      const uniqueCustomerData = Array.from(uniqueCustomers).map(
+        (customerName) => {
+          return custData.find((item) => item.cust_name === customerName);
+        }
+      );
+      setUniqueCustomerData(uniqueCustomerData);
+
+      const dateFilterData = filterDataBasedOnSelection(res.data.data);
+      setFilterData(dateFilterData);
+    });
+
+    axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
+      setPaymetMethod(res.data.data);
+      // let x =res.data.data.map(e=>{
+      //   setPaymetMethod(prev=>[...prev,{payment_type:e.payment_type}])
+      // })
+      // console.log(res.data.data.map(e=>{
+      //  return e.payment_type})
+      // )
+    });
+  }
+  function convertDateToDDMMYYYY(dateString) {
+    if (String(dateString).startsWith("0000-00-00")) {
+      return " ";
+    }
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
+    const year = date.getFullYear();
+
+    if (day == "NaN" || month == "NaN" || year == "NaN") {
+      return " ";
+    } else {
+      return `${day}/${month}/${year}`;
+    }
+  }
+
+  const handleCopyDetail = (detail) => {
+    navigator.clipboard.writeText(detail);
+    toastAlert("Detail copied");
+  };
+
+  useEffect(() => {
+    getData();
+  }, [dateFilter]);
+
+  useEffect(() => {
+    const result = datas.filter((d) => {
+      return d.assetsName?.toLowerCase().match(search.toLowerCase());
+    });
+    setFilterData(result);
+  }, [search]);
 
   const handleFilter = () => {
     const result = datas
@@ -108,6 +172,15 @@ const AllTransactions = () => {
       });
 
     setFilterData(result);
+
+    const uniqueCustomers = new Set(result.map((item) => item.cust_name));
+    setUniqueCustomerCount(uniqueCustomers.size);
+    const uniqueCustomerData = Array.from(uniqueCustomers).map(
+      (customerName) => {
+        return result.find((item) => item.cust_name === customerName);
+      }
+    );
+    setUniqueCustomerData(uniqueCustomerData);
   };
 
   const handleClear = () => {
@@ -120,65 +193,15 @@ const AllTransactions = () => {
     setFromDate("");
     setToDate("");
     setFilterData(datas);
+
+    const uniqueCustomers = new Set(datas.map((item) => item.cust_name));
+    setUniqueCustomerCount(uniqueCustomers.size);
+    const uniqueCustomerData = Array.from(uniqueCustomers).map(
+      (customerName) => {
+        return result.find((item) => item.cust_name === customerName);
+      }
+    );
   };
-
-  function getData() {
-    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
-    axios.get(baseUrl + "get_all_php_finance_data").then((res) => {
-      setData(res.data.data);
-      setFilterData(res.data.data);
-      const custData = res.data.data;
-      const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
-      setUniqueCustomerCount(uniqueCustomers.size);
-      const uniqueCustomerData = Array.from(uniqueCustomers).map(
-        (customerName) => {
-          return custData.find((item) => item.cust_name === customerName);
-        }
-      );
-      setUniqueCustomerData(uniqueCustomerData);
-    });
-
-    axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
-      setPaymetMethod(res.data.data);
-      // let x =res.data.data.map(e=>{
-      //   setPaymetMethod(prev=>[...prev,{payment_type:e.payment_type}])
-      // })
-      // console.log(res.data.data.map(e=>{
-      //  return e.payment_type})
-      // )
-    });
-  }
-  function convertDateToDDMMYYYY(dateString) {
-    if (String(dateString).startsWith("0000-00-00")) {
-      return " ";
-    }
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
-    const year = date.getFullYear();
-
-    if (day == "NaN" || month == "NaN" || year == "NaN") {
-      return " ";
-    } else {
-      return `${day}/${month}/${year}`;
-    }
-  }
-
-  const handleCopyDetail = (detail) => {
-    navigator.clipboard.writeText(detail);
-    toastAlert("Detail copied");
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  useEffect(() => {
-    const result = datas.filter((d) => {
-      return d.assetsName?.toLowerCase().match(search.toLowerCase());
-    });
-    setFilterData(result);
-  }, [search]);
 
   const handleOpenUniqueCustomerClick = () => {
     setUniqueCustomerDialog(true);
@@ -741,422 +764,543 @@ const AllTransactions = () => {
     const filtered = datas.filter((item) => item.payment_approval_status === 2);
     setFilterData(filtered);
   };
-  return (
-    <>
-      <FormContainer
-        mainTitle="Dashboard"
-        link="/admin/finance-alltransaction"
-        buttonAccess={
-          contextData &&
-          contextData[2] &&
-          contextData[2].insert_value === 1 &&
-          false
-        }
-        uniqueCustomerCount={uniqueCustomerCount}
-        totalRequestAmount={requestedAmountTotal}
-        pendingCount={pendingCount}
-        approvedCount={approvedCount}
-        rejectedCount={rejectedCount}
-        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
-        dashboardAdditionalTitles={true}
-      />
-      {/* Same Customer Dialog */}
-      <Dialog
-        open={sameCustomerDialog}
-        onClose={handleCloseSameCustomer}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Vendors</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameCustomer}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameCustomerData}
-            columns={sameCustomerColumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => sameCustomerData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
 
-      {/* Unique Customer Dialog Box */}
-      <Dialog
-        open={uniqueCustomerDialog}
-        onClose={handleCloseUniqueCustomer}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Customers</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniqueCustomer}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
+  console.log(filterData, "filterData >> all transaction >>>>>>");
+  const filterDataBasedOnSelection = (apiData) => {
+    const now = moment();
+    switch (dateFilter) {
+      case "last7Days":
+        return apiData.filter((item) =>
+          moment(item.payment_date).isBetween(
+            now.clone().subtract(7, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "last30Days":
+        return apiData.filter((item) =>
+          moment(item.payment_date).isBetween(
+            now.clone().subtract(30, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "thisWeek":
+        const startOfWeek = now.clone().startOf("week");
+        const endOfWeek = now.clone().endOf("week");
+        return apiData.filter((item) =>
+          moment(item.payment_date).isBetween(
+            startOfWeek,
+            endOfWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "lastWeek":
+        const startOfLastWeek = now
+          .clone()
+          .subtract(1, "weeks")
+          .startOf("week");
+        const endOfLastWeek = now.clone().subtract(1, "weeks").endOf("week");
+        return apiData.filter((item) =>
+          moment(item.payment_date).isBetween(
+            startOfLastWeek,
+            endOfLastWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "currentMonth":
+        const startOfMonth = now.clone().startOf("month");
+        const endOfMonth = now.clone().endOf("month");
+        return apiData.filter((item) =>
+          moment(item.payment_date).isBetween(
+            startOfMonth,
+            endOfMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "nextMonth":
+        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+        return apiData.filter((item) =>
+          moment(item.payment_date).isBetween(
+            startOfNextMonth,
+            endOfNextMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "currentQuarter":
+        const quarterStart = moment().startOf("quarter");
+        const quarterEnd = moment().endOf("quarter");
+        return apiData.filter((item) =>
+          moment(item.payment_date).isBetween(
+            quarterStart,
+            quarterEnd,
+            "day",
+            "[]"
+          )
+        );
+      default:
+        return apiData; // No filter applied
+    }
+  };
+  return (
+    <div className="master-card-css ">
+      <div className="action_heading w-100">
+        <div
+          className="action_title "
+          style={{
+            position: "fixed",
+            zIndex: "500",
+            background: "var(--body-bg)",
+            width: "calc(100% - 379px)",
           }}
         >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          <FormContainer
+            mainTitle="Dashboard"
+            link="/admin/finance-alltransaction"
+            buttonAccess={
+              contextData &&
+              contextData[2] &&
+              contextData[2].insert_value === 1 &&
+              false
+            }
+            uniqueCustomerCount={uniqueCustomerCount}
+            totalRequestAmount={requestedAmountTotal}
+            pendingCount={pendingCount}
+            approvedCount={approvedCount}
+            rejectedCount={rejectedCount}
+            handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+            dashboardAdditionalTitles={true}
+          />
+        </div>
+      </div>
+      <div className="master-card-css p-1" style={{ marginTop: "120px" }}>
+        {/* Same Customer Dialog */}
+        <Dialog
+          open={sameCustomerDialog}
+          onClose={handleCloseSameCustomer}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
         >
-          <DataGrid
-            rows={uniqueCustomerData}
-            columns={uniqueCustomerColumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
+          <DialogTitle>Same Vendors</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseSameCustomer}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
             }}
-            getRowId={(row) => row._id}
-          />
-        </DialogContent>
-      </Dialog>
-      <div className="row ms-2 me-1">
-        <div className="card col-4  ">
-          <div className="card-header fs-6 lead">Pending</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total Requested Amount :- ₹{" "}
-              {datas.length > 0
-                ? datas
-                    .filter((item) => item.payment_approval_status == 0)
-                    .reduce((total, currentItem) => {
-                      return total + currentItem.payment_amount_show * 1;
-                    }, 0)
-                : ""}
-            </p>
-            <p className="fs-6 lead ">
-              {
-                <Link className="link-primary" onClick={handlePendingClick}>
-                  Click Here
-                </Link>
-              }
-            </p>
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={sameCustomerData}
+              columns={sameCustomerColumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameCustomerData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Unique Customer Dialog Box */}
+        <Dialog
+          open={uniqueCustomerDialog}
+          onClose={handleCloseUniqueCustomer}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Unique Customers</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseUniqueCustomer}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={uniqueCustomerData}
+              columns={uniqueCustomerColumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => row._id}
+            />
+          </DialogContent>
+        </Dialog>
+        <div className="row ms-2 me-1">
+          <div className="card col-4  ">
+            <div className="card-header fs-6 lead">Pending</div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                Total Requested Amount :- ₹{" "}
+                {datas.length > 0
+                  ? datas
+                      .filter((item) => item.payment_approval_status == 0)
+                      .reduce((total, currentItem) => {
+                        return total + currentItem.payment_amount_show * 1;
+                      }, 0)
+                  : ""}
+              </p>
+              <p className="fs-6 lead ">
+                {
+                  <Link className="link-primary" onClick={handlePendingClick}>
+                    Click Here
+                  </Link>
+                }
+              </p>
+            </div>
+          </div>
+          <div className="card col-4  ">
+            <div className="card-header fs-6 lead">Approved</div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                Total Approved Amount :- ₹{" "}
+                {datas.length > 0
+                  ? datas
+                      .filter((item) => item.payment_approval_status == 1)
+                      .reduce((total, currentItem) => {
+                        return total + currentItem.payment_amount_show * 1;
+                      }, 0)
+                  : ""}
+              </p>
+              <p className="fs-6 lead ">
+                {
+                  <Link className="link-primary" onClick={handleApprovedClick}>
+                    Click Here
+                  </Link>
+                }
+              </p>
+            </div>
+          </div>
+          <div className="card col-4 ">
+            <div className="card-header fs-6 lead">Rejected</div>
+            <div className="card-body">
+              <p className="fs-6 lead ">
+                Total Rejected Amount :- ₹{" "}
+                {datas.length > 0
+                  ? datas
+                      .filter((item) => item.payment_approval_status == 2)
+                      .reduce((total, currentItem) => {
+                        return total + currentItem.payment_amount_show * 1;
+                      }, 0)
+                  : ""}
+              </p>
+              <p className="fs-6 lead ">
+                {
+                  <Link className="link-primary" onClick={handleRejectedClick}>
+                    Click Here
+                  </Link>
+                }
+              </p>
+            </div>
           </div>
         </div>
-        <div className="card col-4  ">
-          <div className="card-header fs-6 lead">Approved</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total Approved Amount :- ₹{" "}
-              {datas.length > 0
-                ? datas
-                    .filter((item) => item.payment_approval_status == 1)
-                    .reduce((total, currentItem) => {
-                      return total + currentItem.payment_amount_show * 1;
-                    }, 0)
-                : ""}
-            </p>
-            <p className="fs-6 lead ">
-              {
-                <Link className="link-primary" onClick={handleApprovedClick}>
-                  Click Here
-                </Link>
-              }
-            </p>
-          </div>
-        </div>
-        <div className="card col-4 ">
-          <div className="card-header fs-6 lead">Rejected</div>
-          <div className="card-body">
-            <p className="fs-6 lead ">
-              Total Rejected Amount :- ₹{" "}
-              {datas.length > 0
-                ? datas
-                    .filter((item) => item.payment_approval_status == 2)
-                    .reduce((total, currentItem) => {
-                      return total + currentItem.payment_amount_show * 1;
-                    }, 0)
-                : ""}
-            </p>
-            <p className="fs-6 lead ">
-              {
-                <Link className="link-primary" onClick={handleRejectedClick}>
-                  Click Here
-                </Link>
-              }
-            </p>
-          </div>
-        </div>
-      </div>
-      <div className="card mt-3">
-        <div className="data_tbl table-responsive">
-          <div className="row ml-2 mt-4 me-3">
-            <div className="col-md-2">
-              <div className="form-group">
-                <label>Requested By</label>
-                <Autocomplete
-                  value={requestedBy}
-                  onChange={(event, newValue) => {
-                    setRequestedBy(newValue);
-                  }}
-                  options={Array.from(
-                    new Set(datas.map((option) => option.user_name))
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="Select Payment Mode"
-                      variant="outlined"
-                      InputProps={{
-                        ...params.InputProps,
-                        className: "form-control", // Apply Bootstrap's form-control class
-                      }}
-                      // Applying inline styles to match Bootstrap's form-control as closely as possible
-                      style={{
-                        borderRadius: "0.25rem",
-                        transition:
-                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                        "&:focus": {
-                          borderColor: "#80bdff",
-                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <div className="col-md-2">
-              <div className="form-group">
-                <label>Customer Name</label>
-                <Autocomplete
-                  value={custName}
-                  onChange={(event, newValue) => {
-                    setCustName(newValue);
-                  }}
-                  options={Array.from(
-                    new Set(datas.map((option) => option.cust_name))
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="Select Payment Mode"
-                      variant="outlined"
-                      InputProps={{
-                        ...params.InputProps,
-                        className: "form-control", // Apply Bootstrap's form-control class
-                      }}
-                      // Applying inline styles to match Bootstrap's form-control as closely as possible
-                      style={{
-                        borderRadius: "0.25rem",
-                        transition:
-                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                        "&:focus": {
-                          borderColor: "#80bdff",
-                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div className="form-group">
-                <label>Payment Amount Filter</label>
-                <select
-                  value={paymentAmountFilter}
-                  className="form-control"
-                  onChange={(e) => setPaymentAmountFilter(e.target.value)}
-                >
-                  <option value="">Select Amount</option>
-                  <option value="greaterThan">Greater Than</option>
-                  <option value="lessThan">Less Than</option>
-                  <option value="equalTo">Equal To</option>
-                </select>
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div className="form-group">
-                <label>Payment Amount</label>
-                <input
-                  value={paymentAmountField}
-                  type="number"
-                  placeholder="Request Amount"
-                  className="form-control"
-                  onChange={(e) => {
-                    setPaymentAmountField(e.target.value);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="col-md-2">
-              <div className="form-group">
-                <label>Payment Mode</label>
-                <Autocomplete
-                  value={paymentMode}
-                  onChange={(event, newValue) => {
-                    setPaymetMode(newValue);
-                  }}
-                  options={Array.from(
-                    new Set(paymetMethod.map((option) => option.payment_type))
-                  )}
-                  getOptionLabel={(option) => (option ? option : "")}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      placeholder="Select Payment Mode"
-                      variant="outlined"
-                      InputProps={{
-                        ...params.InputProps,
-                        className: "form-control", // Apply Bootstrap's form-control class
-                      }}
-                      // Applying inline styles to match Bootstrap's form-control as closely as possible
-                      style={{
-                        borderRadius: "0.25rem",
-                        transition:
-                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                        "&:focus": {
-                          borderColor: "#80bdff",
-                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </div>
-            </div>
-            <div className="col-md-2">
-              <div className="form-group">
-                <label>Status</label>
-                <Autocomplete
-                  value={status?.title}
-                  onChange={(event, newValue) => {
-                    setStatus(newValue);
-                  }}
-                  options={[
-                    { title: "Pending", value: 0 },
-                    { title: "Approved", value: 1 },
-                    { title: "Rejected", value: 2 },
-                  ]}
-                  getOptionLabel={(option) => option.title}
-                  renderInput={(params) => (
-                    <div ref={params.InputProps.ref}>
-                      <input
-                        type="text"
-                        {...params.inputProps}
-                        className="form-control"
-                        placeholder="Select Status"
+        <div className="card mt-3">
+          <div className="data_tbl table-responsive">
+            <div className="row ml-2 mt-4 me-3">
+              <div className="col-md-2">
+                <div className="form-group">
+                  <label>Requested By</label>
+                  <Autocomplete
+                    value={requestedBy}
+                    onChange={(event, newValue) => {
+                      setRequestedBy(newValue);
+                    }}
+                    options={Array.from(
+                      new Set(datas.map((option) => option.user_name))
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Select Payment Mode"
+                        variant="outlined"
+                        InputProps={{
+                          ...params.InputProps,
+                          className: "form-control", // Apply Bootstrap's form-control class
+                        }}
+                        // Applying inline styles to match Bootstrap's form-control as closely as possible
+                        style={{
+                          borderRadius: "0.25rem",
+                          transition:
+                            "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                          "&:focus": {
+                            borderColor: "#80bdff",
+                            boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                          },
+                        }}
                       />
-                    </div>
-                  )}
-                />
+                    )}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="col-md-2">
-              <div className="form-group">
-                <label>From Date</label>
-                <input
-                  value={fromDate}
-                  className="form-control"
-                  type="date"
-                  onChange={(e) => setFromDate(e.target.value)}
-                />
+              <div className="col-md-2">
+                <div className="form-group">
+                  <label>Customer Name</label>
+                  <Autocomplete
+                    value={custName}
+                    onChange={(event, newValue) => {
+                      setCustName(newValue);
+                    }}
+                    options={Array.from(
+                      new Set(datas.map((option) => option.cust_name))
+                    )}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Select Payment Mode"
+                        variant="outlined"
+                        InputProps={{
+                          ...params.InputProps,
+                          className: "form-control", // Apply Bootstrap's form-control class
+                        }}
+                        // Applying inline styles to match Bootstrap's form-control as closely as possible
+                        style={{
+                          borderRadius: "0.25rem",
+                          transition:
+                            "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                          "&:focus": {
+                            borderColor: "#80bdff",
+                            boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="col-md-2">
-              <div className="form-group">
-                <label>To Date</label>
-                <input
-                  value={toDate}
-                  className="form-control"
-                  type="date"
-                  onChange={(e) => setToDate(e.target.value)}
-                />
+              <div className="col-md-3">
+                <div className="form-group">
+                  <label>Payment Amount Filter</label>
+                  <select
+                    value={paymentAmountFilter}
+                    className="form-control"
+                    onChange={(e) => setPaymentAmountFilter(e.target.value)}
+                  >
+                    <option value="">Select Amount</option>
+                    <option value="greaterThan">Greater Than</option>
+                    <option value="lessThan">Less Than</option>
+                    <option value="equalTo">Equal To</option>
+                  </select>
+                </div>
               </div>
-            </div>
-            <div className="col-md-1 mt-4">
-              <div className="form-group">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleFilter}
-                >
-                  {" "}
-                  Search{" "}
-                </Button>
+              <div className="col-md-3">
+                <div className="form-group">
+                  <label>Payment Amount</label>
+                  <input
+                    value={paymentAmountField}
+                    type="number"
+                    placeholder="Request Amount"
+                    className="form-control"
+                    onChange={(e) => {
+                      setPaymentAmountField(e.target.value);
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="col-md-1 mt-4">
-              <div className="form-group">
-                <Button variant="contained" color="error" onClick={handleClear}>
-                  {" "}
-                  Clear{" "}
-                </Button>
+              <div className="col-md-2">
+                <div className="form-group">
+                  <label>Payment Mode</label>
+                  <Autocomplete
+                    value={paymentMode}
+                    onChange={(event, newValue) => {
+                      setPaymetMode(newValue);
+                    }}
+                    options={Array.from(
+                      new Set(paymetMethod.map((option) => option.payment_type))
+                    )}
+                    getOptionLabel={(option) => (option ? option : "")}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        placeholder="Select Payment Mode"
+                        variant="outlined"
+                        InputProps={{
+                          ...params.InputProps,
+                          className: "form-control", // Apply Bootstrap's form-control class
+                        }}
+                        // Applying inline styles to match Bootstrap's form-control as closely as possible
+                        style={{
+                          borderRadius: "0.25rem",
+                          transition:
+                            "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                          "&:focus": {
+                            borderColor: "#80bdff",
+                            boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                          },
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="col-md-2">
+                <div className="form-group">
+                  <label>Status</label>
+                  <Autocomplete
+                    value={status?.title}
+                    onChange={(event, newValue) => {
+                      setStatus(newValue);
+                    }}
+                    options={[
+                      { title: "Pending", value: 0 },
+                      { title: "Approved", value: 1 },
+                      { title: "Rejected", value: 2 },
+                    ]}
+                    getOptionLabel={(option) => option.title}
+                    renderInput={(params) => (
+                      <div ref={params.InputProps.ref}>
+                        <input
+                          type="text"
+                          {...params.inputProps}
+                          className="form-control"
+                          placeholder="Select Status"
+                        />
+                      </div>
+                    )}
+                  />
+                </div>
+              </div>
+              <div className="col-md-2">
+                <div className="form-group">
+                  <label>From Date</label>
+                  <input
+                    value={fromDate}
+                    className="form-control"
+                    type="date"
+                    onChange={(e) => setFromDate(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="col-md-2">
+                <div className="form-group">
+                  <label>To Date</label>
+                  <input
+                    value={toDate}
+                    className="form-control"
+                    type="date"
+                    onChange={(e) => setToDate(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="col-md-1 mt-4">
+                <div className="form-group">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleFilter}
+                  >
+                    {" "}
+                    Search{" "}
+                  </Button>
+                </div>
+              </div>
+              <div className="col-md-1 mt-4">
+                <div className="form-group">
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={handleClear}
+                  >
+                    {" "}
+                    Clear{" "}
+                  </Button>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="form-group">
+                  <label>Select Date Range:</label>
+                  <select
+                    className="form-control"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                  >
+                    <option value="">All</option>
+                    <option value="last7Days">Last 7 Days</option>
+                    <option value="last30Days">Last 30 Days</option>
+                    <option value="thisWeek">This Week</option>
+                    <option value="lastWeek">Last Week</option>
+                    <option value="currentMonth">Current Month</option>
+                    <option value="nextMonth">Next Month</option>
+                    <option value="currentQuarter">This Quarter</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div>
-        <div className="card mt-3" >
-          <DataGrid
-            rows={filterData}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => filterData.indexOf(row)}
-          />
+        <div>
+          <div className="card mt-3" style={{ height: "700px" }}>
+            <DataGrid
+              rows={filterData}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => filterData.indexOf(row)}
+            />
+          </div>
         </div>
+        {viewImgDialog && (
+          <ImageView
+            viewImgSrc={viewImgSrc}
+            setViewImgDialog={setViewImgDialog}
+          />
+        )}
       </div>
-      {viewImgDialog && (
-        <ImageView
-          viewImgSrc={viewImgSrc}
-          setViewImgDialog={setViewImgDialog}
-        />
-      )}
-    </>
+    </div>
   );
 };
 

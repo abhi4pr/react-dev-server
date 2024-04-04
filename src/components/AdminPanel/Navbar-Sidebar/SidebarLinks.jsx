@@ -1096,7 +1096,7 @@ const SidebarLinks = () => {
                       </li>
 
                       <li className="nav-item">
-                        <Link
+                        {/* <Link
                           className="nav-btn nav-link collapsed"
                           data-toggle="collapse"
                           data-target="#collapsInnerThree"
@@ -1104,25 +1104,25 @@ const SidebarLinks = () => {
                           aria-controls="collapsInnerThree"
                         >
                           <i className="bi bi-dash"></i>
-                          <span>Balance Payment Update</span>
-                        </Link>
-                        <div
+                          <span>Outstanding</span>
+                        </Link> */}
+                        {/* <div
                           id="collapsInnerThree"
                           className="collapse"
                           aria-labelledby="headingTwo"
                           // data-parent="#accordionSidebar"
                         >
-                          <div className="internal collapse-inner">
-                            <>
-                              <Link
-                                className="collapse-item"
-                                to="/admin/finance-balancepayment"
-                              >
-                                <i className="bi bi-dot"></i> List
-                              </Link>
-                            </>
-                          </div>
-                        </div>
+                          <div className="internal collapse-inner"> */}
+                        <>
+                          <Link
+                            className="collapse-item"
+                            to="/admin/finance-balancepayment"
+                          >
+                            <i className="bi bi-dot"></i> Outstanding
+                          </Link>
+                        </>
+                        {/* </div>
+                        </div> */}
                       </li>
 
                       <li className="nav-item">
@@ -1156,7 +1156,7 @@ const SidebarLinks = () => {
                         </div>
                       </li>
 
-                      <li className="nav-item">
+                      {/* <li className="nav-item">
                         <Link
                           className="nav-btn nav-link collapsed"
                           data-toggle="collapse"
@@ -1188,11 +1188,24 @@ const SidebarLinks = () => {
                               >
                                 <i className="bi bi-dot"></i> Invoice Created
                               </Link>
-                            </>
+                              {/* <Link
+                                className="collapse-item"
+                                to="/admin/finance-invoice"
+                              >
+                                <i className="bi bi-dot"></i> Invoice
+                              </Link> */}
+                      {/* </>
                           </div>
                         </div>
+                      </li> */}
+                      <li className="nav-item">
+                        <Link
+                          className="collapse-item"
+                          to="/admin/finance-invoice"
+                        >
+                          <i className="bi bi-dot"></i> Invoice
+                        </Link>
                       </li>
-
                       <li className="nav-item">
                         <Link
                           className="nav-btn nav-link collapsed"
@@ -1379,7 +1392,7 @@ const SidebarLinks = () => {
                     className="collapse-item"
                     to="/admin/finance-gst-nongst-incentive-report"
                   >
-                    <i className="bi bi-dot"></i> GST NonGST Incentive Report
+                    <i className="bi bi-dot"></i> Incentive Report
                   </Link>
                 </>
               </li>

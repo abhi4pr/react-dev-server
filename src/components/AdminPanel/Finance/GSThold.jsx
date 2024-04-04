@@ -17,6 +17,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { useGlobalContext } from "../../../Context/Context";
+import moment from "moment";
 
 export default function GSThold() {
   const { toastAlert } = useGlobalContext();
@@ -46,6 +47,7 @@ export default function GSThold() {
   const [row, setRowData] = useState([]);
   const [historyData, setHistoryData] = useState([]);
   const [phpData, setPhpData] = useState([]);
+  const [dateFilter, setDateFilter] = useState("");
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -78,12 +80,15 @@ export default function GSThold() {
           setUniqueVendorCount(uniqueVendors.size);
           const uvData = [];
           uniqueVendors.forEach((vendorName) => {
-            const vendorRows = y.filter(
+            const vendorRows = u.filter(
               (item) => item.vendor_name === vendorName
             );
             uvData.push(vendorRows[0]);
           });
           setUniqueVendorData(uvData);
+
+          const dateFilterData = filterDataBasedOnSelection(u);
+          setFilterData(dateFilterData);
         });
     });
   };
@@ -102,7 +107,7 @@ export default function GSThold() {
 
   useEffect(() => {
     callApi();
-  }, []);
+  }, [dateFilter]);
 
   const convertDateToDDMMYYYY = (date) => {
     const date1 = new Date(date);
@@ -236,12 +241,6 @@ export default function GSThold() {
     const sameNameVendors = data.filter(
       (item) => item.vendor_name === vendorName
     );
-    // Calculate the total amount for vendors with the same name
-    // const totalAmount = sameNameVendors.reduce(
-    //   (total, item) => total + item.request_amount,
-    //   0
-    // );
-
     // Set the selected vendor data including the vendor name, data, and total amount
     setSameVendorData(sameNameVendors);
   };
@@ -308,7 +307,7 @@ export default function GSThold() {
   const handleClosePaymentHistory = () => {
     setPaymentHistory(false);
   };
-
+  console.log(sameVendorData, "same vendor >>");
   // same Vender columns:-
   const sameVenderColumns = [
     {
@@ -377,16 +376,16 @@ export default function GSThold() {
     {
       field: "vendor_name",
       headerName: "Vendor Name",
-      // width: "auto",
       width: 250,
       renderCell: (params) => {
         return (
-          <div
-            style={{ cursor: "pointer" }}
+          <a
+            href="#"
+            style={{ cursor: "pointer", color: "blue" }}
             onClick={() => handleOpenSameVender(params.row.vendor_name)}
           >
             {params.row.vendor_name}
-          </div>
+          </a>
         );
       },
     },
@@ -394,8 +393,17 @@ export default function GSThold() {
       field: "total_amount",
       headerName: "Total Amount",
       width: 150,
-      renderCell: () => {
-        // return <p> &#8377; {totalSameVendorAmount}</p>;
+      renderCell: ({ row }) => {
+        const sameVendor = filterData.filter(
+          (e) => e.vendor_name === row.vendor_name
+        );
+
+        const reduceAmt = sameVendor.reduce(
+          (a, b) => a + 1 * b.request_amount,
+          0
+        );
+
+        return <p> &#8377; {reduceAmt}</p>;
       },
     },
     {
@@ -618,7 +626,9 @@ export default function GSThold() {
       headerName: "Requested Date",
       width: 150,
       renderCell: (params) => {
-        return convertDateToDDMMYYYY(params.row.request_date);
+        new Date(params.row.request_date).toLocaleDateString("en-IN") +
+          " " +
+          new Date(params.row.request_date).toLocaleTimeString("en-IN");
       },
     },
     {
@@ -885,346 +895,465 @@ export default function GSThold() {
     },
   ];
 
+  const filterDataBasedOnSelection = (apiData) => {
+    const now = moment();
+    switch (dateFilter) {
+      case "last7Days":
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            now.clone().subtract(7, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "last30Days":
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            now.clone().subtract(30, "days"),
+            now,
+            "day",
+            "[]"
+          )
+        );
+      case "thisWeek":
+        const startOfWeek = now.clone().startOf("week");
+        const endOfWeek = now.clone().endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfWeek,
+            endOfWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "lastWeek":
+        const startOfLastWeek = now
+          .clone()
+          .subtract(1, "weeks")
+          .startOf("week");
+        const endOfLastWeek = now.clone().subtract(1, "weeks").endOf("week");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfLastWeek,
+            endOfLastWeek,
+            "day",
+            "[]"
+          )
+        );
+      case "currentMonth":
+        const startOfMonth = now.clone().startOf("month");
+        const endOfMonth = now.clone().endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfMonth,
+            endOfMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "nextMonth":
+        const startOfNextMonth = now.clone().add(1, "months").startOf("month");
+        const endOfNextMonth = now.clone().add(1, "months").endOf("month");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            startOfNextMonth,
+            endOfNextMonth,
+            "day",
+            "[]"
+          )
+        );
+      case "currentQuarter":
+        const quarterStart = moment().startOf("quarter");
+        const quarterEnd = moment().endOf("quarter");
+        return apiData.filter((item) =>
+          moment(item.request_date).isBetween(
+            quarterStart,
+            quarterEnd,
+            "day",
+            "[]"
+          )
+        );
+      default:
+        return apiData; // No filter applied
+    }
+  };
+
   return (
-    <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
-      <FormContainer
-        mainTitle="GST Hold"
-        link="/admin/finance-pruchasemanagement-paymentdone"
-        uniqueVendorCount={uniqueVendorCount}
-        totalRequestAmount={totalRequestAmount}
-        pendingRequestCount={pendingRequestCount}
-        handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
-        paymentDoneAdditionalTitles={true}
-      />
-      {/* Same Vendors Dialog */}
-      <Dialog
-        open={sameVendorDialog}
-        onClose={handleCloseSameVender}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Same Vendors</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseSameVender}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
+    <div className="master-card-css ">
+      <div className="action_heading w-100">
+        <div
+          className="action_title "
+          style={{
+            position: "fixed",
+            zIndex: "500",
+            background: "var(--body-bg)",
+            width: "calc(100% - 379px)",
           }}
         >
-          <CloseIcon />
-        </IconButton>
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={sameVendorData}
-            columns={sameVenderColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => sameVendorData.indexOf(row)}
+          <FormContainer
+            mainTitle="GST Hold"
+            link="/admin/finance-pruchasemanagement-paymentdone"
+            uniqueVendorCount={uniqueVendorCount}
+            totalRequestAmount={totalRequestAmount}
+            pendingRequestCount={pendingRequestCount}
+            handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
+            gstHoldAdditionalTitles={true}
           />
-        </DialogContent>
-      </Dialog>
-      {/* Unique Vendor Dialog Box */}
-      <Dialog
-        open={uniqueVenderDialog}
-        onClose={handleCloseUniqueVendor}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Unique Vendors</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseUniqueVendor}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        <DialogContent
-          dividers={true}
-          sx={{ maxHeight: "80vh", overflowY: "auto" }}
-        >
-          <DataGrid
-            rows={uniqueVendorData}
-            columns={uniqueVendorColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => uniqueVendorData.indexOf(row)}
-          />
-        </DialogContent>
-      </Dialog>
-
-      <div className="card body-padding">
-        <div className="row">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Vendor Name</label>
-              <Autocomplete
-                value={vendorName}
-                onChange={(event, newValue) => setVendorName(newValue)}
-                options={Array.from(
-                  new Set(data.map((option) => option.vendor_name))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Vendor Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>From Date</label>
-              <input
-                value={fromDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => setFromDate(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>To Date</label>
-              <input
-                value={toDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => {
-                  setToDate(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Priority</label>
-              <select
-                value={priorityFilter}
-                className="form-control"
-                onChange={(e) => setPriorityFilter(e.target.value)}
-              >
-                <option value="">Select Priority</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-                <option value="High">High</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Request Amount Filter</label>
-              <select
-                value={requestAmountFilter}
-                className="form-control"
-                onChange={(e) => setRequestAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Requested Amount</label>
-              <input
-                value={requestedAmountField}
-                type="number"
-                placeholder="Request Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setRequestedAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-1 mt-4 me-2">
-            <Button variant="contained" onClick={handleDateFilter}>
-              <i className="fas fa-search"></i> Search
-            </Button>
-          </div>
-          <div className="col-md-1 mt-4">
-            <Button variant="contained" onClick={handleClearDateFilter}>
-              Clear
-            </Button>
-          </div>
         </div>
       </div>
-
-      <div className="card">
-        <DataGrid
-          rows={filterData}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
+      <div className="master-card-css p-1" style={{ marginTop: "114px" }}>
+        {/* Same Vendors Dialog */}
+        <Dialog
+          open={sameVendorDialog}
+          onClose={handleCloseSameVender}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
           }}
-          getRowId={(row) => filterData.indexOf(row)}
-        />
+        >
+          <DialogTitle>Same Vendors</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseSameVender}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={sameVendorData}
+              columns={sameVenderColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameVendorData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+        {/* Unique Vendor Dialog Box */}
+        <Dialog
+          open={uniqueVenderDialog}
+          onClose={handleCloseUniqueVendor}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Unique Vendors</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseUniqueVendor}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          <DialogContent
+            dividers={true}
+            sx={{ maxHeight: "80vh", overflowY: "auto" }}
+          >
+            <DataGrid
+              rows={uniqueVendorData}
+              columns={uniqueVendorColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueVendorData.indexOf(row)}
+            />
+          </DialogContent>
+        </Dialog>
+
+        <div className="card body-padding">
+          <div className="row">
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Vendor Name</label>
+                <Autocomplete
+                  value={vendorName}
+                  onChange={(event, newValue) => setVendorName(newValue)}
+                  options={Array.from(
+                    new Set(data.map((option) => option.vendor_name))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Vendor Name"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>From Date</label>
+                <input
+                  value={fromDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>To Date</label>
+                <input
+                  value={toDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => {
+                    setToDate(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Priority</label>
+                <select
+                  value={priorityFilter}
+                  className="form-control"
+                  onChange={(e) => setPriorityFilter(e.target.value)}
+                >
+                  <option value="">Select Priority</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Request Amount Filter</label>
+                <select
+                  value={requestAmountFilter}
+                  className="form-control"
+                  onChange={(e) => setRequestAmountFilter(e.target.value)}
+                >
+                  <option value="">Select Date</option>
+                  <option value="greaterThan">Greater Than</option>
+                  <option value="lessThan">Less Than</option>
+                  <option value="equalTo">Equal To</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="form-group">
+                <label>Requested Amount</label>
+                <input
+                  value={requestedAmountField}
+                  type="number"
+                  placeholder="Request Amount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setRequestedAmountField(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-1 mt-4 me-2">
+              <Button variant="contained" onClick={handleDateFilter}>
+                <i className="fas fa-search"></i> Search
+              </Button>
+            </div>
+            <div className="col-md-1 mt-4">
+              <Button variant="contained" onClick={handleClearDateFilter}>
+                Clear
+              </Button>
+            </div>
+            <div className="col-md-6">
+              <div className="form-group">
+                <label>Select Date Range:</label>
+                <select
+                  className="form-control"
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                >
+                  <option value="">All</option>
+                  <option value="last7Days">Last 7 Days</option>
+                  <option value="last30Days">Last 30 Days</option>
+                  <option value="thisWeek">This Week</option>
+                  <option value="lastWeek">Last Week</option>
+                  <option value="currentMonth">Current Month</option>
+                  <option value="nextMonth">Next Month</option>
+                  <option value="currentQuarter">This Quarter</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          className="card"
+          // style={{ height: "700px" }}
+        >
+          <DataGrid
+            rows={filterData}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => filterData.indexOf(row)}
+          />
+        </div>
+        {openImageDialog && (
+          <ImageView
+            viewImgSrc={viewImgSrc}
+            setViewImgDialog={setOpenImageDialog}
+          />
+        )}
+        {/* Bank Detail */}
+        <Dialog
+          open={bankDetail}
+          onClose={handleCloseBankDetail}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Bank Details</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseBankDetail}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          <TextField
+            id="outlined-multiline-static"
+            multiline
+            value={
+              bankDetailRowData[0]?.payment_details +
+              "\n" +
+              "Mob:" +
+              bankDetailRowData[0]?.mob1 +
+              "\n" +
+              (bankDetailRowData[0]?.email
+                ? "Email:" + bankDetailRowData[0]?.email
+                : "")
+            }
+            rows={4}
+            defaultValue="Default Value"
+            variant="outlined"
+          />
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(
+                bankDetailRowData[0]?.payment_details
+              );
+              toastAlert("Copied to clipboard");
+            }}
+          >
+            Copy
+          </Button>
+        </Dialog>
+        {/* Pyament History */}
+        <Dialog
+          open={paymentHistory}
+          onClose={handleClosePaymentHistory}
+          fullWidth={"md"}
+          maxWidth={"md"}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <DialogTitle>Payment History</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleClosePaymentHistory}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+
+          <DataGrid
+            rows={historyData}
+            columns={paymentDetailColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => row.request_id}
+          />
+        </Dialog>
       </div>
-      {openImageDialog && (
-        <ImageView
-          viewImgSrc={viewImgSrc}
-          setViewImgDialog={setOpenImageDialog}
-        />
-      )}
-      {/* Bank Detail */}
-      <Dialog
-        open={bankDetail}
-        onClose={handleCloseBankDetail}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Bank Details</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseBankDetail}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        <TextField
-          id="outlined-multiline-static"
-          multiline
-          value={
-            bankDetailRowData[0]?.payment_details +
-            "\n" +
-            "Mob:" +
-            bankDetailRowData[0]?.mob1 +
-            "\n" +
-            (bankDetailRowData[0]?.email
-              ? "Email:" + bankDetailRowData[0]?.email
-              : "")
-          }
-          rows={4}
-          defaultValue="Default Value"
-          variant="outlined"
-        />
-        <Button
-          onClick={() => {
-            navigator.clipboard.writeText(
-              bankDetailRowData[0]?.payment_details
-            );
-            toastAlert("Copied to clipboard");
-          }}
-        >
-          Copy
-        </Button>
-      </Dialog>
-      {/* Pyament History */}
-      <Dialog
-        open={paymentHistory}
-        onClose={handleClosePaymentHistory}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Payment History</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleClosePaymentHistory}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        <DataGrid
-          rows={historyData}
-          columns={paymentDetailColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => row.request_id}
-        />
-      </Dialog>
     </div>
   );
 }
