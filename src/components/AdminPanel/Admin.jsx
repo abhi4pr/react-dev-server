@@ -240,11 +240,11 @@ import AccountMaster from "./Customer/AccountMaster";
 import OwnershipMaster from "./Customer/OwnershipMaster";
 import OpsCustomerMast from "./Customer/OpsCustomerMast";
 import OpsCustomerOverview from "./Customer/OpsCustomerOverview";
- import OpsCustomerUpdate from "./Customer/OpsCustomerUpdate";
- import CustomerContOverview from "./Customer/CustomerContOverview";
- import CustomerContMaster from "./Customer/CustomerContMaster";
- import CustomerContUpdate from "./Customer/CustomerContUpdate";
- import OpsDocMast from "./Customer/OpsDocMast";
+import OpsCustomerUpdate from "./Customer/OpsCustomerUpdate";
+import CustomerContOverview from "./Customer/CustomerContOverview";
+import CustomerContMaster from "./Customer/CustomerContMaster";
+import CustomerContUpdate from "./Customer/CustomerContUpdate";
+import OpsDocMast from "./Customer/OpsDocMast";
 
 import VendorType from "./PageMS/VendorType";
 import PageCategory from "./PageMS/PageCategory";
@@ -276,6 +276,10 @@ import OperationContents from "./RegisterCampaign/OperationContents";
 import GstNongstIncentiveReport from "./Finance/GstNongstIncentiveReport";
 import AssetRepairSummary from "../Sim/AssetRepairSummaryHR";
 import VendorSummary from "../Sim/VendorSummary";
+import SalesDashboard from "./Sales/SalesDashboard";
+import SalesServicesOverview from "./Sales/SalesServices/SalesServicesOverview";
+import SalesServicesCreate from "./Sales/SalesServices/SalesServicesCreate";
+import SalesServicesUpdate from "./Sales/SalesServices/SalesServicesUpdate";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1220,21 +1224,35 @@ const Admin = () => {
 
                   <Route path="/customer-master" element={<CustomerMaster />} />
                   <Route path="/account-master" element={<AccountMaster />} />
-                  <Route path="/ownership-master" element={<OwnershipMaster />} />
-                  <Route path="/ops-customer-mast" element={<OpsCustomerMast />} />
-                  <Route path="/ops-customer-overview" element={<OpsCustomerOverview />} />
-                   <Route path="/ops-customer-update/:id" element={<OpsCustomerUpdate />} /> 
-                   <Route path="/customer-cont-overview" element={<CustomerContOverview />} /> 
-                   <Route path="/customer-cont-master" element={<CustomerContMaster />} /> 
-                   <Route path="/customer-cont-update/:id" element={<CustomerContUpdate />} /> 
-                   <Route path="/ops-doc-mast" element={<OpsDocMast />} /> 
-
-
-
-
-
-
-
+                  <Route
+                    path="/ownership-master"
+                    element={<OwnershipMaster />}
+                  />
+                  <Route
+                    path="/ops-customer-mast"
+                    element={<OpsCustomerMast />}
+                  />
+                  <Route
+                    path="/ops-customer-overview"
+                    element={<OpsCustomerOverview />}
+                  />
+                  <Route
+                    path="/ops-customer-update/:id"
+                    element={<OpsCustomerUpdate />}
+                  />
+                  <Route
+                    path="/customer-cont-overview"
+                    element={<CustomerContOverview />}
+                  />
+                  <Route
+                    path="/customer-cont-master"
+                    element={<CustomerContMaster />}
+                  />
+                  <Route
+                    path="/customer-cont-update/:id"
+                    element={<CustomerContUpdate />}
+                  />
+                  <Route path="/ops-doc-mast" element={<OpsDocMast />} />
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />
                   <Route path="/pms-profile-type" element={<ProfileType />} />
@@ -1269,7 +1287,7 @@ const Admin = () => {
                   <Route
                     path="/pms-vendor-group-link"
                     element={<VendorGroupLink />}
-                  /> 
+                  />
                   <Route
                     path="/pms-vendor-group-link/:vendorMast_name"
                     element={<VendorGroupLink />}
@@ -1291,7 +1309,7 @@ const Admin = () => {
                   <Route
                     path="/pms-vendor-page-price-master"
                     element={<VendorPagePriceMaster />}
-                  /> 
+                  />
                   <Route
                     path="/pms-vendor-page-price-master/:vendorMast_name"
                     element={<VendorPagePriceMaster />}
@@ -1305,6 +1323,21 @@ const Admin = () => {
                     element={<EditVendorPagePrice />}
                   />
                   <Route path="/pms-master" element={<PMSmaster />} />
+
+                  {/* Sales Module Routing here  */}
+                  <Route path="/sales-dashboard" element={<SalesDashboard />} />
+                  <Route
+                    path="/create-sales-services"
+                    element={<SalesServicesCreate />}
+                  />
+                  <Route
+                    path="/update-sales-services/:id"
+                    element={<SalesServicesUpdate />}
+                  />
+                  <Route
+                    path="/sales-services-overview"
+                    element={<SalesServicesOverview />}
+                  />
                 </Route>
               </Routes>
             </div>

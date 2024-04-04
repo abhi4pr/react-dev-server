@@ -545,16 +545,18 @@ const SimOverview = () => {
             row.status !== "Stolen" &&
             row.status !== "Lost" && (
               <>
-                <select
-                  className="form-control"
-                  onChange={handleSelectionChange(row)}
-                >
-                  <option>Select...</option>
-                  <option value="send-to-vendor">Send To Vendor</option>
-                  <option value="stolen">Stolen</option>
-                  <option value="lost">Lost</option>
-                  <option value="scrap">Scrap</option>
-                </select>
+                {row.vendor_status == "0" && (
+                  <select
+                    className="form-control"
+                    onChange={handleSelectionChange(row)}
+                  >
+                    <option>Select...</option>
+                    <option value="send-to-vendor">Send To Vendor</option>
+                    <option value="stolen">Stolen</option>
+                    <option value="lost">Lost</option>
+                    <option value="scrap">Scrap</option>
+                  </select>
+                )}
               </>
             )}
         </>
