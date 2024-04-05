@@ -777,7 +777,7 @@ PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       let result;
       try {
         setIsLoadingPlan(true);
-        result = await axios.post(baseUrl + "tempplan", newdata);
+        result = await axios.post(baseUrl + "campaignplan", newdata);
         alert(result.data.message);
         setIsLoadingPlan(false);
         toastAlert("Plan Created SuccessFully");

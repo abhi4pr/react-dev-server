@@ -1,30 +1,31 @@
 import {
   Autocomplete,
-  Button,
   FormControl,
-  Grid,
   TextField,
 } from "@mui/material";
 import axios from "axios";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useGlobalContext } from "../../../../Context/Context";
 import { baseUrl } from "../../../../utils/config";
 import FormContainer from "../../FormContainer";
+import jwtDecode from "jwt-decode";
 
 let options = [];
 let plateformvar = [];
 
-const Experties = () => {
-  const { toastAlert, toastError } = useGlobalContext();
-  const navigate = useNavigate();
+const NewExpertUpdate = () => {
+const navigate=  useNavigate()
+  const { id } = useParams();
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const { userID } = decodedToken;
   const [allPageData, setAllPageData] = useState([]);
   const [getUserData, setGetUserData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedFollower, setSelectedFollower] = useState([]);
   const [pageHealth, setPageHealth] = useState([]);
   const [platform, setPlatfrom] = useState([]);
-  const [expertiesusername, setExpertiesUserName] = useState("");
+  const [singleUserData, setSingleUserData] = useState(null);
 
   const Follower_Count = [
     "<10k",
@@ -47,17 +48,12 @@ const Experties = () => {
     setGetUserData(alluser.data.data);
   };
 
-  useEffect(() => {
-    getPageData();
-    getAllUsers();
-  }, []);
+
 
   const categorySet = () => {
     allPageData?.forEach((data) => {
       if (!options.includes(data.cat_name)) {
-        if (data.cat_name != null) {
-          options.push(data.cat_name);
-        }
+        options.push(data.cat_name);
       }
     });
   };
@@ -71,7 +67,7 @@ const Experties = () => {
   };
 
   useEffect(() => {
-    if (allPageData.length > 0) {
+    if (allPageData?.length > 0) {
       categorySet();
       platformset();
     }
@@ -87,92 +83,116 @@ const Experties = () => {
   const followerChangeHandler = (e, op) => {
     setSelectedFollower(op);
   };
+ 
+
+  const ExsingleData = async () => {
+    const singledata = await axios.get(`${baseUrl}` + `expertise/${id}`);
+    const fetcheData = singledata?.data.data;
+    setSingleUserData(fetcheData);
+    setSelectedCategory(fetcheData?.area_of_expertise?.category);
+    setPlatfrom(fetcheData?.area_of_expertise?.platform);
+    setSelectedFollower(fetcheData?.area_of_expertise?.follower_count);
+  };
+  useEffect(() => {
+    getPageData();
+    getAllUsers();
+    ExsingleData();
+
+  }, []);
+  
 
   const handleSubmit = async () => {
     try {
-      const response = await axios.post(baseUrl + "expertise", {
-        exp_name: expertiesusername.label,
-        user_id: expertiesusername.user_id,
-        area_of_expertise: {
-          category: selectedCategory,
-          follower_count: selectedFollower,
-          platform: platform,
-          pageHealth: pageHealth,
-        },
-      });
-      toastAlert("Experties Created Successfully");
-      navigate("/admin/experties-overview");
-    } catch (error) {
-      if (error.message) {
-        toastError("Fill * Required Data ");
-      }
-    }
+      const res = await axios.put(
+        `${baseUrl}expertise/${singleUserData?.user_id}`,
+        {
+          user_id: singleUserData.user_id,
+          area_of_expertise: {
+            category: selectedCategory,
+            follower_count: selectedFollower,
+            platform: platform,
+            pageHealth: pageHealth,
+          },
+          updated_by: userID,
+        }
+        );
+      } catch {}
+      navigate('/admin/experties-overview') 
   };
 
   return (
     <>
-      <FormContainer mainTitle=" Expert" link="flase" />
+      <FormContainer mainTitle="Update Expert" link="flase" />
 
       <div className="card body-padding">
         <FormControl className="gap4" sx={{ width: "100%" }}>
-          <div className="grid-con">
-            {/* <div className="col-sm-12 col-lg-12"> */}
+          <div className="grid-con ">
             <Autocomplete
               fullWidth={true}
               disablePortal
-              id="combo-box-demo"
-              options={getUserData.map((user) => ({
+              id="user-name-autocomplete"
+              options={getUserData?.map((user) => ({
                 label: user.user_name,
                 value: user.user_id,
               }))}
+              value={
+                getUserData.find(
+                  (user) => user.user_name === singleUserData?.exp_name
+                )?.user_name || null
+              }
+              renderInput={(params) => (
+                <TextField {...params} label="User Name" />
+              )}
               onChange={(e, newvalue) => {
                 if (newvalue != null) {
-                  setExpertiesUserName((prev) => ({
-                    label: newvalue.label,
+                  setSingleUserData((prev) => ({
+                    ...prev,
+                    exp_name: newvalue.label,
                     user_id: newvalue.value,
                   }));
+                } else {
+                  // Reset or adjust `singleUserData` if no user is selected
+                  setSingleUserData((prev) => ({
+                    ...prev,
+                    exp_name: null,
+                    user_id: null,
+                  }));
                 }
-              }}
-              renderInput={(params) => (
-                <TextField {...params} label="User Name *" />
-              )}
-            />
-            {/* </div> */}
-            {/* <div className="col-sm-12 col-lg-3"> */}
+              }}            />
+
             <Autocomplete
               multiple
               id="combo-box-demo"
               options={options}
               renderInput={(params) => (
-                <TextField {...params} label="Category *" />
+                <TextField {...params} label="Category" />
               )}
               onChange={categoryChangeHandler}
+              value={selectedCategory}
             />
-            {/* </div> */}
-            {/* <div className="col-sm-12 col-lg-3"> */}
+
             <Autocomplete
               multiple
               id="combo-box-demo"
               options={plateformvar}
               renderInput={(params) => (
-                <TextField {...params} label="Platform *" />
+                <TextField {...params} label="Platform" />
               )}
+              value={platform}
               onChange={plateformHandler}
             />
-            {/* </div> */}
-            {/* <div className="col-sm-12 col-lg-3"> */}
+
             <Autocomplete
               multiple
               id="combo-box-demo"
               options={Follower_Count}
+              value={selectedFollower}
               getOptionLabel={(option) => option}
               renderInput={(params) => (
                 <TextField {...params} label="Follower Count" />
               )}
               onChange={followerChangeHandler}
             />
-            {/* </div> */}
-            {/* <div className="col-sm-12 col-lg-3"> */}
             <Autocomplete
               multiple
               id="combo-box-demo"
@@ -184,12 +204,9 @@ const Experties = () => {
                 <TextField {...params} label="Page health" />
               )}
             />
-            {/* </div> */}
           </div>
+
           <div className="pack mt-2">
-            {/* <button className="btn btn-primary" onClick={handleSubmit}>
-            Submit
-          </button> */}
             <button onClick={handleSubmit} className="btn btn-outline-primary">
               Submit
             </button>
@@ -200,4 +217,4 @@ const Experties = () => {
   );
 };
 
-export default Experties;
+export default NewExpertUpdate;

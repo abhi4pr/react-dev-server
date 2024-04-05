@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import FormContainer from "../FormContainer";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid ,GridToolbar} from "@mui/x-data-grid";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import SendTwoToneIcon from "@mui/icons-material/SendTwoTone";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -775,6 +775,9 @@ export default function RegisteredCampaign() {
           rows={filteredTable1Data}
           columns={tab1Columns}
           getRowId={(row) => row?._id}
+          slots={{
+            toolbar: GridToolbar,
+          }}
         />
       )}
       <Modal
