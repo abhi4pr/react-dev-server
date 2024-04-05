@@ -281,6 +281,10 @@ import SalesServicesOverview from "./Sales/SalesServices/SalesServicesOverview";
 import SalesServicesCreate from "./Sales/SalesServices/SalesServicesCreate";
 import SalesServicesUpdate from "./Sales/SalesServices/SalesServicesUpdate";
 import Invoice from "./Finance/Invoice";
+import CreditApprovalReasonCreate from "./Sales/CreditApprovalReason/CreditApprovalReasonCreate";
+import CreditApprovalReasonView from "./Sales/CreditApprovalReason/CreditApprovalReasonView";
+import CreditApprovalReasonUpdate from "./Sales/CreditApprovalReason/CreditApprovalReasonUpdate";
+import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1339,6 +1343,22 @@ const Admin = () => {
                   <Route
                     path="/sales-services-overview"
                     element={<SalesServicesOverview />}
+                  />
+                  <Route
+                    path="/create-credit-reason-approval"
+                    element={<CreditApprovalReasonCreate />}
+                  />
+                  <Route
+                    path="/view-credit-reason-approval"
+                    element={<CreditApprovalReasonView />}
+                  />
+                  <Route
+                    path="/update-credit-reason-approval/:id"
+                    element={<CreditApprovalReasonUpdate />}
+                  />
+                  <Route
+                    path="/create-sale-booking"
+                    element={<CreateSaleBooking />}
                   />
                 </Route>
               </Routes>

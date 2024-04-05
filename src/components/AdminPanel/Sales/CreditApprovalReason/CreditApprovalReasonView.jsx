@@ -1,77 +1,65 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import DataTable from "react-data-table-component";
-import { Link, useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../../utils/config";
 import FormContainer from "../../FormContainer";
+import DataTable from "react-data-table-component";
 import DeleteButton from "../../DeleteButton";
+import { Link } from "react-router-dom";
 
-const SalesServicesOverview = () => {
-  const navigate = useNavigate();
-  const [hobbiesData, setHobbiesData] = useState([]);
+const CreditApprovalReasonView = () => {
+  const [creditAppReasonData, setCreditAppReasonData] = useState([]);
   const [origionalData, setOrigionalData] = useState([]);
   const [search, setSearch] = useState("");
+
   const getData = async () => {
     try {
       const response = await axios.get(
-        baseUrl + "sales/getlist_sale_service_master"
+        `${baseUrl}sales/getlist_reason_credit_approval`
       );
-      const data = response.data.data;
-      console.log(data, "hello world");
-      setHobbiesData(data);
-      setOrigionalData(data);
+      setCreditAppReasonData(response.data.data);
+      setOrigionalData(response.data.data);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching credit approval reasons:", error);
     }
   };
-
   useEffect(() => {
     getData();
   }, []);
 
   useEffect(() => {
     const result = origionalData.filter((d) => {
-      return d.hobby_name?.toLowerCase().includes(search.toLowerCase());
+      return d.reason?.toLowerCase().includes(search.toLowerCase());
     });
-    setHobbiesData(result);
+    setCreditAppReasonData(result);
   }, [search]);
 
   const columns = [
     {
       name: "S.no",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "80px",
-      sortable: true,
     },
     {
-      name: "Service Name",
-      selector: (row) => row.service_name,
+      name: "Reason",
+      selector: (row) => row.reason,
+    },
+    {
+      name: "Days Count",
+      selector: (row) => row.day_count,
     },
     {
       name: "Action",
       cell: (row) => (
         <>
-          <div class="btn-group">
-            <button
-              type="button"
-              class=" icon-1 "
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <i class="fa-solid fa-ellipsis"></i>
-            </button>
-            <div className="dropdown-menu dropdown-menu-right">
-              <Link to={`/admin/update-sales-services/${row._id}`}>
-                <button className="dropdown-item ">Edit</button>
-              </Link>
-              <DeleteButton
-                endpoint="sales/delete_sale_service_master"
-                id={row._id}
-                getData={getData}
-              />
+          <Link to={`/admin/update-credit-reason-approval/${row._id}`}>
+            <div className="icon-1">
+              <i className="bi bi-pencil" />
             </div>
-          </div>
+          </Link>
+          <DeleteButton
+            endpoint="sales/delete_reason_credit_approval"
+            id={row._id}
+            getData={getData}
+          />
         </>
       ),
     },
@@ -81,8 +69,8 @@ const SalesServicesOverview = () => {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Services"
-            link="/admin/create-sales-services"
+            mainTitle="Credit Approval Reasons"
+            link="/admin/create-credit-reason-approval"
             buttonAccess={true}
             submitButton={false}
           />
@@ -94,7 +82,7 @@ const SalesServicesOverview = () => {
             <DataTable
               title="Services Overview"
               columns={columns}
-              data={hobbiesData}
+              data={creditAppReasonData}
               fixedHeader
               pagination
               fixedHeaderScrollHeight="64vh"
@@ -117,4 +105,4 @@ const SalesServicesOverview = () => {
   );
 };
 
-export default SalesServicesOverview;
+export default CreditApprovalReasonView;

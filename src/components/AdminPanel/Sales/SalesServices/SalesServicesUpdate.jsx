@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import { baseUrl } from "../../../../utils/config";
-import DynamicSelect from "./DynamicSelectManualy";
+import DynamicSelect from "../DynamicSelectManualy";
 import axios from "axios";
 
 const SalesServicesUpdate = () => {
