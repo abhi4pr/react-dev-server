@@ -1415,7 +1415,7 @@ export default function PendingPaymentRequest() {
         </div>
       </div>
       <div className="master-card-css p-1" style={{ marginTop: "114px" }}>
-        {/* Bank Details 14
+        {/* Bank Details 14 */}
         <Dialog
           open={bankDetail}
           onClose={handleCloseBankDetail}
@@ -1445,13 +1445,15 @@ export default function PendingPaymentRequest() {
             id="outlined-multiline-static"
             multiline
             value={
+              "\n" +
+              "Payment Details - " +
               bankDetailRowData[0]?.payment_details +
               "\n" +
-              "Mob:" +
+              "Mob - " +
               bankDetailRowData[0]?.mob1 +
               "\n" +
               (bankDetailRowData[0]?.email
-                ? "Email:" + bankDetailRowData[0]?.email
+                ? "Email - " + bankDetailRowData[0]?.email
                 : "")
             }
             rows={4}

@@ -89,7 +89,7 @@ export default function TaskPending() {
     // setUniqueVendorCount(uniqueVendors.size);
     const uvData = [];
     uniqueVendors.forEach((vendorName) => {
-      const vendorRows = filterData.filter(
+      const vendorRows = nodeData.filter(
         (item) => item.vendor_name === vendorName
       );
       uvData.push(vendorRows[0]);
@@ -155,7 +155,6 @@ export default function TaskPending() {
       console.error("Error:", error);
     }
   };
-  console.log(filterData, "filterData >>>> Pending");
   // ========================
   useEffect(() => {
     callApi();
@@ -198,25 +197,7 @@ export default function TaskPending() {
     0
   );
   // ==============================================================
-  //iterate for totalAmount of same name venders :-
-  // const vendorAmounts = [];
-  // uniqueVendorData.forEach((item) => {
-  //   const vendorName = item.vendor_name;
-  //   const requestAmount = item.request_amount;
 
-  //   if (vendorAmounts[vendorName]) {
-  //     vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
-  //   } else {
-  //     vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
-  //   }
-  // });
-
-  // // calculate the total amount for vendors with the same name
-  // let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
-  //   (total, amount) => total + amount,
-  //   0
-  // );
-  // ================================================================
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
       const date = new Date(item.request_date);
@@ -490,8 +471,17 @@ export default function TaskPending() {
       field: "total_amount",
       headerName: "Total Amount",
       width: 150,
-      renderCell: () => {
-        return <p> &#8377; {totalSameVendorAmount}</p>;
+      renderCell: ({ row }) => {
+        const sameVendor = filterData.filter(
+          (e) => e.vendor_name === row.vendor_name
+        );
+
+        const reduceAmt = sameVendor.reduce(
+          (a, b) => a + 1 * b.request_amount,
+          0
+        );
+
+        return <p> &#8377; {reduceAmt}</p>;
       },
     },
     {
@@ -702,10 +692,7 @@ export default function TaskPending() {
             variant="outlined"
             style={{ cursor: "pointer", marginRight: "20px" }}
             onClick={() => {
-              handleOpenPendingClick(
-                params.row._id,
-                params.row.request_date
-              );
+              handleOpenPendingClick(params.row._id, params.row.request_date);
             }}
           >
             Pending
