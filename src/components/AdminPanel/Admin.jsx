@@ -280,14 +280,11 @@ import SalesDashboard from "./Sales/SalesDashboard";
 import SalesServicesOverview from "./Sales/SalesServices/SalesServicesOverview";
 import SalesServicesCreate from "./Sales/SalesServices/SalesServicesCreate";
 import SalesServicesUpdate from "./Sales/SalesServices/SalesServicesUpdate";
-<<<<<<< Updated upstream
 import Invoice from "./Finance/Invoice";
-=======
 import CreditApprovalReasonCreate from "./Sales/CreditApprovalReason/CreditApprovalReasonCreate";
 import CreditApprovalReasonView from "./Sales/CreditApprovalReason/CreditApprovalReasonView";
 import CreditApprovalReasonUpdate from "./Sales/CreditApprovalReason/CreditApprovalReasonUpdate";
 import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
->>>>>>> Stashed changes
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
