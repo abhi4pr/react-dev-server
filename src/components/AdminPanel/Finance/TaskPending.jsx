@@ -157,7 +157,6 @@ export default function TaskPending() {
   };
   console.log(filterData, "filterData >>>> Pending");
   // ========================
-
   useEffect(() => {
     callApi();
   }, []);
@@ -703,7 +702,10 @@ export default function TaskPending() {
             variant="outlined"
             style={{ cursor: "pointer", marginRight: "20px" }}
             onClick={() => {
-              handleOpenPendingClick(params.row._id, params.row.request_date);
+              handleOpenPendingClick(
+                params.row._id,
+                params.row.request_date
+              );
             }}
           >
             Pending
