@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import { baseUrl } from "../../../../utils/config";
 import DynamicSelect from "../DynamicSelectManualy";
 import axios from "axios";
+import { useGlobalContext } from "../../../../Context/Context";
+import { useAPIGlobalContext } from "../../APIContext/APIContext";
 
 const SalesServicesCreate = () => {
-  const navigate = useNavigate();
+  const { toastAlert, toastError } = useGlobalContext();
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+  const { userID } = useAPIGlobalContext();
   const [servicename, setServiceName] = useState("");
   const [postType, setPostType] = useState("");
   const [excelUpload, setExcelUpload] = useState("");
@@ -50,7 +54,39 @@ const SalesServicesCreate = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!servicename || servicename == "") {
+      return toastError("Service Name is Required");
+    } else if (!postType || postType == "") {
+      return toastError("Post Type is Required");
+    } else if (!excelUpload || excelUpload == "") {
+      return toastError("Excel Upload is Required");
+    } else if (!amount || amount == "") {
+      return toastError("Amount is Required");
+    } else if (!numberHours || numberHours == "") {
+      return toastError("Number Hours is Required");
+    } else if (!goal || goal == "") {
+      return toastError("Goal is Required");
+    } else if (!day || day == "") {
+      return toastError("Day is Required");
+    } else if (!quantity || quantity == "") {
+      return toastError("Quantity is Required");
+    } else if (!brandName || brandName == "") {
+      return toastError("Brand Name is Required");
+    } else if (!hashTag || hashTag == "") {
+      return toastError("hashTag is Required");
+    } else if (!individual || individual == "") {
+      return toastError("individual Status is Required");
+    } else if (!numberOfCreators || numberOfCreators == "") {
+      return toastError("Number Of Creators is Required");
+    } else if (!startEndDate || startEndDate == "") {
+      return toastError("Start End Date is Required");
+    } else if (!perMonthAmount || perMonthAmount == "") {
+      return toastError("Per Month Amount is Required");
+    } else if (!startEndDate || startEndDate == "") {
+      return toastError("Start End Date is Required");
+    } else if (!deliverables || deliverables == "") {
+      return toastError("Deliverables info is Required");
+    }
     try {
       const response = await axios.post(
         baseUrl + `sales/add_sale_service_master`,
@@ -65,24 +101,26 @@ const SalesServicesCreate = () => {
           quantity_status: quantity,
           brand_name_status: brandName,
           hashtag: hashTag,
-          individual_amount_status: individual,
+          indiviual_amount_status: individual,
           no_of_creators: numberOfCreators,
           start_end_date_status: startEndDate,
           per_month_amount_status: perMonthAmount,
           deliverables_info: deliverables,
           remarks: remark,
-          created_by: 712,
+          created_by: userID,
         }
       );
 
-      // toastAlert("Submited Succesfully");
+      toastAlert("Submited Succesfully");
       setServiceName("");
-      // navigate("/admin/hobbies-overview");
+      setIsFormSubmitted(true);
     } catch (error) {
       console.error(error);
-      // alert(error.response.data.message);
     }
   };
+  if (isFormSubmitted) {
+    return <Navigate to="/admin/sales-services-overview" />;
+  }
   return (
     <>
       <FormContainer
@@ -95,6 +133,7 @@ const SalesServicesCreate = () => {
           astric={true}
           fieldGrid={4}
           value={servicename}
+          required={false}
           onChange={(e) => setServiceName(e.target.value)}
         />
         <DynamicSelect

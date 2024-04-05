@@ -26,7 +26,7 @@ const DeleteButton = ({ endpoint, id, getData }) => {
       .then((result) => {
         if (result.isConfirmed) {
           axios
-            .delete(`${baseUrl}`+`${endpoint}/${id}`)
+            .delete(`${baseUrl}` + `${endpoint}/${id}`)
             .then(() => {
               // Check if no error occurred and then show the success alert
               swalWithBootstrapButtons.fire(
@@ -57,12 +57,7 @@ const DeleteButton = ({ endpoint, id, getData }) => {
   };
 
   return (
-    <div
-      title="Delete"
-      className="icon-1"
-      onClick={handleDelete}
-      type="button"
-    >
+    <div title="Delete" className="icon-1" onClick={handleDelete} type="button">
       <i className="bi bi-trash3"></i>
     </div>
   );

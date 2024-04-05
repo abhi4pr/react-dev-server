@@ -280,6 +280,7 @@ import SalesDashboard from "./Sales/SalesDashboard";
 import SalesServicesOverview from "./Sales/SalesServices/SalesServicesOverview";
 import SalesServicesCreate from "./Sales/SalesServices/SalesServicesCreate";
 import SalesServicesUpdate from "./Sales/SalesServices/SalesServicesUpdate";
+<<<<<<< Updated upstream
 import Invoice from "./Finance/Invoice";
 import CreditApprovalReasonCreate from "./Sales/CreditApprovalReason/CreditApprovalReasonCreate";
 import CreditApprovalReasonView from "./Sales/CreditApprovalReason/CreditApprovalReasonView";
@@ -288,6 +289,12 @@ import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
 import CustomerDocumentMaster from "./Customer/CustomerDocumentMaster";
 import CustomerDocumentOverview from "./Customer/CustomerDocumentOverview";
 import NewExpertUpdate from "./RegisterCampaign/Experties/NewExpertUpdate";
+=======
+import IncentiveCreate from "./Sales/IncentivePlan/IncentiveCreate";
+import IncentiveOverview from "./Sales/IncentivePlan/IncentiveOverview";
+import IncentiveUpdate from "./Sales/IncentivePlan/IncentiveUpdate";
+import { SalesContext } from "./Sales/SalesContext";
+>>>>>>> Stashed changes
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1315,14 +1322,15 @@ const Admin = () => {
                   />
                   <Route path="/pms-master" element={<PMSmaster />} />
 
-                  {/* Sales Module Routing here  */}
+                  {/* Sales Module Routing here start-------------------  */}
+
                   <Route path="/sales-dashboard" element={<SalesDashboard />} />
                   <Route
                     path="/create-sales-services"
                     element={<SalesServicesCreate />}
                   />
                   <Route
-                    path="/update-sales-services/:id"
+                    path="/update-sales-services/:id/:post"
                     element={<SalesServicesUpdate />}
                   />
                   <Route
@@ -1344,6 +1352,16 @@ const Admin = () => {
                   <Route
                     path="/create-sale-booking"
                     element={<CreateSaleBooking />}
+                    path="/sales-incentive-create"
+                    element={<IncentiveCreate />}
+                  />
+                  <Route
+                    path="/sales-incentive-overview"
+                    element={<IncentiveOverview />}
+                  />
+                  <Route
+                    path="/sales-incentive-update/:id"
+                    element={<IncentiveUpdate />}
                   />
                 </Route>
               </Routes>

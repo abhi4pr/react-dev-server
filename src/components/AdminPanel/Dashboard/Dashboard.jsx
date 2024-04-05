@@ -9,8 +9,8 @@ import jwtDecode from "jwt-decode";
 import { baseUrl } from "../../../utils/config";
 import { Box, Button } from "@mui/material";
 import ChatApplication from "../../Common/ChatApplication";
-import { useLocation } from 'react-router-dom';
-import titleimg from '/bg-img.png'
+import { useLocation } from "react-router-dom";
+import titleimg from "/bg-img.png";
 
 function Dashboard() {
   const [renderCount, setRenderCount] = useState(0);
@@ -94,11 +94,13 @@ function Dashboard() {
     <>
       <div>
         <div className="form-heading">
-        <img className="img-bg" src={titleimg} alt="" width={160} />
+          <img className="img-bg" src={titleimg} alt="" width={160} />
           <div className="form_heading_title">
-          <h1>Dashboard</h1>
+            <h1>Dashboard</h1>
             <div className="pack">
-            <i class="bi bi-house"></i> {activeLink.slice(1).charAt(0).toUpperCase()+ activeLink.slice(2)}
+              <i class="bi bi-house"></i>{" "}
+              {activeLink.slice(1).charAt(0).toUpperCase() +
+                activeLink.slice(2)}
             </div>
           </div>
           {/* <Link to={`/admin/kra/${userId}`}>
@@ -107,7 +109,7 @@ function Dashboard() {
             </button>
           </Link> */}
         </div>
-        <div className="row" style={{marginTop:"16px"}}>
+        <div className="row" style={{ marginTop: "16px" }}>
           {contextData && contextData[8] && contextData[8].view_value === 1 && (
             <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
               <div className="d_infocard card shadow">
@@ -331,7 +333,6 @@ function Dashboard() {
         </div>
       </div>
       <ChatApplication />
-      
     </>
   );
 }

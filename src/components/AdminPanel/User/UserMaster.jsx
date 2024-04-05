@@ -1326,40 +1326,42 @@ const UserMaster = () => {
           <p style={{ color: "red" }}>Please enter Gender</p>
         )}
       </div>
-      <div className="from-group col-3" >
+      <div className="from-group col-3">
         <label className="form-label">
           DOB <sup style={{ color: "red" }}>*</sup>
         </label>
-        <div className="pack" style={{position:"relative"}}>
-
-        <input
-          label="DOB"
-          type="date"
-          className="form-control"
-          style={{ width: "100%" }}
-          max={today}
-          value={dateOfBirth}
-          onChange={handleDateChange}
+        <div className="pack" style={{ position: "relative" }}>
+          <input
+            label="DOB"
+            type="date"
+            className="form-control"
+            style={{ width: "100%" }}
+            max={today}
+            value={dateOfBirth}
+            onChange={handleDateChange}
           />
-         <div className="custom-btn-2" style={{
-           
-           pointereEvents: "none",
-           position: "absolute",
-           bottom: "7px",
-           right: "5px",
-           display: "flex",
-           justifyContent: "center",
-           alignItems: "center",
-           fontSize: "16px",
-           color:"var(--medium)",
-           height: "34px",
-           width: "42px",
-           borderRadius: "0  12px 12px 0",
-           borderLeft: "1px solid var(--border)",
-           backgroundColor: "var(--white)"
-           
-          }}><i class="bi bi-calendar-week"></i></div>
+          <div
+            className="custom-btn-2"
+            style={{
+              pointereEvents: "none",
+              position: "absolute",
+              bottom: "7px",
+              right: "5px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              fontSize: "16px",
+              color: "var(--medium)",
+              height: "34px",
+              width: "42px",
+              borderRadius: "0  12px 12px 0",
+              borderLeft: "1px solid var(--border)",
+              backgroundColor: "var(--white)",
+            }}
+          >
+            <i class="bi bi-calendar-week"></i>
           </div>
+        </div>
       </div>
       {dateOfBirth !== "" && (
         <FieldContainer fieldGrid={3} label="Age" value={age} />
@@ -1869,37 +1871,39 @@ const UserMaster = () => {
           <p style={{ color: "red" }}>Please enter Status</p>
         )}
       </div>
-      <div className="from-group col-3" >
+      <div className="from-group col-3">
         <label className="form-label">
           Joining Date <sup style={{ color: "red" }}>*</sup>
         </label>
-        <div className="pack" style={{position:"relative"}}>
-
-        <input
-          type="date"
-          className="form-control"
-          value={joiningDate}
-          onChange={(e) => setJoiningDate(e.target.value)}
+        <div className="pack" style={{ position: "relative" }}>
+          <input
+            type="date"
+            className="form-control"
+            value={joiningDate}
+            onChange={(e) => setJoiningDate(e.target.value)}
           />
-         <div className="custom-btn-2"><i class="bi bi-calendar-week" style={{
-           
-           pointereEvents: "none",
-           position: "absolute",
-           bottom: "7px",
-           right: "5px",
-           display: "flex",
-           justifyContent: "center",
-           alignItems: "center",
-           fontSize: "16px",
-           color:"var(--medium)",
-           height: "34px",
-           width: "42px",
-           borderRadius: "0  12px 12px 0",
-           borderLeft: "1px solid var(--border)",
-           backgroundColor: "var(--white)"
-           
-          }}></i></div>
+          <div className="custom-btn-2">
+            <i
+              class="bi bi-calendar-week"
+              style={{
+                pointereEvents: "none",
+                position: "absolute",
+                bottom: "7px",
+                right: "5px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                fontSize: "16px",
+                color: "var(--medium)",
+                height: "34px",
+                width: "42px",
+                borderRadius: "0  12px 12px 0",
+                borderLeft: "1px solid var(--border)",
+                backgroundColor: "var(--white)",
+              }}
+            ></i>
           </div>
+        </div>
       </div>
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -2965,7 +2969,7 @@ const UserMaster = () => {
       </div>
       <FormContainer
         mainTitle="User"
-        title="User Registration" 
+        title="User Registration"
         // handleSubmit={handleSubmit}
         submitButton={false}
         accordionButtons={accordionButtons}

@@ -3,18 +3,18 @@ import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import { baseUrl } from "../../../../utils/config";
-import FormContainer from "../../FormContainer";
 import DeleteButton from "../../DeleteButton";
+import FormContainer from "../../FormContainer";
+import IncentiveCreate from "./IncentiveCreate";
 
-const SalesServicesOverview = () => {
+const IncentiveOverview = () => {
   const [hobbiesData, setHobbiesData] = useState([]);
   const [origionalData, setOrigionalData] = useState([]);
   const [search, setSearch] = useState("");
-  const [post, setPost] = useState("post");
   const getData = async () => {
     try {
       const response = await axios.get(
-        baseUrl + "sales/getlist_sale_service_master"
+        baseUrl + "sales/getlist_incentive_plan"
       );
       const data = response.data.data;
       console.log(data, "hello world");
@@ -45,10 +45,19 @@ const SalesServicesOverview = () => {
     },
     {
       name: "Service Name",
-      selector: (row) => row.service_name,
+      selector: (row) => row.Sales_Service_Master.service_name,
+    },
+    {
+      name: "Service Name",
+      selector: (row) => row.incentive_type,
+    },
+    {
+      name: "Value",
+      selector: (row) => row.value,
     },
     {
       name: "Action",
+
       cell: (row) => (
         <>
           <div class="btn-group">
@@ -62,19 +71,18 @@ const SalesServicesOverview = () => {
               <i class="fa-solid fa-ellipsis"></i>
             </button>
             <div className="dropdown-menu dropdown-menu-right">
-              <Link to={`/admin/update-sales-services/${row._id}/${"put"}`}>
-                <button className="dropdown-item ">Edit</button>
+              <Link to={`/admin/sales-incentive-update/${row._id}`}>
+                <div className="icon-1">
+                  <i className="fa fa-edit"></i>
+                </div>
               </Link>
 
-              <Link to={`/admin/update-sales-services/${row._id}/${post}`}>
-                <button className="dropdown-item ">Clone</button>
-              </Link>
+              <DeleteButton
+                endpoint="sales/delete_incentive_plan"
+                id={row._id}
+                getData={getData}
+              />
             </div>
-            <DeleteButton
-              endpoint="sales/delete_sale_service_master"
-              id={row._id}
-              getData={getData}
-            />
           </div>
         </>
       ),
@@ -85,8 +93,8 @@ const SalesServicesOverview = () => {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Services"
-            link="/admin/create-sales-services"
+            mainTitle="Incentive Plan"
+            link="/admin/sales-incentive-create"
             buttonAccess={true}
             submitButton={false}
           />
@@ -96,7 +104,7 @@ const SalesServicesOverview = () => {
         <div className="card mb-4">
           <div className="data_tbl table-responsive">
             <DataTable
-              title="Services Overview"
+              title="Incentive Overview"
               columns={columns}
               data={hobbiesData}
               fixedHeader
@@ -121,4 +129,4 @@ const SalesServicesOverview = () => {
   );
 };
 
-export default SalesServicesOverview;
+export default IncentiveOverview;
