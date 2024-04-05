@@ -76,6 +76,7 @@ export default function RegisterCampaign() {
     exeCmpName: "",
     exeRemark: "",
   });
+  const [loading, setLoading] = useState(false);
 
   const [postData, setPostData] = useState({
     brand_name: "",
@@ -150,7 +151,7 @@ export default function RegisterCampaign() {
     form.append("campaignClosedBy", campaignClosedBy);
 
     //form.append("service", selectedService);
-
+    setLoading(true);
     axios
       .post(baseUrl + "register_campaign", form)
       .then(() => {
@@ -161,10 +162,12 @@ export default function RegisterCampaign() {
         setShowBrandName([]);
         setBrandName([]);
         setFields([]);
+        setLoading(false);
         navigate("/admin/registered-campaign");
         toastAlert("Campaign Regrister Successfully");
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
       });
   };
@@ -746,8 +749,9 @@ export default function RegisterCampaign() {
           size="large"
           color="secondary"
           className="btn btn-primary mt-3 mb-3"
+          disabled={loading}
         >
-          Register
+          {loading ? "Submitting" : "Submit"}
         </button>
       </Box>
       <>

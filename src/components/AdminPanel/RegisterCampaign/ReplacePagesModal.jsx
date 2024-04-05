@@ -31,6 +31,8 @@ const ReplacePagesModal = ({
   const [remainingPages, setRemainingPages] = useState([]);
   const [selectedPages, setSelectedPages] = useState([]);
   const [postPages, setPostpages] = useState([]);
+  const [storyPages, setStorypages] = useState([]);
+
   const getAllPages = async () => {
     const pageData = await axios.get(
       `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
@@ -53,6 +55,7 @@ const ReplacePagesModal = ({
     const pagesData = selectedPages.map((page, index) => ({
       page_name: page.page_name,
       postPerPage: postPages[index] || 0,
+      storyPerPage: storyPages[index] || 0,
       cat_name: page.cat_name,
       platform: page.platform,
       follower_count: page.follower_count,
@@ -80,6 +83,11 @@ const ReplacePagesModal = ({
     const updatedpages = [...postPages];
     updatedpages[index] = value;
     setPostpages(updatedpages);
+  };
+  const handlepagesChangeNew = (index, value) => {
+    const updatedpages = [...storyPages];
+    updatedpages[index] = value;
+    setStorypages(updatedpages);
   };
 
   return (
@@ -117,6 +125,13 @@ const ReplacePagesModal = ({
               value={postPages[index]}
               fullWidth
               onChange={(e) => handlepagesChange(index, e.target.value)}
+              sx={{ m: 2 }}
+            />
+            <TextField
+              label="Story / Page"
+              value={storyPages[index]}
+              fullWidth
+              onChange={(e) => handlepagesChangeNew(index, e.target.value)}
               sx={{ m: 2 }}
             />
             <TextField

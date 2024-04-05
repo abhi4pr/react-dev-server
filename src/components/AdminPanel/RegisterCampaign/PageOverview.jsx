@@ -45,7 +45,8 @@ const PageOverview = ({ selectData, setrender, stage, id ,phase_id}) => {
       if (
         page.replacement_status == "pending" ||
         page.replacement_status == "replacement" ||
-        page.replacement_status == "inactive" 
+        page.replacement_status == "inactive" ||
+        page.replacement_status == "active"
        
       ) {
         return page;

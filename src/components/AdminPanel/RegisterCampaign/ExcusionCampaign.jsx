@@ -11,12 +11,8 @@ const ExcusionCampaign = () => {
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
 
-
-
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [assignmentData, setAssignmentData] = useState([]);
-  console.log(assignmentData, "new");
-  // const [pendingData, setPendingData] = useState([]);
   const [executedData, setExecutedData] = useState([]);
   const [verifiedData, setVerifiedData] = useState([]);
   const [rejectedData, setRejectedData] = useState([]);
@@ -31,25 +27,17 @@ const ExcusionCampaign = () => {
       `${baseUrl}` + `expertise/user/${decodedToken.id}`
     );
     getAssignment(expert.data.data.exp_id);
-    console.log(expert);
   };
 
-
-
   useEffect(() => {
-    console.log("hello")
     let x = []
     for (const pages of unfilteredAssignment) {
       if (!x.some(item => pages.ass_page?.campaignName == item?.campaignName)) {
-
         x.push({ campaignName: pages.ass_page?.campaignName, campaignId: pages?.campaignId })
       }
     }
-    setCampaignOptions(x)
-    
-
+    // setCampaignOptions(x)    
   }, [unfilteredAssignment,requestAssign,selectedCampaign])
-  console.log(campaignOptions)
 
   useEffect(() => {
     getExpertee();
@@ -66,26 +54,29 @@ const ExcusionCampaign = () => {
       }else return (item.status == "pending" && item.campaignId==selectedCampaign)
     })
     const data2= reqAss?.data?.data.filter((item) => {
-   
         return item.status == "pending"
-
-      
     })
     
     setUnfilteredAssignment(data2)
     SetRequestAssign(data);
   };
 
-  
   useEffect(() => {
     RequestAssign();
+    getAssignment()
   }, [selectedCampaign]);
-
 
   const getAssignment = async (id) => {
     const getData = await axios.get(
       `${baseUrl}` + `assignment/all/${decodedToken.id}`
     );
+
+    const getCampaigns = Object.values(getData.data.data.reduce((acc, cur) => {
+      acc[cur.campaignId] = { campaignId: cur.campaignId, campaignName: cur.campaignName };
+      return acc;
+    }, {}));
+    setCampaignOptions(getCampaigns)
+
     const assigned = getData?.data?.data.filter(
       (item) => {
         if(!selectedCampaign){
@@ -95,9 +86,7 @@ const ExcusionCampaign = () => {
         }
       }
     ).reverse()
-    // const pending = getData?.data?.data.filter(
-    //   (item) => item.ass_status == "pending"
-    // );
+    
     const excuted = getData?.data?.data.filter(
       (item) => {
         if(!selectedCampaign){
@@ -150,15 +139,6 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
-  // const tab3 = (
-  //   <ExePageDetailes
-  //     data={pendingData}
-  //     status={"assigned"}
-  //     setActiveAccordionIndex={setActiveAccordionIndex}
-  //     activeAccordion="2"
-  //     getAssignment={getAssignment}
-  //   />
-  // );
   const tab3 = (
     <ExePageDetailes
       data={executedData}
@@ -185,7 +165,7 @@ const ExcusionCampaign = () => {
       getAssignment={getAssignment}
     />
   );
-  console.log(selectedCampaign)
+
   const accordionButtons = [
     "Requested Assign",
     "Assignment",
@@ -195,10 +175,8 @@ const ExcusionCampaign = () => {
     "Rejected",
   ];
 
-  console.log(selectedCampaign)
   return (
     <>
-
       <FormContainer
         submitButton={false}
         mainTitle="Execution Campaign"
@@ -215,11 +193,8 @@ const ExcusionCampaign = () => {
           className={option=>option.campaignId}
           style={{ width: 300 }}
           renderInput={(params) => <TextField {...params} label="Select Campaign" variant="outlined" />}
-          onChange={(e) => {
-            
-            
-            console.log(e.target.class)
-
+          onChange={(e,value) => {
+            setSelectedCampaign(value.campaignId)
           }}
         />
         {activeAccordionIndex === 0 && tab1}
@@ -227,7 +202,6 @@ const ExcusionCampaign = () => {
         {activeAccordionIndex === 2 && tab3}
         {activeAccordionIndex === 3 && tab4}
         {activeAccordionIndex === 4 && tab5}
-        {/* {activeAccordionIndex === 5 && tab6} */}
       </FormContainer>
     </>
   );

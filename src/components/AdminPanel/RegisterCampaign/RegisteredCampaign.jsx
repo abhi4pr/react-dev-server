@@ -45,13 +45,11 @@ export default function RegisteredCampaign() {
   const [commits, setCommits] = useState([]);
   const [table1Data, setTable1Data] = useState([]);
   const [table2Data, setTable2Data] = useState([]);
-  console.log(table2Data, "table2Data");
   const [loadTable1, SetLoadTable1] = useState(false);
   const [table1Data2, setTable1Data2] = useState(false);
   const [brandName, setBrandName] = useState([]);
   const [open, setOpen] = React.useState(false);
   const [commitmentModalData, setCommitmentModalData] = useState([{}]);
-  console.log(commitmentModalData, "commitmentModalData");
   const [campaignId, setCampaignId] = useState("");
   const [campignData, setCampignData] = useState([{}]);
   const [deleteRowModal, setDeleteRowModal] = useState(false);
@@ -276,8 +274,6 @@ export default function RegisteredCampaign() {
     }
   };
 
-  console.log(filteredTable1Data);
-  console.log(filteredTable2Data);
   const handlePlan = (event) => {
     const path = `/admin/tempplanCreation/${event._id}`;
     navigate(path);
@@ -288,7 +284,6 @@ export default function RegisteredCampaign() {
   };
   handleShowPlan;
   const handlePhase = (event) => {
-    // console.log(event);
     const path = `/admin/phase/${event._id}`;
     navigate(path);
   };
@@ -329,7 +324,6 @@ export default function RegisteredCampaign() {
     axios
       .get(baseUrl + "get_brands")
       .then((response) => {
-        console.log(response.data.data, "response");
         setBrandName(response.data.data);
         setTable1Data2(true);
       })
@@ -702,7 +696,6 @@ export default function RegisteredCampaign() {
       new Date(now.getFullYear(), now.getMonth() - 3, now.getDate() + 1)
       // .setMonth(now.getMonth() - 3)
     );
-    // console.log(startOfLast3Months,"startOfLast3Months");
 
     const startOfYear = new Date(now.getFullYear(), 0, 1);
 
@@ -747,8 +740,6 @@ export default function RegisteredCampaign() {
         return data;
     }
   };
-
-  console.log(filteredTable1Data);
 
   const commitColumns = [
     {
@@ -1062,7 +1053,7 @@ export default function RegisteredCampaign() {
               </div>
               <div className="d-flex justify-content-between">
                 <button className="btn btn-outline-danger" onClick={handleClose}>
-                  Cancle
+                  Cancel
                 </button>
                 <button
                   type="submit"
@@ -1110,7 +1101,7 @@ export default function RegisteredCampaign() {
                 onClick={handleClose2}
                 
               >
-                Cancle
+                Cancel
               </button>
           
           </div>

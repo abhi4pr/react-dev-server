@@ -966,7 +966,7 @@ const Admin = () => {
                     element={<PlancreationNew />}
                   />
                   <Route path="/tempExcel" element={<NewExcelFile />} />
-                  <Route path="/phase/:id" element={<PhaseCreation />} />
+                  {/* <Route path="/phase/:id" element={<PhaseCreation />} /> */}
                   <Route
                     path="/planCreation/:id"
                     element={<PlancreationNew />}
