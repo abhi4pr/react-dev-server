@@ -86,7 +86,7 @@ export default function Discard() {
           setUniqueVendorCount(uniqueVendors.size);
           const uvData = [];
           uniqueVendors.forEach((vendorName) => {
-            const vendorRows = y.filter(
+            const vendorRows = u.filter(
               (item) => item.vendor_name === vendorName
             );
             uvData.push(vendorRows[0]);
@@ -346,23 +346,23 @@ export default function Discard() {
 
   // ==============================================================
   //iterate for totalAmount of same name venders :-
-  const vendorAmounts = [];
-  uniqueVendorData.forEach((item) => {
-    const vendorName = item.vendor_name;
-    const requestAmount = item.request_amount;
+  // const vendorAmounts = [];
+  // uniqueVendorData.forEach((item) => {
+  //   const vendorName = item.vendor_name;
+  //   const requestAmount = item.request_amount;
 
-    if (vendorAmounts[vendorName]) {
-      vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
-    } else {
-      vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
-    }
-  });
+  //   if (vendorAmounts[vendorName]) {
+  //     vendorAmounts[vendorName] += requestAmount; // Add request amount to existing total
+  //   } else {
+  //     vendorAmounts[vendorName] = requestAmount; // Initialize with request amount
+  //   }
+  // });
 
-  // calculate the total amount for vendors with the same name
-  let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
-    (total, amount) => total + amount,
-    0
-  );
+  // // calculate the total amount for vendors with the same name
+  // let totalSameVendorAmount = Object.values(vendorAmounts).reduce(
+  //   (total, amount) => total + amount,
+  //   0
+  // );
   // ================================================================
   const handleDateFilter = () => {
     const filterData = data.filter((item) => {
@@ -527,7 +527,6 @@ export default function Discard() {
     //   },
     // },
   ];
-
   // unique vender column :-
   const uniqueVendorColumns = [
     {
