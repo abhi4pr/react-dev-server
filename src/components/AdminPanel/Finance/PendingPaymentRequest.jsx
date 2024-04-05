@@ -316,8 +316,9 @@ export default function PendingPaymentRequest() {
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
-
+  console.log(rowData?.request_amount, "rowDATA>>>");
   const handlePayVendorClick = () => {
+    console.log("HIIIIIII>>>");
     // displayRazorpay(paymentAmout);
     // return;
     const formData = new FormData();
@@ -360,6 +361,7 @@ export default function PendingPaymentRequest() {
           "payment_date",
           new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " ")
         );
+        console.log(rowData.request_amount, "REQUEST AMOUNT");
         phpFormData.append("payment_by", userName);
         phpFormData.append("evidence", payMentProof);
         phpFormData.append("finance_remark", payRemark);
@@ -367,7 +369,7 @@ export default function PendingPaymentRequest() {
         phpFormData.append("payment_mode", paymentMode);
         phpFormData.append("gst_hold", rowData.gst_amount);
         phpFormData.append("gst_hold_amount", GSTHoldAmount);
-        formData.append("request_amount", rowData.request_amount);
+        phpFormData.append("request_amount", rowData.request_amount);
         phpFormData.append("tds_deduction", TDSValue);
         phpFormData.append("gst_Hold_Bool", gstHold ? 1 : 0);
         phpFormData.append("tds_Deduction_Bool", TDSDeduction ? 1 : 0);
