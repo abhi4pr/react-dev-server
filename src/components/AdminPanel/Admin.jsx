@@ -280,7 +280,6 @@ import SalesDashboard from "./Sales/SalesDashboard";
 import SalesServicesOverview from "./Sales/SalesServices/SalesServicesOverview";
 import SalesServicesCreate from "./Sales/SalesServices/SalesServicesCreate";
 import SalesServicesUpdate from "./Sales/SalesServices/SalesServicesUpdate";
-<<<<<<< Updated upstream
 import Invoice from "./Finance/Invoice";
 import CreditApprovalReasonCreate from "./Sales/CreditApprovalReason/CreditApprovalReasonCreate";
 import CreditApprovalReasonView from "./Sales/CreditApprovalReason/CreditApprovalReasonView";
@@ -289,12 +288,9 @@ import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
 import CustomerDocumentMaster from "./Customer/CustomerDocumentMaster";
 import CustomerDocumentOverview from "./Customer/CustomerDocumentOverview";
 import NewExpertUpdate from "./RegisterCampaign/Experties/NewExpertUpdate";
-=======
 import IncentiveCreate from "./Sales/IncentivePlan/IncentiveCreate";
 import IncentiveOverview from "./Sales/IncentivePlan/IncentiveOverview";
 import IncentiveUpdate from "./Sales/IncentivePlan/IncentiveUpdate";
-import { SalesContext } from "./Sales/SalesContext";
->>>>>>> Stashed changes
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1240,16 +1236,43 @@ const Admin = () => {
 
                   <Route path="/customer-master" element={<CustomerMaster />} />
                   <Route path="/account-master" element={<AccountMaster />} />
-                  <Route path="/ownership-master" element={<OwnershipMaster />} />
-                  <Route path="/ops-customer-mast" element={<OpsCustomerMast />} />
-                  <Route path="/ops-customer-overview" element={<OpsCustomerOverview />} />
-                   <Route path="/ops-customer-update/:id" element={<OpsCustomerUpdate />} /> 
-                   <Route path="/customer-cont-overview" element={<CustomerContOverview />} /> 
-                   <Route path="/customer-cont-master" element={<CustomerContMaster />} /> 
-                   <Route path="/customer-cont-update/:id" element={<CustomerContUpdate />} /> 
-                   <Route path="/ops-doc-mast" element={<OpsDocMast />} /> 
-                   <Route path="/customer-doc-master" element={<CustomerDocumentMaster />} /> 
-                   <Route path="/customer-document-overview" element={<CustomerDocumentOverview />} /> 
+                  <Route
+                    path="/ownership-master"
+                    element={<OwnershipMaster />}
+                  />
+                  <Route
+                    path="/ops-customer-mast"
+                    element={<OpsCustomerMast />}
+                  />
+                  <Route
+                    path="/ops-customer-overview"
+                    element={<OpsCustomerOverview />}
+                  />
+                  <Route
+                    path="/ops-customer-update/:id"
+                    element={<OpsCustomerUpdate />}
+                  />
+                  <Route
+                    path="/customer-cont-overview"
+                    element={<CustomerContOverview />}
+                  />
+                  <Route
+                    path="/customer-cont-master"
+                    element={<CustomerContMaster />}
+                  />
+                  <Route
+                    path="/customer-cont-update/:id"
+                    element={<CustomerContUpdate />}
+                  />
+                  <Route path="/ops-doc-mast" element={<OpsDocMast />} />
+                  <Route
+                    path="/customer-doc-master"
+                    element={<CustomerDocumentMaster />}
+                  />
+                  <Route
+                    path="/customer-document-overview"
+                    element={<CustomerDocumentOverview />}
+                  />
 
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />
@@ -1352,6 +1375,8 @@ const Admin = () => {
                   <Route
                     path="/create-sale-booking"
                     element={<CreateSaleBooking />}
+                  />
+                  <Route
                     path="/sales-incentive-create"
                     element={<IncentiveCreate />}
                   />
