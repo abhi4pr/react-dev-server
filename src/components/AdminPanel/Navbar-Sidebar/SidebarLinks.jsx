@@ -95,6 +95,9 @@ const SidebarLinks = () => {
     (index) => contextData[index]?.view_value === 1
   );
   const isOpration = [42].some((index) => contextData[index]?.view_value === 1);
+  const isCustomer = [50].some((index) => contextData[index]?.view_value === 1);
+  const isPageManagement = [51].some((index) => contextData[index]?.view_value === 1);
+  const isSales = [52].some((index) => contextData[index]?.view_value === 1);
 
   // const isWFHDuser  = [].some(index=>context )
 
@@ -1514,7 +1517,7 @@ const SidebarLinks = () => {
       )}
       {/* {isUserManagementVisible && ( */}
 
-      {/* {isCustomer && ( */}
+      {isCustomer && (
       <li className="nav-item">
         <Link
           className="nav-btn nav-link collapsed"
@@ -1535,38 +1538,39 @@ const SidebarLinks = () => {
           <div className="internal collapse-inner">
             <>
               <Link className="collapse-item" to="/admin/customer-master">
-                <i class="bi bi-dot"></i> Customer Type
+                <i className="bi bi-dot"></i> Customer Type
               </Link>
 
               <Link className="collapse-item" to="/admin/account-master">
-                <i class="bi bi-dot"></i> Account Type
+                <i className="bi bi-dot"></i> Account Type
               </Link>
 
               <Link className="collapse-item" to="/admin/ownership-master">
-                <i class="bi bi-dot"></i> Ownership Type
+                <i className="bi bi-dot"></i> Ownership Type
               </Link>
               <Link className="collapse-item" to="/admin/ops-customer-overview">
-                <i class="bi bi-dot"></i> Ops Customer Overview
+                <i className="bi bi-dot"></i> Ops Customer Overview
               </Link>
               {/* <Link className="collapse-item" to="/admin/ops-customer-update">
-                <i class="bi bi-dot"></i> Ops Customer Update
+                <i className="bi bi-dot"></i> Ops Customer Update
               </Link> */}
 
               <Link
                 className="collapse-item"
                 to="/admin/customer-cont-overview"
               >
-                <i class="bi bi-dot"></i> Customer Contact Overview
+                <i className="bi bi-dot"></i> Customer Contact Overview
               </Link>
               <Link className="collapse-item" to="/admin/ops-doc-mast">
-                <i class="bi bi-dot"></i> OpsDocMast
+                <i className="bi bi-dot"></i> OpsDocMast
               </Link>
             </>
           </div>
         </div>
       </li>
-      {/* )} */}
+      )}
 
+    {isPageManagement && (
       <li className="nav-item">
         <Link
           className="nav-link collapsed"
@@ -1708,8 +1712,11 @@ const SidebarLinks = () => {
           </div>
         </div>
       </li>
+    )}
 
+    {isSales && (
       <SalesSidebarLinks />
+    )}
     </>
   );
 };
