@@ -289,13 +289,10 @@ import CreditApprovalReasonUpdate from "./Sales/CreditApprovalReason/CreditAppro
 import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
 
 import NewExpertUpdate from "./RegisterCampaign/Experties/NewExpertUpdate";
-<<<<<<< Updated upstream
 import IncentiveCreate from "./Sales/IncentivePlan/IncentiveCreate";
 import IncentiveOverview from "./Sales/IncentivePlan/IncentiveOverview";
 import IncentiveUpdate from "./Sales/IncentivePlan/IncentiveUpdate";
-=======
 import CustomerContactDetails from "./Customer/Contectdetailes/CustomerContactDetails";
->>>>>>> Stashed changes
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1241,45 +1238,6 @@ const Admin = () => {
 
                   <Route path="/customer-master" element={<CustomerMaster />} />
                   <Route path="/account-master" element={<AccountMaster />} />
-<<<<<<< Updated upstream
-                  <Route
-                    path="/ownership-master"
-                    element={<OwnershipMaster />}
-                  />
-                  <Route
-                    path="/ops-customer-mast"
-                    element={<OpsCustomerMast />}
-                  />
-                  <Route
-                    path="/ops-customer-overview"
-                    element={<OpsCustomerOverview />}
-                  />
-                  <Route
-                    path="/ops-customer-update/:id"
-                    element={<OpsCustomerUpdate />}
-                  />
-                  <Route
-                    path="/customer-cont-overview"
-                    element={<CustomerContOverview />}
-                  />
-                  <Route
-                    path="/customer-cont-master"
-                    element={<CustomerContMaster />}
-                  />
-                  <Route
-                    path="/customer-cont-update/:id"
-                    element={<CustomerContUpdate />}
-                  />
-                  <Route path="/ops-doc-mast" element={<OpsDocMast />} />
-                  <Route
-                    path="/customer-doc-master"
-                    element={<CustomerDocumentMaster />}
-                  />
-                  <Route
-                    path="/customer-document-overview"
-                    element={<CustomerDocumentOverview />}
-                  />
-=======
                   <Route path="/ownership-master" element={<OwnershipMaster />} />
                   <Route path="/ops-customer-mast" element={<OpsCustomerMast />} />
                   <Route path="/ops-customer-overview" element={<OpsCustomerOverview />} />
@@ -1291,7 +1249,6 @@ const Admin = () => {
                    <Route path="/customer-document-master" element={<CustomerDocumentMaster />} /> 
                    <Route path="/customer-contact-details/:customer_id" element={<CustomerContactDetails />} /> 
                    <Route path="/customer-document-overview" element={<CustomerDocumentOverview />} /> 
->>>>>>> Stashed changes
 
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />
