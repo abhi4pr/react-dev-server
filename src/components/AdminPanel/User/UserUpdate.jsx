@@ -554,7 +554,6 @@ const UserUpdate = () => {
         cast_type,
         alternate_contact,
       } = fetchedData;
-      console.log(setAccountType(account_type), "----------");
       setSpouseName(spouse_name);
       setUserName(user_name);
       setUserStatus(user_status);

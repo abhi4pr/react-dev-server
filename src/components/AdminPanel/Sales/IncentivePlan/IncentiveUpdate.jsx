@@ -6,9 +6,9 @@ import Select from "react-select";
 import { baseUrl } from "../../../../utils/config";
 import FieldContainer from "../../FieldContainer";
 import FormContainer from "../../FormContainer";
-import DynamicSelect from "../SalesServices/DynamicSelectManualy";
 import { useGlobalContext } from "../../../../Context/Context";
 import { useAPIGlobalContext } from "../../APIContext/APIContext";
+import DynamicSelect from "../DynamicSelectManualy";
 
 const IncentiveUpdate = () => {
   const { id } = useParams();

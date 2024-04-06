@@ -691,10 +691,10 @@ const UserMaster = () => {
           // }
 
           whatsappApi.callWhatsAPI(
-            "user_register",
+            "userMng",
             JSON.stringify(personalContact),
             username,
-            [username, loginId, password, "https://jarvis.work/"]
+            [username, loginId, password]
           );
           setFamilyDetails([initialFamilyDetailsGroup]);
           setEducationDetails([initialEducationDetailsGroup]);
