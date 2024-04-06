@@ -5,9 +5,14 @@ import FieldContainer from "../../FieldContainer";
 import { baseUrl } from "../../../../utils/config";
 import DynamicSelect from "../DynamicSelectManualy";
 import axios from "axios";
+import { useGlobalContext } from "../../../../Context/Context";
+import { useAPIGlobalContext } from "../../APIContext/APIContext";
 
 const SalesServicesUpdate = () => {
-  const { id } = useParams();
+  const { id, post, put } = useParams();
+  const { userID } = useAPIGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [servicename, setServiceName] = useState("");
   const [postType, setPostType] = useState("");
   const [excelUpload, setExcelUpload] = useState("");
@@ -53,7 +58,11 @@ const SalesServicesUpdate = () => {
       .get(`${baseUrl}` + `sales/get_sale_service_master/${id}`)
       .then((res) => {
         const response = res.data.data;
-        setServiceName(response[0]?.service_name);
+        if (post === "post") {
+          setServiceName("");
+        } else {
+          setServiceName(response[0]?.service_name);
+        }
         setPostType(response[0]?.post_type);
         setExcelUpload(response[0]?.is_excel_upload);
         setAmount(response[0]?.amount_status);
@@ -63,7 +72,7 @@ const SalesServicesUpdate = () => {
         setQuantity(response[0]?.quantity_status);
         setBrandName(response[0]?.brand_name_status);
         setHashTag(response[0]?.hashtag);
-        setIndividual(response[0]?.individual_amount_status);
+        setIndividual(response[0]?.indiviual_amount_status);
         setNumberOfCreators(response[0]?.no_of_creators);
         setStartEndDate(response[0]?.start_end_date_status);
         setPerMonthAmount(response[0]?.per_month_amount_status);
@@ -76,37 +85,44 @@ const SalesServicesUpdate = () => {
   }, [id]);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await axios.put(
-        baseUrl + `sales/update_sale_service_maste/${id}`,
-        {
-          service_name: servicename,
-          post_type: postType,
-          is_excel_upload: excelUpload,
-          amount_status: amount,
-          no_of_hours_status: numberHours,
-          goal_status: goal,
-          day_status: day,
-          quantity_status: quantity,
-          brand_name_status: brandName,
-          hashtag: hashTag,
-          individual_amount_status: individual,
-          no_of_creators: numberOfCreators,
-          start_end_date_status: startEndDate,
-          per_month_amount_status: perMonthAmount,
-          deliverables_info: deliverables,
-          remarks: remark,
-          created_by: 712,
-        }
-      );
+    const requestData = {
+      service_name: servicename,
+      post_type: postType,
+      is_excel_upload: excelUpload,
+      amount_status: amount,
+      no_of_hours_status: numberHours,
+      goal_status: goal,
+      day_status: day,
+      quantity_status: quantity,
+      brand_name_status: brandName,
+      hashtag: hashTag,
+      indiviual_amount_status: individual,
+      no_of_creators: numberOfCreators,
+      start_end_date_status: startEndDate,
+      per_month_amount_status: perMonthAmount,
+      deliverables_info: deliverables,
+      remarks: remark,
+      created_by: userID,
+    };
 
-      // toastAlert("Submited Succesfully");
-      // navigate("/admin/hobbies-overview");
+    if (post == "post") {
+      await axios.post(baseUrl + `sales/add_sale_service_master`, requestData);
+    } else {
+      await axios.put(
+        baseUrl + `sales/update_sale_service_master/${id}`,
+        requestData
+      );
+    }
+    try {
+      toastAlert("Submited Succesfully");
+      setIsFormSubmitted(true);
     } catch (error) {
       console.error(error);
-      // alert(error.response.data.message);
     }
   };
+  if (isFormSubmitted) {
+    return <Navigate to="/admin/sales-services-overview" />;
+  }
   return (
     <>
       <FormContainer
@@ -120,6 +136,7 @@ const SalesServicesUpdate = () => {
           fieldGrid={4}
           value={servicename}
           onChange={(e) => setServiceName(e.target.value)}
+          required={false}
         />
         <DynamicSelect
           lable="Post Type"

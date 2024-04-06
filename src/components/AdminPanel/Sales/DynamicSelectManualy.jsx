@@ -18,7 +18,6 @@ const DynamicSelect = ({ data, value, onChange, cols, lable, astric }) => {
           label: `${value}`,
         }}
         onChange={onChange}
-        // isClearable
         required={true}
       />
     </div>
