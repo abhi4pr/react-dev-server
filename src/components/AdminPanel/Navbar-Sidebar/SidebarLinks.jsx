@@ -1549,7 +1549,11 @@ const SidebarLinks = () => {
                 <i className="bi bi-dot"></i> Ownership Type
               </Link>
               <Link className="collapse-item" to="/admin/ops-customer-overview">
+<<<<<<< Updated upstream
                 <i className="bi bi-dot"></i> Ops Customer Overview
+=======
+                <i class="bi bi-dot"></i> Customer Overview
+>>>>>>> Stashed changes
               </Link>
               {/* <Link className="collapse-item" to="/admin/ops-customer-update">
                 <i className="bi bi-dot"></i> Ops Customer Update
@@ -1562,8 +1566,18 @@ const SidebarLinks = () => {
                 <i className="bi bi-dot"></i> Customer Contact Overview
               </Link>
               <Link className="collapse-item" to="/admin/ops-doc-mast">
+<<<<<<< Updated upstream
                 <i className="bi bi-dot"></i> OpsDocMast
+=======
+                <i class="bi bi-dot"></i> Doc Master
+>>>>>>> Stashed changes
               </Link>
+              <Link className="collapse-item" to="/admin/customer-document-overview">
+                <i class="bi bi-dot"></i> Document Overview
+              </Link>
+              {/* <Link className="collapse-item" to="/admin/customer-doc-master">
+                <i class="bi bi-dot"></i> Customer Document
+              </Link> */}
             </>
           </div>
         </div>

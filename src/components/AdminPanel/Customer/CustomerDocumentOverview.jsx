@@ -1,98 +1,124 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
+import { FaEdit } from "react-icons/fa";
+import DeleteButton from "../DeleteButton";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 import { baseUrl } from "../../../utils/config";
+import { FaUserPlus, FaFileAlt } from "react-icons/fa";
 
 const CustomerDocumentOverview = () => {
   const [search, setSearch] = useState("");
-  const [datas, setData] = useState([]);
-  const [filterData, setFilterData] = useState([]);
+  const [documents, setDocuments] = useState([]);
+  const [filteredDocuments, setFilteredDocuments] = useState([]);
 
-  const storedToken = sessionStorage.getItem("token");
-  const decodedToken = jwtDecode(storedToken);
-  
-  function getData() {
-    axios.get(baseUrl + "get_all_customer_document").then((res) => {
-        setData(res.data.customerMastList);
-      setFilterData(res.data.customerMastList);
+console.log(documents);
+
+  // const storedToken = sessionStorage.getItem("token");
+  // const decodedToken = jwtDecode(storedToken);
+  // const userID = decodedToken.id;
+
+  function getDocuments() {
+   axios.get(baseUrl + "get_all_customer_document").then((res) => {
+      console.log(res.data.data);
+      setDocuments(res.data.data);
+      setFilteredDocuments(res.data.data);
     });
   }
 
   useEffect(() => {
-    getData();
+    getDocuments();
   }, []);
 
   useEffect(() => {
-    const result = datas?.filter((d) => {
+    const result = documents?.filter((doc) => {
       return (
-        d.customer_type_id?.toLowerCase().includes(search.toLowerCase()) ||
-        d.account_type_id?.toLowerCase().includes(search.toLowerCase()) ||
-        d.ownership_id?.toLowerCase().includes(search.toLowerCase()) ||
-        d.industry_id?.toLowerCase().includes(search.toLowerCase()) ||
-        d.account_owner_id?.toLowerCase().includes(search.toLowerCase()) 
-
-        );
+        doc.doc_id?.toLowerCase().includes(search.toLowerCase()) ||
+        doc.doc_upload?.toLowerCase().includes(search.toLowerCase()) ||
+        doc.doc_no?.toLowerCase().includes(search.toLowerCase()) ||
+        doc.description?.toLowerCase().includes(search.toLowerCase())
+      );
     });
-    setFilterData(result);
-  }, [search]);
-  
+    setFilteredDocuments(result);
+  }, [search, documents]);
 
   const columns = [
     {
-        name: "S.No",
-        cell: (row, index) => <div>{index + 1}</div>,
-        width: "5%",
-        sortable: true,
-      },
-      {
-        name: "Customer Name",
-        selector: (row) => row.Customer_type_data.customer_type_name,
-        sortable: true,
-      },
-      {
-        name: "Account Name",
-        selector: (row) => row.Account_type_data.account_type_name,
-        sortable: true,
-      },
-      {
-        name: "Ownership Name",
-        selector: (row) => row.Ownership_data.ownership_name,  
-        sortable: true,
-      },
-      {
-        name: "Industry Name",
-        selector: (row) => row.Industry_data.industry_name,  
-        sortable: true,
-      },
-      {
-        name: "Account Owner Name",
-        selector: (row) => row.account_owner_id,
-        sortable: true,
-      },
-     
+      name: "S.No",
+      cell: (row, index) => <div>{index + 1}</div>,
+      width: "5%",
+      sortable: true,
+    },
+    // {
+    //   name: "Customer Type ID",
+    //   selector: (row) => row.customer_id,
+    //   sortable: true,
+    // },
+    {
+      name: "Doc ID",
+      selector: (row) => row.doc_id,
+      sortable: true,
+    },
+    {
+      name: "Doc File",
+      selector: (row) =><img style={{height:"80px" , width:"80px"}} target='blank' src={row.doc_upload}  alt="" /> ,
+      sortable: true,
+    },
+    {
+      name: "Doc No",
+      selector: (row) => row.doc_no,
+      sortable: true,
+    },
+    {
+      name: "Description",
+      selector: (row) => row.description,
+      sortable: true,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <>
+          
+          <Link to={`/admin/customer-doc-master/${row._id}`}>
+            <button
+              title="Edit"
+              className="btn btn-outline-primary btn-sm user-button"
+            >
+              <FaEdit />
+            </button>
+          </Link>
+          <DeleteButton
+            endpoint="delete_customer_document"
+            id={row._id}
+            getData={getDocuments}
+          />
+        </>
+      ),
+      allowOverflow: true,
+      width: "22%",
+    },
   ];
 
   return (
     <>
 
-       <Link to={`/admin/ops-customer-mast`}>
+        <Link to={`/admin/customer-document-master`}>
         <button
           title="Add"
           className="btn btn-outline-primary"
           style={{marginBottom:'10px'}}
         >
-        Add Customer
+        Add Document
         </button>
       </Link>
       
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
-            title="Ops Customer Overview"
+            title="Customer Document Overview"
             columns={columns}
-            data={filterData}
+            data={filteredDocuments}
             fixedHeader
             fixedHeaderScrollHeight="64vh"
             highlightOnHover

@@ -121,7 +121,7 @@ const OwnershipMaster = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Ownership Master" 
+        mainTitle="Ownership" 
         title="Ownership" 
         handleSubmit={handleSubmit}
       >
@@ -135,7 +135,7 @@ const OwnershipMaster = () => {
         <FieldContainer
           label="Description"
           value={description}
-          required={true}
+          required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
       </FormContainer>

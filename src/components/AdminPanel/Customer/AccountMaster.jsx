@@ -122,7 +122,7 @@ const AccountMaster = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Account Master" 
+        mainTitle="Account" 
         title="Account" 
         handleSubmit={handleSubmit}
       >
@@ -136,7 +136,7 @@ const AccountMaster = () => {
         <FieldContainer
           label="Description"
           value={description}
-          required={true}
+          required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
       </FormContainer>

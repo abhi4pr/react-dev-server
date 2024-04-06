@@ -20,6 +20,7 @@ const CustomerContUpdate = () => {
   const [department, setDepartment] = useState("");
   const [designation, setDesignation] = useState("");
   const [description, setDescription] = useState("");
+  const [emailIsInvalid, setEmailIsInvalid] = useState(false);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -36,6 +37,7 @@ const CustomerContUpdate = () => {
       setContactNo(data[0].contact_no);
       setAlternateContact(data[0].alternative_contact_no);
       setEmailId(data[0].email_id);
+      console.log(data,'asdfghjkl')
       setDepartment(data[0].department);
       setDesignation(data[0].designation);
       setDescription(data[0].description);
@@ -53,6 +55,37 @@ const CustomerContUpdate = () => {
     fetchCustomerContactDetails();
   }, [id]);
 
+  const handleContactNo = (e, setState) => {
+    const re = /^[0-9\b]+$/;
+    if (
+      e.target.value === "" ||
+      (re.test(e.target.value) && e.target.value.length <= 10)
+    ) {
+      setState(e.target.value);
+    }
+  };
+
+  const handleAlternativeNo = (e, setState) => {
+    const re = /^[0-9\b]+$/;
+    if (
+      e.target.value === "" ||
+      (re.test(e.target.value) && e.target.value.length <= 10)
+    ) {
+      setState(e.target.value);
+    }
+  };
+
+  
+const handleEmailSet = (e, setState) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setState(e.target.value);
+    if (re.test(e.target.value) || e.target.value === "") {
+      return setEmailIsInvalid(false);
+    }
+    return setEmailIsInvalid(true);
+  };
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     axios.put(`${baseUrl}update_customer_contact/${id}`, {
@@ -60,7 +93,7 @@ const CustomerContUpdate = () => {
       contact_name: contactName,
       contact_no: contactNo,
       alternative_contact_no: alternateContact,
-      email_id: emailId,
+      email_Id: emailId,
       department,
       designation,
       description,
@@ -117,32 +150,42 @@ const CustomerContUpdate = () => {
         type="number"
         value={contactNo}
         required={true}
-        onChange={(e) => setContactNo(e.target.value)}
+        onChange={(e) => handleContactNo(e, setContactNo)}
       />
       <FieldContainer
         label="Alternate Contact"
         type="number"
         value={alternateContact}
-        onChange={(e) => setAlternateContact(e.target.value)}
+        required={true}
+        onChange={(e) => handleAlternativeNo(e, setAlternateContact)}
       />
       <FieldContainer
         label="Email ID"
         value={emailId}
-        onChange={(e) => setEmailId(e.target.value)}
-      />
+        onChange={(e) => handleEmailSet(e,setEmailId )}
+        />
+        {emailIsInvalid && (
+            <span style={{ color: "red", fontSize: "12px" }}>
+              Please enter a valid email
+            </span>
+          )}      
+      
       <FieldContainer
         label="Department"
         value={department}
+        required={false}
         onChange={(e) => setDepartment(e.target.value)}
       />
       <FieldContainer
         label="Designation"
         value={designation}
+        required={false}
         onChange={(e) => setDesignation(e.target.value)}
       />
       <FieldContainer
         label="Description"
         value={description}
+        required={false}
         onChange={(e) => setDescription(e.target.value)}
       />    </FormContainer>
   );
