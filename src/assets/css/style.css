@@ -14414,7 +14414,7 @@ body.sidebar-toggled .sidebar_toggle .footer_cprgt {
 } */
 .sc-ikkxIA,
 .clxJSV {
-  display: none !important;
+  /* display: none !important; */
 }
 
 .rdt_TableCell {
@@ -14635,3 +14635,25 @@ body.sidebar-toggled .sidebar_toggle .footer_cprgt {
   border: 1px solid var(--border);
   margin-left: -2px;
 }
+
+/* .rdt_Table {
+  display: table !important;
+}
+.rdt_TableHead {
+  display: table-header-group !important;
+}
+.rdt_TableHeadRow {
+  display: table-row !important;
+}
+.rdt_TableCol {
+  display: table-cell !important;
+}
+.rdt_TableBody {
+  display: table-row-group !important;
+}
+.rdt_TableRow {
+  display: table-row !important;
+}
+.rdt_TableCell {
+  display: table-cell !important;
+} */
