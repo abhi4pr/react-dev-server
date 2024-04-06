@@ -141,14 +141,26 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
 
   const downloadExcel = () => {
     const workbook = XLSX.utils.book_new();
+    const catNames = Object.keys(catNameLengths);
+
+    const catNameCounts = catNames.reduce((counts, catName) => {
+      counts[catName] = payload.filter(item => item.cat_name === catName).length;
+      return counts;
+    }, {});
+
     const overviewData = [
-      ["", "", "", "Summary"],
-      ["Sno.", "Description", "Count", "Platform", "Deliverables", "Cost"],
-      [1, "Post", summaryData.totalPost, "", ""],
-      [2, "Followers", summaryData.total, "", ""],
-      [3, "Story ", summaryData.totalStory, "", ""],
-      ["", "Total", summaryData.lent],
+        ["", "", "Proposal"],
+        ["Sno.", "Description", "Platform", "Count", "Deliverables", "Cost"],
     ];
+
+    catNames.forEach((catName, index) => {
+        overviewData.push([index + 1, catName, "Instagram", catNameCounts[catName] || 0, "", ""]);
+    });
+
+    overviewData.push(
+        ["", "", "GST (18%)", "",""],
+        ["", "Total", "", summaryData.lent]
+    );
 
     const overviewWorksheet = XLSX.utils.aoa_to_sheet(overviewData);
 

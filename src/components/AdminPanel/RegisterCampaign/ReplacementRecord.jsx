@@ -22,6 +22,7 @@ const style = {
 };
 
 const ReplacementRecord = ({ open, data, handleClose }) => {
+  
   const [replacementData, setReplacementData] = useState({});
   const [oldPageData, seteOldPageData] = useState({});
   const [newPageData, seteNewPageData] = useState([]);
@@ -29,14 +30,16 @@ const ReplacementRecord = ({ open, data, handleClose }) => {
 
   const getRecord = async () => {
     const record = await axios.get(
-      `${baseUrl}`+`replacement/${data.replacement_id._id}`
+      // `${baseUrl}`+`replacement/${data.replacement_id._id}`
+      `${baseUrl}`+`replacement/${data.replacement_id}`
     );
-    console.log(record.data.data, "<---------------------------------");
     setReplacementData(record?.data?.data);
   };
+
   const getPageData = async () => {
     const oldPageData = await axios.get(
-      `${baseUrl}`+`replacement/${data.replacement_id._id}`
+      // `${baseUrl}`+`replacement/${data.replacement_id._id}`
+      `${baseUrl}`+`replacement/${data.replacement_id}`
     );
     seteNewPageData(oldPageData?.data?.data?.newPages);
     setOldData(oldPageData?.data?.data);
@@ -47,11 +50,13 @@ const ReplacementRecord = ({ open, data, handleClose }) => {
       getRecord();
     }
   }, [data]);
+
   useEffect(() => {
     if (replacementData) {
       getPageData();
     }
   }, [replacementData]);
+
   return (
     <Modal
       open={open}
