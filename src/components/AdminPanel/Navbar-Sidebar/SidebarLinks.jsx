@@ -1562,8 +1562,14 @@ const SidebarLinks = () => {
                 <i className="bi bi-dot"></i> Customer Contact Overview
               </Link>
               <Link className="collapse-item" to="/admin/ops-doc-mast">
-                <i className="bi bi-dot"></i> OpsDocMast
+                <i class="bi bi-dot"></i> Doc Master
               </Link>
+              <Link className="collapse-item" to="/admin/customer-document-overview">
+                <i class="bi bi-dot"></i> Document Overview
+              </Link>
+              {/* <Link className="collapse-item" to="/admin/customer-doc-master">
+                <i class="bi bi-dot"></i> Customer Document
+              </Link> */}
             </>
           </div>
         </div>

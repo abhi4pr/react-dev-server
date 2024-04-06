@@ -7,7 +7,7 @@ import axios from "axios";
 import FormContainer from "../FormContainer";
 import jwtDecode from "jwt-decode";
 import { baseUrl } from "../../../utils/config";
-import { FaUserPlus } from 'react-icons/fa';
+import { FaUserPlus, FaFileAlt } from 'react-icons/fa';
 
 const OpsCustomerOverview = () => {
   const [search, setSearch] = useState("");
@@ -55,7 +55,7 @@ const OpsCustomerOverview = () => {
       },
       {
         name: "Customer Name",
-        selector: (row) => row.Customer_type_data.customer_type_name,
+        selector: (row) => row.customer_name,
         sortable: true,
       },
       {
@@ -75,21 +75,42 @@ const OpsCustomerOverview = () => {
       },
       {
         name: "Account Owner Name",
-        selector: (row) => row.account_owner_id,
+        selector: (row) => row.account_owner_id_name,
+        sortable: true,
+      },
+      {
+        name: "PAN Number",
+        selector: (row) => row.company_pan_no,
+        sortable: true,
+      },
+      {
+        name: "GST Number",
+        selector: (row) => row.company_gst_no,
         sortable: true,
       },
      
     {
       name: "Action",
       cell: (row) => (
+        
         <>
-          <Link to={`/admin/customer-cont-master/`}>
+          <Link to={`/admin/customer-contact-details/${row.customer_id}`}>
           <button title="Add Contact" className="btn btn-outline-success btn-sm ml-2">
             <FaUserPlus />
           </button>
            </Link>
-              
-              <Link to={`/admin/ops-customer-update/${row.customer_type_id}`}>
+           
+           <Link to={`/admin/document/${row._id}`}>
+            <button
+              title="Document"
+              className="btn btn-outline-info btn-sm ml-2"
+            >
+              <FaFileAlt />
+            </button>
+          </Link>
+
+              <Link to={`/admin/ops-customer-update/${row._id}`}>
+
                 <button
                   title="Edit"
                   className="btn btn-outline-primary btn-sm user-button"
@@ -99,8 +120,8 @@ const OpsCustomerOverview = () => {
               </Link>
           
               <DeleteButton
-                endpoint="customer_delete"
-                id={row.customer_id}
+                endpoint="delete_customer_mast"
+                id={row._id}
                 getData={getData}
               />
             </>

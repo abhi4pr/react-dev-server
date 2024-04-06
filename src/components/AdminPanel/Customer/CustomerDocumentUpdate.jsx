@@ -6,9 +6,10 @@ import FormContainer from "../FormContainer";
 import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import Select from "react-select";
-import { Navigate } from "react-router-dom";
+import { useParams, Navigate } from "react-router-dom";
 
-const CustomerDocumentMaster = () => {
+const CustomerDocumentUpdate = () => {
+  const { id } = useParams(); 
   const { toastAlert, toastError } = useGlobalContext();
  // const [customerName, setCustomerName] = useState("");
   const [docFile, setDocFile] = useState("");
@@ -21,34 +22,38 @@ const CustomerDocumentMaster = () => {
 
   const [customersData, setCustomersData] = useState([]);
   console.log(customersData, "new name");
-  const CustomerData = () => {
-    axios.get(baseUrl + "get_all_customer_mast").then((res) => {
+  
+  useEffect(() => {
+    axios.get(baseUrl + "get_all_customer_document").then((res) => {
       setCustomersData(res.data.customerMastList);
     });
-  };
-
- 
+  }, []);
 
   useEffect(() => {
-    CustomerData();
-  }, []);
+    axios.get(baseUrl + `get_customer_document/${id}`).then((res) => {
+      const documentData = res.data; 
+      setCustomerName(documentData.customer_id);
+      setDocNo(documentData.doc_no);
+      setDescription(documentData.description);
+    }).catch((error) => {
+      console.error("Error fetching document data:", error);
+    });
+  }, [id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(customerName, "customerName");
     const formData = new FormData();
     //formData.append("customer_id", customerName);
-    formData.append("doc_id", "65f539b586cbd6416a3fd633");
     formData.append("doc_upload", docFile);
     formData.append("doc_no", docNo);
     formData.append("description", description);
-    formData.append("created_by", userID);
+    formData.append("modified_by", userID);
 
     axios
-      .post(baseUrl + "add_customer_document", formData)
+      .put(baseUrl + `update_customer_document/${id}`, formData)
       .then(() => {
         setIsFormSubmitted(true);
-        toastAlert("Contact added successfully");
+        toastAlert("Document updated successfully");
       })
       .catch((error) => {
         toastError("An error occurred: " + error.message);
@@ -61,8 +66,8 @@ const CustomerDocumentMaster = () => {
 
   return (
     <FormContainer
-      mainTitle="Customer Contact Master"
-      title="Add Customer Contact"
+      mainTitle="Customer Document Update"
+      title="Update Customer Document"
       handleSubmit={handleSubmit}
     >
       {/* <div className="form-group col-6">
@@ -70,41 +75,25 @@ const CustomerDocumentMaster = () => {
           Customer Type ID <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
-          options={customersData?.map((option) => ({
+          options={customersData.map((option) => ({
             value: option.customer_id,
             label: option._id,
           }))}
           value={{
             value: customerName,
-            label:
-              customersData?.find((cust) => cust.customer_id === customerName)
-                ?._id || "",
+            label: customerName,
           }}
           onChange={(e) => {
             setCustomerName(e.value);
           }}
-        ></Select>
+        />
       </div> */}
-      <div className="form-group col-6">
+
+       <div className="form-group col-6">
         <label className="form-label">
           Doc ID <sup style={{ color: "red" }}>*</sup>
         </label>
-        <Select
-        //   options={customersData?.map((option) => ({
-        //     value: option.customer_id,
-        //     label: option._id ,
-        //   }))}
-        //   value={{
-        //     value: customerName,
-        //     label:
-        //       customersData?.find((cust) => cust.customer_id === customerName)
-        //         ?._id || "",
-        //   }}
-        //   onChange={(e) => {
-        //     setCustomerName(e.value);
-        //   }}
-        ></Select>
-      </div>
+        </div>
 
       <FieldContainer
         type="file"
@@ -129,4 +118,4 @@ const CustomerDocumentMaster = () => {
   );
 };
 
-export default CustomerDocumentMaster;
+export default CustomerDocumentUpdate;

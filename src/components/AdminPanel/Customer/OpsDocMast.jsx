@@ -138,7 +138,7 @@ const OpsDocMast = () => {
         <FieldContainer
           label="Description"
           value={description}
-          required={true}
+          required={false}
           onChange={(e) => setDescription(e.target.value)}
         />        
       </FormContainer>
@@ -163,7 +163,7 @@ const OpsDocMast = () => {
               />
             }
           />
-        </div>[]
+        </div>
       </div>
 
       <div id="myModal" className="modal fade" role="dialog">

@@ -2,22 +2,25 @@ import { useState, useEffect } from "react";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
-import DeleteButton from "../DeleteButton";
+import DeleteButton from "../../DeleteButton";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
-import { baseUrl } from "../../../utils/config";
+import { baseUrl } from "../../../../utils/config";
+import { param } from "jquery";
+import { useParams} from "react-router-dom"
 
-const CustomerContOverview = () => {
+const CustomerContactDetails = () => {
+  let { customer_id } = useParams();
+  console.log(customer_id,"id");
   const [search, setSearch] = useState("");
   const [datas, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
 
-    const storedToken = sessionStorage.getItem("token");
-    const decodedToken = jwtDecode(storedToken);
-
+  //   const storedToken = sessionStorage.getItem("token");
+  //   const decodedToken = jwtDecode(storedToken);
     function getData() {
-      axios.get(baseUrl + "get_all_customer_contact").then((res) => {
-        setData(res.data.data);
+      axios.get(`${baseUrl}get_list_customer_contact/${customer_id}`).then((res) => {
+        setData(res.data);
         console.log(res.data.data, '----ok')
         setFilterData(res.data.data);
       });
@@ -90,6 +93,7 @@ const CustomerContOverview = () => {
 
   return (
     <>
+
       <Link to={`/admin/customer-cont-master`}>
         <button
           title="Add"
@@ -126,4 +130,4 @@ const CustomerContOverview = () => {
   );
 };
 
-export default CustomerContOverview;
+export default CustomerContactDetails;
