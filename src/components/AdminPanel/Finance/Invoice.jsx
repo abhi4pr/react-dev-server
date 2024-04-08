@@ -90,6 +90,7 @@ const Invoice = () => {
   const [saleBookingId, setSaleBookingId] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [dateFilterInvoice, setDateFilterInvoice] = useState("");
+  const [invoiceMngDate, setInvoiceMngDate] = useState("");
 
   const accordionButtons = ["Pending Invoice", "Invoice Created"];
 
@@ -544,16 +545,17 @@ const Invoice = () => {
     setActiveAccordionIndex(index);
   };
   // Edit Action Field
-  const handleOpenEditFieldAction = (id) => {
+  const handleOpenEditFieldAction = (id, date) => {
     setSaleBookingId(id);
     setEditActionDialog(true);
+    setInvoiceMngDate(date);
   };
   const handleCloseEditFieldAction = () => {
     setEditActionDialog(false);
   };
   // handle submit  function for updating fields
   const handleInvoiceEditFields = async () => {
-    console.log(saleBookingId, "Sale Booking ID");
+    console.log(saleBookingId, "Sale Booking ID", invcDate, "DATE dATA >?????");
     const formData = new FormData();
     // const moment = require("moment");
 
@@ -561,10 +563,7 @@ const Invoice = () => {
     formData.append("loggedin_user_id", 36);
     formData.append("invoiceFormSubmit", 1);
     formData.append("invoice_mnj_number", invcNumber);
-    formData.append(
-      "invoice_mnj_date",
-      moment(invcNumber).format("YYYY/MM/DD")
-    );
+    formData.append("invoice_mnj_date", moment(invcDate).format("YYYY/MM/DD"));
     formData.append("party_mnj_name", partyInvoiceName);
     formData.append("invoice", imageInvoice);
 
@@ -578,6 +577,7 @@ const Invoice = () => {
       )
       .then((res) => {
         handleCloseEditFieldAction();
+        toastAlert("Fields Updated Successfully");
         getDataInvoiceCreated();
       });
   };
@@ -1053,7 +1053,7 @@ const Invoice = () => {
     //   ),
     // },
   ];
-  console.log(filterData, "FILTER DD===");
+
   const columns = [
     {
       width: 60,
@@ -1099,60 +1099,125 @@ const Invoice = () => {
       ),
     },
 
+    // {
+    //   field: "Input",
+    //   headerName: "Input",
+    //   width: 600,
+    //   renderCell: (params, index) => (
+    //     <div className="mt-2 d-flex">
+    //       <TextField
+    //         key={params.row.sale_booking_id}
+    //         className="d-block"
+    //         type="text"
+    //         name="input"
+    //         label="Invoice No."
+    //         sx={{
+    //           marginBottom: "1px",
+    //           "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+    //             padding: "12px ",
+    //           },
+    //         }}
+    //         onChange={(e) => setInoiceNum(e.target.value)}
+    //       />
+    //       {/* //invoice num , date , party name */}
+    //       <div>
+    //         <LocalizationProvider dateAdapter={AdapterDayjs}>
+    //           <DatePicker
+    //             key={params.row.sale_booking_id}
+    //             format="DD/MM/YYYY"
+    //             sx={{
+    //               "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
+    //                 padding: "10px",
+    //               },
+    //             }}
+    //             defaultValue={dayjs()}
+    //             onChange={(e) => {
+    //               setDate(e);
+    //             }}
+    //           />
+    //         </LocalizationProvider>
+    //       </div>
+    //       <div>
+    //         <TextField
+    //           key={params.row.sale_booking_id}
+    //           type="text"
+    //           name="input"
+    //           variant="outlined"
+    //           label="Party Name"
+    //           sx={{
+    //             marginBottom: "1px",
+    //             "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+    //               padding: "12px ",
+    //             },
+    //           }}
+    //           onChange={(e) => setPartyName(e.target.value)}
+    //         />
+    //       </div>
+    //     </div>
+    //   ),
+    // },
     {
-      field: "Input",
-      headerName: "Input",
-      width: 600,
-      renderCell: (params, index) => (
-        <div className="mt-2 d-flex">
-          <TextField
+      field: "invoice_mnj_number",
+      headerName: "Invoice No.",
+      width: 200,
+      renderCell: (params) => (
+        <TextField
+          key={params.row.sale_booking_id}
+          className="d-block"
+          type="text"
+          name="input"
+          label="Invoice No."
+          sx={{
+            marginBottom: "1px",
+            "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+              padding: "12px ",
+            },
+          }}
+          onChange={(e) => setInoiceNum(e.target.value)}
+        />
+      ),
+    },
+    {
+      field: "invoice_mnj_date",
+      headerName: "Invoice Date",
+      width: 200,
+      renderCell: (params) => (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
             key={params.row.sale_booking_id}
-            className="d-block"
-            type="text"
-            name="input"
-            label="Invoice No."
+            format="DD/MM/YYYY"
             sx={{
-              marginBottom: "1px",
-              "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
-                padding: "12px ",
+              "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
+                padding: "10px",
               },
             }}
-            onChange={(e) => setInoiceNum(e.target.value)}
+            defaultValue={dayjs()}
+            onChange={(e) => {
+              setDate(e);
+            }}
           />
-          {/* //invoice num , date , party name */}
-          <div>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                key={params.row.sale_booking_id}
-                format="DD/MM/YYYY"
-                sx={{
-                  "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
-                    padding: "10px",
-                  },
-                }}
-                defaultValue={dayjs()}
-                onChange={(e) => {
-                  setDate(e);
-                }}
-              />
-            </LocalizationProvider>
-          </div>
-          <div>
-            <TextField
-              key={params.row.sale_booking_id}
-              type="text"
-              name="input"
-              label="Party Name"
-              sx={{
-                marginBottom: "1px",
-                "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
-                  padding: "12px ",
-                },
-              }}
-              onChange={(e) => setPartyName(e.target.value)}
-            />
-          </div>
-        </div>
+        </LocalizationProvider>
+      ),
+    },
+    {
+      field: "party_mnj_name",
+      headerName: "Party Name",
+      width: 200,
+      renderCell: (params) => (
+        <TextField
+          key={params.row.sale_booking_id}
+          type="text"
+          name="input"
+          variant="outlined"
+          label="Party Name"
+          sx={{
+            marginBottom: "1px",
+            "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+              padding: "12px ",
+            },
+          }}
+          onChange={(e) => setPartyName(e.target.value)}
+        />
       ),
     },
     {
@@ -1323,6 +1388,12 @@ const Invoice = () => {
       renderCell: (params) => params.row.invoice_mnj_number,
     },
     {
+      field: "invoice_mnj_date",
+      headerName: "Invoice Date",
+      width: 200,
+      renderCell: (params) => params.row.invoice_mnj_date,
+    },
+    {
       field: "party_mnj_name",
       headerName: "Party Name",
       width: 210,
@@ -1397,7 +1468,10 @@ const Invoice = () => {
           <Button
             variant="contained"
             onClick={() =>
-              handleOpenEditFieldAction(params.row.sale_booking_id)
+              handleOpenEditFieldAction(
+                params.row.sale_booking_id,
+                params.row.invoice_mnj_date
+              )
             }
           >
             Edit
@@ -1662,6 +1736,15 @@ const Invoice = () => {
   // ==========================================
   console.log(dataInvoice, "dataInvoice data >>", filterData, "filter Data >>");
 
+  const YYYYMMDDdateConverter = (date) => {
+    let dateObj = new Date(date);
+    let month = String(dateObj.getUTCMonth() + 1).padStart(2, "0"); // Month in 2 digits
+    let day = String(dateObj.getUTCDate()).padStart(2, "0"); // Day in 2 digits
+    let year = dateObj.getUTCFullYear(); // Year in 4 digits
+    let newdate = year + "-" + month + "-" + day;
+    return newdate;
+  };
+
   return (
     <div className="master-card-css ">
       <div className="action_heading w-100">
@@ -1733,16 +1816,16 @@ const Invoice = () => {
                 label="Invoice No."
                 onChange={(e) => setInvcNumber(e.target.value)}
               />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  format="DD/MM/YYYY"
-                  className="mt-3"
-                  defaultValue={dayjs()}
-                  onChange={(e) => {
-                    setInvcDate(e);
-                  }}
-                />
-              </LocalizationProvider>
+              {/* <LocalizationProvider dateAdapter={AdapterDayjs}> */}
+              <input
+                type="date"
+                className="form-control mt-3"
+                onChange={(e) => {
+                  setInvcDate(e.target.value);
+                }}
+                min={YYYYMMDDdateConverter(invoiceMngDate)}
+              />
+              {/* </LocalizationProvider> */}
               <TextField
                 type="text"
                 name="input"
@@ -2332,7 +2415,7 @@ const Invoice = () => {
                   columns={columns}
                   pageSize={5}
                   rowsPerPageOptions={[5]}
-                  disableSelectionOnClick
+                  // disableSelectionOnClick
                   autoHeight
                   slots={{ toolbar: GridToolbar }}
                   slotProps={{
@@ -2343,7 +2426,7 @@ const Invoice = () => {
                   getRowId={(row) => filterData.indexOf(row)}
                 />
               </div>
-            )}{" "}
+            )}
             {openImageDialog && (
               <ImageView
                 viewImgSrc={viewImgSrc}
@@ -2357,7 +2440,7 @@ const Invoice = () => {
                   columns={columnsInvoice}
                   pageSize={5}
                   rowsPerPageOptions={[5]}
-                  disableSelectionOnClick
+                  // disableSelectionOnClick
                   autoHeight
                   slots={{ toolbar: GridToolbar }}
                   slotProps={{
