@@ -96,7 +96,9 @@ const SidebarLinks = () => {
   );
   const isOpration = [42].some((index) => contextData[index]?.view_value === 1);
   const isCustomer = [50].some((index) => contextData[index]?.view_value === 1);
-  const isPageManagement = [51].some((index) => contextData[index]?.view_value === 1);
+  const isPageManagement = [51].some(
+    (index) => contextData[index]?.view_value === 1
+  );
   const isSales = [52].some((index) => contextData[index]?.view_value === 1);
 
   // const isWFHDuser  = [].some(index=>context )
@@ -250,6 +252,9 @@ const SidebarLinks = () => {
 
               <Link className="collapse-item" to="/admin/wfh-single-user">
                 <i className="bi bi-dot"></i> Payout Summary
+              </Link>
+              <Link className="collapse-item" to="/admin/user-summary">
+                <i className="bi bi-dot"></i> User Summary
               </Link>
 
               {/* <Link
@@ -1518,105 +1523,114 @@ const SidebarLinks = () => {
       {/* {isUserManagementVisible && ( */}
 
       {isCustomer && (
-      <li className="nav-item">
-        <Link
-          className="nav-btn nav-link collapsed"
-          data-toggle="collapse"
-          data-target="#customer"
-          aria-expanded="true"
-          aria-controls="customer"
-        >
-          <i className="bi bi-person-gear" />
-          <span>Customer</span>
-        </Link>
-        <div
-          id="customer"
-          className="collapse"
-          aria-labelledby="headingTwo"
-          // data-parent="#accordionSidebar"
-        >
-          <div className="internal collapse-inner">
-            <>
-              <Link className="collapse-item" to="/admin/customer-master">
-                <i className="bi bi-dot"></i> Customer Type
-              </Link>
+        <li className="nav-item">
+          <Link
+            className="nav-btn nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#customer"
+            aria-expanded="true"
+            aria-controls="customer"
+          >
+            <i className="bi bi-person-gear" />
+            <span>Customer</span>
+          </Link>
+          <div
+            id="customer"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            // data-parent="#accordionSidebar"
+          >
+            <div className="internal collapse-inner">
+              <>
+                <Link className="collapse-item" to="/admin/customer-master">
+                  <i className="bi bi-dot"></i> Customer Type
+                </Link>
 
-              <Link className="collapse-item" to="/admin/account-master">
-                <i className="bi bi-dot"></i> Account Type
-              </Link>
+                <Link className="collapse-item" to="/admin/account-master">
+                  <i className="bi bi-dot"></i> Account Type
+                </Link>
 
-              <Link className="collapse-item" to="/admin/ownership-master">
-                <i className="bi bi-dot"></i> Ownership Type
-              </Link>
-              <Link className="collapse-item" to="/admin/ops-customer-overview">
-                <i className="bi bi-dot"></i> Ops Customer Overview
-              </Link>
-              {/* <Link className="collapse-item" to="/admin/ops-customer-update">
+                <Link className="collapse-item" to="/admin/ownership-master">
+                  <i className="bi bi-dot"></i> Ownership Type
+                </Link>
+                <Link
+                  className="collapse-item"
+                  to="/admin/ops-customer-overview"
+                >
+                  <i className="bi bi-dot"></i> Ops Customer Overview
+                </Link>
+                {/* <Link className="collapse-item" to="/admin/ops-customer-update">
                 <i className="bi bi-dot"></i> Ops Customer Update
               </Link> */}
 
-              <Link
-                className="collapse-item"
-                to="/admin/customer-cont-overview"
-              >
-                <i className="bi bi-dot"></i> Customer Contact Overview
-              </Link>
-              <Link className="collapse-item" to="/admin/ops-doc-mast">
-                <i class="bi bi-dot"></i> Doc Master
-              </Link>
-              <Link className="collapse-item" to="/admin/customer-document-overview">
-                <i class="bi bi-dot"></i> Document Overview
-              </Link>
-              {/* <Link className="collapse-item" to="/admin/customer-doc-master">
+                <Link
+                  className="collapse-item"
+                  to="/admin/customer-cont-overview"
+                >
+                  <i className="bi bi-dot"></i> Customer Contact Overview
+                </Link>
+                <Link className="collapse-item" to="/admin/ops-doc-mast">
+                  <i class="bi bi-dot"></i> Doc Master
+                </Link>
+                <Link
+                  className="collapse-item"
+                  to="/admin/customer-document-overview"
+                >
+                  <i class="bi bi-dot"></i> Document Overview
+                </Link>
+                {/* <Link className="collapse-item" to="/admin/customer-doc-master">
                 <i class="bi bi-dot"></i> Customer Document
               </Link> */}
-            </>
+              </>
+            </div>
           </div>
-        </div>
-      </li>
+        </li>
       )}
 
-    {isPageManagement && (
-      <li className="nav-item">
-        <Link
-          className="nav-link collapsed"
-          data-toggle="collapse"
-          data-target="#collapseTwom8"
-          aria-expanded="true"
-          aria-controls="collapseTwom8"
-        >
-          <i className="bi bi-person-gear" />
-          <span>Page Management</span>
-        </Link>
-        <div
-          id="collapseTwom8"
-          className="collapse"
-          aria-labelledby="headingTwo"
-          data-parent="#accordionSidebar"
-        >
-          <div className="internal collapse-inner">
-            {contextData &&
-              contextData[0] &&
-              contextData[0].view_value === 1 && (
-                <Link className="collapse-item" to="/admin/pms-master">
-                  <i className="bi bi-dot"></i>Master
-                </Link>
-              )}
-            {contextData &&
-              contextData[0] &&
-              contextData[0].view_value === 1 && (
-                <Link className="collapse-item" to="/admin/pms-page-overview">
-                  <i className="bi bi-dot"></i>Page
-                </Link>
-              )}
-            {contextData &&
-              contextData[0] &&
-              contextData[0].view_value === 1 && (
-                <Link className="collapse-item" to="/admin/pms-vendor-overview">
-                  <i className="bi bi-dot"></i>Vendor
-                </Link>
-              )}
-            {/* {contextData &&
+      {isPageManagement && (
+        <li className="nav-item">
+          <Link
+            className="nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapseTwom8"
+            aria-expanded="true"
+            aria-controls="collapseTwom8"
+          >
+            <i className="bi bi-person-gear" />
+            <span>Page Management</span>
+          </Link>
+          <div
+            id="collapseTwom8"
+            className="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#accordionSidebar"
+          >
+            <div className="internal collapse-inner">
+              {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-master">
+                    <i className="bi bi-dot"></i>Master
+                  </Link>
+                )}
+              {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+                  <Link className="collapse-item" to="/admin/pms-page-overview">
+                    <i className="bi bi-dot"></i>Page
+                  </Link>
+                )}
+              {contextData &&
+                contextData[0] &&
+                contextData[0].view_value === 1 && (
+                  <Link
+                    className="collapse-item"
+                    to="/admin/pms-vendor-overview"
+                  >
+                    <i className="bi bi-dot"></i>Vendor
+                  </Link>
+                )}
+              {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-vendor-type">
@@ -1624,7 +1638,7 @@ const SidebarLinks = () => {
                 </Link>
               )} */}
 
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-category">
@@ -1632,7 +1646,7 @@ const SidebarLinks = () => {
                 </Link>
               )} */}
 
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-profile-type">
@@ -1640,7 +1654,7 @@ const SidebarLinks = () => {
                 </Link>
               )} */}
 
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[0] &&
               contextData[0].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-page-ownership">
@@ -1648,7 +1662,7 @@ const SidebarLinks = () => {
                 </Link>
               )} */}
 
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[21] &&
               contextData[21].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-platform">
@@ -1656,14 +1670,14 @@ const SidebarLinks = () => {
                 </Link>
               )} */}
 
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[1] &&
               contextData[1].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-pay-method">
                   <i className="bi bi-dot"></i> Payment Method
                 </Link>
               )} */}
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[2] &&
               contextData[2].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-pay-cycle">
@@ -1671,21 +1685,21 @@ const SidebarLinks = () => {
                 </Link>
               )} */}
 
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-group-link-type">
                   <i className="bi bi-dot"></i> Group Link Type
                 </Link>
               )} */}
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link className="collapse-item" to="/admin/pms-price-type">
                   <i className="bi bi-dot"></i> Price
                 </Link>
               )} */}
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link
@@ -1695,7 +1709,7 @@ const SidebarLinks = () => {
                   <i className="bi bi-dot"></i>Platform Price
                 </Link>
               )} */}
-            {/* {contextData &&
+              {/* {contextData &&
               contextData[6] &&
               contextData[6].view_value === 1 && (
                 <Link
@@ -1706,23 +1720,21 @@ const SidebarLinks = () => {
                 </Link>
               )} */}
 
-            {/* <Link className="collapse-item" to="/admin/pms-vendor-overview">
+              {/* <Link className="collapse-item" to="/admin/pms-vendor-overview">
               <i className="bi bi-dot"></i> Vendor Overview
             </Link> */}
-            {/* <Link className="collapse-item" to="/admin/pms-vendor-group-link">
+              {/* <Link className="collapse-item" to="/admin/pms-vendor-group-link">
               <i className="bi bi-dot"></i>Vendor Group Link
             </Link> */}
-            {/* <Link className="collapse-item" to="/admin/pms-page-overview">
+              {/* <Link className="collapse-item" to="/admin/pms-page-overview">
               <i className="bi bi-dot"></i> Page Overview
             </Link> */}
+            </div>
           </div>
-        </div>
-      </li>
-    )}
+        </li>
+      )}
 
-    {isSales && (
-      <SalesSidebarLinks />
-    )}
+      {isSales && <SalesSidebarLinks />}
     </>
   );
 };
