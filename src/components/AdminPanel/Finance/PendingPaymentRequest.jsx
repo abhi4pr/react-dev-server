@@ -775,8 +775,19 @@ export default function PendingPaymentRequest() {
       headerName: "Aging",
       width: 150,
       renderCell: (params) => {
+        // const paymentDate = nodeData.filter(
+        //   (dateData) => dateData.request_id === params.row.request_id
+        // );
         return (
-          <p> {calculateDays(params.row.request_date, new Date())} Days</p>
+          <p>
+            {" "}
+            {Math.round(
+              (
+                calculateHours(params.row.request_date, new Date()) / 24
+              ).toFixed(1)
+            )}{" "}
+            Days
+          </p>
         );
       },
     },
@@ -849,7 +860,7 @@ export default function PendingPaymentRequest() {
               className="btn btn-sm btn-danger mx-2"
               onClick={() => handleDiscardClick(params.row)}
             >
-              discard
+              Discard
             </button>
           </div>
         );
@@ -1296,7 +1307,7 @@ export default function PendingPaymentRequest() {
               className="btn btn-sm btn-danger mx-2"
               onClick={() => handleDiscardClick(params.row)}
             >
-              discard
+              Discard
             </button>
           </div>
         );

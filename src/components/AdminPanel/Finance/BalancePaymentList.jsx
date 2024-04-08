@@ -491,31 +491,49 @@ const BalancePaymentList = () => {
   const handleOpenTDSFields = (row) => {
     setTDSFieldSaleBookingId(row.sale_booking_id);
     setTDSDialog(true);
+    setBalAmount(row.campaign_amount - row.total_paid_amount);
   };
 
   const handleCloseTDSFields = () => {
     setTDSDialog(false);
   };
+
+  const handleTdsValue = (inputValue) => {
+    // if (parseFloat(inputValue) > parseFloat(balAmount)) {
+    //   // If TDS value is greater, don't update state
+    //   toastError("TDS shouldn't be more than Balance Amount");
+    //   // You can also display a message to the user indicating the issue
+    //   return;
+    // }
+    // If TDS value is valid, update state
+    setTDSValue(inputValue);
+  };
   const handleSaveTDS = async () => {
-    const formData = new FormData();
+    if (parseFloat(TDSValue) > parseFloat(balAmount)) {
+      toastError("TDS shouldn't be more than Balance Amount");
+      // You can also display a message to the user indicating the issue
+      return;
+    } else {
+      const formData = new FormData();
 
-    formData.append("sale_booking_id", tdsFieldSaleBookingId);
-    formData.append("tds_percent", TDSPercentage);
-    formData.append("tds_amount", TDSValue);
+      formData.append("sale_booking_id", tdsFieldSaleBookingId);
+      formData.append("tds_percent", TDSPercentage);
+      formData.append("tds_amount", TDSValue);
 
-    await axios
-      .post(
-        "https://sales.creativefuel.io/webservices/RestController.php?view=sales_tds_detail_update",
-        formData
-        // headers: {
-        //   "Content-Type": "multipart/form-data",
-        // },
-      )
-      .then((res) => {
-        handleCloseTDSFields();
-        toastAlert(`TDS DoneE Successfully`);
-        getData();
-      });
+      await axios
+        .post(
+          "https://sales.creativefuel.io/webservices/RestController.php?view=sales_tds_detail_update",
+          formData
+          // headers: {
+          //   "Content-Type": "multipart/form-data",
+          // },
+        )
+        .then((res) => {
+          handleCloseTDSFields();
+          toastAlert(`TDS Done Successfully`);
+          getData();
+        });
+    }
   };
   // ==========================
 
@@ -1026,7 +1044,7 @@ const BalancePaymentList = () => {
       renderCell: (params) =>
         params.row.invoice_mnj_date != "0000-00-00" ? (
           <div style={{ whiteSpace: "normal" }}>
-            {convertDateToDDMMYYYY(params.row.invoice_mnj_date)}
+            {moment(params.row.invoice_mnj_date).format("DD/MM/YYYY")}
           </div>
         ) : (
           ""
