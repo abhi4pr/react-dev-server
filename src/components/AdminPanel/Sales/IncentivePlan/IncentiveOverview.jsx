@@ -5,10 +5,11 @@ import { Link } from "react-router-dom";
 import { baseUrl } from "../../../../utils/config";
 import DeleteButton from "../../DeleteButton";
 import FormContainer from "../../FormContainer";
-import IncentiveCreate from "./IncentiveCreate";
+import DynamicExcelDownload from "../DynamicExcelDownload";
+import DynamicPDFDownload from "../DynamicPDFDownload";
 
 const IncentiveOverview = () => {
-  const [hobbiesData, setHobbiesData] = useState([]);
+  const [incentiveData, setIncentiveData] = useState([]);
   const [origionalData, setOrigionalData] = useState([]);
   const [search, setSearch] = useState("");
   const getData = async () => {
@@ -18,7 +19,7 @@ const IncentiveOverview = () => {
       );
       const data = response.data.data;
       console.log(data, "hello world");
-      setHobbiesData(data);
+      setIncentiveData(data);
       setOrigionalData(data);
     } catch (error) {
       console.error(error);
@@ -33,7 +34,7 @@ const IncentiveOverview = () => {
     const result = origionalData.filter((d) => {
       return d.service_name?.toLowerCase().includes(search.toLowerCase());
     });
-    setHobbiesData(result);
+    setIncentiveData(result);
   }, [search]);
 
   const columns = [
@@ -103,10 +104,34 @@ const IncentiveOverview = () => {
       <div className="page_height">
         <div className="card mb-4">
           <div className="data_tbl table-responsive">
+            <button
+              className="btn btn-danger mt-2"
+              onClick={() => {
+                const selectedData = origionalData.map((row, index) => ({
+                  "S.No": index + 1,
+                  "Service Name": row.Sales_Service_Master.service_name,
+                  "Incentive Type": row.incentive_type,
+                  Value: row.value,
+                }));
+                const fileName = "Incentive-exlce.xlsx";
+                DynamicExcelDownload(selectedData, fileName);
+              }}
+            >
+              Excel Download
+            </button>
+
+            <button
+              className="btn btn-success mt-2"
+              onClick={() => DynamicPDFDownload(origionalData)}
+            >
+              PDF Download
+            </button>
+
+            {/* <DynamicExcelDownload incentiveData={incentiveData} /> */}
             <DataTable
               title="Incentive Overview"
               columns={columns}
-              data={hobbiesData}
+              data={incentiveData}
               fixedHeader
               pagination
               fixedHeaderScrollHeight="64vh"

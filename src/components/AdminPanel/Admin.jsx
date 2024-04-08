@@ -245,8 +245,6 @@ import CustomerContOverview from "./Customer/CustomerContOverview";
 import CustomerContMaster from "./Customer/CustomerContMaster";
 import CustomerContUpdate from "./Customer/CustomerContUpdate";
 import OpsDocMast from "./Customer/OpsDocMast";
-import CustomerDocumentMaster from "./Customer/CustomerDocumentMaster";
-import CustomerDocumentOverview from "./Customer/CustomerDocumentOverview";
 
 import VendorType from "./PageMS/VendorType";
 import PageCategory from "./PageMS/PageCategory";
@@ -287,7 +285,8 @@ import CreditApprovalReasonCreate from "./Sales/CreditApprovalReason/CreditAppro
 import CreditApprovalReasonView from "./Sales/CreditApprovalReason/CreditApprovalReasonView";
 import CreditApprovalReasonUpdate from "./Sales/CreditApprovalReason/CreditApprovalReasonUpdate";
 import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
-
+import CustomerDocumentMaster from "./Customer/CustomerDocumentMaster";
+import CustomerDocumentOverview from "./Customer/CustomerDocumentOverview";
 import NewExpertUpdate from "./RegisterCampaign/Experties/NewExpertUpdate";
 import IncentiveCreate from "./Sales/IncentivePlan/IncentiveCreate";
 import IncentiveOverview from "./Sales/IncentivePlan/IncentiveOverview";
@@ -1239,17 +1238,43 @@ const Admin = () => {
 
                   <Route path="/customer-master" element={<CustomerMaster />} />
                   <Route path="/account-master" element={<AccountMaster />} />
-                  <Route path="/ownership-master" element={<OwnershipMaster />} />
-                  <Route path="/ops-customer-mast" element={<OpsCustomerMast />} />
-                  <Route path="/ops-customer-overview" element={<OpsCustomerOverview />} />
-                   <Route path="/ops-customer-update/:id" element={<OpsCustomerUpdate />} /> 
-                   <Route path="/customer-cont-overview" element={<CustomerContOverview />} /> 
-                   <Route path="/customer-cont-master" element={<CustomerContMaster />} /> 
-                   <Route path="/customer-cont-update/:id" element={<CustomerContUpdate />} /> 
-                   <Route path="/ops-doc-mast" element={<OpsDocMast />} /> 
-                   <Route path="/customer-document-master" element={<CustomerDocumentMaster />} /> 
-                   <Route path="/customer-contact-details/:customer_id" element={<CustomerContactDetails />} /> 
-                   <Route path="/customer-document-overview" element={<CustomerDocumentOverview />} /> 
+                  <Route
+                    path="/ownership-master"
+                    element={<OwnershipMaster />}
+                  />
+                  <Route
+                    path="/ops-customer-mast"
+                    element={<OpsCustomerMast />}
+                  />
+                  <Route
+                    path="/ops-customer-overview"
+                    element={<OpsCustomerOverview />}
+                  />
+                  <Route
+                    path="/ops-customer-update/:id"
+                    element={<OpsCustomerUpdate />}
+                  />
+                  <Route
+                    path="/customer-cont-overview"
+                    element={<CustomerContOverview />}
+                  />
+                  <Route
+                    path="/customer-cont-master"
+                    element={<CustomerContMaster />}
+                  />
+                  <Route
+                    path="/customer-cont-update/:id"
+                    element={<CustomerContUpdate />}
+                  />
+                  <Route path="/ops-doc-mast" element={<OpsDocMast />} />
+                  <Route
+                    path="/customer-doc-master"
+                    element={<CustomerDocumentMaster />}
+                  />
+                  <Route
+                    path="/customer-document-overview"
+                    element={<CustomerDocumentOverview />}
+                  />
 
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />
@@ -1296,7 +1321,10 @@ const Admin = () => {
                   />
                   <Route path="/pms-page-master" element={<PageMaster />} />
                   <Route path="/pms-page-overview" element={<PageOverview />} />
-                  <Route path="/pms-purchase-price/:id" element={<PurchasePrice />} />
+                  <Route
+                    path="/pms-purchase-price/:id"
+                    element={<PurchasePrice />}
+                  />
                   <Route
                     path="/pms-page-edit/:pageMast_id"
                     element={<PageEdit />}
