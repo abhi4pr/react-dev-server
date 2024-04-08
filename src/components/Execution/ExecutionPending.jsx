@@ -31,7 +31,6 @@ function ExecutionPending() {
   const [paymentDialogDetails, setPaymentDialogDetails] = useState([{}]);
 
   const handleClickOpenPaymentDetailDialog = (data) => {
-    console.log(data);
     setPaymentDialogDetails(data);
     setOpenPaymentDetaliDialog(true);
   };
@@ -68,7 +67,7 @@ function ExecutionPending() {
         axios
           .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
           .then((res) => {
-            if (res.data[42].view_value == 1) {
+            if (res.data[26].view_value == 1) {
               setContextData(true);
               setAlert(res.data);
             }
@@ -243,8 +242,7 @@ function ExecutionPending() {
       field: "campaign_amount",
       headerName: "Amount",
       width: 120,
-    },
-    contextData && {
+    }, {
       field: "execution_excel",
       headerName: "Excel",
       width: 150,

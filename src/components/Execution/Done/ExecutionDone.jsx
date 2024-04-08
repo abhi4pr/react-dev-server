@@ -185,8 +185,7 @@ export default function ExecutionDone() {
       field: "campaign_amount",
       headerName: "Amount",
       width: 120,
-    },
-    contextData && {
+    }, {
       field: "execution_excel",
       headerName: "Excel",
       width: 150,
@@ -280,7 +279,7 @@ export default function ExecutionDone() {
           width: 300,
           cellClassName: "actions",
           getActions: (params) => {
-            const { id } = params;
+            const id  = params.row._id
             return [
               <Link key={id} to={`/admin/exeexecution/${id}`}>
                 <GridActionsCellItem

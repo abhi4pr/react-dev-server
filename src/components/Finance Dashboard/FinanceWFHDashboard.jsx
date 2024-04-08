@@ -228,27 +228,137 @@ export default function FinanceWFHDashboard() {
     }
   };
 
-  const handleDownloadExcel = () => {
-    const formattedData = rowForPayment?.map((row, index) => ({
-      "S.No": index + 1,
-      Name: row.user_name,
-      Department: row.dept_name,
-      Month: row.month,
-      Year: row.year,
-      Salary: row.total_salary,
-      "Net Salary": row.net_salary,
-      "TDS Deduction": row.tds_deduction,
-      "To Pay": row.toPay,
-      Status: row.attendence_status_flow,
-      "Attendence ID": row.attendence_id,
-      utr: "",
-    }));
-    const fileName = "AllSalary.xlsx";
-    const worksheet = XLSX.utils.json_to_sheet(formattedData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, fileName);
-  };
+  // const handleDownloadExcel = () => {
+  //   const formattedData = rowForPayment?.map((row, index) => ({
+  //     "S.No": index + 1,
+  //     Name: row.user_name,
+  //     Department: row.dept_name,
+  //     Month: row.month,
+  //     Year: row.year,
+  //     Salary: row.total_salary,
+  //     "Net Salary": row.net_salary,
+  //     "TDS Deduction": row.tds_deduction,
+  //     "To Pay": row.toPay,
+  //     Status: row.attendence_status_flow,
+  //     "Attendence ID": row.attendence_id,
+  //     utr: "",
+  //   }));
+  //   const fileName = "AllSalary.xlsx";
+  //   const worksheet = XLSX.utils.json_to_sheet(formattedData);
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+  //   XLSX.writeFile(workbook, fileName);
+  // };
+
+
+  function convertDateToDDMMYYYY(dateString) {
+    if (String(dateString).startsWith("0000-00-00")) {
+      return " ";
+    }
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
+    const year = date.getFullYear();
+
+    if (day == "NaN" || month == "NaN" || year == "NaN") {
+      return " ";
+    } else {
+      return `${day}-${month}-${year}`;
+    }
+  }
+
+
+    const handleDownloadExcel = () => {
+      // return console.log(rowForPayment,"rowForPayment");
+      const formattedData = rowForPayment?.map((row, index) => ({
+        "PYMT_PROD_TYPE_CODE \n Fixed Value: PAB_VENDOR (All in block letters)":"PAB_VENDOR",
+        "PYMT_MODE Allowed values: FT, NEFT, RTGS, IMPS  (All in block letters; FT: for Fund Transfer to ICICI Acc. ; No special Characters)" :row.bank_name == "ICICI Bank" ? "FT" : "NEFT",
+        "DEBIT_ACC_NO Allowed values: 12 digit ICICI Bank Account number; No special Characters":"004105018735",
+        "BNF_NAME Name of Beneficiary    (No Special Characters; Max 500 Alphabetical Characters allowed)":row.beneficiary_name,
+        "BENE_ACC_NO Account number of Beneficiary (Max 32 Numeric Characters allowed only)":row.account_no,
+        "BENE_IFSC IFSC code of Beneficiary (Enter ICIC0000011 for FT; Alphanumeric only; No special characters)":row.ifsc_code,
+        "AMOUNT Numeric value with decimal up to 2 places":row.toPay,
+        "DEBIT_NARR 30 Alphanumeric Characters; No special characters allowed":row.user_name,
+        "CREDIT_NARR 30 Alphanumeric Characters; No special characters allowed":"",
+        "MOBILE_NUM Mobile no of Bene.10 Digit Numeric values allowed":row.user_contact_no,
+        "EMAIL_ID Email Id of Bene.500 Characters allowed":row.user_email_id,
+        "REMARK Non-Mandatory field (For Internal Use Only)":"",
+        "PYMT_DATE Date format  DD-MM-YYYY":convertDateToDDMMYYYY(new Date()),
+        "REF_NO Non-Mandatory field (30 Characters Alphanumeric Allowed)":"",
+        "ADDL_INFO1 Non-Mandatory field (500 Characters Alphanumeric Allowed)":"",
+        "ADDL_INFO2 Non-Mandatory field (500 Characters Alphanumeric Allowed)":"",
+        "ADDL_INFO3 Non-Mandatory field (500 Characters Alphanumeric Allowed)":"",
+        "ADDL_INFO4 Non-Mandatory field (500 Characters Alphanumeric Allowed)":"",
+        "ADDL_INFO5 Non-Mandatory field (500 Characters Alphanumeric Allowed)":""
+
+      }));
+      const fileName = "AllSalary.xlsx";
+      const worksheet = XLSX.utils.json_to_sheet(formattedData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+      XLSX.writeFile(workbook, fileName);
+    };
+
+  
+    // const handleDownloadExcel = () => {
+    //   const formattedData = rowForPayment?.map((row, index) => ({
+    //     "PYMT_PROD_TYPE_CODE \n Fixed Value: PAB_VENDOR (All in block letters)": "PAB_VENDOR",
+    //     "PYMT_MODE Allowed values: FT, NEFT, RTGS, IMPS  (All in block letters; FT: for Fund Transfer to ICICI Acc. ; No special Characters)": row.bank_name === "ICICI" ? "FT" : "NEFT",
+    //     "DEBIT_ACC_NO Allowed values: 12 digit ICICI Bank Account number; No special Characters": "004105018735",
+    //     "BNF_NAME Name of Beneficiary    (No Special Characters; Max 500 Alphabetical Characters allowed)": row.beneficiary_name,
+    //     "BENE_ACC_NO Account number of Beneficiary (Max 32 Numeric Characters allowed only)": row.account_no,
+    //     "BENE_IFSC IFSC code of Beneficiary (Enter ICIC0000011 for FT; Alphanumeric only; No special characters)": row.ifsc_code,
+    //     "AMOUNT Numeric value with decimal up to 2 places": row.toPay,
+    //     "DEBIT_NARR 30 Alphanumeric Characters; No special characters allowed": row.user_name,
+    //     "CREDIT_NARR 30 Alphanumeric Characters; No special characters allowed": "",
+    //     "MOBILE_NUM Mobile no of Bene.10 Digit Numeric values allowed": row.user_contact_no,
+    //     "EMAIL_ID Email Id of Bene.500 Characters allowed": row.user_email_id,
+    //     "REMARK Non-Mandatory field (For Internal Use Only)": "",
+    //     "PYMT_DATE Date format  DD-MM-YYYY": convertDateToDDMMYYYY(row.date),
+    //     "REF_NO Non-Mandatory field (30 Characters Alphanumeric Allowed)": "",
+    //     "ADDL_INFO1 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
+    //     "ADDL_INFO2 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
+    //     "ADDL_INFO3 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
+    //     "ADDL_INFO4 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
+    //     "ADDL_INFO5 Non-Mandatory field (500 Characters Alphanumeric Allowed)": ""
+    //   }));
+    
+    //   const fileName = "AllSalary.xlsx";
+    
+    //   // Create a new sheet with an empty header row
+    //   const worksheet = XLSX.utils.json_to_sheet([]);
+    
+    //   const formattedHeaders = [
+    //     "PYMT_PROD_TYPE_CODE \n Fixed Value: PAB_VENDOR (All in block letters)",
+    //     "PYMT_MODE Allowed values: FT, NEFT, RTGS, IMPS  (All in block letters; FT: for Fund Transfer to ICICI Acc. ; No special Characters)",
+    //     // ... other headers ...
+    //   ];
+    
+    //   // Ensure at least an empty header row exists
+    //   worksheet['!ref'] = { v: formattedHeaders[0], t: 's' }; // Set first header value and type (string)
+    
+    //   // ... (Rest of the code
+    
+    
+    //   // Update reference to include all headers
+    //   worksheet['!ref'] = XLSX.utils.encode_cell({ c: formattedHeaders.length - 1, r: 0 });
+    
+    //   // Create a merge range for headers
+    //   const mergeRange = XLSX.utils.decode_cell(worksheet['!ref']) + ':' + XLSX.utils.encode_cell({ c: formattedHeaders.length - 1, r: 0 });
+    //   worksheet['!merges'] = [{ s: { c: 0, r: 0 }, e: { c: formattedHeaders.length - 1, r: 0 } }];
+    
+    //   // Set header cell style (replace with your desired red color)
+    //   const headerStyle = { fgColor: { rgb: 'FF0000' }, alignment: { wrapText: true } }; // Red background, wrap text
+    //   for (let i = 0; i < formattedHeaders.length; i++) {
+    //     worksheet[XLSX.utils.encode_cell({ c: i, r: 0 })].i = headerStyle;
+    //   }
+    
+    //   const workbook = XLSX.utils.book_new();
+    //   XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    //   XLSX.writeFile(workbook, fileName);
+    // };
+    
+    
 
   const handleRowSelectionModelChange = async (rowIds) => {
     setRowSelectionModel(rowIds);

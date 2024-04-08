@@ -24,12 +24,8 @@ function ExecutionDetail() {
         setData(
           ...res.data.filter((ele) => ele._id == id)
         );
-        console.log(res.data
-          .filter((ele) => ele._id == id)[0],'filter data')
         setPageIds(() =>
-          res.data
-            .filter((ele) => ele._id == id)[0]
-            .page_ids?.split(",")
+          res.data?.filter((ele) => ele._id == id)[0]?.page_ids?.split(",")
         );
       });
   }, []);
@@ -214,7 +210,6 @@ function ExecutionDetail() {
           justifyContent="space-between"
           sx={{ flexWrap: "wrap", flexDirection: "row", p: 2, mt: 4 }}
         >
-          {console.log(pageNames)}
           <DataGrid
             rows={addSerialNumber(pageNames)}
             columns={columns}

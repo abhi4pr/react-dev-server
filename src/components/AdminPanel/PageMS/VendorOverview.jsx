@@ -257,17 +257,16 @@ const VendorOverview = () => {
       ),
     },
   ];
-
   const copySelectedRows = (type) => {
     let data = [];
     let selectedRows = [];
+    
     if (type === 1) {
       selectedRows = Array.from(
         document.getElementsByClassName("MuiDataGrid-row")
       ).filter((row) => row.classList.contains("Mui-selected"));
-
-      console.log(selectedRows, "selectedRows");
     }
+    
     data = selectedRows.map((row) => {
       let rowData = {};
       for (let j = 1; j < row.children.length - 1; j++) {
@@ -277,46 +276,44 @@ const VendorOverview = () => {
       }
       return rowData;
     });
-    console.log(data, "data");
-    console.log(selectedRows, "selectedRows");
+    
     let copyData = data.map((item) => {
-      let formattedData =
-        `Vendor Name: ${item.vendorMast_name}\n` +
-        `Mobile: ${item.mobile}\n` +
-        `Alternate Mobile: ${item.alternate_mobile}\n` +
-        `Email: ${item.email}\n` +
-        `Home City: ${item.home_city}\n` +
-        `GST No: ${item.gst_no}\n` +
-        `Threshold Limit: ${item.threshold_limit}\n` +
-        `Country Code: ${item.country_code}\n` +
-        `Company Pincode: ${item.company_pincode}\n` +
-        `Company Address: ${item.company_address}\n` +
-        `Company City: ${item.company_city}\n` +
-        `Company Name: ${item.company_name}\n` +
-        `Company State: ${item.company_state}\n` +
-        `Home Address: ${item.home_address}\n` +
-        `Home State: ${item.home_state}\n` +
-        `Pan No: ${item.pan_no}\n` +
-        `Personal Address: ${item.personal_address}\n` +
-        `Vendor Type: ${
-          typeData?.find((type) => type._id == item.type_id)?.type_name
-        }\n` +
-        `Platform: ${item.platform_id}\n` +
-        `Payment Method: ${
-          payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
-        }\n` +
-        `Cycle: ${
-          cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
-        }\n`;
-      return formattedData;
+      return `Vendor Name: ${item.vendorMast_name}\n` +
+             `Mobile: ${item.mobile}\n` +
+             `Alternate Mobile: ${item.alternate_mobile}\n` +
+             `Email: ${item.email}\n` +
+             `Home City: ${item.home_city}\n` +
+             `GST No: ${item.gst_no}\n` +
+             `Threshold Limit: ${item.threshold_limit}\n` +
+             `Country Code: ${item.country_code}\n` +
+             `Company Pincode: ${item.company_pincode}\n` +
+             `Company Address: ${item.company_address}\n` +
+             `Company City: ${item.company_city}\n` +
+             `Company Name: ${item.company_name}\n` +
+             `Company State: ${item.company_state}\n` +
+             `Home Address: ${item.home_address}\n` +
+             `Home State: ${item.home_state}\n` +
+             `Pan No: ${item.pan_no}\n` +
+             `Personal Address: ${item.personal_address}\n` +
+             `Vendor Type: ${typeData?.find((type) => type._id == item.type_id)?.type_name}\n` +
+             `Platform: ${item.platform_id}\n` +
+             `Payment Method: ${payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name}\n` +
+             `Cycle: ${cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name}\n`;
     });
-
-    console.log(copyData, "copyData");
-    console.log(data, "data");
-
-    navigator.clipboard.writeText(copyData.join("\n"));
+    
+    converttoclipboard(copyData.join("\n"));
     toastAlert("Copied Selected Pages");
   };
+  
+  const converttoclipboard = (copydata) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = copydata;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  };
+  
 
   const copyAllRows = () => {
   let data = filterData.map((item) => {
@@ -352,7 +349,8 @@ const VendorOverview = () => {
   }
   );
   console.log(data, "data");
-  navigator.clipboard.writeText(data.join("\n"));
+  // navigator.clipboard.writeText(data.join("\n"));
+  converttoclipboard(data.join("\n"));
   toastAlert("Copied All Pages");
   };
 
