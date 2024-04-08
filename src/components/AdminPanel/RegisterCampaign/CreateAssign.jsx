@@ -35,6 +35,7 @@ const Follower_Count = [
 const CreateAssign = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  
   const [allPageData, setAllPageData] = useState([]);
   const [commit, setCommit] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,6 +67,7 @@ const CreateAssign = () => {
         const assignment = await axios.get(
           `${baseUrl}`+`assignment/phase/${id}`
         );
+        setcampaignId(assignment.data.data[0].campaignId)
         const filter = assignment?.data?.data.filter((page) => {
           return (
             page.replacement_status === "pending" ||
