@@ -12,6 +12,7 @@ import { OverviewTraffic } from "./overview-traffic";
 import AppWebsiteVisits from "./Overview-website-preview";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { baseUrl } from "../../../utils/config";
 
 const now = new Date();
 
@@ -19,16 +20,16 @@ const OverviewIndex = () => {
   const [data, setData] = useState([]);
   const [counts, setCounts] = useState([]);
   useEffect(() => {
-    // const apiBodyData = [
-    //   { status: "pending", filterCriteria: "m" },
-    //   { status: "complete", filterCriteria: "m" },
-    //   { status: "pending", filterCriteria: "w" },
-    //   { status: "complete", filterCriteria: "w" },
-    //   { status: "pending", filterCriteria: "q" },
-    //   { status: "complete", filterCriteria: "q" },
-    //   { status: "pending", filterCriteria: "y" },
-    //   { status: "complete", filterCriteria: "y" },
-    // ];
+    const apiBodyData = [
+      { status: "pending", filterCriteria: "m" },
+      { status: "complete", filterCriteria: "m" },
+      { status: "pending", filterCriteria: "w" },
+      { status: "complete", filterCriteria: "w" },
+      { status: "pending", filterCriteria: "q" },
+      { status: "complete", filterCriteria: "q" },
+      { status: "pending", filterCriteria: "y" },
+      { status: "complete", filterCriteria: "y" },
+    ];
 
     const fetchData = async () => {
       const responseArray = [];
@@ -45,30 +46,30 @@ const OverviewIndex = () => {
           console.log(error);
         });
 
-      // for (const data of apiBodyData) {
-      //   const formData = new URLSearchParams();
-      //   formData.append("loggedin_user_id", 36);
-      //   formData.append("filter_criteria", data.filterCriteria);
-      //   formData.append("pendingorcomplete", data.status);
+      for (const data of apiBodyData) {
+        const formData = new URLSearchParams();
+        formData.append("loggedin_user_id", 36);
+        formData.append("filter_criteria", data.filterCriteria);
+        formData.append("pendingorcomplete", data.status);
 
-      //   try {
-      //     const response = await axios.post(
-      //       "https://sales.creativefuel.io/webservices/RestController.php?view=dashboardData",
-      //       formData,
-      //       {
-      //         headers: {
-      //           "Content-Type": "application/x-www-form-urlencoded",
-      //         },
-      //       }
-      //     );
+        try {
+          const response = await axios.post(
+            "https://sales.creativefuel.io/webservices/RestController.php?view=dashboardData",
+            formData,
+            {
+              headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+              },
+            }
+          );
 
-      //     responseArray.push({
-      //       [data.filterCriteria + data.status]: response.data.body,
-      //     });
-      //   } catch (error) {
-      //     console.error("Error:", error);
-      //   }
-      // }
+          responseArray.push({
+            [data.filterCriteria + data.status]: response.data.body,
+          });
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      }
 
       axios.get(baseUrl+"execution_graph").then((res) => {
         console.log(res.data, "this is response");

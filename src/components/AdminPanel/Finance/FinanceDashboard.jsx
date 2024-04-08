@@ -20,7 +20,7 @@ const FinanceDashboard = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post("https://jarvis.work/api/", {
+    await axios.post("http://34.173.223.156api/", {
       display_sequence: displaySeq,
     });
 

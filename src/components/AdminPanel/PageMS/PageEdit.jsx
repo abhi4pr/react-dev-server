@@ -24,6 +24,10 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseTwoToneIcon from "@mui/icons-material/CloseTwoTone";
 import { Country } from "country-state-city";
 import { BarChart } from "@mui/x-charts";
+import ImageView from "../Finance/ImageView";
+import { DataGrid } from "@mui/x-data-grid";
+import InsertPhotoTwoToneIcon from "@mui/icons-material/InsertPhotoTwoTone";
+import OndemandVideoTwoToneIcon from "@mui/icons-material/OndemandVideoTwoTone";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -153,8 +157,13 @@ const PageEdit = () => {
     value: "1",
   });
   const [p_id, setP_id] = useState();
-  const [viewType, setViewType] = useState("Default");
-
+  const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [viewImgSrc, setViewImgSrc] = useState("");
+  const [p_idHistoryData, setP_idHistoryData] = useState([]);
+  const [graphView, setGraphView] = useState(false);
+  const [openDeleteHistoryConFirmation, setOpenDeleteHistoryConFirmation] =
+    useState(false);
+  const [allUsers, setAllUsers] = useState([]);
 
   const handlePercentageChange = (value, setter) => {
     const newValue = parseFloat(value);
@@ -169,6 +178,28 @@ const PageEdit = () => {
     date.setMinutes(date.getMinutes() - offset);
     setEndDate(newValue);
   };
+
+  function convertDateToDDMMYYYY(dateString) {
+    if (String(dateString).startsWith("0000-00-00")) {
+      return " ";
+    }
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
+    const year = date.getFullYear();
+
+    if (day == "NaN" || month == "NaN" || year == "NaN") {
+      return " ";
+    } else {
+      return `${day}/${month}/${year}`;
+    }
+  }
+
+  useEffect(() => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
+      setAllUsers(res.data.data);
+    });
+  }, []);
 
   const handleStartDateChange = (newValue) => {
     setStartDate(newValue.$d);
@@ -509,7 +540,19 @@ const PageEdit = () => {
         setHistoryData(res.data.data);
         console.log(res.data.data, "res.data.data");
       });
+
+
   };
+
+  useEffect(() => {
+    axios.get(baseUrl + `get_exe_ip_count_history/${p_id}`).then((res) => {
+      console.log(res.data, "get_exe_ip_count_history");
+      const data = res.data.data.filter((e) => {
+        return e.isDeleted !== true;
+      });
+      setP_idHistoryData(data);
+    });
+  }, [p_id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -609,12 +652,7 @@ const PageEdit = () => {
     // handleClickOpenExeDialog();
   };
 
-  const accordionButtons = [
-    "Edit Page",
-    "Page Health",
-    "Page Detailed",
-    "Performance",
-  ];
+  const accordionButtons = ["Edit Page", "Page Health", "Performance"];
 
   const intervalFlagOptions = [
     { label: "Current Month", value: 1 },
@@ -862,186 +900,15 @@ const PageEdit = () => {
 
   const PageHealth = () => {
     return (
-      <>
-        <>
+      <div className="d-felx">
+       page health
+        <div >
           <FieldContainer
             label="Page Name "
             disabled={true}
             value={pageName}
             required={true}
             onChange={(e) => setPageName(e.target.value)}
-          />
-          <FieldContainer
-            label="Link "
-            disabled={true}
-            value={link}
-            required={true}
-            onChange={(e) => setLink(e.target.value)}
-          />
-          <div className="form-group col-6">
-            <label className="form-label">Platform</label>
-            <Select
-              isDisabled={true}
-              options={platformData.map((option) => ({
-                value: option._id,
-                label: option.platform_name,
-              }))}
-              value={{
-                value: platformId,
-                label:
-                  platformData.find((role) => role._id === platformId)
-                    ?.platform_name || "",
-              }}
-              onChange={(e) => {
-                setPlatformId(e.value);
-              }}
-            ></Select>
-          </div>
-          <div className="form-group col-6">
-            <label className="form-label">Category</label>
-            <Select
-              isDisabled
-              options={categoryData.map((option) => ({
-                value: option._id,
-                label: option.page_category,
-              }))}
-              value={{
-                value: categoryId,
-                label:
-                  categoryData.find((role) => role._id === categoryId)
-                    ?.page_category || "",
-              }}
-              onChange={(e) => {
-                setCategoryId(e.value);
-              }}
-            ></Select>
-          </div>
-          <div className="form-group col-6">
-            <label className="form-label">Page Level</label>
-            <Select
-              isDisabled
-              name="page level"
-              options={PageLevels}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              value={PageLevels.find((option) => option.value === pageLevel)}
-              onChange={(selectedOption) => setPageLevel(selectedOption.value)}
-            />
-          </div>
-          <div className="form-group col-6">
-            <label className="form-label">Page Status</label>
-            <Select
-              isDisabled
-              name="page status"
-              options={PageStatus}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              value={PageStatus.find((option) => option.value == pageStatus)}
-              onChange={(selectedOption) => setPageStatus(selectedOption.value)}
-            />
-          </div>
-          <div className="form-group col-6">
-            <label className="form-label">Close by</label>
-            <Select
-              isDisabled
-              options={userData.map((option) => ({
-                value: option.user_id,
-                label: option.user_name,
-              }))}
-              value={{
-                value: closeBy,
-                label:
-                  userData.find((role) => role.user_id === closeBy)
-                    ?.user_name || "",
-              }}
-              onChange={(e) => {
-                setCloseBy(e.value);
-              }}
-            ></Select>
-          </div>
-          <div className="form-group col-6">
-            <label className="form-label">Page Name Type</label>
-            <Select
-              isDisabled
-              name="page name type"
-              options={PageTypes}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              value={PageTypes.find((option) => option.value == pageType)}
-              onChange={(selectedOption) => setPageType(selectedOption.value)}
-            />
-          </div>
-          <div className="form-group col-6">
-            <label className="form-label">Content Creation</label>
-            <Select
-              isDisabled
-              name="Content creation"
-              options={Contents}
-              className="basic-multi-select"
-              classNamePrefix="select"
-              value={Contents.find((option) => option.value == content)}
-              onChange={(selectedOption) => setContent(selectedOption.value)}
-            />
-          </div>
-          <FieldContainer
-            disabled={true}
-            label="Ownership type *"
-            value={ownerType}
-            required={true}
-            onChange={(e) => setOwnerType(e.target.value)}
-          />
-          <div className="form-group col-6">
-            <label className="form-label">Vendor</label>
-            <Select
-              isDisabled
-              options={vendorData.map((option) => ({
-                value: option.vendorMast_id,
-                label: option.vendorMast_name,
-              }))}
-              value={{
-                value: vendorId,
-                label:
-                  vendorData.find((role) => role.vendorMast_id === vendorId)
-                    ?.vendorMast_name || "",
-              }}
-              onChange={(e) => {
-                setVendorId(e.value);
-              }}
-            ></Select>
-          </div>
-          <FieldContainer
-            disabled={true}
-            label="Followers Count "
-            type="number"
-            value={followCount}
-            required={true}
-            onChange={(e) => setFollowCount(e.target.value)}
-          />
-          <div className="form-group col-6">
-            <label className="form-label">Profile Type</label>
-            <Select
-              isDisabled
-              options={profileData.map((option) => ({
-                value: option._id,
-                label: option.profile_type,
-              }))}
-              value={{
-                value: profileId,
-                label:
-                  profileData.find((role) => role._id === profileId)
-                    ?.profile_type || "",
-              }}
-              onChange={(e) => {
-                setProfileId(e.value);
-              }}
-            ></Select>
-          </div>
-          <FieldContainer
-            disabled={true}
-            label="Platform active on"
-            value={platformActive}
-            required={true}
-            onChange={(e) => setPlatformActive(e.target.value)}
           />
           <FieldContainer
             disabled={true}
@@ -1113,8 +980,12 @@ const PageEdit = () => {
               Update
             </button>
           </div>
-        </>
-      </>
+        </div>
+        <div className="d-inline">
+          Page Detailed
+          <PageDetailed />
+        </div>
+      </div>
     );
   };
 
@@ -1178,236 +1049,18 @@ const PageEdit = () => {
   };
 
   const PageDetailed = () => {
+    const reachImgUrl = `${execounthismodels?.reach_upload_image}`;
+    const impressionImgUrl = `${execounthismodels?.impression_upload_image}`;
+    const engagementImgUrl = `${execounthismodels?.engagement_upload_image}`;
+    const storyViewImgUrl = `${execounthismodels?.story_view_upload_image}`;
+    const storyViewVideoUrl = `${execounthismodels?.story_view_upload_video}`;
+    const countryImgUrl = `${execounthismodels?.country_image_upload}`;
+    const ageImgUrl = `${execounthismodels?.Age_upload}`;
+
+    const cityImgUrl = `${execounthismodels?.reach_upload_image}`;
+
     return (
       <>
-        <FieldContainer
-          label="Page Name "
-          disabled={true}
-          value={pageName}
-          required={true}
-          onChange={(e) => setPageName(e.target.value)}
-        />
-        <FieldContainer
-          label="Link "
-          disabled={true}
-          value={link}
-          required={true}
-          onChange={(e) => setLink(e.target.value)}
-        />
-        <div className="form-group col-6">
-          <label className="form-label">Platform</label>
-          <Select
-            isDisabled={true}
-            options={platformData.map((option) => ({
-              value: option._id,
-              label: option.platform_name,
-            }))}
-            value={{
-              value: platformId,
-              label:
-                platformData.find((role) => role._id === platformId)
-                  ?.platform_name || "",
-            }}
-            onChange={(e) => {
-              setPlatformId(e.value);
-            }}
-          ></Select>
-        </div>
-        <div className="form-group col-6">
-          <label className="form-label">Category</label>
-          <Select
-            isDisabled
-            options={categoryData.map((option) => ({
-              value: option._id,
-              label: option.page_category,
-            }))}
-            value={{
-              value: categoryId,
-              label:
-                categoryData.find((role) => role._id === categoryId)
-                  ?.page_category || "",
-            }}
-            onChange={(e) => {
-              setCategoryId(e.value);
-            }}
-          ></Select>
-        </div>
-        <div className="form-group col-6">
-          <label className="form-label">Page Level</label>
-          <Select
-            isDisabled
-            name="page level"
-            options={PageLevels}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            value={PageLevels.find((option) => option.value === pageLevel)}
-            onChange={(selectedOption) => setPageLevel(selectedOption.value)}
-          />
-        </div>
-        <div className="form-group col-6">
-          <label className="form-label">Page Status</label>
-          <Select
-            isDisabled
-            name="page status"
-            options={PageStatus}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            value={PageStatus.find((option) => option.value == pageStatus)}
-            onChange={(selectedOption) => setPageStatus(selectedOption.value)}
-          />
-        </div>
-        <div className="form-group col-6">
-          <label className="form-label">Close by</label>
-          <Select
-            isDisabled
-            options={userData.map((option) => ({
-              value: option.user_id,
-              label: option.user_name,
-            }))}
-            value={{
-              value: closeBy,
-              label:
-                userData.find((role) => role.user_id === closeBy)?.user_name ||
-                "",
-            }}
-            onChange={(e) => {
-              setCloseBy(e.value);
-            }}
-          ></Select>
-        </div>
-        <div className="form-group col-6">
-          <label className="form-label">Page Name Type</label>
-          <Select
-            isDisabled
-            name="page name type"
-            options={PageTypes}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            value={PageTypes.find((option) => option.value == pageType)}
-            onChange={(selectedOption) => setPageType(selectedOption.value)}
-          />
-        </div>
-        <div className="form-group col-6">
-          <label className="form-label">Content Creation</label>
-          <Select
-            isDisabled
-            name="Content creation"
-            options={Contents}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            value={Contents.find((option) => option.value == content)}
-            onChange={(selectedOption) => setContent(selectedOption.value)}
-          />
-        </div>
-        <FieldContainer
-          disabled={true}
-          label="Ownership type *"
-          value={ownerType}
-          required={true}
-          onChange={(e) => setOwnerType(e.target.value)}
-        />
-        <div className="form-group col-6">
-          <label className="form-label">Vendor</label>
-          <Select
-            isDisabled
-            options={vendorData.map((option) => ({
-              value: option.vendorMast_id,
-              label: option.vendorMast_name,
-            }))}
-            value={{
-              value: vendorId,
-              label:
-                vendorData.find((role) => role.vendorMast_id === vendorId)
-                  ?.vendorMast_name || "",
-            }}
-            onChange={(e) => {
-              setVendorId(e.value);
-            }}
-          ></Select>
-        </div>
-        <FieldContainer
-          disabled={true}
-          label="Followers Count "
-          type="number"
-          value={followCount}
-          required={true}
-          onChange={(e) => setFollowCount(e.target.value)}
-        />
-        <div className="form-group col-6">
-          <label className="form-label">Profile Type</label>
-          <Select
-            isDisabled
-            options={profileData.map((option) => ({
-              value: option._id,
-              label: option.profile_type,
-            }))}
-            value={{
-              value: profileId,
-              label:
-                profileData.find((role) => role._id === profileId)
-                  ?.profile_type || "",
-            }}
-            onChange={(e) => {
-              setProfileId(e.value);
-            }}
-          ></Select>
-        </div>
-        <FieldContainer
-          disabled={true}
-          label="Platform active on"
-          value={platformActive}
-          required={true}
-          onChange={(e) => setPlatformActive(e.target.value)}
-        />
-        <FieldContainer
-          disabled={true}
-          label="Engagement Rate"
-          type="number"
-          value={execounthismodels?.engagement}
-          required={true}
-          onChange={(e) => setRate(e.target.value)}
-        />
-        <FieldContainer
-          disabled={true}
-          label="Description"
-          value={description}
-          required={false}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <FieldContainer
-          disabled={true}
-          label="Stats Update %"
-          value={0}
-          required={false}
-          onChange={(e) => setDescription(e.target.value)}
-        />{" "}
-        <FieldContainer
-          disabled={true}
-          label="Stats Update Flag"
-          value={"No"}
-          required={false}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-        <FieldContainer
-          disabled={true}
-          label={"Reach"}
-          value={execounthismodels?.reach}
-        />
-        <FieldContainer
-          disabled={true}
-          label={"Impression"}
-          value={execounthismodels?.impression}
-        />
-        <FieldContainer
-          disabled={true}
-          label={"Engagement"}
-          value={execounthismodels?.engagement}
-        />
-        <FieldContainer
-          disabled={true}
-          label={"Story View"}
-          value={execounthismodels?.story_view}
-        />
         <FieldContainer
           disabled={true}
           label={"Stats For"}
@@ -1416,12 +1069,12 @@ const PageEdit = () => {
         <FieldContainer
           disabled={true}
           label={"Start Date"}
-          value={execounthismodels?.start_date}
+          value={convertDateToDDMMYYYY(execounthismodels?.start_date)}
         />
         <FieldContainer
           disabled={true}
           label={"End Date"}
-          value={execounthismodels?.end_date}
+          value={convertDateToDDMMYYYY(execounthismodels?.end_date)}
         />
         <FieldContainer
           disabled={true}
@@ -1493,90 +1146,667 @@ const PageEdit = () => {
           label={"City Image Upload"}
           value={execounthismodels?.city_image_upload}
         />
+
+        {execounthismodels?.city_image_upload?.length > 0 && (
+          <>
+            {" "}
+            <h5>City Image</h5>
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(cityImgUrl);
+              }}
+              src={cityImgUrl}
+              alt="City"
+              style={{ width: "100px", height: "100px" }}
+            />
+          </>
+        )}
+
+        {reachImgUrl.length > 0 && (
+          <>
+            <h5>Reach Image</h5>
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(reachImgUrl);
+              }}
+              src={reachImgUrl}
+              alt="Reach"
+              style={{ width: "100px", height: "100px" }}
+            />
+          </>
+        )}
+        {impressionImgUrl.length > 0 && (
+          <>
+            <h5>Impression Image</h5>
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(impressionImgUrl);
+              }}
+              src={impressionImgUrl}
+              alt="Impression"
+              style={{ width: "100px", height: "100px" }}
+            />
+          </>
+        )}
+        {engagementImgUrl.length > 0 && (
+          <>
+            <h5>Engagement Image</h5>
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(engagementImgUrl);
+              }}
+              src={engagementImgUrl}
+              alt="Engagement"
+              style={{ width: "100px", height: "100px" }}
+            />
+          </>
+        )}
+        {storyViewImgUrl.length > 0 && (
+          <>
+            <h5>Story View Image</h5>
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(storyViewImgUrl);
+              }}
+              src={storyViewImgUrl}
+              alt="Story View"
+              style={{ width: "100px", height: "100px" }}
+            />
+          </>
+        )}
+        {storyViewVideoUrl.length > 0 && (
+          <>
+            <h5>Story View Video</h5>
+            <video
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(storyViewVideoUrl);
+              }}
+              src={storyViewVideoUrl}
+              alt="Story View"
+              style={{ width: "100px", height: "100px" }}
+            />
+          </>
+        )}
+        {countryImgUrl.length > 0 && (
+          <>
+            <h5>Country Image</h5>
+
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(countryImgUrl);
+              }}
+              alt="Country"
+              style={{ width: "100px", height: "100px" }}
+            />
+          </>
+        )}
+        {ageImgUrl.length > 0 && (
+          <>
+            <h5>Age Image</h5>
+            <img
+              onClick={() => {
+                setOpenImageDialog(true);
+                setViewImgSrc(ageImgUrl);
+              }}
+              src={ageImgUrl}
+              alt="Age"
+              style={{ width: "100px", height: "100px" }}
+            />
+          </>
+        )}
+
+        {openImageDialog && (
+          <ImageView
+            viewImgSrc={viewImgSrc}
+            fullWidth={true}
+            maxWidth={"md"}
+            setViewImgDialog={setOpenImageDialog}
+          />
+        )}
       </>
     );
   };
   const viewInOptions = ["Millions", "Thousands", "Default"];
+  const columns = [
+    {
+      field: "S.No",
+      headerName: "S.No",
+      renderCell: (params) => {
+        const rowIndex = p_idHistoryData.indexOf(params.row);
+        return <div>{rowIndex + 1}</div>;
+      },
+    },
+    {
+      field: "creation_date",
+      headerName: "Creation Date",
+      readerCell: (params) => {
+        return (
+          <div>
+            {params.row?.creation_date ? (
+              <>
+                {new Date(params.row.creation_date).toISOString().substr(8, 2)}/
+                {new Date(params.row.creation_date).toISOString().substr(5, 2)}/
+                {new Date(params.row.creation_date).toISOString().substr(2, 2)}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "executive_name",
+      headerName: "Executive Name",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.user_id ? (
+              <>
+                {
+                  allUsers.filter((e) => e.user_id == params.row.user_id)[0]
+                    ?.user_name
+                }
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "reach",
+      headerName: "Reach",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.reach ? (
+              <>
+                {params.row.reach} {params.row.percentage_reach}&nbsp;
+                {params.row.reach_upload_image_url && (
+                  <a
+                    key="reach"
+                    href={params.row.reach_upload_image_url}
+                    title="Reach Impression Image"
+                    download
+                  >
+                    <InsertPhotoTwoToneIcon
+                      variant="contained"
+                      color="primary"
+                    />
+                  </a>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "impression",
+      headerName: "Impression",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.impression ? (
+              <>
+                {params.row.impression} {params.row.percentage_impression}
+                &nbsp;
+                {params.row.impression_upload_image_url && (
+                  <a
+                    key="reach"
+                    href={params.row.impression_upload_image_url}
+                    title="Reach Impression Image"
+                    download
+                  >
+                    <InsertPhotoTwoToneIcon
+                      variant="contained"
+                      color="primary"
+                    />
+                  </a>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "engagement",
+      headerName: "Engagement",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.engagement ? (
+              <>
+                {params.row.engagement} {params.row.percentage_engagement}
+                &nbsp;
+                {params.row.engagement_upload_image_url && (
+                  <a
+                    key="engagement"
+                    href={params.row.engagement_upload_image_url}
+                    title="Engagement Image"
+                    download
+                  >
+                    <InsertPhotoTwoToneIcon
+                      variant="contained"
+                      color="primary"
+                    />
+                  </a>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "story_view",
+      headerName: "Story View",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.story_view ? (
+              <>
+                {params.row.story_view} {params.row.percentage_story_view}
+                &nbsp;
+                {params.row.story_view_upload_image_url && (
+                  <a
+                    key="storyImg"
+                    href={params.row.story_view_upload_image_url}
+                    title="Story View Image"
+                    download
+                  >
+                    <InsertPhotoTwoToneIcon
+                      variant="contained"
+                      color="primary"
+                    />
+                  </a>
+                )}
+                {params.row.story_view_upload_video_url && (
+                  <a
+                    key="storyVdo"
+                    href={params.row.story_view_upload_video_url}
+                    title="Story view Video"
+                    download
+                  >
+                    <OndemandVideoTwoToneIcon
+                      variant="contained"
+                      color="primary"
+                    />
+                  </a>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "stats_for",
+      headerName: "Stats For",
+      width: 150,
+    },
+    {
+      field: "quater",
+      headerName: "Quater",
+      width: 150,
+    },
+    {
+      field: "city1_name",
+      headerName: "City 1",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.city1_name ? (
+              <>
+                {params.row.city1_name} &nbsp;{" "}
+                {params.row.percentage_city1_name}
+                {params.row.city_image_upload_url && (
+                  <a
+                    key="cityImg"
+                    href={params.row.city_image_upload_url}
+                    title="City Image"
+                    download
+                  >
+                    <InsertPhotoTwoToneIcon
+                      variant="contained"
+                      color="primary"
+                    />
+                  </a>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "city2_name",
+      headerName: "City 2",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.city2_name ? (
+              <>
+                {params.row.city2_name} &nbsp;{" "}
+                {params.row.percentage_city2_name}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "city3_name",
+      headerName: "City 3",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.city3_name ? (
+              <>
+                {params.row.city3_name} &nbsp;{" "}
+                {params.row.percentage_city3_name}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "city4_name",
+      headerName: "City 4",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.city4_name ? (
+              <>
+                {params.row.city4_name} &nbsp;{" "}
+                {params.row.percentage_city4_name}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "city5_name",
+      headerName: "City 5",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.city5_name ? (
+              <>
+                {params.row.city5_name} &nbsp;{" "}
+                {params.row.percentage_city5_name}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "male_percent",
+      headerName: "Male %",
+      width: 150,
+    },
+    {
+      field: "female_percent",
+      headerName: "Female %",
+      width: 150,
+    },
+    {
+      field: "Age_13_17_percent",
+      headerName: "Age 13-17 %",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.Age_13_17_percent ? (
+              <>
+                {params.row.Age_13_17_percent} &nbsp;{" "}
+                {params.row.Age_upload_url && (
+                  <a
+                    key="cityVdo"
+                    href={params.row.Age_upload_url}
+                    title="Age Img"
+                    download
+                  >
+                    <InsertPhotoTwoToneIcon
+                      variant="contained"
+                      color="primary"
+                    />
+                  </a>
+                )}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "Age_18_24_percent",
+      headerName: "Age 18-24 %",
+      width: 150,
+    },
+    {
+      field: "Age_25_34_percent",
+      headerName: "Age 25-34 %",
+    },
+    {
+      field: "Age_35_44_percent",
+      headerName: "Age 35-44 %",
+    },
+    {
+      field: "Age_45_54_percent",
+      headerName: "Age 45-54 %",
+    },
+    {
+      field: "Age_55_64_percent",
+      headerName: "Age 55-64 %",
+    },
+    {
+      field: "Age_65_plus_percent",
+      headerName: "Age 65+ %",
+    },
+    {
+      field: "start_date",
+      headerName: "Start Date",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.start_date ? (
+              <>
+                {new Date(params.row.start_date).toISOString().substr(8, 2)}/
+                {new Date(params.row.start_date).toISOString().substr(5, 2)}/
+                {new Date(params.row.start_date).toISOString().substr(2, 2)}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "story_view_date",
+      headerName: "Story View Date",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row?.story_view_date ? (
+              <>
+                {new Date(params.row.story_view_date)
+                  .toISOString()
+                  .substr(8, 2)}
+                /
+                {new Date(params.row.story_view_date)
+                  .toISOString()
+                  .substr(5, 2)}
+                /
+                {new Date(params.row.story_view_date)
+                  .toISOString()
+                  .substr(2, 2)}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "end_date",
+      headerName: "End Date",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {params.row.end_date ? (
+              <>
+                {new Date(params.row.end_date).toISOString().substr(8, 2)}/
+                {new Date(params.row.end_date).toISOString().substr(5, 2)}/
+                {new Date(params.row.end_date).toISOString().substr(2, 2)}
+              </>
+            ) : (
+              ""
+            )}
+          </div>
+        );
+      },
+    },
+    {
+      field: "creation_date",
+      headerName: "Creation Date",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <div>
+            {new Date(params.row.creation_date).toISOString().substr(8, 2)}/
+            {new Date(params.row.creation_date).toISOString().substr(5, 2)}/
+            {new Date(params.row.creation_date).toISOString().substr(2, 2)}
+          </div>
+        );
+      },
+    },
+    {
+      field: "action",
+      headerName: "Action",
+      width: 150,
+      renderCell: (params) => {
+        return (
+          <Button
+            onClick={() => handleDeleteRowData(params.row)}
+            variant="contained"
+            color="primary"
+          >
+            Delete
+          </Button>
+        );
+      },
+    },
+  ];
 
+  const handleDeleteRowData = (data) => {
+    setRowData(data);
+    handleClickOpenDeleteHistoryConFirmation();
+  };
+  const handleClickOpenDeleteHistoryConFirmation = () => {
+    setOpenDeleteHistoryConFirmation(true);
+  };
   const PerformanceDashboard = () => {
     return (
       <>
-        <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-          <Box sx={{ display: "flex" }}>
-            {/* <Autocomplete
-            disablePortal
-            value={viewType}
-            // defaultValue={compareFlagOptions[0].label}
-            id="combo-box-demo"
-            options={viewInOptions}
-            onChange={(event, newValue) => {
-              if (newValue === null) {
-                return setViewType({
-                  newValue: "Default",
-                });
-              }
+        <Button sx={{ mb: 3 }} onClick={() => setGraphView(!graphView)}>
+          {graphView ? "View Table" : "View Graph"}
+        </Button>
+        {graphView && (
+          <>
+            {" "}
+            <Box
+              sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
+            >
+              <Box sx={{ display: "flex" }}>
+                <Autocomplete
+                  disablePortal
+                  value={intervalFlag.label}
+                  defaultValue={intervalFlagOptions[0].label}
+                  id="combo-box-demo"
+                  options={intervalFlagOptions.map((option) => ({
+                    label: option.label,
+                    value: option.value,
+                  }))}
+                  onChange={(event, newValue) => {
+                    if (newValue === null) {
+                      return setIntervalFlag({
+                        label: "Current Month",
+                        value: 1,
+                      });
+                    }
+                    setIntervalFlag(newValue);
+                  }}
+                  sx={{ width: 300 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Filter Date" />
+                  )}
+                />
+              </Box>
+            </Box>
+            <div className="d-flex justify-content-between">
+              <h6 className="fs-5 mx-2 pt-3">Hightest</h6>
 
-              setViewType(newValue);
-            }}
-            sx={{ width: 250,mr:2 }}
-            renderInput={(params) => <TextField {...params} label="View In" />}
-          /> */}
-            <Autocomplete
-              disablePortal
-              value={intervalFlag.label}
-              defaultValue={intervalFlagOptions[0].label}
-              id="combo-box-demo"
-              options={intervalFlagOptions.map((option) => ({
-                label: option.label,
-                value: option.value,
-              }))}
-              onChange={(event, newValue) => {
-                if (newValue === null) {
-                  return setIntervalFlag({ label: "Current Month", value: 1 });
-                }
-                setIntervalFlag(newValue);
-              }}
-              sx={{ width: 300 }}
-              renderInput={(params) => (
-                <TextField {...params} label="Filter Date" />
-              )}
-            />
-            {/* <Autocomplete
-            className="ms-3"
-            disablePortal
-            value={filterDataVal}
-            defaultChecked="Higest"
-            defaultValue={FilterDataOptions[0]}
-            id="combo-box-demo"
-            options={FilterDataOptions}
-            onChange={(event, newValue) => {
-              if (newValue === null) {
-                return setFilterDataVal("Highest");
-              }
-              setFilterDataVal(newValue);
-            }}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Filter Data" />
-            )}
-          /> */}
-          </Box>
-        </Box>
-        <div className="d-flex justify-content-between">
-          <h6 className="fs-5 mx-2 pt-3">Hightest</h6>
+              <BarChart
+                xAxis={[{ scaleType: "band", data: ["Higest"] }]}
+                series={[
+                  { data: [historyData[0].maxReach], label: "Reach" },
+                  { data: [historyData[0].maxImpression], label: "Impression" },
+                  { data: [historyData[0].maxEngagement], label: "Engagement" },
+                ]}
+                width={500}
+                height={300}
+              />
 
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["Higest"] }]}
-            series={[
-              { data: [historyData[0].maxReach], label: "Reach" },
-              { data: [historyData[0].maxImpression], label: "Impression" },
-              { data: [historyData[0].maxEngagement], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          />
-
-          <BarChart
+              {/* <BarChart
             xAxis={[{ scaleType: "band", data: ["lowest"] }]}
             series={[
               { data: [100000], label: "Reach" },
@@ -1596,75 +1826,87 @@ const PageEdit = () => {
             ]}
             width={500}
             height={300}
+          /> */}
+            </div>
+            <div className="d-flex justify-content-between">
+              <h6 className="fs-5 mx-2 pt-3">Average</h6>
+              <BarChart
+                xAxis={[{ scaleType: "band", data: ["Average"] }]}
+                series={[
+                  { data: [historyData[0].avgReach], label: "Reach" },
+                  { data: [historyData[0].avgImpression], label: "Impression" },
+                  { data: [historyData[0].avgEngagement], label: "Engagement" },
+                ]}
+                width={500}
+                height={300}
+              />{" "}
+              {/* <BarChart
+            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
+            series={[
+              { data: [1000], label: "Reach" },
+              { data: [10000000], label: "Impression" },
+              { data: [10000000000], label: "Engagement" },
+            ]}
+            width={500}
+            height={300}
+          />{" "}
+          <BarChart
+            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
+            series={[
+              { data: [1000], label: "Reach" },
+              { data: [10000000], label: "Impression" },
+              { data: [10000000000], label: "Engagement" },
+            ]}
+            width={500}
+            height={300}
+          /> */}
+            </div>
+            <div className="d-flex justify-content-between">
+              <h6 className="fs-5 mx-2 pt-3">Lowest</h6>
+              <BarChart
+                xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
+                series={[
+                  { data: [historyData[0].minReach], label: "Reach" },
+                  { data: [historyData[0].minImpression], label: "Impression" },
+                  { data: [historyData[0].minEngagement], label: "Engagement" },
+                ]}
+                width={500}
+                height={300}
+              />
+              {/* <BarChart
+            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
+            series={[
+              { data: [1000], label: "Reach" },
+              { data: [10000000], label: "Impression" },
+              { data: [10000000000], label: "Engagement" },
+            ]}
+            width={500}
+            height={300}
           />
-        </div>
+          <BarChart
+            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
+            series={[
+              { data: [1000], label: "Reach" },
+              { data: [10000000], label: "Impression" },
+              { data: [10000000000], label: "Engagement" },
+            ]}
+            width={500}
+            height={300}
+          /> */}
+            </div>{" "}
+          </>
+        )}
 
-        <div className="d-flex justify-content-between">
-          <h6 className="fs-5 mx-2 pt-3">Average</h6>
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["Average"] }]}
-            series={[
-              { data: [historyData[0].avgReach], label: "Reach" },
-              { data: [historyData[0].avgImpression], label: "Impression" },
-              { data: [historyData[0].avgEngagement], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          />{" "}
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
-            series={[
-              { data: [1000], label: "Reach" },
-              { data: [10000000], label: "Impression" },
-              { data: [10000000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          />{" "}
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
-            series={[
-              { data: [1000], label: "Reach" },
-              { data: [10000000], label: "Impression" },
-              { data: [10000000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
+        {
+          <DataGrid
+            rows={p_idHistoryData}
+            columns={columns}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            checkboxSelection
+            getRowId={(row) => row._id}
           />
-        </div>
-        <div className="d-flex justify-content-between">
-          <h6 className="fs-5 mx-2 pt-3">Lowest</h6>
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
-            series={[
-              { data: [historyData[0].minReach], label: "Reach" },
-              { data: [historyData[0].minImpression], label: "Impression" },
-              { data: [historyData[0].minEngagement], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          />
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
-            series={[
-              { data: [1000], label: "Reach" },
-              { data: [10000000], label: "Impression" },
-              { data: [10000000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          />
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
-            series={[
-              { data: [1000], label: "Reach" },
-              { data: [10000000], label: "Impression" },
-              { data: [10000000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          />
-        </div>
+        }
       </>
     );
   };
@@ -1682,8 +1924,8 @@ const PageEdit = () => {
       >
         {activeAccordionIndex === 0 && <Page />}
         {activeAccordionIndex === 1 && <PageHealth />}
-        {activeAccordionIndex === 2 && <PageDetailed />}
-        {activeAccordionIndex === 3 && <PerformanceDashboard />}
+        {/* {activeAccordionIndex === 2 && <PageDetailed />} */}
+        {activeAccordionIndex === 2 && <PerformanceDashboard />}
       </FormContainer>
 
       <div id="myModal1" className="modal fade" role="dialog">

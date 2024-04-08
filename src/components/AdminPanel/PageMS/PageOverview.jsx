@@ -6,12 +6,14 @@ import DeleteButton from "../DeleteButton";
 import { Link } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
-import Skeleton from "@mui/material/Skeleton";
-import { Button, Grid, Stack } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import { useGlobalContext } from "../../../Context/Context";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import RequestPageIcon from '@mui/icons-material/RequestPage';
 
 const PageOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -23,17 +25,23 @@ const PageOverview = () => {
   const [venodr, setVenodr] = useState([{}]);
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(10);
 
   const getData = () => {
+    setProgress(30);
     setLoading(true);
+    setProgress(50);
     axios.get(baseUrl + "getPageMastList").then((res) => {
+      setProgress(70);
       setVendorTypes(res.data.data);
       setFilterData(res.data.data);
+
       setLoading(false);
     });
     axios.get(baseUrl + "getAllPlatform").then((res) => {
       setPlatform(res.data.data);
     });
+    setProgress(80);
     axios.get(baseUrl + "getPageCatgList").then((res) => {
       setCat(res.data.data);
     });
@@ -41,8 +49,10 @@ const PageOverview = () => {
     axios.get(baseUrl + "vendorAllData").then((res) => {
       setVenodr(res.data.tmsVendorkMastList);
     });
+    setProgress(90);
     axios.get(baseUrl + "get_all_users").then((res) => {
       setUser(res.data.data);
+      setProgress(100);
     });
   };
 
@@ -65,7 +75,20 @@ const PageOverview = () => {
 
       width: 130,
     },
-    { field: "page_user_name", headerName: "Page user Name", width: 200 },
+    {
+      field: "page_user_name",
+      headerName: "Page user Name",
+      width: 200,
+      renderCell: (params) => {
+        let name = params.row.page_user_name;
+        let hideName = name.slice(1, name.length);
+        let star = name.slice(0, 1);
+        for (let i = 0; i < hideName.length; i++) {
+          star += "*";
+        }
+        return <div>{star}</div>;
+      },
+    },
     { field: "page_level", headerName: "Page level", width: 200 },
     { field: "page_status", headerName: "Page status", width: 200 },
     { field: "ownership_type", headerName: "Ownership type", width: 200 },
@@ -75,7 +98,7 @@ const PageOverview = () => {
       width: 200,
       renderCell: (params) => (
         <Link to={params.row.link} target="_blank" className="text-primary">
-          {params.row.link}
+          <OpenInNewIcon />
         </Link>
       ),
     },
@@ -165,7 +188,16 @@ const PageOverview = () => {
       width: 300,
       renderCell: (params) => (
         <div className="d-flex align-center ">
-          <Link className="mt-2" to={`/admin/pms-page-edit/${params.row._id}`}>
+          
+          <Link className="mt-2" to={`/admin/pms-purchase-price/${params.row.pageMast_id}`}>
+            <button
+              title="Purchase Price"
+              className="btn btn-outline-primary btn-sm user-button"
+            >
+              <RequestPageIcon />{" "}
+            </button>
+          </Link>
+             <Link className="mt-2" to={`/admin/pms-page-edit/${params.row._id}`}>
             <button
               title="Edit"
               className="btn btn-outline-primary btn-sm user-button"
@@ -183,67 +215,17 @@ const PageOverview = () => {
     },
   ];
 
-  // const copySelectedRows = (type) => {
-  //   let selectedRows = Array.from(
-  //     document.getElementsByClassName("MuiDataGrid-row")
-  //   ).filter((row) => row.classList.contains("Mui-selected"));
-
-  //   let data = selectedRows.map((row) => {
-  //     let rowData = {};
-  //     for (let j = 1; j < row.children.length - 1; j++) {
-  //       if (dataGridcolumns[j].field !== "Action") {
-  //         rowData[dataGridcolumns[j].field] = row.children[j].innerText;
-  //       }
-  //     }
-  //     return rowData;
-  //   });
-
-  //   if (type === 1) {
-  //     let excelData = Object.keys(data[0]).join("\t") + "\n";
-  //     data.forEach((row) => {
-  //       let values = Object.values(row).join("\t");
-  //       excelData += values + "\n";
-  //     });
-  //     navigator.clipboard.writeText(excelData);
-  //   } else {
-  //     let copyData = data.map((row) => {
-  //       return {
-  //         "Page User Name": row.page_user_name,
-  //         Link: row.link,
-  //       };
-  //     });
-  //     let excelData = Object.keys(copyData[0]).join("\t") + "\n";
-  //     copyData.forEach((row) => {
-  //       let values = Object.values(row).join("\t");
-  //       excelData += values + "\n";
-  //     });
-  //     navigator.clipboard.writeText(excelData);
-  //   }
-  // };
-
-  // const copySelectedRows = () => {
-  //   let selectedRows = Array.from(document.getElementsByClassName("MuiDataGrid-row"))
-  //   .filter(row => row.classList.contains("Mui-selected"));
-
-  //   let data = selectedRows.map(row => {
-  //   let rowData = {};
-  //   for (let j = 1; j < row.children.length - 1; j++) {
-  //   if (dataGridcolumns[j].field !== "Action") {
-  //   rowData[dataGridcolumns[j].field] = row.children[j].innerText;
-  //   }
-  //   }
-  //   return rowData;
-  //   });
-
-  //   let formattedData = data.map((row) => {
-  //   let formattedRow = `Page Name: ${row["page_user_name"]}\n Followers: ${row["followers_count"]}\n Page Link: ${row["link"]}\n Platform: ${row["platform_id"]}\n Category: ${row["page_catg_id"]}\n Vendor: ${row["vendorMast_id"]}\n Platform Active On: ${row["platform_active_on"]}\n Engagment Rate: ${row["engagment_rate"]}\n Closed By: ${row["page_closed_by"]}\n Page Name Type: ${row["page_name_type"]}\n Content Creation: ${row["content_creation"]} \n \n`;
-  //   return formattedRow;
-  //   });
-
-  //   navigator.clipboard.writeText(formattedData.join("\n"));
-  //   };
+  const copyToClipboard = (text) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    document.body.removeChild(textarea);
+  };
 
   const copySelectedRows = (type) => {
+    // Your existing code to retrieve the selected rows and format the data
     let selectedRows = Array.from(
       document.getElementsByClassName("MuiDataGrid-row")
     ).filter((row) => row.classList.contains("Mui-selected"));
@@ -259,6 +241,7 @@ const PageOverview = () => {
     });
 
     if (type === 0) {
+      // Copy data without using the clipboard API
       let copyData = data.map((row) => {
         return {
           "Page Name": row.page_level,
@@ -267,28 +250,23 @@ const PageOverview = () => {
       });
 
       let formattedData = copyData.map((row) => {
-        let formattedRow = `Page Name: ${row["Page Name"]}\nPage Link: ${row["Link"]} \n`;
+        let formattedRow = `Page Name: ${row["Page Name"]}\nPage Link: ${row["Link"]}\n`;
         return formattedRow;
       });
 
-      navigator.clipboard.writeText(formattedData.join("\n"));
+      copyToClipboard(formattedData.join("\n"));
       toastAlert("Data Copied Successfully", "success");
       return;
     }
+
+    // Copy data using the clipboard API
     let formattedData = data.map((row) => {
-      let formattedRow =
-        `Page Name: ${row["page_level"]}\n` +
-        `Followers: ${row["followers_count"]}\n` +
-        `Page Link: ${row["platform_id"]}\n` +
-        `Platform: ${row["page_catg_id"]}\n` +
-        `Category: ${row["followers_count"]}\n` +
-        `Ownership Type":${row["link"]}\n` +
-        `Page Status: ${row["ownership_type"]}\n`;
+      let formattedRow = `Page Name: ${row["page_level"]}\nFollowers: ${row["followers_count"]}\nPage Link: ${row["platform_id"]}\nPlatform: ${row["page_catg_id"]}\nCategory: ${row["followers_count"]}\nOwnership Type: ${row["link"]}\nPage Status: ${row["ownership_type"]}\n`;
       return formattedRow;
     });
-    toastAlert("Data Copied Successfully", "success");
 
-    navigator.clipboard.writeText(formattedData.join("\n"));
+    copyToClipboard(formattedData.join("\n"));
+    toastAlert("Data Copied Successfully", "success");
   };
 
   const copyAllRows = () => {
@@ -416,38 +394,42 @@ const PageOverview = () => {
           </div>
 
           {loading ? (
-            <Box mt={2} ml={2} mb={3} sx={{ width: "95%" }}>
-              <Grid
-                container
-                spacing={{ xs: 1, md: 10 }}
-                columns={{ xs: 4, sm: 8, md: 12 }}
+            <Box
+              sx={
+                {
+                  textAlign: "center",
+                  position: "relative",
+                  margin: "auto",
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "center",
+                }
+                // {
+
+                // }
+              }
+            >
+              <CircularProgress variant="determinate" value={progress} />
+              <Box
+                sx={{
+                  top: 0,
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  position: "absolute",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                {Array.from(Array(5)).map((_, index) => (
-                  <Grid item md={1} key={index}>
-                    <Skeleton
-                      sx={{
-                        width: "100%",
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
-              <Grid
-                container
-                spacing={{ xs: 2, md: 3 }}
-                columns={{ xs: 4, sm: 8, md: 12 }}
-              >
-                {Array.from(Array(30)).map((_, index) => (
-                  <Grid item xs={2} sm={2} md={2} key={index}>
-                    <Skeleton
-                      animation="wave"
-                      sx={{
-                        width: "100%",
-                      }}
-                    />
-                  </Grid>
-                ))}
-              </Grid>
+                <Typography
+                  variant="caption"
+                  component="div"
+                  color="text-primary"
+                >
+                  {`${Math.round(progress)}%`}
+                </Typography>
+              </Box>
             </Box>
           ) : (
             <DataGrid

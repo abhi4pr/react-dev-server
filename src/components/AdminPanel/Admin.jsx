@@ -293,6 +293,7 @@ import IncentiveCreate from "./Sales/IncentivePlan/IncentiveCreate";
 import IncentiveOverview from "./Sales/IncentivePlan/IncentiveOverview";
 import IncentiveUpdate from "./Sales/IncentivePlan/IncentiveUpdate";
 import CustomerContactDetails from "./Customer/Contectdetailes/CustomerContactDetails";
+import PurchasePrice from "./PageMS/PurchasePrice";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1295,6 +1296,7 @@ const Admin = () => {
                   />
                   <Route path="/pms-page-master" element={<PageMaster />} />
                   <Route path="/pms-page-overview" element={<PageOverview />} />
+                  <Route path="/pms-purchase-price/:id" element={<PurchasePrice />} />
                   <Route
                     path="/pms-page-edit/:pageMast_id"
                     element={<PageEdit />}
