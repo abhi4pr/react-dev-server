@@ -463,6 +463,12 @@ const WFHDOverview = () => {
               >
                 Sep
               </button>
+              <Link to={`/admin/wfhd-bank-update/${row.user_id}`}>
+                {/* <DetailsIcon /> */}
+                <div className="icon-1" title="Bank details">
+                  <i class="bi bi-info-square"></i>
+                </div>
+              </Link>
               <Link to={`/admin/wfhd-update/${row.user_id}`}>
                 {/* <EditIcon /> */}
                 <div className="icon-1" title="Edit User">

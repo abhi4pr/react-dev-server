@@ -28,7 +28,7 @@ const InvoiceTemplate4 = ({ data }) => {
     );
     return monthIndex !== -1 ? monthIndex + 1 : null;
   }
-  
+
   function getLastDateOfMonth(monthName) {
     const monthNumber = monthNameToNumber(monthName);
     if (monthNumber === null) {
@@ -36,8 +36,8 @@ const InvoiceTemplate4 = ({ data }) => {
     }
     const currentYear = new Date().getFullYear();
     const lastDate = new Date(currentYear, monthNumber, 0).getDate();
-    const formattedMonth = monthNumber < 10 ? '0' + monthNumber : monthNumber;
-    const formattedLastDate = lastDate < 10 ? '0' + lastDate : lastDate;
+    const formattedMonth = monthNumber < 10 ? "0" + monthNumber : monthNumber;
+    const formattedLastDate = lastDate < 10 ? "0" + lastDate : lastDate;
     return `${currentYear}-${formattedMonth}-${formattedLastDate}`;
   }
 
@@ -65,6 +65,7 @@ const InvoiceTemplate4 = ({ data }) => {
                   <div className="invoice-to-content">
                     <p className="font-md color-light-black">Invoice To:</p>
                     <h1 className="d-none">Invoice</h1>
+
                     <h2 className="color-blue-flight font-lg pt-10">
                       CREATIVEFUEL PRIVATE LIMITED
                     </h2>
@@ -82,7 +83,17 @@ const InvoiceTemplate4 = ({ data }) => {
                 <div className="invo-pay-to-wrap invo-pay-to-wrap-photo">
                   <div className="invoice-pay-content">
                     <h1 className="photo-txt">INVOICE</h1>
-                    <div className="invo-head-content pt-20  ">
+                    <div className="addressBox">
+                      <h3>Name : {data?.user_name}</h3>
+                      <h4>E-Mail : {data?.user_email_id}</h4>
+                      <h4>Contact No. : {data?.user_contact_no}</h4>
+                      <h4>
+                        Address :{" "}
+                        {`${data?.permanent_address} ${data?.permanent_city} ${data?.permanent_state}`}
+                      </h4>
+                      <h4>Pincode : {data?.permanent_pin_code}</h4>
+                    </div>
+                    <div className="invo-head-content   ">
                       <div className="invo-head-wrap invo-head-wrap-photo">
                         <div className="color-light-black font-md">
                           Invoice No:
@@ -100,7 +111,7 @@ const InvoiceTemplate4 = ({ data }) => {
                             .split("-")
                             .reverse()
                             .join("-")} */}
-                            {getLastDateOfMonth(data?.month)}
+                          {getLastDateOfMonth(data?.month)}
                         </div>
                       </div>
                     </div>
