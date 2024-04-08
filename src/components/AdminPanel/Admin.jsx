@@ -293,6 +293,7 @@ import IncentiveOverview from "./Sales/IncentivePlan/IncentiveOverview";
 import IncentiveUpdate from "./Sales/IncentivePlan/IncentiveUpdate";
 import CustomerContactDetails from "./Customer/Contectdetailes/CustomerContactDetails";
 import PurchasePrice from "./PageMS/PurchasePrice";
+import UserSummary from "./WFH/UserSummary/UserSummary";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -444,6 +445,10 @@ const Admin = () => {
                   <Route path="/attendence-mast" element={<Attendence />} />
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
+
+                  <Route path="/user-summary" element={<UserSummary />} />
+                  {/* <Route path="/salaryWFH" element={<SalaryWFH />} /> */}
+
                   <Route path="/all-salary" element={<WFHAllSalary />} />
                   <Route path="/salary-summary" element={<SalarySummary />} />
                   {/* Accounts/Finance */}
