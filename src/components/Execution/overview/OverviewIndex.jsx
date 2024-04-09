@@ -1,20 +1,15 @@
 // import Head from "next/head";
-import { subDays, subHours } from "date-fns";
 import { Box, Container, Grid } from "@mui/material";
 import { OverviewBudget } from "./overview-budget";
 import { OverviewLatestOrders } from "./overview-latest-orders";
 import { OverviewLatestProducts } from "./overview-latest-products";
-import { OverviewSales } from "./overview-sales";
-import { OverviewTasksProgress } from "./overview-tasks-progress";
-import { OverviewTotalCustomers } from "./overview-total-customers";
-import { OverviewTotalProfit } from "./overview-total-profit";
 import { OverviewTraffic } from "./overview-traffic";
 import AppWebsiteVisits from "./Overview-website-preview";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { baseUrl } from "../../../utils/config";
 
-const now = new Date();
+
 
 const OverviewIndex = () => {
   const [data, setData] = useState([]);
@@ -35,15 +30,11 @@ const OverviewIndex = () => {
       const responseArray = [];
 
       axios
-        .get(baseUrl+"get_exe_sum", {
+        .get(baseUrl + "get_exe_sum", {
           loggedin_user_id: 52,
         })
         .then((response) => {
-          console.log(response.data, "this is resposne");
           setData(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
         });
 
       for (const data of apiBodyData) {
@@ -66,28 +57,24 @@ const OverviewIndex = () => {
           responseArray.push({
             [data.filterCriteria + data.status]: response.data.body,
           });
-        } catch (error) {
-          console.error("Error:", error);
+        }catch (error) {
+          return console.log(error);
         }
       }
-
-      axios.get(baseUrl+"execution_graph").then((res) => {
-        console.log(res.data, "this is response");
+      axios.get(baseUrl + "execution_graph").then((res) => {
+        // console.log(res.data, "this is response");
         setCounts(res.data);
-        console.log(
-          res.data.filter(
-            (count) =>
-              count.interval_type === "Weekly" && count.execution_status === 1
-          )[0].count,
-          "filter data"
-        );
+        // console.log(
+        //   res.data.filter(
+        //     (count) =>
+        //       count?.interval_type === "Weekly" && count?.execution_status === 3
+        //   )[0]?.count,
+        //   "filter data"
+        // );
       });
 
       setCounts(responseArray);
     };
-    setTimeout(() => {
-      console.log(counts);
-    }, 1000);
     fetchData();
   }, []);
 
@@ -97,7 +84,7 @@ const OverviewIndex = () => {
       <title>Overview | Devias Kit</title>
     </Head> */}
       <Box
-        component="main"
+        // component="main"
         sx={{
           flexGrow: 1,
           py: 8,
@@ -112,12 +99,12 @@ const OverviewIndex = () => {
                   counts.filter(
                     (count) =>
                       count.interval_type === "Weekly" &&
-                      count.execution_status === 1
+                      count.execution_status === 3
                   )[0]?.count !== undefined
                     ? counts.filter(
                         (count) =>
                           count.interval_type === "Weekly" &&
-                          count.execution_status === 1
+                          count.execution_status === 3
                       )[0].count
                     : 0
                 }
@@ -125,15 +112,29 @@ const OverviewIndex = () => {
                   counts.filter(
                     (count) =>
                       count.interval_type === "Weekly" &&
-                      count.execution_status === 0
+                      count.execution_status === 1
                   )[0]?.count
                     ? counts.filter(
                         (count) =>
                           count.interval_type === "Weekly" &&
-                          count.execution_status === 0
+                          count.execution_status === 1
                       )[0].count
                     : 0
                 }
+                onGoing= {
+                  counts.filter(
+                    (count) =>
+                      count.interval_type === "Weekly" &&
+                      count.execution_status === 2
+                  )[0]?.count
+                    ? counts.filter(
+                        (count) =>
+                          count.interval_type === "Weekly" &&
+                          count.execution_status === 2
+                      )[0].count
+                    : 0
+                }
+               
                 sx={{ height: "100%" }}
                 value="Weekly Execution"
               />
@@ -145,6 +146,19 @@ const OverviewIndex = () => {
                   counts.filter(
                     (count) =>
                       count.interval_type === "Monthly" &&
+                      count.execution_status === 3
+                  )[0]?.count
+                    ? counts.filter(
+                        (count) =>
+                          count.interval_type === "Monthly" &&
+                          count.execution_status === 3
+                      )[0].count
+                    : 0
+                }
+                pending={
+                  counts.filter(
+                    (count) =>
+                      count.interval_type === "Monthly" &&
                       count.execution_status === 1
                   )[0]?.count
                     ? counts.filter(
@@ -154,19 +168,21 @@ const OverviewIndex = () => {
                       )[0].count
                     : 0
                 }
-                pending={
+
+                onGoing= {
                   counts.filter(
                     (count) =>
                       count.interval_type === "Monthly" &&
-                      count.execution_status === 0
+                      count.execution_status === 2
                   )[0]?.count
                     ? counts.filter(
                         (count) =>
                           count.interval_type === "Monthly" &&
-                          count.execution_status === 0
+                          count.execution_status === 2
                       )[0].count
                     : 0
                 }
+               
                 sx={{ height: "100%" }}
                 value="Monthly Execution"
               />
@@ -178,6 +194,19 @@ const OverviewIndex = () => {
                   counts.filter(
                     (count) =>
                       count.interval_type === "Quarterly" &&
+                      count.execution_status === 3
+                  )[0]?.count
+                    ? counts.filter(
+                        (count) =>
+                          count.interval_type === "Quarterly" &&
+                          count.execution_status === 3
+                      )[0].count
+                    : 0
+                }
+                pending={
+                  counts.filter(
+                    (count) =>
+                      count.interval_type === "Quarterly" &&
                       count.execution_status === 1
                   )[0]?.count
                     ? counts.filter(
@@ -187,19 +216,21 @@ const OverviewIndex = () => {
                       )[0].count
                     : 0
                 }
-                pending={
+
+                onGoing= {
                   counts.filter(
                     (count) =>
                       count.interval_type === "Quarterly" &&
-                      count.execution_status === 0
+                      count.execution_status === 2
                   )[0]?.count
                     ? counts.filter(
                         (count) =>
                           count.interval_type === "Quarterly" &&
-                          count.execution_status === 0
+                          count.execution_status === 2
                       )[0].count
                     : 0
                 }
+               
                 sx={{ height: "100%" }}
                 value="Quaterly Execution"
               />
@@ -211,6 +242,19 @@ const OverviewIndex = () => {
                   counts.filter(
                     (count) =>
                       count.interval_type === "Yearly" &&
+                      count.execution_status === 3
+                  )[0]?.count
+                    ? counts.filter(
+                        (count) =>
+                          count.interval_type === "Yearly" &&
+                          count.execution_status === 3
+                      )[0].count
+                    : 0
+                }
+                pending={
+                  counts.filter(
+                    (count) =>
+                      count.interval_type === "Yearly" &&
                       count.execution_status === 1
                   )[0]?.count
                     ? counts.filter(
@@ -220,19 +264,20 @@ const OverviewIndex = () => {
                       )[0].count
                     : 0
                 }
-                pending={
+                onGoing= {
                   counts.filter(
                     (count) =>
                       count.interval_type === "Yearly" &&
-                      count.execution_status === 0
+                      count.execution_status === 2
                   )[0]?.count
                     ? counts.filter(
                         (count) =>
                           count.interval_type === "Yearly" &&
-                          count.execution_status === 0
+                          count.execution_status === 2
                       )[0].count
                     : 0
                 }
+               
                 sx={{ height: "100%" }}
                 value="Yearly Execution"
               />

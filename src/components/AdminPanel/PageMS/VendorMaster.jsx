@@ -39,6 +39,7 @@ const VendorMaster = () => {
   const [payData, setPayData] = useState([]);
   const [cycleData, setCycleData] = useState([]);
   const [emailIsInvalid, setEmailIsInvalid] = useState(false);
+  const [gstApplicable, setGstApplicable] = useState("No");
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -156,6 +157,17 @@ const VendorMaster = () => {
       toastAlert("Submitted");
     });
   };
+
+  const gstOptions = [
+    {
+      label: "Yes",
+      value: "Yes",
+    },
+    {
+      label: "No",
+      value: "No",
+    },
+  ];
 
   if (isFormSubmitted) {
     return <Navigate to="/admin/pms-vendor-overview" />;
@@ -317,19 +329,46 @@ const VendorMaster = () => {
           onChange={(e) => setPanImage(e.target.files[0])}
         />
 
-        <FieldContainer
-          label="GST"
-          value={gst}
-          required={false}
-          onChange={(e) => setGst(e.target.value.toUpperCase())}
-        />
-        <FieldContainer
-          type="file"
-          label="Gst Image"
-          // value={gstImage}
-          required={false}
-          onChange={(e) => setGstImage(e.target.files[0])}
-        />
+        <div className="form-group col-6">
+          <label className="form-label">
+            GST Applicable<sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={gstOptions.map((option) => ({
+              value: option.value,
+              label: option.label,
+            }))}
+            required={true}
+            value={{
+              value: gstApplicable,
+              label:
+                gstOptions.find((role) => role.value === gstApplicable)
+                  ?.label || "",
+            }}
+            onChange={(e) => {
+              setGstApplicable(e.value);
+            }}
+          ></Select>
+        </div>
+
+        {gstApplicable == "Yes" && (
+          <>
+            {" "}
+            <FieldContainer
+              label="GST"
+              value={gst}
+              required={false}
+              onChange={(e) => setGst(e.target.value.toUpperCase())}
+            />
+            <FieldContainer
+              type="file"
+              label="Gst Image"
+              // value={gstImage}
+              required={false}
+              onChange={(e) => setGstImage(e.target.files[0])}
+            />
+          </>
+        )}
 
         <FieldContainer
           label="Company Name"

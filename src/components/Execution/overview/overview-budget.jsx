@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 export const OverviewBudget = (props) => {
-  const { complete, pending, sx, value } = props;
+  const { complete, pending, onGoing, sx, value } = props;
 
   return (
     <Card sx={sx}>
@@ -54,6 +54,20 @@ export const OverviewBudget = (props) => {
               {/* </SvgIcon> */}
             </Avatar>
             <Typography variant="h6">Pending</Typography>
+
+            <Avatar
+              sx={{
+                backgroundColor: "warning.dark",
+                height: 46,
+                width: 46,
+              }}
+            >
+              <Typography variant="h6">{onGoing}</Typography>
+              {/* <SvgIcon> */}
+              {/* <CurrencyRupeeIcon /> */}
+              {/* </SvgIcon> */}
+            </Avatar>
+            <Typography variant="h6">Ongoing</Typography>
           </Stack>
         </Stack>
         {/* {difference && (
