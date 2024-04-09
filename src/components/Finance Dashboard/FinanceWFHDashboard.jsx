@@ -458,6 +458,18 @@ export default function FinanceWFHDashboard() {
     setShowModal(false);
   };
 
+  // const handleUndo = async (row) => {
+  //   console.log(row);
+  //   try {
+  //     const res = await axios.put(`${baseUrl}update_finance_data`, {
+  //       attendence_id: row.attendence_id,
+  //     });
+  //     console.log("Data updated successfully:", res.data);
+  //   } catch (error) {
+  //     console.error("Error updating data:", error);
+  //   }
+  // };
+
   function handlePayOut(e) {
     e.preventDefault();
     if (!refrenceNumber) return;
@@ -734,7 +746,11 @@ export default function FinanceWFHDashboard() {
                 }}
               />
               <button
+<<<<<<< Updated upstream
                 style={{ width: "200px" }}
+=======
+                style={{ width: "100px" }}
+>>>>>>> Stashed changes
                 className="btn btn-primary"
                 //  type="submit"
                 onClick={(e) => handleUTRupload(e, params.row)}
@@ -742,6 +758,14 @@ export default function FinanceWFHDashboard() {
               >
                 Submit
               </button>
+              {/* <button
+                style={{ width: "200px" }}
+                className="btn btn-primary"
+                type="button"
+                onClick={() => handleUndo(params.row)}
+              >
+                Undo
+              </button> */}
             </form>
           </div>
         );
@@ -1033,7 +1057,70 @@ export default function FinanceWFHDashboard() {
           </Button>
         )}
       </div>
+<<<<<<< Updated upstream
       <div className="thm_table">
+=======
+      <DataGrid
+        rows={filterData?.filter((item) => item.status_ === 1)}
+        columns={pendingColumns}
+        getRowId={(row) => row.id}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 50,
+            },
+          },
+        }}
+        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+        pageSizeOptions={[5, 25, 50, 100, 500]}
+        checkboxSelection
+        // disableRowSelectionOnClick
+        onRowSelectionModelChange={(rowIds) => {
+          handleRowSelectionModelChange(rowIds);
+          // console.log(rowIds);
+        }}
+        rowSelectionModel={rowSelectionModel}
+        slotProps={{
+          toolbar: {
+            showQuickFilter: true,
+          },
+        }}
+      />
+    </div>
+  );
+
+  const payoutReleased = (
+    <>
+      <div>
+        {rowForPayment.length > 0 && (
+          <button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "200px" }}
+            className=" btn btn-primary ml-3 mb-2"
+            onClick={handleDownloadExcel}
+          >
+            Download Excel
+          </button>
+        )}
+        {/* <div style={{ height: "50px" }} className="d-flex">
+          {rowForPayment.length > 0 && (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ width: "100px" }}
+              className="ml-3 mb-2"
+              onClick={handleDownloadInvoices}
+            >
+              Download PDF Zip
+            </Button>
+          )}
+        </div> */}
+        {/* <h1>Payout Released</h1> */}
+
+>>>>>>> Stashed changes
         <DataGrid
           rows={filterData?.filter((item) => item.status_ === 1)}
           columns={pendingColumns}
@@ -1287,12 +1374,54 @@ export default function FinanceWFHDashboard() {
   // );
 
   return (
+<<<<<<< Updated upstream
     <div>
       <FormContainer
         mainTitle="Payout Summary"
         submitButton={false}
         link="true"
       />
+=======
+    <div className="master-card-css">
+      <FormContainer submitButton={false} link="true" />
+      <div className="card body-padding">
+        <div className="row thm_form ">
+          <div className="form-group col-3 ">
+            <label className="form-label">
+              Department Name<sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              options={[
+                { value: "", label: "All" },
+                ...departmentData.map((option) => ({
+                  value: option.dept_id,
+                  label: option.dept_name,
+                })),
+              ]}
+              value={
+                departmentFilter === ""
+                  ? { value: "", label: "" }
+                  : {
+                      value: departmentFilter,
+                      label:
+                        departmentData.find(
+                          (dept) => dept.dept_id === departmentFilter
+                        )?.dept_name || "Select...",
+                    }
+              }
+              onChange={(selectedOption) => {
+                const selectedValue = selectedOption
+                  ? selectedOption.value
+                  : "";
+                setDepartmentFilter(selectedValue);
+                if (selectedValue === "") {
+                  getData();
+                }
+              }}
+              required
+            />
+          </div>
+>>>>>>> Stashed changes
 
       <div className="row">
         <div className="col-12">
@@ -1411,7 +1540,11 @@ export default function FinanceWFHDashboard() {
         </div>
       </div>
 
+<<<<<<< Updated upstream
       <div className="tab mb24">
+=======
+      <div className="tab">
+>>>>>>> Stashed changes
         {accordionButtons.map((button, index) => (
           <div
             className={`named-tab ${
@@ -1422,11 +1555,60 @@ export default function FinanceWFHDashboard() {
             }}
           >
             {button}
+<<<<<<< Updated upstream
           </div>
         ))}
       </div>
 
       <div className="card">
+=======
+          </div>
+        ))}
+      </div>
+      <div
+        className={`card ${activeAccordionIndex === 1 ? "" : "body-padding"}`}
+      >
+        {activeAccordionIndex === 1 && (
+          // <FormContainer {handleCSVFlieupload}>
+          <div className="card-header p-1">
+            <div className="pack " style={{ alignItem: "center" }}>
+              <FieldContainer
+                // label="Upload UTR"
+
+                type="file"
+                accept=".xls,.xlsx"
+                fieldGrid={6}
+                onChange={(e) => setCSVFile(e.target.files[0])}
+              />
+              <input
+                onClick={handleCSVFlieupload}
+                type="submit"
+                value={"Upload UTR"}
+                className="btn btn-primary h-50 mt-3 "
+                disabled={!CSVFile}
+              />
+            </div>
+          </div>
+
+          // </FormContainer>
+        )}
+        <div
+          className={`${
+            activeAccordionIndex === 1 ? "card-body body-padding" : ""
+          }`}
+        >
+          {invoice}
+
+          {activeAccordionIndex === 0 && pending}
+          {/* {activeAccordionIndex === 1 && verified} */}
+          {activeAccordionIndex === 1 && payoutReleased}
+          {activeAccordionIndex === 2 && failedTransaction}
+          {/* {activeAccordionIndex === 3 && TDS}
+{activeAccordionIndex === 4 && NonTDS} */}
+        </div>
+      </div>
+      {showModal && (
+>>>>>>> Stashed changes
         <div
           className={`card-body ${
             activeAccordionIndex === 1 ? "" : "body-padding"
@@ -1553,6 +1735,7 @@ export default function FinanceWFHDashboard() {
           </div>
         )}
 
+<<<<<<< Updated upstream
         {showFilterModal && (
           <DataGridDialog
             open={showFilterModal}
@@ -1577,6 +1760,31 @@ export default function FinanceWFHDashboard() {
           />
         )}
       </div>
+=======
+      {showFilterModal && (
+        <DataGridDialog
+          open={showFilterModal}
+          handleClose={() => {
+            setShowFilterModal(false),
+              setDepartmentFilter(""),
+              setMonths(""),
+              setYears("");
+          }}
+          fullWidth={true}
+          maxWidth="lg"
+          // handleFullWidthChange={handleFullWidthChange}
+          // handleMaxWidthChange={handleMaxWidthChange}
+          rows={filterData}
+          columns={TDSUserCol}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+        />
+      )}
+>>>>>>> Stashed changes
     </div>
   );
 }
