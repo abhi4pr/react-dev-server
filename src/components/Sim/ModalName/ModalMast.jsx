@@ -123,7 +123,7 @@ const ModalMast = () => {
             color="primary"
             onClick={() => handleBrandData(row)}
           >
-           <i className="bi bi-pencil"></i>
+            <i className="bi bi-pencil"></i>
           </button>
           <DeleteButton
             endpoint="delete_asset_modal"
@@ -137,7 +137,7 @@ const ModalMast = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!modalName || modalName == "") {
-      return toastError("Modal Name is Required");
+      return toastError("Model Name is Required");
     } else if (!brandName || brandName == "") {
       return toastError("Brand Name is Required");
     }
@@ -152,7 +152,7 @@ const ModalMast = () => {
           asset_modal_name: modalName,
           asset_brand_id: brandName,
         });
-        toastAlert("Modal Created");
+        toastAlert("Model Created");
         setModalName("");
         setBrandName("");
         getModalData();

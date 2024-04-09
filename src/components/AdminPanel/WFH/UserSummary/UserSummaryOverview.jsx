@@ -82,32 +82,32 @@ const UserSummaryOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
           )}
           {tabTwo && (
             <div className="profileInfo_area">
-              <div className="row profileInfo_row pt-0">
-                <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-                  <div className="profileInfo_box">
-                    <h3>Doc Type</h3>
-                    <h4>
-                      {filterData[0]?.doc_type ? filterData[0]?.doc_type : "NA"}
-                    </h4>
+              {filterData.map((d) => (
+                <div className="row profileInfo_row pt-0">
+                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div className="profileInfo_box">
+                      <h3>Doc Type</h3>
+                      <h4>{d?.doc_type ? d?.doc_type : "NA"}</h4>
+                    </div>
+                  </div>
+                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div className="profileInfo_box">
+                      <h3>Doc Image</h3>
+                      <img
+                        style={{ height: "250px", width: "250px" }}
+                        src={d?.doc_image_url}
+                        alt="NA"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
+                    <div className="profileInfo_box">
+                      <h3>Description</h3>
+                      <h4>{d?.description ? d?.description : "NA"}</h4>
+                    </div>
                   </div>
                 </div>
-                <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-                  <div className="profileInfo_box">
-                    <h3>Doc Image</h3>
-                    <img src={filterData[0]?.doc_image_url} alt="NA" />
-                  </div>
-                </div>
-                <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12">
-                  <div className="profileInfo_box">
-                    <h3>Description</h3>
-                    <h4>
-                      {filterData[0]?.description
-                        ? filterData[0]?.description
-                        : "NA"}
-                    </h4>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           )}
         </div>
