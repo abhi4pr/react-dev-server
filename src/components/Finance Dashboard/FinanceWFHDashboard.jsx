@@ -250,7 +250,6 @@ export default function FinanceWFHDashboard() {
   //   XLSX.writeFile(workbook, fileName);
   // };
 
-
   function convertDateToDDMMYYYY(dateString) {
     if (String(dateString).startsWith("0000-00-00")) {
       return " ";
@@ -267,98 +266,106 @@ export default function FinanceWFHDashboard() {
     }
   }
 
+  const handleDownloadExcel = () => {
+    // return console.log(rowForPayment,"rowForPayment");
+    const formattedData = rowForPayment?.map((row, index) => ({
+      "PYMT_PROD_TYPE_CODE \n Fixed Value: PAB_VENDOR (All in block letters)":
+        "PAB_VENDOR",
+      "PYMT_MODE Allowed values: FT, NEFT, RTGS, IMPS  (All in block letters; FT: for Fund Transfer to ICICI Acc. ; No special Characters)":
+        row.bank_name == "ICICI Bank" ? "FT" : "NEFT",
+      "DEBIT_ACC_NO Allowed values: 12 digit ICICI Bank Account number; No special Characters":
+        "004105018735",
+      "BNF_NAME Name of Beneficiary    (No Special Characters; Max 500 Alphabetical Characters allowed)":
+        row.beneficiary_name,
+      "BENE_ACC_NO Account number of Beneficiary (Max 32 Numeric Characters allowed only)":
+        row.account_no,
+      "BENE_IFSC IFSC code of Beneficiary (Enter ICIC0000011 for FT; Alphanumeric only; No special characters)":
+        row.ifsc_code,
+      "AMOUNT Numeric value with decimal up to 2 places": row.toPay,
+      "DEBIT_NARR 30 Alphanumeric Characters; No special characters allowed":
+        row.user_name,
+      "CREDIT_NARR 30 Alphanumeric Characters; No special characters allowed":
+        "",
+      "MOBILE_NUM Mobile no of Bene.10 Digit Numeric values allowed":
+        row.user_contact_no,
+      "EMAIL_ID Email Id of Bene.500 Characters allowed": row.user_email_id,
+      "REMARK Non-Mandatory field (For Internal Use Only)": "",
+      "PYMT_DATE Date format  DD-MM-YYYY": convertDateToDDMMYYYY(new Date()),
+      "REF_NO Non-Mandatory field (30 Characters Alphanumeric Allowed)": "",
+      "ADDL_INFO1 Non-Mandatory field (500 Characters Alphanumeric Allowed)":
+        "",
+      "ADDL_INFO2 Non-Mandatory field (500 Characters Alphanumeric Allowed)":
+        "",
+      "ADDL_INFO3 Non-Mandatory field (500 Characters Alphanumeric Allowed)":
+        "",
+      "ADDL_INFO4 Non-Mandatory field (500 Characters Alphanumeric Allowed)":
+        "",
+      "ADDL_INFO5 Non-Mandatory field (500 Characters Alphanumeric Allowed)":
+        "",
+    }));
+    const fileName = "AllSalary.xlsx";
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, fileName);
+  };
 
-    const handleDownloadExcel = () => {
-      // return console.log(rowForPayment,"rowForPayment");
-      const formattedData = rowForPayment?.map((row, index) => ({
-        "PYMT_PROD_TYPE_CODE \n Fixed Value: PAB_VENDOR (All in block letters)":"PAB_VENDOR",
-        "PYMT_MODE Allowed values: FT, NEFT, RTGS, IMPS  (All in block letters; FT: for Fund Transfer to ICICI Acc. ; No special Characters)" :row.bank_name == "ICICI Bank" ? "FT" : "NEFT",
-        "DEBIT_ACC_NO Allowed values: 12 digit ICICI Bank Account number; No special Characters":"004105018735",
-        "BNF_NAME Name of Beneficiary    (No Special Characters; Max 500 Alphabetical Characters allowed)":row.beneficiary_name,
-        "BENE_ACC_NO Account number of Beneficiary (Max 32 Numeric Characters allowed only)":row.account_no,
-        "BENE_IFSC IFSC code of Beneficiary (Enter ICIC0000011 for FT; Alphanumeric only; No special characters)":row.ifsc_code,
-        "AMOUNT Numeric value with decimal up to 2 places":row.toPay,
-        "DEBIT_NARR 30 Alphanumeric Characters; No special characters allowed":row.user_name,
-        "CREDIT_NARR 30 Alphanumeric Characters; No special characters allowed":"",
-        "MOBILE_NUM Mobile no of Bene.10 Digit Numeric values allowed":row.user_contact_no,
-        "EMAIL_ID Email Id of Bene.500 Characters allowed":row.user_email_id,
-        "REMARK Non-Mandatory field (For Internal Use Only)":"",
-        "PYMT_DATE Date format  DD-MM-YYYY":convertDateToDDMMYYYY(new Date()),
-        "REF_NO Non-Mandatory field (30 Characters Alphanumeric Allowed)":"",
-        "ADDL_INFO1 Non-Mandatory field (500 Characters Alphanumeric Allowed)":"",
-        "ADDL_INFO2 Non-Mandatory field (500 Characters Alphanumeric Allowed)":"",
-        "ADDL_INFO3 Non-Mandatory field (500 Characters Alphanumeric Allowed)":"",
-        "ADDL_INFO4 Non-Mandatory field (500 Characters Alphanumeric Allowed)":"",
-        "ADDL_INFO5 Non-Mandatory field (500 Characters Alphanumeric Allowed)":""
+  // const handleDownloadExcel = () => {
+  //   const formattedData = rowForPayment?.map((row, index) => ({
+  //     "PYMT_PROD_TYPE_CODE \n Fixed Value: PAB_VENDOR (All in block letters)": "PAB_VENDOR",
+  //     "PYMT_MODE Allowed values: FT, NEFT, RTGS, IMPS  (All in block letters; FT: for Fund Transfer to ICICI Acc. ; No special Characters)": row.bank_name === "ICICI" ? "FT" : "NEFT",
+  //     "DEBIT_ACC_NO Allowed values: 12 digit ICICI Bank Account number; No special Characters": "004105018735",
+  //     "BNF_NAME Name of Beneficiary    (No Special Characters; Max 500 Alphabetical Characters allowed)": row.beneficiary_name,
+  //     "BENE_ACC_NO Account number of Beneficiary (Max 32 Numeric Characters allowed only)": row.account_no,
+  //     "BENE_IFSC IFSC code of Beneficiary (Enter ICIC0000011 for FT; Alphanumeric only; No special characters)": row.ifsc_code,
+  //     "AMOUNT Numeric value with decimal up to 2 places": row.toPay,
+  //     "DEBIT_NARR 30 Alphanumeric Characters; No special characters allowed": row.user_name,
+  //     "CREDIT_NARR 30 Alphanumeric Characters; No special characters allowed": "",
+  //     "MOBILE_NUM Mobile no of Bene.10 Digit Numeric values allowed": row.user_contact_no,
+  //     "EMAIL_ID Email Id of Bene.500 Characters allowed": row.user_email_id,
+  //     "REMARK Non-Mandatory field (For Internal Use Only)": "",
+  //     "PYMT_DATE Date format  DD-MM-YYYY": convertDateToDDMMYYYY(row.date),
+  //     "REF_NO Non-Mandatory field (30 Characters Alphanumeric Allowed)": "",
+  //     "ADDL_INFO1 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
+  //     "ADDL_INFO2 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
+  //     "ADDL_INFO3 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
+  //     "ADDL_INFO4 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
+  //     "ADDL_INFO5 Non-Mandatory field (500 Characters Alphanumeric Allowed)": ""
+  //   }));
 
-      }));
-      const fileName = "AllSalary.xlsx";
-      const worksheet = XLSX.utils.json_to_sheet(formattedData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-      XLSX.writeFile(workbook, fileName);
-    };
+  //   const fileName = "AllSalary.xlsx";
 
-  
-    // const handleDownloadExcel = () => {
-    //   const formattedData = rowForPayment?.map((row, index) => ({
-    //     "PYMT_PROD_TYPE_CODE \n Fixed Value: PAB_VENDOR (All in block letters)": "PAB_VENDOR",
-    //     "PYMT_MODE Allowed values: FT, NEFT, RTGS, IMPS  (All in block letters; FT: for Fund Transfer to ICICI Acc. ; No special Characters)": row.bank_name === "ICICI" ? "FT" : "NEFT",
-    //     "DEBIT_ACC_NO Allowed values: 12 digit ICICI Bank Account number; No special Characters": "004105018735",
-    //     "BNF_NAME Name of Beneficiary    (No Special Characters; Max 500 Alphabetical Characters allowed)": row.beneficiary_name,
-    //     "BENE_ACC_NO Account number of Beneficiary (Max 32 Numeric Characters allowed only)": row.account_no,
-    //     "BENE_IFSC IFSC code of Beneficiary (Enter ICIC0000011 for FT; Alphanumeric only; No special characters)": row.ifsc_code,
-    //     "AMOUNT Numeric value with decimal up to 2 places": row.toPay,
-    //     "DEBIT_NARR 30 Alphanumeric Characters; No special characters allowed": row.user_name,
-    //     "CREDIT_NARR 30 Alphanumeric Characters; No special characters allowed": "",
-    //     "MOBILE_NUM Mobile no of Bene.10 Digit Numeric values allowed": row.user_contact_no,
-    //     "EMAIL_ID Email Id of Bene.500 Characters allowed": row.user_email_id,
-    //     "REMARK Non-Mandatory field (For Internal Use Only)": "",
-    //     "PYMT_DATE Date format  DD-MM-YYYY": convertDateToDDMMYYYY(row.date),
-    //     "REF_NO Non-Mandatory field (30 Characters Alphanumeric Allowed)": "",
-    //     "ADDL_INFO1 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
-    //     "ADDL_INFO2 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
-    //     "ADDL_INFO3 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
-    //     "ADDL_INFO4 Non-Mandatory field (500 Characters Alphanumeric Allowed)": "",
-    //     "ADDL_INFO5 Non-Mandatory field (500 Characters Alphanumeric Allowed)": ""
-    //   }));
-    
-    //   const fileName = "AllSalary.xlsx";
-    
-    //   // Create a new sheet with an empty header row
-    //   const worksheet = XLSX.utils.json_to_sheet([]);
-    
-    //   const formattedHeaders = [
-    //     "PYMT_PROD_TYPE_CODE \n Fixed Value: PAB_VENDOR (All in block letters)",
-    //     "PYMT_MODE Allowed values: FT, NEFT, RTGS, IMPS  (All in block letters; FT: for Fund Transfer to ICICI Acc. ; No special Characters)",
-    //     // ... other headers ...
-    //   ];
-    
-    //   // Ensure at least an empty header row exists
-    //   worksheet['!ref'] = { v: formattedHeaders[0], t: 's' }; // Set first header value and type (string)
-    
-    //   // ... (Rest of the code
-    
-    
-    //   // Update reference to include all headers
-    //   worksheet['!ref'] = XLSX.utils.encode_cell({ c: formattedHeaders.length - 1, r: 0 });
-    
-    //   // Create a merge range for headers
-    //   const mergeRange = XLSX.utils.decode_cell(worksheet['!ref']) + ':' + XLSX.utils.encode_cell({ c: formattedHeaders.length - 1, r: 0 });
-    //   worksheet['!merges'] = [{ s: { c: 0, r: 0 }, e: { c: formattedHeaders.length - 1, r: 0 } }];
-    
-    //   // Set header cell style (replace with your desired red color)
-    //   const headerStyle = { fgColor: { rgb: 'FF0000' }, alignment: { wrapText: true } }; // Red background, wrap text
-    //   for (let i = 0; i < formattedHeaders.length; i++) {
-    //     worksheet[XLSX.utils.encode_cell({ c: i, r: 0 })].i = headerStyle;
-    //   }
-    
-    //   const workbook = XLSX.utils.book_new();
-    //   XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    //   XLSX.writeFile(workbook, fileName);
-    // };
-    
-    
+  //   // Create a new sheet with an empty header row
+  //   const worksheet = XLSX.utils.json_to_sheet([]);
+
+  //   const formattedHeaders = [
+  //     "PYMT_PROD_TYPE_CODE \n Fixed Value: PAB_VENDOR (All in block letters)",
+  //     "PYMT_MODE Allowed values: FT, NEFT, RTGS, IMPS  (All in block letters; FT: for Fund Transfer to ICICI Acc. ; No special Characters)",
+  //     // ... other headers ...
+  //   ];
+
+  //   // Ensure at least an empty header row exists
+  //   worksheet['!ref'] = { v: formattedHeaders[0], t: 's' }; // Set first header value and type (string)
+
+  //   // ... (Rest of the code
+
+  //   // Update reference to include all headers
+  //   worksheet['!ref'] = XLSX.utils.encode_cell({ c: formattedHeaders.length - 1, r: 0 });
+
+  //   // Create a merge range for headers
+  //   const mergeRange = XLSX.utils.decode_cell(worksheet['!ref']) + ':' + XLSX.utils.encode_cell({ c: formattedHeaders.length - 1, r: 0 });
+  //   worksheet['!merges'] = [{ s: { c: 0, r: 0 }, e: { c: formattedHeaders.length - 1, r: 0 } }];
+
+  //   // Set header cell style (replace with your desired red color)
+  //   const headerStyle = { fgColor: { rgb: 'FF0000' }, alignment: { wrapText: true } }; // Red background, wrap text
+  //   for (let i = 0; i < formattedHeaders.length; i++) {
+  //     worksheet[XLSX.utils.encode_cell({ c: i, r: 0 })].i = headerStyle;
+  //   }
+
+  //   const workbook = XLSX.utils.book_new();
+  //   XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+  //   XLSX.writeFile(workbook, fileName);
+  // };
 
   const handleRowSelectionModelChange = async (rowIds) => {
     setRowSelectionModel(rowIds);
@@ -702,14 +709,14 @@ export default function FinanceWFHDashboard() {
       width: 350,
       renderCell: (params) => {
         return (
-          <div style={{width:"500px"}}>
+          <div style={{ width: "500px" }}>
             <form
               method="post"
               // onSubmit={(e)=>handleUTRupload(e,params.row)}
               className="d-flex "
             >
               <input
-              style={{backgroundColor: "white"}}
+                style={{ backgroundColor: "white" }}
                 className="form-control mr-2"
                 value={
                   params.row.utr
@@ -727,7 +734,7 @@ export default function FinanceWFHDashboard() {
                 }}
               />
               <button
-              style={{width:"200px"}}
+                style={{ width: "200px" }}
                 className="btn btn-primary"
                 //  type="submit"
                 onClick={(e) => handleUTRupload(e, params.row)}
@@ -785,7 +792,6 @@ export default function FinanceWFHDashboard() {
 
   const NonTDS = (
     <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
-      
       <div style={{ height: "50px" }}>
         {rowForPayment.length > 0 && (
           <Button
@@ -826,32 +832,34 @@ export default function FinanceWFHDashboard() {
           </Button>
         )}
       </div>
-      <DataGrid
-        rows={filterData?.filter((item) => item.status_ === 0)}
-        columns={pendingColumns}
-        getRowId={(row) => row.id}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 50,
+      <div className="thm_table">
+        <DataGrid
+          rows={filterData?.filter((item) => item.status_ === 0)}
+          columns={pendingColumns}
+          getRowId={(row) => row.id}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 50,
+              },
             },
-          },
-        }}
-        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-        pageSizeOptions={[5, 25, 50, 100, 500]}
-        checkboxSelection
-        // disableRowSelectionOnClick
-        onRowSelectionModelChange={(rowIds) => {
-          handleRowSelectionModelChange(rowIds);
-          // console.log(rowIds);
-        }}
-        rowSelectionModel={rowSelectionModel}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-      />
+          }}
+          slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+          pageSizeOptions={[5, 25, 50, 100, 500]}
+          checkboxSelection
+          // disableRowSelectionOnClick
+          onRowSelectionModelChange={(rowIds) => {
+            handleRowSelectionModelChange(rowIds);
+            // console.log(rowIds);
+          }}
+          rowSelectionModel={rowSelectionModel}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+        />
+      </div>
     </div>
   );
   const TDS = (
@@ -896,116 +904,116 @@ export default function FinanceWFHDashboard() {
           </Button>
         )}
       </div>
-      <DataGrid
-        rows={filterData?.filter((item) => item.status_ === 0)}
-        columns={pendingColumns}
-        getRowId={(row) => row.id}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 50,
+      <div className="thm_table">
+        <DataGrid
+          rows={filterData?.filter((item) => item.status_ === 0)}
+          columns={pendingColumns}
+          getRowId={(row) => row.id}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 50,
+              },
             },
-          },
-        }}
-        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-        pageSizeOptions={[5, 25, 50, 100, 500]}
-        checkboxSelection
-        // disableRowSelectionOnClick
-        onRowSelectionModelChange={(rowIds) => {
-          handleRowSelectionModelChange(rowIds);
-          // console.log(rowIds);
-        }}
-        rowSelectionModel={rowSelectionModel}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-      />
+          }}
+          slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+          pageSizeOptions={[5, 25, 50, 100, 500]}
+          checkboxSelection
+          // disableRowSelectionOnClick
+          onRowSelectionModelChange={(rowIds) => {
+            handleRowSelectionModelChange(rowIds);
+            // console.log(rowIds);
+          }}
+          rowSelectionModel={rowSelectionModel}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+        />
+      </div>
     </div>
   );
 
   const pending = (
     <div>
-      <div >
+      <div>
         {rowForPayment.length > 0 && (
           <>
             <button
-            className="btn btn-primary ml-3 mb-2"
+              className="btn btn-primary ml-3 mb-2"
               variant="contained"
               color="primary"
               size="small"
-              
               onClick={handleDownloadInvoices}
             >
               Download PDF Zip
             </button>
             <button
-               className="btn btn-primary ml-3 mb-2"
+              className="btn btn-primary ml-3 mb-2"
               variant="contained"
               color="primary"
               size="lg"
-              
               onClick={() => BankExcelConverter(rowForPayment)}
             >
               Export Bank Excel
             </button>
           </>
-        )} 
+        )}
 
         {rowForPayment.length > 0 && (
           <button
             variant="contained"
             color="primary"
             size="small"
-       
             className="btn btn-primary ml-3 mb-2"
-         
             onClick={handleDownloadExcel}
           >
             Download Excel
           </button>
         )}
 
-         {rowForPayment.length > 0 && ( 
+        {rowForPayment.length > 0 && (
           <button
             variant="contained"
             color="primary"
             size="small"
-            sx={{ width: "200px",height:"50px" }}
+            sx={{ width: "200px", height: "50px" }}
             className=" btn btn-primary ml-3 mb-2"
             onClick={handleSendToBank}
           >
             Send to Bank
           </button>
-        )} 
+        )}
       </div>
-      <DataGrid
-        rows={filterData?.filter((item) => item.status_ === 0)}
-        columns={pendingColumns}
-        getRowId={(row) => row.id}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 50,
+      <div className="thm_table">
+        <DataGrid
+          rows={filterData?.filter((item) => item.status_ === 0)}
+          columns={pendingColumns}
+          getRowId={(row) => row.id}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 50,
+              },
             },
-          },
-        }}
-        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-        pageSizeOptions={[5, 25, 50, 100, 500]}
-        checkboxSelection
-        // disableRowSelectionOnClick
-        onRowSelectionModelChange={(rowIds) => {
-          handleRowSelectionModelChange(rowIds);
-          // console.log(rowIds);
-        }}
-        rowSelectionModel={rowSelectionModel}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-      />
+          }}
+          slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+          pageSizeOptions={[5, 25, 50, 100, 500]}
+          checkboxSelection
+          // disableRowSelectionOnClick
+          onRowSelectionModelChange={(rowIds) => {
+            handleRowSelectionModelChange(rowIds);
+            // console.log(rowIds);
+          }}
+          rowSelectionModel={rowSelectionModel}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+        />
+      </div>
     </div>
   );
 
@@ -1025,66 +1033,7 @@ export default function FinanceWFHDashboard() {
           </Button>
         )}
       </div>
-      <DataGrid
-        rows={filterData?.filter((item) => item.status_ === 1)}
-        columns={pendingColumns}
-        getRowId={(row) => row.id}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 50,
-            },
-          },
-        }}
-        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-        pageSizeOptions={[5, 25, 50, 100, 500]}
-        checkboxSelection
-        // disableRowSelectionOnClick
-        onRowSelectionModelChange={(rowIds) => {
-          handleRowSelectionModelChange(rowIds);
-          // console.log(rowIds);
-        }}
-        rowSelectionModel={rowSelectionModel}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-      />
-    </div>
-  );
-
-  const payoutReleased = (
-    <>
-      <div>
-      {rowForPayment.length > 0 && (
-          <button
-            variant="contained"
-            color="primary"
-            size="small"
-            sx={{ width: "200px" }}
-            className=" btn btn-primary ml-3 mb-2"
-            onClick={handleDownloadExcel}
-          >
-            Download Excel
-          </button>
-         )} 
-        {/* <div style={{ height: "50px" }} className="d-flex">
-          {rowForPayment.length > 0 && (
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
-              sx={{ width: "100px" }}
-              className="ml-3 mb-2"
-              onClick={handleDownloadInvoices}
-            >
-              Download PDF Zip
-            </Button>
-          )}
-        </div> */}
-        {/* <h1>Payout Released</h1> */}
-
+      <div className="thm_table">
         <DataGrid
           rows={filterData?.filter((item) => item.status_ === 1)}
           columns={pendingColumns}
@@ -1105,13 +1054,74 @@ export default function FinanceWFHDashboard() {
             // console.log(rowIds);
           }}
           rowSelectionModel={rowSelectionModel}
-
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
         />
+      </div>
+    </div>
+  );
+
+  const payoutReleased = (
+    <>
+      <div>
+        {rowForPayment.length > 0 && (
+          <button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ width: "200px" }}
+            className=" btn btn-primary ml-3 mb-2"
+            onClick={handleDownloadExcel}
+          >
+            Download Excel
+          </button>
+        )}
+        {/* <div style={{ height: "50px" }} className="d-flex">
+          {rowForPayment.length > 0 && (
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ width: "100px" }}
+              className="ml-3 mb-2"
+              onClick={handleDownloadInvoices}
+            >
+              Download PDF Zip
+            </Button>
+          )}
+        </div> */}
+        {/* <h1>Payout Released</h1> */}
+        <div className="thm_table">
+          <DataGrid
+            rows={filterData?.filter((item) => item.status_ === 1)}
+            columns={pendingColumns}
+            getRowId={(row) => row.id}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 50,
+                },
+              },
+            }}
+            slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+            pageSizeOptions={[5, 25, 50, 100, 500]}
+            checkboxSelection
+            // disableRowSelectionOnClick
+            onRowSelectionModelChange={(rowIds) => {
+              handleRowSelectionModelChange(rowIds);
+              // console.log(rowIds);
+            }}
+            rowSelectionModel={rowSelectionModel}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+          />
+        </div>
       </div>
     </>
   );
@@ -1158,34 +1168,36 @@ export default function FinanceWFHDashboard() {
           </Button>
         )}
       </div> */}
-      <DataGrid
-        rows={filterData?.filter(
-          (item) => item.attendence_status_flow == "Payment Failed"
-        )}
-        columns={pendingColumns}
-        getRowId={(row) => row.id}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 50,
+      <div className="thm_table">
+        <DataGrid
+          rows={filterData?.filter(
+            (item) => item.attendence_status_flow == "Payment Failed"
+          )}
+          columns={pendingColumns}
+          getRowId={(row) => row.id}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 50,
+              },
             },
-          },
-        }}
-        slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-        pageSizeOptions={[5, 25, 50, 100, 500]}
-        checkboxSelection
-        // disableRowSelectionOnClick
-        onRowSelectionModelChange={(rowIds) => {
-          handleRowSelectionModelChange(rowIds);
-          // console.log(rowIds);
-        }}
-        rowSelectionModel={rowSelectionModel}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-      />
+          }}
+          slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+          pageSizeOptions={[5, 25, 50, 100, 500]}
+          checkboxSelection
+          // disableRowSelectionOnClick
+          onRowSelectionModelChange={(rowIds) => {
+            handleRowSelectionModelChange(rowIds);
+            // console.log(rowIds);
+          }}
+          rowSelectionModel={rowSelectionModel}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+            },
+          }}
+        />
+      </div>
     </div>
   );
 
@@ -1275,50 +1287,54 @@ export default function FinanceWFHDashboard() {
   // );
 
   return (
-    <div className="master-card-css">
-       <FormContainer
+    <div>
+      <FormContainer
+        mainTitle="Payout Summary"
         submitButton={false}
-       link="true"
+        link="true"
       />
-      <div className="card body-padding">
-        <div className="row thm_form ">
-          <div className="form-group col-3 ">
-            <label className="form-label">
-              Department Name<sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              options={[
-                { value: "", label: "All" },
-                ...departmentData.map((option) => ({
-                  value: option.dept_id,
-                  label: option.dept_name,
-                })),
-              ]}
-              value={
-                departmentFilter === ""
-                  ? { value: "", label: "" }
-                  : {
-                      value: departmentFilter,
-                      label:
-                        departmentData.find(
-                          (dept) => dept.dept_id === departmentFilter
-                        )?.dept_name || "Select...",
-                    }
-              }
-              onChange={(selectedOption) => {
-                const selectedValue = selectedOption
-                  ? selectedOption.value
-                  : "";
-                setDepartmentFilter(selectedValue);
-                if (selectedValue === "") {
-                  getData();
-                }
-              }}
-              required
-            />
-          </div>
 
-          {/* <div className="form-group col-3">
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body pb4">
+              <div className="row thm_form">
+                <div className="form-group col-3 ">
+                  <label className="form-label">
+                    Department Name<sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    options={[
+                      { value: "", label: "All" },
+                      ...departmentData.map((option) => ({
+                        value: option.dept_id,
+                        label: option.dept_name,
+                      })),
+                    ]}
+                    value={
+                      departmentFilter === ""
+                        ? { value: "", label: "" }
+                        : {
+                            value: departmentFilter,
+                            label:
+                              departmentData.find(
+                                (dept) => dept.dept_id === departmentFilter
+                              )?.dept_name || "Select...",
+                          }
+                    }
+                    onChange={(selectedOption) => {
+                      const selectedValue = selectedOption
+                        ? selectedOption.value
+                        : "";
+                      setDepartmentFilter(selectedValue);
+                      if (selectedValue === "") {
+                        getData();
+                      }
+                    }}
+                    required
+                  />
+                </div>
+                {/* <div className="form-group col-3">
                   <label className="form-label">
                     Designation<sup style={{ color: "red" }}>*</sup>
                   </label>
@@ -1354,199 +1370,213 @@ export default function FinanceWFHDashboard() {
                   />
                 </div> */}
 
-          <div className="form-group col-3">
-            <label className="form-label">
-              Years<sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              value={yearOptions.find((option) => option.value === years)}
-              onChange={(selectedOption) => {
-                setYears(selectedOption.value);
-              }}
-              options={yearOptions}
-            />
-          </div>
-          <div className="form-group col-3">
-            <label className="form-label">
-              Months<sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              value={monthOptions.find((option) => option.value === months)}
-              onChange={(selectedOption) => {
-                setMonths(selectedOption.value);
-              }}
-              options={monthOptions}
-            />
-          </div>
-          <div className="form-group col-3 mt-4">
-            <button
-              onClick={handSearchleClick}
-              disabled={!years || !months || !departmentFilter}
-              className="btn btn-primary"
-            >
-              Show TDS Users
-            </button>
+                <div className="form-group col-3">
+                  <label className="form-label">
+                    Years<sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    value={yearOptions.find((option) => option.value === years)}
+                    onChange={(selectedOption) => {
+                      setYears(selectedOption.value);
+                    }}
+                    options={yearOptions}
+                  />
+                </div>
+                <div className="form-group col-3">
+                  <label className="form-label">
+                    Months<sup style={{ color: "red" }}>*</sup>
+                  </label>
+                  <Select
+                    value={monthOptions.find(
+                      (option) => option.value === months
+                    )}
+                    onChange={(selectedOption) => {
+                      setMonths(selectedOption.value);
+                    }}
+                    options={monthOptions}
+                  />
+                </div>
+                <div className="form-group col-3">
+                  <button
+                    onClick={handSearchleClick}
+                    disabled={!years || !months || !departmentFilter}
+                    className="btn cmnbtn btn-primary w-100 mt24"
+                  >
+                    Show TDS Users
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-     
-      
-      <div className="tab">
-        {
-          accordionButtons.map((button, index) => (
-            <div className={`named-tab ${activeAccordionIndex === index? "active-tab":""}`} onClick={()=>{
+      <div className="tab mb24">
+        {accordionButtons.map((button, index) => (
+          <div
+            className={`named-tab ${
+              activeAccordionIndex === index ? "active-tab" : ""
+            }`}
+            onClick={() => {
               handleAccordionButtonClick(index);
-            }}>{button}</div>
-          ))
-        }
-      </div>
-      <div className={`card ${activeAccordionIndex === 1?"":"body-padding"}`}>
-      {activeAccordionIndex === 1 && (
-          // <FormContainer {handleCSVFlieupload}>
-          <div className="card-header p-1">
-            <div className="pack " style={{alignItem:"center"}}>
-            <FieldContainer
-              // label="Upload UTR"
-            
-              type="file"
-              accept=".xls,.xlsx"
-              fieldGrid={6}
-              onChange={(e) => setCSVFile(e.target.files[0])}
-              />
-            <input
-              onClick={handleCSVFlieupload}
-              type="submit"
-              value={"Upload UTR"}
-              className="btn btn-primary h-50 mt-3 "
-              disabled={!CSVFile}
-            />
-            </div>
+            }}
+          >
+            {button}
           </div>
-          
-          // </FormContainer>
-        )}
-        <div className={`${activeAccordionIndex === 1 ?"card-body body-padding":""}`}>
-      {invoice}
+        ))}
+      </div>
 
-{activeAccordionIndex === 0 && pending}
-{/* {activeAccordionIndex === 1 && verified} */}
-{activeAccordionIndex === 1 && payoutReleased}
-{activeAccordionIndex === 2 && failedTransaction}
-{/* {activeAccordionIndex === 3 && TDS}
-{activeAccordionIndex === 4 && NonTDS} */}
-      </div>
-      </div>
-      {showModal && (
+      <div className="card">
         <div
-          className={`modal fade ${showModal ? "show" : ""}`}
-          tabIndex={-1}
-          role="dialog"
-          style={{ display: showModal ? "block" : "none" }}
+          className={`card-body ${
+            activeAccordionIndex === 1 ? "" : "body-padding"
+          }`}
         >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Pay
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                  onClick={closeModal}
-                >
-                  <span aria-hidden="true">×</span>
-                </button>
+          {activeAccordionIndex === 1 && (
+            <div className="card-header p-1">
+              <div className="pack " style={{ alignItem: "center" }}>
+                <FieldContainer
+                  type="file"
+                  accept=".xls,.xlsx"
+                  fieldGrid={6}
+                  onChange={(e) => setCSVFile(e.target.files[0])}
+                />
+                <input
+                  onClick={handleCSVFlieupload}
+                  type="submit"
+                  value={"Upload UTR"}
+                  className="btn btn-primary h-50 mt-3 "
+                  disabled={!CSVFile}
+                />
               </div>
-              <form onSubmit={handlePayOut}>
-                <div className="modal-body">
-                  <div className="form-group">
-                    <label className="col-form-label">Amount</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="recipient-name"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
-                    />
-                    <label className="col-form-label">Date</label>
-                    <input
-                      type="date"
-                      className="form-control"
-                      id="recipient-name"
-                      value={date}
-                      onChange={(e) => setDate(e.target.value)}
-                      min={`${new Date().getFullYear()}-${String(
-                        new Date().getMonth() + 1
-                      ).padStart(2, "0")}-01`}
-                    />
-                    <label className="col-form-label">Snapshot</label>
-                    <input
-                      type="file"
-                      className="form-control"
-                      id="recipient-name"
-                      onChange={(e) => setScreenshot(e.target.files[0])}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="col-form-label">RefrenceNumber</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="recipient-name"
-                      value={refrenceNumber}
-                      onChange={(e) => setRefrenceNumber(e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="modal-footer">
+            </div>
+          )}
+          <div
+            className={`${
+              activeAccordionIndex === 1 ? "card-body body-padding" : ""
+            }`}
+          >
+            {invoice}
+
+            {activeAccordionIndex === 0 && pending}
+            {/* {activeAccordionIndex === 1 && verified} */}
+            {activeAccordionIndex === 1 && payoutReleased}
+            {activeAccordionIndex === 2 && failedTransaction}
+            {/* {activeAccordionIndex === 3 && TDS}
+              {activeAccordionIndex === 4 && NonTDS} */}
+          </div>
+        </div>
+        {showModal && (
+          <div
+            className={`modal fade ${showModal ? "show" : ""}`}
+            tabIndex={-1}
+            role="dialog"
+            style={{ display: showModal ? "block" : "none" }}
+          >
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Pay
+                  </h5>
                   <button
                     type="button"
-                    className="btn btn-secondary"
+                    className="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
                     onClick={closeModal}
                   >
-                    Close
-                  </button>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    // onClick={handlePayOut}
-                  >
-                    Pay
+                    <span aria-hidden="true">×</span>
                   </button>
                 </div>
-              </form>
+                <form onSubmit={handlePayOut}>
+                  <div className="modal-body">
+                    <div className="form-group">
+                      <label className="col-form-label">Amount</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="recipient-name"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                      />
+                      <label className="col-form-label">Date</label>
+                      <input
+                        type="date"
+                        className="form-control"
+                        id="recipient-name"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        min={`${new Date().getFullYear()}-${String(
+                          new Date().getMonth() + 1
+                        ).padStart(2, "0")}-01`}
+                      />
+                      <label className="col-form-label">Snapshot</label>
+                      <input
+                        type="file"
+                        className="form-control"
+                        id="recipient-name"
+                        onChange={(e) => setScreenshot(e.target.files[0])}
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="col-form-label">RefrenceNumber</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="recipient-name"
+                        value={refrenceNumber}
+                        onChange={(e) => setRefrenceNumber(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={closeModal}
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      // onClick={handlePayOut}
+                    >
+                      Pay
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {showFilterModal && (
-        <DataGridDialog
-          open={showFilterModal}
-          handleClose={() => {
-            setShowFilterModal(false),
-              setDepartmentFilter(""),
-              setMonths(""),
-              setYears("");
-          }}
-          fullWidth={true}
-          maxWidth="lg"
-          // handleFullWidthChange={handleFullWidthChange}
-          // handleMaxWidthChange={handleMaxWidthChange}
-          rows={filterData}
-          columns={TDSUserCol}
-          slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-          },
-        }}
-        />
-      )}
+        {showFilterModal && (
+          <DataGridDialog
+            open={showFilterModal}
+            handleClose={() => {
+              setShowFilterModal(false),
+                setDepartmentFilter(""),
+                setMonths(""),
+                setYears("");
+            }}
+            fullWidth={true}
+            maxWidth="lg"
+            // handleFullWidthChange={handleFullWidthChange}
+            // handleMaxWidthChange={handleMaxWidthChange}
+            rows={filterData}
+            columns={TDSUserCol}
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+          />
+        )}
+      </div>
     </div>
   );
 }

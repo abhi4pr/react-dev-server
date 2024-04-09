@@ -313,19 +313,15 @@ a:hover {
   bottom: 0;
   opacity: 1;
   transition: var(--u-transition);
-  background-image: linear-gradient(
-    to bottom,
-    rgb(255 190 66 / 0%),
-    rgb(255 190 66 / 15%)
-  );
+  background-image: linear-gradient(to bottom,
+      rgb(255 190 66 / 0%),
+      rgb(255 190 66 / 15%));
 }
 
 .prdct_card:hover .prdct_img::after {
-  background-image: linear-gradient(
-    to bottom,
-    rgb(255 190 66 / 0%),
-    rgb(255 190 66 / 100%)
-  );
+  background-image: linear-gradient(to bottom,
+      rgb(255 190 66 / 0%),
+      rgb(255 190 66 / 100%));
   height: 75%;
 }
 
@@ -445,11 +441,11 @@ a:hover {
   transition: var(--u-transition);
 }
 
-s .add_counter .btn-check:checked + .btn,
+s .add_counter .btn-check:checked+.btn,
 .add_counter .btn.active,
 .add_counter .btn.show,
 .add_counter .btn:first-child:active,
-.add_counter :not(.btn-check) + .btn:active {
+.add_counter :not(.btn-check)+.btn:active {
   color: var(--u-gray-900);
   background-color: var(--u-bg-white);
   border-color: var(--u-primary);
@@ -669,22 +665,26 @@ body[theme="dark"] .close_carttoggle {
   gap: 5px 10px;
   flex-direction: column;
 }
-.addon_item_group{
+
+.addon_item_group {
   display: flex;
   align-items: center;
   gap: 0px 8px;
 }
+
 .addon_item_group h4 {
   color: var(--gray-700);
   font-size: 14px;
   line-height: 17px;
   margin-right: 5px;
 }
+
 .addon_item {
   display: flex;
   align-items: center;
   gap: 0px 5px;
 }
+
 .addon_item label {
   margin: 0;
 }
@@ -713,7 +713,7 @@ body[theme="dark"] .close_carttoggle {
   line-height: 20px;
   font-weight: 400;
   padding: 10px 29px;
-  height: 50px;
+  height: 48px;
   transition: var(--u-transition);
 }
 
@@ -1209,6 +1209,7 @@ body[theme="dark"] .sec_bg {
     width: 100%;
   }
 }
+
 /*  */
 
 .order_item_action .icon_btn {
@@ -1363,7 +1364,7 @@ body[theme="dark"] .sec_bg {
   margin: 0;
 }
 
-.cstm-radio-btn > i {
+.cstm-radio-btn>i {
   color: var(--u-color-white);
   background-color: var(--u-success);
   font-size: 18px;
@@ -1395,7 +1396,7 @@ body[theme="dark"] .sec_bg {
   padding: 5px 0px;
 }
 
-.transfer_bx input:checked + .cstm-radio-btn .boy_img img {
+.transfer_bx input:checked+.cstm-radio-btn .boy_img img {
   border-color: var(--u-success);
   box-shadow: 0px 0px 0px 4px var(--u-success);
 }
@@ -1408,11 +1409,11 @@ body[theme="dark"] .sec_bg {
   transition: var(--u-transition);
 }
 
-.transfer_bx input:checked + .cstm-radio-btn .boy_img h3 {
+.transfer_bx input:checked+.cstm-radio-btn .boy_img h3 {
   color: var(--u-success);
 }
 
-.transfer_bx input:checked + .cstm-radio-btn > i {
+.transfer_bx input:checked+.cstm-radio-btn>i {
   opacity: 1;
   transform: translateX(-50%) scale(1);
 }
@@ -1463,7 +1464,7 @@ body[theme="dark"] .sec_bg {
   border-radius: 30px;
   padding: 5px 15px;
   display: flex;
-    align-items: center;
+  align-items: center;
 }
 
 .sitting_bx .form-label {
@@ -1481,7 +1482,7 @@ body[theme="dark"] .sec_bg {
 }
 
 .sitting_filter .form-group label,
-.sitting_bx label.form-label{
+.sitting_bx label.form-label {
   font-size: 15px;
   font-weight: 400;
   color: var(--gray-800);

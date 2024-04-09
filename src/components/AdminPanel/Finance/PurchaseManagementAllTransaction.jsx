@@ -1195,268 +1195,280 @@ export default function PurchaseManagementAllTransaction() {
   };
 
   return (
-    <div className="master-card-css  ">
-      <div
-        className="action_heading mr-3"
-        style={{
-          position: "fixed",
-          zIndex: "500",
-          background: "var(--body-bg)",
+    <div>
+      <FormContainer
+        mainTitle="Purchase Dashboard"
+        link="/admin/finance-pruchasemanagement-alltransaction"
+        uniqueVendorCount={uniqueVendorCount}
+        totalRequestAmount={totalRequestAmount}
+        pendingRequestCount={pendingRequestCount}
+        discardedRequestCount={discardedRequestCount}
+        paidRequestCount={paidRequestCount}
+        handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
+        allTransactionAdditionalTitles={true}
+      />
+      <Dialog
+        open={sameVendorDialog}
+        onClose={handleCloseSameVender}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <div className="action_title">
-          <FormContainer
-            mainTitle="Purchase Dashboard"
-            link="/admin/finance-pruchasemanagement-alltransaction"
-            uniqueVendorCount={uniqueVendorCount}
-            totalRequestAmount={totalRequestAmount}
-            pendingRequestCount={pendingRequestCount}
-            discardedRequestCount={discardedRequestCount}
-            paidRequestCount={paidRequestCount}
-            handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
-            allTransactionAdditionalTitles={true}
+        <DialogTitle>Same Vendors</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameVender}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={sameVendorData}
+            columns={sameVenderColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
+            }}
+            getRowId={(row) => sameVendorData.indexOf(row)}
           />
-        </div>
-      </div>
-      <div className="master-card-css p-1" style={{ marginTop: "140px" }}>
-        <Dialog
-          open={sameVendorDialog}
-          onClose={handleCloseSameVender}
-          fullWidth={"md"}
-          maxWidth={"md"}
+        </DialogContent>
+      </Dialog>
+      {/* Unique Vendor Dialog Box */}
+      <Dialog
+        open={uniqueVenderDialog}
+        onClose={handleCloseUniqueVendor}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Vendors</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniqueVendor}
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
           }}
         >
-          <DialogTitle>Same Vendors</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseSameVender}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <DataGrid
+            rows={uniqueVendorData}
+            columns={uniqueVendorColumns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+            disableSelectionOnClick
+            autoHeight
+            slots={{ toolbar: GridToolbar }}
+            slotProps={{
+              toolbar: {
+                showQuickFilter: true,
+              },
             }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent
-            dividers={true}
-            sx={{ maxHeight: "80vh", overflowY: "auto" }}
-          >
-            <DataGrid
-              rows={sameVendorData}
-              columns={sameVenderColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              getRowId={(row) => sameVendorData.indexOf(row)}
-            />
-          </DialogContent>
-        </Dialog>
+            getRowId={(row) => uniqueVendorData.indexOf(row)}
+          />
+        </DialogContent>
+      </Dialog>
 
-        {/* Unique Vendor Dialog Box */}
-        <Dialog
-          open={uniqueVenderDialog}
-          onClose={handleCloseUniqueVendor}
-          fullWidth={"md"}
-          maxWidth={"md"}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <DialogTitle>Unique Vendors</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseUniqueVendor}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent
-            dividers={true}
-            sx={{ maxHeight: "80vh", overflowY: "auto" }}
-          >
-            <DataGrid
-              rows={uniqueVendorData}
-              columns={uniqueVendorColumns}
-              pageSize={5}
-              rowsPerPageOptions={[5]}
-              disableSelectionOnClick
-              autoHeight
-              slots={{ toolbar: GridToolbar }}
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              getRowId={(row) => uniqueVendorData.indexOf(row)}
-            />
-          </DialogContent>
-        </Dialog>
-        <div className="card body-padding">
-          <div className="row">
-            <div className="col-md-3">
-              <div className="form-group">
-                <label>Vendor Name</label>
-                <Autocomplete
-                  value={vendorName}
-                  onChange={(event, newValue) => setVendorName(newValue)}
-                  options={Array.from(
-                    new Set(data.map((option) => option.vendor_name))
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        ...params.InputProps,
-                        className: "form-control", // Apply Bootstrap's form-control class
-                      }}
-                      style={{
-                        borderRadius: "0.25rem",
-                        transition:
-                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                        "&:focus": {
-                          borderColor: "#80bdff",
-                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                        },
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-header flexCenterBetween">
+              <h5 className="card-title">Search by filter</h5>
+              <div className="flexCenter colGap12">
+                <div className="form-group flexCenter colGap8">
+                  <label className="w-100 m0">Select Date Range:</label>
+                  <select
+                    className="form-control form_sm"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                  >
+                    <option value="">All</option>
+                    <option value="last7Days">Last 7 Days</option>
+                    <option value="last30Days">Last 30 Days</option>
+                    <option value="thisWeek">This Week</option>
+                    <option value="lastWeek">Last Week</option>
+                    <option value="currentMonth">Current Month</option>
+                    <option value="nextMonth">Next Month</option>
+                    <option value="currentQuarter">This Quarter</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div className="card-body pb4">
+              <div className="row thm_form">
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>Vendor Name</label>
+                    <Autocomplete
+                      value={vendorName}
+                      onChange={(event, newValue) => setVendorName(newValue)}
+                      options={Array.from(
+                        new Set(data.map((option) => option.vendor_name))
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          type="text"
+                          variant="outlined"
+                          InputProps={{
+                            ...params.InputProps,
+                            className: "form-control", // Apply Bootstrap's form-control class
+                          }}
+                          style={{
+                            borderRadius: "0.25rem",
+                            transition:
+                              "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                            "&:focus": {
+                              borderColor: "#80bdff",
+                              boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>From Date</label>
+                    <input
+                      value={fromDate}
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => setFromDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>To Date</label>
+                    <input
+                      value={toDate}
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => {
+                        setToDate(e.target.value);
                       }}
                     />
-                  )}
-                />
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>Priority</label>
+                    <select
+                      value={priorityFilter}
+                      className="form-control"
+                      onChange={(e) => setPriorityFilter(e.target.value)}
+                    >
+                      <option value="">Select Priority</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>Request Amount Filter</label>
+                    <select
+                      value={requestAmountFilter}
+                      className="form-control"
+                      onChange={(e) => setRequestAmountFilter(e.target.value)}
+                    >
+                      <option value="">Select Amount</option>
+                      <option value="greaterThan">Greater Than</option>
+                      <option value="lessThan">Less Than</option>
+                      <option value="equalTo">Equal To</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col-md-4">
+                  <div className="form-group">
+                    <label>Requested Amount</label>
+                    <input
+                      value={requestedAmountField}
+                      type="number"
+                      placeholder="Request Amount"
+                      className="form-control"
+                      onChange={(e) => {
+                        setRequestedAmountField(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="col-md-3">
-              <div className="form-group">
-                <label>From Date</label>
-                <input
-                  value={fromDate}
-                  type="date"
-                  className="form-control"
-                  onChange={(e) => setFromDate(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div className="form-group">
-                <label>To Date</label>
-                <input
-                  value={toDate}
-                  type="date"
-                  className="form-control"
-                  onChange={(e) => {
-                    setToDate(e.target.value);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div className="form-group">
-                <label>Priority</label>
-                <select
-                  value={priorityFilter}
-                  className="form-control"
-                  onChange={(e) => setPriorityFilter(e.target.value)}
+            <div className="card-footer">
+              <div className="flexCenter colGap16">
+                <Button
+                  variant="contained"
+                  onClick={handleDateFilter}
+                  className="btn cmnbtn btn-primary"
                 >
-                  <option value="">Select Priority</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
-                  <option value="High">High</option>
-                </select>
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div className="form-group">
-                <label>Request Amount Filter</label>
-                <select
-                  value={requestAmountFilter}
-                  className="form-control"
-                  onChange={(e) => setRequestAmountFilter(e.target.value)}
+                  <i className="fas fa-search"></i> Search
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleClearDateFilter}
+                  className="btn cmnbtn btn-secondary"
                 >
-                  <option value="">Select Amount</option>
-                  <option value="greaterThan">Greater Than</option>
-                  <option value="lessThan">Less Than</option>
-                  <option value="equalTo">Equal To</option>
-                </select>
-              </div>
-            </div>
-            <div className="col-md-3">
-              <div className="form-group">
-                <label>Requested Amount</label>
-                <input
-                  value={requestedAmountField}
-                  type="number"
-                  placeholder="Request Amount"
-                  className="form-control"
-                  onChange={(e) => {
-                    setRequestedAmountField(e.target.value);
-                  }}
-                />
-              </div>
-            </div>
-            <div className="col-md-1 mt-4 me-2">
-              <Button variant="contained" onClick={handleDateFilter}>
-                <i className="fas fa-search"></i> Search
-              </Button>
-            </div>
-            <div className="col-md-1 mt-4">
-              <Button variant="contained" onClick={handleClearDateFilter}>
-                Clear
-              </Button>
-            </div>
-            <div className="col-md-6">
-              <div className="form-group">
-                <label>Select Date Range:</label>
-                <select
-                  className="form-control"
-                  value={dateFilter}
-                  onChange={(e) => setDateFilter(e.target.value)}
-                >
-                  <option value="">All</option>
-                  <option value="last7Days">Last 7 Days</option>
-                  <option value="last30Days">Last 30 Days</option>
-                  <option value="thisWeek">This Week</option>
-                  <option value="lastWeek">Last Week</option>
-                  <option value="currentMonth">Current Month</option>
-                  <option value="nextMonth">Next Month</option>
-                  <option value="currentQuarter">This Quarter</option>
-                </select>
+                  Clear
+                </Button>
               </div>
             </div>
           </div>
         </div>
-        <div className="row">
-          <div className="card col-2 ms-2">
-            <div className="card-header h4  fs-5">Pending</div>
-            <div className="card-body">
-              <p className="fs-6 lead ">
-                Total Requested Amount :-{" "}
-                {/* {filterData.length > 0
-                ? filterData
-                    .filter((item) => item.status == 0)
-                    .reduce((total, currentItem) => {
-                      return total + currentItem.request_amount * 1;
-                    }, 0)
-                : ""} */}
+      </div>
+
+      <div className="row">
+        <div className="col-md-4 col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title w-100 flexCenterBetween">
+                Pending
+                <Link
+                  className="link-primary"
+                  to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
+                >
+                  <span class="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
+                </Link>
+              </h5>
+            </div>
+            <div class="card-body">
+              <h5 class="mediumText">Total Requested Amount</h5>
+              <h4 class="font-weight-bold mt8">
                 {filterData.length > 0
                   ? filterData
                       .filter((item) => {
@@ -1468,47 +1480,28 @@ export default function PurchaseManagementAllTransaction() {
                         return total + parseFloat(currentItem.request_amount);
                       }, 0)
                   : ""}
-              </p>
-              <p className="fs-6 lead ">
-                {
-                  <Link
-                    className="link-primary"
-                    to="/admin/finance-pruchasemanagement-pendingpaymentrequest"
-                  >
-                    Click Here
-                  </Link>
-                }
-              </p>
-            </div>{" "}
-          </div>{" "}
-          <div className="card col-2 ms-2">
-            <div className="card-header h4  fs-5">Done</div>
-            <div className="card-body">
-              <p className="fs-6 lead ">
-                Total Requested Amount :-{" "}
-                {/* {filterData.length > 0
-                ? filterData
-                    .filter((item) => item.status == 1)
-                    .reduce((total, currentItem) => {
-                      return total + currentItem.request_amount * 1;
-                    }, 0)
-                : ""} */}
-                {/* {filterData.length > 0
-                ? filterData
-                    .filter((item) => {
-                      // Adjust condition to filter for paid requests (assuming status code for paid requests is 1)
-                      return (
-                        parseFloat(item.status) === 1 &&
-                        !nodeData.some(
-                          (item2) => item.request_id === item2.request_id
-                        )
-                      );
-                      // This condition checks if the item is paid and if its request_id is not found in nodeData
-                    })
-                    .reduce((total, currentItem) => {
-                      return total + parseFloat(currentItem.request_amount);
-                    }, 0)
-                : ""} */}
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-4 col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title w-100 flexCenterBetween">
+                Done
+                <Link
+                  className="link-primary"
+                  to="/admin/finance-pruchasemanagement-paymentdone"
+                >
+                  <span class="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
+                </Link>
+              </h5>
+            </div>
+            <div class="card-body">
+              <h5 class="mediumText">Total Requested Amount</h5>
+              <h4 class="font-weight-bold mt8">
                 {filterData.length > 0
                   ? filterData
                       .filter(
@@ -1524,234 +1517,260 @@ export default function PurchaseManagementAllTransaction() {
                         0
                       )
                   : 0}
-              </p>
-              <p className="fs-6 lead ">
-                {
-                  <Link
-                    className="link-primary"
-                    to="/admin/finance-pruchasemanagement-paymentdone"
-                  >
-                    Click Here
-                  </Link>
-                }
-              </p>
-            </div>{" "}
-          </div>{" "}
-          <div className="card col-2 ms-2">
-            <div className="card-header h4  fs-5">Discard</div>
-            <div className="card-body">
-              <p className="fs-6 lead ">
-                Total Requested Amount :-{" "}
-                {/* {filterData.length > 0
-                ? filterData
-                    .filter((item) => item.status == 0)
-                    .reduce((total, currentItem) => {
-                      return total + currentItem.request_amount * 1;
-                    }, 0)
-                : ""} */}
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div className="col-md-4 col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title w-100 flexCenterBetween">
+                Discard
+                <Link
+                  className="link-primary"
+                  to="/admin/finance-pruchasemanagement-discardpayment"
+                >
+                  <span class="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
+                </Link>
+              </h5>
+            </div>
+            <div class="card-body">
+              <h5 class="mediumText">Total Requested Amount</h5>
+              <h4 class="font-weight-bold mt8">
+                {" "}
                 {filterData.length > 0
                   ? filterData
                       .filter((item) => {
-                        // Adjust condition to filter for paid requests (assuming status code for paid requests is 1)
                         return (
                           parseFloat(item.status) === 2 &&
                           !nodeData.some(
                             (item2) => item.request_id === item2.request_id
                           )
                         );
-                        // This condition checks if the item is paid and if its request_id is not found in nodeData
                       })
                       .reduce((total, currentItem) => {
                         return total + parseFloat(currentItem.request_amount);
                       }, 0)
                   : ""}
-              </p>
-              <p className="fs-6 lead ">
-                {
-                  <Link
-                    className="link-primary"
-                    to="/admin/finance-pruchasemanagement-discardpayment"
-                  >
-                    Click Here
-                  </Link>
-                }
-              </p>
+              </h4>
             </div>
           </div>
-          <div className="card col-2 ms-2">
-            <div className="card-header h4  fs-5">With Invoice</div>
-            <div className="card-body">
-              <p className="fs-6 lead ">
-                With Invoice Count :- {withInvoiceCount}
-              </p>
-              <p className="fs-6 lead ">
+        </div>
+        <div className="col-md-4 col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title w-100 flexCenterBetween">
+                With Invoice
                 <Link
                   className="link-primary"
                   onClick={handleWithInvoiceButtonClick}
                 >
-                  Click Here
+                  <span class="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
                 </Link>
-              </p>
+              </h5>
+            </div>
+            <div class="card-body">
+              <h5 class="mediumText">With Invoice Count</h5>
+              <h4 class="font-weight-bold mt8">{withInvoiceCount}</h4>
             </div>
           </div>
-          <div className="card col-2 ms-2">
-            <div className="card-header h4 fs-5">Without Invoice</div>
-            <div className="card-body">
-              <p className="fs-6 lead ">
-                Without Invoice Count :- {withoutInvoiceCount}
-              </p>
-              <p className="fs-6 lead ">
+        </div>
+        <div className="col-md-4 col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title w-100 flexCenterBetween">
+                Without Invoice
                 <Link
                   className="link-primary"
                   onClick={handleWithoutInvoiceButtonClick}
                 >
-                  Click Here
+                  <span class="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
                 </Link>
-              </p>
+              </h5>
+            </div>
+            <div class="card-body">
+              <h5 class="mediumText">Without Invoice Count</h5>
+              <h4 class="font-weight-bold mt8">{withoutInvoiceCount}</h4>
             </div>
           </div>
-          <div className="card col-2 ms-2">
-            <div className="card-header h4 fs-5">GST Hold </div>
-            <div className="card-body">
-              <p className="fs-6 lead ">
-                GST Hold Amount :- {totalGstHoldAmount}
-              </p>
-              <p className="fs-6 lead ">
-                GST Hold Count :- {totalGstHoldCount}
-              </p>
-              <p className="fs-6 lead ">
+        </div>
+        <div className="col-md-4 col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title w-100 flexCenterBetween">
+                GST Hold
                 <Link className="link-primary" onClick={filterDataByGstHold}>
-                  Click Here
+                  <span class="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
                 </Link>
-              </p>
+              </h5>
+            </div>
+            <div class="card-body">
+              <div className="flexCenterBetween">
+                <div>
+                  <h5 class="mediumText">GST Hold Amount</h5>
+                  <h4 class="font-weight-bold mt8 mb8">{totalGstHoldAmount}</h4>
+                </div>
+                <div>
+                  <h5 class="mediumText">GST Hold Count</h5>
+                  <h4 class="font-weight-bold mt8">{totalGstHoldCount}</h4>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="card col-2 ms-2">
-            <div className="card-header h4 fs-5"> Average Payment Aging </div>
-            <div className="card-body">
-              <p className="fs-6 lead ">Average Aging :- {averageAging}</p>
+        </div>
+        <div className="col-md-4 col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title w-100 flexCenterBetween">
+                Average Payment Aging
+              </h5>
+            </div>
+            <div class="card-body">
+              <h5 class="mediumText">Average Aging</h5>
+              <h4 class="font-weight-bold mt8">{averageAging}</h4>
             </div>
           </div>
-          <div className="card col-2 ms-2">
-            <div className="card-header h4 fs-5">TDS Deducted</div>
-            <div className="card-body">
-              <p className="fs-6 lead ">
-                Total TDS Deduction amount :-
-                {Math.round(totalTDSDeductedAmount)}
-              </p>
-              <p className="fs-6 lead ">
-                {" "}
-                Total TDS Deduction Count :- {totalTDSDeductedCount}
-              </p>
-              <p className="fs-6 lead ">
+        </div>
+        <div className="col-md-8 col-sm-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="card-title w-100 flexCenterBetween">
+                TDS Deducted
                 <Link
                   className="link-primary"
                   onClick={filterDataByTotalDeductedAmount}
                 >
-                  Click Here
+                  <span class="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
                 </Link>
-              </p>
+              </h5>
+            </div>
+            <div class="card-body">
+              <div className="flexCenterBetween">
+                <div>
+                  <h5 class="mediumText">Total TDS Deduction amount</h5>
+                  <h4 class="font-weight-bold mt8 mb8">
+                    {totalTDSDeductedCount}
+                  </h4>
+                </div>
+                <div>
+                  <h5 class="mediumText">Total TDS Deduction Count</h5>
+                  <h4 class="font-weight-bold mt8">{totalTDSDeductedCount}</h4>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-        <div className="card mt-3" style={{ height: "700px" }}>
-          <DataGrid
-            rows={filterData}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            disableMultipleColumnsSorting
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => row.request_id}
-          />
+      </div>
+
+      <div className="row">
+        <div className="col-12">
+          <div className="card" style={{ height: "700px" }}>
+            <div className="card-body thm_table">
+              <DataGrid
+                rows={filterData}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                disableMultipleColumnsSorting
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                getRowId={(row) => row.request_id}
+              />
+            </div>
+            {paymentHistory && (
+              <PaymentHistoryDialog
+                handleClose={setPaymentHistory}
+                paymentDetailColumns={paymentDetailColumns}
+                filterData={historyData}
+              />
+            )}
+            {openImageDialog && (
+              <ImageView
+                viewImgSrc={viewImgSrc}
+                setViewImgDialog={setOpenImageDialog}
+              />
+            )}
+            <Dialog
+              open={bankDetail}
+              onClose={handleCloseBankDetail}
+              fullWidth={"md"}
+              maxWidth={"md"}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <DialogTitle>Bank Details</DialogTitle>
+              <IconButton
+                aria-label="close"
+                onClick={handleCloseBankDetail}
+                sx={{
+                  position: "absolute",
+                  right: 8,
+                  top: 8,
+                  color: (theme) => theme.palette.grey[500],
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+              <TextField
+                id="outlined-multiline-static"
+                multiline
+                value={
+                  bankDetailRowData[0]?.payment_details +
+                  "\n" +
+                  "Mob:" +
+                  bankDetailRowData[0]?.mob1 +
+                  "\n" +
+                  (bankDetailRowData[0]?.email
+                    ? "Email:" + bankDetailRowData[0]?.email
+                    : "")
+                }
+                rows={4}
+                defaultValue="Default Value"
+                variant="outlined"
+              />
+              <Button
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    bankDetailRowData[0]?.payment_details
+                  );
+                  toastAlert("Copied to clipboard");
+                }}
+              >
+                Copy
+              </Button>
+            </Dialog>
+            {remainderDialog && (
+              <ShowDataModal
+                handleClose={setRemainderDialog}
+                rows={reminderData}
+                columns={remainderDialogColumns}
+                aknowledgementDialog={aknowledgementDialog}
+                setAknowledgementDialog={setAknowledgementDialog}
+                userName={userName}
+                callApi={callApi}
+                setRemainderDialo={setRemainderDialog}
+              />
+            )}
+          </div>
         </div>
-        {paymentHistory && (
-          <PaymentHistoryDialog
-            handleClose={setPaymentHistory}
-            paymentDetailColumns={paymentDetailColumns}
-            filterData={historyData}
-          />
-        )}
-
-        {openImageDialog && (
-          <ImageView
-            viewImgSrc={viewImgSrc}
-            setViewImgDialog={setOpenImageDialog}
-          />
-        )}
-
-        <Dialog
-          open={bankDetail}
-          onClose={handleCloseBankDetail}
-          fullWidth={"md"}
-          maxWidth={"md"}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <DialogTitle>Bank Details</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseBankDetail}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-
-          <TextField
-            id="outlined-multiline-static"
-            multiline
-            value={
-              bankDetailRowData[0]?.payment_details +
-              "\n" +
-              "Mob:" +
-              bankDetailRowData[0]?.mob1 +
-              "\n" +
-              (bankDetailRowData[0]?.email
-                ? "Email:" + bankDetailRowData[0]?.email
-                : "")
-            }
-            rows={4}
-            defaultValue="Default Value"
-            variant="outlined"
-          />
-          <Button
-            onClick={() => {
-              navigator.clipboard.writeText(
-                bankDetailRowData[0]?.payment_details
-              );
-              toastAlert("Copied to clipboard");
-            }}
-          >
-            Copy
-          </Button>
-        </Dialog>
-
-        {remainderDialog && (
-          <ShowDataModal
-            handleClose={setRemainderDialog}
-            rows={reminderData}
-            columns={remainderDialogColumns}
-            aknowledgementDialog={aknowledgementDialog}
-            setAknowledgementDialog={setAknowledgementDialog}
-            userName={userName}
-            callApi={callApi}
-            setRemainderDialo={setRemainderDialog}
-          />
-        )}
       </div>
     </div>
   );

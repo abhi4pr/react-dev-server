@@ -689,8 +689,8 @@ export default function TaskPending() {
         <div>
           <Button
             type="button"
-            variant="outlined"
-            style={{ cursor: "pointer", marginRight: "20px" }}
+            className="btn cmnbtn btn_sm btn-outline-primary"
+            style={{ cursor: "pointer" }}
             onClick={() => {
               handleOpenPendingClick(params.row._id, params.row.request_date);
             }}
@@ -1022,7 +1022,7 @@ export default function TaskPending() {
   ];
 
   return (
-    <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
+    <div>
       <FormContainer
         mainTitle="Pending"
         link="/admin/finance-pruchasemanagement-paymentdone"
@@ -1165,7 +1165,6 @@ export default function TaskPending() {
           />
         </DialogContent>
       </Dialog>
-
       {/* Unique Vendor Dialog Box */}
       <Dialog
         open={uniqueVenderDialog}
@@ -1219,177 +1218,369 @@ export default function TaskPending() {
           />
         </DialogContent>
       </Dialog>
-      <div className="card body-padding">
-        <div className="row">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Vendor Name</label>
-              <Autocomplete
-                value={vendorName}
-                onChange={(event, newValue) => setVendorName(newValue)}
-                options={Array.from(
-                  new Set(data.map((option) => option.vendor_name))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Vendor Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
+
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-header">
+              <h5 className="card-title">Search by filter</h5>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>From Date</label>
-              <input
-                value={fromDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => setFromDate(e.target.value)}
-              />
+            <div className="card-body pb4">
+              <div className="row thm_form">
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>Vendor Name</label>
+                    <Autocomplete
+                      value={vendorName}
+                      onChange={(event, newValue) => setVendorName(newValue)}
+                      options={Array.from(
+                        new Set(data.map((option) => option.vendor_name))
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Vendor Name"
+                          type="text"
+                          variant="outlined"
+                          InputProps={{
+                            ...params.InputProps,
+                            className: "form-control", // Apply Bootstrap's form-control class
+                          }}
+                          style={{
+                            borderRadius: "0.25rem",
+                            transition:
+                              "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                            "&:focus": {
+                              borderColor: "#80bdff",
+                              boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>From Date</label>
+                    <input
+                      value={fromDate}
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => setFromDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>To Date</label>
+                    <input
+                      value={toDate}
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => {
+                        setToDate(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>Priority</label>
+                    <select
+                      value={priorityFilter}
+                      className="form-control"
+                      onChange={(e) => setPriorityFilter(e.target.value)}
+                    >
+                      <option value="">Select Priority</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>Request Amount Filter</label>
+                    <select
+                      value={requestAmountFilter}
+                      className="form-control"
+                      onChange={(e) => setRequestAmountFilter(e.target.value)}
+                    >
+                      <option value="">Select Amount</option>
+                      <option value="greaterThan">Greater Than</option>
+                      <option value="lessThan">Less Than</option>
+                      <option value="equalTo">Equal To</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>Requested Amount</label>
+                    <input
+                      value={requestedAmountField}
+                      type="number"
+                      placeholder="Request Amount"
+                      className="form-control"
+                      onChange={(e) => {
+                        setRequestedAmountField(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>To Date</label>
-              <input
-                value={toDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => {
-                  setToDate(e.target.value);
-                }}
-              />
+            <div className="card-footer">
+              <div className="flexCenter colGap16">
+                <Button
+                  variant="contained"
+                  onClick={handleDateFilter}
+                  className="btn cmnbtn btn-primary"
+                >
+                  <i className="fas fa-search"></i> Search
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleClearDateFilter}
+                  className="btn cmnbtn btn-secondary"
+                >
+                  Clear
+                </Button>
+              </div>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Priority</label>
-              <select
-                value={priorityFilter}
-                className="form-control"
-                onChange={(e) => setPriorityFilter(e.target.value)}
-              >
-                <option value="">Select Priority</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-                <option value="High">High</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Request Amount Filter</label>
-              <select
-                value={requestAmountFilter}
-                className="form-control"
-                onChange={(e) => setRequestAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Requested Amount</label>
-              <input
-                value={requestedAmountField}
-                type="number"
-                placeholder="Request Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setRequestedAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-1 mt-4 me-2">
-            <Button variant="contained" onClick={handleDateFilter}>
-              <i className="fas fa-search"></i> Search
-            </Button>
-          </div>
-          <div className="col-md-1 mt-4">
-            <Button variant="contained" onClick={handleClearDateFilter}>
-              Clear
-            </Button>
           </div>
         </div>
       </div>
-      <FormContainer
-        submitButton={false}
-        accordionButtons={accordionButtons}
-        activeAccordionIndex={activeAccordionIndex}
-        onAccordionButtonClick={handleAccordionButtonClick}
-        mainTitleRequired={false}
-      >
-        <div className="tab-content">
-          {activeAccordionIndex === 0 && (
-            <div className="mt-3">
-              <DataGrid
-                rows={filterData.filter((item) => {
-                  return nodeData.some(
-                    (item2) =>
-                      item.request_id == item2.request_id &&
-                      item2.zoho_status != "Done"
-                  );
-                })}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                autoHeight
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
+
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body p0 thm_table">
+              <FormContainer
+                submitButton={false}
+                accordionButtons={accordionButtons}
+                activeAccordionIndex={activeAccordionIndex}
+                onAccordionButtonClick={handleAccordionButtonClick}
+                mainTitleRequired={false}
+              >
+                <div className="tab-content">
+                  {activeAccordionIndex === 0 && (
+                    <div>
+                      <DataGrid
+                        rows={filterData.filter((item) => {
+                          return nodeData.some(
+                            (item2) =>
+                              item.request_id == item2.request_id &&
+                              item2.zoho_status != "Done"
+                          );
+                        })}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        disableSelectionOnClick
+                        autoHeight
+                        slots={{ toolbar: GridToolbar }}
+                        slotProps={{
+                          toolbar: {
+                            showQuickFilter: true,
+                          },
+                        }}
+                        getRowId={(row) => filterData.indexOf(row)}
+                      />
+                    </div>
+                  )}
+                  {activeAccordionIndex === 1 && (
+                    <div className="mt-3">
+                      {filterData.some(
+                        (row) =>
+                          row.gstHold !== undefined &&
+                          row.gstHold !== null &&
+                          row.gstHold === 1
+                      ) ||
+                      nodeData.some(
+                        (row) =>
+                          row.gst_Hold_Bool !== undefined &&
+                          row.gst_Hold_Bool !== null &&
+                          row.gst_Hold_Bool === true
+                      ) ? (
+                        <DataGrid
+                          rows={filterData.filter((item) => {
+                            return nodeData.some(
+                              (item2) =>
+                                item.request_id == item2.request_id &&
+                                item2.gst_status != "Done"
+                            );
+                          })}
+                          columns={columns}
+                          pageSize={5}
+                          rowsPerPageOptions={[5]}
+                          disableSelectionOnClick
+                          autoHeight
+                          slots={{ toolbar: GridToolbar }}
+                          slotProps={{
+                            toolbar: {
+                              showQuickFilter: true,
+                            },
+                          }}
+                          getRowId={(row) => filterData.indexOf(row)}
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  )}
+                  {activeAccordionIndex === 2 && (
+                    <div className="mt-3">
+                      {filterData.some(
+                        (row) =>
+                          row.TDSDeduction !== undefined &&
+                          row.TDSDeduction !== null &&
+                          row.TDSDeduction === 1
+                      ) ||
+                      nodeData.some(
+                        (row) =>
+                          row.tds_Deduction_Bool !== undefined &&
+                          row.tds_Deduction_Bool !== null &&
+                          row.tds_Deduction_Bool === true
+                      ) ? (
+                        <DataGrid
+                          rows={filterData.filter((item) => {
+                            return nodeData.some(
+                              (item2) =>
+                                item.request_id == item2.request_id &&
+                                item2.tds_status != "Done"
+                            );
+                          })}
+                          columns={columns}
+                          pageSize={5}
+                          rowsPerPageOptions={[5]}
+                          disableSelectionOnClick
+                          autoHeight
+                          slots={{ toolbar: GridToolbar }}
+                          slotProps={{
+                            toolbar: {
+                              showQuickFilter: true,
+                            },
+                          }}
+                          getRowId={(row) => filterData.indexOf(row)}
+                        />
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  )}
+                </div>
+              </FormContainer>
+              {openImageDialog && (
+                <ImageView
+                  viewImgSrc={viewImgSrc}
+                  setViewImgDialog={setOpenImageDialog}
+                />
+              )}
+              {/* Bank Detail dialog */}
+              <Dialog
+                open={bankDetail}
+                onClose={handleCloseBankDetail}
+                fullWidth={"md"}
+                maxWidth={"md"}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                 }}
-                getRowId={(row) => filterData.indexOf(row)}
-              />
-            </div>
-          )}
-          {activeAccordionIndex === 1 && (
-            <div className="mt-3">
-              {filterData.some(
-                (row) =>
-                  row.gstHold !== undefined &&
-                  row.gstHold !== null &&
-                  row.gstHold === 1
-              ) ||
-              nodeData.some(
-                (row) =>
-                  row.gst_Hold_Bool !== undefined &&
-                  row.gst_Hold_Bool !== null &&
-                  row.gst_Hold_Bool === true
-              ) ? (
-                <DataGrid
-                  rows={filterData.filter((item) => {
-                    return nodeData.some(
-                      (item2) =>
-                        item.request_id == item2.request_id &&
-                        item2.gst_status != "Done"
+              >
+                <DialogTitle>Bank Details</DialogTitle>
+                <IconButton
+                  aria-label="close"
+                  onClick={handleCloseBankDetail}
+                  sx={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    color: (theme) => theme.palette.grey[500],
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+
+                {/* <DataGrid
+                  rows={bankDetailRowData}
+                  columns={bankDetailColumns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5]}
+                  disableSelectionOnClick
+                  autoHeight
+                  disableColumnMenu
+                  disableColumnSelector
+                  disableColumnFilter
+                  disableColumnReorder
+                  disableColumnResize
+                  disableMultipleColumnsSorting
+                  components={{
+                    Toolbar: GridToolbar,
+                  }}
+                  fv
+                  componentsProps={{
+                    toolbar: {
+                      value: search,
+                      onChange: (event) => setSearch(event.target.value),
+                      placeholder: "Search",
+                      clearSearch: true,
+                      clearSearchAriaLabel: "clear",
+                    },
+                  }}
+                  getRowId={(row) => filterData.indexOf(row)}
+                /> */}
+
+                <TextField
+                  id="outlined-multiline-static"
+                  // label="Multiline"
+                  multiline
+                  value={bankDetailRowData[0]?.payment_details}
+                  rows={4}
+                  defaultValue="Default Value"
+                  variant="outlined"
+                />
+
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      bankDetailRowData[0]?.payment_details
                     );
-                  })}
-                  columns={columns}
+                    toastAlert("Copied to clipboard");
+                  }}
+                >
+                  Copy
+                </Button>
+              </Dialog>
+              {/* Pyament History */}
+              <Dialog
+                open={paymentHistory}
+                onClose={handleClosePaymentHistory}
+                fullWidth={"md"}
+                maxWidth={"md"}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <DialogTitle>Payment History</DialogTitle>
+                <IconButton
+                  aria-label="close"
+                  onClick={handleClosePaymentHistory}
+                  sx={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    color: (theme) => theme.palette.grey[500],
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <DataGrid
+                  rows={historyData}
+                  columns={paymentDetailColumns}
                   pageSize={5}
                   rowsPerPageOptions={[5]}
                   disableSelectionOnClick
@@ -1400,180 +1591,17 @@ export default function TaskPending() {
                       showQuickFilter: true,
                     },
                   }}
-                  getRowId={(row) => filterData.indexOf(row)}
+                  getRowId={(row) => row.request_id}
                 />
-              ) : (
-                ""
-              )}
+              </Dialog>
             </div>
-          )}
-          {activeAccordionIndex === 2 && (
-            <div className="mt-3">
-              {filterData.some(
-                (row) =>
-                  row.TDSDeduction !== undefined &&
-                  row.TDSDeduction !== null &&
-                  row.TDSDeduction === 1
-              ) ||
-              nodeData.some(
-                (row) =>
-                  row.tds_Deduction_Bool !== undefined &&
-                  row.tds_Deduction_Bool !== null &&
-                  row.tds_Deduction_Bool === true
-              ) ? (
-                <DataGrid
-                  rows={filterData.filter((item) => {
-                    return nodeData.some(
-                      (item2) =>
-                        item.request_id == item2.request_id &&
-                        item2.tds_status != "Done"
-                    );
-                  })}
-                  columns={columns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
-                  disableSelectionOnClick
-                  autoHeight
-                  slots={{ toolbar: GridToolbar }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                  getRowId={(row) => filterData.indexOf(row)}
-                />
-              ) : (
-                ""
-              )}
-            </div>
-          )}
+          </div>
         </div>
-      </FormContainer>
+      </div>
 
-      {openImageDialog && (
-        <ImageView
-          viewImgSrc={viewImgSrc}
-          setViewImgDialog={setOpenImageDialog}
-        />
-      )}
-      {/* Bank Detail dialog */}
-      <Dialog
-        open={bankDetail}
-        onClose={handleCloseBankDetail}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Bank Details</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseBankDetail}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        {/* <DataGrid
-          rows={bankDetailRowData}
-          columns={bankDetailColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          disableColumnMenu
-          disableColumnSelector
-          disableColumnFilter
-          disableColumnReorder
-          disableColumnResize
-          disableMultipleColumnsSorting
-          components={{
-            Toolbar: GridToolbar,
-          }}
-          fv
-          componentsProps={{
-            toolbar: {
-              value: search,
-              onChange: (event) => setSearch(event.target.value),
-              placeholder: "Search",
-              clearSearch: true,
-              clearSearchAriaLabel: "clear",
-            },
-          }}
-          getRowId={(row) => filterData.indexOf(row)}
-        /> */}
-
-        <TextField
-          id="outlined-multiline-static"
-          // label="Multiline"
-          multiline
-          value={bankDetailRowData[0]?.payment_details}
-          rows={4}
-          defaultValue="Default Value"
-          variant="outlined"
-        />
-
-        <Button
-          onClick={() => {
-            navigator.clipboard.writeText(
-              bankDetailRowData[0]?.payment_details
-            );
-            toastAlert("Copied to clipboard");
-          }}
-        >
-          Copy
-        </Button>
-      </Dialog>
-      {/* Pyament History */}
-      <Dialog
-        open={paymentHistory}
-        onClose={handleClosePaymentHistory}
-        fullWidth={"md"}
-        maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Payment History</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleClosePaymentHistory}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-
-        <DataGrid
-          rows={historyData}
-          columns={paymentDetailColumns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => row.request_id}
-        />
-      </Dialog>
+      <div
+        style={{ display: "flex", gap: "16px", flexDirection: "column" }}
+      ></div>
     </div>
   );
 }
