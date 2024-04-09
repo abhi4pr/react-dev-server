@@ -162,55 +162,59 @@ export default function PaymentModeMast() {
         mainTitle="Payment Mode Master"
         link={"#"}
       />
-
-      <Paper sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
-        <TextField
-          type="text"
-          label="Search Payment Mode"
-          sx={{ m: 1 }}
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
-        <Page>
-          <TextField
-            type="text"
-            variant="outlined"
-            label="Payment Mode Name"
-            value={addPaymentMode}
-            sx={{ m: 1 }}
-            onChange={handlePaymentModeInputChange}
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-header flexCenterBetween">
+              <div className="thm_form">
+                <TextField
+                  type="text"
+                  label="Search Payment Mode"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                />
+              </div>
+              <div className="flexCenter colGap12 thm_form">
+                <TextField
+                  type="text"
+                  variant="outlined"
+                  label="Payment Mode Name"
+                  value={addPaymentMode}
+                  onChange={handlePaymentModeInputChange}
+                />
+                <button
+                  className="btn cmnbtn btn-primary"
+                  disabled={row.length > 0}
+                  onClick={handleClickAddCity}
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+            <div className="card-body thm_table">
+              <DataGrid
+                rows={filteredRows}
+                columns={cityColumns}
+                getRowId={(row) => row._id}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        {openEditPaymentMode && (
+          <EditPaymentMode
+            handleCloseEditPaymentMode={handleCloseEditPaymentMode}
+            openEditPaymentMode={openEditPaymentMode}
+            callApi={callApi}
+            editPaymetMode={editPaymetMode}
+            handleEditPaymentMode={handleEditPaymentMode}
+            rowData={rowData}
+            toastAlert={toastAlert}
+            handleSaveEditPaymentMode={handleSaveEditPaymentMode}
           />
-          <button
-            className="btn btn-primary btn-lg"
-            style={{ margin: "12px" }}
-            disabled={row.length > 0}
-            onClick={handleClickAddCity}
-          >
-            Add
-          </button>
-        </Page>
-      </Paper>
-
-      <Box className="card body-padding ">
-        <DataGrid
-          rows={filteredRows}
-          columns={cityColumns}
-          getRowId={(row) => row._id}
-        />
-      </Box>
-
-      {openEditPaymentMode && (
-        <EditPaymentMode
-          handleCloseEditPaymentMode={handleCloseEditPaymentMode}
-          openEditPaymentMode={openEditPaymentMode}
-          callApi={callApi}
-          editPaymetMode={editPaymetMode}
-          handleEditPaymentMode={handleEditPaymentMode}
-          rowData={rowData}
-          toastAlert={toastAlert}
-          handleSaveEditPaymentMode={handleSaveEditPaymentMode}
-        />
-      )}
+        )}
+      </div>
     </div>
   );
 }

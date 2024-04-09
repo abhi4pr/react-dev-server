@@ -1,4 +1,4 @@
-  import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormContainer from "../FormContainer";
 import DataTable from "react-data-table-component";
 import axios from "axios";
@@ -12,7 +12,7 @@ import MyTemplate5 from "../WFH/SalaryGeneration/Template5";
 
 import { generatePDF } from "../WFH/SalaryGeneration/pdfGenerator";
 import { useGlobalContext } from "../../../Context/Context";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const AccountsOverviewWFH = () => {
   const { toastAlert } = useGlobalContext();
@@ -34,7 +34,7 @@ const AccountsOverviewWFH = () => {
 
   const getData = async () => {
     try {
-      axios.get(`${baseUrl}`+`get_finances`).then((res) => {
+      axios.get(`${baseUrl}` + `get_finances`).then((res) => {
         const response = res.data;
         setData(response);
         setFilterData(
@@ -81,7 +81,7 @@ const AccountsOverviewWFH = () => {
     formData.append("attendence_id", rowData.attendence_id);
 
     axios
-      .put(`${baseUrl}`+`edit_finance`, formData, {
+      .put(`${baseUrl}` + `edit_finance`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -151,7 +151,7 @@ const AccountsOverviewWFH = () => {
       name: "TDS Deduction",
       selector: (row) => row.tds_deduction + " ₹",
       sortable: true,
-      width:"150px"
+      width: "150px",
     },
     {
       name: "To Pay",
@@ -160,12 +160,12 @@ const AccountsOverviewWFH = () => {
     },
     {
       name: "Action",
-      width:"200px",
+      width: "200px",
       cell: (row) => (
         <>
           {salaryStatusToggle == 0 && (
             <button
-              className="btn btn-primary"
+              className="btn cmnbtn btn_sm btn-outline-primary"
               data-toggle="modal"
               data-target="#exampleModal"
               onClick={() => handlePay(row)}
@@ -176,12 +176,12 @@ const AccountsOverviewWFH = () => {
 
           {row?.invoice_template_no !== "0" && (
             <button
-              className="btn btn-outline-primary btn-sm icon-1"
+              className="btn cmnbtn btn_sm tableIconBtn btn-outline-primary ml8"
               title="Download Invoice"
               type="button"
               onClick={() => generatePDF(row)}
             >
-              <CloudDownloadIcon />
+              <CloudDownloadIcon className="fs-5" />
             </button>
           )}
         </>
@@ -196,16 +196,13 @@ const AccountsOverviewWFH = () => {
     setShowModal(false);
   };
   return (
-    <>
-      <div className="action_heading">
-        <div className="action_title">
-          <FormContainer
-            mainTitle="Acount Overview"
-            link="/admin/user"
-            submitButton={false}
-          />
-        </div>
-      </div>
+    <div>
+      <FormContainer
+        mainTitle="Acount Overview"
+        link="/admin/user"
+        submitButton={false}
+      />
+
       {isloading ? (
         <div className="loader">
           <div>
@@ -245,56 +242,49 @@ const AccountsOverviewWFH = () => {
           <span>Loading</span>
         </div>
       ) : (
-        <div className="">
-          <div className="card mb-4">
-            <div className="card-header">
-              <h6>WFH Salary</h6>
-              <div className="pack"> 
-              <div className="btn-group mr-2" role="group">
-                      <button
-                        type="button"
-                        className={`btn btn-${
-                          salaryStatusToggle == 0
-                            ? "primary"
-                            : "outline-primary"
-                        }`}
-                        onClick={() => setSalaryStatusToggle(0)}
-                      >
-                        Pending
-                      </button>
-                      <button
-                        type="button"
-                        className={`btn btn-${
-                          salaryStatusToggle == 1
-                            ? "primary"
-                            : "outline-primary"
-                        }`}
-                        onClick={() => setSalaryStatusToggle(1)}
-                      >
-                        Paid
-                      </button>
-                    </div>
-
-                    <input
-                      type="text"
-                      placeholder="Search here"
-                      className="w-50 form-control "
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                    /></div>
+        <div className="card">
+          <div className="card-header flexCenterBetween">
+            <h5 className="card-title">WFH Salary</h5>
+            <div className="flexCenter">
+              <div className="pack">
+                <div className="btn-group mr-2" role="group">
+                  <button
+                    type="button"
+                    className={`btn cmnbtn btn_sm btn-${
+                      salaryStatusToggle == 0 ? "primary" : "outline-primary"
+                    }`}
+                    onClick={() => setSalaryStatusToggle(0)}
+                  >
+                    Pending
+                  </button>
+                  <button
+                    type="button"
+                    className={`btn cmnbtn btn_sm btn-${
+                      salaryStatusToggle == 1 ? "primary" : "outline-primary"
+                    }`}
+                    onClick={() => setSalaryStatusToggle(1)}
+                  >
+                    Paid
+                  </button>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search here"
+                  className="w-100 form-control form_sm"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
             </div>
-            <div className="data_tbl table-responsive card-body body-padding">
-              <DataTable
-                
-                columns={columns}
-                data={filterData}
-                // fixedHeader
-                pagination
-                // fixedHeaderScrollHeight="64vh"
-                
-                        
-              />
-            </div>
+          </div>
+          <div className="data_tbl table-responsive card-body body-padding">
+            <DataTable
+              columns={columns}
+              data={filterData}
+              // fixedHeader
+              pagination
+              // fixedHeaderScrollHeight="64vh"
+            />
           </div>
         </div>
       )}
@@ -385,7 +375,7 @@ const AccountsOverviewWFH = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

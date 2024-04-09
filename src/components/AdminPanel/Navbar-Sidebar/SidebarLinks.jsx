@@ -660,7 +660,7 @@ const SidebarLinks = () => {
                   aria-labelledby="headingTwo"
                   data-parent="#accordionSidebar"
                 >
-                  <div className="bg-white collapse-inner">
+                  <div className="collapse-inner">
                     {/* {contextData &&
                 contextData[24] &&
                 contextData[24].view_value === 1 &&
@@ -947,7 +947,7 @@ const SidebarLinks = () => {
             aria-labelledby="headingTwo"
             data-parent="#accordionSidebar"
           >
-            <div className="bg-white collapse-inner">
+            <div className="collapse-inner">
               {contextData &&
                 contextData[22] &&
                 contextData[22].view_value === 1 && (
@@ -980,7 +980,7 @@ const SidebarLinks = () => {
             aria-labelledby="headingTwo"
             data-parent="#accordionSidebar"
           >
-            <div className="bg-white collapse-inner">
+            <div className="collapse-inner">
               <li className="nav-item">
                 {/* <Link
                   className="nav-btn nav-link collapsed"
@@ -997,14 +997,14 @@ const SidebarLinks = () => {
                   aria-labelledby="headingTwo"
                   // data-parent="#accordionSidebar"
                 > */}
-                <div className="bg-white collapse-inner">
+                <div className="collapse-inner">
                   <>
                     <li className="nav-item">
                       <Link
                         className="collapse-item"
                         to="/admin/finance-dashboard"
                       >
-                        <i className="bi bi-dot"></i> <span>Dashboard</span>
+                        <i className="bi bi-dash"></i> <span>Dashboard</span>
                       </Link>
                     </li>
                   </>
@@ -1027,7 +1027,7 @@ const SidebarLinks = () => {
                   aria-labelledby="headingTwo"
                   // data-parent="#accordionSidebar"
                 >
-                  <div className="bg-white collapse-inner">
+                  <div className="collapse-inner">
                     <>
                       <li className="nav-item">
                         <a
@@ -1401,7 +1401,7 @@ const SidebarLinks = () => {
                     className="collapse-item"
                     to="/admin/finance-gst-nongst-incentive-report"
                   >
-                    <i className="bi bi-dot"></i> Incentive Report
+                    <i className="bi bi-dash"></i> Incentive Report
                   </Link>
                 </>
               </li>
