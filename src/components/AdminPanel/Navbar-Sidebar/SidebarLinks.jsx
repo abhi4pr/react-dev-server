@@ -100,6 +100,7 @@ const SidebarLinks = () => {
     (index) => contextData[index]?.view_value === 1
   );
   const isSales = [52].some((index) => contextData[index]?.view_value === 1);
+  const asset = [53].some((index) => contextData[index]?.view_value == 1);
 
   // const isWFHDuser  = [].some(index=>context )
 
@@ -1412,7 +1413,7 @@ const SidebarLinks = () => {
       {/* FINANCE */}
 
       {/* Asset Management here  */}
-      {job_type !== "WFHD" && (
+      {asset && job_type !== "WFHD" && (
         <li className="nav-item">
           <Link
             className="nav-btn nav-link collapsed"
