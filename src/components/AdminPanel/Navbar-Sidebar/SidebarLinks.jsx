@@ -4,6 +4,7 @@ import jwtDecode from "jwt-decode";
 import axios from "axios";
 import { baseUrl } from "../../../utils/config";
 import SalesSidebarLinks from "./SalesSidebarLinks";
+import PageAssignmentSidebarLinks from "./PageAssignmentSidebarLinks";
 
 const SidebarLinks = () => {
   const [contextData, setData] = useState([]);
@@ -1735,7 +1736,10 @@ const SidebarLinks = () => {
         </li>
       )}
 
-      {isSales && <SalesSidebarLinks />}
+    {isSales && (
+      <SalesSidebarLinks />
+    )}
+      <PageAssignmentSidebarLinks/>
     </>
   );
 };
