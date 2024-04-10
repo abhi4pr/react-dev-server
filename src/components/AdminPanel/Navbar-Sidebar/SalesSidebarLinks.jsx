@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { ChartLineUp } from "@phosphor-icons/react";
 
 const SalesSidebarLinks = () => {
   return (
@@ -10,7 +11,9 @@ const SalesSidebarLinks = () => {
         aria-expanded="true"
         aria-controls="collapseTwom99"
       >
-        <i className="bi bi-person-gear" />
+        <i className="ph">
+          <ChartLineUp weight="duotone" />
+        </i>
         <span>Sales</span>
       </Link>
       <div
