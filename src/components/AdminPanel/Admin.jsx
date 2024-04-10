@@ -294,6 +294,10 @@ import IncentiveUpdate from "./Sales/IncentivePlan/IncentiveUpdate";
 import CustomerContactDetails from "./Customer/Contectdetailes/CustomerContactDetails";
 import PurchasePrice from "./PageMS/PurchasePrice";
 import UserSummary from "./WFH/UserSummary/UserSummary";
+import PageAssignment from "./PageAssignment/PageAssignmentOverview";
+import PageAssignmentMaster from "./PageAssignment/PageAssignmentMaster";
+import PageAssignmentUpdate from "./PageAssignment/PageAssignmentUpdate";
+import HistoryAssignData from "./PageAssignment/HistoryAssignData";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1398,6 +1402,20 @@ const Admin = () => {
                   <Route
                     path="/sales-incentive-update/:id"
                     element={<IncentiveUpdate />}
+                  />
+                  {/* page assignment Routing here  */}
+                  <Route path="/page-assignment" element={<PageAssignment />} />
+                  <Route
+                    path="/create-pageAssignment"
+                    element={<PageAssignmentMaster />}
+                  />
+                   <Route
+                    path="/update-pageAssignment/:id"
+                    element={<PageAssignmentUpdate />}
+                  />
+                   <Route
+                    path="/historyAssignment"
+                    element={<HistoryAssignData />}
                   />
                 </Route>
               </Routes>
