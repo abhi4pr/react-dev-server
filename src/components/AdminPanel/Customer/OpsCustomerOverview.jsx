@@ -100,7 +100,7 @@ const OpsCustomerOverview = () => {
           </button>
            </Link>
            
-           <Link to={`/admin/document/${row._id}`}>
+           <Link to={`/admin/customer-document-details/${row.customer_id}`}>
             <button
               title="Document"
               className="btn btn-outline-info btn-sm ml-2"

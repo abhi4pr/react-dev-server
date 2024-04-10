@@ -14,14 +14,39 @@ const CustomerDocumentUpdate = () => {
  // const [customerName, setCustomerName] = useState("");
   const [docFile, setDocFile] = useState("");
   const [docNo, setDocNo] = useState("");
+  const [customerName, setCustomerName] = useState("");
+ const [docName, setDocName] = useState(""); 
   const [description, setDescription] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
 
-  const [customersData, setCustomersData] = useState([]);
+  const [customersData, setCustomersData] = useState([]); 
   console.log(customersData, "new name");
+  const [customersDoc, setCustomersDoc] = useState([]);
+  const getData = () => {
+    axios.get(baseUrl + "get_all_doc_mast") 
+      .then((res) => {
+        setCustomersDoc(res?.data?.data); 
+        console.log(res.data.data);
+        setFilterData(res.data.data);
+      });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const CustomerData = () => {
+    axios.get(baseUrl + "get_all_customer_mast").then((res) => {
+      setCustomersData(res.data.customerMastList);
+    });
+  };
+
+  useEffect(() => {
+    CustomerData();
+  }, []);
   
   useEffect(() => {
     axios.get(baseUrl + "get_all_customer_document").then((res) => {
@@ -31,10 +56,11 @@ const CustomerDocumentUpdate = () => {
 
   useEffect(() => {
     axios.get(baseUrl + `get_customer_document/${id}`).then((res) => {
-      const documentData = res.data; 
-      setCustomerName(documentData.customer_id);
-      setDocNo(documentData.doc_no);
-      setDescription(documentData.description);
+      const documentData = res.data.data; 
+      setCustomerName(documentData[0]?.customer_id);
+      setDocName(documentData[0]?.doc_id);
+      setDocNo(documentData[0]?.doc_no);
+      setDescription(documentData[0]?.description);
     }).catch((error) => {
       console.error("Error fetching document data:", error);
     });
@@ -43,7 +69,8 @@ const CustomerDocumentUpdate = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const formData = new FormData();
-    //formData.append("customer_id", customerName);
+    formData.append("customer_id", customerName);
+    formData.append("doc_id", docName);
     formData.append("doc_upload", docFile);
     formData.append("doc_no", docNo);
     formData.append("description", description);
@@ -70,34 +97,52 @@ const CustomerDocumentUpdate = () => {
       title="Update Customer Document"
       handleSubmit={handleSubmit}
     >
-      {/* <div className="form-group col-6">
+     <div className="form-group col-6">
         <label className="form-label">
-          Customer Type ID <sup style={{ color: "red" }}>*</sup>
+          Customer Name <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
-          options={customersData.map((option) => ({
+          options={customersData?.map((option) => ({
             value: option.customer_id,
-            label: option._id,
+            label: option.customer_name,
           }))}
           value={{
             value: customerName,
-            label: customerName,
+            label:
+              customersData?.find((cust) => cust.customer_id === customerName)
+                ?.customer_name || "",
           }}
           onChange={(e) => {
             setCustomerName(e.value);
           }}
-        />
-      </div> */}
-
-       <div className="form-group col-6">
+        ></Select>
+      </div>
+     
+      <div className="form-group col-6">
         <label className="form-label">
-          Doc ID <sup style={{ color: "red" }}>*</sup>
+          Doc Name <sup style={{ color: "red" }}>*</sup>
         </label>
-        </div>
+        <Select
+          options={customersDoc?.map((option) => ({
+            value: option?._id,
+            label: option?.doc_name ,
+          }))}
+          value={{
+            value: docName,
+            label:
+            customersDoc?.find((cust) => cust._id === docName)
+                ?.doc_name || "",
+          }}
+          onChange={(e) => {
+            setDocName(e.value);
+          }}
+        ></Select>
+      </div>
 
       <FieldContainer
         type="file"
         label="Doc File"
+        required={false}
         onChange={(e) => setDocFile(e.target.files[0])}
       />
       <FieldContainer
