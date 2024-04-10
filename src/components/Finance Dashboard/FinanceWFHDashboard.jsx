@@ -458,6 +458,18 @@ export default function FinanceWFHDashboard() {
     setShowModal(false);
   };
 
+  // const handleUndo = async (row) => {
+  //   console.log(row);
+  //   try {
+  //     const res = await axios.put(`${baseUrl}update_finance_data`, {
+  //       attendence_id: row.attendence_id,
+  //     });
+  //     console.log("Data updated successfully:", res.data);
+  //   } catch (error) {
+  //     console.error("Error updating data:", error);
+  //   }
+  // };
+
   function handlePayOut(e) {
     e.preventDefault();
     if (!refrenceNumber) return;
@@ -734,7 +746,7 @@ export default function FinanceWFHDashboard() {
                 }}
               />
               <button
-                style={{ width: "200px" }}
+                style={{ width: "100px" }}
                 className="btn btn-primary"
                 //  type="submit"
                 onClick={(e) => handleUTRupload(e, params.row)}
@@ -742,6 +754,14 @@ export default function FinanceWFHDashboard() {
               >
                 Submit
               </button>
+              {/* <button
+                style={{ width: "200px" }}
+                className="btn btn-primary"
+                type="button"
+                onClick={() => handleUndo(params.row)}
+              >
+                Undo
+              </button> */}
             </form>
           </div>
         );
