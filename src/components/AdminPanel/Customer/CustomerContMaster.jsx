@@ -105,18 +105,18 @@ const CustomerContMaster = () => {
     >
       <div className="form-group col-6">
         <label className="form-label">
-          Customer Type ID <sup style={{ color: "red" }}>*</sup>
+          Customer Name <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
           options={customersData?.map((option) => ({
             value: option.customer_id,
-            label: option._id ,
+            label: option.customer_name ,
           }))}
           value={{
             value: customerName,
             label:
               customersData?.find((cust) => cust.customer_id === customerName)
-                ?._id || "",
+                ?.customer_name || "",
           }}
           onChange={(e) => {
             setCustomerName(e.value);

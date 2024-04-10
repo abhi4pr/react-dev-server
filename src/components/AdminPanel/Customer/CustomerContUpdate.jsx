@@ -27,6 +27,7 @@ const CustomerContUpdate = () => {
   const userID = decodedToken.id;
 
   const [customersData, setCustomersData] = useState([]);
+  
 
   const fetchCustomerContactDetails = () => {
     axios.get(`${baseUrl}get_customer_contact/${id}`).then((res) => {
@@ -36,7 +37,7 @@ const CustomerContUpdate = () => {
       setContactName(data[0].contact_name);
       setContactNo(data[0].contact_no);
       setAlternateContact(data[0].alternative_contact_no);
-      setEmailId(data[0].email_id);
+      setEmailId(data[0].email_Id);
       console.log(data,'asdfghjkl')
       setDepartment(data[0].department);
       setDesignation(data[0].designation);
@@ -120,18 +121,18 @@ const handleEmailSet = (e, setState) => {
     >
 <div className="form-group col-6">
         <label className="form-label">
-          Customer Type ID <sup style={{ color: "red" }}>*</sup>
+          Customer Name  <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
           options={customersData?.map((option) => ({
             value: option.customer_id,
-            label: option._id ,
+            label: option.customer_name ,
           }))}
           value={{
             value: customerName,
             label:
               customersData?.find((cust) => cust.customer_id === customerName)
-                ?._id || "",
+                ?.customer_name || "",
           }}
           onChange={(e) => {
             setCustomerName(e.value);
