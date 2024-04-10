@@ -5,6 +5,16 @@ import axios from "axios";
 import { baseUrl } from "../../../utils/config";
 import SalesSidebarLinks from "./SalesSidebarLinks";
 import PageAssignmentSidebarLinks from "./PageAssignmentSidebarLinks";
+import {
+  Gauge,
+  IdentificationBadge,
+  House,
+  Laptop,
+  CurrencyInr,
+  FolderSimpleStar,
+  UserRectangle,
+  Files,
+} from "@phosphor-icons/react";
 
 const SidebarLinks = () => {
   const [contextData, setData] = useState([]);
@@ -109,7 +119,9 @@ const SidebarLinks = () => {
     <>
       <li className="nav-item nav-item-single">
         <Link className="nav-btn nav-link" to="/admin">
-          <i className="bi bi-columns-gap" />
+          <i className="ph">
+            <Gauge weight="duotone" />
+          </i>
           <span>Dashboard</span>
         </Link>
       </li>
@@ -124,7 +136,9 @@ const SidebarLinks = () => {
             aria-expanded="true"
             aria-controls="collapseTwo"
           >
-            <i className="bi bi-person-gear" />
+            <i className="ph">
+              <IdentificationBadge weight="duotone" />
+            </i>
             <span>User Management</span>
           </Link>
           <div
@@ -282,7 +296,9 @@ const SidebarLinks = () => {
             aria-expanded="true"
             aria-controls="collapsInnerOneModify"
           >
-            <i className="bi bi-person-gear" />
+            <i className="ph">
+              <House weight="duotone" />
+            </i>
             <span>WFHD</span>
           </a>
           <div
@@ -556,7 +572,9 @@ const SidebarLinks = () => {
             aria-expanded="true"
             aria-controls="collapsInnerOneModifyTwo"
           >
-            <i className="bi bi-person-gear" />
+            <i className="ph">
+              <Laptop weight="duotone" />
+            </i>
             <span>Operation</span>
           </a>
           <div
@@ -972,7 +990,9 @@ const SidebarLinks = () => {
             aria-expanded="true"
             aria-controls="collapseNine"
           >
-            <i className="bi bi-person-gear" />
+            <i className="ph">
+              <CurrencyInr weight="duotone" />
+            </i>
             <span>Finance</span>
           </Link>
           <div
@@ -1500,7 +1520,9 @@ const SidebarLinks = () => {
             aria-expanded="true"
             aria-controls="taskmanagement"
           >
-            <i className="bi bi-person-gear" />
+            <i className="ph">
+              <FolderSimpleStar weight="duotone" />
+            </i>
             <span>Task Management</span>
           </Link>
           <div
@@ -1533,7 +1555,9 @@ const SidebarLinks = () => {
             aria-expanded="true"
             aria-controls="customer"
           >
-            <i className="bi bi-person-gear" />
+            <i className="ph">
+              <UserRectangle weight="duotone" />
+            </i>
             <span>Customer</span>
           </Link>
           <div
@@ -1598,7 +1622,9 @@ const SidebarLinks = () => {
             aria-expanded="true"
             aria-controls="collapseTwom8"
           >
-            <i className="bi bi-person-gear" />
+            <i className="ph">
+              <Files weight="duotone" />
+            </i>
             <span>Page Management</span>
           </Link>
           <div
@@ -1736,10 +1762,8 @@ const SidebarLinks = () => {
         </li>
       )}
 
-    {isSales && (
-      <SalesSidebarLinks />
-    )}
-      <PageAssignmentSidebarLinks/>
+      {isSales && <SalesSidebarLinks />}
+      <PageAssignmentSidebarLinks />
     </>
   );
 };

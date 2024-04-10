@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { UserFocus } from "@phosphor-icons/react";
 
 const PageAssignmentSidebarLinks = () => {
   return (
@@ -10,7 +11,9 @@ const PageAssignmentSidebarLinks = () => {
         aria-expanded="true"
         aria-controls="collapseTwom99s"
       >
-        <i className="bi bi-person-gear" />
+        <i className="ph">
+          <UserFocus weight="duotone" />
+        </i>
         <span>Page Assignment</span>
       </Link>
       <div
