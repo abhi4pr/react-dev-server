@@ -749,15 +749,15 @@ const SidebarLinks = () => {
                           <Link
                             className="nav-btn nav-link collapsed"
                             data-toggle="collapse"
-                            data-target="#collapsInnerTwo"
+                            data-target="#collapsInnerTwoCamp"
                             aria-expanded="true"
-                            aria-controls="collapsInnerTwo"
+                            aria-controls="collapsInnerTwoCamp"
                           >
                             <i className="bi bi-dash"></i>
                             <span>Campaign</span>
                           </Link>
                           <div
-                            id="collapsInnerTwo"
+                            id="collapsInnerTwoCamp"
                             className="collapse"
                             aria-labelledby="headingTwo"
                             // data-parent="#accordionSidebar"

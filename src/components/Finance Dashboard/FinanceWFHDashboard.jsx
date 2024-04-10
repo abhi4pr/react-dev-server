@@ -141,20 +141,13 @@ export default function FinanceWFHDashboard() {
     try {
       await downloadSelectedInvoices(rowForPayment);
     } catch (error) {
-      console.error("Error downloading invoices:", error);
+      // console.error("Error downloading invoices:", error);
       // Handle any errors related to downloading invoices here
     }
   };
 
   const handleUTRupload = async (e, row) => {
     e.preventDefault();
-    console.log(rowUTR);
-    console.log(typeof rowUTR.row.attendence_id);
-
-    // const formData = new FormData();
-    console.log(rowUTR);
-    // return;
-
     axios
 
       .put(
@@ -458,17 +451,18 @@ export default function FinanceWFHDashboard() {
     setShowModal(false);
   };
 
-  // const handleUndo = async (row) => {
-  //   console.log(row);
-  //   try {
-  //     const res = await axios.put(`${baseUrl}update_finance_data`, {
-  //       attendence_id: row.attendence_id,
-  //     });
-  //     console.log("Data updated successfully:", res.data);
-  //   } catch (error) {
-  //     console.error("Error updating data:", error);
-  //   }
-  // };
+  const handleUndo = async (e, row) => {
+    e.preventDefault();
+    axios.put(`${baseUrl}` + `update_finance_data`,
+      {
+        attendence_id: row.attendence_id
+      }
+    )
+    .then(() => {
+      toastAlert("Sent To Pending");
+      getData();
+    });
+  };
 
   function handlePayOut(e) {
     e.preventDefault();
@@ -754,14 +748,14 @@ export default function FinanceWFHDashboard() {
               >
                 Submit
               </button>
-              {/* <button
-                style={{ width: "200px" }}
-                className="btn btn-primary"
-                type="button"
-                onClick={() => handleUndo(params.row)}
+              <button
+                style={{ width: "100px" }}
+                className="btn btn-success"
+                // type="submit"
+                onClick={(e) => handleUndo(e, params.row)}
               >
                 Undo
-              </button> */}
+              </button>
             </form>
           </div>
         );
