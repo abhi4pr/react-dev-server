@@ -90,6 +90,7 @@ const CreateAssign = () => {
           }
         );
 
+        setcampaignId(createPreAssignment?.data?.data[0]?.campaignId)
         const filter = createPreAssignment?.data?.ass.filter((page) => {
           return (
             page.replacement_status === "pending" ||
@@ -385,7 +386,7 @@ const CreateAssign = () => {
   }, [selectedFollower]);
 
   const handleSelectionChange = (selectedIds) => {
-    console.log(selectedIds);
+    // console.log(selectedIds);
     setSelectedRows(selectedIds);
   };
 
@@ -413,9 +414,9 @@ const CreateAssign = () => {
     setLoading(false);
   };
 
-  console.log(filteredPages);
+  // console.log(filteredPages);
   const handleExpertsChange = (event, newValue, params) => {
-    console.log(event, newValue, params);
+    // console.log(event, newValue, params);
     const data = payload.map((page) => {
       if (page.p_id == params.row.p_id) {
         return {
@@ -427,7 +428,7 @@ const CreateAssign = () => {
       } else return page;
     });
 
-    console.log(data);
+    // console.log(data);
     setPayload(data);
   };
   const followerChangeHandler = (e, op) => {
@@ -445,7 +446,7 @@ const CreateAssign = () => {
   const assignModalfn = (newPayload) => {
     setPayload(newPayload);
   };
-  console.log(payload);
+  // console.log(payload);
   const handleRadioChange = (e) => {
     setRadioSelected(e.target.value);
 
@@ -459,7 +460,7 @@ const CreateAssign = () => {
         if (page.preAssignedTo.length == 0 && page.rejected_by.length > 0)
           return page;
       } else if (e.target.value == "unassigned") {
-        console.log("first");
+        // console.log("first");
         return page.ass_status=="unassigned" && page.preAssignedTo.length == 0 && page.rejected_by.length == 0  ;
       } else if (e.target.value == "pending") {
         return page.ass_status == "unassigned";
@@ -600,7 +601,7 @@ const CreateAssign = () => {
   if (isLoading) {
     return <Loader message="Auto Assignment in Progress..." />;
   }
-console.log(filteredPages)
+// console.log(filteredPages)
   return (
     <>
       <div className="form-heading">

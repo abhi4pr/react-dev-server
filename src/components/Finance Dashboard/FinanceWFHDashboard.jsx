@@ -754,7 +754,7 @@ export default function FinanceWFHDashboard() {
                 // type="submit"
                 onClick={(e) => handleUndo(e, params.row)}
               >
-                Undo
+                Retrieve
               </button>
             </form>
           </div>
