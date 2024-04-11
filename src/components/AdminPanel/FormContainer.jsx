@@ -39,6 +39,9 @@ const FormContainer = ({
   rejectedCount,
   baseAmountTotal,
   campaignAmountTotal,
+  nonGstCount,
+  invoiceCount,
+  nonInvoiceCount,
   totalBaseAmount,
   uniqueSalesExecutiveCount,
   handleOpenUniqueSalesExecutive,
@@ -72,8 +75,10 @@ const FormContainer = ({
       {mainTitleRequired && (
         <div className="form-heading">
           <img className="img-bg" src={titleimg} alt="" width={160} />
-          <div className="form
-          _heading_title ">
+          <div
+            className="form
+          _heading_title "
+          >
             <h2>{mainTitle}</h2>
             <div className="pack">
               <i class="bi bi-house"></i>{" "}
@@ -91,6 +96,15 @@ const FormContainer = ({
               </h2>
               <h2>
                 Pending Request : <a href="#"> {pendingRequestCount}</a>
+              </h2>
+              <h2>
+                Non GST : <a href="#"> {nonGstCount}</a>
+              </h2>
+              <h2>
+                With Invoice Count : <a href="#"> {invoiceCount}</a>
+              </h2>
+              <h2>
+                Without Invoice Count : <a href="#"> {nonInvoiceCount}</a>
               </h2>
               {/* <h2>
                 Reminder : <a href="#">{pendingpaymentRemainder}</a>
@@ -185,12 +199,12 @@ const FormContainer = ({
               <h2>
                 Pending count : <a href="#"> {pendingCount}</a>
               </h2>
-              <h2>
+              {/* <h2>
                 Approved Count : <a href="#"> {approvedCount}</a>
               </h2>
               <h2>
                 Rejected Count : <a href="#">{rejectedCount}</a>
-              </h2>
+              </h2> */}
             </div>
           )}
           {dashboardAdditionalTitles && (

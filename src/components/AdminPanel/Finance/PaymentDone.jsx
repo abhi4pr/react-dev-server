@@ -698,6 +698,9 @@ export default function PaymentDone() {
       field: "invc_img",
       headerName: "Invoice Image",
       renderCell: (params) => {
+        if (!params.row.invc_img) {
+          return "No Image";
+        }
         // Extract file extension and check if it's a PDF
         const fileExtension = params.row.invc_img
           .split(".")
@@ -1064,16 +1067,16 @@ export default function PaymentDone() {
         );
       },
     },
-    {
-      field: "Aging (in hours)",
-      headerName: "Aging (in hours)",
-      width: 150,
-      renderCell: (params) => {
-        return (
-          <p> {calculateHours(params.row.request_date, new Date())} Hours</p>
-        );
-      },
-    },
+    // {
+    //   field: "Aging (in hours)",
+    //   headerName: "Aging (in hours)",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     return (
+    //       <p> {calculateHours(params.row.request_date, new Date())} Hours</p>
+    //     );
+    //   },
+    // },
     {
       field: "gstHold",
       headerName: "GST Hold",
