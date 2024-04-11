@@ -10,6 +10,7 @@ import { Button } from "@mui/material";
 import PaymentDetailDailog from "../PaymentDetailDailog";
 import PointOfSaleTwoToneIcon from "@mui/icons-material/PointOfSaleTwoTone";
 import {baseUrl} from '../../../utils/config'
+import Confirmation from "../Confirmation";
 
 export default function ExecutionDone() {
   const storedToken = sessionStorage.getItem("token");
@@ -18,9 +19,19 @@ export default function ExecutionDone() {
 
   const [data, setData] = useState([]);
   const [contextData, setContextData] = useState(false);
-
+  const [snackbar, setSnackbar] = useState(null);
   const [openPaymentDetailDialog, setOpenPaymentDetaliDialog] = useState(false);
   const [paymentDialogDetails, setPaymentDialogDetails] = useState([{}]);
+  const [rowData, setRowData] = useState([]);
+  const [confirmation, setConfirmation] = useState(false);
+  const [executionStatus, setExecutionStatus] = useState();
+  const [reload, setReload] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      fetchData();
+    }, 1000);
+  }, [reload]);
 
   const handleClickOpenPaymentDetailDialog = (data) => {
     setPaymentDialogDetails(data);
@@ -68,6 +79,12 @@ export default function ExecutionDone() {
       },
     },
   });
+
+  const handleSetPending = (row) => {
+    setRowData(row);
+    setConfirmation(true);
+    setExecutionStatus(4);
+  };
 
   const addSerialNumber = (rows) => {
     return rows.map((row, index) => ({
@@ -269,6 +286,12 @@ export default function ExecutionDone() {
                   title="Record Service Detail"
                 />
               </Link>,
+              <GridActionsCellItem
+              key={id}
+              icon={<Button variant="outlined">Set To Pending</Button>}
+              onClick={() => handleSetPending(params.row)}
+              color="inherit"
+            />
             ];
           },
         }
@@ -286,6 +309,7 @@ export default function ExecutionDone() {
                   icon={<ListAltOutlinedIcon />}
                   label="Delete"
                   color="inherit"
+                  title="Record Service Detail"
                 />
               </Link>,
             ];
@@ -318,6 +342,24 @@ export default function ExecutionDone() {
           paymentDialogDetails={paymentDialogDetails}
         />
       </>
+      {confirmation && (
+        <Confirmation
+          rowData={rowData}
+          value={new Date()}
+          status={executionStatus }
+          setReload={setReload}
+          confirmation={confirmation}
+          setSnackbar={setSnackbar}
+          setConfirmation={setConfirmation}
+          type={
+            executionStatus
+              ? executionStatus == 2
+                ? "Accept"
+                : "Reject"
+              : "Reject"
+          }
+        />
+      )}
     </div>
   );
 }

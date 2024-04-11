@@ -29,7 +29,6 @@ export const OverviewLatestProducts = (props) => {
   ]
 const columns =[{field:'id',headerName:"ID" ,width:"20"},{field:'cust_name' ,headerName:"Customer Name",width:"150"},{field:'salaes_bookig_data',headerName:"Sales Booking Date",width:"150"}]
 const topFiveProducts = products?.filter(e=>e.execution_status==0).slice(0, 5);
-console.log(products)
   return (
     <Card sx={sx}>
       <CardHeader title="Latest Pending" />

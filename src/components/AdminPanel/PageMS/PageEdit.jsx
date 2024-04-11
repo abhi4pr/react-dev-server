@@ -13,7 +13,6 @@ import {
   Box,
   Button,
   InputAdornment,
-  Paper,
   TextField,
   styled,
 } from "@mui/material";
@@ -28,6 +27,7 @@ import ImageView from "../Finance/ImageView";
 import { DataGrid } from "@mui/x-data-grid";
 import InsertPhotoTwoToneIcon from "@mui/icons-material/InsertPhotoTwoTone";
 import OndemandVideoTwoToneIcon from "@mui/icons-material/OndemandVideoTwoTone";
+import { useNavigate } from "react-router-dom";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -42,6 +42,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const PageEdit = () => {
+  const navigate = useNavigate();
   const { toastAlert } = useGlobalContext();
   const [pageName, setPageName] = useState("");
   const [link, setLink] = useState("");
@@ -164,6 +165,7 @@ const PageEdit = () => {
   const [openDeleteHistoryConFirmation, setOpenDeleteHistoryConFirmation] =
     useState(false);
   const [allUsers, setAllUsers] = useState([]);
+  const [stateUpdate, setStateUpdate] = useState(false);
 
   const handlePercentageChange = (value, setter) => {
     const newValue = parseFloat(value);
@@ -463,9 +465,28 @@ const PageEdit = () => {
     { value: "Hindi", label: "Hindi" },
   ];
 
+
+
+  const handleUpdateRowClick = async () => {
+    await axios
+      .get(`${baseUrl}`+`get_exe_ip_count_history/${p_id}`)
+      .then((res) => {
+        let data = res.data.data.filter((e) => {
+          return e.isDeleted !== true;
+        });
+        console.log(p_id, data, "data");
+        data = data[data.length - 1];
+        navigate(`/admin/exe-update/${data._id}`, { state: p_id });
+      });
+  };
   const getData = () => {
     axios.get(baseUrl + `getPageDetail/${pageMast_id}`).then((res) => {
-      const data = res.data.data;
+      const data = [res.data.data];
+      
+      console.log(res.data.latestEntry.stats_update_flag, "data[0].totalPercentage");
+      setLatestEntry(res.data.latestEntry);
+      setStateUpdate(data[0].stats_update_flag);
+      setTotalPercentage(res.data.totalPercentage);
       setPlatformId(data[0].platform_id);
       setPageName(data[0].page_user_name);
       setLink(data[0].link);
@@ -484,11 +505,10 @@ const PageEdit = () => {
       setRate(data[0].engagment_rate);
       setDescription(data[0].description);
       setP_id(data[0].pageMast_id);
-      console.log(res.data.data[0], "p_id");
       const { execounthismodels } = data[0];
       setExecounthismodels(execounthismodels);
     });
-    console.log(execounthismodels, "execounthismodels");
+
 
     axios.get(baseUrl + "getAllPlatform").then((res) => {
       setPlatformData(res.data.data);
@@ -530,6 +550,11 @@ const PageEdit = () => {
     callApi();
   }, [intervalFlag]);
 
+  
+  const handleHistoryRowClick = () => {
+    navigate(`/admin/exe-history/${p_id}`, { state: p_id });
+  };
+
   const callApi = () => {
     axios
       .post(baseUrl + "page_health_dashboard", {
@@ -538,20 +563,20 @@ const PageEdit = () => {
       })
       .then((res) => {
         setHistoryData(res.data.data);
-        console.log(res.data.data, "res.data.data");
       });
 
 
   };
 
   useEffect(() => {
+    if(p_id){
     axios.get(baseUrl + `get_exe_ip_count_history/${p_id}`).then((res) => {
-      console.log(res.data, "get_exe_ip_count_history");
       const data = res.data.data.filter((e) => {
         return e.isDeleted !== true;
       });
       setP_idHistoryData(data);
     });
+  }
   }, [p_id]);
 
   const handleSubmit = (e) => {
@@ -928,14 +953,14 @@ const PageEdit = () => {
           <FieldContainer
             disabled={true}
             label="Stats Update %"
-            value={0}
+            value={totalPercentage}
             required={false}
             onChange={(e) => setDescription(e.target.value)}
           />{" "}
           <FieldContainer
             disabled={true}
             label="Stats Update Flag"
-            value={"No"}
+            value={stateUpdate? "Yes" : "No"}
             required={false}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -955,9 +980,9 @@ const PageEdit = () => {
             <button
               type="button"
               className="btn btn-primary me-2 btn-lg"
-              // onClick={() =>
-              //    handleHistoryRowClick(params.row)
-              //   }
+              onClick={() =>
+                 handleHistoryRowClick()
+                }
               disabled={
                 latestEntry?.stats_update_flag
                   ? latestEntry.stats_update_flag
@@ -970,7 +995,7 @@ const PageEdit = () => {
             <button
               type="button"
               className="btn btn-primary me-2 btn-lg"
-              // onClick={() => handleUpdateRowClick(params.row)}
+              onClick={() => handleUpdateRowClick()}
               disabled={
                 latestEntry?.stats_update_flag
                   ? !latestEntry.stats_update_flag

@@ -40,9 +40,9 @@ const PageMaster = () => {
   const userID = decodedToken.id;
 
   const PageLevels = [
-    { value: "Level 1", label: "Level 1" },
-    { value: "Level 2", label: "Level 2" },
-    { value: "Level 3", label: "Level 3" },
+    { value: "Level 1 (High)", label: "Level 1 (High)" },
+    { value: "Level 2 (Medium)", label: "Level 2 (Medium)" },
+    { value: "Level 3 Level 3 (Low)", label: "Level 3 Level 3 (Low)" },
   ];
 
   const PageStatus = [
@@ -53,7 +53,7 @@ const PageMaster = () => {
   const PageTypes = [
     { value: "Clear", label: "Clear" },
     { value: "Shreddy", label: "Shreddy" },
-  ];  
+  ];
 
   const Contents = [
     { value: "Own", label: "Own" },
@@ -190,23 +190,9 @@ const PageMaster = () => {
         title="Page Master"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Page Name *"
-          value={pageName}
-          required={true}
-          onChange={(e) => setPageName(e.target.value)}
-        />
-
-        <FieldContainer
-          label="Link *"
-          value={link}
-          required={true}
-          onChange={(e) => setLink(e.target.value)}
-        />
-
         <div className="form-group col-6">
           <label className="form-label">
-            Platform  <sup style={{ color: "red" }}>*</sup>
+            Platform <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
             options={platformData.map((option) => ({
@@ -224,6 +210,43 @@ const PageMaster = () => {
               setPlatformId(e.value);
             }}
           ></Select>
+        </div>
+
+        <div className="form-group col-6">
+          <label className="form-label">
+            Profile Type <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={profileData.map((option) => ({
+              value: option._id,
+              label: option.profile_type,
+            }))}
+            required={true}
+            value={{
+              value: profileId,
+              label:
+                profileData.find((role) => role._id === profileId)
+                  ?.profile_type || "",
+            }}
+            onChange={(e) => {
+              setProfileId(e.value);
+            }}
+          ></Select>
+        </div>
+
+        <div className="form-group col-6">
+          <label className="form-label">
+            Profile Status <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            name="page status"
+            options={PageStatus}
+            required={true}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            value={PageStatus.find((option) => option.value == pageStatus)}
+            onChange={(selectedOption) => setPageStatus(selectedOption.value)}
+          />
         </div>
 
         <div className="form-group col-6">
@@ -248,13 +271,6 @@ const PageMaster = () => {
           ></Select>
         </div>
 
-        {/* <FieldContainer
-          label="Tag"
-          value={tag}
-          required={false}
-          placeholder="Comma separated values"
-          onChange={(e) => setTag(e.target.value.split(','))}
-        /> */}
         <label className="form-label">Tags</label>
         <div className="tags-input-container">
           {tag.map((tag, index) => (
@@ -273,9 +289,39 @@ const PageMaster = () => {
           />
         </div>
 
+        <FieldContainer
+          label="Page Name *"
+          value={pageName}
+          required={true}
+          onChange={(e) => setPageName(e.target.value)}
+        />
+
+        <FieldContainer
+          label="Link *"
+          value={link}
+          required={true}
+          onChange={(e) => setLink(e.target.value)}
+        />
+
+        <FieldContainer
+          label="Followers Count *"
+          type="number"
+          value={followCount}
+          required={true}
+          onChange={(e) => setFollowCount(e.target.value)}
+        />
+
+        {/* <FieldContainer
+          label="Tag"
+          value={tag}
+          required={false}
+          placeholder="Comma separated values"
+          onChange={(e) => setTag(e.target.value.split(','))}
+        /> */}
+
         <div className="form-group col-6">
           <label className="form-label">
-            Page Level <sup style={{ color: "red" }}>*</sup>
+            Preference level <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
             name="page level"
@@ -288,20 +334,12 @@ const PageMaster = () => {
           />
         </div>
 
-        <div className="form-group col-6">
-          <label className="form-label">
-            Page Status <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            name="page status"
-            options={PageStatus}
-            required={true}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            value={PageStatus.find((option) => option.value == pageStatus)}
-            onChange={(selectedOption) => setPageStatus(selectedOption.value)}
-          />
-        </div>
+        <FieldContainer
+          label="Ownership type *"
+          value={ownerType}
+          required={true}
+          onChange={(e) => setOwnerType(e.target.value)}
+        />
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -327,21 +365,6 @@ const PageMaster = () => {
 
         <div className="form-group col-6">
           <label className="form-label">
-            Page Name Type <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            name="page name type"
-            options={PageTypes}
-            required={true}
-            className="basic-multi-select"
-            classNamePrefix="select"
-            value={PageTypes.find((option) => option.value == pageType)}
-            onChange={(selectedOption) => setPageType(selectedOption.value)}
-          />
-        </div>
-
-        <div className="form-group col-6">
-          <label className="form-label">
             Content Creation <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
@@ -356,11 +379,26 @@ const PageMaster = () => {
         </div>
 
         <FieldContainer
-          label="Ownership type *"
-          value={ownerType}
+          label="Platform active on *"
+          value={platformActive}
           required={true}
-          onChange={(e) => setOwnerType(e.target.value)}
+          onChange={(e) => setPlatformActive(e.target.value)}
         />
+
+        <div className="form-group col-6">
+          <label className="form-label">
+            Page Name Type <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            name="page name type"
+            options={PageTypes}
+            required={true}
+            className="basic-multi-select"
+            classNamePrefix="select"
+            value={PageTypes.find((option) => option.value == pageType)}
+            onChange={(selectedOption) => setPageType(selectedOption.value)}
+          />
+        </div>
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -383,43 +421,6 @@ const PageMaster = () => {
             }}
           ></Select>
         </div>
-
-        <FieldContainer
-          label="Followers Count *"
-          type="number"
-          value={followCount}
-          required={true}
-          onChange={(e) => setFollowCount(e.target.value)}
-        />
-
-        <div className="form-group col-6">
-          <label className="form-label">
-            Profile Type <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            options={profileData.map((option) => ({
-              value: option._id,
-              label: option.profile_type,
-            }))}
-            required={true}
-            value={{
-              value: profileId,
-              label:
-                profileData.find((role) => role._id === profileId)
-                  ?.profile_type || "",
-            }}
-            onChange={(e) => {
-              setProfileId(e.value);
-            }}
-          ></Select>
-        </div>
-
-        <FieldContainer
-          label="Platform active on *"
-          value={platformActive}
-          required={true}
-          onChange={(e) => setPlatformActive(e.target.value)}
-        />
 
         <FieldContainer
           label="Engagement Rate *"
