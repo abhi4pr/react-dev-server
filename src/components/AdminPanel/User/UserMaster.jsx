@@ -44,6 +44,7 @@ import IndianBankList from "../../../assets/js/IndianBankList";
 import { ToastContainer } from "react-toastify";
 import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 import EducationList from "../../../assets/js/EducationList";
+import { constant } from "../../../utils/constants";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -157,6 +158,8 @@ const UserMaster = () => {
   const [validEmail, setValidEmail] = useState(true);
   const [contact, setContact] = useState(""); //official contact
   const [loginId, setLoginId] = useState("");
+  const [loginResponse, setLoginResponse] = useState("");
+
   const [lastIndexUsed, setLastIndexUsed] = useState(-1);
 
   const [password, setPassword] = useState("");
@@ -284,8 +287,8 @@ const UserMaster = () => {
     "Post Graduation",
     "Other",
   ];
-  const bankTypeData = ["Permanent A/C", "Current A/C"];
-  const statusData = ["Active", "Exit", "On Leave", "Resign"];
+  const bankTypeData = ["Saving A/C", "Current A/C", "Salary A/C"];
+  const statusData = ["Active", "Exit"];
   const genderData = ["Male", "Female", "Other"];
   const bloodGroupData = [
     "A+ (A Positive)",
@@ -317,6 +320,7 @@ const UserMaster = () => {
   useEffect(() => {
     axios.get(baseUrl + "get_all_roles").then((res) => {
       getRoleData(res.data.data);
+      setRoles(constant.CONST_USER_ROLE);
     });
 
     axios.get(baseUrl + "get_all_departments").then((res) => {
@@ -756,8 +760,8 @@ const UserMaster = () => {
       return toastError("bank name is required");
     } else if (!bankAccountNumber || bankAccountNumber == "") {
       return toastError("bank account number is required");
-    } else if (!IFSC || IFSC == "") {
-      return toastError("IFSC is required");
+    } else if (!IFSC || IFSC == "" || IFSC.length < 11) {
+      return toastError("IFSC is required and length must be 11 digit");
     } else if (!banktype || banktype == "") {
       return toastError("Bank Type is required");
     }
@@ -949,8 +953,10 @@ const UserMaster = () => {
     }
   };
 
-  const generateLoginId = () => {
+  const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
+
+    // Define login ID options
     const loginIdOptions = [
       userName[0], // loginIdOption1
       userName[0] + (userName[1] ? userName[1].charAt(0) : ""), // loginIdOption2
@@ -961,7 +967,16 @@ const UserMaster = () => {
     setLastIndexUsed(nextIndex);
     const generatedLoginId = loginIdOptions[nextIndex];
     setLoginId(generatedLoginId);
-    if (generatedLoginId.length > 0) {
+
+    await axios
+      .post(baseUrl + `check_login_exist`, {
+        user_login_id: loginId,
+      })
+      .then((res) => {
+        setLoginResponse(res.data.message);
+      });
+
+    if (generatedLoginId?.length > 0) {
       setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
     }
   };
@@ -1758,6 +1773,15 @@ const UserMaster = () => {
       )}
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
+          <p
+            className={
+              loginResponse == "login id available"
+                ? "login-success1"
+                : "login-error1"
+            }
+          >
+            {loginResponse}
+          </p>
           <label>
             Login ID <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -1921,7 +1945,7 @@ const UserMaster = () => {
           disabled={isLoading}
           style={{ width: "20%", marginLeft: "1%" }}
         >
-          {isLoading ? "Please wait submiting..." : "Submit"}
+          {isLoading ? "Please wait submiting..." : "Register"}
         </button>
       </div>
 
@@ -2177,7 +2201,7 @@ const UserMaster = () => {
 
       <hr className="mb-2" />
       <FieldContainer
-        label="Address"
+        label="Parmanent Address"
         fieldGrid={12}
         value={address}
         onChange={(e) => setAddress(e.target.value)}
@@ -2200,7 +2224,7 @@ const UserMaster = () => {
         <p style={{ color: "red" }}>Please enter Address</p>
       )} */}
       <div className="form-group col-4">
-        <label className="form-label">City</label>
+        <label className="form-label">Parmanent City</label>
         <Select
           options={cityData.map((city) => ({
             value: city.city_name,
@@ -2254,7 +2278,7 @@ const UserMaster = () => {
         )} */}
       </div>
       <FieldContainer
-        label="Pincode"
+        label="Parmanent Pincode"
         type="number"
         fieldGrid={4}
         maxLength={6}
@@ -2265,20 +2289,6 @@ const UserMaster = () => {
             setPincode(value);
           }
         }}
-        // onBlur={() => {
-        //   if (pincode === "") {
-        //     // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,pincode:true});
-        //     return setMandatoryFieldsEmpty((prevState) => ({
-        //       ...prevState,
-        //       pincode: true,
-        //     }));
-        //   } else {
-        //     setMandatoryFieldsEmpty({
-        //       ...mandatoryFieldsEmpty,
-        //       pincode: false,
-        //     });
-        //   }
-        // }}
         required={false}
       />
       {/* {mandatoryFieldsEmpty.pincode && (
@@ -2510,7 +2520,11 @@ const UserMaster = () => {
         astric={true}
         label="IFSC"
         value={IFSC}
-        onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+        // onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+        onChange={(e) => {
+          const inputValue = e.target.value.toUpperCase();
+          setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
+        }}
         onBlur={() => {
           if (IFSC === "") {
             // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,IFSC:true});

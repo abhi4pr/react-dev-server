@@ -18,12 +18,12 @@
   color: "#FFF";
 }
 
-.login-success {
-  color: green;
+.login-success1 {
+  color: green !important;
 }
 
-.login-error {
-  color: red;
+.login-error1 {
+  color: red !important;
 }
 
 /* this style use for user management  */
@@ -229,19 +229,19 @@ i.bi {
   --bs-gutter-y: 0;
   display: flex;
   flex-wrap: wrap;
-  margin-top: calc(-1* var(--bs-gutter-y));
-  margin-right: calc(-.5* var(--bs-gutter-x));
-  margin-left: calc(-.5* var(--bs-gutter-x));
+  margin-top: calc(-1 * var(--bs-gutter-y));
+  margin-right: calc(-0.5 * var(--bs-gutter-x));
+  margin-left: calc(-0.5 * var(--bs-gutter-x));
   width: 70%;
   padding-right: 180px;
 }
 
-.additional-titles>* {
+.additional-titles > * {
   flex-shrink: 0;
   width: 100%;
   max-width: 100%;
-  padding-right: calc(var(--bs-gutter-x)* .5);
-  padding-left: calc(var(--bs-gutter-x)* .5);
+  padding-right: calc(var(--bs-gutter-x) * 0.5);
+  padding-left: calc(var(--bs-gutter-x) * 0.5);
   margin-top: var(--bs-gutter-y);
 }
 

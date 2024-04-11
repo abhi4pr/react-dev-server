@@ -160,6 +160,8 @@ const UserUpdate = () => {
   const [contact, setContact] = useState();
   const [isValidcontact, setValidContact] = useState(true);
   const [loginId, setLoginId] = useState("");
+  const [loginResponse, setLoginResponse] = useState("");
+  const [lastIndexUsed, setLastIndexUsed] = useState(-1);
   const [password, setPassword] = useState("");
   const [userStatus, setUserStatus] = useState("");
   const [joiningDate, setJoiningDate] = useState("");
@@ -244,7 +246,7 @@ const UserUpdate = () => {
     "Post Graduation",
     "Other",
   ];
-  const bankTypeData = ["Permanent A/C", "Current A/C"];
+  const bankTypeData = ["Saving A/C", "Current A/C", "Salary A/C"];
   const genderData = ["Male", "Female", "Other"];
 
   const familyRelations = [
@@ -280,7 +282,7 @@ const UserUpdate = () => {
     "O+ (O Positive)",
     "O- (O Negetive)",
   ];
-  const statusData = ["Active", "Exit", "On Leave", "Resign"];
+  const statusData = ["Active", "Exit"];
   const maritialStatusData = ["Married", "Unmarried"];
 
   // login progress bar---------------------------------------------------------------------
@@ -927,8 +929,8 @@ const UserUpdate = () => {
       return toastError("bank name is required");
     } else if (!bankAccountNumber || bankAccountNumber == "") {
       return toastError("bank account number is required");
-    } else if (!IFSC || IFSC == "") {
-      return toastError("IFSC is required");
+    } else if (!IFSC || IFSC == "" || IFSC.length < 11) {
+      return toastError("IFSC is required and length must be 11 digit");
     } else if (!banktype || banktype == "") {
       return toastError("Bank Type is required");
     }
@@ -1104,33 +1106,54 @@ const UserUpdate = () => {
     setPassword(generatePassword);
   };
 
-  // const generateLoginId = () => {
-  //   const randomSuffix = Math.floor(Math.random() * 1000);
-  //   const generatedLoginId = `${username}@${randomSuffix}`;
-  //   setLoginId(generatedLoginId);
-  // };
-
-  const generateLoginId = () => {
+  const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
 
-    const loginIdOption1 = userName[0] + userName[1].charAt(0);
-
-    const loginIdOption2 = userName[0].charAt(0) + userName[1];
-
-    const loginIdOption3 = userName.join(".");
-
-    // Randomly choose one of the options
-    const randomIndex = Math.floor(Math.random() * 3);
-    const generatedLoginId = [loginIdOption1, loginIdOption2, loginIdOption3][
-      randomIndex
+    // Define login ID options
+    const loginIdOptions = [
+      userName[0], // loginIdOption1
+      userName[0] + (userName[1] ? userName[1].charAt(0) : ""), // loginIdOption2
+      (userName[0] ? userName[0].charAt(0) : "") + (userName[1] || ""), // loginIdOption3
+      userName.join("."), // loginIdOption4
     ];
-
+    const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
+    setLastIndexUsed(nextIndex);
+    const generatedLoginId = loginIdOptions[nextIndex];
     setLoginId(generatedLoginId);
 
-    if (generatedLoginId.length > 0) {
+    await axios
+      .post(baseUrl + `check_login_exist`, {
+        user_login_id: loginId,
+      })
+      .then((res) => {
+        setLoginResponse(res.data.message);
+      });
+
+    if (generatedLoginId?.length > 0) {
       setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
     }
   };
+  // const generateLoginId = () => {
+  //   const userName = username.trim().toLowerCase().split(" ");
+
+  //   const loginIdOption1 = userName[0] + userName[1].charAt(0);
+
+  //   const loginIdOption2 = userName[0].charAt(0) + userName[1];
+
+  //   const loginIdOption3 = userName.join(".");
+
+  //   // Randomly choose one of the options
+  //   const randomIndex = Math.floor(Math.random() * 3);
+  //   const generatedLoginId = [loginIdOption1, loginIdOption2, loginIdOption3][
+  //     randomIndex
+  //   ];
+
+  //   setLoginId(generatedLoginId);
+
+  //   if (generatedLoginId.length > 0) {
+  //     setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+  //   }
+  // };
 
   const handleLoginIdChange = (event) => {
     const selectedLoginId = event.target.value;
@@ -1592,6 +1615,15 @@ const UserUpdate = () => {
       )}
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
+          <p
+            className={
+              loginResponse == "login id available"
+                ? "login-success1"
+                : "login-error1"
+            }
+          >
+            {loginResponse}
+          </p>
           <label>
             Login ID <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -1964,7 +1996,11 @@ const UserUpdate = () => {
         label="IFSC"
         astric={true}
         value={IFSC}
-        onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+        // onChange={(e) => setIFSC(e.target.value.toUpperCase())}
+        onChange={(e) => {
+          const inputValue = e.target.value.toUpperCase();
+          setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
+        }}
       />
       <FieldContainer
         label="Beneficiary"
