@@ -200,7 +200,6 @@ const GstNongstIncentiveReport = () => {
 
   const handleOpenSameCustomer = (e, custName) => {
     e.preventDefault();
-    console.log("=====================");
     setSameCustomerDialog(true);
 
     const sameNameCustomers = data.filter(

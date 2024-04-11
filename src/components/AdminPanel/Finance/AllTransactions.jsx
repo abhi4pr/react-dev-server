@@ -147,7 +147,7 @@ const AllTransactions = () => {
           (d.payment_mode &&
             d.payment_mode.toLowerCase().includes(paymentMode.toLowerCase()));
         const matchesStatus = status
-          ? d.payment_approval_status === status.value
+          ? d.payment_approval_status == status.value
           : true;
         const dateMatch = (date, fromDate, toDate) => {
           const dateToCheck = new Date(date);
@@ -247,16 +247,16 @@ const AllTransactions = () => {
     requestedAmountTotal,
     filterData
   );
-
+  console.log(filterData, "filterData >>>");
   // Counts According to status:-
   const pendingCount = filterData.filter(
-    (item) => item.payment_approval_status === 0
+    (item) => item.payment_approval_status === "0"
   ).length;
   const approvedCount = filterData.filter(
-    (item) => item.payment_approval_status === 1
+    (item) => item.payment_approval_status === "1"
   ).length;
   const rejectedCount = filterData.filter(
-    (item) => item.payment_approval_status === 2
+    (item) => item.payment_approval_status === "2"
   ).length;
 
   const sameCustomerColumn = [

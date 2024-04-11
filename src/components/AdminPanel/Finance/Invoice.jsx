@@ -1054,6 +1054,16 @@ const Invoice = () => {
     // },
   ];
 
+  const handleKeyDown = (e) => {
+    if (e.key === " ") {
+      e.preventDefault(); // Prevent default behavior (e.g., page scroll)
+      e.stopPropagation(); // Stop propagation to prevent DataGrid from handling the event
+      setPartyName((prevName) => prevName + " "); // Append space character to the current value
+    }
+    if (e.key === "Shift") {
+      e.preventDefault(); // Prevent focus shift when Shift key is pressed
+    }
+  };
   const columns = [
     {
       width: 60,
@@ -1071,7 +1081,7 @@ const Invoice = () => {
       height: "200px",
     },
     {
-      headerName: "Requested On Date",
+      headerName: "Sale Booking Date",
       field: "sale_booking_date",
       width: 220,
       renderCell: (params) =>
@@ -1216,7 +1226,7 @@ const Invoice = () => {
               padding: "12px ",
             },
           }}
-          onChange={(e) => setPartyName(e.target.value)}
+          onChange={(e) => handleKeyDown(e.target.value)}
         />
       ),
     },
@@ -1734,7 +1744,6 @@ const Invoice = () => {
   ];
 
   // ==========================================
-  console.log(dataInvoice, "dataInvoice data >>", filterData, "filter Data >>");
 
   const YYYYMMDDdateConverter = (date) => {
     let dateObj = new Date(date);
@@ -2450,6 +2459,13 @@ const Invoice = () => {
                         slotProps={{
                           toolbar: {
                             showQuickFilter: true,
+                          },
+                        }}
+                        state={{
+                          keyboard: {
+                            cell: null,
+                            columnHeader: null,
+                            isMultipleKeyPressed: false,
                           },
                         }}
                         getRowId={(row) => filterData.indexOf(row)}

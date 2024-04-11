@@ -78,7 +78,10 @@ const PendingApprovalUpdate = () => {
     }
   };
 
+  console.log(filterData, "filter Data fo rpending approval");
+
   const handleStatusChange = async (row, selectedStatus) => {
+    console.log(row, "Row Data >>>");
     setStatus(selectedStatus);
 
     const formData = new FormData();
@@ -230,6 +233,15 @@ const PendingApprovalUpdate = () => {
       return allFiltersPassed;
     });
     setFilterData(filterData);
+
+    const uniqueCustomers = new Set(filterData.map((item) => item.cust_name));
+    setUniqueCustomerCount(uniqueCustomers.size);
+    const uniqueCustomerData = Array.from(uniqueCustomers).map(
+      (customerName) => {
+        return filterData.find((item) => item.cust_name === customerName);
+      }
+    );
+    setUniqueCustomerData(uniqueCustomerData);
   };
 
   const handleClearAllFilter = () => {
@@ -245,6 +257,15 @@ const PendingApprovalUpdate = () => {
     setCampaignAmountFilter("");
     setPaymentStatus("");
     setPaymetMode("");
+
+    const uniqueCustomers = new Set(datas.map((item) => item.cust_name));
+    setUniqueCustomerCount(uniqueCustomers.size);
+    const uniqueCustomerData = Array.from(uniqueCustomers).map(
+      (customerName) => {
+        return datas.find((item) => item.cust_name === customerName);
+      }
+    );
+    setUniqueCustomerData(uniqueCustomerData);
   };
   const handleOpenUniqueCustomerClick = () => {
     setUniqueCustomerDialog(true);
@@ -288,7 +309,7 @@ const PendingApprovalUpdate = () => {
     0
   );
   // All Counts:-
-  const pendingCount = datas.filter(
+  const pendingCount = filterData.filter(
     (item) => item.payment_approval_status === "0"
   ).length;
   const approvedCount = datas.filter(
@@ -785,7 +806,7 @@ const PendingApprovalUpdate = () => {
           getOptionLabel={(option) => option.label}
           onChange={(event, newValue) => {
             handleStatusChange(row, newValue.value),
-              console.log(newValue.value);
+              console.log(newValue.value, "value DATA >>>");
           }}
           style={{ width: 180 }}
           renderInput={(params) => (
@@ -1213,29 +1234,29 @@ const PendingApprovalUpdate = () => {
         <div className="col-12">
           <div className="card" style={{ height: "700px" }}>
             <div className="card-body thm_table">
-              {!loading ? (
-                <DataGrid
-                  rows={filterData}
-                  columns={columns}
-                  // pageSize={5}
-                  // rowsPerPageOptions={[5]}
-                  disableSelectionOnClick
-                  slots={{ toolbar: GridToolbar }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                  getRowId={(row) => filterData.indexOf(row)}
-                />
-              ) : (
-                <Skeleton
+              {/* {!loading ? ( */}
+              <DataGrid
+                rows={filterData}
+                columns={columns}
+                // pageSize={5}
+                // rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                getRowId={(row) => filterData.indexOf(row)}
+              />
+              {/* ) : ( */}
+              {/* <Skeleton
                   sx={{ bgcolor: "grey.900", borderRadius: "0.25rem" }}
                   variant="rectangular"
                   width="100%"
                   height={200}
                 />
-              )}
+              )} */}
               {viewImgDialog && (
                 <ImageView
                   viewImgSrc={viewImgSrc}

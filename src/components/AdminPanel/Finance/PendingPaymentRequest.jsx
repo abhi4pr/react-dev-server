@@ -50,6 +50,8 @@ export default function PendingPaymentRequest() {
   const [payRemark, setPayRemark] = useState("");
   const [payMentProof, setPayMentProof] = useState("");
   const [vendorName, setVendorName] = useState("");
+  const [partialVendorName, setPartialVendorName] = useState("");
+  // const [instantVendorName, setInstantVendorName] = useState("");
   const [showDisCardModal, setShowDiscardModal] = useState(false);
   const [paymentAmout, setPaymentAmount] = useState("");
   const [openImageDialog, setOpenImageDialog] = useState(false);
@@ -87,6 +89,13 @@ export default function PendingPaymentRequest() {
   const [bankDetailRowData, setBankDetailRowData] = useState([]);
   const [paymentModeData, setPaymentModeData] = useState([]);
   const [dateFilter, setDateFilter] = useState("");
+  const [invoiceCount, setInvoiceCount] = useState(0);
+  const [nonInvoiceCount, setNonInvoiceCount] = useState(0);
+  const [nonGstCount, setNonGstCount] = useState(0);
+  const [partialData, setPartialData] = useState("");
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+
+  const accordionButtons = ["All", "Partial", "Instant"];
 
   var handleAcknowledgeClick = () => {
     setAknowledgementDialog(true);
@@ -207,6 +216,19 @@ export default function PendingPaymentRequest() {
           });
           setUniqueVendorData(uvData);
 
+          const nonGstCount = mergedArray.filter((gst) => gst.gstHold === "0");
+          setNonGstCount(nonGstCount.length);
+
+          const withInvoiceImage = mergedArray.filter(
+            (item) => item.invc_img && item.invc_img.length > 0
+          );
+          const withoutInvoiceImage = mergedArray.filter(
+            (item) => !item.invc_img || item.invc_img.length === 0
+          );
+          setInvoiceCount(withInvoiceImage.length);
+          setNonInvoiceCount(withoutInvoiceImage.length);
+
+          // calculate Partial Data :-
           const dateFilterData = filterDataBasedOnSelection(mergedArray);
           setFilterData(dateFilterData);
         });
@@ -220,7 +242,6 @@ export default function PendingPaymentRequest() {
       setUserName(res.data.user_name);
     });
   };
-
   const handleRemainderModal = (reaminderData) => {
     setReminderData(reaminderData);
     setRemainderDialog(true);
@@ -316,9 +337,7 @@ export default function PendingPaymentRequest() {
     (total, item) => total + parseFloat(item.request_amount),
     0
   );
-  console.log(rowData?.request_amount, "rowDATA>>>");
   const handlePayVendorClick = () => {
-    console.log("HIIIIIII>>>");
     // displayRazorpay(paymentAmout);
     // return;
     const formData = new FormData();
@@ -404,14 +423,13 @@ export default function PendingPaymentRequest() {
   };
   //req_id , paymeent_amou ,paydate , payby, screenshot , finance remark
 
-  const handleDiscardClick = (row) => {
+  const handleDiscardClick = (e, row) => {
+    e.preventDefault();
     setRowData(row);
     setShowDiscardModal(true);
-    // axios
-    //   .delete(`${baseUrl}`+`delete_demo/${row._id}`)
-    //   .then(() => {
-    //     callApi();
-    //   });
+    // axios.delete(`${baseUrl}` + `delete_demo/${row._id}`).then(() => {
+    //   callApi();
+    // });
   };
 
   const handleDateFilter = () => {
@@ -482,7 +500,22 @@ export default function PendingPaymentRequest() {
       uvData.push(vendorRows[0]);
     });
     setUniqueVendorData(uvData);
+
+    // counts data
+
+    const nonGstCount = filterData.filter((gst) => gst.gstHold === "0");
+    setNonGstCount(nonGstCount.length);
+
+    const withInvoiceImage = filterData.filter(
+      (item) => item.invc_img && item.invc_img.length > 0
+    );
+    const withoutInvoiceImage = filterData.filter(
+      (item) => !item.invc_img || item.invc_img.length === 0
+    );
+    setInvoiceCount(withInvoiceImage.length);
+    setNonInvoiceCount(withoutInvoiceImage.length);
   };
+
   const handleClearDateFilter = () => {
     setFilterData(data);
     setFromDate("");
@@ -492,7 +525,7 @@ export default function PendingPaymentRequest() {
     setRequestAmountFilter("");
     setRequestedAmountField("");
     setPendingRequestCount(data.length);
-
+    // unique vendor data
     const uniqueVendors = new Set(data.map((item) => item.vendor_name));
     setUniqueVendorCount(uniqueVendors.size);
     const uvData = [];
@@ -501,6 +534,20 @@ export default function PendingPaymentRequest() {
       uvData.push(vendorRows[0]);
     });
     setUniqueVendorData(uvData);
+
+    // count data
+
+    const nonGstCount = data.filter((gst) => gst.gstHold === "0");
+    setNonGstCount(nonGstCount.length);
+
+    const withInvoiceImage = data.filter(
+      (item) => item.invc_img && item.invc_img.length > 0
+    );
+    const withoutInvoiceImage = data.filter(
+      (item) => !item.invc_img || item.invc_img.length === 0
+    );
+    setInvoiceCount(withInvoiceImage.length);
+    setNonInvoiceCount(withoutInvoiceImage.length);
   };
   const handleClosePayDialog = () => {
     setPayDialog(false);
@@ -512,7 +559,8 @@ export default function PendingPaymentRequest() {
     setGstHold(false);
   };
 
-  const handlePayClick = (row) => {
+  const handlePayClick = (e, row) => {
+    e.preventDefault();
     let x = phpRemainderData.filter(
       (item) => item.request_id == row.request_id
     );
@@ -603,7 +651,6 @@ export default function PendingPaymentRequest() {
   };
 
   // ==============================================================
-
   function loadScript(src) {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -661,6 +708,11 @@ export default function PendingPaymentRequest() {
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
   }
+
+  // accordin function:-
+  const handleAccordionButtonClick = (index) => {
+    setActiveAccordionIndex(index);
+  };
 
   const paymentDetailColumns = [
     {
@@ -852,13 +904,13 @@ export default function PendingPaymentRequest() {
           <div>
             <button
               className="btn btn-sm btn-success"
-              onClick={() => handlePayClick(params.row)}
+              onClick={(e) => handlePayClick(e, params.row)}
             >
               Pay
             </button>
             <button
               className="btn btn-sm btn-danger mx-2"
-              onClick={() => handleDiscardClick(params.row)}
+              onClick={(e) => handleDiscardClick(e, params.row)}
             >
               Discard
             </button>
@@ -867,7 +919,6 @@ export default function PendingPaymentRequest() {
       },
     },
   ];
-
   // unique vender column :-
   const uniqueVendorColumns = [
     {
@@ -930,6 +981,7 @@ export default function PendingPaymentRequest() {
       editable: false,
       renderCell: (params) => {
         const rowIndex = filterData.indexOf(params.row);
+
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -937,6 +989,9 @@ export default function PendingPaymentRequest() {
       field: "invc_img",
       headerName: "Invoice Image",
       renderCell: (params) => {
+        if (!params.row.invc_img) {
+          return "No Image";
+        }
         // Extract file extension and check if it's a PDF
         const fileExtension = params.row.invc_img
           .split(".")
@@ -1262,16 +1317,16 @@ export default function PendingPaymentRequest() {
         );
       },
     },
-    {
-      field: "Aging (in hours)",
-      headerName: "Aging (in hours)",
-      width: 150,
-      renderCell: (params) => {
-        const hours = calculateHours(params.row.request_date, new Date());
+    // {
+    //   field: "Aging (in hours)",
+    //   headerName: "Aging (in hours)",
+    //   width: 150,
+    //   renderCell: (params) => {
+    //     const hours = calculateHours(params.row.request_date, new Date());
 
-        return <p> {Math.round(hours)} Hours</p>;
-      },
-    },
+    //     return <p> {Math.round(hours)} Hours</p>;
+    //   },
+    // },
     {
       field: "Status",
       headerName: "Status",
@@ -1299,13 +1354,13 @@ export default function PendingPaymentRequest() {
           <div>
             <button
               className="btn btn-sm btn-success"
-              onClick={() => handlePayClick(params.row)}
+              onClick={(e) => handlePayClick(e, params.row)}
             >
               Pay
             </button>
             <button
               className="btn btn-sm btn-danger mx-2"
-              onClick={() => handleDiscardClick(params.row)}
+              onClick={(e) => handleDiscardClick(e, params.row)}
             >
               Discard
             </button>
@@ -1399,7 +1454,7 @@ export default function PendingPaymentRequest() {
     }
   };
 
-  console.log(filterData, "FD =============", nodeData);
+  console.log(filterData, "FD =============", nodeData, partialData, "PD");
 
   return (
     <div>
@@ -1409,65 +1464,68 @@ export default function PendingPaymentRequest() {
         uniqueVendorCount={uniqueVendorCount}
         totalPendingAmount={totalPendingAmount}
         pendingRequestCount={pendingRequestCount}
+        nonGstCount={nonGstCount}
+        invoiceCount={invoiceCount}
+        nonInvoiceCount={nonInvoiceCount}
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
         includeAdditionalTitles={true}
         pendingpaymentRemainder={phpRemainderData.length}
       />
-      {/* Bank Details 14
-        <Dialog
-          open={bankDetail}
-          onClose={handleCloseBankDetail}
-          fullWidth={"md"}
-          maxWidth={"md"}
+      {/* Bank Details 14 */}
+      <Dialog
+        open={bankDetail}
+        onClose={handleCloseBankDetail}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Bank Details</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseBankDetail}
           sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
           }}
         >
-          <DialogTitle>Bank Details</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseBankDetail}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
+          <CloseIcon />
+        </IconButton>
 
-          <TextField
-            id="outlined-multiline-static"
-            multiline
-            value={
-              bankDetailRowData[0]?.payment_details +
-              "\n" +
-              "Mob:" +
-              bankDetailRowData[0]?.mob1 +
-              "\n" +
-              (bankDetailRowData[0]?.email
-                ? "Email:" + bankDetailRowData[0]?.email
-                : "")
-            }
-            rows={4}
-            defaultValue="Default Value"
-            variant="outlined"
-          />
-          <Button
-            onClick={() => {
-              navigator.clipboard.writeText(
-                bankDetailRowData[0]?.payment_details
-              );
-              toastAlert("Copied to clipboard");
-            }}
-          >
-            Copy
-          </Button>
-        </Dialog>
-        {/* Payment History */}
+        <TextField
+          id="outlined-multiline-static"
+          multiline
+          value={
+            bankDetailRowData[0]?.payment_details +
+            "\n" +
+            "Mob:" +
+            bankDetailRowData[0]?.mob1 +
+            "\n" +
+            (bankDetailRowData[0]?.email
+              ? "Email:" + bankDetailRowData[0]?.email
+              : "")
+          }
+          rows={4}
+          defaultValue="Default Value"
+          variant="outlined"
+        />
+        <Button
+          onClick={() => {
+            navigator.clipboard.writeText(
+              bankDetailRowData[0]?.payment_details
+            );
+            toastAlert("Copied to clipboard");
+          }}
+        >
+          Copy
+        </Button>
+      </Dialog>
+      {/* Payment History */}
       <Dialog
         open={paymentHistory}
         onClose={handleClosePaymentHistory}
@@ -1611,6 +1669,7 @@ export default function PendingPaymentRequest() {
           <div className="card">
             <div className="card-header flexCenterBetween">
               <h5 className="card-title">Search by filter</h5>
+
               <div className="flexCenter colGap12">
                 <div className="form-group flexCenter colGap8">
                   <label className="w-100 m0">Select Date Range:</label>
@@ -1642,6 +1701,13 @@ export default function PendingPaymentRequest() {
                       options={Array.from(
                         new Set(data.map((option) => option.vendor_name))
                       )}
+                      // options={Array.from(
+                      //   new Set(
+                      //     filterData
+                      //       .filter((d) => d.status === "3")
+                      //       .map((option) => option.vendor_name)
+                      //   )
+                      // )}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -1762,22 +1828,95 @@ export default function PendingPaymentRequest() {
         <div className="col-12">
           <div className="card" style={{ height: "700px" }}>
             <div className="card-body thm_table">
-              <DataGrid
-                rows={filterData}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                getRowClassName={getValidationCSSForRemainder}
-                slots={{ toolbar: GridToolbar }}
-                disableSelectionOnClick
-                disableColumnMenu
-                getRowId={(row) => filterData.indexOf(row)}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-              />
+              {/* <FormContainer
+                submitButton={false}
+                accordionButtons={accordionButtons}
+                activeAccordionIndex={activeAccordionIndex}
+                onAccordionButtonClick={handleAccordionButtonClick}
+                mainTitleRequired={false}
+              > */}
+              <div>
+                {/* {activeAccordionIndex === 0 && ( */}
+                <DataGrid
+                  rows={filterData}
+                  columns={columns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5]}
+                  getRowClassName={getValidationCSSForRemainder}
+                  slots={{ toolbar: GridToolbar }}
+                  disableSelectionOnClick
+                  disableColumnMenu
+                  getRowId={(row) => filterData.indexOf(row)}
+                  slotProps={{
+                    toolbar: {
+                      showQuickFilter: true,
+                    },
+                  }}
+                />
+                {/* )} */}
+                {openImageDialog && (
+                  <ImageView
+                    viewImgSrc={viewImgSrc}
+                    fullWidth={true}
+                    maxWidth={"md"}
+                    setViewImgDialog={setOpenImageDialog}
+                  />
+                )}
+                {/* {activeAccordionIndex === 1 && (
+                    <DataGrid
+                      rows={filterData.filter((d) => d.status === "3")}
+                      columns={columns}
+                      pageSize={5}
+                      rowsPerPageOptions={[5]}
+                      getRowClassName={getValidationCSSForRemainder}
+                      slots={{ toolbar: GridToolbar }}
+                      disableSelectionOnClick
+                      disableColumnMenu
+                      getRowId={(row) => filterData.indexOf(row)}
+                      slotProps={{
+                        toolbar: {
+                          showQuickFilter: true,
+                        },
+                      }}
+                    />
+                  )}
+                  {openImageDialog && (
+                    <ImageView
+                      viewImgSrc={viewImgSrc}
+                      fullWidth={true}
+                      maxWidth={"md"}
+                      setViewImgDialog={setOpenImageDialog}
+                    />
+                  )}
+                  {
+                    activeAccordionIndex === 2 && "NO DATA" */}
+                {/* //   <DataGrid */}
+                {/* //     rows={filterData.filter((d) => d.status === "0")}
+                    //     columns={columns}
+                    //     pageSize={5}
+                    //     rowsPerPageOptions={[5]}
+                    //     getRowClassName={getValidationCSSForRemainder}
+                    //     slots={{ toolbar: GridToolbar }}
+                    //     disableSelectionOnClick
+                    //     disableColumnMenu
+                    //     getRowId={(row) => filterData.indexOf(row)}
+                    //     slotProps={{ */}
+                {/* //       toolbar: { */}
+                {/* //         showQuickFilter: true,
+                    //       },
+                    //     }}
+                    //   />
+                    // )}
+                    // {openImageDialog && ( */}
+                {/* //   <ImageView
+                    //     viewImgSrc={viewImgSrc}
+                    //     fullWidth={true}
+                    //     maxWidth={"md"}
+                    //     setViewImgDialog={setOpenImageDialog}
+                    //   /> */}
+                {/* } */}
+              </div>
+              {/* </FormContainer> */}
               {/*Dialog Box */}
               <Dialog open={payDialog} onClose={handleClosePayDialog}>
                 <DialogTitle>Vendor Payment</DialogTitle>
@@ -2190,14 +2329,7 @@ export default function PendingPaymentRequest() {
                   callApi={callApi}
                 />
               )}
-              {openImageDialog && (
-                <ImageView
-                  viewImgSrc={viewImgSrc}
-                  fullWidth={true}
-                  maxWidth={"md"}
-                  setViewImgDialog={setOpenImageDialog}
-                />
-              )}
+
               {remainderDialog && (
                 <ShowDataModal
                   handleClose={setRemainderDialog}
