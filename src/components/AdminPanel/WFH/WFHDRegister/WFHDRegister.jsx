@@ -512,8 +512,8 @@ const WFHDRegister = ({ userUpdateID }) => {
     }
     setPassword(generatePassword);
   };
-  const generateLoginId = () => {
-    // Example username, replace with actual data source
+
+  const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
 
     // Define login ID options
@@ -527,43 +527,19 @@ const WFHDRegister = ({ userUpdateID }) => {
     setLastIndexUsed(nextIndex);
     const generatedLoginId = loginIdOptions[nextIndex];
     setLoginId(generatedLoginId);
+
+    await axios
+      .post(baseUrl + `check_login_exist`, {
+        user_login_id: loginId,
+      })
+      .then((res) => {
+        setLoginResponse(res.data.message);
+      });
+
+    if (generatedLoginId?.length > 0) {
+      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+    }
   };
-
-  // const generateLoginId = async () => {
-  //   const userName = username.trim().toLowerCase().split(" ");
-
-  //   const loginIdOption1 = userName[0];
-
-  //   const loginIdOption2 = userName[0] + userName[1].charAt(0);
-
-  //   const loginIdOption3 = userName[0].charAt(0) + userName[1];
-
-  //   const loginIdOption4 = userName.join(".");
-
-  //   // Randomly choose one of the options
-  //   const randomIndex = Math.floor(Math.random() * 4);
-
-  //   const generatedLoginId = [
-  //     loginIdOption1,
-  //     loginIdOption2,
-  //     loginIdOption3,
-  //     loginIdOption4,
-  //   ][randomIndex];
-
-  //   setLoginId(generatedLoginId);
-
-  //   await axios
-  //     .post(baseUrl + `check_login_exist`, {
-  //       user_login_id: loginId,
-  //     })
-  //     .then((res) => {
-  //       setLoginResponse(res.data.message);
-  //     });
-
-  //   if (generatedLoginId?.length > 0) {
-  //     setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
-  //   }
-  // };
 
   const handleLoginIdChange = (event) => {
     const selectedLoginId = event.target.value;
@@ -947,9 +923,9 @@ const WFHDRegister = ({ userUpdateID }) => {
             <div className="form-group">
               <p
                 className={
-                  loginResponse === "login id available"
-                    ? "login-success"
-                    : "login-error"
+                  loginResponse == "login id available"
+                    ? "login-success1"
+                    : "login-error1"
                 }
               >
                 {loginResponse}

@@ -21,6 +21,8 @@ import { baseUrl } from "../../../utils/config";
 const UserOverview = () => {
   const whatsappApi = WhatsappAPI();
   const { toastAlert } = useGlobalContext();
+  const [activeButton, setActiveButton] = useState(2);
+
   const [search, setSearch] = useState("");
   const [datas, setDatas] = useState([]);
   const [filterdata, setFilterData] = useState([]);
@@ -63,6 +65,24 @@ const UserOverview = () => {
   const [isSummaryModal, setIsSummaryModal] = useState(false);
   const [historyData, setHistoryData] = useState([]);
 
+  // toggle button
+  const handleRadioChange = (value) => {
+    setActiveButton(value);
+    if (value === 1) {
+      let filterdata = datas;
+      setFilterData(filterdata);
+    } else if (value === 2) {
+      let filterdata = datas.filter((d) => d.user_status == "Active");
+      setFilterData(filterdata);
+    } else if (value === 3) {
+      let filterdata = datas.filter((d) => d.user_status == "Exit");
+      setFilterData(filterdata);
+    }
+  };
+  useEffect(() => {
+    handleRadioChange(2);
+  }, []);
+
   const handleKRA = (userId) => {
     setIsModalOpen(true);
     KRAAPI(userId);
@@ -90,7 +110,6 @@ const UserOverview = () => {
       .get(`${baseUrl}` + `get_single_user_update_history/${userId}`)
       .then((res) => {
         setHistoryData(res.data.data);
-        console.log(res.data.data, "-------------------hostory");
       });
   };
   const handleCloseSummaryModal = () => {
@@ -163,8 +182,9 @@ const UserOverview = () => {
     try {
       const response = await axios.get(baseUrl + "get_all_users");
       const data = response.data.data;
+
       setDatas(data);
-      setFilterData(data);
+      setFilterData(data.filter((d) => d.user_status == "Active"));
       setTransferToUser(data);
     } catch (error) {
       throw new Error(error);
@@ -749,7 +769,58 @@ const UserOverview = () => {
           <span>Loading</span>
         </div>
       ) : (
+        //  Active inActive toggle button here
         <div className="page_height">
+          <div className="pack w-100 justify-content-end d-flex p-2 ">
+            <div
+              className="btn-group ml-3 mb-1"
+              role="group"
+              aria-label="Basic radio toggle button group"
+            >
+              <input
+                type="radio"
+                className="btn-check"
+                name="btnradio"
+                id="btnradio1"
+                checked={activeButton === 1}
+                onChange={() => handleRadioChange(1)}
+              />
+              <label
+                className="btn btn-outline-primary"
+                style={{
+                  borderTopRightRadius: "20pxpx",
+                  borderBottomRightRadius: "20px",
+                }}
+                htmlFor="btnradio1"
+              >
+                All
+              </label>
+
+              <input
+                type="radio"
+                className="btn-check"
+                name="btnradio"
+                id="btnradio2"
+                checked={activeButton === 2}
+                onChange={() => handleRadioChange(2)}
+              />
+              <label className="btn btn-outline-primary" htmlFor="btnradio2">
+                Active
+              </label>
+
+              <input
+                type="radio"
+                className="btn-check"
+                name="btnradio"
+                id="btnradio3"
+                checked={activeButton === 3}
+                onChange={() => handleRadioChange(3)}
+              />
+              <label className="btn btn-outline-primary" htmlFor="btnradio3">
+                Exit
+              </label>
+            </div>
+          </div>
           <div className="card mb-4">
             <div className="card-body pb0 pb4">
               <div className="row thm_form">
