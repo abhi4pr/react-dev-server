@@ -89,12 +89,9 @@ const ExePageDetailes = ({
     setOpen2(true);
   };
 
-  console.log(commitPayload, "commit payload");
-
   const handleVerified = () => { };
 
   const handleCommitChange = (e, field, param) => {
-    console.log(param.row);
     // setCommitPayload({...commitPayload,[field]:e.target.value,id})
     const data = commitPayload.map((commit) => {
       if (commit.comm_id == param.row.comm_id) {
@@ -106,7 +103,6 @@ const ExePageDetailes = ({
   };
 
   const handleExecute = async (params) => {
-    console.log(params);
     const response = await axios.post(
       baseUrl + "assignment/status",
       {

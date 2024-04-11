@@ -10,7 +10,8 @@ import { Navigate } from "react-router-dom";
 
 const CustomerDocumentMaster = () => {
   const { toastAlert, toastError } = useGlobalContext();
- // const [customerName, setCustomerName] = useState("");
+ const [customerName, setCustomerName] = useState("");
+ const [docName, setDocName] = useState(""); 
   const [docFile, setDocFile] = useState("");
   const [docNo, setDocNo] = useState("");
   const [description, setDescription] = useState("");
@@ -19,13 +20,32 @@ const CustomerDocumentMaster = () => {
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
 
+  const [customersDoc, setCustomersDoc] = useState([]);
+  const getData = () => {
+    axios.get(baseUrl + "get_all_doc_mast") 
+      .then((res) => {
+        console.log(res.data.data);
+      
+        setCustomersDoc(res?.data?.data); 
+        setFilterData(res.data.data);
+      });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   const [customersData, setCustomersData] = useState([]);
-  console.log(customersData, "new name");
   const CustomerData = () => {
     axios.get(baseUrl + "get_all_customer_mast").then((res) => {
       setCustomersData(res.data.customerMastList);
     });
   };
+
+  useEffect(() => {
+    CustomerData();
+  }, []);
+
 
  
 
@@ -37,8 +57,8 @@ const CustomerDocumentMaster = () => {
     e.preventDefault();
     console.log(customerName, "customerName");
     const formData = new FormData();
-    //formData.append("customer_id", customerName);
-    formData.append("doc_id", "65f539b586cbd6416a3fd633");
+    formData.append("customer_id", customerName);
+    formData.append("doc_id", docName);
     formData.append("doc_upload", docFile);
     formData.append("doc_no", docNo);
     formData.append("description", description);
@@ -61,54 +81,56 @@ const CustomerDocumentMaster = () => {
 
   return (
     <FormContainer
-      mainTitle="Customer Contact Master"
-      title="Add Customer Contact"
+      mainTitle="Customer Document"
+      title="Add Customer Document"
       handleSubmit={handleSubmit}
     >
-      {/* <div className="form-group col-6">
+      <div className="form-group col-6">
         <label className="form-label">
-          Customer Type ID <sup style={{ color: "red" }}>*</sup>
+          Customer Name <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
           options={customersData?.map((option) => ({
             value: option.customer_id,
-            label: option._id,
+            label: option.customer_name,
           }))}
           value={{
             value: customerName,
             label:
               customersData?.find((cust) => cust.customer_id === customerName)
-                ?._id || "",
+                ?.customer_name || "",
           }}
           onChange={(e) => {
             setCustomerName(e.value);
           }}
         ></Select>
-      </div> */}
+      </div>
+     
       <div className="form-group col-6">
         <label className="form-label">
-          Doc ID <sup style={{ color: "red" }}>*</sup>
+          Doc Name <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
-        //   options={customersData?.map((option) => ({
-        //     value: option.customer_id,
-        //     label: option._id ,
-        //   }))}
-        //   value={{
-        //     value: customerName,
-        //     label:
-        //       customersData?.find((cust) => cust.customer_id === customerName)
-        //         ?._id || "",
-        //   }}
-        //   onChange={(e) => {
-        //     setCustomerName(e.value);
-        //   }}
+          options={customersDoc?.map((option) => ({
+            value: option?._id,
+            label: option?.doc_name ,
+          }))}
+          value={{
+            value: docName,
+            label:
+            customersDoc?.find((doc) => doc._id === docName)
+                ?.doc_name || "",
+          }}
+          onChange={(e) => {
+            setDocName(e.value);
+          }}
         ></Select>
       </div>
 
       <FieldContainer
         type="file"
         label="Doc File"
+        required={true}
         onChange={(e) => setDocFile(e.target.files[0])}
       />
       <FieldContainer

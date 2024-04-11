@@ -144,6 +144,19 @@ for (let year = 1950; year <= 2050; year++) {
   establishmentYearOptions.push({ value: year.toString(), label: year.toString() });  
 }
 
+const [parentData, setParentData] = useState([]);
+function parentDatas() {
+  axios.get(baseUrl + "get_all_customer_mast").then((res) => {
+      //console.log(res.data.customerMastList, "rrrr")
+      setParentData(res.data.customerMastList);
+  });
+}
+
+useEffect(() => {
+  parentDatas();
+}, []);
+
+
 const [customersData, setCustomersData] = useState([]);
   const CustomerData = () => {
     axios.get(baseUrl + "get_all_customer_type")   
@@ -435,14 +448,14 @@ const getData = () => {
             Parent Account Name <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
-            options={usersDataContext.map((option) => ({
-              value: option._id,
+            options={parentData.map((option) => ({
+              value: option.customer_id,
               label: option.customer_name,
             }))}
             value={{
               value: parentAccountName,
               label:
-              usersDataContext?.find((acc) => acc._id === parentAccountName)?.customer_name || "",
+              parentData?.find((acc) => acc.customer_id === parentAccountName)?.customer_name || "", 
             }}
             onChange={(e) => {
               setParentAccountName(e.value);

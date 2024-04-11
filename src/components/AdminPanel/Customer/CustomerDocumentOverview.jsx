@@ -50,14 +50,14 @@ console.log(documents);
       width: "5%",
       sortable: true,
     },
-    // {
-    //   name: "Customer Type ID",
-    //   selector: (row) => row.customer_id,
-    //   sortable: true,
-    // },
     {
-      name: "Doc ID",
-      selector: (row) => row.doc_id,
+      name: "Customer Name",
+      selector: (row) => row?.OPS_CustomerMast_data?.customer_name,
+      sortable: true,
+    },
+    {
+      name: "Doc Name",
+      selector: (row) => row?.OPS_Doc_Mast?.doc_name,
       sortable: true,
     },
     {
@@ -80,7 +80,7 @@ console.log(documents);
       cell: (row) => (
         <>
           
-          <Link to={`/admin/customer-doc-master/${row._id}`}>
+          <Link to={`/admin/customer-document-update/${row._id}`}>
             <button
               title="Edit"
               className="btn btn-outline-primary btn-sm user-button"

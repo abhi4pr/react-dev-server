@@ -955,7 +955,7 @@ export default function Discard() {
   };
 
   return (
-    <div style={{ display: "flex", gap: "16px", flexDirection: "column" }}>
+    <div>
       <FormContainer
         mainTitle="Discard Payment"
         link="/admin/inance-pruchasemanagement-discardpayment"
@@ -1011,7 +1011,6 @@ export default function Discard() {
           />
         </DialogContent>
       </Dialog>
-
       {/* Unique Vendor Dialog Box */}
       <Dialog
         open={uniqueVenderDialog}
@@ -1059,229 +1058,252 @@ export default function Discard() {
         </DialogContent>
       </Dialog>
 
-      <div className="card body-padding">
-        <div className="row">
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Vendor Name</label>
-              <Autocomplete
-                value={vendorName}
-                onChange={(event, newValue) => setVendorName(newValue)}
-                options={Array.from(
-                  new Set(data.map((option) => option.vendor_name))
-                )}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label="Vendor Name"
-                    type="text"
-                    variant="outlined"
-                    InputProps={{
-                      ...params.InputProps,
-                      className: "form-control", // Apply Bootstrap's form-control class
-                    }}
-                    style={{
-                      borderRadius: "0.25rem",
-                      transition:
-                        "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                      "&:focus": {
-                        borderColor: "#80bdff",
-                        boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                      },
-                    }}
-                  />
-                )}
-              />
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-header flexCenterBetween">
+              <h5 className="card-title">Search by filter</h5>
+              <div className="flexCenter colGap12">
+                <div className="form-group flexCenter colGap8">
+                  <label className="w-100 m0">Select Date Range:</label>
+                  <select
+                    className="form-control form_sm"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                  >
+                    <option value="">All</option>
+                    <option value="last7Days">Last 7 Days</option>
+                    <option value="last30Days">Last 30 Days</option>
+                    <option value="thisWeek">This Week</option>
+                    <option value="lastWeek">Last Week</option>
+                    <option value="currentMonth">Current Month</option>
+                    <option value="nextMonth">Next Month</option>
+                    <option value="currentQuarter">This Quarter</option>
+                  </select>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>From Date</label>
-              <input
-                value={fromDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => setFromDate(e.target.value)}
-              />
+            <div className="card-body pb4">
+              <div className="row thm_form">
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>Vendor Name</label>
+                    <Autocomplete
+                      value={vendorName}
+                      onChange={(event, newValue) => setVendorName(newValue)}
+                      options={Array.from(
+                        new Set(data.map((option) => option.vendor_name))
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Vendor Name"
+                          type="text"
+                          variant="outlined"
+                          InputProps={{
+                            ...params.InputProps,
+                            className: "form-control", // Apply Bootstrap's form-control class
+                          }}
+                          style={{
+                            borderRadius: "0.25rem",
+                            transition:
+                              "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                            "&:focus": {
+                              borderColor: "#80bdff",
+                              boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                            },
+                          }}
+                        />
+                      )}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>From Date</label>
+                    <input
+                      value={fromDate}
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => setFromDate(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>To Date</label>
+                    <input
+                      value={toDate}
+                      type="date"
+                      className="form-control"
+                      onChange={(e) => {
+                        setToDate(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>Priority</label>
+                    <select
+                      value={priorityFilter}
+                      className="form-control"
+                      onChange={(e) => setPriorityFilter(e.target.value)}
+                    >
+                      <option value="">Select Priority</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                      <option value="High">High</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>Request Amount Filter</label>
+                    <select
+                      value={requestAmountFilter}
+                      className="form-control"
+                      onChange={(e) => setRequestAmountFilter(e.target.value)}
+                    >
+                      <option value="">Select Amount</option>
+                      <option value="greaterThan">Greater Than</option>
+                      <option value="lessThan">Less Than</option>
+                      <option value="equalTo">Equal To</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="col-md-4 col-sm-12">
+                  <div className="form-group">
+                    <label>Requested Amount</label>
+                    <input
+                      value={requestedAmountField}
+                      type="number"
+                      placeholder="Request Amount"
+                      className="form-control"
+                      onChange={(e) => {
+                        setRequestedAmountField(e.target.value);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>To Date</label>
-              <input
-                value={toDate}
-                type="date"
-                className="form-control"
-                onChange={(e) => {
-                  setToDate(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Priority</label>
-              <select
-                value={priorityFilter}
-                className="form-control"
-                onChange={(e) => setPriorityFilter(e.target.value)}
-              >
-                <option value="">Select Priority</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-                <option value="High">High</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Request Amount Filter</label>
-              <select
-                value={requestAmountFilter}
-                className="form-control"
-                onChange={(e) => setRequestAmountFilter(e.target.value)}
-              >
-                <option value="">Select Amount</option>
-                <option value="greaterThan">Greater Than</option>
-                <option value="lessThan">Less Than</option>
-                <option value="equalTo">Equal To</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-md-3">
-            <div className="form-group">
-              <label>Requested Amount</label>
-              <input
-                value={requestedAmountField}
-                type="number"
-                placeholder="Request Amount"
-                className="form-control"
-                onChange={(e) => {
-                  setRequestedAmountField(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-          <div className="col-md-1 mt-4 me-2">
-            <Button variant="contained" onClick={handleDateFilter}>
-              <i className="fas fa-search"></i> Search
-            </Button>
-          </div>
-          <div className="col-md-1 mt-4">
-            <Button variant="contained" onClick={handleClearDateFilter}>
-              Clear
-            </Button>
-          </div>
-          <div className="col-md-6">
-            <div className="form-group">
-              <label>Select Date Range:</label>
-              <select
-                className="form-control"
-                value={dateFilter}
-                onChange={(e) => setDateFilter(e.target.value)}
-              >
-                <option value="">All</option>
-                <option value="last7Days">Last 7 Days</option>
-                <option value="last30Days">Last 30 Days</option>
-                <option value="thisWeek">This Week</option>
-                <option value="lastWeek">Last Week</option>
-                <option value="currentMonth">Current Month</option>
-                <option value="nextMonth">Next Month</option>
-                <option value="currentQuarter">This Quarter</option>
-              </select>
+            <div className="card-footer">
+              <div className="flexCenter colGap16">
+                <Button
+                  variant="contained"
+                  onClick={handleDateFilter}
+                  className="btn cmnbtn btn-primary"
+                >
+                  <i className="fas fa-search"></i> Search
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleClearDateFilter}
+                  className="btn cmnbtn btn-secondary"
+                >
+                  Clear
+                </Button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <div className="card">
-        <DataGrid
-          rows={filterData}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          disableSelectionOnClick
-          autoHeight
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-            },
-          }}
-          getRowId={(row) => filterData.indexOf(row)}
-        />
+
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body thm_table">
+              <DataGrid
+                rows={filterData}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                disableSelectionOnClick
+                autoHeight
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                getRowId={(row) => filterData.indexOf(row)}
+              />
+              {openImageDialog && (
+                <ImageView
+                  viewImgSrc={viewImgSrc}
+                  setViewImgDialog={setOpenImageDialog}
+                />
+              )}
+              {paymentHistory && (
+                <PaymentHistoryDialog
+                  handleClose={setPaymentHistory}
+                  paymentDetailColumns={paymentDetailColumns}
+                  filterData={historyData}
+                />
+              )}
+              {/* Bank Detail dialog */}
+              <Dialog
+                open={bankDetail}
+                onClose={handleCloseBankDetail}
+                // fullWidth={"md"}
+                // maxWidth={"md"}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <DialogTitle>Bank Details</DialogTitle>
+                <IconButton
+                  aria-label="close"
+                  onClick={handleCloseBankDetail}
+                  sx={{
+                    position: "absolute",
+                    right: 8,
+                    top: 8,
+                    color: (theme) => theme.palette.grey[500],
+                  }}
+                >
+                  <CloseIcon />
+                </IconButton>
+                <TextField
+                  id="outlined-multiline-static"
+                  // label="Multiline"
+                  multiline
+                  value={bankDetailRowData[0]?.payment_details}
+                  rows={4}
+                  defaultValue="Default Value"
+                  variant="outlined"
+                />
+
+                <Button
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      bankDetailRowData[0]?.payment_details
+                    );
+                    toastAlert("Copied to clipboard");
+                  }}
+                >
+                  Copy
+                </Button>
+              </Dialog>
+              {remainderDialog && (
+                <ShowDataModal
+                  handleClose={setRemainderDialog}
+                  rows={reminderData}
+                  columns={remainderDialogColumns}
+                  aknowledgementDialog={aknowledgementDialog}
+                  setAknowledgementDialog={setAknowledgementDialog}
+                  userName={userName}
+                  callApi={callApi}
+                  setRemainderDialo={setRemainderDialog}
+                />
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-      {openImageDialog && (
-        <ImageView
-          viewImgSrc={viewImgSrc}
-          setViewImgDialog={setOpenImageDialog}
-        />
-      )}
-      {paymentHistory && (
-        <PaymentHistoryDialog
-          handleClose={setPaymentHistory}
-          paymentDetailColumns={paymentDetailColumns}
-          filterData={historyData}
-        />
-      )}
-      {/* Bank Detail dialog */}
-      <Dialog
-        open={bankDetail}
-        onClose={handleCloseBankDetail}
-        // fullWidth={"md"}
-        // maxWidth={"md"}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <DialogTitle>Bank Details</DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseBankDetail}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: 8,
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <TextField
-          id="outlined-multiline-static"
-          // label="Multiline"
-          multiline
-          value={bankDetailRowData[0]?.payment_details}
-          rows={4}
-          defaultValue="Default Value"
-          variant="outlined"
-        />
-
-        <Button
-          onClick={() => {
-            navigator.clipboard.writeText(
-              bankDetailRowData[0]?.payment_details
-            );
-            toastAlert("Copied to clipboard");
-          }}
-        >
-          Copy
-        </Button>
-      </Dialog>
-
-      {remainderDialog && (
-        <ShowDataModal
-          handleClose={setRemainderDialog}
-          rows={reminderData}
-          columns={remainderDialogColumns}
-          aknowledgementDialog={aknowledgementDialog}
-          setAknowledgementDialog={setAknowledgementDialog}
-          userName={userName}
-          callApi={callApi}
-          setRemainderDialo={setRemainderDialog}
-        />
-      )}
     </div>
   );
 }

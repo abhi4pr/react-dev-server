@@ -10,6 +10,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import InfoIcon from "@mui/icons-material/Info";
 import { baseUrl } from "../../../../utils/config";
+import gifone from "../../../../assets/img/finance/gifone.gif";
+import giftwo from "../../../../assets/img/finance/giftwo.gif";
+import gifthree from "../../../../assets/img/finance/gifthree.gif";
 
 const filterOptions = [
   "Today",
@@ -399,368 +402,271 @@ export default function FinanceDashboard() {
         link="/admin/finance-dashboard"
       />
 
-      <div className="row">
-        <Autocomplete
-          className="col-3"
-          disablePortal
-          value={filterValue}
-          id="combo-box-demo"
-          options={filterOptions}
-          onChange={(event, value) => {
-            handleFilterChange(value);
-          }}
-          sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Filter" />}
-        />
-
-        {filterValue === "Custom Date" && (
-          <>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                className="col-3 "
-                label="Start Date"
-                format="DD/MM/YYYY"
-                disableFuture
-                value={startDate}
-                onChange={(newValue) => {
-                  setStartDate(newValue);
+      <div className="card">
+        <div className="card-body">
+          <div className="row thm_form">
+            <div className="col-md-2_5">
+              <Autocomplete
+                disablePortal
+                value={filterValue}
+                id="combo-box-demo"
+                options={filterOptions}
+                onChange={(event, value) => {
+                  handleFilterChange(value);
                 }}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Filter" />
+                )}
               />
-              <DatePicker
-                className="col-3 mx-2"
-                label="End Date"
-                format="DD/MM/YYYY"
-                value={endDate}
-                shouldDisableDate={(day) => dayjs(day).isBefore(startDate)}
-                onChange={(newValue) => {
-                  setEndDate(newValue);
-                }}
-              />
-            </LocalizationProvider>
-            <Button
-              variant="contained"
-              className="col-1"
-              onClick={() => handleFilterChange("search")}
-            >
-              Filter
-            </Button>
-          </>
-        )}
+            </div>
 
-        <Button
-          variant="contained"
-          size="small "
-          onClick={handleResetClick}
-          className="col-1 mx-2 "
-        >
-          Reset
-        </Button>
+            {filterValue === "Custom Date" && (
+              <>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <div className="col-md-2_5">
+                    <DatePicker
+                      label="Start Date"
+                      format="DD/MM/YYYY"
+                      disableFuture
+                      value={startDate}
+                      onChange={(newValue) => {
+                        setStartDate(newValue);
+                      }}
+                    />
+                  </div>
+                  <div className="col-md-2_5">
+                    <DatePicker
+                      label="End Date"
+                      format="DD/MM/YYYY"
+                      value={endDate}
+                      shouldDisableDate={(day) =>
+                        dayjs(day).isBefore(startDate)
+                      }
+                      onChange={(newValue) => {
+                        setEndDate(newValue);
+                      }}
+                    />
+                  </div>
+                </LocalizationProvider>
+                <div className="col-md-2_5">
+                  <Button
+                    variant="contained"
+                    onClick={() => handleFilterChange("search")}
+                    className="btn cmnbtn btn-primary w-100"
+                  >
+                    Filter
+                  </Button>
+                </div>
+              </>
+            )}
+            <div className="col-md-2_5">
+              <Button
+                variant="contained"
+                size="small "
+                onClick={handleResetClick}
+                className="btn cmnbtn btn-primary w-100"
+              >
+                Reset
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
+
+      <div className="card">
+        <div className="card-body pb0">
+          <div className="card-body cardGrdnt orangeGrdnt">
+            <Link to="/admin/finance-incentivepayment">
+              <div className="row align-items-center">
+                <div className="col-md-6 financeCardBox border-right ">
+                  <div className="financeCardBoxIn p0">
+                    <div className="financeCardBoxTitle">
+                      <div className="financeCardBoxImg">
+                        <img src={gifone} alt="" />
+                      </div>
+                      <h2>Total Incentive Count</h2>
+                    </div>
+                    <h3>{incentiveData.length}</h3>
+                  </div>
+                </div>
+                <div className="col-md-6 financeCardBox">
+                  <div className="financeCardBoxIn p0">
+                    <div className="financeCardBoxDetails">
+                      <ul className="pl32">
+                        <li>
+                          Request Amount
+                          <span>
+                            <span>&#8377; </span>
+                            {incentiveData
+                              .map((item) => +item.request_amount)
+                              .reduce((prev, next) => prev + next, 0)}
+                          </span>
+                        </li>
+                        <li>
+                          Released Amount
+                          <span>
+                            <span>&#8377; </span>
+                            {incentiveData
+                              .map((item) => +item.released_amount)
+                              .reduce((prev, next) => prev + next, 0)}
+                          </span>
+                        </li>
+                        <li>
+                          Balance Release
+                          <span>
+                            <span>&#8377; </span>
+                            {incentiveData
+                              .map((item) => +item.balance_release_amount)
+                              .reduce((prev, next) => prev + next, 0)}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+          <div className="row">
+            <div className="col-md-6">
+              <Link to="/admin/finance-salebookingclose">
+                <div className="cardGrdnt greenGrdnt">
+                  <div className="financeCardBox border-bottom">
+                    <div className="financeCardBoxIn">
+                      <div className="financeCardBoxTitle">
+                        <div className="financeCardBoxImg">
+                          <img src={giftwo} alt="" />
+                        </div>
+                        <h2>TDS Verification Open</h2>
+                      </div>
+                      <h3>{salesBookingOpenData.length}</h3>
+                    </div>
+                  </div>
+                  <div className="financeCardBox">
+                    <div className="financeCardBoxIn">
+                      <div className="financeCardBoxDetails">
+                        <ul>
+                          <li>
+                            TDS Verification About to Close
+                            <span>{salesBookingAboutToCloseData.length}</span>
+                          </li>
+                          <li>
+                            TDS Verification Closed
+                            <span>{salesBookingCloseData.length}</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+            <div className="col-md-6">
+              <Link to="/admin/finance-balancepayment">
+                <div className="cardGrdnt greenGrdnt">
+                  <div className="financeCardBox border-bottom">
+                    <div className="financeCardBoxIn">
+                      <div className="financeCardBoxTitle">
+                        <div className="financeCardBoxImg">
+                          <img src={gifthree} alt="" />
+                        </div>
+                        <h2>Customer Balance Payment Count</h2>
+                      </div>
+                      <h3>{cstPaymentData.length}</h3>
+                    </div>
+                  </div>
+                  <div className="financeCardBox">
+                    <div className="financeCardBoxIn">
+                      <div className="financeCardBoxDetails">
+                        <ul>
+                          <li>
+                            Total Refund Request Amount Pending
+                            <span>
+                              <span>&#8377; </span>
+                              {cstPaymentData
+                                .map(
+                                  (item) =>
+                                    item.campaign_amount -
+                                    item.total_paid_amount
+                                )
+                                .reduce((prev, next) => prev + next, 0)
+                                .toLocaleString("en-IN")}
+                            </span>
+                          </li>
+                          <li>
+                            &nbsp;
+                            <span>&nbsp;</span>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <Link to="/admin/finance-pendingapproveupdate">
+                <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                  <h2>Pending Approval of Sales Payment</h2>
+                  <h3>{pendingForApprovalData.length}</h3>
+                </div>
+              </Link>
+            </div>
+            <div className="col">
+              <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                <h2>Total Invoice Pending</h2>
+                <h3>{invoicePending.length}</h3>
+              </div>
+            </div>
+            <div className="col">
+              <Link to="/admin/finance-pendingapproverefund">
+                <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                  <h2>Total Refund Request Amount Pending</h2>
+                  <h3>
+                    <span>&#8377;</span>
+                    {refundReqData
+                      .map((item) => item.refund_amount)
+                      .reduce((prev, next) => prev + next, 0)
+                      .toLocaleString("en-IN")}
+                  </h3>
+                </div>
+              </Link>
+            </div>
+            <div className="col">
+              <Link to="/admin/finance-pruchasemanagement-paymentdone">
+                <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                  <h2>Pending for Vendor Payment</h2>
+                  <h3>{vendorCardData.length}</h3>
+                </div>
+              </Link>
+            </div>
+            <div className="col">
+              <Link to="#">
+                <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                  <h2>Total Payout Pending</h2>
+                  <h3>
+                    <span>&#8377; </span>
+                    {payoutData
+                      .map((e) => e.toPay)
+                      .reduce((prev, next) => prev + next, 0)
+                      ? payoutData
+                          .map((e) => e.toPay)
+                          .reduce((prev, next) => prev + next, 0)
+                          .toLocaleString("en-IN")
+                      : 0}
+                  </h3>
+                </div>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="card mt-4">
         <div className="row gx-3 justify-content-around">
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon className={classes.progressValue} />
-              </div>
-              <div className={classes.content}>
-                <p className={classes.bodyMd}>
-                  Pending Approval of Sales Payment:
-                </p>
-                <span className={classes.h1}>
-                  {pendingForApprovalData.length}
-                </span>
-                <Link
-                  to="/admin/finance-pendingapproveupdate"
-                  className={classes.detailsLink}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-pendingapproveupdate">
-                <InfoIcon className="fs-3  pb-1" />
-              </Link>
-            </div>
-          </div>
-
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 mt-3 m-2`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon
-                  className={classes.progressValue}
-                  style={{ marginTop: "5px" }}
-                />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                  Total Invoice Pending :
-                </h5>
-                <span className={classes.h1}>{invoicePending.length}</span>
-                <Link to="#" className={classes.detailsLink}>
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="#">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
-
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon
-                  className={classes.progressValue}
-                  style={{ marginTop: "-36px" }}
-                />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                  Customer Balance Payment Count:{" "}
-                  <span className={classes.h1}>{cstPaymentData.length}</span>
-                </h5>
-                <h5
-                  className={`${classes.bodyMd} mt-1 `}
-                  style={{ lineHeight: "15px" }}
-                >
-                  Total Refund Request Amount Pending:{" "}
-                  <span className={classes.h1}>&#8377;</span>
-                  {cstPaymentData
-                    .map(
-                      (item) => item.campaign_amount - item.total_paid_amount
-                    )
-                    .reduce((prev, next) => prev + next, 0)
-                    .toLocaleString("en-IN")}
-                </h5>
-                <Link
-                  to="/admin/finance-balancepayment"
-                  className={classes.detailsLink}
-                >
-                  <p className={classes.cardText}>View Details</p>
-                </Link>
-              </div>
-            </div>
-
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-balancepayment">
-                <InfoIcon className="fs-3  pb-1  mt-3" />
-              </Link>
-            </div>
-          </div>
-
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon className={classes.progressValue} />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                  Total Refund Request Amount Pending:{" "}
-                  <span className={classes.h1}>
-                    <span className={classes.currencySymbol}>&#8377;</span>
-                  </span>
-                  {refundReqData
-                    .map((item) => item.refund_amount)
-                    .reduce((prev, next) => prev + next, 0)
-                    .toLocaleString("en-IN")}
-                </h5>
-                <Link
-                  to="/admin/finance-pendingapproverefund"
-                  className={classes.detailsLink}
-                >
-                  <p className={classes.cardText}>View Details</p>
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-pendingapproverefund">
-                <InfoIcon className="fs-3  pb-1 " />
-              </Link>
-            </div>
-          </div>
-
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon
-                  className={classes.progressValue}
-                  style={{ marginTop: "-70px" }}
-                />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                  Total Incentive Count:
-                </h5>
-                <h3 className={classes.h1}>{incentiveData.length}</h3>
-                <h5 className={classes.bodyMd}>
-                  Request Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {incentiveData
-                    .map((item) => +item.request_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <h5 className={classes.bodyMd}>
-                  Released Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {incentiveData
-                    .map((item) => +item.released_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <h5 className={classes.bodyMd}>
-                  Balance Release Amount:{" "}
-                  <span className={classes.currencySymbol}>&#8377;</span>
-                  {incentiveData
-                    .map((item) => +item.balance_release_amount)
-                    .reduce((prev, next) => prev + next, 0)}
-                </h5>
-                <Link
-                  to="/admin/finance-incentivepayment"
-                  className={classes.detailsLink}
-                  style={{ marginLeft: "-2px" }}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-incentivepayment">
-                <InfoIcon className="fs-3  pb-1" />
-              </Link>
-            </div>
-          </div>
-
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 mt-3 m-2`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon
-                  className={classes.progressValue}
-                  style={{ marginTop: "-50px" }}
-                />
-              </div>
-              <div className={classes.content}>
-                <h5
-                  className={`${classes.bodyMd} mb-0`}
-                  style={{ marginTop: "4px " }}
-                >
-                  TDS Verification Open:
-                </h5>
-                <span className={`${classes.h1} mt-0 mb-3`}>
-                  {salesBookingOpenData.length}
-                </span>
-                <h5 className={`${classes.bodyMd} mb-0 mt-2`}>
-                  TDS Verification About to Close:
-                </h5>
-                <span className={`${classes.h1} mt-0 mb-3`}>
-                  {salesBookingAboutToCloseData.length}
-                </span>
-                <h5 className={`${classes.bodyMd} mb-0 mt-2`}>
-                  TDS Verification Closed:
-                </h5>
-                <span className={`${classes.h1} mt-0 mb-3`}>
-                  {salesBookingCloseData.length}
-                </span>
-
-                <Link
-                  to="/admin/finance-salebookingclose"
-                  className={`${classes.detailsLink} ml-5 pl-5`}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-salebookingclose">
-                <InfoIcon className="fs-3  pb-1 " />
-              </Link>
-            </div>
-          </div>
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon
-                  className={classes.progressValue}
-                  style={{ marginTop: "5px" }}
-                />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                  Pending for Vendor Payment:
-                </h5>
-                <span className={classes.h1}>{vendorCardData.length}</span>
-                <Link
-                  to="/admin/finance-pruchasemanagement-paymentdone"
-                  className={classes.detailsLink}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="/admin/finance-pruchasemanagement-paymentdone">
-                <InfoIcon className="fs-3  pb-1" />
-              </Link>
-            </div>
-          </div>
-
-          <div
-            className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} col-3 mt-3 m-2`}
-          >
-            <div className={`${classes.cardContent} ${classes.horizontal}`}>
-              <div className={classes.circularProgress}>
-                <PointOfSaleIcon
-                  className={`${classes.progressValue}`}
-                  style={{ marginTop: "30px" }}
-                />
-              </div>
-              <div className={classes.content}>
-                <h5 className={classes.bodyMd} style={{ marginTop: "4px" }}>
-                  Total Payout Pending:
-                </h5>
-                <span className={classes.h1}>
-                  &#8377;
-                  {payoutData
-                    .map((e) => e.toPay)
-                    .reduce((prev, next) => prev + next, 0)
-                    ? payoutData
-                        .map((e) => e.toPay)
-                        .reduce((prev, next) => prev + next, 0)
-                        .toLocaleString("en-IN")
-                    : 0}
-                </span>
-                <Link
-                  to="#"
-                  className={classes.detailsLink}
-                  style={{ whiteSpace: "nowrap" }}
-                >
-                  View Details
-                </Link>
-              </div>
-            </div>
-            <div className={classes.cardActions}>
-              <Link to="#">
-                <InfoIcon className="fs-3 pb-1 " />
-              </Link>
-            </div>
-          </div>
-
           {/* last card */}
           {/* <div
             className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
@@ -814,7 +720,7 @@ export default function FinanceDashboard() {
                 <InfoIcon className="fs-3  pb-1" />
               </Link>
             </div>
-          </div> */}
+          </div>
           {/* <div
             className={`${classes.customCard} ${classes.cardSolidPrimary} ${classes.invertedColors} m-2 mt-3 col-3`}
           >

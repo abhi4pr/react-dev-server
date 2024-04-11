@@ -25,6 +25,19 @@ const DocumentTab = ({
     });
   };
 
+  const handleDocDelete = async (item) => {
+    console.log(item, "item here");
+    await axios
+      .put(`${baseUrl}` + `update_doc_user`, {
+        _id: item._id,
+        // status: "unapprove",
+      })
+      .then((res) => {
+        getDocuments();
+        toastAlert("Document Deleted Successfully");
+      });
+  };
+
   useEffect(() => {
     getData();
   }, []);
@@ -149,6 +162,16 @@ const DocumentTab = ({
                               class="bi bi-exclamation-circle-fill"
                               title={item.reject_reason}
                             />
+                          )}
+                          {item.status == "Approved" && (
+                            <button
+                              type="button"
+                              style={{ borderRadius: 17, padding: 7 }}
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleDocDelete(item)}
+                            >
+                              Unapprove
+                            </button>
                           )}
                         </span>
                       </div>

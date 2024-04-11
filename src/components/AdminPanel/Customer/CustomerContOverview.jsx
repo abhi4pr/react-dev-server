@@ -46,11 +46,11 @@ const CustomerContOverview = () => {
       width: "5%",
       sortable: true,
     },
-    // {
-    //   name: "Customer ID",
-    //   selector: (row) => row.customer_id,
-    //   sortable: true,
-    // },
+    {
+      name: "Customer Name",
+      selector: (row) => row?.OPS_CustomerMast_data?.customer_name,
+      sortable: true,
+    },
     {
       name: "Contact Name",
       selector: (row) => row.contact_name,

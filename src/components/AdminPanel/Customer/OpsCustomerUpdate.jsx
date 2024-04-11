@@ -70,10 +70,30 @@ const OpsCustomerUpdate = () => {
   ];
   
 
-  const establishmentYearOptions = [];
- for (let year = 1950; year <= 2050; year++) {
+  // const establishmentYearOptions = [];
+//  for (let year = 1950; year <= 2050; year++) {
+//   establishmentYearOptions.push({ value: year.toString(), label: year.toString() });
+
+// }
+// Define establishmentYearOptions
+const establishmentYearOptions = [];
+for (let year = 1950; year <= 2050; year++) {
   establishmentYearOptions.push({ value: year.toString(), label: year.toString() });
 }
+
+const [parentData, setParentData] = useState([]);
+function parentDatas() {
+  axios.get(baseUrl + "get_all_customer_mast").then((res) => {
+      //console.log(res.data.customerMastList, "rrrr")
+      setParentData(res.data.customerMastList);
+  });
+}
+
+useEffect(() => {
+  parentDatas();
+}, []);
+
+
 
   const [customersData, setCustomersData] = useState([]);
   const CustomerData = () => {
@@ -269,7 +289,7 @@ const getData = () => {
 
     axios.put(`${baseUrl}update_customer_mast/${id}`, formData).then(() => {
       setIsFormSubmitted(true);
-      toastAlert("Customer added successfully");
+      toastAlert("Customer updated successfully");
     });
   };
 
@@ -400,13 +420,34 @@ const getData = () => {
         </div>
 
 
-          <FieldContainer
+          {/* <FieldContainer
           label="Parent Account "
           value={parentAccountName}
           required={false}
           type="number"
           onChange={(e) => setParentAccountName(e.target.value)}
-        />
+        /> */}
+
+         <div className="form-group col-6">
+          <label className="form-label">
+            Parent Account Name <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={parentData.map((option) => ({
+              value: option.customer_id,
+              label: option.customer_name,
+            }))}
+            value={{
+              value: parentAccountName,
+              label:
+              parentData?.find((acc) => acc.customer_id === parentAccountName)?.customer_name || "",
+            }}
+            onChange={(e) => {
+              setParentAccountName(e.value);
+            }}
+          ></Select>
+        </div>
+
 
 
         <div className="form-group col-6">
@@ -463,8 +504,12 @@ const getData = () => {
         Establishment Year <sup style={{ color: "red" }}>*</sup>
         </label>
         <Select
-         options={establishmentYearOptions}
-         value={establishmentYearOptions.find(option => option.value === establishmentYear)}
+        options={establishmentYearOptions}
+        //  value={establishmentYear}
+        value={{
+          value: establishmentYear,
+          label: `${establishmentYear}`,
+        }}
         onChange={(e) => setEstablishmentYear(e.value)}
         />
         </div>

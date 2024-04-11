@@ -90,6 +90,7 @@ const Invoice = () => {
   const [saleBookingId, setSaleBookingId] = useState("");
   const [dateFilter, setDateFilter] = useState("");
   const [dateFilterInvoice, setDateFilterInvoice] = useState("");
+  const [invoiceMngDate, setInvoiceMngDate] = useState("");
 
   const accordionButtons = ["Pending Invoice", "Invoice Created"];
 
@@ -544,16 +545,17 @@ const Invoice = () => {
     setActiveAccordionIndex(index);
   };
   // Edit Action Field
-  const handleOpenEditFieldAction = (id) => {
+  const handleOpenEditFieldAction = (id, date) => {
     setSaleBookingId(id);
     setEditActionDialog(true);
+    setInvoiceMngDate(date);
   };
   const handleCloseEditFieldAction = () => {
     setEditActionDialog(false);
   };
   // handle submit  function for updating fields
   const handleInvoiceEditFields = async () => {
-    console.log(saleBookingId, "Sale Booking ID");
+    console.log(saleBookingId, "Sale Booking ID", invcDate, "DATE dATA >?????");
     const formData = new FormData();
     // const moment = require("moment");
 
@@ -561,10 +563,7 @@ const Invoice = () => {
     formData.append("loggedin_user_id", 36);
     formData.append("invoiceFormSubmit", 1);
     formData.append("invoice_mnj_number", invcNumber);
-    formData.append(
-      "invoice_mnj_date",
-      moment(invcNumber).format("YYYY/MM/DD")
-    );
+    formData.append("invoice_mnj_date", moment(invcDate).format("YYYY/MM/DD"));
     formData.append("party_mnj_name", partyInvoiceName);
     formData.append("invoice", imageInvoice);
 
@@ -578,6 +577,7 @@ const Invoice = () => {
       )
       .then((res) => {
         handleCloseEditFieldAction();
+        toastAlert("Fields Updated Successfully");
         getDataInvoiceCreated();
       });
   };
@@ -1053,7 +1053,17 @@ const Invoice = () => {
     //   ),
     // },
   ];
-  console.log(filterData, "FILTER DD===");
+
+  const handleKeyDown = (e) => {
+    if (e.key === " ") {
+      e.preventDefault(); // Prevent default behavior (e.g., page scroll)
+      e.stopPropagation(); // Stop propagation to prevent DataGrid from handling the event
+      setPartyName((prevName) => prevName + " "); // Append space character to the current value
+    }
+    if (e.key === "Shift") {
+      e.preventDefault(); // Prevent focus shift when Shift key is pressed
+    }
+  };
   const columns = [
     {
       width: 60,
@@ -1071,7 +1081,7 @@ const Invoice = () => {
       height: "200px",
     },
     {
-      headerName: "Requested On Date",
+      headerName: "Sale Booking Date",
       field: "sale_booking_date",
       width: 220,
       renderCell: (params) =>
@@ -1099,60 +1109,125 @@ const Invoice = () => {
       ),
     },
 
+    // {
+    //   field: "Input",
+    //   headerName: "Input",
+    //   width: 600,
+    //   renderCell: (params, index) => (
+    //     <div className="mt-2 d-flex">
+    //       <TextField
+    //         key={params.row.sale_booking_id}
+    //         className="d-block"
+    //         type="text"
+    //         name="input"
+    //         label="Invoice No."
+    //         sx={{
+    //           marginBottom: "1px",
+    //           "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+    //             padding: "12px ",
+    //           },
+    //         }}
+    //         onChange={(e) => setInoiceNum(e.target.value)}
+    //       />
+    //       {/* //invoice num , date , party name */}
+    //       <div>
+    //         <LocalizationProvider dateAdapter={AdapterDayjs}>
+    //           <DatePicker
+    //             key={params.row.sale_booking_id}
+    //             format="DD/MM/YYYY"
+    //             sx={{
+    //               "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
+    //                 padding: "10px",
+    //               },
+    //             }}
+    //             defaultValue={dayjs()}
+    //             onChange={(e) => {
+    //               setDate(e);
+    //             }}
+    //           />
+    //         </LocalizationProvider>
+    //       </div>
+    //       <div>
+    //         <TextField
+    //           key={params.row.sale_booking_id}
+    //           type="text"
+    //           name="input"
+    //           variant="outlined"
+    //           label="Party Name"
+    //           sx={{
+    //             marginBottom: "1px",
+    //             "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+    //               padding: "12px ",
+    //             },
+    //           }}
+    //           onChange={(e) => setPartyName(e.target.value)}
+    //         />
+    //       </div>
+    //     </div>
+    //   ),
+    // },
     {
-      field: "Input",
-      headerName: "Input",
-      width: 600,
-      renderCell: (params, index) => (
-        <div className="mt-2 d-flex">
-          <TextField
+      field: "invoice_mnj_number",
+      headerName: "Invoice No.",
+      width: 200,
+      renderCell: (params) => (
+        <TextField
+          key={params.row.sale_booking_id}
+          className="d-block"
+          type="text"
+          name="input"
+          label="Invoice No."
+          sx={{
+            marginBottom: "1px",
+            "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+              padding: "12px ",
+            },
+          }}
+          onChange={(e) => setInoiceNum(e.target.value)}
+        />
+      ),
+    },
+    {
+      field: "invoice_mnj_date",
+      headerName: "Invoice Date",
+      width: 200,
+      renderCell: (params) => (
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
             key={params.row.sale_booking_id}
-            className="d-block"
-            type="text"
-            name="input"
-            label="Invoice No."
+            format="DD/MM/YYYY"
             sx={{
-              marginBottom: "1px",
-              "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
-                padding: "12px ",
+              "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
+                padding: "10px",
               },
             }}
-            onChange={(e) => setInoiceNum(e.target.value)}
+            defaultValue={dayjs()}
+            onChange={(e) => {
+              setDate(e);
+            }}
           />
-          {/* //invoice num , date , party name */}
-          <div>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                key={params.row.sale_booking_id}
-                format="DD/MM/YYYY"
-                sx={{
-                  "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
-                    padding: "10px",
-                  },
-                }}
-                defaultValue={dayjs()}
-                onChange={(e) => {
-                  setDate(e);
-                }}
-              />
-            </LocalizationProvider>
-          </div>
-          <div>
-            <TextField
-              key={params.row.sale_booking_id}
-              type="text"
-              name="input"
-              label="Party Name"
-              sx={{
-                marginBottom: "1px",
-                "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
-                  padding: "12px ",
-                },
-              }}
-              onChange={(e) => setPartyName(e.target.value)}
-            />
-          </div>
-        </div>
+        </LocalizationProvider>
+      ),
+    },
+    {
+      field: "party_mnj_name",
+      headerName: "Party Name",
+      width: 200,
+      renderCell: (params) => (
+        <TextField
+          key={params.row.sale_booking_id}
+          type="text"
+          name="input"
+          variant="outlined"
+          label="Party Name"
+          sx={{
+            marginBottom: "1px",
+            "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
+              padding: "12px ",
+            },
+          }}
+          onChange={(e) => handleKeyDown(e.target.value)}
+        />
       ),
     },
     {
@@ -1323,6 +1398,12 @@ const Invoice = () => {
       renderCell: (params) => params.row.invoice_mnj_number,
     },
     {
+      field: "invoice_mnj_date",
+      headerName: "Invoice Date",
+      width: 200,
+      renderCell: (params) => params.row.invoice_mnj_date,
+    },
+    {
       field: "party_mnj_name",
       headerName: "Party Name",
       width: 210,
@@ -1397,7 +1478,10 @@ const Invoice = () => {
           <Button
             variant="contained"
             onClick={() =>
-              handleOpenEditFieldAction(params.row.sale_booking_id)
+              handleOpenEditFieldAction(
+                params.row.sale_booking_id,
+                params.row.invoice_mnj_date
+              )
             }
           >
             Edit
@@ -1660,723 +1744,770 @@ const Invoice = () => {
   ];
 
   // ==========================================
-  console.log(dataInvoice, "dataInvoice data >>", filterData, "filter Data >>");
+
+  const YYYYMMDDdateConverter = (date) => {
+    let dateObj = new Date(date);
+    let month = String(dateObj.getUTCMonth() + 1).padStart(2, "0"); // Month in 2 digits
+    let day = String(dateObj.getUTCDate()).padStart(2, "0"); // Day in 2 digits
+    let year = dateObj.getUTCFullYear(); // Year in 4 digits
+    let newdate = year + "-" + month + "-" + day;
+    return newdate;
+  };
 
   return (
-    <div className="master-card-css ">
-      <div className="action_heading w-100">
-        <div
-          className="action_title "
-          style={{
-            position: "fixed",
-            zIndex: "500",
-            background: "var(--body-bg)",
-            width: "calc(100% - 379px)",
+    <div>
+      <FormContainer
+        mainTitle="Invoice"
+        link="admin/finance-invoice"
+        buttonAccess={
+          contextData &&
+          contextData[2] &&
+          contextData[2].insert_value === 1 &&
+          false
+        }
+        uniqueCustomerCount={uniqueCustomerCount}
+        uniqueCustomerInvoiceCount={uniqueCustomerInvoiceCount}
+        baseAmountTotal={baseAmountTotal}
+        campaignAmountTotal={campaignAmountTotal}
+        handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
+        handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
+        accIndex={activeAccordionIndex}
+        uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
+        uniqueSalesExecutiveInvoiceCount={uniqueSalesExecutiveInvoiceCount}
+        pendingInvoicePaymentAdditionalTitles={true}
+      />
+
+      {/* Edit Action Field */}
+      <Dialog
+        open={editActionDialog}
+        onClose={handleCloseEditFieldAction}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Edit Fields</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseEditFieldAction}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
           }}
         >
-          <FormContainer
-            mainTitle="Invoice"
-            link="admin/finance-invoice"
-            buttonAccess={
-              contextData &&
-              contextData[2] &&
-              contextData[2].insert_value === 1 &&
-              false
-            }
-            uniqueCustomerCount={uniqueCustomerCount}
-            uniqueCustomerInvoiceCount={uniqueCustomerInvoiceCount}
-            baseAmountTotal={baseAmountTotal}
-            campaignAmountTotal={campaignAmountTotal}
-            handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
-            handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
-            accIndex={activeAccordionIndex}
-            uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
-            uniqueSalesExecutiveInvoiceCount={uniqueSalesExecutiveInvoiceCount}
-            pendingInvoicePaymentAdditionalTitles={true}
-          />
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <div className="row">
+            <TextField
+              type="text"
+              name="input"
+              label="Invoice No."
+              onChange={(e) => setInvcNumber(e.target.value)}
+            />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                format="DD/MM/YYYY"
+                className="mt-3"
+                defaultValue={dayjs()}
+                onChange={(e) => {
+                  setInvcDate(e);
+                }}
+              />
+            </LocalizationProvider>
+            <TextField
+              type="text"
+              name="input"
+              label="Party Name"
+              className="mt-3"
+              onChange={(e) => setPartyInvoiceName(e.target.value)}
+            />
+
+            <input
+              type="file"
+              name="upload_image"
+              className="mt-3"
+              onChange={(e) => setImageInvoice(e.target.files[0])}
+            />
+
+            <Button
+              type="button"
+              className="mt-3"
+              variant="contained"
+              onClick={handleInvoiceEditFields}
+            >
+              Update
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* Same Sales Executive Dialog Box */}
+      <Dialog
+        open={sameSalesExecutiveDialog}
+        onClose={handleCloseSameSalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameSalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          {activeAccordionIndex === 0 && (
+            <DataGrid
+              rows={sameSalesExecutiveData}
+              columns={sameSalesExecutivecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+            />
+          )}
+          {activeAccordionIndex === 1 && (
+            <DataGrid
+              rows={sameSalesExecutiveInvoiceData}
+              columns={sameSalesExecutiveInvoicecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameSalesExecutiveInvoiceData.indexOf(row)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      {/* Unique Sales Executive Dialog Box */}
+      <Dialog
+        open={uniqueSalesExecutiveDialog}
+        onClose={handleCloseUniquesalesExecutive}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniquesalesExecutive}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          {activeAccordionIndex === 0 && (
+            <DataGrid
+              rows={uniqueSalesExecutiveData}
+              columns={uniqueSalesExecutivecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+            />
+          )}
+          {activeAccordionIndex === 1 && (
+            <DataGrid
+              rows={uniqueSalesExecutiveInvoiceData}
+              columns={uniqueSalesExecutiveInvoicecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueSalesExecutiveInvoiceData.indexOf(row)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      {/* Same Customer Dialog */}
+      <Dialog
+        open={sameCustomerDialog}
+        onClose={handleCloseSameCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseSameCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          {activeAccordionIndex === 0 && (
+            <DataGrid
+              rows={sameCustomerData}
+              columns={sameCustomercolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameCustomerData.indexOf(row)}
+            />
+          )}
+          {activeAccordionIndex === 1 && (
+            <DataGrid
+              rows={sameCustomerInvoiceData}
+              columns={sameCustomercolumnInvoice}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameCustomerInvoiceData.indexOf(row)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      {/* Unique Customer Dialog Box */}
+      <Dialog
+        open={uniqueCustomerDialog}
+        onClose={handleCloseUniqueCustomer}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Unique Customers</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseUniqueCustomer}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          {activeAccordionIndex === 0 && (
+            <DataGrid
+              rows={uniqueCustomerData}
+              columns={uniqueCustomercolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueCustomerData.indexOf(row)}
+            />
+          )}
+          {activeAccordionIndex === 1 && (
+            <DataGrid
+              rows={uniqueCustomerInvoiceData}
+              columns={uniqueCustomercolumnInvoice}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueCustomerInvoiceData.indexOf(row)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+      {activeAccordionIndex === 0 && (
+        <div className="row">
+          <div className="col-12">
+            <div className="card">
+              <div className="card-header">
+                <h5 className="card-title">Search by filter</h5>
+              </div>
+              <div className="card-body pb4">
+                <div className="row thm_form">
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>Sales Person Name</label>
+                      <Autocomplete
+                        value={salesPersonName}
+                        onChange={(event, newValue) =>
+                          setSalesPersonName(newValue)
+                        }
+                        options={Array.from(
+                          new Set(
+                            datas.map((option) => option.sales_person_username)
+                          )
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Sales Executive Name"
+                            type="text"
+                            variant="outlined"
+                            InputProps={{
+                              ...params.InputProps,
+                              className: "form-control", // Apply Bootstrap's form-control class
+                            }}
+                            style={{
+                              borderRadius: "0.25rem",
+                              transition:
+                                "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                              "&:focus": {
+                                borderColor: "#80bdff",
+                                boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>Customer Name</label>
+                      <Autocomplete
+                        value={customerName}
+                        onChange={(event, newValue) =>
+                          setCustomerName(newValue)
+                        }
+                        options={Array.from(
+                          new Set(datas.map((option) => option.cust_name))
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="customer Name"
+                            type="text"
+                            variant="outlined"
+                            InputProps={{
+                              ...params.InputProps,
+                              className: "form-control", // Apply Bootstrap's form-control class
+                            }}
+                            style={{
+                              borderRadius: "0.25rem",
+                              transition:
+                                "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                              "&:focus": {
+                                borderColor: "#80bdff",
+                                boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>From Date</label>
+                      <input
+                        value={fromDate}
+                        type="date"
+                        className="form-control"
+                        onChange={(e) => setFromDate(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>To Date</label>
+                      <input
+                        value={toDate}
+                        type="date"
+                        className="form-control"
+                        onChange={(e) => {
+                          setToDate(e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>Requested Amount Filter</label>
+                      <select
+                        value={baseAmountFilter}
+                        className="form-control"
+                        onChange={(e) => setBaseAmountFilter(e.target.value)}
+                      >
+                        <option value="">Select Amount</option>
+                        <option value="greaterThan">Greater Than</option>
+                        <option value="lessThan">Less Than</option>
+                        <option value="equalTo">Equal To</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>Requested Amount</label>
+                      <input
+                        value={baseAmountField}
+                        type="number"
+                        placeholder="Request Amount"
+                        className="form-control"
+                        onChange={(e) => {
+                          setBaseAmountField(e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="card-footer">
+                <div className="flexCenter colGap16">
+                  <Button
+                    variant="contained"
+                    onClick={handleAllFilters}
+                    className="btn cmnbtn btn-primary"
+                  >
+                    <i className="fas fa-search"></i> Search
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleClearAllFilter}
+                    className="btn cmnbtn btn-secondary"
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-      <div className="master-card-css p-1" style={{ marginTop: "114px" }}>
-        {/* Edit Action Field */}
-        <Dialog
-          open={editActionDialog}
-          onClose={handleCloseEditFieldAction}
-          fullWidth={"md"}
-          maxWidth={"md"}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <DialogTitle>Edit Fields</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseEditFieldAction}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent
-            dividers={true}
-            sx={{ maxHeight: "80vh", overflowY: "auto" }}
-          >
-            <div className="row">
-              <TextField
-                type="text"
-                name="input"
-                label="Invoice No."
-                onChange={(e) => setInvcNumber(e.target.value)}
-              />
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  format="DD/MM/YYYY"
-                  className="mt-3"
-                  defaultValue={dayjs()}
-                  onChange={(e) => {
-                    setInvcDate(e);
-                  }}
-                />
-              </LocalizationProvider>
-              <TextField
-                type="text"
-                name="input"
-                label="Party Name"
-                className="mt-3"
-                onChange={(e) => setPartyInvoiceName(e.target.value)}
-              />
+      )}
+      {activeAccordionIndex === 1 && (
+        <div className="row">
+          <div className="col-12">
+            <div className="card">
+              <div className="card-header">
+                <h5 className="card-title">Search by filter</h5>
+              </div>
+              <div className="card-body pb4">
+                <div className="row thm_form">
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>Customer Name</label>
+                      <Autocomplete
+                        value={customerNameInvoice}
+                        onChange={(event, newValue) =>
+                          setCustomerNameInvoice(newValue)
+                        }
+                        options={Array.from(
+                          new Set(dataInvoice.map((option) => option.cust_name))
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Customer Name"
+                            type="text"
+                            variant="outlined"
+                            InputProps={{
+                              ...params.InputProps,
+                              className: "form-control", // Apply Bootstrap's form-control class
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>Sales Person Name</label>
+                      <Autocomplete
+                        value={salesPersonInvoiceName}
+                        onChange={(event, newValue) =>
+                          setSalesPersonInvoiceName(newValue)
+                        }
+                        options={Array.from(
+                          new Set(
+                            dataInvoice.map(
+                              (option) => option.sales_person_name
+                            )
+                          )
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Sales Executive Name"
+                            type="text"
+                            variant="outlined"
+                            InputProps={{
+                              ...params.InputProps,
+                              className: "form-control", // Apply Bootstrap's form-control class
+                            }}
+                            style={{
+                              borderRadius: "0.25rem",
+                              transition:
+                                "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                              "&:focus": {
+                                borderColor: "#80bdff",
+                                boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                              },
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>Invoice Particular</label>
+                      <Autocomplete
+                        value={invoiceParticularName}
+                        onChange={(event, newValue) =>
+                          setInvoiceParticularName(newValue)
+                        }
+                        options={Array.from(
+                          new Set(
+                            dataInvoice
+                              .filter(
+                                (option) =>
+                                  option &&
+                                  option.invoice_particular_name !== null &&
+                                  option.invoice_particular_name !== undefined
+                              ) // Filter out null or undefined values
+                              .map((option) =>
+                                option.invoice_particular_name.toLowerCase()
+                              ) // Convert to lowercase here
+                          )
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Invoice Particular"
+                            type="text"
+                            variant="outlined"
+                            InputProps={{
+                              ...params.InputProps,
+                              className: "form-control",
+                            }}
+                          />
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>Campaign Amount Filter</label>
+                      <select
+                        value={campaignAmountInvoiceFilter}
+                        className="form-control"
+                        onChange={(e) =>
+                          setCampaignAmountInvoiceFilter(e.target.value)
+                        }
+                      >
+                        <option value="">Select Amount</option>
+                        <option value="greaterThan">Greater Than</option>
+                        <option value="lessThan">Less Than</option>
+                        <option value="equalTo">Equal To</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="form-group">
+                      <label>Campaign Amount</label>
+                      <input
+                        value={campaignAmountInvoiceField}
+                        type="number"
+                        placeholder="Request Amount"
+                        className="form-control"
+                        onChange={(e) => {
+                          setCampaignAmountInvoiceField(e.target.value);
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="card-footer">
+                <div className="flexCenter colGap16">
+                  <Button
+                    variant="contained"
+                    onClick={handleAllInvoiceFilters}
+                    className="btn cmnbtn btn-primary"
+                  >
+                    <i className="fas fa-search"></i> Search
+                  </Button>
+                  <Button
+                    variant="contained"
+                    onClick={handleClearAllInvoiceFilters}
+                    className="btn cmnbtn btn-secondary"
+                  >
+                    Clear
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-              <input
-                type="file"
-                name="upload_image"
-                className="mt-3"
-                onChange={(e) => setImageInvoice(e.target.files[0])}
-              />
-
-              <Button
-                type="button"
-                className="mt-3"
-                variant="contained"
-                onClick={handleInvoiceEditFields}
+      <div className="row">
+        <div className="col-12">
+          <div className="card">
+            <div className="card-body thm_table p0">
+              <FormContainer
+                submitButton={false}
+                accordionButtons={accordionButtons}
+                activeAccordionIndex={activeAccordionIndex}
+                onAccordionButtonClick={handleAccordionButtonClick}
+                mainTitleRequired={false}
               >
-                Update
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-        {/* Same Sales Executive Dialog Box */}
-        <Dialog
-          open={sameSalesExecutiveDialog}
-          onClose={handleCloseSameSalesExecutive}
-          fullWidth={"md"}
-          maxWidth={"md"}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <DialogTitle>Same Sales Executive</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseSameSalesExecutive}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent
-            dividers={true}
-            sx={{ maxHeight: "80vh", overflowY: "auto" }}
-          >
-            {activeAccordionIndex === 0 && (
-              <DataGrid
-                rows={sameSalesExecutiveData}
-                columns={sameSalesExecutivecolumn}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                autoHeight
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
-              />
-            )}
-            {activeAccordionIndex === 1 && (
-              <DataGrid
-                rows={sameSalesExecutiveInvoiceData}
-                columns={sameSalesExecutiveInvoicecolumn}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                autoHeight
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => sameSalesExecutiveInvoiceData.indexOf(row)}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-        {/* Unique Sales Executive Dialog Box */}
-        <Dialog
-          open={uniqueSalesExecutiveDialog}
-          onClose={handleCloseUniquesalesExecutive}
-          fullWidth={"md"}
-          maxWidth={"md"}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <DialogTitle>Unique Sales Executive</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseUniquesalesExecutive}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent
-            dividers={true}
-            sx={{ maxHeight: "80vh", overflowY: "auto" }}
-          >
-            {activeAccordionIndex === 0 && (
-              <DataGrid
-                rows={uniqueSalesExecutiveData}
-                columns={uniqueSalesExecutivecolumn}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                autoHeight
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
-              />
-            )}
-            {activeAccordionIndex === 1 && (
-              <DataGrid
-                rows={uniqueSalesExecutiveInvoiceData}
-                columns={uniqueSalesExecutiveInvoicecolumn}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                autoHeight
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => uniqueSalesExecutiveInvoiceData.indexOf(row)}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-        {/* Same Customer Dialog */}
-        <Dialog
-          open={sameCustomerDialog}
-          onClose={handleCloseSameCustomer}
-          fullWidth={"md"}
-          maxWidth={"md"}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <DialogTitle>Same Customers</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseSameCustomer}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent
-            dividers={true}
-            sx={{ maxHeight: "80vh", overflowY: "auto" }}
-          >
-            {activeAccordionIndex === 0 && (
-              <DataGrid
-                rows={sameCustomerData}
-                columns={sameCustomercolumn}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                autoHeight
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => sameCustomerData.indexOf(row)}
-              />
-            )}
-            {activeAccordionIndex === 1 && (
-              <DataGrid
-                rows={sameCustomerInvoiceData}
-                columns={sameCustomercolumnInvoice}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                autoHeight
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => sameCustomerInvoiceData.indexOf(row)}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-        {/* Unique Customer Dialog Box */}
-        <Dialog
-          open={uniqueCustomerDialog}
-          onClose={handleCloseUniqueCustomer}
-          fullWidth={"md"}
-          maxWidth={"md"}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <DialogTitle>Unique Customers</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseUniqueCustomer}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent
-            dividers={true}
-            sx={{ maxHeight: "80vh", overflowY: "auto" }}
-          >
-            {activeAccordionIndex === 0 && (
-              <DataGrid
-                rows={uniqueCustomerData}
-                columns={uniqueCustomercolumn}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                autoHeight
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => uniqueCustomerData.indexOf(row)}
-              />
-            )}
-            {activeAccordionIndex === 1 && (
-              <DataGrid
-                rows={uniqueCustomerInvoiceData}
-                columns={uniqueCustomercolumnInvoice}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                autoHeight
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => uniqueCustomerInvoiceData.indexOf(row)}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-        {activeAccordionIndex === 0 && (
-          <div className="card body-padding">
-            <div className="row">
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>Sales Person Name</label>
-                  <Autocomplete
-                    value={salesPersonName}
-                    onChange={(event, newValue) => setSalesPersonName(newValue)}
-                    options={Array.from(
-                      new Set(
-                        datas.map((option) => option.sales_person_username)
-                      )
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Sales Executive Name"
-                        type="text"
-                        variant="outlined"
-                        InputProps={{
-                          ...params.InputProps,
-                          className: "form-control", // Apply Bootstrap's form-control class
-                        }}
-                        style={{
-                          borderRadius: "0.25rem",
-                          transition:
-                            "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                          "&:focus": {
-                            borderColor: "#80bdff",
-                            boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                <div className="tab-content">
+                  {activeAccordionIndex === 0 && (
+                    <div>
+                      <DataGrid
+                        rows={filterData}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        disableSelectionOnClick
+                        autoHeight
+                        slots={{ toolbar: GridToolbar }}
+                        slotProps={{
+                          toolbar: {
+                            showQuickFilter: true,
                           },
                         }}
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>Customer Name</label>
-                  <Autocomplete
-                    value={customerName}
-                    onChange={(event, newValue) => setCustomerName(newValue)}
-                    options={Array.from(
-                      new Set(datas.map((option) => option.cust_name))
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="customer Name"
-                        type="text"
-                        variant="outlined"
-                        InputProps={{
-                          ...params.InputProps,
-                          className: "form-control", // Apply Bootstrap's form-control class
-                        }}
-                        style={{
-                          borderRadius: "0.25rem",
-                          transition:
-                            "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                          "&:focus": {
-                            borderColor: "#80bdff",
-                            boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        state={{
+                          keyboard: {
+                            cell: null,
+                            columnHeader: null,
+                            isMultipleKeyPressed: false,
                           },
                         }}
+                        getRowId={(row) => filterData.indexOf(row)}
                       />
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>From Date</label>
-                  <input
-                    value={fromDate}
-                    type="date"
-                    className="form-control"
-                    onChange={(e) => setFromDate(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>To Date</label>
-                  <input
-                    value={toDate}
-                    type="date"
-                    className="form-control"
-                    onChange={(e) => {
-                      setToDate(e.target.value);
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>Requested Amount Filter</label>
-                  <select
-                    value={baseAmountFilter}
-                    className="form-control"
-                    onChange={(e) => setBaseAmountFilter(e.target.value)}
-                  >
-                    <option value="">Select Amount</option>
-                    <option value="greaterThan">Greater Than</option>
-                    <option value="lessThan">Less Than</option>
-                    <option value="equalTo">Equal To</option>
-                  </select>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>Requested Amount</label>
-                  <input
-                    value={baseAmountField}
-                    type="number"
-                    placeholder="Request Amount"
-                    className="form-control"
-                    onChange={(e) => {
-                      setBaseAmountField(e.target.value);
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="col-md-1 mt-4 me-2">
-                <Button variant="contained" onClick={handleAllFilters}>
-                  <i className="fas fa-search"></i> Search
-                </Button>
-              </div>
-              <div className="col-md-1 mt-4">
-                <Button variant="contained" onClick={handleClearAllFilter}>
-                  Clear
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-        {activeAccordionIndex === 1 && (
-          <div className="card body-padding">
-            <div className="row">
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>Customer Name</label>
-                  <Autocomplete
-                    value={customerNameInvoice}
-                    onChange={(event, newValue) =>
-                      setCustomerNameInvoice(newValue)
-                    }
-                    options={Array.from(
-                      new Set(dataInvoice.map((option) => option.cust_name))
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Customer Name"
-                        type="text"
-                        variant="outlined"
-                        InputProps={{
-                          ...params.InputProps,
-                          className: "form-control", // Apply Bootstrap's form-control class
-                        }}
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>Sales Person Name</label>
-                  <Autocomplete
-                    value={salesPersonInvoiceName}
-                    onChange={(event, newValue) =>
-                      setSalesPersonInvoiceName(newValue)
-                    }
-                    options={Array.from(
-                      new Set(
-                        dataInvoice.map((option) => option.sales_person_name)
-                      )
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Sales Executive Name"
-                        type="text"
-                        variant="outlined"
-                        InputProps={{
-                          ...params.InputProps,
-                          className: "form-control", // Apply Bootstrap's form-control class
-                        }}
-                        style={{
-                          borderRadius: "0.25rem",
-                          transition:
-                            "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                          "&:focus": {
-                            borderColor: "#80bdff",
-                            boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                    </div>
+                  )}{" "}
+                  {openImageDialog && (
+                    <ImageView
+                      viewImgSrc={viewImgSrc}
+                      setViewImgDialog={setOpenImageDialog}
+                    />
+                  )}
+                  {activeAccordionIndex === 1 && (
+                    <div>
+                      <DataGrid
+                        rows={filterDataInvoice}
+                        columns={columnsInvoice}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        disableSelectionOnClick
+                        autoHeight
+                        slots={{ toolbar: GridToolbar }}
+                        slotProps={{
+                          toolbar: {
+                            showQuickFilter: true,
                           },
                         }}
+                        getRowId={(row) => filterDataInvoice.indexOf(row)}
                       />
-                    )}
-                  />
+                    </div>
+                  )}
+                  {openImageDialog && (
+                    <ImageView
+                      viewImgSrc={viewImgSrc}
+                      setViewImgDialog={setOpenImageDialog}
+                    />
+                  )}
                 </div>
-              </div>
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>Invoice Particular</label>
-                  <Autocomplete
-                    value={invoiceParticularName}
-                    onChange={(event, newValue) =>
-                      setInvoiceParticularName(newValue)
-                    }
-                    options={Array.from(
-                      new Set(
-                        dataInvoice
-                          .filter(
-                            (option) =>
-                              option &&
-                              option.invoice_particular_name !== null &&
-                              option.invoice_particular_name !== undefined
-                          ) // Filter out null or undefined values
-                          .map((option) =>
-                            option.invoice_particular_name.toLowerCase()
-                          ) // Convert to lowercase here
-                      )
-                    )}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="Invoice Particular"
-                        type="text"
-                        variant="outlined"
-                        InputProps={{
-                          ...params.InputProps,
-                          className: "form-control",
-                        }}
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>Campaign Amount Filter</label>
-                  <select
-                    value={campaignAmountInvoiceFilter}
-                    className="form-control"
-                    onChange={(e) =>
-                      setCampaignAmountInvoiceFilter(e.target.value)
-                    }
-                  >
-                    <option value="">Select Amount</option>
-                    <option value="greaterThan">Greater Than</option>
-                    <option value="lessThan">Less Than</option>
-                    <option value="equalTo">Equal To</option>
-                  </select>
-                </div>
-              </div>
-              <div className="col-md-3">
-                <div className="form-group">
-                  <label>Campaign Amount</label>
-                  <input
-                    value={campaignAmountInvoiceField}
-                    type="number"
-                    placeholder="Request Amount"
-                    className="form-control"
-                    onChange={(e) => {
-                      setCampaignAmountInvoiceField(e.target.value);
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="col-md-1 mt-1 me-2">
-                <Button variant="contained" onClick={handleAllInvoiceFilters}>
-                  <i className="fas fa-search"></i> Search
-                </Button>
-              </div>
-              <div className="col-md-1 mt-1">
-                <Button
-                  variant="contained"
-                  onClick={handleClearAllInvoiceFilters}
-                >
-                  Clear
-                </Button>
-              </div>
+              </FormContainer>
             </div>
           </div>
-        )}
-        <FormContainer
-          submitButton={false}
-          accordionButtons={accordionButtons}
-          activeAccordionIndex={activeAccordionIndex}
-          onAccordionButtonClick={handleAccordionButtonClick}
-          mainTitleRequired={false}
-        >
-          <div className="tab-content">
-            {activeAccordionIndex === 0 && (
-              <div className="mt-3">
-                <DataGrid
-                  rows={filterData}
-                  columns={columns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
-                  disableSelectionOnClick
-                  autoHeight
-                  slots={{ toolbar: GridToolbar }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                  getRowId={(row) => filterData.indexOf(row)}
-                />
-              </div>
-            )}{" "}
-            {openImageDialog && (
-              <ImageView
-                viewImgSrc={viewImgSrc}
-                setViewImgDialog={setOpenImageDialog}
-              />
-            )}
-            {activeAccordionIndex === 1 && (
-              <div className="mt-3">
-                <DataGrid
-                  rows={filterDataInvoice}
-                  columns={columnsInvoice}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
-                  disableSelectionOnClick
-                  autoHeight
-                  slots={{ toolbar: GridToolbar }}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                  getRowId={(row) => filterDataInvoice.indexOf(row)}
-                />
-              </div>
-            )}
-            {openImageDialog && (
-              <ImageView
-                viewImgSrc={viewImgSrc}
-                setViewImgDialog={setOpenImageDialog}
-              />
-            )}
-          </div>
-        </FormContainer>
+        </div>
       </div>
     </div>
   );

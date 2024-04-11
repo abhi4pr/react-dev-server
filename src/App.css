@@ -138,11 +138,13 @@ input[type="number"] {
 .section {
   padding: 0 !important;
 }
+
 i.bi {
   display: flex;
   justify-content: center;
   align-items: center;
 }
+
 .form-heading {
   /* position: relative;
   display: flex;
@@ -161,45 +163,50 @@ i.bi {
   padding: 10px 18px;
   margin: 0px 0px 25px; */
   position: relative;
-
   display: flex;
   flex-direction: row;
-
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
   min-height: 98px;
   gap: 5px;
   border-radius: 24px;
-  padding: 24px 20px 24px 20px;
-  background-color: var(--white);
+  padding: 24px 20px;
+  background-color: var(--bg-white);
   overflow: hidden;
+  margin-bottom: 24px;
+
   .img-bg {
     position: absolute;
     right: 30px;
-    top: 2px;
+    top: 0px;
     width: 160px;
     z-index: 0;
   }
+
   h1,
   h2 {
     z-index: 1;
     font-size: 20px;
+    line-height: 26px;
     font-weight: 500;
     color: var(--dark);
+    margin-bottom: 4px;
   }
+
   .form_heading_title {
     display: flex;
     justify-items: center;
     gap: 4px;
     flex-direction: column;
   }
+
   .pack {
     display: flex;
     z-index: 1;
     gap: 6px;
-    color: var(--dark);
-    font-size: 16px;
+    color: var(--medium);
+    font-size: 14px;
     font-weight: 400;
 
     span {
@@ -216,27 +223,49 @@ i.bi {
 } */
 
 .additional-titles {
-  display: flex;
-  gap: 20px;
+  gap: 6px 0px;
   z-index: 3;
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: calc(-1* var(--bs-gutter-y));
+  margin-right: calc(-.5* var(--bs-gutter-x));
+  margin-left: calc(-.5* var(--bs-gutter-x));
+  width: 70%;
+  padding-right: 180px;
+}
+
+.additional-titles>* {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 100%;
+  padding-right: calc(var(--bs-gutter-x)* .5);
+  padding-left: calc(var(--bs-gutter-x)* .5);
+  margin-top: var(--bs-gutter-y);
 }
 
 .additional-titles h2 {
-  font-size: 15px;
-  line-height: 26px;
+  font-size: 13px;
+  line-height: 14px;
   font-weight: 500;
-  color: var(--gray-900);
+  color: var(--dark);
   display: flex;
   cursor: pointer;
-  gap: 10px;
+  gap: 0px 4px;
+  flex: 0 0 33.33333%;
+  max-width: 33.33333%;
+  margin: 0;
 }
 
 .additional-titles h2 a {
   color: #007bff;
 }
+
 .form_heading_action {
   z-index: 1;
 }
+
 .form_heading_action button {
   box-shadow: none;
   outline: none;
@@ -1104,6 +1133,7 @@ label.checkbox-inline.propscss {
   line-height: 30px;
   font-weight: 500;
 }
+
 .timeline_slideItem h4 {
   display: flex;
   justify-content: center;
@@ -1116,6 +1146,7 @@ label.checkbox-inline.propscss {
   color: var(--medium);
   font-size: 12px;
 }
+
 .timeline_slideItem h3 {
   color: var(--gray-500);
   font-size: 14px;
@@ -1298,6 +1329,7 @@ label.checkbox-inline.propscss {
   font-size: 16px;
   list-style: 22px;
 }
+
 .master-card-css {
   display: flex;
   flex-direction: column;
@@ -1305,6 +1337,7 @@ label.checkbox-inline.propscss {
   padding-bottom: 20px;
   position: relative;
 }
+
 .userSalary_modal h3 {
   color: var(--gray-800);
   font-size: 20px;
@@ -1312,40 +1345,50 @@ label.checkbox-inline.propscss {
   font-weight: 500;
   margin: 0px 0px 4px;
 }
+
 .css-ptkaw2-MuiDataGrid-root {
   border-radius: 15px !important;
 }
+
 .css-wop1k0-MuiDataGrid-footerContainer {
   background-color: var(--body-bg);
   border-radius: 0 0 15px 15px !important;
 }
+
 .css-1iyq7zh-MuiDataGrid-columnHeaders {
   background-color: var(--body-bg);
-  border-radius: 14px 12px 0 0 !important;
 }
+
 .css-128fb87-MuiDataGrid-toolbarContainer {
   background-color: var(--body-bg);
   border-radius: 15px 15px 0 0;
 }
+
 .MuiDataGrid-row--editing .MuiDataGrid-cell--editable {
   background: rgb(95 69 255 / 20%) !important;
   border-right: 1px solid rgb(95 69 255 / 20%) !important;
 }
+
 .MuiDataGrid-row:nth-of-type(even) {
-  background-color: var(--body-bg);
+  /* background-color: var(--body-bg); */
 }
+
 .css-5wly58-MuiDataGrid-root .MuiDataGrid-columnHeader--moving {
   background-color: transparent !important;
 }
+
 .css-1kwdphh-MuiDataGrid-virtualScrollerContent {
   min-height: 45px !important;
 }
+
 .custom-btn-2 {
   pointer-events: none;
 }
+
 .form-group {
   position: relative;
   margin-bottom: 20px;
+
   .custom-btn-2 {
     pointer-events: none;
     position: absolute;
@@ -1364,6 +1407,7 @@ label.checkbox-inline.propscss {
     background-color: var(--white);
   }
 }
+
 .form-group.download_btn {
   margin-top: 35px;
 }
