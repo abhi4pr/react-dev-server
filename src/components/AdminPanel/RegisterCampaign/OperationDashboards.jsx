@@ -167,159 +167,180 @@ export default function OperationDashboards() {
 
         </div>
       </div> */}
-      <FormContainer
-      mainTitle="Dashboard"
-      link="true"
-      ></FormContainer>
-     
-                  <div className="card body-padding">
-       
-   
-         <div className="grid-con">
+      <FormContainer mainTitle="Dashboard" link="true"></FormContainer>
 
-            
-              <Link to="/admin/manager-campaign">
-                <div
-                  className="card hover body-padding"
-                  style={{
-                    height: "100px",
-                    minWidth: "300px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    gap: "10px",
-                    cursor: "pointer",
-                    border: "1px solid var(--primary)",
-                    padding: "10px",
-                  }}
-                  >
-                  <div
-                    className="pack  "
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: "20px",
-                    }}
-                  >
-                    <div className="rounded-circle circle-card">
-                      <i className="bi bi-bounding-box"></i>
-                    </div>
-                    Manager Campaign Dashboard
-                  </div>
+      <div className="card body-padding">
+        <div className="grid-con">
+        <Link to="/admin/operationDashboard">
+            <div
+              className="card hover body-padding"
+              style={{
+                height: "100px",
+                minWidth: "300px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "10px",
+                cursor: "pointer",
+                border: "1px solid var(--primary)",
+                padding: "10px",
+              }}
+            >
+              <div
+                className="pack  "
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  gap: "20px",
+                }}
+              >
+                <div className="rounded-circle circle-card">
+                  <i className="bi bi-bounding-box"></i>
                 </div>
-              </Link>
-           
-           
-              <Link to="/admin/phase-dashboard">
-                <div
-                  className="card hover body-padding"
-                  style={{
-                    height: "100px",
-                    minWidth: "300px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    gap: "10px",
-                    cursor: "pointer",
-                    border: "1px solid var(--primary)",
-                    padding: "10px",
-                  }}
-                >
-                  <div
-                    className="pack  "
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: "20px",
-                    }}
-                  >
-                    <div className="rounded-circle circle-card">
-                      <i className="bi bi-bounding-box"></i>
-                    </div>
-                    Phase Dashboard
-                  </div>
+                Opreation  Dashboard
+              </div>
+            </div>
+          </Link>
+          <Link to="/admin/manager-campaign">
+            <div
+              className="card hover body-padding"
+              style={{
+                height: "100px",
+                minWidth: "300px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "10px",
+                cursor: "pointer",
+                border: "1px solid var(--primary)",
+                padding: "10px",
+              }}
+            >
+              <div
+                className="pack  "
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  gap: "20px",
+                }}
+              >
+                <div className="rounded-circle circle-card">
+                  <i className="bi bi-bounding-box"></i>
                 </div>
-              </Link>
-           
-            
-              <Link to="/admin/replacement-dashboard">
-                <div
-                  className="card hover body-padding"
-                  style={{
-                    height: "100px",
-                    minWidth: "300px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    gap: "10px",
-                    cursor: "pointer",
-                    border: "1px solid var(--primary)",
-                    padding: "10px",
-                  }}
-                >
-                  <div
-                    className="pack  "
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: "20px",
-                    }}
-                  >
-                    <div className="rounded-circle circle-card">
-                      <i className="bi bi-bounding-box"></i>
-                    </div>
-                    Replacement Dashboard
-                  </div>
+                Manager Campaign Dashboard
+              </div>
+            </div>
+          </Link>
+
+          <Link to="/admin/phase-dashboard">
+            <div
+              className="card hover body-padding"
+              style={{
+                height: "100px",
+                minWidth: "300px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "10px",
+                cursor: "pointer",
+                border: "1px solid var(--primary)",
+                padding: "10px",
+              }}
+            >
+              <div
+                className="pack  "
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  gap: "20px",
+                }}
+              >
+                <div className="rounded-circle circle-card">
+                  <i className="bi bi-bounding-box"></i>
                 </div>
-              </Link>
-           
-              <Link to="/admin/assignment-dashboard">
-                <div
-                  className="card hover body-padding"
-                  style={{
-                    height: "100px",
-                    minWidth: "300px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    gap: "10px",
-                    cursor: "pointer",
-                    border: "1px solid var(--primary)",
-                    padding: "10px",
-                  }}
-                >
-                  <div
-                    className="pack  "
-                    style={{
-                      width: "100%",
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "flex-start",
-                      alignItems: "center",
-                      gap: "20px",
-                    }}
-                  >
-                    <div className="rounded-circle circle-card">
-                      <i className="bi bi-bounding-box"></i>
-                    </div>
-                    Assignment Dashboard
-                  </div>
+                Phase Dashboard
+              </div>
+            </div>
+          </Link>
+
+          <Link to="/admin/replacement-dashboard">
+            <div
+              className="card hover body-padding"
+              style={{
+                height: "100px",
+                minWidth: "300px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "10px",
+                cursor: "pointer",
+                border: "1px solid var(--primary)",
+                padding: "10px",
+              }}
+            >
+              <div
+                className="pack  "
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  gap: "20px",
+                }}
+              >
+                <div className="rounded-circle circle-card">
+                  <i className="bi bi-bounding-box"></i>
                 </div>
-              </Link>
-           
-                      </div>
-          </div>
-     
-     
+                Replacement Dashboard
+              </div>
+            </div>
+          </Link>
+
+          <Link to="/admin/assignment-dashboard">
+            <div
+              className="card hover body-padding"
+              style={{
+                height: "100px",
+                minWidth: "300px",
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "flex-start",
+                gap: "10px",
+                cursor: "pointer",
+                border: "1px solid var(--primary)",
+                padding: "10px",
+              }}
+            >
+              <div
+                className="pack  "
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  gap: "20px",
+                }}
+              >
+                <div className="rounded-circle circle-card">
+                  <i className="bi bi-bounding-box"></i>
+                </div>
+                Assignment Dashboard
+              </div>
+            </div>
+          </Link>
+        </div>
+      </div>
     </>
   );
 }
