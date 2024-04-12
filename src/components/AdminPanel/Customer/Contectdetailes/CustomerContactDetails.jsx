@@ -28,19 +28,17 @@ const CustomerContactDetails = () => {
   const [designation, setDesignation] = useState("");
   const [description, setDescription] = useState("");
   const [emailIsInvalid, setEmailIsInvalid] = useState(false);
-
-
+  const [count, setCount] = useState([]);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
- 
+ console.log(count,"new dataa ");
   const [customersData, setCustomersData] = useState([]);
   const CustomerData = () => {
     axios.get(baseUrl + "get_all_customer_mast").then((res) => {
       setCustomersData(res.data.customerMastList);
-      console.log(res?.data?.customerMastList,"piyush");;
-
+      
     });
   };
 
@@ -83,9 +81,12 @@ const CustomerContactDetails = () => {
   
     function getData() {
       axios.get(`${baseUrl}get_list_customer_contact/${customer_id}`).then((res) => {
-        setData(res.data);
-        console.log(res.data.data, '----ok')
+        const cts = res?.data?.data || []; 
+        const count = cts.length;
+
+        setData(res.data.data);
         setFilterData(res.data.data);
+        setCount(count);
       });
     }
 
@@ -181,7 +182,7 @@ const CustomerContactDetails = () => {
 
   return (
     <>
-
+    <div>{count}</div>
     <FormContainer
       mainTitle="Customer Contact"
       title="Add Customer Contact"
@@ -199,13 +200,13 @@ const CustomerContactDetails = () => {
           value={{
             value: customerName,
             label:
-              customersData?.find((cust) => cust.customer_id === customerName)
-                ?.customer_name || "",
+            customersData?.find((cust) => cust.customer_id === customerName)
+            ?.customer_name || "",
           }}
           onChange={(e) => {
             setCustomerName(e.value);
           }}
-        ></Select>
+          ></Select>
       </div>
 
       {/* <FieldContainer label="Customer ID" value={customerId} required={true} onChange={(e) => setCustomerId(e.target.value)} /> */}

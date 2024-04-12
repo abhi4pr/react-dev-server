@@ -9,15 +9,15 @@ import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
-const CustomerMaster = () => {
+const BrandNameType = () => {
   const { toastAlert } = useGlobalContext();
-  const [customerType, setCustomerType] = useState("");
+  const [accountType, setAccountType] = useState("");
   const [description, setDescription] = useState("");
-  const [customers, setCustomers] = useState([]);
+  const [accounts, setAccounts] = useState([]);
   const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
   const [rowData, setRowData] = useState({});
-  const [customerTypeUpdate, setCustomerTypeUpdate] = useState("");
+  const [accountTypeUpdate, setAccountTypeUpdate] = useState("");
   const [descriptionUpdate, setDescriptionUpdate] = useState("");
 
   const token = sessionStorage.getItem("token");
@@ -25,10 +25,9 @@ const CustomerMaster = () => {
   const userID = decodedToken.id;
 
   const getData = () => {
-    axios.get(baseUrl + "get_all_customer_type") 
+    axios.get(baseUrl + "get_all_account_type") 
       .then((res) => {
-        setCustomers(res.data.data);
-        console.log(res.data.data);
+        setAccounts(res.data.data); 
         setFilterData(res.data.data);
       });
   };
@@ -38,22 +37,22 @@ const CustomerMaster = () => {
   }, []);
 
   useEffect(() => {
-    const result = customers.filter((d) => {
-      return d.customer_type_name?.toLowerCase().match(search.toLowerCase()); 
+    const result = accounts.filter((d) => {
+      return d.account_type_name?.toLowerCase().match(search.toLowerCase()); 
     });
     setFilterData(result);
   }, [search]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(baseUrl + "add_customer_type", {
-        customer_type_name: customerType,
+    axios.post(baseUrl + "add_account_type", { 
+        account_type_name: accountType, 
         description: description,
         created_by: userID
       })
       .then(() => {
         toastAlert("Submitted");
-        setCustomerType("");
+        setAccountType(""); 
         setDescription("");
         getData(); 
       });   
@@ -66,8 +65,8 @@ const CustomerMaster = () => {
       sortable: true,
     },
     {
-      name: "Customer Type",
-      selector: (row) => row.customer_type_name, 
+      name: "Brand Name Type",
+      selector: (row) => row.account_type_name, 
     },
     {
       name: "Description",
@@ -90,7 +89,7 @@ const CustomerMaster = () => {
             <FaEdit />{" "}
           </button>
           <DeleteButton
-            endpoint="delete_customer_type" 
+            endpoint="delete_account_type" 
             id={row._id}
             getData={getData}
           />
@@ -99,22 +98,23 @@ const CustomerMaster = () => {
     },
   ];
 
+
   const handleRowData = (row) => {
     setRowData(row);
-    setCustomerTypeUpdate(row.customer_type_name); 
+    setAccountTypeUpdate(row.account_type_name); 
     setDescriptionUpdate(row.description);
   };
 
   const handleModalUpdate = () => {
-    axios.put(baseUrl + `update_customer_type/${rowData._id}`, { 
-      customer_type_name: customerTypeUpdate, 
-      decription: descriptionUpdate,
+    axios.put(baseUrl + `update_account_type/${rowData._id}`, { 
+      account_type_name: accountTypeUpdate, 
+      description: descriptionUpdate,
       updated_by: userID
     })
     .then(() => {
       toastAlert("Successfully Update");
       getData();
-      setCustomerTypeUpdate("");
+      setAccountTypeUpdate(""); 
       setDescriptionUpdate("");
     });
   };
@@ -122,15 +122,15 @@ const CustomerMaster = () => {
   return (
     <>
       <FormContainer
-        mainTitle="Customer" 
-        title="Customer" 
+        mainTitle="Brand" 
+        title="Brand" 
         handleSubmit={handleSubmit}
       >
         <FieldContainer
-          label="Customer Type *" 
-          value={customerType}
+          label="Brand Name Type *" 
+          value={accountType}
           required={true}
-          onChange={(e) => setCustomerType(e.target.value)}
+          onChange={(e) => setAccountType(e.target.value)}
         />
         
         <FieldContainer
@@ -144,7 +144,7 @@ const CustomerMaster = () => {
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
-            title="Customer Overview" 
+            title="Brand Overview" 
             columns={columns}
             data={filterData}
             fixedHeader
@@ -174,10 +174,10 @@ const CustomerMaster = () => {
             </div>
             <div className="modal-body">
               <FieldContainer
-                label="Customer Type *"
-                value={customerTypeUpdate}
+                label="Brand Name Type *"
+                value={accountTypeUpdate}
                 required={true}
-                onChange={(e) => setCustomerTypeUpdate(e.target.value)}
+                onChange={(e) => setAccountTypeUpdate(e.target.value)}
               />
 
               <FieldContainer
@@ -206,4 +206,4 @@ const CustomerMaster = () => {
   );
 };
 
-export default CustomerMaster;
+export default BrandNameType;

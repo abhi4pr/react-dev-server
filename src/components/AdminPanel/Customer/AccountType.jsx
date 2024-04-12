@@ -9,15 +9,15 @@ import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 
-const AccountMaster = () => {
+const AccountType = () => {
   const { toastAlert } = useGlobalContext();
-  const [accountType, setAccountType] = useState("");
+  const [customerType, setCustomerType] = useState("");
   const [description, setDescription] = useState("");
-  const [accounts, setAccounts] = useState([]);
+  const [customers, setCustomers] = useState([]);
   const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
   const [rowData, setRowData] = useState({});
-  const [accountTypeUpdate, setAccountTypeUpdate] = useState("");
+  const [customerTypeUpdate, setCustomerTypeUpdate] = useState("");
   const [descriptionUpdate, setDescriptionUpdate] = useState("");
 
   const token = sessionStorage.getItem("token");
@@ -25,9 +25,10 @@ const AccountMaster = () => {
   const userID = decodedToken.id;
 
   const getData = () => {
-    axios.get(baseUrl + "get_all_account_type") 
+    axios.get(baseUrl + "get_all_customer_type") 
       .then((res) => {
-        setAccounts(res.data.data); 
+        setCustomers(res.data.data);
+        console.log(res.data.data);
         setFilterData(res.data.data);
       });
   };
@@ -37,22 +38,22 @@ const AccountMaster = () => {
   }, []);
 
   useEffect(() => {
-    const result = accounts.filter((d) => {
-      return d.account_type_name?.toLowerCase().match(search.toLowerCase()); 
+    const result = customers.filter((d) => {
+      return d.customer_type_name?.toLowerCase().match(search.toLowerCase()); 
     });
     setFilterData(result);
   }, [search]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(baseUrl + "add_account_type", { 
-        account_type_name: accountType, 
+    axios.post(baseUrl + "add_customer_type", {
+        customer_type_name: customerType,
         description: description,
         created_by: userID
       })
       .then(() => {
         toastAlert("Submitted");
-        setAccountType(""); 
+        setCustomerType("");
         setDescription("");
         getData(); 
       });   
@@ -66,7 +67,7 @@ const AccountMaster = () => {
     },
     {
       name: "Account Type",
-      selector: (row) => row.account_type_name, 
+      selector: (row) => row.customer_type_name, 
     },
     {
       name: "Description",
@@ -89,7 +90,7 @@ const AccountMaster = () => {
             <FaEdit />{" "}
           </button>
           <DeleteButton
-            endpoint="delete_account_type" 
+            endpoint="delete_customer_type" 
             id={row._id}
             getData={getData}
           />
@@ -98,23 +99,22 @@ const AccountMaster = () => {
     },
   ];
 
-
   const handleRowData = (row) => {
     setRowData(row);
-    setAccountTypeUpdate(row.account_type_name); 
+    setCustomerTypeUpdate(row.customer_type_name); 
     setDescriptionUpdate(row.description);
   };
 
   const handleModalUpdate = () => {
-    axios.put(baseUrl + `update_account_type/${rowData._id}`, { 
-      account_type_name: accountTypeUpdate, 
-      description: descriptionUpdate,
+    axios.put(baseUrl + `update_customer_type/${rowData._id}`, { 
+      customer_type_name: customerTypeUpdate, 
+      decription: descriptionUpdate,
       updated_by: userID
     })
     .then(() => {
       toastAlert("Successfully Update");
       getData();
-      setAccountTypeUpdate(""); 
+      setCustomerTypeUpdate("");
       setDescriptionUpdate("");
     });
   };
@@ -128,9 +128,9 @@ const AccountMaster = () => {
       >
         <FieldContainer
           label="Account Type *" 
-          value={accountType}
+          value={customerType}
           required={true}
-          onChange={(e) => setAccountType(e.target.value)}
+          onChange={(e) => setCustomerType(e.target.value)}
         />
         
         <FieldContainer
@@ -175,9 +175,9 @@ const AccountMaster = () => {
             <div className="modal-body">
               <FieldContainer
                 label="Account Type *"
-                value={accountTypeUpdate}
+                value={customerTypeUpdate}
                 required={true}
-                onChange={(e) => setAccountTypeUpdate(e.target.value)}
+                onChange={(e) => setCustomerTypeUpdate(e.target.value)}
               />
 
               <FieldContainer
@@ -206,4 +206,4 @@ const AccountMaster = () => {
   );
 };
 
-export default AccountMaster;
+export default AccountType;

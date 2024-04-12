@@ -330,7 +330,7 @@ const getData = () => {
 
         <div className="form-group col-6">
           <label className="form-label">
-            Customer Type Name <sup style={{ color: "red" }}>*</sup>
+            Account Type Name <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
             options={customersData.map((option) => ({
@@ -351,7 +351,7 @@ const getData = () => {
          
           <div className="form-group col-6">
           <label className="form-label">
-            Account Name <sup style={{ color: "red" }}>*</sup>
+            Brand Name <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
             options={accountsData.map((option) => ({
