@@ -111,7 +111,7 @@ const SidebarLinks = () => {
     (index) => contextData[index]?.view_value === 1
   );
   const isSales = [52].some((index) => contextData[index]?.view_value === 1);
-  const asset = [53].some((index) => contextData[index]?.view_value == 1);
+  const isAssets = [53].some((index) => contextData[index]?.view_value === 1);
 
   // const isWFHDuser  = [].some(index=>context )
 
@@ -155,6 +155,100 @@ const SidebarLinks = () => {
                     <i className="bi bi-dot"></i> User
                   </Link>
                 )}
+
+              {/* Asset Management here  */}
+              {isAssets && (
+                <li className="nav-item">
+                  <a
+                    className="nav-btn nav-link collapsed"
+                    data-toggle="collapse"
+                    data-target="#collapsInnerOneModifyTwo"
+                    aria-expanded="true"
+                    aria-controls="collapsInnerOneModifyTwo"
+                  >
+                    <i className="ph">
+                      <FolderSimpleStar weight="duotone" />
+                    </i>
+                    <span>Assets</span>
+                  </a>
+                  <div
+                    id="collapsInnerOneModifyTwo"
+                    className="collapse"
+                    aria-labelledby="headingTwoOne"
+                  >
+                    <div className="internal collapse-inner">
+                      {RoleId == 5 && (
+                        <Link
+                          className="collapse-item"
+                          to="/admin/asset-dashboard"
+                        >
+                          <i className="bi bi-dot"></i> Dashboard
+                        </Link>
+                      )}
+                      <Link
+                        className="collapse-item"
+                        to="/admin/asset-single-user"
+                      >
+                        <i className="bi bi-dot"></i> My Asset
+                      </Link>
+                      {RoleId == 5 && (
+                        <Link
+                          className="collapse-item"
+                          to={`/sim-overview/${0}`}
+                        >
+                          <i className="bi bi-dot"></i> Asset Management
+                        </Link>
+                      )}
+                      {RoleId == 5 && (
+                        <Link
+                          className="collapse-item"
+                          to="/admin/asset-visible-to-hr"
+                        >
+                          <i className="bi bi-dot"></i> Asset's Request
+                        </Link>
+                      )}
+                      <Link
+                        className="collapse-item"
+                        to="/admin/asset-visible-to-taged-person"
+                      >
+                        <i className="bi bi-dot"></i> Tagged Asset
+                      </Link>
+                      {RoleId == 2 && (
+                        <Link
+                          className="collapse-item"
+                          to="/admin/asset-manager"
+                        >
+                          <i className="bi bi-dot"></i> Asset Request Approvel
+                        </Link>
+                      )}
+                      {RoleId == 5 && (
+                        <Link
+                          className="collapse-item"
+                          to="/admin/asset-repair-return-summary"
+                        >
+                          <i className="bi bi-dot"></i> Return Summary
+                        </Link>
+                      )}
+                      {RoleId == 5 && (
+                        <Link
+                          className="collapse-item"
+                          to="/admin/asset-repair-summary"
+                        >
+                          <i className="bi bi-dot"></i> Repair Summary
+                        </Link>
+                      )}
+                      {RoleId == 5 && (
+                        <Link
+                          className="collapse-item"
+                          to="/admin/asset-vendor-summary"
+                        >
+                          <i className="bi bi-dot"></i> Vendor Summary
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                </li>
+              )}
 
               {/* <Link
                 className="collapse-item"
@@ -1434,82 +1528,6 @@ const SidebarLinks = () => {
       {/* FINANCE */}
 
       {/* Asset Management here  */}
-      {asset && job_type !== "WFHD" && (
-        <li className="nav-item">
-          <Link
-            className="nav-btn nav-link collapsed"
-            data-toggle="collapse"
-            data-target="#assets"
-            aria-expanded="true"
-            aria-controls="assets"
-          >
-            <i className="bi bi-person-gear" />
-            <span>Assets</span>
-          </Link>
-          <div
-            id="assets"
-            className="collapse"
-            aria-labelledby="headingTwo"
-            data-parent="#accordionSidebar"
-          >
-            <div className="internal collapse-inner">
-              {RoleId == 5 && (
-                <Link className="collapse-item" to="/admin/asset-dashboard">
-                  <i className="bi bi-dot"></i> Dashboard
-                </Link>
-              )}
-              <Link className="collapse-item" to="/admin/asset-single-user">
-                <i className="bi bi-dot"></i> My Asset
-              </Link>
-              {RoleId == 5 && (
-                <Link className="collapse-item" to={`/sim-overview/${0}`}>
-                  <i className="bi bi-dot"></i> Asset Management
-                </Link>
-              )}
-              {RoleId == 5 && (
-                <Link className="collapse-item" to="/admin/asset-visible-to-hr">
-                  <i className="bi bi-dot"></i> Asset's Request
-                </Link>
-              )}
-              <Link
-                className="collapse-item"
-                to="/admin/asset-visible-to-taged-person"
-              >
-                <i className="bi bi-dot"></i> Tagged Asset
-              </Link>
-              {RoleId == 2 && (
-                <Link className="collapse-item" to="/admin/asset-manager">
-                  <i className="bi bi-dot"></i> Asset Request Approvel
-                </Link>
-              )}
-              {RoleId == 5 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/asset-repair-return-summary"
-                >
-                  <i className="bi bi-dot"></i> Return Summary
-                </Link>
-              )}
-              {RoleId == 5 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/asset-repair-summary"
-                >
-                  <i className="bi bi-dot"></i> Repair Summary
-                </Link>
-              )}
-              {RoleId == 5 && (
-                <Link
-                  className="collapse-item"
-                  to="/admin/asset-vendor-summary"
-                >
-                  <i className="bi bi-dot"></i> Vendor Summary
-                </Link>
-              )}
-            </div>
-          </div>
-        </li>
-      )}
 
       {isTaskManagment && (
         <li className="nav-item">

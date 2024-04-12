@@ -114,7 +114,6 @@ const UserOverview = () => {
   };
   const handleCloseSummaryModal = () => {
     setIsSummaryModal(false);
-    // setKRIData([]);
     setHistoryData([]);
   };
 
@@ -626,6 +625,11 @@ const UserOverview = () => {
           />
         </div>
         <div className="action_btns">
+          <Link to="/admin/users-dashboard">
+            <button type="button" className="btn btn-outline-danger btn-sm">
+              Dashboard
+            </button>
+          </Link>
           <Link to="/admin/billing-overview">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Billing{" "}
@@ -636,16 +640,12 @@ const UserOverview = () => {
               Hobbies
             </button>
           </Link>
-          <Link to={`/sim-overview/${0}`}>
+          {/* <Link to={`/sim-overview/${0}`}>
             <button type="button" className="btn btn-outline-primary btn-sm">
               Asset
             </button>
-          </Link>
-          <Link to="/admin/users-dashboard">
-            <button type="button" className="btn btn-outline-primary btn-sm">
-              Dashboard
-            </button>
-          </Link>
+          </Link> */}
+
           <Link to="/admin/reason">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Reason
@@ -664,13 +664,13 @@ const UserOverview = () => {
               </button>
             </Link>
           )}
-          {contextData && contextData[3] && contextData[3].view_value === 1 && (
+          {/* {contextData && contextData[3] && contextData[3].view_value === 1 && (
             <Link to="/admin/sub-department-overview">
               <button type="button" className="btn btn-outline-primary btn-sm">
                 Sub Department
               </button>
             </Link>
-          )}
+          )} */}
           {contextData &&
             contextData[10] &&
             contextData[10].view_value === 1 && (
@@ -687,10 +687,7 @@ const UserOverview = () => {
             contextData[0] &&
             contextData[0].insert_value === 1 && (
               <Link to="/admin/user">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary btn-sm"
-                >
+                <button type="button" className="btn btn-primary btn-sm">
                   Add New User
                 </button>
               </Link>
@@ -786,7 +783,7 @@ const UserOverview = () => {
                 onChange={() => handleRadioChange(1)}
               />
               <label
-                className="btn btn-outline-primary"
+                className="btn btn-outline-info"
                 style={{
                   borderTopRightRadius: "20pxpx",
                   borderBottomRightRadius: "20px",
@@ -804,7 +801,7 @@ const UserOverview = () => {
                 checked={activeButton === 2}
                 onChange={() => handleRadioChange(2)}
               />
-              <label className="btn btn-outline-primary" htmlFor="btnradio2">
+              <label className="btn btn-outline-info" htmlFor="btnradio2">
                 Active
               </label>
 
@@ -816,7 +813,7 @@ const UserOverview = () => {
                 checked={activeButton === 3}
                 onChange={() => handleRadioChange(3)}
               />
-              <label className="btn btn-outline-primary" htmlFor="btnradio3">
+              <label className="btn btn-outline-info" htmlFor="btnradio3">
                 Exit
               </label>
             </div>

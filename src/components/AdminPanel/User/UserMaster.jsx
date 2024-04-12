@@ -241,10 +241,6 @@ const UserMaster = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  // const [isAlternateTouched, setisAlternateTouched] = useState(false);
-  // const [validAlternateContact, setValidAlternateContact] = useState(false);
-  // const [validAlternateContact1, setValidAlternateContact1] = useState(false);
-
   const [familyValidationErrors, setFamilyValidationErrors] = useState({});
 
   const [mandatoryFieldsEmpty, setMandatoryFieldsEmpty] = useState({
@@ -593,21 +589,21 @@ const UserMaster = () => {
             loginId.toLocaleLowerCase()
         );
         const contactNumberExists = usersData.some(
-          (user) => user.personal_number == contact
+          (user) => user.user_contact_no == personalContact
         );
 
         const emailIdExists = usersData.some(
           (user) =>
-            user.Personal_email?.toLocaleLowerCase() ==
-            email?.toLocaleLowerCase()
+            user.user_email_id?.toLocaleLowerCase() ==
+            personalEmail?.toLocaleLowerCase()
         );
 
         if (isLoginIdExists) {
           alert("this login ID already exists");
         } else if (contactNumberExists) {
-          alert("Official Contact Already Exists");
+          alert("Personal Contact Already Exists");
         } else if (emailIdExists) {
-          alert("Official Email Already Exists");
+          alert("Personal Email Already Exists");
         } else {
           setIsLoading(true);
           const response = await axios
@@ -622,7 +618,7 @@ const UserMaster = () => {
                 const userResponseID = res.data.simv.user_id;
                 setUserResID(userResponseID);
                 setIsFormSubmitted(true);
-                toastAlert("User Registerd");
+                toastAlert(res.data.simv.emp_id + " " + "Employe Registerd");
                 setIsLoading(false);
               } else {
                 toastError("Sorry User is Not Created, Please try again later");
@@ -1739,6 +1735,7 @@ const UserMaster = () => {
       <FieldContainer
         label="Official Email"
         type="email"
+        placeholder="Not Allocated"
         fieldGrid={3}
         value={email}
         onChange={handleEmailChange}
@@ -1762,6 +1759,7 @@ const UserMaster = () => {
       <FieldContainer
         label="Official Contact"
         type="number"
+        placeholder="Not Allocated"
         fieldGrid={3}
         value={contact}
         required={true}

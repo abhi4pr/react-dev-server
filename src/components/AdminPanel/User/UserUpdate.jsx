@@ -1594,6 +1594,7 @@ const UserUpdate = () => {
       <FieldContainer
         label="Official Email"
         type="email"
+        placeholder="Not Allocated"
         fieldGrid={3}
         required={false}
         value={email}
@@ -1604,6 +1605,7 @@ const UserUpdate = () => {
       <FieldContainer
         label="Official Contact"
         type="number"
+        placeholder="Not Allocated"
         fieldGrid={3}
         value={contact}
         required={true}
