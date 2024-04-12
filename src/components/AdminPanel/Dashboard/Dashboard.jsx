@@ -97,11 +97,19 @@ function Dashboard() {
           <img className="img-bg" src={titleimg} alt="" width={160} />
           <div className="form_heading_title">
             <h1>Dashboard</h1>
-            <div className="pack">
-              <i class="bi bi-house"></i>{" "}
-              {activeLink.slice(1).charAt(0).toUpperCase() +
-                activeLink.slice(2)}
-            </div>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                  <a href="#">
+                    <i class="bi bi-house"></i>
+                  </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                  {activeLink.slice(1).charAt(0).toUpperCase() +
+                    activeLink.slice(2)}
+                </li>
+              </ol>
+            </nav>
           </div>
           {/* <Link to={`/admin/kra/${userId}`}>
             <button type="button" className="btn btn-outline-primary btn-sm">

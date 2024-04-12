@@ -7,6 +7,7 @@ import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
 import DoneIcon from "@mui/icons-material/Done";
 import { baseUrl } from "../../../utils/config";
 import logo from "../../../assets/logo.png";
+import { List } from "@phosphor-icons/react";
 const Navbar = () => {
   const [count, setCount] = useState(0);
   const [loginUserData, setLoginUserData] = useState([]);
@@ -74,55 +75,32 @@ const Navbar = () => {
         {/* <button className="btn sidebar_tglbtn" id="sidebarToggle">
           <i className="bi bi-list" />
         </button> */}
-        <div className="branding">
-          <div className="logo-1">
-            <img className="logo-img" src={logo} alt="logo" width={40} />
-          </div>
-          <div className="brandtext">
-            Creative <span>fuel</span>
+        <div className="topbarBrand">
+          <div className="branding">
+            <div className="logo-1">
+              <img className="logo-img" src={logo} alt="logo" width={40} />
+            </div>
+            <div className="brandtext">
+              Creative <span>fuel</span>
+            </div>
           </div>
         </div>
-        <ul className="navbar-nav align-items-center ml-auto">
-          <li className="nav-item dropdown no-arrow d-sm-none">
-            <a
-              className="nav-link dropdown-toggle nav_icon_link"
-              id="searchDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              <i className="bi bi-search" />
-            </a>
-            <div
-              className="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
-              aria-labelledby="searchDropdown"
-            >
-              <form className="form-inline mr-auto w-100 navbar-search">
-                <div className="input-group">
-                  <input
-                    type="text"
-                    className="form-control bg-light border-0 small"
-                    placeholder="Search for..."
-                    aria-label="Search"
-                    aria-describedby="basic-addon2"
-                  />
-                  <div className="input-group-append">
-                    <button className="btn btn-primary" type="button">
-                      <i className="bi bi-search" />
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
+        <ul className="navbar-nav align-items-center ml-auto w-100 blurBg">
+          <li className="nav-item ml-0 mr-auto ">
+            <label className="icon" for="nav-toggle" id="sidebarToggle">
+              <div class="circle">
+                <i className="ph">
+                  <List />
+                </i>
+              </div>
+            </label>
           </li>
-
           <li className="nav-item">
             <div className="theme-switch">
               <input type="checkbox" id="theme-toggle" />
 
               <label htmlFor="theme-toggle">
-                <div className="theme-sw">
+                <div className="theme-sw icon">
                   <i className="bi bi-brightness-high"></i>
                   <i className="bi bi-moon-stars-fill"></i>
                 </div>
