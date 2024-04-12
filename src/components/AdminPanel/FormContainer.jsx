@@ -368,7 +368,8 @@ const FormContainer = ({
                     addNewButtonName && "text_button"
                   }`}
                 >
-                  {addNewButtonName ? addNewButtonName : <FaUserPlus />}
+                  {/* {addNewButtonName ? addNewButtonName : <FaUserPlus />} */}
+                  {addNewButtonName ? addNewButtonName : "Add"}
                 </button>
               </Link>
               {link && newbutton && (
@@ -379,7 +380,8 @@ const FormContainer = ({
                       newbuttonName && "text_button"
                     }`}
                   >
-                    {newbuttonName ? newbuttonName : <FaUserPlus />}
+                    {/* {newbuttonName ? newbuttonName : <FaUserPlus />} */}
+                    {newbuttonName ? newbuttonName : "Add"}
                   </button>
                 </Link>
               )}

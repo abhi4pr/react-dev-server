@@ -35,7 +35,7 @@ const FieldContainer = ({
           {label} {astric === true && <sup style={{ color: "red" }}>*</sup>}
         </label>
         <Tag
-        id={label}
+          id={label}
           step={step}
           className={Tag == "select" ? "form-select" : "form-control"}
           type={type}
@@ -57,9 +57,12 @@ const FieldContainer = ({
         >
           {children}
         </Tag>
-        {type === "date"? <div className="custom-btn-2"><i class="bi bi-calendar-week"></i></div>: null}
+        {type === "date" ? (
+          <div className="custom-btn-2">
+            <i class="bi bi-calendar-week"></i>
+          </div>
+        ) : null}
         {/* {Tag === "select"? <div className="custom-btn-2"><i class="bi bi-chevron-down"></i></div>: null} */}
-       
       </div>
     </div>
   );

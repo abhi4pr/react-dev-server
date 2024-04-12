@@ -185,6 +185,12 @@ const DepartmentOverview = () => {
         }
       />
 
+      <Link to="/admin/sub-department-overview">
+        <button type="button" className="btn btn-outline-primary btn-sm">
+          Sub Department
+        </button>
+      </Link>
+
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
