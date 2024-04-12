@@ -1586,12 +1586,12 @@ const SidebarLinks = () => {
           >
             <div className="internal collapse-inner">
               <>
-                <Link className="collapse-item" to="/admin/customer-master">
-                  <i className="bi bi-dot"></i> Customer Type
-                </Link>
+                {/* <Link className="collapse-item" to="/admin/account-type">
+                  <i className="bi bi-dot"></i> Account Type
+                </Link> */}
 
                 <Link className="collapse-item" to="/admin/account-master">
-                  <i className="bi bi-dot"></i> Account Type
+                  <i className="bi bi-dot"></i> Brand Name Type
                 </Link>
 
                 <Link className="collapse-item" to="/admin/ownership-master">
@@ -1601,7 +1601,7 @@ const SidebarLinks = () => {
                   className="collapse-item"
                   to="/admin/ops-customer-overview"
                 >
-                  <i className="bi bi-dot"></i> Ops Customer Overview
+                  <i className="bi bi-dot"></i> Account Overview
                 </Link>
                 {/* <Link className="collapse-item" to="/admin/ops-customer-update">
                 <i className="bi bi-dot"></i> Ops Customer Update
@@ -1611,7 +1611,7 @@ const SidebarLinks = () => {
                   className="collapse-item"
                   to="/admin/customer-cont-overview"
                 >
-                  <i className="bi bi-dot"></i> Customer Contact Overview
+                  <i className="bi bi-dot"></i> Contact
                 </Link>
                 <Link className="collapse-item" to="/admin/ops-doc-mast">
                   <i class="bi bi-dot"></i> Doc Master

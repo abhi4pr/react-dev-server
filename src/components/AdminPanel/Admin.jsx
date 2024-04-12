@@ -235,8 +235,8 @@ import GSThold from "./Finance/GSThold";
 import NewExcelFile from "./RegisterCampaign/Plan/NewExcelFile";
 
 import TempExecution from "./RegisterCampaign/tempPlan/TempExecution";
-import CustomerMaster from "./Customer/CustomerMaster";
-import AccountMaster from "./Customer/AccountMaster";
+import AccountType from "./Customer/AccountType";
+import AccountMaster from "./Customer/BrandNameType";
 import OwnershipMaster from "./Customer/OwnershipMaster";
 import OpsCustomerMast from "./Customer/OpsCustomerMast";
 import OpsCustomerOverview from "./Customer/OpsCustomerOverview";
@@ -1252,7 +1252,7 @@ const Admin = () => {
                   />
                   {/* TASK MANAGEMENT */}
 
-                  <Route path="/customer-master" element={<CustomerMaster />} />
+                  <Route path="/account-type" element={<AccountType />} />
                   <Route path="/account-master" element={<AccountMaster />} />
                   <Route path="/ownership-master" element={<OwnershipMaster />} />
                   <Route path="/ops-customer-mast" element={<OpsCustomerMast />} />
