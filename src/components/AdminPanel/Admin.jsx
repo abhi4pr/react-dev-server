@@ -300,6 +300,7 @@ import PageAssignmentUpdate from "./PageAssignment/PageAssignmentUpdate";
 import HistoryAssignData from "./PageAssignment/HistoryAssignData";
 import CustomerDocumentDetails from "./Customer/DocumentDetails/CustomerDocumentDetails";
 import CustomerDocumentUpdate from "./Customer/CustomerDocumentUpdate";
+import OperationDashboard from "./RegisterCampaign/OperationDashboard/OperationDashboard";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -944,6 +945,10 @@ const Admin = () => {
                   <Route
                     path="/replacement-dashboard"
                     element={<ReplacementDashobard />}
+                  />
+                   <Route
+                    path="/operationDashboard"
+                    element={<OperationDashboard />}
                   />
                   <Route
                     path="/assignment-dashboard"
