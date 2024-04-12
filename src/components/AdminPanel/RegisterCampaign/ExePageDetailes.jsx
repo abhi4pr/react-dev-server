@@ -18,7 +18,7 @@ const style = {
   left: "50%",
   borderRadius: "10px",
   transform: "translate(-50%, -50%)",
-  width: 700,
+  width: 800,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
@@ -44,7 +44,7 @@ const ExePageDetailes = ({
   const [ass_id, setAss_id] = useState(null)
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
-
+  const [pageDetails, setPageDetails] = useState([]);
 
   const handleButtonClick = async (row) => {
     const postCount = row.postPerPage;
@@ -136,6 +136,7 @@ const ExePageDetailes = ({
     getAssignment();
     setOpen(false);
   };
+
   const column = [
     {
       field: "S.NO",
@@ -352,6 +353,31 @@ const ExePageDetailes = ({
     },
   ];
 
+  const getPageDetails = async (index) => {
+    try {
+        const payload = {
+            "shortCode": "C5hg84Wo7Nd",
+            "department": "660ea4d1bbf521bf783ffe18",
+            "userId": 15
+        };
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3RpbmciLCJpYXQiOjE3MDczMTIwODB9.ytDpwGbG8dc9jjfDasL_PI5IEhKSQ1wXIFAN-2QLrT8";
+        const config = {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        };
+        const response = await axios.post(`http://35.200.154.203:8080/api/v1/getpostDetailFromInsta`, payload, config);
+        
+        setPageDetails((prevPageDetails) => {
+          const updatedPageDetails = [...prevPageDetails];
+          updatedPageDetails[index] = response?.data?.data;
+          return updatedPageDetails;
+        });
+    } catch (error) {
+        console.error('Error fetching page details:', error);
+    }
+};
+
   return (
     <>
     
@@ -373,14 +399,13 @@ const ExePageDetailes = ({
             <Typography variant="h5" component="h2" sx={{ ml: 1 }}>
               Execution
             </Typography>
-            <Box sx={{ display: "flex" }}>
+            <Box sx={{  }}>
               <Box>
-                {posts.map((index) => (
-                  <div>
+                {posts.map((index,i) => (
+                  <div key={i}>
                     <TextField
                       sx={{ m: 1 }}
-                      key={index}
-                      label=" Link"
+                      label="Shortcode"
                       type="text"
                       onChange={(e) =>
                         setAssignedData({
@@ -391,22 +416,38 @@ const ExePageDetailes = ({
                       }
                     />
 
+                    <TextField
+                      sx={{ m: 1,width:"100px" }}
+                      label="Likes"
+                      type="number"
+                      value={pageDetails[i]?.like_count}
+                      // onChange={}
+                    />
+                    <TextField
+                      sx={{ m: 1,width:'150px' }}
+                      label="Comments"
+                      type="number"
+                      value={pageDetails[i]?.comment_count}
+                      // onChange={}
+                    />
+
                     <Button
                       variant="contained"
                       color="primary"
                       size="small"
                       style={{ marginRight: "8px" }}
-                      onClick={handleAssignedSubmit}
+                      // onClick={handleAssignedSubmit}
+                      onClick={() => getPageDetails(i)}
                       sx={{ mt: 2 }}
                     >
-                      Submit
+                      Get Details
                     </Button>
                   </div>
                 ))}
               </Box>
-              <Box>
+              {/* <Box>
                 {story.map((index) => (
-                  <div>
+                  <div key={index}>
                     <TextField
                       key={index}
                       label=" Story / Page"
@@ -431,8 +472,8 @@ const ExePageDetailes = ({
                     </Button>
                   </div>
                 ))}
-              </Box>
-              <Button onClick={finalExecute}>
+              </Box> */}
+              <Button variant="contained" color="success" onClick={finalExecute}>
                 execute
               </Button>
             </Box>
@@ -484,6 +525,7 @@ const ExePageDetailes = ({
               />
             </Box>
             {singlePhase.map((item) => (
+              <>
               <Box>
                 <TextField
                   label="commitment"
@@ -502,6 +544,7 @@ const ExePageDetailes = ({
                   margin="normal"
                 />
               </Box>
+              </>
             ))}
             <DataGrid
               rows={assignmentCommits}

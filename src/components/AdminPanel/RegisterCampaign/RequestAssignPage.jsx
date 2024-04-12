@@ -135,7 +135,6 @@ const RequestAssignPage = ({ data, RequestAssign }) => {
     }
   }
 
-  console.log(processedData)
   return (
     <div>
       <Button variant="contained" onClick={handleAcceptAll}>
