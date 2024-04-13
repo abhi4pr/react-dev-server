@@ -5,12 +5,12 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 const SideBar = () => {
   return (
     <>
-      <ul className="navbar-nav sidebar shadow accordion" id="accordionSidebar">
-        <label htmlFor="nav-toggle" id="sidebarToggle">
+      <ul className="navbar-nav sidebar accordion" id="accordionSidebar">
+        {/* <label htmlFor="nav-toggle" id="sidebarToggle">
           <div className="circle">
             <i className="bi bi-chevron-left"></i>
           </div>
-        </label>
+        </label> */}
         {/* <Link className="sidebar-brand">
           <div className="sidebar-brand-icon">
             <img src={Logo} alt="logo" width={40} height={40} />
@@ -23,12 +23,6 @@ const SideBar = () => {
         </Link> */}
         <div className="links">
           <SidebarLinks />
-        </div>
-        <div className="pack">
-          <div className="radial"></div>
-          <div className="copyright-sec">
-            ⓒ <span>2023 |</span> <p>CreativeFuel</p>
-          </div>
         </div>
       </ul>
     </>

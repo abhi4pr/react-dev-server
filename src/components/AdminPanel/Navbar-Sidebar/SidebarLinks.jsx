@@ -118,7 +118,7 @@ const SidebarLinks = () => {
   return (
     <>
       <li className="nav-item nav-item-single">
-        <Link className="nav-btn nav-link" to="/admin">
+        <Link className="nav-btn nav-link active" to="/admin">
           <i className="ph">
             <Gauge weight="duotone" />
           </i>
