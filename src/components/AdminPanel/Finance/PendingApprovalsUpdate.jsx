@@ -51,6 +51,9 @@ const PendingApprovalUpdate = () => {
   const [uniqueCustomerData, setUniqueCustomerData] = useState([]);
   const [sameCustomerDialog, setSameCustomerDialog] = useState(false);
   const [sameCustomerData, setSameCustomerData] = useState([]);
+  const [invoiceCount, setInvoiceCount] = useState(0);
+  const [nonInvoiceCount, setNonInvoiceCount] = useState(0);
+  const [nonGstCount, setNonGstCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [dateFilter, setDateFilter] = useState("");
   // const []
@@ -130,6 +133,20 @@ const PendingApprovalUpdate = () => {
           );
           setUniqueCustomerData(uniqueCustomerData);
 
+          const nonGstCount = custData.filter((gst) => gst.gst_status === "0");
+          setNonGstCount(nonGstCount.length);
+
+          const withInvoiceImage = custData.filter(
+            (item) =>
+              item.payment_screenshot && item.payment_screenshot.length > 0
+          );
+          const withoutInvoiceImage = custData.filter(
+            (item) =>
+              !item.payment_screenshot || item.payment_screenshot.length === 0
+          );
+          setInvoiceCount(withInvoiceImage.length);
+          setNonInvoiceCount(withoutInvoiceImage.length);
+
           const dateFilterData = filterDataBasedOnSelection(res.data.data);
           setFilterData(dateFilterData);
         });
@@ -156,7 +173,7 @@ const PendingApprovalUpdate = () => {
     });
     setFilterData(result);
   }, [search]);
-
+  console.log(filterData, "fdddd>>>");
   // Filters Logic :-
   const handleAllFilters = () => {
     const filterData = datas.filter((item) => {
@@ -944,6 +961,9 @@ const PendingApprovalUpdate = () => {
         pendingCount={pendingCount}
         approvedCount={approvedCount}
         rejectedCount={rejectedCount}
+        nonGstCount={nonGstCount}
+        invoiceCount={invoiceCount}
+        nonInvoiceCount={nonInvoiceCount}
         handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
         pendingApprovalAdditionalTitles={true}
       />

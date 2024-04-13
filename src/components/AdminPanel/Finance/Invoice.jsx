@@ -27,7 +27,7 @@ import moment from "moment";
 
 const Invoice = () => {
   const navigate = useNavigate();
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [datas, setData] = useState([]);
   const [search, setSearch] = useState("");
@@ -85,6 +85,7 @@ const Invoice = () => {
   const [editActionDialog, setEditActionDialog] = useState("");
   const [invcDate, setInvcDate] = useState("");
   const [invcNumber, setInvcNumber] = useState("");
+  const [fileUpload, setFileUpload] = useState("");
   const [partyInvoiceName, setPartyInvoiceName] = useState("");
   const [imageInvoice, setImageInvoice] = useState([]);
   const [saleBookingId, setSaleBookingId] = useState("");
@@ -132,16 +133,18 @@ const Invoice = () => {
     setIsFormSubmitted(true);
   };
 
-  const handleImageUpload = async (row, fileData) => {
+  const handleImageUpload = async (row) => {
+    console.log(inoiceNum, "inoiceNum", date, "date", partyName, "partyName>>");
+    console.log(partyName, "partyName>>>");
     if (!inoiceNum || !date || !partyName) {
-      toastAlert("Please fill all the fields");
+      toastError("Please fill all the fields");
       return;
     }
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_id", row.sale_booking_id);
     formData.append("invoiceFormSubmit", 1);
-    formData.append("invoice", fileData);
+    formData.append("invoice", fileUpload);
     formData.append("invoice_mnj_number", inoiceNum);
     formData.append(
       "invoice_mnj_date",
@@ -161,6 +164,7 @@ const Invoice = () => {
       )
       .then(() => {
         toastAlert("Data updated");
+        getDataInvoiceCreated();
         axios
           .put(baseUrl + "pending_invoice_update", formData, {
             headers: {
@@ -750,6 +754,7 @@ const Invoice = () => {
           <div>
             <TextField
               key={params.row.sale_booking_id}
+              className="d-block"
               type="text"
               name="input"
               label="Party Name"
@@ -1081,6 +1086,13 @@ const Invoice = () => {
       height: "200px",
     },
     {
+      headerName: " Requested On",
+      field: "invoice_requested_date",
+      width: 220,
+      renderCell: (params) =>
+        convertDateToDDMMYYYY(params.row.invoice_requested_date),
+    },
+    {
       headerName: "Sale Booking Date",
       field: "sale_booking_date",
       width: 220,
@@ -1226,14 +1238,14 @@ const Invoice = () => {
               padding: "12px ",
             },
           }}
-          onChange={(e) => handleKeyDown(e.target.value)}
+          onChange={(e) => setPartyName(e.target.value)}
         />
       ),
     },
     {
       field: "Upload Invoice",
       headerName: "Upload Invoice",
-      width: 380,
+      width: 480,
       renderCell: (params, index) => (
         <div key={params.row.sale_booking_id} className="d-flex">
           <form>
@@ -1242,13 +1254,20 @@ const Invoice = () => {
               type="file"
               name="upload_image"
               className="w-70"
-              onChange={(e) => handleImageUpload(params.row, e.target.files[0])}
+              onChange={(e) => setFileUpload(e.target.files[0])}
             />
           </form>
           <br />
           <button
             type="button"
             className="btn btn-success"
+            onClick={() => handleImageUpload(params.row)}
+          >
+            Submit
+          </button>
+          <button
+            type="button"
+            className="btn btn-success ms-3"
             onClick={() => handleReject(params.row)}
           >
             Reject
