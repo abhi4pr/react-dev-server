@@ -5,14 +5,13 @@ import {
   DialogTitle,
   IconButton,
   TextField,
-  Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
 import React from "react";
 import axios from "axios";
-import { set } from "date-fns";
+// import { set } from "date-fns";
 import { baseUrl } from "../../../utils/config";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -74,9 +73,25 @@ export default function DiscardConfirmation({
         phpFormData.append("payment_mode", "");
         phpFormData.append("gst_hold", rowData.gst_amount);
         phpFormData.append("tds_deduction", 0);
+
+        // const phpPayload = {
+        //   request_id: rowData.request_id,
+        //   payment_amount: rowData.payment_amount,
+        //   payment_date: new Date()
+        //     ?.toISOString()
+        //     .slice(0, 19)
+        //     .replace("T", " "),
+        //   payment_by: userName,
+        //   evidence: "",
+        //   finance_remark: discardRemark,
+        //   status: 2,
+        //   payment_mode: "",
+        //   gst_hold: rowData.gst_amount,
+        //   tds_deduction: 0,
+        // };
         axios
           .post(
-            "https://purchase.creativefuel.io/webservices/RestController.php?view=updatePaymentrequestNew",
+            "https://purchase.creativefuel.io/webservices/RestController.php?view=updatePaymentrequestdiscard",
             phpFormData,
             {
               headers: {

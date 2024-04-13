@@ -92,8 +92,8 @@ export default function PendingPaymentRequest() {
   const [invoiceCount, setInvoiceCount] = useState(0);
   const [nonInvoiceCount, setNonInvoiceCount] = useState(0);
   const [nonGstCount, setNonGstCount] = useState(0);
-  const [partialData, setPartialData] = useState("");
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+  const [vendorNameList, setVendorNameList] = useState([]);
 
   const accordionButtons = ["All", "Partial", "Instant"];
 
@@ -185,7 +185,6 @@ export default function PendingPaymentRequest() {
               (item2) => item.request_id === item2.request_id
             );
           });
-          console.log(remindData, "c data>>", c);
 
           y.push(...c); // Merging the filtered items with items matching certain conditions
 
@@ -198,7 +197,7 @@ export default function PendingPaymentRequest() {
           });
 
           mergedArray = mergedArray.filter(
-            (item) => item.status == 0 || item.status == 3
+            (item) => item.status == 0 || item.status == 3 || item.status == 2
           );
           setData(mergedArray);
           setFilterData(mergedArray);
@@ -333,8 +332,8 @@ export default function PendingPaymentRequest() {
     return diffHours;
   }
 
-  const totalPendingAmount = filterData.reduce(
-    (total, item) => total + parseFloat(item.request_amount),
+  const totalPendingAmount = filterData?.reduce(
+    (total, item) => total + parseFloat(item?.request_amount),
     0
   );
   const handlePayVendorClick = () => {
@@ -380,7 +379,6 @@ export default function PendingPaymentRequest() {
           "payment_date",
           new Date(paymentDate)?.toISOString().slice(0, 19).replace("T", " ")
         );
-        console.log(rowData.request_amount, "REQUEST AMOUNT");
         phpFormData.append("payment_by", userName);
         phpFormData.append("evidence", payMentProof);
         phpFormData.append("finance_remark", payRemark);
@@ -875,7 +873,14 @@ export default function PendingPaymentRequest() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = sameVendorData.indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? sameVendorData.indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? sameVendorData.filter((d) => d.status === "3").indexOf(params.row)
+            : sameVendorData
+                .filter((d) => d.status === "0")
+                .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -927,7 +932,16 @@ export default function PendingPaymentRequest() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = uniqueVendorData.indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? uniqueVendorData.indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? uniqueVendorData
+                .filter((d) => d.status === "3")
+                .indexOf(params.row)
+            : uniqueVendorData
+                .filter((d) => d.status === "0")
+                .indexOf(params.row);
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -980,7 +994,13 @@ export default function PendingPaymentRequest() {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = filterData.indexOf(params.row);
+        // const rowIndex = filterData.indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? filterData.indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? filterData.filter((d) => d.status === "3").indexOf(params.row)
+            : filterData.filter((d) => d.status === "0").indexOf(params.row);
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -1454,7 +1474,75 @@ export default function PendingPaymentRequest() {
     }
   };
 
-  console.log(filterData, "FD =============", nodeData, partialData, "PD");
+  const partialData = filterData?.filter((d) => d.status === "3");
+  const instantData = filterData?.filter((d) => d.status === "0");
+
+  const pendingPartialcount = partialData?.length;
+  const pendingInstantcount = instantData?.length;
+  // For partial tab :-
+  const uniqueVendorPartialCount = new Set(
+    partialData?.map((item) => item.vendor_name)
+  );
+  const pendingAmountPartial = partialData?.reduce(
+    (total, item) => total + parseFloat(item.request_amount),
+    0
+  );
+  const nonGstPartialCount = partialData?.filter((gst) => gst.gstHold === "0");
+
+  const withInvcPartialImage = partialData?.filter(
+    (item) => item.invc_img && item.invc_img.length > 0
+  );
+
+  const withoutInvcPartialImage = partialData?.filter(
+    (item) => !item.invc_img || item.invc_img.length === 0
+  );
+  // ===================================================================
+  // For Instant tab :-
+  const uniqueVendorsInstantCount = new Set(
+    instantData?.map((item) => item.vendor_name)
+  );
+  const pendingAmountInstant = instantData?.reduce(
+    (total, item) => total + parseFloat(item.request_amount),
+    0
+  );
+  const nonGstInstantCount = instantData?.filter((gst) => gst.gstHold === "0");
+
+  const withInvcInstantImage = instantData?.filter(
+    (item) => item.invc_img && item.invc_img.length > 0
+  );
+  const withoutInvcInstantImage = instantData?.filter(
+    (item) => !item.invc_img || item.invc_img.length === 0
+  );
+  // ===================================================================
+
+  useEffect(() => {
+    if (activeAccordionIndex === 0) {
+      const uniqueVendorNames = [...new Set(data?.map((d) => d?.vendor_name))];
+
+      setVendorNameList(uniqueVendorNames);
+    } else if (activeAccordionIndex === 1) {
+      const filteredData = data.filter((d) => d.status === "3");
+      const uniqueVendorNames = [
+        ...new Set(filteredData.map((d) => d?.vendor_name)),
+      ];
+
+      setVendorNameList(uniqueVendorNames);
+    } else if (activeAccordionIndex === 2) {
+      const filteredData = data?.filter((d) => d?.status === "0");
+      const uniqueVendorNames = [
+        ...new Set(filteredData.map((d) => d?.vendor_name)),
+      ];
+      setVendorNameList(uniqueVendorNames);
+    }
+  }, [activeAccordionIndex]);
+
+  useEffect(() => {
+    if (activeAccordionIndex === 0) {
+      const uniqueVendorNames = [...new Set(data?.map((d) => d?.vendor_name))];
+
+      setVendorNameList(uniqueVendorNames);
+    }
+  }, [data]);
 
   return (
     <div>
@@ -1464,9 +1552,22 @@ export default function PendingPaymentRequest() {
         uniqueVendorCount={uniqueVendorCount}
         totalPendingAmount={totalPendingAmount}
         pendingRequestCount={pendingRequestCount}
+        pendingPartialcount={pendingPartialcount}
+        pendingInstantcount={pendingInstantcount}
+        uniqueVendorPartialCount={uniqueVendorPartialCount}
+        uniqueVendorsInstantCount={uniqueVendorsInstantCount}
+        pendingAmountPartial={pendingAmountPartial}
+        pendingAmountInstant={pendingAmountInstant}
+        nonGstPartialCount={nonGstPartialCount}
+        nonGstInstantCount={nonGstInstantCount}
+        withInvcPartialImage={withInvcPartialImage}
+        withInvcInstantImage={withInvcInstantImage}
+        withoutInvcPartialImage={withoutInvcPartialImage}
+        withoutInvcInstantImage={withoutInvcInstantImage}
         nonGstCount={nonGstCount}
         invoiceCount={invoiceCount}
         nonInvoiceCount={nonInvoiceCount}
+        accIndex={activeAccordionIndex}
         handleOpenUniqueVendorClick={handleOpenUniqueVendorClick}
         includeAdditionalTitles={true}
         pendingpaymentRemainder={phpRemainderData.length}
@@ -1600,21 +1701,57 @@ export default function PendingPaymentRequest() {
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          <DataGrid
-            rows={sameVendorData}
-            columns={sameVenderColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => sameVendorData.indexOf(row)}
-          />
+          {activeAccordionIndex === 0 && (
+            <DataGrid
+              rows={sameVendorData}
+              columns={sameVenderColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameVendorData.indexOf(row)}
+            />
+          )}
+          {activeAccordionIndex === 1 && (
+            <DataGrid
+              rows={sameVendorData.filter((d) => d.status === "3")}
+              columns={sameVenderColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameVendorData.indexOf(row)}
+            />
+          )}
+          {activeAccordionIndex === 2 && (
+            <DataGrid
+              rows={sameVendorData.filter((d) => d.status === "0")}
+              columns={sameVenderColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameVendorData.indexOf(row)}
+            />
+          )}
         </DialogContent>
       </Dialog>
       {/* Unique Vendor Dialog Box */}
@@ -1646,21 +1783,57 @@ export default function PendingPaymentRequest() {
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          <DataGrid
-            rows={uniqueVendorData}
-            columns={uniqueVendorColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => uniqueVendorData.indexOf(row)}
-          />
+          {activeAccordionIndex === 0 && (
+            <DataGrid
+              rows={uniqueVendorData}
+              columns={uniqueVendorColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueVendorData.indexOf(row)}
+            />
+          )}
+          {activeAccordionIndex === 1 && (
+            <DataGrid
+              rows={uniqueVendorData.filter((d) => d.status === "3")}
+              columns={uniqueVendorColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueVendorData.indexOf(row)}
+            />
+          )}
+          {activeAccordionIndex === 2 && (
+            <DataGrid
+              rows={uniqueVendorData.filter((d) => d.status === "0")}
+              columns={uniqueVendorColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueVendorData.indexOf(row)}
+            />
+          )}
         </DialogContent>
       </Dialog>
 
@@ -1698,9 +1871,12 @@ export default function PendingPaymentRequest() {
                     <Autocomplete
                       value={vendorName}
                       onChange={(event, newValue) => setVendorName(newValue)}
-                      options={Array.from(
-                        new Set(data.map((option) => option.vendor_name))
-                      )}
+                      // options={Array.from(
+                      //   new Set(data.map((option) => option.vendor_name))
+                      // )}
+                      options={vendorNameList?.map((e) => {
+                        return e;
+                      })}
                       // options={Array.from(
                       //   new Set(
                       //     filterData
@@ -1708,6 +1884,7 @@ export default function PendingPaymentRequest() {
                       //       .map((option) => option.vendor_name)
                       //   )
                       // )}
+                      // options={filterData.map((option) => option.vendor_name)}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -1828,41 +2005,41 @@ export default function PendingPaymentRequest() {
         <div className="col-12">
           <div className="card" style={{ height: "700px" }}>
             <div className="card-body thm_table">
-              {/* <FormContainer
+              <FormContainer
                 submitButton={false}
                 accordionButtons={accordionButtons}
                 activeAccordionIndex={activeAccordionIndex}
                 onAccordionButtonClick={handleAccordionButtonClick}
                 mainTitleRequired={false}
-              > */}
-              <div>
-                {/* {activeAccordionIndex === 0 && ( */}
-                <DataGrid
-                  rows={filterData}
-                  columns={columns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5]}
-                  getRowClassName={getValidationCSSForRemainder}
-                  slots={{ toolbar: GridToolbar }}
-                  disableSelectionOnClick
-                  disableColumnMenu
-                  getRowId={(row) => filterData.indexOf(row)}
-                  slotProps={{
-                    toolbar: {
-                      showQuickFilter: true,
-                    },
-                  }}
-                />
-                {/* )} */}
-                {openImageDialog && (
-                  <ImageView
-                    viewImgSrc={viewImgSrc}
-                    fullWidth={true}
-                    maxWidth={"md"}
-                    setViewImgDialog={setOpenImageDialog}
-                  />
-                )}
-                {/* {activeAccordionIndex === 1 && (
+              >
+                <div>
+                  {activeAccordionIndex === 0 && (
+                    <DataGrid
+                      rows={filterData}
+                      columns={columns}
+                      pageSize={5}
+                      rowsPerPageOptions={[5]}
+                      getRowClassName={getValidationCSSForRemainder}
+                      slots={{ toolbar: GridToolbar }}
+                      disableSelectionOnClick
+                      disableColumnMenu
+                      getRowId={(row) => filterData.indexOf(row)}
+                      slotProps={{
+                        toolbar: {
+                          showQuickFilter: true,
+                        },
+                      }}
+                    />
+                  )}
+                  {openImageDialog && (
+                    <ImageView
+                      viewImgSrc={viewImgSrc}
+                      fullWidth={true}
+                      maxWidth={"md"}
+                      setViewImgDialog={setOpenImageDialog}
+                    />
+                  )}
+                  {activeAccordionIndex === 1 && (
                     <DataGrid
                       rows={filterData.filter((d) => d.status === "3")}
                       columns={columns}
@@ -1888,35 +2065,34 @@ export default function PendingPaymentRequest() {
                       setViewImgDialog={setOpenImageDialog}
                     />
                   )}
-                  {
-                    activeAccordionIndex === 2 && "NO DATA" */}
-                {/* //   <DataGrid */}
-                {/* //     rows={filterData.filter((d) => d.status === "0")}
-                    //     columns={columns}
-                    //     pageSize={5}
-                    //     rowsPerPageOptions={[5]}
-                    //     getRowClassName={getValidationCSSForRemainder}
-                    //     slots={{ toolbar: GridToolbar }}
-                    //     disableSelectionOnClick
-                    //     disableColumnMenu
-                    //     getRowId={(row) => filterData.indexOf(row)}
-                    //     slotProps={{ */}
-                {/* //       toolbar: { */}
-                {/* //         showQuickFilter: true,
-                    //       },
-                    //     }}
-                    //   />
-                    // )}
-                    // {openImageDialog && ( */}
-                {/* //   <ImageView
-                    //     viewImgSrc={viewImgSrc}
-                    //     fullWidth={true}
-                    //     maxWidth={"md"}
-                    //     setViewImgDialog={setOpenImageDialog}
-                    //   /> */}
-                {/* } */}
-              </div>
-              {/* </FormContainer> */}
+                  {activeAccordionIndex === 2 && (
+                    <DataGrid
+                      rows={filterData.filter((d) => d.status === "0")}
+                      columns={columns}
+                      pageSize={5}
+                      rowsPerPageOptions={[5]}
+                      getRowClassName={getValidationCSSForRemainder}
+                      slots={{ toolbar: GridToolbar }}
+                      disableSelectionOnClick
+                      disableColumnMenu
+                      getRowId={(row) => filterData.indexOf(row)}
+                      slotProps={{
+                        toolbar: {
+                          showQuickFilter: true,
+                        },
+                      }}
+                    />
+                  )}
+                  {openImageDialog && (
+                    <ImageView
+                      viewImgSrc={viewImgSrc}
+                      fullWidth={true}
+                      maxWidth={"md"}
+                      setViewImgDialog={setOpenImageDialog}
+                    />
+                  )}
+                </div>
+              </FormContainer>
               {/*Dialog Box */}
               <Dialog open={payDialog} onClose={handleClosePayDialog}>
                 <DialogTitle>Vendor Payment</DialogTitle>
@@ -2233,12 +2409,6 @@ export default function PendingPaymentRequest() {
                         rowData.balance_amount;
 
                         const currentValue = e.target.value;
-                        console.log(
-                          currentValue,
-                          "current value",
-                          paymentAmout,
-                          "payment amount??"
-                        );
                         if (/^\d+$/.test(currentValue) || currentValue === "") {
                           // setPaymentAmount(currentValue);
                           if (currentValue <= +rowData.balance_amount) {

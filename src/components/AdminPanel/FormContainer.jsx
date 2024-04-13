@@ -43,6 +43,18 @@ const FormContainer = ({
   invoiceCount,
   nonInvoiceCount,
   totalBaseAmount,
+  uniqueVendorPartialCount,
+  uniqueVendorsInstantCount,
+  pendingAmountPartial,
+  pendingAmountInstant,
+  pendingInstantcount,
+  pendingPartialcount,
+  nonGstPartialCount,
+  nonGstInstantCount,
+  withInvcPartialImage,
+  withInvcInstantImage,
+  withoutInvcPartialImage,
+  withoutInvcInstantImage,
   uniqueSalesExecutiveCount,
   handleOpenUniqueSalesExecutive,
   pendingApprovalAdditionalTitles = false,
@@ -70,6 +82,7 @@ const FormContainer = ({
 }) => {
   const location = useLocation();
   const activeLink = location.pathname;
+
   return (
     <div style={{ display: "flex", gap: "10px", flexDirection: "column" }}>
       {mainTitleRequired && (
@@ -86,7 +99,7 @@ const FormContainer = ({
                 activeLink.slice(2)}
             </div>
           </div>
-          {includeAdditionalTitles && (
+          {includeAdditionalTitles && accIndex === 0 ? (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueVendorClick}>
                 Unique Vendor : <a href="#">{uniqueVendorCount}</a>
@@ -110,17 +123,72 @@ const FormContainer = ({
                 Reminder : <a href="#">{pendingpaymentRemainder}</a>
               </h2> */}
             </div>
+          ) : includeAdditionalTitles && accIndex === 1 ? (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueVendorClick}>
+                Unique Vendor : <a href="#">{uniqueVendorPartialCount?.size}</a>
+              </h2>
+              <h2>
+                Pending Request Amount : <a href="#"> {pendingAmountPartial}</a>
+              </h2>
+              <h2>
+                Pending Request : <a href="#"> {pendingPartialcount}</a>
+              </h2>
+              <h2>
+                Non GST : <a href="#"> {nonGstPartialCount?.length}</a>
+              </h2>
+              <h2>
+                With Invoice Count :{" "}
+                <a href="#"> {withInvcPartialImage?.length}</a>
+              </h2>
+              <h2>
+                Without Invoice Count :{" "}
+                <a href="#"> {withoutInvcPartialImage?.length}</a>
+              </h2>
+              {/* <h2>
+                Reminder : <a href="#">{pendingpaymentRemainder}</a>
+              </h2> */}
+            </div>
+          ) : includeAdditionalTitles && accIndex === 2 ? (
+            <div className="additional-titles ">
+              <h2 onClick={handleOpenUniqueVendorClick}>
+                Unique Vendor :{" "}
+                <a href="#">{uniqueVendorsInstantCount?.size}</a>
+              </h2>
+              <h2>
+                Pending Request Amount : <a href="#"> {pendingAmountInstant}</a>
+              </h2>
+              <h2>
+                Pending Request : <a href="#"> {pendingInstantcount}</a>
+              </h2>
+              <h2>
+                Non GST : <a href="#"> {nonGstInstantCount?.length}</a>
+              </h2>
+              <h2>
+                With Invoice Count :{" "}
+                <a href="#"> {withInvcInstantImage?.length}</a>
+              </h2>
+              <h2>
+                Without Invoice Count :{" "}
+                <a href="#"> {withoutInvcInstantImage?.length}</a>
+              </h2>
+              {/* <h2>
+                Reminder : <a href="#">{pendingpaymentRemainder}</a>
+              </h2> */}
+            </div>
+          ) : (
+            ""
           )}
           {paymentDoneAdditionalTitles && (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueVendorClick}>
-                Unique Vendor : <a href="#">{uniqueVendorCount}</a>
+                Unique Vendor : <a href="#">{uniqueVendorsInstantCount}</a>
               </h2>
               <h2>
-                Payment Done Amount : <a href="#"> {totalRequestAmount}</a>
+                Payment Done Amount : <a href="#"> {pendingAmountPartial}</a>
               </h2>
               <h2>
-                Payment Done : <a href="#"> {pendingRequestCount}</a>
+                Payment Done : <a href="#"> {pending}</a>
               </h2>
               <h2>
                 With Invoice Count : <a href="#"> {withInvoiceCount}</a>
@@ -198,6 +266,15 @@ const FormContainer = ({
               </h2>
               <h2>
                 Pending count : <a href="#"> {pendingCount}</a>
+              </h2>
+              <h2>
+                Non GST : <a href="#"> {nonGstCount}</a>
+              </h2>
+              <h2>
+                With Invoice Count : <a href="#"> {invoiceCount}</a>
+              </h2>
+              <h2>
+                Without Invoice Count : <a href="#"> {nonInvoiceCount}</a>
               </h2>
               {/* <h2>
                 Approved Count : <a href="#"> {approvedCount}</a>
