@@ -93,7 +93,7 @@ const OperationDashboard = () => {
                     ) : (
                       <p style={{ color: "red" }}>Plan not created yet</p>
                     )}
-                    {item.campaignphaseData > 0 ? (
+                    {item.campaignphaseData?.length > 0 ? (
                       <>
                         <h3>Campaign Phase details</h3>
                         {item.campaignphaseData.map((item, phaseIndex) => (

@@ -231,7 +231,7 @@ const InvoiceTemplate3 = ({ data }) => {
                         {data?.billing_header_name}
                       </td>
                       <td className="font-sm color-grey text-right">
-                        ₹ {data?.total_salary}
+                        ₹ {data?.net_salary}
                       </td>
                     </tr>
                   </tbody>
