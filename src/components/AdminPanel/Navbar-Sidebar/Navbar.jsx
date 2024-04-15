@@ -144,6 +144,7 @@ const Navbar = () => {
                         <div
                           className="message"
                           id={notificationData._id}
+                          key={notification._id}
                           onClick={() => NotificationsOff(notification._id)}
                         >
                           <div className="ppimg">

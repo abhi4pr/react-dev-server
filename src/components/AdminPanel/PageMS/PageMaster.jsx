@@ -31,10 +31,23 @@ const PageMaster = () => {
   const [followCount, setFollowCount] = useState("");
   const [profileData, setProfileData] = useState([]);
   const [profileId, setProfileId] = useState("");
-  const [platformActive, setPlatformActive] = useState("");
+  const [platformActive, setPlatformActive] = useState();
   const [rate, setRate] = useState("");
   const [description, setDescription] = useState("");
+  const [priceTypeList, setPriceTypeList] = useState([]);
+  const [filterPriceTypeList, setFilterPriceTypeList] = useState([]);
+  const [priceTypeId, setPriceTypeId] = useState([]);
+  const [rateType, setRateType] = useState({ value: "Fixed", label: "Fixed" });
+  const [variableType, setVariableType] = useState({
+    value: "Per Thousand",
+    label: "Per Thousand",
+  });
+  const [price, setPrice] = useState();
 
+  const handleVariableTypeChange = (selectedOption) => {
+    setVariableType(selectedOption);
+  };
+  const [rowCount, setRowCount] = useState([{ price_type_id: "", price: "" }]);
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userID = decodedToken.id;
@@ -86,6 +99,30 @@ const PageMaster = () => {
     getData();
   }, []);
 
+  // const handlePriceTypeChange = (selectedOption) => {
+  //   console.log(selectedOption, "selectedOption");
+  //   setPriceTypeList( //filtering out the selected option from the list
+  //     (prev) =>
+  //       prev.filter((e) => !(e.value == selectedOption.value))
+  //   );
+  //   setPriceTypeId(selectedOption);
+  // };
+
+  const handleRateTypeChange = (selectedOption) => {
+    setRateType(selectedOption);
+  };
+  useEffect(() => {
+    if (platformId) {
+      setPriceTypeId([]);
+      setPriceTypeList([]);
+      let priceData = platformData.find((role) => role._id == platformId)?._id;
+      axios.get(baseUrl + `data/${priceData}`).then((res) => {
+        setPriceTypeList(res.data.data);
+        setFilterPriceTypeList(res.data.data);
+      });
+    }
+  }, [platformId]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (pageName === "") {
@@ -134,13 +171,14 @@ const PageMaster = () => {
       toastError("Please Fill Engagement Rate");
       return;
     }
+    // return console.log(tag, "Tags....");
 
     const payload = {
       page_user_name: pageName,
       link: link,
       platform_id: platformId,
       page_catg_id: categoryId,
-      tag_category: tag,
+      tag_category: tag.map(e => e.value),
       page_level: pageLevel,
       page_status: pageStatus,
       page_closed_by: closeBy,
@@ -150,10 +188,16 @@ const PageMaster = () => {
       vendorMast_id: vendorId,
       followers_count: followCount,
       profile_type_id: profileId,
-      platform_active_on: platformActive,
+      platform_active_on: platformActive.map((e) => e.value),
       engagment_rate: rate,
       description: description,
       created_by: userID,
+
+      price_cal_type: rateType.value,
+      // price_type_id: priceTypeId.map((e) => e.value),
+      variable_type: rateType.value == "Variable" ? variableType.value : null,
+      // purchase_price: +price,
+      purchase_price: rowCount,
     };
 
     axios
@@ -171,17 +215,29 @@ const PageMaster = () => {
     return <Navigate to="/admin/pms-page-overview" />;
   }
 
-  function handleKeyDown(e) {
-    if (e.key === "," && e.target.value.trim()) {
-      e.preventDefault();
-      setTag([...tag, e.target.value.trim()]);
-      e.target.value = "";
-    }
-  }
+  const addPriceRow = () => {
+    setRowCount((rowCount) => [...rowCount, { price_type_id: "", price: "" }]);
+  };
 
-  function removeTag(index) {
-    setTag(tag.filter((el, i) => i !== index));
-  }
+  const handlePriceTypeChange = (e, index) => {
+    setPriceTypeId(e.value);
+    rowCount[index].price_type_id = e.value;
+    handleFilterPriceType();
+  };
+
+  const handlePriceChange = (e, index) => {
+    setPrice(() => e.target.value);
+    rowCount[index].price = e.target.value;
+  };
+
+  const handleFilterPriceType = () => {
+    let filteredData = priceTypeList.filter((row) => {
+      // Check if row's price_type_id exists in priceTypeList
+      return !rowCount.some((e) => e.price_type_id == row.price_type_id);
+    });
+    console.log(filteredData, "filteredData");
+    setFilterPriceTypeList(filteredData);
+  };
 
   return (
     <>
@@ -211,7 +267,6 @@ const PageMaster = () => {
             }}
           ></Select>
         </div>
-
         <div className="form-group col-6">
           <label className="form-label">
             Profile Type <sup style={{ color: "red" }}>*</sup>
@@ -233,7 +288,6 @@ const PageMaster = () => {
             }}
           ></Select>
         </div>
-
         <div className="form-group col-6">
           <label className="form-label">
             Profile Status <sup style={{ color: "red" }}>*</sup>
@@ -248,7 +302,6 @@ const PageMaster = () => {
             onChange={(selectedOption) => setPageStatus(selectedOption.value)}
           />
         </div>
-
         <div className="form-group col-6">
           <label className="form-label">
             Category <sup style={{ color: "red" }}>*</sup>
@@ -270,8 +323,7 @@ const PageMaster = () => {
             }}
           ></Select>
         </div>
-
-        <label className="form-label">Tags</label>
+        {/* <label className="form-label">Tags</label>
         <div className="tags-input-container">
           {tag.map((tag, index) => (
             <div className="tag-item" key={index}>
@@ -287,22 +339,35 @@ const PageMaster = () => {
             className="tags-input"
             placeholder="comma separated values"
           />
-        </div>
+        </div> */}
 
+        <div className="form-group col-6">
+          <label className="form-label">
+            Tags <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            isMulti
+            options={categoryData.map((option) => ({
+              value: option._id,
+              label: option.page_category,
+            }))}
+            required={true}
+            value={tag}
+            onChange={(e) => setTag(e)}
+          ></Select>
+        </div>
         <FieldContainer
           label="Page Name *"
           value={pageName}
           required={true}
           onChange={(e) => setPageName(e.target.value)}
         />
-
         <FieldContainer
           label="Link *"
           value={link}
           required={true}
           onChange={(e) => setLink(e.target.value)}
         />
-
         <FieldContainer
           label="Followers Count *"
           type="number"
@@ -310,7 +375,6 @@ const PageMaster = () => {
           required={true}
           onChange={(e) => setFollowCount(e.target.value)}
         />
-
         {/* <FieldContainer
           label="Tag"
           value={tag}
@@ -318,7 +382,6 @@ const PageMaster = () => {
           placeholder="Comma separated values"
           onChange={(e) => setTag(e.target.value.split(','))}
         /> */}
-
         <div className="form-group col-6">
           <label className="form-label">
             Preference level <sup style={{ color: "red" }}>*</sup>
@@ -333,14 +396,12 @@ const PageMaster = () => {
             onChange={(selectedOption) => setPageLevel(selectedOption.value)}
           />
         </div>
-
         <FieldContainer
           label="Ownership type *"
           value={ownerType}
           required={true}
           onChange={(e) => setOwnerType(e.target.value)}
         />
-
         <div className="form-group col-6">
           <label className="form-label">
             Close by <sup style={{ color: "red" }}>*</sup>
@@ -362,7 +423,6 @@ const PageMaster = () => {
             }}
           ></Select>
         </div>
-
         <div className="form-group col-6">
           <label className="form-label">
             Content Creation <sup style={{ color: "red" }}>*</sup>
@@ -377,13 +437,58 @@ const PageMaster = () => {
             onChange={(selectedOption) => setContent(selectedOption.value)}
           />
         </div>
-
-        <FieldContainer
+        {/* <FieldContainer
           label="Platform active on *"
           value={platformActive}
           required={true}
           onChange={(e) => setPlatformActive(e.target.value)}
-        />
+        /> */}
+
+        {/* <div className="form-group col-6">
+          <label className="form-label">
+            Platform Active On <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={platformData.map((option) => ({
+              value: option._id,
+              label: option.platform_name,
+            }))}
+            isMulti
+            // value={{
+            //   value: platformActive,
+            //   label:
+            //     platformData.find((role) => role._id === platformId)
+            //       ?.platform_name || "",
+            // }}
+            value={platformData.filter((e) => platformActive.includes(e._id)) || {}}
+            // onChange={(e) => {
+            //   setPlatformActive(e.value);
+            // }}
+
+            onChange={(e) => {
+              setPlatformActive(e.map((e) => e._id));
+            }}
+
+          ></Select>
+        </div> */}
+
+        <div className="form-group col-6">
+          <label className="form-label">
+            Platform Active On <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            required={true}
+            options={platformData.map((option) => ({
+              value: option._id,
+              label: option.platform_name,
+            }))}
+            isMulti
+            value={platformActive}
+            onChange={(e) => {
+              setPlatformActive(e);
+            }}
+          ></Select>
+        </div>
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -399,7 +504,6 @@ const PageMaster = () => {
             onChange={(selectedOption) => setPageType(selectedOption.value)}
           />
         </div>
-
         <div className="form-group col-6">
           <label className="form-label">
             Vendor <sup style={{ color: "red" }}>*</sup>
@@ -421,7 +525,6 @@ const PageMaster = () => {
             }}
           ></Select>
         </div>
-
         <FieldContainer
           label="Engagement Rate *"
           type="number"
@@ -429,13 +532,147 @@ const PageMaster = () => {
           required={true}
           onChange={(e) => setRate(e.target.value)}
         />
-
         <FieldContainer
           label="Description"
           value={description}
           required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
+        <div>Purchase Price</div>
+        <div className="form-group col-6">
+          <label className="form-label">
+            Platform ID <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={platformData.map((option) => ({
+              value: option._id,
+              label: option.platform_name,
+            }))}
+            value={{
+              value: platformId,
+              label:
+                platformData.find((role) => role._id === platformId)
+                  ?.platform_name || "",
+            }}
+            onChange={(e) => {
+              setPlatformId(e.value);
+            }}
+          ></Select>
+        </div>
+        {/* <div className="form-group col-6 row">
+          <label className="form-label">
+            Price Type <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={priceTypeList.map((option) => ({
+              value: option.price_type_id,
+              label: option.PMS_Platforms_data.price_type,
+            }))}
+            required={true}
+            value={{
+              value: priceTypeId,
+              label:
+                priceTypeList.find((role) => role.price_type_id === priceTypeId)
+                  ?.PMS_Platforms_data.price_type || "",
+            }}
+            onChange={handlePriceTypeChange}
+          />
+        </div> */}
+
+        <div className="form-group col-6 row">
+          <label className="form-label">
+            Rate Type <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={["Fixed", "Variable"].map((option) => ({
+              value: option,
+              label: option,
+            }))}
+            required={true}
+            value={{
+              value: rateType.value,
+              label: rateType.label,
+            }}
+            onChange={handleRateTypeChange}
+          />
+        </div>
+        {rateType.label == "Variable" && (
+          <div className="form-group col-6 row">
+            <label className="form-label">
+              Variable Type <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              options={["Per Thousand", "Per Million"].map((option) => ({
+                value: option,
+                label: option,
+              }))}
+              required={true}
+              value={{
+                value: variableType.value,
+                label: variableType.label,
+              }}
+              onChange={handleVariableTypeChange}
+            />
+          </div>
+        )}
+
+        <div className="col-12 row">
+          {rowCount.map((row, index) => (
+            <>
+              {" "}
+              <div className="form-group col-5 row">
+                <label className="form-label">
+                  Price Type <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={filterPriceTypeList.map((option) => ({
+                    value: option.price_type_id,
+                    label: option.price_type,
+                  }))}
+                  required={true}
+                  value={{
+                    label: priceTypeList.find(
+                      (role) =>
+                        role.price_type_id === rowCount[index].price_type_id
+                    )?.price_type,
+                    value: rowCount[index].price_type_id,
+                  }}
+                  onChange={(e) => handlePriceTypeChange(e, index)}
+                />
+              </div>
+              <FieldContainer
+                label=" Price *"
+                required={true}
+                type="number"
+                onChange={(e) => handlePriceChange(e, index)}
+                value={rowCount[index].price}
+              />
+              {index != 0 && (
+                <button
+                  className="btn btn-sm btn-danger mt-4 ml-2  col-1 mb-3"
+                  type="button"
+                  onClick={() => {
+                    setRowCount(
+                      (prev) => prev.filter((e, i) => i !== index),
+                      handleFilterPriceType()
+                    );
+                  }}
+                >
+                  Remove
+                </button>
+              )}
+            </>
+          ))}
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={addPriceRow}
+              className="btn btn-sm btn-primary"
+            >
+              Add Price
+            </button>
+          </div>
+        </div>
       </FormContainer>
     </>
   );
