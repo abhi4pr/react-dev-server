@@ -7,6 +7,7 @@ import FormContainer from "../../FormContainer";
 import Modal from "react-modal";
 import DataTable from "react-data-table-component";
 import { PieChart } from "@mui/x-charts/PieChart";
+import { BarChart } from "@mui/x-charts/BarChart";
 
 const UserDashboard = () => {
   const [userData, setUserData] = useState([]);
@@ -41,6 +42,33 @@ const UserDashboard = () => {
     axios.get(baseUrl + "get_all_departments").then((res) => {
       setDepartmentData(res.data);
     });
+  }, []);
+
+  const [designationData, setDesignationData] = useState([]);
+  async function designaitonData() {
+    await axios.get(baseUrl + "get_all_designations").then((res) => {
+      setDesignationData(res.data.data);
+    });
+  }
+  const [subDepartmentData, setSubDeparmentData] = useState([]);
+  function SubDeptData() {
+    axios.get(baseUrl + "get_all_sub_departments").then((res) => {
+      setSubDeparmentData(res.data);
+    });
+  }
+  const [roleData, setRoleData] = useState([]);
+  async function RoleData() {
+    try {
+      const response = await axios.get(baseUrl + "get_all_roles");
+      setRoleData(response.data.data);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+  useEffect(() => {
+    designaitonData();
+    SubDeptData();
+    RoleData();
   }, []);
 
   return (
@@ -159,13 +187,44 @@ const UserDashboard = () => {
               />
             </div>
           </div>
-          <div style={{ backgroundColor: "green", padding: "30px" }}>
+          <div style={{ backgroundColor: "#33FF57", padding: "30px" }}>
             Active User
             <h2>{activeUserCount.length}</h2>
           </div>
-          <div style={{ backgroundColor: "orange", padding: "30px" }}>
+          <div style={{ backgroundColor: "#FF5733", padding: "30px" }}>
             Exit User
             <h2>{exitUserCount.length}</h2>
+          </div>
+        </div>
+
+        <div
+          className="chart_container p-0"
+          style={{ width: "50%", height: "100% " }}
+        >
+          <div className="card">
+            <BarChart
+              xAxis={[
+                {
+                  scaleType: "band",
+                  data: ["Department", "Sub Department", "Designation", "Role"],
+                },
+              ]}
+              series={[
+                {
+                  data: [
+                    departmentData.length,
+                    subDepartmentData.length,
+                    designationData.length,
+                    roleData.length,
+                  ],
+                  // colors: ["#FF5733", "#33FF57", "#337EFF", "#FF33E1"],
+                },
+                { data: [] },
+                // { data: [2, 5, 6] },
+              ]}
+              width={600}
+              height={300}
+            />
           </div>
         </div>
 
