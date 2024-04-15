@@ -26,6 +26,7 @@ export default function PurchasePrice() {
   const [platformId, setPlatformId] = useState("");
   const [tableData, setTableData] = useState([]);
   const [allPriceList, setAllPriceList] = useState([]);
+  const [allPriceTypeList, setAllallPriceTypeList] = useState([]);
 
   const getData = () => {
     axios.get(baseUrl + "getAllPlatform").then((res) => {
@@ -34,6 +35,10 @@ export default function PurchasePrice() {
 
     axios.get(baseUrl + `get_page_purchase_price/${+id}`).then((res) => {
       setTableData(res.data.data);
+    });
+    axios.get(baseUrl + `get_all_data_list`).then((res) => {
+      setAllallPriceTypeList(res.data.data);
+      console.log(res.data.data, "price type list api");
     });
   };
 
@@ -51,10 +56,11 @@ export default function PurchasePrice() {
 
   useEffect(() => {
     if (platformId) {
-      setPriceTypeList([])
+      setPriceTypeId("")
+      setPriceTypeList([]);
       let priceData = platformData.find((role) => role._id == platformId)?._id;
       axios
-        .get(baseUrl + `getAll_page_purchase_price/${priceData}`)
+        .get(baseUrl + `data/${priceData}`)
         .then((res) => {
           setPriceTypeList(res.data.data);
         });
@@ -94,7 +100,7 @@ export default function PurchasePrice() {
       pageMast_id: id,
       price_cal_type: rateType.value,
       price_type_id: priceTypeId,
-      variable_type:rateType.value=="Variable"? variableType.value:null,
+      variable_type: rateType.value == "Variable" ? variableType.value : null,
       purchase_price: price,
       description: description,
     };
@@ -109,7 +115,7 @@ export default function PurchasePrice() {
           setPrice("");
           setDescription("");
           setPlatformId("");
-          
+
           getData();
         } else {
           alert("Something went wrong");
@@ -147,14 +153,23 @@ export default function PurchasePrice() {
       field: "PMS_Platforms_data.price_type",
       headerName: "Price Type",
       width: 200,
-      renderCell: (params) => (
-        <strong>
-          {
-            allPriceList.find((e) => e._id == params.row.price_type_id)
-              ?.price_type
-          }
-        </strong>
-      ),
+      renderCell: ({ row }) => {
+        let f = allPriceTypeList?.filter((item) =>
+          row?.price_type_id?.includes(item?.price_type_id)
+        );
+        return (
+          <>
+            {f.map((item, i) => {
+              return (
+                <>
+                  {item?.price_type}
+                  {i !== f.length - 1 && ","}
+                </>
+              );
+            })}
+          </>
+        );
+      },
     },
     { field: "price_cal_type", headerName: "Rate Type", width: 200 },
     { field: "variable_type", headerName: "Variable Type", width: 200 },
@@ -195,17 +210,13 @@ export default function PurchasePrice() {
             Price Type <sup style={{ color: "red" }}>*</sup>
           </label>
           <Select
+            isMulti
             options={priceTypeList.map((option) => ({
               value: option.price_type_id,
-              label: option.PMS_Platforms_data.price_type,
+              label: option.price_type,
             }))}
             required={true}
-            value={{
-              value: priceTypeId,
-              label:
-                priceTypeList.find((role) => role.price_type_id === priceTypeId)
-                  ?.PMS_Platforms_data.price_type || "",
-            }}
+            value={priceTypeId}
             onChange={handlePriceTypeChange}
           />
         </div>
@@ -273,17 +284,15 @@ export default function PurchasePrice() {
           >
             Submit
           </Button>
-
         </div>
-          <DataGrid
-            rows={tableData}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-
-            disableSelectionOnClick
-            getRowId={(row) => row._id}
-          />
+        <DataGrid
+          rows={tableData}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          disableSelectionOnClick
+          getRowId={(row) => row._id}
+        />
       </FormContainer>
     </>
   );

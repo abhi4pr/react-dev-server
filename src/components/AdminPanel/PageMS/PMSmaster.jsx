@@ -558,7 +558,7 @@ export default function PMSmaster() {
               className="d-flex gap4 col mb-2"
               style={{ flexWrap: "wrap", gap: "10px" }}
             >
-              <Link to="admin/pms-price-type">
+              <Link to="/admin/pms-price-type">
                 <div
                   className="card hover body-padding"
                   style={{

@@ -64,7 +64,7 @@ const PageEdit = () => {
   const [followCount, setFollowCount] = useState("");
   const [profileData, setProfileData] = useState([]);
   const [profileId, setProfileId] = useState("");
-  const [platformActive, setPlatformActive] = useState("");
+  const [platformActive, setPlatformActive] = useState();
   const [rate, setRate] = useState("");
   const [description, setDescription] = useState("");
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
@@ -296,8 +296,8 @@ const PageEdit = () => {
     const svDate = preSVDate != "Invalid Date" ? preSVDate?.toISOString() : "";
 
     const formData = new FormData();
-    formData.append("p_id", rowData.p_id);
-    formData.append("reach", reach);
+    formData.append("p_id", p_id);
+    formData.append("reach", reach? reach : 0);
     formData.append("impression", impression ? impression : 0);
     formData.append("engagement", engagement ? engagement : 0);
     formData.append("story_view", storyView ? storyView : 0);
@@ -440,7 +440,7 @@ const PageEdit = () => {
         setStoryViewImgSrc(null);
         setStoryViewVideoSrc(null);
         setStoryViewDate(null);
-
+getData()
         toastAlert("Form Submitted success");
       });
   };
@@ -465,11 +465,9 @@ const PageEdit = () => {
     { value: "Hindi", label: "Hindi" },
   ];
 
-
-
   const handleUpdateRowClick = async () => {
     await axios
-      .get(`${baseUrl}`+`get_exe_ip_count_history/${p_id}`)
+      .get(`${baseUrl}` + `get_exe_ip_count_history/${p_id}`)
       .then((res) => {
         let data = res.data.data.filter((e) => {
           return e.isDeleted !== true;
@@ -480,36 +478,6 @@ const PageEdit = () => {
       });
   };
   const getData = () => {
-    axios.get(baseUrl + `getPageDetail/${pageMast_id}`).then((res) => {
-      const data = [res.data.data];
-      
-      console.log(res.data.latestEntry.stats_update_flag, "data[0].totalPercentage");
-      setLatestEntry(res.data.latestEntry);
-      setStateUpdate(data[0].stats_update_flag);
-      setTotalPercentage(res.data.totalPercentage);
-      setPlatformId(data[0].platform_id);
-      setPageName(data[0].page_user_name);
-      setLink(data[0].link);
-      setCategoryId(data[0].page_catg_id);
-      setTag(data[0].tag_category);
-      setPageLevel(data[0].page_level);
-      setPageStatus(data[0].page_status);
-      setCloseBy(data[0].page_closed_by);
-      setPageType(data[0].page_name_type);
-      setContent(data[0].content_creation);
-      setOwnerType(data[0].ownership_type);
-      setVendorId(data[0].vendorMast_id);
-      setFollowCount(data[0].followers_count);
-      setProfileId(data[0].profile_type_id);
-      setPlatformActive(data[0].platform_active_on);
-      setRate(data[0].engagment_rate);
-      setDescription(data[0].description);
-      setP_id(data[0].pageMast_id);
-      const { execounthismodels } = data[0];
-      setExecounthismodels(execounthismodels);
-    });
-
-
     axios.get(baseUrl + "getAllPlatform").then((res) => {
       setPlatformData(res.data.data);
     });
@@ -550,7 +518,52 @@ const PageEdit = () => {
     callApi();
   }, [intervalFlag]);
 
-  
+  useEffect(() => {
+    axios.get(baseUrl + `getPageDetail/${pageMast_id}`).then((res) => {
+      const data = [res.data.data];
+
+      setLatestEntry(res.data.latestEntry);
+      setStateUpdate(data[0].stats_update_flag);
+      setTotalPercentage(res.data.totalPercentage);
+      setPlatformId(data[0].platform_id);
+      setPageName(data[0].page_user_name);
+      setLink(data[0].link);
+      setCategoryId(data[0].page_catg_id);
+      setTag(data[0].tag_category);
+      const tagFilter = categoryData.filter((e) =>
+        data[0].tag_category.includes(e._id)
+      );
+      setTag(
+        tagFilter.map((e) => {
+          return { value: e._id, label: e.page_category };
+        })
+      );
+      setPageLevel(data[0].page_level);
+      setPageStatus(data[0].page_status);
+      setCloseBy(data[0].page_closed_by);
+      setPageType(data[0].page_name_type);
+      setContent(data[0].content_creation);
+      setOwnerType(data[0].ownership_type);
+      setVendorId(data[0].vendorMast_id);
+      setFollowCount(data[0].followers_count);
+      setProfileId(data[0].profile_type_id);
+      const platformActive = platformData.filter((e) =>
+        data[0].platform_active_on.includes(e._id)
+      );
+      setPlatformActive(
+        platformActive.map((e) => {
+          return { value: e._id, label: e.platform_name };
+        })
+      );
+      console.log(data[0].platform_active_on, "data[0].platform_active_on");
+      setRate(data[0].engagment_rate);
+      setDescription(data[0].description);
+      setP_id(data[0].pageMast_id);
+      const { execounthismodels } = data[0];
+      setExecounthismodels(execounthismodels);
+    });
+  }, [categoryData, platformData]);
+
   const handleHistoryRowClick = () => {
     navigate(`/admin/exe-history/${p_id}`, { state: p_id });
   };
@@ -564,19 +577,17 @@ const PageEdit = () => {
       .then((res) => {
         setHistoryData(res.data.data);
       });
-
-
   };
 
   useEffect(() => {
-    if(p_id){
-    axios.get(baseUrl + `get_exe_ip_count_history/${p_id}`).then((res) => {
-      const data = res.data.data.filter((e) => {
-        return e.isDeleted !== true;
+    if (p_id) {
+      axios.get(baseUrl + `get_exe_ip_count_history/${p_id}`).then((res) => {
+        const data = res.data.data.filter((e) => {
+          return e.isDeleted !== true;
+        });
+        setP_idHistoryData(data);
       });
-      setP_idHistoryData(data);
-    });
-  }
+    }
   }, [p_id]);
 
   const handleSubmit = (e) => {
@@ -634,7 +645,7 @@ const PageEdit = () => {
       link: link,
       platform_id: platformId,
       page_catg_id: categoryId,
-      tag_category: tag,
+      tag_category: tag.map((e) => e.value),
       page_level: pageLevel,
       page_status: pageStatus,
       page_closed_by: closeBy,
@@ -644,7 +655,7 @@ const PageEdit = () => {
       vendorMast_id: vendorId,
       followers_count: followCount,
       profile_type_id: profileId,
-      platform_active_on: platformActive,
+      platform_active_on: platformActive.map((e) => e.value),
       engagment_rate: rate,
       description: description,
       updated_by: userID,
@@ -660,17 +671,7 @@ const PageEdit = () => {
     return <Navigate to="/admin/pms-page-overview" />;
   }
 
-  function handleKeyDown(e) {
-    if (e.key === "," && e.target.value.trim()) {
-      e.preventDefault();
-      setTag([...tag, e.target.value.trim()]);
-      e.target.value = "";
-    }
-  }
-
-  function removeTag(index) {
-    setTag(tag.filter((el, i) => i !== index));
-  }
+ 
 
   const handleRowClick = () => {
     // setRowData(row);
@@ -746,22 +747,20 @@ const PageEdit = () => {
           ></Select>
         </div>
 
-        <label className="form-label">Tags</label>
-        <div className="tags-input-container">
-          {tag?.map((tag, index) => (
-            <div className="tag-item" key={index}>
-              <span className="text">{tag}</span>
-              <span className="close" onClick={() => removeTag(index)}>
-                &times;
-              </span>
-            </div>
-          ))}
-          <input
-            onKeyDown={handleKeyDown}
-            type="text"
-            className="tags-input"
-            placeholder="comma separated values"
-          />
+        <div className="form-group col-6">
+          <label className="form-label">
+            Tags <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            isMulti
+            options={categoryData.map((option) => ({
+              value: option._id,
+              label: option.page_category,
+            }))}
+            required={true}
+            value={tag}
+            onChange={(e) => setTag(e)}
+          ></Select>
         </div>
 
         <div className="form-group col-6">
@@ -898,12 +897,23 @@ const PageEdit = () => {
           ></Select>
         </div>
 
-        <FieldContainer
-          label="Platform active on *"
-          value={platformActive}
-          required={true}
-          onChange={(e) => setPlatformActive(e.target.value)}
-        />
+        <div className="form-group col-6">
+          <label className="form-label">
+            Platform Active On <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            required={true}
+            options={platformData.map((option) => ({
+              value: option._id,
+              label: option.platform_name,
+            }))}
+            isMulti
+            value={platformActive}
+            onChange={(e) => {
+              setPlatformActive(e);
+            }}
+          ></Select>
+        </div>
 
         <FieldContainer
           label="Engagement Rate *"
@@ -926,8 +936,8 @@ const PageEdit = () => {
   const PageHealth = () => {
     return (
       <div className="d-felx">
-       page health
-        <div >
+        page health
+        <div>
           <FieldContainer
             label="Page Name "
             disabled={true}
@@ -960,7 +970,7 @@ const PageEdit = () => {
           <FieldContainer
             disabled={true}
             label="Stats Update Flag"
-            value={stateUpdate? "Yes" : "No"}
+            value={stateUpdate ? "Yes" : "No"}
             required={false}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -980,9 +990,7 @@ const PageEdit = () => {
             <button
               type="button"
               className="btn btn-primary me-2 btn-lg"
-              onClick={() =>
-                 handleHistoryRowClick()
-                }
+              onClick={() => handleHistoryRowClick()}
               disabled={
                 latestEntry?.stats_update_flag
                   ? latestEntry.stats_update_flag
@@ -1298,7 +1306,6 @@ const PageEdit = () => {
       </>
     );
   };
-  const viewInOptions = ["Millions", "Thousands", "Default"];
   const columns = [
     {
       field: "S.No",
@@ -1823,9 +1830,15 @@ const PageEdit = () => {
               <BarChart
                 xAxis={[{ scaleType: "band", data: ["Higest"] }]}
                 series={[
-                  { data: [historyData[0].maxReach], label: "Reach" },
-                  { data: [historyData[0].maxImpression], label: "Impression" },
-                  { data: [historyData[0].maxEngagement], label: "Engagement" },
+                  { data: [historyData[0]?.maxReach], label: "Reach" },
+                  {
+                    data: [historyData[0]?.maxImpression],
+                    label: "Impression",
+                  },
+                  {
+                    data: [historyData[0]?.maxEngagement],
+                    label: "Engagement",
+                  },
                 ]}
                 width={500}
                 height={300}
@@ -1858,9 +1871,15 @@ const PageEdit = () => {
               <BarChart
                 xAxis={[{ scaleType: "band", data: ["Average"] }]}
                 series={[
-                  { data: [historyData[0].avgReach], label: "Reach" },
-                  { data: [historyData[0].avgImpression], label: "Impression" },
-                  { data: [historyData[0].avgEngagement], label: "Engagement" },
+                  { data: [historyData[0]?.avgReach], label: "Reach" },
+                  {
+                    data: [historyData[0]?.avgImpression],
+                    label: "Impression",
+                  },
+                  {
+                    data: [historyData[0]?.avgEngagement],
+                    label: "Engagement",
+                  },
                 ]}
                 width={500}
                 height={300}
@@ -1891,9 +1910,15 @@ const PageEdit = () => {
               <BarChart
                 xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
                 series={[
-                  { data: [historyData[0].minReach], label: "Reach" },
-                  { data: [historyData[0].minImpression], label: "Impression" },
-                  { data: [historyData[0].minEngagement], label: "Engagement" },
+                  { data: [historyData[0]?.minReach], label: "Reach" },
+                  {
+                    data: [historyData[0]?.minImpression],
+                    label: "Impression",
+                  },
+                  {
+                    data: [historyData[0]?.minEngagement],
+                    label: "Engagement",
+                  },
                 ]}
                 width={500}
                 height={300}
@@ -1922,7 +1947,7 @@ const PageEdit = () => {
           </>
         )}
 
-        {
+        {!graphView && (
           <DataGrid
             rows={p_idHistoryData}
             columns={columns}
@@ -1931,7 +1956,7 @@ const PageEdit = () => {
             checkboxSelection
             getRowId={(row) => row._id}
           />
-        }
+        )}
       </>
     );
   };

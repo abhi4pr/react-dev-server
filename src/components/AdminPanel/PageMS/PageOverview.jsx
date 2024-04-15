@@ -13,12 +13,19 @@ import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
 import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import { useGlobalContext } from "../../../Context/Context";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import RequestPageIcon from '@mui/icons-material/RequestPage';
+import RequestPageIcon from "@mui/icons-material/RequestPage";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Button from "@mui/material/Button";
+import { render } from "react-dom";
 
 const PageOverview = () => {
   const { toastAlert } = useGlobalContext();
   const [vendorTypes, setVendorTypes] = useState([]);
-  const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
   const [platform, setPlatform] = useState([{}]);
   const [cat, setCat] = useState([{}]);
@@ -26,20 +33,26 @@ const PageOverview = () => {
   const [user, setUser] = useState();
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(10);
+  const [platformData, setPlatformData] = useState([]);
+  const [allPriceTypeList, setAllallPriceTypeList] = useState([]);
+  const [showPriceModal, setShowPriceModal] = useState(false);
+  const [priceData, setPriceData] = useState({});
 
   const getData = () => {
-    setProgress(30);
+    setProgress(0);
     setLoading(true);
-    setProgress(50);
+    setProgress(20);
+
+    axios.get(baseUrl + "getAllPlatform").then((res) => {
+      setPlatformData(res.data.data);
+    });
+
     axios.get(baseUrl + "getPageMastList").then((res) => {
-      setProgress(70);
+      setProgress(60);
       setVendorTypes(res.data.data);
-      setFilterData(res.data.data);
+      setFilterData(res.data.data.reverse());
 
       setLoading(false);
-    });
-    axios.get(baseUrl + "getAllPlatform").then((res) => {
-      setPlatform(res.data.data);
     });
     setProgress(80);
     axios.get(baseUrl + "getPageCatgList").then((res) => {
@@ -57,15 +70,27 @@ const PageOverview = () => {
   };
 
   useEffect(() => {
-    getData();
+    setAllallPriceTypeList([]);
+    axios.get(baseUrl + `get_all_data_list`).then((res) => {
+      setAllallPriceTypeList(res.data.data);
+    });
   }, []);
 
   useEffect(() => {
-    const result = vendorTypes?.filter((d) => {
-      return d.page_user_name.toLowerCase().match(search.toLowerCase());
-    });
-    setFilterData(result);
-  }, [search]);
+    getData();
+  }, []);
+
+  const handlePriceClick = (row) => {
+    return function () {
+      console.log(row.purchase_price, "row._id by Manoj");
+      setPriceData(row.purchase_price);
+      setShowPriceModal(true);
+    };
+  };
+
+  const handleClose = () => {
+    setShowPriceModal(false);
+  };
 
   const dataGridcolumns = [
     {
@@ -107,7 +132,7 @@ const PageOverview = () => {
       headerName: "Platform",
       renderCell: (params) => {
         let name = platform?.find(
-          (item) => item?._id == params.row?.platform_id
+          (item) => item?._id == params.row.platform_id
         )?.platform_name;
 
         return <div>{name}</div>;
@@ -148,6 +173,46 @@ const PageOverview = () => {
       field: "platform_active_on",
       headerName: "Platform Active On",
       width: 200,
+      renderCell: (params) => {
+        console.log(params.row.platform_active_on, "platform_active_on");
+        let data = platformData.filter((item) => {
+          return params.row.platform_active_on.includes(item._id);
+        });
+        return (
+          <div>
+            {data.map((item, i) => {
+              return (
+                <>
+                  {item.platform_name}
+                  {i !== data.length - 1 && ","}
+                </>
+              );
+            })}
+          </div>
+        );
+      },
+    },
+    {
+      field: "tag_category",
+      headerName: "Tag Category",
+      width: 200,
+      renderCell: (params) => {
+        let data = cat.filter((item) => {
+          return params.row?.tag_category?.includes(item._id);
+        });
+        return (
+          <div>
+            {data?.map((item, i) => {
+              return (
+                <>
+                  {item.page_category}
+                  {i !== data.length - 1 && ","}
+                </>
+              );
+            })}
+          </div>
+        );
+      },
     },
     {
       field: "engagment_rate",
@@ -183,13 +248,60 @@ const PageOverview = () => {
       width: 200,
     },
     {
+      field: "price_type_id",
+      headerName: "Price Type",
+      renderCell: ({ row }) => {
+        let f = allPriceTypeList?.filter((item) =>
+          row?.price_type_id?.includes(item?.price_type_id)
+        );
+        return (
+          <>
+            {f.map((item, i) => {
+              return (
+                <>
+                  {item?.price_type}
+                  {i !== f.length - 1 && ","}
+                </>
+              );
+            })}
+          </>
+        );
+      },
+    },
+    { field: "price_cal_type", headerName: "Rate Type", width: 200 },
+    { field: "variable_type", headerName: "Variable Type", width: 200 },
+    {
+      field: "purchase_price",
+      headerName: "Price",
+      width: 200,
+      renderCell: ({ row }) => {
+        // console.log(row.purchase_price,"purchase_price")
+        return (
+          <div>
+            {row.purchase_price && (
+              <button
+                title="Price"
+                onClick={handlePriceClick(row)}
+                className="btn btn-outline-primary btn-sm user-button"
+              >
+                <PriceCheckIcon />
+              </button>
+            )}
+          </div>
+        );
+      },
+    },
+    { field: "description", headerName: "Description", width: 200 },
+    {
       field: "Action",
       headerName: "Action",
       width: 300,
       renderCell: (params) => (
         <div className="d-flex align-center ">
-          
-          <Link className="mt-2" to={`/admin/pms-purchase-price/${params.row.pageMast_id}`}>
+          <Link
+            className="mt-2"
+            to={`/admin/pms-purchase-price/${params.row.pageMast_id}`}
+          >
             <button
               title="Purchase Price"
               className="btn btn-outline-primary btn-sm user-button"
@@ -197,7 +309,7 @@ const PageOverview = () => {
               <RequestPageIcon />{" "}
             </button>
           </Link>
-             <Link className="mt-2" to={`/admin/pms-page-edit/${params.row._id}`}>
+          <Link className="mt-2" to={`/admin/pms-page-edit/${params.row._id}`}>
             <button
               title="Edit"
               className="btn btn-outline-primary btn-sm user-button"
@@ -212,6 +324,32 @@ const PageOverview = () => {
           />
         </div>
       ),
+    },
+  ];
+
+  const priceColumn = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      renderCell: (params) => <div>{priceData.indexOf(params.row) + 1}</div>,
+      width: 130,
+    },
+    {
+      field: "price_type",
+      headerName: "Price Type",
+      width: 200,
+      renderCell: (params) => {
+        let name = allPriceTypeList?.find(
+          (item) => item.price_type_id == params.row.price_type_id
+        )?.price_type;
+        return <div>{name}</div>;
+      },
+    },
+
+    {
+      field: "price",
+      headerName: "Price",
+      width: 200,
     },
   ];
 
@@ -389,6 +527,51 @@ const PageOverview = () => {
                     </Link>
                   </div>
                 </div>
+                <div className="row my-2">
+                  {platformData?.map((item, i) => {
+                    return (
+                      <div key={i} className="col-md-2">
+                        <button
+                          onClick={() => {
+                            let result = vendorTypes.filter((d) => {
+                              return d.platform_id == item._id;
+                            });
+
+                            setFilterData(result);
+                          }}
+                          className="btn btn-primary btn-sm"
+                          id="pageName"
+                        >
+                          {item.platform_name}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="row">
+                  {/* {
+                  allPriceTypeList?.map((item,i) => {
+                    return (
+                      <div key={i} className="col-md-2">
+                        <button
+                          onClick={() => {
+                            let result = vendorTypes.filter((d) => {
+                              return d.price_type_id == item.price_type_id;
+                            });
+                            setFilterData(result);
+                          }}
+
+                          className="btn btn-primary btn-sm"
+                          id="pageName"
+                        >
+                          {item.PMS_Platforms_data.price_type}
+                        </button>
+                      </div>
+                    );
+                  })
+                
+                } */}
+                </div>
               </div>
             </div>
           </div>
@@ -432,25 +615,60 @@ const PageOverview = () => {
               </Box>
             </Box>
           ) : (
+            <Box sx={{ height: 400, width: "100%" }}>
+              <DataGrid
+                title="Page Overview"
+                rows={filterData}
+                columns={dataGridcolumns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                rowHeight={38}
+                disableSelectionOnClick
+                getRowId={(row) => row._id}
+                slots={{ toolbar: GridToolbar }}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                checkboxSelection
+              />
+            </Box>
+          )}
+        </div>
+      </div>
+      <Dialog
+        open={showPriceModal}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Price Details"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
             <DataGrid
-              title="Page Overview"
-              rows={filterData}
-              columns={dataGridcolumns}
+              rows={priceData}
+              columns={priceColumn}
               pageSize={5}
               rowsPerPageOptions={[5]}
               disableSelectionOnClick
-              getRowId={(row) => row._id}
+              getRowId={(row) => row.price_type_id}
               slots={{ toolbar: GridToolbar }}
               slotProps={{
                 toolbar: {
                   showQuickFilter: true,
                 },
               }}
-              checkboxSelection
             />
-          )}
-        </div>
-      </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} autoFocus>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* } */}
     </>
   );
 };
