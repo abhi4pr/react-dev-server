@@ -10,7 +10,7 @@ import {
   Paper,
   Autocomplete,
 } from "@mui/material";
-import { baseUrl } from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const style = {
   position: "absolute",
@@ -31,7 +31,6 @@ const ExePageDetailes = ({
   activeAccordion,
   getAssignment,
 }) => {
-
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [singlePhase, setSinglePhase] = useState([]);
@@ -41,10 +40,17 @@ const ExePageDetailes = ({
   const [commitPayload, setCommitPayload] = useState([]);
   const [posts, setPosts] = useState([]);
   const [story, setStory] = useState([]);
-  const [ass_id, setAss_id] = useState(null)
+  const [ass_id, setAss_id] = useState(null);
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
   const [pageDetails, setPageDetails] = useState([]);
+  const [shortcode, setShortcode] = useState("");
+
+  const handleShortcodeChange = (event, index) => {
+    const newShortcodes = [...shortcode];
+    newShortcodes[index] = event.target.value;
+    setShortcode(newShortcodes);
+  };
 
   const handleButtonClick = async (row) => {
     const postCount = row.postPerPage;
@@ -55,25 +61,22 @@ const ExePageDetailes = ({
       ass_id: row.ass_id,
       campaignId: row.campaignId,
       phase_id: row.phase_id,
-      execute: false
+      execute: false,
     });
-    setAss_id(row.ass_id)
+    setAss_id(row.ass_id);
     setOpen(true);
   };
 
   const finalExecute = async () => {
-    const response = await axios.post(
-      baseUrl + "assignment/commit",
-      {
-        ass_id: ass_id,
+    const response = await axios.post(baseUrl + "assignment/commit", {
+      ass_id: ass_id,
 
-        execute: true
-      }
-    );
+      execute: true,
+    });
     alert("executed successfully");
     getAssignment();
     setOpen(false);
-  }
+  };
 
   const handleUpdate = async (params) => {
     const response = await axios.get(
@@ -89,7 +92,7 @@ const ExePageDetailes = ({
     setOpen2(true);
   };
 
-  const handleVerified = () => { };
+  const handleVerified = () => {};
 
   const handleCommitChange = (e, field, param) => {
     // setCommitPayload({...commitPayload,[field]:e.target.value,id})
@@ -103,14 +106,11 @@ const ExePageDetailes = ({
   };
 
   const handleExecute = async (params) => {
-    const response = await axios.post(
-      baseUrl + "assignment/status",
-      {
-        ass_id: params.row.ass_id,
-        campaignId: params.row.campaignId,
-        ass_status: "executed",
-      }
-    );
+    const response = await axios.post(baseUrl + "assignment/status", {
+      ass_id: params.row.ass_id,
+      campaignId: params.row.campaignId,
+      ass_status: "executed",
+    });
 
     getAssignment();
   };
@@ -355,32 +355,44 @@ const ExePageDetailes = ({
 
   const getPageDetails = async (index) => {
     try {
+      const regex = /\/reel\/([A-Za-z0-9-_]+)/;
+      const match = shortcode[index].match(regex);
+      if (match && match.length > 1) {
+  
         const payload = {
-            "shortCode": "C5hg84Wo7Nd",
-            "department": "660ea4d1bbf521bf783ffe18",
-            "userId": 15
+          shortCode: match[1],
+          department: "660ea4d1bbf521bf783ffe18",
+          userId: 15,
         };
-        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3RpbmciLCJpYXQiOjE3MDczMTIwODB9.ytDpwGbG8dc9jjfDasL_PI5IEhKSQ1wXIFAN-2QLrT8";
+        const token =
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3RpbmciLCJpYXQiOjE3MDczMTIwODB9.ytDpwGbG8dc9jjfDasL_PI5IEhKSQ1wXIFAN-2QLrT8";
         const config = {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         };
-        const response = await axios.post(`http://35.200.154.203:8080/api/v1/getpostDetailFromInsta`, payload, config);
-        
+        const response = await axios.post(
+          `http://35.200.154.203:8080/api/v1/getpostDetailFromInsta`,
+          payload,
+          config
+        );
+  
         setPageDetails((prevPageDetails) => {
           const updatedPageDetails = [...prevPageDetails];
           updatedPageDetails[index] = response?.data?.data;
           return updatedPageDetails;
         });
+      } else {
+        console.log("No match found or invalid shortcode.");
+      }
     } catch (error) {
-        console.error('Error fetching page details:', error);
+      console.error("Error fetching page details:", error);
     }
-};
+  };
+  
 
   return (
     <>
-    
       <DataGrid
         rows={data}
         columns={column}
@@ -399,32 +411,27 @@ const ExePageDetailes = ({
             <Typography variant="h5" component="h2" sx={{ ml: 1 }}>
               Execution
             </Typography>
-            <Box sx={{  }}>
+            <Box sx={{}}>
               <Box>
-                {posts.map((index,i) => (
+                {posts.map((index, i) => (
                   <div key={i}>
                     <TextField
                       sx={{ m: 1 }}
                       label="Shortcode"
                       type="text"
-                      onChange={(e) =>
-                        setAssignedData({
-                          ...assignedData,
-                          link: e.target.value,
-                          commitType:'post'
-                        })
-                      }
+                      value={shortcode[i]}
+                      onChange={(event) => handleShortcodeChange(event, i)}
                     />
 
                     <TextField
-                      sx={{ m: 1,width:"100px" }}
+                      sx={{ m: 1, width: "100px" }}
                       label="Likes"
                       type="number"
                       value={pageDetails[i]?.like_count}
                       // onChange={}
                     />
                     <TextField
-                      sx={{ m: 1,width:'150px' }}
+                      sx={{ m: 1, width: "150px" }}
                       label="Comments"
                       type="number"
                       value={pageDetails[i]?.comment_count}
@@ -473,7 +480,11 @@ const ExePageDetailes = ({
                   </div>
                 ))}
               </Box> */}
-              <Button variant="contained" color="success" onClick={finalExecute}>
+              <Button
+                variant="contained"
+                color="success"
+                onClick={finalExecute}
+              >
                 execute
               </Button>
             </Box>
@@ -526,24 +537,24 @@ const ExePageDetailes = ({
             </Box>
             {singlePhase.map((item) => (
               <>
-              <Box>
-                <TextField
-                  label="commitment"
-                  value={item.commitment}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  margin="normal"
-                />
-                <TextField
-                  label="value"
-                  value={item.value}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                  margin="normal"
-                />
-              </Box>
+                <Box>
+                  <TextField
+                    label="commitment"
+                    value={item.commitment}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    margin="normal"
+                  />
+                  <TextField
+                    label="value"
+                    value={item.value}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    margin="normal"
+                  />
+                </Box>
               </>
             ))}
             <DataGrid
