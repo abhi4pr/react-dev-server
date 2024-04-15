@@ -24,15 +24,33 @@ const SalesSidebarLinks = () => {
       >
         <div className="internal collapse-inner">
           <Link className="collapse-item" to="/admin/sales-dashboard">
-            <i className="bi bi-dot"></i>Dashboard
+            <i className="bi bi-dot" />
+            Dashboard
           </Link>
 
           <Link className="collapse-item" to="/admin/sales-services-overview">
-            <i className="bi bi-dot"></i>Services
+            <i className="bi bi-dot" />
+            Services
           </Link>
 
           <Link className="collapse-item" to="/admin/pms-vendor-overview">
-            <i className="bi bi-dot"></i>Bookings
+            <i className="bi bi-dot" />
+            Bookings
+          </Link>
+          <Link
+            className="collapse-item"
+            to="/admin/view-credit-reason-approval"
+          >
+            <i className="bi bi-dot" />
+            Credit Reason Approval
+          </Link>
+          <Link className="collapse-item" to="/admin/create-sales-booking">
+            <i className="bi bi-dot" />
+            Create Sale Booking
+          </Link>
+          <Link className="collapse-item" to="/admin/view-sales-booking">
+            <i className="bi bi-dot" />
+            Sale Booking
           </Link>
         </div>
       </div>
