@@ -45,7 +45,7 @@ const ExePageDetailes = ({
   const handleClose2 = () => setOpen2(false);
   const [pageDetails, setPageDetails] = useState([]);
   const [shortcode, setShortcode] = useState("");
-  console.log(shortcode, "<--48", "nnnnnn");
+
   const handleShortcodeChange = (event, index) => {
     const newShortcodes = [...shortcode];
     newShortcodes[index] = event.target.value;
@@ -357,8 +357,7 @@ const ExePageDetailes = ({
     try {
       const regex = /\/reel\/([A-Za-z0-9-_]+)/;
       const match = shortcode[index].match(regex);
-      if (match && match.length > 1) { // Check if match exists and has length greater than 1
-        console.log(match[0], "jjjj");
+      if (match && match.length > 1) {
   
         const payload = {
           shortCode: match[1],
