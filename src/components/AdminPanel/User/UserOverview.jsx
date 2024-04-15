@@ -292,6 +292,22 @@ const UserOverview = () => {
     { value: "WFHD", label: "WFHD" },
   ];
 
+  function convertDateToDDMMYYYY(dateString) {
+    if (String(dateString).startsWith("0000-00-00")) {
+      return " ";
+    }
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
+    const year = date.getFullYear();
+
+    if (day == "NaN" || month == "NaN" || year == "NaN") {
+      return " ";
+    } else {
+      return `${day}/${month}/${year}`;
+    }
+  }
+
   const columns = [
     {
       field: "id",
@@ -352,6 +368,15 @@ const UserOverview = () => {
     },
     { field: "PersonalNumber", headerName: "Personal Contact", width: 150 },
     { field: "user_email_id", headerName: "Email", width: 230 },
+    { field: "created_by_name", headerName: "Created by Name", width: 200 },
+    {
+      field: "created_At",
+      renderCell: (params, index) => (
+        <div>{convertDateToDDMMYYYY(params.row.created_At)} </div>
+      ),
+      headerName: "Creation Date",
+      width: 150,
+    },
     {
       field: "user_status",
       headerName: "Status",
