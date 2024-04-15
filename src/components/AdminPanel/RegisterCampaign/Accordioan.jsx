@@ -78,7 +78,7 @@ const Accordioan = ({ data }) => {
           value={data.description}
           // sx={{ m: 2 }}
         />
-        {console.log(data.desciption, "hello description")}
+        
       </Box>
       {data.commitment.map((item, ind) => (
         <Box key={ind} sx={{ display: "flex" }}>

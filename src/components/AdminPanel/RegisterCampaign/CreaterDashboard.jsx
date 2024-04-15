@@ -52,19 +52,19 @@ export default function CreaterDashboard() {
     remark: "",
   });
 
-  console.log(compData, "------------compData");
+  
   const getBrand = () => {
     axios.get(baseUrl+"get_brands").then((res) => {
       const data = res.data.data;
       setBrandName(data);
-      console.log(data, "this is by saimyual");
+      
     });
   };
   function getContentType() {
     axios.get(baseUrl+"content").then((res) => {
       const data = res.data.data;
       setContent(data);
-      console.log(data, "this is by content");
+      
     });
   }
   const getData = () => {
@@ -85,7 +85,7 @@ export default function CreaterDashboard() {
       setAcceptData(accept);
       setRejectData(reject);
       setCompData(complete);
-      console.log(pending, "this is by contentSectionReg");
+      
     });
   };
 
@@ -113,10 +113,7 @@ export default function CreaterDashboard() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(
-      "Input Values:",
-      inputFields.map((field) => field.value)
-    );
+    
   };
 
   const handleClose = () => setOpen(false);
@@ -163,7 +160,7 @@ export default function CreaterDashboard() {
         status: "21",
       })
       .then((response) => {
-        console.log(response);
+        
         if (response.data.success) {
           handleClose();
           getData();
@@ -183,7 +180,7 @@ export default function CreaterDashboard() {
         status: "22",
       })
       .then((response) => {
-        console.log(response);
+        
         if (response.data.success) {
           handleClose();
           getData();
@@ -213,7 +210,7 @@ export default function CreaterDashboard() {
           }
         );
         if (response.data.success) {
-          console.log(`Successfully sent data for ${field.textValue}`);
+          console.log('');
         } else {
           console.error(`Error sending data for ${field.textValue}`);
         }
@@ -229,7 +226,7 @@ export default function CreaterDashboard() {
 
   // Submission ++++++++++++++++++
   const handleSubmissionData = (params) => {
-    console.log(params.row, "new data manoj");
+    
     setSelectedContentType(
       content.filter((e) => e.content_value === params.row.content_type_id)[0]
         ?.content_type

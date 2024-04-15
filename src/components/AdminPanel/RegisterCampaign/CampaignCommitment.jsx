@@ -69,7 +69,7 @@ export default function CampaignCommitment() {
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    console.log(name.exeCmpName, "exeCmpName");
+    // console.log(name.exeCmpName, "exeCmpName");
     setPostData({
       ...postData,
       [name]: value,
@@ -133,7 +133,7 @@ export default function CampaignCommitment() {
         exeRemark: editData.exeRemark,
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setIsPutOpen(true);
         if (res.data.success === false) {
           toastError(res.data.message);
@@ -145,11 +145,11 @@ export default function CampaignCommitment() {
         setIsPutOpen(false);
         setReload(!reload);
       });
-    console.log("put data");
+    // console.log("put data");
   };
   const handleEditClick = (id, row) => () => {
     setEditData(row);
-    console.log(row);
+    // console.log(row);
     setIsPutOpen(true);
   };
   // delete ======>
@@ -163,7 +163,7 @@ export default function CampaignCommitment() {
       axios
         .delete(`${url}/${itemToDeleteId}`)
         .then(() => {
-          console.log("Data deleted successfully");
+          // console.log("Data deleted successfully");
         })
         .catch((error) => {
           console.error("Error deleting data:", error);

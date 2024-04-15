@@ -355,12 +355,18 @@ const ExePageDetailes = ({
 
   const getPageDetails = async (index) => {
     try {
-      const regex = /\/reel\/([A-Za-z0-9-_]+)/;
+      const regex = /\/(reel|p)\/([A-Za-z0-9-_]+)/;
       const match = shortcode[index].match(regex);
-      if (match && match.length > 1) {
+      if (match && match.length > 2) {
+
+        setPageDetails((prevPageDetails) => {
+          const updatedPageDetails = [...prevPageDetails];
+          updatedPageDetails[index] = "Getting details...";
+          return updatedPageDetails;
+        });
   
         const payload = {
-          shortCode: match[1],
+          shortCode: match[2],
           department: "660ea4d1bbf521bf783ffe18",
           userId: 15,
         };
@@ -444,10 +450,11 @@ const ExePageDetailes = ({
                       size="small"
                       style={{ marginRight: "8px" }}
                       // onClick={handleAssignedSubmit}
-                      onClick={() => getPageDetails(i)}
+                      onClick={() => shortcode[i] && getPageDetails(i)}
                       sx={{ mt: 2 }}
+                      disabled={pageDetails[i] === "Getting details..."}
                     >
-                      Get Details
+                      {pageDetails[i]?.is_paid_partnership ? pageDetails[i]?.is_paid_partnership : "Get Details"}
                     </Button>
                   </div>
                 ))}

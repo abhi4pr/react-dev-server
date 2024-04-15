@@ -23,7 +23,6 @@ const Assigned = ({ open, handleClose, data }) => {
     setNewPayload(x)
   }, [data]);
 
-console.log(newPayload)
   const columns = [
     {
       field: "S.NO",

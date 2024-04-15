@@ -73,7 +73,6 @@ export default function BrandMaster() {
     setIsModalOpen(false);
   };
 
-  console.log(dataPlatforms);
   function EditToolbar() {
     const handleClick = () => {
       setIsModalOpen(true);
@@ -172,7 +171,7 @@ export default function BrandMaster() {
 
   const categoryData = () => {
     axios.get(baseUrl + "projectxCategory").then((res) => {
-      console.log(res.data.data, "-------> cat data");
+      
       setCategoryOptions(res.data.data);
     });
   };
@@ -182,13 +181,13 @@ export default function BrandMaster() {
   }, [reload]);
 
   const subCategoryDataOnEdit = () => {
-    console.log("calling the subcategory data on Edit");
+    
     axios.get(baseUrl + "projectxSubCategory").then((res) => {
-      console.log(res.data.data, "-------> subcat data");
+      // console.log(res.data.data, "-------> subcat data");
       const filteredData = res.data.data.filter((item) => {
         return item.category_id == postData.category_id;
       });
-      console.log(filteredData, "filteredData meeee");
+      // console.log(filteredData, "filteredData meeee");
 
       setSubCategoryOptions(filteredData);
       setLoading(false);
@@ -232,18 +231,18 @@ export default function BrandMaster() {
 
   useEffect(() => {
     axios.get(baseUrl + "projectxSubCategory").then((res) => {
-      console.log(res.data.data, "-------> subcat data");
+      // console.log(res.data.data, "-------> subcat data");
       const filteredData = res.data.data.filter((item) => {
         return item.category_id == editData.category_id;
       });
-      console.log(filteredData, "filteredData meeee");
+      // console.log(filteredData, "filteredData meeee");
       setSubCategoryOptions(filteredData);
       setLoading(false);
     });
   }, [editData.category_id]);
 
   const handlePlatformData = (params) => {
-    console.log("new ");
+    console.log("");
   };
 
   useEffect(() => {
@@ -288,7 +287,7 @@ export default function BrandMaster() {
         .delete(`${brandURL}/delete_brand/${itemToDeleteId}`)
         .then(() => {
           getData();
-          console.log("Data deleted successfully");
+          
         })
         .finally(() => {
           setIsDeleteConfirmationOpen(false);
@@ -474,7 +473,7 @@ export default function BrandMaster() {
                     <TextField {...params} label="  * Category" />
                   )}
                   onChange={(event, newValue) => {
-                    console.log(newValue.value);
+                    // console.log(newValue.value);
                     setPostData({
                       ...postData,
                       category_id: newValue.value,
@@ -493,7 +492,7 @@ export default function BrandMaster() {
                     <TextField {...params} label="  * Subcategory" />
                   )}
                   onChange={(event, newValue) => {
-                    console.log(newValue.value);
+                    // console.log(newValue.value);
                     if (newValue) {
                       setPostData({
                         ...postData,

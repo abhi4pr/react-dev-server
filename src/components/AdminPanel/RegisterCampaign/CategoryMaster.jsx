@@ -77,7 +77,7 @@ export default function CategoryMaster() {
         }
         setIsModalOpen(false);
         getData();
-        console.log("Data saved:", response.data);
+        // console.log("Data saved:", response.data);
       })
       .catch((error) => {
         console.error("Error saving data:", error);
@@ -90,7 +90,7 @@ export default function CategoryMaster() {
   // get api ========>
   const getData = () => {
     axios.get(baseUrl + "projectxCategory").then((res) => {
-      console.log(res.data.data);
+      // console.log(res.data.data);
       const sortedData = res.data.data.sort(
         (a, b) => b.category_id - a.category_id
       );
@@ -115,7 +115,7 @@ export default function CategoryMaster() {
         // brand_id: editData.brand_id,
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setIsPutOpen(true);
         if (res.data.success === false) {
           toastError(res.data.message);
@@ -129,10 +129,10 @@ export default function CategoryMaster() {
         getData();
         setReload(!reload);
       });
-    console.log("put data");
+    // console.log("put data");
   };
   const handleEditClick = (id, row) => () => {
-    console.log(row);
+    // console.log(row);
     setEditData(row);
     setIsPutOpen(true);
   };
@@ -156,7 +156,7 @@ export default function CategoryMaster() {
         .delete(`${baseUrl}` + `projectxCategory/${itemToDeleteId}`)
         .then(() => {
           getData();
-          console.log("Data deleted successfully");
+          // console.log("Data deleted successfully");
         })
         .catch((error) => {
           console.error("Error deleting data:", error);

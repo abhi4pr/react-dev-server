@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import axios from "axios";
+import {baseUrl} from '../../../../utils/config';
 
 const OperationDashboard = () => {
   const countData = [1, 2, 3];
@@ -13,19 +14,25 @@ const OperationDashboard = () => {
 
   const getAllOperationData = async () => {
     try {
-      const res = await axios.get(
-        `http://192.168.29.125:8080/api/operation_dashboard_api`
-      );
-      console.log(res.data.data, "new api");
-      setData(res.data.data);
+      if(selectDate){
+        const res = await axios.get(
+          `${baseUrl}operation_dashboard_api?date=${selectDate}`
+        );
+        setData(res.data.data);
+      }else{
+        const res = await axios.get(
+          `${baseUrl}operation_dashboard_api`
+        );
+        setData(res.data.data);
+      }
     } catch (err) {
-      console.log(err, "nnnnnn");
+      console.log(err, "error");
     }
   };
 
   useEffect(() => {
     getAllOperationData();
-  }, []);
+  }, [selectDate]);
 
   const toggleAccordion = (index) => {
     setOpenAccordion(openAccordion === index ? null : index);
@@ -44,8 +51,8 @@ const OperationDashboard = () => {
           type="date"
           fieldGrid={3}
           label="Date"
-          // value={selectDate}
-          // onChange={(e) => setDateOfMarriage(e.target.value)}
+          value={selectDate}
+          onChange={(e) => setSelectDate(e.target.value)}
           // max={today}
           required={false}
         />
