@@ -922,9 +922,17 @@ const UserUpdate = () => {
       );
     }
   };
-
+  const [bankProveImage, setBankProveImage] = useState(null);
   const handleSubmitBank = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("bank_name", bankName);
+    formData.append("account_no", bankAccountNumber);
+    formData.append("ifsc_code", IFSC);
+    formData.append("beneficiary", beneficiary);
+    formData.append("account_type", banktype);
+    formData.append("bank_proof_image", bankProveImage);
+
     if (!bankName || bankName == "") {
       return toastError("bank name is required");
     } else if (!bankAccountNumber || bankAccountNumber == "") {
@@ -937,13 +945,17 @@ const UserUpdate = () => {
     try {
       const response = await axios.put(
         baseUrl + `update_user_for_bank_details/${id}`,
+        formData,
         {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
           // Bank info payload Start
-          bank_name: bankName,
-          account_no: bankAccountNumber,
-          ifsc_code: IFSC,
-          beneficiary: beneficiary,
-          account_type: banktype,
+          // bank_name: bankName,
+          // account_no: bankAccountNumber,
+          // ifsc_code: IFSC,
+          // beneficiary: beneficiary,
+          // account_type: banktype,
           // Bank info payload End
         }
         // setActiveAccordionIndex((prev) => prev + 1)
@@ -2008,6 +2020,18 @@ const UserUpdate = () => {
         label="Beneficiary"
         value={beneficiary}
         onChange={(e) => setBeneficiary(e.target.value)}
+      />
+
+      <FieldContainer
+        label="Upload Proof *"
+        type="file"
+        multiple
+        accept="image/*"
+        onChange={(e) => {
+          setBankProveImage(e.target.files[0]);
+        }}
+        fieldGrid={6}
+        required={true}
       />
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
