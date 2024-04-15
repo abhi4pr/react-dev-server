@@ -284,7 +284,6 @@ import Invoice from "./Finance/Invoice";
 import CreditApprovalReasonCreate from "./Sales/CreditApprovalReason/CreditApprovalReasonCreate";
 import CreditApprovalReasonView from "./Sales/CreditApprovalReason/CreditApprovalReasonView";
 import CreditApprovalReasonUpdate from "./Sales/CreditApprovalReason/CreditApprovalReasonUpdate";
-import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
 import CustomerDocumentMaster from "./Customer/CustomerDocumentMaster";
 import CustomerDocumentOverview from "./Customer/CustomerDocumentOverview";
 import NewExpertUpdate from "./RegisterCampaign/Experties/NewExpertUpdate";
@@ -301,6 +300,8 @@ import HistoryAssignData from "./PageAssignment/HistoryAssignData";
 import CustomerDocumentDetails from "./Customer/DocumentDetails/CustomerDocumentDetails";
 import CustomerDocumentUpdate from "./Customer/CustomerDocumentUpdate";
 import OperationDashboard from "./RegisterCampaign/OperationDashboard/OperationDashboard";
+import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
+import ViewSaleBooking from "./Sales/SaleBooking/ViewSaleBooking";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -946,7 +947,7 @@ const Admin = () => {
                     path="/replacement-dashboard"
                     element={<ReplacementDashobard />}
                   />
-                   <Route
+                  <Route
                     path="/operationDashboard"
                     element={<OperationDashboard />}
                   />
@@ -1254,23 +1255,59 @@ const Admin = () => {
 
                   <Route path="/account-type" element={<AccountType />} />
                   <Route path="/account-master" element={<AccountMaster />} />
-                  <Route path="/ownership-master" element={<OwnershipMaster />} />
-                  <Route path="/ops-customer-mast" element={<OpsCustomerMast />} />
-                  <Route path="/ops-customer-overview" element={<OpsCustomerOverview />} />
-                   <Route path="/ops-customer-update/:id" element={<OpsCustomerUpdate />} /> 
-                   <Route path="/customer-cont-overview" element={<CustomerContOverview />} /> 
-                   <Route path="/customer-cont-master" element={<CustomerContMaster />} /> 
-                   <Route path="/customer-cont-update/:id" element={<CustomerContUpdate />} /> 
-                   <Route path="/ops-doc-mast" element={<OpsDocMast />} /> 
-                   <Route path="/customer-document-master" element={<CustomerDocumentMaster />} /> 
-                   <Route path="/customer-contact-details/:customer_id" element={<CustomerContactDetails />} /> 
-                   <Route path="/customer-document-overview" element={<CustomerDocumentOverview />} /> 
-                   <Route path="/customer-document-update/:id" element={<CustomerDocumentUpdate />} /> 
-                   <Route path="/customer-document-master" element={<CustomerDocumentMaster />} /> 
-                   <Route path="/customer-document-details/:customer_id" element={<CustomerDocumentDetails />} /> 
-
-
-
+                  <Route
+                    path="/ownership-master"
+                    element={<OwnershipMaster />}
+                  />
+                  <Route
+                    path="/ops-customer-mast"
+                    element={<OpsCustomerMast />}
+                  />
+                  <Route
+                    path="/ops-customer-overview"
+                    element={<OpsCustomerOverview />}
+                  />
+                  <Route
+                    path="/ops-customer-update/:id"
+                    element={<OpsCustomerUpdate />}
+                  />
+                  <Route
+                    path="/customer-cont-overview"
+                    element={<CustomerContOverview />}
+                  />
+                  <Route
+                    path="/customer-cont-master"
+                    element={<CustomerContMaster />}
+                  />
+                  <Route
+                    path="/customer-cont-update/:id"
+                    element={<CustomerContUpdate />}
+                  />
+                  <Route path="/ops-doc-mast" element={<OpsDocMast />} />
+                  <Route
+                    path="/customer-document-master"
+                    element={<CustomerDocumentMaster />}
+                  />
+                  <Route
+                    path="/customer-contact-details/:customer_id"
+                    element={<CustomerContactDetails />}
+                  />
+                  <Route
+                    path="/customer-document-overview"
+                    element={<CustomerDocumentOverview />}
+                  />
+                  <Route
+                    path="/customer-document-update/:id"
+                    element={<CustomerDocumentUpdate />}
+                  />
+                  <Route
+                    path="/customer-document-master"
+                    element={<CustomerDocumentMaster />}
+                  />
+                  <Route
+                    path="/customer-document-details/:customer_id"
+                    element={<CustomerDocumentDetails />}
+                  />
 
                   <Route path="/pms-vendor-type" element={<VendorType />} />
                   <Route path="/pms-page-category" element={<PageCategory />} />
@@ -1375,8 +1412,12 @@ const Admin = () => {
                     element={<CreditApprovalReasonUpdate />}
                   />
                   <Route
-                    path="/create-sale-booking"
+                    path="/create-sales-booking"
                     element={<CreateSaleBooking />}
+                  />
+                  <Route
+                    path="/view-sales-booking"
+                    element={<ViewSaleBooking />}
                   />
                   <Route
                     path="/sales-incentive-create"
@@ -1396,11 +1437,11 @@ const Admin = () => {
                     path="/create-pageAssignment"
                     element={<PageAssignmentMaster />}
                   />
-                   <Route
+                  <Route
                     path="/update-pageAssignment/:id"
                     element={<PageAssignmentUpdate />}
                   />
-                   <Route
+                  <Route
                     path="/historyAssignment"
                     element={<HistoryAssignData />}
                   />

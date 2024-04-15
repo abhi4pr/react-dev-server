@@ -12,7 +12,7 @@ const APIContext = ({ children }) => {
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
-  
+
   const userID = decodedToken.id;
   const ContextDept = decodedToken.dept_id;
   const RoleIDContext = decodedToken.role_id;
@@ -21,7 +21,6 @@ const APIContext = ({ children }) => {
       axios
         .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
         .then((res) => {
-          
           setContextData(res?.data);
         });
     }

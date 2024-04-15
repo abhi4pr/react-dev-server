@@ -87,7 +87,6 @@ const AnnoucementReactionView = ({
         {Object.keys(reactionData).map((type) => (
           <div
             className=" opt-btn flex-row align-items-center justify-content-center h-100 w-100"
-            style={{ cursor: "pointer" }}
             onClick={() => handleFilter(type)}
             style={{
               cursor: "pointer",
