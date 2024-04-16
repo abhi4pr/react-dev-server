@@ -658,7 +658,7 @@ const PendingApprovalUpdate = () => {
     },
     {
       field: "cust_name",
-      headerName: "Custumer Name",
+      headerName: "Customer Name",
       width: 260,
       renderCell: (params) => (
         <div
@@ -781,15 +781,14 @@ const PendingApprovalUpdate = () => {
       field: "detail",
       width: 490,
       renderCell: (params) => (
-        <div>
+        <div className="flexCenter colGap8">
           <button
-            className="btn btn-secondary ml-2"
+            className="btn tableIconBtn btn_sm "
             onClick={() => handleCopyDetail(params.row.detail)}
           >
             <ContentCopyIcon />
             {/* or any other icon */}
-          </button>{" "}
-          {"  "}
+          </button>
           {params.row.detail}
         </div>
       ),
@@ -850,7 +849,7 @@ const PendingApprovalUpdate = () => {
           <Link to={`/admin/payment-summary/${params.row.cust_id}`}>
             <button
               title="Summary"
-              className="btn btn-outline-primary btn-sm user-button"
+              className="btn tableIconBtn btn_sm btn-outline-primary user-button"
             >
               <i className="bi bi-journal-text"></i>
             </button>

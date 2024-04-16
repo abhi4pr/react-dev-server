@@ -906,15 +906,15 @@ export default function PendingPaymentRequest() {
       width: 150,
       renderCell: (params) => {
         return (
-          <div>
+          <div className="flexCenter colGap8">
             <button
-              className="btn btn-sm btn-success"
+              className="btn cmnbtn btn_sm btn-success"
               onClick={(e) => handlePayClick(e, params.row)}
             >
               Pay
             </button>
             <button
-              className="btn btn-sm btn-danger mx-2"
+              className="btn cmnbtn btn_sm btn-danger"
               onClick={(e) => handleDiscardClick(e, params.row)}
             >
               Discard
@@ -1371,15 +1371,15 @@ export default function PendingPaymentRequest() {
       width: 250,
       renderCell: (params) => {
         return (
-          <div>
+          <div className="flexCenter colGap8">
             <button
-              className="btn btn-sm btn-success"
+              className="btn cmnbtn btn_sm btn-success"
               onClick={(e) => handlePayClick(e, params.row)}
             >
               Pay
             </button>
             <button
-              className="btn btn-sm btn-danger mx-2"
+              className="btn cmnbtn btn_sm btn-danger"
               onClick={(e) => handleDiscardClick(e, params.row)}
             >
               Discard

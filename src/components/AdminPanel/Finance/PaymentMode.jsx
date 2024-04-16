@@ -54,7 +54,7 @@ const PaymentMode = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => { });
+    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
     axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
       setData(res.data.data);
       setFilterData(res.data.data);
@@ -190,16 +190,15 @@ const PaymentMode = () => {
       //   <Button key={row.detail} variant="contained" color="primary" onClick={console.log('clicked')} style={{marginLeft: "10px"}}>Copy</Button>
       // </div>,
       renderCell: (params) => (
-        <div style={{ whiteSpace: "normal" }}>
-          {params.row.detail}
+        <div className="flexCenter colGap8">
           <button
+            className="btn tableIconBtn btn_sm "
             key={params.row.detail}
-            color="secondary"
             onClick={() => handleCopyDetail(params.row.detail)}
-            style={{ marginLeft: "10px" }}
           >
             <ContentCopyIcon />
           </button>
+          {params.row.detail}
         </div>
       ),
     },
@@ -220,16 +219,16 @@ const PaymentMode = () => {
     {
       headerName: "Action",
       field: "Action",
-      width: 200,
+      width: 140,
       renderCell: (params) => {
         return (
           <div>
-            <Button
-              variant="contained"
+            <button
               onClick={() => handleHideRowData(params.row)}
+              className="btn cmnbtn btn_sm btn-outline-primary"
             >
               Hide
-            </Button>
+            </button>
           </div>
         );
       },
@@ -258,16 +257,15 @@ const PaymentMode = () => {
       //   <Button key={row.detail} variant="contained" color="primary" onClick={console.log('clicked')} style={{marginLeft: "10px"}}>Copy</Button>
       // </div>,
       renderCell: (params) => (
-        <div style={{ whiteSpace: "normal" }}>
-          {params.row.detail}
-          <Button
+        <div className="flexCenter colGap8">
+          <button
+            className="btn tableIconBtn btn_sm "
             key={params.row.detail}
-            color="secondary"
             onClick={() => handleCopyDetail(params.row.detail)}
-            style={{ marginLeft: "10px" }}
           >
             <ContentCopyIcon />
-          </Button>
+          </button>
+          {params.row.detail}
         </div>
       ),
     },
@@ -346,7 +344,6 @@ const PaymentMode = () => {
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <div className="thm_table">
-
             <DataGrid
               rows={filterData.filter((row) => row.is_hide)}
               columns={HiddenRowColumns}

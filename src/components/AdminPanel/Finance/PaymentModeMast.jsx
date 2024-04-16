@@ -135,16 +135,14 @@ export default function PaymentModeMast() {
       width: 300,
       renderCell: (params) => (
         <>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="small"
-            className="me-2"
-            style={{ marginLeft: 16 }}
+          <button
+            className="btn cmnbtn btn_sm tableIconBtn btn-light"
             onClick={() => handleEditClick(params.row)}
-            startIcon={<EditIcon />}
-          ></Button>
+          >
+            <EditIcon />
+          </button>
           <DeleteButton
+            className="btn cmnbtn btn_sm tableIconBtn btn-light"
             endpoint={`delete_payment_mode`}
             id={params.row._id}
             getData={callApi}

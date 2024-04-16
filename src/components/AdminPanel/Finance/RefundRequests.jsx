@@ -413,7 +413,7 @@ const RefundRequests = () => {
         <>
           {params.row.refund_files && (
             <button
-              className="btn btn-primary"
+              className="btn cmnbtn btn_sm btn-outline-primary"
               onClick={() => {
                 setOpenImageDialog(true);
                 setViewImgSrc(
@@ -546,7 +546,7 @@ const RefundRequests = () => {
         <>
           {params.row.refund_files && (
             <button
-              className="btn btn-primary"
+              className="btn cmnbtn btn_sm btn-outline-primary"
               onClick={() => {
                 setOpenImageDialog(true);
                 setViewImgSrc(
@@ -580,10 +580,10 @@ const RefundRequests = () => {
             </>
           )}
           {params.row.finance_refund_status == 1 && (
-            <div className="text-success btn">Approved</div>
+            <div className="text-success">Approved</div>
           )}
           {params.row.finance_refund_status == 2 && (
-            <div className="text-danger btn">Rejected</div>
+            <div className="text-danger">Rejected</div>
           )}
         </div>
       ),
