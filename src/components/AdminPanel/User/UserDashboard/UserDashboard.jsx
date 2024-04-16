@@ -8,6 +8,8 @@ import Modal from "react-modal";
 import DataTable from "react-data-table-component";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { BuildingOffice, HouseLine, Users } from "@phosphor-icons/react";
+import { HomeMini, HomeOutlined } from "@mui/icons-material";
 
 const UserDashboard = () => {
   const [userData, setUserData] = useState([]);
@@ -76,16 +78,16 @@ const UserDashboard = () => {
       <FormContainer mainTitle="User Dashboard" link="/" />
       <div className="row">
         <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-          <div className="d_infocard card shadow">
+          <div className="d_infocard shadow">
             <Link to="/admin/user-overview">
-              <div className="card-body">
-                <div className="d_infocard_txt">
-                  <h3>All Users</h3>
-                  <h2>{userData.length}</h2>
+              <div className="card body-padding fin-das-card-3">
+                <div className="d_infocard_txt sb">
+                  <h1 style={{ color: "var(--white)" }}>All Users</h1>
+                  <h2 style={{ color: "var(--white)" }}>{userData.length}</h2>
                 </div>
-                <div className="d_infocard_icon">
-                  <span>
-                    <MdOutlineCategory />
+                <div className="d_infocard_icon mt-5">
+                  <span style={{ background: "var(--white)" }}>
+                    <Users color="var(--secondary)" />
                   </span>
                 </div>
               </div>
@@ -93,168 +95,179 @@ const UserDashboard = () => {
           </div>
         </div>
         <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-          <div className="d_infocard card shadow">
-            <div className="card-body" onClick={() => handleCard("WFO")}>
-              <div className="d_infocard_txt">
-                <h3>WFO</h3>
-                <h2>{wFOCount.length}</h2>
+          <div className="d_infocard shadow">
+            <div
+              className="card body-padding fin-das-card-3"
+              onClick={() => handleCard("WFO")}
+            >
+              <div className="d_infocard_txt sb">
+                <h1 style={{ color: "var(--white)" }}>WFO</h1>
+                <h2 style={{ color: "var(--white)" }}>{wFOCount.length}</h2>
               </div>
-              <div className="d_infocard_icon">
-                <span>
-                  <MdOutlineCategory />
+              <div className="d_infocard_icon mt-5">
+                <span style={{ background: "var(--white)" }}>
+                  <BuildingOffice color="var(--secondary)" />
                 </span>
               </div>
             </div>
           </div>
         </div>
         <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-          <div className="d_infocard card shadow">
-            <div className="card-body" onClick={() => handleCard("WFH")}>
-              <div className="d_infocard_txt">
-                <h3>WFH</h3>
-                <h2>{wFhCount.length}</h2>
+          <div className="d_infocard  shadow">
+            <div
+              className="card body-padding fin-das-card-3"
+              onClick={() => handleCard("WFH")}
+            >
+              <div className="d_infocard_txt sb">
+                <h1 style={{ color: "var(--white)" }}>WFH</h1>
+                <h2 style={{ color: "var(--white)" }}>{wFhCount.length}</h2>
               </div>
-              <div className="d_infocard_icon">
-                <span>
-                  <MdOutlineCategory />
+              <div className="d_infocard_icon mt-5">
+                <span style={{ background: "var(--white)" }}>
+                  <HouseLine color="var(--secondary)" />
                 </span>
               </div>
             </div>
           </div>
         </div>
         <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-          <div className="d_infocard card shadow">
-            <div className="card-body" onClick={() => handleCard("WFHD")}>
-              <div className="d_infocard_txt">
-                <h3>WFHD</h3>
-                <h2>{wfhdCount.length}</h2>
+          <div className="d_infocard shadow">
+            <div
+              className="card body-padding fin-das-card-3"
+              onClick={() => handleCard("WFHD")}
+            >
+              <div className="d_infocard_txt sb">
+                <h1 style={{ color: "var(--white)" }}>WFHD</h1>
+                <h2 style={{ color: "var(--white)" }}>{wfhdCount.length}</h2>
               </div>
-              <div className="d_infocard_icon">
-                <span>
-                  <MdOutlineCategory />
+              <div className="d_infocard_icon mt-5">
+                <span style={{ background: "var(--white)" }}>
+                  <BuildingOffice color="var(--secondary)" />
                 </span>
               </div>
             </div>
           </div>
         </div>
-        <div className="asset_chart">
-          <div
-            className="card"
-            style={{
-              width: "50%",
-              height: "100%",
-            }}
-          >
-            <div className="chart_container body-padding">
-              <h5 style={{ fontWeight: "600", color: "var(--gray-700)" }}>
-                Total Users - {userData.length}
-              </h5>
-              <PieChart
-                series={[
-                  {
-                    data: [
-                      {
-                        id: 0,
-                        value: wfhdCount.length,
-                        label: "WFHD",
-                        color: "rgb(184, 0, 216)",
-                      },
-                      {
-                        id: 1,
-                        value: wFhCount.length,
-                        label: "WFH",
-                      },
-                      {
-                        id: 2,
-                        value: wFOCount.length,
-                        label: "WFO",
-                        color: "green",
-                      },
-                    ],
-                    innerRadius: 30,
-                    outerRadius: 70,
-                    cornerRadius: 5,
-                    paddingAngle: 1,
-                    highlightScope: { faded: "global", highlighted: "item" },
-                    faded: {
-                      innerRadius: 30,
-                      additionalRadius: -30,
-                      color: "gray",
-                    },
-                  },
-                ]}
-                height={200}
-              />
-            </div>
-          </div>
-          <div style={{ backgroundColor: "#33FF57", padding: "30px" }}>
-            Active User
-            <h2>{activeUserCount.length}</h2>
-          </div>
-          <div style={{ backgroundColor: "#FF5733", padding: "30px" }}>
-            Exit User
-            <h2>{exitUserCount.length}</h2>
-          </div>
-        </div>
-
-        <div
-          className="chart_container p-0"
-          style={{ width: "50%", height: "100% " }}
-        >
-          <div className="card">
-            <BarChart
-              xAxis={[
-                {
-                  scaleType: "band",
-                  data: ["Department", "Sub Department", "Designation", "Role"],
-                },
-              ]}
-              series={[
-                {
-                  data: [
-                    departmentData.length,
-                    subDepartmentData.length,
-                    designationData.length,
-                    roleData.length,
-                  ],
-                  // colors: ["#FF5733", "#33FF57", "#337EFF", "#FF33E1"],
-                },
-                { data: [] },
-                // { data: [2, 5, 6] },
-              ]}
-              width={600}
-              height={300}
-            />
-          </div>
-        </div>
-
-        {/* {departmentData.map((d) => (
-          <>
-            <div className="col-xxl-4 col-xl-3 col-lg-4 col-md-6 col-sm-12 d_infocard_col">
-              <div className="d_infocard card shadow">
-                <Link to={`/admin/dashboard_department_wise_user/${d.dept_id}`}>
-                  <div className="card-body">
-                    <div className="d_infocard_txt">
-                      <h3>{d.dept_name}</h3>
-                      <h2>
-                        {
-                          userData.filter(
-                            (data) => data.department_name === d.dept_name
-                          ).length
-                        }
-                      </h2>
-                    </div>
-                    <div className="d_infocard_icon">
-                      <span>
-                        <MdOutlineCategory />
-                      </span>
+      </div>
+      <div className="card">
+        <div className="card-body">
+          <div className="row">
+            <div className="col-md-6">
+              <div className="fin-das-card-2 card gap16">
+                <div className="card-body flex-row sb align-items-center pl-5 pr-5">
+                  <h3 style={{ color: "var(--white)" }}>Active User</h3>
+                  <div className="scroll-con">
+                    <div className="scroller">
+                      <h1 style={{ color: "var(--white)" }}>0</h1>
+                      {activeUserCount.map((i, index) => (
+                        <h1 style={{ color: "var(--white)" }}> {index + 1}</h1>
+                      ))}
                     </div>
                   </div>
-                </Link>
+                </div>
               </div>
             </div>
-          </>
-        ))} */}
+            <div className="col-md-6">
+              <div
+                className="fin-das-card-2 card gap16"
+                style={{
+                  background: " rgb(196,1,1)",
+                  background:
+                    "linear-gradient(159deg, rgba(196,1,1,1) 0%, rgba(255,136,0,1) 73%)",
+                }}
+              >
+                <div className="card-body flex-row sb align-items-center pl-5 pr-5">
+                  <h3 style={{ color: "var(--white)" }}>Exit User</h3>
+                  <div className="scroll-con">
+                    <div className="scroller">
+                      <h1 style={{ color: "var(--white)" }}>0</h1>
+                      {exitUserCount.map((i, index) => (
+                        <h1 style={{ color: "var(--white)" }}> {index + 1}</h1>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-md-6">
+              <div className="card">
+                <BarChart
+                  xAxis={[
+                    {
+                      scaleType: "band",
+                      data: [
+                        "Department",
+                        "Sub Department",
+                        "Designation",
+                        "Role",
+                      ],
+                    },
+                  ]}
+                  series={[
+                    {
+                      data: [
+                        departmentData.length,
+                        subDepartmentData.length,
+                        designationData.length,
+                        roleData.length,
+                      ],
+                      // colors: ["#FF5733", "#33FF57", "#337EFF", "#FF33E1"],
+                    },
+                    { data: [] },
+                    // { data: [2, 5, 6] },
+                  ]}
+                  width={600}
+                  height={300}
+                />
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="chart_container body-padding">
+                <h5 style={{ fontWeight: "600", color: "var(--gray-700)" }}>
+                  Total Users - {userData.length}
+                </h5>
+                <PieChart
+                  series={[
+                    {
+                      data: [
+                        {
+                          id: 0,
+                          value: wfhdCount.length,
+                          label: "WFHD",
+                          color: "rgb(184, 0, 216)",
+                        },
+                        {
+                          id: 1,
+                          value: wFhCount.length,
+                          label: "WFH",
+                        },
+                        {
+                          id: 2,
+                          value: wFOCount.length,
+                          label: "WFO",
+                          color: "green",
+                        },
+                      ],
+                      innerRadius: 30,
+                      outerRadius: 100,
+                      cornerRadius: 5,
+                      paddingAngle: 1,
+                      highlightScope: { faded: "global", highlighted: "item" },
+                      faded: {
+                        innerRadius: 30,
+                        additionalRadius: -30,
+                        color: "gray",
+                      },
+                    },
+                  ]}
+                  height={200}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <Modal
