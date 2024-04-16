@@ -9,8 +9,9 @@ import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import { Button } from "@mui/material";
 import PaymentDetailDailog from "../PaymentDetailDailog";
 import PointOfSaleTwoToneIcon from "@mui/icons-material/PointOfSaleTwoTone";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
 import Confirmation from "../Confirmation";
+import FormContainer from "../../AdminPanel/FormContainer";
 
 export default function ExecutionDone() {
   const storedToken = sessionStorage.getItem("token");
@@ -50,7 +51,7 @@ export default function ExecutionDone() {
       if (userID && contextData == false) {
         axios
           .get(
-            `${baseUrl}`+`get_single_user_auth_detail/${userID}`
+            `${baseUrl}` + `get_single_user_auth_detail/${userID}`
           )
           .then((res) => {
             if (res.data[26].view_value == 1) {
@@ -61,7 +62,7 @@ export default function ExecutionDone() {
       const formData = new URLSearchParams();
       formData.append("loggedin_user_id", 36);
       const response = axios
-        .get(baseUrl+"get_exe_sum", {
+        .get(baseUrl + "get_exe_sum", {
           loggedin_user_id: 52,
         })
         .then((res) => {
@@ -115,7 +116,7 @@ export default function ExecutionDone() {
       renderCell: (params) => {
         if (params.row.execution_status == "3") {
           return (
-            <Button size="small" color="success" variant="outlined">
+            <Button className="btn btn_sm cmnbtn" size="small" color="success" variant="outlined">
               executed
             </Button>
           );
@@ -210,6 +211,7 @@ export default function ExecutionDone() {
         return (
           params.row.execution_excel && (
             <Button
+              className="btn btn_sm cmnbtn"
               size="small"
               color="success"
               variant="outlined"
@@ -245,93 +247,106 @@ export default function ExecutionDone() {
       type: "number",
       width: 110,
       renderCell: (params) => {
-        let time =Math.abs(
+        let time = Math.abs(
           (new Date(params.row.start_date) -
             new Date(params.row.end_date)) /
-            36e5
+          36e5
         ).toFixed(1)
-          return (
-            <div>
-              {
-                time.includes(".0")?time.split(".")[0]:time
-              }{" "}
-              hours
-            </div>
-          );
-        
+        return (
+          <div>
+            {
+              time.includes(".0") ? time.split(".")[0] : time
+            }{" "}
+            hours
+          </div>
+        );
+
       },
     },
 
     contextData
       ? {
-          field: "actions",
-          type: "actions",
-          headerName: "Actions",
-          width: 300,
-          cellClassName: "actions",
-          getActions: (params) => {
-            const id  = params.row._id
-            return [
+        field: "actions",
+        type: "actions",
+        headerName: "Actions",
+        width: 300,
+        cellClassName: "actions",
+        getActions: (params) => {
+          const id = params.row._id
+          return [
+            <div className="icon-1">
+
               <GridActionsCellItem
                 key={id}
                 icon={<PointOfSaleTwoToneIcon />}
                 onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
                 color="inherit"
                 title="Payment Details"
-              />,
-              <Link key={id} to={`/admin/exeexecution/${id}`}>
+              />
+            </div>
+            ,
+            <Link key={id} to={`/admin/exeexecution/${id}`}>
+              <div className="icon-1">
+
                 <GridActionsCellItem
                   icon={<ListAltOutlinedIcon />}
                   color="inherit"
                   title="Record Service Detail"
                 />
-              </Link>,
-              <GridActionsCellItem
+              </div>
+            </Link>,
+            <GridActionsCellItem
               key={id}
-              icon={<Button variant="outlined">Set To Pending</Button>}
+              icon={<Button className="btn btn_sm cmnbtn" variant="outlined">Set To Pending</Button>}
               onClick={() => handleSetPending(params.row)}
               color="inherit"
             />
-            ];
-          },
-        }
+          ];
+        },
+      }
       : {
-          field: "actions",
-          type: "actions",
-          headerName: "Actions",
-          width: 300,
-          cellClassName: "actions",
-          getActions: (params) => {
-            const id  = params.row._id
-            return [
-              <Link key={id} to={`/admin/exeexecution/${id}`}>
+        field: "actions",
+        type: "actions",
+        headerName: "Actions",
+        width: 300,
+        cellClassName: "actions",
+        getActions: (params) => {
+          const id = params.row._id
+          return [
+            <Link key={id} to={`/admin/exeexecution/${id}`}>
+              <div className="icon-1">
                 <GridActionsCellItem
+
                   icon={<ListAltOutlinedIcon />}
                   label="Delete"
                   color="inherit"
                   title="Record Service Detail"
                 />
-              </Link>,
-            ];
-          },
+              </div>
+            </Link>,
+          ];
         },
+      },
   ];
 
   return (
     <div>
-      <div>
-        <div className="form_heading_title">
-          <h2 className="form-heading">Execution Executed Summary</h2>
-        </div>
-      </div>
+      <FormContainer
+        mainTitle={"Execution Executed Summary"}
+        link={true}
+      />
+
       <>
         <ThemeProvider theme={theme}>
-          <DataGrid
-            rows={addSerialNumber(data)}
-            touchrippleref={false}
-            columns={columns}
-            getRowId={(row) => row.sale_booking_execution_id}
-          />
+          <div className="card body-padding thm_table fx-head">
+
+            <DataGrid
+              rows={addSerialNumber(data)}
+              touchrippleref={false}
+              columns={columns}
+              getRowId={(row) => row.sale_booking_execution_id}
+            />
+          </div>
         </ThemeProvider>
         <PaymentDetailDailog
           handleClickOpenPaymentDetailDialog={
@@ -346,7 +361,7 @@ export default function ExecutionDone() {
         <Confirmation
           rowData={rowData}
           value={new Date()}
-          status={executionStatus }
+          status={executionStatus}
           setReload={setReload}
           confirmation={confirmation}
           setSnackbar={setSnackbar}

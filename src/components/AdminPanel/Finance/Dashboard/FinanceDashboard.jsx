@@ -452,9 +452,10 @@ export default function FinanceDashboard() {
                 </LocalizationProvider>
                 <div className="col-md-2_5">
                   <Button
-                    variant="contained"
+
                     onClick={() => handleFilterChange("search")}
-                    className="btn cmnbtn btn-primary w-100"
+                    className="btn cmnbtn btn-outline-primary w-100 "
+
                   >
                     Filter
                   </Button>
@@ -463,10 +464,9 @@ export default function FinanceDashboard() {
             )}
             <div className="col-md-2_5">
               <Button
-                variant="contained"
-                size="small "
+
                 onClick={handleResetClick}
-                className="btn cmnbtn btn-primary w-100"
+                className="btn cmnbtn btn-outline-primary w-100"
               >
                 Reset
               </Button>
@@ -1251,6 +1251,6 @@ export default function FinanceDashboard() {
           </div>
         </div>
       </div> */}
-    </div>
+    </div >
   );
 }

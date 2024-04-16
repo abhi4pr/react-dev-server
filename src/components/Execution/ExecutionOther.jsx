@@ -886,7 +886,7 @@ function ExecutionOther() {
                 <Button
                   size="small"
                   variant="outlined"
-                  className="btn cmnbtn btn-primary btn_sm"
+                  className="btn cmnbtn btn-primary"
 
                   startIcon={<ContentCopyOutlinedIcon />}
                   onClick={() => copySelectedRows(1)}
@@ -896,7 +896,7 @@ function ExecutionOther() {
                 <Button
                   size="small"
                   variant="outlined"
-                  className="btn cmnbtn btn-primary btn_sm"
+                  className="btn cmnbtn btn-primary"
 
 
                   startIcon={<CopyAllOutlinedIcon />}
@@ -906,7 +906,7 @@ function ExecutionOther() {
                 </Button>
                 <Button
                   size="small"
-                  className="btn cmnbtn btn-primary btn_sm"
+                  className="btn cmnbtn btn-primary"
 
 
                   variant="outlined"
@@ -922,7 +922,7 @@ function ExecutionOther() {
           <div
             className="card body-padding gap16"
           >
-            <Typography >Rate Of Conversion</Typography>
+
 
             <Stack className="flex-row flexCenter gap16">
               <Button

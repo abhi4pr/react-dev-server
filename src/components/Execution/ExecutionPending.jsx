@@ -13,6 +13,7 @@ import ExecutionUpdate from "./ExecutionUpdate";
 import PaymentDetailDailog from "./PaymentDetailDailog";
 import PointOfSaleTwoToneIcon from "@mui/icons-material/PointOfSaleTwoTone";
 import { baseUrl } from "../../utils/config";
+import FormContainer from "../AdminPanel/FormContainer";
 
 function ExecutionPending() {
   const [snackbar, setSnackbar] = useState(null);
@@ -132,6 +133,7 @@ function ExecutionPending() {
             <Button
               size="small"
               color="error"
+              className="btn btn_sm cmnbtn"
               variant="outlined"
               fontSize="inherit"
             >
@@ -144,6 +146,8 @@ function ExecutionPending() {
               size="small"
               color="success"
               variant="outlined"
+              className="btn btn_sm cmnbtn"
+
               fontSize="inherit"
             >
               In Progress
@@ -252,6 +256,8 @@ function ExecutionPending() {
             <Button
               size="small"
               color="success"
+              className="btn btn_sm cmnbtn"
+
               variant="outlined"
               fontSize="inherit"
               href={params.row.execution_excel}
@@ -292,33 +298,34 @@ function ExecutionPending() {
       headerName: "Time passed",
       type: "number",
       width: 110,
-      renderCell: (params) => {   
-     
+      renderCell: (params) => {
+
         if (params.row.execution_status == "2") {
           let time =
-          Math.abs((new Date(params.row.start_date) - new Date()) / 36e5).toFixed(1)
-        + " hours"
+            Math.abs((new Date(params.row.start_date) - new Date()) / 36e5).toFixed(1)
+            + " hours"
           return (
-time.includes(".0")?time.split(".")[0]:time
+            time.includes(".0") ? time.split(".")[0] : time
           );
         }
       },
     },
     contextData
       ? {
-          field: "actions",
-          type: "actions",
-          headerName: "Actions",
-          width: 300,
-          cellClassName: "actions",
-          getActions: (params) => {
-            const { id, row } = params; // Destructure the id and row from params
-            const executionStatus = row.execution_status; // Get the execution_status
+        field: "actions",
+        type: "actions",
+        headerName: "Actions",
+        width: 400,
+        cellClassName: "actions",
+        getActions: (params) => {
+          const { id, row } = params; // Destructure the id and row from params
+          const executionStatus = row.execution_status; // Get the execution_status
 
-            if (executionStatus == "1") {
-              // Show Accept and Reject buttons when execution_status is "0"
-              return [
-                // <Button key={id}><PointOfSaleTwoToneIcon/></Button>,
+          if (executionStatus == "1") {
+            // Show Accept and Reject buttons when execution_status is "0"
+            return [
+              // <Button key={id}><PointOfSaleTwoToneIcon/></Button>,
+              <div className="icon-1">
 
                 <GridActionsCellItem
                   key={id}
@@ -326,165 +333,199 @@ time.includes(".0")?time.split(".")[0]:time
                   onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
                   color="inherit"
                   title="Payment Detail"
-                />,
-                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                />
+              </div>
+              ,
+
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <div className="icon-1">
                   <GridActionsCellItem
                     icon={<ListAltOutlinedIcon />}
                     onClick={handleViewClick(id)}
                     color="inherit"
                     title="Record Service Detail"
                   />
-                </Link>,
-                <GridActionsCellItem
-                  key={id}
-                  icon={<Button variant="outlined">Accept</Button>}
-                  onClick={() => handleAccept(row)}
-                  color="inherit"
-                />,
-                <GridActionsCellItem
-                  key={id}
-                  icon={
-                    <ExecutionUpdate
-                      setReload={setReload}
-                      id={id}
-                      rowData={row}
-                      status={3}
-                    />
-                  }
-                  color="inherit"
-                />,
-              ];
-            } else if (executionStatus == "2") {
-              // Show "Done" button when execution_status is "2"
-              return [
+                </div>
+              </Link >,
+
+
+              <GridActionsCellItem
+                key={id}
+
+                icon={<Button className="btn btn_sm cmnbtn" variant="outlined">Accept</Button>}
+                onClick={() => handleAccept(row)}
+                color="inherit"
+              />
+
+              ,
+
+              <GridActionsCellItem
+                key={id}
+                icon={
+                  <ExecutionUpdate
+                    setReload={setReload}
+                    id={id}
+                    rowData={row}
+                    status={3}
+                  />
+                }
+                color="inherit"
+              />,
+            ];
+          } else if (executionStatus == "2") {
+            // Show "Done" button when execution_status is "2"
+            return [
+              <div className="icon-1">
+
                 <GridActionsCellItem
                   key={id}
                   icon={<PointOfSaleTwoToneIcon />}
                   onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
                   color="inherit"
                   title="Payment Detail"
-                />,
-                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                />
+              </div>
+              ,
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <div className="icon-1">
+
                   <GridActionsCellItem
                     icon={<ListAltOutlinedIcon />}
                     onClick={handleViewClick(id)}
                     color="inherit"
                     title="Record Service Detail"
                   />
-                </Link>,
-                <GridActionsCellItem
-                  key={id}
-                  icon={
-                    <ExecutionUpdate
-                      setReload={setReload}
-                      id={id}
-                      rowData={row}
-                      status={1}
-                    />
-                  }
-                  label="Delete"
-                  onClick={() => handleDone(row)}
-                  color="inherit"
-                />,
-              ];
-            } else {
-              // Default case, no special buttons
-              return [
+                </div>
+              </Link>,
+              <GridActionsCellItem
+                key={id}
+                icon={
+                  <ExecutionUpdate
+                    setReload={setReload}
+                    id={id}
+                    rowData={row}
+                    status={1}
+                  />
+                }
+                label="Delete"
+                onClick={() => handleDone(row)}
+                color="inherit"
+              />,
+            ];
+          } else {
+            // Default case, no special buttons
+            return [
+              <div className="icon-1">
+
                 <GridActionsCellItem
                   key={id}
                   icon={<PointOfSaleTwoToneIcon />}
                   onClick={handleClickOpenPaymentDetailDialog}
                   color="inherit"
-                />,
-                <Link key={id} to={`/admin/exeexecution/${id}`}>
-                  <GridActionsCellItem
-                    icon={<ListAltOutlinedIcon />}
-                    onClick={handleViewClick(id)}
-                    color="inherit"
-                  />
-                </Link>,
-              ];
-            }
-          },
-        }
-      : {
-          field: "actions",
-          type: "actions",
-          headerName: "Actions",
-          width: 300,
-          cellClassName: "actions",
-          getActions: (params) => {
-            const { id, row } = params; // Destructure the id and row from params
-            const executionStatus = row.execution_status; // Get the execution_status
+                />
+              </div>
+              ,
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <div className="icon-1">
 
-            if (executionStatus == "1") {
-              // Show Accept and Reject buttons when execution_status is "0"
-              return [
-                <Link key={id} to={`/admin/exeexecution/${id}`}>
                   <GridActionsCellItem
                     icon={<ListAltOutlinedIcon />}
                     onClick={handleViewClick(id)}
                     color="inherit"
                   />
-                </Link>,
-                <GridActionsCellItem
-                  key={id}
-                  icon={
-                    <ExecutionUpdate
-                      setReload={setReload}
-                      id={id}
-                      rowData={row}
-                      status={4}
-                    />
-                  }
-                  color="inherit"
-                />,
-                <GridActionsCellItem
-                  key={id}
-                  icon={<Button variant="outlined">Accept</Button>}
-                  onClick={() => handleAccept(row)}
-                  color="inherit"
-                />,
-              ];
-            } else if (executionStatus == "2") {
-              // Show "Done" button when execution_status is "2"
-              return [
-                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                </div>
+              </Link>,
+            ];
+          }
+        },
+      }
+      : {
+        field: "actions",
+        type: "actions",
+        headerName: "Actions",
+        width: 300,
+        cellClassName: "actions",
+        getActions: (params) => {
+          const { id, row } = params; // Destructure the id and row from params
+          const executionStatus = row.execution_status; // Get the execution_status
+
+          if (executionStatus == "1") {
+            // Show Accept and Reject buttons when execution_status is "0"
+            return [
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <div className="icon-1">
+
+                  <GridActionsCellItem
+                    icon={<ListAltOutlinedIcon />}
+                    onClick={handleViewClick(id)}
+                    color="inherit"
+                  />
+                </div>
+              </Link>,
+              <GridActionsCellItem
+                key={id}
+                icon={
+                  <ExecutionUpdate
+                    setReload={setReload}
+                    id={id}
+                    rowData={row}
+                    status={4}
+                  />
+                }
+                color="inherit"
+              />,
+              <GridActionsCellItem
+                key={id}
+                icon={<Button variant="outlined" className="btn btn_sm cmnbtn">Accept</Button>}
+                onClick={() => handleAccept(row)}
+                color="inherit"
+              />,
+            ];
+          } else if (executionStatus == "2") {
+            // Show "Done" button when execution_status is "2"
+            return [
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <div className="icon-1">
+
                   <GridActionsCellItem
                     icon={<ListAltOutlinedIcon />}
                     label="Delete"
                     onClick={handleViewClick(id)}
                     color="inherit"
                   />
-                </Link>,
-                <GridActionsCellItem
-                  key={id}
-                  icon={
-                    <ExecutionUpdate
-                      setReload={setReload}
-                      id={id}
-                      rowData={row}
-                      status={1}
-                    />
-                  }
-                  label="Delete"
-                  onClick={() => handleDone(row)}
-                  color="inherit"
-                />,
-              ];
-            } else {
-              return [
-                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                </div>
+              </Link>,
+              <GridActionsCellItem
+                key={id}
+                icon={
+                  <ExecutionUpdate
+                    setReload={setReload}
+                    id={id}
+                    rowData={row}
+                    status={1}
+                  />
+                }
+                label="Delete"
+                onClick={() => handleDone(row)}
+                color="inherit"
+              />,
+            ];
+          } else {
+            return [
+              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                <div className="icon-1">
+
                   <GridActionsCellItem
                     icon={<ListAltOutlinedIcon />}
                     onClick={handleViewClick(id)}
                     color="inherit"
                   />
-                </Link>,
-              ];
-            }
-          },
+                </div>
+              </Link>,
+            ];
+          }
         },
+      },
   ];
   return (
     <>
@@ -507,25 +548,25 @@ time.includes(".0")?time.split(".")[0]:time
         />
       )}
       <ThemeProvider theme={theme}>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2>Execution Pending Summary</h2>
+        <div>
+          <FormContainer mainTitle={"Execution Pending Summary"} link={true} />
+
+          <div className="thm_table card body-padding fx-head thm_row">
+
+            <DataGrid
+              rows={addSerialNumber(data)}
+              columns={columns}
+              getRowId={(row) => row._id}
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+            ></DataGrid>
           </div>
         </div>
-        <div>
-          
-          <DataGrid
-            rows={addSerialNumber(data)}
-            columns={columns}
-            getRowId={(row) => row._id}
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-          ></DataGrid>
-        </div>
+
       </ThemeProvider>
       <PaymentDetailDailog
         handleClickOpenPaymentDetailDialog={handleClickOpenPaymentDetailDialog}

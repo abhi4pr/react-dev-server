@@ -344,7 +344,8 @@ export default function ExecutionDashboard() {
         return (
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn cmnbtn btn_sm btn-outline-primary"
+
             data-toggle="modal"
             data-target="#myModal1"
             disabled={
@@ -365,7 +366,8 @@ export default function ExecutionDashboard() {
         return (
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn cmnbtn btn_sm btn-outline-primary"
+
             onClick={() => handleHistoryRowClick(params.row)}
             disabled={
               params?.row?.latestEntry?.stats_update_flag
@@ -387,7 +389,7 @@ export default function ExecutionDashboard() {
         return (
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn cmnbtn btn_sm btn-outline-primary"
             onClick={() => handleUpdateRowClick(params.row)}
             disabled={
               params?.row?.latestEntry?.stats_update_flag

@@ -51,9 +51,8 @@ const AnnoucementPost = () => {
       axios
         .get(
           baseUrl +
-            `get_all_designations_by_deptId/${
-              department[department.length - 1]
-            }`
+          `get_all_designations_by_deptId/${department[department.length - 1]
+          }`
         )
         .then((res) => {
           const newDesignations = res.data.data;
@@ -355,7 +354,7 @@ const AnnoucementPost = () => {
           >
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn cmnbtn btn-primary"
               style={{
                 display: "flex",
                 justifyContent: "center",
@@ -369,7 +368,7 @@ const AnnoucementPost = () => {
 
             <label
               htmlFor="attachment-multi2"
-              className="btn btn-outline-primary"
+              className="btn cmnbtn btn-outline-primary"
               style={{
                 display: "flex",
                 justifyContent: "center",

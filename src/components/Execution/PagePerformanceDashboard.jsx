@@ -357,80 +357,79 @@ export default function PagePerformanceDashboard() {
   return (
     <div>
       <FormContainer mainTitle="Page Performance Dashboard" link="/ip-master" />
+      <div className="card body-padding">
+        <div className="flex-row w-100 gap16">
+          <TextField
+            sx={{ width: "100%" }}
+            type="text"
+            label="Search Page"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
-      <div className="card">
-        <div className="card-header sb">
-          <div></div>
-          <div className="flex-row w-100 gap16">
-            <TextField
+          <Autocomplete
+            disablePortal
+            value={viewType}
+            // defaultValue={compareFlagOptions[0].label}
+            id="combo-box-demo"
+            options={viewInOptions}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setViewType({
+                  newValue: "Default",
+                });
+              }
 
-              type="text"
-              label="Search Page"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+              setViewType(newValue);
+            }}
 
-            <Autocomplete
-              disablePortal
-              value={viewType}
-              // defaultValue={compareFlagOptions[0].label}
-              id="combo-box-demo"
-              options={viewInOptions}
-              onChange={(event, newValue) => {
-                if (newValue === null) {
-                  return setViewType({
-                    newValue: "Default",
-                  });
-                }
+            renderInput={(params) => <TextField {...params} label="View In" />}
+          // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+          />
+          <Autocomplete
+            disablePortal
+            value={intervalFlag.label}
+            defaultValue={intervalFlagOptions[0].label}
+            id="combo-box-demo"
+            options={intervalFlagOptions.map((option) => ({
+              label: option.label,
+              value: option.value,
+            }))}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setIntervalFlag({ label: "Current Month", value: 1 });
+              }
+              setIntervalFlag(newValue);
+            }}
 
-                setViewType(newValue);
-              }}
+            renderInput={(params) => (
+              <TextField {...params} label="Filter Date" />
+            )}
+          />
+          <Autocomplete
 
-              renderInput={(params) => <TextField {...params} label="View In" />}
-            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
-            />
-            <Autocomplete
-              disablePortal
-              value={intervalFlag.label}
-              defaultValue={intervalFlagOptions[0].label}
-              id="combo-box-demo"
-              options={intervalFlagOptions.map((option) => ({
-                label: option.label,
-                value: option.value,
-              }))}
-              onChange={(event, newValue) => {
-                if (newValue === null) {
-                  return setIntervalFlag({ label: "Current Month", value: 1 });
-                }
-                setIntervalFlag(newValue);
-              }}
+            disablePortal
+            value={filterDataVal}
+            defaultChecked="Higest"
+            defaultValue={FilterDataOptions[0]}
+            id="combo-box-demo"
+            options={FilterDataOptions}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setFilterDataVal("Highest");
+              }
+              setFilterDataVal(newValue);
+            }}
 
-              renderInput={(params) => (
-                <TextField {...params} label="Filter Date" />
-              )}
-            />
-            <Autocomplete
+            renderInput={(params) => (
+              <TextField {...params} label="Filter Data" />
+            )}
+          />
 
-              disablePortal
-              value={filterDataVal}
-              defaultChecked="Higest"
-              defaultValue={FilterDataOptions[0]}
-              id="combo-box-demo"
-              options={FilterDataOptions}
-              onChange={(event, newValue) => {
-                if (newValue === null) {
-                  return setFilterDataVal("Highest");
-                }
-                setFilterDataVal(newValue);
-              }}
-
-              renderInput={(params) => (
-                <TextField {...params} label="Filter Data" />
-              )}
-            />
-
-          </div>
         </div>
+      </div>
+      <div className="card">
+
         <div className="card-body nt-head fx-head">
 
           <DataGrid

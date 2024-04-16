@@ -6022,6 +6022,18 @@ body.sidebar-toggled .topbarBrand {
   margin: 0;
 }
 
+.thm_row {
+  .css-lgtgv4-MuiDataGrid-root .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell {
+    overflow: hidden;
+    white-space: nowrap;
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}
+
 .card-subtitle {
   margin-top: -0.375rem;
   margin-bottom: 0;
@@ -6356,6 +6368,25 @@ body.sidebar-toggled .topbarBrand {
       padding: 0 10px !important;
       font-size: 0.8rem !important;
     }
+  }
+
+  .form-group {
+    .form-label {
+      display: none;
+    }
+
+    .form-control {
+      min-height: 35px !important;
+      height: 30px !important;
+      border-radius: 7px !important;
+    }
+  }
+
+  .form-control {
+    min-height: 35px !important;
+    height: 30px !important;
+    border-radius: 7px !important;
+    width: 300px !important;
   }
 
   .css-vnubik-MuiFormLabel-root-MuiInputLabel-root,

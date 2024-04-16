@@ -85,19 +85,19 @@ export default function BrandMaster() {
         </button>
 
         <button
-         className="btn btn-outline-primary btn-sm"
+          className="btn btn-outline-primary btn-sm"
           onClick={() => navigate("/admin/categorymaster")}
         >
           Create Category
         </button>
         <button
-         className="btn btn-outline-primary btn-sm"
+          className="btn btn-outline-primary btn-sm"
           onClick={() => navigate("/admin/subcategory")}
         >
           Create Subcategory
         </button>
         <button
-         className="btn btn-outline-primary btn-sm"
+          className="btn btn-outline-primary btn-sm"
           onClick={() => navigate("/case-platform")}
         >
           Platfrom
@@ -171,7 +171,7 @@ export default function BrandMaster() {
 
   const categoryData = () => {
     axios.get(baseUrl + "projectxCategory").then((res) => {
-      
+
       setCategoryOptions(res.data.data);
     });
   };
@@ -181,7 +181,7 @@ export default function BrandMaster() {
   }, [reload]);
 
   const subCategoryDataOnEdit = () => {
-    
+
     axios.get(baseUrl + "projectxSubCategory").then((res) => {
       // console.log(res.data.data, "-------> subcat data");
       const filteredData = res.data.data.filter((item) => {
@@ -287,7 +287,7 @@ export default function BrandMaster() {
         .delete(`${brandURL}/delete_brand/${itemToDeleteId}`)
         .then(() => {
           getData();
-          
+
         })
         .finally(() => {
           setIsDeleteConfirmationOpen(false);
@@ -356,10 +356,10 @@ export default function BrandMaster() {
         const { id, row } = params;
         return [
           <button
-        className="icon-1"
-           
+            className="icon-1"
+
             label="Edit"
-            
+
             onClick={handleEditClick(id, row)}
             color="primary"
           >
@@ -369,7 +369,7 @@ export default function BrandMaster() {
             className="icon-1"
             label="Delete"
             onClick={handleDeleteClick(id)}
-          
+
           >
             <i className="bi bi-trash"></i>
           </button>,
@@ -394,7 +394,7 @@ export default function BrandMaster() {
     try {
       const response = await axios.get(`${baseUrl}get_all_data_platforms`);
       setDataPlatforms(response?.data);
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
@@ -411,32 +411,34 @@ export default function BrandMaster() {
 
       <div className="card">
         <div className="card-header sb">
-          <div></div>
+          <div className="card-tittle">
+            Overview
+          </div>
           <div className="pack w-25">
-           
-              <FieldContainer
-                fieldGrid={12}
-                label=""
-                placeholder="Search Here"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-              />
-           
+
+            <FieldContainer
+              fieldGrid={12}
+              label=""
+              placeholder="Search Here"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+
           </div>
         </div>
-        <div className="card-body body-padding">
-          <Box sx={{ height: "700px" }}>
-            <DataGrid
-              rows={filteredRows}
-              columns={columns}
-              editMode="row"
-              onRowEditStop={handleRowEditStop}
-              getRowId={(row) => row.brand_id}
-              slots={{
-                toolbar: EditToolbar,
-              }}
-            />
-          </Box>
+        <div className="card-body body-padding fx-head thm_table">
+
+          <DataGrid
+            rows={filteredRows}
+            columns={columns}
+            editMode="row"
+            onRowEditStop={handleRowEditStop}
+            getRowId={(row) => row.brand_id}
+            slots={{
+              toolbar: EditToolbar,
+            }}
+          />
+
         </div>
       </div>
       {/* AddRecordModal post data */}
@@ -646,7 +648,7 @@ export default function BrandMaster() {
       <Dialog
         open={isDeleteConfirmationOpen}
         onClose={() => setIsDeleteConfirmationOpen(false)}
-        
+
       >
         <DialogTitle>Delete Confirmation</DialogTitle>
         <DialogContent>
@@ -654,24 +656,24 @@ export default function BrandMaster() {
         </DialogContent>
         <DialogActions>
           <div className="sb w-100">
-             
-          <button
-          className="btn btn-outline-danger btn-sm"
-            onClick={() => setIsDeleteConfirmationOpen(false)}
-            color="primary"
-            variant="outlined"
+
+            <button
+              className="btn btn-outline-danger btn-sm"
+              onClick={() => setIsDeleteConfirmationOpen(false)}
+              color="primary"
+              variant="outlined"
             >
-            Cancel
-          </button>
-          <button
-          className="btn btn-outline-primary btn-sm"
-            onClick={handleConfirmDelete}
-            color="error"
-            variant="outlined"
+              Cancel
+            </button>
+            <button
+              className="btn btn-outline-primary btn-sm"
+              onClick={handleConfirmDelete}
+              color="error"
+              variant="outlined"
             >
-            Delete
-          </button>
-            </div>
+              Delete
+            </button>
+          </div>
         </DialogActions>
       </Dialog>
     </>

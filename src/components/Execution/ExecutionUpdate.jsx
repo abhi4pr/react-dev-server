@@ -28,7 +28,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function ExecutionUpdate({ id, rowData, setReload, status,executionStatus }) {
+export default function ExecutionUpdate({ id, rowData, setReload, status, executionStatus }) {
   console.log(rowData.execution_status);
   const [remark, setRemark] = useState("");
   const [data, setData] = useState([]);
@@ -48,7 +48,7 @@ export default function ExecutionUpdate({ id, rowData, setReload, status,executi
   };
 
   const handleSave = () => {
-   if(status==1 && !value){
+    if (status == 1 && !value) {
       setValidationError(true);
       return;
     }
@@ -76,6 +76,7 @@ export default function ExecutionUpdate({ id, rowData, setReload, status,executi
     <div>
       <Button
         variant="outlined"
+        className="btn btn_sm cmnbtn"
         onClick={() => {
           setOpen(true);
           console.log(rowData?.execution_status, "execution_status");
@@ -122,7 +123,7 @@ export default function ExecutionUpdate({ id, rowData, setReload, status,executi
           <Typography gutterBottom>
             You are about to update the execution status.
           </Typography>
-          {rowData?.execution_status != 1  && (
+          {rowData?.execution_status != 1 && (
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
                 value={value}
