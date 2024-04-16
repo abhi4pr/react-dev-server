@@ -50,7 +50,7 @@ const CaseStudyplateform = () => {
             color="primary"
             onClick={() => handleBrandData(row)}
           >
-           <i className="bi bi-pencil"></i>
+            <i className="bi bi-pencil"></i>
           </button>
           <DeleteButton
             endpoint="delete_data_platform"
@@ -71,7 +71,7 @@ const CaseStudyplateform = () => {
         alert("Platform already Exists");
       } else {
         const response = await axios.post(
-          baseUrl+"add_data_platform",
+          baseUrl + "add_data_platform",
           {
             platform_name: platformName,
             remark: "",
@@ -87,7 +87,7 @@ const CaseStudyplateform = () => {
   };
   async function getModalData() {
     const res = await axios.get(
-      baseUrl+"get_all_data_platforms"
+      baseUrl + "get_all_data_platforms"
     );
     setModalData(res.data);
     setModalFilter(res.data);
@@ -103,7 +103,7 @@ const CaseStudyplateform = () => {
   };
   const handleModalUpdate = () => {
     axios
-      .put(baseUrl+"update_data_platform", {
+      .put(baseUrl + "update_data_platform", {
         _id: modalId,
         platform_name: platformNameUpdate,
       })
@@ -131,42 +131,42 @@ const CaseStudyplateform = () => {
           link="true"
           handleSubmit={false}
         >
-         
+
         </FormContainer>
         <div className="card body-padding">
-          <div className="d-flex" style={{justifyContent:"space-between",alignItems:"center"}}>
+          <div className="d-flex" style={{ justifyContent: "space-between", alignItems: "center" }}>
 
-        <FieldContainer
-            label="Platform Name"
-            value={platformName}
-            onChange={(e) => setPlatformName(e.target.value)}
+            <FieldContainer
+              label="Platform Name"
+              value={platformName}
+              onChange={(e) => setPlatformName(e.target.value)}
             />
-           <button className="btn btn-outline-primary">Submit</button>
-            </div>
+            <button className="btn cmnbtn btn-outline-primary">Submit</button>
+          </div>
         </div>
 
         <div className="card">
           <div className="card-header
           sb">
-         <h6> Modal Overview</h6>  
-         <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+            <h6> Modal Overview</h6>
+            <input
+              type="text"
+              placeholder="Search here"
+              className="w-50 form-control"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
           <div className="data_tbl table-responsive card-body body-padding">
             <DataTable
-            
+
               columns={columns}
               data={modalFilter}
-             
+
               pagination
               fixedHeaderScrollHeight="64vh"
               highlightOnHover
-             
+
             />
           </div>
         </div>

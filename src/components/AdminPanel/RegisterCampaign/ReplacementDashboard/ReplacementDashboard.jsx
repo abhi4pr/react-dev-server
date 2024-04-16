@@ -6,7 +6,7 @@ import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import { Box, Button, Modal } from "@mui/material";
 import ReplacementList from "./replacementList";
 import { Autocomplete } from "@mui/material";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from '../../../../utils/config'
 
 const ReplacementDashboard = () => {
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
@@ -17,12 +17,12 @@ const ReplacementDashboard = () => {
   const getReplacementData = async () => {
     try {
       const replace = await axios.get(
-        baseUrl+"replacement/plan"
+        baseUrl + "replacement/plan"
       );
       setReplacementData(replace?.data?.data);
 
       const getCampaigns = await axios.get(
-        baseUrl+"exe_campaign"
+        baseUrl + "exe_campaign"
       );
       setAllCampaigns(getCampaigns?.data?.data);
     } catch (error) {
@@ -103,19 +103,27 @@ const ReplacementDashboard = () => {
           // onChange={() => handleCampaignSelect()}
         />
       }
+      
       </div> */}
       <FormContainer
         submitButton={false}
         mainTitle="Replacement Dashboard"
-        title=""
-        accordionButtons={accordionButtons}
-        activeAccordionIndex={activeAccordionIndex}
-        onAccordionButtonClick={handleAccordionButtonClick}
-      >
+        link={true}
+      />
+      <div className="tab">
+        {accordionButtons.map((button, index) => (
+          <div className={`named-tab ${activeAccordionIndex === index ? "active-tab" : ""}`} onClick={() => handleAccordionButtonClick(index)}>
+            {button}
+          </div>
+        ))}
+      </div>
+
+
+      <div className="card body-padding fx-head">
         {activeAccordionIndex === 0 && tab1}
         {activeAccordionIndex === 1 && tab2}
         {activeAccordionIndex === 2 && tab3}
-      </FormContainer>
+      </div>
     </>
   );
 };

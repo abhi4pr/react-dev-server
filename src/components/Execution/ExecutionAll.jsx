@@ -958,7 +958,7 @@ function ExecutionAll() {
               <div className=" gap16  sb">
 
                 <Button
-                  className="btn btn_sm cmnbtn btn-primary"
+                  className="btn  cmnbtn btn-primary"
                   size="small"
                   variant="outlined"
                   startIcon={<ContentCopyOutlinedIcon />}
@@ -967,7 +967,7 @@ function ExecutionAll() {
                   Copy Selected Pages
                 </Button>
                 <Button
-                  className="btn btn_sm cmnbtn btn-primary"
+                  className="btn  cmnbtn btn-primary"
 
                   size="small"
                   variant="outlined"
@@ -977,7 +977,7 @@ function ExecutionAll() {
                   Copy All Pages
                 </Button>
                 <Button
-                  className="btn btn_sm cmnbtn btn-primary"
+                  className="btn  cmnbtn btn-primary"
 
                   size="small"
                   variant="outlined"
@@ -995,9 +995,9 @@ function ExecutionAll() {
           <div
             className="card body-padding"
           >
-            <Typography sx={{ mb: 1 }}>Rate Of Conversion</Typography>
 
             <Stack className="thm_form flex-row flexCenter colGap16" >
+
               <Button
                 className="btn btn_sm cmnbtn btn-primary"
 
@@ -1062,7 +1062,9 @@ function ExecutionAll() {
 
           >
             <div className="card-header sb flexCeneterBetween">
-              <div></div>
+              <h3 className="card-title">
+                Rate of Conversion
+              </h3>
               <div className="flex-row">
                 <TextField
                   label="Search by Page Name"

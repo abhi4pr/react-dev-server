@@ -49,7 +49,7 @@ export default function CategoryMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <button className="btn btn-outline-primary" onClick={handleClick}>
+        <button className="btn cmnbtn btn_sm btn-outline-primary" onClick={handleClick}>
           create category{" "}
         </button>
       </GridToolbarContainer>
@@ -221,7 +221,7 @@ export default function CategoryMaster() {
           </button>,
           // eslint-disable-next-line react/jsx-key
           <button
-           className="icon-1"
+            className="icon-1"
             label="Delete"
             onClick={handleDeleteClick(id)}
             color="error"
@@ -254,15 +254,15 @@ export default function CategoryMaster() {
         <div className="card-header sb">
           <div></div>
           <div className="pack w-25">
-           
-              <FieldContainer
-                fieldGrid={12}
-                label=""
-                placeholder="Search Here"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-              />
-            
+
+            <FieldContainer
+              fieldGrid={12}
+              label=""
+              placeholder="Search Here"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+            />
+
           </div>
         </div>
         <div className="card-body body-padding ">

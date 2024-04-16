@@ -7,7 +7,7 @@ import axios from "axios";
 import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import AnnoucementComments from "./AnnoucementComments";
-import Interactions from "./Interactions";
+
 import { Drawer, Modal } from "@mui/material";
 import AnnoucementReactionView from "./AnnoucementReactionView";
 import { useGlobalContext } from "../../../Context/Context";
@@ -125,9 +125,7 @@ const Announcement = ({
   const [reactionData, setReactionData] = useState({});
   const reactionTypes = ["like", "haha", "love", "sad", "clap"];
   const [isOpen, setIsOpen] = useState(false);
-  const [idsToShow, setIdsToShow] = useState(
-    // Object.values(announcement.reactions).flat()
-  );
+
   const { toastError } = useGlobalContext();
   const handleReaction = async (announcementId, reaction, isRemoveReaction) => {
     try {
@@ -144,14 +142,7 @@ const Announcement = ({
       );
     }
   };
-  const handleFilter = (reaction) => {
-    if (reaction === "all") {
-      // Flatten all ID arrays into one
-      setIdsToShow(Object.values(announcement.reactions).flat());
-    } else {
-      setIdsToShow(announcement.reactions[reaction]);
-    }
-  };
+
   const toggleDrawer = (open) => (event) => {
     if (
       event.type === "keydown" &&
@@ -165,7 +156,7 @@ const Announcement = ({
   const decodedToken = jwtDecode(token);
 
   const [selectedReaction, setSelectedReaction] = useState(announcement?.currentUserReaction);
-  const [interactedReaction, setinteractedReaction] = useState({ type: selectedReaction, prevtype: "", isIntracted: false, isRemoved: false });
+
 
   const loginUserId = decodedToken.id;
 
@@ -174,16 +165,13 @@ const Announcement = ({
     if (reactionType === selectedReaction) {
       setSelectedReaction("");
       setReactionCount(reactionCount - 1);
-      setinteractedReaction({ type: reactionType, prevtype: "", isIntracted: false, isRemoved: true });
+
 
     } else {
       setSelectedReaction(reactionType);
       if (selectedReaction === "") {
         setReactionCount(reactionCount + 1);
-        setinteractedReaction({ type: reactionType, prevtype: interactedReaction["type"], isIntracted: true, isRemoved: false });
-      } else {
 
-        setinteractedReaction({ type: reactionType, prevtype: interactedReaction["type"], isIntracted: true, isRemoved: true });
       }
 
     }
@@ -374,8 +362,7 @@ const Announcement = ({
 
         {showCommentlist && (
           <div className="pack w-100">
-            <Interactions announcement={announcement} reactionObj={reactionObj} reactionTypes={reactionTypes} interactedReaction={interactedReaction} />
-            <br />
+
 
             <AnnoucementComments
               comments={comments}

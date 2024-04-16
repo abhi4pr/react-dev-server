@@ -529,7 +529,7 @@ function ExecutionOwn() {
                 <Button
                   size="small"
                   variant="outlined"
-                  className="btn cmnbtn btn_sm btn-primary"
+                  className="btn cmnbtn btn-primary"
                   startIcon={<ContentCopyOutlinedIcon />}
                   onClick={() => copySelectedRows(1)}
                 >
@@ -538,7 +538,7 @@ function ExecutionOwn() {
                 <Button
                   size="small"
                   variant="outlined"
-                  className="btn cmnbtn btn_sm btn-primary"
+                  className="btn cmnbtn btn-primary"
 
                   startIcon={<CopyAllOutlinedIcon />}
                   onClick={copyAllRows}
@@ -547,7 +547,7 @@ function ExecutionOwn() {
                 </Button>
                 <Button
                   size="small"
-                  className="btn btn_sm cmnbtn btn-primary"
+                  className="btn cmnbtn btn-primary"
 
                   variant="outlined"
                   startIcon={<ContentPasteIcon />}
@@ -562,7 +562,7 @@ function ExecutionOwn() {
           <div
             className="card body-padding"
           >
-            <Typography sx={{ mb: 1 }}>Rate Of Conversion</Typography>
+
 
             <Stack className="flexCenter flex-row gap16">
               <Button
@@ -630,7 +630,7 @@ function ExecutionOwn() {
             className="card"
           >
             <div className="card-header sb">
-              <div></div> <div className="pack">
+              <div className="card-tittle">Rate Of Conversion</div> <div className="pack w-75">
                 <TextField
                   label="Search by Page Name"
                   onChange={(e) => {
