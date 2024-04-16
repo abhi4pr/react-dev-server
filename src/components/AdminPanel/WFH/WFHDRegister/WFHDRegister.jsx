@@ -571,175 +571,178 @@ const WFHDRegister = ({ userUpdateID }) => {
   };
 
   return (
-    <div className="master-card-css">
+    <div>
       <FormContainer
         mainTitle="WFHD Register"
         submitButton={false}
         link={"/admin/wfhd-overview"}
       />
-
-      <div className="card body-padding">
-        <div className="row">
-          <FieldContainer
-            label="Full Name *"
-            fieldGrid={3}
-            required
-            value={username}
-            onChange={(e) => setUserName(e.target.value)}
-          />
-
-          <div className="form-group col-3">
-            <label className="form-label">
-              Job Type <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              className=""
-              options={jobTypeData.map((option) => ({
-                value: `${option}`,
-                label: `${option}`,
-              }))}
-              value={{
-                value: jobType,
-                label: `${jobType}`,
-              }}
-              onChange={(e) => {
-                setJobType(e.value);
-              }}
-              isDisabled={true}
+      <div className="card">
+        <div className="card-header">
+          <h5 className="card-title">WFHD Registration</h5>
+        </div>
+        <div className="card-body">
+          <div className="row">
+            <FieldContainer
+              label="Full Name *"
+              fieldGrid={3}
               required
+              value={username}
+              onChange={(e) => setUserName(e.target.value)}
             />
-          </div>
 
-          <div className="form-group col-3">
-            <label className="form-label">
-              Department Name <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              className=""
-              options={departmentdata.map((option) => ({
-                value: option.dept_id,
-                label: `${option.dept_name}`,
-              }))}
-              value={{
-                value: department,
-                label:
-                  departmentdata.find((user) => user.dept_id === department)
-                    ?.dept_name || "",
-              }}
-              onChange={(e) => {
-                setDepartment(e.value);
-              }}
-              required
-              isDisabled={loginRole == 2}
-            />
-          </div>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Job Type <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                className=""
+                options={jobTypeData.map((option) => ({
+                  value: `${option}`,
+                  label: `${option}`,
+                }))}
+                value={{
+                  value: jobType,
+                  label: `${jobType}`,
+                }}
+                onChange={(e) => {
+                  setJobType(e.value);
+                }}
+                isDisabled={true}
+                required
+              />
+            </div>
 
-          <div className="form-group col-3">
-            <label className="form-label">
-              Designation <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              className=""
-              options={designationData?.map((option) => ({
-                value: option.desi_id,
-                label: `${option.desi_name}`,
-              }))}
-              value={{
-                value: designation,
-                label:
-                  designationData?.find((user) => user.desi_id === designation)
-                    ?.desi_name || "",
-              }}
-              onChange={(e) => {
-                setDesignation(e.value);
-              }}
-              required
-            />
-          </div>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Department Name <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                className=""
+                options={departmentdata.map((option) => ({
+                  value: option.dept_id,
+                  label: `${option.dept_name}`,
+                }))}
+                value={{
+                  value: department,
+                  label:
+                    departmentdata.find((user) => user.dept_id === department)
+                      ?.dept_name || "",
+                }}
+                onChange={(e) => {
+                  setDepartment(e.value);
+                }}
+                required
+                isDisabled={loginRole == 2}
+              />
+            </div>
 
-          <div className="form-group col-3">
-            <label className="form-label">
-              Report L1 <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              required={true}
-              className=""
-              options={usersData.map((option) => ({
-                value: option.user_id,
-                label: `${option.user_name}`,
-              }))}
-              value={{
-                value: reportL1,
-                label:
-                  usersData.find((user) => user.user_id === reportL1)
-                    ?.user_name || "",
-              }}
-              onChange={(e) => {
-                setReportL1(e.value);
-                e.value &&
-                  setIsRequired((prev) => {
-                    return { ...prev, reportL1: false };
-                  });
-              }}
-              onBlur={(e) => {
-                !reportL1 &&
-                  setIsRequired((prev) => {
-                    return { ...prev, reportL1: true };
-                  });
-                reportL1 &&
-                  setIsRequired((prev) => {
-                    return { ...prev, reportL1: false };
-                  });
-              }}
-            />
-            {isRequired.reportL1 && (
-              <p style={{ color: "red" }}>*Please select Report L1</p>
-            )}
-          </div>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Designation <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                className=""
+                options={designationData?.map((option) => ({
+                  value: option.desi_id,
+                  label: `${option.desi_name}`,
+                }))}
+                value={{
+                  value: designation,
+                  label:
+                    designationData?.find((user) => user.desi_id === designation)
+                      ?.desi_name || "",
+                }}
+                onChange={(e) => {
+                  setDesignation(e.value);
+                }}
+                required
+              />
+            </div>
 
-          <div className="form-group col-3">
-            <label className="form-label">Report L2</label>
-            <Select
-              className=""
-              options={usersData.map((option) => ({
-                value: option.user_id,
-                label: `${option.user_name}`,
-              }))}
-              value={{
-                value: reportL2,
-                label:
-                  usersData.find((user) => user.user_id === reportL2)
-                    ?.user_name || "",
-              }}
-              onChange={(e) => {
-                setReportL2(e.value);
-              }}
-              required={false}
-            />
-          </div>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Report L1 <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                required={true}
+                className=""
+                options={usersData.map((option) => ({
+                  value: option.user_id,
+                  label: `${option.user_name}`,
+                }))}
+                value={{
+                  value: reportL1,
+                  label:
+                    usersData.find((user) => user.user_id === reportL1)
+                      ?.user_name || "",
+                }}
+                onChange={(e) => {
+                  setReportL1(e.value);
+                  e.value &&
+                    setIsRequired((prev) => {
+                      return { ...prev, reportL1: false };
+                    });
+                }}
+                onBlur={(e) => {
+                  !reportL1 &&
+                    setIsRequired((prev) => {
+                      return { ...prev, reportL1: true };
+                    });
+                  reportL1 &&
+                    setIsRequired((prev) => {
+                      return { ...prev, reportL1: false };
+                    });
+                }}
+              />
+              {isRequired.reportL1 && (
+                <p style={{ color: "red" }}>*Please select Report L1</p>
+              )}
+            </div>
 
-          <div className="form-group col-3">
-            <label className="form-label">Report L3</label>
-            <Select
-              className=""
-              options={usersData.map((option) => ({
-                value: option.user_id,
-                label: `${option.user_name}`,
-              }))}
-              value={{
-                value: reportL3,
-                label:
-                  usersData.find((user) => user.user_id === reportL3)
-                    ?.user_name || "",
-              }}
-              onChange={(e) => {
-                setReportL3(e.value);
-              }}
-              required={false}
-            />
-          </div>
+            <div className="form-group col-3">
+              <label className="form-label">Report L2</label>
+              <Select
+                className=""
+                options={usersData.map((option) => ({
+                  value: option.user_id,
+                  label: `${option.user_name}`,
+                }))}
+                value={{
+                  value: reportL2,
+                  label:
+                    usersData.find((user) => user.user_id === reportL2)
+                      ?.user_name || "",
+                }}
+                onChange={(e) => {
+                  setReportL2(e.value);
+                }}
+                required={false}
+              />
+            </div>
 
-          {/* <FieldContainer
+            <div className="form-group col-3">
+              <label className="form-label">Report L3</label>
+              <Select
+                className=""
+                options={usersData.map((option) => ({
+                  value: option.user_id,
+                  label: `${option.user_name}`,
+                }))}
+                value={{
+                  value: reportL3,
+                  label:
+                    usersData.find((user) => user.user_id === reportL3)
+                      ?.user_name || "",
+                }}
+                onChange={(e) => {
+                  setReportL3(e.value);
+                }}
+                required={false}
+              />
+            </div>
+
+            {/* <FieldContainer
           label="Email"
           type="email"
           fieldGrid={3}
@@ -750,18 +753,18 @@ const WFHDRegister = ({ userUpdateID }) => {
         {!validEmail && (
           <p style={{ color: "red" }}>*Please enter valid email</p>
         )} */}
-          <FieldContainer
-            label="Personal Email *"
-            type="email"
-            fieldGrid={3}
-            required={false}
-            value={personalEmail}
-            onChange={handlePersonalEmailChange}
-          />
-          {!validPersonalEmail && (
-            <p style={{ color: "red" }}>*Please enter valid email</p>
-          )}
-          {/* <FieldContainer
+            <FieldContainer
+              label="Personal Email *"
+              type="email"
+              fieldGrid={3}
+              required={false}
+              value={personalEmail}
+              onChange={handlePersonalEmailChange}
+            />
+            {!validPersonalEmail && (
+              <p style={{ color: "red" }}>*Please enter valid email</p>
+            )}
+            {/* <FieldContainer
           label=" City"
           type="text"
           fieldGrid={3}
@@ -769,88 +772,88 @@ const WFHDRegister = ({ userUpdateID }) => {
           value={city}
           onChange={(e) => setCity(e.target.value)}
         /> */}
-          <div className="form-group col-3">
-            <label className="form-label">
-              City <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              options={cityData.map((city) => ({
-                value: city.city_name,
-                label: city.city_name,
-              }))}
-              onChange={(e) => setCity(e ? e.value : "")}
-              required={true}
-              // value={city}
-              value={{
-                value: city,
-                label:
-                  cityData.find((gotCity) => gotCity.city_name == city)
-                    ?.city_name || "",
-              }}
-              placeholder="Select a city..."
-              isClearable
-            />
-          </div>
-
-          {/* {jobType === "WFH" && ( */}
-          <>
-            <FieldContainer
-              // label="Salary"
-              label="Monthly Salary *"
-              type="number"
-              fieldGrid={3}
-              value={salary}
-              // onChange={(e) => setSalary(e.target.value)}
-              onChange={handleMonthlySalaryChange}
-            />
-
-            <FieldContainer
-              // label="Salary"
-              label="CTC *"
-              type="number"
-              fieldGrid={3}
-              value={yearlySalary}
-              // onChange={(e) => setYearlySalary(e.target.value)}
-              onChange={handleYearlySalaryChange}
-            />
-
             <div className="form-group col-3">
               <label className="form-label">
-                TDS Applicable<sup style={{ color: "red" }}>*</sup>
+                City <sup style={{ color: "red" }}>*</sup>
               </label>
               <Select
-                className=""
-                options={tdsApplicableData.map((option) => ({
-                  value: `${option}`,
-                  label: `${option}`,
+                options={cityData.map((city) => ({
+                  value: city.city_name,
+                  label: city.city_name,
                 }))}
+                onChange={(e) => setCity(e ? e.value : "")}
+                required={true}
+                // value={city}
                 value={{
-                  value: tdsApplicable,
-                  label: `${tdsApplicable}`,
+                  value: city,
+                  label:
+                    cityData.find((gotCity) => gotCity.city_name == city)
+                      ?.city_name || "",
                 }}
-                onChange={(e) => {
-                  const selectedValue = e.value;
-                  setTdsApplicable(e.value);
-                  setShowTdsPercentage(selectedValue === "Yes");
-                }}
-                required={false}
+                placeholder="Select a city..."
+                isClearable
               />
             </div>
-            {showTdsPercentage && (
-              <FieldContainer
-                label="TDS Percentage"
-                fieldGrid={3}
-                type="number"
-                value={tdsPercentage}
-                onChange={(e) => setTdsPercentage(e.target.value)}
-                required={false}
-              />
-            )}
-          </>
-          {/* )} */}
 
-          {/* {jobType == "WFHD" && ( */}
-          {/* <FieldContainer
+            {/* {jobType === "WFH" && ( */}
+            <>
+              <FieldContainer
+                // label="Salary"
+                label="Monthly Salary *"
+                type="number"
+                fieldGrid={3}
+                value={salary}
+                // onChange={(e) => setSalary(e.target.value)}
+                onChange={handleMonthlySalaryChange}
+              />
+
+              <FieldContainer
+                // label="Salary"
+                label="CTC *"
+                type="number"
+                fieldGrid={3}
+                value={yearlySalary}
+                // onChange={(e) => setYearlySalary(e.target.value)}
+                onChange={handleYearlySalaryChange}
+              />
+
+              <div className="form-group col-3">
+                <label className="form-label">
+                  TDS Applicable<sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  className=""
+                  options={tdsApplicableData.map((option) => ({
+                    value: `${option}`,
+                    label: `${option}`,
+                  }))}
+                  value={{
+                    value: tdsApplicable,
+                    label: `${tdsApplicable}`,
+                  }}
+                  onChange={(e) => {
+                    const selectedValue = e.value;
+                    setTdsApplicable(e.value);
+                    setShowTdsPercentage(selectedValue === "Yes");
+                  }}
+                  required={false}
+                />
+              </div>
+              {showTdsPercentage && (
+                <FieldContainer
+                  label="TDS Percentage"
+                  fieldGrid={3}
+                  type="number"
+                  value={tdsPercentage}
+                  onChange={(e) => setTdsPercentage(e.target.value)}
+                  required={false}
+                />
+              )}
+            </>
+            {/* )} */}
+
+            {/* {jobType == "WFHD" && ( */}
+            {/* <FieldContainer
           label=" CTC *"
           type="number"
           fieldGrid={3}
@@ -858,9 +861,9 @@ const WFHDRegister = ({ userUpdateID }) => {
           value={userCtc}
           onChange={(e) => setUserCtc(e.target.value)}
         /> */}
-          {/* )} */}
+            {/* )} */}
 
-          {/* {jobType == "WFO" && (
+            {/* {jobType == "WFO" && (
           <div className="form-group col-3">
             <label className="form-label">
               Letter send <sup style={{ color: "red" }}>*</sup>
@@ -882,7 +885,7 @@ const WFHDRegister = ({ userUpdateID }) => {
           </div>
         )} */}
 
-          {/* {sendLetter.label == "Yes" && (
+            {/* {sendLetter.label == "Yes" && (
           <FieldContainer
             label="Annexure pdf"
             fieldGrid={3}
@@ -892,95 +895,95 @@ const WFHDRegister = ({ userUpdateID }) => {
           />
         )} */}
 
-          <FieldContainer
-            label="Personal Contact *"
-            type="number"
-            fieldGrid={3}
-            value={personalContact}
-            required={false}
-            onChange={handlePersonalContactChange}
-            onBlur={handlePersonalContactBlur}
-          />
-          {(isContactTouched1 || personalContact?.length >= 10) &&
-            !isValidcontact1 && (
-              <p style={{ color: "red" }}>*Please enter a valid Number</p>
-            )}
+            <FieldContainer
+              label="Personal Contact *"
+              type="number"
+              fieldGrid={3}
+              value={personalContact}
+              required={false}
+              onChange={handlePersonalContactChange}
+              onBlur={handlePersonalContactBlur}
+            />
+            {(isContactTouched1 || personalContact?.length >= 10) &&
+              !isValidcontact1 && (
+                <p style={{ color: "red" }}>*Please enter a valid Number</p>
+              )}
 
-          <FieldContainer
-            label="Alternate Contact *"
-            type="number"
-            fieldGrid={3}
-            value={contact}
-            required={false}
-            onChange={handleContactChange}
-            onBlur={handleContactBlur}
-          />
-          {/* {(isContactTouched || contact.length >= 10) && !isValidcontact && (
+            <FieldContainer
+              label="Alternate Contact *"
+              type="number"
+              fieldGrid={3}
+              value={contact}
+              required={false}
+              onChange={handleContactChange}
+              onBlur={handleContactBlur}
+            />
+            {/* {(isContactTouched || contact.length >= 10) && !isValidcontact && (
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
         )} */}
 
-          <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-            <div className="form-group">
-              <p
-                className={
-                  loginResponse == "login id available"
-                    ? "login-success1"
-                    : "login-error1"
-                }
-              >
-                {loginResponse}
-              </p>
+            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+              <div className="form-group">
+                <p
+                  className={
+                    loginResponse == "login id available"
+                      ? "login-success1"
+                      : "login-error1"
+                  }
+                >
+                  {loginResponse}
+                </p>
 
-              <label>
-                Login ID <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <div className="input-group">
-                <input
-                  className="form-control"
-                  value={loginId}
-                  required
-                  onChange={handleLoginIdChange}
-                />
-                <div className="input-group-append">
-                  <button
-                    className="btn btn-outline-primary"
-                    onClick={generateLoginId}
-                    type="button"
-                  >
-                    <AiOutlineReload />
-                  </button>
+                <label>
+                  Login ID <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <div className="input-group">
+                  <input
+                    className="form-control"
+                    value={loginId}
+                    required
+                    onChange={handleLoginIdChange}
+                  />
+                  <div className="input-group-append">
+                    <button
+                      className="btn btn-outline-primary"
+                      onClick={generateLoginId}
+                      type="button"
+                    >
+                      <AiOutlineReload />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-            <div className="form-group">
-              <label>
-                Generate Password <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <div className="input-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={password}
-                  required
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <div className="input-group-append">
-                  <button
-                    className="btn btn-outline-primary"
-                    onClick={generatePassword}
-                    type="button"
-                  >
-                    <i className="fa-solid fa-repeat"></i>
-                  </button>
+            <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+              <div className="form-group">
+                <label>
+                  Generate Password <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={password}
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <div className="input-group-append">
+                    <button
+                      className="btn btn-outline-primary"
+                      onClick={generatePassword}
+                      type="button"
+                    >
+                      <i className="fa-solid fa-repeat"></i>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* <div className="form-group col-3">
+            {/* <div className="form-group col-3">
           <label className="form-label">
             Role <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -1001,70 +1004,59 @@ const WFHDRegister = ({ userUpdateID }) => {
           ></Select>
         </div> */}
 
-          <FieldContainer
-            type="date"
-            label="Joining Date *"
-            fieldGrid={3}
-            value={joiningDate}
-            onChange={(e) => setJoiningDate(e.target.value)}
-          />
-
-          <FieldContainer
-            label="DOB *"
-            fieldGrid={3}
-            type="date"
-            value={dateOfBirth}
-            onChange={handleDateChange}
-          />
-
-          <div className="form-group col-3">
-            <label className="form-label">
-              Gender <sup style={{ color: "red" }}>*</sup>
-            </label>
-            <Select
-              className=""
-              options={genderData.map((option) => ({
-                value: `${option}`,
-                label: `${option}`,
-              }))}
-              value={{
-                value: gender,
-                label: `${gender}`,
-              }}
-              onChange={(e) => {
-                setGender(e.value);
-              }}
-              required
+            <FieldContainer
+              type="date"
+              label="Joining Date *"
+              fieldGrid={3}
+              value={joiningDate}
+              onChange={(e) => setJoiningDate(e.target.value)}
             />
+
+            <FieldContainer
+              label="DOB *"
+              fieldGrid={3}
+              type="date"
+              value={dateOfBirth}
+              onChange={handleDateChange}
+            />
+
+            <div className="form-group col-3">
+              <label className="form-label">
+                Gender <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                className=""
+                options={genderData.map((option) => ({
+                  value: `${option}`,
+                  label: `${option}`,
+                }))}
+                value={{
+                  value: gender,
+                  label: `${gender}`,
+                }}
+                onChange={(e) => {
+                  setGender(e.value);
+                }}
+                required
+              />
+            </div>
           </div>
         </div>
-        {/* <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12"> */}
-
-        {/* </div> */}
-      </div>
-      <div className="form-group">
-        <button
-          type="button"
-          className="btn btn-primary"
-          style={{
-            marginBottom: "12px",
-            padding: "14px 28px 14px 28",
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            gap: "10px",
-          }}
-          disabled={loading}
-          onClick={handleSubmit}
-        >
-          {loading ? "Submitting" : "Submit"}
-          {loading ? (
-            <i className="bi bi-arrow-clockwise"></i>
-          ) : (
-            <i className="bi bi-arrow-right"></i>
-          )}
-        </button>
+        <div className="card-footer">
+          <button
+            type="button"
+            className="btn cmnbtn btn-primary"
+            disabled={loading}
+            onClick={handleSubmit}
+          >
+            {loading ? "Submitting" : "Submit"}
+            {loading ? (
+              <i className="bi bi-arrow-clockwise"></i>
+            ) : (
+              <i className="bi bi-arrow-right"></i>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

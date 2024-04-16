@@ -11,11 +11,11 @@ import { GridColumnMenu } from "@mui/x-data-grid";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import ContentLoader from "react-content-loader";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from '../../utils/config'
 
 const viewInOptions = ["Millions", "Thousands", "Default"];
 export default function ExecutionDashboard() {
-  const [selectedCategories,setSelectedCategories] =useState([])
+  const [selectedCategories, setSelectedCategories] = useState([])
   const [viewType, setViewType] = useState("Default");
   const [contextData, setContextData] = useState(false);
   const [pagemode, setPagemode] = useState(1);
@@ -44,25 +44,25 @@ export default function ExecutionDashboard() {
     if (!num) return "";
     var x = num.toString();
     var afterPoint = '';
-    if(x.indexOf('.') > 0)
-       afterPoint = x.substring(x.indexOf('.'),x.length);
+    if (x.indexOf('.') > 0)
+      afterPoint = x.substring(x.indexOf('.'), x.length);
     x = Math.floor(x);
     x = x.toString();
     var lastThree = x.substring(x.length - 3);
     var otherNumbers = x.substring(0, x.length - 3);
     if (otherNumbers != '')
-        lastThree = ',' + lastThree;
+      lastThree = ',' + lastThree;
     var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
     return res;
   };
-  
+
 
   const callDataForLoad = () => {
     const formData = new URLSearchParams();
     formData.append("loggedin_user_id", 36);
     setLoading(true);
     axios
-      .get(baseUrl+"get_all_purchase_data")
+      .get(baseUrl + "get_all_purchase_data")
       .then((res) => {
         setAlldata(res.data.result);
         let tempdata = res.data.result.filter((ele) => {
@@ -83,7 +83,7 @@ export default function ExecutionDashboard() {
     if (userID && contextData == false) {
       axios
         .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
+          `${baseUrl}` + `get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           if (res.data[33].view_value == 1) {
@@ -106,37 +106,37 @@ export default function ExecutionDashboard() {
   useEffect(() => {
     filterDataByCategory();
   }, [selectedCategories, alldata]); // Re-run when selectedCategories or alldata changes
-  
+
   const filterDataByCategory = () => {
     if (selectedCategories.length === 0) {
       setTableData(alldata); // If no category is selected, show all data
       return;
     }
-  
+
     const filteredData = alldata.filter(row => selectedCategories.includes(row.cat_name));
     setTableData(filteredData);
   };
 
-  
+
   const [categoryPageCounts, setCategoryPageCounts] = useState({});
 
-useEffect(() => {
-  calculateCategoryPageCounts();
-}, [alldata]); // Re-run when alldata changes
+  useEffect(() => {
+    calculateCategoryPageCounts();
+  }, [alldata]); // Re-run when alldata changes
 
-const calculateCategoryPageCounts = () => {
-  const counts = alldata.reduce((acc, curr) => {
-    const category = curr.cat_name;
-    if (acc[category]) {
-      acc[category] += 1;
-    } else {
-      acc[category] = 1;
-    }
-    return acc;
-  }, {});
+  const calculateCategoryPageCounts = () => {
+    const counts = alldata.reduce((acc, curr) => {
+      const category = curr.cat_name;
+      if (acc[category]) {
+        acc[category] += 1;
+      } else {
+        acc[category] = 1;
+      }
+      return acc;
+    }, {});
 
-  setCategoryPageCounts(counts);
-};
+    setCategoryPageCounts(counts);
+  };
 
 
   const handleHistoryRowClick = (row) => {
@@ -145,7 +145,7 @@ const calculateCategoryPageCounts = () => {
 
   const handleUpdateRowClick = (row) => {
     axios
-      .get(`${baseUrl}`+`get_exe_ip_count_history/${row.p_id}`)
+      .get(`${baseUrl}` + `get_exe_ip_count_history/${row.p_id}`)
       .then((res) => {
         let data = res.data.data.filter((e) => {
           return e.isDeleted !== true;
@@ -218,26 +218,26 @@ const calculateCategoryPageCounts = () => {
     },
     pagemode == 1 || pagemode == 2
       ? {
-          field: "page_name",
-          headerName: "Page Name",
-          width: 250,
-          renderCell: (params) => {
-            const date = params.row.page_link;
-            return (
-              <div style={{ color: "blue" }}>
-                <a href={date} target="blank">
-                  {date == "" ? "" : params.row.page_name}
-                </a>
-              </div>
-            );
-          },
-        }
+        field: "page_name",
+        headerName: "Page Name",
+        width: 250,
+        renderCell: (params) => {
+          const date = params.row.page_link;
+          return (
+            <div style={{ color: "blue" }}>
+              <a href={date} target="blank">
+                {date == "" ? "" : params.row.page_name}
+              </a>
+            </div>
+          );
+        },
+      }
       : pagemode == 3 || pagemode == 4
-      ? {
+        ? {
           field: "account_name",
           headerName: "Account Name",
         }
-      : {
+        : {
           field: "channel_username",
           headerName: "Channel Name",
         },
@@ -248,21 +248,21 @@ const calculateCategoryPageCounts = () => {
     },
     pagemode == 1 || pagemode == 2
       ? {
-          field: "page_link",
-          headerName: "Link",
-          renderCell: (params) => {
-            const date = params.row.page_link;
-            return (
-              <div style={{ color: "blue" }}>
-                <a href={date} target="blank">
-                  {date == "" ? "" : "Link"}
-                </a>
-              </div>
-            );
-          },
-        }
+        field: "page_link",
+        headerName: "Link",
+        renderCell: (params) => {
+          const date = params.row.page_link;
+          return (
+            <div style={{ color: "blue" }}>
+              <a href={date} target="blank">
+                {date == "" ? "" : "Link"}
+              </a>
+            </div>
+          );
+        },
+      }
       : pagemode == 3 || pagemode == 4
-      ? {
+        ? {
           field: "account_link",
           headerName: "Link",
           renderCell: (params) => {
@@ -277,7 +277,7 @@ const calculateCategoryPageCounts = () => {
             );
           },
         }
-      : {
+        : {
           field: "channel_link",
           headerName: "Link",
           renderCell: (params) => {
@@ -292,7 +292,7 @@ const calculateCategoryPageCounts = () => {
           },
         },
     pagemode == 1 || pagemode == 4
-      ?{
+      ? {
         field: "follower_count",
         headerName: "Followers",
         renderCell: (params) => {
@@ -307,29 +307,29 @@ const calculateCategoryPageCounts = () => {
         },
         valueFormatter: (params) => formatNumberIndian(params.value),
       }
-      
+
       : pagemode == 2
-      ? ({
-        field: "follower_count",
-        headerName: "Followers",
-        renderCell: (params) => {
-          const followerCount = params.row.follower_count;
-          if (viewType === "Millions") {
-            return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
-          } else if (viewType === "Thousands") {
-            return <span>{(followerCount / 1000).toFixed(2)}K</span>;
-          } else {
-            return <span>{formatNumberIndian(followerCount)}</span>;
-          }
+        ? ({
+          field: "follower_count",
+          headerName: "Followers",
+          renderCell: (params) => {
+            const followerCount = params.row.follower_count;
+            if (viewType === "Millions") {
+              return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+            } else if (viewType === "Thousands") {
+              return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+            } else {
+              return <span>{formatNumberIndian(followerCount)}</span>;
+            }
+          },
+          valueFormatter: (params) => formatNumberIndian(params.value),
         },
-        valueFormatter: (params) => formatNumberIndian(params.value),
-      },
-      
+
         {
           field: "page_likes",
           headerName: "Page Likes",
         })
-      : {
+        : {
           field: "subscribers",
           headerName: "Subscribers",
         },
@@ -370,7 +370,7 @@ const calculateCategoryPageCounts = () => {
             disabled={
               params?.row?.latestEntry?.stats_update_flag
                 ? !params?.row?.latestEntry.stats_update_flag ||
-                  params?.row?.latestEntry?.isDeleted === true
+                params?.row?.latestEntry?.isDeleted === true
                 : true
             }
           >
@@ -494,7 +494,7 @@ const calculateCategoryPageCounts = () => {
     setTableData(filtered);
   };
 
-  
+
 
   useEffect(() => {
     filterRows();
@@ -503,161 +503,165 @@ const calculateCategoryPageCounts = () => {
 
   return (
     <div>
-      <div style={{ width: "100%", margin: "0 0 0 0" }}>
-        <FormContainer mainTitle="Dashboard" link="/ip-master" />
-        <div className=" m-auto row gap-5">
-          <Paper
-            elevation={3}
-            style={{ padding: "20px", margin: "20px 0 0 0", width: "20%" }}
-          >
-            <h3 className="h6">Page Evaluation</h3>
-            <div className="w-50 m-auto">
-              <div style={{ width: 100, height: 100 }}>
-                <CircularProgressbar value={25} text={`0-25%`} />
-              </div>
-            </div>
-            <p className="fs-5">
-              {" "}
-              Page Count :-{" "}
-              <Button
-                color="primary"
-                onClick={() => {
-                  handlesetTableDataByPercentage(dataLessThan25);
-                }}
-              >
-                {dataLessThan25.length}
-              </Button>
-            </p>
-          </Paper>
 
-          <Paper
-            elevation={3}
-            style={{ padding: "20px", margin: "20px 0 0 0", width: "20%" }}
-          >
-            <h3 className="h6">Page Evaluation</h3>
-            <div className="w-50 m-auto">
-              <div style={{ width: 100, height: 100 }}>
-                <CircularProgressbar value={50} text={`26-50%`} />
-              </div>
+      <FormContainer mainTitle="Dashboard" link="/ip-master" />
+      <div className=" card flex-row body-padding gap4 sb align-items-center">
+        <div
+          className="card body-padding m-0"
+          style={{ border: "1px solid var(--gray-200)" }}
+        >
+          <h3 className="h6">Page Evaluation</h3>
+          <div className="w-50 m-auto">
+            <div style={{ width: 100, height: 100 }}>
+              <CircularProgressbar value={25} text={`0-25%`} />
             </div>
-            <p className="fs-5">
-              {" "}
-              Page Count :-{" "}
-              <Button
-                onClick={() => handlesetTableDataByPercentage(dataLessThan50)}
-              >
-                {dataLessThan50.length}
-              </Button>
-            </p>
-          </Paper>
-          <Paper
-            elevation={3}
-            style={{ padding: "20px", margin: "20px 0 0 0", width: "20%" }}
-          >
-            <h3 className="h6">Page Evaluation</h3>
-            <div className="w-50 m-auto">
-              <div style={{ width: 100, height: 100 }}>
-                <CircularProgressbar value={75} text={`51-75%`} />
-              </div>
-            </div>
-            <p className="fs-5">
-              {" "}
-              Page Count :-{" "}
-              <Button
-                onClick={() => handlesetTableDataByPercentage(dataLessThan75)}
-              >
-                {dataLessThan75.length}
-              </Button>
-            </p>
-          </Paper>
-          <Paper
-            elevation={3}
-            style={{ padding: "20px", margin: "20px 0 0 0", width: "20%" }}
-          >
-            <h3 className="h6">Page Evaluation</h3>
-            <div className="w-50 m-auto">
-              <div style={{ width: 100, height: 100 }}>
-                <CircularProgressbar value={100} text={`76-100%`} />
-              </div>
-            </div>
-            <p className="fs-5">
-              {" "}
-              Page Count :-{" "}
-              <Button
-                onClick={() => handlesetTableDataByPercentage(dataLessThan100)}
-              >
-                {dataLessThan100.length}
-              </Button>
-            </p>
-          </Paper>
+          </div>
+          <p className="fs-5">
+            {" "}
+            Page Count :-{" "}
+            <Button
+              color="primary"
+              onClick={() => {
+                handlesetTableDataByPercentage(dataLessThan25);
+              }}
+            >
+              {dataLessThan25.length}
+            </Button>
+          </p>
         </div>
-        <>
-          <TextField
-            label="Search"
-            variant="outlined"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            sx={{ mb: 2, mt: 2 }}
-          />
-          <Autocomplete
-            disablePortal
-            value={viewType}
-            // defaultValue={compareFlagOptions[0].label}
-            id="combo-box-demo"
-            options={viewInOptions}
-            onChange={(event, newValue) => {
-              if (newValue === null) {
-                return setViewType({
-                  newValue: "Default",
-                });
-              }
 
-              setViewType(newValue);
-            }}
-            sx={{ width: 250 }}
-            renderInput={(params) => <TextField {...params} label="View In" />}
-            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
-          />
-        </>
-
-        <div>
-  
-  <div style={{padding: '10px', display: "flex", justifyContent: "space-around"}}>
-    {Object.keys(categoryPageCounts).map(category => (
-      <div key={category} style={{margin: '10px 0', padding: '10px', borderRadius: '5px'}}>
-        <strong>{category}:</strong> {categoryPageCounts[category]}
+        <div
+          className="card body-padding m-0"
+          style={{ border: "1px solid var(--gray-200)" }}
+        >
+          <h3 className="h6">Page Evaluation</h3>
+          <div className="w-50 m-auto">
+            <div style={{ width: 100, height: 100 }}>
+              <CircularProgressbar value={50} text={`26-50%`} />
+            </div>
+          </div>
+          <p className="fs-5">
+            {" "}
+            Page Count :-{" "}
+            <Button
+              onClick={() => handlesetTableDataByPercentage(dataLessThan50)}
+            >
+              {dataLessThan50.length}
+            </Button>
+          </p>
+        </div>
+        <div
+          className="card body-padding m-0"
+          style={{ border: "1px solid var(--gray-200)" }}
+        >
+          <h3 className="h6">Page Evaluation</h3>
+          <div className="w-50 m-auto">
+            <div style={{ width: 100, height: 100 }}>
+              <CircularProgressbar value={75} text={`51-75%`} />
+            </div>
+          </div>
+          <p className="fs-5">
+            {" "}
+            Page Count :-{" "}
+            <Button
+              onClick={() => handlesetTableDataByPercentage(dataLessThan75)}
+            >
+              {dataLessThan75.length}
+            </Button>
+          </p>
+        </div>
+        <div
+          className="card body-padding m-0"
+          style={{ border: "1px solid var(--gray-200)" }}
+        >
+          <h3 className="h6">Page Evaluation</h3>
+          <div className="w-50 m-auto">
+            <div style={{ width: 100, height: 100 }}>
+              <CircularProgressbar value={100} text={`76-100%`} />
+            </div>
+          </div>
+          <p className="fs-5">
+            {" "}
+            Page Count :-{" "}
+            <Button
+              onClick={() => handlesetTableDataByPercentage(dataLessThan100)}
+            >
+              {dataLessThan100.length}
+            </Button>
+          </p>
+        </div>
       </div>
-    ))}
-  </div>
-  </div>
+      <div className="card body-padding flex-row gap4">
+        <TextField
+          label="Search"
+          variant="outlined"
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
 
+        />
+        <Autocomplete
+          disablePortal
+          value={viewType}
+          // defaultValue={compareFlagOptions[0].label}
+          id="combo-box-demo"
+          options={viewInOptions}
+          onChange={(event, newValue) => {
+            if (newValue === null) {
+              return setViewType({
+                newValue: "Default",
+              });
+            }
 
-        {!loading && (
-          <DataGrid
-            rows={tableData}
-            columns={columns}
-            getRowId={(row) => row.p_id}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 50,
+            setViewType(newValue);
+          }}
+          sx={{ width: 250 }}
+          renderInput={(params) => <TextField {...params} label="View In" />}
+        // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+        />
+      </div>
+
+      <div className="card">
+
+        <div style={{ padding: '10px', display: "flex", justifyContent: "space-around" }}>
+          {Object.keys(categoryPageCounts).map(category => (
+            <div key={category} style={{ margin: '10px 0', padding: '10px', borderRadius: '5px' }}>
+              <strong>{category}:</strong> {categoryPageCounts[category]}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="card body-padding fx-head thm_table" >
+
+        {
+          !loading && (
+            <DataGrid
+              rows={tableData}
+              columns={columns}
+              getRowId={(row) => row.p_id}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 50,
+                  },
                 },
-              },
-            }}
-            slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-            pageSizeOptions={[5, 25, 50, 100, 500]}
-            checkboxSelection
-            disableRowSelectionOnClick
-            onRowSelectionModelChange={(newRowSelectionModel) => {
-              setRowSelectionModel(newRowSelectionModel);
-            }}
-            rowSelectionModel={rowSelectionModel}
-            onClipboardCopy={(copiedString) => setCopiedData(copiedString)}
-            unstable_ignoreValueFormatterDuringExport
-          />
-        )}
+              }}
+              slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+              pageSizeOptions={[5, 25, 50, 100, 500]}
+              checkboxSelection
+              disableRowSelectionOnClick
+              onRowSelectionModelChange={(newRowSelectionModel) => {
+                setRowSelectionModel(newRowSelectionModel);
+              }}
+              rowSelectionModel={rowSelectionModel}
+              onClipboardCopy={(copiedString) => setCopiedData(copiedString)}
+              unstable_ignoreValueFormatterDuringExport
+            />
+          )
+        }
         {loading && <SkeletonLoading />}
+
       </div>
-    </div>
+    </div >
   );
 }

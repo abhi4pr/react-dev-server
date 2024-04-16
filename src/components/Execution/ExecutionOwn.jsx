@@ -30,7 +30,9 @@ import dayjs from "dayjs";
 import { useNavigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../Context/Context";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from '../../utils/config'
+import FormContainer from "../AdminPanel/FormContainer";
+import { FacebookLogo, InstagramLogo, TelegramLogo, ThreadsLogo, TwitterLogo, YoutubeLogo } from "@phosphor-icons/react";
 
 const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 const checkedIcon = <CheckBoxIcon fontSize="small" />;
@@ -139,7 +141,7 @@ function ExecutionOwn() {
     if (userID && contextData == false) {
       axios
         .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
+          `${baseUrl}` + `get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           if (res.data[33].view_value == 1) {
@@ -293,17 +295,17 @@ function ExecutionOwn() {
     },
     pagemode == 1 || pagemode == 2
       ? {
-          field: "page_name",
-          headerName: "Page Name",
-          // width: 150,
-        }
+        field: "page_name",
+        headerName: "Page Name",
+        // width: 150,
+      }
       : pagemode == 3 || pagemode == 4
-      ? {
+        ? {
           field: "account_name",
           headerName: "Account Name",
           // width: 150,
         }
-      : {
+        : {
           field: "channel_username",
           headerName: "Channel Name",
           // width: 150,
@@ -315,23 +317,23 @@ function ExecutionOwn() {
     },
     pagemode == 1 || pagemode == 2
       ? {
-          field: "page_link",
-          headerName: "Link",
-          // width: 160,
-          renderCell: (params) => {
-            const date = params.row.page_link;
-            // console.log(date);
-            return (
-              <div style={{ color: "blue" }}>
-                <a href={date} target="blank">
-                  {date == "" ? "" : "Link"}
-                </a>
-              </div>
-            );
-          },
-        }
+        field: "page_link",
+        headerName: "Link",
+        // width: 160,
+        renderCell: (params) => {
+          const date = params.row.page_link;
+          // console.log(date);
+          return (
+            <div style={{ color: "blue" }}>
+              <a href={date} target="blank">
+                {date == "" ? "" : "Link"}
+              </a>
+            </div>
+          );
+        },
+      }
       : pagemode == 3 || pagemode == 4
-      ? {
+        ? {
           field: "account_link",
           headerName: "Link",
           // width: 160,
@@ -347,7 +349,7 @@ function ExecutionOwn() {
             );
           },
         }
-      : {
+        : {
           field: "channel_link",
           headerName: "Link",
           // width: 160,
@@ -365,12 +367,12 @@ function ExecutionOwn() {
         },
     pagemode == 1 || pagemode == 4
       ? {
-          field: "follower_count",
-          headerName: "Followers",
-          // width: 150,
-        }
+        field: "follower_count",
+        headerName: "Followers",
+        // width: 150,
+      }
       : pagemode == 2
-      ? ({
+        ? ({
           field: "follower_count",
           headerName: "Followers",
           // width: 150,
@@ -379,7 +381,7 @@ function ExecutionOwn() {
           field: "page_likes",
           headerName: "Page Likes",
         })
-      : {
+        : {
           field: "subscribers",
           headerName: "Subscribers",
           // width: 150,
@@ -439,7 +441,7 @@ function ExecutionOwn() {
     formData.append("stats_for", statesFor);
 
     axios
-      .post(`${baseUrl}`+`add_exe_pid_history`, formData, {
+      .post(`${baseUrl}` + `add_exe_pid_history`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -481,204 +483,223 @@ function ExecutionOwn() {
     <>
       <ThemeProvider theme={theme}>
         {/* <div style={{}}> */}
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2>Pages</h2>
-          </div>
-        </div>
-        <Paper
-          justifyContent="space-between"
-          sx={{
-            flexWrap: "wrap",
-            flexDirection: "row",
-            pt: 3,
-            pb: 3,
-            pl: 2,
-            pr: 2,
-          }}
-        >
-          {/* <Typography>h1. Heading</Typography> */}
-          <Stack direction="row" sx={{}} justifyContent="space-between">
-            <Autocomplete
-              multiple
-              id="checkboxes-tags-demo"
-              options={option}
-              disableCloseOnSelect
-              size="small"
-              getOptionLabel={(option) => option}
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    // onClick={handleoptions(props.key, props.aria - selected)}
-                    // onClick={(e) => e.stopPropagation()}
-                    checked={selected}
+        <div>
+
+          <FormContainer
+            mainTitle={"Pages Owned"}
+            link={true}
+          />
+
+          <div
+            className="card body-padding"
+          >
+            {/* <Typography>h1. Heading</Typography> */}
+            <Stack direction="row" sx={{}} justifyContent="space-between">
+              <Autocomplete
+                multiple
+                id="checkboxes-tags-demo"
+                options={option}
+                disableCloseOnSelect
+                size="small"
+                getOptionLabel={(option) => option}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      // onClick={handleoptions(props.key, props.aria - selected)}
+                      // onClick={(e) => e.stopPropagation()}
+                      checked={selected}
+                    />
+                    {option}
+                  </li>
+                )}
+                style={{ minWidth: 150 }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Checkboxes"
+                    placeholder="Select"
                   />
-                  {option}
-                </li>
-              )}
-              style={{ minWidth: 150 }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Checkboxes"
-                  placeholder="Select"
-                />
-              )}
-              value={selectedOptions}
-              onChange={handleOptionChange}
-            />
-            <Stack direction="row" spacing={1}>
+                )}
+                value={selectedOptions}
+                onChange={handleOptionChange}
+              />
+              <div className="sb gap16">
+                <Button
+                  size="small"
+                  variant="outlined"
+                  className="btn cmnbtn btn_sm btn-primary"
+                  startIcon={<ContentCopyOutlinedIcon />}
+                  onClick={() => copySelectedRows(1)}
+                >
+                  Copy Selected Pages
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  className="btn cmnbtn btn_sm btn-primary"
+
+                  startIcon={<CopyAllOutlinedIcon />}
+                  onClick={copyAllRows}
+                >
+                  Copy All Pages
+                </Button>
+                <Button
+                  size="small"
+                  className="btn btn_sm cmnbtn btn-primary"
+
+                  variant="outlined"
+                  startIcon={<ContentPasteIcon />}
+                  onClick={() => copySelectedRows(0)}
+                >
+                  Copy Page Name & Links
+                </Button>
+              </div>
+            </Stack>
+          </div>
+          {/* Second Paper */}
+          <div
+            className="card body-padding"
+          >
+            <Typography sx={{ mb: 1 }}>Rate Of Conversion</Typography>
+
+            <Stack className="flexCenter flex-row gap16">
               <Button
-                size="small"
-                variant="outlined"
-                startIcon={<ContentCopyOutlinedIcon />}
-                onClick={() => copySelectedRows(1)}
+                size="medium"
+                variant="contained"
+                className="btn btn_sm cmnbtn btn-primary"
+
+                onClick={() => handlefilter("Instagram", 1)}
               >
-                Copy Selected Pages
+                <InstagramLogo />
+                Instagram
               </Button>
               <Button
-                size="small"
-                variant="outlined"
-                startIcon={<CopyAllOutlinedIcon />}
-                onClick={copyAllRows}
+                size="medium"
+                variant="contained"
+                className="btn btn_sm cmnbtn btn-primary"
+
+                onClick={() => handlefilter("Facebook", 2)}
               >
-                Copy All Pages
+                <FacebookLogo />
+                Facebook
               </Button>
               <Button
-                size="small"
-                variant="outlined"
-                startIcon={<ContentPasteIcon />}
-                onClick={() => copySelectedRows(0)}
+                size="medium"
+                variant="contained"
+                className="btn btn_sm cmnbtn btn-primary"
+
+                onClick={() => handlefilter("Telegram", 3)}
               >
-                Copy Page Name & Links
+                <TelegramLogo /> Telegram
+              </Button>
+              <Button
+                size="medium"
+                className="btn btn_sm cmnbtn btn-primary"
+
+                variant="contained"
+                onClick={() => handlefilter("Threads", 4)}
+              >
+                <ThreadsLogo /> Threads
+              </Button>
+              <Button
+                size="medium"
+                variant="contained"
+                className="btn btn_sm cmnbtn btn-primary"
+
+                onClick={() => handlefilter("X", 5)}
+              >
+                <TwitterLogo />  X
+              </Button>
+              <Button
+                size="medium"
+                variant="contained"
+                onClick={() => handlefilter("Youtube", 6)}
+                className="btn btn_sm cmnbtn btn-primary"
+
+              >
+                <YoutubeLogo /> YouTube
               </Button>
             </Stack>
-          </Stack>
-        </Paper>
-        {/* Second Paper */}
-        <Paper
-          sx={{
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            flexDirection: "row",
-            p: 3,
-            mt: 3,
-            mb: 4,
-          }}
-        >
-          <Typography sx={{ mb: 4 }}>Rate Of Conversion</Typography>
+          </div>
+          {/* Third Paper */}
 
-          <Stack direction="row" justifyContent="space-between" spacing={1}>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Instagram", 1)}
-            >
-              Instagram
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Facebook", 2)}
-            >
-              Facebook
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Telegram", 3)}
-            >
-              Telegram
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Threads", 4)}
-            >
-              Threads
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("X", 5)}
-            >
-              X
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Youtube", 6)}
-            >
-              YouTube
-            </Button>
-          </Stack>
-        </Paper>
-        {/* Third Paper */}
-        <TextField
-          label="Search by Page Name"
-          onChange={(e) => {
-            const temp = alldata.filter((ele) => {
-              return ele.page_name
-                .toLowerCase()
-                .includes(e.target.value.toLowerCase());
-            });
-            setRows(temp);
-          }}
-        />
 
-        <Paper
-          justifyContent="space-between"
-          sx={{ flexWrap: "wrap", flexDirection: "row", p: 3, mt: 3, mb: 4 }}
-        >
-          <Typography sx={{ mb: 1 }}>Page Summary</Typography>
+          <div
+            className="card"
+          >
+            <div className="card-header sb">
+              <div></div> <div className="pack">
+                <TextField
+                  label="Search by Page Name"
+                  onChange={(e) => {
+                    const temp = alldata.filter((ele) => {
+                      return ele.page_name
+                        .toLowerCase()
+                        .includes(e.target.value.toLowerCase());
+                    });
+                    setRows(temp);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="card-body">
 
-          {rows != [] ? (
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              getRowId={(row) => row.p_id}
-              // rowModesModel={rowModesModel}
-              // onRowModesModelChange
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 50,
-                  },
-                },
-              }}
-              // processRowUpdate={processRowUpdate}
-              slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-              pageSizeOptions={[5, 25, 50, 100, 500]}
-              // processRowUpdate={processRowUpdate}
-              // onRowClick={handleCheckBox}
-              checkboxSelection
-              disableRowSelectionOnClick
-              onRowSelectionModelChange={(newRowSelectionModel) => {
-                setRowSelectionModel(newRowSelectionModel);
-                // console.log(newRowSelectionModel);
-              }}
-              rowSelectionModel={rowSelectionModel}
-              onClipboardCopy={(copiedString) => setCopiedData(copiedString)}
-              unstable_ignoreValueFormatterDuringExport
-            />
-          ) : (
-            // <CircularWithValueLabel />
-            <ContentLoader
-              width={2000}
-              height={700}
-              viewBox="0 30 2000 700"
-              backgroundColor="#f0f0f0"
-              foregroundColor="#dedede"
-            >
-              {/* <rect x="43" y="304" rx="4" ry="4" width="271" height="9" /> */}
-              {/* <rect x="44" y="323" rx="3" ry="3" width="119" height="6" /> */}
-              <rect x="42" y="77" rx="10" ry="10" width="1100" height="600" />
-            </ContentLoader>
-          )}
-        </Paper>
-      </ThemeProvider>
+              {rows != [] ? (
+                <div className="thm_table">
+
+                  <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    getRowId={(row) => row.p_id}
+                    // rowModesModel={rowModesModel}
+                    // onRowModesModelChange
+                    initialState={{
+                      pagination: {
+                        paginationModel: {
+                          pageSize: 50,
+                        },
+                      },
+                    }}
+                    // processRowUpdate={processRowUpdate}
+                    slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+                    pageSizeOptions={[5, 25, 50, 100, 500]}
+                    // processRowUpdate={processRowUpdate}
+                    // onRowClick={handleCheckBox}
+                    checkboxSelection
+                    disableRowSelectionOnClick
+                    onRowSelectionModelChange={(newRowSelectionModel) => {
+                      setRowSelectionModel(newRowSelectionModel);
+                      // console.log(newRowSelectionModel);
+                    }}
+                    rowSelectionModel={rowSelectionModel}
+                    onClipboardCopy={(copiedString) => setCopiedData(copiedString)}
+                    unstable_ignoreValueFormatterDuringExport
+                  />
+                </div>
+
+
+              ) : (
+                // <CircularWithValueLabel />
+                <ContentLoader
+                  width={2000}
+                  height={700}
+                  viewBox="0 30 2000 700"
+                  backgroundColor="#f0f0f0"
+                  foregroundColor="#dedede"
+                >
+                  {/* <rect x="43" y="304" rx="4" ry="4" width="271" height="9" /> */}
+                  {/* <rect x="44" y="323" rx="3" ry="3" width="119" height="6" /> */}
+                  <rect x="42" y="77" rx="10" ry="10" width="1100" height="600" />
+                </ContentLoader>
+              )}
+            </div>
+
+          </div>
+
+        </div>
+      </ThemeProvider >
 
       <div id="myModal1" className="modal fade" role="dialog">
         <div
@@ -895,11 +916,11 @@ function ExecutionOwn() {
                 data-dismiss="modal"
                 disabled={
                   !impression ||
-                  !reach ||
-                  !engagement ||
-                  !statesFor ||
-                  !storyView ||
-                  statesFor == "Quarterly"
+                    !reach ||
+                    !engagement ||
+                    !statesFor ||
+                    !storyView ||
+                    statesFor == "Quarterly"
                     ? !quater
                     : !startDate || !endDate
                 }

@@ -35,6 +35,9 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import CloseTwoToneIcon from "@mui/icons-material/CloseTwoTone";
 import { Country, City } from "country-state-city";
+import FormContainer from "../AdminPanel/FormContainer";
+import { FacebookLogo, InstagramLogo, TelegramLogo, ThreadsLogo, TwitterLogo, YoutubeLogo } from "@phosphor-icons/react";
+import { Telegram } from "@mui/icons-material";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -512,17 +515,17 @@ function ExecutionOther() {
     },
     pagemode == 1 || pagemode == 2
       ? {
-          field: "page_name",
-          headerName: "Page Name",
-          // width: 150,
-        }
+        field: "page_name",
+        headerName: "Page Name",
+        // width: 150,
+      }
       : pagemode == 3 || pagemode == 4
-      ? {
+        ? {
           field: "account_name",
           headerName: "Account Name",
           // width: 150,
         }
-      : {
+        : {
           field: "channel_username",
           headerName: "Channel Name",
           // width: 150,
@@ -534,23 +537,23 @@ function ExecutionOther() {
     },
     pagemode == 1 || pagemode == 2
       ? {
-          field: "page_link",
-          headerName: "Link",
-          // width: 160,
-          renderCell: (params) => {
-            const date = params.row.page_link;
-            // console.log(date);
-            return (
-              <div style={{ color: "blue" }}>
-                <a href={date} target="blank">
-                  {date == "" ? "" : "Link"}
-                </a>
-              </div>
-            );
-          },
-        }
+        field: "page_link",
+        headerName: "Link",
+        // width: 160,
+        renderCell: (params) => {
+          const date = params.row.page_link;
+          // console.log(date);
+          return (
+            <div style={{ color: "blue" }}>
+              <a href={date} target="blank">
+                {date == "" ? "" : "Link"}
+              </a>
+            </div>
+          );
+        },
+      }
       : pagemode == 3 || pagemode == 4
-      ? {
+        ? {
           field: "account_link",
           headerName: "Link",
           // width: 160,
@@ -566,7 +569,7 @@ function ExecutionOther() {
             );
           },
         }
-      : {
+        : {
           field: "channel_link",
           headerName: "Link",
           // width: 160,
@@ -584,22 +587,22 @@ function ExecutionOther() {
         },
     pagemode == 1 || pagemode == 4
       ? {
-          field: "follower_count",
-          headerName: "Followers",
-          renderCell: (params) => {
-            const followerCount = params.row.follower_count;
-            if (viewType === "Millions") {
-              return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
-            } else if (viewType === "Thousands") {
-              return <span>{(followerCount / 1000).toFixed(2)}K</span>;
-            } else {
-              return <span>{formatNumberIndian(followerCount)}</span>;
-            }
-          },
-          valueFormatter: (params) => formatNumberIndian(params.value),
-        }
+        field: "follower_count",
+        headerName: "Followers",
+        renderCell: (params) => {
+          const followerCount = params.row.follower_count;
+          if (viewType === "Millions") {
+            return <span>{(followerCount / 1000000).toFixed(1)}M</span>;
+          } else if (viewType === "Thousands") {
+            return <span>{(followerCount / 1000).toFixed(2)}K</span>;
+          } else {
+            return <span>{formatNumberIndian(followerCount)}</span>;
+          }
+        },
+        valueFormatter: (params) => formatNumberIndian(params.value),
+      }
       : pagemode == 2
-      ? ({
+        ? ({
           field: "follower_count",
           headerName: "Followers",
           // width: 150,
@@ -608,7 +611,7 @@ function ExecutionOther() {
           field: "page_likes",
           headerName: "Page Likes",
         })
-      : {
+        : {
           field: "subscribers",
           headerName: "Subscribers",
           // width: 150,
@@ -616,11 +619,12 @@ function ExecutionOther() {
 
     contextData && {
       headerName: "Update",
+      width: 120,
       renderCell: (params) => {
         return (
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn cmnbtn btn-outline-primary btn_sm"
             data-toggle="modal"
             data-target="#myModal1"
             onClick={() => handleRowClick(params.row)}
@@ -632,13 +636,14 @@ function ExecutionOther() {
     },
     {
       field: "history",
-      width: 150,
+      width: 120,
       headerName: "History",
       renderCell: (params) => {
         return (
           <button
             type="button"
-            className="btn btn-primary"
+            className="btn cmnbtn btn-outline-primary btn_sm"
+
             onClick={() => handleHistoryRowClick(params.row)}
           >
             See History
@@ -838,225 +843,241 @@ function ExecutionOther() {
   return (
     <>
       <ThemeProvider theme={theme}>
-        <div className="form-heading">
-          <div className="form_heading_title">
-            <h2>Pages</h2>
-          </div>
-        </div>
-        <Paper
-          justifyContent="space-between"
-          sx={{
-            flexWrap: "wrap",
-            flexDirection: "row",
-            pt: 3,
-            pb: 3,
-            pl: 2,
-            pr: 2,
-          }}
-        >
-          {/* <Typography>h1. Heading</Typography> */}
-          <Stack direction="row" sx={{}} justifyContent="space-between">
-            <Autocomplete
-              multiple
-              id="checkboxes-tags-demo"
-              options={option}
-              disableCloseOnSelect
-              size="small"
-              getOptionLabel={(option) => option}
-              renderOption={(props, option, { selected }) => (
-                <li {...props}>
-                  <Checkbox
-                    icon={icon}
-                    checkedIcon={checkedIcon}
-                    // onClick={handleoptions(props.key, props.aria - selected)}
-                    // onClick={(e) => e.stopPropagation()}
-                    checked={selected}
+        <div>
+          <FormContainer
+            mainTitle={"Other"}
+            link={true}
+          />
+          <div className="card body-padding"
+          >
+            {/* <Typography>h1. Heading</Typography> */}
+            <Stack direction="row" sx={{}} justifyContent="space-between">
+              <Autocomplete
+                multiple
+                id="checkboxes-tags-demo"
+                options={option}
+                disableCloseOnSelect
+                size="small"
+                getOptionLabel={(option) => option}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      // onClick={handleoptions(props.key, props.aria - selected)}
+                      // onClick={(e) => e.stopPropagation()}
+                      checked={selected}
+                    />
+                    {option}
+                  </li>
+                )}
+                style={{ minWidth: 150 }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Checkboxes"
+                    placeholder="Select"
                   />
-                  {option}
-                </li>
-              )}
-              style={{ minWidth: 150 }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="Checkboxes"
-                  placeholder="Select"
-                />
-              )}
-              value={selectedOptions}
-              onChange={handleOptionChange}
-            />
-            <Stack direction="row" spacing={1}>
+                )}
+                value={selectedOptions}
+                onChange={handleOptionChange}
+              />
+              <div className="sb gap16">
+                <Button
+                  size="small"
+                  variant="outlined"
+                  className="btn cmnbtn btn-primary btn_sm"
+
+                  startIcon={<ContentCopyOutlinedIcon />}
+                  onClick={() => copySelectedRows(1)}
+                >
+                  Copy Selected Pages
+                </Button>
+                <Button
+                  size="small"
+                  variant="outlined"
+                  className="btn cmnbtn btn-primary btn_sm"
+
+
+                  startIcon={<CopyAllOutlinedIcon />}
+                  onClick={copyAllRows}
+                >
+                  Copy All Pages
+                </Button>
+                <Button
+                  size="small"
+                  className="btn cmnbtn btn-primary btn_sm"
+
+
+                  variant="outlined"
+                  startIcon={<ContentPasteIcon />}
+                  onClick={() => copySelectedRows(0)}
+                >
+                  Copy Page Name & Links
+                </Button>
+              </div>
+            </Stack>
+          </div>
+          {/* Second Paper */}
+          <div
+            className="card body-padding gap16"
+          >
+            <Typography >Rate Of Conversion</Typography>
+
+            <Stack className="flex-row flexCenter gap16">
               <Button
-                size="small"
-                variant="outlined"
-                startIcon={<ContentCopyOutlinedIcon />}
-                onClick={() => copySelectedRows(1)}
+
+                size="medium"
+                variant="contained"
+                className="btn cmnbtn btn-primary btn_sm"
+
+
+                onClick={() => handlefilter("Instagram", 1)}
               >
-                Copy Selected Pages
+                <InstagramLogo />  Instagram
               </Button>
               <Button
-                size="small"
-                variant="outlined"
-                startIcon={<CopyAllOutlinedIcon />}
-                onClick={copyAllRows}
+                size="medium"
+                className="btn cmnbtn btn-primary btn_sm"
+
+                variant="contained"
+                onClick={() => handlefilter("Facebook", 2)}
               >
-                Copy All Pages
+                <FacebookLogo />  Facebook
               </Button>
               <Button
-                size="small"
-                variant="outlined"
-                startIcon={<ContentPasteIcon />}
-                onClick={() => copySelectedRows(0)}
+                className="btn cmnbtn btn-primary btn_sm"
+
+
+                size="medium"
+                variant="contained"
+                onClick={() => handlefilter("Telegram", 3)}
               >
-                Copy Page Name & Links
+                <TelegramLogo /> Telegram
+              </Button>
+              <Button
+                size="medium"
+                className="btn cmnbtn btn-primary btn_sm"
+
+                variant="contained"
+                onClick={() => handlefilter("Threads", 4)}
+              >
+                <ThreadsLogo /> Threads
+              </Button>
+              <Button
+                size="medium"
+                variant="contained"
+                className="btn cmnbtn btn-primary btn_sm"
+
+                onClick={() => handlefilter("X", 5)}
+              >
+                <TwitterLogo /> X
+              </Button>
+              <Button
+                size="medium"
+                className="btn cmnbtn btn-primary btn_sm"
+
+                variant="contained"
+                onClick={() => handlefilter("Youtube", 6)}
+              >
+                <YoutubeLogo />  YouTube
               </Button>
             </Stack>
-          </Stack>
-        </Paper>
-        {/* Second Paper */}
-        <Paper
-          sx={{
-            justifyContent: "space-between",
-            flexWrap: "wrap",
-            flexDirection: "row",
-            p: 3,
-            mt: 3,
-            mb: 4,
-          }}
-        >
-          <Typography sx={{ mb: 4 }}>Rate Of Conversion</Typography>
+          </div>
+          {/* Third Paper */}
 
-          <Stack direction="row" justifyContent="space-between" spacing={1}>
-            <Button
-              className="col-lg-2"
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Instagram", 1)}
-            >
-              Instagram
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Facebook", 2)}
-            >
-              Facebook
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Telegram", 3)}
-            >
-              Telegram
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Threads", 4)}
-            >
-              Threads
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("X", 5)}
-            >
-              X
-            </Button>
-            <Button
-              size="medium"
-              variant="contained"
-              onClick={() => handlefilter("Youtube", 6)}
-            >
-              YouTube
-            </Button>
-          </Stack>
-        </Paper>
-        {/* Third Paper */}
-        <Box sx={{ display: "flex" }}>
-          <TextField
-            label="Search by Page Name"
-            onChange={(e) => {
-              const temp = alldata.filter((ele) => {
-                return ele.page_name
-                  .toLowerCase()
-                  .includes(e.target.value.toLowerCase());
-              });
-              setRows(temp);
-            }}
-          />
-          <Autocomplete
-            disablePortal
-            value={viewType}
-            // defaultValue={compareFlagOptions[0].label}
-            id="combo-box-demo"
-            options={viewInOptions}
-            onChange={(event, newValue) => {
-              if (newValue === null) {
-                return setViewType({
-                  newValue: "Default",
-                });
-              }
 
-              setViewType(newValue);
-            }}
-            sx={{ width: 250, ml: 2 }}
-            renderInput={(params) => <TextField {...params} label="View In" />}
-            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
-          />
-        </Box>
+          <div className="card"
+          >
+            <div className="card-header flexCenterBetween">
+              <div className="card-title">Page Summary</div>
+              <div className="flex-row">
+                <TextField
+                  label="Search by Page Name"
+                  onChange={(e) => {
+                    const temp = alldata.filter((ele) => {
+                      return ele.page_name
+                        .toLowerCase()
+                        .includes(e.target.value.toLowerCase());
+                    });
+                    setRows(temp);
+                  }}
+                />
+                <Autocomplete
+                  disablePortal
+                  value={viewType}
+                  // defaultValue={compareFlagOptions[0].label}
+                  id="combo-box-demo"
+                  options={viewInOptions}
+                  onChange={(event, newValue) => {
+                    if (newValue === null) {
+                      return setViewType({
+                        newValue: "Default",
+                      });
+                    }
 
-        <Paper
-          justifyContent="space-between"
-          sx={{ flexWrap: "wrap", flexDirection: "row", p: 3, mt: 3, mb: 4 }}
-        >
-          <Typography sx={{ mb: 1 }}>Page Summary</Typography>
+                    setViewType(newValue);
+                  }}
+                  sx={{ width: 250, ml: 2 }}
+                  renderInput={(params) => <TextField {...params} label="View In" />}
+                // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="card-body fx-head thm_table">
 
-          {!loading ? (
-            <DataGrid
-              rows={rows}
-              columns={columns}
-              getRowId={(row) => row.p_id}
-              initialState={{
-                pagination: {
-                  paginationModel: {
-                    pageSize: 50,
-                  },
-                },
-              }}
-              slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
-              pageSizeOptions={[5, 25, 50, 100, 500]}
-              checkboxSelection
-              disableRowSelectionOnClick
-              onRowSelectionModelChange={(newRowSelectionModel) => {
-                setRowSelectionModel(newRowSelectionModel);
-              }}
-              rowSelectionModel={rowSelectionModel}
-              onClipboardCopy={(copiedString) => setCopiedData(copiedString)}
-              unstable_ignoreValueFormatterDuringExport
-              slotProps={{
-                toolbar: {
-                  showQuickFilter: true,
-                },
-              }}
-              unstable_headerFilters
-            />
-          ) : (
-            // <CircularWithValueLabel />
-            <ContentLoader
-              width={2000}
-              height={700}
-              viewBox="0 30 2000 700"
-              backgroundColor="#f0f0f0"
-              foregroundColor="#dedede"
-            >
-              {/* <rect x="43" y="304" rx="4" ry="4" width="271" height="9" /> */}
-              {/* <rect x="44" y="323" rx="3" ry="3" width="119" height="6" /> */}
-              <rect x="42" y="77" rx="10" ry="10" width="1100" height="600" />
-            </ContentLoader>
-          )}
-        </Paper>
+
+              {!loading ? (
+
+
+                <DataGrid
+                  rows={rows}
+                  columns={columns}
+                  getRowId={(row) => row.p_id}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 50,
+                      },
+                    },
+                  }}
+                  slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+                  pageSizeOptions={[5, 25, 50, 100, 500]}
+                  checkboxSelection
+                  disableRowSelectionOnClick
+                  onRowSelectionModelChange={(newRowSelectionModel) => {
+                    setRowSelectionModel(newRowSelectionModel);
+                  }}
+                  rowSelectionModel={rowSelectionModel}
+                  onClipboardCopy={(copiedString) => setCopiedData(copiedString)}
+                  unstable_ignoreValueFormatterDuringExport
+                  slotProps={{
+                    toolbar: {
+                      showQuickFilter: true,
+                    },
+                  }}
+
+                />
+
+
+              ) : (
+                // <CircularWithValueLabel />
+                <ContentLoader
+                  width={2000}
+                  height={700}
+                  viewBox="0 30 2000 700"
+                  backgroundColor="#f0f0f0"
+                  foregroundColor="#dedede"
+                >
+                  {/* <rect x="43" y="304" rx="4" ry="4" width="271" height="9" /> */}
+                  {/* <rect x="44" y="323" rx="3" ry="3" width="119" height="6" /> */}
+                  <rect x="42" y="77" rx="10" ry="10" width="1100" height="600" />
+                </ContentLoader>
+              )}
+            </div>
+
+          </div>
+        </div>
       </ThemeProvider>
 
       <div id="myModal1" className="modal fade" role="dialog">

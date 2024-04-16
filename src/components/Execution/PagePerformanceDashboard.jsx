@@ -62,14 +62,14 @@ export default function PagePerformanceDashboard() {
     if (!num) return "";
     var x = num.toString();
     var afterPoint = '';
-    if(x.indexOf('.') > 0)
-       afterPoint = x.substring(x.indexOf('.'),x.length);
+    if (x.indexOf('.') > 0)
+      afterPoint = x.substring(x.indexOf('.'), x.length);
     x = Math.floor(x);
     x = x.toString();
     var lastThree = x.substring(x.length - 3);
     var otherNumbers = x.substring(0, x.length - 3);
     if (otherNumbers != '')
-        lastThree = ',' + lastThree;
+      lastThree = ',' + lastThree;
     var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
     return res;
   };
@@ -355,85 +355,97 @@ export default function PagePerformanceDashboard() {
   }, [search, pageHistory]);
 
   return (
-    <>
+    <div>
       <FormContainer mainTitle="Page Performance Dashboard" link="/ip-master" />
-      <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-        <TextField
-          type="text"
-          label="Search Page"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <Box sx={{ display: "flex" }}>
-          <Autocomplete
-            disablePortal
-            value={viewType}
-            // defaultValue={compareFlagOptions[0].label}
-            id="combo-box-demo"
-            options={viewInOptions}
-            onChange={(event, newValue) => {
-              if (newValue === null) {
-                return setViewType({
-                  newValue: "Default",
-                });
-              }
 
-              setViewType(newValue);
-            }}
-            sx={{ width: 250,mr:2 }}
-            renderInput={(params) => <TextField {...params} label="View In" />}
+      <div className="card">
+        <div className="card-header sb">
+          <div></div>
+          <div className="flex-row w-100 gap16">
+            <TextField
+
+              type="text"
+              label="Search Page"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+
+            <Autocomplete
+              disablePortal
+              value={viewType}
+              // defaultValue={compareFlagOptions[0].label}
+              id="combo-box-demo"
+              options={viewInOptions}
+              onChange={(event, newValue) => {
+                if (newValue === null) {
+                  return setViewType({
+                    newValue: "Default",
+                  });
+                }
+
+                setViewType(newValue);
+              }}
+
+              renderInput={(params) => <TextField {...params} label="View In" />}
             // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+            />
+            <Autocomplete
+              disablePortal
+              value={intervalFlag.label}
+              defaultValue={intervalFlagOptions[0].label}
+              id="combo-box-demo"
+              options={intervalFlagOptions.map((option) => ({
+                label: option.label,
+                value: option.value,
+              }))}
+              onChange={(event, newValue) => {
+                if (newValue === null) {
+                  return setIntervalFlag({ label: "Current Month", value: 1 });
+                }
+                setIntervalFlag(newValue);
+              }}
+
+              renderInput={(params) => (
+                <TextField {...params} label="Filter Date" />
+              )}
+            />
+            <Autocomplete
+
+              disablePortal
+              value={filterDataVal}
+              defaultChecked="Higest"
+              defaultValue={FilterDataOptions[0]}
+              id="combo-box-demo"
+              options={FilterDataOptions}
+              onChange={(event, newValue) => {
+                if (newValue === null) {
+                  return setFilterDataVal("Highest");
+                }
+                setFilterDataVal(newValue);
+              }}
+
+              renderInput={(params) => (
+                <TextField {...params} label="Filter Data" />
+              )}
+            />
+
+          </div>
+        </div>
+        <div className="card-body nt-head fx-head">
+
+          <DataGrid
+            rows={filteredRows}
+            columns={columns}
+            onRowClick={handleRowClick}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            disableSelectionOnClick
+            getRowId={(row) => row._id}
           />
-          <Autocomplete
-            disablePortal
-            value={intervalFlag.label}
-            defaultValue={intervalFlagOptions[0].label}
-            id="combo-box-demo"
-            options={intervalFlagOptions.map((option) => ({
-              label: option.label,
-              value: option.value,
-            }))}
-            onChange={(event, newValue) => {
-              if (newValue === null) {
-                return setIntervalFlag({ label: "Current Month", value: 1 });
-              }
-              setIntervalFlag(newValue);
-            }}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Filter Date" />
-            )}
-          />
-          <Autocomplete
-            className="ms-3"
-            disablePortal
-            value={filterDataVal}
-            defaultChecked="Higest"
-            defaultValue={FilterDataOptions[0]}
-            id="combo-box-demo"
-            options={FilterDataOptions}
-            onChange={(event, newValue) => {
-              if (newValue === null) {
-                return setFilterDataVal("Highest");
-              }
-              setFilterDataVal(newValue);
-            }}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Filter Data" />
-            )}
-          />
-        </Box>
-      </Box>
-      <DataGrid
-        rows={filteredRows}
-        columns={columns}
-        onRowClick={handleRowClick}
-        pageSize={10}
-        rowsPerPageOptions={[10]}
-        disableSelectionOnClick
-        getRowId={(row) => row._id}
-      />
+        </div>
+
+      </div>
+
       {openPerformanceGraphDialog && (
         <PerformanceGraphDialog
           setOpenPerformanceGraphDialog={setOpenPerformanceGraphDialog}
@@ -443,6 +455,6 @@ export default function PagePerformanceDashboard() {
           intervalFlagOptions={intervalFlagOptions}
         />
       )}
-    </>
+    </div>
   );
 }

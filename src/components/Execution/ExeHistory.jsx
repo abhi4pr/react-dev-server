@@ -29,7 +29,7 @@ export default function ExeHistory() {
 
   const apiCall = () => {
     axios
-      .get(`${baseUrl}`+`get_exe_ip_count_history/${id.id}`)
+      .get(`${baseUrl}` + `get_exe_ip_count_history/${id.id}`)
       .then((res) => {
         const data = res.data.data.filter((e) => {
           return e.isDeleted !== true;
@@ -40,7 +40,7 @@ export default function ExeHistory() {
 
   useEffect(() => {
     apiCall();
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       setAllUsers(res.data.data);
     });
   }, []);
@@ -524,15 +524,16 @@ export default function ExeHistory() {
   ];
 
   return (
-    <>
-      {" "}
-      <div style={{ width: "100%", margin: "0 0 0 0%" }}>
-        <UserNav />
-        <FormContainer
-          mainTitle="Stats History"
-          link="/ip-master"
-          buttonAccess={buttonAccess}
-        />
+    <div>
+
+
+      <FormContainer
+        mainTitle="Stats History"
+        link="/ip-master"
+        buttonAccess={buttonAccess}
+      />
+      <div className="card body-padding fx-head nt-head">
+
         <DataGrid
           rows={data}
           columns={columns}
@@ -542,6 +543,7 @@ export default function ExeHistory() {
           getRowId={(row) => row._id}
         />
       </div>
+
       <DeleteHistoryConfirmation
         handleCloseDeleteHistoryConFirmation={
           handleCloseDeleteHistoryConFirmation
@@ -550,6 +552,6 @@ export default function ExeHistory() {
         rowData={rowData}
         apiCall={apiCall}
       />
-    </>
+    </div >
   );
 }

@@ -54,7 +54,7 @@ const PaymentMode = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
+    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => { });
     axios.get(baseUrl + "get_all_php_payment_acc_data").then((res) => {
       setData(res.data.data);
       setFilterData(res.data.data);
@@ -192,14 +192,14 @@ const PaymentMode = () => {
       renderCell: (params) => (
         <div style={{ whiteSpace: "normal" }}>
           {params.row.detail}
-          <Button
+          <button
             key={params.row.detail}
             color="secondary"
             onClick={() => handleCopyDetail(params.row.detail)}
             style={{ marginLeft: "10px" }}
           >
             <ContentCopyIcon />
-          </Button>
+          </button>
         </div>
       ),
     },
@@ -345,21 +345,24 @@ const PaymentMode = () => {
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          <DataGrid
-            rows={filterData.filter((row) => row.is_hide)}
-            columns={HiddenRowColumns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => filterData.indexOf(row)}
-          />
+          <div className="thm_table">
+
+            <DataGrid
+              rows={filterData.filter((row) => row.is_hide)}
+              columns={HiddenRowColumns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => filterData.indexOf(row)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
       {/* ============================= */}

@@ -9,7 +9,7 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from '../../utils/config'
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -31,7 +31,7 @@ export default function DeleteHistoryConfirmation(props) {
   const handleDeleteConfirmation = () => {
     axios
       .delete(
-        `${baseUrl}`+`delete_exe_ip_count_history/${rowData._id}`
+        `${baseUrl}` + `delete_exe_ip_count_history/${rowData._id}`
       )
       .then((res) => {
         if (res.data.isDeleted) {
@@ -68,20 +68,23 @@ export default function DeleteHistoryConfirmation(props) {
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button
-            color="error"
-            autoFocus
-            onClick={handleCloseDeleteHistoryConFirmation}
-          >
-            No
-          </Button>
-          <Button
-            color="success"
-            autoFocus
-            onClick={() => handleDeleteConfirmation()}
-          >
-            Yes
-          </Button>
+          <div className="w-100 sb">
+
+            <Button
+              color="error"
+              autoFocus
+              onClick={handleCloseDeleteHistoryConFirmation}
+            >
+              No
+            </Button>
+            <Button
+              color="success"
+              autoFocus
+              onClick={() => handleDeleteConfirmation()}
+            >
+              Yes
+            </Button>
+          </div>
         </DialogActions>
       </BootstrapDialog>
     </React.Fragment>

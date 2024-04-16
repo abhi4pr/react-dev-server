@@ -117,14 +117,14 @@ export default function PagePerformanceAnalytics() {
     if (!num) return "";
     var x = num.toString();
     var afterPoint = '';
-    if(x.indexOf('.') > 0)
-       afterPoint = x.substring(x.indexOf('.'),x.length);
+    if (x.indexOf('.') > 0)
+      afterPoint = x.substring(x.indexOf('.'), x.length);
     x = Math.floor(x);
     x = x.toString();
     var lastThree = x.substring(x.length - 3);
     var otherNumbers = x.substring(0, x.length - 3);
     if (otherNumbers != '')
-        lastThree = ',' + lastThree;
+      lastThree = ',' + lastThree;
     var res = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree + afterPoint;
     return res;
   };
@@ -688,56 +688,60 @@ export default function PagePerformanceAnalytics() {
   }, [searchInput, rowData]);
 
   return (
-    <>
+    <div >
       <FormContainer mainTitle="Analytics" link="/ip-master" />
       <div
-      // className="d-flex"
+        className="card body-padding thm_form gap16"
       >
-        <Autocomplete
-          className="me-2"
-          disablePortal
-          value={intervalFlag.label}
-          defaultValue={intervalFlagOptions[0].label}
-          id="combo-box-demo"
-          options={intervalFlagOptions.map((option) => ({
-            label: option.label,
-            value: option.value,
-          }))}
-          onChange={(event, newValue) => {
-            if (newValue === null) {
-              return setIntervalFlag({ label: "Current Month", value: 1 });
-            }
+        <div className="flexCenter colGap16">
 
-            setIntervalFlag(newValue);
-          }}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField {...params} label="Filter Date" />
-          )}
-        />
-        {intervalFlag.value === 4 && (
-          <>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                value={startDate}
-                format="DD/MM/YY"
-                onChange={(e) => setStartDate(e)}
-                label="From"
-              />
-            </LocalizationProvider>
-            <span className="ms-3">
+          <Autocomplete
+            className="me-2"
+            disablePortal
+            value={intervalFlag.label}
+            defaultValue={intervalFlagOptions[0].label}
+            id="combo-box-demo"
+            options={intervalFlagOptions.map((option) => ({
+              label: option.label,
+              value: option.value,
+            }))}
+            onChange={(event, newValue) => {
+              if (newValue === null) {
+                return setIntervalFlag({ label: "Current Month", value: 1 });
+              }
+
+              setIntervalFlag(newValue);
+            }}
+            sx={{ width: 300 }}
+            renderInput={(params) => (
+              <TextField {...params} label="Filter Date" />
+            )}
+          />
+          {intervalFlag.value === 4 && (
+            <>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
-                  value={endDate}
-                  onChange={(e) => handleEndDateChange(e)}
-                  label="To"
-                  disabled={!startDate}
+                  value={startDate}
+                  format="DD/MM/YY"
+                  onChange={(e) => setStartDate(e)}
+                  label="From"
                 />
               </LocalizationProvider>
-            </span>
-          </>
-        )}
-        <div className="d-flex my-3">
+              <span>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    value={endDate}
+                    onChange={(e) => handleEndDateChange(e)}
+                    label="To"
+                    disabled={!startDate}
+                  />
+                </LocalizationProvider>
+              </span>
+            </>
+          )}
+        </div>
+
+        <div className=" flexCenter colGap16">
           <Autocomplete
             disablePortal
             value={followerCoutnCompareFlag.label}
@@ -813,7 +817,7 @@ export default function PagePerformanceAnalytics() {
           )}
         </div>
 
-        <div className="d-flex my-3">
+        <div className=" flexCenter colGap16">
           {" "}
           <Autocomplete
             disablePortal
@@ -885,7 +889,7 @@ export default function PagePerformanceAnalytics() {
             </>
           )}
         </div>
-        <div className="d-flex my-3">
+        <div className=" flexCenter colGap16">
           <Autocomplete
             disablePortal
             value={impressionCompareFlag.label}
@@ -963,12 +967,13 @@ export default function PagePerformanceAnalytics() {
             filter
           </button> */}
         </div>
-        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <div className=" flexCenter colGap16 ">
           <Autocomplete
             disablePortal
             value={viewType}
             // defaultValue={compareFlagOptions[0].label}
             id="combo-box-demo"
+
             options={viewInOptions}
             onChange={(event, newValue) => {
               if (newValue === null) {
@@ -979,40 +984,44 @@ export default function PagePerformanceAnalytics() {
 
               setViewType(newValue);
             }}
-            sx={{ width: 250 }}
+
             renderInput={(params) => <TextField {...params} label="View In" />}
-            // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
+          // onChange={(e) => setFollowerCoutnCompareFlag(e.target.value)}
           />
 
           <TextField
             type="text"
             label="Search Page"
-            sx={{ m: 1 }}
+
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
-        </Box>
+        </div>
       </div>
-      {!loading ? (
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          pageSize={10}
-          rowsPerPageOptions={[10]}
-          disableSelectionOnClick
-          getRowId={(row) => row._id}
-        />
-      ) : (
-        <ContentLoader
-          width={2000}
-          height={700}
-          viewBox="0 30 2000 700"
-          backgroundColor="#f0f0f0"
-          foregroundColor="#dedede"
-        >
-          <rect x="42" y="77" rx="10" ry="10" width="1100" height="600" />
-        </ContentLoader>
-      )}
-    </>
+      <div className="card body-padding thm_table nt-head">
+
+        {!loading ? (
+          <DataGrid
+            rows={filteredRows}
+            columns={columns}
+            pageSize={10}
+            rowsPerPageOptions={[10]}
+            disableSelectionOnClick
+            getRowId={(row) => row._id}
+          />
+        ) : (
+          <ContentLoader
+            width={2000}
+            height={700}
+            viewBox="0 30 2000 700"
+            backgroundColor="#f0f0f0"
+            foregroundColor="#dedede"
+          >
+            <rect x="42" y="77" rx="10" ry="10" width="1100" height="600" />
+          </ContentLoader>
+        )}
+      </div>
+
+    </div>
   );
 }
