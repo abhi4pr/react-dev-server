@@ -4,6 +4,7 @@ import { baseUrl } from "../../../utils/config";
 import { data } from "jquery";
 import imageTest1 from "../../../assets/img/product/Avtrar1.png";
 import { calc } from "antd/es/theme/internal";
+import { useGlobalContext } from "../../../Context/Context";
 
 const AnnoucementReactionView = ({
   announcementId,
@@ -11,6 +12,7 @@ const AnnoucementReactionView = ({
   reactionType,
   reactionObj,
 }) => {
+  const { toastAlert, toastError } = useGlobalContext();
   const [reactionData, setReactionData] = useState({});
   const [dataToShow, setDataToShow] = useState([]);
   const [activebtn, setActivebtn] = useState("all");
@@ -28,9 +30,10 @@ const AnnoucementReactionView = ({
           value.map((obj) => ({ ...obj, reaction: key }))
         );
         setDataToShow(newDataToShow);
+
       }
     } catch (error) {
-      console.log(
+      toastError(
         error.response?.data?.error || "Error fetching announcements"
       );
     }
@@ -59,10 +62,10 @@ const AnnoucementReactionView = ({
     }
   };
 
-  console.log(reactionData);
+
   useEffect(() => {
     getAnnouncementData();
-  }, [isOpen === true]);
+  }, []);
 
   return (
     <>
@@ -114,30 +117,38 @@ const AnnoucementReactionView = ({
             </div>
           )
         }
-        {dataToShow.map((item, index) => (
-          <div
-            key={item.user_id}
-            className="sb pack w-100 flex-row p-2"
-            style={{ borderTop: "1px solid  var(--border)" }}
-          >
-            <div className="pack flex-row jutify-content-center align-items-center">
-              <div
-                className="profile-sec mr-3"
-                style={{ alignItems: "center" }}
-              >
-                <div className="profile-img">
-                  <img src={imageTest1} alt="" width={40} />
+        <div className="d-flex flex-column hidden-scroll-bar">
+
+          {dataToShow.map((item, index) => (
+            <div
+              key={item.user_id}
+              className="sb pack w-100 flex-row p-2"
+              style={{ borderTop: "1px solid  var(--border)" }}
+            >
+              <div className="pack flex-row jutify-content-center align-items-center">
+                <div
+                  className="profile-sec mr-3"
+                  style={{ alignItems: "center" }}
+                >
+                  <div className="profile-img">
+                    <img
+                      src={item.image !== "" ? item.image : imageTest1}
+                      alt=""
+                      width={40}
+                    />
+                  </div>
+                </div>
+                <div className="d-flex flex-column">
+                  <h6>{item.user_name}</h6>
+                  <p className="rec-com">{item.desi_name}</p>
                 </div>
               </div>
-              <div className="d-flex flex-column">
-                <h6>{item.user_name}</h6>
-                <p className="rec-com">designation</p>
-              </div>
-            </div>
 
-            <h5>{reactionObj[item.reaction.split("U")[0]]}</h5>
-          </div>
-        ))}
+              <h5>{reactionObj[item.reaction.split("U")[0]]}</h5>
+            </div>
+          ))}
+        </div>
+
       </div>
     </>
   );

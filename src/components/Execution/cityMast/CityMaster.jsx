@@ -99,26 +99,29 @@ export default function CityMaster() {
       width: 300,
       renderCell: (params) => (
         <>
-          <Button
+          <button
             variant="contained"
             color="primary"
             size="small"
             style={{ marginLeft: 16 }}
             onClick={() => handleEditClick(params.row)}
             startIcon={<EditIcon />}
+            className="icon-1"
           >
-            Edit
-          </Button>
-          <Button
+            <i className="bi bi-pencil" />
+          </button>
+          <button
             variant="contained"
             color="error"
             size="small"
             style={{ marginLeft: 16 }}
             onClick={() => handleClickOpenDeleteCityName(params.row)}
             startIcon={<DeleteIcon />}
+            className="icon-1"
+
           >
-            Delete
-          </Button>
+            <i className="bi bi-trash" />
+          </button>
         </>
       ),
     },
@@ -158,42 +161,45 @@ export default function CityMaster() {
   }, [searchInput, row]);
 
   return (
-    <>
+    <div >
       <FormContainer mainTitle="City Master" link="/ip-master" />
-      <Paper sx={{ display: "flex", justifyContent: "space-between", m: 1 }}>
-        <TextField
-          type="text"
-          label="Search City"
-          sx={{ m: 1 }}
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-        />
-        <Page>
+      <div className="card">
+        <div className="card-body thm_form flexCenter colGap16">
+
           <TextField
             type="text"
-            variant="outlined"
-            label="City Name"
-            value={addCity}
-            sx={{ m: 1 }}
-            onChange={handleCityInputChange}
+            label="Search City"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
           />
-          <button
-            className="btn btn-primary btn-lg"
-            style={{ margin: "12px" }}
-            disabled={row.length > 0}
-            onClick={handleClickAddCity}
-          >
-            Add
-          </button>
-        </Page>
-      </Paper>
-      <Box>
+          <>
+            <TextField
+              type="text"
+              variant="outlined"
+              label="City Name"
+              value={addCity}
+              onChange={handleCityInputChange}
+            />
+            <Button
+              className="btn cmnbtn btn-primary "
+
+              disabled={row.length > 0}
+              onClick={handleClickAddCity}
+            >
+              Add
+            </Button>
+
+          </>
+        </div>
+
+      </div>
+      <div className="card body-padding nt-head">
         <DataGrid
           rows={filteredRows}
           columns={cityColumns}
           getRowId={(row) => row._id}
         />
-      </Box>
+      </div>
 
       <DeleteCity
         handleCloseDeleteCityName={handleCloseDeleteCityName}
@@ -215,6 +221,6 @@ export default function CityMaster() {
           handleSaveEditCityName={handleSaveEditCityName}
         />
       )}
-    </>
+    </div>
   );
 }

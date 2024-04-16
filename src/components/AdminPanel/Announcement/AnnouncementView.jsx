@@ -6,19 +6,23 @@ import { useGlobalContext } from "../../../Context/Context";
 import Announcement from "./Announcement";
 import FormContainer from "../FormContainer";
 import { useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
+
 import imageTest1 from "../../../assets/img/product/Avtrar1.png";
 const AnnouncementView = () => {
   const navigate = useNavigate();
   const { toastError } = useGlobalContext();
-  const loginUserId = getDecodedToken().id;
+  const token = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(token);
+  const loginUserId = decodedToken.id;
   const [announcements, setAnnouncements] = useState([]);
   const [comments, setComments] = useState({});
 
   useEffect(() => {
     const getAnnouncementData = async () => {
       try {
-        const res = await axios.get(`${baseUrl}get_all_user_announcement`);
-        setAnnouncements(res.data.userAnnouncementList);
+        const res = await axios.get(`${baseUrl}get_all_user_login_announcement/${loginUserId}`);
+        setAnnouncements(res.data.data);
       } catch (error) {
         toastError(
           error.response?.data?.error || "Error fetching announcements"
@@ -80,7 +84,7 @@ const AnnouncementView = () => {
   };
 
   return (
-    <div className="master-card-css">
+    <div>
       <FormContainer
         mainTitle={"Announcement"}
         link={true}
@@ -98,7 +102,7 @@ const AnnouncementView = () => {
             </span>
           </div>
           <button
-            className="btn btn-outline-primary"
+            className="btn cmnbtn btn_sm btn-outline-primary"
             onClick={() => {
               navigate("/admin/announcement-post");
             }}
@@ -114,12 +118,13 @@ const AnnouncementView = () => {
           />
         </div>
       </div>
+
       {announcements.map((announcement) => (
         <Announcement
           key={announcement._id}
           announcement={announcement}
           comments={comments[announcement._id] || []}
-          handleReaction={handleReaction}
+
           handlePostComment={handlePostComment}
           fetchComments={() => fetchComments(announcement._id)}
         />

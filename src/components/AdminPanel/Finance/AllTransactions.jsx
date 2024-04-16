@@ -52,7 +52,7 @@ const AllTransactions = () => {
   // const [requestedAmountField, setRequestedAmountField] = useState("");
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => {});
+    axios.post(baseUrl + "add_php_payment_acc_data_in_node").then((res) => { });
     axios.get(baseUrl + "get_all_php_finance_data").then((res) => {
       setData(res.data.data);
       setFilterData(res.data.data);
@@ -401,10 +401,10 @@ const AllTransactions = () => {
           {params.row.payment_approval_status === 0
             ? "Pending"
             : params.row.payment_approval_status === 1
-            ? "Approved"
-            : params.row.payment_approval_status === 2
-            ? "Rejected"
-            : ""}
+              ? "Approved"
+              : params.row.payment_approval_status === 2
+                ? "Rejected"
+                : ""}
         </div>
       ),
     },
@@ -566,10 +566,10 @@ const AllTransactions = () => {
           {params.row.payment_approval_status === 0
             ? "Pending"
             : params.row.payment_approval_status === 1
-            ? "Approved"
-            : params.row.payment_approval_status === 2
-            ? "Rejected"
-            : ""}
+              ? "Approved"
+              : params.row.payment_approval_status === 2
+                ? "Rejected"
+                : ""}
         </div>
       ),
     },
@@ -701,7 +701,7 @@ const AllTransactions = () => {
             // key={row.detail}
             color="secondary"
             onClick={() => handleCopyDetail(params.row.detail)}
-            // style={{ marginLeft: "10px" }}
+          // style={{ marginLeft: "10px" }}
           >
             <ContentCopyIcon />
           </Button>{" "}
@@ -727,10 +727,10 @@ const AllTransactions = () => {
           {params.row.payment_approval_status === "0"
             ? "Pending"
             : params.row.payment_approval_status === "1"
-            ? "Approved"
-            : params.row.payment_approval_status === "2"
-            ? "Rejected"
-            : ""}
+              ? "Approved"
+              : params.row.payment_approval_status === "2"
+                ? "Rejected"
+                : ""}
         </div>
       ),
     },
@@ -979,10 +979,10 @@ const AllTransactions = () => {
                 ₹
                 {datas.length > 0
                   ? datas
-                      .filter((item) => item.payment_approval_status == 0)
-                      .reduce((total, currentItem) => {
-                        return total + currentItem.payment_amount_show * 1;
-                      }, 0)
+                    .filter((item) => item.payment_approval_status == 0)
+                    .reduce((total, currentItem) => {
+                      return total + currentItem.payment_amount_show * 1;
+                    }, 0)
                   : ""}
               </h4>
             </div>
@@ -1006,10 +1006,10 @@ const AllTransactions = () => {
                 ₹
                 {datas.length > 0
                   ? datas
-                      .filter((item) => item.payment_approval_status == 1)
-                      .reduce((total, currentItem) => {
-                        return total + currentItem.payment_amount_show * 1;
-                      }, 0)
+                    .filter((item) => item.payment_approval_status == 1)
+                    .reduce((total, currentItem) => {
+                      return total + currentItem.payment_amount_show * 1;
+                    }, 0)
                   : ""}
               </h4>
             </div>
@@ -1033,10 +1033,10 @@ const AllTransactions = () => {
                 ₹
                 {datas.length > 0
                   ? datas
-                      .filter((item) => item.payment_approval_status == 2)
-                      .reduce((total, currentItem) => {
-                        return total + currentItem.payment_amount_show * 1;
-                      }, 0)
+                    .filter((item) => item.payment_approval_status == 2)
+                    .reduce((total, currentItem) => {
+                      return total + currentItem.payment_amount_show * 1;
+                    }, 0)
                   : ""}
               </h4>
             </div>

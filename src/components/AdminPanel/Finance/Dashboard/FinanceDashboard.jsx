@@ -13,6 +13,7 @@ import { baseUrl } from "../../../../utils/config";
 import gifone from "../../../../assets/img/finance/gifone.gif";
 import giftwo from "../../../../assets/img/finance/giftwo.gif";
 import gifthree from "../../../../assets/img/finance/gifthree.gif";
+import { PieChart } from "@mui/x-charts";
 
 const filterOptions = [
   "Today",
@@ -56,7 +57,7 @@ export default function FinanceDashboard() {
   const [filterPayoutData, setFilterPayoutData] = useState([]);
   const [incentiveData, setIncentiveData] = useState([]);
   const [incentiveFilterData, setIncentiveFilterData] = useState([]);
-
+  const [graph, setgraph] = useState(0)
   const handleResetClick = () => {
     setFilterValue();
     setStartDate(dayjs());
@@ -93,13 +94,13 @@ export default function FinanceDashboard() {
         });
     });
 
-    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {});
+    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => { });
     axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
       setFilterPendingForApprovalData(res.data.data);
       setPendingForApprovalData(res.data.data);
     });
 
-    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {});
+    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => { });
     setTimeout(() => {
       axios
         .get(
@@ -114,13 +115,13 @@ export default function FinanceDashboard() {
         });
     });
 
-    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {});
+    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => { });
     axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
       setFilterPendingForApprovalData(res.data.data);
       setPendingForApprovalData(res.data.data);
     });
 
-    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {});
+    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => { });
     setTimeout(() => {
       axios
         .get(baseUrl + "get_all_php_payment_refund_data_pending")
@@ -130,7 +131,7 @@ export default function FinanceDashboard() {
         });
     }, 1000);
 
-    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {});
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => { });
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -148,7 +149,7 @@ export default function FinanceDashboard() {
         setCstPaymentData(res.data.body);
       });
 
-    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then(() => {});
+    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then(() => { });
     const formDataa = new FormData();
     formDataa.append("loggedin_user_id", 36);
     axios
@@ -168,7 +169,7 @@ export default function FinanceDashboard() {
 
     axios
       .post(baseUrl + "add_php_sale_booking_tds_data_in_node")
-      .then(() => {});
+      .then(() => { });
     let formDataSalesbookingAboutToClose = new FormData();
     formDataSalesbookingAboutToClose.append("loggedin_user_id", 36);
     formDataSalesbookingAboutToClose.append("tds_status", 0);
@@ -236,11 +237,11 @@ export default function FinanceDashboard() {
         setFilterPayoutData(response);
         setPayoutData(response);
       });
-    } catch (error) {}
+    } catch (error) { }
 
     axios
       .post(baseUrl + "add_php_payment_incentive_data_in_node")
-      .then(() => {});
+      .then(() => { });
     const formDataIncentive = new FormData();
     formDataIncentive.append("loggedin_user_id", 36);
     axios
@@ -403,8 +404,8 @@ export default function FinanceDashboard() {
       />
 
       <div className="card">
-        <div className="card-body">
-          <div className="row thm_form">
+        <div className="card-body flex-row gap4">
+          <div className="row thm_form w-100">
             <div className="col-md-2_5">
               <Autocomplete
                 disablePortal
@@ -471,199 +472,411 @@ export default function FinanceDashboard() {
               </Button>
             </div>
           </div>
+          <div className=" flex-row d-flex" style={{ gap: "20px" }}>
+
+            <i className="bi bi-list-ul" style={{ cursor: 'pointer' }} onClick={() => { setgraph(0) }}></i>
+            <i className="bi bi-bar-chart-fill" style={{ cursor: 'pointer' }} onClick={() => { setgraph(1) }}></i>
+          </div>
         </div>
       </div>
+      {
+        graph === 0 && (
+          <div className="card">
+            <div className="card-body pb0">
+              <div className="card-body cardGrdnt orangeGrdnt">
+                <Link to="/admin/finance-incentivepayment">
+                  <div className="row align-items-center">
+                    <div className="col-md-6 financeCardBox border-right ">
+                      <div className="financeCardBoxIn p0">
+                        <div className="financeCardBoxTitle">
+                          <div className="financeCardBoxImg">
+                            <img src={gifone} alt="" />
+                          </div>
+                          <h2>Total Incentive Count</h2>
+                        </div>
+                        <div className="scroll-con pl40">
+                          <div
+                            className="scroller"
 
-      <div className="card">
-        <div className="card-body pb0">
-          <div className="card-body cardGrdnt orangeGrdnt">
-            <Link to="/admin/finance-incentivepayment">
-              <div className="row align-items-center">
-                <div className="col-md-6 financeCardBox border-right ">
-                  <div className="financeCardBoxIn p0">
-                    <div className="financeCardBoxTitle">
-                      <div className="financeCardBoxImg">
-                        <img src={gifone} alt="" />
+                          >
+                            <h3>0</h3>
+                            {incentiveData.map((item, index) => (
+                              <h3>{index + 1}</h3>
+                            ))}
+                          </div>
+                        </div>
                       </div>
-                      <h2>Total Incentive Count</h2>
                     </div>
-                    <h3>{incentiveData.length}</h3>
+                    <div className="col-md-6 financeCardBox">
+                      <div className="financeCardBoxIn p0">
+                        <div className="financeCardBoxDetails">
+                          <ul className="pl32">
+                            <li>
+                              Request Amount
+                              <span>
+                                <span>&#8377; </span>
+                                {incentiveData
+                                  .map((item) => +item.request_amount)
+                                  .reduce((prev, next) => prev + next, 0)}
+                              </span>
+                            </li>
+                            <li>
+                              Released Amount
+                              <span>
+                                <span>&#8377; </span>
+                                {incentiveData
+                                  .map((item) => +item.released_amount)
+                                  .reduce((prev, next) => prev + next, 0)}
+                              </span>
+                            </li>
+                            <li>
+                              Balance Release
+                              <span>
+                                <span>&#8377; </span>
+                                {incentiveData
+                                  .map((item) => +item.balance_release_amount)
+                                  .reduce((prev, next) => prev + next, 0)}
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+                </Link>
+              </div>
+              <div className="row">
+                <div className="col-md-6">
+                  <Link to="/admin/finance-salebookingclose">
+                    <div className="cardGrdnt greenGrdnt">
+                      <div className="financeCardBox border-bottom">
+                        <div className="financeCardBoxIn">
+                          <div className="financeCardBoxTitle">
+                            <div className="financeCardBoxImg">
+                              <img src={giftwo} alt="" />
+                            </div>
+                            <h2>TDS Verification Open</h2>
+                          </div>
+                          <div className="scroll-con">
+                            <div
+                              className="scroller"
+
+                            >
+                              <h3>0</h3>
+                              {salesBookingOpenData.map((item, index) => (
+                                <h3>{index + 1}</h3>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="financeCardBox">
+                        <div className="financeCardBoxIn">
+                          <div className="financeCardBoxDetails">
+                            <ul>
+                              <li>
+                                TDS Verification About to Close
+                                <span>{salesBookingAboutToCloseData.length}</span>
+                              </li>
+                              <li>
+                                TDS Verification Closed
+                                <span>{salesBookingCloseData.length}</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
                 </div>
-                <div className="col-md-6 financeCardBox">
-                  <div className="financeCardBoxIn p0">
-                    <div className="financeCardBoxDetails">
-                      <ul className="pl32">
-                        <li>
-                          Request Amount
-                          <span>
-                            <span>&#8377; </span>
-                            {incentiveData
-                              .map((item) => +item.request_amount)
-                              .reduce((prev, next) => prev + next, 0)}
-                          </span>
-                        </li>
-                        <li>
-                          Released Amount
-                          <span>
-                            <span>&#8377; </span>
-                            {incentiveData
-                              .map((item) => +item.released_amount)
-                              .reduce((prev, next) => prev + next, 0)}
-                          </span>
-                        </li>
-                        <li>
-                          Balance Release
-                          <span>
-                            <span>&#8377; </span>
-                            {incentiveData
-                              .map((item) => +item.balance_release_amount)
-                              .reduce((prev, next) => prev + next, 0)}
-                          </span>
-                        </li>
-                      </ul>
+                <div className="col-md-6">
+                  <Link to="/admin/finance-balancepayment">
+                    <div className="cardGrdnt greenGrdnt">
+                      <div className="financeCardBox border-bottom">
+                        <div className="financeCardBoxIn">
+                          <div className="financeCardBoxTitle">
+                            <div className="financeCardBoxImg">
+                              <img src={gifthree} alt="" />
+                            </div>
+                            <h2>Customer Balance Payment Count</h2>
+                          </div>
+                          <div className="scroll-con">
+                            <div
+                              className="scroller"
+
+                            >
+                              <h1>0</h1>
+                              {cstPaymentData.map((item, index) => (
+                                <h3>{index + 1}</h3>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="financeCardBox">
+                        <div className="financeCardBoxIn">
+                          <div className="financeCardBoxDetails">
+                            <ul>
+                              <li>
+                                Total Refund Request Amount Pending
+                                <span>
+                                  <span>&#8377; </span>
+                                  {cstPaymentData
+                                    .map(
+                                      (item) =>
+                                        item.campaign_amount -
+                                        item.total_paid_amount
+                                    )
+                                    .reduce((prev, next) => prev + next, 0)
+                                    .toLocaleString("en-IN")}
+                                </span>
+                              </li>
+                              <li>
+                                &nbsp;
+                                <span>&nbsp;</span>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               </div>
-            </Link>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <Link to="/admin/finance-salebookingclose">
-                <div className="cardGrdnt greenGrdnt">
-                  <div className="financeCardBox border-bottom">
-                    <div className="financeCardBoxIn">
-                      <div className="financeCardBoxTitle">
-                        <div className="financeCardBoxImg">
-                          <img src={giftwo} alt="" />
-                        </div>
-                        <h2>TDS Verification Open</h2>
-                      </div>
-                      <h3>{salesBookingOpenData.length}</h3>
+              <div className="row">
+                <div className="col">
+                  <Link to="/admin/finance-pendingapproveupdate">
+                    <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                      <h2>Pending Approval of Sales Payment</h2>
+                      <h3>{pendingForApprovalData.length}</h3>
                     </div>
-                  </div>
-                  <div className="financeCardBox">
-                    <div className="financeCardBoxIn">
-                      <div className="financeCardBoxDetails">
-                        <ul>
-                          <li>
-                            TDS Verification About to Close
-                            <span>{salesBookingAboutToCloseData.length}</span>
-                          </li>
-                          <li>
-                            TDS Verification Closed
-                            <span>{salesBookingCloseData.length}</span>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
+                  </Link>
+                </div>
+                <div className="col">
+                  <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                    <h2>Total Invoice Pending</h2>
+                    <h3>{invoicePending.length}</h3>
                   </div>
                 </div>
-              </Link>
-            </div>
-            <div className="col-md-6">
-              <Link to="/admin/finance-balancepayment">
-                <div className="cardGrdnt greenGrdnt">
-                  <div className="financeCardBox border-bottom">
-                    <div className="financeCardBoxIn">
-                      <div className="financeCardBoxTitle">
-                        <div className="financeCardBoxImg">
-                          <img src={gifthree} alt="" />
-                        </div>
-                        <h2>Customer Balance Payment Count</h2>
-                      </div>
-                      <h3>{cstPaymentData.length}</h3>
+                <div className="col">
+                  <Link to="/admin/finance-pendingapproverefund">
+                    <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                      <h2>Total Refund Request Amount Pending</h2>
+                      <h3>
+                        <span>&#8377;</span>
+                        {refundReqData
+                          .map((item) => item.refund_amount)
+                          .reduce((prev, next) => prev + next, 0)
+                          .toLocaleString("en-IN")}
+                      </h3>
                     </div>
-                  </div>
-                  <div className="financeCardBox">
-                    <div className="financeCardBoxIn">
-                      <div className="financeCardBoxDetails">
-                        <ul>
-                          <li>
-                            Total Refund Request Amount Pending
-                            <span>
-                              <span>&#8377; </span>
-                              {cstPaymentData
-                                .map(
-                                  (item) =>
-                                    item.campaign_amount -
-                                    item.total_paid_amount
-                                )
-                                .reduce((prev, next) => prev + next, 0)
-                                .toLocaleString("en-IN")}
-                            </span>
-                          </li>
-                          <li>
-                            &nbsp;
-                            <span>&nbsp;</span>
-                          </li>
-                        </ul>
-                      </div>
+                  </Link>
+                </div>
+                <div className="col">
+                  <Link to="/admin/finance-pruchasemanagement-paymentdone">
+                    <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                      <h2>Pending for Vendor Payment</h2>
+                      <h3>{vendorCardData.length}</h3>
                     </div>
-                  </div>
+                  </Link>
                 </div>
-              </Link>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col">
-              <Link to="/admin/finance-pendingapproveupdate">
-                <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
-                  <h2>Pending Approval of Sales Payment</h2>
-                  <h3>{pendingForApprovalData.length}</h3>
-                </div>
-              </Link>
-            </div>
-            <div className="col">
-              <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
-                <h2>Total Invoice Pending</h2>
-                <h3>{invoicePending.length}</h3>
-              </div>
-            </div>
-            <div className="col">
-              <Link to="/admin/finance-pendingapproverefund">
-                <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
-                  <h2>Total Refund Request Amount Pending</h2>
-                  <h3>
-                    <span>&#8377;</span>
-                    {refundReqData
-                      .map((item) => item.refund_amount)
-                      .reduce((prev, next) => prev + next, 0)
-                      .toLocaleString("en-IN")}
-                  </h3>
-                </div>
-              </Link>
-            </div>
-            <div className="col">
-              <Link to="/admin/finance-pruchasemanagement-paymentdone">
-                <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
-                  <h2>Pending for Vendor Payment</h2>
-                  <h3>{vendorCardData.length}</h3>
-                </div>
-              </Link>
-            </div>
-            <div className="col">
-              <Link to="#">
-                <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
-                  <h2>Total Payout Pending</h2>
-                  <h3>
-                    <span>&#8377; </span>
-                    {payoutData
-                      .map((e) => e.toPay)
-                      .reduce((prev, next) => prev + next, 0)
-                      ? payoutData
+                <div className="col">
+                  <Link to="#">
+                    <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                      <h2>Total Payout Pending</h2>
+                      <h3>
+                        <span>&#8377; </span>
+                        {payoutData
                           .map((e) => e.toPay)
                           .reduce((prev, next) => prev + next, 0)
-                          .toLocaleString("en-IN")
-                      : 0}
-                  </h3>
+                          ? payoutData
+                            .map((e) => e.toPay)
+                            .reduce((prev, next) => prev + next, 0)
+                            .toLocaleString("en-IN")
+                          : 0}
+                      </h3>
+                    </div>
+                  </Link>
                 </div>
-              </Link>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
+          </div>)
+      }
+      {
+        graph === 1 && (
+          <div className="card body-padding" style={{ gap: "16px" }}>
+            <div className="pack fin-up-card flex-row" style={{ gap: "16px" }} >
+              <div className="fin-card w-50">
+                <div className="pack flex-row w-100" style={{ gap: "32px", padding: "20px" }} >
+                  <div className="fd-circle">
+                    <img src={gifone} alt="gif" />
+                  </div>
+                  <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                    <h4>Total Incentive Count</h4>
+                    <div className="scroll-con">
+                      <div
+                        className="scroller"
+
+                      >
+                        <h1>0</h1>
+                        {incentiveData.map((item, index) => (
+                          <h1>{index + 1}</h1>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="pack d-flex flex-column w-100" style={{ gap: "10px", padding: "20px", color: "var(--white)" }}>
+                  <div className="pack sb" style={{ position: "relative", borderRadius: "100px", border: "1px solid rgba(109, 44, 0, 0.60) ", padding: "3px 10px" }}>
+                    <div className="bg-pack h-100 w-75"></div>
+                    <h6>Request Amount </h6>
+                    <h6 style={{ color: "#672700" }}> ₹{" "}
+                      {incentiveData
+                        .map((item) => +item.request_amount)
+                        .reduce((prev, next) => prev + next, 0)}{" "}</h6>
+
+                  </div>
+                  <div className="pack sb" style={{ position: "relative", borderRadius: "100px", border: "1px solid rgba(109, 44, 0, 0.60) ", padding: "3px 10px" }}>
+                    <div className="bg-pack h-100 w-50"></div>
+                    <h6>Released Amount </h6>
+                    <h6 style={{ color: "#672700" }}>
+                      ₹
+                      {incentiveData
+                        .map((item) => +item.released_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h6>
+
+                  </div>
+                  <div className="pack sb" style={{ position: "relative", borderRadius: "100px", border: "1px solid rgba(109, 44, 0, 0.60) ", padding: "3px 10px" }}>
+                    <div className="bg-pack h-100" style={{ width: "40%" }}></div>
+                    <h6>Balance Released</h6>
+                    <h6 style={{ color: "#672700" }}>
+                      ₹{" "}
+                      {incentiveData
+                        .map((item) => +item.balance_release_amount)
+                        .reduce((prev, next) => prev + next, 0)}
+                    </h6>
+
+                  </div>
+                </div>
+              </div>
+              <div className="fin-card w-50">
+
+                <PieChart
+                  series={[
+                    {
+                      data: [{ label: " Pending Approval of Sales Payment", value: pendingForApprovalData.length },
+                      {
+                        label: " Total Invoice Pending"
+                        , value: invoicePending.length
+                      }, {
+                        label: "Total Refund Request Amount Pending", value: refundReqData
+                          .map((item) => item.refund_amount)
+                          .reduce((prev, next) => prev + next, 0)
+
+
+                      },
+                      {
+                        value: vendorCardData.length,
+                        label: "Pending for Vendor Payment"
+                      },
+                      {
+                        value: payoutData
+                          .map((e) => e.toPay)
+                          .reduce((prev, next) => prev + next, 0) === "Nan" ? 0 : payoutData
+                            .map((e) => e.toPay)
+                            .reduce((prev, next) => prev + next, 0),
+                        label: " Total Payout Pending"
+                      }
+                      ], innerRadius: 30,
+                      outerRadius: 100,
+                      paddingAngle: 5,
+                      cornerRadius: 5,
+                      startAngle: -180,
+                      endAngle: 180,
+                      cx: 250,
+                      cy: 140,
+                    },
+
+                  ]}
+
+                />
+
+              </div>
+            </div>
+            <div className="pack flex-row" style={{ gap: "16px" }}>
+              <div className="fin-card w-50">
+                <div className="pack flex-row w-100" style={{ gap: "32px", padding: "20px" }} >
+                  <div className="fd-circle">
+                    <img src={giftwo} alt="gif" />
+                  </div>
+                  <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                    <h4>TDS Verification Open</h4>
+                    <div className="scroll-con">
+                      <div
+                        className="scroller"
+
+                      >
+                        <h1>0</h1>
+                        {salesBookingOpenData.map((item, index) => (
+                          <h1>{index + 1}</h1>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="pack d-flex flex-column w-100" style={{ gap: "10px", padding: "20px" }}>
+                  <div className="pack sb">
+                    <h6>TDS Verification About to Close</h6> <h6>{salesBookingAboutToCloseData.length}</h6>
+                  </div>
+                  <div className="pack sb">
+                    <h6>TDS Verification Closed</h6>
+                    <h6> {salesBookingCloseData.length}</h6>
+                  </div>
+                </div>
+
+              </div>
+              <div className="fin-card w-50">
+                <div className="pack flex-row w-100" style={{ gap: "32px", padding: "20px" }} >
+                  <div className="fd-circle">
+                    <img src={gifthree} alt="gif" />
+                  </div>
+                  <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                    <h4>Customer Balance Payment Count</h4>
+                    <div className="scroll-con">
+                      <div
+                        className="scroller"
+
+                      >
+                        <h3>0</h3>
+                        {cstPaymentData.map((item, index) => (
+                          <h1>{index + 1}</h1>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="pack d-flex flex-column w-100" style={{ gap: "10px", padding: "20px" }}>
+                  <div className="pack sb">
+                    <h6>Total Refund Request Amount Pending </h6>
+                    <h6>
+                      ₹{" "}
+                      {cstPaymentData
+                        .map(
+                          (item) =>
+                            item.campaign_amount - item.total_paid_amount
+                        )
+                        .reduce((prev, next) => prev + next, 0)
+                        .toLocaleString("en-IN")}
+                    </h6>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+          </div>)
+      }
 
       <div className="card mt-4">
         <div className="row gx-3 justify-content-around">

@@ -1,5 +1,5 @@
 import axios from "axios";
-import  { useEffect } from "react";
+import { useEffect } from "react";
 import FormContainer from "../AdminPanel/FormContainer";
 import { DataGrid, GridColumnMenu, GridToolbar } from "@mui/x-data-grid";
 import { useState } from "react";
@@ -21,7 +21,7 @@ export default function StatsAllPagesDetail() {
   const [loading, setLoading] = useState(false);
   const apiCall = () => {
     axios
-      .get(baseUrl+"get_distinct_count_history")
+      .get(baseUrl + "get_distinct_count_history")
       .then((res) => {
         console.log(res.data);
         setAllPagesDetail(res.data.data);
@@ -33,7 +33,7 @@ export default function StatsAllPagesDetail() {
     formData.append("loggedin_user_id", 36);
     setLoading(true);
     axios
-      .get(baseUrl+"get_all_purchase_data")
+      .get(baseUrl + "get_all_purchase_data")
       .then((res) => {
         setLoading(false);
         setPhpData(res.data.result);
@@ -42,7 +42,7 @@ export default function StatsAllPagesDetail() {
         });
       });
     apiCall();
-    axios.get(baseUrl+"get_all_users").then((res) => {
+    axios.get(baseUrl + "get_all_users").then((res) => {
       setAllUsers(res.data.data);
     });
   }, []);
@@ -697,8 +697,9 @@ export default function StatsAllPagesDetail() {
 
   return (
     <div>
-      <div style={{ width: "100%", margin: "0 0 0 0" }}>
-        <FormContainer mainTitle="All Pages Detailed" link="/ip-master" />
+      <FormContainer mainTitle="All Pages Detailed" link="/ip-master" />
+      <div className="card body-padding fx-head thm_table">
+
         {!loading && (
           <DataGrid
             rows={allPagesDetail}
@@ -728,8 +729,10 @@ export default function StatsAllPagesDetail() {
             unstable_ignoreValueFormatterDuringExport
           />
         )}
+
         {loading && <SkeletonLoading />}
       </div>
+
       <DeleteHistoryConfirmation
         handleCloseDeleteHistoryConFirmation={
           handleCloseDeleteHistoryConFirmation
