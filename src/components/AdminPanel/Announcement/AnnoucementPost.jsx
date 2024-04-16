@@ -249,7 +249,7 @@ const AnnoucementPost = () => {
                   <button
                     type="button"
                     onClick={handleSelectAllDepartments}
-                    className="btn btn-primary btn-sm"
+                    className="btn btn-primary btn-sm ml-5 mb-1"
                   >
                     Select All Departments
                   </button>

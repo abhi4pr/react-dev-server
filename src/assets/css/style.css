@@ -6286,6 +6286,26 @@ body.sidebar-toggled .topbarBrand {
   }
 }
 
+.css-13cymwt-control,
+.css-t3ipsp-control,
+.css-16xfy0z-control {
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+}
+
+.css-13cymwt-control-webkit-scrollbar {
+  display: none;
+}
+
+.css-4xgw5l-IndicatorsContainer2 {
+  right: 0;
+  top: 5px;
+  position: sticky;
+  height: 35px;
+}
+
 .accordion {
   overflow-anchor: none;
 }
