@@ -628,7 +628,7 @@ const SaleBookingVerify = () => {
             <span>Verified</span>
           ) : (
             <button
-              className="btn btn-sm btn-outline-info"
+              className="btn cmnbtn btn_sm btn-outline-primary mr4"
               onClick={() => handleImageClick(params.row)}
             >
               Verify
@@ -729,7 +729,7 @@ const SaleBookingVerify = () => {
             <span>Verified</span>
           ) : (
             <button
-              className="btn btn-sm btn-outline-info"
+              className="btn cmnbtn btn_sm btn-outline-primary mr4"
               onClick={() => handleImageClick(row)}
             >
               Verify

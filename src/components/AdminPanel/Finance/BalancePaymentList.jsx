@@ -1019,10 +1019,14 @@ const BalancePaymentList = () => {
       headerName: "Party Name",
       width: 210,
       renderCell: (params) => (
-        <div
-          onClick={() => handleOpenEditPartyField(params.row.sale_booking_id)}
-        >
-          <EditIcon /> {params.row.party_mnj_name}
+        <div className="flexCenter colGap8">
+          <button
+            className="btn tableIconBtn btn_sm "
+            onClick={() => handleOpenEditPartyField(params.row.sale_booking_id)}
+          >
+            <EditIcon />
+          </button>
+          {params.row.party_mnj_name}
         </div>
       ),
     },
@@ -1031,10 +1035,16 @@ const BalancePaymentList = () => {
       headerName: "Invoice Number",
       width: 190,
       renderCell: (params) => (
-        <div
-          onClick={() => handleOpenEditInvoiceField(params.row.sale_booking_id)}
-        >
-          <EditIcon /> {params.row.invoice_mnj_number}
+        <div className="flexCenter colGap8">
+          <button
+            className="btn tableIconBtn btn_sm "
+            onClick={() =>
+              handleOpenEditInvoiceField(params.row.sale_booking_id)
+            }
+          >
+            <EditIcon />
+          </button>
+          {params.row.invoice_mnj_number}
         </div>
       ),
     },
@@ -1142,7 +1152,7 @@ const BalancePaymentList = () => {
       width: 190,
       renderCell: (params) => (
         <button
-          className="btn btn-sm btn-outline-info"
+          className="btn cmnbtn btn_sm btn-outline-primary"
           onClick={() => handleOpenTDSFields(params.row)}
         >
           TDS
@@ -1155,7 +1165,7 @@ const BalancePaymentList = () => {
       width: 190,
       renderCell: (params) => (
         <button
-          className="btn btn-sm btn-outline-info"
+          className="btn cmnbtn btn_sm btn-outline-primary"
           onClick={() => handleImageClick(params.row)}
         >
           Balance Update

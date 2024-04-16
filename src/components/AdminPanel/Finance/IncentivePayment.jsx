@@ -399,7 +399,7 @@ const IncentivePayment = () => {
       renderCell: (params) => {
         return params.row.action == "Complete Release Button" ? (
           <button
-            className="btn btn-sm btn-outline-info"
+            className="btn cmnbtn btn_sm btn-outline-primary"
             data-toggle="modal"
             data-target="#incentiveModal"
             onClick={() => {
@@ -528,7 +528,7 @@ const IncentivePayment = () => {
       renderCell: (params) => {
         return params.row.action == "Complete Release Button" ? (
           <button
-            className="btn btn-sm btn-outline-info"
+            className="btn cmnbtn btn_sm btn-outline-primary"
             data-toggle="modal"
             data-target="#incentiveModal"
             onClick={() => {
@@ -669,7 +669,7 @@ const IncentivePayment = () => {
       renderCell: (params) => {
         return params.row.action == "Complete Release Button" ? (
           <button
-            className="btn btn-sm btn-outline-info"
+            className="btn cmnbtn btn_sm btn-outline-primary"
             data-toggle="modal"
             data-target="#incentiveModal"
             onClick={() => {
@@ -1328,8 +1328,8 @@ const IncentivePayment = () => {
       </Dialog>
       <div className="row">
         <div className="col-12">
-          <div className="card" style={{ height: "700px" }}>
-            <div className="card-body flexCenterBetween pt0 pb0">
+          <div className="card">
+            <div className="card-body flexCenterBetween">
               <div className="flexCenter colGap12">
                 <Button
                   variant="contained"

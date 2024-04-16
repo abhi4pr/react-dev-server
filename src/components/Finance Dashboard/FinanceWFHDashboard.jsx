@@ -453,15 +453,14 @@ export default function FinanceWFHDashboard() {
 
   const handleUndo = async (e, row) => {
     e.preventDefault();
-    axios.put(`${baseUrl}` + `update_finance_data`,
-      {
-        attendence_id: row.attendence_id
-      }
-    )
-    .then(() => {
-      toastAlert("Sent To Pending");
-      getData();
-    });
+    axios
+      .put(`${baseUrl}` + `update_finance_data`, {
+        attendence_id: row.attendence_id,
+      })
+      .then(() => {
+        toastAlert("Sent To Pending");
+        getData();
+      });
   };
 
   function handlePayOut(e) {
@@ -773,7 +772,7 @@ export default function FinanceWFHDashboard() {
           <>
             {activeAccordionIndex != 2 && (
               <button
-                className="btn btn-primary"
+                className="btn cmnbtn btn_sm btn-outline-primary"
                 data-toggle="modal"
                 data-target="#exampleModal"
                 onClick={(e) =>
@@ -788,7 +787,7 @@ export default function FinanceWFHDashboard() {
 
             {params.row?.invoice_template_no !== "0" && (
               <button
-                className="btn btn-outline-primary btn-sm icon-1"
+                className="btn cmnbtn btn_sm btn-outline-primary tableIconBtn ml8"
                 title="Download Invoice"
                 type="button"
                 onClick={() => {

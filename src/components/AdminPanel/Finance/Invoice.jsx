@@ -180,7 +180,7 @@ const Invoice = () => {
   function getData() {
     axios
       .post(baseUrl + "add_php_pending_invoice_data_in_node")
-      .then((res) => { });
+      .then((res) => {});
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -224,7 +224,7 @@ const Invoice = () => {
   function getDataInvoiceCreated() {
     axios
       .post(baseUrl + "add_php_pending_invoice_data_in_node")
-      .then((res) => { });
+      .then((res) => {});
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
