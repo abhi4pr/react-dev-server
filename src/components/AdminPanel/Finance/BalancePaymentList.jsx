@@ -378,7 +378,6 @@ const BalancePaymentList = () => {
     setUniqueCustomerDialog(false);
   };
 
-  
   const handleOpenSameCustomer = (custName) => {
     setSameCustomerDialog(true);
 
@@ -1162,19 +1161,19 @@ const BalancePaymentList = () => {
           "No Image"
         ),
     },
-    {
-      field: "Action",
-      headerName: "Action",
-      width: 190,
-      renderCell: (params) => (
-        <button
-          className="btn btn-sm btn-outline-info"
-          onClick={() => handleOpenTDSFields(params.row)}
-        >
-          TDS
-        </button>
-      ),
-    },
+    // {
+    //   field: "Action",
+    //   headerName: "Action",
+    //   width: 190,
+    //   renderCell: (params) => (
+    //     <button
+    //       className="btn btn-sm btn-outline-info"
+    //       onClick={() => handleOpenTDSFields(params.row)}
+    //     >
+    //       TDS
+    //     </button>
+    //   ),
+    // },
     {
       field: "status",
       headerName: "Status",
