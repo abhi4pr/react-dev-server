@@ -82,10 +82,14 @@ const BalancePaymentList = () => {
   const [saleBookingIdForInvoiceNo, setSaleBookingIdForInvoiceNo] =
     useState("");
   const [dateFilter, setDateFilter] = useState("");
-  const [TDSDialog, setTDSDialog] = useState(false);
-  const [TDSPercentage, setTDSPercetage] = useState("");
-  const [TDSValue, setTDSValue] = useState("");
+  const [closeDialog, setCloseDialog] = useState(false);
+  // const [TDSPercentage, setTDSPercetage] = useState("");
+  // const [TDSValue, setTDSValue] = useState("");
   const [tdsFieldSaleBookingId, setTDSFieldSaleBookingId] = useState("");
+  const [paidPercentage, setPaidPercentage] = useState("");
+  const [tdsPercentage, setTDSPercentage] = useState("");
+  const [showField, setShowField] = useState(false);
+  const [baseAmount, setBaseAmount] = useState();
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -98,6 +102,11 @@ const BalancePaymentList = () => {
     const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
     return `${ye}-${mo}-${da}`;
   };
+
+  useEffect(() => {
+    calculatePaidPercentage();
+    calculateTDSPercentage();
+  }, [balAmount, paidAmount, baseAmount]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -249,10 +258,12 @@ const BalancePaymentList = () => {
 
   const handleImageClick = (row) => {
     setBalAmount(row.campaign_amount - row.total_paid_amount);
+    setBaseAmount(row.base_amount);
+    setTDSFieldSaleBookingId(row.sale_booking_id);
     setSingleRow(row);
+    getData();
     setImageModalOpen(true);
   };
-
   const convertDateToDDMMYYYY = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, "0");
@@ -270,6 +281,7 @@ const BalancePaymentList = () => {
     setPaymentType({ label: "", value: "" });
     setPaymentDetails("");
     setPaidAmount([]);
+    setPaidPercentage("");
   };
 
   useEffect(() => {
@@ -366,6 +378,7 @@ const BalancePaymentList = () => {
     setUniqueCustomerDialog(false);
   };
 
+  
   const handleOpenSameCustomer = (custName) => {
     setSameCustomerDialog(true);
 
@@ -489,51 +502,49 @@ const BalancePaymentList = () => {
 
   // TDS DIALOG FUNCTION:-
   const handleOpenTDSFields = (row) => {
-    setTDSFieldSaleBookingId(row.sale_booking_id);
-    setTDSDialog(true);
-    setBalAmount(row.campaign_amount - row.total_paid_amount);
+    // setTDSFieldSaleBookingId(row.sale_booking_id);
+    setCloseDialog(true);
+    // setBalAmount(row.campaign_amount - row.total_paid_amount);
   };
 
   const handleCloseTDSFields = () => {
-    setTDSDialog(false);
+    setCloseDialog(false);
   };
 
-  const handleTdsValue = (inputValue) => {
-    // if (parseFloat(inputValue) > parseFloat(balAmount)) {
-    //   // If TDS value is greater, don't update state
+  // const handleTdsValue = (inputValue) => {
+  //   // if (parseFloat(inputValue) > parseFloat(balAmount)) {
+  //   //   // If TDS value is greater, don't update state
+  //   //   toastError("TDS shouldn't be more than Balance Amount");
+  //   //   // You can also display a message to the user indicating the issue
+  //   //   return;
+  //   // }
+  //   // If TDS value is valid, update state
+  //   setTDSValue(inputValue);
+  // };
+  const handleSaveTDS = async () => {
+    // if (parseFloat(TDSValue) > parseFloat(balAmount)) {
     //   toastError("TDS shouldn't be more than Balance Amount");
     //   // You can also display a message to the user indicating the issue
     //   return;
+    // } else {
+
+    const formData = new FormData();
+
+    formData.append("sale_booking_id", tdsFieldSaleBookingId);
+    formData.append("tds_status", 1);
+
+    await axios
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales_tds_detail_update",
+        formData
+      )
+      .then((res) => {
+        handleCloseTDSFields();
+        toastAlert(`TDS Done Successfully`);
+        getData();
+        handleCloseImageModal();
+      });
     // }
-    // If TDS value is valid, update state
-    setTDSValue(inputValue);
-  };
-  const handleSaveTDS = async () => {
-    if (parseFloat(TDSValue) > parseFloat(balAmount)) {
-      toastError("TDS shouldn't be more than Balance Amount");
-      // You can also display a message to the user indicating the issue
-      return;
-    } else {
-      const formData = new FormData();
-
-      formData.append("sale_booking_id", tdsFieldSaleBookingId);
-      formData.append("tds_percent", TDSPercentage);
-      formData.append("tds_amount", TDSValue);
-
-      await axios
-        .post(
-          "https://sales.creativefuel.io/webservices/RestController.php?view=sales_tds_detail_update",
-          formData
-          // headers: {
-          //   "Content-Type": "multipart/form-data",
-          // },
-        )
-        .then((res) => {
-          handleCloseTDSFields();
-          toastAlert(`TDS Done Successfully`);
-          getData();
-        });
-    }
   };
   // ==========================
 
@@ -1104,6 +1115,11 @@ const BalancePaymentList = () => {
         params.row.campaign_amount - params.row.total_paid_amount,
     },
     {
+      field: "base_amount",
+      headerName: "Base Amount",
+      renderCell: (params) => params.row.base_amount,
+    },
+    {
       field: "gst_status",
       headerName: "GST",
       renderCell: (params) =>
@@ -1152,7 +1168,7 @@ const BalancePaymentList = () => {
       width: 190,
       renderCell: (params) => (
         <button
-          className="btn cmnbtn btn_sm btn-outline-primary"
+          className="btn btn-sm btn-outline-info"
           onClick={() => handleOpenTDSFields(params.row)}
         >
           TDS
@@ -1173,8 +1189,6 @@ const BalancePaymentList = () => {
       ),
     },
   ];
-
-  console.log(filterData, "filterdata >>");
 
   const filterDataBasedOnSelection = (apiData) => {
     console.log(apiData, "api data >>");
@@ -1218,7 +1232,25 @@ const BalancePaymentList = () => {
     }
   };
 
-  console.log(filterData, "filter Data>> outstanding=====");
+  const calculatePaidPercentage = () => {
+    if (paidAmount !== 0) {
+      const percentage = (paidAmount / balAmount) * 100;
+      // const roundedPercentage = percentage * 10;
+      setPaidPercentage(percentage.toFixed(1));
+    } else {
+      setPaidPercentage(0);
+    }
+  };
+
+  const calculateTDSPercentage = () => {
+    const remainingData = balAmount - paidAmount;
+    console.log(remainingData, "remainingData", baseAmount, "baseAmount");
+    const percentage = (baseAmount / remainingData) * 100;
+    console.log(percentage, "percentage");
+    const roundedPercentage = parseFloat(percentage.toFixed(2)); // Round to two decimal places and convert to float
+    const formattedPercentage = (roundedPercentage / 100).toFixed(2); // Divide by 100 and round to two decimal places
+    setTDSPercentage(formattedPercentage);
+  };
 
   return (
     <div>
@@ -1240,9 +1272,10 @@ const BalancePaymentList = () => {
         handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
         balancePaymentAdditionalTitles={true}
       />
+
       {/* Add Icon TDS */}
       <Dialog
-        open={TDSDialog}
+        open={closeDialog}
         onClose={handleCloseTDSFields}
         fullWidth={"md"}
         maxWidth={"md"}
@@ -1255,6 +1288,7 @@ const BalancePaymentList = () => {
         <DialogTitle>TDS</DialogTitle>
         <IconButton
           aria-label="close"
+          s
           onClick={handleCloseTDSFields}
           sx={{
             position: "absolute",
@@ -1270,27 +1304,46 @@ const BalancePaymentList = () => {
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
           <div className="row">
-            <TextField
-              id="outlined-basic"
-              label="TDS Percentage"
-              variant="outlined"
-              className="mt-2"
-              onChange={(e) => setTDSPercetage(e.target.value)}
-            />
-
-            <TextField
-              id="outlined-basic"
-              label="TDS Value"
-              variant="outlined"
-              className="mt-3"
-              onChange={(e) => setTDSValue(e.target.value)}
-            />
+            <div className="col-md-12 ">
+              <div className="form-group">
+                <label htmlFor="images">TDS Amount</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="TDS Amount"
+                  name="TDS Amount"
+                  value={balAmount - paidAmount}
+                  readOnly
+                  // onChange={(e) => e.target.value}
+                  required
+                />
+              </div>
+            </div>
+            <div className="col-md-12 ">
+              <div className="form-group">
+                <label htmlFor="images">TDS Percentage</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="TDS Percentage"
+                  name="TDS Percentage"
+                  value={tdsPercentage}
+                  readOnly
+                  required
+                />
+              </div>
+            </div>
           </div>
           <div className="pack w-100 mt-3 sb">
             <div></div>
-            <Button variant="contained" onClick={handleSaveTDS}>
-              Save
-            </Button>
+            <div className="pack gap16">
+              <Button variant="contained" onClick={handleSaveTDS}>
+                YES
+              </Button>
+              <Button variant="contained" onClick={handleCloseTDSFields}>
+                NO
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
@@ -1770,6 +1823,8 @@ const BalancePaymentList = () => {
                 }}
                 getRowId={(row) => filterData.indexOf(row)}
               />
+
+              {/* Dialog box for balance payment update*/}
               <BootstrapDialog
                 onClose={handleCloseImageModal}
                 aria-labelledby="customized-dialog-title"
@@ -1795,22 +1850,96 @@ const BalancePaymentList = () => {
                     <div className="col-md-12 ">
                       <form onSubmit={handleSubmit}>
                         <div className="form-group col-12"></div>
-
-                        <div className="form-group">
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            className="form-control mt-3"
+                            label="Payment Date"
+                            value={paymentDate}
+                            format="DD/MM/YYYY"
+                            onChange={setPaymentDate}
+                          />
+                        </LocalizationProvider>
+                        <div className="form-group mt-3">
                           <label htmlFor="images">Balance Amount</label>
                           <input
                             type="number"
                             className="form-control"
-                            id="images"
-                            name="images"
+                            id="balance Amount"
+                            name="balance Amount"
                             value={balAmount}
                             readOnly
-                            onChange={(e) => setBalAmount(e.target.value)}
+                            // onChange={(e) => setBalAmount(e.target.value)}
                             required
                           />
                         </div>
+                        <TextField
+                          variant="outlined"
+                          label="Paid Amount *"
+                          className="form-control "
+                          value={paidAmount}
+                          onChange={(e) => {
+                            const inputValue = e.target.value;
+                            if (!isNaN(inputValue) && inputValue !== "") {
+                              const parsedValue = parseFloat(inputValue);
+                              if (parsedValue <= balAmount) {
+                                setPaidAmount(parsedValue);
+                                setShowField(inputValue !== "");
 
-                        <div className="form-group">
+                                setPaymentType(
+                                  parsedValue === balAmount
+                                    ? { label: "Full", value: "full" }
+                                    : { label: "Partial", value: "partial" }
+                                );
+                              } else {
+                                toastError(
+                                  "Paid amount should be less than or equal to the balance amount"
+                                );
+                              }
+                            } else {
+                              toastError("Please enter a valid numeric value");
+                              setPaidAmount("");
+                              setShowField(false);
+                            }
+                          }}
+                        />
+
+                        {showField && paidAmount > 0 && (
+                          <div className="row">
+                            <div className="col-md-12 ">
+                              <div className="form-group">
+                                <label htmlFor="images">Remaining Amount</label>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  id="remaining amount"
+                                  name="remaining amount"
+                                  value={balAmount - paidAmount}
+                                  readOnly
+                                  // onChange={(e) => e.target.value}
+                                  required
+                                />
+                              </div>
+                            </div>
+                            <div className="col-md-12 ">
+                              <div className="form-group">
+                                <label htmlFor="images">
+                                  Paid Percentage %
+                                </label>
+                                <input
+                                  type="number"
+                                  className="form-control"
+                                  id="paid %"
+                                  name="paid %"
+                                  value={paidPercentage}
+                                  readOnly
+                                  // onChange={(e) => setBalAmount(e.target.value)}
+                                  required
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                        <div className="form-group mt-3">
                           <label htmlFor="images">
                             Payment Reference Number:
                           </label>
@@ -1823,23 +1952,6 @@ const BalancePaymentList = () => {
                             onChange={(e) => setPaymentRefNo(e.target.value)}
                           />
                         </div>
-
-                        <div className="form-group">
-                          <label htmlFor="images">
-                            Payment Reference Image:
-                          </label>
-                          <input
-                            type="file"
-                            className="form-control"
-                            id="images"
-                            name="images"
-                            accept="image/*"
-                            onChange={(e) =>
-                              setPaymentRefImg(e.target.files[0])
-                            }
-                          />
-                        </div>
-
                         <Autocomplete
                           className="my-2 mt-3"
                           id="combo-box-demo"
@@ -1861,33 +1973,21 @@ const BalancePaymentList = () => {
                             />
                           )}
                         />
-                        <TextField
-                          variant="outlined"
-                          label="Paid Amount *"
-                          className="form-control "
-                          value={paidAmount}
-                          onChange={(e) => {
-                            const inputValue = e.target.value;
-                            if (!isNaN(inputValue) && inputValue !== "") {
-                              const parsedValue = parseFloat(inputValue);
-                              if (parsedValue <= balAmount) {
-                                setPaidAmount(parsedValue);
-                                setPaymentType(
-                                  parsedValue === balAmount
-                                    ? { label: "Full", value: "full" }
-                                    : { label: "Partial", value: "partial" }
-                                );
-                              } else {
-                                toastError(
-                                  "Paid amount should be less than or equal to the balance amount"
-                                );
-                              }
-                            } else {
-                              toastError("Please enter a valid numeric value");
-                              setPaidAmount("");
+                        <div className="form-group">
+                          <label htmlFor="images">
+                            Payment Reference Image:
+                          </label>
+                          <input
+                            type="file"
+                            className="form-control"
+                            id="images"
+                            name="images"
+                            accept="image/*"
+                            onChange={(e) =>
+                              setPaymentRefImg(e.target.files[0])
                             }
-                          }}
-                        />
+                          />
+                        </div>
                         <Autocomplete
                           className="my-2 mt-3"
                           id="combo-box-demo"
@@ -1911,15 +2011,6 @@ const BalancePaymentList = () => {
                             />
                           )}
                         />
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            className="form-control mt-3"
-                            label="Payment Date"
-                            value={paymentDate}
-                            format="DD/MM/YYYY"
-                            onChange={setPaymentDate}
-                          />
-                        </LocalizationProvider>
                       </form>
                     </div>
                   </div>
@@ -1931,11 +2022,23 @@ const BalancePaymentList = () => {
                       paidAmount === "" ||
                       paymentDetails === ""
                     }
+                    variant="contained"
                     autoFocus
                     onClick={handleSubmit}
                   >
                     Save
                   </Button>
+                  {paidPercentage === 90 || paidPercentage >= 90 ? (
+                    <Button
+                      variant="contained"
+                      autoFocus
+                      onClick={handleOpenTDSFields}
+                    >
+                      Close
+                    </Button>
+                  ) : (
+                    ""
+                  )}
                 </DialogActions>
               </BootstrapDialog>
               {viewImgDialog && (

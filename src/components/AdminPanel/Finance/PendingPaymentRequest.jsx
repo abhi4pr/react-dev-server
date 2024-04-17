@@ -31,6 +31,9 @@ import ShowDataModal from "./ShowDataModal";
 import Checkbox from "@mui/material/Checkbox";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import moment from "moment";
+import jsPDF from "jspdf";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 export default function PendingPaymentRequest() {
   const whatsappApi = WhatsappAPI();
@@ -94,6 +97,8 @@ export default function PendingPaymentRequest() {
   const [nonGstCount, setNonGstCount] = useState(0);
   const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
   const [vendorNameList, setVendorNameList] = useState([]);
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
+  const [adjustAmount, setAdjustAmount] = useState("");
 
   const accordionButtons = ["All", "Partial", "Instant"];
 
@@ -385,6 +390,7 @@ export default function PendingPaymentRequest() {
         phpFormData.append("status", 1);
         phpFormData.append("payment_mode", paymentMode);
         phpFormData.append("gst_hold", rowData.gst_amount);
+        phpFormData.append("adjust_amt", adjustAmount);
         phpFormData.append("gst_hold_amount", GSTHoldAmount);
         phpFormData.append("request_amount", rowData.request_amount);
         phpFormData.append("tds_deduction", TDSValue);
@@ -1544,6 +1550,64 @@ export default function PendingPaymentRequest() {
     }
   }, [data]);
 
+  const handleRowSelectionModelChange = async (rowIds) => {
+    setRowSelectionModel(rowIds);
+  };
+
+  // const handleDownloadInvoices = async () => {
+  //   const zip = new JSZip();
+
+  //   // Generate PDFs and add them to the zip
+  //   await Promise.all(
+  //     rowSelectionModel.map(async (rowId) => {
+  //       const pdf = new jsPDF();
+  //       // Customize your PDF content here
+  //       pdf.text(`PDF content for row ${rowId}`, 10, 10);
+  //       zip.file(`invoice_${rowId}.pdf`, pdf.output());
+  //     })
+  //   );
+
+  //   // Generate the zip file
+  //   const zipBlob = await zip.generateAsync({ type: "blob" });
+
+  //   // Trigger download
+  //   const link = document.createElement("a");
+  //   link.href = URL.createObjectURL(zipBlob);
+  //   link.download = "invoices.zip";
+  //   link.click();
+  // };
+
+  const handleDownloadInvoices = async () => {
+    const zip = new JSZip();
+
+    // Generate PDFs and add them to the zip
+    await Promise.all(
+      rowSelectionModel.map(async (rowId) => {
+        const pdf = new jsPDF();
+        // Customize your PDF content here
+        pdf.text(`PDF content for row ${rowId}`, 10, 10);
+        zip.file(`invoice_${rowId}.pdf`, pdf.output());
+      })
+    );
+
+    // Generate the zip file
+    const zipBlob = await zip.generateAsync({ type: "blob" });
+
+    // Save the zip file
+    saveAs(zipBlob, "invoices.zip");
+  };
+
+  function CustomColumnMenu(props) {
+    return (
+      <GridColumnMenu
+        {...props}
+        slots={{
+          columnMenuColumnsItem: null,
+        }}
+      />
+    );
+  }
+
   return (
     <div>
       <FormContainer
@@ -1709,7 +1773,8 @@ export default function PendingPaymentRequest() {
               rowsPerPageOptions={[5]}
               disableSelectionOnClick
               autoHeight
-              slots={{ toolbar: GridToolbar }}
+              checkboxSelection
+              slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
               slotProps={{
                 toolbar: {
                   showQuickFilter: true,
@@ -1726,7 +1791,7 @@ export default function PendingPaymentRequest() {
               rowsPerPageOptions={[5]}
               disableSelectionOnClick
               autoHeight
-              slots={{ toolbar: GridToolbar }}
+              slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
               slotProps={{
                 toolbar: {
                   showQuickFilter: true,
@@ -1743,7 +1808,7 @@ export default function PendingPaymentRequest() {
               rowsPerPageOptions={[5]}
               disableSelectionOnClick
               autoHeight
-              slots={{ toolbar: GridToolbar }}
+              slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
               slotProps={{
                 toolbar: {
                   showQuickFilter: true,
@@ -2005,6 +2070,17 @@ export default function PendingPaymentRequest() {
         <div className="col-12">
           <div className="card" style={{ height: "700px" }}>
             <div className="card-body thm_table">
+              {rowSelectionModel.length > 0 && (
+                <Button
+                  className="btn btn-primary ml-3 mb-2"
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={handleDownloadInvoices}
+                >
+                  Download PDF Zip
+                </Button>
+              )}
               <FormContainer
                 submitButton={false}
                 accordionButtons={accordionButtons}
@@ -2022,13 +2098,19 @@ export default function PendingPaymentRequest() {
                       getRowClassName={getValidationCSSForRemainder}
                       slots={{ toolbar: GridToolbar }}
                       disableSelectionOnClick
-                      disableColumnMenu
+                      // disableColumnMenu
+                      checkboxSelection
                       getRowId={(row) => filterData.indexOf(row)}
                       slotProps={{
                         toolbar: {
                           showQuickFilter: true,
                         },
                       }}
+                      onRowSelectionModelChange={(rowIds) => {
+                        handleRowSelectionModelChange(rowIds);
+                        console.log(rowIds, "IDS");
+                      }}
+                      rowSelectionModel={rowSelectionModel}
                     />
                   )}
                   {openImageDialog && (
@@ -2047,6 +2129,7 @@ export default function PendingPaymentRequest() {
                       rowsPerPageOptions={[5]}
                       getRowClassName={getValidationCSSForRemainder}
                       slots={{ toolbar: GridToolbar }}
+                      checkboxSelection
                       disableSelectionOnClick
                       disableColumnMenu
                       getRowId={(row) => filterData.indexOf(row)}
@@ -2055,6 +2138,11 @@ export default function PendingPaymentRequest() {
                           showQuickFilter: true,
                         },
                       }}
+                      onRowSelectionModelChange={(rowIds) => {
+                        handleRowSelectionModelChange(rowIds);
+                        console.log(rowIds, "IDS");
+                      }}
+                      rowSelectionModel={rowSelectionModel}
                     />
                   )}
                   {openImageDialog && (
@@ -2073,6 +2161,7 @@ export default function PendingPaymentRequest() {
                       rowsPerPageOptions={[5]}
                       getRowClassName={getValidationCSSForRemainder}
                       slots={{ toolbar: GridToolbar }}
+                      checkboxSelection
                       disableSelectionOnClick
                       disableColumnMenu
                       getRowId={(row) => filterData.indexOf(row)}
@@ -2081,6 +2170,11 @@ export default function PendingPaymentRequest() {
                           showQuickFilter: true,
                         },
                       }}
+                      onRowSelectionModelChange={(rowIds) => {
+                        handleRowSelectionModelChange(rowIds);
+                        console.log(rowIds, "IDS");
+                      }}
+                      rowSelectionModel={rowSelectionModel}
                     />
                   )}
                   {openImageDialog && (
@@ -2450,6 +2544,19 @@ export default function PendingPaymentRequest() {
                         views={["year", "month", "day"]}
                       />
                     </LocalizationProvider>
+                    <TextField
+                      onChange={(e) => setAdjustAmount(e.target.value)}
+                      multiline
+                      className="mt-3"
+                      autoFocus
+                      margin="dense"
+                      id="Adjust Amount"
+                      label="Adjust Amount"
+                      type="text"
+                      variant="outlined"
+                      fullWidth
+                      value={adjustAmount}
+                    />
 
                     <TextField
                       onChange={(e) => setPayRemark(e.target.value)}
