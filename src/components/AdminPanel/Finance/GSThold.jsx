@@ -18,6 +18,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import { useGlobalContext } from "../../../Context/Context";
 import moment from "moment";
+import jsPDF from "jspdf";
+import JSZip from "jszip";
+import { saveAs } from "file-saver";
 
 export default function GSThold() {
   const { toastAlert } = useGlobalContext();
@@ -48,6 +51,7 @@ export default function GSThold() {
   const [historyData, setHistoryData] = useState([]);
   const [phpData, setPhpData] = useState([]);
   const [dateFilter, setDateFilter] = useState("");
+  const [rowSelectionModel, setRowSelectionModel] = useState([]);
 
   const callApi = () => {
     axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
@@ -979,6 +983,38 @@ export default function GSThold() {
     }
   };
 
+  const handleRowSelectionModelChange = async (rowIds) => {
+    setRowSelectionModel(rowIds);
+  };
+  const handleDownloadInvoices = async () => {
+    const zip = new JSZip();
+
+    // Generate PDFs and add them to the zip
+    await Promise.all(
+      rowSelectionModel.map(async (rowId) => {
+        const pdf = new jsPDF();
+        // Customize your PDF content here
+        pdf.text(`PDF content for row ${rowId}`, 10, 10);
+        zip.file(`invoice_${rowId}.pdf`, pdf.output());
+      })
+    );
+
+    // Generate the zip file
+    const zipBlob = await zip.generateAsync({ type: "blob" });
+
+    // Save the zip file
+    saveAs(zipBlob, "invoices.zip");
+  };
+  function CustomColumnMenu(props) {
+    return (
+      <GridColumnMenu
+        {...props}
+        slots={{
+          columnMenuColumnsItem: null,
+        }}
+      />
+    );
+  }
   return (
     <div>
       <FormContainer
@@ -1240,19 +1276,36 @@ export default function GSThold() {
         <div className="col-12">
           <div className="card">
             <div className="card-body thm_table">
+              {rowSelectionModel.length > 0 && (
+                <Button
+                  className="btn btn-primary ml-3 mb-2"
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={handleDownloadInvoices}
+                >
+                  Download PDF Zip
+                </Button>
+              )}
               <DataGrid
                 rows={filterData}
                 columns={columns}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
-                slots={{ toolbar: GridToolbar }}
+                checkboxSelection
+                slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
                 slotProps={{
                   toolbar: {
                     showQuickFilter: true,
                   },
                 }}
                 getRowId={(row) => filterData.indexOf(row)}
+                onRowSelectionModelChange={(rowIds) => {
+                  handleRowSelectionModelChange(rowIds);
+                  console.log(rowIds, "IDS");
+                }}
+                rowSelectionModel={rowSelectionModel}
               />
               {openImageDialog && (
                 <ImageView

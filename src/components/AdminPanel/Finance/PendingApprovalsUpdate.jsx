@@ -743,7 +743,7 @@ const PendingApprovalUpdate = () => {
         ),
     },
     {
-      headerName: "Payment Amount",
+      headerName: "Balance Amount",
       field: "payment_amount",
       width: 180,
       renderCell: (params) => <div>{params.row.payment_amount_show} </div>,
