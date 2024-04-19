@@ -182,13 +182,13 @@ const FormContainer = ({
           {paymentDoneAdditionalTitles && (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueVendorClick}>
-                Unique Vendor : <a href="#">{uniqueVendorsInstantCount}</a>
+                Unique Vendor : <a href="#">{uniqueVendorCount}</a>
               </h2>
               <h2>
-                Payment Done Amount : <a href="#"> {pendingAmountPartial}</a>
+                Payment Done Amount : <a href="#"> {totalRequestAmount}</a>
               </h2>
               <h2>
-                Payment Done : <a href="#"> {pending}</a>
+                Payment Done : <a href="#"> {pendingRequestCount}</a>
               </h2>
               <h2>
                 With Invoice Count : <a href="#"> {withInvoiceCount}</a>

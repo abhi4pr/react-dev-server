@@ -194,9 +194,8 @@ const PageMaster = () => {
       created_by: userID,
 
       price_cal_type: rateType.value,
-      // price_type_id: priceTypeId.map((e) => e.value),
       variable_type: rateType.value == "Variable" ? variableType.value : null,
-      // purchase_price: +price,
+
       purchase_price: rowCount,
     };
 
