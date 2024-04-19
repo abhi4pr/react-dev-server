@@ -3,7 +3,7 @@ import axios from "axios";
 import { baseUrl } from "../../../utils/config";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
 import { Stack, Typography } from "@mui/material";
@@ -21,7 +21,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
-import { render } from "react-dom";
+import jwtDecode from "jwt-decode";
 
 const PageOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -37,6 +37,42 @@ const PageOverview = () => {
   const [allPriceTypeList, setAllallPriceTypeList] = useState([]);
   const [showPriceModal, setShowPriceModal] = useState(false);
   const [priceData, setPriceData] = useState({});
+  const [contextData, setContextData] = useState(false);
+  const storedToken = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(storedToken);
+  const userID = decodedToken.id;
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (userID && contextData == false) {
+      axios
+        .get(`${baseUrl}` + `get_single_user_auth_detail/${userID}`)
+        .then((res) => {
+          if (res.data[33].view_value == 1) {
+            setContextData(true);
+            // setAlert(res.data);
+          }
+        });
+    }
+    setTimeout(() => {}, 500);
+    getData();
+  }, []);
+
+  const handleUpdateRowClick = async (row) => {
+    await axios
+      .get(`${baseUrl}` + `get_exe_ip_count_history/${row.exepurchasemodel.p_id}`)
+      .then((res) => {
+        let data = res.data.data.filter((e) => {
+          return e.isDeleted !== true;
+        });
+        data = data[data.length - 1];
+        navigate(`/admin/exe-update/${data._id}`, { state:row.exepurchasemodel.p_id});
+      });
+  };
+
+  const handleHistoryRowClick = (row) => {
+
+    navigate(`/admin/exe-history/${row.exepurchasemodel.p_id}`, { state:row.exepurchasemodel.p_id });
+  };
 
   const getData = () => {
     setProgress(0);
@@ -76,13 +112,8 @@ const PageOverview = () => {
     });
   }, []);
 
-  useEffect(() => {
-    getData();
-  }, []);
-
   const handlePriceClick = (row) => {
     return function () {
-      console.log(row.purchase_price, "row._id by Manoj");
       setPriceData(row.purchase_price);
       setShowPriceModal(true);
     };
@@ -174,7 +205,6 @@ const PageOverview = () => {
       headerName: "Platform Active On",
       width: 200,
       renderCell: (params) => {
-        console.log(params.row.platform_active_on, "platform_active_on");
         let data = platformData.filter((item) => {
           return params.row.platform_active_on.includes(item._id);
         });
@@ -221,7 +251,7 @@ const PageOverview = () => {
     },
     {
       field: "page_closed_by",
-      headerName: "Colosed By",
+      headerName: "Closed By",
       width: 200,
       renderCell: (params) => {
         let name = user?.find(
@@ -275,7 +305,6 @@ const PageOverview = () => {
       headerName: "Price",
       width: 200,
       renderCell: ({ row }) => {
-        // console.log(row.purchase_price,"purchase_price")
         return (
           <div>
             {row.purchase_price && (
@@ -324,6 +353,89 @@ const PageOverview = () => {
           />
         </div>
       ),
+    },
+
+    contextData && {
+      field: "update",
+      headerName: "Update",
+      width: 130,
+      renderCell: (params) => {
+        const totalPercentage = params.row.totalPercentage;
+        return (
+          totalPercentage == 100||   totalPercentage == 0.00    && <button
+          type="button"
+          className="btn cmnbtn btn_sm btn-outline-primary"
+          data-toggle="modal"
+          data-target="#myModal1"
+          disabled={
+            totalPercentage == 0 || totalPercentage == 100 ? false : true
+          }
+        >
+          Set Stats
+        </button>
+        );
+      },
+    },
+    {
+      field: "history",
+      width: 150,
+      headerName: "History",
+      renderCell: (params) => {
+        return (
+          <button
+            type="button"
+            className="btn cmnbtn btn_sm btn-outline-primary"
+            onClick={() => handleHistoryRowClick(params.row)}
+            disabled={
+              params?.row?.latestEntry?.stats_update_flag
+                ? !params?.row?.latestEntry.stats_update_flag
+                : true
+            }
+          >
+            See History
+          </button>
+        );
+      },
+    },
+    {
+      field: "statsUpdate",
+      width: 150,
+      headerName: "Stats Update",
+      renderCell: (params) => {
+        return (
+          <button
+            type="button"
+            className="btn cmnbtn btn_sm btn-outline-primary"
+            onClick={() => handleUpdateRowClick(params.row)}
+            disabled={
+              params?.row?.latestEntry?.stats_update_flag
+                ? !params?.row?.latestEntry.stats_update_flag
+                : true
+            }
+          >
+            Update
+          </button>
+        );
+      },
+    },
+    {
+      field: "totalPercentage",
+      width: 150,
+      headerName: "Stats Update %",
+      renderCell: (params) => {
+        return params.row. totalPercentage? Math.round(+params.row?.totalPercentage) + "%":""
+      },
+    },
+    {
+      field: "stats_update_flag ",
+      width: 150,
+      headerName: "Stats Update Flag",
+      renderCell: (params) => {
+        const num = params?.row?.latestEntry?.stats_update_flag
+          ? params?.row?.latestEntry.stats_update_flag
+          : false;
+        return num ? "Yes" : "No";
+      },
     },
   ];
 

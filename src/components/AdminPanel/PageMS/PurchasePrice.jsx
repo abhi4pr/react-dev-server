@@ -5,9 +5,11 @@ import axios from "axios";
 import { baseUrl } from "../../../utils/config";
 import FieldContainer from "../FieldContainer";
 import { useParams } from "react-router-dom";
-import { DataGrid } from "@mui/x-data-grid";
-import { Button } from "@mui/material";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import { useGlobalContext } from "../../../Context/Context";
+import PriceCheckIcon from "@mui/icons-material/PriceCheck";
+
 
 export default function PurchasePrice() {
   const { id } = useParams();
@@ -27,6 +29,14 @@ export default function PurchasePrice() {
   const [tableData, setTableData] = useState([]);
   const [allPriceList, setAllPriceList] = useState([]);
   const [allPriceTypeList, setAllallPriceTypeList] = useState([]);
+  const [rowCount, setRowCount] = useState([{ price_type_id: "", price: "" }]);
+  const [filterPriceTypeList, setFilterPriceTypeList] = useState([]);
+  const [showPriceModal, setShowPriceModal] = useState(false);
+  const [priceData, setPriceData] = useState({});
+
+  const handleClose = () => {
+    setShowPriceModal(false);
+  };
 
   const getData = () => {
     axios.get(baseUrl + "getAllPlatform").then((res) => {
@@ -38,7 +48,6 @@ export default function PurchasePrice() {
     });
     axios.get(baseUrl + `get_all_data_list`).then((res) => {
       setAllallPriceTypeList(res.data.data);
-      console.log(res.data.data, "price type list api");
     });
   };
 
@@ -56,20 +65,15 @@ export default function PurchasePrice() {
 
   useEffect(() => {
     if (platformId) {
-      setPriceTypeId("")
+      setPriceTypeId([]);
       setPriceTypeList([]);
       let priceData = platformData.find((role) => role._id == platformId)?._id;
-      axios
-        .get(baseUrl + `data/${priceData}`)
-        .then((res) => {
-          setPriceTypeList(res.data.data);
-        });
+      axios.get(baseUrl + `data/${priceData}`).then((res) => {
+        setPriceTypeList(res.data.data);
+        setFilterPriceTypeList(res.data.data);
+      });
     }
   }, [platformId]);
-
-  const handlePriceTypeChange = (selectedOption) => {
-    setPriceTypeId(selectedOption.value);
-  };
 
   const handleRateTypeChange = (selectedOption) => {
     setRateType(selectedOption);
@@ -91,17 +95,18 @@ export default function PurchasePrice() {
       return;
     }
 
-    if (!priceTypeId || !priceTypeId || !rateType || !price) {
-      toastAlert("Please fill all the fields");
+    if ( !rateType || !price) {
+      toastError("Please fill all the fields");
       return;
     }
     let data = {
       platform_id: platformId,
       pageMast_id: id,
       price_cal_type: rateType.value,
-      price_type_id: priceTypeId,
+      // price_type_id: priceTypeId,
       variable_type: rateType.value == "Variable" ? variableType.value : null,
-      purchase_price: price,
+      // purchase_price: price,
+      purchase_price: rowCount,
       description: description,
     };
     axios
@@ -115,6 +120,7 @@ export default function PurchasePrice() {
           setPrice("");
           setDescription("");
           setPlatformId("");
+          setRowCount([{ price_type_id: "", price: "" }]);
 
           getData();
         } else {
@@ -125,6 +131,40 @@ export default function PurchasePrice() {
         toastError(err.response.data.message);
       });
   };
+
+  const handlePriceClick = (row) => {
+    return function () {
+      console.log(row.purchase_price, "row._id by Manoj");
+      setPriceData(row.purchase_price);
+      setShowPriceModal(true);
+    };
+  };
+
+  const priceColumn = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      renderCell: (params) => <div>{priceData.indexOf(params.row) + 1}</div>,
+      width: 130,
+    },
+    {
+      field: "price_type",
+      headerName: "Price Type",
+      width: 200,
+      renderCell: (params) => {
+        let name = allPriceTypeList?.find(
+          (item) => item.price_type_id == params.row.price_type_id
+        )?.price_type;
+        return <div>{name}</div>;
+      },
+    },
+
+    {
+      field: "price",
+      headerName: "Price",
+      width: 200,
+    },
+  ];
 
   const columns = [
     {
@@ -149,33 +189,54 @@ export default function PurchasePrice() {
         </strong>
       ),
     },
+   
+    { field: "price_cal_type", headerName: "Rate Type", width: 200 },
+    { field: "variable_type", headerName: "Variable Type", width: 200 },
     {
-      field: "PMS_Platforms_data.price_type",
-      headerName: "Price Type",
+      field: "purchase_price",
+      headerName: "Price",
       width: 200,
       renderCell: ({ row }) => {
-        let f = allPriceTypeList?.filter((item) =>
-          row?.price_type_id?.includes(item?.price_type_id)
-        );
         return (
-          <>
-            {f.map((item, i) => {
-              return (
-                <>
-                  {item?.price_type}
-                  {i !== f.length - 1 && ","}
-                </>
-              );
-            })}
-          </>
+          <div>
+            {row.purchase_price && (
+              <button
+              type="button"
+                title="Price"
+                onClick={handlePriceClick(row)}
+                className="btn btn-outline-primary btn-sm user-button"
+              >
+                <PriceCheckIcon />
+              </button>
+            )}
+          </div>
         );
       },
     },
-    { field: "price_cal_type", headerName: "Rate Type", width: 200 },
-    { field: "variable_type", headerName: "Variable Type", width: 200 },
-    { field: "purchase_price", headerName: "Price", width: 200 },
     { field: "description", headerName: "Description", width: 200 },
   ];
+
+  const handlePriceChange = (e, index) => {
+    setPrice(() => e.target.value);
+    rowCount[index].price = +e.target.value;
+  };
+
+  const handleFilterPriceType = () => {
+    let filteredData = priceTypeList.filter((row) => {
+      return !rowCount.some((e) => e.price_type_id == row.price_type_id);
+    });
+    setFilterPriceTypeList(filteredData);
+  };
+
+  const addPriceRow = () => {
+    setRowCount((rowCount) => [...rowCount, { price_type_id: "", price: "" }]);
+  };
+
+  const handlePriceTypeChange = (e, index) => {
+    setPriceTypeId(e.value);
+    rowCount[index].price_type_id = e.value;
+    handleFilterPriceType();
+  };
 
   return (
     <>
@@ -204,21 +265,6 @@ export default function PurchasePrice() {
               setPlatformId(e.value);
             }}
           ></Select>
-        </div>
-        <div className="form-group col-6 row">
-          <label className="form-label">
-            Price Type <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            isMulti
-            options={priceTypeList.map((option) => ({
-              value: option.price_type_id,
-              label: option.price_type,
-            }))}
-            required={true}
-            value={priceTypeId}
-            onChange={handlePriceTypeChange}
-          />
         </div>
 
         <div className="form-group col-6 row">
@@ -257,13 +303,13 @@ export default function PurchasePrice() {
             />
           </div>
         )}
-        <FieldContainer
+        {/*  <FieldContainer
           label=" Price *"
           required={true}
           type="number"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
-        />
+        />*/}
         <FieldContainer
           label="Discription "
           type="text"
@@ -271,6 +317,65 @@ export default function PurchasePrice() {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+
+        <div className="col-12 row">
+          {rowCount.map((row, index) => (
+            <>
+              {" "}
+              <div className="form-group col-5 row">
+                <label className="form-label">
+                  Price Type <sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  options={filterPriceTypeList.map((option) => ({
+                    value: option.price_type_id,
+                    label: option.price_type,
+                  }))}
+                  required={true}
+                  value={{
+                    label: priceTypeList.find(
+                      (role) =>
+                        role.price_type_id === rowCount[index].price_type_id
+                    )?.price_type,
+                    value: rowCount[index].price_type_id,
+                  }}
+                  onChange={(e) => handlePriceTypeChange(e, index)}
+                />
+              </div>
+              <FieldContainer
+                label=" Price *"
+                required={true}
+                type="number"
+                onChange={(e) => handlePriceChange(e, index)}
+                value={rowCount[index].price}
+              />
+              {index != 0 && (
+                <button
+                  className="btn btn-sm btn-danger mt-4 ml-2  col-1 mb-3"
+                  type="button"
+                  onClick={() => {
+                    setRowCount(
+                      (prev) => prev.filter((e, i) => i !== index),
+                      handleFilterPriceType()
+                    );
+                  }}
+                >
+                  Remove
+                </button>
+              )}
+            </>
+          ))}
+          <div className="text-center">
+            <button
+              type="button"
+              onClick={addPriceRow}
+              className="btn btn-sm btn-primary"
+            >
+              Add Price
+            </button>
+          </div>
+        </div>
+
         <div>
           <Button
             variant="contained"
@@ -294,6 +399,38 @@ export default function PurchasePrice() {
           getRowId={(row) => row._id}
         />
       </FormContainer>
+
+      <Dialog
+        open={showPriceModal}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Price Details"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            <DataGrid
+              rows={priceData}
+              columns={priceColumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              getRowId={(row) => row.price_type_id}
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+            />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} autoFocus>
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
