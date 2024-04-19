@@ -72,10 +72,8 @@ const PageEdit = () => {
     setActiveAccordionIndex(index);
   };
   const [totalPercentage, setTotalPercentage] = useState(0);
-  const [totalPercentageFlag, setTotalPercentageFlag] = useState(false);
   const [latestEntry, setLatestEntry] = useState({});
   const [historyData, setHistoryData] = useState([]);
-  const [isHistoryData, setIsHistoryData] = useState(false);
   const [quater, setQuater] = useState("");
   const [quaterIsValid, setQuaterIsValid] = useState(false);
   const [reachValidation, setReachValidation] = useState(true);
