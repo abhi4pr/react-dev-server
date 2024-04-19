@@ -330,6 +330,7 @@ const ObjectOverview = () => {
                     {column}
                   </th>
                 ))}
+                <td>Action</td>
               </tr>
             </thead>
             <tbody>
@@ -338,6 +339,18 @@ const ObjectOverview = () => {
                   {columns.map((column) => (
                     <td key={column}>{row[column]}</td>
                   ))}
+                  <td>
+                    <Link to={`/admin/object-update/${row.obj_id}`}>
+                      <button title="Edit" className="btn btn-outline-primary btn-sm-user-button">
+                        <FaEdit />{" "}
+                      </button>
+                    </Link>
+                    <DeleteButton 
+                      endpoint={"obj_delete"}
+                      id={row.obj_id}
+                      getData={getData}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
