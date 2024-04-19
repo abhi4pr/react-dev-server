@@ -60,7 +60,7 @@ const Attendence = () => {
   }
 
   function gettingSliderData() {
-    axios.get(baseUrl + "get_month_year_data").then((res) => {
+    axios.get(baseUrl + "get_month_year_merged_data").then((res) => {
       setCompletedYearsMonths(res.data.data);
     });
   }

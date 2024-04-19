@@ -160,11 +160,15 @@ const ObjectOverview = () => {
   const [filterData, setFilterData] = useState([]);
   const [contextData, setDatas] = useState([]);
   const [columns, setColumns] = useState([]);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [itemsPerPage] = useState(10); 
   
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
   const tableId = '661f8aaef8af207af006cdb8';
+
+  // custom dynamic table code starts here
 
   const getTableData = async() => {
     await axios.get(baseUrl + `get_dynamic_table_data/${tableId}`)
@@ -223,6 +227,22 @@ const ObjectOverview = () => {
       console.error('Error editing dynamic table data:', error);
     });
   };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  const getPageCount = () => {
+    return Math.ceil(datas.length / itemsPerPage);
+  };
+
+  const getPageData = (datas) => {
+    const startIndex = currentPage * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return datas.slice(startIndex, endIndex);
+  };
+
+  // custom dynamic table code ends here
 
   useEffect(() => {
     if (userID && contextData.length === 0) {
@@ -285,6 +305,15 @@ const ObjectOverview = () => {
               ))}
             </div>
           )}
+          <div className="search-container">
+            <input
+              className="form-control w-50"
+              type="text"
+              placeholder="Search..."
+              value={search}
+              onChange={(e)=>setSearch(e.target.value)}
+            />
+          </div>
 
           <table className="table border table-striped mt-2">
             <thead>
@@ -301,18 +330,46 @@ const ObjectOverview = () => {
                     {column}
                   </th>
                 ))}
+                <td>Action</td>
               </tr>
             </thead>
             <tbody>
-              {datas.map((row, index) => (
+              {getPageData(search ? filterData : datas).map((row, index) => (
                 <tr key={row.id}>
                   {columns.map((column) => (
                     <td key={column}>{row[column]}</td>
                   ))}
+                  <td>
+                    <Link to={`/admin/object-update/${row.obj_id}`}>
+                      <button title="Edit" className="btn btn-outline-primary btn-sm-user-button">
+                        <FaEdit />{" "}
+                      </button>
+                    </Link>
+                    <DeleteButton 
+                      endpoint={"obj_delete"}
+                      id={row.obj_id}
+                      getData={getData}
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <div className="pagination">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 0}
+            >
+              Previous
+            </button>
+            <span>{currentPage + 1} of {getPageCount()}</span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === getPageCount() - 1}
+            >
+              Next
+            </button>
+          </div>
         </div>
       </div>
     </>
