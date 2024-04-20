@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import SidebarLinks from "./SidebarLinks";
 import Logo from "../../../assets/logo.png";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+
 const SideBar = () => {
+
   return (
     <>
       <ul className="navbar-nav sidebar accordion" id="accordionSidebar">

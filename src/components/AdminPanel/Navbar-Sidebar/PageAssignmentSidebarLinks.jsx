@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { UserFocus } from "@phosphor-icons/react";
 
 const PageAssignmentSidebarLinks = () => {
@@ -23,12 +23,12 @@ const PageAssignmentSidebarLinks = () => {
         data-parent="#accordionSidebar"
       >
         <div className="internal collapse-inner">
-          <Link className="collapse-item" to="/admin/page-assignment">
+          <NavLink className="collapse-item" to="/admin/page-assignment">
             <i className="bi bi-dot"></i>Page Assignment
-          </Link>
-          <Link className="collapse-item" to="/admin/historyAssignment">
+          </NavLink>
+          <NavLink className="collapse-item" to="/admin/historyAssignment">
             <i className="bi bi-dot"></i>History
-          </Link>
+          </NavLink>
         </div>
       </div>
     </li>
