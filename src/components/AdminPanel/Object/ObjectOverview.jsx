@@ -162,6 +162,7 @@ const ObjectOverview = () => {
   const [columns, setColumns] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage] = useState(10); 
+  const [filters, setFilters] = useState([]);
   
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -244,6 +245,45 @@ const ObjectOverview = () => {
 
   // custom dynamic table code ends here
 
+  // multiple filter code start here
+
+  const addFilter = () => {
+    const defaultColumn = columns[0]; 
+    const newFilters = [...filters, { column: defaultColumn, value: '' }];
+    setFilters(newFilters);
+  };
+
+  const updateFilterValue = (index, value) => {
+    const updatedFilters = [...filters];
+    updatedFilters[index].value = value;
+    setFilters(updatedFilters);
+  };
+
+  const updateFilterColumn = (index, column) => {
+    const updatedFilters = [...filters];
+    updatedFilters[index].column = column;
+    setFilters(updatedFilters);
+  };
+
+  const applyFilters = () => {
+    let filteredData = [...datas];
+    filters.forEach(filter => {
+      const filterValue = filter.value.toLowerCase();
+      filteredData = filteredData.filter(item => {
+        const columnName = filter.column;
+        if (columnName in item) {
+          const itemValue = String(item[columnName]).toLowerCase();
+          return itemValue.includes(filterValue);
+        } else {
+          return true;
+        }
+      });
+    });
+    setFilterData(filteredData);
+  };
+
+  // multiple filter code end here
+
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
@@ -315,6 +355,32 @@ const ObjectOverview = () => {
             />
           </div>
 
+          <div className="filter-container">
+            {filters.map((filter, index) => (
+              <div key={index} className="filter">
+                <select
+                  value={filter.column}
+                  onChange={(e) => {
+                    const column = e.target.value;
+                    updateFilterColumn(index, column); 
+                  }}
+                >
+                  {columns.map(column => (
+                    <option key={column} value={column}>{column}</option>
+                  ))}
+                </select>
+                <input
+                  type="text"
+                  value={filter.value}
+                  onChange={(e) => updateFilterValue(index, e.target.value)}
+                  placeholder="Search..."
+                />
+              </div>
+            ))}
+            <button onClick={addFilter}>Add Filter</button>
+            <button onClick={applyFilters}>Apply Filters</button>
+          </div>
+
           <table className="table border table-striped mt-2">
             <thead>
               <tr>
@@ -334,7 +400,8 @@ const ObjectOverview = () => {
               </tr>
             </thead>
             <tbody>
-              {getPageData(search ? filterData : datas).map((row, index) => (
+              {getPageData(filterData).map((row, index) => (
+              // {getPageData(search ? filterData : datas).map((row, index) => (
                 <tr key={row.id}>
                   {columns.map((column) => (
                     <td key={column}>{row[column]}</td>
