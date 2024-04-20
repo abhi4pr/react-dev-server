@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { ChartLineUp } from "@phosphor-icons/react";
 
 const SalesSidebarLinks = () => {
@@ -23,35 +23,35 @@ const SalesSidebarLinks = () => {
         data-parent="#accordionSidebar"
       >
         <div className="internal collapse-inner">
-          <Link className="collapse-item" to="/admin/sales-dashboard">
+          <NavLink className="collapse-item" to="/admin/sales-dashboard">
             <i className="bi bi-dot" />
             Dashboard
-          </Link>
+          </NavLink>
 
-          <Link className="collapse-item" to="/admin/sales-services-overview">
+          <NavLink className="collapse-item" to="/admin/sales-services-overview">
             <i className="bi bi-dot" />
             Services
-          </Link>
+          </NavLink>
 
-          <Link className="collapse-item" to="/admin/pms-vendor-overview">
+          <NavLink className="collapse-item" to="/admin/pms-vendor-overview">
             <i className="bi bi-dot" />
             Bookings
-          </Link>
-          <Link
+          </NavLink>
+          <NavLink
             className="collapse-item"
             to="/admin/view-credit-reason-approval"
           >
             <i className="bi bi-dot" />
             Credit Reason Approval
-          </Link>
-          <Link className="collapse-item" to="/admin/create-sales-booking">
+          </NavLink>
+          <NavLink className="collapse-item" to="/admin/create-sales-booking">
             <i className="bi bi-dot" />
             Create Sale Booking
-          </Link>
-          <Link className="collapse-item" to="/admin/view-sales-booking">
+          </NavLink>
+          <NavLink className="collapse-item" to="/admin/view-sales-booking">
             <i className="bi bi-dot" />
             Sale Booking
-          </Link>
+          </NavLink>
         </div>
       </div>
     </li>
