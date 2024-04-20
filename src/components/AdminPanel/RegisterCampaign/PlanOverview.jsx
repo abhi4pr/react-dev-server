@@ -9,6 +9,8 @@ import ReplacePagesModal from "./ReplacePagesModal";
 import CampaignDetailes from "./CampaignDetailes";
 import PageOverview from "./PageOverview";
 import { baseUrl } from "../../../utils/config";
+import FormContainer from "../FormContainer";
+import { tr } from "date-fns/locale";
 
 const PlanOverview = () => {
   const [selectData, setSelectData] = useState([]);
@@ -19,14 +21,14 @@ const PlanOverview = () => {
 
   const getSelectPage = async () => {
     const newPlan = await axios.get(
-      `${baseUrl}`+`campaignplan/${id}`
+      `${baseUrl}` + `campaignplan/${id}`
     );
     console.log(newPlan, "dfsldfksdl");
     const x = newPlan.data.data.filter((page) => {
       if (
-       ( page.replacement_status == "pending" ||
-        page.replacement_status == "replacement" ||
-        page.replacement_status == "inactive") && (page.delete_status=='inactive')
+        (page.replacement_status == "pending" ||
+          page.replacement_status == "replacement" ||
+          page.replacement_status == "inactive") && (page.delete_status == 'inactive')
       ) {
       }
       return page;
@@ -43,12 +45,12 @@ const PlanOverview = () => {
   };
 
   return (
-    <Paper>
-      <div>
-        <div className="form_heading_title">
-          <h2 className="form-heading">Plan Overview</h2>
-        </div>
-      </div>
+    <div>
+      <FormContainer
+        mainTitle={"Plan Overview"}
+        link={true}
+      />
+
       <CampaignDetailes cid={id} />
       <PageOverview
         selectData={selectData}
@@ -56,7 +58,7 @@ const PlanOverview = () => {
         stage={"plan"}
         id={id}
       />
-    </Paper>
+    </div>
   );
 };
 

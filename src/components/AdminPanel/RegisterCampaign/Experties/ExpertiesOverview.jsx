@@ -30,21 +30,21 @@ const ExpertiesOverview = () => {
     setPlatform(params.row.area_of_expertise.platform);
     const maxLength = Math.max(...Object.values(params.row.area_of_expertise).map(arr => arr.length));
     const keys = Object.keys(params.row.area_of_expertise);
-    
+
     const transformedData = Array.from({ length: maxLength }, (_, index) => {
-    
+
       let obj = { id: index };
-    
-     
+
+
       keys.forEach(key => {
         obj[key] = params.row.area_of_expertise[key][index] || null;
       });
-  
+
       return obj;
     });
     setAreaofexp(transformedData);
   };
-  console.log(areaofexp,"lol");
+  console.log(areaofexp, "lol");
 
   const handleClose2 = () => setOpen2(false);
 
@@ -139,7 +139,7 @@ const ExpertiesOverview = () => {
         return (
           <div>
             <button className="icon-1" onClick={() => handleOpen2(params)} variant="text">
-             <i className="bi bi-chat-left-text"></i>
+              <i className="bi bi-chat-left-text"></i>
             </button>
           </div>
         );
@@ -171,12 +171,12 @@ const ExpertiesOverview = () => {
       width: 150,
       renderCell: (params) => (
         <>
-        {/* {console.log(params.row,"vijjj")} */}
+          {/* {console.log(params.row,"vijjj")} */}
           <Link to={`/admin/expeties-update/${params.row.exp_id}`}>
-          <div className="icon-1">
-            <i className="bi bi-pencil"></i>
-          </div>
-                    </Link>
+            <div className="icon-1">
+              <i className="bi bi-pencil"></i>
+            </div>
+          </Link>
 
           <div className="icon-1"
             onClick={() => handleDelete(params.row.user_id)}>
@@ -188,7 +188,7 @@ const ExpertiesOverview = () => {
   ];
 
   return (
-    <div className="master-card-css">
+    <div>
       <FormContainer
         mainTitle="Expert Overview"
         link="/admin/experties"
@@ -209,14 +209,14 @@ const ExpertiesOverview = () => {
         </div>
       </div> */}
       <div className="card">
-        <div className="card-body body-padding mt-2">
-          <Box sx={{ height: "400px" }}>
-            <DataGrid
-              rows={getExpertiesData}
-              columns={columns}
-              getRowId={(row) => row.exp_id}
-            />
-          </Box>
+        <div className="card-body body-padding fx-head thm_table">
+
+          <DataGrid
+            rows={getExpertiesData}
+            columns={columns}
+            getRowId={(row) => row.exp_id}
+          />
+
         </div>
       </div>
       {/* {console.log(areaofexp)} */}
@@ -226,12 +226,12 @@ const ExpertiesOverview = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-         
-        <Box sx={style}>
-        
-        
-        <DataGrid
-          rows={areaofexp}
+
+        <div className="fx-head thm_table">
+
+
+          <DataGrid
+            rows={areaofexp}
             columns={[{
               field: "S.NO",
               headerName: "S.NO",
@@ -240,30 +240,30 @@ const ExpertiesOverview = () => {
                 const rowIndex = areaofexp.indexOf(params.row);
                 return <div>{rowIndex + 1}</div>;
               }
-             
+
             },
-              {
-                field: "category",
-                headerName: "Category",
-                width: 180,
-                sortable: true,
-              },
-              {
-                field: "followers Count",
-                headerName: "Followers Count",
-                width: 180,
-                sortable: true,
-              },
-              {
-                field: "Platform",
-                headerName: "Platform",
-                width: 180,
-                sortable: true,
-              },
-            ]}     
-            getRowId={(row) => row.id}   
-        />
-        </Box>
+            {
+              field: "category",
+              headerName: "Category",
+              width: 180,
+              sortable: true,
+            },
+            {
+              field: "followers Count",
+              headerName: "Followers Count",
+              width: 180,
+              sortable: true,
+            },
+            {
+              field: "Platform",
+              headerName: "Platform",
+              width: 180,
+              sortable: true,
+            },
+            ]}
+            getRowId={(row) => row.id}
+          />
+        </div>
       </Modal>
     </div>
   );

@@ -23,7 +23,7 @@ import {
 import Review from "./Review";
 import axios from "axios";
 import { SnippetFolderTwoTone } from "@mui/icons-material";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
 
 export default function CreaterDashboard() {
   const [open, setOpen] = useState(false);
@@ -52,23 +52,23 @@ export default function CreaterDashboard() {
     remark: "",
   });
 
-  
+
   const getBrand = () => {
-    axios.get(baseUrl+"get_brands").then((res) => {
+    axios.get(baseUrl + "get_brands").then((res) => {
       const data = res.data.data;
       setBrandName(data);
-      
+
     });
   };
   function getContentType() {
-    axios.get(baseUrl+"content").then((res) => {
+    axios.get(baseUrl + "content").then((res) => {
       const data = res.data.data;
       setContent(data);
-      
+
     });
   }
   const getData = () => {
-    axios.get(baseUrl+"contentSectionReg").then((res) => {
+    axios.get(baseUrl + "contentSectionReg").then((res) => {
       const pending = res.data.data.filter(
         (e) => e.status == "11" && e.stage == 2
       );
@@ -85,7 +85,7 @@ export default function CreaterDashboard() {
       setAcceptData(accept);
       setRejectData(reject);
       setCompData(complete);
-      
+
     });
   };
 
@@ -113,7 +113,7 @@ export default function CreaterDashboard() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
   };
 
   const handleClose = () => setOpen(false);
@@ -152,7 +152,7 @@ export default function CreaterDashboard() {
   const handleActive = (e) => {
     e.preventDefault();
     axios
-      .put(baseUrl+"contentSectionReg", {
+      .put(baseUrl + "contentSectionReg", {
         content_section_id: contentSectionId,
         creator_dt: startData.selectedDate,
         creator_remark: startData.remark,
@@ -160,7 +160,7 @@ export default function CreaterDashboard() {
         status: "21",
       })
       .then((response) => {
-        
+
         if (response.data.success) {
           handleClose();
           getData();
@@ -172,7 +172,7 @@ export default function CreaterDashboard() {
   };
   const handleActiveReject = () => {
     axios
-      .put(baseUrl+"contentSectionReg", {
+      .put(baseUrl + "contentSectionReg", {
         content_section_id: contentSectionId,
         creator_dt: startData.selectedDate,
         creator_remark: text,
@@ -180,7 +180,7 @@ export default function CreaterDashboard() {
         status: "22",
       })
       .then((response) => {
-        
+
         if (response.data.success) {
           handleClose();
           getData();
@@ -201,7 +201,7 @@ export default function CreaterDashboard() {
 
       try {
         const response = await axios.put(
-          baseUrl+"contentSectionReg",
+          baseUrl + "contentSectionReg",
           formData,
           {
             headers: {
@@ -226,7 +226,7 @@ export default function CreaterDashboard() {
 
   // Submission ++++++++++++++++++
   const handleSubmissionData = (params) => {
-    
+
     setSelectedContentType(
       content.filter((e) => e.content_value === params.row.content_type_id)[0]
         ?.content_type
@@ -264,7 +264,7 @@ export default function CreaterDashboard() {
   const handleExtend = (e) => {
     e.preventDefault();
     axios
-      .put(baseUrl+"contentSectionReg", {
+      .put(baseUrl + "contentSectionReg", {
         content_section_id: contentSectionId,
         creator_dt: extendDeliveryDate,
         creator_remark: text,
@@ -287,7 +287,7 @@ export default function CreaterDashboard() {
   const handleTerminate = (e) => {
     e.preventDefault();
     axios
-      .put(baseUrl+"contentSectionReg", {
+      .put(baseUrl + "contentSectionReg", {
         content_section_id: contentSectionId,
         creator_remark: text,
         stage: 2,
@@ -738,14 +738,28 @@ export default function CreaterDashboard() {
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
-      >
-        {activeAccordionIndex === 0 && tab1}
-        {activeAccordionIndex === 1 && tab2}
-        {activeAccordionIndex === 2 && tab3}
-        {activeAccordionIndex === 3 && tab4}
-        {activeAccordionIndex === 4 && tab5}
-      </FormContainer>
+        link={true}
+      />
 
+
+      <div className="tab">
+        {
+          accordionButtons.map((button, index) => (
+            <div className={`named-tab ${activeAccordionIndex === index ? "active-tab" : ""}`} onClick={() => handleAccordionButtonClick(index)}>
+              {button}
+            </div>
+          ))
+        }
+      </div>
+      <div className="card">
+        <div className="card-body fx-head thm_table nt-head">
+          {activeAccordionIndex === 0 && tab1}
+          {activeAccordionIndex === 1 && tab2}
+          {activeAccordionIndex === 2 && tab3}
+          {activeAccordionIndex === 3 && tab4}
+          {activeAccordionIndex === 4 && tab5}
+        </div>
+      </div>
       {/* Modal section */}
       {/* Modal-1 accept   */}
       <Modal

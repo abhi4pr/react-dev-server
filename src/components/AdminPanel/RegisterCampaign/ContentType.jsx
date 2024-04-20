@@ -43,7 +43,7 @@ export default function ContentType() {
   const [postData, setPostData] = useState({
     content_type: "",
   });
-  const url = baseUrl+"content";
+  const url = baseUrl + "content";
 
   function EditToolbar() {
     const handleClick = () => {
@@ -52,7 +52,7 @@ export default function ContentType() {
     return (
       <GridToolbarContainer style={toolbarStyles}>
         <button
-         className="btn btn-outline-primary btn-sm"
+          className="btn cmnbtn btn-outline-primary btn_sm"
           onClick={handleClick}
         >
           create content
@@ -218,7 +218,7 @@ export default function ContentType() {
         return [
           // eslint-disable-next-line react/jsx-key
           <button
-           
+
             label="Edit"
             className="icon-1"
             onClick={handleEditClick(id, row)}
@@ -228,8 +228,8 @@ export default function ContentType() {
           </button>,
           // eslint-disable-next-line react/jsx-key
           <button
-          className="icon-1"
-           
+            className="icon-1"
+
             label="Delete"
             onClick={handleDeleteClick(id)}
             color="error"
@@ -252,48 +252,51 @@ export default function ContentType() {
   }, [searchInput, rows]);
 
   return (
-    <>
-    <FormContainer
-      link={"true"}
-      submitButton={false}
-      mainTitle={"Content"}
-    />
-      
-      <div className="card">
-        <div className="card-header">
-            <div className="pack">
-            <TextField
-        label="Search"
-        variant="outlined"
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        style={{ marginBottom: "10px" }}
+    <div>
+      <FormContainer
+        link={"true"}
+        submitButton={false}
+        mainTitle={"Content"}
       />
-            </div>
+
+      <div className="card">
+        <div className="card-header sb">
+          <div className="card-tittle">
+            <h5>Content Overview</h5>
+          </div>
+          <div className="pack  w-75">
+            <TextField
+              label="Search"
+              variant="outlined"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+
+            />
+          </div>
         </div>
         <div className="card-body body-padding">
 
-      <Box>
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          editMode="row"
-          getRowId={(row) => row.content_type_id}
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
-        />
-      </Box>
+          <Box>
+            <DataGrid
+              rows={filteredRows}
+              columns={columns}
+              editMode="row"
+              getRowId={(row) => row.content_type_id}
+              rowModesModel={rowModesModel}
+              onRowModesModelChange={handleRowModesModelChange}
+              onRowEditStop={handleRowEditStop}
+              processRowUpdate={processRowUpdate}
+              slots={{
+                toolbar: EditToolbar,
+              }}
+              slotProps={{
+                toolbar: { setRows, setRowModesModel },
+              }}
+            />
+          </Box>
         </div>
       </div>
-      
+
 
 
       {/* AddRecordModal post data */}
@@ -385,21 +388,21 @@ export default function ContentType() {
         <DialogActions>
           <div className="d-flex sb w-100">
 
-          <button
-            onClick={() => setIsDeleteConfirmationOpen(false)}
-            className="btn btn-outline-primary btn-sm"
+            <button
+              onClick={() => setIsDeleteConfirmationOpen(false)}
+              className="btn btn-outline-primary btn-sm"
             >
-            Cancel
-          </button>
-          <button
-            onClick={handleConfirmDelete}
-            className="btn  btn-outline-danger btn-sm"
+              Cancel
+            </button>
+            <button
+              onClick={handleConfirmDelete}
+              className="btn  btn-outline-danger btn-sm"
             >
-            Delete
-          </button>
-            </div>
+              Delete
+            </button>
+          </div>
         </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }

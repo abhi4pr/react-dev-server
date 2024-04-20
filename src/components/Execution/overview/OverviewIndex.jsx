@@ -8,8 +8,31 @@ import AppWebsiteVisits from "./Overview-website-preview";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { baseUrl } from "../../../utils/config";
+import Linegraph from "./Linegraph";
+import RadialBar from "./Radialchart";
 
-
+const gdata = [
+  { name: 1, cost: 4.11, impression: 100 },
+  { name: 2, cost: 2.39, impression: 120 },
+  { name: 3, cost: 1.37, impression: 150 },
+  { name: 4, cost: 1.16, impression: 180 },
+  { name: 5, cost: 2.29, impression: 200 },
+  { name: 6, cost: 3, impression: 499 },
+  { name: 7, cost: 0.53, impression: 50 },
+  { name: 8, cost: 2.52, impression: 100 },
+  { name: 9, cost: 1.79, impression: 200 },
+  { name: 10, cost: 2.94, impression: 222 },
+  { name: 11, cost: 4.3, impression: 210 },
+  { name: 12, cost: 4.41, impression: 300 },
+  { name: 13, cost: 2.1, impression: 50 },
+  { name: 14, cost: 8, impression: 190 },
+  { name: 15, cost: 0, impression: 300 },
+  { name: 16, cost: 9, impression: 400 },
+  { name: 17, cost: 3, impression: 200 },
+  { name: 18, cost: 2, impression: 50 },
+  { name: 19, cost: 3, impression: 100 },
+  { name: 20, cost: 7, impression: 100 },
+];
 
 const OverviewIndex = () => {
   const [data, setData] = useState([]);
@@ -57,7 +80,7 @@ const OverviewIndex = () => {
           responseArray.push({
             [data.filterCriteria + data.status]: response.data.body,
           });
-        }catch (error) {
+        } catch (error) {
           return console.log(error);
         }
       }
@@ -83,16 +106,16 @@ const OverviewIndex = () => {
       {/* <Head>
       <title>Overview | Devias Kit</title>
     </Head> */}
-      <Box
-        // component="main"
-        sx={{
-          flexGrow: 1,
-          py: 8,
-        }}
+      <div
       >
-        <Container maxWidth="xl">
-          <Grid container spacing={3}>
-            <Grid xs={12} sm={6} lg={3}>
+        <div className="card">
+          <div className="card-body">
+            <h3 className="card-head-title mb-2 ml-2">Execution</h3>
+            <div className="flex-row gap16 sb">
+
+
+
+
               <OverviewBudget
                 difference={12}
                 complete={
@@ -102,10 +125,10 @@ const OverviewIndex = () => {
                       count.execution_status === 3
                   )[0]?.count !== undefined
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Weekly" &&
-                          count.execution_status === 3
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Weekly" &&
+                        count.execution_status === 3
+                    )[0].count
                     : 0
                 }
                 pending={
@@ -115,31 +138,31 @@ const OverviewIndex = () => {
                       count.execution_status === 1
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Weekly" &&
-                          count.execution_status === 1
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Weekly" &&
+                        count.execution_status === 1
+                    )[0].count
                     : 0
                 }
-                onGoing= {
+                onGoing={
                   counts.filter(
                     (count) =>
                       count.interval_type === "Weekly" &&
                       count.execution_status === 2
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Weekly" &&
-                          count.execution_status === 2
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Weekly" &&
+                        count.execution_status === 2
+                    )[0].count
                     : 0
                 }
-               
+
                 sx={{ height: "100%" }}
                 value="Weekly Execution"
               />
-            </Grid>
-            <Grid xs={12} sm={6} lg={3}>
+
+
               <OverviewBudget
                 difference={12}
                 complete={
@@ -149,10 +172,10 @@ const OverviewIndex = () => {
                       count.execution_status === 3
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Monthly" &&
-                          count.execution_status === 3
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Monthly" &&
+                        count.execution_status === 3
+                    )[0].count
                     : 0
                 }
                 pending={
@@ -162,32 +185,32 @@ const OverviewIndex = () => {
                       count.execution_status === 1
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Monthly" &&
-                          count.execution_status === 1
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Monthly" &&
+                        count.execution_status === 1
+                    )[0].count
                     : 0
                 }
 
-                onGoing= {
+                onGoing={
                   counts.filter(
                     (count) =>
                       count.interval_type === "Monthly" &&
                       count.execution_status === 2
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Monthly" &&
-                          count.execution_status === 2
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Monthly" &&
+                        count.execution_status === 2
+                    )[0].count
                     : 0
                 }
-               
+
                 sx={{ height: "100%" }}
                 value="Monthly Execution"
               />
-            </Grid>
-            <Grid xs={12} sm={6} lg={3}>
+
+
               <OverviewBudget
                 difference={12}
                 complete={
@@ -197,10 +220,10 @@ const OverviewIndex = () => {
                       count.execution_status === 3
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Quarterly" &&
-                          count.execution_status === 3
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Quarterly" &&
+                        count.execution_status === 3
+                    )[0].count
                     : 0
                 }
                 pending={
@@ -210,32 +233,32 @@ const OverviewIndex = () => {
                       count.execution_status === 1
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Quarterly" &&
-                          count.execution_status === 1
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Quarterly" &&
+                        count.execution_status === 1
+                    )[0].count
                     : 0
                 }
 
-                onGoing= {
+                onGoing={
                   counts.filter(
                     (count) =>
                       count.interval_type === "Quarterly" &&
                       count.execution_status === 2
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Quarterly" &&
-                          count.execution_status === 2
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Quarterly" &&
+                        count.execution_status === 2
+                    )[0].count
                     : 0
                 }
-               
+
                 sx={{ height: "100%" }}
                 value="Quaterly Execution"
               />
-            </Grid>
-            <Grid xs={12} sm={6} lg={3}>
+
+
               <OverviewBudget
                 difference={12}
                 complete={
@@ -245,10 +268,10 @@ const OverviewIndex = () => {
                       count.execution_status === 3
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Yearly" &&
-                          count.execution_status === 3
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Yearly" &&
+                        count.execution_status === 3
+                    )[0].count
                     : 0
                 }
                 pending={
@@ -258,87 +281,113 @@ const OverviewIndex = () => {
                       count.execution_status === 1
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Yearly" &&
-                          count.execution_status === 1
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Yearly" &&
+                        count.execution_status === 1
+                    )[0].count
                     : 0
                 }
-                onGoing= {
+                onGoing={
                   counts.filter(
                     (count) =>
                       count.interval_type === "Yearly" &&
                       count.execution_status === 2
                   )[0]?.count
                     ? counts.filter(
-                        (count) =>
-                          count.interval_type === "Yearly" &&
-                          count.execution_status === 2
-                      )[0].count
+                      (count) =>
+                        count.interval_type === "Yearly" &&
+                        count.execution_status === 2
+                    )[0].count
                     : 0
                 }
-               
+
                 sx={{ height: "100%" }}
                 value="Yearly Execution"
               />
-            </Grid>
 
-            <Grid item xs={12} md={6} lg={8}>
-              <AppWebsiteVisits
-                title="Overview"
-                // subheader="(+43%) than last year"
-                chartLabels={[
-                  "01/01/2003",
-                  "02/01/2003",
-                  "03/01/2003",
-                  "04/01/2003",
-                  "05/01/2003",
-                  "06/01/2003",
-                  "07/01/2003",
-                  "08/01/2003",
-                  "09/01/2003",
-                  "10/01/2003",
-                  "11/01/2003",
-                ]}
-                chartData={[
-                  {
-                    name: "Team A",
-                    type: "column",
-                    fill: "solid",
-                    data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-                  },
-                  {
-                    name: "Team B",
-                    type: "area",
-                    fill: "gradient",
-                    data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-                  },
-                  {
-                    name: "Team C",
-                    type: "line",
-                    fill: "solid",
-                    data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
-                  },
-                ]}
-              />
-            </Grid>
-            <Grid xs={12} md={6} lg={4}>
-              <OverviewTraffic
-                chartSeries={[63, 15, 22]}
-                labels={["Inventory", "Pending", "Complete"]}
-                sx={{ height: "100%" }}
-              />
-            </Grid>
+            </div>
+          </div>
 
-            <Grid xs={12} md={6} lg={4}>
-              <OverviewLatestProducts products={data} sx={{ height: "100%" }} />
-            </Grid>
-            <Grid xs={12} md={12} lg={8}>
-              <OverviewLatestOrders products={data} sx={{ height: "100%" }} />
-            </Grid>
-          </Grid>
-        </Container>
-      </Box>
+        </div>
+        <div className="flex-row gap16">
+
+          <div className="card w-50">
+            <div className="card-body">
+              <div className="pack align-items-center sb mb-2">
+                <h3 className="card-head-title">Overview</h3>
+                <div className="op-das">
+                  <button className="op-das-btn op-das-act">Team A</button>
+                  <button className="op-das-btn ">Team B</button>
+                  <button className="op-das-btn ">Team C </button>
+                </div>
+              </div>
+              <Linegraph gdata={gdata} />
+            </div>
+          </div>
+          <div className="card w-50">
+            <div className="card-body">
+              <h3 className="card-head-title mb-2 ml-2">Analytics</h3>
+              <RadialBar />
+            </div>
+          </div>
+        </div>
+
+        {/* <Grid item xs={12} md={6} lg={8}>
+          <AppWebsiteVisits
+            title="Overview"
+            // subheader="(+43%) than last year"
+            chartLabels={[
+              "01/01/2003",
+              "02/01/2003",
+              "03/01/2003",
+              "04/01/2003",
+              "05/01/2003",
+              "06/01/2003",
+              "07/01/2003",
+              "08/01/2003",
+              "09/01/2003",
+              "10/01/2003",
+              "11/01/2003",
+            ]}
+            chartData={[
+              {
+                name: "Team A",
+                type: "column",
+                fill: "solid",
+                data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+              },
+              {
+                name: "Team B",
+                type: "area",
+                fill: "gradient",
+                data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+              },
+              {
+                name: "Team C",
+                type: "line",
+                fill: "solid",
+                data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+              },
+            ]}
+          />
+        </Grid> */}
+        {/* <Grid xs={12} md={6} lg={4}>
+          <OverviewTraffic
+            chartSeries={[63, 15, 22]}
+            labels={["Inventory", "Pending", "Complete"]}
+            sx={{ height: "100%" }}
+          />
+        </Grid> */}
+
+
+        <OverviewLatestProducts products={data} sx={{ height: "100%" }} />
+
+
+        <OverviewLatestOrders products={data} sx={{ height: "100%" }} />
+
+
+
+      </div>
     </>
   );
 };

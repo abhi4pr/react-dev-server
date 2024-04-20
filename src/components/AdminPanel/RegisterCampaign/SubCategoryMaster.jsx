@@ -51,9 +51,9 @@ export default function SubCategoryMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <Button color="error" variant="outlined" onClick={handleClick}>
+        <button className="btn btn_sm cmnbtn btn-outline-primary" onClick={handleClick}>
           create SubCategory
-        </Button>
+        </button>
       </GridToolbarContainer>
     );
   }
@@ -224,7 +224,7 @@ export default function SubCategoryMaster() {
         return [
           // eslint-disable-next-line react/jsx-key
           <button
-        
+
             label="Edit"
             className="icon-1"
             onClick={handleEditClick(id, row)}
@@ -259,47 +259,47 @@ export default function SubCategoryMaster() {
   }, [searchInput, rows]);
 
   return (
-    <div className="master-card-css">
+    <div>
       <FormContainer
-         mainTitle={"Sub Category Master"}
-         submitButton={false}
-         link={"/admin-panel"}
+        mainTitle={"Sub Category Master"}
+        submitButton={false}
+        link={"/admin-panel"}
       />
       <div className="card">
         <div className="card-header">
           <div></div>
           <div className="pack">
 
-      <TextField
-        id="outlined-basic"
-        label="Search"
-        variant="outlined"
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        style={{ marginBottom: "10px" }}
-      />
+            <TextField
+              id="outlined-basic"
+              label="Search"
+              variant="outlined"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+
+            />
           </div>
         </div>
-        <div className="card-body body-padding" style={{height:"700px"}}>
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          processRowUpdate={processRowUpdate}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-          getRowId={(row) => row.sub_category_id}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
-        />
+        <div className="card-body body-padding" style={{ height: "700px" }}>
+          <DataGrid
+            rows={filteredRows}
+            columns={columns}
+            editMode="row"
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStop={handleRowEditStop}
+            processRowUpdate={processRowUpdate}
+            slots={{
+              toolbar: EditToolbar,
+            }}
+            getRowId={(row) => row.sub_category_id}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+          />
         </div>
       </div>
-      
+
 
       {/* AddRecordModal post data */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -428,19 +428,19 @@ export default function SubCategoryMaster() {
         <DialogActions>
           <div className="d-flex sb w-100">
 
-          <button
-            onClick={() => setIsDeleteConfirmationOpen(false)}
-            className="btn btn-outline-primary btn-sm"
+            <button
+              onClick={() => setIsDeleteConfirmationOpen(false)}
+              className="btn btn-outline-primary btn-sm"
             >
-            Cancel
-          </button>
-          <button
-            onClick={handleConfirmDelete}
-            className="btn btn-outline-danger btn-sm"
+              Cancel
+            </button>
+            <button
+              onClick={handleConfirmDelete}
+              className="btn btn-outline-danger btn-sm"
             >
-            Delete
-          </button>
-            </div>
+              Delete
+            </button>
+          </div>
         </DialogActions>
       </Dialog>
     </div>

@@ -23,7 +23,7 @@ import { useGlobalContext } from "../../../Context/Context";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { baseUrl } from "../../../utils/config";
 
-const PageOverview = ({ selectData, setrender, stage, id ,phase_id}) => {
+const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
   const { toastAlert, toastError } = useGlobalContext();
   const naviagte = useNavigate();
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
@@ -31,7 +31,7 @@ const PageOverview = ({ selectData, setrender, stage, id ,phase_id}) => {
   const [isRecordOpen, setIsRecordOpen] = useState(false);
   const [selection, setSelections] = useState();
   const [realData, setRealData] = useState([]);
-  const [updatePayload,setUpdatePayload]=useState({campaignId:id})
+  const [updatePayload, setUpdatePayload] = useState({ campaignId: id })
   const handleDeletePlanData = () => {
     setOpenDeleteDialog(true);
   };
@@ -47,7 +47,7 @@ const PageOverview = ({ selectData, setrender, stage, id ,phase_id}) => {
         page.replacement_status == "replacement" ||
         page.replacement_status == "inactive" ||
         page.replacement_status == "active"
-       
+
       ) {
         return page;
       }
@@ -59,20 +59,20 @@ const PageOverview = ({ selectData, setrender, stage, id ,phase_id}) => {
 
   const handleDeleteSinglePlan = async (params) => {
     const pageName = params.row?.page_name;
-    if(params.row.isExecuted){
+    if (params.row.isExecuted) {
       toastError("Cant delete page , it is already executed");
-    }else{
-      if(stage=='plan'){
+    } else {
+      if (stage == 'plan') {
 
         const deleteData = await axios.post(
-          `${baseUrl}`+`campaignplan/singleplan`,
+          `${baseUrl}` + `campaignplan/singleplan`,
           { page: params.row, deletion_requested_by: "test" }
         );
         toastAlert(` Delete ${pageName} Page Successfully `);
         setrender();
-      }else if(stage=='phase'){
+      } else if (stage == 'phase') {
         const deleteData = await axios.post(
-          `${baseUrl}`+`campaignphase/singlephase`,
+          `${baseUrl}` + `campaignphase/singlephase`,
           { page: params.row, deletion_requested_by: "test" }
         );
         toastAlert(` Delete ${pageName} Page Successfully `);
@@ -81,37 +81,37 @@ const PageOverview = ({ selectData, setrender, stage, id ,phase_id}) => {
     }
   };
 
-  
-  
-  
-const handleInputChange=(e,params)=>{
 
-  if(params.field=="postPerPage"){
-    setUpdatePayload({...updatePayload,postPerPage:Number(e.target.value),p_id:params.row.p_id})
-  }else if(params.field=="storyPerPage"){
-    setUpdatePayload({...updatePayload,storyPerPage:Number(e.target.value),p_id:params.row.p_id})
-  }
-  
-}
 
-const updateSinglePlan=async ()=>{
-  if(stage=="plan"){
-    try {
-      const response=await axios.put(`${baseUrl}`+`updateplan`,updatePayload)
-      console.log(response)
-      toastAlert(response.data.message)
+
+  const handleInputChange = (e, params) => {
+
+    if (params.field == "postPerPage") {
+      setUpdatePayload({ ...updatePayload, postPerPage: Number(e.target.value), p_id: params.row.p_id })
+    } else if (params.field == "storyPerPage") {
+      setUpdatePayload({ ...updatePayload, storyPerPage: Number(e.target.value), p_id: params.row.p_id })
     }
-    catch (error) {
-      console.log(error);
-    }
-  }else{
-    alert("update not implement here")
+
   }
-  
 
-} 
+  const updateSinglePlan = async () => {
+    if (stage == "plan") {
+      try {
+        const response = await axios.put(`${baseUrl}` + `updateplan`, updatePayload)
+        console.log(response)
+        toastAlert(response.data.message)
+      }
+      catch (error) {
+        console.log(error);
+      }
+    } else {
+      alert("update not implement here")
+    }
 
-console.log(updatePayload)
+
+  }
+
+  console.log(updatePayload)
   const columns = [
     {
       field: "S.NO",
@@ -145,12 +145,12 @@ console.log(updatePayload)
       headerName: "Post",
       width: 150,
       renderCell: (params) => {
-        
-        
+
+
         return (
           <TextField
-            defaultValue={params?.row?.postPerPage} 
-            onChange={(e)=>handleInputChange(e,params)} 
+            defaultValue={params?.row?.postPerPage}
+            onChange={(e) => handleInputChange(e, params)}
           />
         );
       },
@@ -161,11 +161,11 @@ console.log(updatePayload)
       width: 150,
       renderCell: (params) => {
 
-        
+
         return (
           <TextField
-            defaultValue={params?.row?.storyPerPage} 
-            onChange={(e)=>handleInputChange(e,params)} 
+            defaultValue={params?.row?.storyPerPage}
+            onChange={(e) => handleInputChange(e, params)}
           />
         );
       },
@@ -186,12 +186,12 @@ console.log(updatePayload)
       renderCell: (params) => {
         return (
           <>
-          <Button onClick={() => updateSinglePlan(params)} color="primary">
-          <BorderColorIcon />
-          </Button>
-          <Button onClick={() => handleDeleteSinglePlan(params)} color="error">
-            <DeleteIcon />
-          </Button>
+            <button className="icon-1" onClick={() => updateSinglePlan(params)} color="primary">
+              <i className="bi bi-pencil" />
+            </button>
+            <button className="icon-1" onClick={() => handleDeleteSinglePlan(params)} color="error">
+              <i className="bi bi-trash" />
+            </button>
           </>
         );
       },
@@ -204,9 +204,9 @@ console.log(updatePayload)
       renderCell: (params) => {
         return (
           params.row.replacement_status == "inactive" && (
-            <Button onClick={() => handleOpenModal(params.row)}>
-              <PublishedWithChangesIcon />
-            </Button>
+            <button className="icon-1" onClick={() => handleOpenModal(params.row)}>
+              <i className="bi bi-arrow-repeat" />
+            </button>
           )
         );
       },
@@ -218,9 +218,9 @@ console.log(updatePayload)
       editable: true,
       renderCell: (params) => {
         return params.row.replacement_id ? (
-          <Button onClick={() => handleOpenModalRecord(params.row)}>
-            <PublishedWithChangesIcon />
-          </Button>
+          <button className="icon-1" onClick={() => handleOpenModalRecord(params.row)}>
+            <i className="bi bi-arrow-repeat" />
+          </button>
         ) : (
           "N/A"
         );
@@ -259,14 +259,14 @@ console.log(updatePayload)
     if (stage == 'plan') {
       handleDeleteDialogClose();
       const deleteData = await axios.delete(
-        `${baseUrl}`+`campaignplan/bulk/${id}`
+        `${baseUrl}` + `campaignplan/bulk/${id}`
       );
       naviagte("/admin/registered-campaign");
       toastAlert("Plan Delete Successfully !!");
     } else {
       handleDeleteDialogClose();
       const deleteData = await axios.delete(
-        `${baseUrl}`+`campaignphase/bulk/${phase_id}`
+        `${baseUrl}` + `campaignphase/bulk/${phase_id}`
       );
       // naviagte("/admin/registered-campaign");
       toastAlert("Phase Delete Successfully !!");
@@ -281,60 +281,65 @@ console.log(updatePayload)
 
   return (
     <div>
-      <Paper>
-        <Box sx={{ height: 400, width: "100%", mt: 2 }}>
-          <Paper
-            sx={{ display: "flex", mb: 2, justifyContent: "space-between" }}
-          >
-            <Box>
-              {" "}
-              <Button
-                onClick={handleExportClick}
-                variant="text"
-                color="success"
-                sx={{ fontSize: "30px" }}
-                title="Download Excel"
-              >
-                <SiMicrosoftexcel />
-              </Button>
-              <Button
-                onClick={handleDownloadPdf}
-                variant="text"
-                color="error"
-                title="Download Pdf"
-                sx={{ mr: 3 }}
-              >
-                <PictureAsPdfIcon sx={{ fontSize: "40px" }} />
-              </Button>
-              <Button
-                onClick={handlePlanDashboard}
-                variant="outlined"
-                color="secondary"
-                sx={{ mr: 3 }}
-              >
-                Plan Dashboard
-              </Button>
-            </Box>
-            <Box>
-              <Button
-                variant="outlined"
-                onClick={handleEditPlanData}
-                color="success"
-                sx={{ mt: 1, mr: 1 }}
-              >
-                Edit
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={handleDeletePlanData}
-                color="error"
-                sx={{ mt: 1, mr: 1 }}
-              >
-                Delete
-              </Button>
+      <div className="card">
+        <div className="card-header sb">
 
-            </Box>
-          </Paper>
+          <div className="gap16">
+            {" "}
+            <Button
+              onClick={handleExportClick}
+              className="btn cmnbtn btn_sm btn-success"
+              variant="text"
+              color="success"
+              sx={{ fontSize: "30px" }}
+              title="Download Excel"
+            >
+              <SiMicrosoftexcel />
+            </Button>
+            <Button
+              onClick={handleDownloadPdf}
+              className="btn cmnbtn btn_sm btn-danger"
+              variant="text"
+              color="error"
+              title="Download Pdf"
+
+            >
+              <PictureAsPdfIcon sx={{ fontSize: "40px" }} />
+            </Button>
+            <Button
+              onClick={handlePlanDashboard}
+              variant="outlined"
+              color="secondary"
+              className="btn cmnbtn btn_sm btn-primary"
+
+            >
+              Plan Dashboard
+            </Button>
+          </div>
+          <div className="gap16">
+            <Button
+              variant="outlined"
+              onClick={handleEditPlanData}
+              color="success"
+              className="btn cmnbtn btn_sm btn-success"
+
+            >
+              Edit
+            </Button>
+            <Button
+              variant="outlined"
+              onClick={handleDeletePlanData}
+              color="error"
+              className="btn cmnbtn btn_sm btn-danger"
+
+            >
+              Delete
+            </Button>
+
+          </div>
+
+        </div>
+        <div className="card-body">
 
           <DataGrid
             rows={realData}
@@ -358,21 +363,23 @@ console.log(updatePayload)
               },
             }}
           />
-          <ReplacePagesModal
-            open={isModalOpen}
-            selection={selection}
-            handleClose={handleCloseModal}
-            planData={selectData}
-            stage={stage}
-          />
-          <ReplacementRecord
-            open={isRecordOpen}
-            handleClose={handleCloseModalRecord}
-            data={selection}
-          />
-        </Box>
-      </Paper>
+        </div>
+
+
+      </div>
       <>
+        <ReplacePagesModal
+          open={isModalOpen}
+          selection={selection}
+          handleClose={handleCloseModal}
+          planData={selectData}
+          stage={stage}
+        />
+        <ReplacementRecord
+          open={isRecordOpen}
+          handleClose={handleCloseModalRecord}
+          data={selection}
+        />
         <Dialog
           open={openDeleteDialog}
           onClose={handleDeleteDialogClose}

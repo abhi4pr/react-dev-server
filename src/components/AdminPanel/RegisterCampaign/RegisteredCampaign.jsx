@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import FormContainer from "../FormContainer";
-import { DataGrid ,GridToolbar} from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import ModeCommentTwoToneIcon from "@mui/icons-material/ModeCommentTwoTone";
 import SendTwoToneIcon from "@mui/icons-material/SendTwoTone";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -485,7 +485,7 @@ export default function RegisteredCampaign() {
         return (
           <div>
             <button className="icon-1" onClick={() => handleOpen2(params)} variant="text">
-             <i className="bi bi-chat-left-text"></i>
+              <i className="bi bi-chat-left-text"></i>
             </button>
           </div>
         );
@@ -514,7 +514,7 @@ export default function RegisteredCampaign() {
         return (
           <div className="d-flex text-center align-item-center justify-content-center">
             <button className="icon-1" type="button" onClick={() => handleOpen(params)}>
-             <i className="bi bi-send"></i>
+              <i className="bi bi-send"></i>
             </button>
           </div>
         );
@@ -523,7 +523,7 @@ export default function RegisteredCampaign() {
     },
     {
       field: "temp plan_creation",
-      headerName: "temp Plan Creation",
+      headerName: "Temp Plan Creation",
       renderCell: (params) => (
         <PlanCreationComponent
           {...params}
@@ -560,10 +560,10 @@ export default function RegisteredCampaign() {
         return (
           <div>
             <button
-             className="icon-1"
+              className="icon-1"
               onClick={() => handleDeleteRow(params)}
             >
-             <i className="bi bi-trash"></i>
+              <i className="bi bi-trash"></i>
             </button>
           </div>
         );
@@ -833,7 +833,7 @@ export default function RegisteredCampaign() {
 
   const accordionButtons = ["Pending", "Sent for Content Creation"];
   return (
-    <div className="master-card-css">
+    <div>
       <div className="action_heading master-card-css">
         <div className="action_title">
           <FormContainer
@@ -844,52 +844,52 @@ export default function RegisteredCampaign() {
             accordionButtons={accordionButtons}
             activeAccordionIndex={activeAccordionIndex}
             onAccordionButtonClick={handleAccordionButtonClick}
-         />
-            
+          />
+
         </div>
         <div className="action_btns ">
           <Link to="/admin/register-campaign">
-            <button type="button" className="btn btn-outline-primary btn-sm">
+            <button type="button" className="btn cmnbtn btn_sm btn-outline-primary btn-sm">
               Add campagin{" "}
             </button>
           </Link>
         </div>
       </div>
       <div className="tab">
-      {accordionButtons.map((button, index) => (<div className={`named-tab ${(activeAccordionIndex === index) ? "active-tab" : "" }`} onClick={()=>{handleAccordionButtonClick(index)}} >{button}</div>))}
-        
+        {accordionButtons.map((button, index) => (<div className={`named-tab ${(activeAccordionIndex === index) ? "active-tab" : ""}`} onClick={() => { handleAccordionButtonClick(index) }} >{button}</div>))}
+
       </div>
 
       <div className="card">
-        <div className="card-header">
-         
-                  <h6 style={{width:"100px"}}>Count: {filteredTable1DataLength}</h6>
-          <div className="pack  ">       
-              <FormControl style={{ width: "300px", margin: "10px" }}>
-                <InputLabel id="date-filter-select-label">
-                  Date Filter
-                </InputLabel>
-                <Select
-                  labelId="date-filter-select-label"
-                  id="date-filter-select"
-                  value={dateFilter}
-                  label="Date filter"
-                  onChange={handleDateFilterChange}
-                >
-                  <MenuItem value="today">Today</MenuItem>
-                  <MenuItem value="thisWeek"> Week</MenuItem>
-                  <MenuItem value="thisMonth"> This Month</MenuItem>
-                  <MenuItem value="last3Months">Last 3 Months</MenuItem>
-                  <MenuItem value="thisYear"> Year</MenuItem>
-                </Select>
-              </FormControl>
-          
-            </div>
+        <div className="card-header sb">
+
+          <div className="card-title">Count: {filteredTable1DataLength}</div>
+          <div className="pack w-75 ">
+            <FormControl className="w-25">
+              <InputLabel id="date-filter-select-label">
+                Date Filter
+              </InputLabel>
+              <Select
+                labelId="date-filter-select-label"
+                id="date-filter-select"
+                value={dateFilter}
+                label="Date filter"
+                onChange={handleDateFilterChange}
+              >
+                <MenuItem value="today">Today</MenuItem>
+                <MenuItem value="thisWeek"> Week</MenuItem>
+                <MenuItem value="thisMonth"> This Month</MenuItem>
+                <MenuItem value="last3Months">Last 3 Months</MenuItem>
+                <MenuItem value="thisYear"> Year</MenuItem>
+              </Select>
+            </FormControl>
+
+          </div>
 
         </div>
-        <div className="card-body body-padding">
-        {activeAccordionIndex === 0 && tab1}
-            {activeAccordionIndex === 1 && tab2}
+        <div className="card-body body-padding fx-head thm_table">
+          {activeAccordionIndex === 0 && tab1}
+          {activeAccordionIndex === 1 && tab2}
         </div>
       </div>
       {/* Modal section */}
@@ -1040,19 +1040,20 @@ export default function RegisteredCampaign() {
                   {videoType?.filter(
                     (e) => !fields?.map((e) => e.selectValue).includes(e)
                   ).length > 0 && (
-                    <Button
-                      variant="outlined"
-                      sx={{ marginBottom: "10px", marginRight: "10px" }}
-                      color="primary"
-                      onClick={handleAddField}
-                    >
-                      Add Row
-                    </Button>
-                  )}
+                      <button
+                        className="btn btn_sm btn-outline-primary mb-2"
+                        variant="outlined"
+
+
+                        onClick={handleAddField}
+                      >
+                        Add Row
+                      </button>
+                    )}
                 </div>
               </div>
               <div className="d-flex justify-content-between">
-                <button className="btn btn-outline-danger" onClick={handleClose}>
+                <button className="btn cmnbtn btn_sm btn-outline-danger" onClick={handleClose}>
                   Cancel
                 </button>
                 <button
@@ -1060,7 +1061,7 @@ export default function RegisteredCampaign() {
                   onClick={() => {
                     handleSubmit();
                   }}
-                   className="btn btn-outline-primary"
+                  className="btn cmnbtn btn_sm btn-outline-primary"
                   color="primary"
                 >
                   Submit
@@ -1087,23 +1088,23 @@ export default function RegisteredCampaign() {
             Commits
           </Typography>
           <div id="modal-modal-description" className=" mt-4" >
-            
-              <div className="d-flex justify-content-between">
-                <DataGrid
-                  rows={commitmentModalData}
-                  columns={commitColumns}
-                  pageSize={10}
-                  getRowId={(row) => row?.selectValue}
-                />
-              </div>
-              <button
-                className="btn btn-outline-primary btn-sm mt-2"
-                onClick={handleClose2}
-                
-              >
-                Cancel
-              </button>
-          
+
+            <div className="card">
+              <DataGrid
+                rows={commitmentModalData}
+                columns={commitColumns}
+                pageSize={10}
+                getRowId={(row) => row?.selectValue}
+              />
+            </div>
+            <button
+              className="btn cmnbtn btn-outline-primary btn_sm mt-2"
+              onClick={handleClose2}
+
+            >
+              Cancel
+            </button>
+
           </div>
         </Box>
       </Modal>
@@ -1136,7 +1137,7 @@ const PlanCreationComponent = ({ row, handlePlan, handleShowPlan }) => {
           <i className="bi bi-send"></i>
         </button>
       ) : (
-        <Button variant="outlined" onClick={() => handleShowPlan(row)}>
+        <Button className="btn cmnbtn btn-outline-primary btn_sm" variant="outlined" onClick={() => handleShowPlan(row)}>
           Show plan
         </Button>
       )}

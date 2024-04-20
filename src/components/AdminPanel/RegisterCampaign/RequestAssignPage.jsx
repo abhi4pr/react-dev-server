@@ -112,17 +112,17 @@ const RequestAssignPage = ({ data, RequestAssign }) => {
     },
   ];
 
-  const handleSelectionChange=(row)=>{
-    
-    const newData=data.filter(item=>{
-      if(row.some(page=>page==item._id)){
+  const handleSelectionChange = (row) => {
+
+    const newData = data.filter(item => {
+      if (row.some(page => page == item._id)) {
         return item
       }
     })
 
     setAcceptAll(newData)
 
-    
+
   }
 
   const handleAcceptAll = async () => {
@@ -137,7 +137,7 @@ const RequestAssignPage = ({ data, RequestAssign }) => {
 
   return (
     <div>
-      <Button variant="contained" onClick={handleAcceptAll}>
+      <Button className="btn cmnbtn btn-primary btn_sm mb-3" variant="contained" onClick={handleAcceptAll}>
         Accept All
       </Button>
       <DataGrid
@@ -147,7 +147,7 @@ const RequestAssignPage = ({ data, RequestAssign }) => {
         rows={processedData}
         columns={columns}
         getRowId={(row) => row._id}
-        
+
       />
     </div>
   );

@@ -11,13 +11,13 @@ import DeleteButton from "../DeleteButton";
 
 const OpsDocMast = () => {
   const { toastAlert } = useGlobalContext();
-  const [docName, setDocName] = useState(""); 
+  const [docName, setDocName] = useState("");
   const [description, setDescription] = useState("");
-  const [documents, setDocuments] = useState([]); 
+  const [documents, setDocuments] = useState([]);
   const [search, setSearch] = useState("");
   const [filterData, setFilterData] = useState([]);
   const [rowData, setRowData] = useState({});
-  const [docNameUpdate, setDocNameUpdate] = useState(""); 
+  const [docNameUpdate, setDocNameUpdate] = useState("");
   const [descriptionUpdate, setDescriptionUpdate] = useState("");
 
   const token = sessionStorage.getItem("token");
@@ -25,9 +25,9 @@ const OpsDocMast = () => {
   const userID = decodedToken.id;
 
   const getData = () => {
-    axios.get(baseUrl + "get_all_doc_mast") 
+    axios.get(baseUrl + "get_all_doc_mast")
       .then((res) => {
-        setDocuments(res.data.data); 
+        setDocuments(res.data.data);
         console.log(res.data.data);
         setFilterData(res.data.data);
       });
@@ -39,30 +39,30 @@ const OpsDocMast = () => {
 
   const handleRowData = (row) => {
     setRowData(row);
-    setDocNameUpdate(row.doc_name); 
+    setDocNameUpdate(row.doc_name);
     setDescriptionUpdate(row.description);
   };
 
   useEffect(() => {
     const result = documents.filter((d) => {
-      return d.doc_name?.toLowerCase().match(search.toLowerCase()); 
+      return d.doc_name?.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
   }, [search]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios.post(baseUrl + "add_doc_mast", { 
-        doc_name: docName, 
-        description: description,
-        created_by: userID
-      })
+    axios.post(baseUrl + "add_doc_mast", {
+      doc_name: docName,
+      description: description,
+      created_by: userID
+    })
       .then(() => {
         toastAlert("Submitted");
         setDocName("");
         setDescription("");
-        getData(); 
-      });   
+        getData();
+      });
   };
 
   const columns = [
@@ -72,81 +72,81 @@ const OpsDocMast = () => {
       sortable: true,
     },
     {
-      name: "Doc Name", 
-      selector: (row) => row.doc_name, 
+      name: "Doc Name",
+      selector: (row) => row.doc_name,
     },
     {
-        name: "Description",
-        selector: (row) => row.description,
-      },
-      {
-        name: "Created By",
-        selector: (row) => row.created_by_name,
-      },
-      {
-        name: "Action",
-        cell: (row) => (
-          <>
-            <button
-              title="Edit"
-              className="btn btn-outline-primary btn-sm user-button"
-              onClick={() => handleRowData(row)}
-              data-toggle="modal" data-target="#myModal"
-            >
-              <FaEdit />{" "}
-            </button>
-            <DeleteButton
-              endpoint="delete_doc_mast" 
-              id={row._id}
-              getData={getData}
-            />
-          </>
-        ),
-      },
+      name: "Description",
+      selector: (row) => row.description,
+    },
+    {
+      name: "Created By",
+      selector: (row) => row.created_by_name,
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <>
+          <button
+            title="Edit"
+            className="btn btn-outline-primary btn-sm user-button"
+            onClick={() => handleRowData(row)}
+            data-toggle="modal" data-target="#myModal"
+          >
+            <FaEdit />{" "}
+          </button>
+          <DeleteButton
+            endpoint="delete_doc_mast"
+            id={row._id}
+            getData={getData}
+          />
+        </>
+      ),
+    },
   ];
 
-  
+
 
   const handleModalUpdate = () => {
-    axios.put(baseUrl + `update_doc_mast/${rowData._id}`, { 
-      doc_name: docNameUpdate, 
+    axios.put(baseUrl + `update_doc_mast/${rowData._id}`, {
+      doc_name: docNameUpdate,
       decription: descriptionUpdate,
       updated_by: userID
     })
-    .then(() => {
-      toastAlert("Successfully Update");
-      getData();
-      setDocNameUpdate("");
-      setDescriptionUpdate("");
-    });
+      .then(() => {
+        toastAlert("Successfully Update");
+        getData();
+        setDocNameUpdate("");
+        setDescriptionUpdate("");
+      });
   };
 
   return (
     <>
       <FormContainer
-        mainTitle="Ops Document Master" 
-        title="Document" 
+        mainTitle="Ops Document Master"
+        title="Document"
         handleSubmit={handleSubmit}
       >
         <FieldContainer
-          label="Doc Name *" 
+          label="Doc Name *"
           value={docName}
           required={true}
           onChange={(e) => setDocName(e.target.value)}
         />
-        
+
         <FieldContainer
           label="Description"
           value={description}
           required={false}
           onChange={(e) => setDescription(e.target.value)}
-        />        
+        />
       </FormContainer>
 
       <div className="card">
         <div className="data_tbl table-responsive">
           <DataTable
-            title="Customer Overview" 
+            title="Customer Overview"
             columns={columns}
             data={filterData}
             fixedHeader
@@ -190,12 +190,12 @@ const OpsDocMast = () => {
               />
             </div>
             <div className="modal-footer">
-              <button type="button" 
-                className="btn btn-primary" 
+              <button type="button"
+                className="btn btn-primary"
                 data-dismiss="modal"
               >Close</button>
-              <button type="button" 
-                className="btn btn-success" 
+              <button type="button"
+                className="btn btn-success"
                 onClick={handleModalUpdate}
                 data-dismiss="modal"
               >Update</button>
@@ -204,7 +204,7 @@ const OpsDocMast = () => {
 
         </div>
       </div>
-      
+
     </>
   );
 };

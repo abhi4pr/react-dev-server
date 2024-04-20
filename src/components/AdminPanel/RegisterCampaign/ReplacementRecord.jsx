@@ -8,7 +8,7 @@ import {
   Autocomplete,
 } from "@mui/material";
 import axios from "axios";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
 
 const style = {
   position: "absolute",
@@ -22,7 +22,7 @@ const style = {
 };
 
 const ReplacementRecord = ({ open, data, handleClose }) => {
-  
+
   const [replacementData, setReplacementData] = useState({});
   const [oldPageData, seteOldPageData] = useState({});
   const [newPageData, seteNewPageData] = useState([]);
@@ -31,7 +31,7 @@ const ReplacementRecord = ({ open, data, handleClose }) => {
   const getRecord = async () => {
     const record = await axios.get(
       // `${baseUrl}`+`replacement/${data.replacement_id._id}`
-      `${baseUrl}`+`replacement/${data.replacement_id}`
+      `${baseUrl}` + `replacement/${data.replacement_id}`
     );
     setReplacementData(record?.data?.data);
   };
@@ -39,7 +39,7 @@ const ReplacementRecord = ({ open, data, handleClose }) => {
   const getPageData = async () => {
     const oldPageData = await axios.get(
       // `${baseUrl}`+`replacement/${data.replacement_id._id}`
-      `${baseUrl}`+`replacement/${data.replacement_id}`
+      `${baseUrl}` + `replacement/${data.replacement_id}`
     );
     seteNewPageData(oldPageData?.data?.data?.newPages);
     setOldData(oldPageData?.data?.data);

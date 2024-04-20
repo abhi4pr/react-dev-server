@@ -359,7 +359,7 @@ export default function RegisterCampaign() {
     // Call other necessary functions like getAllData here
   }, []);
 
-  const handleChangeBrnad = () => {};
+  const handleChangeBrnad = () => { };
 
   const handlePlatfromChange = (index, value) => {
     const updatedpages = [...userName];
@@ -448,7 +448,7 @@ export default function RegisterCampaign() {
         setCampaignModalPayload({ exeCmpName: "", exeRemark: "" });
         setIsModalOpenForCampaign(false);
         getAllData();
-      } catch (error) {}
+      } catch (error) { }
     }
   };
   return (
@@ -456,38 +456,38 @@ export default function RegisterCampaign() {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-          mainTitle="Register Campaign"
-          link="true"
+            mainTitle="Register Campaign"
+            link="true"
           />
-          </div>
-          {/* <h2 className="form-heading">Register Campaign</h2> */}
-          <div className="action_btns" >
-            <Link to="/admin/brandmaster" style={{ marginRight: "5px" }}>
-              <button type="button" className="btn btn-outline-primary btn-sm">
-                Brand Master
-              </button>
-            </Link>
-            <Link to="/admin/overview/agency" style={{ marginRight: "5px" }}>
-              <button type="button" className="btn btn-outline-primary btn-sm">
-                Agency Master
-              </button>
-            </Link>
-            <Link to="/admin/overview/industry" style={{ marginRight: "5px" }}>
-              <button type="button" className="btn btn-outline-primary btn-sm">
-                Industry Master
-              </button>
-            </Link>
-            <Link to="/admin/overview/goal" style={{ marginRight: "5px" }}>
-              <button type="button" className="btn btn-outline-primary btn-sm">
-                Goal Master
-              </button>
-            </Link>
-            <Link to="/admin/contentcreater" style={{ marginRight: "5px" }}>
-              <button type="button" className="btn btn-outline-primary btn-sm">
-                Commitment Master
-              </button>
-            </Link>
-          </div>
+        </div>
+        {/* <h2 className="form-heading">Register Campaign</h2> */}
+        <div className="action_btns" >
+          <Link to="/admin/brandmaster" style={{ marginRight: "5px" }}>
+            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+              Brand Master
+            </button>
+          </Link>
+          <Link to="/admin/overview/agency" style={{ marginRight: "5px" }}>
+            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+              Agency Master
+            </button>
+          </Link>
+          <Link to="/admin/overview/industry" style={{ marginRight: "5px" }}>
+            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+              Industry Master
+            </button>
+          </Link>
+          <Link to="/admin/overview/goal" style={{ marginRight: "5px" }}>
+            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+              Goal Master
+            </button>
+          </Link>
+          <Link to="/admin/contentcreater" style={{ marginRight: "5px" }}>
+            <button type="button" className="btn cmnbtn btn-outline-primary btn_sm">
+              Commitment Master
+            </button>
+          </Link>
+        </div>
       </div>
       < >
         {/* Alert to display when there are validation errors */}
@@ -520,7 +520,7 @@ export default function RegisterCampaign() {
               </div>
               <div className="form-group col-2">
                 <button
-                  className="btn btn-primary mt-2 wid-100"
+                  className="btn btn-primary cmnbtn  mt-2 "
                   onClick={addBrandData}
                 >
                   Add Brand
@@ -545,7 +545,7 @@ export default function RegisterCampaign() {
               </div>
               <div className="form-group col-2">
                 <button
-                  className="btn btn-primary mt-2"
+                  className="btn btn-primary cmnbtn  mt-2"
                   onClick={addCampaignData}
                 >
                   Add Campaign
@@ -593,44 +593,44 @@ export default function RegisterCampaign() {
               </div>
               <div className="form-group col-4">
 
-              <Autocomplete
-                disablePortal
-                id="agency-dropdown"
-                options={
-                  goal?.length > 0 && goal?.map((option) => option?.name)
-                }
-                value={selectedGoal}
-                onChange={handleGoalChange}
-                renderInput={(params) => <TextField {...params} label="Goal" />}
-              />
+                <Autocomplete
+                  disablePortal
+                  id="agency-dropdown"
+                  options={
+                    goal?.length > 0 && goal?.map((option) => option?.name)
+                  }
+                  value={selectedGoal}
+                  onChange={handleGoalChange}
+                  renderInput={(params) => <TextField {...params} label="Goal" />}
+                />
               </div>
               <div className="form-group col-4">
 
-               <TextField
-                label="Hashtag"
-                value={hashtag}
-                onChange={handleHashtagChange}
-                variant="outlined"
-                fullWidth
-              />
+                <TextField
+                  label="Hashtag"
+                  value={hashtag}
+                  onChange={handleHashtagChange}
+                  variant="outlined"
+                  fullWidth
+                />
               </div>
               <div className="form-group col-4">
 
-               <Autocomplete
-                disablePortal
-                id="campaign-closed-by-dropdown"
-                options={
-                  salesUsers?.length > 0 &&
-                  salesUsers?.map((user) => user.user_name)
-                }
-                value={campaignClosedBy}
-                onChange={(event, newValue) => {
-                  setCampaignClosedBy(newValue);
-                }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Campaign Closed By *" />
-                )}
-              />
+                <Autocomplete
+                  disablePortal
+                  id="campaign-closed-by-dropdown"
+                  options={
+                    salesUsers?.length > 0 &&
+                    salesUsers?.map((user) => user.user_name)
+                  }
+                  value={campaignClosedBy}
+                  onChange={(event, newValue) => {
+                    setCampaignClosedBy(newValue);
+                  }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Campaign Closed By *" />
+                  )}
+                />
               </div>
             </Box>
           </Box>
@@ -641,7 +641,7 @@ export default function RegisterCampaign() {
               multiline
               value={campaignDetailing}
               onChange={(e) => setCampaignDetailing(e.target.value)}
-              sx={{   mr:1 }}
+              sx={{ mr: 1 }}
             />
 
             <TextField
@@ -716,15 +716,16 @@ export default function RegisterCampaign() {
             {commitmentOptions.filter(
               (e) => !fields.map((e) => e.selectValue).includes(e)
             ).length > 0 && (
-              <Button
-                variant="outlined"
-                sx={{ mt: 2 }}
-                color="secondary"
-                onClick={handleAddField}
-              >
-                Add Row
-              </Button>
-            )}
+                <Button
+                  variant="outlined"
+                  sx={{ mt: 2 }}
+                  color="secondary"
+                  className="btn btn-primary cmnbtn btn_sm"
+                  onClick={handleAddField}
+                >
+                  Add Row
+                </Button>
+              )}
             {/* <Button
               variant="outlined"
               onClick={togglePageDetails}
@@ -748,7 +749,7 @@ export default function RegisterCampaign() {
           variant="outlined"
           size="large"
           color="secondary"
-          className="btn btn-primary mt-3 mb-3"
+          className="btn btn-primary cmnbtn  mt-3 mb-3"
           disabled={loading}
         >
           {loading ? "Submitting" : "Submit"}

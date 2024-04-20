@@ -58,7 +58,7 @@ const DeleteButton = ({ endpoint, id, getData }) => {
 
   return (
     <div title="Delete" className="icon-1" onClick={handleDelete} type="button">
-      <i className="bi bi-trash3"></i>
+      <i className="bi bi-trash"></i>
     </div>
   );
 };

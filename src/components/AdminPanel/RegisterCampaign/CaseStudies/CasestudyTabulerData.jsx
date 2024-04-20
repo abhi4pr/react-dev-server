@@ -40,7 +40,7 @@ const CasestudyTabulerData = ({
   const [enlargedFileUrl, setEnlargedFileUrl] = useState("");
   const [enlargedFileType, setEnlargedFileType] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
+
   const [filterModel, setFilterModel] = useState({
     items: [
       {
@@ -84,9 +84,9 @@ const CasestudyTabulerData = ({
   };
 
 
-  useEffect(()=>{
-   setNewData(newData )
-  },[brandCategory])
+  useEffect(() => {
+    setNewData(newData)
+  }, [brandCategory])
   const renderEnlargedContent = () => {
     switch (enlargedFileType) {
       case "image":
@@ -115,8 +115,8 @@ const CasestudyTabulerData = ({
     }
   };
 
-  
-  
+
+
   // resizeing columns ---->
   const [columns, setColumns] = useState([
     {
@@ -128,18 +128,18 @@ const CasestudyTabulerData = ({
         return <div>{rowIndex + 1}</div>;
       },
     },
-    
-    
-    
+
+
+
     {
       field: "campaign_purpose",
       headerName: "Campaign",
       width: 180,
       renderCell: (params) => {
         const campName = params.value;
-          const capitalizedCampName =
+        const capitalizedCampName =
           campName.charAt(0).toUpperCase() + campName.slice(1);
-          return <div>{capitalizedCampName}</div>;
+        return <div>{capitalizedCampName}</div>;
       },
     },
     {
@@ -148,18 +148,18 @@ const CasestudyTabulerData = ({
       width: 180,
       renderCell: (params) => {
         const brandName = params.value;
-          const capitalizedBrandName =
-            brandName.charAt(0).toUpperCase() + brandName.slice(1);
-          return <div>{capitalizedBrandName}</div>;
+        const capitalizedBrandName =
+          brandName.charAt(0).toUpperCase() + brandName.slice(1);
+        return <div>{capitalizedBrandName}</div>;
       },
     },
-  
+
     {
       field: "categoryName",
       headerName: "Category",
       width: 180,
       renderCell: (params) => {
-        console.log(brandCategory,"brandcat")
+        console.log(brandCategory, "brandcat")
         const category = brandCategory?.find(
           (cat) => cat.category_id === params.row.brand_category_id
         );
@@ -193,8 +193,8 @@ const CasestudyTabulerData = ({
         return (
           <div className="summary_box text-center ml-auto mr-auto">
             {detail.data_type === "jpg" ||
-            detail.data_type === "png" ||
-            detail.data_type === "jpeg" ? (
+              detail.data_type === "png" ||
+              detail.data_type === "jpeg" ? (
               <div
                 id={`carouselExampleControls_${index}`}
                 className="carousel slide"
@@ -211,14 +211,13 @@ const CasestudyTabulerData = ({
                       <>
                         <div
                           key={index}
-                          className={`carousel-item ${
-                            index === 0 ? "active" : ""
-                          }`}
+                          className={`carousel-item ${index === 0 ? "active" : ""
+                            }`}
                           data-interval="10000"
                         >
                           {filteredItem.data_type === "jpg" ||
-                          filteredItem.data_type === "png" ||
-                          filteredItem.data_type === "jpeg" ? (
+                            filteredItem.data_type === "png" ||
+                            filteredItem.data_type === "jpeg" ? (
                             <img
                               onClick={() =>
                                 handleFileClick(
@@ -530,38 +529,38 @@ const CasestudyTabulerData = ({
       <ResizableHeader field={col.headerName} width={params.colDef.width} />
     ),
   }));
-console.log(brandCategory,"brandCat",brandSubCatData)
+  console.log(brandCategory, "brandCat", brandSubCatData)
   return (
-    <div style={{ height: 400, width: "100%" }}>
+    <>
       {console.log("datagrid rendered")}
-      {brandCategory.length > 0 && brandSubCatData.length >0 &&
-      
-      <DataGrid
-        rows={newData}
-        columns={resizableColumns}
-        pageSize={5}
-        getRowId={(row) => row._id}
-        initialState={{
-          // sorting: {
-          //   sortModel: [{ field: "brand_name", sort: "desc" }],
-          // },
-        }}
-        slots={{ toolbar: CustomToolbar }}
-        slotProps={{
-          panel: {
-            anchorEl: filterButtonEl,
-          },
-          toolbar: {
-            setFilterButtonEl,
-          },
-        }}
-        filterModel={filterModel}
-        onFilterModelChange={(model) => setFilterModel(model)}
-        columnVisibilityModel={columnVisibilityModel}
-        onColumnVisibilityModelChange={(newModel) =>
-          setColumnVisibilityModel(newModel)
-        }
-      />}
+      {brandCategory.length > 0 && brandSubCatData.length > 0 &&
+
+        <DataGrid
+          rows={newData}
+          columns={resizableColumns}
+          pageSize={5}
+          getRowId={(row) => row._id}
+          initialState={{
+            // sorting: {
+            //   sortModel: [{ field: "brand_name", sort: "desc" }],
+            // },
+          }}
+          slots={{ toolbar: CustomToolbar }}
+          slotProps={{
+            panel: {
+              anchorEl: filterButtonEl,
+            },
+            toolbar: {
+              setFilterButtonEl,
+            },
+          }}
+          filterModel={filterModel}
+          onFilterModelChange={(model) => setFilterModel(model)}
+          columnVisibilityModel={columnVisibilityModel}
+          onColumnVisibilityModelChange={(newModel) =>
+            setColumnVisibilityModel(newModel)
+          }
+        />}
 
       <Modal
         isOpen={isModalOpen}
@@ -584,7 +583,7 @@ console.log(brandCategory,"brandCat",brandSubCatData)
       >
         {renderEnlargedContent()}
       </Modal>
-    </div>
+    </>
   );
 };
 

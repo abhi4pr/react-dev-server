@@ -826,20 +826,20 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             renderCell: (params) => {
                 return (
                     <div className="form-group m-0 pt-3 pb-3">
-                    <input
-                        style={{ width: "100%" }}
-                        className="form-control" 
-                        type="number"
-                        min="0"
-                        oninput="validity.valid||(value='');"
-                        value={
-                            params.row.postPerPage !== null
-                                ? params.row.postPerPage
-                                : params.value || ""
-                        }
-                        placeholder={params.row.postPerPage || ""}
-                        onChange={(e) => handlePostPerPageChange(e, params, "post")}
-                    />
+                        <input
+                            style={{ width: "100%" }}
+                            className="form-control"
+                            type="number"
+                            min="0"
+                            oninput="validity.valid||(value='');"
+                            value={
+                                params.row.postPerPage !== null
+                                    ? params.row.postPerPage
+                                    : params.value || ""
+                            }
+                            placeholder={params.row.postPerPage || ""}
+                            onChange={(e) => handlePostPerPageChange(e, params, "post")}
+                        />
                     </div>
                 );
             },
@@ -851,14 +851,14 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             renderCell: (params) => {
                 return (
                     <div className="form-group m-0 pt-3 pb-3">
-                    <input
-                        style={{ width: "100%" }}
-                        className="form-control"
-                        type="number"
-                        min="0.000001"
-                        disabled
-                        placeholder={params.row.postRemaining}
-                    />
+                        <input
+                            style={{ width: "100%" }}
+                            className="form-control"
+                            type="number"
+                            min="0.000001"
+                            disabled
+                            placeholder={params.row.postRemaining}
+                        />
                     </div>
                 );
             },
@@ -871,19 +871,19 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             renderCell: (params) => {
                 return (
                     <div className="form-group m-0 pt-3 pb-3">
-                    <input
-                        style={{ width: "100%" }}
-                        className="form-control"
-                        type="number"
-                        min="0"
-                        value={
-                            params.row.storyPerPage !== null
-                                ? params.row.storyPerPage
-                                : params.value || ""
-                        }
-                        placeholder={params.row.storyPerPage || ""}
-                        onChange={(e) => handlePostPerPageChange(e, params, "story")}
-                    />
+                        <input
+                            style={{ width: "100%" }}
+                            className="form-control"
+                            type="number"
+                            min="0"
+                            value={
+                                params.row.storyPerPage !== null
+                                    ? params.row.storyPerPage
+                                    : params.value || ""
+                            }
+                            placeholder={params.row.storyPerPage || ""}
+                            onChange={(e) => handlePostPerPageChange(e, params, "story")}
+                        />
                     </div>
                 );
             },
@@ -1028,14 +1028,14 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
 
     return (
         <>
-            <div className="card  body-padding ">
-                <div className="row-align gap4">
+            <div className="card  body-padding thm_form gap16">
+                <div className="row-align gap16">
 
                     <TextField className="w-100" label='Plan Name*' onChange={(e) => {
                         setPlanName(e.target.value)
                     }} />
 
-                    <button className=" btn btn-outline-primary" style={{width:"150px"}} onClick={() => {
+                    <button className=" btn cmnbtn btn-outline-primary" onClick={() => {
                         navigate(`/admin/direct_allplan`);
                     }}>
                         All plans
@@ -1074,7 +1074,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                 </>
             </div>
             <div className="card body-padding">
-                <div className="row-align gap4">
+                <div className="row-align gap16">
 
                     <Autocomplete
                         className="w-100"
@@ -1113,13 +1113,13 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                         variant="outlined"
                         onChange={handleSearchChange}
                     />
-                    <div className="row-align w-50 gap4">
-                        <button className="btn btn-outline-primary" onClick={handleCP} style={{ width: "130px" }} >
+                    <div className="row-align w-50 gap16">
+                        <button className="btn btn-outline-primary cmnbtn" onClick={handleCP} style={{ width: "140px" }} >
                             Copy / paste
                         </button>
 
 
-                        <label for="fileInput" class="btn btn-outline-primary" style={{ width: "130px", margin: "0", display: "flex", alignItems: "center", justifyContent: "center" }} >
+                        <label for="fileInput" class="btn btn-outline-primary cmnbtn" style={{ width: "140px", margin: "0", display: "flex", alignItems: "center", justifyContent: "center" }} >
                             upload excel
                         </label>
                         <input
@@ -1134,7 +1134,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                 </div>
             </div>
             <div className="card body-padding">
-                <div className="d-flex justify-content-between gap4">
+                <div className="d-flex justify-content-between gap16">
 
                     <TextField
                         sx={{ width: "50%" }}
@@ -1209,7 +1209,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
                         />
                         <div style={{ display: "flex", justifyContent: "flex-start" }}>
                             <button
-                              className="btn btn-primary mt-5 mb-3"
+                                className="btn cmnbtn btn-primary mt-5 mb-3"
                                 onClick={submitPlan}
                             >
                                 submit
