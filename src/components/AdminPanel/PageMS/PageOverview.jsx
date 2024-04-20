@@ -27,7 +27,6 @@ const PageOverview = () => {
   const { toastAlert } = useGlobalContext();
   const [vendorTypes, setVendorTypes] = useState([]);
   const [filterData, setFilterData] = useState([]);
-  const [platform, setPlatform] = useState([{}]);
   const [cat, setCat] = useState([{}]);
   const [venodr, setVenodr] = useState([{}]);
   const [user, setUser] = useState();
@@ -162,10 +161,9 @@ const PageOverview = () => {
       field: "platform_id",
       headerName: "Platform",
       renderCell: (params) => {
-        let name = platform?.find(
+        let name = platformData?.find(
           (item) => item?._id == params.row.platform_id
         )?.platform_name;
-
         return <div>{name}</div>;
       },
       width: 200,
