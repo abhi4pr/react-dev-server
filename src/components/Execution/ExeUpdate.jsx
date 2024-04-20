@@ -383,846 +383,903 @@ export default function ExeUPdate() {
   return (
     <div>
       <FormContainer
-        mainTitle="Stats History"
+        mainTitle="Update"
         link="/ip-master"
       //   buttonAccess={buttonAccess}
       />
 
 
 
-      <div className="card body-padding flex-row colgap16" >
+      <div className="card" >
+        <div className="card-body sb flex-row">
 
 
-        <Autocomplete
-          className="mb-1 me-3 p-1 "
-          disablePortal
-          id="combo-box-demo"
-          options={dropdownStaticData}
-          onChange={(e, value) => {
-            setStatesFor(value),
-              value !== "Quarterly"
-                ? setStateForIsNotQuater(true)
-                : setStateForIsNotQuater(false);
-            value?.length > 0
-              ? setStateForIsValid(true)
-              : setStateForIsValid(false);
-            value == "Daily" ? setStartDate(dayjs()) : setStartDate("");
-            value == "Daily" ? setEndDate(dayjs()) : setEndDate("");
-          }}
-          value={statesFor}
-          sx={{ width: 300 }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Stats for *"
-              helperText={!stateForIsValid ? "Please select an option" : ""}
-            />
-          )}
-        />
-
-        {statesFor !== "Quarterly" && statesFor !== null && (
-          // stateForIsNotQuater &&
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              className="my-1"
-              label="Start Date *"
-              format="DD/MM/YY"
-              value={startDate}
-              onChange={(newValue) => {
-                handleStartDateChange(newValue);
-                statesFor == "Daily" ? setEndDate(newValue) : "";
+          <h4 className="ml-3 w-25">Stats History</h4>
+          <div className="flex-row  justify-content-end w-100 gap16">
+            <div></div>
+            <Autocomplete
+              sx={{ minWidth: 300, maxWidth: 400 }}
+              className="w-100"
+              disablePortal
+              id="combo-box-demo"
+              options={dropdownStaticData}
+              onChange={(e, value) => {
+                setStatesFor(value),
+                  value !== "Quarterly"
+                    ? setStateForIsNotQuater(true)
+                    : setStateForIsNotQuater(false);
+                value?.length > 0
+                  ? setStateForIsValid(true)
+                  : setStateForIsValid(false);
+                value == "Daily" ? setStartDate(dayjs()) : setStartDate("");
+                value == "Daily" ? setEndDate(dayjs()) : setEndDate("");
               }}
-            />
-          </LocalizationProvider>
-        )}
+              value={statesFor}
 
-        {statesFor !== null && statesFor !== "Quarterly" && (
-          // stateForIsNotQuater &&
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              className="my-1 mx-3"
-              label="End Date *"
-              format="DD/MM/YY"
-              value={endDate}
-              onChange={(newValue) => {
-                handleEndDateChange(newValue);
-              }}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Stats for *"
+                  helperText={!stateForIsValid ? "Please select an option" : ""}
+                />
+              )}
             />
-          </LocalizationProvider>
-        )}
-        {statesFor == "Quarterly" && (
-          // !stateForIsNotQuater &&
-          <Autocomplete
-            className="my-1"
-            disablePortal
-            id="combo-box-demo"
-            options={QuarterStaticData}
-            onChange={(e, value) => {
-              setQuater(value);
-              value?.length > 0
-                ? setQuaterIsValid(true)
-                : setQuaterIsValid(false);
-            }}
-            value={quater}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Quater *"
-              // error={!quaterIsValid}
-              // helperText={!quaterIsValid ? "Please select an option" : ""}
+
+            {statesFor !== "Quarterly" && statesFor !== null && (
+              // stateForIsNotQuater &&
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+
+                  label="Start Date *"
+                  format="DD/MM/YY"
+                  value={startDate}
+                  onChange={(newValue) => {
+                    handleStartDateChange(newValue);
+                    statesFor == "Daily" ? setEndDate(newValue) : "";
+                  }}
+                />
+              </LocalizationProvider>
+            )}
+
+            {statesFor !== null && statesFor !== "Quarterly" && (
+              // stateForIsNotQuater &&
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+
+                  label="End Date *"
+                  format="DD/MM/YY"
+                  value={endDate}
+                  onChange={(newValue) => {
+                    handleEndDateChange(newValue);
+                  }}
+                />
+              </LocalizationProvider>
+            )}
+            {statesFor == "Quarterly" && (
+              // !stateForIsNotQuater &&
+              <Autocomplete
+
+                disablePortal
+                id="combo-box-demo"
+                options={QuarterStaticData}
+                onChange={(e, value) => {
+                  setQuater(value);
+                  value?.length > 0
+                    ? setQuaterIsValid(true)
+                    : setQuaterIsValid(false);
+                }}
+                value={quater}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Quater *"
+                  // error={!quaterIsValid}
+                  // helperText={!quaterIsValid ? "Please select an option" : ""}
+                  />
+                )}
               />
             )}
-          />
-        )}
+          </div>
+        </div>
+
       </div>
+
       <div className="card">
         <div className="card-header">
           <h4 className="card-title">Followers Bifurcation</h4>
 
         </div>
-        <div className="card-body body-padding thm_form gap16 flex-col">
-          <div className="flexCenter colgap16">
-            <TextField
+        <div className="card-body body-padding gap16 flex-col">
+          <div className="row">
+            <div className="col-md-6">
 
-              label="Reach *"
-              type="number"
-              value={reach}
-              onChange={(e) => {
-                e.target.value > 0
-                  ? setReachValidation(true)
-                  : setReachValidation(false),
-                  setReach(e.target.value);
-              }}
-              error={!reachValidation}
-              helperText={
-                !reachValidation ? "Please enter a valid Count" : ""
-              }
-            />
-            <Button
-              component="label"
-              variant="contained"
-              color="primary"
-              className="btn cmnbtn btn-primary"
+              <div className=" flex-col gap16">
+                <TextField
 
-              startIcon={<CloudUploadIcon />}
-              size="small"
-              title="Reach"
-              style={{ flexBasis: 'calc(100% / 3 - 20px)', margin: '10px' }}
-            >
-              Image
-              <VisuallyHiddenInput
-                onChange={(e) => {
-                  const uploadedFile = e.target.files[0];
-                  if (uploadedFile) {
-                    const imageUrl = URL.createObjectURL(uploadedFile);
-                    setReachImgSrc(imageUrl);
-                    setReachImg(uploadedFile);
-                  }
-                }}
-                type="file"
-                accept="image/png, image/jpeg"
-              />
-            </Button>
-
-            {reachImgSrc && (
-              <div className="d-flex thm_pr">
-                <img
-                  style={{ width: "50px", height: "50px" }}
-                  src={reachImgSrc}
-                  className="mt-1"
-                  alt="Uploaded"
-                />{" "}
-                <Button
-
-                  className="btn cmnbtn btn-primary"
-                  size="small"
-                  onClick={() => {
-                    setReachImgSrc(null);
-                    setReachImg(null);
+                  label="Reach *"
+                  type="number"
+                  value={reach}
+                  onChange={(e) => {
+                    e.target.value > 0
+                      ? setReachValidation(true)
+                      : setReachValidation(false),
+                      setReach(e.target.value);
                   }}
-                >
-                  <CloseTwoToneIcon />
-                </Button>
-              </div>
-            )}
-          </div>
-          <div className="flexCenter colgap16">
-
-            <TextField
-              label="Impressions *"
-              type="number"
-              value={impression}
-
-              // fieldGrid={4}
-              onChange={(e) => {
-                e.target.value > 0
-                  ? setImpressionValidation(true)
-                  : setImpressionValidation(false),
-                  setImpression(e.target.value);
-              }}
-              error={!impressionValidation}
-              helperText={
-                !impressionValidation ? "Please enter a valid Count" : ""
-              }
-            />
-            <Button
-              component="label"
-              variant="contained"
-              className="btn cmnbtn btn-primary"
-
-              startIcon={<CloudUploadIcon />}
-              size="small"
-              title="Impression"
-              style={{ flexBasis: 'calc(100% / 3 - 20px)', margin: '10px' }}
-            >
-              Image
-              <VisuallyHiddenInput
-                onChange={(e) => {
-                  const uploadedFile = e.target.files[0];
-                  if (uploadedFile) {
-                    const imageUrl = URL.createObjectURL(uploadedFile);
-                    setImpressionimgSrc(imageUrl);
-                    setImpressionImg(uploadedFile);
+                  error={!reachValidation}
+                  helperText={
+                    !reachValidation ? "Please enter a valid Count" : ""
                   }
-                }}
-                type="file"
-                accept="image/png, image/jpeg"
-              />
-            </Button>
-
-            {impressionimgSrc && (
-              <div className="d-flex thm_pr">
-                <img
-                  style={{ width: "50px", height: "50px" }}
-                  src={impressionimgSrc}
-                  className="mt-1"
-                  alt="Uploaded"
-                />{" "}
-                <Button
-                  size="small"
-                  className="btn cmnbtn btn-primary"
-
-                  onClick={() => {
-                    setImpressionimgSrc(null);
-                    setImpressionImg(null);
-                  }}
-                >
-                  <CloseTwoToneIcon />
-                </Button>
-              </div>
-            )}
-          </div>
-          <div className="flexCenter colgap16">
-
-            <TextField
-              label="Engagement *"
-              type="number"
-
-              value={engagement}
-              // fieldGrid={4}
-              onChange={(e) => {
-                e.target.value > 0
-                  ? setEngagementValidation(true)
-                  : setEndDateIsValid(false),
-                  setEngagement(e.target.value);
-              }}
-              error={!engagementValidation}
-              helperText={
-                !engagementValidation ? "Please enter a valid Count" : ""
-              }
-            />
-            <Button
-              component="label"
-              variant="contained"
-              className="btn cmnbtn btn-primary"
-              startIcon={<CloudUploadIcon />}
-              size="small"
-            >
-              Image
-              <VisuallyHiddenInput
-                onChange={(e) => {
-                  const uploadedFile = e.target.files[0];
-                  if (uploadedFile) {
-                    const imageUrl = URL.createObjectURL(uploadedFile);
-                    setEngagementImgSrc(imageUrl);
-                    setEngagementImg(uploadedFile);
-                  }
-                }}
-                type="file"
-                accept="image/png, image/jpeg"
-              />
-            </Button>
-          </div>
-          {engagementImgSrc && (
-            <div className="flexCenter colgap16 gap16">
-              <img
-                style={{ width: "50px", height: "50px", marginTop: '10px' }}
-                src={engagementImgSrc}
-
-                alt="Uploaded"
-              />
-
-              <Button
-                className="btn cmnbtn btn-primary"
-                size="small"
-                onClick={() => {
-                  setEngagementImgSrc(null);
-                  setEngagementImg(null);
-                }}
-              >
-                <CloseTwoToneIcon />
-              </Button>
-
-            </div>
-          )}
-          <div className="flexCenter colgap16 gap16">
-
-            <TextField
-              label="Story View *"
-              type="number"
-              value={storyView}
-
-              // fieldGrid={4}
-              onChange={(e) => {
-                e.target.value > 0
-                  ? setStoryViewValidation(true)
-                  : setStoryViewValidation(false),
-                  setStoryView(e.target.value);
-              }}
-              error={!storyViewValidation}
-              helperText={
-                !storyViewValidation ? "Please enter a valid Count" : ""
-              }
-            />
-            <Button
-              className="btn cmnbtn btn-primary"
-
-              component="label"
-              variant="contained"
-              startIcon={<CloudUploadIcon />}
-              size="small"
-            >
-              image
-              <VisuallyHiddenInput
-                onChange={(e) => {
-                  const uploadedFile = e.target.files[0];
-                  if (uploadedFile) {
-                    const imageUrl = URL.createObjectURL(uploadedFile);
-                    setStoryViewImgSrc(imageUrl);
-                    setStoryViewImg(uploadedFile);
-                  }
-                }}
-                type="file"
-                accept="image/png, image/jpeg"
-              />
-            </Button>
-            <Button
-              component="label"
-              variant="contained"
-              className="btn cmnbtn btn-primary"
-
-              startIcon={<CloudUploadIcon />}
-              size="small"
-            >
-              Video
-              <VisuallyHiddenInput
-                onChange={(e) => {
-                  const uploadedFile = e.target.files[0];
-                  if (uploadedFile) {
-                    const videoUrl = URL.createObjectURL(uploadedFile);
-                    setStoryViewVideoSrc(videoUrl); // Set the video URL in state for preview
-                    setStoryViewVideo(uploadedFile); // Set the uploaded video in state
-                  }
-                }}
-                type="file"
-                accept="video/mp4,video/avi"
-              />
-            </Button>
-          </div>
-          <div className="flexCenter colgap16">
-
-            <>
-              <LocalizationProvider dateAdapter={AdapterDayjs} style={{ flexBasis: 'calc(100% / 3 - 20px)', margin: '10px' }}>
-                <DatePicker
-                  className="my-1"
-                  label="Story View Date"
-                  format="DD/MM/YY"
-                  value={storyViewDate}
-                  onChange={(newValue) => {
-                    handleStoryViewDateChange(newValue);
-                  }}
-                />
-              </LocalizationProvider>
-            </>
-
-            {storyViewImgSrc && (
-              <div className="d-flex">
-                <img
-                  style={{ height: "50px", width: "50px" }}
-                  src={storyViewImgSrc}
-                  className="mt-1"
-                  alt="Uploaded"
-                />{" "}
-                <Button
-                  size="small"
-                  className="btn cmnbtn btn-primary"
-
-                  onClick={() => {
-                    setStoryViewImgSrc(null);
-                    setStoryViewImg(null);
-                  }}
-                >
-                  <CloseTwoToneIcon />
-                </Button>
-              </div>
-            )}
-            {storyViewVideoSrc && (
-              <div className="d-flex align-items-center">
-                <video
-                  style={{ height: "50px", width: "50px" }}
-                  src={storyViewVideoSrc}
-                  // controls
-                  className="mt-1"
-                  alt="Uploaded Video"
                 />
                 <Button
+                  component="label"
+                  variant="contained"
+                  color="primary"
+                  className="btn cmnbtn btn-wid btn_sm btn-primary"
+
+                  startIcon={<CloudUploadIcon />}
                   size="small"
-                  className="btn cmnbtn btn-primary"
+                  title="Reach"
 
-                  onClick={() => {
-                    setStoryViewVideoSrc(null);
-                    setStoryViewVideo(null);
-                  }}
                 >
-                  <CloseTwoToneIcon />
+                  Image
+                  <VisuallyHiddenInput
+                    onChange={(e) => {
+                      const uploadedFile = e.target.files[0];
+                      if (uploadedFile) {
+                        const imageUrl = URL.createObjectURL(uploadedFile);
+                        setReachImgSrc(imageUrl);
+                        setReachImg(uploadedFile);
+                      }
+                    }}
+                    type="file"
+                    accept="image/png, image/jpeg"
+                  />
                 </Button>
+
+                {reachImgSrc && (
+                  <div className="d-flex thm_pr">
+                    <img
+                      style={{ width: "50px", height: "50px" }}
+                      src={reachImgSrc}
+                      className="mt-1"
+                      alt="Uploaded"
+                    />{" "}
+                    <Button
+
+                      className="btn cmnbtn btn-wid btn_sm btn-primary"
+                      size="small"
+                      onClick={() => {
+                        setReachImgSrc(null);
+                        setReachImg(null);
+                      }}
+                    >
+                      <CloseTwoToneIcon />
+                    </Button>
+                  </div>
+                )}
               </div>
-
-            )}
-            <TextField
-
-              label="Profile Visit"
-              type="number"
-              value={profileVisit}
-              onChange={(e) => setProfileVisit(e.target.value)}
-            />
-          </div>
-          <div>
-
-            <div className="card-title">
-              City
             </div>
+            <div className="col-md-6 mb-4">
+
+              <div className="flex-col gap16">
+
+                <TextField
+                  label="Impressions *"
+                  type="number"
+                  value={impression}
+
+                  // fieldGrid={4}
+                  onChange={(e) => {
+                    e.target.value > 0
+                      ? setImpressionValidation(true)
+                      : setImpressionValidation(false),
+                      setImpression(e.target.value);
+                  }}
+                  error={!impressionValidation}
+                  helperText={
+                    !impressionValidation ? "Please enter a valid Count" : ""
+                  }
+                />
+                <Button
+                  component="label"
+                  variant="contained"
+                  className="btn cmnbtn btn-wid btn_sm btn-primary"
+
+                  startIcon={<CloudUploadIcon />}
+                  size="small"
+                  title="Impression"
+
+                >
+                  Image
+                  <VisuallyHiddenInput
+                    onChange={(e) => {
+                      const uploadedFile = e.target.files[0];
+                      if (uploadedFile) {
+                        const imageUrl = URL.createObjectURL(uploadedFile);
+                        setImpressionimgSrc(imageUrl);
+                        setImpressionImg(uploadedFile);
+                      }
+                    }}
+                    type="file"
+                    accept="image/png, image/jpeg"
+                  />
+                </Button>
+
+                {impressionimgSrc && (
+                  <div className="d-flex thm_pr">
+                    <img
+                      style={{ width: "50px", height: "50px" }}
+                      src={impressionimgSrc}
+                      className="mt-1"
+                      alt="Uploaded"
+                    />{" "}
+                    <Button
+                      size="small"
+                      className="btn cmnbtn btn-wid btn_sm btn-primary"
+
+                      onClick={() => {
+                        setImpressionimgSrc(null);
+                        setImpressionImg(null);
+                      }}
+                    >
+                      <CloseTwoToneIcon />
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6 mb-4">
+              <div className="flex-col gap16">
+
+                <TextField
+                  label="Engagement *"
+                  type="number"
+
+                  value={engagement}
+                  // fieldGrid={4}
+                  onChange={(e) => {
+                    e.target.value > 0
+                      ? setEngagementValidation(true)
+                      : setEndDateIsValid(false),
+                      setEngagement(e.target.value);
+                  }}
+                  error={!engagementValidation}
+                  helperText={
+                    !engagementValidation ? "Please enter a valid Count" : ""
+                  }
+                />
+                <Button
+                  component="label"
+                  variant="contained"
+                  className="btn cmnbtn btn-wid btn_sm btn-primary"
+                  startIcon={<CloudUploadIcon />}
+                  size="small"
+                >
+                  Image
+                  <VisuallyHiddenInput
+                    onChange={(e) => {
+                      const uploadedFile = e.target.files[0];
+                      if (uploadedFile) {
+                        const imageUrl = URL.createObjectURL(uploadedFile);
+                        setEngagementImgSrc(imageUrl);
+                        setEngagementImg(uploadedFile);
+                      }
+                    }}
+                    type="file"
+                    accept="image/png, image/jpeg"
+                  />
+                </Button>
+                {engagementImgSrc && (
+                  <div className="flexCenter colgap16 gap16">
+                    <img
+                      style={{ width: "50px", height: "50px" }}
+                      src={engagementImgSrc}
+
+                      alt="Uploaded"
+                    />
+
+                    <Button
+                      className="btn cmnbtn btn-wid btn_sm btn-primary"
+                      size="small"
+                      onClick={() => {
+                        setEngagementImgSrc(null);
+                        setEngagementImg(null);
+                      }}
+                    >
+                      <CloseTwoToneIcon />
+                    </Button>
+
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="flex-col gap16">
+
+                <TextField
+                  label="Story View *"
+                  type="number"
+                  value={storyView}
+
+                  // fieldGrid={4}
+                  onChange={(e) => {
+                    e.target.value > 0
+                      ? setStoryViewValidation(true)
+                      : setStoryViewValidation(false),
+                      setStoryView(e.target.value);
+                  }}
+                  error={!storyViewValidation}
+                  helperText={
+                    !storyViewValidation ? "Please enter a valid Count" : ""
+                  }
+                />
+                <div className="flex-row  gap16">
+
+                  <Button
+                    className="btn cmnbtn btn-wid btn_sm btn-primary"
+
+                    component="label"
+                    variant="contained"
+                    startIcon={<CloudUploadIcon />}
+                    size="small"
+                  >
+                    image
+                    <VisuallyHiddenInput
+                      onChange={(e) => {
+                        const uploadedFile = e.target.files[0];
+                        if (uploadedFile) {
+                          const imageUrl = URL.createObjectURL(uploadedFile);
+                          setStoryViewImgSrc(imageUrl);
+                          setStoryViewImg(uploadedFile);
+                        }
+                      }}
+                      type="file"
+                      accept="image/png, image/jpeg"
+                    />
+                  </Button>
+                  <Button
+                    component="label"
+                    variant="contained"
+                    className="btn cmnbtn btn-wid btn_sm btn-primary"
+
+                    startIcon={<CloudUploadIcon />}
+                    size="small"
+                  >
+                    Video
+                    <VisuallyHiddenInput
+                      onChange={(e) => {
+                        const uploadedFile = e.target.files[0];
+                        if (uploadedFile) {
+                          const videoUrl = URL.createObjectURL(uploadedFile);
+                          setStoryViewVideoSrc(videoUrl); // Set the video URL in state for preview
+                          setStoryViewVideo(uploadedFile); // Set the uploaded video in state
+                        }
+                      }}
+                      type="file"
+                      accept="video/mp4,video/avi"
+                    />
+                  </Button>
+                </div>
+
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="flexCenter colgap16">
+
+                <>
+                  <LocalizationProvider dateAdapter={AdapterDayjs} >
+                    <DatePicker
+
+                      label="Story View Date"
+                      format="DD/MM/YY"
+                      value={storyViewDate}
+                      onChange={(newValue) => {
+                        handleStoryViewDateChange(newValue);
+                      }}
+                    />
+                  </LocalizationProvider>
+                </>
+
+                {storyViewImgSrc && (
+                  <div className="d-flex">
+                    <img
+                      style={{ height: "50px", width: "50px" }}
+                      src={storyViewImgSrc}
+
+                      alt="Uploaded"
+                    />{" "}
+                    <Button
+                      size="small"
+                      className="btn cmnbtn btn-wid btn_sm btn-primary"
+
+                      onClick={() => {
+                        setStoryViewImgSrc(null);
+                        setStoryViewImg(null);
+                      }}
+                    >
+                      <CloseTwoToneIcon />
+                    </Button>
+                  </div>
+                )}
+                {storyViewVideoSrc && (
+                  <div className="d-flex align-items-center">
+                    <video
+                      style={{ height: "50px", width: "50px" }}
+                      src={storyViewVideoSrc}
+                      // controls
+
+                      alt="Uploaded Video"
+                    />
+                    <Button
+                      size="small"
+                      className="btn cmnbtn btn-wid btn_sm btn-primary"
+
+                      onClick={() => {
+                        setStoryViewVideoSrc(null);
+                        setStoryViewVideo(null);
+                      }}
+                    >
+                      <CloseTwoToneIcon />
+                    </Button>
+                  </div>
+
+                )}
+
+              </div>
+            </div>
+            <div className="col-md-6">
+              <TextField
+                className="w-100"
+                label="Profile Visit"
+                type="number"
+                value={profileVisit}
+                onChange={(e) => setProfileVisit(e.target.value)}
+              />
+            </div>
+
+
 
 
           </div>
         </div>
       </div>
-      <div className="row thm_pr">
-        <div className="card col-md-12 col-lg-3">
-          <div className="card-body">
-            <div className="col-md-3 col-lg-12  my-2">
-
-              <div className="col-md-3 py-1 mb-2  thm_pr">
-
+      <div className="card">
+        <div className="card-header">
+          <h4 className="card-title">City</h4>
+        </div>
+        <div className="card-body">
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Autocomplete
+                  className="w-100"
+                  id="combo-box-demo"
+                  value={city1}
+                  options={cityList.map((city) => city)}
+                  onChange={(e, value) => {
+                    cityCopyValidation(value);
+                    setCity1(value);
+                  }}
+                  sx={{ width: 150 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="City 1" />
+                  )}
+                />
+                <TextField
+                  className="w-50"
+                  type="number"
+                  value={city1Percentage}
+                  onChange={(e) => {
+                    setCity1Percentage(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
               </div>
             </div>
-            <div className="col-md-3 col-lg-12 d-block my-2">
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
 
-            </div>
-            <div className="col-md-3 py-1 mb-2 thm_pr  ">
-
-            </div>
-
-            <div className="col-md-3 col-lg-12 d-block my-2">
-
-            </div>
-            <div className="col-md-3 py-1 mb-2 thm_pr">
-
-            </div>
-            <div className="col-md-3 col-lg-12 d-block my-2">
-
-            </div>
-            <div className="col-md-3 col-lg-12 py-1 mb-2">
-
-
-
-            </div>
-            <div className="col-md-3 col-lg-12 d-block my-2">
-
-            </div>
-          </div>
-        </div>
-
-        <div className="card col-md-12 col-lg-3">
-          <div className="card-body">
-            <label className="mt-3 h6">City</label>
-            <Autocomplete
-              id="combo-box-demo"
-              value={city1}
-              options={cityList.map((city) => city)}
-              onChange={(e, value) => {
-                cityCopyValidation(value);
-                setCity1(value);
-              }}
-              sx={{ width: 150 }}
-              renderInput={(params) => (
-                <TextField {...params} label="City 1" />
-              )}
-            />
-            <TextField
-              className="mb-2 "
-              type="number"
-              value={city1Percentage}
-              onChange={(e) => {
-                setCity1Percentage(e.target.value);
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">%</InputAdornment>
-                ),
-                inputProps: {
-                  min: 0,
-                  max: 100,
-                },
-              }}
-            />
-            <Autocomplete
-              id="combo-box-demo"
-              value={city2}
-              options={cityList.map((city) => city)}
-              onChange={(e, value) => {
-                setCity2(value);
-                cityCopyValidation(value);
-              }}
-              sx={{ width: 150 }}
-              renderInput={(params) => (
-                <TextField {...params} label="City 2" />
-              )}
-            />
-            <TextField
-              className="mb-2"
-              value={city2Percentage}
-              onChange={(e) => {
-                setCity2Percentage(e.target.value);
-              }}
-              type="number"
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">%</InputAdornment>
-                ),
-                inputProps: {
-                  min: 0,
-                  max: 100,
-                },
-              }}
-            />
-            <Autocomplete
-              id="combo-box-demo"
-              value={city3}
-              options={cityList.map((city) => city)}
-              onChange={(e, value) => {
-                setCity3(value);
-                cityCopyValidation(value);
-              }}
-              sx={{ width: 150 }}
-              renderInput={(params) => (
-                <TextField {...params} label="City 3" />
-              )}
-            />
-            <TextField
-              className="mb-2"
-              type="number"
-              value={city3Percentage}
-              onChange={(e) => {
-                setCity3Percentage(e.target.value);
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">%</InputAdornment>
-                ),
-                inputProps: {
-                  min: 0,
-                  max: 100,
-                },
-              }}
-            />
-            <Autocomplete
-              id="combo-box-demo"
-              value={city4}
-              options={cityList.map((city) => city)}
-              onChange={(e, value) => {
-                setCity4(value);
-                cityCopyValidation(value);
-              }}
-              sx={{ width: 150 }}
-              renderInput={(params) => (
-                <TextField {...params} label="City 4" />
-              )}
-            />
-            <TextField
-              className="mb-2"
-              type="number"
-              value={city4Percentage}
-              onChange={(e) => {
-                setCity4Percentage(e.target.value);
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">%</InputAdornment>
-                ),
-                inputProps: {
-                  min: 0,
-                  max: 100,
-                },
-              }}
-            />
-            <Autocomplete
-              id="combo-box-demo"
-              value={city5}
-              options={cityList.map((city) => city)}
-              onChange={(e, value) => {
-                setCity5(value);
-                cityCopyValidation(value);
-              }}
-              sx={{ width: 150 }}
-              renderInput={(params) => (
-                <TextField {...params} label="City 5" />
-              )}
-            />
-            <TextField
-              className="mb-2 "
-              type="number"
-              value={city5Percentage}
-              onChange={(e) => {
-                setCity5Percentage(e.target.value);
-              }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">%</InputAdornment>
-                ),
-                inputProps: {
-                  min: 0,
-                  max: 100,
-                },
-              }}
-            />
-            <div>
-              <Button
-                component="label"
-                variant="contained"
-                startIcon={<CloudUploadIcon />}
-                size="small"
-                className="mt-4"
-                onChange={(e) => {
-                  const uploadedFile = e.target.files[0];
-                  if (uploadedFile) {
-                    const imageUrl = URL.createObjectURL(uploadedFile);
-                    setCityImgSrc(imageUrl);
-                    setCityImg(uploadedFile);
-                  }
-                }}
-              >
-                Image
-                <VisuallyHiddenInput
-                  type="file"
-                  accept="image/png, image/jpeg"
+                <Autocomplete
+                  className="w-100"
+                  id="combo-box-demo"
+                  value={city2}
+                  options={cityList.map((city) => city)}
+                  onChange={(e, value) => {
+                    setCity2(value);
+                    cityCopyValidation(value);
+                  }}
+                  sx={{ width: 150 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="City 2" />
+                  )}
                 />
-              </Button>
+                <TextField
+                  className="w-50"
 
-              {cityImgSrc && (
-                <div className="d-flex align-items-center">
-                  <img
-                    style={{ height: "50px", width: "50px" }}
-                    src={cityImgSrc}
-                    className="mt-1"
-                    alt="Image Uploaded"
-                  />
-                  <Button
-                    size="small"
-                    onClick={() => {
-                      setCityImgSrc(null);
-                      setCityImg(null);
-                    }}
-                  >
-                    <CloseTwoToneIcon />
-                  </Button>
-                </div>
-              )}
+                  value={city2Percentage}
+                  onChange={(e) => {
+                    setCity2Percentage(e.target.value);
+                  }}
+                  type="number"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
+              </div>
             </div>
-          </div>
-        </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Autocomplete
+                  className="w-100"
+                  id="combo-box-demo"
+                  value={city3}
+                  options={cityList.map((city) => city)}
+                  onChange={(e, value) => {
+                    setCity3(value);
+                    cityCopyValidation(value);
+                  }}
+                  sx={{ width: 150 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="City 3" />
+                  )}
+                />
+                <TextField
+                  className="w-50"
 
-        <div className="card col-md-12 col-lg-3">
-          <div className="card-body">
-            <label className="mt-3 h6">Country</label>
-            <div>
-              <Autocomplete
-                id="combo-box-demo"
-                value={country1}
-                options={countryList.map((country) => country.name)}
-                onChange={(e, value) => {
-                  countryCopyValidation(value);
-                  setCountry1(value);
-                }}
-                // sx={{ width: 250 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Country 1" />
-                )}
-              />
-              <TextField
-                // style={{ width: "10%" }}
-                className="mb-2"
-                type="number"
-                value={country1Percentage}
-                onChange={(e) => {
-                  setCountry1Percentage(e.target.value);
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">%</InputAdornment>
-                  ),
-                  inputProps: {
-                    min: 0,
-                    max: 100,
-                  },
-                }}
-              />
-              <Autocomplete
-                disablePortal
-                value={country2}
-                onChange={(e, value) => {
-                  countryCopyValidation(value);
-                  setCountry2(value);
-                }}
-                id="combo-box-demo"
-                options={countryList.map((country) => country.name)}
-                // sx={{ width: 150 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Country 2" />
-                )}
-              />
-              <TextField
-                // style={{ width: "10%" }}
-                className="mb-2"
-                value={country2Percentage}
-                onChange={(e) => {
-                  setCountry2Percentage(e.target.value);
-                }}
-                type="number"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">%</InputAdornment>
-                  ),
-                  inputProps: {
-                    min: 0,
-                    max: 100,
-                  },
-                }}
-              />
-              <Autocomplete
-                disablePortal
-                value={country3}
-                onChange={(e, value) => {
-                  setCountry3(value);
-                  countryCopyValidation(value);
-                }}
-                id="combo-box-demo"
-                options={countryList.map((country) => country.name)}
-                // sx={{ width: 150 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Country 3" />
-                )}
-              />
-              <TextField
-                // style={{ width: "10%" }}
-                className="mb-2"
-                type="number"
-                value={country3Percentage}
-                onChange={(e) => {
-                  setCountry3Percentage(e.target.value);
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">%</InputAdornment>
-                  ),
-                  inputProps: {
-                    min: 0,
-                    max: 100,
-                  },
-                }}
-              />
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={countryList.map((country) => country.name)}
-                value={country4}
-                onChange={(e, value) => {
-                  setCountry4(value);
-                  countryCopyValidation(value);
-                }}
-                // sx={{ width: 150 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Country 4" />
-                )}
-              />
-              <TextField
-                // style={{ width: "10%" }}
-                className="mb-2"
-                type="number"
-                value={country4Percentage}
-                onChange={(e) => {
-                  setCountry4Percentage(e.target.value);
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">%</InputAdornment>
-                  ),
-                  inputProps: {
-                    min: 0,
-                    max: 100,
-                  },
-                }}
-              />
-              <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={countryList.map((country) => country.name)}
-                value={country5}
-                onChange={(e, value) => {
-                  setCountry5(value);
-                  countryCopyValidation(value);
-                }}
-                // sx={{ width: 150 }}
-                renderInput={(params) => (
-                  <TextField {...params} label="Country 5" />
-                )}
-              />
-              <TextField
-                // style={{ width: "10%" }}
-                className="me-2"
-                type="number"
-                value={country5Percentage}
-                onChange={(e) => {
-                  setCountry5Percentage(e.target.value);
-                }}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">%</InputAdornment>
-                  ),
-                  inputProps: {
-                    min: 0,
-                    max: 100,
-                  },
-                }}
-              />
-              <div>
+                  type="number"
+                  value={city3Percentage}
+                  onChange={(e) => {
+                    setCity3Percentage(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Autocomplete
+                  className="w-100"
+                  id="combo-box-demo"
+                  value={city4}
+                  options={cityList.map((city) => city)}
+                  onChange={(e, value) => {
+                    setCity4(value);
+                    cityCopyValidation(value);
+                  }}
+                  sx={{ width: 150 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="City 4" />
+                  )}
+                />
+                <TextField
+                  className="w-50"
+
+                  type="number"
+                  value={city4Percentage}
+                  onChange={(e) => {
+                    setCity4Percentage(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Autocomplete
+                  className="w-100"
+                  id="combo-box-demo"
+                  value={city5}
+                  options={cityList.map((city) => city)}
+                  onChange={(e, value) => {
+                    setCity5(value);
+                    cityCopyValidation(value);
+                  }}
+                  sx={{ width: 150 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="City 5" />
+                  )}
+                />
+                <TextField
+                  className="w-50"
+                  type="number"
+                  value={city5Percentage}
+                  onChange={(e) => {
+                    setCity5Percentage(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
                 <Button
                   component="label"
                   variant="contained"
                   startIcon={<CloudUploadIcon />}
                   size="small"
-                  className="mt-3"
+                  className="btn cmnbtn btn-wid btn_sm btn-primary"
+                  onChange={(e) => {
+                    const uploadedFile = e.target.files[0];
+                    if (uploadedFile) {
+                      const imageUrl = URL.createObjectURL(uploadedFile);
+                      setCityImgSrc(imageUrl);
+                      setCityImg(uploadedFile);
+                    }
+                  }}
+                >
+                  Image
+                  <VisuallyHiddenInput
+                    type="file"
+                    accept="image/png, image/jpeg"
+                  />
+                </Button>
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                {cityImgSrc && (
+                  <div className="d-flex align-items-center">
+                    <img
+                      style={{ height: "50px", width: "50px" }}
+                      src={cityImgSrc}
+                      className="mt-1"
+                      alt="Image Uploaded"
+                    />
+                    <Button
+                      size="small"
+                      className="btn cmnbtn btn-wid btn_sm btn-primary"
+                      onClick={() => {
+                        setCityImgSrc(null);
+                        setCityImg(null);
+                      }}
+                    >
+                      <CloseTwoToneIcon />
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div className="card">
+        <div className="card-header">
+          <h4 className="card-title">Country</h4>
+        </div>
+        <div className="card-body">
+          <div className="row">
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Autocomplete
+                  className="w-100"
+                  id="combo-box-demo"
+                  value={country1}
+                  options={countryList.map((country) => country.name)}
+                  onChange={(e, value) => {
+                    countryCopyValidation(value);
+                    setCountry1(value);
+                  }}
+                  // sx={{ width: 250 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Country 1" />
+                  )}
+                />
+                <TextField
+                  // style={{ width: "10%" }}
+                  className="w-50"
+
+                  type="number"
+                  value={country1Percentage}
+                  onChange={(e) => {
+                    setCountry1Percentage(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Autocomplete
+                  disablePortal
+                  value={country2}
+                  onChange={(e, value) => {
+                    countryCopyValidation(value);
+                    setCountry2(value);
+                  }}
+                  id="combo-box-demo"
+                  options={countryList.map((country) => country.name)}
+                  // sx={{ width: 150 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Country 2" />
+                  )}
+                />
+                <TextField
+                  // style={{ width: "10%" }}
+                  className="w-50"
+
+                  value={country2Percentage}
+                  onChange={(e) => {
+                    setCountry2Percentage(e.target.value);
+                  }}
+                  type="number"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Autocomplete
+                  disablePortal
+                  value={country3}
+                  onChange={(e, value) => {
+                    setCountry3(value);
+                    countryCopyValidation(value);
+                  }}
+                  id="combo-box-demo"
+                  options={countryList.map((country) => country.name)}
+                  // sx={{ width: 150 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Country 3" />
+                  )}
+                />
+                <TextField
+                  // style={{ width: "10%" }}
+                  className="w-50"
+
+                  type="number"
+                  value={country3Percentage}
+                  onChange={(e) => {
+                    setCountry3Percentage(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={countryList.map((country) => country.name)}
+                  value={country4}
+                  onChange={(e, value) => {
+                    setCountry4(value);
+                    countryCopyValidation(value);
+                  }}
+                  // sx={{ width: 150 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Country 4" />
+                  )}
+                />
+                <TextField
+                  // style={{ width: "10%" }}
+                  className="w-50"
+
+                  type="number"
+                  value={country4Percentage}
+                  onChange={(e) => {
+                    setCountry4Percentage(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Autocomplete
+                  disablePortal
+                  id="combo-box-demo"
+                  options={countryList.map((country) => country.name)}
+                  value={country5}
+                  onChange={(e, value) => {
+                    setCountry5(value);
+                    countryCopyValidation(value);
+                  }}
+                  // sx={{ width: 150 }}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Country 5" />
+                  )}
+                />
+                <TextField
+                  // style={{ width: "10%" }}
+                  className="w-50"
+                  type="number"
+                  value={country5Percentage}
+                  onChange={(e) => {
+                    setCountry5Percentage(e.target.value);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">%</InputAdornment>
+                    ),
+                    inputProps: {
+                      min: 0,
+                      max: 100,
+                    },
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-6 mb-3">
+              <div className="flex-col gap16">
+                <Button
+                  component="label"
+                  variant="contained"
+                  startIcon={<CloudUploadIcon />}
+                  size="small"
+                  className="btn cmnbtn btn-wid btn_sm btn-primary"
                   onChange={(e) => {
                     const uploadedFile = e.target.files[0];
                     if (uploadedFile) {
@@ -1248,6 +1305,7 @@ export default function ExeUPdate() {
                     />
                     <Button
                       size="small"
+                      className="btn cmnbtn btn-wid btn_sm btn-primary"
                       onClick={() => {
                         setCountryImg(null);
                         setCountryImgSrc(null);
@@ -1261,157 +1319,160 @@ export default function ExeUPdate() {
             </div>
           </div>
         </div>
-
-        <div className="col-md-12 col-lg-3">
-          <div className="card">
-            <div className="card-body">
-              <label className="h6 d-block">Age Group</label>
-              <div className="col-md-3 col-lg-12 my-2">
-                <TextField
-                  label="13-17"
-                  type="number"
-                  className="mx-1"
-                  value={age1Percentage}
-                  onChange={(e) =>
-                    handlePercentageChange(e.target.value, setAge1Percentage)
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                    inputProps: {
-                      min: 0,
-                      max: 100,
-                    },
-                  }}
-                />
-              </div>
-              <div className="col-md-3 col-lg-12 my-2">
-                <TextField
-                  label="18-24"
-                  type="number"
-                  className="mx-1"
-                  value={age2Percentage}
-                  onChange={(e) =>
-                    handlePercentageChange(e.target.value, setAge2Percentage)
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                    inputProps: {
-                      min: 0,
-                      max: 100,
-                    },
-                  }}
-                />
-              </div>
-              <div className="col-md-3 col-lg-12 my-2">
-                <TextField
-                  label="25-34"
-                  type="number"
-                  className="mx-1"
-                  value={age3Percentage}
-                  onChange={(e) =>
-                    handlePercentageChange(e.target.value, setAge3Percentage)
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                    inputProps: {
-                      min: 0,
-                      max: 100,
-                    },
-                  }}
-                />
-              </div>
-              <div className="col-md-3 col-lg-12 my-2">
-                <TextField
-                  label="35-44"
-                  type="number"
-                  className="mx-1"
-                  value={age4Percentage}
-                  onChange={(e) =>
-                    handlePercentageChange(e.target.value, setAge4Percentage)
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                    inputProps: {
-                      min: 0,
-                      max: 100,
-                    },
-                  }}
-                />
-              </div>
-              <div className="col-md-3 col-lg-12 my-2">
-                <TextField
-                  label="45-54"
-                  type="number"
-                  className="mx-1"
-                  value={age5Percentage}
-                  onChange={(e) =>
-                    handlePercentageChange(e.target.value, setAge5Percentage)
-                  }
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                    inputProps: {
-                      min: 0,
-                      max: 100,
-                    },
-                  }}
-                />
-              </div>
-              <div className="col-md-3 col-lg-12 my-2">
-                <TextField
-                  label="55-64"
-                  type="number"
-                  className="mx-1"
-                  value={age6percentage}
-                  onChange={(e) => {
-                    setAge6Percentage(e.target.value);
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                    inputProps: {
-                      min: 0,
-                      max: 100,
-                    },
-                  }}
-                />
-              </div>
-              <div className="col-md-3 col-lg-12 my-2">
-                <TextField
-                  label="65+"
-                  type="number"
-                  className="mx-1"
-                  value={age7Percentage}
-                  onChange={(e) => {
-                    setAge7Percentage(e.target.value);
-                  }}
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">%</InputAdornment>
-                    ),
-                    inputProps: {
-                      min: 0,
-                      max: 100,
-                    },
-                  }}
-                />
-              </div>
+      </div>
+      <div className="card">
+        <div className="card-header">
+          <h4 className="card-title">Age Group</h4>
+        </div>
+        <div className="card-body">
+          <div className="row">
+            <div className="col-sm-4 mb-3">
+              <TextField
+                label="13-17"
+                type="number"
+                className="w-100"
+                value={age1Percentage}
+                onChange={(e) =>
+                  handlePercentageChange(e.target.value, setAge1Percentage)
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">%</InputAdornment>
+                  ),
+                  inputProps: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+              />
+            </div>
+            <div className="col-sm-4 mb-3">
+              <TextField
+                label="18-24"
+                type="number"
+                className="w-100"
+                value={age2Percentage}
+                onChange={(e) =>
+                  handlePercentageChange(e.target.value, setAge2Percentage)
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">%</InputAdornment>
+                  ),
+                  inputProps: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+              />
+            </div>
+            <div className="col-sm-4 mb-3">
+              <TextField
+                label="25-34"
+                type="number"
+                className="w-100"
+                value={age3Percentage}
+                onChange={(e) =>
+                  handlePercentageChange(e.target.value, setAge3Percentage)
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">%</InputAdornment>
+                  ),
+                  inputProps: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+              />
+            </div>
+            <div className="col-sm-4 mb-3">
+              <TextField
+                label="35-44"
+                type="number"
+                className="w-100"
+                value={age4Percentage}
+                onChange={(e) =>
+                  handlePercentageChange(e.target.value, setAge4Percentage)
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">%</InputAdornment>
+                  ),
+                  inputProps: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+              />
+            </div>
+            <div className="col-sm-4 mb-3">
+              <TextField
+                label="45-54"
+                type="number"
+                className="w-100"
+                value={age5Percentage}
+                onChange={(e) =>
+                  handlePercentageChange(e.target.value, setAge5Percentage)
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">%</InputAdornment>
+                  ),
+                  inputProps: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+              />
+            </div>
+            <div className="col-sm-4 mb-3">
+              <TextField
+                label="55-64"
+                type="number"
+                className="w-100"
+                value={age6percentage}
+                onChange={(e) => {
+                  setAge6Percentage(e.target.value);
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">%</InputAdornment>
+                  ),
+                  inputProps: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+              />
+            </div>
+            <div className="col-sm-4 mb-3">
+              <TextField
+                label="65+"
+                type="number"
+                className="w-100"
+                value={age7Percentage}
+                onChange={(e) => {
+                  setAge7Percentage(e.target.value);
+                }}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">%</InputAdornment>
+                  ),
+                  inputProps: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+              />
+            </div>
+            <div className="col-sm-4 mb-3">
               <Button
                 component="label"
                 variant="contained"
                 startIcon={<CloudUploadIcon />}
                 size="small"
-                className="mt-4"
+                className="btn cmnbtn btn-wid btn_sm btn-primary"
                 onChange={(e) => {
                   const uploadedFile = e.target.files[0];
                   if (uploadedFile) {
@@ -1438,6 +1499,7 @@ export default function ExeUPdate() {
                   />
                   <Button
                     size="small"
+                    className="btn cmnbtn btn-wid btn_sm btn-primary"
                     onClick={() => {
                       setAgeImgSrc(null);
                       setAgeImg(null);
@@ -1448,61 +1510,78 @@ export default function ExeUPdate() {
                 </div>
               )}
             </div>
-            {totalPercentage < 98 && (
-              <span style={{ color: "red" }}>
-                Total percentage must be at least 98%
-              </span>
-            )}
-            {totalPercentage > 100 && (
-              <span style={{ color: "red" }}>
-                Total percentage cannot exceed 100%
-              </span>
-            )}
+            <div className="col-sm-4 mb-3">
+              {totalPercentage < 98 && (
+                <span style={{ color: "red" }}>
+                  Total percentage must be at least 98%
+                </span>
+              )}
+              {totalPercentage > 100 && (
+                <span style={{ color: "red" }}>
+                  Total percentage cannot exceed 100%
+                </span>
+              )}
+            </div>
           </div>
-          <div></div>
-          <label className="h6 d-block">Gender</label>
-          <TextField
-            label="Male"
-            type="number"
-            value={malePercentage}
-            onChange={(e) => {
-              setMalePercentage(e.target.value);
-            }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">%</InputAdornment>,
-              inputProps: {
-                min: 0,
-                max: 100,
-              },
-            }}
-          />
-          <TextField
-            label="Female"
-            type="number"
-            className="mx-3"
-            value={femalePercentage}
-            onChange={(e) => {
-              setFemalePercentage(e.target.value);
-            }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">%</InputAdornment>,
-              inputProps: {
-                min: 0,
-                max: 100,
-              },
-            }}
-          />
         </div>
       </div>
+      <div className="card">
+        <div className="card-header">
+          <h4 className="card-title">Gender</h4>
+        </div>
+        <div className="card-body">
+          <div className="row">
+            <div className="col-sm-4">
+              <TextField
+                label="Male"
+                className="w-100"
 
+                type="number"
+                value={malePercentage}
+                onChange={(e) => {
+                  setMalePercentage(e.target.value);
+                }}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                  inputProps: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+              />
+            </div>
+            <div className="col-sm-4">
+              <TextField
+                label="Female"
+                type="number"
+                className="w-100"
+                value={femalePercentage}
+                onChange={(e) => {
+                  setFemalePercentage(e.target.value);
+                }}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">%</InputAdornment>,
+                  inputProps: {
+                    min: 0,
+                    max: 100,
+                  },
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
       <button
         onClick={saveStats}
         type="button"
-        className="btn btn-success"
+        className="btn cmnbtn btn-success mt-3 mb-3"
         data-dismiss="modal"
       >
         Save
       </button>
+
+
+
     </div>
   );
 }

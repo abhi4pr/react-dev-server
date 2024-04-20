@@ -122,7 +122,7 @@ const CaseStudyplateform = () => {
 
   return (
     <div>
-      <div className="master-card-css" style={{ width: "80%", margin: "0 0 0 10%" }}>
+      <div style={{ width: "80%", margin: "0 0 0 10%" }}>
         <UserNav />
 
         <FormContainer
@@ -133,26 +133,27 @@ const CaseStudyplateform = () => {
         >
 
         </FormContainer>
-        <div className="card body-padding">
-          <div className="d-flex" style={{ justifyContent: "space-between", alignItems: "center" }}>
+        <div className="card body-padding sb flex-row">
 
-            <FieldContainer
-              label="Platform Name"
-              value={platformName}
-              onChange={(e) => setPlatformName(e.target.value)}
-            />
-            <button className="btn cmnbtn btn-outline-primary">Submit</button>
-          </div>
+
+          <FieldContainer
+            label="Platform Name"
+            value={platformName}
+            onChange={(e) => setPlatformName(e.target.value)}
+          />
+          <button className="btn cmnbtn btn-outline-primary">Submit</button>
+
         </div>
 
         <div className="card">
           <div className="card-header
           sb">
             <h6> Modal Overview</h6>
+
             <input
               type="text"
               placeholder="Search here"
-              className="w-50 form-control"
+              className="w-25 form-control"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

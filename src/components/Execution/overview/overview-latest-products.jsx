@@ -23,34 +23,48 @@ import { DataGrid } from "@mui/x-data-grid";
 
 
 export const OverviewLatestProducts = (props) => {
-  const { products , sx } = props;
-  let newrow=[
-    
+  const { products, sx } = props;
+  let newrow = [
+
   ]
-const columns =[{field:'id',headerName:"ID" ,width:"20"},{field:'cust_name' ,headerName:"Customer Name",width:"150"},{field:'salaes_bookig_data',headerName:"Sales Booking Date",width:"150"}]
-const topFiveProducts = products?.filter(e=>e.execution_status==0).slice(0, 5);
+  const columns = [{ field: 'id', headerName: "ID", width: "20" }, { field: 'cust_name', headerName: "Customer Name", width: "150" }, { field: 'salaes_bookig_data', headerName: "Sales Booking Date", width: "150" }]
+  const topFiveProducts = products?.filter(e => e.execution_status == 0).slice(0, 5);
   return (
-    <Card sx={sx}>
-      <CardHeader title="Latest Pending" />
-      <DataGrid
-        rows={topFiveProducts}
-        columns={columns}
-        getRowId={(row) => row.id}
-      />
-      <Divider />
-      <CardActions sx={{ justifyContent: 'flex-end' }}>
-        <Link to="/admin/exeinventory">
-          <Button
-            color="inherit"
-            endIcon={<SvgIcon fontSize="small"><ArrowRightIcon /></SvgIcon>}
-            size="small"
-            variant="text"
-          >
-            View all
-          </Button>
-        </Link>
-      </CardActions>
-    </Card>
+    <div className="card">
+      <div className="card-header">
+        <div className="card-title">
+          Latest Pending
+        </div>
+      </div>
+      <div className="card-body nt-head fx-head thm_table">
+
+        <DataGrid
+          rows={topFiveProducts}
+          columns={columns}
+          getRowId={(row) => row.id}
+        />
+      </div>
+      <div className="card-footer sb">
+
+        <div></div>
+        <div className="pack">
+
+          <Link to="/admin/exeinventory">
+
+            <Button
+              color="inherit"
+              className="btn btn-primary cmnbtn  btn_sm"
+              endIcon={<SvgIcon fontSize="small"><ArrowRightIcon /></SvgIcon>}
+              size="small"
+              variant="text"
+            >
+              View all
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+    </div>
   );
 };
 

@@ -80,24 +80,24 @@ export default function BrandMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <button className="btn btn-outline-primary btn-sm" onClick={handleClick}>
+        <button className="btn cmnbtn btn-outline-primary btn_sm" onClick={handleClick}>
           Create Brand
         </button>
 
         <button
-          className="btn btn-outline-primary btn-sm"
+          className="btn cmnbtn btn-outline-primary btn_sm"
           onClick={() => navigate("/admin/categorymaster")}
         >
           Create Category
         </button>
         <button
-          className="btn btn-outline-primary btn-sm"
+          className="btn cmnbtn btn-outline-primary btn_sm"
           onClick={() => navigate("/admin/subcategory")}
         >
           Create Subcategory
         </button>
         <button
-          className="btn btn-outline-primary btn-sm"
+          className="btn cmnbtn btn-outline-primary btn_sm"
           onClick={() => navigate("/case-platform")}
         >
           Platfrom
@@ -414,7 +414,7 @@ export default function BrandMaster() {
           <div className="card-tittle">
             Overview
           </div>
-          <div className="pack w-25">
+          <div className="w-25">
 
             <FieldContainer
               fieldGrid={12}

@@ -19,8 +19,8 @@ const ExcusionCampaign = () => {
   const [requestAssign, SetRequestAssign] = useState([]);
   const [campaignOptions, setCampaignOptions] = useState([])
   const [selectedCampaign, setSelectedCampaign] = useState(null)
-  const [unfilteredAssignment,setUnfilteredAssignment]=useState([])
- 
+  const [unfilteredAssignment, setUnfilteredAssignment] = useState([])
+
 
   const getExpertee = async () => {
     const expert = await axios.get(
@@ -37,7 +37,7 @@ const ExcusionCampaign = () => {
       }
     }
     // setCampaignOptions(x)    
-  }, [unfilteredAssignment,requestAssign,selectedCampaign])
+  }, [unfilteredAssignment, requestAssign, selectedCampaign])
 
   useEffect(() => {
     getExpertee();
@@ -48,15 +48,15 @@ const ExcusionCampaign = () => {
       `${baseUrl}` + `preassignment/${decodedToken.id}`
     );
     const data = reqAss?.data?.data.filter((item) => {
-      if(!selectedCampaign){
+      if (!selectedCampaign) {
         return item.status == "pending"
 
-      }else return (item.status == "pending" && item.campaignId==selectedCampaign)
+      } else return (item.status == "pending" && item.campaignId == selectedCampaign)
     })
-    const data2= reqAss?.data?.data.filter((item) => {
-        return item.status == "pending"
+    const data2 = reqAss?.data?.data.filter((item) => {
+      return item.status == "pending"
     })
-    
+
     setUnfilteredAssignment(data2)
     SetRequestAssign(data);
   };
@@ -79,37 +79,40 @@ const ExcusionCampaign = () => {
 
     const assigned = getData?.data?.data.filter(
       (item) => {
-        if(!selectedCampaign){
-         return item.ass_status == "assigned" || item.ass_status == "pending"
-        }else  {
-          return (item.ass_status == "assigned" || item.ass_status == "pending") && item.campaignId==selectedCampaign
+        if (!selectedCampaign) {
+          return item.ass_status == "assigned" || item.ass_status == "pending"
+        } else {
+          return (item.ass_status == "assigned" || item.ass_status == "pending") && item.campaignId == selectedCampaign
         }
       }
     ).reverse()
-    
+
     const excuted = getData?.data?.data.filter(
       (item) => {
-        if(!selectedCampaign){
-         return item.ass_status == "executed"
-        }else  {
-          return item.ass_status == "executed"  && item.campaignId==selectedCampaign
-        }}
+        if (!selectedCampaign) {
+          return item.ass_status == "executed"
+        } else {
+          return item.ass_status == "executed" && item.campaignId == selectedCampaign
+        }
+      }
     ).reverse();
     const verified = getData?.data?.data.filter(
       (item) => {
-        if(!selectedCampaign){
-         return item.ass_status == "verified"
-        }else  {
-          return item.ass_status == "verified"  && item.campaignId==selectedCampaign
-        }}
+        if (!selectedCampaign) {
+          return item.ass_status == "verified"
+        } else {
+          return item.ass_status == "verified" && item.campaignId == selectedCampaign
+        }
+      }
     ).reverse();
     const rejected = getData?.data?.data.filter(
       (item) => {
-        if(!selectedCampaign){
-         return item.ass_status == "rejected"
-        }else  {
-          return item.ass_status == "rejected"  && item.campaignId==selectedCampaign
-        }}
+        if (!selectedCampaign) {
+          return item.ass_status == "rejected"
+        } else {
+          return item.ass_status == "rejected" && item.campaignId == selectedCampaign
+        }
+      }
     ).reverse();
     setAssignmentData(assigned);
     // setPendingData(pending);
@@ -176,7 +179,7 @@ const ExcusionCampaign = () => {
   ];
 
   return (
-    <>
+    <div>
       <FormContainer
         submitButton={false}
         mainTitle="Execution Campaign"
@@ -185,25 +188,48 @@ const ExcusionCampaign = () => {
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
         onAccordionButtonClick={handleAccordionButtonClick}
+        link={true}
       >
-        <Autocomplete
-          id="campaigns"
-          options={campaignOptions}
-          getOptionLabel={(option) => option.campaignName}
-          className={option=>option.campaignId}
-          style={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Select Campaign" variant="outlined" />}
-          onChange={(e,value) => {
-            setSelectedCampaign(value.campaignId)
-          }}
-        />
-        {activeAccordionIndex === 0 && tab1}
-        {activeAccordionIndex === 1 && tab2}
-        {activeAccordionIndex === 2 && tab3}
-        {activeAccordionIndex === 3 && tab4}
-        {activeAccordionIndex === 4 && tab5}
+
+
       </FormContainer>
-    </>
+      <div className="tab">
+        {
+          accordionButtons.map((button, index) => (
+            <div className={`named-tab ${activeAccordionIndex === index ? "active-tab" : ""}`} onClick={() => handleAccordionButtonClick(index)}>
+              {button}
+            </div>
+          ))
+        }
+      </div>
+      <div className="card">
+        <div className="card-header sb">
+          <div className="card-title">
+            Execution Campaign
+          </div>
+          <div className="pack w-75">
+            <Autocomplete
+              id="campaigns"
+              options={campaignOptions}
+              getOptionLabel={(option) => option.campaignName}
+              className={option => option.campaignId}
+              style={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Select Campaign" variant="outlined" />}
+              onChange={(e, value) => {
+                setSelectedCampaign(value.campaignId)
+              }}
+            />
+          </div>
+        </div>
+        <div className="card-body thm_table fx-head nt-head">
+          {activeAccordionIndex === 0 && tab1}
+          {activeAccordionIndex === 1 && tab2}
+          {activeAccordionIndex === 2 && tab3}
+          {activeAccordionIndex === 3 && tab4}
+          {activeAccordionIndex === 4 && tab5}
+        </div>
+      </div>
+    </div>
   );
 };
 

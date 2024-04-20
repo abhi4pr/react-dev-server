@@ -26,49 +26,58 @@ const statusMap = {
   refunded: "error",
 };
 
-export const OverviewLatestOrders = ({products,sx}) => {
+export const OverviewLatestOrders = ({ products, sx }) => {
   // const { products , sx } = props;
-  const columns =[{field:'id',headerName:"ID" ,width:"20"},{field:'cust_name' ,headerName:"Customer Name",width:"150"},{field:'sale_booking_date',headerName:"Sales Booking Date",width:"150"},{field:'execution_status',headerName:"Status",width:"150",renderCell: (params) => {
-    return params.row.execution_status == "1" ? (
-      <Button
-        size="small"
-        color="success"
-        variant="outlined"
+  const columns = [{ field: 'id', headerName: "ID", width: "20" }, { field: 'cust_name', headerName: "Customer Name", width: "150" }, { field: 'sale_booking_date', headerName: "Sales Booking Date", width: "150" }, {
+    field: 'execution_status', headerName: "Status", width: "150", renderCell: (params) => {
+      return params.row.execution_status == "1" ? (
+        <Button
+          size="small"
+          color="success"
+          className="btn btn-outline-primary cmnbtn  btn_sm"
+          variant="outlined"
         // fontSize="inherit"
-      >
-        Done
-      </Button>
-    ) : params.row.execution_status =="2" ? (
-      <Button
-        size="small"
-        color="success"
-        variant="outlined"
+        >
+          Done
+        </Button>
+      ) : params.row.execution_status == "2" ? (
+        <Button
+          size="small"
+          color="success"
+          variant="outlined"
+          className="btn btn-outline-primary cmnbtn  btn_sm"
+
         // fontSize="inherit"
-      >
-        Accepted
-      </Button>
-    ) : params.row.execution_status == "0" ? (
-      <Button
-        size="small"
-        color="default" // You can choose the appropriate color for "Pending"
-        variant="outlined"
+        >
+          Accepted
+        </Button>
+      ) : params.row.execution_status == "0" ? (
+        <Button
+          size="small"
+          className="btn btn-outline-primary cmnbtn  btn_sm"
+
+          color="default" // You can choose the appropriate color for "Pending"
+          variant="outlined"
         // fontSize="inherit"
-      >
-        Pending
-      </Button>
-    ) : (
-      <Button
-        size="small"
-        color="error"
-        variant="outlined"
-        fontSize="inherit"
-      >
-        Rejected
-      </Button>
-    );
-    
-  }}]
-const topFiveProducts = products.filter(e=>e.execution_status==1).slice(0, 5);
+        >
+          Pending
+        </Button>
+      ) : (
+        <Button
+          size="small"
+          color="error"
+          className="btn btn-outline-danger cmnbtn  btn_sm"
+
+          variant="outlined"
+          fontSize="inherit"
+        >
+          Rejected
+        </Button>
+      );
+
+    }
+  }]
+  const topFiveProducts = products.filter(e => e.execution_status == 1).slice(0, 5);
   // const { orders = [], sx } = props;
   // const columns = [
   //   { field: "id", headerName: "ID" },
@@ -79,27 +88,37 @@ const topFiveProducts = products.filter(e=>e.execution_status==1).slice(0, 5);
   //   { field: "status", headerName: "Status" },
   // ];
   return (
-    <Card sx={sx}>
-    <CardHeader title="Latest Executed" />
-    <DataGrid
-      rows={topFiveProducts}
-      columns={columns}
-      getRowId={(row) => row.id}
-    />
-    <Divider />
-    <CardActions sx={{ justifyContent: 'flex-end' }}>
-      <Link to="/admin/exeinventory">
-        <Button
-          color="inherit"
-          endIcon={<SvgIcon fontSize="small"><ArrowRightIcon /></SvgIcon>}
-          size="small"
-          variant="text"
-        >
-          View all
-        </Button>
-      </Link>
-    </CardActions>
-  </Card>
+    <div className="card">
+      <div className="card-header">
+        <div className="card-title">
+          Latest Executed
+        </div>
+      </div>
+      <div className="card-body nt-head fx-head thm_table">
+        <DataGrid
+          rows={topFiveProducts}
+          columns={columns}
+          getRowId={(row) => row.id}
+        />
+      </div>
+      <div className="card-footer sb">
+        <div></div>
+        <div className="pack">
+          <Link to="/admin/exeinventory">
+            <Button
+              className="btn btn-primary cmnbtn  btn_sm"
+              color="inherit"
+              endIcon={<SvgIcon fontSize="small"><ArrowRightIcon /></SvgIcon>}
+              size="small"
+              variant="text"
+            >
+              View all
+            </Button>
+          </Link>
+        </div>
+      </div>
+
+    </div>
   );
 };
 

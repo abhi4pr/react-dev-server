@@ -24,6 +24,10 @@
   --white: #fff;
   --color-white: #fff;
   --bg-white: #fff;
+  --Gray-Color-600: #D0D5DD;
+  --Gray-Color-400: #475467;
+  --brown: #5D1A0B;
+  --green: #03482A;
   --radiusS: 8px;
   --radiusM: 12px;
   --radiusL: 24px;
@@ -2416,7 +2420,7 @@ pre code {
   /* padding: 0!important; */
   /* padding: 0 0 0 10px !important; */
   box-shadow: none !important;
-  padding: 0 0 0 0px !important;
+  padding: 0 0 0 10px !important;
 }
 
 .css-1d8u07g-MuiInputBase-root-MuiOutlinedInput-root,
@@ -2597,7 +2601,7 @@ select.form-control:focus::-ms-value {
   background-color: transparent;
   background-clip: padding-box;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radiusM);
   transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
@@ -6014,6 +6018,7 @@ body.sidebar-toggled .topbarBrand {
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
+  margin-bottom: 24px;
 
   .named-tab {
     display: flex;
@@ -6286,6 +6291,26 @@ body.sidebar-toggled .topbarBrand {
   }
 }
 
+.css-13cymwt-control,
+.css-t3ipsp-control,
+.css-16xfy0z-control {
+  overflow: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+}
+
+.css-13cymwt-control-webkit-scrollbar {
+  display: none;
+}
+
+.css-4xgw5l-IndicatorsContainer2 {
+  right: 0;
+  top: 5px;
+  position: sticky;
+  height: 35px;
+}
+
 .accordion {
   overflow-anchor: none;
 }
@@ -6340,7 +6365,7 @@ body.sidebar-toggled .topbarBrand {
     min-height: 35px !important;
     height: 30px !important;
     border-radius: 7px !important;
-    width: 300px !important;
+    min-width: 300px !important;
   }
 
   .css-vnubik-MuiFormLabel-root-MuiInputLabel-root,
@@ -15132,11 +15157,12 @@ body.sidebar-toggled .sidebar_toggle .footer_cprgt {
 }
 
 .rdt_TableHeadRow .rdt_TableCol:nth-last-child(1),
-/* .rdt_TableRow .rdt_TableCell:nth-last-child(1) {
+.rdt_TableRow .rdt_TableCell:nth-last-child(1) {
   justify-content: center;
   min-width: 12.5%;
   max-width: 12.5%;
-} */
+}
+
 .sc-ikkxIA,
 .clxJSV {
   display: none !important;
@@ -15795,4 +15821,122 @@ body[theme="dark"] .blurBg {
 .gap16 {
   display: flex;
   gap: 16px;
+}
+
+.op-exe-das-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: 100%;
+  border-radius: 15px !important;
+  background: var(--body-bg) !important;
+  box-shadow: 5px 5px 1px 2px #672700;
+  margin-bottom: 0px;
+
+  .title-line {
+    display: flex;
+    width: 100%;
+    padding: 30px 20px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+  }
+
+  .title-count {
+    display: flex;
+    width: 100%;
+    padding: 10px 40px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-top: 2px solid var(--Gray-Color-600);
+
+    .scroller-tag {
+
+      text-align: center;
+      font-size: 40px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+    }
+
+    .title-tag {
+
+
+      font-size: 18px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+
+    }
+
+    .complete-txt {
+      color: var(--green);
+    }
+
+    .ongoing-txt {
+      color: var(--brown);
+    }
+
+    .pending-txt {
+      color: var(--Gray-Color-400);
+    }
+  }
+}
+
+.card-head-title {
+  color: #333745;
+
+  font-size: 21px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+
+
+}
+
+.op-das {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-direction: row;
+
+  .op-das-btn {
+    display: flex;
+    padding: 7px 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 4px;
+    border: 0.6px solid #D5D5D5;
+
+    color: rgba(43, 48, 52, 0.40);
+    text-align: right;
+
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 573;
+    line-height: 10px;
+    /* 62.5% */
+  }
+
+  .op-das-act {
+    background: #4379EE;
+    color: var(--bg-white) !important;
+    border: #003e8a !important;
+  }
+}
+
+.btn-wid {
+  max-width: max-content !important;
 }

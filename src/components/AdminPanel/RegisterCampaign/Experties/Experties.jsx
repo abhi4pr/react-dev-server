@@ -110,7 +110,7 @@ const Experties = () => {
   };
 
   return (
-    <>
+    <div>
       <FormContainer mainTitle=" Expert" link="flase" />
 
       <div className="card body-padding">
@@ -190,13 +190,13 @@ const Experties = () => {
             {/* <button className="btn btn-primary" onClick={handleSubmit}>
             Submit
           </button> */}
-            <button onClick={handleSubmit} className="btn btn-outline-primary">
+            <button onClick={handleSubmit} className="btn cmnbtn btn-outline-primary">
               Submit
             </button>
           </div>
         </FormControl>
       </div>
-    </>
+    </div>
   );
 };
 

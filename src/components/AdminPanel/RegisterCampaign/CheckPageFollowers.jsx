@@ -127,7 +127,7 @@ export default function CheckPageFollowers() {
         
         <div className="pack gap4">
         <button
-          className="btn btn-outline-primary btn-sm"
+          className="btn btn-outline-primary cmnbtn btn_sm"
          
           onClick={handleUploadClick}
           >
@@ -143,13 +143,13 @@ export default function CheckPageFollowers() {
         <button
           
           onClick={createExcelTemplate}
-          className="btn btn-outline-primary btn-sm"
+          className="btn btn-outline-primary cmnbtn btn_sm"
           >
           Template
         </button>
         </div>
         </div>
-        <div className="card-body body-padding" style={{height:"max-content",maxHeight:"700px"}}>
+        <div className="card-body thm_table fx-head body-padding">
         <DataGrid
         rows={addSerialNumber(followerData)}
         columns={columns}

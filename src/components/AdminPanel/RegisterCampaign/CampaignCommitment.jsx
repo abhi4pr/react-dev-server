@@ -21,13 +21,13 @@ import {
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useGlobalContext } from "../../../Context/Context";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
 import FormContainer from "../FormContainer";
 
 export const toolbarStyles = {
   display: 'flex',
-  justifyContent: 'flex-end', 
-  padding:"10px"
+  justifyContent: 'flex-end',
+  padding: "10px"
 };
 export default function CampaignCommitment() {
   const { toastAlert, toastError } = useGlobalContext();
@@ -48,7 +48,7 @@ export default function CampaignCommitment() {
     // exeHashTag: "",
     exeRemark: "",
   });
-  const url = baseUrl+"exe_campaign";
+  const url = baseUrl + "exe_campaign";
 
   function EditToolbar() {
     const handleClick = () => {
@@ -57,7 +57,7 @@ export default function CampaignCommitment() {
     return (
       <GridToolbarContainer style={toolbarStyles}>
         <button
-          className="btn btn-outline-primary"
+          className="btn cmnbtb btn_sm btn-outline-primary"
           onClick={handleClick}
         >
           create campaign
@@ -257,47 +257,47 @@ export default function CampaignCommitment() {
   }, [searchInput, rows]);
 
   return (
-    <div className="master-card-css">
-    <FormContainer
-    mainTitle={"Campaign Commitment"}
-    link={true}
-    submitButton={false}
-    />
-     <div className="card">
-      <div className="card-header sb">
-      <div></div>
-      <TextField
-        label="Search"
-        variant="outlined"
-        value={searchInput}
-        onChange={(e) => setSearchInput(e.target.value)}
-        style={{ marginBottom: "10px" }}
+    <div>
+      <FormContainer
+        mainTitle={"Campaign Commitment"}
+        link={true}
+        submitButton={false}
       />
-     
-      </div>
-      <div className="card-body body-padding">
+      <div className="card">
+        <div className="card-header sb">
+          <div className="card-title">  Campaign Overview</div>
+          <TextField
+            label="Search"
+            variant="outlined"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
 
-      
-
-      <Box>
-        <DataGrid
-          rows={filteredRows}
-          columns={columns}
-          editMode="row"
-          getRowId={(row) => row.exeCmpId}
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
-          slots={{
-            toolbar: EditToolbar,
-          }}
-          slotProps={{
-            toolbar: { setRows, setRowModesModel },
-          }}
           />
-      </Box>
-          </div>
-         </div>
+
+        </div>
+        <div className="card-body body-padding">
+
+
+
+
+          <DataGrid
+            rows={filteredRows}
+            columns={columns}
+            editMode="row"
+            getRowId={(row) => row.exeCmpId}
+            rowModesModel={rowModesModel}
+            onRowModesModelChange={handleRowModesModelChange}
+            onRowEditStop={handleRowEditStop}
+            slots={{
+              toolbar: EditToolbar,
+            }}
+            slotProps={{
+              toolbar: { setRows, setRowModesModel },
+            }}
+          />
+
+        </div>
+      </div>
 
       {/* AddRecordModal post data */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -324,7 +324,7 @@ export default function CampaignCommitment() {
                   </div>
                 )}
               </>
-{/* 
+              {/* 
               <TextField
                 id="outlined-password-input"
                 label="Hash Tag"
@@ -433,19 +433,19 @@ export default function CampaignCommitment() {
           <DialogActions>
             <div className="d-flex sb w-100">
 
-            <button
-              onClick={() => setIsDeleteConfirmationOpen(false)}
-              className="btn btn-outline-primary btn-sm"
+              <button
+                onClick={() => setIsDeleteConfirmationOpen(false)}
+                className="btn btn-outline-primary btn-sm"
               >
-              Cancel
-            </button>
-            <button
-              onClick={handleConfirmDelete}
-              className="btn btn-outline-danger btn-sm"
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="btn btn-outline-danger btn-sm"
               >
-              Delete
-            </button>
-              </div>
+                Delete
+              </button>
+            </div>
           </DialogActions>
         </Dialog>
       </>

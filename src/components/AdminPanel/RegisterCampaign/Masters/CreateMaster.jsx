@@ -3,12 +3,12 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../../../Context/Context";
-import {baseUrl} from '../../../../utils/config'
+import { baseUrl } from '../../../../utils/config'
 import FormContainer from "../../FormContainer";
 
 const CreateMaster = ({ name, data }) => {
   const { toastAlert, toastError } = useGlobalContext();
-  const url = baseUrl+"";
+  const url = baseUrl + "";
   const navigate = useNavigate();
   const [payload, setPayload] = useState({});
   const [errors, setErrors] = useState({});
@@ -33,7 +33,7 @@ const CreateMaster = ({ name, data }) => {
   const handleSubmit = async () => {
     for (let field of data) {
       if ((field.required && !payload[field.payload]) ||
-          (field.validation && !field.validation.test(payload[field.payload]))) {
+        (field.validation && !field.validation.test(payload[field.payload]))) {
         toastError(`Invalid ${field.label}`);
         return;
       }
@@ -64,16 +64,16 @@ const CreateMaster = ({ name, data }) => {
     }
   };
 
- 
+
   console.log(payload);
   return (
-    <div className="master-card-css">
+    <div>
       <FormContainer mainTitle={`Create ${name}`}
-      link={"true"}
-      submitButton={false}
-      
+        link={"true"}
+        submitButton={false}
+
       />
-      
+
       <div className="card body-padding">
         <Grid container spacing={2}>
           {data &&
@@ -84,8 +84,8 @@ const CreateMaster = ({ name, data }) => {
                   onChange={changeHandler}
                   label={
                     field.required ? `${field.label} *` : field.label
-                  }                  error={!!errors[field.payload]}
-                helperText={errors[field.payload]}
+                  } error={!!errors[field.payload]}
+                  helperText={errors[field.payload]}
                   sx={{ mt: 0.5 }}
                   fullWidth
                 />
@@ -93,14 +93,14 @@ const CreateMaster = ({ name, data }) => {
             ))}
         </Grid>
 
-        
-      </div>
-        <div className="pack">
 
-          <button className="btn btn-outline-primary" onClick={handleSubmit}>
-            submit
-          </button>
-        </div>
+      </div>
+      <div className="pack">
+
+        <button className="btn cmnbtn  btn-outline-primary" onClick={handleSubmit}>
+          submit
+        </button>
+      </div>
     </div>
   );
 };

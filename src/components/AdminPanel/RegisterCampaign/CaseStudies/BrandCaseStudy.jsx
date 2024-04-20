@@ -835,7 +835,9 @@ const BrandCaseStudy = () => {
   return (
     <>
       <div className="full_page_content container">
+
         <UserNav />
+        <div className="card"></div>
         <FormContainer
           mainTitle="Case Study"
           title="Case Study"
@@ -873,7 +875,7 @@ const BrandCaseStudy = () => {
               onChange={handleSarcasmFileChange}
               fieldGrid={4}
               required={false}
-              // required={false}
+            // required={false}
             />
             <FieldContainer
               label="No Logo *"
@@ -884,7 +886,7 @@ const BrandCaseStudy = () => {
               onChange={handleNologoFileChange}
               fieldGrid={4}
               required={false}
-              // required={logoVsCf ?false:true}
+            // required={logoVsCf ?false:true}
             />
           </>
           <div className="form-group col-xl-4">
@@ -942,7 +944,7 @@ const BrandCaseStudy = () => {
                   setDataBrand(data.data.data);
                 }}
                 required={false}
-                // required
+              // required
               />
               <Button
                 title="Add Category"
@@ -971,7 +973,7 @@ const BrandCaseStudy = () => {
                 setDesignedBy(e.value);
               }}
               required={false}
-              // required
+            // required
             />
           </div>
           <>
@@ -1178,7 +1180,7 @@ const BrandCaseStudy = () => {
             </div>
             <div className="form-group col-xl-4">
               <label className="form-label">
-                Public Usage <sup style={{ color: "red" }}></sup>
+                Public Usage <sup style={{ color: "red", }}></sup>
               </label>
               <Select
                 className="formSelect"
@@ -1206,9 +1208,9 @@ const BrandCaseStudy = () => {
                 <div className="summary_cardrow brand_img_row">
                   <div className="col summary_box brand_img_box col140">
                     {detail.fileType === "jpg" ||
-                    detail.fileType === "jpeg" ||
-                    detail.fileType === "png" ||
-                    detail.fileType === "gif" ? (
+                      detail.fileType === "jpeg" ||
+                      detail.fileType === "png" ||
+                      detail.fileType === "gif" ? (
                       images[index] && (
                         <img
                           onClick={() =>
@@ -1362,36 +1364,15 @@ const BrandCaseStudy = () => {
             ))} */}
             {mmcDetails.length > 0
               ? mmcDetails.map((detail, index) => (
-                  <div key={index} className="summary_card brand_img_item">
-                    <div className="summary_cardrow brand_img_row">
-                      <div className="col summary_box brand_img_box col140">
-                        {detail.fileType === "jpg" ||
+                <div key={index} className="summary_card brand_img_item">
+                  <div className="summary_cardrow brand_img_row">
+                    <div className="col summary_box brand_img_box col140">
+                      {detail.fileType === "jpg" ||
                         detail.fileType === "jpeg" ||
                         detail.fileType === "png" ||
                         detail.fileType === "gif" ? (
-                          mmcImages[index] && (
-                            <img
-                              onClick={() =>
-                                setOpenReviewDisalog({
-                                  open: true,
-                                  image: URL.createObjectURL(mmcImages[index]),
-                                  detail: detail,
-                                })
-                              }
-                              className="brandimg_icon"
-                              src={URL.createObjectURL(mmcImages[index])}
-                              alt={`Image ${index + 1}`}
-                              style={{
-                                width: "45%",
-                                height: "auto",
-                                border: "none",
-                                overflow: "hidden",
-                              }}
-                            />
-                          )
-                        ) : (
-                          <div
-                            className="file_icon"
+                        mmcImages[index] && (
+                          <img
                             onClick={() =>
                               setOpenReviewDisalog({
                                 open: true,
@@ -1399,44 +1380,65 @@ const BrandCaseStudy = () => {
                                 detail: detail,
                               })
                             }
-                          >
-                            {renderFileIcon(
-                              detail.fileType,
-                              URL.createObjectURL(mmcImages[index]),
-                              detail
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      <div className="col summary_box brand_img_box col140">
-                        <h4>
-                          <span>Extension:</span>
-                          {detail.fileType}
-                        </h4>
-                      </div>
-                      <div className="col summary_box brand_img_box col140">
-                        <h4>
-                          <span>Size:</span>
-                          {detail.sizeInMB}MB
-                        </h4>
-                      </div>
-                      <div className="col summary_box brand_img_box col140">
-                        <h4>
-                          <span>Date:</span>
-                          {currentDate}
-                        </h4>
-                      </div>
-                      <button
-                        onClick={() => {
-                          delteMMCRowData(index);
-                        }}
-                        className="btn btn-sm btn-dengor me-2"
-                      >
-                        <CloseTwoTone />
-                      </button>
+                            className="brandimg_icon"
+                            src={URL.createObjectURL(mmcImages[index])}
+                            alt={`Image ${index + 1}`}
+                            style={{
+                              width: "45%",
+                              height: "auto",
+                              border: "none",
+                              overflow: "hidden",
+                            }}
+                          />
+                        )
+                      ) : (
+                        <div
+                          className="file_icon"
+                          onClick={() =>
+                            setOpenReviewDisalog({
+                              open: true,
+                              image: URL.createObjectURL(mmcImages[index]),
+                              detail: detail,
+                            })
+                          }
+                        >
+                          {renderFileIcon(
+                            detail.fileType,
+                            URL.createObjectURL(mmcImages[index]),
+                            detail
+                          )}
+                        </div>
+                      )}
                     </div>
+                    <div className="col summary_box brand_img_box col140">
+                      <h4>
+                        <span>Extension:</span>
+                        {detail.fileType}
+                      </h4>
+                    </div>
+                    <div className="col summary_box brand_img_box col140">
+                      <h4>
+                        <span>Size:</span>
+                        {detail.sizeInMB}MB
+                      </h4>
+                    </div>
+                    <div className="col summary_box brand_img_box col140">
+                      <h4>
+                        <span>Date:</span>
+                        {currentDate}
+                      </h4>
+                    </div>
+                    <button
+                      onClick={() => {
+                        delteMMCRowData(index);
+                      }}
+                      className="btn btn-sm btn-dengor me-2"
+                    >
+                      <CloseTwoTone />
+                    </button>
                   </div>
-                ))
+                </div>
+              ))
               : ""}
           </div>
 
@@ -1449,9 +1451,9 @@ const BrandCaseStudy = () => {
                 <div className="summary_cardrow brand_img_row">
                   <div className="col summary_box brand_img_box col140">
                     {detail.fileType === "jpg" ||
-                    detail.fileType === "jpeg" ||
-                    detail.fileType === "png" ||
-                    detail.fileType === "gif" ? (
+                      detail.fileType === "jpeg" ||
+                      detail.fileType === "png" ||
+                      detail.fileType === "gif" ? (
                       sarcasmImages[index] && (
                         <img
                           onClick={() =>
@@ -1530,9 +1532,9 @@ const BrandCaseStudy = () => {
                 <div className="summary_cardrow brand_img_row">
                   <div className="col summary_box brand_img_box col140">
                     {detail.fileType === "jpg" ||
-                    detail.fileType === "jpeg" ||
-                    detail.fileType === "png" ||
-                    detail.fileType === "gif" ? (
+                      detail.fileType === "jpeg" ||
+                      detail.fileType === "png" ||
+                      detail.fileType === "gif" ? (
                       nologoImages[index] && (
                         <img
                           onClick={() =>
@@ -1633,9 +1635,10 @@ const BrandCaseStudy = () => {
         <Button
           type="submit"
           variant="contained"
+          className="btn cmnbtn btn-primary"
           disabled={isLoading}
           onClick={handleSubmit}
-          // style={{ width: "20%", marginLeft: "1%" }}
+        // style={{ width: "20%", marginLeft: "1%" }}
         >
           {isLoading ? "Please wait data uploading..." : "Submit"}
         </Button>

@@ -26,19 +26,37 @@ export default function CampignAdmin() {
     "Assigned",
   ];
   return (
-    <FormContainer
-      submitButton={false}
-      mainTitle="Campaign Admin"
-      title="Campaign Admin"
-      accordionButtons={accordionButtons}
-      activeAccordionIndex={activeAccordionIndex}
-      onAccordionButtonClick={handleAccordionButtonClick}
-    >
-      {activeAccordionIndex === 0 && tab1}
-      {activeAccordionIndex === 1 && tab2}
-      {activeAccordionIndex === 2 && tab3}
-      {activeAccordionIndex === 3 && tab4}
-      {activeAccordionIndex === 4 && tab5}
-    </FormContainer>
+    <div>
+
+      <FormContainer
+        submitButton={false}
+        mainTitle="Campaign Admin"
+        title="Campaign Admin"
+        accordionButtons={accordionButtons}
+        activeAccordionIndex={activeAccordionIndex}
+        onAccordionButtonClick={handleAccordionButtonClick}
+        link={true}
+      >
+
+      </FormContainer>
+      <div className="tab">
+        {
+          accordionButtons.map((button, index) => (
+            <div className={`named-tab ${activeAccordionIndex === index ? "active-tab" : ""}`} onClick={() => handleAccordionButtonClick(index)}>
+              {button}
+            </div>
+          ))
+        }
+      </div>
+      <div className="card">
+        <div className="card-body fx-head nt-head">
+          {activeAccordionIndex === 0 && tab1}
+          {activeAccordionIndex === 1 && tab2}
+          {activeAccordionIndex === 2 && tab3}
+          {activeAccordionIndex === 3 && tab4}
+          {activeAccordionIndex === 4 && tab5}
+        </div>
+      </div>
+    </div>
   );
 }
