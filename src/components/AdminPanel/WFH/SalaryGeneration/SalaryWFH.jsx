@@ -1208,17 +1208,15 @@ const SalaryWFH = () => {
                 Array.isArray(deptSalary) &&
                 deptSalary.some((d) => d.dept === option.dept_id);
 
-              const className = `btn ${
-                department === option.dept_id
-                  ? "btn-primary"
-                  : isDeptInSalary
-                  ? "btn-success"
-                  : "btn-outline-primary"
-              }`;
-
               return (
                 <div
-                  className="card hover body-padding"
+                  className={`card hover body-padding ${
+                    department === option.dept_id
+                      ? "btn-primary"
+                      : isDeptInSalary
+                      ? "btn-success"
+                      : "btn-outline-primary"
+                  }`}
                   style={{
                     height: "100px",
                     minWidth: "300px",

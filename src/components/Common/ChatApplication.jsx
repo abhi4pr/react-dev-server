@@ -49,8 +49,6 @@ const ChatApplication = () => {
     setData(res?.data?.data);
   };
 
-
-
   const getChattingUserData = async () => {
     try {
       const res = await axios.get(`${baseUrl}chat/${loginUserId}`);
@@ -90,7 +88,7 @@ const ChatApplication = () => {
         userFromChatId: loginUserId,
         userToChatId: idData?.value?.user_id,
       });
-      console.log(response?.data?.data, "idData ddddddddddddddddddd>>>");
+      // console.log(response?.data?.data, "idData ddddddddddddddddddd>>>");
       if (response.status === 200) {
         setChatIdData(response?.data?.data?._id);
         setSelectedItem(idData?.value);
@@ -103,7 +101,7 @@ const ChatApplication = () => {
     }
   };
 
-  console.log(chattingUserData, "CHAT APPPLICATION COMPONENT ");
+  // console.log(chattingUserData, "CHAT APPPLICATION COMPONENT ");
   return (
     <>
       {!open && (

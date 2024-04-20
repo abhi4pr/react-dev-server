@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./ShowData.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import { RiLoginBoxLine } from "react-icons/ri";
 import FormContainer from "../FormContainer";
@@ -19,6 +19,7 @@ import Swal from "sweetalert2";
 import { baseUrl } from "../../../utils/config";
 
 const UserOverview = () => {
+  const { id } = useParams();
   const whatsappApi = WhatsappAPI();
   const { toastAlert } = useGlobalContext();
   const [activeButton, setActiveButton] = useState(2);
@@ -105,6 +106,30 @@ const UserOverview = () => {
     setIsSummaryModal(true);
     SummaryData(userId);
   };
+  const [reJoinModalOpen, setRejoinModalOpen] = useState(false);
+  const [reJoinDate, setReJoinDate] = useState("");
+  const [rejoinID, setRejoinID] = useState("");
+  const reJoinClose = () => {
+    setRejoinModalOpen(false);
+  };
+  const handleReJoin = (id) => {
+    setRejoinModalOpen(true);
+    setRejoinID(id);
+  };
+  const handleSubmitReJoin = async () => {
+    if (!reJoinDate || reJoinDate == "") {
+      toastAlert("ReJoin Date is Required");
+    }
+    try {
+      await axios.put(`${baseUrl}` + `rejoin_user`, {
+        user_id: rejoinID,
+        joining_date: reJoinDate,
+      });
+      reJoinClose();
+      getData();
+    } catch {}
+  };
+
   const SummaryData = (userId) => {
     axios
       .get(`${baseUrl}` + `get_single_user_update_history/${userId}`)
@@ -183,8 +208,20 @@ const UserOverview = () => {
       const data = response.data.data;
 
       setDatas(data);
-      setFilterData(data.filter((d) => d.user_status == "Active"));
       setTransferToUser(data);
+
+      if (id == "Active") {
+        setFilterData(data.filter((d) => d.user_status == "Active"));
+      }
+      if (id == "WFO") {
+        setFilterData(data.filter((d) => d.job_type == "WFO"));
+      }
+      if (id == "WFH") {
+        setFilterData(data.filter((d) => d.job_type == "WFH"));
+      }
+      if (id == "WFHD") {
+        setFilterData(data.filter((d) => d.job_type == "WFHD"));
+      }
     } catch (error) {
       throw new Error(error);
     } finally {
@@ -536,6 +573,23 @@ const UserOverview = () => {
         </>
       ),
     },
+
+    {
+      field: "Re-Join",
+      headerName: "Re-Join",
+      width: 100,
+      renderCell: (params) =>
+        params.row.user_status === "Exit" && (
+          <Button
+            variant="contained"
+            color="error"
+            onClick={() => handleReJoin(params.row.user_id)}
+          >
+            Re-Join
+          </Button>
+        ),
+    },
+
     // {
     //   field: "User Map",
     //   headerName: "User Map",
@@ -655,6 +709,18 @@ const UserOverview = () => {
               Dashboard
             </button>
           </Link>
+          {contextData && contextData[2] && contextData[2].view_value === 1 && (
+            <Link className="collapse-item" to="/admin/object-overview">
+              <button type="button" className="btn btn-outline-warning btn-sm">
+                Objects Auth
+              </button>
+            </Link>
+          )}
+          <Link className="collapse-item" to="/admin/jobType">
+            <button type="button" className="btn btn-outline-primary btn-sm">
+              Job Type
+            </button>
+          </Link>
           <Link to="/admin/billing-overview">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Billing{" "}
@@ -665,12 +731,6 @@ const UserOverview = () => {
               Hobbies
             </button>
           </Link>
-          {/* <Link to={`/sim-overview/${0}`}>
-            <button type="button" className="btn btn-outline-primary btn-sm">
-              Asset
-            </button>
-          </Link> */}
-
           <Link to="/admin/reason">
             <button type="button" className="btn btn-outline-primary btn-sm">
               Reason
@@ -689,13 +749,6 @@ const UserOverview = () => {
               </button>
             </Link>
           )}
-          {/* {contextData && contextData[3] && contextData[3].view_value === 1 && (
-            <Link to="/admin/sub-department-overview">
-              <button type="button" className="btn btn-outline-primary btn-sm">
-                Sub Department
-              </button>
-            </Link>
-          )} */}
           {contextData &&
             contextData[10] &&
             contextData[10].view_value === 1 && (
@@ -1287,6 +1340,54 @@ const UserOverview = () => {
             highlightOnHover
           />
         </>
+      </Modal>
+
+      {/* Re-Join Modal here  */}
+      <Modal
+        isOpen={reJoinModalOpen}
+        onRequestClose={reJoinClose}
+        style={{
+          content: {
+            width: "30%",
+            height: "40%",
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        {/* {selectedRow && ( */}
+
+        <div>
+          <div className="d-flex justify-content-between mb-2">
+            <h3>Re-Join</h3>
+            <div className="d-flex">
+              <button className="btn btn-danger" onClick={reJoinClose}>
+                X
+              </button>
+            </div>
+          </div>
+          <div>
+            <FieldContainer
+              label="Re-Join Date"
+              type="date"
+              astric
+              value={reJoinDate}
+              onChange={(e) => setReJoinDate(e.target.value)}
+              fieldGrid={12}
+            />
+          </div>
+          <button
+            className="btn btn-success ml-3 mt-3"
+            onClick={handleSubmitReJoin}
+          >
+            Submit
+          </button>
+        </div>
+        {/* )} */}
       </Modal>
     </>
   );

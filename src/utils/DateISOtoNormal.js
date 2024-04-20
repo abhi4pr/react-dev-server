@@ -7,7 +7,7 @@ const DateISOtoNormal = (IsoString) => {
 //   const currentDate = new Date();
 //   const year = currentDate.getFullYear();
 //   const month = currentDate.getMonth() + 1;
-//   let day = 30; 
+//   let day = 30;
 
 //   if (month === 2) {
 //     day = 28;

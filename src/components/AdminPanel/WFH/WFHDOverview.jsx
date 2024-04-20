@@ -68,7 +68,7 @@ const WFHDOverview = () => {
       switch (activeTab) {
         case 0:
           filterTabWise = FinalResonse.filter(
-            (item) => item.att_status == "registered"
+            (item) => item.att_status == "onboarded"
           );
           break;
 
@@ -86,13 +86,13 @@ const WFHDOverview = () => {
 
         case 3:
           filterTabWise = FinalResonse.filter(
-            (item) => item.att_status == "onboarded"
+            (item) => item.att_status == "registered"
           );
           break;
 
         default:
           filterTabWise = FinalResonse.filter(
-            (item) => item.att_status == "registered"
+            (item) => item.att_status == "onboarded"
           );
       }
 
@@ -108,7 +108,7 @@ const WFHDOverview = () => {
       switch (activeTab) {
         case 0:
           filterTabWise = deptWiseData.filter(
-            (item) => item.att_status == "registered"
+            (item) => item.att_status == "onboarded"
           );
           break;
 
@@ -126,13 +126,13 @@ const WFHDOverview = () => {
 
         case 3:
           filterTabWise = deptWiseData.filter(
-            (item) => item.att_status == "onboarded"
+            (item) => item.att_status == "registered"
           );
           break;
 
         default:
           filterTabWise = deptWiseData.filter(
-            (item) => item.att_status == "registered"
+            (item) => item.att_status == "onboarded"
           );
       }
 
@@ -611,9 +611,9 @@ const WFHDOverview = () => {
         </ul> */}
         <div className="tab">
           <div
-            className={` named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
+            className={` named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
             onClick={() => {
-              FilterTabData("registered"), setActiveTab(0);
+              FilterTabData("registered"), setActiveTab(3);
             }}
           >
             Registered (
@@ -636,10 +636,13 @@ const WFHDOverview = () => {
           >
             Training ({statusCounts?.training ? statusCounts?.training : 0})
           </div>
+        </div>
+
+        <div className="tab">
           <div
-            className={`named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
+            className={`named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
             onClick={() => {
-              FilterTabData("onboarded"), setActiveTab(3);
+              FilterTabData("onboarded"), setActiveTab(0);
             }}
           >
             Onboarded ({statusCounts?.onboarded ? statusCounts?.onboarded : 0})

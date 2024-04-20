@@ -12,6 +12,7 @@ import DocumentTabUserSingle from "./DocumentTabUserSingle";
 import { baseUrl } from "../../../utils/config";
 import UserSingleTab5 from "./UserSingle5";
 import UserSingleTab6 from "./UserSingle6";
+import UserSingleWFHDSalaryTab from "./UserSingleWFHDSalaryTab";
 
 const UserSingle = () => {
   const whatsappApi = WhatsappAPI();
@@ -81,31 +82,13 @@ const UserSingle = () => {
     "Documents",
     "Family",
     "Education",
-    // "Documents",
+    "Salary",
   ];
 
   return (
     <>
       <div className="box">
         <div id="content">
-          {/* <div className="profileInfo_imgbox">
-              <img src={Logo} alt="Circular Image" className="img-fluid" />
-            </div> */}
-          {/* <div className="profileInfo_imgbox">
-            {user.image ? (
-              <img
-                src={userProfileImage}
-                alt="Circular Image"
-                className="img-fluid"
-              />
-            ) : (
-              <img
-                src={blankProfilePic}
-                alt="Circular Image"
-                className="img-fluid"
-              />
-            )}
-          </div> */}
           <FormContainer
             submitButton={false}
             mainTitle="User"
@@ -120,7 +103,6 @@ const UserSingle = () => {
             {activeAccordionIndex === 1 && (
               <UserSingleTab2 user={user} hobbiesData={hobbiesData} />
             )}
-            {/* {activeAccordionIndex === 2 && <UserSingleTab3 KRIData={KRIData} />} */}
             {activeAccordionIndex == 2 && <DocumentTabUserSingle id={id} />}
             {activeAccordionIndex == 3 && (
               <UserSingleTab5 familyData={familyData} />
@@ -128,6 +110,7 @@ const UserSingle = () => {
             {activeAccordionIndex == 4 && (
               <UserSingleTab6 educationData={educationData} />
             )}
+            {activeAccordionIndex == 5 && <UserSingleWFHDSalaryTab id={id} />}
           </FormContainer>
         </div>
       </div>

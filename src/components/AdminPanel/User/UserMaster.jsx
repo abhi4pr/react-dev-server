@@ -144,6 +144,7 @@ const UserMaster = () => {
   //--------------------Official Info State Start
   const [jobType, setJobType] = useState("");
   const [department, setDepartment] = useState("");
+  console.log(department, "department>>>>>>>>>>>>>>>>");
   const [departmentdata, getDepartmentData] = useState([]);
   const [subDepartmentData, setSubDepartmentData] = useState([]);
   const [subDepartment, setSubDeparment] = useState([]);
@@ -165,6 +166,8 @@ const UserMaster = () => {
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("Active");
   const [joiningDate, setJoiningDate] = useState("");
+  const [creditLimit, setCreditLimit] = useState(0);
+
   const [sitting, setSitting] = useState("");
   const [roomId, setRoomId] = useState("");
   const [refrenceData, getRefrenceData] = useState([]); //This is a sitting api state
@@ -284,7 +287,7 @@ const UserMaster = () => {
     "Other",
   ];
   const bankTypeData = ["Saving A/C", "Current A/C", "Salary A/C"];
-  const statusData = ["Active", "Exit"];
+  const statusData = ["Active", "Exit", "PreOnboard"];
   const genderData = ["Male", "Female", "Other"];
   const bloodGroupData = [
     "A+ (A Positive)",
@@ -573,12 +576,14 @@ const UserMaster = () => {
     formData.append("user_login_password", password);
     formData.append("user_status", status);
     formData.append("sitting_id", sitting);
+
     // formData.append(
     //   "room_id",
     //   jobType === "WFH" || jobType === "WFHD" ? "1" : roomId.room_id
     // );
     formData.append("room_id", 1);
     formData.append("joining_date", joiningDate);
+    formData.append("user_credit_limit", creditLimit);
     //offcial info payload End
 
     if (personalEmail && personalContact) {
@@ -1942,6 +1947,17 @@ const UserMaster = () => {
           </div>
         </div>
       </div>
+
+      {department == constant.CONST_SALES_DEPT_ID && (
+        <FieldContainer
+          label="Credit Limit"
+          type="number"
+          fieldGrid={3}
+          value={creditLimit}
+          required={true}
+          onChange={(e) => setCreditLimit(e.target.value)}
+        />
+      )}
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         {/* <button

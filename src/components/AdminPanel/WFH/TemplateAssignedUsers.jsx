@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import DataTable from "react-data-table-component";
 
 const TemplateAssignedUsers = ({ usersData }) => {
+  console.log(usersData, ">>>>>>>>>><<<<<<<<<<<<");
   const columns = [
     {
       name: "S.No",
@@ -16,31 +17,15 @@ const TemplateAssignedUsers = ({ usersData }) => {
     },
     {
       name: "Department",
-      cell: (row) => row.department_name,
+      cell: (row) => row.dept_name,
     },
     {
       name: "Designation",
-      cell: (row) => row.designation_name,
-    },
-    {
-      name: "Designation",
-      cell: (row) => row.designation_name,
-    },
-    {
-      name: "Salary",
-      cell: (row) => row.salary,
-    },
-    {
-      name: "CTC",
-      cell: (row) => row.ctc,
+      cell: (row) => row.desi_name,
     },
     {
       name: "Report(L1)",
-      cell: (row) => row.Report_L1N,
-    },
-    {
-      name: "Personal Contact",
-      cell: (row) => row.PersonalNumber,
+      cell: (row) => row.ReportL1_N,
     },
   ];
   return (

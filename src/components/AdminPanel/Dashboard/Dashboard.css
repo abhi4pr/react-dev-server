@@ -34,5 +34,9 @@
   font-size: 34px;
   background-size: cover;
   color: #fff;
-  background-image: linear-gradient(to right, rgb(95 69 255 / 60%), rgb(95 69 255 / 40%));
+  background-image: linear-gradient(
+    to right,
+    rgb(95 69 255 / 60%),
+    rgb(95 69 255 / 40%)
+  );
 }
