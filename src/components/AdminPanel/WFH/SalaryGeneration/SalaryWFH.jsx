@@ -1266,7 +1266,7 @@ const SalaryWFH = () => {
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
-                  <h2>This Month</h2>
+                  <h2>Current Month</h2>
                 </div>
                 <div className="salary_dtlCard_info">
                   <ul>

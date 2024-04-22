@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import FormContainer from "../../FormContainer";
 import DataTable from "react-data-table-component";
+import Select from "react-select";
 import Modal from "react-modal";
 import { baseUrl } from "../../../../utils/config";
+import DynamicSelect from "../../Sales/DynamicSelectManualy";
 
 const SalarySummary = () => {
   const [allSalaryData, setAllSalaryData] = useState([]);
@@ -12,6 +14,21 @@ const SalarySummary = () => {
 
   const [userCount, setUserCount] = useState([]);
   const [handleOpenUser, setHandleOpenUser] = useState(false);
+  const [month, setMonth] = useState("");
+  const MonthData = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
   const handleOpenSubCat = () => {
     setHandleOpenUser(true);
@@ -19,6 +36,28 @@ const SalarySummary = () => {
   const handleCloseSubCat = () => {
     setHandleOpenUser(false);
   };
+
+  const [departmentData, setDepartmentData] = useState([]);
+  const [departmentFilter, setDepartmentFilter] = useState([]);
+  const departmentAPI = () => {
+    axios.get(baseUrl + "get_all_departments").then((res) => {
+      setDepartmentData(res.data);
+      getData();
+    });
+  };
+
+  useEffect(() => {
+    const result = savedData.filter((d) => {
+      const deptMatch = !departmentFilter || d.dept_id === departmentFilter;
+      const monthMatch = !month || d.month === month;
+      return deptMatch || monthMatch;
+    });
+    setAllSalaryData(result);
+  }, [departmentFilter, month]);
+
+  useEffect(() => {
+    departmentAPI();
+  }, []);
 
   const handleUserModal = async (row) => {
     try {
@@ -91,15 +130,11 @@ const SalarySummary = () => {
       name: "Month",
       cell: (row) => row.month,
     },
-    // {
-    //   name: "User Count",
-    //   cell: (row) => row.totalUsers,
-    // },
     {
       name: "User Count",
       cell: (row) => (
         <button
-        style={{width: "60px"}}
+          style={{ width: "60px" }}
           className="btn btn-outline-warning"
           onClick={() => handleUserModal(row)}
         >
@@ -108,25 +143,11 @@ const SalarySummary = () => {
       ),
       sortable: true,
     },
-    // {
-    //   name: "DOJ",
-    //   cell: (row) => {
-    //     const date = new Date(row.joining_date);
-    //     const dd = String(date.getDate()).padStart(2, "0");
-    //     const mm = String(date.getMonth() + 1).padStart(2, "0");
-    //     const yy = String(date.getFullYear()).slice(2);
-    //     return `${dd}/${mm}/${yy}`;
-    //   },
-    // },
 
     {
       name: "Total Salary",
       cell: (row) => row.totalSalary + " ₹",
     },
-    // {
-    //   name: "Total Salary Disbused",
-    //   cell: (row) => row.noOfabsent,
-    // },
 
     {
       name: "Pending Amount",
@@ -149,29 +170,71 @@ const SalarySummary = () => {
 
   return (
     <>
+      <div className="row">
+        <div className="form-group col-3">
+          <label className="form-label">
+            Department Name<sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={[
+              { value: "", label: "All" },
+              ...departmentData.map((option) => ({
+                value: option.dept_id,
+                label: option.dept_name,
+              })),
+            ]}
+            value={
+              departmentFilter === ""
+                ? { value: "", label: "All" }
+                : {
+                    value: departmentFilter,
+                    label:
+                      departmentData.find(
+                        (dept) => dept.dept_id === departmentFilter
+                      )?.dept_name || "Select...",
+                  }
+            }
+            onChange={(selectedOption) => {
+              const selectedValue = selectedOption ? selectedOption.value : "";
+              setDepartmentFilter(selectedValue);
+              if (selectedValue === "") {
+                getData();
+              }
+            }}
+            required
+          />
+        </div>
+        <DynamicSelect
+          lable="Month"
+          astric={true}
+          data={MonthData}
+          value={month}
+          cols={3}
+          onChange={(e) => setMonth(e.value)}
+        />
+      </div>
+
       <div className="master-card-css">
         <FormContainer mainTitle="Salary Summary" link={"/admin/"} />
         <div className="card">
           <div className="card-header sb">
             <h5>Total Salary Summary</h5>
             <input
-                  type="text"
-                  placeholder="Search Here"
-                  className="w-50 form-control"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
+              type="text"
+              placeholder="Search Here"
+              className="w-50 form-control"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
           <div className="data_tbl table-responsive card-body body-padding">
             <DataTable
-              
               columns={columns}
               data={allSalaryData}
               // fixedHeader
               // fixedHeaderScrollHeight="64vh"
               highlightOnHover
-pagination
-             
+              pagination
             />
           </div>
         </div>
@@ -193,24 +256,17 @@ pagination
             },
           }}
         >
-            <button
+          <button
             className="btn btn-success mb-3 float-right"
             onClick={handleCloseSubCat}
-            >x</button>
+          >
+            x
+          </button>
           <DataTable
             columns={SubCatColumns}
             data={userCount}
             highlightOnHover
             pagination
-            // subHeaderComponent={
-            //   <input
-            //     type="text"
-            //     placeholder="Search..."
-            //     className="w-50 form-control"
-            //     value={modalSearch}
-            //     onChange={(e) => setModalSearch(e.target.value)}
-            //   />
-            // }
           />
         </Modal>
       </div>
