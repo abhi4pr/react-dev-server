@@ -2005,7 +2005,7 @@ const BalancePaymentList = () => {
 
       <div className="row">
         <div className="col-12">
-          <div className="card" style={{ height: "700px" }}>
+          <div className="card" style={{ height: "600px" }}>
             <div className="card-body thm_table">
               <DataGrid
                 rows={filterData}

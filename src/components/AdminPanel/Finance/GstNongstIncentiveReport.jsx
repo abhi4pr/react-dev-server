@@ -979,7 +979,7 @@ const GstNongstIncentiveReport = () => {
 
       <div className="row">
         <div className="col-12">
-          <div className="card" style={{ height: "700px" }}>
+          <div className="card" style={{ height: "600px" }}>
             <div className="card-body table-responsive thm_table">
               <DataGrid
                 rows={filterData}

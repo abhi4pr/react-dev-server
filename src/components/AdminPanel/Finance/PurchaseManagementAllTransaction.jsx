@@ -1710,7 +1710,7 @@ export default function PurchaseManagementAllTransaction() {
 
       <div className="row">
         <div className="col-12">
-          <div className="card" style={{ height: "700px" }}>
+          <div className="card" style={{ height: "600px" }}>
             <div className="card-body thm_table">
               {rowSelectionModel.length > 0 && (
                 <Button

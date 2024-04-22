@@ -540,7 +540,7 @@ const PaymentMode = () => {
 
       <div className="row">
         <div className="col-12">
-          <div className="card" style={{ maxHeight: "700px" }}>
+          <div className="card" style={{ maxHeight: "600px" }}>
             <div className="card-body thm_table">
               <DataGrid
                 rows={filterData.filter((row) => !row.is_hide)}
