@@ -741,7 +741,7 @@ const SaleBookingVerify = () => {
   ];
 
   return (
-    <div>
+    <div className="mt-4">
       <FormContainer
         mainTitle="Sale Booking "
         link="/admin/incentive-payment-list"

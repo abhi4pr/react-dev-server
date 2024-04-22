@@ -303,6 +303,7 @@ import OperationDashboard from "./RegisterCampaign/OperationDashboard/OperationD
 import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
 import ViewSaleBooking from "./Sales/SaleBooking/ViewSaleBooking";
 import Timeline from "./Navbar-Sidebar/Timeline";
+import SaleBooking from "./Finance/Salebooking";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -798,13 +799,17 @@ const Admin = () => {
                     element={<RefundRequests />}
                   />
                   <Route
+                    path="/finance-salebooking"
+                    element={<SaleBooking />}
+                  />
+                  {/* <Route
                     path="/finance-salebookingclose"
                     element={<SaleBookingClose />}
                   />
                   <Route
                     path="/finance-salebookingverify"
                     element={<SaleBookingVerify />}
-                  />
+                  /> */}
                   <Route
                     path="/finance-pruchasemanagement-pendingpaymentrequest"
                     element={<PendingPaymentRequest />}

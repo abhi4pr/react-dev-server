@@ -48,6 +48,13 @@ const SaleBookingClose = () => {
   const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
   const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  // const [openCount, setOpenCount] = useState(0);
+  // const [closeCount, setCloseCount] = useState(0);
+  // const [aboutToCloseCount, setAboutToCloseCount] = useState(0);
+  const [verifyDialog, setVerifyDialog] = useState(false);
+  const [balAmount, setBalAmount] = useState("");
+  const [remark, setRemark] = useState("");
+  const [row, setRow] = useState({});
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -72,6 +79,7 @@ const SaleBookingClose = () => {
     toastAlert("Data Updated");
     setIsFormSubmitted(true);
   };
+
   function getData() {
     axios
       .post(baseUrl + "add_php_sale_booking_tds_data_in_node")
@@ -123,6 +131,20 @@ const SaleBookingClose = () => {
 
         const dateFilterData = filterDataBasedOnSelection(res.data.body);
         setFilterData(dateFilterData);
+
+        const openCount = res.data.body.filter(
+          (item) => item.show_fstatus === "Open"
+        ).length;
+        const closeCount = res.data.body.filter(
+          (item) => item.show_fstatus === "Closed Link"
+        ).length;
+        const aboutToCloseCount = res.data.body.filter(
+          (item) => item.show_fstatus === "About To Close"
+        ).length;
+
+        // setOpenCount(openCount);
+        // setCloseCount(closeCount);
+        // setAboutToCloseCount(aboutToCloseCount);
       });
   }
 
@@ -130,7 +152,8 @@ const SaleBookingClose = () => {
     getData();
   }, [tdsStatus, aboutToClose, dateFilter]);
 
-  const aboutClose = () => {
+  const aboutClose = (e) => {
+    e.preventDefault();
     // const allData = datas;
     // const filteredData = allData.filter(
     //   (item) => item.show_fstatus == "About To Close"
@@ -141,8 +164,9 @@ const SaleBookingClose = () => {
     setAboutToClose(true);
   };
 
-  const open = () => {
-    const allData = datas;
+  const open = (e) => {
+    e.preventDefault();
+    // const allData = datas;
     // const filteredData = allData.filter((item) => item.show_fstatus == "Open");
     // setData(allData);
     // setFilterData(filteredData);
@@ -150,7 +174,8 @@ const SaleBookingClose = () => {
     setAboutToClose(false);
   };
 
-  const close = () => {
+  const close = (e) => {
+    e.preventDefault();
     // const allData = datas;
     // const filteredData = allData.filter(
     //   (item) => item.show_fstatus == "Closed Link"
@@ -277,7 +302,44 @@ const SaleBookingClose = () => {
     (total, item) => total + parseFloat(item.base_amount),
     0
   );
+  // For Verify :-
+  const handleOpenVerifyDialog = (e, row) => {
+    e.preventDefault();
+    setVerifyDialog(true);
+    setRow(row);
+  };
 
+  const handleCloseVerifyDialog = () => {
+    setVerifyDialog(false);
+    setBalAmount("");
+    setRemark("");
+  };
+  const handleVerifySubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("loggedin_user_id", 36);
+    formData.append("sale_booking_id", row.sale_booking_id);
+    formData.append("verified_amount", balAmount);
+    formData.append("verified_remark", remark);
+    await axios
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=verifybooking",
+        formData,
+        {
+          headers: {
+            "application-type": "multipart/form-data",
+          },
+        }
+      )
+      .then(() => {
+        handleCloseVerifyDialog();
+        getData();
+      });
+
+    toastAlert("Data Updated");
+    setIsFormSubmitted(true);
+  };
+  // ========================================================
   const sameSalesExecutivecolumn = [
     {
       field: "S.No",
@@ -675,7 +737,24 @@ const SaleBookingClose = () => {
         );
       },
     },
+    {
+      field: "Action",
+      fieldName: "Action",
+      selector: (row) => (
+        <>
+          {row.show_fstatus === "Closed" ? (
+            <button
+              className="btn cmnbtn btn_sm btn-outline-primary mr4"
+              onClick={(e) => handleOpenVerifyDialog(e, row)}
+            >
+              Verify
+            </button>
+          ) : null}
+        </>
+      ),
+    },
   ];
+  console.log(filterData, "FILTER DATA>>");
   const filterDataBasedOnSelection = (apiData) => {
     const now = moment();
     switch (dateFilter) {
@@ -759,8 +838,31 @@ const SaleBookingClose = () => {
         return apiData; // No filter applied
     }
   };
+
+  const openCount = filterData?.filter(
+    (item) => item.show_fstatus === "Open"
+  ).length;
+  const closeCount = filterData?.filter(
+    (item) => item.show_fstatus === "Closed"
+  ).length;
+  const aboutToCloseCount = filterData?.filter(
+    (item) => item.show_fstatus === "About To Close"
+  ).length;
+
+  // setOpenCount(openCount);
+  // setCloseCount(closeCount);
+  // setAboutToCloseCount(aboutToCloseCount);
+
+  // const openCount = filterData?.filter((open) => open?.show_fstatus === "Open");
+  // const closeCount = filterData?.filter(
+  //   (close) => close?.show_fstatus === "Close Link "
+  // );
+  // const aboutToCloseCount = filterData?.filter(
+  //   (aboutTo) => aboutTo?.show_fstatus === "About To Close"
+  // );
+  console.log(filterData, "filterData>");
   return (
-    <div>
+    <div className="mt-4">
       <FormContainer
         mainTitle="Sale Booking "
         link="/admin/incentive-payment-list"
@@ -772,11 +874,93 @@ const SaleBookingClose = () => {
         }
         uniqueCustomerCount={uniqueCustomerCount}
         baseAmountTotal={baseAmountTotal}
+        openCount={openCount}
+        closeCount={closeCount}
+        aboutToCloseCount={aboutToCloseCount}
         handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
         handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
         uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
         saleBookingClosePaymentAdditionalTitles={true}
       />
+      {/* verify dialog box */}
+      <Dialog
+        open={verifyDialog}
+        onClose={handleCloseVerifyDialog}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Same Sales Executive</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseVerifyDialog}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <div className="row">
+            <div className="col-md-12 ">
+              <form onSubmit={handleVerifySubmit}>
+                <div className="form-group col-12"></div>
+
+                <div className="form-group">
+                  <label htmlFor="images">Amount:</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="images"
+                    name="images"
+                    value={balAmount}
+                    onChange={(e) => {
+                      // if (e.target.value > row.net_balance_amount_to_pay) {
+                      //   toastError(
+                      //     "Amount is greater than balance amount to pay"
+                      //   );
+                      //   return;
+                      // }
+                      setBalAmount(e.target.value);
+                    }}
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="images">Remark:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="images"
+                    name="images"
+                    value={remark}
+                    onChange={(e) => setRemark(e.target.value)}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  onClick={handleVerifySubmit}
+                >
+                  Submit
+                </button>
+              </form>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       {/* Same Sales Executive Dialog Box */}
       <Dialog
         open={sameSalesExecutiveDialog}
@@ -1142,22 +1326,22 @@ const SaleBookingClose = () => {
               <div className="flexCenter colGap12">
                 <button
                   className="btn cmnbtn btn_sm btn-success"
-                  onClick={open}
+                  onClick={(e) => open(e)}
                 >
-                  Open
+                  Open ({openCount})
                 </button>
                 <button
                   className="btn cmnbtn btn_sm btn-danger"
-                  onClick={close}
+                  onClick={(e) => close(e)}
                 >
-                  Closed
+                  Closed({closeCount})
                 </button>
-                <button
+                {/* <button
                   className="btn cmnbtn btn_sm btn-warning"
-                  onClick={aboutClose}
+                  onClick={(e) => aboutClose(e)}
                 >
                   About to close
-                </button>
+                </button> */}
               </div>
             </div>
             <div className="card-body thm_table data_tbl table-responsive">

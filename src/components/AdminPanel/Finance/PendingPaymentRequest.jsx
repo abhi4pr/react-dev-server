@@ -99,6 +99,8 @@ export default function PendingPaymentRequest() {
   const [vendorNameList, setVendorNameList] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [adjustAmount, setAdjustAmount] = useState("");
+  const [preview, setPreview] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
 
   const accordionButtons = ["All", "Partial", "Instant"];
 
@@ -1608,6 +1610,16 @@ export default function PendingPaymentRequest() {
     );
   }
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setPayMentProof(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
+  const openImgDialog = () => {
+    setOpenDialog(true);
+  };
+
   return (
     <div>
       <FormContainer
@@ -2572,20 +2584,80 @@ export default function PendingPaymentRequest() {
                       value={payRemark}
                     />
                     <div className="form-group mt-3">
-                      <label htmlFor="paymentProof">
-                        Payment Proof/ScreenShot
-                      </label>
-                      <input
-                        type="file"
-                        className="form-control"
-                        id="paymentProof"
-                        onChange={(e) => setPayMentProof(e.target.files[0])}
-                      />
+                      <div className="row">
+                        <label htmlFor="paymentProof">
+                          Payment Proof/ScreenShot
+                        </label>
+                        {/* <input
+                          type="file"
+                          className="form-control col-md-6"
+                          id="paymentProof"
+                          onChange={(e) => setPayMentProof(e.target.files[0])}
+                        /> */}
+                        {/* <Button
+                          variant="contained"
+                          className="col-md-5 ms-3"
+                          fullWidth
+                          onClick={setOpenImageDialog}
+                        >
+                          view image
+                        </Button> */}
+                        {/* {openImageDialog && (
+                          <ImageView
+                            viewImgSrc={payMentProof}
+                            fullWidth={true}
+                            maxWidth={"md"}
+                            setViewImgDialog={setOpenImageDialog}
+                          />
+                        )} */}
+
+                        <input
+                          type="file"
+                          className="form-control col-md-6"
+                          id="paymentProof"
+                          onChange={handleFileChange}
+                          // onClick={openImgDialog}
+                        />
+                        <Button
+                          variant="contained"
+                          className="col-md-5 ms-3"
+                          fullWidth
+                          onClick={openImgDialog}
+                        >
+                          view image
+                        </Button>
+                        {openDialog && preview && (
+                          <div
+                            style={{
+                              position: "fixed",
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              background: "rgba(0,0,0,0.5)",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              zIndex: 9999,
+                            }}
+                            onClick={() => setOpenDialog(false)}
+                          >
+                            <img
+                              src={preview}
+                              alt="Selected file"
+                              style={{
+                                maxWidth: "50%",
+                                maxHeight: "80%",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </DialogContent>
                 <DialogActions>
-                  {/* <Button onClick={handleClosePayDialog}>Cancel</Button> */}
                   <Button
                     variant="contained"
                     className="mx-2"
