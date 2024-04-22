@@ -51,7 +51,10 @@ export default function SubCategoryMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <button className="btn btn_sm cmnbtn btn-outline-primary" onClick={handleClick}>
+        <button
+          className="btn btn_sm cmnbtn btn-outline-primary"
+          onClick={handleClick}
+        >
           create SubCategory
         </button>
       </GridToolbarContainer>
@@ -224,7 +227,6 @@ export default function SubCategoryMaster() {
         return [
           // eslint-disable-next-line react/jsx-key
           <button
-
             label="Edit"
             className="icon-1"
             onClick={handleEditClick(id, row)}
@@ -269,18 +271,16 @@ export default function SubCategoryMaster() {
         <div className="card-header">
           <div></div>
           <div className="pack">
-
             <TextField
               id="outlined-basic"
               label="Search"
               variant="outlined"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-
             />
           </div>
         </div>
-        <div className="card-body body-padding" style={{ height: "700px" }}>
+        <div className="card-body body-padding" style={{ height: "600px" }}>
           <DataGrid
             rows={filteredRows}
             columns={columns}
@@ -299,7 +299,6 @@ export default function SubCategoryMaster() {
           />
         </div>
       </div>
-
 
       {/* AddRecordModal post data */}
       <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
@@ -427,7 +426,6 @@ export default function SubCategoryMaster() {
         </DialogContent>
         <DialogActions>
           <div className="d-flex sb w-100">
-
             <button
               onClick={() => setIsDeleteConfirmationOpen(false)}
               className="btn btn-outline-primary btn-sm"

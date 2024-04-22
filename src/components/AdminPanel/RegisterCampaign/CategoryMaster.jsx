@@ -49,7 +49,10 @@ export default function CategoryMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <button className="btn cmnbtn btn_sm btn-outline-primary" onClick={handleClick}>
+        <button
+          className="btn cmnbtn btn_sm btn-outline-primary"
+          onClick={handleClick}
+        >
           create category{" "}
         </button>
       </GridToolbarContainer>
@@ -211,7 +214,6 @@ export default function CategoryMaster() {
         return [
           // eslint-disable-next-line react/jsx-key
           <button
-
             label="Edit"
             className="icon-1"
             onClick={handleEditClick(id, row)}
@@ -254,7 +256,6 @@ export default function CategoryMaster() {
         <div className="card-header sb">
           <div></div>
           <div className="pack w-25">
-
             <FieldContainer
               fieldGrid={12}
               label=""
@@ -262,11 +263,10 @@ export default function CategoryMaster() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
             />
-
           </div>
         </div>
         <div className="card-body body-padding ">
-          <Box sx={{ height: "700px" }}>
+          <Box sx={{ height: "600px" }}>
             <DataGrid
               rows={filteredRows}
               columns={columns}
@@ -347,7 +347,6 @@ export default function CategoryMaster() {
                   }))
                 }
               />
-
             </div>
           </Box>
         </DialogContent>

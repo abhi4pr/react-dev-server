@@ -2080,7 +2080,7 @@ export default function PendingPaymentRequest() {
 
       <div className="row">
         <div className="col-12">
-          <div className="card" style={{ height: "700px" }}>
+          <div className="card">
             <div className="card-body thm_table">
               {rowSelectionModel.length > 0 && (
                 <Button
@@ -2100,7 +2100,7 @@ export default function PendingPaymentRequest() {
                 onAccordionButtonClick={handleAccordionButtonClick}
                 mainTitleRequired={false}
               >
-                <div>
+                <div style={{ height: "400px" }}>
                   {activeAccordionIndex === 0 && (
                     <DataGrid
                       rows={filterData}
