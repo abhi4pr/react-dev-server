@@ -300,7 +300,10 @@ const SidebarLinks = () => {
               {/* {contextData &&
                 contextData[2] &&
                 contextData[2].view_value === 1 && (
-                  <NavLink className="collapse-item" to="/admin/object-overview">
+                  <NavLink
+                    className="collapse-item"
+                    to="/admin/object-overview"
+                  >
                     <i className="bi bi-dot"></i> Object
                   </Link>
                 )} */}
@@ -1382,6 +1385,13 @@ const SidebarLinks = () => {
                             <>
                               <NavLink
                                 className="collapse-item"
+                                to="/admin/finance-salebooking"
+                              >
+                                <i className="bi bi-dot"></i> Sales Booking
+                              </NavLink>
+
+                              {/* <NavLink
+                                className="collapse-item"
                                 to="/admin/finance-salebookingclose"
                               >
                                 <i className="bi bi-dot"></i> Sales Booking
@@ -1393,7 +1403,7 @@ const SidebarLinks = () => {
                               >
                                 <i className="bi bi-dot"></i> Sales Booking
                                 Verification
-                              </NavLink>
+                              </NavLink> */}
                             </>
                           </div>
                         </div>

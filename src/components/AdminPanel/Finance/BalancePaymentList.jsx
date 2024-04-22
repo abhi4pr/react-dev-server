@@ -22,6 +22,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import moment from "moment";
 
 import dayjs from "dayjs";
+import { Link } from "react-router-dom";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -1030,12 +1031,24 @@ const BalancePaymentList = () => {
       width: 210,
       renderCell: (params) => (
         <div className="flexCenter colGap8">
-          <button
+          {params.row.invoice && params.row.invoice !== "" ? (
+            <button
+              className="btn tableIconBtn btn_sm "
+              onClick={() =>
+                handleOpenEditPartyField(params.row.sale_booking_id)
+              }
+            >
+              <EditIcon />
+            </button>
+          ) : (
+            ""
+          )}
+          {/* <button
             className="btn tableIconBtn btn_sm "
             onClick={() => handleOpenEditPartyField(params.row.sale_booking_id)}
           >
             <EditIcon />
-          </button>
+          </button> */}
           {params.row.party_mnj_name}
         </div>
       ),
@@ -1046,14 +1059,18 @@ const BalancePaymentList = () => {
       width: 190,
       renderCell: (params) => (
         <div className="flexCenter colGap8">
-          <button
-            className="btn tableIconBtn btn_sm "
-            onClick={() =>
-              handleOpenEditInvoiceField(params.row.sale_booking_id)
-            }
-          >
-            <EditIcon />
-          </button>
+          {params.row.invoice && params.row.invoice !== "" ? (
+            <button
+              className="btn tableIconBtn btn_sm "
+              onClick={() =>
+                handleOpenEditInvoiceField(params.row.sale_booking_id)
+              }
+            >
+              <EditIcon />
+            </button>
+          ) : (
+            ""
+          )}
           {params.row.invoice_mnj_number}
         </div>
       ),
@@ -1141,6 +1158,7 @@ const BalancePaymentList = () => {
                 ),
                   setViewImgDialog(true);
               }}
+              style={{ width: "40px", height: "40px" }}
             />
           ) : (
             <img
@@ -1250,6 +1268,34 @@ const BalancePaymentList = () => {
     const formattedPercentage = (roundedPercentage / 100).toFixed(2); // Divide by 100 and round to two decimal places
     setTDSPercentage(formattedPercentage);
   };
+
+  // gst counts :-
+  const gstCounts = filterData.filter((count) => count.gst_status === "1");
+  // Total gst - balance amounts
+  const totalGstBalanceAmount = gstCounts?.reduce(
+    (total, item) =>
+      total + parseFloat(item?.campaign_amount - item?.total_paid_amount),
+    0
+  );
+  // total gst - paid amounts
+  const totalGstReceivedAmount = gstCounts?.reduce(
+    (total, item) => total + parseFloat(item?.total_paid_amount),
+    0
+  );
+
+  // non gst counts :-
+  const nonGstCounts = filterData.filter((count) => count.gst_status === "0");
+  // Total non gst - balance amounts
+  const totalNonGstBalanceAmount = nonGstCounts?.reduce(
+    (total, item) =>
+      total + parseFloat(item?.campaign_amount - item?.total_paid_amount),
+    0
+  );
+  // total non gst - paid amounts
+  const totalNonGstReceivedAmount = nonGstCounts?.reduce(
+    (total, item) => total + parseFloat(item?.total_paid_amount),
+    0
+  );
 
   return (
     <div>
@@ -1611,6 +1657,159 @@ const BalancePaymentList = () => {
         </DialogContent>
       </Dialog>
 
+      <div className="row">
+        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+          <div className="card">
+            <div className="card-header">
+              <h5 className="card-title w-100 flexCenterBetween">
+                Invoice Created
+                <Link className="link-primary">
+                  <span className="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
+                </Link>
+              </h5>
+            </div>
+            <div className="card-body">
+              <h5 className="mediumText">Balance Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                ₹
+                {/* {datas.length > 0
+                  ? datas
+                      .filter((item) => item.payment_approval_status == 0)
+                      .reduce((total, currentItem) => {
+                        return total + currentItem.payment_amount_show * 1;
+                      }, 0)
+                  : ""} */}
+              </h4>
+              <h5 className="mediumText">Total Due Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                ₹
+                {/* {datas.length > 0
+                  ? datas
+                      .filter((item) => item.payment_approval_status == 0)
+                      .reduce((total, currentItem) => {
+                        return total + currentItem.payment_amount_show * 1;
+                      }, 0)
+                  : ""} */}
+              </h4>
+              <h5 className="mediumText">Received Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                ₹
+                {/* {datas.length > 0
+                  ? datas
+                      .filter((item) => item.payment_approval_status == 0)
+                      .reduce((total, currentItem) => {
+                        return total + currentItem.payment_amount_show * 1;
+                      }, 0)
+                  : ""} */}
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+          <div className="card">
+            <div className="card-header">
+              <h5 className="card-title w-100 flexCenterBetween">
+                Non Invoice Created
+                <Link className="link-primary">
+                  <span className="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
+                </Link>
+              </h5>
+            </div>
+            <div className="card-body">
+              <h5 className="mediumText">Balance Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                ₹
+                {/* {datas.length > 0
+                  ? datas
+                      .filter((item) => item.payment_approval_status == 0)
+                      .reduce((total, currentItem) => {
+                        return total + currentItem.payment_amount_show * 1;
+                      }, 0)
+                  : ""} */}
+              </h4>
+              <h5 className="mediumText">Total Due Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                ₹
+                {/* {datas.length > 0
+                  ? datas
+                      .filter((item) => item.payment_approval_status == 0)
+                      .reduce((total, currentItem) => {
+                        return total + currentItem.payment_amount_show * 1;
+                      }, 0)
+                  : ""} */}
+              </h4>
+              <h5 className="mediumText">Received Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                ₹
+                {/* {datas.length > 0
+                  ? datas
+                      .filter((item) => item.payment_approval_status == 0)
+                      .reduce((total, currentItem) => {
+                        return total + currentItem.payment_amount_show * 1;
+                      }, 0)
+                  : ""} */}
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+          <div className="card">
+            <div className="card-header">
+              <h5 className="card-title w-100 flexCenterBetween">
+                GST
+                <Link className="link-primary">
+                  <span className="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
+                </Link>
+              </h5>
+            </div>
+            <div className="card-body">
+              <h5 className="mediumText">GST Count</h5>
+              <h4 className="font-weight-bold mt8">{gstCounts?.length}</h4>
+              <h5 className="mediumText">Total Balance Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                {" "}
+                ₹ {totalGstBalanceAmount}
+              </h4>
+              <h5 className="mediumText">Total Received Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                ₹ {totalGstReceivedAmount}
+              </h4>
+            </div>
+          </div>
+        </div>
+        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+          <div className="card">
+            <div className="card-header">
+              <h5 className="card-title w-100 flexCenterBetween">
+                Non GST
+                <Link className="link-primary">
+                  <span className="iconLink">
+                    <i class="bi bi-arrow-up-right"></i>
+                  </span>
+                </Link>
+              </h5>
+            </div>
+            <div className="card-body">
+              <h5 className="mediumText">Non GST Counts</h5>
+              <h4 className="font-weight-bold mt8">₹{nonGstCounts?.length}</h4>
+              <h5 className="mediumText"> Total Balance Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                ₹{totalNonGstBalanceAmount}
+              </h4>
+              <h5 className="mediumText">Total Received Amount</h5>
+              <h4 className="font-weight-bold mt8">
+                ₹{totalNonGstReceivedAmount}
+              </h4>
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="row">
         <div className="col-12">
           <div className="card">
