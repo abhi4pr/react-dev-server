@@ -253,34 +253,43 @@ const ObjectOverview = () => {
     setFilters(newFilters);
   };
 
-  const updateFilterValue = (index, value) => {
-    const updatedFilters = [...filters];
-    updatedFilters[index].value = value;
-    setFilters(updatedFilters);
-  };
-
   const updateFilterColumn = (index, column) => {
     const updatedFilters = [...filters];
     updatedFilters[index].column = column;
     setFilters(updatedFilters);
   };
 
-  const applyFilters = () => {
+  const getUniqueColumnValues = (columnName) => {
+    const uniqueValues = new Set();
+    datas.forEach((item) => {
+      if (columnName in item) {
+        uniqueValues.add(item[columnName]);
+      }
+    });
+    return Array.from(uniqueValues);
+  };
+  
+  const filterDataFun = (filters) => {
     let filteredData = [...datas];
-    filters.forEach(filter => {
-      const filterValue = filter.value.toLowerCase();
-      filteredData = filteredData.filter(item => {
-        const columnName = filter.column;
-        if (columnName in item) {
-          const itemValue = String(item[columnName]).toLowerCase();
-          return itemValue.includes(filterValue);
-        } else {
-          return true;
-        }
-      });
+    filters.forEach((filter) => {
+      const { column, value } = filter;
+      if (value !== '') {
+        filteredData = filteredData.filter((item) => {
+          const itemValue = String(item[column]).toLowerCase();
+          return itemValue.includes(value.toLowerCase());
+        });
+      }
     });
     setFilterData(filteredData);
   };
+
+  const handleFilterChange = (index, column, value) => {
+    const updatedFilters = [...filters];
+    updatedFilters[index] = { column, value };
+    setFilters(updatedFilters);
+    filterDataFun(updatedFilters);
+  };
+
 
   // multiple filter code end here
 
@@ -332,19 +341,20 @@ const ObjectOverview = () => {
       />
 
       <div className="card">
-        <div className="data_tbl table-responsive">
-          
-          <button onClick={toggleDrawer} className="btn btn-primary">Hide/Show Columns</button>
-          {drawerOpen && (
-            <div className="drawer">
-              {Object.keys(datas[0]).map((key) => (
-                <div key={key} onClick={() => toggleColumn(key)}>
-                  <input type="checkbox" checked={columns.includes(key)} readOnly />
-                  {key}
-                </div>
-              ))}
-            </div>
-          )}
+        <div className="makeInRow" style={{display:"flex"}}>
+          <div>
+            <button onClick={toggleDrawer} className="btn btn-primary">Hide/Show Columns</button>
+            {drawerOpen && (
+              <div className="drawer">
+                {Object.keys(datas[0]).map((key) => (
+                  <div key={key} onClick={() => toggleColumn(key)}>
+                    <input type="checkbox" checked={columns.includes(key)} readOnly />
+                    {key}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
           <div className="search-container">
             <input
               className="form-control w-50"
@@ -359,6 +369,7 @@ const ObjectOverview = () => {
             {filters.map((filter, index) => (
               <div key={index} className="filter">
                 <select
+                  className='form-control'
                   value={filter.column}
                   onChange={(e) => {
                     const column = e.target.value;
@@ -369,18 +380,26 @@ const ObjectOverview = () => {
                     <option key={column} value={column}>{column}</option>
                   ))}
                 </select>
-                <input
-                  type="text"
-                  value={filter.value}
-                  onChange={(e) => updateFilterValue(index, e.target.value)}
-                  placeholder="Search..."
-                />
+                {filter.column && (
+                  <select
+                    className='form-control'
+                    value={filter.value}
+                    onChange={(e) => handleFilterChange(index, filter.column, e.target.value)}
+                  >
+                    <option value="">Select Value</option>
+                    {getUniqueColumnValues(filter.column).map((value, i) => (
+                      <option key={i} value={value}>{value}</option>
+                    ))}
+                  </select>
+                )}
               </div>
             ))}
-            <button onClick={addFilter}>Add Filter</button>
-            <button onClick={applyFilters}>Apply Filters</button>
+            <button className="btn btn-success" onClick={addFilter}>Add Filter</button>
+            {/* <button className="btn btn-warning" onClick={applyFilters}>Apply Filters</button> */}
           </div>
+        </div>
 
+          <div className="data_tbl table-responsive">
           <table className="table border table-striped mt-2">
             <thead>
               <tr>
@@ -422,6 +441,7 @@ const ObjectOverview = () => {
               ))}
             </tbody>
           </table>
+          </div>
           <div className="pagination">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
@@ -437,7 +457,7 @@ const ObjectOverview = () => {
               Next
             </button>
           </div>
-        </div>
+        
       </div>
     </>
   );
