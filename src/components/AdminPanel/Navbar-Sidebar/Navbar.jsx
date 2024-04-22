@@ -308,7 +308,7 @@ const Navbar = () => {
                 <Link to="/admin/user-timeline">
                   <div className="pro-btn">
                     <i class="bi bi-gear"></i>
-                    <p>Timeline</p>
+                    {/* <p>Timeline</p> */}
                   </div>
                 </Link>
                 <div className="pro-btn" onClick={handleLogOut}>
