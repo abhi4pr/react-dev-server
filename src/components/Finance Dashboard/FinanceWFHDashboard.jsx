@@ -140,10 +140,13 @@ export default function FinanceWFHDashboard() {
   const handleDownloadInvoices = async () => {
     try {
       await downloadSelectedInvoices(rowForPayment);
-    } catch (error) {
-      // console.error("Error downloading invoices:", error);
-      // Handle any errors related to downloading invoices here
-    }
+    } catch (error) {}
+  };
+
+  const handleDownloadIPayoutReleased = async () => {
+    try {
+      await downloadSelectedInvoices(rowForPayment);
+    } catch (error) {}
   };
 
   const handleUTRupload = async (e, row) => {
@@ -1081,16 +1084,28 @@ export default function FinanceWFHDashboard() {
     <>
       <div>
         {rowForPayment.length > 0 && (
-          <button
-            variant="contained"
-            color="primary"
-            size="small"
-            sx={{ width: "200px" }}
-            className=" btn btn-primary ml-3 mb-2"
-            onClick={handleDownloadExcel}
-          >
-            Download Excel
-          </button>
+          <>
+            <button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ width: "200px" }}
+              className=" btn btn-primary ml-3 mb-2"
+              onClick={handleDownloadIPayoutReleased}
+            >
+              Download PDF Zip
+            </button>
+            <button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{ width: "200px" }}
+              className=" btn btn-primary ml-3 mb-2"
+              onClick={handleDownloadExcel}
+            >
+              Download Excel
+            </button>
+          </>
         )}
         {/* <div style={{ height: "50px" }} className="d-flex">
           {rowForPayment.length > 0 && (

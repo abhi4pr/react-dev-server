@@ -80,7 +80,10 @@ export default function BrandMaster() {
     };
     return (
       <GridToolbarContainer style={toolbarStyles}>
-        <button className="btn cmnbtn btn-outline-primary btn_sm" onClick={handleClick}>
+        <button
+          className="btn cmnbtn btn-outline-primary btn_sm"
+          onClick={handleClick}
+        >
           Create Brand
         </button>
 
@@ -171,7 +174,6 @@ export default function BrandMaster() {
 
   const categoryData = () => {
     axios.get(baseUrl + "projectxCategory").then((res) => {
-
       setCategoryOptions(res.data.data);
     });
   };
@@ -181,7 +183,6 @@ export default function BrandMaster() {
   }, [reload]);
 
   const subCategoryDataOnEdit = () => {
-
     axios.get(baseUrl + "projectxSubCategory").then((res) => {
       // console.log(res.data.data, "-------> subcat data");
       const filteredData = res.data.data.filter((item) => {
@@ -287,7 +288,6 @@ export default function BrandMaster() {
         .delete(`${brandURL}/delete_brand/${itemToDeleteId}`)
         .then(() => {
           getData();
-
         })
         .finally(() => {
           setIsDeleteConfirmationOpen(false);
@@ -339,7 +339,11 @@ export default function BrandMaster() {
       renderCell: (params) => {
         return (
           <div>
-            <button className="icon-1" onClick={() => handlePlatformData(params)} variant="text">
+            <button
+              className="icon-1"
+              onClick={() => handlePlatformData(params)}
+              variant="text"
+            >
               <i className="bi bi-chat-left-text"></i>
             </button>
           </div>
@@ -357,9 +361,7 @@ export default function BrandMaster() {
         return [
           <button
             className="icon-1"
-
             label="Edit"
-
             onClick={handleEditClick(id, row)}
             color="primary"
           >
@@ -369,7 +371,6 @@ export default function BrandMaster() {
             className="icon-1"
             label="Delete"
             onClick={handleDeleteClick(id)}
-
           >
             <i className="bi bi-trash"></i>
           </button>,
@@ -394,7 +395,7 @@ export default function BrandMaster() {
     try {
       const response = await axios.get(`${baseUrl}get_all_data_platforms`);
       setDataPlatforms(response?.data);
-    } catch (error) { }
+    } catch (error) {}
   };
 
   return (
@@ -411,11 +412,8 @@ export default function BrandMaster() {
 
       <div className="card">
         <div className="card-header sb">
-          <div className="card-tittle">
-            Overview
-          </div>
+          <div className="card-tittle">Overview</div>
           <div className="w-25">
-
             <FieldContainer
               fieldGrid={12}
               label=""
@@ -423,11 +421,9 @@ export default function BrandMaster() {
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
             />
-
           </div>
         </div>
         <div className="card-body body-padding fx-head thm_table">
-
           <DataGrid
             rows={filteredRows}
             columns={columns}
@@ -438,7 +434,6 @@ export default function BrandMaster() {
               toolbar: EditToolbar,
             }}
           />
-
         </div>
       </div>
       {/* AddRecordModal post data */}
@@ -648,7 +643,6 @@ export default function BrandMaster() {
       <Dialog
         open={isDeleteConfirmationOpen}
         onClose={() => setIsDeleteConfirmationOpen(false)}
-
       >
         <DialogTitle>Delete Confirmation</DialogTitle>
         <DialogContent>
@@ -656,7 +650,6 @@ export default function BrandMaster() {
         </DialogContent>
         <DialogActions>
           <div className="sb w-100">
-
             <button
               className="btn btn-outline-danger btn-sm"
               onClick={() => setIsDeleteConfirmationOpen(false)}
@@ -670,6 +663,7 @@ export default function BrandMaster() {
               onClick={handleConfirmDelete}
               color="error"
               variant="outlined"
+              Cancel
             >
               Delete
             </button>

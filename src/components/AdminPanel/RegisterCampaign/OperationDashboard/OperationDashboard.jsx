@@ -2,27 +2,24 @@ import React, { useEffect, useState } from "react";
 import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import axios from "axios";
-import {baseUrl} from '../../../../utils/config';
+import { baseUrl } from "../../../../utils/config";
+import CreatedPlanData from "./CreatedPlanData";
 
 const OperationDashboard = () => {
-  const countData = [1, 2, 3];
   const today = new Date().toISOString().split("T")[0];
-
   const [data, setData] = useState([]);
   const [selectDate, setSelectDate] = useState("");
   const [openAccordion, setOpenAccordion] = useState(null);
 
   const getAllOperationData = async () => {
     try {
-      if(selectDate){
+      if (selectDate) {
         const res = await axios.get(
           `${baseUrl}operation_dashboard_api?date=${selectDate}`
         );
         setData(res.data.data);
-      }else{
-        const res = await axios.get(
-          `${baseUrl}operation_dashboard_api`
-        );
+      } else {
+        const res = await axios.get(`${baseUrl}operation_dashboard_api`);
         setData(res.data.data);
       }
     } catch (err) {
@@ -53,13 +50,13 @@ const OperationDashboard = () => {
           label="Date"
           value={selectDate}
           onChange={(e) => setSelectDate(e.target.value)}
-          // max={today}
+          max={today}
           required={false}
         />
         <div className="accordion" id="accordionExample">
           {data.length > 0 &&
             data.map((item, index) => (
-              <div className="accordion-item" key={index}>
+              <div className="accordion-item m-2" key={index}>
                 <h2 className="accordion-header" id={`heading${index}`}>
                   <button
                     className="accordion-button"
@@ -84,22 +81,17 @@ const OperationDashboard = () => {
                     <p>Industry - {item.registercampaign_Data.industry}</p>
                     <p>Agency - {item.registercampaign_Data.agency}</p>
                     <p>Goal - {item.registercampaign_Data.goal}</p>
-                    <p>Brand Name - {item.registercampaign_Data.brandData.brand_name}</p>
+                    <p>
+                      Brand Name -{" "}
+                      {item.registercampaign_Data.brandData.brand_name}
+                    </p>
+
                     {item?.campaignplansData?.length > 0 ? (
-                      <>
-                        <h3>Campaign Plan details</h3>
-                        {item.campaignplansData.map((item, planIndex) => (
-                          <div key={planIndex}>
-                            <p>Plan Name - {item.planName}</p>
-                            <p>Page name - {item.page_name}</p>
-                            <p>post Per Page - {item.postPerPage}</p>
-                            <p>Post remaining - {item.postRemaining}</p>
-                          </div>
-                        ))}
-                      </>
+                      <CreatedPlanData data={item?.campaignplansData} />
                     ) : (
-                      <p style={{ color: "red" }}>Plan not created yet</p>
+                      <div style={{ color: "red" }}>Plan not available</div>
                     )}
+
                     {item.campaignphaseData?.length > 0 ? (
                       <>
                         <h3>Campaign Phase details</h3>
@@ -110,7 +102,7 @@ const OperationDashboard = () => {
                         ))}
                       </>
                     ) : (
-                      <p style={{ color: "red" }}>Phase not created yet</p>
+                      <div style={{ color: "red" }}>Phase not available</div>
                     )}
                   </div>
                 </div>
