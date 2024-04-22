@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 import { Navigate, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../Context/Context";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const UserAuthDetail = () => {
   const { toastAlert } = useGlobalContext();
@@ -23,7 +23,7 @@ const UserAuthDetail = () => {
 
   function getData() {
     axios
-      .get(`${baseUrl}`+`get_single_user_auth_detail/${id}`)
+      .get(`${baseUrl}` + `get_single_user_auth_detail/${id}`)
       .then((res) => {
         setData(res.data);
         setFilterData(res.data);
@@ -156,7 +156,7 @@ const UserAuthDetail = () => {
 
   function postData() {
     for (const element of filterData) {
-      axios.put(baseUrl+"update_user_auth", {
+      axios.put(baseUrl + "update_user_auth", {
         auth_id: element.auth_id,
         Juser_id: Number(id),
         obj_id: element.obj_id,
@@ -172,7 +172,7 @@ const UserAuthDetail = () => {
   }
 
   if (isSubmitted) {
-    return <Navigate to="/admin/user-overview" />;
+    return <Navigate to={`/admin/user-overview/${"Active"}`} />;
   }
   return (
     <>
@@ -182,26 +182,42 @@ const UserAuthDetail = () => {
         </div>
         <div className="action_btns">
           <button onClick={postData} className="btn btn-outline-danger btn-sm">
-            Post  
+            Post
           </button>
 
-          <button onClick={() => handleSelectAllColumn("insert_value")} className="btn btn-outline-warning btn-sm">
+          <button
+            onClick={() => handleSelectAllColumn("insert_value")}
+            className="btn btn-outline-warning btn-sm"
+          >
             Select All Insert
           </button>
-          
-          <button onClick={() => handleSelectAllColumn("view_value")} className="btn btn-outline-warning btn-sm">
+
+          <button
+            onClick={() => handleSelectAllColumn("view_value")}
+            className="btn btn-outline-warning btn-sm"
+          >
             Select All View
           </button>
-          
-          <button onClick={() => handleSelectAllColumn("update_value")} className="btn btn-outline-warning btn-sm">
+
+          <button
+            onClick={() => handleSelectAllColumn("update_value")}
+            className="btn btn-outline-warning btn-sm"
+          >
             Select All Update
           </button>
-          
-          <button onClick={() => handleSelectAllColumn("delete_flag_value")} className="btn btn-outline-warning btn-sm">
+
+          <button
+            onClick={() => handleSelectAllColumn("delete_flag_value")}
+            className="btn btn-outline-warning btn-sm"
+          >
             Select All Delete
           </button>
-          
-          <button onClick={handleSelectAll} type="button" className="btn btn-outline-success btn-sm">
+
+          <button
+            onClick={handleSelectAll}
+            type="button"
+            className="btn btn-outline-success btn-sm"
+          >
             Select All
           </button>
         </div>

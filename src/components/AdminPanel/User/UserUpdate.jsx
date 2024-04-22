@@ -282,7 +282,7 @@ const UserUpdate = () => {
     "O+ (O Positive)",
     "O- (O Negetive)",
   ];
-  const statusData = ["Active", "Exit"];
+  const statusData = ["Active", "Exit", "PreOnboard"];
   const maritialStatusData = ["Married", "Unmarried"];
 
   // login progress bar---------------------------------------------------------------------

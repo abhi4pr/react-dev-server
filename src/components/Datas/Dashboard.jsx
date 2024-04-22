@@ -4,7 +4,7 @@ import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 import { Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
 export default function Dashboard() {
   const [categoryData, setCategoryData] = useState([]);
@@ -17,29 +17,29 @@ export default function Dashboard() {
 
   const callApi = () => {
     axios
-      .get(baseUrl+"get_all_data_categorys")
+      .get(baseUrl + "get_all_data_categorys")
       .then((res) => setCategoryData(res.data.simcWithSubCategoryCount));
 
     axios
-      .get(baseUrl+"get_all_data_brands")
+      .get(baseUrl + "get_all_data_brands")
       .then((res) => setBrandData(res.data));
 
     axios
-      .get(baseUrl+"distinct_created_by")
+      .get(baseUrl + "distinct_created_by")
       .then((res) => setEmployeeData(res.data.data));
     axios
-      .get(baseUrl+"distinct_designed_by")
+      .get(baseUrl + "distinct_designed_by")
       .then((res) => setDesignedData(res.data.data));
 
     axios
-      .get(baseUrl+"get_all_data_platforms")
+      .get(baseUrl + "get_all_data_platforms")
       .then((res) => setPlatformData(res.data));
     axios
 
-      .get(baseUrl+"get_all_data_content_types")
+      .get(baseUrl + "get_all_data_content_types")
       .then((res) => setContentData(res.data));
     axios
-      .get(baseUrl+"get_all_data_Sub_categories")
+      .get(baseUrl + "get_all_data_Sub_categories")
       .then((res) => setSubCategoryData(res.data));
   };
 
@@ -77,54 +77,183 @@ export default function Dashboard() {
   return (
     <div>
       <UserNav />
-      <div className="row container" style={{ margin: '20px auto', display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-    
-    {/* Category Card */}
-    <div className="col-md-5" style={{ margin: '15px', flexBasis: 'calc(50% - 30px)' }}>
-        <div className="card" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', borderRadius: '10px', backgroundColor: '#f8f9fa', padding: '20px' }}>
+      <div
+        className="row container"
+        style={{
+          margin: "20px auto",
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
+      >
+        {/* Category Card */}
+        <div
+          className="col-md-5"
+          style={{ margin: "15px", flexBasis: "calc(50% - 30px)" }}
+        >
+          <div
+            className="card"
+            style={{
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              borderRadius: "10px",
+              backgroundColor: "#f8f9fa",
+              padding: "20px",
+            }}
+          >
             <div className="card-body">
-                <h5 className="card-title" style={{ fontSize: '1.25rem', color: '#007bff' }}>Category</h5>
-                <p className="card-text" style={{ fontSize: '1rem' }}>Total Category: {categoryData.length}</p>
-                <Link to="/data-brand-category" className="btn btn-primary" style={{ backgroundColor: '#007bff', border: 'none', borderRadius: '5px', padding: '10px 20px', color: 'white', textDecoration: 'none' }}>View Category</Link>
+              <h5
+                className="card-title"
+                style={{ fontSize: "1.25rem", color: "#007bff" }}
+              >
+                Category
+              </h5>
+              <p className="card-text" style={{ fontSize: "1rem" }}>
+                Total Category: {categoryData.length}
+              </p>
+              <Link
+                to="/data-brand-category"
+                className="btn btn-primary"
+                style={{
+                  backgroundColor: "#007bff",
+                  border: "none",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  color: "white",
+                  textDecoration: "none",
+                }}
+              >
+                View Category
+              </Link>
             </div>
+          </div>
         </div>
-    </div>
 
-    {/* Brand Card */}
-    <div className="col-md-5" style={{ margin: '15px', flexBasis: 'calc(50% - 30px)' }}>
-        <div className="card" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', borderRadius: '10px', backgroundColor: '#f8f9fa', padding: '20px' }}>
+        {/* Brand Card */}
+        <div
+          className="col-md-5"
+          style={{ margin: "15px", flexBasis: "calc(50% - 30px)" }}
+        >
+          <div
+            className="card"
+            style={{
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              borderRadius: "10px",
+              backgroundColor: "#f8f9fa",
+              padding: "20px",
+            }}
+          >
             <div className="card-body">
-                <h5 className="card-title" style={{ fontSize: '1.25rem', color: '#007bff' }}>Brand</h5>
-                <p className="card-text" style={{ fontSize: '1rem' }}>Total Brand: {brandData.length}</p>
-                <Link to="/data-brand" className="btn btn-primary" style={{ backgroundColor: '#007bff', border: 'none', borderRadius: '5px', padding: '10px 20px', color: 'white', textDecoration: 'none' }}>View Brand</Link>
+              <h5
+                className="card-title"
+                style={{ fontSize: "1.25rem", color: "#007bff" }}
+              >
+                Brand
+              </h5>
+              <p className="card-text" style={{ fontSize: "1rem" }}>
+                Total Brand: {brandData.length}
+              </p>
+              <Link
+                to="/data-brand"
+                className="btn btn-primary"
+                style={{
+                  backgroundColor: "#007bff",
+                  border: "none",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  color: "white",
+                  textDecoration: "none",
+                }}
+              >
+                View Brand
+              </Link>
             </div>
+          </div>
         </div>
-    </div>
 
-    {/* Sub Category Card */}
-    <div className="col-md-5" style={{ margin: '15px', flexBasis: 'calc(50% - 30px)' }}>
-        <div className="card" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', borderRadius: '10px', backgroundColor: '#f8f9fa', padding: '20px' }}>
+        {/* Sub Category Card */}
+        <div
+          className="col-md-5"
+          style={{ margin: "15px", flexBasis: "calc(50% - 30px)" }}
+        >
+          <div
+            className="card"
+            style={{
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              borderRadius: "10px",
+              backgroundColor: "#f8f9fa",
+              padding: "20px",
+            }}
+          >
             <div className="card-body">
-                <h5 className="card-title" style={{ fontSize: '1.25rem', color: '#007bff' }}>Sub Category</h5>
-                <p className="card-text" style={{ fontSize: '1rem' }}>Total Sub Category: {subCategoryData.length}</p>
-                <Link to="/data-brand-sub-category" className="btn btn-primary" style={{ backgroundColor: '#007bff', border: 'none', borderRadius: '5px', padding: '10px 20px', color: 'white', textDecoration: 'none' }}>View Sub Category</Link>
+              <h5
+                className="card-title"
+                style={{ fontSize: "1.25rem", color: "#007bff" }}
+              >
+                Sub Category
+              </h5>
+              <p className="card-text" style={{ fontSize: "1rem" }}>
+                Total Sub Category: {subCategoryData.length}
+              </p>
+              <Link
+                to="/data-brand-sub-category"
+                className="btn btn-primary"
+                style={{
+                  backgroundColor: "#007bff",
+                  border: "none",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  color: "white",
+                  textDecoration: "none",
+                }}
+              >
+                View Sub Category
+              </Link>
             </div>
+          </div>
         </div>
-    </div>
 
-    {/* Content Type Card */}
-    <div className="col-md-5" style={{ margin: '15px', flexBasis: 'calc(50% - 30px)' }}>
-        <div className="card" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)', borderRadius: '10px', backgroundColor: '#f8f9fa', padding: '20px' }}>
+        {/* Content Type Card */}
+        <div
+          className="col-md-5"
+          style={{ margin: "15px", flexBasis: "calc(50% - 30px)" }}
+        >
+          <div
+            className="card"
+            style={{
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+              borderRadius: "10px",
+              backgroundColor: "#f8f9fa",
+              padding: "20px",
+            }}
+          >
             <div className="card-body">
-                <h5 className="card-title" style={{ fontSize: '1.25rem', color: '#007bff' }}>Content Type</h5>
-                <p className="card-text" style={{ fontSize: '1rem' }}>Total Content Type: {contentData.length}</p>
-                <Link to="/data-content-type" className="btn btn-primary" style={{ backgroundColor: '#007bff', border: 'none', borderRadius: '5px', padding: '10px 20px', color: 'white', textDecoration: 'none' }}>View Content Type</Link>
+              <h5
+                className="card-title"
+                style={{ fontSize: "1.25rem", color: "#007bff" }}
+              >
+                Content Type
+              </h5>
+              <p className="card-text" style={{ fontSize: "1rem" }}>
+                Total Content Type: {contentData.length}
+              </p>
+              <Link
+                to="/data-content-type"
+                className="btn btn-primary"
+                style={{
+                  backgroundColor: "#007bff",
+                  border: "none",
+                  borderRadius: "5px",
+                  padding: "10px 20px",
+                  color: "white",
+                  textDecoration: "none",
+                }}
+              >
+                View Content Type
+              </Link>
             </div>
+          </div>
         </div>
-    </div>
-
-</div>
-
+      </div>
     </div>
   );
 }

@@ -302,6 +302,7 @@ import CustomerDocumentUpdate from "./Customer/CustomerDocumentUpdate";
 import OperationDashboard from "./RegisterCampaign/OperationDashboard/OperationDashboard";
 import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
 import ViewSaleBooking from "./Sales/SaleBooking/ViewSaleBooking";
+import Timeline from "./Navbar-Sidebar/Timeline";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -377,12 +378,16 @@ const Admin = () => {
                         contextData[38].view_value === 1)) && (
                       <Route path="/user" element={<UserMaster />} />
                     )}
+
+                    {/* User Profile Routing Here  */}
+                    <Route path="/user-timeline" element={<Timeline />} />
+
                     {contextData &&
                       contextData[0] &&
                       contextData[0].view_value === 1 && (
                         <>
                           <Route
-                            path="/user-overview"
+                            path="/user-overview/:id"
                             element={<UserOverview />}
                           />
                           <Route
