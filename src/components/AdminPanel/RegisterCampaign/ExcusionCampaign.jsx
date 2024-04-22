@@ -136,6 +136,7 @@ const ExcusionCampaign = () => {
     <ExePageDetailes
       data={assignmentData}
       // status={"assigned"}
+      selectedCampaign={selectedCampaign}
       // setActiveAccordionIndex={setActiveAccordionIndex}
       setActiveAccordionIndex={setActiveAccordionIndex}
       activeAccordion="1"

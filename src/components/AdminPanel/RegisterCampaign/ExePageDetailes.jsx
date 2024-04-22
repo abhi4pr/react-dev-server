@@ -1,16 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
-import {
-  Modal,
-  Box,
-  Typography,
-  Button,
-  TextField,
-  Paper,
-  Autocomplete,
-} from "@mui/material";
+import { Modal, Box, Typography, Button, TextField } from "@mui/material";
 import { baseUrl } from "../../../utils/config";
+import PublishedWithChangesIcon from "@mui/icons-material/PublishedWithChanges";
+import ReplacePagesModal from "./ReplacePagesModal";
+import ReplacePagesModalExe from "./ReplacePagesModalExe";
 
 const style = {
   position: "absolute",
@@ -18,23 +13,18 @@ const style = {
   left: "50%",
   borderRadius: "10px",
   transform: "translate(-50%, -50%)",
-  width: 800,
+  width: 900,
   bgcolor: "background.paper",
   border: "2px solid #000",
   boxShadow: 24,
   p: 1,
 };
 
-const ExePageDetailes = ({
-  data,
-  setActiveAccordionIndex,
-  activeAccordion,
-  getAssignment,
-}) => {
+const ExePageDetailes = ({ data, activeAccordion, getAssignment,selectedCampaign }) => {
+  console.log(selectedCampaign,"page saim");
   const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
   const [singlePhase, setSinglePhase] = useState([]);
-
   const [assignedData, setAssignedData] = useState({});
   const [assignmentCommits, setAssignmentCommits] = useState([]);
   const [commitPayload, setCommitPayload] = useState([]);
@@ -44,8 +34,12 @@ const ExePageDetailes = ({
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
   const [pageDetails, setPageDetails] = useState([]);
-  const [shortcode, setShortcode] = useState("");
+  const [shortcode, setShortcode] = useState([]);
+  const [selectedPostDetails, setSelectedPostDetails] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selection, setSelections] = useState();
 
+  console.log(selection);
   const handleShortcodeChange = (event, index) => {
     const newShortcodes = [...shortcode];
     newShortcodes[index] = event.target.value;
@@ -70,7 +64,6 @@ const ExePageDetailes = ({
   const finalExecute = async () => {
     const response = await axios.post(baseUrl + "assignment/commit", {
       ass_id: ass_id,
-
       execute: true,
     });
     alert("executed successfully");
@@ -92,10 +85,7 @@ const ExePageDetailes = ({
     setOpen2(true);
   };
 
-  const handleVerified = () => {};
-
   const handleCommitChange = (e, field, param) => {
-    // setCommitPayload({...commitPayload,[field]:e.target.value,id})
     const data = commitPayload.map((commit) => {
       if (commit.comm_id == param.row.comm_id) {
         return { ...commit, [field]: e.target.value };
@@ -127,16 +117,6 @@ const ExePageDetailes = ({
     getAssignment();
   };
 
-  const handleAssignedSubmit = async () => {
-    const response = await axios.post(
-      baseUrl + "assignment/commit",
-      assignedData
-    );
-    alert("submitted successfully");
-    getAssignment();
-    setOpen(false);
-  };
-
   const column = [
     {
       field: "S.NO",
@@ -164,8 +144,23 @@ const ExePageDetailes = ({
     },
     {
       field: "storyPerPage",
-      headerName: "Post",
+      headerName: "Story",
       width: 150,
+    },
+    {
+      field: "replace",
+      headerName: "Replace Pages",
+      width: 150,
+      editable: true,
+      renderCell: (params) => {
+        return (
+          <Button>
+            <PublishedWithChangesIcon
+              onClick={() => handleOpenModal(params.row)}
+            />
+          </Button>
+        );
+      },
     },
     {
       field: "actions",
@@ -327,7 +322,6 @@ const ExePageDetailes = ({
         return (
           <TextField
             type="text"
-            //  value={activeAccordion!="2" && params.row.snapshot}
             placeholder={params.row.snapshot}
             onChange={(e) => handleCommitChange(e, "snapshot", params)}
           />
@@ -353,49 +347,89 @@ const ExePageDetailes = ({
     },
   ];
 
-  const getPageDetails = async (index) => {
-    try {
-      const regex = /\/(reel|p)\/([A-Za-z0-9-_]+)/;
-      const match = shortcode[index].match(regex);
-      if (match && match.length > 2) {
+  useEffect(() => {
+    const fetchPageDetails = async (index) => {
+      if (shortcode[index]) {
+        const regex = /\/(reel|p)\/([A-Za-z0-9-_]+)/;
+        const match = shortcode[index].match(regex);
+        if (match && match.length > 2) {
+          try {
+            setPageDetails((prevPageDetails) => {
+              const updatedPageDetails = [...prevPageDetails];
+              updatedPageDetails[index] = "Getting details...";
+              return updatedPageDetails;
+            });
 
-        setPageDetails((prevPageDetails) => {
-          const updatedPageDetails = [...prevPageDetails];
-          updatedPageDetails[index] = "Getting details...";
-          return updatedPageDetails;
-        });
-  
-        const payload = {
-          shortCode: match[2],
-          department: "660ea4d1bbf521bf783ffe18",
-          userId: 15,
-        };
-        const token =
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3RpbmciLCJpYXQiOjE3MDczMTIwODB9.ytDpwGbG8dc9jjfDasL_PI5IEhKSQ1wXIFAN-2QLrT8";
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        const response = await axios.post(
-          `http://35.200.154.203:8080/api/v1/getpostDetailFromInsta`,
-          payload,
-          config
-        );
-  
-        setPageDetails((prevPageDetails) => {
-          const updatedPageDetails = [...prevPageDetails];
-          updatedPageDetails[index] = response?.data?.data;
-          return updatedPageDetails;
-        });
-      } else {
-        console.log("No match found or invalid shortcode.");
+            const payload = {
+              shortCode: match[2],
+              department: "660ea4d1bbf521bf783ffe18",
+              userId: 15,
+            };
+            const token =
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6InRlc3RpbmciLCJpYXQiOjE3MDczMTIwODB9.ytDpwGbG8dc9jjfDasL_PI5IEhKSQ1wXIFAN-2QLrT8";
+            const config = {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            };
+            const response = await axios.post(
+              `http://35.200.154.203:8080/api/v1/getpostDetailFromInsta`,
+              payload,
+              config
+            );
+
+            setPageDetails((prevPageDetails) => {
+              const updatedPageDetails = [...prevPageDetails];
+              updatedPageDetails[index] = response?.data?.data;
+              return updatedPageDetails;
+            });
+          } catch (error) {
+            console.error("Error fetching page details:", error);
+          }
+        } else {
+          console.log("No match found or invalid shortcode.");
+        }
       }
-    } catch (error) {
-      console.error("Error fetching page details:", error);
-    }
+    };
+    shortcode.forEach((_, index) => {
+      fetchPageDetails(index);
+    });
+  }, [shortcode]);
+
+  const handlePostCaptionClick = (index) => {
+    setSelectedPostDetails(pageDetails[index]);
+    setOpen2(true);
   };
-  
+
+  const handleOpenModal = (row) => {
+    setSelections(row);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+  const [selectData, setSelectData] = useState([]);
+
+  const getSelectPage = async () => {
+    const newPlan = await axios.get(
+      `${baseUrl}`+`campaignplan/${selection?.campaignId}`
+    );
+    const x = newPlan.data.data.filter((page) => {
+      if (
+       ( page.replacement_status == "pending" ||
+        page.replacement_status == "replacement" ||
+        page.replacement_status == "inactive") && (page.delete_status=='inactive')
+      ) {
+      }
+      return page;
+    });
+    setSelectData(x);
+  };
+
+  useEffect(() => {
+    getSelectPage();
+  }, []);
 
   return (
     <>
@@ -423,28 +457,64 @@ const ExePageDetailes = ({
                   <div key={i}>
                     <TextField
                       sx={{ m: 1 }}
-                      label="Shortcode"
+                      label="Page Link"
                       type="text"
                       value={shortcode[i]}
                       onChange={(event) => handleShortcodeChange(event, i)}
                     />
 
                     <TextField
-                      sx={{ m: 1, width: "100px" }}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      sx={{ width: "80px", m: 1 }}
                       label="Likes"
-                      type="number"
                       value={pageDetails[i]?.like_count}
-                      // onChange={}
                     />
                     <TextField
-                      sx={{ m: 1, width: "150px" }}
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      sx={{ m: 1, width: "90px" }}
                       label="Comments"
-                      type="number"
                       value={pageDetails[i]?.comment_count}
-                      // onChange={}
                     />
-
-                    <Button
+                    <TextField
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      sx={{ m: 1, width: "150px" }}
+                      label="Post Count"
+                      value={pageDetails[i]?.owner_info?.post_count}
+                    />
+                    <TextField
+                      InputLabelProps={{ shrink: true }}
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      sx={{ m: 1, width: "150px" }}
+                      label=" Caption"
+                      value={pageDetails[i]?.post_caption}
+                      onClick={() => handlePostCaptionClick(i)}
+                    />
+                    {pageDetails[i]?.postImage && (
+                      <div
+                        style={{
+                          width: "100px",
+                          height: "100px",
+                          borderRadius: "50%",
+                        }}
+                      >
+                        <img
+                          src={pageDetails[i]?.postImage}
+                          alt="Profile Pic"
+                        />
+                      </div>
+                    )}
+                    {/* <Button
                       variant="contained"
                       color="primary"
                       size="small"
@@ -454,8 +524,10 @@ const ExePageDetailes = ({
                       sx={{ mt: 2 }}
                       disabled={pageDetails[i] === "Getting details..."}
                     >
-                      {pageDetails[i]?.is_paid_partnership ? pageDetails[i]?.is_paid_partnership : "Get Details"}
-                    </Button>
+                      {pageDetails[i]?.is_paid_partnership
+                        ? pageDetails[i]?.is_paid_partnership
+                        : "Get Details"}
+                    </Button> */}
                   </div>
                 ))}
               </Box>
@@ -508,80 +580,21 @@ const ExePageDetailes = ({
           aria-describedby="modal-modal-description"
         >
           <Box sx={style}>
-            <Paper>
-              <div className="form-heading">
-                <div className="form_heading_title">
-                  <h2> Excusion pending </h2>
-                </div>
+            {selectedPostDetails && (
+              <div>
+                <Typography>Post Caption</Typography>
+                {selectedPostDetails.post_caption}
               </div>
-            </Paper>
-            <Typography>campaign Details</Typography>
-            <Box sx={{ display: "flex" }}>
-              <TextField
-                label="campaign"
-                defaultValue="Tiger 3"
-                InputProps={{
-                  readOnly: true,
-                }}
-                margin="normal"
-              />
-              <TextField
-                label="plan"
-                defaultValue="plan name"
-                InputProps={{
-                  readOnly: true,
-                }}
-                margin="normal"
-              />
-              <TextField
-                label="phase"
-                defaultValue="phase 1"
-                InputProps={{
-                  readOnly: true,
-                }}
-                margin="normal"
-              />
-            </Box>
-            {singlePhase.map((item) => (
-              <>
-                <Box>
-                  <TextField
-                    label="commitment"
-                    value={item.commitment}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    margin="normal"
-                  />
-                  <TextField
-                    label="value"
-                    value={item.value}
-                    InputProps={{
-                      readOnly: true,
-                    }}
-                    margin="normal"
-                  />
-                </Box>
-              </>
-            ))}
-            <DataGrid
-              rows={assignmentCommits}
-              columns={columnForAssCommit}
-              getRowId={(row) => row.comm_id}
-              pagination
-            />
-
-            {/* <Button
-              variant="contained"
-              color="primary"
-              style={{ marginRight: "8px" }}
-            // onClick={}
-
->
-              Submit
-            </Button> */}
+            )}
           </Box>
         </Modal>
+      </>
+      <>
+      <ReplacePagesModalExe
+            open={isModalOpen}
+            handleClose={handleCloseModal}
+            selectedCampaign={selectedCampaign}
+          />
       </>
     </>
   );
