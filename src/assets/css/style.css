@@ -15678,7 +15678,127 @@ body.sidebar-toggled .sidebar_toggle .footer_cprgt {
   column-gap: 40px;
 }
 
-.thm_table {}
+.dt {
+  .head-font {
+    font-weight: 500;
+  }
+
+  .table>:not(:last-child)>:last-child>* {
+    border-bottom: none;
+  }
+
+  .th {
+    border: none;
+  }
+
+  .MuiInputBase-input {
+
+    border: none;
+
+  }
+
+  .border-pagination {
+    border: 1px solid var(--border);
+    border-top: none !important;
+    position: relative;
+  }
+
+  .border-toolbar {
+    border: 1px solid var(--border);
+    border-bottom: none !important;
+    position: relative;
+  }
+
+  .drawer {
+    position: absolute;
+    z-index: 10;
+    top: 100%;
+    background-color: var(--white);
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    width: max-content;
+    border-radius: 12px;
+    padding: 20px;
+    gap: 5px;
+    border: 1px solid var(--border);
+
+    .dt-toogle {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      width: 100%;
+      padding: 0 !important;
+
+      .form-check-label {
+        color: var(--medium) !important;
+        padding-left: 20px !important;
+      }
+    }
+  }
+
+  .dt-center {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .table_responsive {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100px;
+    max-height: 700px;
+    overflow: scroll;
+    position: relative;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+
+
+    thead {
+      position: sticky;
+      top: 0;
+      background-color: var(--body-bg);
+      cursor: pointer;
+      height: 56px;
+    }
+
+    tr {
+      min-height: 56px;
+
+      width: 100%;
+
+      td {
+        padding: 0px;
+
+        .dt-row-col {
+          padding: 0 0 0 12px;
+          display: flex;
+          align-items: center;
+          flex-direction: row;
+          width: 100%;
+          min-height: 56px;
+          max-height: 100%;
+          /* justify-content: center; */
+        }
+      }
+
+    }
+
+    .dt-row {
+
+      &:hover {
+        background-color: var(--Gray-Color-600);
+      }
+    }
+  }
+}
 
 .MuiDataGrid-root {
   border: 1px solid var(--border) !important;
