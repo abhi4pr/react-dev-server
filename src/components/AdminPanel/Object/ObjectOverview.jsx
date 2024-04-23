@@ -145,7 +145,7 @@
 
 
 import { useState, useEffect } from "react";
-import DataTable from "react-data-table-component";
+// import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
@@ -290,6 +290,11 @@ const ObjectOverview = () => {
     filterDataFun(updatedFilters);
   };
 
+  const removeFilter = (indexToRemove) => {
+    const updatedFilters = filters.filter((_,index) => index !== indexToRemove);
+    setFilters(updatedFilters)
+    filterDataFun(updatedFilters)
+  }
 
   // multiple filter code end here
 
@@ -392,10 +397,10 @@ const ObjectOverview = () => {
                     ))}
                   </select>
                 )}
+                <button className="btn btn-danger" onClick={() => removeFilter(index)}>Remove</button>
               </div>
             ))}
             <button className="btn btn-success" onClick={addFilter}>Add Filter</button>
-            {/* <button className="btn btn-warning" onClick={applyFilters}>Apply Filters</button> */}
           </div>
         </div>
 
@@ -420,7 +425,6 @@ const ObjectOverview = () => {
             </thead>
             <tbody>
               {getPageData(filterData).map((row, index) => (
-              // {getPageData(search ? filterData : datas).map((row, index) => (
                 <tr key={row.id}>
                   {columns.map((column) => (
                     <td key={column}>{row[column]}</td>
