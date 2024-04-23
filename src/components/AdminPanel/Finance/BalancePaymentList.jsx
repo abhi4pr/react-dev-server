@@ -91,6 +91,8 @@ const BalancePaymentList = () => {
   const [tdsPercentage, setTDSPercentage] = useState("");
   const [showField, setShowField] = useState(false);
   const [baseAmount, setBaseAmount] = useState();
+  const [campaignAmountData, setCampaignAmountData] = useState();
+  const [paidAmountData, setPaidAmountData] = useState();
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -257,9 +259,15 @@ const BalancePaymentList = () => {
     getDropdownData();
   }, []);
 
+  useEffect(() => {
+    totalPA();
+  }, [paidAmount]);
+
   const handleImageClick = (row) => {
     setBalAmount(row.campaign_amount - row.total_paid_amount);
     setBaseAmount(row.base_amount);
+    setPaidAmountData(row.total_paid_amount);
+    setCampaignAmountData(row.campaign_amount);
     setTDSFieldSaleBookingId(row.sale_booking_id);
     setSingleRow(row);
     getData();
@@ -267,6 +275,9 @@ const BalancePaymentList = () => {
   };
   const convertDateToDDMMYYYY = (dateString) => {
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      return "Invalid Date";
+    }
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0"); // January is 0!
     const year = date.getFullYear();
@@ -1251,7 +1262,8 @@ const BalancePaymentList = () => {
 
   const calculatePaidPercentage = () => {
     if (paidAmount !== 0) {
-      const percentage = (paidAmount / balAmount) * 100;
+      const percentage =
+        ((+paidAmount + +paidAmountData) / +campaignAmountData) * 100;
       // const roundedPercentage = percentage * 10;
       setPaidPercentage(percentage.toFixed(1));
     } else {
@@ -1261,12 +1273,14 @@ const BalancePaymentList = () => {
 
   const calculateTDSPercentage = () => {
     const remainingData = balAmount - paidAmount;
-    console.log(remainingData, "remainingData", baseAmount, "baseAmount");
-    const percentage = (baseAmount / remainingData) * 100;
-    console.log(percentage, "percentage");
-    const roundedPercentage = parseFloat(percentage.toFixed(2)); // Round to two decimal places and convert to float
-    const formattedPercentage = (roundedPercentage / 100).toFixed(2); // Divide by 100 and round to two decimal places
-    setTDSPercentage(formattedPercentage);
+    if (remainingData === 0) {
+      setTDSPercentage(0);
+    } else {
+      const percentage = (baseAmount / remainingData) * 100;
+      const roundedPercentage = parseFloat(percentage.toFixed(2)); // Round to two decimal places and convert to float
+      const formattedPercentage = (roundedPercentage / 100).toFixed(2); // Divide by 100 and round to two decimal places
+      setTDSPercentage(formattedPercentage);
+    }
   };
 
   // gst counts :-
@@ -1296,6 +1310,10 @@ const BalancePaymentList = () => {
     (total, item) => total + parseFloat(item?.total_paid_amount),
     0
   );
+
+  const totalPA = () => {
+    return +campaignAmountData - (+paidAmountData + paidAmount);
+  };
 
   return (
     <div>
@@ -2070,6 +2088,19 @@ const BalancePaymentList = () => {
                             required
                           />
                         </div>
+                        <div className="form-group mt-3">
+                          <label htmlFor="images">Paid Amount</label>
+                          <input
+                            type="number"
+                            className="form-control"
+                            id="paid Amount"
+                            name="paid Amount"
+                            value={paidAmountData}
+                            readOnly
+                            // onChange={(e) => setBalAmount(e.target.value)}
+                            required
+                          />
+                        </div>
                         <TextField
                           variant="outlined"
                           label="Paid Amount *"
@@ -2081,7 +2112,7 @@ const BalancePaymentList = () => {
                               const parsedValue = parseFloat(inputValue);
                               if (parsedValue <= balAmount) {
                                 setPaidAmount(parsedValue);
-                                setShowField(inputValue !== "");
+                                setShowField(true);
 
                                 setPaymentType(
                                   parsedValue === balAmount
