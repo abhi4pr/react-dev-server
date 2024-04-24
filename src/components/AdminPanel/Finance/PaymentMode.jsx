@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
@@ -532,6 +532,15 @@ const PaymentMode = () => {
                 >
                   Hidden Data
                 </Button>
+                {/* <Link to="/admin/finance-payment-mode-payment-details">
+                  <Button
+                    variant="contained"
+                    // onClick={handleAddPaymentDetail}
+                    className="btn cmnbtn btn-primary"
+                  >
+                    Add Data
+                  </Button>
+                </Link> */}
               </div>
             </div>
           </div>
