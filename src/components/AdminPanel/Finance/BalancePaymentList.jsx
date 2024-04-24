@@ -1311,6 +1311,38 @@ const BalancePaymentList = () => {
     0
   );
 
+  // invoice counts :-
+  const invoiceCounts = filterData.filter(
+    (count) => count.invoice_mnj_number !== ""
+  );
+  // Total gst - balance amounts
+  const totalInvoiceBalanceAmount = invoiceCounts?.reduce(
+    (total, item) =>
+      total + parseFloat(item?.campaign_amount - item?.total_paid_amount),
+    0
+  );
+  // total gst - paid amounts
+  const totalInvoiceReceivedAmount = invoiceCounts?.reduce(
+    (total, item) => total + parseFloat(item?.total_paid_amount),
+    0
+  );
+
+  // Non invoice counts :-
+  const nonInvoiceCounts = filterData.filter(
+    (count) => count.invoice_mnj_number === ""
+  );
+  // Total gst - balance amounts
+  const totalNonInvoiceBalanceAmount = nonInvoiceCounts?.reduce(
+    (total, item) =>
+      total + parseFloat(item?.campaign_amount - item?.total_paid_amount),
+    0
+  );
+  // total gst - paid amounts
+  const totalNonInvoiceReceivedAmount = nonInvoiceCounts?.reduce(
+    (total, item) => total + parseFloat(item?.total_paid_amount),
+    0
+  );
+
   const totalPA = () => {
     return +campaignAmountData - (+paidAmountData + paidAmount);
   };
@@ -1689,38 +1721,17 @@ const BalancePaymentList = () => {
               </h5>
             </div>
             <div className="card-body">
+              <h5 className="mediumText">Invoice Count</h5>
+              <h4 className="font-weight-bold mt8">{invoiceCounts?.length}</h4>
               <h5 className="mediumText">Balance Amount</h5>
               <h4 className="font-weight-bold mt8">
-                ₹
-                {/* {datas.length > 0
-                  ? datas
-                      .filter((item) => item.payment_approval_status == 0)
-                      .reduce((total, currentItem) => {
-                        return total + currentItem.payment_amount_show * 1;
-                      }, 0)
-                  : ""} */}
+                ₹{totalInvoiceBalanceAmount}
               </h4>
-              <h5 className="mediumText">Total Due Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                ₹
-                {/* {datas.length > 0
-                  ? datas
-                      .filter((item) => item.payment_approval_status == 0)
-                      .reduce((total, currentItem) => {
-                        return total + currentItem.payment_amount_show * 1;
-                      }, 0)
-                  : ""} */}
-              </h4>
+              {/* <h5 className="mediumText">Total Due Amount</h5>
+              <h4 className="font-weight-bold mt8">₹{}</h4> */}
               <h5 className="mediumText">Received Amount</h5>
               <h4 className="font-weight-bold mt8">
-                ₹
-                {/* {datas.length > 0
-                  ? datas
-                      .filter((item) => item.payment_approval_status == 0)
-                      .reduce((total, currentItem) => {
-                        return total + currentItem.payment_amount_show * 1;
-                      }, 0)
-                  : ""} */}
+                ₹{totalInvoiceReceivedAmount}
               </h4>
             </div>
           </div>
@@ -1738,38 +1749,22 @@ const BalancePaymentList = () => {
               </h5>
             </div>
             <div className="card-body">
+              <h5 className="mediumText">Non Invoice Count</h5>
+              <h4 className="font-weight-bold mt8">
+                {nonInvoiceCounts?.length}
+              </h4>
               <h5 className="mediumText">Balance Amount</h5>
               <h4 className="font-weight-bold mt8">
-                ₹
-                {/* {datas.length > 0
-                  ? datas
-                      .filter((item) => item.payment_approval_status == 0)
-                      .reduce((total, currentItem) => {
-                        return total + currentItem.payment_amount_show * 1;
-                      }, 0)
-                  : ""} */}
+                ₹{totalNonInvoiceBalanceAmount}
               </h4>
-              <h5 className="mediumText">Total Due Amount</h5>
+              {/* <h5 className="mediumText">Total Due Amount</h5>
               <h4 className="font-weight-bold mt8">
                 ₹
-                {/* {datas.length > 0
-                  ? datas
-                      .filter((item) => item.payment_approval_status == 0)
-                      .reduce((total, currentItem) => {
-                        return total + currentItem.payment_amount_show * 1;
-                      }, 0)
-                  : ""} */}
-              </h4>
+                {}
+              </h4> */}
               <h5 className="mediumText">Received Amount</h5>
               <h4 className="font-weight-bold mt8">
-                ₹
-                {/* {datas.length > 0
-                  ? datas
-                      .filter((item) => item.payment_approval_status == 0)
-                      .reduce((total, currentItem) => {
-                        return total + currentItem.payment_amount_show * 1;
-                      }, 0)
-                  : ""} */}
+                ₹{totalNonInvoiceReceivedAmount}
               </h4>
             </div>
           </div>
@@ -1814,7 +1809,7 @@ const BalancePaymentList = () => {
               </h5>
             </div>
             <div className="card-body">
-              <h5 className="mediumText">Non GST Counts</h5>
+              <h5 className="mediumText">Non GST Count</h5>
               <h4 className="font-weight-bold mt8">₹{nonGstCounts?.length}</h4>
               <h5 className="mediumText"> Total Balance Amount</h5>
               <h4 className="font-weight-bold mt8">
