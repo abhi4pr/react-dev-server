@@ -189,7 +189,6 @@ const PageOverview = () => {
         let name = platformData?.find(
           (item) => item?._id == params.row.platform_id
         )?.platform_name;
-
         return <div>{name}</div>;
       },
       width: 200,
