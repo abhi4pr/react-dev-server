@@ -6,6 +6,7 @@ import jwtDecode from "jwt-decode";
 import RequestAssignPage from "./RequestAssignPage";
 import { baseUrl } from '../../../utils/config'
 import { Autocomplete, TextField } from "@mui/material";
+import AssignmentExcusionPage from "./ExcusionTab/AssignmentExcusionPage";
 
 const ExcusionCampaign = () => {
   const storedToken = sessionStorage.getItem("token");
@@ -133,14 +134,21 @@ const ExcusionCampaign = () => {
   );
 
   const tab2 = (
-    <ExePageDetailes
-      data={assignmentData}
-      // status={"assigned"}
-      selectedCampaign={selectedCampaign}
-      // setActiveAccordionIndex={setActiveAccordionIndex}
-      setActiveAccordionIndex={setActiveAccordionIndex}
-      activeAccordion="1"
-      getAssignment={getAssignment}
+    // <ExePageDetailes
+    //   data={assignmentData}
+    //   status={"assigned"}
+    //   selectedCampaign={selectedCampaign}
+    //   // setActiveAccordionIndex={setActiveAccordionIndex}
+    //   setActiveAccordionIndex={setActiveAccordionIndex}
+    //   activeAccordion="1"
+    //   getAssignment={getAssignment}
+    // />
+    <AssignmentExcusionPage
+          selectedCampaign={selectedCampaign}
+          data={assignmentData}
+          selectedCamp={selectedCampaign}
+          getAssignment={getAssignment}
+          status={"assigned"}
     />
   );
   const tab3 = (

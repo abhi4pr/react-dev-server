@@ -305,6 +305,8 @@ import ViewSaleBooking from "./Sales/SaleBooking/ViewSaleBooking";
 import Timeline from "./Navbar-Sidebar/Timeline";
 import SaleBooking from "./Finance/Salebooking";
 import Stats from "./PageMS/Stats";
+import OperationMasters from "./Operation/Masters/OperationMasters";
+import RegisteredCampaigns from "./Operation/RegisteredCampaigns";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1457,6 +1459,16 @@ const Admin = () => {
                     path="/historyAssignment"
                     element={<HistoryAssignData />}
                   />
+
+                   {/* //exe operation */}
+                <Route
+                path="/exeoperation/master"
+                element={<OperationMasters/>}
+                />
+                <Route
+                path="/op-registered-campaign"
+                element={<RegisteredCampaigns />}
+                />
                 </Route>
               </Routes>
             </div>
