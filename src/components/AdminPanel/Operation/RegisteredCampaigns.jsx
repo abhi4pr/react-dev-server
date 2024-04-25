@@ -28,7 +28,7 @@ import axios from "axios";
 import { Page } from "@react-pdf/renderer";
 import { baseUrl } from "../../../utils/config";
 
-export default function RegisteredCampaign() {
+export default function RegisteredCampaigns() {
   const navigate = useNavigate();
   const params = useParams();
   const [reload, setReload] = useState(false);
@@ -817,21 +817,21 @@ export default function RegisteredCampaign() {
     </div>
   );
 
-  const tab2 = (
-    <div>
-      {loadTable1 && table1Data2 && (
-        <DataGrid
-          rows={table2Data}
-          columns={tab2Columns}
-          // pageSize={10}
+  // const tab2 = (
+  //   <div>
+  //     {loadTable1 && table1Data2 && (
+  //       <DataGrid
+  //         rows={table2Data}
+  //         columns={tab2Columns}
+  //         // pageSize={10}
 
-          getRowId={(row) => row?._id}
-        />
-      )}
-    </div>
-  );
+  //         getRowId={(row) => row?._id}
+  //       />
+  //     )}
+  //   </div>
+  // );
 
-  const accordionButtons = ["Pending", "Sent for Content Creation"];
+  const accordionButtons = ["Pending"];
   return (
     <div>
       <div className="action_heading master-card-css">
@@ -855,10 +855,10 @@ export default function RegisteredCampaign() {
           </Link>
         </div>
       </div>
-      <div className="tab">
+      {/* <div className="tab">
         {accordionButtons.map((button, index) => (<div className={`named-tab ${(activeAccordionIndex === index) ? "active-tab" : ""}`} onClick={() => { handleAccordionButtonClick(index) }} >{button}</div>))}
 
-      </div>
+      </div> */}
 
       <div className="card">
         <div className="card-header sb">
@@ -1043,8 +1043,6 @@ export default function RegisteredCampaign() {
                       <button
                         className="btn btn_sm btn-outline-primary mb-2"
                         variant="outlined"
-
-
                         onClick={handleAddField}
                       >
                         Add Row
