@@ -152,19 +152,30 @@ const CocMaster = () => {
   // );
 
   return (
-    <>
+    <div>
       <FormContainer
-        title="Coc Creation"
+        link={true}
         mainTitle="COC"
         handleSubmit={handleSubmit}
       >
-        <TextEditor value={cocContent} onChange={setCocContent} />
 
-        <div style={{ border: "solid" }}>
+        {/* <div style={{ border: "solid" }}>
           <div dangerouslySetInnerHTML={{ __html: cocContent }}></div>
-        </div>
+        </div> */}
       </FormContainer>
-    </>
+      <div className="card">
+        <div className="card-header">
+          <div className="card-title">
+            Coc Creation
+          </div>
+        </div>
+        <div className="card-body">
+          <TextEditor value={cocContent} onChange={setCocContent} />
+
+        </div>
+      </div>
+      <button className="btn btn-primary cmnbtn " onClick={handleSubmit}>Submit</button>
+    </div>
   );
 };
 

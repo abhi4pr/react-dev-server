@@ -157,7 +157,7 @@ export default function TotalNDG() {
         }}
         // pageSize={5}
         // rowsPerPageOptions={[5]}
-        
+
         disableSelectionOnClick
         slotProps={{
           toolbar: {
@@ -195,42 +195,44 @@ export default function TotalNDG() {
       </div>
       <div className="card">
         <div className="card-header sb">
-          Finance    <div className="pack">{activeAccordionIndex === 1 ? <>
-            <div className="form-group col-3">
-              <label className="form-label">
-                Department Name<sup style={{ color: "red" }}>*</sup>
-              </label>
-              <Select
-                options={[
-                  { value: "", label: "All" },
-                  ...departmentData.map((option) => ({
-                    value: option.dept_id,
-                    label: option.dept_name,
-                  })),
-                ]}
-                value={
-                  departmentFilter === ""
-                    ? { value: "", label: "" }
-                    : {
-                      value: departmentFilter,
-                      label:
-                        departmentData.find(
-                          (dept) => dept.dept_id === departmentFilter
-                        )?.dept_name || "Select...",
-                    }
-                }
-                onChange={(selectedOption) => {
-                  const selectedValue = selectedOption ? selectedOption.value : "";
-                  setDepartmentFilter(selectedValue);
-                  if (selectedValue === "") {
-                    getData();
+          Finance    <div className="pack gap16">
+            {activeAccordionIndex === 1 ? <>
+              <div className="form-group">
+                <label className="form-label">
+                  Department Name<sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  placeholder="Department Name"
+                  options={[
+                    { value: "", label: "All" },
+                    ...departmentData.map((option) => ({
+                      value: option.dept_id,
+                      label: option.dept_name,
+                    })),
+                  ]}
+                  value={
+                    departmentFilter === ""
+                      ? { value: "", label: "Department Name" }
+                      : {
+                        value: departmentFilter,
+                        label:
+                          departmentData.find(
+                            (dept) => dept.dept_id === departmentFilter
+                          )?.dept_name || "All",
+                      }
                   }
-                }}
-                required
-              />
-            </div>
+                  onChange={(selectedOption) => {
+                    const selectedValue = selectedOption ? selectedOption.value : "";
+                    setDepartmentFilter(selectedValue);
+                    if (selectedValue === "") {
+                      getData();
+                    }
+                  }}
+                  required
+                />
+              </div>
 
-            {/* <div className="form-group col-3">
+              {/* <div className="form-group col-3">
                   <label className="form-label">
                     Designation<sup style={{ color: "red" }}>*</sup>
                   </label>
@@ -266,45 +268,49 @@ export default function TotalNDG() {
                   />
                 </div> */}
 
-            <div className="form-group col-3">
-              <label className="form-label">
-                Years<sup style={{ color: "red" }}>*</sup>
-              </label>
-              <Select
-                value={yearOptions.find((option) => option.value === years)}
-                onChange={(selectedOption) => {
-                  setYears(selectedOption.value);
-                }}
-                options={yearOptions}
-              />
-            </div>
-            <div className="form-group col-3 mr-3">
-              <label className="form-label">
-                Months<sup style={{ color: "red" }}>*</sup>
-              </label>
-              <Select
-                value={monthOptions.find((option) => option.value === months)}
-                onChange={(selectedOption) => {
-                  setMonths(selectedOption.value);
-                }}
-                options={monthOptions}
-              />
-            </div>
-            <div className="form-group mt-4">
-            <button
-              onClick={handSearchleClick}
-              disabled={!years || !months || !departmentFilter}
-              className="btn btn-primary"
-            >
-              Show Salary
-            </button>
-            </div>
-            {/* <div className="form-group col-3 ">
+              <div className="form-group">
+                <label className="form-label">
+                  Years<sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+
+                  value={yearOptions.find((option) => option.value === years)}
+                  onChange={(selectedOption) => {
+                    setYears(selectedOption.value);
+                  }}
+                  options={yearOptions}
+                  placeholder="Year"
+                />
+              </div>
+              <div className="form-group">
+                <label className="form-label">
+                  Months<sup style={{ color: "red" }}>*</sup>
+                </label>
+                <Select
+                  value={monthOptions.find((option) => option.value === months)}
+                  onChange={(selectedOption) => {
+                    setMonths(selectedOption.value);
+                  }}
+                  options={monthOptions}
+                  placeholder="Month"
+
+                />
+              </div>
+              <div className="form-group">
+                <button
+                  onClick={handSearchleClick}
+                  disabled={!years || !months || !departmentFilter}
+                  className="btn  cmnbtn btn_sm btn-primary"
+                >
+                  Show Salary
+                </button>
+              </div>
+              {/* <div className="form-group col-3 ">
         </div> */}
-          </> : ""}
+            </> : ""}
           </div>
         </div>
-        <div className="card-body body-padding">
+        <div className="card-body body-padding thm_table">
           {activeAccordionIndex === 0 && nonDigitalSignature}
           {activeAccordionIndex === 1 && seePreviousSalary}
         </div>

@@ -710,7 +710,7 @@ const SidebarLinks = () => {
             <i className="ph">
               <Laptop weight="duotone" />
             </i>
-            <span>ExeOperation</span>
+            <span>Operation New</span>
           </Link>
           <div
             id="collapsInnerexeop"
@@ -752,7 +752,7 @@ const SidebarLinks = () => {
                     </NavLink>
                     <NavLink
                       className="collapse-item"
-                      to="/admin/op-camp-execution"
+                      to="/admin/op-campaign-executions"
                     >
                       <i className="bi bi-dot"></i>
                       Camp Execution
@@ -775,7 +775,7 @@ const SidebarLinks = () => {
             <i className="ph">
               <Laptop weight="duotone" />
             </i>
-            <span>Operation</span>
+            <span>Operation Old</span>
           </a>
           <div
             id="collapsInnerOneModifyTwo"

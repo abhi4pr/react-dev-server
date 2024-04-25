@@ -1,12 +1,12 @@
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import CampaignDetailes from "./CampaignDetailes";
+import CampaignDetails from "./CampaignDetails";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { DataGrid, GridExpandMoreIcon } from "@mui/x-data-grid";
-import PageDetaling from "./PageDetailing";
+import PageDetalingNew from "./PageDetailingNew";
 
 import {
   Paper,
@@ -31,7 +31,7 @@ import { baseUrl } from "../../../utils/config";
 import { useGlobalContext } from "../../../Context/Context";
 import FormContainer from "../FormContainer";
 
-const PhasecreationNew = () => {
+const PhaseCreation = () => {
   const param = useParams();
   const id = param.id;
   const { toastAlert, toastError } = useGlobalContext();
@@ -119,7 +119,7 @@ const PhasecreationNew = () => {
       link="true"
     />
       
-      <CampaignDetailes cid={id} getCampaign={getCampaignName} />
+      <CampaignDetails cid={id} getCampaign={getCampaignName} />
       {/* add Accordion for show phase------------------- */}
       <Paper>
         {allPhaseData?.map((item,index)=>(
@@ -181,13 +181,13 @@ const PhasecreationNew = () => {
             {showPageDetails ? "Hide Page Details" : "Create New Phase"}
           </Button>
 
-          <Button
+          {/* <Button
             variant="outlined"
             onClick={handleAllAssign}
             sx={{ m: 2, mb: 2 }}
           >
             create final phase
-          </Button>
+          </Button> */}
 
           <Button variant="outlined"  onClick={handlePlanDashboard}sx={{ m: 2, mb: 2 }}>
             Plan Overview
@@ -308,4 +308,4 @@ const PhasecreationNew = () => {
   );
 };
 
-export default PhasecreationNew;
+export default PhaseCreation;

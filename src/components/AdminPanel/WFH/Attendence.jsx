@@ -419,63 +419,61 @@ const Attendence = () => {
       editable: true,
     },
     filterData?.length !== 0 &&
-      filterData[0]?.attendence_generated == 0 && {
-        field: "actions",
-        type: "actions",
-        headerName: "Actions",
-        width: 100,
-        cellClassName: "actions",
-        getActions: ({ id }) => {
-          isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          if (isInEditMode) {
-            return [
-              
-              <GridActionsCellItem
-                icon={<ClearIcon />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />,
-              <GridActionsCellItem
-                icon={<SaveAsIcon />}
-                label="Save"
-                sx={{
-                  color: "primary.main",
-                }}
-                onClick={handleSaveClick(id)}
-              />,
-            ];
-          }
-
+    filterData[0]?.attendence_generated == 0 && {
+      field: "actions",
+      type: "actions",
+      headerName: "Actions",
+      width: 100,
+      cellClassName: "actions",
+      getActions: ({ id }) => {
+        isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        if (isInEditMode) {
           return [
+
             <GridActionsCellItem
-              icon={<EditIcon />}
-              label="Edit"
+              icon={<ClearIcon />}
+              label="Cancel"
               className="textPrimary"
-              onClick={handleEditClick(id)}
+              onClick={handleCancelClick(id)}
               color="inherit"
             />,
+            <GridActionsCellItem
+              icon={<SaveAsIcon />}
+              label="Save"
+              sx={{
+                color: "primary.main",
+              }}
+              onClick={handleSaveClick(id)}
+            />,
           ];
-        },
+        }
+
+        return [
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+        ];
       },
+    },
   ];
   return (
     <>
       {/* Cards */}
-        <FormContainer 
+      <FormContainer
         mainTitle="Create Attendence"
         link="true"
-        ></FormContainer>
+      ></FormContainer>
       <div className="timeline_wrapper mb24">
         <Slider {...settings} className="timeline_slider">
           {completedYearsMonths.map((data, index) => (
             <div
-              className={`timeline_slideItem ${
-                data.atdGenerated && "completed"
-              } ${selectedCardIndex === index ? "selected" : ""} ${
-                currentMonth == data.month && "current"
-              }`}
+              className={`timeline_slideItem ${data.atdGenerated && "completed"
+                } ${selectedCardIndex === index ? "selected" : ""} ${currentMonth == data.month && "current"
+                }`}
               onClick={() => handleCardSelect(index, data)}
               key={index}
             >
@@ -499,8 +497,8 @@ const Attendence = () => {
                 {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
-                  ? "Upcoming"
-                  : "Pending"}
+                    ? "Upcoming"
+                    : "Pending"}
               </h3>
             </div>
           ))}
@@ -510,32 +508,30 @@ const Attendence = () => {
         <div className="card-header d-flex justify-content-between">
           <h4>Department</h4>
           <span className="d-flex gap4">
-          {filterData?.length !== 0 && filterData[0]?.attendence_generated == 0 && (
-        <button
-        onClick={(e) => handleCreateSalary(e)}
-          className="btn btn-success" style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px"}}
-           
-        >
-          Complete Attendance
-        </button>
-      )}
-        {filterData?.length == 0 &&
-          department &&
-          selectedMonth &&
-          selectedYear && (
-            
-            <button onClick={handleAttendence}  className="btn btn-danger" style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"10px"}}
-            // style={{ marginTop: "25px" }}
-          >
-            No Absents, Create Attendance <i className="bi bi-arrow-right"></i>
-            </button>
-  
-          )}
+            {filterData?.length !== 0 && filterData[0]?.attendence_generated == 0 && (
+              <button
+                onClick={(e) => handleCreateSalary(e)}
+                className="btn btn-success" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "10px" }}
+
+              >
+                Complete Attendance
+              </button>
+            )}
+            {filterData?.length == 0 &&
+              department &&
+              selectedMonth &&
+              selectedYear && (
+
+                <button onClick={handleAttendence} className="btn  cmnbtn btn_sm btn-danger"
+                >
+                  No Absents, Create Attendance <i className="bi bi-arrow-right"></i>
+                </button>
+
+              )}
             {deptSalary?.length !== departmentdata?.length &&
               (RoleIDContext == 1 || RoleIDContext == 5) && (
                 <button
-                className="btn btn-primary" style={{display:"flex",justifyContent:"center",alignItems:"center", gap:"4px"}}
-                  onClick={handleAllDepartmentAttendance}
+                  className="btn  cmnbtn btn_sm btn-primary" onClick={handleAllDepartmentAttendance}
                 >
                   Create All Department Attendance <i className="bi bi-check-all"></i>
                 </button>
@@ -543,45 +539,44 @@ const Attendence = () => {
           </span>
         </div>
         <div className="card-body">
-          <div className="d-flex gap4" style={{flexWrap:"wrap",gap:"10px"}}>
+          <div className="d-flex gap4" style={{ flexWrap: "wrap", gap: "10px" }}>
             {departmentdata.map((option) => {
               const isDeptInSalary =
                 Array.isArray(deptSalary) &&
                 deptSalary.some((d) => d.dept === option.dept_id);
 
-              const className = `btn ${
-                department === option.dept_id
-                  ? "btn-primary"
-                  : isDeptInSalary
+              const className = `btn ${department === option.dept_id
+                ? "btn-primary"
+                : isDeptInSalary
                   ? "btn-outline-primary"
                   : "btn-outline-primary"
-              }`;
+                }`;
 
               return (
                 <div
                   className="card hover body-padding"
-                  style={{height:"100px" ,minWidth:"300px",display:"flex",justifyContent:"center",alignItems:"flex-start", gap:"10px",cursor:"pointer",border:"1px solid var(--primary)",padding:"10px"}}
+                  style={{ height: "100px", minWidth: "300px", display: "flex", justifyContent: "center", alignItems: "flex-start", gap: "10px", cursor: "pointer", border: "1px solid var(--primary)", padding: "10px" }}
                   onClick={() => setDepartment(option.dept_id)}
                 >
-                  <div className="pack  " style={{width:"100%",display:"flex",flexDirection:"row" ,justifyContent:"flex-start",alignItems:"center",gap:"20px"}}>
+                  <div className="pack  " style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "flex-start", alignItems: "center", gap: "20px" }}>
                     <div className="rounded-circle circle-card"  >
-                    <i class="bi bi-bounding-box"></i>
+                      <i class="bi bi-bounding-box"></i>
                     </div>
-                  {option.dept_name}
+                    {option.dept_name}
                   </div>
                 </div>
               );
             })}
           </div>
 
-          <h6 style={{ color: "green",paddingTop:"10px" }}>
+          <h6 style={{ color: "green", paddingTop: "10px" }}>
             <span >Active : {activeusers}</span>
           </h6>
         </div>
       </div>
-      
+
       <div className="card body-padding">
-        <div className="data_tbl table-responsive footer_none">
+        <div className="data_tbl table-responsive footer_none thm_table">
           {filterData?.length > 0 && (
             <DataGrid
               rows={filterData}
@@ -590,15 +585,15 @@ const Attendence = () => {
               slots={{
                 toolbar: GridToolbar,
               }}
-             
+
               editMode="row"
               rowModesModel={rowModesModel}
               onRowModesModelChange={handleRowModesModelChange}
               onRowEditStop={handleRowEditStop}
               processRowUpdate={processRowUpdate}
-              />
-              )}
-              {/* <Pagination count={10} /> */}
+            />
+          )}
+          {/* <Pagination count={10} /> */}
         </div>
       </div>
     </>

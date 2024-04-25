@@ -181,6 +181,8 @@ const ObjectOverview = () => {
   }
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerOpen1, setDrawerOpen1] = useState(false);
+
 
   const handleDragStart = (e, index) => {
     e.dataTransfer.setData("text/plain", index);
@@ -207,6 +209,10 @@ const ObjectOverview = () => {
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
+  };
+  const toggleDrawer1 = () => {
+
+    setDrawerOpen1(!drawerOpen1);
   };
 
   const toggleColumn = (columnName) => {
@@ -367,9 +373,8 @@ const ObjectOverview = () => {
 
 
               <div className="flex-row gap16">
-                <div className="drawer" style={{
-                  display: `${filters.length > 0 ? 'flex' : 'none'}`
-                }}>
+                {drawerOpen1 && (<div className="drawer" >
+                  <button className="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall css-12k3ht8-MuiButtonBase-root-MuiButton-root" onClick={addFilter}> Add Filter</button>
 
                   {filters.map((filter, index) => (
                     <div key={index} className="filter align-items-center flex-row gap16">
@@ -400,8 +405,8 @@ const ObjectOverview = () => {
                       <button className="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall css-12k3ht8-MuiButtonBase-root-MuiButton-root" onClick={() => removeFilter(index)}><i className="bi bi-trash" /></button>
                     </div>
                   ))}
-                </div>
-                <button className="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall css-12k3ht8-MuiButtonBase-root-MuiButton-root" onClick={addFilter}>Add Filter</button>
+                </div>)}
+                <button onClick={toggleDrawer1} className=" flex-row align-items-center MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall css-12k3ht8-MuiButtonBase-root-MuiButton-root"><span class="MuiButton-startIcon MuiButton-iconSizeSmall css-y6rp3m-MuiButton-startIcon"><span class="MuiBadge-root css-1c32n2y-MuiBadge-root"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="FilterListIcon"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path></svg><span class="MuiBadge-badge MuiBadge-standard MuiBadge-invisible MuiBadge-anchorOriginTopRight MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary css-u5p6dm-MuiBadge-badge"></span></span></span>Filters</button>
               </div>
             </div>
 
