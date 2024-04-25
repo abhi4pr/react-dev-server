@@ -3113,6 +3113,7 @@ textarea.form-control.is-invalid {
   display: flex;
   align-items: center;
   gap: 0px 8px;
+  width: max-content !important;
 
   svg {
     font-size: 20px;
@@ -3125,6 +3126,7 @@ textarea.form-control.is-invalid {
   line-height: 18px !important;
   padding: 8px 16px !important;
   height: 38px !important;
+  min-width: max-content !important;
 }
 
 .btn_sm svg {
@@ -6336,7 +6338,10 @@ body.sidebar-toggled .topbarBrand {
 }
 
 .card-header {
-  .MuiInputBase-formControl {
+
+  .MuiInputBase-formControl,
+  .css-13cymwt-control,
+  .css-t3ipsp-control {
     height: 30px !important;
     border-radius: 7px !important;
     width: 100% !important;

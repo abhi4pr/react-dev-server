@@ -56,7 +56,7 @@ const LoginHistory = () => {
   }, [search]);
 
   function formatTimestamp(timestamp) {
-    if(timestamp == null){
+    if (timestamp == null) {
       return 'N/A'
     }
     const date = new Date(timestamp);
@@ -224,7 +224,7 @@ const LoginHistory = () => {
     const result = data.filter((d) => {
       return (
         new Date(d.login_date).getTime() >=
-          new Date(startFormattedDate).getTime() &&
+        new Date(startFormattedDate).getTime() &&
         new Date(d.login_date).getTime() <= new Date(endFormattedDate).getTime()
       );
     });
@@ -258,122 +258,122 @@ const LoginHistory = () => {
         new Date(customFormattedDate).getTime()
       );
     });
-    
+
     setFilterData(result);
     setDurationFilter("Custom Date");
   };
 
   return (
-    <>
-     
-        <FormContainer
+    <div>
+
+      <FormContainer
         mainTitle="Onboarding user login history"
         title="Pre Onboard User Login History"
         // title=""
         // handleSubmit={handleSubmit}
         TitleHeaderComponentDisplay="flex"
         Titleheadercomponent={
-          <div style={{display:"flex",width:"100%",justifyContent:"center",alignItems:"center" ,flexDirection:"row",gap:"10px"}} >
-        <div className="d-flex" style={{display:"flex",gap:"10px"}}>
-          <Autocomplete
-            className=""
-            disablePortal
-            id="combo-box-demo"
-            value={durationFilter}
-            options={customDateOptions}
-            onChange={(event, newValue) => {
-              handleFilterChange(newValue);
-            }}
-            sx={{ width: 300 }}
-            renderInput={(params) => (
-              <TextField {...params} label="Custom Date" />
-            )}
-          />
-
-          {durationFilter === "Start To End Date" && (
-            <>
-              
-              <LocalizationProvider
+          <div style={{ display: "flex", width: "100%", justifyContent: "center", alignItems: "center", flexDirection: "row", gap: "10px" }} >
+            <div className="d-flex" style={{ display: "flex", gap: "10px" }}>
+              <Autocomplete
                 className=""
-                dateAdapter={AdapterDayjs}
-              >
-                <DatePicker
-                  value={startDate}
-                  format="DD/MM/YY"
-                  onChange={(e) => setStartDate(e)}
-                  label="From"
-                />
-              </LocalizationProvider>
-              <span className="">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                disablePortal
+                id="combo-box-demo"
+                value={durationFilter}
+                options={customDateOptions}
+                onChange={(event, newValue) => {
+                  handleFilterChange(newValue);
+                }}
+                sx={{ width: 300 }}
+                renderInput={(params) => (
+                  <TextField {...params} label="Custom Date" />
+                )}
+              />
+
+              {durationFilter === "Start To End Date" && (
+                <>
+
+                  <LocalizationProvider
+                    className=""
+                    dateAdapter={AdapterDayjs}
+                  >
+                    <DatePicker
+                      value={startDate}
+                      format="DD/MM/YY"
+                      onChange={(e) => setStartDate(e)}
+                      label="From"
+                    />
+                  </LocalizationProvider>
+                  <span className="">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DatePicker
+                        value={endDate}
+                        format="DD/MM/YY"
+                        onChange={(e) => handleEndDateChange(e)}
+                        label="To"
+                        minDate={startDate ? dayjs(startDate).add(1, "day") : null}
+                        disabled={!startDate}
+                      />
+                    </LocalizationProvider>
+                  </span>
+                  <Button
+                    variant="contained"
+                    disabled={!startDate || !endDate}
+                    className="w-40"
+                    onClick={handleFindCunstomDate}
+                  >
+                    Find
+                  </Button>
+                </>
+              )}
+
+              {durationFilter === "Custom Date" && (
+                <LocalizationProvider
+                  className="col-md-3"
+                  dateAdapter={AdapterDayjs}
+                >
                   <DatePicker
-                    value={endDate}
+                    value={customDate}
                     format="DD/MM/YY"
-                    onChange={(e) => handleEndDateChange(e)}
-                    label="To"
-                    minDate={startDate ? dayjs(startDate).add(1, "day") : null}
-                    disabled={!startDate}
+                    onChange={(e) => handleCustomDate(e)}
+                    label="Date"
                   />
                 </LocalizationProvider>
-              </span>
-              <Button
-                variant="contained"
-                disabled={!startDate || !endDate}
-                className="w-40"
-                onClick={handleFindCunstomDate}
-              >
-                Find
-              </Button>
-            </>
-          )}
-
-          {durationFilter === "Custom Date" && (
-            <LocalizationProvider
-              className="col-md-3"
-              dateAdapter={AdapterDayjs}
-            >
-              <DatePicker
-                value={customDate}
-                format="DD/MM/YY"
-                onChange={(e) => handleCustomDate(e)}
-                label="Date"
-              />
-            </LocalizationProvider>
-          )}
-        </div>
-        <input
-                    type="text"
-                    placeholder="Search here"
-                    className="w-50 form-control "
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
+              )}
+            </div>
+            <input
+              type="text"
+              placeholder="Search here"
+              className="w-50 form-control "
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
         }
         submitButton={false}
       >
-         
-      
-        <div className="page_height">
-          <div className="card">
-            <div className="data_tbl table-responsive">
-              <DataTable
-                
-                columns={columns}
-                data={filterdata}
-                // fixedHeader
-                pagination
-                selectableRows
-                // fixedHeaderScrollHeight="64vh"
-                // highlightOnHover
-                
-               
-                />
-            </div>
-          </div>
+
+
+
+
+        <div className="thm_table">
+          <DataTable
+
+            columns={columns}
+            data={filterdata}
+            // fixedHeader
+            pagination
+            selectableRows
+          // fixedHeaderScrollHeight="64vh"
+          // highlightOnHover
+
+
+          />
         </div>
+
+
       </FormContainer>
-    </>
+    </div>
   );
 };
 

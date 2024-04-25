@@ -7,7 +7,7 @@ import FormContainer from "../FormContainer";
 import jwtDecode from "jwt-decode";
 import Modal from "react-modal";
 import Select from "react-select";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
 
 export const SelfAudit = () => {
   const [search, setSearch] = useState("");
@@ -41,7 +41,7 @@ export const SelfAudit = () => {
     formData.append("uploaded_by", userID);
     formData.append("type", type);
     await axios.post(
-      baseUrl+"add_assets_images",
+      baseUrl + "add_assets_images",
       formData,
       {
         headers: {
@@ -63,7 +63,7 @@ export const SelfAudit = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
+          `${baseUrl}` + `get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -78,7 +78,7 @@ export const SelfAudit = () => {
     setImageModalOpen(false);
   };
   function getData() {
-    axios.get(baseUrl+"get_all_sims").then((res) => {
+    axios.get(baseUrl + "get_all_sims").then((res) => {
       setData(res.data.data);
       setFilterData(res.data.data);
     });
@@ -133,7 +133,7 @@ export const SelfAudit = () => {
       name: "Action",
       selector: (row) => (
         <button
-          className="btn btn-outline-success"
+          className="btn cmnbtn btn_sm btn-outline-success"
           onClick={() => handleImageClick(row)}
         >
           Verify
@@ -157,27 +157,27 @@ export const SelfAudit = () => {
 
       <div className="card">
         <div className="card-header sb">
-        Self Audit
-        <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          Self Audit
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-        <div className="card-body">
-       < DataTable
+        <div className="card-body thm_table">
+          < DataTable
             // title="Self Audit"
             columns={columns}
             data={filterData}
             // fixedHeader
             pagination
             selectableRows
-            // fixedHeaderScrollHeight="64vh"
-            // highlightOnHover
-            // subHeader
-            
+          // fixedHeaderScrollHeight="64vh"
+          // highlightOnHover
+          // subHeader
+
           />
         </div>
         {/* <div className="data_tbl table-responsive">

@@ -4,7 +4,7 @@ import DataTable from "react-data-table-component";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from '../../../utils/config'
 
 const OnboardExtendDateOverview = () => {
   const whatsappApi = WhatsappAPI();
@@ -20,7 +20,7 @@ const OnboardExtendDateOverview = () => {
   useEffect(() => {
     if (userID && contextData.length === 0) {
       axios
-        .get(`${baseUrl}`+`userauth/${userID}`)
+        .get(`${baseUrl}` + `userauth/${userID}`)
         .then((res) => {
           setDatas(res.data);
         });
@@ -30,7 +30,7 @@ const OnboardExtendDateOverview = () => {
   async function getData() {
     try {
       const response = await axios.get(
-        baseUrl+"get_all_users"
+        baseUrl + "get_all_users"
       );
       const data = response.data.data.filter(
         (item) => item.joining_date_extend_status == "Requested"
@@ -53,7 +53,7 @@ const OnboardExtendDateOverview = () => {
     formData.append("id", user_id);
     formData.append("joining_date_extend_status", status);
     axios
-      .put(baseUrl+"userupdate", formData, {
+      .put(baseUrl + "userupdate", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -121,7 +121,7 @@ const OnboardExtendDateOverview = () => {
         <>
           <button
             title="Approve"
-            className="btn btn-outline-primary btn-md user-button"
+            className="btn cmnbtn btn_sm btn-outline-success btn-md user-button"
             onClick={() =>
               statusUpdate(row.user_id, "Approve", row.user_contact_no)
             }
@@ -131,7 +131,7 @@ const OnboardExtendDateOverview = () => {
 
           <button
             title="Reject"
-            className="btn btn-outline-primary btn-md user-button"
+            className="btn cmnbtn btn_sm btn-outline-danger btn-md user-button"
             onClick={() =>
               statusUpdate(row.user_id, "Reject", row.user_contact_no)
             }
@@ -147,7 +147,7 @@ const OnboardExtendDateOverview = () => {
   ];
 
   return (
-    <>
+    <div >
       <FormContainer
         mainTitle="Extend Date Overview"
         link="/admin/designation-master"
@@ -158,31 +158,31 @@ const OnboardExtendDateOverview = () => {
           true
         }
       />
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title=" Overview"
-              columns={columns}
-              data={filterdata}
-              fixedHeader
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
-            />
-          </div>
+
+      <div className="card">
+        <div className="card-body thm_table">
+          <DataTable
+            title=" Overview"
+            columns={columns}
+            data={filterdata}
+            fixedHeader
+            fixedHeaderScrollHeight="64vh"
+            highlightOnHover
+            subHeader
+            subHeaderComponent={
+              <input
+                type="text"
+                placeholder="Search here"
+                className="w-50 form-control "
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            }
+          />
         </div>
       </div>
-    </>
+
+    </div>
   );
 };
 

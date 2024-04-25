@@ -124,13 +124,13 @@ const DisputeOverview = () => {
           {row.dispute_status == "Disputed" && (
             <>
               <button
-                className="btn btn-primary"
+                className="btn  cmnbtn btn_sm btn-outline-primary mr-2"
                 onClick={(e) => handleResolveReject(row, e, "Dispute Resolved")}
               >
                 Resolve
               </button>
               <button
-                className="btn btn-danger"
+                className="btn  cmnbtn btn_sm btn-outline-danger"
                 onClick={(e) => handleResolveReject(row, e, "Dispute Rejected")}
               >
                 Reject
@@ -204,30 +204,30 @@ const DisputeOverview = () => {
         submitButton={false}
         link="/admin/wfh/dispute/add-dispute"
       />
-       
+
       <div className="card">
         <div className="card-header sb">
-        <h5>Dispute Overview</h5>
-        <input
-                    type="text"
-                    placeholder="Search here"
-                    className="w-50 form-control "
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
+          <h5>Dispute Overview</h5>
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control "
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
 
         </div>
-        <div className="card-body body-padding">
-        <DataTable
-               
-                columns={columns}
-                data={filterData}
-                // fixedHeader
-                pagination
-                fixedHeaderScrollHeight="64vh"
-                highlightOnHover
-                
-              />
+        <div className="card-body body-padding thm_table">
+          <DataTable
+
+            columns={columns}
+            data={filterData}
+            // fixedHeader
+            pagination
+            fixedHeaderScrollHeight="64vh"
+            highlightOnHover
+
+          />
         </div>
       </div>
     </>
