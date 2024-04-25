@@ -700,6 +700,71 @@ const SidebarLinks = () => {
       {/* OPERATIONS */}
       {isOpration && (
         <li className="nav-item">
+          <Link
+            className="nav-btn nav-link collapsed"
+            data-toggle="collapse"
+            data-target="#collapsInnerexeop"
+            aria-expanded="true"
+            aria-controls="collapsInnerOneModifyTwo"
+          >
+            <i className="ph">
+              <Laptop weight="duotone" />
+            </i>
+            <span>ExeOperation</span>
+          </Link>
+          <div
+            id="collapsInnerexeop"
+            className="collapse"
+            aria-labelledby="headingTwoOne"
+          >
+            <div className="collapse-inner internal">
+              {contextData &&
+                contextData[34] &&
+                contextData[34].view_value === 1 && (
+                  <>
+                    <NavLink
+                      className="collapse-item"
+                      to="/admin/exeoperation/master"
+                    >
+                      <i className="bi bi-dot"></i>
+                      Masters
+                    </NavLink>
+                    <NavLink
+                      className="collapse-item"
+                      to="/admin/op-registered-campaign"
+                    >
+                      <i className="bi bi-dot"></i>
+                      Regsiter Campaign
+                    </NavLink>
+                    <NavLink
+                      className="collapse-item"
+                      to="/admin/op-plan-creation"
+                    >
+                      <i className="bi bi-dot"></i>
+                      Plan Creation
+                    </NavLink>
+                    <NavLink
+                      className="collapse-item"
+                      to="/admin/op-phase-creation"
+                    >
+                      <i className="bi bi-dot"></i>
+                      Phase Creation
+                    </NavLink>
+                    <NavLink
+                      className="collapse-item"
+                      to="/admin/op-camp-execution"
+                    >
+                      <i className="bi bi-dot"></i>
+                      Camp Execution
+                    </NavLink>
+                  </>
+                )}
+            </div>
+          </div>
+        </li>
+      )}
+      {isOpration && (
+        <li className="nav-item">
           <a
             className="nav-btn nav-link collapsed"
             data-toggle="collapse"
