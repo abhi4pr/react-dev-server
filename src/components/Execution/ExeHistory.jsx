@@ -29,7 +29,7 @@ export default function ExeHistory() {
 
   const apiCall = () => {
     axios
-      .get(`${baseUrl}` + `get_exe_ip_count_history/${id.id}`)
+      .get(`${baseUrl}` + `get_exe_history/${id.id}`)
       .then((res) => {
         const data = res.data.data.filter((e) => {
           return e.isDeleted !== true;

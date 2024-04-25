@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useGlobalContext } from "../../../Context/Context";
 import FieldContainer from "../FieldContainer";
@@ -164,6 +164,7 @@ const PageEdit = () => {
     useState(false);
   const [allUsers, setAllUsers] = useState([]);
   const [stateUpdate, setStateUpdate] = useState(false);
+const [data, setData] = useState([]);
 
   const handlePercentageChange = (value, setter) => {
     const newValue = parseFloat(value);
@@ -295,7 +296,7 @@ const PageEdit = () => {
 
     const formData = new FormData();
     formData.append("p_id", p_id);
-    formData.append("reach", reach? reach : 0);
+    formData.append("reach", reach ? reach : 0);
     formData.append("impression", impression ? impression : 0);
     formData.append("engagement", engagement ? engagement : 0);
     formData.append("story_view", storyView ? storyView : 0);
@@ -438,7 +439,7 @@ const PageEdit = () => {
         setStoryViewImgSrc(null);
         setStoryViewVideoSrc(null);
         setStoryViewDate(null);
-getData()
+        getData();
         toastAlert("Form Submitted success");
       });
   };
@@ -519,6 +520,7 @@ getData()
   useEffect(() => {
     axios.get(baseUrl + `getPageDetail/${pageMast_id}`).then((res) => {
       const data = [res.data.data];
+      setData(data);
 
       setLatestEntry(res.data.latestEntry);
       setStateUpdate(data[0].stats_update_flag);
@@ -669,8 +671,6 @@ getData()
     return <Navigate to="/admin/pms-page-overview" />;
   }
 
- 
-
   const handleRowClick = () => {
     // setRowData(row);
     // handleClickOpenExeDialog();
@@ -687,13 +687,15 @@ getData()
   ];
 
   const Page = () => {
+
+
     return (
       <>
         <FieldContainer
           label="Page Name *"
           value={pageName}
           required={true}
-          onChange={(e) => setPageName(e.target.value)}
+          onChange={(e) =>{ setPageName(e.target.value); e.preventDefault();}}
         />
 
         <FieldContainer
@@ -865,7 +867,6 @@ getData()
             }}
           ></Select>
         </div>
-
         <FieldContainer
           label="Followers Count *"
           type="number"
@@ -942,9 +943,8 @@ getData()
           <FieldContainer
             label="Page Name "
             disabled={true}
-            value={pageName}
+            value={data[0]?.page_user_name}
             required={true}
-            onChange={(e) => setPageName(e.target.value)}
           />
           <FieldContainer
             disabled={true}
@@ -1844,28 +1844,6 @@ getData()
                 width={500}
                 height={300}
               />
-
-              {/* <BarChart
-            xAxis={[{ scaleType: "band", data: ["lowest"] }]}
-            series={[
-              { data: [100000], label: "Reach" },
-              { data: [1000000], label: "Impression" },
-              { data: [1000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          />
-
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["lowest"] }]}
-            series={[
-              { data: [100000], label: "Reach" },
-              { data: [1000000], label: "Impression" },
-              { data: [1000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          /> */}
             </div>
             <div className="d-flex justify-content-between">
               <h6 className="fs-5 mx-2 pt-3">Average</h6>
@@ -1885,26 +1863,6 @@ getData()
                 width={500}
                 height={300}
               />{" "}
-              {/* <BarChart
-            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
-            series={[
-              { data: [1000], label: "Reach" },
-              { data: [10000000], label: "Impression" },
-              { data: [10000000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          />{" "}
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
-            series={[
-              { data: [1000], label: "Reach" },
-              { data: [10000000], label: "Impression" },
-              { data: [10000000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          /> */}
             </div>
             <div className="d-flex justify-content-between">
               <h6 className="fs-5 mx-2 pt-3">Lowest</h6>
@@ -1924,26 +1882,6 @@ getData()
                 width={500}
                 height={300}
               />
-              {/* <BarChart
-            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
-            series={[
-              { data: [1000], label: "Reach" },
-              { data: [10000000], label: "Impression" },
-              { data: [10000000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          />
-          <BarChart
-            xAxis={[{ scaleType: "band", data: ["Lowest"] }]}
-            series={[
-              { data: [1000], label: "Reach" },
-              { data: [10000000], label: "Impression" },
-              { data: [10000000000], label: "Engagement" },
-            ]}
-            width={500}
-            height={300}
-          /> */}
             </div>{" "}
           </>
         )}
@@ -1975,7 +1913,6 @@ getData()
       >
         {activeAccordionIndex === 0 && <Page />}
         {activeAccordionIndex === 1 && <PageHealth />}
-        {/* {activeAccordionIndex === 2 && <PageDetailed />} */}
         {activeAccordionIndex === 2 && <PerformanceDashboard />}
       </FormContainer>
 
@@ -1989,7 +1926,7 @@ getData()
             style={{ width: "70vw", height: "auto" }}
           >
             <div className="modal-header">
-              <h4 className="modal-title">Page Name :- {pageName}</h4>
+              <h4 className="modal-title">Page Name :- {data[0]?.page_user_name}</h4>
               <button
                 type="button"
                 className="close"
@@ -2112,7 +2049,7 @@ getData()
                         label="Reach"
                         type="number"
                         value={reach}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) => {
                           const enteredValue = e.target.value;
                           if (enteredValue >= 0) {
@@ -2176,7 +2113,7 @@ getData()
                         label="Impressions *"
                         type="number"
                         value={impression}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) => {
                           const enteredValue = e.target.value;
                           if (enteredValue >= 0) {
@@ -2240,7 +2177,7 @@ getData()
                     <div className="col-md-3 col-lg-12 my-2">
                       <TextField
                         label="Engagement *"
-                        key={reachkey}
+                        //key={reachkey}
                         type="number"
                         value={engagement}
                         onChange={(e) => {
@@ -2303,7 +2240,7 @@ getData()
                         label="Story View *"
                         type="number"
                         value={storyView}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) => {
                           const enteredValue = e.target.value;
                           if (enteredValue >= 0) {
@@ -2422,7 +2359,7 @@ getData()
                     <div className="col-md-3 col-lg-12 my-2">
                       <TextField
                         label="Profile Visit"
-                        key={reachkey}
+                        //key={reachkey}
                         type="number"
                         value={profileVisit}
                         onChange={(e) => {
@@ -2464,7 +2401,7 @@ getData()
                       className="mb-1 "
                       type="number"
                       value={city1Percentage}
-                      key={reachkey}
+                      //key={reachkey}
                       onChange={(e) => {
                         setCity1Percentage(e.target.value);
                       }}
@@ -2493,7 +2430,7 @@ getData()
                     <TextField
                       className="mb-2"
                       value={city2Percentage}
-                      key={reachkey}
+                      //key={reachkey}
                       onChange={(e) => {
                         setCity2Percentage(e.target.value);
                       }}
@@ -2523,7 +2460,7 @@ getData()
                     <TextField
                       className="mb-2"
                       type="number"
-                      key={reachkey}
+                      //key={reachkey}
                       value={city3Percentage}
                       onChange={(e) => {
                         setCity3Percentage(e.target.value);
@@ -2554,7 +2491,7 @@ getData()
                       className="mb-2"
                       type="number"
                       value={city4Percentage}
-                      key={reachkey}
+                      //key={reachkey}
                       onChange={(e) => {
                         setCity4Percentage(e.target.value);
                       }}
@@ -2583,7 +2520,7 @@ getData()
                     <TextField
                       type="number"
                       value={city5Percentage}
-                      key={reachkey}
+                      //key={reachkey}
                       onChange={(e) => {
                         setCity5Percentage(e.target.value);
                       }}
@@ -2662,7 +2599,7 @@ getData()
                       className="mb-2"
                       type="number"
                       value={country1Percentage}
-                      key={reachkey}
+                      //key={reachkey}
                       onChange={(e) => {
                         setCountry1Percentage(e.target.value);
                       }}
@@ -2692,7 +2629,7 @@ getData()
                     <TextField
                       className="mb-2"
                       value={country2Percentage}
-                      key={reachkey}
+                      //key={reachkey}
                       onChange={(e) => {
                         setCountry2Percentage(e.target.value);
                       }}
@@ -2724,7 +2661,7 @@ getData()
                       className="mb-2"
                       type="number"
                       value={country3Percentage}
-                      key={reachkey}
+                      //key={reachkey}
                       onChange={(e) => {
                         setCountry3Percentage(e.target.value);
                       }}
@@ -2755,7 +2692,7 @@ getData()
                       className="mb-2"
                       type="number"
                       value={country4Percentage}
-                      key={reachkey}
+                      //key={reachkey}
                       onChange={(e) => {
                         setCountry4Percentage(e.target.value);
                       }}
@@ -2786,7 +2723,7 @@ getData()
                       className="mb-2"
                       type="number"
                       value={country5Percentage}
-                      key={reachkey}
+                      //key={reachkey}
                       onChange={(e) => {
                         setCountry5Percentage(e.target.value);
                       }}
@@ -2853,7 +2790,7 @@ getData()
                         type="number"
                         className="mb-2"
                         value={age1Percentage}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge1Percentage(e.target.value)
@@ -2874,7 +2811,7 @@ getData()
                         type="number"
                         className="mb-2"
                         value={age2Percentage}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge2Percentage(e.target.value)
@@ -2895,7 +2832,7 @@ getData()
                         type="number"
                         className="mb-2"
                         value={age3Percentage}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge3Percentage(e.target.value)
@@ -2916,7 +2853,7 @@ getData()
                         type="number"
                         className="mb-2"
                         value={age4Percentage}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge4Percentage(e.target.value)
@@ -2937,7 +2874,7 @@ getData()
                         type="number"
                         className="mb-2"
                         value={age5Percentage}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) =>
                           handlePercentageChange(
                             setAge5Percentage(e.target.value)
@@ -2958,7 +2895,7 @@ getData()
                         type="number"
                         className="mb-2"
                         value={age6percentage}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) => {
                           setAge6Percentage(e.target.value);
                         }}
@@ -2977,7 +2914,7 @@ getData()
                         type="number"
                         className="mb-2"
                         value={age7Percentage}
-                        key={reachkey}
+                        //key={reachkey}
                         onChange={(e) => {
                           setAge7Percentage(e.target.value);
                         }}
