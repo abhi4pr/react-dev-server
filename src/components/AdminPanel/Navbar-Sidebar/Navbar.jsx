@@ -305,12 +305,12 @@ const Navbar = () => {
                   <i class="bi bi-person"></i>
                   <p>My profile</p>
                 </div>
-                <Link to="/admin/user-timeline">
+                {/* <Link to="/admin/user-timeline">
                   <div className="pro-btn">
                     <i class="bi bi-gear"></i>
-                    {/* <p>Timeline</p> */}
+                    <p>Timeline</p>
                   </div>
-                </Link>
+                </Link> */}
                 <div className="pro-btn" onClick={handleLogOut}>
                   <i class="bi bi-box-arrow-right"></i>
                   <p>Logout</p>

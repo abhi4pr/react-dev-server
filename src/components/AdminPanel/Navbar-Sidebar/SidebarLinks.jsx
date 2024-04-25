@@ -15,6 +15,7 @@ import {
   UserRectangle,
   Files,
 } from "@phosphor-icons/react";
+import { constant } from "../../../utils/constants";
 
 const SidebarLinks = () => {
   const [contextData, setData] = useState([]);
@@ -459,12 +460,27 @@ const SidebarLinks = () => {
                       <i className="bi bi-dot"></i> Payout Summary
                     </NavLink>
                   )}
-                  <NavLink
-                    className="collapse-item"
-                    to="/admin/attendence-mast"
-                  >
-                    <i className="bi bi-dot"></i> Create Attendance
-                  </NavLink>
+
+                  {RoleId !== constant.CONST_MANAGER_ROLE && (
+                    <>
+                      <NavLink
+                        className="collapse-item"
+                        to="/admin/attendence-mast"
+                      >
+                        <i className="bi bi-dot"></i> Create Attendance
+                      </NavLink>
+                      <NavLink
+                        className="collapse-item"
+                        to="/admin/dispute-overview"
+                      >
+                        <i className="bi bi-dot"></i>Dispute Summary
+                      </NavLink>
+                      <NavLink className="collapse-item" to="/admin/total-NDG">
+                        <i className="bi bi-dot"></i> Total & NDG
+                      </NavLink>
+                    </>
+                  )}
+
                   {RoleId == 1 && (
                     <NavLink
                       className="collapse-item"
@@ -473,15 +489,6 @@ const SidebarLinks = () => {
                       <i className="bi bi-dot"></i> Invoice Template Summary
                     </NavLink>
                   )}
-                  <NavLink
-                    className="collapse-item"
-                    to="/admin/dispute-overview"
-                  >
-                    <i className="bi bi-dot"></i>Dispute Summary
-                  </NavLink>
-                  <NavLink className="collapse-item" to="/admin/total-NDG">
-                    <i className="bi bi-dot"></i> Total & NDG
-                  </NavLink>
                 </div>
               </div>
             </li>
