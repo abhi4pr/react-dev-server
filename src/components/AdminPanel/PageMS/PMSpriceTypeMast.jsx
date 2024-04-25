@@ -100,6 +100,14 @@ export default function PMSpriceTypeMast() {
       selector: (row, index) => <div>{index + 1}</div>,
       sortable: true,
     },
+  {
+   name:"Platform",
+   cell:(row) => (
+      <div>
+        {platformData.find((platform) => platform._id === row.platform_id)?.platform_name}
+      </div>
+    ) 
+  },
     {
       name: "Pay Type",
       selector: (row) => row.price_type,

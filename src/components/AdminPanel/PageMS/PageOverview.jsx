@@ -22,12 +22,14 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import jwtDecode from "jwt-decode";
+import { useDispatch } from "react-redux";
+import { addRow } from "../../Store/Executon-Slice";
+import DateFormattingComponent from "../../DateFormator/DateFormared";
 
 const PageOverview = () => {
   const { toastAlert } = useGlobalContext();
   const [vendorTypes, setVendorTypes] = useState([]);
   const [filterData, setFilterData] = useState([]);
-  const [platform, setPlatform] = useState([{}]);
   const [cat, setCat] = useState([{}]);
   const [venodr, setVenodr] = useState([{}]);
   const [user, setUser] = useState();
@@ -42,6 +44,7 @@ const PageOverview = () => {
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   useEffect(() => {
     if (userID && contextData == false) {
       axios
@@ -49,7 +52,6 @@ const PageOverview = () => {
         .then((res) => {
           if (res.data[33].view_value == 1) {
             setContextData(true);
-            // setAlert(res.data);
           }
         });
     }
@@ -59,19 +61,23 @@ const PageOverview = () => {
 
   const handleUpdateRowClick = async (row) => {
     await axios
-      .get(`${baseUrl}` + `get_exe_ip_count_history/${row.exepurchasemodel.p_id}`)
+      .get(`${baseUrl}` + `get_exe_history/${row.pageMast_id}`)
       .then((res) => {
         let data = res.data.data.filter((e) => {
           return e.isDeleted !== true;
         });
-        data = data[data.length - 1];
-        navigate(`/admin/exe-update/${data._id}`, { state:row.exepurchasemodel.p_id});
+        data = data[0];
+
+        navigate(`/admin/exe-update/${data._id}`, {
+          state: row.pageMast_id,
+        });
       });
   };
 
   const handleHistoryRowClick = (row) => {
-
-    navigate(`/admin/exe-history/${row.exepurchasemodel.p_id}`, { state:row.exepurchasemodel.p_id });
+    navigate(`/admin/exe-history/${row.exepurchasemodel.p_id}`, {
+      state: row.exepurchasemodel.p_id,
+    });
   };
 
   const getData = () => {
@@ -104,6 +110,24 @@ const PageOverview = () => {
       setProgress(100);
     });
   };
+
+  useEffect(() => {
+    axios.get(baseUrl + `get_exe_historyData`).then((res) => {
+      let data = vendorTypes.map((e) => {
+        let result = res.data.result.filter((d) => {
+          return d.pageMast_id == e.pageMast_id;
+        });
+        let totalPercentage = 0;
+        result.forEach((e) => {
+          totalPercentage += e.percentage;
+        });
+        e.totalPercentage = totalPercentage;
+        e.latestEntry = result[result.length - 1];
+        return e;
+      });
+      setFilterData(data);
+    });
+  }, [vendorTypes]);
 
   useEffect(() => {
     setAllallPriceTypeList([]);
@@ -162,10 +186,9 @@ const PageOverview = () => {
       field: "platform_id",
       headerName: "Platform",
       renderCell: (params) => {
-        let name = platform?.find(
+        let name = platformData?.find(
           (item) => item?._id == params.row.platform_id
         )?.platform_name;
-
         return <div>{name}</div>;
       },
       width: 200,
@@ -362,17 +385,24 @@ const PageOverview = () => {
       renderCell: (params) => {
         const totalPercentage = params.row.totalPercentage;
         return (
-          totalPercentage == 100||   totalPercentage == 0.00    && <button
-          type="button"
-          className="btn cmnbtn btn_sm btn-outline-primary"
-          data-toggle="modal"
-          data-target="#myModal1"
-          disabled={
-            totalPercentage == 0 || totalPercentage == 100 ? false : true
-          }
-        >
-          Set Stats
-        </button>
+          totalPercentage == 100 ||
+          (totalPercentage == 0.0 && (
+            <button
+              type="button"
+              className="btn cmnbtn btn_sm btn-outline-primary"
+              data-toggle="modal"
+              data-target="#myModal1"
+              disabled={
+                totalPercentage == 0 || totalPercentage == 100 ? false : true
+              }
+              onClick={() => {
+                dispatch(addRow(params.row));
+                navigate(`/admin/stats`);
+              }}
+            >
+              Set Stats
+            </button>
+          ))
         );
       },
     },
@@ -423,7 +453,9 @@ const PageOverview = () => {
       width: 150,
       headerName: "Stats Update %",
       renderCell: (params) => {
-        return params.row. totalPercentage? Math.round(+params.row?.totalPercentage) + "%":""
+        return params.row.totalPercentage > 0
+          ? Math.round(+params.row?.totalPercentage) + "%"
+          : params.row.totalPercentageForExeHistory + "%";
       },
     },
     {
@@ -437,6 +469,455 @@ const PageOverview = () => {
         return num ? "Yes" : "No";
       },
     },
+    {
+      field: "Age_13_17_percent",
+      width: 150,
+      headerName: "Age 13-17 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.Age_13_17_percent;
+        return +data ? data + "%" : "NA";
+      },
+    },
+    {
+      field: "Age_18_24_percent",
+      width: 150,
+      headerName: "Age 18-24 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.Age_18_24_percent;
+        return +data ? data + "%" : "NA";
+      },
+    },
+    {
+      field: "Age_25_34_percent",
+      width: 150,
+      headerName: "Age 25-34 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.Age_25_34_percent;
+        return +data ? data + "%" : "NA";
+      },
+    },
+    {
+      field: "Age_35_44_percent",
+      width: 150,
+      headerName: "Age 35-44 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.Age_35_44_percent;
+        return +data ? data + "%" : "NA";
+      },
+    },
+    {
+      field: "Age_45_54_percent",
+      width: 150,
+      headerName: "Age 45-54 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.Age_45_54_percent;
+        return +data ? data + "%" : "NA";
+      },
+    },
+    {
+      field: "Age_55_64_percent",
+      width: 150,
+      headerName: "Age 55-64 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.Age_55_64_percent;
+        return +data ? data + "%" : "NA";
+      },
+    },
+    {
+      field: "Age_65_plus_percent",
+      width: 150,
+      headerName: "Age 65+ %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.Age_65_plus_percent;
+        return +data ? data + "%" : "NA";
+      },
+    },
+    {
+      field: "Age_upload",
+      width: 150,
+      headerName: "Age Upload",
+      renderCell: (params) => {
+        let url = params.row?.exehistorymodelsData?.Age_upload;
+        return url ? (
+          <img src={url} style={{ width: "50px", height: "50px" }} />
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "city1_name",
+      width: 150,
+      headerName: "City 1",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.city1_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "city2_name",
+      width: 150,
+      headerName: "City 2",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.city2_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "city3_name",
+      width: 150,
+      headerName: "City 3",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.city3_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "city4_name",
+      width: 150,
+      headerName: "City 4",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.city4_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "city5_name",
+      width: 150,
+      headerName: "City 5",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.city5_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "city_image_upload",
+      width: 150,
+      headerName: "City Image",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.city_image_upload;
+        return data ? (
+          <img src={data} style={{ width: "50px", height: "50px" }} />
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "country1_name",
+      width: 150,
+      headerName: "Country 1",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.country1_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "country2_name",
+      width: 150,
+      headerName: "Country 2",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.country2_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "country3_name",
+      width: 150,
+      headerName: "Country 3",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.country3_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "country4_name",
+      width: 150,
+      headerName: "Country 4",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.country4_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "country5_name",
+      width: 150,
+      headerName: "Country 5",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.country5_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "country_image_upload",
+      width: 150,
+      headerName: "Country Image",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.country_image_upload;
+        return data ? (
+          <img src={data} style={{ width: "50px", height: "50px" }} />
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "creation_date",
+      width: 150,
+      headerName: "Creation Date",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.creation_date;
+        return data ? <DateFormattingComponent date={data} /> : "NA";
+      },
+    },
+    {
+      field: "end_date",
+      width: 150,
+      headerName: "End Date",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.end_date;
+        return data ? <DateFormattingComponent date={data} /> : "NA";
+      },
+    },
+    {
+      field: "engagement",
+      width: 150,
+      headerName: "Engagement",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.engagement;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "engagement_upload_image",
+      width: 150,
+      headerName: "Engagement Image",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.engagement_upload_image;
+        return data ? (
+          <img src={data} style={{ width: "50px", height: "50px" }} />
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "female_percent",
+      width: 150,
+      header: "Female %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.female_percent;
+        return data ? data + "%" : "NA";
+      },
+    },
+    {
+      field: "impression",
+      width: 150,
+      headerName: "Impression",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.impression;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "impression_upload_image",
+      width: 150,
+      headerName: "Impression Image",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.impression_upload_image;
+        return data ? (
+          <img src={data} style={{ width: "50px", height: "50px" }} />
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "male_percent",
+      width: 150,
+      header: "Male %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.male_percent;
+        return data ? data + "%" : "NA";
+      },
+    },
+    {
+      field: "percentage_city1_name",
+      width: 150,
+      headerName: "City 1 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.percentage_city1_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "percentage_city2_name",
+      width: 150,
+      headerName: "City 2 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.percentage_city2_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "percentage_city3_name",
+      width: 150,
+      headerName: "City 3 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.percentage_city3_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "percentage_city4_name",
+      width: 150,
+      headerName: "City 4 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.percentage_city4_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "percentage_city5_name",
+      width: 150,
+      headerName: "City 5 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.percentage_city5_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "percentage_country1_name",
+      width: 150,
+      headerName: "Country 1 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.percentage_country1_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "percentage_country2_name",
+      width: 150,
+      headerName: "Country 2 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.percentage_country2_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "percentage_country3_name",
+      width: 150,
+      headerName: "Country 3 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.percentage_country3_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "percentage_country4_name",
+      width: 150,
+      headerName: "Country 4 %",
+      renderCell: (
+        params
+      ) => {
+        let data = params.row?.exehistorymodelsData?.percentage_country4_name;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "percentage_country5_name",
+      width: 150,
+      headerName: "Country 5 %",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.percentage_country5_name;
+        return data ? data : "NA";
+      },
+    },
+{
+  field: "profile_visit",
+  width: 150,
+  headerName: "Profile Visit",
+  renderCell: (params) => {
+    let data = params.row?.exehistorymodelsData?.profile_visit;
+    return data ? data : "NA";
+  }
+},
+{
+  field: "quater",
+  width: 150,
+  headerName: "Quater",
+  renderCell: (params) => {
+    let data = params.row?.exehistorymodelsData?.quater;
+    return data ? data : "NA";
+  }
+},
+{
+  field: "reach",
+  width: 150,
+  headerName: "Reach",
+  renderCell: (params) => {
+    let data = params.row?.exehistorymodelsData?.reach;
+    return data ? data : "NA";
+  }
+},
+{
+  field: "reach_upload_image",
+  width: 150,
+  headerName: "Reach Image",
+  renderCell: (params) => {
+    let data = params.row?.exehistorymodelsData?.reach_upload_image;
+    return data ? (
+      <img src={data} style={{ width: "50px", height: "50px" }} />
+    ) : (
+      "NA"
+    );
+  }
+},
+{
+  field: "start_date",
+  width: 150,
+  headerName: "Start Date",
+  renderCell: (params) => {
+    let data = params.row?.exehistorymodelsData?.story_click;
+    return data ? <DateFormattingComponent  date={data} /> : "NA";
+  }
+},
+{
+  field: "stats_for",
+  width: 150,
+  headerName: "Stats For",
+  renderCell: (params) => {
+    let data = params.row?.exehistorymodelsData?.stats_for;
+    return data ? (
+      data) : (
+      "NA"
+    );}
+  },
+  {
+    field: "story_view",
+    width: 150,
+    headerName: "Story View",
+    renderCell: (params) => {
+      let data = params.row?.exehistorymodelsData?.story_view;
+      return data ? data : "NA";
+    }
+  },
+  {
+    field: "story_view_upload_image",
+    width: 150,
+    headerName: "Story View Image",
+    renderCell: (params) => {
+      let data = params.row?.exehistorymodelsData?.story_view_upload_image;
+      return data ? (
+        <img src={data} style={{ width: "50px", height: "50px" }} />
+      ) : (
+        "NA"
+      );
+    }
+  }
+
+
+
   ];
 
   const priceColumn = [
