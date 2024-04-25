@@ -726,7 +726,7 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
         setIsLoadingPlan(false);
         toastAlert("Plan Created SuccessFully");
         setTimeout(() => {
-          navigate(`/admin/phase/${data.campaignId}`);
+          navigate(`/admin/op-phase-creation/${data.campaignId}`);
         }, 2000);
       } catch (error) {
         console.log();

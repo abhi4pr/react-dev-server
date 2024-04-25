@@ -752,7 +752,7 @@ const SidebarLinks = () => {
                     </NavLink>
                     <NavLink
                       className="collapse-item"
-                      to="/admin/op-camp-execution"
+                      to="/admin/op-campaign-executions"
                     >
                       <i className="bi bi-dot"></i>
                       Camp Execution
