@@ -304,6 +304,7 @@ import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
 import ViewSaleBooking from "./Sales/SaleBooking/ViewSaleBooking";
 import Timeline from "./Navbar-Sidebar/Timeline";
 import SaleBooking from "./Finance/Salebooking";
+import Stats from "./PageMS/Stats";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -457,6 +458,7 @@ const Admin = () => {
                     element={<AttendanceOverview />}
                   />
                   <Route path="/attendence-mast" element={<Attendence />} />
+                  <Route path="/stats" element={<Stats />} />
                   {/* Salary */}
                   <Route path="/salaryWFH" element={<SalaryWFH />} />
 

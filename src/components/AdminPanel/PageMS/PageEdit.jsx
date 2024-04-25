@@ -927,6 +927,9 @@ getData()
           required={false}
           onChange={(e) => setDescription(e.target.value)}
         />
+        <button type="submit" className="btn btn-primary mt-2 btn-sm">
+          Submit
+        </button>
       </>
     );
   };

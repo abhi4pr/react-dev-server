@@ -94,8 +94,8 @@ export default function VendorPagePriceMaster() {
         price_type_id: priceTypeId.value,
         price_cal_type: pricecalType,
         variable_type: variableType,
-        price_fixed: priceFixed,
-        price_variable: priceVariable,
+        Sale_price: priceFixed,
+        variable_type_rate: priceVariable,
         description: description,
       })
       .then((res) => {
@@ -218,6 +218,7 @@ export default function VendorPagePriceMaster() {
         <FieldContainer
           label="Price Fixed *"
           value={priceFixed}
+          type="number"
           required={true}
           onChange={(e) => setPriceFixed(e.target.value)}
         />

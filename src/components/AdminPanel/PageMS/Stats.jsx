@@ -1,309 +1,99 @@
-import React from "react";
-import Stack from "@mui/material/Stack";
+import { useEffect, useState } from "react";
+import FormContainer from "../FormContainer";
 import {
   Autocomplete,
   Button,
-  Checkbox,
   InputAdornment,
-  OutlinedInput,
-  Paper,
   TextField,
-  Typography,
+  styled,
 } from "@mui/material";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
-import { useState } from "react";
-
-import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
-import { useGlobalContext } from "../../Context/Context";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { styled } from "@mui/material/styles";
-import { Country, City } from "country-state-city";
-import UserNav from "../Pantry/UserPanel/UserNav";
-import FormContainer from "../AdminPanel/FormContainer";
-import { useEffect } from "react";
-import axios from "axios";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { set } from "date-fns";
 import CloseTwoToneIcon from "@mui/icons-material/CloseTwoTone";
+import { Country } from "country-state-city";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
-import { baseUrl } from "../../utils/config";
+import { useGlobalContext } from "../../../Context/Context";
+import { useNavigate } from "react-router-dom";
 
-const VisuallyHiddenInput = styled("input")({
-  clip: "rect(0 0 0 0)",
-  clipPath: "inset(50%)",
-  height: 1,
-  overflow: "hidden",
-  position: "absolute",
-  bottom: 0,
-  left: 0,
-  whiteSpace: "nowrap",
-  width: 1,
-});
-
-export default function ExeUPdate() {
-  const storedToken = sessionStorage.getItem("token");
-  const decodedToken = jwtDecode(storedToken);
-  const userID = decodedToken.id;
-  const location = useLocation();
-
-  const { toastAlert } = useGlobalContext();
-
-  const [reach, setReach] = useState(0);
-  const [impression, setImpression] = useState(0);
-  const [engagement, setEngagement] = useState(0);
-  const [storyView, setStoryView] = useState(0);
-
+export default function Stats() {
   const [statesFor, setStatesFor] = useState(null);
+  const [stateForIsValid, setStateForIsValid] = useState(false);
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState("");
-  const [demoFile, setDemoFile] = useState();
-  const [stateForIsValid, setStateForIsValid] = useState(false);
-  const [stateForIsNotQuater, setStateForIsNotQuater] = useState(false);
   const [quater, setQuater] = useState("");
-  const [quaterIsValid, setQuaterIsValid] = useState(false);
-
-  const [endDateIsValid, setEndDateIsValid] = useState(false);
+  const [stateForIsNotQuater, setStateForIsNotQuater] = useState(false);
+  const [reach, setReach] = useState();
   const [reachValidation, setReachValidation] = useState(true);
+  const [reachImgSrc, setReachImgSrc] = useState(null);
+  const [reachImg, setReachImg] = useState(null);
+  const [impression, setImpression] = useState();
   const [impressionValidation, setImpressionValidation] = useState(true);
-  const [engagementValidation, setEngagementValidation] = useState(true);
-  const [storyViewValidation, setStoryViewValidation] = useState(true);
-  const [impressionImg, setImpressionImg] = useState();
+  const [impressionImgSrc, setImpressionImgSrc] = useState(null);
+  const [impressionImg, setImpressionImg] = useState(null);
   const [engagementImg, setEngagementImg] = useState();
   const [storyViewImg, setStoryViewImg] = useState();
-  const [storyViewVideo, setStoryViewVideo] = useState(null);
-  const [city1, setCity1] = useState(null);
-  const [city2, setCity2] = useState(null);
-  const [city3, setCity3] = useState(null);
-  const [city4, setCity4] = useState(null);
-  const [city5, setCity5] = useState(null);
-  const [city1Percentage, setCity1Percentage] = useState(0);
-  const [city2Percentage, setCity2Percentage] = useState(0);
-  const [city3Percentage, setCity3Percentage] = useState(0);
-  const [city4Percentage, setCity4Percentage] = useState(0);
-  const [city5Percentage, setCity5Percentage] = useState(0);
-  const [cityImg, setCityImg] = useState(null);
-  const [malePercentage, setMalePercentage] = useState(0);
-  const [femalePercentage, setFemalePercentage] = useState(0);
-  const [age1Percentage, setAge1Percentage] = useState(0);
-  const [age2Percentage, setAge2Percentage] = useState(0);
-  const [age3Percentage, setAge3Percentage] = useState(0);
-  const [age4Percentage, setAge4Percentage] = useState(0);
-  const [age5Percentage, setAge5Percentage] = useState(0);
-  const [age6percentage, setAge6Percentage] = useState(0);
-  const [age7Percentage, setAge7Percentage] = useState(0);
+  const [storyViewVideo, setStoryViewVideo] = useState();
+  const [city1, setCity1] = useState();
+  const [city2, setCity2] = useState();
+  const [city3, setCity3] = useState();
+  const [city4, setCity4] = useState();
+  const [city5, setCity5] = useState();
+  const [city1Percentage, setCity1Percentage] = useState();
+  const [city2Percentage, setCity2Percentage] = useState();
+  const [city3Percentage, setCity3Percentage] = useState();
+  const [city4Percentage, setCity4Percentage] = useState();
+  const [city5Percentage, setCity5Percentage] = useState();
+  const [cityImg, setCityImg] = useState();
+  const [malePercentage, setMalePercentage] = useState();
+  const [femalePercentage, setFemalePercentage] = useState();
+  const [age1Percentage, setAge1Percentage] = useState();
+  const [age2Percentage, setAge2Percentage] = useState();
+  const [age3Percentage, setAge3Percentage] = useState();
+  const [age4Percentage, setAge4Percentage] = useState();
+  const [age5Percentage, setAge5Percentage] = useState();
+  const [age6percentage, setAge6Percentage] = useState();
+  const [age7Percentage, setAge7Percentage] = useState();
   const [ageImg, setAgeImg] = useState("");
-  const [profileVisit, setProfileVisit] = useState(0);
+  const [profileVisit, setProfileVisit] = useState();
   const [countryList, setCountryList] = useState([]);
   const [cityList, setCityList] = useState([]);
-  const [country1, setCountry1] = useState(null);
-  const [country2, setCountry2] = useState(null);
-  const [country3, setCountry3] = useState(null);
-  const [country4, setCountry4] = useState(null);
-  const [country5, setCountry5] = useState(null);
-  const [country1Percentage, setCountry1Percentage] = useState(0);
-  const [country2Percentage, setCountry2Percentage] = useState(0);
-  const [country3Percentage, setCountry3Percentage] = useState(0);
-  const [country4Percentage, setCountry4Percentage] = useState(0);
-  const [country5Percentage, setCountry5Percentage] = useState(0);
+  const [cityListTemp, setCityListTemp] = useState();
+  const [country1, setCountry1] = useState("");
+  const [country2, setCountry2] = useState("");
+  const [country3, setCountry3] = useState("");
+  const [country4, setCountry4] = useState("");
+  const [country5, setCountry5] = useState("");
+  const [country1Percentage, setCountry1Percentage] = useState();
+  const [country2Percentage, setCountry2Percentage] = useState();
+  const [country3Percentage, setCountry3Percentage] = useState();
+  const [country4Percentage, setCountry4Percentage] = useState();
+  const [country5Percentage, setCountry5Percentage] = useState();
   const [countryImg, setCountryImg] = useState();
-  const [impressionimgSrc, setImpressionimgSrc] = useState(null);
+
+  const [totalPercentage, setTotalPercentage] = useState();
   const [engagementImgSrc, setEngagementImgSrc] = useState(null);
   const [storyViewImgSrc, setStoryViewImgSrc] = useState(null);
   const [storyViewVideoSrc, setStoryViewVideoSrc] = useState(null);
   const [countryImgSrc, setCountryImgSrc] = useState(null);
   const [cityImgSrc, setCityImgSrc] = useState(null);
   const [ageImgSrc, setAgeImgSrc] = useState(null);
-  const [reachImgSrc, setReachImgSrc] = useState(null);
-  const [reachImg, setReachImg] = useState(null);
+  const [engagement, setEngagement] = useState();
+  const [engagementValidation, setEngagementValidation] = useState(true);
+  const [storyView, setStoryView] = useState();
+  const [storyViewValidation, setStoryViewValidation] = useState(true);
   const [storyViewDate, setStoryViewDate] = useState("");
-
-  const navigate = useNavigate();
-  const saveStats = async (e) => {
-    console.log(storyViewDate);
-    e.preventDefault();
-
-    const formData = new FormData();
-    formData.append("_id", id.id);
-    formData.append("reach", reach);
-    formData.append("impression", impression);
-    formData.append("engagement", engagement);
-    formData.append("story_view", storyView);
-    demoFile ? formData.append("media", demoFile) : "";
-    quater ? formData.append("quater", quater) : "";
-    formData.append("start_date", startDate);
-    formData.append("end_date", endDate);
-    formData.append("stats_for", statesFor);
-    formData.append("impression_upload_image", impressionImg);
-    formData.append("reach_upload_image", reachImg);
-    formData.append("engagement_upload_image", engagementImg);
-    formData.append("story_view_upload_image", storyViewImg);
-    formData.append("story_view_upload_video", storyViewVideo);
-    formData.append("city_image_upload", cityImg);
-    formData.append("Age_upload", ageImg);
-    formData.append("city1_name", city1);
-    formData.append("city2_name", city2);
-    formData.append("city3_name", city3);
-    formData.append("city4_name", city4);
-    formData.append("city5_name", city5);
-    formData.append("percentage_city1_name", city1Percentage);
-    formData.append("percentage_city2_name", city2Percentage);
-    formData.append("percentage_city3_name", city3Percentage);
-    formData.append("percentage_city4_name", city4Percentage);
-    formData.append("percentage_city5_name", city5Percentage);
-    formData.append("male_percent", malePercentage);
-    formData.append("female_percent", femalePercentage);
-    formData.append("Age_13_17_percent", age1Percentage);
-    formData.append("Age_18_24_percent", age2Percentage);
-    formData.append("Age_25_34_percent", age3Percentage);
-    formData.append("Age_35_44_percent", age4Percentage);
-    formData.append("Age_45_54_percent", age5Percentage);
-    formData.append("Age_55_64_percent", age6percentage);
-    formData.append("Age_65_plus_percent", age7Percentage);
-
-    formData.append("profile_visit", profileVisit);
-    formData.append("country1_name", country1);
-    formData.append("country2_name", country2);
-    formData.append("country3_name", country3);
-    formData.append("country4_name", country4);
-    formData.append("country5_name", country5);
-    formData.append("percentage_country1_name", country1Percentage);
-    formData.append("percentage_country2_name", country2Percentage);
-    formData.append("percentage_country3_name", country3Percentage);
-    formData.append("percentage_country4_name", country4Percentage);
-    formData.append("percentage_country5_name", country5Percentage);
-    formData.append("country_image_upload", countryImg);
-    formData.append("user_id", userID);
-    formData.append("story_view_date", storyViewDate);
-
-    axios
-      .put(
-        // `${baseUrl}` + `edit_exe_ip_count_history`,
-        `${baseUrl}` + `update_exe_history/${id.id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then(() => {
-        navigate("/admin/pms-page-overview");
-        toastAlert("Form Submitted success");
-      });
-  };
-
-  const apiCall = () => {
-    axios
-      .get(`${baseUrl}` + `get_exe_history/${location.state}`)
-      .then((res) => {
-        var data = { ...res.data.data[0] };
-
-        setReach(data.reach);
-        setProfileVisit(data.profile_visit);
-        setAge1Percentage(data.Age_13_17_percent);
-        setAge2Percentage(data.Age_18_24_percent);
-        setAge3Percentage(data.Age_25_34_percent);
-        setAge4Percentage(data.Age_35_44_percent);
-        setAge5Percentage(data.Age_45_54_percent);
-        setAge6Percentage(data.Age_55_64_percent);
-        setAge7Percentage(data.Age_65_plus_percent);
-        setAgeImgSrc(data.Age_upload_url);
-        setCity1(data.city1_name);
-        setCity2(data.city2_name);
-        setCity3(data.city3_name);
-        setCity4(data.city4_name);
-        setCity5(data.city5_name);
-        setCityImgSrc(data.city_image_upload);
-        setEndDate(data.end_date);
-        setEndDate(dayjs(new Date(data.end_date?.split("T")[0])));
-        setStartDate(dayjs(new Date(data.start_date?.split("T")[0])));
-        setStoryViewDate(
-          data.story_view_date != null
-            ? dayjs(new Date(data.story_view_date?.split("T")[0]))
-            : ""
-        );
-        setEngagement(data.engagement);
-        setEngagementImgSrc(data.engagement_upload_image);
-        setFemalePercentage(data.female_percent);
-        setImpression(data.impression);
-        setMalePercentage(data.male_percent);
-        setCity1Percentage(data.percentage_city1_name);
-        setCity2Percentage(data.percentage_city2_name);
-        setCity3Percentage(data.percentage_city3_name);
-        setCity4Percentage(data.percentage_city4_name);
-        setCity5Percentage(data.percentage_city5_name);
-        setQuater(data.quater);
-        setImpressionImg(data?.impression_upload_image);
-        setImpressionimgSrc(data?.impression_upload_image);
-        setStatesFor(data.stats_for);
-        setStoryView(data.story_view);
-        setStoryViewVideoSrc(data?.story_view_upload_video);
-        setStoryViewImgSrc(data?.story_view_upload_image);
-        setCountry1(data.country1_name);
-        setCountry2(data.country2_name);
-        setCountry3(data.country3_name);
-        setCountry4(data.country4_name);
-        setCountry5(data.country5_name);
-        setCountry1Percentage(data.percentage_country1_name);
-        setCountry2Percentage(data.percentage_country2_name);
-        setCountry3Percentage(data?.percentage_country3_name);
-        setCountry4Percentage(data.percentage_country4_name);
-        setCountry5Percentage(data.percentage_country5_name);
-        setCountryImgSrc(data.country_image_upload_url);
-        setReachImgSrc(data.reach_upload_image);
-        setImpressionimgSrc(data.impression_upload_image_url);
-      });
-  };
-
-  useEffect(() => {
-    apiCall();
-  }, []);
-
-  const [totalPercentage, setTotalPercentage] = useState(0);
-
-  const handlePercentageChange = (value, setter) => {
-    const newValue = parseFloat(value);
-    if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
-      setter(newValue);
-    }
-  };
-
-  useEffect(() => {
-    setCountryList(Country.getAllCountries());
-    axios.get(baseUrl + "get_all_cities").then((res) => {
-      setCityList(res.data.data.map((city) => city.city_name));
-    });
-  }, []);
-
-  const cityCopyValidation = (value) => {
-    setTimeout(() => {
-      let tempCityList = cityList;
-      tempCityList = tempCityList.filter((city) => !value.includes(city));
-      setCityList(tempCityList);
-    }, 400);
-  };
-
-  const countryCopyValidation = (value) => {
-    setTimeout(() => {
-      let tempCountryList = countryList;
-      tempCountryList = tempCountryList.filter(
-        (country) => !value.includes(country.name)
-      );
-      setCountryList(tempCountryList);
-    }, 400);
-  };
-  const handleEndDateChange = (newValue) => {
-    const date = new Date(newValue.$d);
-
-    // Adjusting for the local time zone offset
-    const offset = date.getTimezoneOffset();
-    date.setMinutes(date.getMinutes() - offset);
-
-    setEndDate(newValue);
-  };
-
+  const [countryListTemp, setCountryListTemp] = useState([]);
+  const rowData= useSelector((state) => state.executon.row);
+  const storedToken = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(storedToken);
+  const userID = decodedToken.id;
+  const { toastAlert } = useGlobalContext();
+const navigation = useNavigate();
   const dropdownStaticData = [
     "Daily",
     "Weekly",
@@ -318,50 +108,275 @@ export default function ExeUPdate() {
     "Quater 3 (Jul-Sep)",
     "Quater 4 (Oct-Dec)",
   ];
-  useEffect(() => {
-    const sum =
-      age1Percentage +
-      age2Percentage +
-      age3Percentage +
-      age4Percentage +
-      age5Percentage +
-      +age6percentage +
-      +age7Percentage;
 
-    setTotalPercentage(sum);
-  }, [
-    age1Percentage,
-    age2Percentage,
-    age3Percentage,
-    age4Percentage,
-    age5Percentage,
-    age6percentage,
-    age7Percentage,
-  ]);
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
 
   const handleStartDateChange = (newValue) => {
     const date = new Date(newValue.$d);
-
-    // Adjusting for the local time zone offset
     const offset = date.getTimezoneOffset();
     date.setMinutes(date.getMinutes() - offset);
-
     setStartDate(newValue);
   };
-  const handleStoryViewDateChange = (newValue) => {
-    const date = new Date(newValue.$d);
 
+  const handleEndDateChange = (newValue) => {
+    const date = new Date(newValue.$d);
     const offset = date.getTimezoneOffset();
     date.setMinutes(date.getMinutes() - offset);
+    setEndDate(newValue);
+  };
 
+  const handleStoryViewDateChange = (newValue) => {
+    const date = new Date(newValue.$d);
+    const offset = date.getTimezoneOffset();
+    date.setMinutes(date.getMinutes() - offset);
     setStoryViewDate(newValue);
   };
 
-  const id = useParams();
+  const cityCopyValidation = (selectedCity) => {
+    setTimeout(() => {
+        console.log(selectedCity,"selectedCity, city")
+      if (selectedCity === null || selectedCity == "") {
+        let temp = cityListTemp.filter(
+          (city) => ![city1, city2, city3, city4, city5].includes(city)
+        );
+        setCityList(prev=>[...temp, prev]);
+        return;
+      }
+      const newCityList = cityListTemp.filter(
+        (city) =>
+          city !== selectedCity &&
+          ![city1, city2, city3, city4, city5].includes(city)
+      );
+      setCityList(newCityList);
+    }, 400);
+  };
+
+  const handlePercentageChange = (value, setter) => {
+    const newValue = parseFloat(value);
+    if (!isNaN(newValue) && newValue >= 0 && newValue <= 100) {
+      setter(newValue);
+    }
+  };
+
+  useEffect(() => {
+    setCountryList(Country.getAllCountries());
+    setCountryListTemp(Country.getAllCountries());
+    axios.get(baseUrl + "get_all_cities").then((res) => {
+        setCityListTemp(res.data.data.map((city) => city.city_name));
+        setCityList(res.data.data.map((city) => city.city_name));
+      });
+  
+  }, []);
+
+  const countryCopyValidation = (selectedCountry, country) => {
+    setTimeout(() => {
+      if (selectedCountry === null) {
+        let temp = countryListTemp.filter(
+          (e) =>
+            ![country1, country2, country3, country4, country5].includes(e.name)
+        );
+        const addCountry = countryListTemp.filter((e) => e.name === country);
+        setCountryList([...temp, ...addCountry]);
+        return;
+      }
+
+      const newCountryList = countryListTemp.filter(
+        (country) =>
+          country.name !== selectedCountry &&
+          ![country1, country2, country3, country4, country5].includes(
+            country.name
+          )
+      );
+
+      setCountryList(newCountryList);
+    }, 400);
+  };
+
+  const saveStats = async (e) => {
+    e.preventDefault();
+
+    const preSDate = new Date(startDate);
+    preSDate.setDate(preSDate.getDate() + 1);
+    const sDate = preSDate.toISOString();
+
+    const preEDate = new Date(endDate);
+    preEDate.setDate(preEDate.getDate() + 1);
+    const eDate = preEDate.toISOString();
+
+    const preSVDate = new Date(storyViewDate);
+    preSVDate.setDate(preSVDate.getDate() + 1);
+    const svDate = preSVDate != "Invalid Date" ? preSVDate?.toISOString() : "";
+
+    const formData = new FormData();
+    console.log(rowData[0], "rowdata")
+    console.log(rowData[0].pageMast_id, "rowdata")
+    // formData.append("p_id", rowData[0].exepurchasemodel.p_id);
+    formData.append("pageMast_id", rowData[0]?.pageMast_id);
+    formData.append("reach", reach);
+    formData.append("impression", impression ? impression : 0);
+    formData.append("engagement", engagement ? engagement : 0);
+    formData.append("story_view", storyView ? storyView : 0);
+    // demoFile ? formData.append("media", demoFile) : "";
+    quater ? formData.append("quater", quater) : "";
+    formData.append("start_date", sDate);
+    formData.append("story_view_date", svDate);
+    formData.append("end_date", eDate);
+    formData.append("stats_for", statesFor);
+    formData.append("impression_upload_image", impressionImg);
+    formData.append("reach_upload_image", reachImg);
+    formData.append("engagement_upload_image", engagementImg);
+    formData.append("story_view_upload_image", storyViewImg);
+    formData.append("story_view_upload_video", storyViewVideo);
+    formData.append("city_image_upload", cityImg);
+    formData.append("Age_upload", ageImg);
+    formData.append("city1_name", city1);
+    formData.append("city2_name", city2);
+    formData.append("city3_name", city3);
+    formData.append("city4_name", city4);
+    formData.append("city5_name", city5);
+    formData.append(
+      "percentage_city1_name",
+      city1Percentage ? city1Percentage : 0
+    );
+    formData.append(
+      "percentage_city2_name",
+      city2Percentage ? city2Percentage : 0
+    );
+    formData.append(
+      "percentage_city3_name",
+      city3Percentage ? city3Percentage : 0
+    );
+    formData.append(
+      "percentage_city4_name",
+      city4Percentage ? city4Percentage : 0
+    );
+    formData.append(
+      "percentage_city5_name",
+      city5Percentage ? city5Percentage : 0
+    );
+    formData.append("male_percent", malePercentage ? malePercentage : 0);
+    formData.append("female_percent", femalePercentage ? femalePercentage : 0);
+    formData.append("Age_13_17_percent", age1Percentage ? age1Percentage : 0);
+    formData.append("Age_18_24_percent", age2Percentage ? age2Percentage : 0);
+    formData.append("Age_25_34_percent", age3Percentage ? age3Percentage : 0);
+    formData.append("Age_35_44_percent", age4Percentage ? age4Percentage : 0);
+    formData.append("Age_45_54_percent", age5Percentage ? age5Percentage : 0);
+    formData.append("Age_55_64_percent", age6percentage ? age6percentage : 0);
+    formData.append("Age_65_plus_percent", age7Percentage ? age7Percentage : 0);
+    formData.append("profile_visit", profileVisit ? profileVisit : 0);
+    formData.append("country1_name", country1);
+    formData.append("country2_name", country2);
+    formData.append("country3_name", country3);
+    formData.append("country4_name", country4);
+    formData.append("country5_name", country5);
+    formData.append(
+      "percentage_country1_name",
+      country1Percentage ? country1Percentage : 0
+    );
+    formData.append(
+      "percentage_country2_name",
+      country2Percentage ? country2Percentage : 0
+    );
+    formData.append(
+      "percentage_country3_name",
+      country3Percentage ? country3Percentage : 0
+    );
+    formData.append(
+      "percentage_country4_name",
+      country4Percentage ? country4Percentage : 0
+    );
+    formData.append(
+      "percentage_country5_name",
+      country5Percentage ? country5Percentage : 0
+    );
+    formData.append("country_image_upload", countryImg);
+    formData.append("user_id", userID);
+
+    axios
+    //   .post(`${baseUrl}` + `add_exe_pid_history`, formData, {
+      .post(`${baseUrl}` + `add_exe_history`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(() => {
+        // setReachkey((perv) => perv + 1);
+        // callDataForLoad();
+        setQuater("");
+        setStatesFor(null);
+        setStartDate(null);
+        setEndDate(null);
+        setReach();
+        setImpression();
+        setEngagement();
+        setStoryView();
+        // setRowData({});
+        setCity1("");
+        setCity2("");
+        setCity3("");
+        setCity4("");
+        setCity5("");
+        setCity1Percentage();
+        setCity2Percentage();
+        setCity3Percentage();
+        setCity4Percentage();
+        setCity5Percentage();
+        setMalePercentage();
+        setFemalePercentage();
+        setAge1Percentage();
+        setAge2Percentage();
+        setAge3Percentage();
+        setAge4Percentage();
+        setAge5Percentage();
+        setAge6Percentage();
+        setAge7Percentage();
+        setAgeImg(null);
+        setCityImg(null);
+        setReachImg(null);
+        setImpressionImg(null);
+        setEngagementImg("");
+        setStoryViewImg("");
+        setStoryViewVideo("");
+        setProfileVisit();
+        setCountry1("");
+        setCountry2("");
+        setCountry3("");
+        setCountry4("");
+        setCountry5("");
+        setCountry1Percentage();
+        setCountry2Percentage();
+        setCountry3Percentage();
+        setCountry4Percentage();
+        setCountry5Percentage();
+        setCountryImg();
+        setCityImgSrc(null);
+        setCountryImgSrc(null);
+        setAgeImgSrc(null);
+        // setReachAndImpressionimgSrc(null);
+        setImpressionImgSrc(null);
+        setEngagementImgSrc(null);
+        setStoryViewImgSrc(null);
+        setStoryViewVideoSrc(null);
+        setStoryViewDate(null);
+
+        toastAlert("Form Submitted success");
+      return  navigation("/admin/pms-page-overview");
+      });
+  };
 
   return (
     <div>
-      <FormContainer mainTitle="Update" link="/ip-master" />
+      <FormContainer mainTitle="Add Stats" link="/ip-master" />
       <div className="card">
         <div className="card-body sb flex-row">
           <h4 className="ml-3 w-25">Stats History</h4>
@@ -393,7 +408,9 @@ export default function ExeUPdate() {
                 />
               )}
             />
+
             {statesFor !== "Quarterly" && statesFor !== null && (
+              // stateForIsNotQuater &&
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   label="Start Date *"
@@ -420,27 +437,31 @@ export default function ExeUPdate() {
                 />
               </LocalizationProvider>
             )}
-            {statesFor == "Quarterly" && (
+            {statesFor == "Quarterly" && !stateForIsNotQuater && (
+              // !stateForIsNotQuater &&
               <Autocomplete
                 disablePortal
                 id="combo-box-demo"
                 options={QuarterStaticData}
                 onChange={(e, value) => {
                   setQuater(value);
-                  value?.length > 0
-                    ? setQuaterIsValid(true)
-                    : setQuaterIsValid(false);
                 }}
                 value={quater}
                 sx={{ width: 300 }}
                 renderInput={(params) => (
-                  <TextField {...params} label="Quater *" />
+                  <TextField
+                    {...params}
+                    label="Quater *"
+                    // error={!quaterIsValid}
+                    // helperText={!quaterIsValid ? "Please select an option" : ""}
+                  />
                 )}
               />
             )}
           </div>
         </div>
       </div>
+
       <div className="card">
         <div className="card-header">
           <h4 className="card-title">Followers Bifurcation</h4>
@@ -487,6 +508,7 @@ export default function ExeUPdate() {
                     accept="image/png, image/jpeg"
                   />
                 </Button>
+
                 {reachImgSrc && (
                   <div className="d-flex thm_pr">
                     <img
@@ -515,6 +537,7 @@ export default function ExeUPdate() {
                   label="Impressions *"
                   type="number"
                   value={impression}
+                  // fieldGrid={4}
                   onChange={(e) => {
                     e.target.value > 0
                       ? setImpressionValidation(true)
@@ -540,7 +563,7 @@ export default function ExeUPdate() {
                       const uploadedFile = e.target.files[0];
                       if (uploadedFile) {
                         const imageUrl = URL.createObjectURL(uploadedFile);
-                        setImpressionimgSrc(imageUrl);
+                        setImpressionImgSrc(imageUrl);
                         setImpressionImg(uploadedFile);
                       }
                     }}
@@ -548,11 +571,12 @@ export default function ExeUPdate() {
                     accept="image/png, image/jpeg"
                   />
                 </Button>
-                {impressionimgSrc && (
+
+                {impressionImgSrc && (
                   <div className="d-flex thm_pr">
                     <img
                       style={{ width: "50px", height: "50px" }}
-                      src={impressionimgSrc}
+                      src={impressionImgSrc}
                       className="mt-1"
                       alt="Uploaded"
                     />{" "}
@@ -560,7 +584,7 @@ export default function ExeUPdate() {
                       size="small"
                       className="btn cmnbtn btn-wid btn_sm btn-primary"
                       onClick={() => {
-                        setImpressionimgSrc(null);
+                        setImpressionImgSrc(null);
                         setImpressionImg(null);
                       }}
                     >
@@ -576,11 +600,15 @@ export default function ExeUPdate() {
                   label="Engagement *"
                   type="number"
                   value={engagement}
+                  // fieldGrid={4}
                   onChange={(e) => {
-                    e.target.value > 0
-                      ? setEngagementValidation(true)
-                      : setEndDateIsValid(false),
-                      setEngagement(e.target.value);
+                    const enteredValue = e.target.value;
+                    if (enteredValue >= 0) {
+                      setEngagementValidation(true);
+                      setEngagement(enteredValue);
+                    } else {
+                      setEngagementValidation(false);
+                    }
                   }}
                   error={!engagementValidation}
                   helperText={
@@ -615,6 +643,7 @@ export default function ExeUPdate() {
                       src={engagementImgSrc}
                       alt="Uploaded"
                     />
+
                     <Button
                       className="btn cmnbtn btn-wid btn_sm btn-primary"
                       size="small"
@@ -635,6 +664,7 @@ export default function ExeUPdate() {
                   label="Story View *"
                   type="number"
                   value={storyView}
+                  // fieldGrid={4}
                   onChange={(e) => {
                     e.target.value > 0
                       ? setStoryViewValidation(true)
@@ -1083,11 +1113,13 @@ export default function ExeUPdate() {
                   }}
                   id="combo-box-demo"
                   options={countryList.map((country) => country.name)}
+                  // sx={{ width: 150 }}
                   renderInput={(params) => (
                     <TextField {...params} label="Country 3" />
                   )}
                 />
                 <TextField
+                  // style={{ width: "10%" }}
                   className="w-50"
                   type="number"
                   value={country3Percentage}
