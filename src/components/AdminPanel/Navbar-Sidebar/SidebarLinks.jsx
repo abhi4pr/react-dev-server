@@ -710,7 +710,7 @@ const SidebarLinks = () => {
             <i className="ph">
               <Laptop weight="duotone" />
             </i>
-            <span>ExeOperation</span>
+            <span>Operation New</span>
           </Link>
           <div
             id="collapsInnerexeop"
@@ -775,7 +775,7 @@ const SidebarLinks = () => {
             <i className="ph">
               <Laptop weight="duotone" />
             </i>
-            <span>Operation</span>
+            <span>Operation Old</span>
           </a>
           <div
             id="collapsInnerOneModifyTwo"

@@ -1,12 +1,11 @@
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import CampaignDetailes from "./CampaignDetailes";
+import CampaignDetails from "./CampaignDetails";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { DataGrid, GridExpandMoreIcon } from "@mui/x-data-grid";
-import PageDetaling from "./PageDetailing";
 
 import {
   Paper,
@@ -23,15 +22,15 @@ import {
 } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import Accordioan from "./Accordioan";
+// import Accordioan from "./Accordioan";
 import { useNavigate } from "react-router-dom";
-import PageOverview from "./PageOverview";
-import PageDetailingNew from "./PageDetailingNew";
+// import PageOverview from "./PageOverview";
+// import PageDetailingNew from "./PageDetailingNew";
 import { baseUrl } from "../../../utils/config";
 import { useGlobalContext } from "../../../Context/Context";
 import FormContainer from "../FormContainer";
 
-const PhasecreationNew = () => {
+const PhaseCreation = () => {
   const param = useParams();
   const id = param.id;
   const { toastAlert, toastError } = useGlobalContext();
@@ -119,7 +118,7 @@ const PhasecreationNew = () => {
       link="true"
     />
       
-      <CampaignDetailes cid={id} getCampaign={getCampaignName} />
+      <CampaignDetails cid={id} getCampaign={getCampaignName} />
       {/* add Accordion for show phase------------------- */}
       <Paper>
         {allPhaseData?.map((item,index)=>(
@@ -135,12 +134,7 @@ const PhasecreationNew = () => {
               <Button variant="contained" color="primary" size="small">
                 Create Assignment
               </Button>
-              {/* {
-                allPhaseData.length == 0 &&
-                <Button variant="contained" color="primary" size="small">
-                  assign all
-                </Button>
-              } */}
+              
             </Link>
             <Accordion
               key={index}
@@ -157,13 +151,13 @@ const PhasecreationNew = () => {
               <AccordionDetails>
                 {/* <Accordioan data={item} /> */}
 
-                <PageOverview
+                {/* <PageOverview
                   selectData={item.pages}
                   phaseIndex={`Phase ${index + 1}`}
                   stage={"phase"}
                   setRender={renderHard}
                   phase_id={item.phase_id}
-                />
+                /> */}
               </AccordionDetails>
             </Accordion>
           </Paper>
@@ -216,13 +210,8 @@ const PhasecreationNew = () => {
                 defaultValue={`Phase ${allPhaseData.length + 1}`}
                 onChange={(e) => {
                   setPhaseData(e.target.value);
-                  // if (phaseDataError) {
-                  //   setPhaseDataError("");
-                  // }
                 }}
                 sx={{ m: 1, width: "300px" }}
-                // error={!!phaseDataError}
-                // helperText={phaseDataError}
               />
 
               <TextField
@@ -308,4 +297,4 @@ const PhasecreationNew = () => {
   );
 };
 
-export default PhasecreationNew;
+export default PhaseCreation;

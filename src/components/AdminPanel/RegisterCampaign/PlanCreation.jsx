@@ -1,4 +1,4 @@
-import CampaignDetailes from "./CampaignDetailes";
+import CampaignDetails from "./CampaignDetails";
 import { useParams } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
@@ -522,7 +522,7 @@ console.log(filterdPages)
           <h2 className="form-heading">Plan Creation</h2>
         </div>
       </div>
-      <CampaignDetailes cid={id} getCampaign={getCampaignName} />
+      <CampaignDetails cid={id} getCampaign={getCampaignName} />
 
       <Paper sx={{ display: "flex", justifyContent: "space-around" }}>
         <Autocomplete

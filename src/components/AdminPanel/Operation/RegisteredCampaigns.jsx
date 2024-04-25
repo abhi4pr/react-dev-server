@@ -275,16 +275,16 @@ export default function RegisteredCampaigns() {
   };
 
   const handlePlan = (event) => {
-    const path = `/admin/tempplanCreation/${event._id}`;
+    const path = `/admin/op-plan-creation/${event._id}`;
     navigate(path);
   };
   const handleShowPlan = (event) => {
-    const path = `/admin/planOverview/${event._id}`;
+    const path = `/admin/op-phase-creation/${event._id}`;
     navigate(path);
   };
   handleShowPlan;
   const handlePhase = (event) => {
-    const path = `/admin/phase/${event._id}`;
+    const path = `/admin/op-phase-creation/${event._id}`;
     navigate(path);
   };
 
@@ -507,32 +507,32 @@ export default function RegisteredCampaigns() {
     //     );
     //   },
     // },
-    {
-      field: "send_for_content_creation",
-      headerName: "Content Creation",
-      renderCell: (params) => {
-        return (
-          <div className="d-flex text-center align-item-center justify-content-center">
-            <button className="icon-1" type="button" onClick={() => handleOpen(params)}>
-              <i className="bi bi-send"></i>
-            </button>
-          </div>
-        );
-      },
-      width: 200,
-    },
-    {
-      field: "temp plan_creation",
-      headerName: "Temp Plan Creation",
-      renderCell: (params) => (
-        <PlanCreationComponent
-          {...params}
-          handlePlan={handlePlan}
-          handleShowPlan={handleShowPlan}
-        />
-      ),
-      width: 200,
-    },
+    // {
+    //   field: "send_for_content_creation",
+    //   headerName: "Content Creation",
+    //   renderCell: (params) => {
+    //     return (
+    //       <div className="d-flex text-center align-item-center justify-content-center">
+    //         <button className="icon-1" type="button" onClick={() => handleOpen(params)}>
+    //           <i className="bi bi-send"></i>
+    //         </button>
+    //       </div>
+    //     );
+    //   },
+    //   width: 200,
+    // },
+    // {
+    //   field: "temp plan_creation",
+    //   headerName: "Temp Plan Creation",
+    //   renderCell: (params) => (
+    //     <PlanCreationComponent
+    //       {...params}
+    //       handlePlan={handlePlan}
+    //       handleShowPlan={handleShowPlan}
+    //     />
+    //   ),
+    //   width: 200,
+    // },
     {
       field: "plan_creation",
       headerName: "Plan Creation",

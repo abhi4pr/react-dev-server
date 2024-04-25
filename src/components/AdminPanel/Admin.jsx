@@ -134,8 +134,8 @@ import PreonboardingDocuments from "./AdminPreOnboarding/AdminPreDocuments/Preon
 import PreonboardingDocumentOverview from "./AdminPreOnboarding/AdminPreDocuments/PreonboardingDocumentOverview";
 import PreonboardingDocumentsUpdate from "./AdminPreOnboarding/AdminPreDocuments/PreonboardingDocumentsUpdate";
 import PlanOverview from "./RegisterCampaign/PlanOverview";
-import PhaseCreation from "./RegisterCampaign/PhaseCreation";
-import PlanCreation from "./RegisterCampaign/PlanCreation";
+// import PhaseCreation from "./RegisterCampaign/PhaseCreation";
+// import PlanCreation from "./RegisterCampaign/PlanCreation";
 import ExeUPdate from "../Execution/ExeUPdate";
 import ExeHistory from "../Execution/ExeHistory";
 import { SelfAudit } from "./AssetNotifier/SelfAudit";
@@ -307,6 +307,8 @@ import SaleBooking from "./Finance/Salebooking";
 import Stats from "./PageMS/Stats";
 import OperationMasters from "./Operation/Masters/OperationMasters";
 import RegisteredCampaigns from "./Operation/RegisteredCampaigns";
+import PlanCreation from './Operation/PlanCreation';
+import PhaseCreation from './Operation/PhaseCreation';
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1461,15 +1463,23 @@ const Admin = () => {
                   />
 
                    {/* //exe operation */}
-                <Route
-                path="/exeoperation/master"
-                element={<OperationMasters/>}
-                />
-                <Route
-                path="/op-registered-campaign"
-                element={<RegisteredCampaigns />}
-                />
-                </Route>
+                  <Route
+                    path="/exeoperation/master"
+                    element={<OperationMasters/>}
+                  />
+                  <Route
+                    path="/op-registered-campaign"
+                    element={<RegisteredCampaigns />}
+                  />
+                  <Route
+                    path="/op-plan-creation/:id"
+                    element={<PlanCreation />}
+                  />
+                  <Route
+                    path="/op-phase-creation/:id"
+                    element={<PhaseCreation />}
+                  />
+                  </Route>
               </Routes>
             </div>
           </div>
