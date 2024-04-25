@@ -931,7 +931,7 @@ const SalaryWFH = () => {
             <button
               type="button"
               title="Select Invoice"
-              className="btn btn-primary btn-sm icon-1"
+              className=" icon-1"
               data-toggle="modal"
               data-target="#exampleModalCenter"
               onClick={() => handleInvoice(row)}
@@ -942,17 +942,17 @@ const SalaryWFH = () => {
             !row?.sendToFinance && (
               <button
                 title="Send to Finance"
-                className="btn-outline-primary btn-sm ml-2 icon-1"
+                className="icon-1"
                 onClick={(e) => handleSendToFinance(e, row)}
               >
-                <IosShareIcon />
+                <i className="bi bi-cloud-arrow-up" />
               </button>
             )
           )}
 
           {row.sendToFinance == 1 && row.status_ == 1 && (
             <button
-              className="btn btn-outline-primary ml-2 "
+              className="btn cmnbtn btn_sm btn-outline-primary ml-2 "
               data-toggle="modal"
               data-target="#exampleModal"
               onClick={() => setRowDataModal(row)}
@@ -961,17 +961,17 @@ const SalaryWFH = () => {
             </button>
           )}
           {row.sendToFinance == 1 && row.status_ == 0 && (
-            <button className="btn btn-danger ml-2 ">Pending</button>
+            <button className="btn cmnbtn btn_sm btn-danger ml-2 ">Pending</button>
           )}
 
           {row?.invoice_template_no !== "0" && row?.digital_signature_image && (
             <button
-              className="btn btn-outline-primary btn-sm icon-1"
+              className="icon-1"
               title="Download Invoice"
               type="button"
               onClick={() => generatePDF(row)}
             >
-              <CloudDownloadIcon />
+              <i className="bi bi-cloud-arrow-down" />
             </button>
           )}
         </>
@@ -981,7 +981,7 @@ const SalaryWFH = () => {
       name: "separation",
       cell: (row) => (
         <Button
-          className="btn btn-primary"
+          className="btn  cmnbtn btn_sm btn-primary"
           data-toggle="modal"
           data-target="#exampleModalSepration"
           size="small"
@@ -1105,11 +1105,9 @@ const SalaryWFH = () => {
         <Slider {...settings} className="timeline_slider">
           {completedYearsMonths.map((data, index) => (
             <div
-              className={`timeline_slideItem ${
-                data.atdGenerated && "completed"
-              } ${selectedCardIndex === index ? "selected" : ""} ${
-                currentMonth == data.month && "current"
-              }`}
+              className={`timeline_slideItem ${data.atdGenerated && "completed"
+                } ${selectedCardIndex === index ? "selected" : ""} ${currentMonth == data.month && "current"
+                }`}
               onClick={() => handleCardSelect(index, data)}
               key={index}
             >
@@ -1136,8 +1134,8 @@ const SalaryWFH = () => {
                 {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
-                  ? "Upcoming"
-                  : "Pending"}
+                    ? "Upcoming"
+                    : "Pending"}
               </h3>
             </div>
           ))}
@@ -1154,14 +1152,15 @@ const SalaryWFH = () => {
               selectedYear && (
                 <button
                   onClick={handleAttendance}
-                  className="btn btn-danger"
+                  className="btn cmnbtn btn_sm btn-danger"
+
                   style={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     gap: "10px",
                   }}
-                  // style={{ marginTop: "25px" }}
+                // style={{ marginTop: "25px" }}
                 >
                   No Absents, Create Attendance{" "}
                   <i className="bi bi-arrow-right"></i>
@@ -1172,7 +1171,7 @@ const SalaryWFH = () => {
               contextData[38].view_value === 1 && (
                 <Link to="/admin/salary-summary">
                   <button
-                    className="btn btn-outline-primary "
+                    className="btn cmnbtn btn_sm btn-outline-primary "
                     style={{
                       display: "flex",
                       justifyContent: "center",
@@ -1185,7 +1184,8 @@ const SalaryWFH = () => {
                 </Link>
               )}
             <button
-              className="btn btn-outline-primary "
+              className="btn cmnbtn btn_sm btn-outline-primary "
+
               style={{
                 display: "flex",
                 justifyContent: "center",
@@ -1200,7 +1200,8 @@ const SalaryWFH = () => {
             {deptSalary?.length !== departmentdata?.length &&
               (RoleIDContext == 1 || RoleIDContext == 5) && (
                 <button
-                  className="btn btn-primary"
+                  className="btn cmnbtn btn_sm btn-primary "
+
                   style={{
                     display: "flex",
                     justifyContent: "center",
@@ -1227,13 +1228,12 @@ const SalaryWFH = () => {
 
               return (
                 <div
-                  className={`card hover body-padding ${
-                    department === option.dept_id
-                      ? "btn-primary"
-                      : isDeptInSalary
+                  className={`card hover body-padding ${department === option.dept_id
+                    ? "btn-primary"
+                    : isDeptInSalary
                       ? "btn-success"
                       : "btn-outline-primary"
-                  }`}
+                    }`}
                   style={{
                     height: "100px",
                     minWidth: "300px",
@@ -1473,17 +1473,17 @@ const SalaryWFH = () => {
           <div className="card">
             <div className="card-header">
               <h5>Salary Overview</h5>
-              <div className="pack">
+              <div className="pack w-75">
                 {selectedRows.length > 0 && activeTab === 0 && (
                   <>
                     <button
-                      className="btn btn-primary mr-2"
+                      className="btn  cmnbtn btn_sm btn-primary mr-2"
                       onClick={handleBulkSendToFinance}
                     >
                       Send to Finance
                     </button>
                     <button
-                      className="btn btn-primary mr-2"
+                      className="btn  cmnbtn btn_sm btn-primary mr-2"
                       onClick={handleInvoiceDownload}
                     >
                       Download Invoices
@@ -1497,6 +1497,7 @@ const SalaryWFH = () => {
                       Export Bank Excel
                     </button> */}
                 <Button
+                  className="btn  cmnbtn btn_sm btn-primary"
                   sx={{ marginRight: "10px" }}
                   size="medium"
                   onClick={handleExport}
@@ -1524,7 +1525,7 @@ const SalaryWFH = () => {
                       color: "#4a4a4a",
                     }}
                   >
-                    <button className="btn btn-primary me-3 mt-1" type="button">
+                    <button className="btn  cmnbtn btn_sm btn-primary mr-2" type="button">
                       Download
                     </button>
                   </PDFDownloadLink>
@@ -1848,13 +1849,13 @@ const SalaryWFH = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                <FieldContainer
-                  label="Reinstated Date"
-                  type="date"
-                  value={separationReinstateDate}
-                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                />
-              )}
+                  <FieldContainer
+                    label="Reinstated Date"
+                    type="date"
+                    value={separationReinstateDate}
+                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                  />
+                )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"

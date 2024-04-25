@@ -423,7 +423,7 @@ const WFHDOverview = () => {
           ) : row.att_status == "document_upload" ? (
             <button
               type="button"
-              className="btn btn-success"
+              className="btn cmnbtn btn_sm btn-outline-success"
               data-toggle="modal"
               data-target="#exampleModal"
               onClick={() => setRowDataFunc(row)}
@@ -433,7 +433,8 @@ const WFHDOverview = () => {
           ) : row.att_status == "training" ? (
             <button
               type="button"
-              className="btn btn-success"
+              className="btn cmnbtn btn_sm btn-outline-success"
+
               // data-toggle="modal"
               // data-target="#exampleModal2"
 
@@ -447,7 +448,8 @@ const WFHDOverview = () => {
           ) : row.att_status == "onboarded" ? (
             <>
               <button
-                className="btn btn-primary"
+                className="btn cmnbtn btn_sm btn-outline-primary"
+
                 data-toggle="modal"
                 data-target="#sepmodal"
                 size="small"
@@ -460,6 +462,7 @@ const WFHDOverview = () => {
                     row.user_contact_no
                   )
                 }
+
               >
                 Sep
               </button>
@@ -479,7 +482,7 @@ const WFHDOverview = () => {
           ) : null}
         </>
       ),
-      width: "200px",
+      width: "300px",
     },
   ];
 
@@ -541,7 +544,7 @@ const WFHDOverview = () => {
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn cmnbtn btn_sm btn-secondary"
                 // data-dismiss="modal"
                 onClick={() => setShowOnBoardModal(false)}
               >
@@ -549,7 +552,7 @@ const WFHDOverview = () => {
               </button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn cmnbtn btn_sm btn-primary"
                 onClick={onboardingFunc}
                 // data-dismiss="modal"
                 disabled={!remark}
@@ -636,9 +639,6 @@ const WFHDOverview = () => {
           >
             Training ({statusCounts?.training ? statusCounts?.training : 0})
           </div>
-        </div>
-
-        <div className="tab">
           <div
             className={`named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
             onClick={() => {
@@ -744,14 +744,14 @@ const WFHDOverview = () => {
               <div className="modal-footer">
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn cmnbtn btn_sm btn-secondary"
                   data-dismiss="modal"
                 >
                   Close
                 </button>
                 <button
                   type="button"
-                  className="btn btn-primary"
+                  className="btn cmnbtn sm_btn btn-primary"
                   onClick={trainingFunc}
                   data-dismiss="modal"
                   disabled={!remark || !trainingDate}
@@ -879,13 +879,13 @@ const WFHDOverview = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                <FieldContainer
-                  label="Reinstated Date"
-                  type="date"
-                  value={separationReinstateDate}
-                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                />
-              )}
+                  <FieldContainer
+                    label="Reinstated Date"
+                    type="date"
+                    value={separationReinstateDate}
+                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                  />
+                )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"

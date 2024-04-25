@@ -77,92 +77,109 @@ const PreonboardingDocuments = () => {
     }
   };
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Document"
-        title="Document Master"
-        handleSubmit={handleSubmit}
+        link={true}
       >
-        <FieldContainer
-          label="Document Type"
-          astric
-          value={documentType}
-          onChange={(e) => setDocumentType(e.target.value)}
-        />
-        <FieldContainer
-          label="Period (days)"
-          astric
-          type="number"
-          fieldGrid={3}
-          value={period}
-          onChange={(e) => setPeriod(e.target.value)}
-        />
 
-        <div className="form-group col-3">
-          <label className="form-label">Priority</label>
-          <sup style={{ color: "red" }}>*</sup>
-          <Select
-            value={selectOptions.find((option) => option.value === priority)}
-            label={priority}
-            options={selectOptions}
-            onChange={(e) => setPriority(e.value)}
-            required
-          />
-        </div>
 
-        <div className="form-group col-3">
-          <label className="form-label">
-            Mandatory <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            value={mandatoryOption.find((option) => option.value === mandatory)}
-            label={mandatory}
-            options={mandatoryOption}
-            onChange={(e) => setMandatory(e.value)}
-            required
-          />
-        </div>
-        <FieldContainer
-          fieldGrid={3}
-          label="Document Number"
-          astric
-          value={documentNumber}
-          onChange={(e) => setDocumentNumber(e.target.value)}
-        />
 
-        <div className="form-group col-6">
-          <label className="form-label">
-            Job Type <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            className=""
-            isMulti
-            options={jobTypeData?.map((option) => ({
-              value: `${option.job_type}`,
-              label: `${option.job_type}`,
-            }))}
-            value={jobType?.map((type) => ({
-              value: type,
-              label: type,
-            }))}
-            onChange={(selectedOptions) => {
-              const selectedValues = selectedOptions.map(
-                (option) => option.value
-              );
-              setJobType(selectedValues);
-            }}
-            required
-          />
-        </div>
-        <FieldContainer
-          Tag="textarea"
-          astric
-          label="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+
+
+
       </FormContainer>
-    </>
+      <div className="card">
+        <div className="card-header">
+          <div className="card-title">
+            <h4>Document Master</h4>
+          </div>
+        </div>
+        <div className="card-body">
+          <div className="row">
+
+            <FieldContainer
+              label="Document Type"
+              astric
+              value={documentType}
+              onChange={(e) => setDocumentType(e.target.value)}
+            />
+            <FieldContainer
+              label="Period (days)"
+              astric
+              type="number"
+              fieldGrid={3}
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+            />
+            <div className="form-group col-3">
+              <label className="form-label">Priority</label>
+              <sup style={{ color: "red" }}>*</sup>
+              <Select
+                value={selectOptions.find((option) => option.value === priority)}
+                label={priority}
+                options={selectOptions}
+                onChange={(e) => setPriority(e.value)}
+                required
+              />
+            </div>
+            <div className="form-group col-3">
+              <label className="form-label">
+                Mandatory <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                value={mandatoryOption.find((option) => option.value === mandatory)}
+                label={mandatory}
+                options={mandatoryOption}
+                onChange={(e) => setMandatory(e.value)}
+                required
+              />
+            </div>
+            <FieldContainer
+              fieldGrid={3}
+              label="Document Number"
+              astric
+              value={documentNumber}
+              onChange={(e) => setDocumentNumber(e.target.value)}
+            />
+
+            <div className="form-group col-6">
+              <label className="form-label">
+                Job Type <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <Select
+                className=""
+                isMulti
+                options={jobTypeData?.map((option) => ({
+                  value: `${option.job_type}`,
+                  label: `${option.job_type}`,
+                }))}
+                value={jobType?.map((type) => ({
+                  value: type,
+                  label: type,
+                }))}
+                onChange={(selectedOptions) => {
+                  const selectedValues = selectedOptions.map(
+                    (option) => option.value
+                  );
+                  setJobType(selectedValues);
+                }}
+                required
+              />
+            </div>
+            <FieldContainer
+              Tag="textarea"
+              astric
+              label="Description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
+
+        </div>
+      </div>
+      <button className="btn btn-primary  cmnbtn">Submit</button>
+    </div>
   );
 };
 

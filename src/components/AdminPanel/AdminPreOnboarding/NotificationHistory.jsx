@@ -95,32 +95,32 @@ const NotificationHistory = () => {
   ];
 
   return (
-    <>
+    <div >
       <FormContainer mainTitle="Notifications" link="/" />
 
       <div className="card">
         <div className="card-header sb">
-        Notification History
-        <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control "
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          Notification History
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control "
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-        <div className="card-body">
-          
-            <DataTable
-           
-              columns={columns}
-              data={filterdata}
-              // fixedHeader
-              pagination
-             selectableRows
-              highlightOnHover
-            />
-          
+        <div className="card-body yhm_table">
+
+          <DataTable
+
+            columns={columns}
+            data={filterdata}
+            // fixedHeader
+            pagination
+            selectableRows
+            highlightOnHover
+          />
+
         </div>
         {/* <div className="data_tbl table-responsive">
           <DataTable
@@ -135,7 +135,7 @@ const NotificationHistory = () => {
           />
         </div> */}
       </div>
-    </>
+    </div>
   );
 };
 

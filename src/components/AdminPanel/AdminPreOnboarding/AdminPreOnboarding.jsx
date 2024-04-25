@@ -430,13 +430,13 @@ const AdminPreOnboarding = () => {
   };
 
   return (
-    <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
       <FormContainer
         mainTitle="User"
         title="User Registration"
         handleSubmit={handleSubmit}
         submitButton={false}
-        // loading={loading}
+      // loading={loading}
       >
         <FieldContainer
           label="Full Name"
@@ -851,20 +851,20 @@ const AdminPreOnboarding = () => {
           )}
         </div>
       </FormContainer>
-            <div className="form-group">
+      <div className="form-group">
 
         <button
           type="submit"
-          className="btn btn-primary"
-          style={{   padding: "14px 28px 14px 28", display:"flex",flexDirection:"row",justifyContent:"space-between", alignItems:"center" ,gap:"10px"}}
+          className="btn cmnbtn  btn-primary"
+
           onClick={handleSubmit}
           disabled={loading}
-          >
+        >
           {loading ? "Submitting" : "Submit"}
-          {loading ? <i className="bi bi-arrow-clockwise"></i> : <i className="bi bi-arrow-right"></i>} 
-           
+          {loading ? <i className="bi bi-arrow-clockwise"></i> : <i className="bi bi-arrow-right"></i>}
+
         </button>
-          </div>
+      </div>
     </div>
   );
 };

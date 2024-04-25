@@ -71,9 +71,9 @@ const CocOverview = () => {
       cell: (row) => (
         <>
           <Link to={`/admin/pre-onboard-coc-update/${row._id}`}>
-          <div className="icon-1"  title="Edit">
-                    <i class="bi bi-pencil"></i>
-                  </div>
+            <div className="icon-1" title="Edit">
+              <i class="bi bi-pencil"></i>
+            </div>
             {/* <button
               title="Edit"
               className="btn btn-outline-primary btn-sm user-button"
@@ -85,7 +85,7 @@ const CocOverview = () => {
 
           <Link to={`/admin/pre-onboard-coc-history/${row._id}`}>
             <div className="icon-1" title="Coc History">
-            <i className="bi bi-clock-history"></i>
+              <i className="bi bi-clock-history"></i>
             </div>
             {/* <button
               title="Coc History"
@@ -111,7 +111,7 @@ const CocOverview = () => {
         link="/admin/pre-onboard-coc-master"
       />
       <Link
-        className="btn btn-primary btn-sm "
+        className="btn cmnbtn btn-primary btn-sm "
         to="/admin/pre-onboard-coc-master"
       >
         New Coc
@@ -119,24 +119,24 @@ const CocOverview = () => {
 
       <div className="card">
         <div className="card-header sb">
-        Coc Overview <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          Coc Overview <input
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
-        <div className="card-body body-padding">
-        <DataTable
-           
+        <div className="card-body body-padding thm_table">
+          <DataTable
+
             columns={columns}
             data={filterdata}
-            
+
             pagination
-            
+
             highlightOnHover
-           
+
           />
         </div>
         {/* <div className="data_tbl table-responsive cocTable">

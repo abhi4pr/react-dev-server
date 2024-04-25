@@ -189,7 +189,7 @@ const OnboardExtendDateOverview = () => {
             <>
               <button
                 title="Approve"
-                className="btn btn-outline-primary mr-3"
+                className="btn cmnbtn btn_sm btn-outline-success mr-3"
                 onClick={() =>
                   statusUpdate(
                     row.user_id,
@@ -204,7 +204,7 @@ const OnboardExtendDateOverview = () => {
               </button>
               <button
                 title="Reject"
-                className="btn btn-outline-danger"
+                className="btn cmnbtn btn_sm btn-outline-danger"
                 onClick={() => handleRejectClick(row)}
               >
                 <CancelIcon />
@@ -214,7 +214,7 @@ const OnboardExtendDateOverview = () => {
           {reasonField && editableRowId === row.user_id && (
             <button
               title="Save"
-              className="btn btn-outline-primary"
+              className="btn cmnbtn btn_sm btn-outline-primary"
               onClick={() =>
                 statusUpdate(
                   row.user_id,
@@ -235,7 +235,7 @@ const OnboardExtendDateOverview = () => {
   ];
 
   return (
-    <>
+    <div >
       <FormContainer
         mainTitle="Extend Date Overview"
         link="/admin/designation-master"
@@ -246,32 +246,32 @@ const OnboardExtendDateOverview = () => {
           true
         }
       />
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="card-header sb">
+
+      <div className="card">
+        <div className="card-header sb">
           Overview
           <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-          </div>
-          <div className="card-body">
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control "
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="card-body thm_table">
           <DataTable
-              
-              columns={columns}
-              data={filterdata}
-              
-             pagination
-             selectableRows
-              highlightOnHover
-              
-            
-            />
-          </div>
-          {/* <div className="data_tbl table-responsive">
+
+            columns={columns}
+            data={filterdata}
+
+            pagination
+            selectableRows
+            highlightOnHover
+
+
+          />
+        </div>
+        {/* <div className="data_tbl table-responsive">
             <DataTable
               title=" Overview"
               columns={columns}
@@ -291,9 +291,9 @@ const OnboardExtendDateOverview = () => {
               }
             />
           </div> */}
-        </div>
       </div>
-    </>
+
+    </div>
   );
 };
 
