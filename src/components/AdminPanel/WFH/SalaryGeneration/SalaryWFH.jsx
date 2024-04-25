@@ -140,6 +140,23 @@ const SalaryWFH = () => {
     "December",
   ];
 
+  const [showAlldeptMonthWiseData, setShowAlldeptMonthWiseData] = useState([]);
+  useEffect(() => {
+    axios.get(baseUrl + "current_month_all_dept_total_salary").then((res) => {
+      setShowAlldeptMonthWiseData(res.data.data);
+    });
+  }, []);
+  const [singleDeptWholeYearSalaryData, setSingleDeptWholeYearSalaryData] =
+    useState([]);
+  useEffect(() => {
+    axios
+      .get(baseUrl + `single_dept_whole_year_total_salary/${department}`)
+      .then((res) => {
+        setSingleDeptWholeYearSalaryData(res.data.data);
+        console.log(res.data, "lll>>>>>>>>>>>>>>>>>>>>>>>>>.");
+      });
+  }, [department]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -1263,10 +1280,68 @@ const SalaryWFH = () => {
       >
         <div className="card-body p-0">
           <div className="row gap_24_0">
+            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+              <div className="salary_dtlCard">
+                <div className="salary_dtlCard_head">
+                  <h2>Current Month All Dept</h2>
+                </div>
+                <div className="salary_dtlCard_info">
+                  <ul>
+                    <li>
+                      <span>Total Payout Incurred :</span>
+                      {showAlldeptMonthWiseData[0]?.totalSalary}
+                    </li>
+                    <li>
+                      <span>Total Bonus</span>
+                      {showAlldeptMonthWiseData[0]?.totalBonus}
+                    </li>
+                    <li>
+                      <span>Total Deductions</span>
+                      {showAlldeptMonthWiseData[0]?.totalTdsDeduction}
+                    </li>
+                    <li>
+                      <span>Total TDS Deducted</span>
+                      {showAlldeptMonthWiseData[0]?.totalSalaryDeduction}
+                    </li>
+                    {/* <li>
+                      <span>Total Payroll Cost</span>
+                      {thisMonthTotalBonus - thisMonthTotalDeductions}
+                    </li> */}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+              <div className="salary_dtlCard">
+                <div className="salary_dtlCard_head">
+                  <h2>This Year Selected Dept</h2>
+                </div>
+                <div className="salary_dtlCard_info">
+                  <ul>
+                    <li>
+                      <span>Total Payout Incurred :</span>
+                      {singleDeptWholeYearSalaryData[0]?.totalsalary}
+                    </li>
+                    <li>
+                      <span>Total Bonus</span>
+                      {singleDeptWholeYearSalaryData[0]?.totalBonus}
+                    </li>
+                    <li>
+                      <span>Total Deductions</span>
+                      {singleDeptWholeYearSalaryData[0]?.totaltdsdeduction}
+                    </li>
+                    <li>
+                      <span>Total TDS Deducted</span>
+                      {singleDeptWholeYearSalaryData[0]?.totalsalarydeduction}
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
-                  <h2>Current Month</h2>
+                  <h2>Current Month Selected Dept</h2>
                 </div>
                 <div className="salary_dtlCard_info">
                   <ul>
@@ -1280,6 +1355,7 @@ const SalaryWFH = () => {
                     </li>
                     <li>
                       <span>Total Deductions</span>
+
                       {thisMonthTotalDeductions}
                     </li>
                     <li>
@@ -1297,7 +1373,7 @@ const SalaryWFH = () => {
             <div className="col-xl-4 col-lg-4 col-md-6 col-sm-12 col-12">
               <div className="salary_dtlCard">
                 <div className="salary_dtlCard_head">
-                  <h2>This Year</h2>
+                  <h2>This Year All Dept</h2>
                 </div>
                 <div className="salary_dtlCard_info">
                   <ul>
