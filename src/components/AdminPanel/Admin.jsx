@@ -309,6 +309,7 @@ import OperationMasters from "./Operation/Masters/OperationMasters";
 import RegisteredCampaigns from "./Operation/RegisteredCampaigns";
 import PlanCreation from './Operation/PlanCreation';
 import PhaseCreation from './Operation/PhaseCreation';
+import CampaignExecutions from "./Operation/CampaignExecutions";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1479,6 +1480,10 @@ const Admin = () => {
                     path="/op-phase-creation/:id"
                     element={<PhaseCreation />}
                   />
+                  <Route
+                path="/op-campaign-executions"
+                element={<CampaignExecutions />}
+                />
                   </Route>
               </Routes>
             </div>

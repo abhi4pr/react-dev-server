@@ -6,6 +6,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useEffect } from "react";
 import { DataGrid, GridExpandMoreIcon } from "@mui/x-data-grid";
+import PageDetalingNew from "./PageDetailingNew";
 
 import {
   Paper,
@@ -22,15 +23,15 @@ import {
 } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
-// import Accordioan from "./Accordioan";
+import Accordioan from "./Accordioan";
 import { useNavigate } from "react-router-dom";
-// import PageOverview from "./PageOverview";
-// import PageDetailingNew from "./PageDetailingNew";
+import PageOverview from "./PageOverview";
+import PageDetailingNew from "./PageDetailingNew";
 import { baseUrl } from "../../../utils/config";
 import { useGlobalContext } from "../../../Context/Context";
 import FormContainer from "../FormContainer";
 
-const PhaseCreation = () => {
+const PhasecreationNew = () => {
   const param = useParams();
   const id = param.id;
   const { toastAlert, toastError } = useGlobalContext();
@@ -134,7 +135,12 @@ const PhaseCreation = () => {
               <Button variant="contained" color="primary" size="small">
                 Create Assignment
               </Button>
-              
+              {/* {
+                allPhaseData.length == 0 &&
+                <Button variant="contained" color="primary" size="small">
+                  assign all
+                </Button>
+              } */}
             </Link>
             <Accordion
               key={index}
@@ -151,13 +157,13 @@ const PhaseCreation = () => {
               <AccordionDetails>
                 {/* <Accordioan data={item} /> */}
 
-                {/* <PageOverview
+                <PageOverview
                   selectData={item.pages}
                   phaseIndex={`Phase ${index + 1}`}
                   stage={"phase"}
                   setRender={renderHard}
                   phase_id={item.phase_id}
-                /> */}
+                />
               </AccordionDetails>
             </Accordion>
           </Paper>
@@ -175,13 +181,13 @@ const PhaseCreation = () => {
             {showPageDetails ? "Hide Page Details" : "Create New Phase"}
           </Button>
 
-          <Button
+          {/* <Button
             variant="outlined"
             onClick={handleAllAssign}
             sx={{ m: 2, mb: 2 }}
           >
             create final phase
-          </Button>
+          </Button> */}
 
           <Button variant="outlined"  onClick={handlePlanDashboard}sx={{ m: 2, mb: 2 }}>
             Plan Overview
@@ -210,8 +216,13 @@ const PhaseCreation = () => {
                 defaultValue={`Phase ${allPhaseData.length + 1}`}
                 onChange={(e) => {
                   setPhaseData(e.target.value);
+                  // if (phaseDataError) {
+                  //   setPhaseDataError("");
+                  // }
                 }}
                 sx={{ m: 1, width: "300px" }}
+                // error={!!phaseDataError}
+                // helperText={phaseDataError}
               />
 
               <TextField
@@ -297,4 +308,4 @@ const PhaseCreation = () => {
   );
 };
 
-export default PhaseCreation;
+export default PhasecreationNew;
