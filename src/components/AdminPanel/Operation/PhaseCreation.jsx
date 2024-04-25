@@ -31,7 +31,7 @@ import { baseUrl } from "../../../utils/config";
 import { useGlobalContext } from "../../../Context/Context";
 import FormContainer from "../FormContainer";
 
-const PhasecreationNew = () => {
+const PhaseCreation = () => {
   const param = useParams();
   const id = param.id;
   const { toastAlert, toastError } = useGlobalContext();
@@ -308,4 +308,4 @@ const PhasecreationNew = () => {
   );
 };
 
-export default PhasecreationNew;
+export default PhaseCreation;
