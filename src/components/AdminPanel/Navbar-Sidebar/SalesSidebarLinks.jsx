@@ -28,7 +28,10 @@ const SalesSidebarLinks = () => {
             Dashboard
           </NavLink>
 
-          <NavLink className="collapse-item" to="/admin/sales-services-overview">
+          <NavLink
+            className="collapse-item"
+            to="/admin/sales-services-overview"
+          >
             <i className="bi bi-dot" />
             Services
           </NavLink>
@@ -51,6 +54,24 @@ const SalesSidebarLinks = () => {
           <NavLink className="collapse-item" to="/admin/view-sales-booking">
             <i className="bi bi-dot" />
             Sale Booking
+          </NavLink>
+
+          <NavLink className="collapse-item" to="/admin/view-sales-booking">
+            <i className="bi bi-dot" />
+            Sale Booking
+          </NavLink>
+          <NavLink className="collapse-item" to="/admin/create-payment-update">
+            <i className="bi bi-dot" />
+            Payment Update
+          </NavLink>
+
+          <NavLink className="collapse-item" to="/admin/view-payment-mode">
+            <i className="bi bi-dot" />
+            Payment Mode
+          </NavLink>
+          <NavLink className="collapse-item" to="/admin/view-payment-details">
+            <i className="bi bi-dot" />
+            Payment Details
           </NavLink>
         </div>
       </div>
