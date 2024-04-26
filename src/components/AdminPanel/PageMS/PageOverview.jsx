@@ -75,8 +75,8 @@ const PageOverview = () => {
   };
 
   const handleHistoryRowClick = (row) => {
-    navigate(`/admin/exe-history/${row.exepurchasemodel.p_id}`, {
-      state: row.exepurchasemodel.p_id,
+    navigate(`/admin/exe-history/${row.pageMast_id}`, {
+      state: row.pageMast_id,
     });
   };
 
@@ -166,7 +166,7 @@ const PageOverview = () => {
         for (let i = 0; i < hideName.length; i++) {
           star += "*";
         }
-        return <div>{star}</div>;
+        return <div>{name}</div>;
       },
     },
     { field: "page_level", headerName: "Page level", width: 200 },
@@ -747,7 +747,7 @@ const PageOverview = () => {
       headerName: "City 1 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city1_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
     {
@@ -756,7 +756,7 @@ const PageOverview = () => {
       headerName: "City 2 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city2_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
     {
@@ -765,7 +765,7 @@ const PageOverview = () => {
       headerName: "City 3 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city3_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
     {
@@ -774,7 +774,7 @@ const PageOverview = () => {
       headerName: "City 4 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city4_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
     {
@@ -783,7 +783,7 @@ const PageOverview = () => {
       headerName: "City 5 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city5_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
     {
@@ -792,7 +792,7 @@ const PageOverview = () => {
       headerName: "Country 1 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_country1_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
     {
@@ -801,7 +801,7 @@ const PageOverview = () => {
       headerName: "Country 2 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_country2_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
     {
@@ -810,7 +810,7 @@ const PageOverview = () => {
       headerName: "Country 3 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_country3_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
     {
@@ -821,7 +821,7 @@ const PageOverview = () => {
         params
       ) => {
         let data = params.row?.exehistorymodelsData?.percentage_country4_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
     {
@@ -830,7 +830,7 @@ const PageOverview = () => {
       headerName: "Country 5 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_country5_name;
-        return data ? data : "NA";
+        return data ? data+ "%" : "NA";
       },
     },
 {
@@ -1135,7 +1135,9 @@ const PageOverview = () => {
                           className="btn btn-primary btn-sm"
                           id="pageName"
                         >
-                          {item.platform_name}
+                          {item.platform_name  } ({vendorTypes.filter((d) => {
+                              return d.platform_id == item._id;
+                            }).length})
                         </button>
                       </div>
                     );
