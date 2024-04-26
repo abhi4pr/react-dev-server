@@ -4,8 +4,10 @@ import { baseUrl } from "../../../../utils/config";
 import { useGlobalContext } from "../../../../Context/Context";
 import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
+import { useNavigate } from "react-router-dom";
 
 const CreditApprovalReasonCreate = () => {
+  const navigate = useNavigate();
   const { toastAlert, toastError } = useGlobalContext();
   const [reason, setReason] = useState("");
   const [dayCount, setDayCount] = useState("");
@@ -23,6 +25,7 @@ const CreditApprovalReasonCreate = () => {
       );
       setReason("");
       setDayCount("");
+      navigate("/admin/view-credit-reason-approval");
       toastAlert(response.data.message);
     } catch (error) {
       toastError(error);

@@ -1,27 +1,29 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { baseUrl } from "../../../../utils/config";
 import FormContainer from "../../FormContainer";
 import DataTable from "react-data-table-component";
-import DeleteButton from "../../DeleteButton";
+import axios from "axios";
+import { baseUrl } from "../../../../utils/config";
 import { Link } from "react-router-dom";
+import DeleteButton from "../../DeleteButton";
 
-const CreditApprovalReasonView = () => {
-  const [creditAppReasonData, setCreditAppReasonData] = useState([]);
+const ViewPaymentDetails = () => {
+  const [paymentDetailsData, setPaymentDetailsData] = useState([]);
   const [origionalData, setOrigionalData] = useState([]);
   const [search, setSearch] = useState("");
+  const [copiedRowId, setCopiedRowId] = useState(null);
 
   const getData = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}sales/getlist_reason_credit_approval`
+        `${baseUrl}sales/getlist_payment_details`
       );
-      setCreditAppReasonData(response.data.data);
+      setPaymentDetailsData(response.data.data);
       setOrigionalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
     }
   };
+
   useEffect(() => {
     getData();
   }, []);
@@ -30,48 +32,68 @@ const CreditApprovalReasonView = () => {
     const result = origionalData.filter((d) => {
       return d.reason?.toLowerCase().includes(search.toLowerCase());
     });
-    setCreditAppReasonData(result);
+    setPaymentDetailsData(result);
   }, [search]);
+
+  const handleCopyDetails = (row) => {
+    navigator.clipboard.writeText(row.details);
+    setCopiedRowId(row._id);
+  };
 
   const columns = [
     {
       name: "S.no",
-      cell: (row, index) => <div>{index + 1}</div>,
+      cell: (row, index) => index + 1,
     },
     {
-      name: "Reason",
-      selector: (row) => row.reason,
+      name: "Mode Name",
+      cell: (row) => row.title,
     },
     {
-      name: "Days Count",
-      selector: (row) => row.day_count,
+      name: "Details",
+      cell: (row) => row.details,
     },
     {
-      name: "Action",
-      cell: (row) =>
-        row.reason_type !== "own reason" && (
-          <>
-            <Link to={`/admin/update-credit-reason-approval/${row._id}`}>
-              <div className="icon-1">
-                <i className="bi bi-pencil" />
-              </div>
-            </Link>
-            <DeleteButton
-              endpoint="sales/delete_reason_credit_approval"
-              id={row._id}
-              getData={getData}
-            />
-          </>
-        ),
+      name: "GST Bank",
+      cell: (row) => (row.gst_bank ? "GST" : "Non GST"),
+    },
+    {
+      name: "Actions",
+      cell: (row) => (
+        <>
+          <div
+            className="icon-1"
+            onClick={() => handleCopyDetails(row)}
+            disabled={row._id === copiedRowId}
+          >
+            {row._id === copiedRowId ? (
+              <i className="bi bi-clipboard2-check" />
+            ) : (
+              <i className="bi bi-clipboard" />
+            )}
+          </div>
+          <Link to={`/admin/edit-payment-details/${row._id}`}>
+            <div className="icon-1">
+              <i className="bi bi-pencil" />
+            </div>
+          </Link>
+          <DeleteButton
+            endpoint="sales/delete_payment_details"
+            id={row._id}
+            getData={getData}
+          />
+        </>
+      ),
     },
   ];
+
   return (
     <>
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Credit Approval Reasons"
-            link="/admin/create-credit-reason-approval"
+            mainTitle="Payment Mode"
+            link="/admin/create-payment-details"
             buttonAccess={true}
             submitButton={false}
           />
@@ -81,9 +103,9 @@ const CreditApprovalReasonView = () => {
         <div className="card mb-4">
           <div className="data_tbl table-responsive">
             <DataTable
-              title="Services Overview"
+              title="Payment Mode Overview"
               columns={columns}
-              data={creditAppReasonData}
+              data={paymentDetailsData}
               fixedHeader
               pagination
               fixedHeaderScrollHeight="64vh"
@@ -106,4 +128,4 @@ const CreditApprovalReasonView = () => {
   );
 };
 
-export default CreditApprovalReasonView;
+export default ViewPaymentDetails;

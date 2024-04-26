@@ -5,27 +5,22 @@ import { useGlobalContext } from "../../../../Context/Context";
 import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import Select from "react-select";
+import getDecodedToken from "../../../../utils/DecodedToken";
 
 const todayDate = new Date().toISOString().split("T")[0];
-const paymentStatusList = [
-  {
-    value: "sent_for_credit_approval",
-    label: "Use Credit Limit",
-  },
-  {
-    value: "sent_for_payment_approval",
-    label: "Sent For Payment Approval",
-  },
-];
+
+const creditLimit = 30000;
 
 const CreateSaleBooking = () => {
+  const token = getDecodedToken();
+  const loginUserId = token.id;
   const { toastAlert, toastError } = useGlobalContext();
   const [customerData, setCustomerData] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState("");
   const [bookingDate, setBookingDate] = useState(
     new Date().toISOString().split("T")[0]
   );
-  const [campaignAmount, setCampaignAmount] = useState(0);
+  const [baseAmount, setBaseAmount] = useState(0);
   const [gstAmount, setGstAmount] = useState(0);
   const [addGst, setAddGst] = useState(false);
   const [netAmount, setNetAmount] = useState(0);
@@ -33,11 +28,25 @@ const CreateSaleBooking = () => {
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState("");
   const [creditApprovalList, setCreditApprovalList] = useState([]);
   const [selectedCreditApp, setSelectedCreditApp] = useState("");
-  const [reasonCreditApp, setReasonCreditApproval] = useState("");
+  const [reasonCreditApproval, setReasonCreditApproval] = useState("");
   const [balancePayDate, setBalancePayDate] = useState("");
   const [executiveSelfCredit, setExecutiveSelfCredit] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
   const [incentiveCheck, setIncentiveCheck] = useState(false);
+
+  const paymentStatusList = [
+    {
+      value: "sent_for_credit_approval",
+      label:
+        creditLimit > netAmount
+          ? `Use Credit Limit (${creditLimit})`
+          : "Send For Credit Approval",
+    },
+    {
+      value: "sent_for_payment_approval",
+      label: "Sent For Payment Approval",
+    },
+  ];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,7 +94,7 @@ const CreateSaleBooking = () => {
     if (!e.target.checked) {
       setGstAmount(0);
     } else {
-      const gst = campaignAmount * 0.18;
+      const gst = baseAmount * 0.18;
       const gstRound = gst.toFixed(2);
       setGstAmount(gstRound);
     }
@@ -93,16 +102,16 @@ const CreateSaleBooking = () => {
 
   useEffect(() => {
     if (addGst) {
-      const gst = campaignAmount * 0.18;
+      const gst = baseAmount * 0.18;
       const gstRound = gst.toFixed(2);
       setGstAmount(gstRound);
-      const net = campaignAmount * 1.18;
+      const net = baseAmount * 1.18;
       const netRound = net.toFixed(2);
       setNetAmount(netRound);
     } else {
-      setNetAmount(campaignAmount);
+      setNetAmount(baseAmount);
     }
-  }, [campaignAmount, addGst]);
+  }, [baseAmount, addGst]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -110,12 +119,19 @@ const CreateSaleBooking = () => {
       const formData = new FormData();
       formData.append("customer_id", selectedCustomer);
       formData.append("sale_booking_date", bookingDate);
-      formData.append("campaign_amount", campaignAmount);
+      formData.append("base_amount", baseAmount);
       formData.append("gst_amount", gstAmount);
       formData.append("gst_status", gstAmount !== 0);
       formData.append("net_amount", netAmount);
+      formData.append("campaign_amount", netAmount);
       formData.append("description", description);
+
       formData.append("payment_credit_status", selectedPaymentStatus?.value);
+      formData.append("reason_credit_approval", selectedCreditApp);
+      formData.append(
+        "reason_credit_approval_own_reason",
+        reasonCreditApproval
+      );
 
       formData.append("balance_payment_date", balancePayDate);
       formData.append("executive_self_credit", executiveSelfCredit);
@@ -128,7 +144,7 @@ const CreateSaleBooking = () => {
       );
 
       formData.append("managed_by", selectedCustomer);
-
+      formData.append("created_by", loginUserId);
       const response = await axios.post(
         `${baseUrl}sales/add_sales_booking`,
         formData,
@@ -141,7 +157,7 @@ const CreateSaleBooking = () => {
 
       setSelectedCustomer("");
       setBookingDate(new Date().toISOString().split("T")[0]);
-      setCampaignAmount(0);
+      setBaseAmount(0);
       setGstAmount(0);
       setAddGst(false);
       setNetAmount(0);
@@ -213,13 +229,13 @@ const CreateSaleBooking = () => {
         </div>
 
         <FieldContainer
-          label="Campaign Amount"
+          label="Base Amount"
           fieldGrid={4}
           placeholder="Enter amount here"
           astric={true}
           type="number"
-          value={campaignAmount}
-          onChange={(e) => setCampaignAmount(e.target.value)}
+          value={baseAmount}
+          onChange={(e) => setBaseAmount(e.target.value)}
         />
 
         <div className="form-group">
@@ -240,7 +256,7 @@ const CreateSaleBooking = () => {
           disabled={true}
         />
         <FieldContainer
-          label="Net Amount"
+          label="Net Amount / Campaign Amount"
           fieldGrid={4}
           type="number"
           value={netAmount}
@@ -272,31 +288,26 @@ const CreateSaleBooking = () => {
                 Reason Credit Approval<sup style={{ color: "red" }}>*</sup>
               </label>
               <Select
-                options={[
-                  ...creditApprovalList.map((option) => ({
-                    value: option.day_count,
-                    label: option.reason,
-                  })),
-                  { value: "own_reason", label: "Type your own" },
-                ]}
+                options={creditApprovalList.map((option) => ({
+                  value: option._id,
+                  label: option.reason,
+                }))}
                 value={{
                   value: selectedCreditApp,
                   label:
-                    selectedCreditApp === "own_reason"
-                      ? "Type your own"
-                      : creditApprovalList.find(
-                          (item) => item.day_count == selectedCreditApp
-                        )?.reason || "",
+                    creditApprovalList.find(
+                      (item) => item?._id == selectedCreditApp
+                    )?.reason || "",
                 }}
                 onChange={(e) => setSelectedCreditApp(e.value)}
                 required
               />
             </div>
-            {selectedCreditApp === "own_reason" && (
+            {selectedCreditApp === "660e77d6d83f9cce30f8b783" && (
               <FieldContainer
                 label="Reason Credit Approval"
                 fieldGrid={4}
-                value={reasonCreditApp}
+                value={reasonCreditApproval}
                 onChange={(e) => setReasonCreditApproval(e.target.value)}
               />
             )}
@@ -316,6 +327,7 @@ const CreateSaleBooking = () => {
               type="checkbox"
               value={executiveSelfCredit}
               onChange={(e) => setExecutiveSelfCredit(e.target.checked)}
+              disabled={creditLimit < netAmount}
             />
             <label>
               Sales Executive Credit Limit - 30000 Total Used Sales Executive
@@ -337,7 +349,7 @@ const CreateSaleBooking = () => {
             value={incentiveCheck}
             onChange={(e) => setIncentiveCheck(e.target.checked)}
           />
-          <label>Invoice</label>
+          <label>No Incentive</label>
         </div>
       </FormContainer>
     </div>

@@ -9,6 +9,7 @@ const APIContext = ({ children }) => {
   const [DepartmentContext, setDepartmentContext] = useState([]);
   const [contextData, setContextData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loginUserData, setLoginUserData] = useState("");
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -33,6 +34,10 @@ const APIContext = ({ children }) => {
     axios.get(baseUrl + "get_all_departments").then((res) => {
       setDepartmentContext(res?.data);
     });
+
+    axios.get(`${baseUrl}get_single_user/${userID}`).then((res) => {
+      setLoginUserData(res.data);
+    });
   }, [userID]);
 
   return (
@@ -42,6 +47,7 @@ const APIContext = ({ children }) => {
         loading,
         DepartmentContext,
         contextData,
+        loginUserData,
         userID,
         ContextDept,
         RoleIDContext,

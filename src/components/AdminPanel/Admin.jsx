@@ -307,9 +307,16 @@ import SaleBooking from "./Finance/Salebooking";
 import Stats from "./PageMS/Stats";
 import OperationMasters from "./Operation/Masters/OperationMasters";
 import RegisteredCampaigns from "./Operation/RegisteredCampaigns";
-import PlanCreation from './Operation/PlanCreation';
-import PhaseCreation from './Operation/PhaseCreation';
+import PlanCreation from "./Operation/PlanCreation";
+import PhaseCreation from "./Operation/PhaseCreation";
 import CampaignExecutions from "./Operation/CampaignExecutions";
+import CreatePaymentUpdate from "./Sales/PaymentUpdate/CreatePaymentUpdate";
+import CreatePaymentMode from "./Sales/PaymentMode/CreatePaymentMode";
+import ViewPaymentMode from "./Sales/PaymentMode/ViewPaymentMode";
+import EditPaymentMode from "./Sales/PaymentMode/EditPaymentMode";
+import CreatePaymentDetails from "./Sales/PaymentDetails/CreatePaymentDetails";
+import ViewPaymentDetails from "./Sales/PaymentDetails/ViewPaymentDetails";
+import EditPaymentDetails from "./Sales/PaymentDetails/EditPayementDetails";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1416,6 +1423,8 @@ const Admin = () => {
                     path="/sales-services-overview"
                     element={<SalesServicesOverview />}
                   />
+
+                  {/* Harshal */}
                   <Route
                     path="/create-credit-reason-approval"
                     element={<CreditApprovalReasonCreate />}
@@ -1436,6 +1445,38 @@ const Admin = () => {
                     path="/view-sales-booking"
                     element={<ViewSaleBooking />}
                   />
+
+                  <Route
+                    path="/create-payment-mode"
+                    element={<CreatePaymentMode />}
+                  />
+                  <Route
+                    path="/view-payment-mode"
+                    element={<ViewPaymentMode />}
+                  />
+                  <Route
+                    path="/edit-payment-mode/:id"
+                    element={<EditPaymentMode />}
+                  />
+                  <Route
+                    path="/create-payment-details"
+                    element={<CreatePaymentDetails />}
+                  />
+                  <Route
+                    path="/view-payment-details"
+                    element={<ViewPaymentDetails />}
+                  />
+                  <Route
+                    path="/edit-payment-details/:id"
+                    element={<EditPaymentDetails />}
+                  />
+
+                  <Route
+                    path="/create-payment-update"
+                    element={<CreatePaymentUpdate />}
+                  />
+
+                  {/* Harshal */}
                   <Route
                     path="/sales-incentive-create"
                     element={<IncentiveCreate />}
@@ -1463,10 +1504,10 @@ const Admin = () => {
                     element={<HistoryAssignData />}
                   />
 
-                   {/* //exe operation */}
+                  {/* //exe operation */}
                   <Route
                     path="/exeoperation/master"
-                    element={<OperationMasters/>}
+                    element={<OperationMasters />}
                   />
                   <Route
                     path="/op-registered-campaign"
@@ -1481,10 +1522,10 @@ const Admin = () => {
                     element={<PhaseCreation />}
                   />
                   <Route
-                path="/op-campaign-executions"
-                element={<CampaignExecutions />}
-                />
-                  </Route>
+                    path="/op-campaign-executions"
+                    element={<CampaignExecutions />}
+                  />
+                </Route>
               </Routes>
             </div>
           </div>

@@ -37,6 +37,7 @@ const ViewSaleBooking = () => {
     },
     {
       name: "Customer name",
+      cell: (row) => row.customer_name,
     },
     {
       name: "Sales Executive name",
@@ -47,22 +48,20 @@ const ViewSaleBooking = () => {
       selector: (row) => DateISOtoNormal(row.sale_booking_date),
     },
     {
-      name: "Campaign Amount",
+      name: "Campaign Amount / Net Amount",
       selector: (row) => row.campaign_amount + "₹",
     },
     {
       name: "Paid Amount",
-      //   selector: (row)=> row.j
+      selector: (row) => console.log(row),
     },
     {
       name: "Base Amount",
+      selector: (row) => row.base_amount,
     },
     {
       name: "GST Amount",
       selector: (row) => row.gst_amount + "₹",
-    },
-    {
-      name: "Net Amount",
     },
     {
       name: "Refund Amount",
@@ -111,7 +110,7 @@ const ViewSaleBooking = () => {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Credit Approval Reasons"
+            mainTitle="Sales Booking"
             link="/admin/create-sales-booking"
             buttonAccess={true}
             submitButton={false}

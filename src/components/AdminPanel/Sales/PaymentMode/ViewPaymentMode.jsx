@@ -1,22 +1,22 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { baseUrl } from "../../../../utils/config";
 import FormContainer from "../../FormContainer";
 import DataTable from "react-data-table-component";
-import DeleteButton from "../../DeleteButton";
+import axios from "axios";
+import { baseUrl } from "../../../../utils/config";
 import { Link } from "react-router-dom";
+import DeleteButton from "../../DeleteButton";
 
-const CreditApprovalReasonView = () => {
-  const [creditAppReasonData, setCreditAppReasonData] = useState([]);
+const ViewPaymentMode = () => {
+  const [paymentModeData, setPaymentModeData] = useState([]);
   const [origionalData, setOrigionalData] = useState([]);
   const [search, setSearch] = useState("");
 
   const getData = async () => {
     try {
       const response = await axios.get(
-        `${baseUrl}sales/getlist_reason_credit_approval`
+        `${baseUrl}sales/getlist_sale_payment_mode`
       );
-      setCreditAppReasonData(response.data.data);
+      setPaymentModeData(response.data.data);
       setOrigionalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
@@ -30,48 +30,44 @@ const CreditApprovalReasonView = () => {
     const result = origionalData.filter((d) => {
       return d.reason?.toLowerCase().includes(search.toLowerCase());
     });
-    setCreditAppReasonData(result);
+    setPaymentModeData(result);
   }, [search]);
 
   const columns = [
     {
       name: "S.no",
-      cell: (row, index) => <div>{index + 1}</div>,
+      cell: (row, index) => index + 1,
     },
     {
-      name: "Reason",
-      selector: (row) => row.reason,
+      name: "Mode Name",
+      cell: (row) => row.payment_mode_name,
     },
     {
-      name: "Days Count",
-      selector: (row) => row.day_count,
-    },
-    {
-      name: "Action",
-      cell: (row) =>
-        row.reason_type !== "own reason" && (
-          <>
-            <Link to={`/admin/update-credit-reason-approval/${row._id}`}>
-              <div className="icon-1">
-                <i className="bi bi-pencil" />
-              </div>
-            </Link>
-            <DeleteButton
-              endpoint="sales/delete_reason_credit_approval"
-              id={row._id}
-              getData={getData}
-            />
-          </>
-        ),
+      name: "Actions",
+      cell: (row) => (
+        <>
+          <Link to={`/admin/edit-payment-mode/${row._id}`}>
+            <div className="icon-1">
+              <i className="bi bi-pencil" />
+            </div>
+          </Link>
+          <DeleteButton
+            endpoint="sales/delete_sale_payment_mode"
+            id={row._id}
+            getData={getData}
+          />
+        </>
+      ),
     },
   ];
+
   return (
     <>
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Credit Approval Reasons"
-            link="/admin/create-credit-reason-approval"
+            mainTitle="Payment Mode"
+            link="/admin/create-payment-mode"
             buttonAccess={true}
             submitButton={false}
           />
@@ -81,9 +77,9 @@ const CreditApprovalReasonView = () => {
         <div className="card mb-4">
           <div className="data_tbl table-responsive">
             <DataTable
-              title="Services Overview"
+              title="Payment Mode Overview"
               columns={columns}
-              data={creditAppReasonData}
+              data={paymentModeData}
               fixedHeader
               pagination
               fixedHeaderScrollHeight="64vh"
@@ -106,4 +102,4 @@ const CreditApprovalReasonView = () => {
   );
 };
 
-export default CreditApprovalReasonView;
+export default ViewPaymentMode;
