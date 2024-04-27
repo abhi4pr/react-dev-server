@@ -25,6 +25,14 @@ import jwtDecode from "jwt-decode";
 import { useDispatch } from "react-redux";
 import { addRow } from "../../Store/Executon-Slice";
 import DateFormattingComponent from "../../DateFormator/DateFormared";
+import CategoryIcon from "@mui/icons-material/Category";
+import {
+  openTagCategoriesModal,
+  setPlatform,
+  setTagCategories,
+} from "../../Store/PageOverview";
+import TagCategoryListModal from "./TagCategoryListModal";
+import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 
 const PageOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -58,6 +66,20 @@ const PageOverview = () => {
     setTimeout(() => {}, 500);
     getData();
   }, []);
+
+  const handleTagCategory = (params) => {
+    return function () {
+      dispatch(setTagCategories(params));
+      dispatch(openTagCategoriesModal());
+    };
+  };
+
+  const handlePlatfrormClick = (data) => {
+    return function () {
+      dispatch(setPlatform(data));
+      dispatch(openTagCategoriesModal());
+    };
+  };
 
   const handleUpdateRowClick = async (row) => {
     await axios
@@ -233,14 +255,14 @@ const PageOverview = () => {
         });
         return (
           <div>
-            {data.map((item, i) => {
-              return (
-                <>
-                  {item.platform_name}
-                  {i !== data.length - 1 && ","}
-                </>
-              );
-            })}
+            {data.length > 0 && (
+              <Button
+                className="text-center"
+                onClick={handlePlatfrormClick(data)}
+              >
+                <KeyboardDoubleArrowUpIcon />
+              </Button>
+            )}
           </div>
         );
       },
@@ -255,14 +277,19 @@ const PageOverview = () => {
         });
         return (
           <div>
-            {data?.map((item, i) => {
+            {/* {data?.map((item, i) => {
               return (
                 <>
                   {item.page_category}
                   {i !== data.length - 1 && ","}
                 </>
               );
-            })}
+            })} */}
+            {data.length > 0 && (
+              <Button className="text-center" onClick={handleTagCategory(data)}>
+                <CategoryIcon />
+              </Button>
+            )}
           </div>
         );
       },
@@ -747,7 +774,7 @@ const PageOverview = () => {
       headerName: "City 1 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city1_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
     {
@@ -756,7 +783,7 @@ const PageOverview = () => {
       headerName: "City 2 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city2_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
     {
@@ -765,7 +792,7 @@ const PageOverview = () => {
       headerName: "City 3 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city3_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
     {
@@ -774,7 +801,7 @@ const PageOverview = () => {
       headerName: "City 4 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city4_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
     {
@@ -783,7 +810,7 @@ const PageOverview = () => {
       headerName: "City 5 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_city5_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
     {
@@ -792,7 +819,7 @@ const PageOverview = () => {
       headerName: "Country 1 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_country1_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
     {
@@ -801,7 +828,7 @@ const PageOverview = () => {
       headerName: "Country 2 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_country2_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
     {
@@ -810,18 +837,16 @@ const PageOverview = () => {
       headerName: "Country 3 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_country3_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
     {
       field: "percentage_country4_name",
       width: 150,
       headerName: "Country 4 %",
-      renderCell: (
-        params
-      ) => {
+      renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_country4_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
     {
@@ -830,94 +855,89 @@ const PageOverview = () => {
       headerName: "Country 5 %",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.percentage_country5_name;
-        return data ? data+ "%" : "NA";
+        return data ? data + "%" : "NA";
       },
     },
-{
-  field: "profile_visit",
-  width: 150,
-  headerName: "Profile Visit",
-  renderCell: (params) => {
-    let data = params.row?.exehistorymodelsData?.profile_visit;
-    return data ? data : "NA";
-  }
-},
-{
-  field: "quater",
-  width: 150,
-  headerName: "Quater",
-  renderCell: (params) => {
-    let data = params.row?.exehistorymodelsData?.quater;
-    return data ? data : "NA";
-  }
-},
-{
-  field: "reach",
-  width: 150,
-  headerName: "Reach",
-  renderCell: (params) => {
-    let data = params.row?.exehistorymodelsData?.reach;
-    return data ? data : "NA";
-  }
-},
-{
-  field: "reach_upload_image",
-  width: 150,
-  headerName: "Reach Image",
-  renderCell: (params) => {
-    let data = params.row?.exehistorymodelsData?.reach_upload_image;
-    return data ? (
-      <img src={data} style={{ width: "50px", height: "50px" }} />
-    ) : (
-      "NA"
-    );
-  }
-},
-{
-  field: "start_date",
-  width: 150,
-  headerName: "Start Date",
-  renderCell: (params) => {
-    let data = params.row?.exehistorymodelsData?.story_click;
-    return data ? <DateFormattingComponent  date={data} /> : "NA";
-  }
-},
-{
-  field: "stats_for",
-  width: 150,
-  headerName: "Stats For",
-  renderCell: (params) => {
-    let data = params.row?.exehistorymodelsData?.stats_for;
-    return data ? (
-      data) : (
-      "NA"
-    );}
-  },
-  {
-    field: "story_view",
-    width: 150,
-    headerName: "Story View",
-    renderCell: (params) => {
-      let data = params.row?.exehistorymodelsData?.story_view;
-      return data ? data : "NA";
-    }
-  },
-  {
-    field: "story_view_upload_image",
-    width: 150,
-    headerName: "Story View Image",
-    renderCell: (params) => {
-      let data = params.row?.exehistorymodelsData?.story_view_upload_image;
-      return data ? (
-        <img src={data} style={{ width: "50px", height: "50px" }} />
-      ) : (
-        "NA"
-      );
-    }
-  }
-
-
-
+    {
+      field: "profile_visit",
+      width: 150,
+      headerName: "Profile Visit",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.profile_visit;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "quater",
+      width: 150,
+      headerName: "Quater",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.quater;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "reach",
+      width: 150,
+      headerName: "Reach",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.reach;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "reach_upload_image",
+      width: 150,
+      headerName: "Reach Image",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.reach_upload_image;
+        return data ? (
+          <img src={data} style={{ width: "50px", height: "50px" }} />
+        ) : (
+          "NA"
+        );
+      },
+    },
+    {
+      field: "start_date",
+      width: 150,
+      headerName: "Start Date",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.story_click;
+        return data ? <DateFormattingComponent date={data} /> : "NA";
+      },
+    },
+    {
+      field: "stats_for",
+      width: 150,
+      headerName: "Stats For",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.stats_for;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "story_view",
+      width: 150,
+      headerName: "Story View",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.story_view;
+        return data ? data : "NA";
+      },
+    },
+    {
+      field: "story_view_upload_image",
+      width: 150,
+      headerName: "Story View Image",
+      renderCell: (params) => {
+        let data = params.row?.exehistorymodelsData?.story_view_upload_image;
+        return data ? (
+          <img src={data} style={{ width: "50px", height: "50px" }} />
+        ) : (
+          "NA"
+        );
+      },
+    },
   ];
 
   const priceColumn = [
@@ -1135,37 +1155,17 @@ const PageOverview = () => {
                           className="btn btn-primary btn-sm"
                           id="pageName"
                         >
-                          {item.platform_name  } ({vendorTypes.filter((d) => {
+                          {item.platform_name} (
+                          {
+                            vendorTypes.filter((d) => {
                               return d.platform_id == item._id;
-                            }).length})
+                            }).length
+                          }
+                          )
                         </button>
                       </div>
                     );
                   })}
-                </div>
-                <div className="row">
-                  {/* {
-                  allPriceTypeList?.map((item,i) => {
-                    return (
-                      <div key={i} className="col-md-2">
-                        <button
-                          onClick={() => {
-                            let result = vendorTypes.filter((d) => {
-                              return d.price_type_id == item.price_type_id;
-                            });
-                            setFilterData(result);
-                          }}
-
-                          className="btn btn-primary btn-sm"
-                          id="pageName"
-                        >
-                          {item.PMS_Platforms_data.price_type}
-                        </button>
-                      </div>
-                    );
-                  })
-                
-                } */}
                 </div>
               </div>
             </div>
@@ -1263,7 +1263,8 @@ const PageOverview = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      {/* } */}
+
+      <TagCategoryListModal />
     </>
   );
 };
