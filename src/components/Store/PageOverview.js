@@ -4,6 +4,7 @@ const initialState = {
   tagCategories: [],
   platforms: [],
   showTagCategoriesModal: false,
+  showPageHelathColumn: false,
 };
 
 const pageOverviewSlice = createSlice({
@@ -22,8 +23,11 @@ const pageOverviewSlice = createSlice({
     setPlatform(state, action) {
       state.platforms = action.payload;
     },
+    setShowPageHealthColumn(state,action){
+      state.showPageHelathColumn = action.payload;
+    }
   },
 });
 
-export const { setTagCategories , closeTagCategoriesModal , openTagCategoriesModal, setPlatform } = pageOverviewSlice.actions;
+export const { setTagCategories , closeTagCategoriesModal , openTagCategoriesModal, setPlatform, setShowPageHealthColumn } = pageOverviewSlice.actions;
 export default pageOverviewSlice.reducer;

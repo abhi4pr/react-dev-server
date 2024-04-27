@@ -6,11 +6,11 @@ import DeleteButton from "../DeleteButton";
 import { Link, useNavigate } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
-import { Stack, Typography } from "@mui/material";
+import { Stack, Switch, Typography } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
-import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
-import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
-import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+// import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
+// import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
+// import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import { useGlobalContext } from "../../../Context/Context";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import RequestPageIcon from "@mui/icons-material/RequestPage";
@@ -22,20 +22,21 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import Button from "@mui/material/Button";
 import jwtDecode from "jwt-decode";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addRow } from "../../Store/Executon-Slice";
 import DateFormattingComponent from "../../DateFormator/DateFormared";
 import CategoryIcon from "@mui/icons-material/Category";
 import {
   openTagCategoriesModal,
   setPlatform,
+  setShowPageHealthColumn,
   setTagCategories,
 } from "../../Store/PageOverview";
 import TagCategoryListModal from "./TagCategoryListModal";
-import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
+import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
 
 const PageOverview = () => {
-  const { toastAlert } = useGlobalContext();
+  // const { toastAlert } = useGlobalContext();
   const [vendorTypes, setVendorTypes] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [cat, setCat] = useState([{}]);
@@ -53,6 +54,10 @@ const PageOverview = () => {
   const userID = decodedToken.id;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const showPageHealthColumn = useSelector(
+    (state) => state.PageOverview.showPageHelathColumn
+  );
   useEffect(() => {
     if (userID && contextData == false) {
       axios
@@ -111,14 +116,7 @@ const PageOverview = () => {
       setPlatformData(res.data.data);
     });
 
-    axios.get(baseUrl + "getPageMastList").then((res) => {
-      setProgress(60);
-      setVendorTypes(res.data.data);
-      setFilterData(res.data.data.reverse());
-
-      setLoading(false);
-    });
-    setProgress(80);
+    setProgress(30);
     axios.get(baseUrl + "getPageCatgList").then((res) => {
       setCat(res.data.data);
     });
@@ -126,12 +124,55 @@ const PageOverview = () => {
     axios.get(baseUrl + "vendorAllData").then((res) => {
       setVenodr(res.data.tmsVendorkMastList);
     });
-    setProgress(90);
+    setProgress(40);
     axios.get(baseUrl + "get_all_users").then((res) => {
       setUser(res.data.data);
-      setProgress(100);
+      setProgress(70);
     });
   };
+
+  useEffect(() => {
+    axios.get(baseUrl + "getPageMastList").then((res) => {
+      setProgress(100);
+      let data = res.data.data;
+
+      data = data.map((e) => {
+        return {
+          ...e,
+          tag_category_name: cat
+            .filter((item) => {
+              return e.tag_category?.includes(item._id);
+            })
+            .map((item) => item.page_category)
+            .join(","),
+        };
+      });
+      setVendorTypes(data);
+      setFilterData(data.reverse());
+      setLoading(false);
+    });
+
+
+
+
+    // {
+    //   field: "price_type",
+    //   headerName: "Price Type",
+    //   width: 200,
+    //   renderCell: (params) => {
+    //     let name = allPriceTypeList?.find(
+    //       (item) => item.price_type_id == params.row.price_type_id
+    //     )?.price_type;
+    //     return <div>{name}</div>;
+    //   },
+    // },
+
+    // {
+    //   field: "price",
+    //   headerName: "Price",
+    //   width: 200,
+    // },
+  }, [cat]);
 
   useEffect(() => {
     axios.get(baseUrl + `get_exe_historyData`).then((res) => {
@@ -172,14 +213,14 @@ const PageOverview = () => {
   const dataGridcolumns = [
     {
       field: "S.NO",
-      headerName: "S.NO",
+      headerName: "Count",
       renderCell: (params) => <div>{filterData.indexOf(params.row) + 1}</div>,
 
       width: 130,
     },
     {
       field: "page_user_name",
-      headerName: "Page user Name",
+      headerName: "User Name",
       width: 200,
       renderCell: (params) => {
         let name = params.row.page_user_name;
@@ -188,12 +229,12 @@ const PageOverview = () => {
         for (let i = 0; i < hideName.length; i++) {
           star += "*";
         }
-        return <div>{name}</div>;
+        return <Link target="__black" to={params.row.link} className="link-primary" >{name}</Link>;
       },
     },
-    { field: "page_level", headerName: "Page level", width: 200 },
-    { field: "page_status", headerName: "Page status", width: 200 },
-    { field: "ownership_type", headerName: "Ownership type", width: 200 },
+    { field: "page_level", headerName: "Level", width: 200 },
+    { field: "page_status", headerName: "Status", width: 200 },
+    { field: "ownership_type", headerName: "Ownership", width: 200 },
     {
       field: "link",
       headerNa: "Link",
@@ -247,7 +288,7 @@ const PageOverview = () => {
 
     {
       field: "platform_active_on",
-      headerName: "Platform Active On",
+      headerName: "Active Platform",
       width: 200,
       renderCell: (params) => {
         let data = platformData.filter((item) => {
@@ -268,35 +309,47 @@ const PageOverview = () => {
       },
     },
     {
-      field: "tag_category",
+      field: "tag_category_name",
       headerName: "Tag Category",
       width: 200,
       renderCell: (params) => {
+        console.log(params.row.tag_category_name, "params.tag_category_name");
         let data = cat.filter((item) => {
           return params.row?.tag_category?.includes(item._id);
         });
         return (
-          <div>
-            {/* {data?.map((item, i) => {
+          <div
+            style={{
+              width: "200px",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {data?.map((item, i) => {
               return (
-                <>
-                  {item.page_category}
+                <p
+                  key={i}
+                  onClick={handleTagCategory(data)}
+                  style={{ display: "inline", cursor: "pointer" }}
+                >
+                  {params.row.tag_category_name}
                   {i !== data.length - 1 && ","}
-                </>
+                </p>
               );
-            })} */}
-            {data.length > 0 && (
+            })}
+            {/* {data.length > 0 && (
               <Button className="text-center" onClick={handleTagCategory(data)}>
                 <CategoryIcon />
               </Button>
-            )}
+            )} */}
           </div>
         );
       },
     },
     {
       field: "engagment_rate",
-      headerName: "Engagment Rate",
+      headerName: "ER",
       width: 200,
     },
     {
@@ -313,7 +366,7 @@ const PageOverview = () => {
     },
     {
       field: "page_name_type",
-      headerName: "Page Name Type",
+      headerName: "Name Type",
       width: 200,
       renderCell: (params) => {
         return params.row.page_name_type != 0 ? params.row.page_name_type : "";
@@ -327,27 +380,27 @@ const PageOverview = () => {
       },
       width: 200,
     },
-    {
-      field: "price_type_id",
-      headerName: "Price Type",
-      renderCell: ({ row }) => {
-        let f = allPriceTypeList?.filter((item) =>
-          row?.price_type_id?.includes(item?.price_type_id)
-        );
-        return (
-          <>
-            {f.map((item, i) => {
-              return (
-                <>
-                  {item?.price_type}
-                  {i !== f.length - 1 && ","}
-                </>
-              );
-            })}
-          </>
-        );
-      },
-    },
+    // {
+    //   field: "price_type_id",
+    //   headerName: "Price Type",
+    //   renderCell: ({ row }) => {
+    //     let f = allPriceTypeList?.filter((item) =>
+    //       row?.price_type_id?.includes(item?.price_type_id)
+    //     );
+    //     return (
+    //       <>
+    //         {f.map((item, i) => {
+    //           return (
+    //             <>
+    //               {item?.price_type}
+    //               {i !== f.length - 1 && ","}
+    //             </>
+    //           );
+    //         })}
+    //       </>
+    //     );
+    //   },
+    // },
     { field: "price_cal_type", headerName: "Rate Type", width: 200 },
     { field: "variable_type", headerName: "Variable Type", width: 200 },
     {
@@ -404,7 +457,35 @@ const PageOverview = () => {
         </div>
       ),
     },
+  ];
 
+  const priceColumn = [
+    {
+      field: "S.NO",
+      headerName: "S.NO",
+      renderCell: (params) => <div>{priceData.indexOf(params.row) + 1}</div>,
+      width: 130,
+    },
+    {
+      field: "price_type",
+      headerName: "Price Type",
+      width: 200,
+      renderCell: (params) => {
+        let name = allPriceTypeList?.find(
+          (item) => item.price_type_id == params.row.price_type_id
+        )?.price_type;
+        return <div>{name}</div>;
+      },
+    },
+
+    {
+      field: "price",
+      headerName: "Price",
+      width: 200,
+    },
+  ];
+
+  const pageHealthColumn = [
     contextData && {
       field: "update",
       headerName: "Update",
@@ -731,7 +812,7 @@ const PageOverview = () => {
     {
       field: "female_percent",
       width: 150,
-      header: "Female %",
+      header: "Female",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.female_percent;
         return data ? data + "%" : "NA";
@@ -762,7 +843,7 @@ const PageOverview = () => {
     {
       field: "male_percent",
       width: 150,
-      header: "Male %",
+      header: "Male",
       renderCell: (params) => {
         let data = params.row?.exehistorymodelsData?.male_percent;
         return data ? data + "%" : "NA";
@@ -940,112 +1021,90 @@ const PageOverview = () => {
     },
   ];
 
-  const priceColumn = [
-    {
-      field: "S.NO",
-      headerName: "S.NO",
-      renderCell: (params) => <div>{priceData.indexOf(params.row) + 1}</div>,
-      width: 130,
-    },
-    {
-      field: "price_type",
-      headerName: "Price Type",
-      width: 200,
-      renderCell: (params) => {
-        let name = allPriceTypeList?.find(
-          (item) => item.price_type_id == params.row.price_type_id
-        )?.price_type;
-        return <div>{name}</div>;
-      },
-    },
+  if (showPageHealthColumn) {
+    dataGridcolumns.push(...pageHealthColumn);
+  }
 
-    {
-      field: "price",
-      headerName: "Price",
-      width: 200,
-    },
-  ];
+  // const copyToClipboard = (text) => {
+  //   const textarea = document.createElement("textarea");
+  //   textarea.value = text;
+  //   document.body.appendChild(textarea);
+  //   textarea.select();
+  //   document.execCommand("copy");
+  //   document.body.removeChild(textarea);
+  // };
 
-  const copyToClipboard = (text) => {
-    const textarea = document.createElement("textarea");
-    textarea.value = text;
-    document.body.appendChild(textarea);
-    textarea.select();
-    document.execCommand("copy");
-    document.body.removeChild(textarea);
-  };
+  // const copySelectedRows = (type) => {
+  //   // Your existing code to retrieve the selected rows and format the data
+  //   let selectedRows = Array.from(
+  //     document.getElementsByClassName("MuiDataGrid-row")
+  //   ).filter((row) => row.classList.contains("Mui-selected"));
 
-  const copySelectedRows = (type) => {
-    // Your existing code to retrieve the selected rows and format the data
-    let selectedRows = Array.from(
-      document.getElementsByClassName("MuiDataGrid-row")
-    ).filter((row) => row.classList.contains("Mui-selected"));
+  //   let data = selectedRows.map((row) => {
+  //     let rowData = {};
+  //     for (let j = 1; j < row.children.length - 1; j++) {
+  //       if (dataGridcolumns[j].field !== "Action") {
+  //         rowData[dataGridcolumns[j].field] = row.children[j].innerText;
+  //       }
+  //     }
+  //     return rowData;
+  //   });
 
-    let data = selectedRows.map((row) => {
-      let rowData = {};
-      for (let j = 1; j < row.children.length - 1; j++) {
-        if (dataGridcolumns[j].field !== "Action") {
-          rowData[dataGridcolumns[j].field] = row.children[j].innerText;
-        }
-      }
-      return rowData;
-    });
+  //   if (type === 0) {
+  //     // Copy data without using the clipboard API
+  //     let copyData = data.map((row) => {
+  //       return {
+  //         "Page Name": row.page_level,
+  //         Link: row.platform_id,
+  //       };
+  //     });
 
-    if (type === 0) {
-      // Copy data without using the clipboard API
-      let copyData = data.map((row) => {
-        return {
-          "Page Name": row.page_level,
-          Link: row.platform_id,
-        };
-      });
+  //     let formattedData = copyData.map((row) => {
+  //       let formattedRow = `Page Name: ${row["Page Name"]}\nPage Link: ${row["Link"]}\n`;
+  //       return formattedRow;
+  //     });
 
-      let formattedData = copyData.map((row) => {
-        let formattedRow = `Page Name: ${row["Page Name"]}\nPage Link: ${row["Link"]}\n`;
-        return formattedRow;
-      });
+  //     copyToClipboard(formattedData.join("\n"));
+  //     toastAlert("Data Copied Successfully", "success");
+  //     return;
+  //   }
 
-      copyToClipboard(formattedData.join("\n"));
-      toastAlert("Data Copied Successfully", "success");
-      return;
-    }
+  //   // Copy data using the clipboard API
+  //   let formattedData = data.map((row) => {
+  //     let formattedRow = `Page Name: ${row["page_level"]}\nFollowers: ${row["followers_count"]}\nPage Link: ${row["platform_id"]}\nPlatform: ${row["page_catg_id"]}\nCategory: ${row["followers_count"]}\nOwnership Type: ${row["link"]}\nPage Status: ${row["ownership_type"]}\n`;
+  //     return formattedRow;
+  //   });
 
-    // Copy data using the clipboard API
-    let formattedData = data.map((row) => {
-      let formattedRow = `Page Name: ${row["page_level"]}\nFollowers: ${row["followers_count"]}\nPage Link: ${row["platform_id"]}\nPlatform: ${row["page_catg_id"]}\nCategory: ${row["followers_count"]}\nOwnership Type: ${row["link"]}\nPage Status: ${row["ownership_type"]}\n`;
-      return formattedRow;
-    });
+  //   copyToClipboard(formattedData.join("\n"));
+  //   toastAlert("Data Copied Successfully", "success");
+  // };
 
-    copyToClipboard(formattedData.join("\n"));
-    toastAlert("Data Copied Successfully", "success");
-  };
+  // const copyAllRows = () => {
+  //   let copyData = filterData.map((row) => {
+  //     return {
+  //       "Page Name": row.page_user_name,
+  //       Followers: row.followers_count,
+  //       "Page Link": row.link,
+  //       Platform: row.PMS_paform_data.platform_name,
+  //       Category: row.PMS_Pagecategories.page_category,
+  //       Vendor: venodr.find((item) => item.vendorMast_id == row.vendorMast_id)
+  //         ?.vendorMast_name,
+  //       "Platform Active On": row.platform_active_on,
+  //       "Engagment Rate": row.engagment_rate,
+  //       "Closed By": row.page_closed_by,
+  //       "Page Name Type": row.page_name_type,
+  //       "Content Creation": row.content_creation,
+  //     };
+  //   });
 
-  const copyAllRows = () => {
-    let copyData = filterData.map((row) => {
-      return {
-        "Page Name": row.page_user_name,
-        Followers: row.followers_count,
-        "Page Link": row.link,
-        Platform: row.PMS_paform_data.platform_name,
-        Category: row.PMS_Pagecategories.page_category,
-        Vendor: venodr.find((item) => item.vendorMast_id == row.vendorMast_id)
-          ?.vendorMast_name,
-        "Platform Active On": row.platform_active_on,
-        "Engagment Rate": row.engagment_rate,
-        "Closed By": row.page_closed_by,
-        "Page Name Type": row.page_name_type,
-        "Content Creation": row.content_creation,
-      };
-    });
+  //   let formattedData = copyData.map((row) => {
+  //     let formattedRow = `Page Name: ${row["Page Name"]}\n   Followers: ${row["Followers"]}\n   Page Link: ${row["Page Link"]} \n   Platform: ${row["Platform"]}\n   Category: ${row["Category"]}\n   Vendor: ${row["Vendor"]}\n   Platform Active On: ${row["Platform Active On"]}\n   Engagment Rate: ${row["Engagment Rate"]}\n   Closed By: ${row["Closed By"]}\n   Page Name Type: ${row["Page Name Type"]}\n   Content Creation: ${row["Content Creation"]}\n`;
+  //     return formattedRow;
+  //   });
 
-    let formattedData = copyData.map((row) => {
-      let formattedRow = `Page Name: ${row["Page Name"]}\n   Followers: ${row["Followers"]}\n   Page Link: ${row["Page Link"]} \n   Platform: ${row["Platform"]}\n   Category: ${row["Category"]}\n   Vendor: ${row["Vendor"]}\n   Platform Active On: ${row["Platform Active On"]}\n   Engagment Rate: ${row["Engagment Rate"]}\n   Closed By: ${row["Closed By"]}\n   Page Name Type: ${row["Page Name Type"]}\n   Content Creation: ${row["Content Creation"]}\n`;
-      return formattedRow;
-    });
-
-    navigator.clipboard.writeText(formattedData.join("\n\n"));
-    toastAlert("Data Copied Successfully", "success");
-  };
+  //   navigator.clipboard.writeText(formattedData.join("\n\n"));
+  //   toastAlert("Data Copied Successfully", "success");
+  // };
 
   return (
     <>
@@ -1058,7 +1117,7 @@ const PageOverview = () => {
           Add Page
         </button>
       </Link>
-      <Stack direction="row" spacing={1}>
+      {/* <Stack direction="row" spacing={1}>
         <button
           title="Add"
           className="btn btn-outline-primary"
@@ -1086,6 +1145,17 @@ const PageOverview = () => {
           <ContentPasteIcon />
           Copy Selected Page Name & Links
         </button>
+      </Stack> */}
+      <Stack direction="row" spacing={1}>
+        <Switch
+          checked={showPageHealthColumn}
+          onChange={() =>
+            dispatch(setShowPageHealthColumn(!showPageHealthColumn))
+          }
+          name="Page Health"
+          color="primary"
+        />
+        <Typography variant="h6">Page Health</Typography>
       </Stack>
       <div className="card">
         <div className="data_tbl table-responsive">
