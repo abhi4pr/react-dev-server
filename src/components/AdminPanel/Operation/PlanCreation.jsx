@@ -13,7 +13,6 @@ const TempPlanCreation = () => {
 
     const getCampaignName = (data, cmpName) => {
         setCampaignName(cmpName);
-        // console.log(cmpName)
     };
 
     return (

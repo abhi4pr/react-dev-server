@@ -1,10 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import ExecutonSlice from "./Executon-Slice";
-
+import executon from "./Executon-Slice";
+import PageOverview from "./PageOverview";
 
  const store = configureStore({
   reducer: {
-    executon: ExecutonSlice,
+    executon,
+    PageOverview,
   },
 });
 
