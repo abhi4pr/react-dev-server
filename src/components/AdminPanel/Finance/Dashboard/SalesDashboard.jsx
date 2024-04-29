@@ -547,7 +547,7 @@ export default function SalesDashboard() {
             </div>
             <div className="row">
               <div className="col-md-6">
-                <Link to="/admin/finance-salebookingclose">
+                <Link to="/admin/finance-salebooking">
                   <div className="cardGrdnt greenGrdnt">
                     <div className="financeCardBox border-bottom">
                       <div className="financeCardBoxIn">
@@ -571,10 +571,10 @@ export default function SalesDashboard() {
                       <div className="financeCardBoxIn">
                         <div className="financeCardBoxDetails">
                           <ul>
-                            <li>
+                            {/* <li>
                               TDS Verification About to Close
                               <span>{salesBookingAboutToCloseData.length}</span>
-                            </li>
+                            </li> */}
                             <li>
                               TDS Verification Closed
                               <span>{salesBookingCloseData.length}</span>
@@ -647,10 +647,12 @@ export default function SalesDashboard() {
                 </Link>
               </div>
               <div className="col">
-                <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
-                  <h2>Total Invoice Pending</h2>
-                  <h3>{invoicePending.length}</h3>
-                </div>
+                <Link to="/admin/finance-invoice">
+                  <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
+                    <h2>Total Invoice Pending</h2>
+                    <h3>{invoicePending.length}</h3>
+                  </div>
+                </Link>
               </div>
               <div className="col">
                 <Link to="/admin/finance-pendingapproverefund">
@@ -675,7 +677,7 @@ export default function SalesDashboard() {
                 </Link>
               </div> */}
               <div className="col">
-                <Link to="#">
+                <Link to="/admin/accounts-finance-dashboard">
                   <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
                     <h2>Total Payout Pending</h2>
                     <h3>

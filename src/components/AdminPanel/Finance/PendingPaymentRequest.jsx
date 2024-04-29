@@ -279,6 +279,7 @@ export default function PendingPaymentRequest() {
     setGstHold(e.target.checked);
     setGSTHoldAmount(rowData.gst_amount);
   };
+
   const handleCalculatePaymentAmount = () => {
     if (gstHold && TDSDeduction) {
       setPaymentStatus("Fully Paid GST Hold and TDS Deduction");
@@ -910,6 +911,14 @@ export default function PendingPaymentRequest() {
       },
     },
     {
+      field: "balance_amount",
+      headerName: "Balance Amount",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.balance_amount}</p>;
+      },
+    },
+    {
       headerName: "Action",
       width: 150,
       renderCell: (params) => {
@@ -984,6 +993,14 @@ export default function PendingPaymentRequest() {
         );
 
         return <p> &#8377; {reduceAmt}</p>;
+      },
+    },
+    {
+      field: "balance_amount",
+      headerName: "Balance Amount",
+      width: 150,
+      renderCell: (params) => {
+        return <p> &#8377; {params.row.balance_amount}</p>;
       },
     },
     {
@@ -1121,7 +1138,9 @@ export default function PendingPaymentRequest() {
             </Button>
             <a
               style={{ cursor: "pointer", marginRight: "20px", color: "blue" }}
-              onClick={() => handleOpenSameVender(params.row.vendor_name)}
+              onClick={() =>
+                handleOpenUniqueVendorClick(params.row.vendor_name)
+              }
             >
               {params.row.vendor_name}
             </a>
@@ -2131,8 +2150,10 @@ export default function PendingPaymentRequest() {
                       fullWidth={true}
                       maxWidth={"md"}
                       setViewImgDialog={setOpenImageDialog}
+                      openImageDialog={openImageDialog}
                     />
                   )}
+
                   {activeAccordionIndex === 1 && (
                     <DataGrid
                       rows={filterData.filter((d) => d.status === "3")}
@@ -2509,7 +2530,7 @@ export default function PendingPaymentRequest() {
                     />
                     <TextField
                       InputProps={{
-                        readOnly: gstHold || TDSDeduction,
+                        readOnly: gstHold,
                       }}
                       onChange={(e) => {
                         rowData.balance_amount;
@@ -2525,6 +2546,8 @@ export default function PendingPaymentRequest() {
                               "Payment Amount should be less than or equal to Requested Amount"
                             );
                           }
+                        } else {
+                          setPaymentAmount("");
                         }
                       }}
                       className="mt-3"

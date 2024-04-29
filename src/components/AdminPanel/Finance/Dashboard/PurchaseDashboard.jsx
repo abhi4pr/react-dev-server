@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { baseUrl } from "../../../../utils/config";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const PurchaseDashboard = () => {
   const [pendingReqData, setPendingReqData] = useState([]);
@@ -13,65 +15,40 @@ const PurchaseDashboard = () => {
   const [filterTdsData, setFilterTDSData] = useState([]);
   const [discardData, setDiscardData] = useState([]);
   const [filterDiscardData, setFilterDiscardData] = useState([]);
+  const [selectedRange, setSelectedRange] = useState("0-10k");
+  const navigate = useNavigate();
 
-  const callApi = () => {
-    //PENDING PAYMENT REQUEST API
-    let remindData = "";
-    axios
-      .get(
-        "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
-      )
-      .then((res) => {
-        remindData = res.data.body;
-      });
+  // useEffect(() => {
+  //   handlePendingReqData();
+  //   handlePaymentDone();
+  //   handleGSTHold();
+  //   TDSDeducted();
+  //   handleDiscardData();
+  // }, []);
 
-    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
-      const pendingPmt = res.data.modifiedData;
-      axios
-        .get(
-          "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
-        )
-        .then((res) => {
-          let y = res.data.body.filter((item) => {
-            return !pendingPmt.some(
-              (item2) => item.request_id === item2.request_id
-            );
-          });
+  useEffect(() => {
+    handlePendingReqData();
+  }, []);
 
-          let c = res.data.body.filter((item) => {
-            return remindData.some(
-              (item2) => item.request_id === item2.request_id
-            );
-          });
+  useEffect(() => {
+    handlePaymentDone();
+  }, []);
 
-          y.push(...c); // Merging the filtered items with items matching certain conditions
+  useEffect(() => {
+    handleGSTHold();
+  }, []);
 
-          let mergedArray = [...y, ...c];
+  useEffect(() => {
+    TDSDeducted();
+  }, []);
 
-          // Creating a set of unique request_ids from the merged data
-          let t = new Set(mergedArray.map((item) => item.request_id));
-          mergedArray = Array.from(t).map((request_id) => {
-            return mergedArray.find((item) => item.request_id === request_id);
-          });
+  useEffect(() => {
+    handleDiscardData();
+  }, []);
 
-          mergedArray = mergedArray.filter(
-            (item) => item.status == 0 || item.status == 3 || item.status == 2
-          );
-          setPendingReqData(mergedArray);
-          setFilterPendingReqData(mergedArray);
-        });
-    });
-
-    axios.get(`${baseUrl}` + `get_all_payment_mode`).then((res) => {
-      //   setPaymentModeData(res.data);
-    });
-
-    // axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
-    //   setUserName(res.data.user_name);
-    // });
-
+  const handlePaymentDone = async () => {
     //PAYMENT DONE API :-
-    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+    await axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       const pmtDone = res.data.modifiedData;
       axios
         .get(
@@ -90,18 +67,11 @@ const PurchaseDashboard = () => {
           setFilterPaymentDoneData(u);
         });
     });
-
-    axios
-      .get(
-        "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
-      )
-      .then((res) => {});
-
-    // axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {});
-
+  };
+  const handleGSTHold = async () => {
     // GST HOLD API  :-
 
-    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+    await axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       const gstHold = res.data.modifiedData;
 
       axios
@@ -125,9 +95,12 @@ const PurchaseDashboard = () => {
           setFilterGSTData(u);
         });
     });
+  };
+
+  const TDSDeducted = async () => {
     // TDS DEDUCTED API  :-
 
-    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+    await axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       const tdsDeduct = res.data.modifiedData;
 
       axios
@@ -151,9 +124,11 @@ const PurchaseDashboard = () => {
           setFilterTDSData(u);
         });
     });
+  };
 
+  const handleDiscardData = async () => {
     // DISCARD API  :-
-    axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+    await axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
       const discard = res.data.modifiedData;
 
       axios
@@ -173,37 +148,80 @@ const PurchaseDashboard = () => {
           setFilterDiscardData(u);
         });
     });
-
-    axios
+  };
+  const handlePendingReqData = async () => {
+    //PENDING PAYMENT REQUEST API
+    //PENDING PAYMENT REQUEST API
+    let remindData = "";
+    await axios
       .get(
         "https://purchase.creativefuel.io//webservices/RestController.php?view=getpaymentrequestremind"
       )
-      .then((res) => {});
+      .then((res) => {
+        remindData = res.data.body;
 
-    // axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {});
+        axios.get(baseUrl + "phpvendorpaymentrequest").then((res) => {
+          const pendingPmt = res?.data?.modifiedData;
+          axios
+            .get(
+              "https://purchase.creativefuel.io/webservices/RestController.php?view=getpaymentrequest"
+            )
+            .then((res) => {
+              let y = res?.data?.body.filter((item) => {
+                return !pendingPmt.some(
+                  (item2) => item.request_id === item2.request_id
+                );
+              });
+
+              let c = res?.data?.body.filter((item) => {
+                return remindData.some(
+                  (item2) => item.request_id === item2.request_id
+                );
+              });
+
+              y.push(...c); // Merging the filtered items with items matching certain conditions
+
+              let mergedArray = [...y, ...c];
+
+              // Creating a set of unique request_ids from the merged data
+              let t = new Set(mergedArray?.map((item) => item?.request_id));
+              mergedArray = Array.from(t).map((request_id) => {
+                return mergedArray.find(
+                  (item) => item.request_id === request_id
+                );
+              });
+
+              mergedArray = mergedArray.filter(
+                (item) =>
+                  item.status == 0 || item.status == 3 || item.status == 2
+              );
+              console.log(mergedArray, "mergedArray?>>>>");
+              setPendingReqData(mergedArray);
+              setFilterPendingReqData(mergedArray);
+            });
+        });
+      });
   };
 
-  useEffect(() => {
-    callApi();
-  }, []);
+  const handleClick = (selectedRange) => {
+    navigate("/admin/finance-overview", {
+      state: {
+        selectedRange: selectedRange,
+        pendingReqData: pendingReqData && pendingReqData,
+      },
+    });
+  };
 
-  //   console.log(
-  //     pendingReqData
-  //       //   .map((item) => item?.request_amount)
-  //       .reduce((total, item) => total + parseFloat(item.request_amount), 0),
-  //     //   .toLocaleString("en-IN"),
-  //     "PENDING DATA  "
-  //   );
+  console.log(pendingReqData, "pending request data >>>>>>");
   return (
     <div>
-      <div className="pack flex-row" style={{ gap: "16px" }}>
+      {/* <div className="pack flex-row" style={{ gap: "16px" }}>
         <div className="fin-card w-50">
           <div
             className="pack flex-row w-100"
             style={{ gap: "32px", padding: "20px" }}
           >
             <div className="fd-circle">
-              {/* <img src={giftwo} alt="gif" /> */}
             </div>
             <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
               <h4>Pending Payment Request</h4>
@@ -282,275 +300,407 @@ const PurchaseDashboard = () => {
             </div>
           </div>
         </div>
-      </div>
-      <div className="pack flex-row" style={{ gap: "16px" }}>
-        <div className="fin-card w-50">
-          <div
-            className="pack flex-row w-100"
-            style={{ gap: "32px", padding: "20px" }}
-          >
-            <div className="fd-circle">
-              {/* <img src={giftwo} alt="gif" /> */}
-            </div>
-            <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
-              <h4> Payment Done</h4>
-              <div className="scroll-con">
+      </div> */}
+      <div className="card-body cardGrdnt orangeGrdnt">
+        {/* <Link to="/admin/finance-pruchasemanagement-pendingpaymentrequest"> */}
+        <div className="row align-items-center">
+          <div className="col-md-6 financeCardBox border-right ">
+            <div className="financeCardBoxIn p0">
+              <div className="financeCardBoxTitle">
+                <div className="financeCardBoxImg"></div>
+                <h2>Pending Payment Request</h2>
+              </div>
+              <div className="scroll-con pl40">
                 <div className="scroller">
-                  <h1>0</h1>
-                  {paymentDoneData?.map((item, index) => (
+                  <h3>0</h3>
+                  {pendingReqData?.map((item, index) => (
                     <h1>{index + 1}</h1>
                   ))}
                 </div>
               </div>
-            </div>
-          </div>
-          <div
-            className="pack d-flex flex-column w-100"
-            style={{ gap: "10px", padding: "20px" }}
-          >
-            <div className="pack sb">
-              <h6>Requested Amount</h6>{" "}
-              <h6>
-                {" "}
-                {paymentDoneData?.reduce(
-                  (total, item) => total + parseFloat(item.request_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Base Amount</h6>
-              <h6>
-                {" "}
-                {paymentDoneData?.reduce(
-                  (total, item) => total + parseFloat(item.base_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>GST Amount</h6>
-              <h6>
-                {paymentDoneData?.reduce(
-                  (total, item) => total + parseFloat(item.gst_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Outstanding</h6>
-              <h6>
-                {" "}
-                {pendingReqData?.reduce(
-                  (total, item) => total + parseFloat(item.outstandings),
-                  0
-                )}
-              </h6>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="pack flex-row" style={{ gap: "16px" }}>
-        <div className="fin-card w-50">
-          <div
-            className="pack flex-row w-100"
-            style={{ gap: "32px", padding: "20px" }}
-          >
-            <div className="fd-circle">
-              {/* <img src={giftwo} alt="gif" /> */}
-            </div>
-            <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
-              <h4> GST Hold</h4>
-              <div className="scroll-con">
-                <div className="scroller">
-                  <h1>0</h1>
-                  {gstData?.map((item, index) => (
-                    <h1>{index + 1}</h1>
-                  ))}
-                </div>
+              <div className="financeCardBoxDetails">
+                <ul className="pl32">
+                  <li>
+                    Request Amount
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) =>
+                          total + parseFloat(item.request_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
+
+                  <li>
+                    Balance Release
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) =>
+                          total + parseFloat(item.balance_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    Base Amount
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) => total + parseFloat(item.base_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    Paid Amount
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) => total + parseFloat(item.paid_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    GST Amount
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) => total + parseFloat(item.gst_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    OutStanding
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) => total + parseFloat(item.outstandings),
+                        0
+                      )}
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-          <div
-            className="pack d-flex flex-column w-100"
-            style={{ gap: "10px", padding: "20px" }}
-          >
-            <div className="pack sb">
-              <h6>Requested Amount</h6>{" "}
-              <h6>
-                {" "}
-                {gstData?.reduce(
-                  (total, item) => total + parseFloat(item.request_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Base Amount</h6>
-              <h6>
-                {" "}
-                {gstData?.reduce(
-                  (total, item) => total + parseFloat(item.base_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>GST Amount</h6>
-              <h6>
-                {gstData?.reduce(
-                  (total, item) => total + parseFloat(item.gst_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Outstanding</h6>
-              <h6>
-                {" "}
-                {gstData?.reduce(
-                  (total, item) => total + parseFloat(item.outstandings),
-                  0
-                )}
-              </h6>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className="pack flex-row" style={{ gap: "16px" }}>
-        <div className="fin-card w-50">
-          <div
-            className="pack flex-row w-100"
-            style={{ gap: "32px", padding: "20px" }}
-          >
-            <div className="fd-circle">
-              {/* <img src={giftwo} alt="gif" /> */}
-            </div>
-            <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
-              <h4> TDS Deduction</h4>
-              <div className="scroll-con">
-                <div className="scroller">
-                  <h1>0</h1>
-                  {tdsData?.map((item, index) => (
-                    <h1>{index + 1}</h1>
-                  ))}
-                </div>
+          <div className="col-md-6 financeCardBox">
+            <div className="financeCardBoxIn p0">
+              <div className="financeCardBoxDetails">
+                <ul className="pl32">
+                  <li
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleClick("0-10k")}
+                  >
+                    0-10K
+                  </li>
+
+                  <li
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleClick("10k-50k")}
+                  >
+                    10k-50k
+                  </li>
+
+                  <li
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleClick("50k-100k")}
+                  >
+                    50k-100k
+                  </li>
+
+                  <li
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleClick("100k-above")}
+                  >
+                    100k-above
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
-          <div
-            className="pack d-flex flex-column w-100"
-            style={{ gap: "10px", padding: "20px" }}
-          >
-            <div className="pack sb">
-              <h6>Requested Amount</h6>{" "}
-              <h6>
-                {" "}
-                {tdsData?.reduce(
-                  (total, item) => total + parseFloat(item.request_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Base Amount</h6>
-              <h6>
-                {" "}
-                {tdsData?.reduce(
-                  (total, item) => total + parseFloat(item.base_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>GST Amount</h6>
-              <h6>
-                {tdsData?.reduce(
-                  (total, item) => total + parseFloat(item.gst_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Outstanding</h6>
-              <h6>
-                {" "}
-                {tdsData?.reduce(
-                  (total, item) => total + parseFloat(item.outstandings),
-                  0
-                )}
-              </h6>
-            </div>
-          </div>
         </div>
-      </div>
-      <div className="pack flex-row" style={{ gap: "16px" }}>
-        <div className="fin-card w-50">
-          <div
-            className="pack flex-row w-100"
-            style={{ gap: "32px", padding: "20px" }}
-          >
-            <div className="fd-circle">
-              {/* <img src={giftwo} alt="gif" /> */}
-            </div>
-            <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
-              <h4> Discard Payment</h4>
-              <div className="scroll-con">
-                <div className="scroller">
-                  <h1>0</h1>
-                  {discardData?.map((item, index) => (
-                    <h1>{index + 1}</h1>
-                  ))}
+        {/* </Link> */}
+      </div>{" "}
+      <Link to="/admin/finance-pruchasemanagement-paymentdone">
+        <div className="pack flex-row" style={{ gap: "16px" }}>
+          <div className="fin-card w-50">
+            <div
+              className="pack flex-row w-100"
+              style={{ gap: "32px", padding: "20px" }}
+            >
+              <div className="fd-circle">
+                {/* <img src={giftwo} alt="gif" /> */}
+              </div>
+              <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                <h4> Payment Done</h4>
+                <div className="scroll-con">
+                  <div className="scroller">
+                    <h1>0</h1>
+                    {paymentDoneData?.map((item, index) => (
+                      <h1>{index + 1}</h1>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
+            <div
+              className="pack d-flex flex-column w-100"
+              style={{ gap: "10px", padding: "20px" }}
+            >
+              <div className="pack sb">
+                <h6>Requested Amount</h6>{" "}
+                <h6>
+                  {" "}
+                  {paymentDoneData?.reduce(
+                    (total, item) => total + parseFloat(item.request_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>Base Amount</h6>
+                <h6>
+                  {" "}
+                  {paymentDoneData?.reduce(
+                    (total, item) => total + parseFloat(item.base_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>GST Amount</h6>
+                <h6>
+                  {paymentDoneData?.reduce(
+                    (total, item) => total + parseFloat(item.gst_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>Outstanding</h6>
+                <h6>
+                  {" "}
+                  {paymentDoneData?.reduce(
+                    (total, item) => total + parseFloat(item.outstandings),
+                    0
+                  )}
+                </h6>
+              </div>
+            </div>
           </div>
-          <div
-            className="pack d-flex flex-column w-100"
-            style={{ gap: "10px", padding: "20px" }}
-          >
-            <div className="pack sb">
-              <h6>Requested Amount</h6>{" "}
-              <h6>
-                {" "}
-                {discardData?.reduce(
-                  (total, item) => total + parseFloat(item.request_amount),
-                  0
-                )}
-              </h6>
+        </div>{" "}
+      </Link>{" "}
+      <Link to="/admin/payment-GST_hold">
+        <div className="pack flex-row" style={{ gap: "16px" }}>
+          <div className="fin-card w-50">
+            <div
+              className="pack flex-row w-100"
+              style={{ gap: "32px", padding: "20px" }}
+            >
+              <div className="fd-circle">
+                {/* <img src={giftwo} alt="gif" /> */}
+              </div>
+              <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                <h4> GST Hold</h4>
+                <div className="scroll-con">
+                  <div className="scroller">
+                    <h1>0</h1>
+                    {gstData?.map((item, index) => (
+                      <h1>{index + 1}</h1>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="pack sb">
-              <h6>Base Amount</h6>
-              <h6>
-                {" "}
-                {discardData?.reduce(
-                  (total, item) => total + parseFloat(item.base_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>GST Amount</h6>
-              <h6>
-                {discardData?.reduce(
-                  (total, item) => total + parseFloat(item.gst_amount),
-                  0
-                )}
-              </h6>
-            </div>
-            <div className="pack sb">
-              <h6>Outstanding</h6>
-              <h6>
-                {" "}
-                {discardData?.reduce(
-                  (total, item) => total + parseFloat(item.outstandings),
-                  0
-                )}
-              </h6>
+            <div
+              className="pack d-flex flex-column w-100"
+              style={{ gap: "10px", padding: "20px" }}
+            >
+              <div className="pack sb">
+                <h6>Requested Amount</h6>{" "}
+                <h6>
+                  {" "}
+                  {gstData?.reduce(
+                    (total, item) => total + parseFloat(item.request_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>Base Amount</h6>
+                <h6>
+                  {" "}
+                  {gstData?.reduce(
+                    (total, item) => total + parseFloat(item.base_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>GST Amount</h6>
+                <h6>
+                  {gstData?.reduce(
+                    (total, item) => total + parseFloat(item.gst_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>Outstanding</h6>
+                <h6>
+                  {" "}
+                  {gstData?.reduce(
+                    (total, item) => total + parseFloat(item.outstandings),
+                    0
+                  )}
+                </h6>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
+        </div>{" "}
+      </Link>{" "}
+      <Link to="/admin/payment-TDS_deduct">
+        <div className="pack flex-row" style={{ gap: "16px" }}>
+          <div className="fin-card w-50">
+            <div
+              className="pack flex-row w-100"
+              style={{ gap: "32px", padding: "20px" }}
+            >
+              <div className="fd-circle">
+                {/* <img src={giftwo} alt="gif" /> */}
+              </div>
+              <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                <h4> TDS Deduction</h4>
+                <div className="scroll-con">
+                  <div className="scroller">
+                    <h1>0</h1>
+                    {tdsData?.map((item, index) => (
+                      <h1>{index + 1}</h1>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="pack d-flex flex-column w-100"
+              style={{ gap: "10px", padding: "20px" }}
+            >
+              <div className="pack sb">
+                <h6>Requested Amount</h6>{" "}
+                <h6>
+                  {" "}
+                  {tdsData?.reduce(
+                    (total, item) => total + parseFloat(item.request_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>Base Amount</h6>
+                <h6>
+                  {" "}
+                  {tdsData?.reduce(
+                    (total, item) => total + parseFloat(item.base_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>GST Amount</h6>
+                <h6>
+                  {tdsData?.reduce(
+                    (total, item) => total + parseFloat(item.gst_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>Outstanding</h6>
+                <h6>
+                  {" "}
+                  {tdsData?.reduce(
+                    (total, item) => total + parseFloat(item.outstandings),
+                    0
+                  )}
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>{" "}
+      </Link>{" "}
+      <Link to="/admin/finance-pruchasemanagement-discardpayment">
+        <div className="pack flex-row" style={{ gap: "16px" }}>
+          <div className="fin-card w-50">
+            <div
+              className="pack flex-row w-100"
+              style={{ gap: "32px", padding: "20px" }}
+            >
+              <div className="fd-circle">
+                {/* <img src={giftwo} alt="gif" /> */}
+              </div>
+              <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                <h4> Discard Payment</h4>
+                <div className="scroll-con">
+                  <div className="scroller">
+                    <h1>0</h1>
+                    {discardData?.map((item, index) => (
+                      <h1>{index + 1}</h1>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              className="pack d-flex flex-column w-100"
+              style={{ gap: "10px", padding: "20px" }}
+            >
+              <div className="pack sb">
+                <h6>Requested Amount</h6>{" "}
+                <h6>
+                  {" "}
+                  {discardData?.reduce(
+                    (total, item) => total + parseFloat(item.request_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>Base Amount</h6>
+                <h6>
+                  {" "}
+                  {discardData?.reduce(
+                    (total, item) => total + parseFloat(item.base_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>GST Amount</h6>
+                <h6>
+                  {discardData?.reduce(
+                    (total, item) => total + parseFloat(item.gst_amount),
+                    0
+                  )}
+                </h6>
+              </div>
+              <div className="pack sb">
+                <h6>Outstanding</h6>
+                <h6>
+                  {" "}
+                  {discardData?.reduce(
+                    (total, item) => total + parseFloat(item.outstandings),
+                    0
+                  )}
+                </h6>
+              </div>
+            </div>
+          </div>
+        </div>{" "}
+      </Link>
     </div>
   );
 };
