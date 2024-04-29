@@ -25,7 +25,7 @@ const ViewSaleBooking = () => {
 
   useEffect(() => {
     const result = origionalData.filter((d) => {
-      return d?.reason?.toLowerCase().includes(search.toLowerCase());
+      return d?.customer_name?.toLowerCase()?.includes(search?.toLowerCase());
     });
     setSaleBookingData(result);
   }, [search]);
@@ -70,9 +70,6 @@ const ViewSaleBooking = () => {
       name: "Refund Amount Files",
     },
     {
-      name: "Service Taken Count",
-    },
-    {
       name: "Service Taken Amount",
       selector: (row) => row.service_taken_amount + "₹",
     },
@@ -103,10 +100,11 @@ const ViewSaleBooking = () => {
     },
     {
       name: "Booking Date Created",
+      selector: (row) => DateISOtoNormal(row.createdAt),
     },
   ];
   return (
-    <>
+    <div>
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
@@ -117,32 +115,29 @@ const ViewSaleBooking = () => {
           />
         </div>
       </div>
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-              title="Services Overview"
-              columns={columns}
-              data={saleBookingData}
-              fixedHeader
-              pagination
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
-            />
-          </div>
+
+      <div className="card">
+        <div className="card-header sb">
+          <div className="card-title">Sale Booking Overview</div>
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control "
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="card-body">
+          <DataTable
+            columns={columns}
+            data={saleBookingData}
+            pagination
+            fixedHeaderScrollHeight="64vh"
+            highlightOnHover
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
