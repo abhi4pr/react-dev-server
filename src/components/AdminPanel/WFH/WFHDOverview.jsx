@@ -434,7 +434,6 @@ const WFHDOverview = () => {
             <button
               type="button"
               className="btn cmnbtn btn_sm btn-outline-success"
-
               // data-toggle="modal"
               // data-target="#exampleModal2"
 
@@ -449,7 +448,6 @@ const WFHDOverview = () => {
             <>
               <button
                 className="btn cmnbtn btn_sm btn-outline-primary"
-
                 data-toggle="modal"
                 data-target="#sepmodal"
                 size="small"
@@ -462,7 +460,6 @@ const WFHDOverview = () => {
                     row.user_contact_no
                   )
                 }
-
               >
                 Sep
               </button>
@@ -639,6 +636,8 @@ const WFHDOverview = () => {
           >
             Training ({statusCounts?.training ? statusCounts?.training : 0})
           </div>
+        </div>
+        <div className="tab">
           <div
             className={`named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
             onClick={() => {
@@ -879,13 +878,13 @@ const WFHDOverview = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                  <FieldContainer
-                    label="Reinstated Date"
-                    type="date"
-                    value={separationReinstateDate}
-                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                  />
-                )}
+                <FieldContainer
+                  label="Reinstated Date"
+                  type="date"
+                  value={separationReinstateDate}
+                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                />
+              )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"
