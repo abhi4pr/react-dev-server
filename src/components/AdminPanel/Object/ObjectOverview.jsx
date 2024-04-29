@@ -147,7 +147,7 @@
 import { useState, useEffect } from "react";
 // import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
-import { FaEdit } from "react-icons/fa";
+// import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
 import axios from "axios";
 import FormContainer from "../FormContainer";
@@ -161,18 +161,28 @@ const ObjectOverview = () => {
   const [contextData, setDatas] = useState([]);
   const [columns, setColumns] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [filters, setFilters] = useState([]);
+  const [savedFilters, setSavedFilters] = useState([]);
+
+  const saveFilter = () => {
+    const newSavedFilters = [...savedFilters, { filters }];
+    setSavedFilters(newSavedFilters); 
+  };
+
+  const applySavedFilter = (savedFilter) => {
+    setFilters(savedFilter.filters);
+    filterDataFun(savedFilter.filters);
+  };
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
-  const tableId = '661f8aaef8af207af006cdb8';
 
   // custom dynamic table code starts here
 
   const getTableData = async () => {
-    await axios.get(baseUrl + `get_dynamic_table_data/${tableId}`)
+    await axios.get(baseUrl + `get_dynamic_table_data?userId=${userID}&tableName=${'object table'}`)
       .then((res) => {
         const initialColumns = res.data.data[0].column_order_Obj ||
           ["Created_by", "Dept_id", "dept_name", "obj_id", "obj_name", "soft_name", "_id"];
@@ -201,7 +211,8 @@ const ObjectOverview = () => {
     newColumns.splice(targetIndex, 0, draggedColumn);
 
     axios.put(`${baseUrl}` + `edit_dynamic_table_data`, {
-      _id: tableId,
+      user_id: userID,
+      table_name: 'object table',
       column_order_Obj: newColumns
     });
     setColumns(newColumns);
@@ -222,8 +233,9 @@ const ObjectOverview = () => {
     } else {
       newColumns = [...columns, columnName];
     }
-    axios.put(`${baseUrl}` + `edit_dynamic_table_data`, {
-      _id: tableId,
+    axios.put(`${baseUrl}` + `edit_dynamic_table_data`, { 
+      user_id: userID,
+      table_name: 'object table',
       column_order_Obj: newColumns
     })
       .then(() => {
@@ -239,14 +251,18 @@ const ObjectOverview = () => {
     setCurrentPage(newPage);
   };
 
-  const getPageCount = () => {
-    return Math.ceil(datas.length / itemsPerPage);
+  const handleItemsPerPageChange = (event) => {
+    setItemsPerPage(parseInt(event.target.value));
   };
 
-  const getPageData = (datas) => {
+  const getPageCount = () => {
+    return Math.ceil(filterData.length / itemsPerPage);
+  };
+
+  const getPageData = () => {
     const startIndex = currentPage * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return datas.slice(startIndex, endIndex);
+    return filterData.slice(startIndex, endIndex); 
   };
 
   // custom dynamic table code ends here
@@ -351,20 +367,25 @@ const ObjectOverview = () => {
         }
       />
 
+  {savedFilters.map((savedFilter, index) => (
+    <button className="btn btn-warning" key={index} onClick={() => applySavedFilter(savedFilter)}>
+      Saved Filter {index + 1}
+    </button>
+  ))}
+  <button className="btn btn-success" onClick={saveFilter} disabled={filters.length === 0}>Save Filter</button>
+
       <div className="card">
         <div className="card-body thm_table dt">
-
           <div className="dt-toolbar border-toolbar  MuiDataGrid-toolbarContainer css-128fb87-MuiDataGrid-toolbarContainer sb" >
             <div className="flex-row gap16">
-
               <div>
                 <button onClick={toggleDrawer} className="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall css-12k3ht8-MuiButtonBase-root-MuiButton-root">Hide/Show Columns</button>
                 {drawerOpen && (
                   <div className="drawer">
                     {Object.keys(datas[0]).map((key) => (
-                      <div class="form-check form-switch dt-toggle" key={key} onClick={() => toggleColumn(key)}>
-                        <input class="form-check-input " role="switch" id="flexSwitchCheckDefault" type="checkbox" checked={columns.includes(key)} readOnly />
-                        <label class="form-check-label" for="flexSwitchCheckDefault"> {key}</label>
+                      <div className="form-check form-switch dt-toggle" key={key} onClick={() => toggleColumn(key)}>
+                        <input className="form-check-input " role="switch" id="flexSwitchCheckDefault" type="checkbox" checked={columns.includes(key)} readOnly />
+                        <label className="form-check-label" htmlFor="flexSwitchCheckDefault"> {key}</label>
                       </div>
                     ))}
                   </div>
@@ -406,15 +427,14 @@ const ObjectOverview = () => {
                     </div>
                   ))}
                 </div>)}
-                <button onClick={toggleDrawer1} className=" flex-row align-items-center MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall css-12k3ht8-MuiButtonBase-root-MuiButton-root"><span class="MuiButton-startIcon MuiButton-iconSizeSmall css-y6rp3m-MuiButton-startIcon"><span class="MuiBadge-root css-1c32n2y-MuiBadge-root"><svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="FilterListIcon"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path></svg><span class="MuiBadge-badge MuiBadge-standard MuiBadge-invisible MuiBadge-anchorOriginTopRight MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary css-u5p6dm-MuiBadge-badge"></span></span></span>Filters</button>
+                <button onClick={toggleDrawer1} className=" flex-row align-items-center MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall MuiButton-root MuiButton-text MuiButton-textPrimary MuiButton-sizeSmall MuiButton-textSizeSmall css-12k3ht8-MuiButtonBase-root-MuiButton-root"><span className="MuiButton-startIcon MuiButton-iconSizeSmall css-y6rp3m-MuiButton-startIcon"><span className="MuiBadge-root css-1c32n2y-MuiBadge-root"><svg className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="FilterListIcon"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path></svg><span className="MuiBadge-badge MuiBadge-standard MuiBadge-invisible MuiBadge-anchorOriginTopRight MuiBadge-anchorOriginTopRightRectangular MuiBadge-overlapRectangular MuiBadge-colorPrimary css-u5p6dm-MuiBadge-badge"></span></span></span>Filters</button>
               </div>
             </div>
 
             <div className="MuiFormControl-root MuiTextField-root css-3be3ve-MuiFormControl-root-MuiTextField-root-MuiDataGrid-toolbarQuickFilter">
               <div className="MuiInputBase-root MuiInput-root MuiInput-underline MuiInputBase-colorPrimary MuiInputBase-formControl MuiInputBase-adornedStart MuiInputBase-adornedEnd css-q25xu3-MuiInputBase-root-MuiInput-root">
                 <div className="dt-center">
-
-                  <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SearchIcon"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
+                  <svg className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-ptiqhd-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="SearchIcon"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
                   <input
                     className="MuiInputBase-input MuiInput-input MuiInputBase-inputTypeSearch MuiInputBase-inputAdornedStart MuiInputBase-inputAdornedEnd css-c63i49-MuiInputBase-input-MuiInput-input"
                     type="search"
@@ -454,16 +474,12 @@ const ObjectOverview = () => {
                   ))}
                   <th>
                     <div className="MuiDataGrid-columnHeaderTitleContainer MuiDataGrid-columnHeader MuiDataGrid-columnHeader--sortable MuiDataGrid-columnHeader--sorted MuiDataGrid-withBorderColor">
-
                       <div className="MuiDataGrid-columnHeaderTitleContainerContent">
                         <div className=" MuiDataGrid-columnHeaderTitle css-t89xny-MuiDataGrid-columnHeaderTitle head-font ">
                           Action
                         </div>
-
                       </div>
-
                     </div>
-
                   </th>
                 </tr>
               </thead>
@@ -498,38 +514,40 @@ const ObjectOverview = () => {
               </tbody>
             </table>
           </div>
+          
           <div className="border-pagination pagination MuiDataGrid-footerContainer MuiDataGrid-withBorderColor css-wop1k0-MuiDataGrid-footerContainer sb">
             <div></div>
             <div className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular MuiTablePagination-toolbar css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar">
-
               <span>{currentPage + 1} of {getPageCount()}</span>
-
               <div className="MuiTablePagination-actions mr-4">
-
-
                 <button
                   className={`MuiButtonBase-root MuiIconButton-root  MuiIconButton-colorInherit MuiIconButton-sizeMedium css-zylse7-MuiButtonBase-root-MuiIconButton-root ${currentPage === 0 ? 'Mui-disabled' : ''}`}
-
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 0}
                 >
-                  <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="KeyboardArrowLeftIcon"><path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"></path></svg>
+                  <svg className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="KeyboardArrowLeftIcon"><path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"></path></svg>
                 </button>
                 <button
                   className={`MuiButtonBase-root MuiIconButton-root  MuiIconButton-colorInherit MuiIconButton-sizeMedium css-zylse7-MuiButtonBase-root-MuiIconButton-root ${currentPage === getPageCount() - 1 ? 'Mui-disabled' : ''}`}
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === getPageCount() - 1}
                 >
-                  <svg class="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="KeyboardArrowRightIcon"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path></svg>
+                  <svg className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="KeyboardArrowRightIcon"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path></svg>
                 </button>
-
+                <div>
+                  <label htmlFor="itemsPerPage">Items Per Page:</label>
+                  <select id="itemsPerPage" value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                    <option value={10}>10</option>
+                    <option value={20}>20</option>
+                    <option value={50}>50</option>
+                    <option value={100}>100</option>
+                  </select>
+                </div>
                 Total Rows: {datas.length}
               </div>
             </div>
-
           </div>
         </div>
-
       </div>
     </div>
   );
