@@ -166,7 +166,6 @@ const PaymentMode = () => {
       });
   };
 
-  console.log(filterData, "FD===");
   const columns = [
     {
       headerName: "S.No",
@@ -301,6 +300,7 @@ const PaymentMode = () => {
       },
     },
   ];
+  console.log(filterData, "filterData>>>", datas, "datas>>");
 
   return (
     <div>
@@ -378,7 +378,7 @@ const PaymentMode = () => {
                       value={title}
                       onChange={(event, newValue) => setTitle(newValue)}
                       options={Array.from(
-                        new Set(datas.map((option) => option.title))
+                        new Set(datas.map((option) => option.title || ""))
                       )}
                       renderInput={(params) => (
                         <TextField
@@ -411,7 +411,7 @@ const PaymentMode = () => {
                       value={bankName}
                       onChange={(event, newValue) => setBankName(newValue)}
                       options={Array.from(
-                        new Set(datas.map((option) => option.detail))
+                        new Set(datas.map((option) => option.detail || ""))
                       )}
                       renderInput={(params) => (
                         <TextField
@@ -444,7 +444,9 @@ const PaymentMode = () => {
                       value={paymentType}
                       onChange={(event, newValue) => setPaymentType(newValue)}
                       options={Array.from(
-                        new Set(datas.map((option) => option.payment_type))
+                        new Set(
+                          datas?.map((option) => option?.payment_type || "")
+                        )
                       )}
                       renderInput={(params) => (
                         <TextField
@@ -454,7 +456,7 @@ const PaymentMode = () => {
                           variant="outlined"
                           InputProps={{
                             ...params.InputProps,
-                            className: "form-control", // Apply Bootstrap's form-control class
+                            className: "form-control",
                           }}
                           style={{
                             borderRadius: "0.25rem",
@@ -479,14 +481,14 @@ const PaymentMode = () => {
                       options={Array.from(
                         new Set(
                           datas.map((option) =>
-                            option.gst_bank === 1 ? "GST" : "Non GST"
+                            option.gst_bank === 1 ? "GST" : "Non GST" || ""
                           )
                         )
                       )}
                       renderInput={(params) => (
                         <TextField
                           {...params}
-                          label="Payment Type"
+                          label="GST"
                           type="text"
                           variant="outlined"
                           InputProps={{
@@ -532,7 +534,7 @@ const PaymentMode = () => {
                 >
                   Hidden Data
                 </Button>
-                {/* <Link to="/admin/finance-payment-mode-payment-details">
+                <Link to="/admin/Incentive-Payment-Mode-Payment-Details">
                   <Button
                     variant="contained"
                     // onClick={handleAddPaymentDetail}
@@ -540,7 +542,7 @@ const PaymentMode = () => {
                   >
                     Add Data
                   </Button>
-                </Link> */}
+                </Link>
               </div>
             </div>
           </div>

@@ -1376,10 +1376,9 @@ const SidebarLinks = () => {
                             <>
                               <NavLink
                                 className="collapse-item"
-                                to="/admin/finance-incentivepayment"
+                                to="/admin/finance-incentive-parent"
                               >
-                                <i className="bi bi-dot"></i> Pending Incentive
-                                Payment
+                                <i className="bi bi-dot"></i>Incentive
                               </NavLink>
                             </>
                           </div>
@@ -1623,7 +1622,7 @@ const SidebarLinks = () => {
                   </div>
                 </div>
               </li>
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <>
                   <NavLink
                     className="collapse-item"
@@ -1632,7 +1631,7 @@ const SidebarLinks = () => {
                     <i className="bi bi-dash"></i> Incentive Report
                   </NavLink>
                 </>
-              </li>
+              </li> */}
             </div>
           </div>
         </li>

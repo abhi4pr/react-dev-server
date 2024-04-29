@@ -304,6 +304,7 @@ import CreateSaleBooking from "./Sales/SaleBooking/CreateSaleBooking";
 import ViewSaleBooking from "./Sales/SaleBooking/ViewSaleBooking";
 import Timeline from "./Navbar-Sidebar/Timeline";
 import SaleBooking from "./Finance/Salebooking";
+
 import Stats from "./PageMS/Stats";
 import OperationMasters from "./Operation/Masters/OperationMasters";
 import RegisteredCampaigns from "./Operation/RegisteredCampaigns";
@@ -317,6 +318,11 @@ import EditPaymentMode from "./Sales/PaymentMode/EditPaymentMode";
 import CreatePaymentDetails from "./Sales/PaymentDetails/CreatePaymentDetails";
 import ViewPaymentDetails from "./Sales/PaymentDetails/ViewPaymentDetails";
 import EditPaymentDetails from "./Sales/PaymentDetails/EditPayementDetails";
+
+import PaymentModePaymentDetails from "./Finance/PaymentModePaymentDetails";
+import BalanceTransactionList from "./Finance/BalanceTransactionList";
+import Overview from "./Finance/Overview";
+import IncentiveParent from "./Finance/IncentiveParent";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -774,6 +780,10 @@ const Admin = () => {
                     element={<BalancePaymentList />}
                   />
                   <Route
+                    path="/finance-transaction-list/:sale_booking_id"
+                    element={<BalanceTransactionList />}
+                  />
+                  <Route
                     path="/finance-incentivepayment"
                     element={<IncentivePayment />}
                   />
@@ -828,6 +838,7 @@ const Admin = () => {
                     path="/finance-pruchasemanagement-pendingpaymentrequest"
                     element={<PendingPaymentRequest />}
                   />
+                  <Route path="/finance-overview" element={<Overview />} />
                   <Route
                     path="/payment-mode-master"
                     element={<PaymentModeMast />}
@@ -843,6 +854,10 @@ const Admin = () => {
                   <Route
                     path="/Incentive-Request-Released-List/:incentive_request_id"
                     element={<SalesExecutiveIncentiveRequestReleaseList />}
+                  />
+                  <Route
+                    path="/Incentive-Payment-Mode-Payment-Details"
+                    element={<PaymentModePaymentDetails />}
                   />
                   <Route
                     path="/finance-pruchasemanagement-alltransaction"
@@ -863,6 +878,10 @@ const Admin = () => {
                   <Route
                     path="/finance-gst-nongst-incentive-report"
                     element={<GstNongstIncentiveReport />}
+                  />
+                  <Route
+                    path="/finance-incentive-parent"
+                    element={<IncentiveParent />}
                   />
                   {/* ========================== */}
                   <Route

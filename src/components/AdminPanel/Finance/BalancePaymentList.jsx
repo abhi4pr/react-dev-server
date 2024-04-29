@@ -93,6 +93,7 @@ const BalancePaymentList = () => {
   const [baseAmount, setBaseAmount] = useState();
   const [campaignAmountData, setCampaignAmountData] = useState();
   const [paidAmountData, setPaidAmountData] = useState();
+  const [adjustmentAmount, setAdjustmentAmount] = useState();
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -124,6 +125,7 @@ const BalancePaymentList = () => {
     formData.append("payment_type", paymentType.label);
     formData.append("payment_mode", "others");
     formData.append("paid_amount", paidAmount);
+    formData.append("incentive_adjustment_amount", adjustmentAmount);
 
     //     // sale_booking_id:161
     //     payment_update_id:
@@ -1216,8 +1218,26 @@ const BalancePaymentList = () => {
         </button>
       ),
     },
+    {
+      field: "Action",
+      headerName: "Action",
+      width: 190,
+      renderCell: (params) => (
+        <Link
+          to={`/admin/finance-transaction-list/${params.row.sale_booking_id}`}
+          className="link-primary"
+        >
+          {params.row.total_paid_amount > 0 ? (
+            <button className="btn cmnbtn btn_sm btn-outline-primary">
+              Transaction History
+            </button>
+          ) : (
+            ""
+          )}
+        </Link>
+      ),
+    },
   ];
-
   const filterDataBasedOnSelection = (apiData) => {
     console.log(apiData, "api data >>");
     const now = moment();
@@ -2163,6 +2183,18 @@ const BalancePaymentList = () => {
                             </div>
                           </div>
                         )}
+                        <div className="form-group mt-3">
+                          <label htmlFor="images">Adjustment Amount</label>
+                          <input
+                            type="number"
+                            className="form-control"
+                            id="paid %"
+                            name="paid %"
+                            onChange={(e) =>
+                              setAdjustmentAmount(e.target.value)
+                            }
+                          />
+                        </div>
                         <div className="form-group mt-3">
                           <label htmlFor="images">
                             Payment Reference Number:
