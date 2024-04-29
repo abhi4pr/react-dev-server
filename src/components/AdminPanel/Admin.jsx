@@ -318,6 +318,7 @@ import EditPaymentMode from "./Sales/PaymentMode/EditPaymentMode";
 import CreatePaymentDetails from "./Sales/PaymentDetails/CreatePaymentDetails";
 import ViewPaymentDetails from "./Sales/PaymentDetails/ViewPaymentDetails";
 import EditPaymentDetails from "./Sales/PaymentDetails/EditPayementDetails";
+import OrgTree from "./WFH/OrgTree/OrgTree";
 
 import PaymentModePaymentDetails from "./Finance/PaymentModePaymentDetails";
 import BalanceTransactionList from "./Finance/BalanceTransactionList";
@@ -453,6 +454,8 @@ const Admin = () => {
                   </>
 
                   {/* Attendence  */}
+
+                  <Route path="/org-tree" element={<OrgTree />} />
 
                   <Route path="/wfhd-register" element={<WFHDRegister />} />
                   <Route path="/total-NDG" element={<TotalNDG />} />

@@ -639,7 +639,7 @@ const UserMaster = () => {
 
           axios
             .post(baseUrl + "add_send_user_mail", {
-              email: email,
+              email: personalEmail,
               subject: "User Registration",
               text: "A new user has been registered.",
               attachment: selectedImage,
@@ -658,7 +658,7 @@ const UserMaster = () => {
           if (reportL1 !== "") {
             axios
               .post(baseUrl + "add_send_user_mail", {
-                email: email,
+                email: personalEmail,
                 subject: "User Registration",
                 text: "A new user has been registered.",
                 attachment: selectedImage,

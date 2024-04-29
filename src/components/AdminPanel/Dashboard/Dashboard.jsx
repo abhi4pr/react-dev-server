@@ -14,9 +14,14 @@ import titleimg from "/bg-img.png";
 import jsPDF from "jspdf";
 import temphHead1 from "/invoice-tempelate/invoice-tem-header-1.png";
 import "jspdf-autotable";
-import { Details } from "@mui/icons-material"; import WFHDDahboard from "./WFHDDahboard";
+import { Details } from "@mui/icons-material";
+import WFHDDahboard from "./WFHDDahboard";
+import { useAPIGlobalContext } from "../APIContext/APIContext";
+import { constant } from "../../../utils/constants";
+import OrgTree from "../WFH/OrgTree/OrgTree";
 
 function Dashboard() {
+  const { RoleIDContext } = useAPIGlobalContext();
   const [renderCount, setRenderCount] = useState(0);
   const [allsimData, getAllSimData] = useState([]);
   const [logoBrandData, getLogoBrandData] = useState([]);
@@ -94,7 +99,6 @@ function Dashboard() {
   const AllData = allData;
   const location = useLocation();
   const activeLink = location.pathname;
-
 
   return (
     <>
@@ -285,6 +289,7 @@ function Dashboard() {
             navigate("/admin/finance-dashboard")}
         </div>
 
+        {/* {RoleIDContext == constant.CONST_MANAGER_ROLE && <OrgTree />} */}
         {contextData && contextData[55] && contextData[55].view_value === 1 && (
           <WFHDDahboard />
         )}
