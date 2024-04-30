@@ -235,16 +235,16 @@ const PageOverview = () => {
     { field: "page_level", headerName: "Level", width: 200 },
     { field: "page_status", headerName: "Status", width: 200 },
     { field: "ownership_type", headerName: "Ownership", width: 200 },
-    {
-      field: "link",
-      headerNa: "Link",
-      width: 200,
-      renderCell: (params) => (
-        <Link to={params.row.link} target="_blank" className="text-primary">
-          <OpenInNewIcon />
-        </Link>
-      ),
-    },
+    // {
+    //   field: "link",
+    //   headerNa: "Link",
+    //   width: 200,
+    //   renderCell: (params) => (
+    //     <Link to={params.row.link} target="_blank" className="text-primary">
+    //       <OpenInNewIcon />
+    //     </Link>
+    //   ),
+    // },
     {
       field: "platform_id",
       headerName: "Platform",
