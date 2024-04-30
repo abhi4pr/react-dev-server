@@ -21,7 +21,7 @@ const OfficeMastOverview = () => {
     if (userID && contextData.length === 0) {
       axios
         .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
+          `${baseUrl}` + `get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -32,7 +32,7 @@ const OfficeMastOverview = () => {
   async function getData() {
     try {
       const res = await axios.get(
-        baseUrl+"get_all_rooms"
+        baseUrl + "get_all_rooms"
       );
 
       setData(res.data.data);
@@ -145,7 +145,7 @@ const OfficeMastOverview = () => {
 
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn cmnbtn  btn-primary"
         style={{
           float: "right",
           position: "relative",
@@ -156,24 +156,24 @@ const OfficeMastOverview = () => {
 
       <div className="card">
         <div className="card-header sb">
-<h5>Office Overview</h5>
-<input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+          <h5>Office Overview</h5>
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </div>
         <div className="card-body">
 
           <DataTable
-            
+
             columns={columns}
             data={filterdata}
             // fixedHeader
             pagination
-           
+
             selectableRows
           />
         </div>

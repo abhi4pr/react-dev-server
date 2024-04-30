@@ -105,23 +105,23 @@ const TagedPersonOverview = ({ filterData, hardRender, tabOne, tabTwo }) => {
 
   return (
     <>
-      
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
-            <DataTable
-             
-              columns={activeColumns}
-              data={filterData}
-              // fixedHeader
-              pagination
-              fixedHeaderScrollHeight="64vh"
-              exportToCSV
-              highlightOnHover
-              subHeader
-            />
-          </div>
-        </div>
-     
+
+      <>
+
+        <DataTable
+
+          columns={activeColumns}
+          data={filterData}
+          // fixedHeader
+          pagination
+          fixedHeaderScrollHeight="64vh"
+          exportToCSV
+          highlightOnHover
+          subHeader
+        />
+
+      </>
+
     </>
   );
 };

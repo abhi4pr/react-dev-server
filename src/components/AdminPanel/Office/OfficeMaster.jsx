@@ -63,41 +63,52 @@ const OfficeMast = () => {
     return <Navigate to="/admin/office-mast-overview" />;
   }
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Office"
-        title="Office Register"
-        handleSubmit={handleSubmit}
-      >
-        <FieldContainer
-          label="Sitting Area (Room)"
-          type="number"
-          value={sittingMast}
-          onChange={(e) => setSittingMast(e.target.value)}
-        />
-        <FieldContainer
-          label="Room Image"
-          type="file"
-          fieldGrid={6}
-          onChange={(e) => setRoomImage(e.target.files[0])}
-        />
-        {/* <FieldContainer
+        link={true}
+
+      />
+
+
+      <div className="card">
+        <div className="card-header">
+          <div className="card-title">
+            Office Register
+          </div>
+        </div>
+        <div className="card-body">
+          <FieldContainer
+            label="Sitting Area (Room)"
+            type="number"
+            value={sittingMast}
+            onChange={(e) => setSittingMast(e.target.value)}
+          />
+          <FieldContainer
+            label="Room Image"
+            type="file"
+            fieldGrid={6}
+            onChange={(e) => setRoomImage(e.target.files[0])}
+          />
+          {/* <FieldContainer
           label="Created By"
           value={createdBy}
           fieldGrid={3}
           onChange={(e) => setCreatedBy(e.target.value)}
           disabled
         /> */}
-        <FieldContainer
-          label="Remark"
-          Tag="textarea"
-          rows={3}
-          required={false}
-          value={remark}
-          onChange={(e) => setRemark(e.target.value)}
-        />
-      </FormContainer>
-    </>
+          <FieldContainer
+            label="Remark"
+            Tag="textarea"
+            rows={3}
+            required={false}
+            value={remark}
+            onChange={(e) => setRemark(e.target.value)}
+          />
+        </div>
+      </div>
+      <button className="cmnbtn btn btn-primary" onClick={handleSubmit}>Submit</button>
+    </div>
   );
 };
 
