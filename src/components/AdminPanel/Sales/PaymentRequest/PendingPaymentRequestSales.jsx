@@ -4,16 +4,20 @@ import { baseUrl } from "../../../../utils/config";
 import DataTable from "react-data-table-component";
 import FormContainer from "../../FormContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
+import { Link } from "react-router-dom";
 
-const ViewSaleBooking = () => {
-  const [saleBookingData, setSaleBookingData] = useState([]);
+const PendingPaymentRequestSales = () => {
+  const [pendingPayReqData, setPendingPayReqData] = useState([]);
   const [origionalData, setOrigionalData] = useState([]);
   const [search, setSearch] = useState("");
 
   const getData = async () => {
     try {
-      const response = await axios.get(`${baseUrl}sales/get_all_sales_booking`);
-      setSaleBookingData(response.data.data);
+      const response =
+        await axios.get(`${baseUrl}sales/getAll_pending_sales_booking_payment_list
+
+      `);
+      setPendingPayReqData(response.data.data);
       setOrigionalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
@@ -23,11 +27,13 @@ const ViewSaleBooking = () => {
     getData();
   }, []);
 
+  console.log(pendingPayReqData);
+
   useEffect(() => {
     const result = origionalData.filter((d) => {
       return d?.customer_name?.toLowerCase()?.includes(search?.toLowerCase());
     });
-    setSaleBookingData(result);
+    setPendingPayReqData(result);
   }, [search]);
 
   const columns = [
@@ -45,62 +51,46 @@ const ViewSaleBooking = () => {
     },
     {
       name: "Booking Date",
-      selector: (row) => DateISOtoNormal(row.sale_booking_date),
+      selector: (row) =>
+        DateISOtoNormal(row?.sale_booking_data?.sale_booking_date),
     },
     {
       name: "Campaign Amount / Net Amount",
-      selector: (row) => row.campaign_amount + "₹",
+      selector: (row) => row?.sale_booking_data?.campaign_amount + "₹",
     },
     {
       name: "Paid Amount",
-      selector: (row) => console.log(row),
+      selector: (row) => row?.payment_amount,
     },
     {
-      name: "Base Amount",
-      selector: (row) => row.base_amount,
+      name: "Pending Amount",
+      selector: (row) =>
+        row?.sale_booking_data?.campaign_amount - row?.payment_amount,
     },
     {
-      name: "GST Amount",
-      selector: (row) => row.gst_amount + "₹",
+      name: "Finance Approved Amount",
+      // selector: (row) => row.gst_amount + "₹",
     },
     {
-      name: "Refund Amount",
-    },
-    {
-      name: "Refund Amount Files",
-    },
-    {
-      name: "Service Taken Amount",
-      selector: (row) => row.service_taken_amount + "₹",
-    },
-    {
-      name: "Service Balance Amount",
-    },
-    {
-      name: "Has Incentive",
-      selector: (row) => row.incentive_status,
-    },
-    {
-      name: "Execution Running Status",
-    },
-    {
-      name: "Invoice Download",
-    },
-    {
-      name: "Open Status",
-    },
-    {
-      name: "Approve or Reject Reason",
-    },
-    {
-      name: "Refund Reasons",
-    },
-    {
-      name: "Badge Achievement",
+      name: "Reason Credit Approval",
+      // selector: (row) => row.gst_amount + "₹",
     },
     {
       name: "Booking Date Created",
-      selector: (row) => DateISOtoNormal(row.createdAt),
+      selector: (row) => DateISOtoNormal(row?.createdAt),
+    },
+    {
+      name: "Action",
+      cell: (row) => (
+        <>
+          <Link to={`/admin/wfh-update-document/${row.user_id}`}>
+            {/* <UploadIcon /> */}
+            <div className="icon-1" title="Document upload">
+              <i class="bi bi-upload"></i>
+            </div>
+          </Link>
+        </>
+      ),
     },
   ];
   return (
@@ -108,7 +98,7 @@ const ViewSaleBooking = () => {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Sales Booking"
+            mainTitle="Pending Payment Request"
             link="/admin/create-sales-booking"
             buttonAccess={true}
             submitButton={false}
@@ -118,7 +108,7 @@ const ViewSaleBooking = () => {
 
       <div className="card">
         <div className="card-header sb">
-          <div className="card-title">Sale Booking Overview</div>
+          <div className="card-title">Pending Payment Request Overview</div>
           <input
             type="text"
             placeholder="Search here"
@@ -130,8 +120,9 @@ const ViewSaleBooking = () => {
         <div className="card-body">
           <DataTable
             columns={columns}
-            data={saleBookingData}
-            pagination
+            data={pendingPayReqData}
+            pagin
+            ation
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
           />
@@ -141,4 +132,4 @@ const ViewSaleBooking = () => {
   );
 };
 
-export default ViewSaleBooking;
+export default PendingPaymentRequestSales;

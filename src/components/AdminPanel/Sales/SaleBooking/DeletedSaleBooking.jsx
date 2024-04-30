@@ -5,15 +5,17 @@ import DataTable from "react-data-table-component";
 import FormContainer from "../../FormContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 
-const ViewSaleBooking = () => {
-  const [saleBookingData, setSaleBookingData] = useState([]);
+const DeletedSaleBooking = () => {
+  const [deletedSaleBookingData, setDeletedSaleBookingData] = useState([]);
   const [origionalData, setOrigionalData] = useState([]);
   const [search, setSearch] = useState("");
 
   const getData = async () => {
     try {
-      const response = await axios.get(`${baseUrl}sales/get_all_sales_booking`);
-      setSaleBookingData(response.data.data);
+      const response = await axios.get(
+        `${baseUrl}sales/get_all_new_deleted_data`
+      );
+      setDeletedSaleBookingData(response.data.data);
       setOrigionalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
@@ -27,7 +29,7 @@ const ViewSaleBooking = () => {
     const result = origionalData.filter((d) => {
       return d?.customer_name?.toLowerCase()?.includes(search?.toLowerCase());
     });
-    setSaleBookingData(result);
+    setDeletedSaleBookingData(result);
   }, [search]);
 
   const columns = [
@@ -37,70 +39,30 @@ const ViewSaleBooking = () => {
     },
     {
       name: "Customer name",
-      cell: (row) => row.customer_name,
+      selector: (row) => row.customer_name,
     },
     {
-      name: "Sales Executive name",
-      selector: (row) => row.created_by_name,
+      name: "Campaign amount/Net Amount",
+      selector: (row) => row?.campaign_amount,
     },
     {
-      name: "Booking Date",
-      selector: (row) => DateISOtoNormal(row.sale_booking_date),
+      name: "Base amount",
+      selector: (row) => row?.base_amount,
     },
     {
-      name: "Campaign Amount / Net Amount",
-      selector: (row) => row.campaign_amount + "₹",
+      name: "GST amount",
+      selector: (row) => row?.gst_amount,
     },
     {
-      name: "Paid Amount",
-      selector: (row) => console.log(row),
-    },
-    {
-      name: "Base Amount",
-      selector: (row) => row.base_amount,
-    },
-    {
-      name: "GST Amount",
-      selector: (row) => row.gst_amount + "₹",
-    },
-    {
-      name: "Refund Amount",
-    },
-    {
-      name: "Refund Amount Files",
-    },
-    {
-      name: "Service Taken Amount",
-      selector: (row) => row.service_taken_amount + "₹",
-    },
-    {
-      name: "Service Balance Amount",
-    },
-    {
-      name: "Has Incentive",
-      selector: (row) => row.incentive_status,
-    },
-    {
-      name: "Execution Running Status",
-    },
-    {
-      name: "Invoice Download",
-    },
-    {
-      name: "Open Status",
-    },
-    {
-      name: "Approve or Reject Reason",
-    },
-    {
-      name: "Refund Reasons",
-    },
-    {
-      name: "Badge Achievement",
+      name: "Incentive",
+      selector: (row) => (row?.incentive_status == "incentive" ? "Yes" : "No"),
     },
     {
       name: "Booking Date Created",
-      selector: (row) => DateISOtoNormal(row.createdAt),
+      selector: (row) =>
+        ` ${DateISOtoNormal(row.createdAt)} ${new Date(
+          row.createdAt
+        ).toLocaleTimeString("en-US", { hour12: false })}`,
     },
   ];
   return (
@@ -108,7 +70,7 @@ const ViewSaleBooking = () => {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Sales Booking"
+            mainTitle="Deleted Sale Booking"
             link="/admin/create-sales-booking"
             buttonAccess={true}
             submitButton={false}
@@ -118,7 +80,7 @@ const ViewSaleBooking = () => {
 
       <div className="card">
         <div className="card-header sb">
-          <div className="card-title">Sale Booking Overview</div>
+          <div className="card-title">Deleted Sale Booking Overview</div>
           <input
             type="text"
             placeholder="Search here"
@@ -130,7 +92,7 @@ const ViewSaleBooking = () => {
         <div className="card-body">
           <DataTable
             columns={columns}
-            data={saleBookingData}
+            data={deletedSaleBookingData}
             pagination
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
@@ -141,4 +103,4 @@ const ViewSaleBooking = () => {
   );
 };
 
-export default ViewSaleBooking;
+export default DeletedSaleBooking;

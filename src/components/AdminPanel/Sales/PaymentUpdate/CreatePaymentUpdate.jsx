@@ -5,10 +5,18 @@ import FieldContainer from "../../FieldContainer";
 import axios from "axios";
 import { baseUrl } from "../../../../utils/config";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
+import { useGlobalContext } from "../../../../Context/Context";
+import getDecodedToken from "../../../../utils/DecodedToken";
+import { useNavigate } from "react-router-dom";
 
 const CreatePaymentUpdate = () => {
+  const { toastAlert, toastError } = useGlobalContext();
+  const navigate = useNavigate();
+  const token = getDecodedToken();
+  const loginUserId = token.id;
   const [saleBookingData, setSaleBookingData] = useState([]);
-  const [selectedSaleBooking, setSelectedSaleBooking] = useState("");
+  const [selectedBookingData, setselectedBookingData] = useState(null);
+  const [selectedSaleBooking, setSelectedSaleBooking] = useState(null);
   const [paymentDate, setPaymentDate] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -52,7 +60,7 @@ const CreatePaymentUpdate = () => {
           `${baseUrl}sales/get_single_sales_booking/${selectedSaleBooking}`
         );
         const response = res.data.data;
-        // const BalAmt = response.campaign_amount - response.
+        setselectedBookingData(response);
       } catch (error) {
         console.error("Error fetching Sales Booking");
       }
@@ -61,10 +69,42 @@ const CreatePaymentUpdate = () => {
     fetchData();
   }, [selectedSaleBooking]);
 
+  console.log(selectedSaleBooking, "", selectedBookingData, "harshal");
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post();
+
+    try {
+      const formData = new FormData();
+      formData.append("sale_booking_id", Number(selectedSaleBooking));
+      formData.append("customer_id", Number(selectedBookingData?.customer_id));
+      formData.append("payment_date", paymentDate);
+      formData.append("payment_amount", paymentAmount);
+      formData.append("payment_detail_id", selectedPaymentDetail);
+      formData.append("payment_mode", selectedPaymentMode);
+      formData.append("payment_screenshot", paymentScreenshot);
+      formData.append("payment_ref_no", paymentRefrenceNumber);
+      formData.append("remarks", remarks);
+      formData.append("created_by", loginUserId);
+
+      const response = await axios.post(
+        `${baseUrl}sales/add_sales_booking_payment
+
+      `,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      toastAlert("Successfull", response.message);
+      navigate("/admin/view-sales-booking");
+    } catch (error) {
+      toastError(error);
+    }
   };
+
   return (
     <div>
       <FormContainer
@@ -76,7 +116,7 @@ const CreatePaymentUpdate = () => {
           <label className="form-label">Sale Booking</label>
           <Select
             options={saleBookingData?.map((option) => ({
-              value: option?._id,
+              value: option?.sale_booking_id,
               label: `${option?.customer_name} | ${DateISOtoNormal(
                 option?.sale_booking_date
               )} | ${option?.campaign_amount}`,
@@ -84,19 +124,19 @@ const CreatePaymentUpdate = () => {
             value={{
               value: selectedSaleBooking,
               label: saleBookingData?.find(
-                (item) => item?._id === selectedSaleBooking
+                (item) => item?.sale_booking_id === selectedSaleBooking
               )
                 ? `${
                     saleBookingData.find(
-                      (item) => item._id === selectedSaleBooking
+                      (item) => item.sale_booking_id === selectedSaleBooking
                     )?.customer_name
                   } | ${DateISOtoNormal(
                     saleBookingData.find(
-                      (item) => item._id === selectedSaleBooking
+                      (item) => item.sale_booking_id === selectedSaleBooking
                     )?.sale_booking_date
                   )} | ${
                     saleBookingData.find(
-                      (item) => item._id === selectedSaleBooking
+                      (item) => item.sale_booking_id === selectedSaleBooking
                     )?.campaign_amount
                   }`
                 : "",
@@ -163,10 +203,12 @@ const CreatePaymentUpdate = () => {
           type="file"
           value={paymentScreenshot}
           onChange={(e) => setPaymentScreenshot(e.target.files)}
+          required={false}
         />
 
         <FieldContainer
           label="Payment Refrence Number"
+          type="number"
           fieldGrid={4}
           astric
           value={paymentRefrenceNumber}

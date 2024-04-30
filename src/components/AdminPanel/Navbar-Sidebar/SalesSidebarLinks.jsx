@@ -53,13 +53,32 @@ const SalesSidebarLinks = () => {
           </NavLink>
           <NavLink className="collapse-item" to="/admin/view-sales-booking">
             <i className="bi bi-dot" />
-            Sale Booking
+            Sale Booking Overview
           </NavLink>
 
-          <NavLink className="collapse-item" to="/admin/view-sales-booking">
+          <NavLink className="collapse-item" to="/admin/deleted-sales-booking">
             <i className="bi bi-dot" />
-            Sale Booking
+            Deleted Sale Booking
           </NavLink>
+          <NavLink
+            className="collapse-item"
+            to="/admin/pending-payment-request-sales"
+          >
+            <i className="bi bi-dot" />
+            Pending Payment Request
+          </NavLink>
+          <NavLink
+            className="collapse-item"
+            to="/admin/rejected-payment-request-sales"
+          >
+            <i className="bi bi-dot" />
+            Rejected Payment Request
+          </NavLink>
+          <NavLink className="collapse-item" to="/admin/record-servcies">
+            <i className="bi bi-dot" />
+            Record Services
+          </NavLink>
+
           <NavLink className="collapse-item" to="/admin/create-payment-update">
             <i className="bi bi-dot" />
             Payment Update
