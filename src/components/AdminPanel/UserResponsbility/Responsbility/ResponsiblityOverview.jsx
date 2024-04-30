@@ -115,9 +115,9 @@ const ResponsiblityOverview = () => {
               <Link to={`/admin/responsibility-update/${row.id}`}>
                 <button
                   title="Edit"
-                  className="btn btn-outline-primary btn-sm user-button"
+                  className="icon-1"
                 >
-                  <FaEdit />
+                  <i className="bi bi-pencil" />
                 </button>
               </Link>
             )}

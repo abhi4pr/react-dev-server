@@ -39,25 +39,35 @@ const ResponsibilityMast = () => {
     return <Navigate to="/admin/responsibility-overview" />;
   }
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Responsibility"
-        title="Responsiblity"
-        handleSubmit={handleSubmit}
+        link={true}
       >
-        <FieldContainer
-          label="Responsibility"
-          value={responsibility}
-          onChange={(e) => setResponsibility(e.target.value)}
-        />
 
-        <FieldContainer
-          label="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
       </FormContainer>
-    </>
+      <div className="card">
+        <div className="card-header">
+          <div className="card-title">
+            Responsibility
+          </div>
+        </div>
+        <div className="card-body">
+          <FieldContainer
+            label="Responsibility"
+            value={responsibility}
+            onChange={(e) => setResponsibility(e.target.value)}
+          />
+
+          <FieldContainer
+            label="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+      </div>
+      <button className="cmnbtn btn-primary" onClick={handleSubmit}>Submit</button>
+    </div>
   );
 };
 

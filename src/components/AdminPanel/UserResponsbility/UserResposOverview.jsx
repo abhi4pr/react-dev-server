@@ -98,7 +98,7 @@ const UserResposOverview = () => {
               <Link to="/admin/user-respons-update">
                 <button
                   title="Edit"
-                  className="btn btn-outline-primary btn-sm user-button"
+                  className="icon-1"
                   onClick={() =>
                     setToLocalStorage(
                       row.Job_res_id,
@@ -108,7 +108,7 @@ const UserResposOverview = () => {
                     )
                   }
                 >
-                  <FaEdit />
+                  <i className="bi bi-pencil" />
                 </button>
               </Link>
             )}
@@ -179,8 +179,8 @@ const UserResposOverview = () => {
               highlightOnHover
               paginationResetDefaultPage={true}
               striped="true"
-              // pagination
-              // fixedHeaderScrollHeight="64vh"
+            // pagination
+            // fixedHeaderScrollHeight="64vh"
             />
           </div>
           {/* <div className="data_tbl table-responsive">

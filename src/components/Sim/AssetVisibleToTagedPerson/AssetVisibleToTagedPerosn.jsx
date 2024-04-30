@@ -60,7 +60,7 @@ const AssetVisibleToTagedPerosn = () => {
 
   return (
     <>
-      <div className="master-card-css">
+      <div>
         <div className="action_title">
           <FormContainer
             submitButton={false}
@@ -92,8 +92,8 @@ const AssetVisibleToTagedPerosn = () => {
           <div className="card-header">
             Assets
           </div>
-          <div className="card-body body-padding">
-          {activeAccordionIndex === 0 && tab1}
+          <div className="card-body thm_table">
+            {activeAccordionIndex === 0 && tab1}
             {activeAccordionIndex === 1 && tab2}
           </div>
         </div>

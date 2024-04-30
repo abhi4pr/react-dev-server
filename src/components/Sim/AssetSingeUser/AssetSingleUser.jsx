@@ -174,7 +174,7 @@ const AssetSingleUser = () => {
     setRepairDate(currentDate);
   }, []);
   return (
-    <>
+    <div>
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
@@ -188,9 +188,8 @@ const AssetSingleUser = () => {
       <div className="tab">
         {accordionButtons.map((button, index) => (
           <div
-            className={`named-tab ${
-              activeAccordionIndex === index ? "active-tab" : ""
-            }`}
+            className={`named-tab ${activeAccordionIndex === index ? "active-tab" : ""
+              }`}
             onClick={() => {
               handleAccordionButtonClick(index);
             }}
@@ -201,7 +200,7 @@ const AssetSingleUser = () => {
       </div>
       <div className="card">
         <div className="card-header sb">Asset</div>
-        <div className="card-body body-padding">
+        <div className="card-body thm_table">
           {activeAccordionIndex === 0 && tab1}
           {activeAccordionIndex === 1 && tab2}
         </div>
@@ -386,7 +385,7 @@ const AssetSingleUser = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
