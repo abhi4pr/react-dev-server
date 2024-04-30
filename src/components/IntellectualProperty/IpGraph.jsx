@@ -7,7 +7,7 @@ import FieldContainer from "../AdminPanel/FieldContainer";
 import { useGlobalContext } from "../../Context/Context";
 import UserNav from "../Pantry/UserPanel/UserNav";
 // import { Chart } from 'chart.js';
-import Chart from "chart.js/auto";
+// import Chart from "chart.js/auto";
 import Select from "react-select";
 import {baseUrl} from '../../utils/config'
 

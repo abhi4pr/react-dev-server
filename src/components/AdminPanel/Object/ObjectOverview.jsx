@@ -165,16 +165,6 @@ const ObjectOverview = () => {
   const [filters, setFilters] = useState([]);
   const [savedFilters, setSavedFilters] = useState([]);
 
-  const saveFilter = () => {
-    const newSavedFilters = [...savedFilters, { filters }];
-    setSavedFilters(newSavedFilters); 
-  };
-
-  const applySavedFilter = (savedFilter) => {
-    setFilters(savedFilter.filters);
-    filterDataFun(savedFilter.filters);
-  };
-
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
@@ -182,17 +172,25 @@ const ObjectOverview = () => {
   // custom dynamic table code starts here
 
   const getTableData = async () => {
-    await axios.get(baseUrl + `get_dynamic_table_data?userId=${userID}&tableName=${'object table'}`)
-      .then((res) => {
-        const initialColumns = res.data.data[0].column_order_Obj ||
-          ["Created_by", "Dept_id", "dept_name", "obj_id", "obj_name", "soft_name", "_id"];
+    try {
+      const response = await axios.get(baseUrl + `get_dynamic_table_data?userId=${userID}&tableName=${'object table'}`);
+      const responseData = response.data;
+      if (responseData && responseData.data && responseData.data.length > 0) {
+        const initialColumns = responseData.data[0].column_order_Obj || ["Created_by", "Dept_id", "dept_name", "obj_id", "obj_name", "soft_name", "_id"];
         setColumns(initialColumns);
-      });
+      } else {
+        const defaultColumns = ["Created_by", "Dept_id", "dept_name", "obj_id", "obj_name", "soft_name", "_id"];
+        setColumns(defaultColumns);
+      }
+    } catch (error) {
+      console.error('Error fetching dynamic table data:', error);
+      const defaultColumns = ["Created_by", "Dept_id", "dept_name", "obj_id", "obj_name", "soft_name", "_id"];
+      setColumns(defaultColumns);
+    }
   }
-
+  
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerOpen1, setDrawerOpen1] = useState(false);
-
 
   const handleDragStart = (e, index) => {
     e.dataTransfer.setData("text/plain", index);
@@ -354,6 +352,21 @@ const ObjectOverview = () => {
     setFilterData(result);
   }, [search]);
 
+  const saveFilter = () => {
+    const newSavedFilters = [...savedFilters, { filters }];
+    setSavedFilters(newSavedFilters); 
+    axios.put(baseUrl+'edit_dynamic_table_data',{
+      user_id: userID,
+      table_name: 'object table',
+      filter_array: newSavedFilters
+    })
+  };
+
+  const applySavedFilter = (savedFilter) => {
+    setFilters(savedFilter.filters);
+    filterDataFun(savedFilter.filters);
+  };
+
   return (
     <div >
       <FormContainer
@@ -367,12 +380,12 @@ const ObjectOverview = () => {
         }
       />
 
-  {savedFilters.map((savedFilter, index) => (
-    <button className="btn btn-warning" key={index} onClick={() => applySavedFilter(savedFilter)}>
-      Saved Filter {index + 1}
-    </button>
-  ))}
-  <button className="btn btn-success" onClick={saveFilter} disabled={filters.length === 0}>Save Filter</button>
+    {savedFilters.map((savedFilter, index) => (
+      <button className="btn btn-warning" key={index} onClick={() => applySavedFilter(savedFilter)}>
+        Saved Filter {index + 1}
+      </button>
+    ))}
+    <button className="btn btn-success" onClick={saveFilter} disabled={filters.length === 0}>Save Filter</button>
 
       <div className="card">
         <div className="card-body thm_table dt">
