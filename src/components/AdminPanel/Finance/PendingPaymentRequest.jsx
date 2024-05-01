@@ -1575,29 +1575,6 @@ export default function PendingPaymentRequest() {
     setRowSelectionModel(rowIds);
   };
 
-  // const handleDownloadInvoices = async () => {
-  //   const zip = new JSZip();
-
-  //   // Generate PDFs and add them to the zip
-  //   await Promise.all(
-  //     rowSelectionModel.map(async (rowId) => {
-  //       const pdf = new jsPDF();
-  //       // Customize your PDF content here
-  //       pdf.text(`PDF content for row ${rowId}`, 10, 10);
-  //       zip.file(`invoice_${rowId}.pdf`, pdf.output());
-  //     })
-  //   );
-
-  //   // Generate the zip file
-  //   const zipBlob = await zip.generateAsync({ type: "blob" });
-
-  //   // Trigger download
-  //   const link = document.createElement("a");
-  //   link.href = URL.createObjectURL(zipBlob);
-  //   link.download = "invoices.zip";
-  //   link.click();
-  // };
-
   const handleDownloadInvoices = async () => {
     const zip = new JSZip();
 
@@ -1967,20 +1944,9 @@ export default function PendingPaymentRequest() {
                     <Autocomplete
                       value={vendorName}
                       onChange={(event, newValue) => setVendorName(newValue)}
-                      // options={Array.from(
-                      //   new Set(data.map((option) => option.vendor_name))
-                      // )}
                       options={vendorNameList?.map((e) => {
                         return e;
                       })}
-                      // options={Array.from(
-                      //   new Set(
-                      //     filterData
-                      //       .filter((d) => d.status === "3")
-                      //       .map((option) => option.vendor_name)
-                      //   )
-                      // )}
-                      // options={filterData.map((option) => option.vendor_name)}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2611,28 +2577,6 @@ export default function PendingPaymentRequest() {
                         <label htmlFor="paymentProof">
                           Payment Proof/ScreenShot
                         </label>
-                        {/* <input
-                          type="file"
-                          className="form-control col-md-6"
-                          id="paymentProof"
-                          onChange={(e) => setPayMentProof(e.target.files[0])}
-                        /> */}
-                        {/* <Button
-                          variant="contained"
-                          className="col-md-5 ms-3"
-                          fullWidth
-                          onClick={setOpenImageDialog}
-                        >
-                          view image
-                        </Button> */}
-                        {/* {openImageDialog && (
-                          <ImageView
-                            viewImgSrc={payMentProof}
-                            fullWidth={true}
-                            maxWidth={"md"}
-                            setViewImgDialog={setOpenImageDialog}
-                          />
-                        )} */}
 
                         <input
                           type="file"

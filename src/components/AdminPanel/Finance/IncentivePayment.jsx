@@ -58,6 +58,7 @@ const IncentivePayment = () => {
   const [sameSalesExecutiveDialog, setSameSalesExecutiveDialog] = useState("");
   const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
   const [dateFilter, setDateFilter] = useState("");
+  const [balRelInvc, setBalRelInvc] = useState("");
 
   const DateFormateToYYYYMMDD = (date) => {
     const d = new Date(date);
@@ -67,10 +68,16 @@ const IncentivePayment = () => {
     return `${ye}-${mo}-${da}`;
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setBalRelInvc(file);
+    // setPreview(URL.createObjectURL(file));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    axios
+    await axios
       .put(baseUrl + "edit_php_payment_incentive_data", {
         incentive_request_id: selectedData.incentive_request_id,
         requested_amount: selectedData.request_amount,
@@ -94,6 +101,7 @@ const IncentivePayment = () => {
     formData.append("payment_date", DateFormateToYYYYMMDD(paymentDate));
     formData.append("payment_type", paymentType);
     formData.append("partial_payment_reason", partialPaymentReason);
+    formData.append("incentive_invoices", balRelInvc);
 
     await axios
       .post(
@@ -305,8 +313,8 @@ const IncentivePayment = () => {
   //   return totalAmount;
   // };
   // const requestedAmountTotal = calculateRequestedAmountTotal();
-  const requestedAmountTotal = filterData.reduce(
-    (total, item) => total + parseFloat(item.request_amount) / 2,
+  const requestedAmountTotal = filterData?.reduce(
+    (total, item) => total + parseFloat(item.request_amount),
     0
   );
 
@@ -636,7 +644,7 @@ const IncentivePayment = () => {
       renderCell: (params) =>
         params.row.sales_executive_name !== "Total" ? (
           <Link
-            to={`/admin/Incentive-Request-Released-List/${params.row.incentive_request_id}`}
+            to={`/admin/Incentive-balance-Released/${params.row.incentive_request_id}`}
             className="link-primary"
           >
             {params.row.released_amount
@@ -667,12 +675,13 @@ const IncentivePayment = () => {
       headerName: "Status",
       width: 230,
       renderCell: (params) => {
-        return params.row.action == "Complete Release Button" ? (
+        return params.row.action === "Complete Release Button" ? (
           <button
             className="btn cmnbtn btn_sm btn-outline-primary"
-            data-toggle="modal"
-            data-target="#incentiveModal"
-            onClick={() => {
+            // data-toggle="modal"
+            // data-target="#incentiveModal"
+            onClick={(e) => {
+              e.preventDefault();
               setSelectedData(params.row),
                 setBalanceReleaseAmount(params.row.balance_release_amount);
               setAccountNo("");
@@ -691,22 +700,24 @@ const IncentivePayment = () => {
     {
       field: "Aging",
       headerName: "Aging",
-      renderCell: (params) => {
-        const currentDate = new Date(
-          params.row.action == "Complete Release Button"
-            ? new Date()
-            : params.row.request_creation_date
-        );
-        const requestedDate = new Date(
-          params.row.action == "Complete Release Button"
-            ? params.row.request_creation_date
-            : params.row.payment_date
-        );
-        const diffTime = Math.abs(currentDate - requestedDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      renderCell: (params) => (
+        <div>{params.row.aging} </div>
 
-        return params.row.sales_executive_name !== "Total" ? diffDays : null;
-      },
+        // const currentDate = new Date(
+        //   params.row.action == "Complete Release Button"
+        //     ? new Date()
+        //     : params.row.request_creation_date
+        // );
+        // const requestedDate = new Date(
+        //   params.row.action == "Complete Release Button"
+        //     ? params.row.request_creation_date
+        //     : params.row.payment_date
+        // );
+        // const diffTime = Math.abs(currentDate - requestedDate);
+        // const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        // return params.row.sales_executive_name !== "Total" ? diffDays : null;
+      ),
     },
   ];
 
@@ -852,6 +863,8 @@ const IncentivePayment = () => {
         return apiData; // No filter applied
     }
   };
+
+  console.log(balRelInvc, "balance release invoice>>>");
   return (
     <div>
       <FormContainer
@@ -1165,6 +1178,7 @@ const IncentivePayment = () => {
           </div>
         </div>
       </div>
+
       <Dialog
         fullWidth={true}
         maxWidth={"sm"}
@@ -1300,6 +1314,74 @@ const IncentivePayment = () => {
               onChange={(e) => setPaymentRef(e.target.value)}
               required
             />
+
+            <div className="row">
+              <label htmlFor="paymentProof">Payment Proof/ScreenShot</label>
+              {/* <input
+                          type="file"
+                          className="form-control col-md-6"
+                          id="paymentProof"
+                          onChange={(e) => setPayMentProof(e.target.files[0])}
+                        /> */}
+              {/* <Button
+                          variant="contained"
+                          className="col-md-5 ms-3"
+                          fullWidth
+                          onClick={setOpenImageDialog}
+                        >
+                          view image
+                        </Button> */}
+              {/* {openImageDialog && (
+                          <ImageView
+                            viewImgSrc={payMentProof}
+                            fullWidth={true}
+                            maxWidth={"md"}
+                            setViewImgDialog={setOpenImageDialog}
+                          />
+                        )} */}
+
+              <input
+                type="file"
+                className="form-control mt-3"
+                id="paymentProof"
+                onChange={handleFileChange}
+              />
+              {/* <Button
+                          variant="contained"
+                          className="col-md-5 ms-3"
+                          fullWidth
+                          onClick={openImgDialog}
+                        >
+                          view image
+                        </Button> */}
+              {/* {openDialog && preview && (
+                          <div
+                            style={{
+                              position: "fixed",
+                              top: 0,
+                              left: 0,
+                              right: 0,
+                              bottom: 0,
+                              background: "rgba(0,0,0,0.5)",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              zIndex: 9999,
+                            }}
+                            onClick={() => setOpenDialog(false)}
+                          >
+                            <img
+                              src={preview}
+                              alt="Selected file"
+                              style={{
+                                maxWidth: "50%",
+                                maxHeight: "80%",
+                                cursor: "pointer",
+                              }}
+                            />
+                          </div>
+                        )} */}
+            </div>
             <label>Remarks</label>
             <input
               type="text"
