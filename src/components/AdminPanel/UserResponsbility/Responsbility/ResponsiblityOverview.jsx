@@ -138,7 +138,7 @@ const ResponsiblityOverview = () => {
   ];
 
   return (
-    <>
+    <div>
       {allResponsiblility.map((d) => {
         <h1>{d.user_name}</h1>;
       })}
@@ -152,31 +152,34 @@ const ResponsiblityOverview = () => {
           true
         }
       />
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
+      <>
+        <div className="card">
+          <div className="card-header sb">
+            <div className="card-title">
+              Responsibility Overview
+            </div>
+            <input
+              type="text"
+              placeholder="Search here"
+              className="w-25 form-control"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div className="card-body">
             <DataTable
-              title="Responsibility Overview"
+
               columns={columns}
               data={filterdata}
               fixedHeader
-              // pagination
+              pagination
               fixedHeaderScrollHeight="64vh"
               highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
+
             />
           </div>
         </div>
-      </div>
+      </>
       <Modal
         isOpen={isModalOpen}
         onRequestClose={handleCloseModal}
@@ -234,7 +237,7 @@ const ResponsiblityOverview = () => {
           </div>
         )}
       </Modal>
-    </>
+    </div>
   );
 };
 export default ResponsiblityOverview;

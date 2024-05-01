@@ -174,7 +174,7 @@ const UserResposOverview = () => {
               columns={columns}
               data={filterdata}
               pagination
-              selectableRows={true}
+              // selectableRows={true}
               paginationDefaultPage={1}
               highlightOnHover
               paginationResetDefaultPage={true}

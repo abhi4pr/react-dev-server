@@ -164,7 +164,7 @@ const DesignationOverview = () => {
   };
 
   return (
-    <>
+    <div>
       {/* FormContainer for main title and link */}
       <FormContainer
         mainTitle="Designation"
@@ -176,30 +176,33 @@ const DesignationOverview = () => {
           true
         }
       />
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
+      <>
+        <div className="card">
+          <div className="card-header sb">
+            <div className="card-title">
+              Designation Overview
+            </div>
+            <input
+              type="text"
+              placeholder="Search here"
+              className="w-25 form-control "
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div className="card-body thm_table">
             <DataTable
-              title="Designation overview"
+
               columns={columns}
               data={filterdata}
               fixedHeader
               fixedHeaderScrollHeight="64vh"
               highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
+              pagination
             />
           </div>
         </div>
-      </div>
+      </>
 
       {/* Modal for displaying user details */}
       <Modal
@@ -266,7 +269,7 @@ const DesignationOverview = () => {
           </div>
         )}
       </Modal>
-    </>
+    </div>
   );
 };
 

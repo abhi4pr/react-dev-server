@@ -48,20 +48,23 @@ const Hobbies = () => {
     }
   };
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Hobbies"
         title="Hobbies Creation"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Hobbie"
-          fieldGrid={3}
-          value={hobby}
-          onChange={(e) => setHobby(e.target.value)}
-        />
+        <div className="row mb-4">
+
+          <FieldContainer
+            label="Hobbie"
+            fieldGrid={3}
+            value={hobby}
+            onChange={(e) => setHobby(e.target.value)}
+          />
+        </div>
       </FormContainer>
-    </>
+    </div>
   );
 };
 
