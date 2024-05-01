@@ -72,25 +72,29 @@ const Reason = () => {
         title="Reason"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Reason"
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-        />
-        <FieldContainer
-          label="Remark"
-          value={remark}
-          onChange={(e) => setRemark(e.target.value)}
-          required={false}
-        />
+        <div className="mb-4 row">
+
+          <FieldContainer
+            label="Reason"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+          />
+          <FieldContainer
+            label="Remark"
+            value={remark}
+            onChange={(e) => setRemark(e.target.value)}
+            required={false}
+          />
+        </div>
       </FormContainer>
       <div className="card">
-        <div className="data_tbl table-responsive">
+        <div className="card-body thm_table">
           <DataTable
             columns={columns}
             data={data}
             fixedHeader
             highlightOnHover
+            pagination
             subHeader
           />
         </div>

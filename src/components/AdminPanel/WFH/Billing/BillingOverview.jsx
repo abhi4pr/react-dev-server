@@ -23,7 +23,7 @@ const BillingOverview = () => {
 
   const getData = () => {
     axios
-      .get(baseUrl+"get_all_billingheaders")
+      .get(baseUrl + "get_all_billingheaders")
       .then((res) => {
         setBillData(res.data.result);
         setFilterData(res.data.result);
@@ -34,7 +34,7 @@ const BillingOverview = () => {
     if (userID && contextData?.length === 0) {
       axios
         .get(
-          `${baseUrl}`+`get_single_user_auth_detail/${userID}`
+          `${baseUrl}` + `get_single_user_auth_detail/${userID}`
         )
         .then((res) => {
           setDatas(res.data);
@@ -77,9 +77,9 @@ const BillingOverview = () => {
               <Link to={`/admin/billing-update/${row?.billingheader_id}`}>
                 <button
                   title="Edit"
-                  className="btn btn-outline-primary btn-sm user-button"
+                  className="btn btn-outline-primary btn-sm user-button icon-1"
                 >
-                  <FaEdit />{" "}
+                  <i className="bi bi-pencil" />{" "}
                 </button>
               </Link>
             )}
@@ -116,24 +116,28 @@ const BillingOverview = () => {
         }
       />
       <div className="card">
-        <div className="data_tbl table-responsive">
+        <div className="card-header sb">
+          <h4>Billing Overview</h4>
+          <input
+            type="text"
+            placeholder="Search Here"
+            className="w-25 form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        <div className="card-body">
           <DataTable
-            title="Billing Overview"
+            // title="Billing Overview"
             columns={columns}
             data={filterdata}
             fixedHeader
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search Here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+
+            pagination
+
           />
         </div>
       </div>

@@ -42,25 +42,28 @@ const RoleMaster = () => {
   return (
     <>
       <FormContainer mainTitle="Role" title="Role" handleSubmit={handleSubmit}>
-        <FieldContainer
-          label="Role Name"
-          value={roleName}
-          onChange={(e) => setRoleName(e.target.value)}
-        />
-        {/* <FieldContainer
+        <div className="mb-4 row">
+
+          <FieldContainer
+            label="Role Name"
+            value={roleName}
+            onChange={(e) => setRoleName(e.target.value)}
+          />
+          {/* <FieldContainer
           label="Created By"
           value={createdBy}
           onChange={(e) => setCreatedBy(e.target.value)}
           disabled
         /> */}
-        <FieldContainer
-          label="Remark"
-          Tag="textarea"
-          rows="3"
-          value={remark}
-          onChange={(e) => setRemark(e.target.value)}
-          required={false}
-        />
+          <FieldContainer
+            label="Remark"
+            Tag="textarea"
+            rows="3"
+            value={remark}
+            onChange={(e) => setRemark(e.target.value)}
+            required={false}
+          />
+        </div>
       </FormContainer>
     </>
   );

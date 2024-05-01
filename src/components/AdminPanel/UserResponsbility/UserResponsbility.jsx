@@ -109,7 +109,7 @@ const UserResponsbility = () => {
     <div>
       <FormContainer
         submitButton={false}
-        mainTitle="Responsibiliy"
+        mainTitle="Responsibility"
         title="User Responsiblity"
         handleSubmit={handleSubmit}
       >
@@ -235,7 +235,7 @@ const UserResponsbility = () => {
         <div className="col-md-12" style={{ margin: "10px" }}>
           <div className="d-flex justify-content-between">
             <button
-              className="btn btn-success"
+              className="btn cmnbtn btn_sm btn-success"
               style={{ marginRight: "5px" }}
               type="button"
               onClick={handleAddTodo}
@@ -245,7 +245,7 @@ const UserResponsbility = () => {
             {todos.length !== 0 && (
               <button
                 type="submit"
-                className="btn btn-primary"
+                className="btn cmnbtn btn-primary"
                 onClick={handleSubmit}
               >
                 {" "}

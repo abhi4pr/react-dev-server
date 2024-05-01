@@ -127,7 +127,7 @@ const UserOverview = () => {
       });
       reJoinClose();
       getData();
-    } catch {}
+    } catch { }
   };
 
   const SummaryData = (userId) => {
@@ -444,9 +444,9 @@ const UserOverview = () => {
             contextData[0] &&
             contextData[3].update_value === 1 && (
               <Link to={`/admin/user-auth-detail/${params.row.user_id}`}>
-                <Button variant="contained" color="primary" size="small">
+                <button className="btn cmnbtn btn_sm btn-outline-primary" variant="outline" size="small">
                   Auth
-                </Button>
+                </button>
               </Link>
             )}
         </>
@@ -461,13 +461,12 @@ const UserOverview = () => {
           {contextData &&
             contextData[0] &&
             contextData[3].update_value === 1 && (
-              <Button
-                size="small"
-                variant="contained"
+              <button
+                className="btn cmnbtn btn_sm btn-outline-primary"
                 onClick={() => handleKRA(params.row.user_id)}
               >
                 KRA
-              </Button>
+              </button>
             )}
         </>
       ),
@@ -478,8 +477,9 @@ const UserOverview = () => {
       width: 80,
       renderCell: (params) => (
         <Button
-          variant="contained"
-          color="primary"
+          variant="outlined"
+          className="btn cmnbtn btn_sm btn-outline-primary"
+
           startIcon={<RiLoginBoxLine />}
           onClick={() =>
             handleLogin(
@@ -496,16 +496,12 @@ const UserOverview = () => {
       headerName: "Transfer Res",
       width: 110,
       renderCell: (params) => (
-        <Button
-          variant="outlined"
-          color="error"
-          data-toggle="modal"
-          data-target="#exampleModal1"
-          data-whatever="@mdo"
+        <button
+          className="btn cmnbtn btn_sm btn-outline-danger"
           onClick={() => handleTransfer(params.row.user_id)}
         >
           Transfer
-        </Button>
+        </button>
       ),
     },
     {
@@ -513,8 +509,8 @@ const UserOverview = () => {
       headerName: "Separation",
       width: 100,
       renderCell: (params) => (
-        <Button
-          className="btn btn-primary"
+        <button
+          className="btn cmnbtn btn_sm btn-outline-primary"
           data-toggle="modal"
           data-target="#exampleModal"
           size="small"
@@ -529,7 +525,7 @@ const UserOverview = () => {
           }
         >
           Sep
-        </Button>
+        </button>
       ),
     },
 
@@ -538,13 +534,14 @@ const UserOverview = () => {
       headerName: "Summary",
       width: 100,
       renderCell: (params) => (
-        <Button
+        <button
+          className="btn cmnbtn btn_sm btn-outline-secondary"
           variant="contained"
           color="warning"
           onClick={() => handleUpdateSummary(params.row.user_id)}
         >
           Summary
-        </Button>
+        </button>
       ),
     },
 
@@ -558,17 +555,17 @@ const UserOverview = () => {
             contextData[0] &&
             contextData[0].update_value === 1 && (
               <Link to={`/admin/user-update/${params.row.user_id}`}>
-                <EditIcon sx={{ gap: "4px", margin: "5px", color: "blue" }} />
+                <div className="icon-1">
+                  <i className="bi bi-pencil" />
+                </div>
               </Link>
             )}
           {contextData &&
             contextData[0] &&
             contextData[0].delete_flag_value === 1 && (
-              <DeleteOutlineIcon
-                sx={{ gap: "4px", margin: "15px" }}
-                color="error"
-                onClick={() => handleDelete(params.row.user_id)}
-              />
+              <div className="icon-1" onClick={() => handleDelete(params.row.user_id)}>
+                <i className="bi bi-trash" />
+              </div>
             )}
         </>
       ),
@@ -580,13 +577,12 @@ const UserOverview = () => {
       width: 100,
       renderCell: (params) =>
         params.row.user_status === "Exit" && (
-          <Button
-            variant="contained"
-            color="error"
+          <button
+            className="btn cmnbtn btn_sm btn-outline-danger"
             onClick={() => handleReJoin(params.row.user_id)}
           >
             Re-Join
-          </Button>
+          </button>
         ),
     },
 
@@ -694,7 +690,7 @@ const UserOverview = () => {
   const mapUrl = `https://www.google.com/maps/embed/v1/place?key=${apiKey}&q=${map1?.latitude?.$numberDecimal},${map1?.longitude?.$numberDecimal}`;
 
   return (
-    <>
+    <div>
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
@@ -915,12 +911,12 @@ const UserOverview = () => {
                       departmentFilter === ""
                         ? { value: "", label: "All" }
                         : {
-                            value: departmentFilter,
-                            label:
-                              departmentData.find(
-                                (dept) => dept.dept_id === departmentFilter
-                              )?.dept_name || "Select...",
-                          }
+                          value: departmentFilter,
+                          label:
+                            departmentData.find(
+                              (dept) => dept.dept_id === departmentFilter
+                            )?.dept_name || "Select...",
+                        }
                     }
                     onChange={(selectedOption) => {
                       const selectedValue = selectedOption
@@ -951,12 +947,12 @@ const UserOverview = () => {
                       designationFilter === ""
                         ? { value: "", label: "All" }
                         : {
-                            value: designationFilter,
-                            label:
-                              designationData.find(
-                                (option) => option.desi_id === designationFilter
-                              )?.desi_name || "Select...",
-                          }
+                          value: designationFilter,
+                          label:
+                            designationData.find(
+                              (option) => option.desi_id === designationFilter
+                            )?.desi_name || "Select...",
+                        }
                     }
                     onChange={(selectedOption) => {
                       const newValue = selectedOption
@@ -997,7 +993,7 @@ const UserOverview = () => {
               </div>
             </div>
 
-            <div className="data_tbl" style={{ height: "64vh", width: "100%" }}>
+            <div className="data_tbl card-body thm_table" style={{ height: "64vh", width: "100%" }}>
               <DataGrid
                 rows={filterdata.map((data, index) => ({ ...data, id: index }))}
                 columns={columns}
@@ -1190,13 +1186,13 @@ const UserOverview = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                <FieldContainer
-                  label="Reinstated Date"
-                  type="date"
-                  value={separationReinstateDate}
-                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                />
-              )}
+                  <FieldContainer
+                    label="Reinstated Date"
+                    type="date"
+                    value={separationReinstateDate}
+                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                  />
+                )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"
@@ -1389,7 +1385,7 @@ const UserOverview = () => {
         </div>
         {/* )} */}
       </Modal>
-    </>
+    </div>
   );
 };
 export default UserOverview;

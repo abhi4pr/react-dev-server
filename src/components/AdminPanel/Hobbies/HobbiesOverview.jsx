@@ -14,7 +14,7 @@ const HobbiesOverview = () => {
   const getData = async () => {
     try {
       const response = await axios.get(
-        baseUrl+"get_all_hobbies"
+        baseUrl + "get_all_hobbies"
       );
       const data = response.data.data;
       setHobbiesData(data);
@@ -52,10 +52,10 @@ const HobbiesOverview = () => {
       selector: (row) => (
         <div className="d-flex">
           <button
-            className="btn btn-primary"
+            className="icon-1"
             onClick={() => navigate(`/admin/hobbies/${row.hobby_id}`)}
           >
-            Edit
+            <i className="bi bi-pencil"></i>
           </button>
           <DeleteButton
             endpoint={"delete_hobby"}
@@ -67,7 +67,7 @@ const HobbiesOverview = () => {
     },
   ];
   return (
-    <>
+    <div>
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
@@ -78,31 +78,32 @@ const HobbiesOverview = () => {
           />
         </div>
       </div>
-      <div className="page_height">
-        <div className="card mb-4">
-          <div className="data_tbl table-responsive">
+      <>
+        <div className="card">
+          <div className="card-header sb">
+            <h4 className="card-title">Hobbies Overview</h4>
+            <input
+              type="text"
+              placeholder="Search here"
+              className="w-25 form-control "
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+          <div className="card-body">
             <DataTable
-              title="Hobbies Overview"
+              // title="Hobbies Overview"
               columns={columns}
               data={hobbiesData}
               fixedHeader
               fixedHeaderScrollHeight="64vh"
               highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search here"
-                  className="w-50 form-control "
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              }
+              pagination
             />
           </div>
         </div>
-      </div>
-    </>
+      </>
+    </div>
   );
 };
 

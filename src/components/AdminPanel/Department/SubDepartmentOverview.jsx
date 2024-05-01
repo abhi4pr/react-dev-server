@@ -83,9 +83,9 @@ export default function SubDepartmentOverview() {
               <Link to={`/admin/sub-department-update/${row.id}`}>
                 <button
                   title="Edit"
-                  className="btn btn-outline-primary btn-sm user-button"
+                  className="btn btn-outline-primary btn-sm user-button icon-1"
                 >
-                  <FaEdit />{" "}
+                  <i className="bi bi-pencil" />{" "}
                 </button>
               </Link>
             )}
@@ -106,7 +106,7 @@ export default function SubDepartmentOverview() {
   ];
 
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Sub-Department"
         link="/admin/sub-department-master"
@@ -119,25 +119,26 @@ export default function SubDepartmentOverview() {
       />
 
       <div className="card">
-        <div className="data_tbl table-responsive">
+        <div className="card-header sb">
+          <h4 className="card-title">Sub-Department Overview</h4>
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="card-body thm_table">
           <DataTable
-            title="Sub-Department Overview"
+            // title="Sub-Department Overview"
             columns={columns}
             data={filterData}
-            fixedHeader
-            // pagination
+            // fixedHeader
+            pagination
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+
           />
         </div>
       </div>
@@ -161,34 +162,42 @@ export default function SubDepartmentOverview() {
         {selectedRow && (
           <div>
             <h2>Sub-Department: {selectedRow.dept_name}</h2>
+            <div className="card">
+              <div className="card-header">
+                <div className="pack">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    className="w-50 form-control"
+                    value={modalSearch}
+                    onChange={(e) => setModalSearch(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div className="card-body">
+                <DataTable
+                  columns={[
+                    { name: "Name", selector: "user_name" },
+                    { name: "Email", selector: "user_email_id" },
+                    { name: "Contact", selector: "user_contact_no" },
+                  ]}
+                  data={selectedUserData.filter((user) =>
+                    user.user_name.toLowerCase().includes(modalSearch.toLowerCase())
+                  )}
+                  highlightOnHover
 
-            <DataTable
-              columns={[
-                { name: "Name", selector: "user_name" },
-                { name: "Email", selector: "user_email_id" },
-                { name: "Contact", selector: "user_contact_no" },
-              ]}
-              data={selectedUserData.filter((user) =>
-                user.user_name.toLowerCase().includes(modalSearch.toLowerCase())
-              )}
-              highlightOnHover
-              subHeader
-              subHeaderComponent={
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  className="w-50 form-control"
-                  value={modalSearch}
-                  onChange={(e) => setModalSearch(e.target.value)}
+                  pagination
+
                 />
-              }
-            />
+              </div>
+            </div>
+
             <button className="btn btn-success" onClick={handleCloseModal}>
               Close
             </button>
           </div>
         )}
       </Modal>
-    </>
+    </div>
   );
 }

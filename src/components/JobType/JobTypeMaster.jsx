@@ -47,7 +47,7 @@ const JobTypeMaster = () => {
       cell: (row) => (
         <>
           <button
-            className="btn btn-primary"
+            className="icon-1"
             data-toggle="modal"
             data-target="#exampleModal"
             size="small"
@@ -55,7 +55,7 @@ const JobTypeMaster = () => {
             color="primary"
             onClick={() => handleJobTypeData(row)}
           >
-            <FaEdit />
+            <i className="bi bi-pencil" />
           </button>
           <DeleteButton
             endpoint="delete_job_type"
@@ -136,39 +136,43 @@ const JobTypeMaster = () => {
         title="Add Job"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Job Type"
-          value={jobTypeName}
-          onChange={(e) => setJobTypeName(e.target.value)}
-        />
-        <FieldContainer
-          label="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required="false"
-        />
+        <div className="row mb-4">
+
+          <FieldContainer
+            label="Job Type"
+            value={jobTypeName}
+            onChange={(e) => setJobTypeName(e.target.value)}
+          />
+          <FieldContainer
+            label="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required="false"
+          />
+        </div>
       </FormContainer>
 
       <div className="card">
-        <div className="data_tbl table-responsive">
+        <div className="card-header sb">
+          <h4>Job Type Overview</h4>
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-50 form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="card-body">
           <DataTable
-            title="Brand Overview"
+            // title="Brand Overview"
             columns={columns}
             data={jobTypeFilter}
             fixedHeader
-            // pagination
+            pagination
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+
           />
         </div>
       </div>
