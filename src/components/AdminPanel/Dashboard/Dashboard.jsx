@@ -289,7 +289,7 @@ function Dashboard() {
             navigate("/admin/finance-dashboard")}
         </div>
 
-        {/* {RoleIDContext == constant.CONST_MANAGER_ROLE && <OrgTree />} */}
+        {RoleIDContext == constant.CONST_MANAGER_ROLE && <OrgTree />}
         {contextData && contextData[55] && contextData[55].view_value === 1 && (
           <WFHDDahboard />
         )}
