@@ -328,6 +328,7 @@ import DeletedSaleBooking from "./Sales/SaleBooking/DeletedSaleBooking";
 import RejectedPaymentRequest from "./Sales/PaymentRequest/RejectedPaymentRequest";
 import PendingPaymentRequestSales from "./Sales/PaymentRequest/PendingPaymentRequestSales";
 import RecordServices from "./Sales/RecordService/RecordServices";
+import ReleasedAmountIncentive from "./Finance/ReleasedAmountIncentive";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -861,6 +862,10 @@ const Admin = () => {
                   <Route
                     path="/Incentive-Request-Released-List/:incentive_request_id"
                     element={<SalesExecutiveIncentiveRequestReleaseList />}
+                  />
+                  <Route
+                    path="/Incentive-balance-Released/:incentive_request_id"
+                    element={<ReleasedAmountIncentive />}
                   />
                   <Route
                     path="/Incentive-Payment-Mode-Payment-Details"

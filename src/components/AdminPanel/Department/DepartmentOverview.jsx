@@ -101,7 +101,7 @@ const DepartmentOverview = () => {
               <Link to="/admin/department-update">
                 <button
                   title="Edit"
-                  className="btn btn-outline-primary btn-sm user-button"
+                  className="btn btn-outline-primary btn-sm user-button icon-1"
                   onClick={() =>
                     setToLocalStorage(
                       row.dept_id,
@@ -116,7 +116,7 @@ const DepartmentOverview = () => {
                     )
                   }
                 >
-                  <FaEdit />{" "}
+                  <i className="bi bi-pencil" />{" "}
                 </button>
               </Link>
             )}
@@ -173,7 +173,7 @@ const DepartmentOverview = () => {
   };
 
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Department"
         link="/admin/department-master"
@@ -186,31 +186,34 @@ const DepartmentOverview = () => {
       />
 
       <Link to="/admin/sub-department-overview">
-        <button type="button" className="btn btn-outline-primary btn-sm">
+        <button type="button" className="btn btn_sm cmnbtn btn-outline-primary btn-sm mb-4">
           Sub Department
         </button>
       </Link>
 
       <div className="card">
-        <div className="data_tbl table-responsive">
+        <div className="card-header sb">
+          <div className="card-title">
+            <h4>Department Overview</h4>
+          </div>
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="card-body">
           <DataTable
-            title="Department Overview"
+            // title="Department Overview"
             columns={columns}
             data={filterData}
             fixedHeader
-            // pagination
+            pagination
             fixedHeaderScrollHeight="64vh"
             highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+
           />
         </div>
       </div>
@@ -272,7 +275,7 @@ const DepartmentOverview = () => {
           </div>
         )}
       </Modal>
-    </>
+    </div>
   );
 };
 

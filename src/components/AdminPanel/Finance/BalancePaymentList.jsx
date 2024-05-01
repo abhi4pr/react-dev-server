@@ -73,8 +73,18 @@ const BalancePaymentList = () => {
   const [sameSalesExecutiveData, setSameSalesExecutiveData] = useState("");
   const [partyNameDialog, setPartyNameDialog] = useState(false);
   const [invoiceNumberDialog, setInvoiceNumberDialog] = useState(false);
-  const [withInvoiceCount, setWithInvoiceCount] = useState(0);
-  const [withoutInvoiceCount, setWithoutInvoiceCount] = useState(0);
+  const [uniqueNonInvoiceCustomerCount, setUniqueNonInvoiceCustomerCount] =
+    useState(0);
+  const [uniqueNonInvoiceCustomerData, setUniqueNonInvoiceCustomerData] =
+    useState(0);
+  const [
+    uniqueNonInvoiceSalesExecutiveCount,
+    setUniqueNonInvoiceSalesExecutiveCount,
+  ] = useState(0);
+  const [
+    uniqueNonInvoiceSalesExecutiveData,
+    setUniqueNonInvoiceSalesExecutiveData,
+  ] = useState(0);
   const [partyName, setPartyName] = useState("");
   const [gstNonGstData, setGstNonGstData] = useState("");
   const [invoiceNumber, setInvoiceNumber] = useState("");
@@ -94,6 +104,12 @@ const BalancePaymentList = () => {
   const [campaignAmountData, setCampaignAmountData] = useState();
   const [paidAmountData, setPaidAmountData] = useState();
   const [adjustmentAmount, setAdjustmentAmount] = useState();
+  const [activeAccordionIndex, setActiveAccordionIndex] = useState(0);
+  const [customerList, setCustomerList] = useState([]);
+  const [salesExecutiveList, setSalesExecutiveList] = useState([]);
+  const [nonGstStatus, setNonGstStatus] = useState("");
+  const [discardDialog, setDiscardDialog] = useState(false);
+  const accordionButtons = ["Invoice Created", "Non Invoice Created"];
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -180,6 +196,15 @@ const BalancePaymentList = () => {
     setImageModalOpen(false);
   };
 
+  const handleDiscardOpenDialog = (e) => {
+    e.preventDefault();
+    setDiscardDialog(true);
+  };
+  const handleDiscardCloseDialog = (e) => {
+    e.preventDefault();
+    setDiscardDialog(false);
+  };
+
   function getData() {
     axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {});
     const formData = new FormData();
@@ -197,40 +222,50 @@ const BalancePaymentList = () => {
       .then((res) => {
         setData(res.data.body);
         setFilterData(res.data.body);
-        const custData = res.data.body;
-
-        const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
+        const invcData = res.data.body.filter((d) => d.invoice !== "");
+        const NonInvoiceData = res.data.body.filter((d) => d.invoice === "");
+        // For Invoice
+        const uniqueCustomers = new Set(invcData.map((item) => item.cust_name));
         setUniqueCustomerCount(uniqueCustomers.size);
         const uniqueCustomerData = Array.from(uniqueCustomers).map(
           (customerName) => {
-            return custData.find((item) => item.cust_name === customerName);
+            return invcData.find((item) => item.cust_name === customerName);
           }
         );
         setUniqueCustomerData(uniqueCustomerData);
 
         // For Unique Sales Executive
-        const salesExecuteiveData = res.data.body;
-        const uniqueSalesEx = new Set(
-          salesExecuteiveData.map((item) => item.username)
-        );
+        const uniqueSalesEx = new Set(invcData.map((item) => item.username));
         setUniqueSalesExecutiveCount(uniqueSalesEx.size);
         const uniqueSEData = Array.from(uniqueSalesEx).map((salesEName) => {
-          return salesExecuteiveData.find(
-            (item) => item.username === salesEName
-          );
+          return invcData.find((item) => item.username === salesEName);
         });
         setUniqueSalesExecutiveData(uniqueSEData);
 
-        // with nd without invoice count
-        const withInvoiceImage = custData.filter(
-          (item) => item.invc_img && item.invc_img.length > 0
+        // For Non-Invoice Created :-
+        const uniqueNonInvoiceCustomers = new Set(
+          NonInvoiceData.map((item) => item.cust_name)
         );
-        const withoutInvoiceImage = custData.filter(
-          (item) => !item.invc_img || item.invc_img.length === 0
+        setUniqueNonInvoiceCustomerCount(uniqueNonInvoiceCustomers.size);
+        const uniqueNonInvoiceCustomerData = Array.from(
+          uniqueNonInvoiceCustomers
+        ).map((customerName) =>
+          NonInvoiceData.find((item) => item.cust_name === customerName)
         );
-        setWithoutInvoiceCount(withInvoiceImage.length);
-        setWithoutInvoiceCount(withoutInvoiceImage.length);
-        // ===============================================
+        setUniqueNonInvoiceCustomerData(uniqueNonInvoiceCustomerData);
+
+        const uniqueNonInvoiceSalesExecutives = new Set(
+          NonInvoiceData.map((item) => item.username)
+        );
+        setUniqueNonInvoiceSalesExecutiveCount(
+          uniqueNonInvoiceSalesExecutives.size
+        );
+        const uniqueNonInvoiceSEData = Array.from(
+          uniqueNonInvoiceSalesExecutives
+        ).map((salesEName) =>
+          NonInvoiceData.find((item) => item.username === salesEName)
+        );
+        setUniqueNonInvoiceSalesExecutiveData(uniqueNonInvoiceSEData);
 
         const dateFilterData = filterDataBasedOnSelection(res?.data?.body);
         setFilterData(dateFilterData);
@@ -265,12 +300,14 @@ const BalancePaymentList = () => {
     totalPA();
   }, [paidAmount]);
 
-  const handleImageClick = (row) => {
+  const handleImageClick = (e, row) => {
+    e.preventDefault();
     setBalAmount(row.campaign_amount - row.total_paid_amount);
     setBaseAmount(row.base_amount);
     setPaidAmountData(row.total_paid_amount);
     setCampaignAmountData(row.campaign_amount);
     setTDSFieldSaleBookingId(row.sale_booking_id);
+    setNonGstStatus(row.gst_status);
     setSingleRow(row);
     getData();
     setImageModalOpen(true);
@@ -369,6 +406,51 @@ const BalancePaymentList = () => {
       return allFiltersPassed;
     });
     setFilterData(filterData);
+
+    const invcData = filterData.filter((d) => d.invoice !== "");
+    const NonInvoiceData = filterData.filter((d) => d.invoice === "");
+    // For Invoice
+    const uniqueCustomers = new Set(invcData.map((item) => item.cust_name));
+    setUniqueCustomerCount(uniqueCustomers.size);
+    const uniqueCustomerData = Array.from(uniqueCustomers).map(
+      (customerName) => {
+        return invcData.find((item) => item.cust_name === customerName);
+      }
+    );
+    setUniqueCustomerData(uniqueCustomerData);
+
+    // For Unique Sales Executive
+    const uniqueSalesEx = new Set(invcData.map((item) => item.username));
+    setUniqueSalesExecutiveCount(uniqueSalesEx.size);
+    const uniqueSEData = Array.from(uniqueSalesEx).map((salesEName) => {
+      return invcData.find((item) => item.username === salesEName);
+    });
+    setUniqueSalesExecutiveData(uniqueSEData);
+
+    // For Non-Invoice Created :-
+    const uniqueNonInvoiceCustomers = new Set(
+      NonInvoiceData.map((item) => item.cust_name)
+    );
+    setUniqueNonInvoiceCustomerCount(uniqueNonInvoiceCustomers.size);
+    const uniqueNonInvoiceCustomerData = Array.from(
+      uniqueNonInvoiceCustomers
+    ).map((customerName) =>
+      NonInvoiceData.find((item) => item.cust_name === customerName)
+    );
+    setUniqueNonInvoiceCustomerData(uniqueNonInvoiceCustomerData);
+
+    const uniqueNonInvoiceSalesExecutives = new Set(
+      NonInvoiceData.map((item) => item.username)
+    );
+    setUniqueNonInvoiceSalesExecutiveCount(
+      uniqueNonInvoiceSalesExecutives.size
+    );
+    const uniqueNonInvoiceSEData = Array.from(
+      uniqueNonInvoiceSalesExecutives
+    ).map((salesEName) =>
+      NonInvoiceData.find((item) => item.username === salesEName)
+    );
+    setUniqueNonInvoiceSalesExecutiveData(uniqueNonInvoiceSEData);
   };
 
   const handleClearAllFilter = () => {
@@ -382,6 +464,51 @@ const BalancePaymentList = () => {
     setBalanceAmountFilter("");
     setBalanceAmountField("");
     setGstNonGstData("");
+
+    const invcData = datas.filter((d) => d.invoice !== "");
+    const NonInvoiceData = datas.filter((d) => d.invoice === "");
+    // For Invoice
+    const uniqueCustomers = new Set(invcData.map((item) => item.cust_name));
+    setUniqueCustomerCount(uniqueCustomers.size);
+    const uniqueCustomerData = Array.from(uniqueCustomers).map(
+      (customerName) => {
+        return invcData.find((item) => item.cust_name === customerName);
+      }
+    );
+    setUniqueCustomerData(uniqueCustomerData);
+
+    // For Unique Sales Executive
+    const uniqueSalesEx = new Set(invcData.map((item) => item.username));
+    setUniqueSalesExecutiveCount(uniqueSalesEx.size);
+    const uniqueSEData = Array.from(uniqueSalesEx).map((salesEName) => {
+      return invcData.find((item) => item.username === salesEName);
+    });
+    setUniqueSalesExecutiveData(uniqueSEData);
+
+    // For Non-Invoice Created :-
+    const uniqueNonInvoiceCustomers = new Set(
+      NonInvoiceData.map((item) => item.cust_name)
+    );
+    setUniqueNonInvoiceCustomerCount(uniqueNonInvoiceCustomers.size);
+    const uniqueNonInvoiceCustomerData = Array.from(
+      uniqueNonInvoiceCustomers
+    ).map((customerName) =>
+      NonInvoiceData.find((item) => item.cust_name === customerName)
+    );
+    setUniqueNonInvoiceCustomerData(uniqueNonInvoiceCustomerData);
+
+    const uniqueNonInvoiceSalesExecutives = new Set(
+      NonInvoiceData.map((item) => item.username)
+    );
+    setUniqueNonInvoiceSalesExecutiveCount(
+      uniqueNonInvoiceSalesExecutives.size
+    );
+    const uniqueNonInvoiceSEData = Array.from(
+      uniqueNonInvoiceSalesExecutives
+    ).map((salesEName) =>
+      NonInvoiceData.find((item) => item.username === salesEName)
+    );
+    setUniqueNonInvoiceSalesExecutiveData(uniqueNonInvoiceSEData);
   };
 
   const handleOpenUniqueCustomerClick = () => {
@@ -436,17 +563,32 @@ const BalancePaymentList = () => {
   };
 
   const calculateRequestedAmountTotal = () => {
+    const invc = filterData?.filter((d) => d.invoice !== "");
     let totalAmount = 0;
-    filterData.forEach((customer) => {
+    invc.forEach((customer) => {
       totalAmount += parseFloat(
         customer.campaign_amount - customer.total_paid_amount
       );
     });
+
+    return totalAmount;
+  };
+
+  const calculateNonRequestedAmountTotal = () => {
+    const nonInvc = filterData?.filter((d) => d.invoice === "");
+    let totalAmount = 0;
+    nonInvc.forEach((customer) => {
+      totalAmount += parseFloat(
+        customer.campaign_amount - customer.total_paid_amount
+      );
+    });
+
     return totalAmount;
   };
 
   // Call the function to get the total sum of requested amount
   const balanceAmountTotal = calculateRequestedAmountTotal();
+  const nonInvcbalanceAmountTotal = calculateNonRequestedAmountTotal();
   // All counts :-
   const approvedCount = datas.filter(
     (item) => item.finance_refund_status === 1
@@ -524,16 +666,6 @@ const BalancePaymentList = () => {
     setCloseDialog(false);
   };
 
-  // const handleTdsValue = (inputValue) => {
-  //   // if (parseFloat(inputValue) > parseFloat(balAmount)) {
-  //   //   // If TDS value is greater, don't update state
-  //   //   toastError("TDS shouldn't be more than Balance Amount");
-  //   //   // You can also display a message to the user indicating the issue
-  //   //   return;
-  //   // }
-  //   // If TDS value is valid, update state
-  //   setTDSValue(inputValue);
-  // };
   const handleSaveTDS = async () => {
     // if (parseFloat(TDSValue) > parseFloat(balAmount)) {
     //   toastError("TDS shouldn't be more than Balance Amount");
@@ -560,7 +692,6 @@ const BalancePaymentList = () => {
     // }
   };
   // ==========================
-
   const sameSalesExecutivecolumn = [
     {
       field: "S.NO",
@@ -1006,23 +1137,27 @@ const BalancePaymentList = () => {
       width: 70,
       field: "s_no",
       headerName: "S.No",
-      renderCell: (params, index) => (
-        // <div style={{ whiteSpace: "normal" }}>{index + 1} </div>
+      renderCell: (params) => {
+        // const rowIndex = filterData.indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? filterData
+                .filter((d) => d.invoice_mnj_number !== "")
+                .indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? filterData
+                .filter((d) => d.invoice_mnj_number === "")
+                .indexOf(params.row)
+            : "";
 
-        <div>{[...datas].indexOf(params.row) + 1}</div>
-      ),
+        return <div>{rowIndex + 1}</div>;
+      },
       sortable: true,
     },
     {
       field: "aging",
       headerName: "Aging",
-      renderCell: (params) => {
-        const date = new Date(params.row.sale_booking_date);
-        const today = new Date();
-        const diffTime = Math.abs(today - date);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays + " Days";
-      },
+      renderCell: (params) => <div>{params.row.aging} days</div>,
     },
     {
       field: "cust_name",
@@ -1212,7 +1347,7 @@ const BalancePaymentList = () => {
       renderCell: (params) => (
         <button
           className="btn cmnbtn btn_sm btn-outline-primary"
-          onClick={() => handleImageClick(params.row)}
+          onClick={(e) => handleImageClick(e, params.row)}
         >
           Balance Update
         </button>
@@ -1303,6 +1438,35 @@ const BalancePaymentList = () => {
     }
   };
 
+  // accordin function:-
+  const handleAccordionButtonClick = (index) => {
+    setActiveAccordionIndex(index);
+  };
+
+  useEffect(() => {
+    if (activeAccordionIndex === 0) {
+      const filteredData = datas.filter((d) => d?.invoice !== "");
+      const uniqueCustomersNames = [
+        ...new Set(filteredData.map((d) => d?.cust_name)),
+      ];
+      const uniqueSalesExeNames = [
+        ...new Set(filteredData.map((d) => d?.username)),
+      ];
+      setCustomerList(uniqueCustomersNames);
+      setSalesExecutiveList(uniqueSalesExeNames);
+    } else if (activeAccordionIndex === 1) {
+      const filteredData = datas.filter((d) => d?.invoice === "");
+      const uniqueCustomersNames = [
+        ...new Set(filteredData.map((d) => d?.cust_name)),
+      ];
+      const uniqueSalesExeNames = [
+        ...new Set(filteredData.map((d) => d?.username)),
+      ];
+      setCustomerList(uniqueCustomersNames);
+      setSalesExecutiveList(uniqueSalesExeNames);
+    }
+  }, [activeAccordionIndex]);
+
   // gst counts :-
   const gstCounts = filterData.filter((count) => count.gst_status === "1");
   // Total gst - balance amounts
@@ -1319,6 +1483,8 @@ const BalancePaymentList = () => {
 
   // non gst counts :-
   const nonGstCounts = filterData.filter((count) => count.gst_status === "0");
+
+  console.log(nonGstCounts, "nongstCOUNT>>>");
   // Total non gst - balance amounts
   const totalNonGstBalanceAmount = nonGstCounts?.reduce(
     (total, item) =>
@@ -1332,10 +1498,8 @@ const BalancePaymentList = () => {
   );
 
   // invoice counts :-
-  const invoiceCounts = filterData.filter(
-    (count) => count.invoice_mnj_number !== ""
-  );
-  // Total gst - balance amounts
+  const invoiceCounts = filterData?.filter((count) => count.invoice !== "");
+
   const totalInvoiceBalanceAmount = invoiceCounts?.reduce(
     (total, item) =>
       total + parseFloat(item?.campaign_amount - item?.total_paid_amount),
@@ -1348,9 +1512,8 @@ const BalancePaymentList = () => {
   );
 
   // Non invoice counts :-
-  const nonInvoiceCounts = filterData.filter(
-    (count) => count.invoice_mnj_number === ""
-  );
+  const nonInvoiceCounts = filterData.filter((count) => count.invoice === "");
+
   // Total gst - balance amounts
   const totalNonInvoiceBalanceAmount = nonInvoiceCounts?.reduce(
     (total, item) =>
@@ -1366,6 +1529,10 @@ const BalancePaymentList = () => {
   const totalPA = () => {
     return +campaignAmountData - (+paidAmountData + paidAmount);
   };
+  console.log(
+    filterData.filter((count) => count.gst_status === "0"),
+    "nonGstCounts?.gst_status????"
+  );
 
   return (
     <div>
@@ -1379,7 +1546,13 @@ const BalancePaymentList = () => {
           false
         }
         uniqueCustomerCount={uniqueCustomerCount}
+        uniqueNonInvoiceCustomerCount={uniqueNonInvoiceCustomerCount}
+        uniqueNonInvoiceSalesExecutiveCount={
+          uniqueNonInvoiceSalesExecutiveCount
+        }
+        accIndex={activeAccordionIndex}
         balanceAmountTotal={balanceAmountTotal}
+        nonInvcbalanceAmountTotal={nonInvcbalanceAmountTotal}
         approvedCount={approvedCount}
         rejectedCount={rejectedCount}
         handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
@@ -1448,6 +1621,75 @@ const BalancePaymentList = () => {
                 />
               </div>
             </div>
+          </div>
+          <div className="pack w-100 mt-3 sb">
+            <div></div>
+            <div className="pack gap16">
+              <Button variant="contained" onClick={handleSaveTDS}>
+                YES
+              </Button>
+              <Button variant="contained" onClick={handleCloseTDSFields}>
+                NO
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* Dialog For Discard */}
+      <Dialog
+        open={closeDialog}
+        onClose={handleCloseTDSFields}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>TDS</DialogTitle>
+        <IconButton
+          aria-label="close"
+          s
+          onClick={handleCloseTDSFields}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <div className="row">
+            <TextField
+              multiline
+              label="Reason for Discard"
+              // value={discardRemark}
+              // onChange={(e) => setDiscardRemark(e.target.value)}
+              fullWidth
+            />
+
+            <Button
+              variant="contained"
+              color="success"
+              autoFocus
+              // onClick={}
+            >
+              yes
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              autoFocus
+              // onClick={}
+            >
+              No
+            </Button>
           </div>
           <div className="pack w-100 mt-3 sb">
             <div></div>
@@ -1872,9 +2114,9 @@ const BalancePaymentList = () => {
                     <Autocomplete
                       value={customerName}
                       onChange={(event, newValue) => setCustomerName(newValue)}
-                      options={Array.from(
-                        new Set(datas.map((option) => option.cust_name))
-                      )}
+                      options={customerList?.map((e) => {
+                        return e;
+                      })}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -1898,9 +2140,9 @@ const BalancePaymentList = () => {
                       onChange={(event, newValue) =>
                         setSalesExecutiveName(newValue)
                       }
-                      options={Array.from(
-                        new Set(datas.map((option) => option.username))
-                      )}
+                      options={salesExecutiveList?.map((e) => {
+                        return e;
+                      })}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -2040,21 +2282,46 @@ const BalancePaymentList = () => {
         <div className="col-12">
           <div className="card" style={{ height: "600px" }}>
             <div className="card-body thm_table">
-              <DataGrid
-                rows={filterData}
-                columns={columns}
-                pageSize={5}
-                rowsPerPageOptions={[5]}
-                disableSelectionOnClick
-                slots={{ toolbar: GridToolbar }}
-                slotProps={{
-                  toolbar: {
-                    showQuickFilter: true,
-                  },
-                }}
-                getRowId={(row) => filterData.indexOf(row)}
-              />
-
+              <FormContainer
+                submitButton={false}
+                accordionButtons={accordionButtons}
+                activeAccordionIndex={activeAccordionIndex}
+                onAccordionButtonClick={handleAccordionButtonClick}
+                mainTitleRequired={false}
+              >
+                {activeAccordionIndex === 0 && (
+                  <DataGrid
+                    rows={filterData.filter((invc) => invc.invoice !== "")}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    disableSelectionOnClick
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{
+                      toolbar: {
+                        showQuickFilter: true,
+                      },
+                    }}
+                    getRowId={(row) => filterData.indexOf(row)}
+                  />
+                )}
+                {activeAccordionIndex === 1 && (
+                  <DataGrid
+                    rows={filterData.filter((invc) => invc.invoice === "")}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    disableSelectionOnClick
+                    slots={{ toolbar: GridToolbar }}
+                    slotProps={{
+                      toolbar: {
+                        showQuickFilter: true,
+                      },
+                    }}
+                    getRowId={(row) => filterData.indexOf(row)}
+                  />
+                )}
+              </FormContainer>
               {/* Dialog box for balance payment update*/}
               <BootstrapDialog
                 onClose={handleCloseImageModal}
@@ -2280,7 +2547,7 @@ const BalancePaymentList = () => {
                     }
                     variant="contained"
                     autoFocus
-                    onClick={handleSubmit}
+                    onClick={(e) => handleSubmit(e)}
                   >
                     Save
                   </Button>
@@ -2295,6 +2562,17 @@ const BalancePaymentList = () => {
                   ) : (
                     ""
                   )}
+                  {/* {nonGstStatus === "0" ? (
+                    <Button
+                      variant="contained"
+                      autoFocus
+                      onClick={(e) => handleDiscardSubmit(e)}
+                    >
+                      Discard
+                    </Button>
+                  ) : (
+                    ""
+                  )} */}
                 </DialogActions>
               </BootstrapDialog>
               {viewImgDialog && (

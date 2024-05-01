@@ -175,6 +175,10 @@ const ObjectOverview = () => {
     try {
       const response = await axios.get(baseUrl + `get_dynamic_table_data?userId=${userID}&tableName=${'object table'}`);
       const responseData = response.data;
+      
+      const savedFiltersData = response.data.data[0]?.filter_array;
+      setSavedFilters(savedFiltersData);
+
       if (responseData && responseData.data && responseData.data.length > 0) {
         const initialColumns = responseData.data[0].column_order_Obj || ["Created_by", "Dept_id", "dept_name", "obj_id", "obj_name", "soft_name", "_id"];
         setColumns(initialColumns);
@@ -380,12 +384,14 @@ const ObjectOverview = () => {
         }
       />
 
-    {savedFilters.map((savedFilter, index) => (
-      <button className="btn btn-warning" key={index} onClick={() => applySavedFilter(savedFilter)}>
-        Saved Filter {index + 1}
-      </button>
-    ))}
-    <button className="btn btn-success" onClick={saveFilter} disabled={filters.length === 0}>Save Filter</button>
+    <div style={{marginBottom:'10px'}}>
+      {savedFilters.map((savedFilter, index) => (
+        <button className="btn btn-warning" key={index} onClick={() => applySavedFilter(savedFilter)} style={{marginRight:'10px'}}>
+          Saved Filter {index + 1}
+        </button>
+      ))}
+      <button className="btn btn-success" onClick={saveFilter} disabled={filters.length === 0}>Save Filter</button>
+    </div>
 
       <div className="card">
         <div className="card-body thm_table dt">

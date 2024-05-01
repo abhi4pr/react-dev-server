@@ -559,7 +559,6 @@ const Invoice = () => {
   };
   // handle submit  function for updating fields
   const handleInvoiceEditFields = async () => {
-    console.log(saleBookingId, "Sale Booking ID", invcDate, "DATE dATA >?????");
     const formData = new FormData();
     // const moment = require("moment");
 

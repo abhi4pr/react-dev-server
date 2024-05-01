@@ -48,49 +48,53 @@ const Designation = () => {
     return <Navigate to="/admin/designation-overview" />;
   }
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Designation"
         title="Designation"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Designation Name"
-          value={designationName}
-          onChange={(e) => setDesignationName(e.target.value)}
-        />
-        <div className="form-group col-6">
-          <label className="form-label">
-            Department Name <sup style={{ color: "red" }}>*</sup>
-          </label>
-          <Select
-            className=""
-            options={DepartmentContext.map((option) => ({
-              value: option.dept_id,
-              label: `${option.dept_name}`,
-            }))}
-            value={{
-              value: departmentName,
-              label:
-                DepartmentContext.find(
-                  (user) => user.dept_id === departmentName
-                )?.dept_name || "",
-            }}
-            onChange={(e) => {
-              setDepartmentName(e.value);
-            }}
-            required
+        <div className="mb-3 row">
+
+          <FieldContainer
+            label="Designation Name"
+            value={designationName}
+            onChange={(e) => setDesignationName(e.target.value)}
+          />
+          <div className="form-group col-6">
+            <label className="form-label">
+              Department Name <sup style={{ color: "red" }}>*</sup>
+            </label>
+            <Select
+              className=""
+              options={DepartmentContext.map((option) => ({
+                value: option.dept_id,
+                label: `${option.dept_name}`,
+              }))}
+              value={{
+                value: departmentName,
+                label:
+                  DepartmentContext.find(
+                    (user) => user.dept_id === departmentName
+                  )?.dept_name || "",
+              }}
+              onChange={(e) => {
+                setDepartmentName(e.value);
+              }}
+              required
+            />
+          </div>
+          <FieldContainer
+            label="Remark"
+            value={remark}
+            required={false}
+            Tag="textarea"
+            onChange={(e) => setRemark(e.target.value)}
+
           />
         </div>
-        <FieldContainer
-          label="Remark"
-          value={remark}
-          required={false}
-          Tag="textarea"
-          onChange={(e) => setRemark(e.target.value)}
-        />
       </FormContainer>
-    </>
+    </div>
   );
 };
 

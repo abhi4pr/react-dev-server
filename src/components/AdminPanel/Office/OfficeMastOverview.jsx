@@ -174,7 +174,7 @@ const OfficeMastOverview = () => {
             // fixedHeader
             pagination
 
-            selectableRows
+          // selectableRows
           />
         </div>
         {/* <div className="data_tbl table-responsive">
