@@ -119,7 +119,6 @@ const SidebarLinks = () => {
 
   // const isWFHDuser  = [].some(index=>context )
   const activelink = useLocation().pathname;
-  console.log(activelink, "path");
   return (
     <>
       <li className="nav-item nav-item-single">

@@ -34,6 +34,7 @@ import {
 } from "../../Store/PageOverview";
 import TagCategoryListModal from "./TagCategoryListModal";
 import KeyboardDoubleArrowUpIcon from "@mui/icons-material/KeyboardDoubleArrowUp";
+import { EditTwoTone } from "@mui/icons-material";
 
 const PageOverview = () => {
   // const { toastAlert } = useGlobalContext();
@@ -54,6 +55,33 @@ const PageOverview = () => {
   const userID = decodedToken.id;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [updatedRows, setUpdatedRows] = useState([]);
+
+  const handleEditCellChange = (params) => {
+    (async()=>{
+      console.log(params, "params" , params.field,"params.field")
+      const updatedRow = {
+        ...params.row,
+        [params.field]: params.value,
+      };
+      
+      console.log("come to edit ")
+      return  axios.put(baseUrl + `updatePage/${params.row._id}`, updatedRow).then((res) => {
+        console.log(res.data);
+      });
+    })()
+
+    // Make API call to update the row data
+    // Example: fetch('/api/updateRow', { method: 'POST', body: JSON.stringify(updatedRow) })
+
+    // Update the local state with the updated row
+    // setUpdatedRows((prevRows) => {
+    //   const updatedRows = [...prevRows];
+    //   const rowIndex = updatedRows.findIndex((row) => row.id === params.row.id);
+    //   updatedRows[rowIndex] = updatedRow;
+    //   return updatedRows;
+    // });
+  };
 
   const showPageHealthColumn = useSelector(
     (state) => state.PageOverview.showPageHelathColumn
@@ -145,6 +173,13 @@ const PageOverview = () => {
             })
             .map((item) => item.page_category)
             .join(","),
+            // price_name: allPriceTypeList?.find(
+            //   (item) => item?.price_type_id == e.purchase_price?.price_type_id
+            // )
+
+            // allPriceTypeList?.find(
+            //   (item) => item.price_type_id == params.row.price_type_id
+            // )?.price_type;
         };
       });
       setVendorTypes(data);
@@ -222,14 +257,19 @@ const PageOverview = () => {
       field: "page_user_name",
       headerName: "User Name",
       width: 200,
+      editable: true,
+      // EditTwoTone: (params) => {
+      //   let name = params.row.page_user_name;
+      //   // let hideName = name.slice(1, name.length);
+      //   // let star = name.slice(0, 1);
+      //   // for (let i = 0; i < hideName.length; i++) {
+      //   //   star += "*";
+      //   // }
+      //   return <Link target="__black" to={params.row.link} className="link-primary" >{name}</Link>;
+      // },
       renderCell: (params) => {
         let name = params.row.page_user_name;
-        let hideName = name.slice(1, name.length);
-        let star = name.slice(0, 1);
-        for (let i = 0; i < hideName.length; i++) {
-          star += "*";
-        }
-        return <Link target="__black" to={params.row.link} className="link-primary" >{name}</Link>;
+        return <Link target="__black" to={params.row.link} className="link-primary">{name}</Link>;
       },
     },
     { field: "page_level", headerName: "Level", width: 200 },
@@ -408,6 +448,7 @@ const PageOverview = () => {
       headerName: "Price",
       width: 200,
       renderCell: ({ row }) => {
+        console.log(row.price_name, "row.price_name")
         return (
           <div>
             {row.purchase_price && (
@@ -1285,6 +1326,11 @@ const PageOverview = () => {
                 title="Page Overview"
                 rows={filterData}
                 columns={dataGridcolumns}
+                // processRowUpdate={handleEditCellChange}
+                // onCellEditStop={handleEditCellChange}
+                // onCellEditStart={handleEditCellChange}
+                // onEditCellChange={handleEditCellChange}
+                onCellEditStop={(params)=> setTimeout(()=>handleEditCellChange(params),1000)}
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 rowHeight={38}
@@ -1297,6 +1343,7 @@ const PageOverview = () => {
                   },
                 }}
                 checkboxSelection
+                disableRowSelectionOnClick
               />
             </Box>
           )}

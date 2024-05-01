@@ -201,35 +201,35 @@ const AssetSingleuserOverview = ({
       name: "Asset ID",
       selector: (row) => row.sim_no,
       sortable: true,
-      width:"150px"
+      width: "150px"
 
     },
     {
       name: "Asset Name",
       selector: (row) => row.assetsName,
       sortable: true,
-      width:"150px"
+      width: "150px"
 
     },
     {
       name: "Asset Category",
       selector: (row) => row.category_name,
       sortable: true,
-      width:"150px"
+      width: "150px"
     },
 
     {
       name: "Asset SubCategory",
       selector: (row) => row.sub_category_name,
       sortable: true,
-      width:"170px"
+      width: "170px"
     },
 
     {
       name: "Assigned Duration",
       selector: (row) => row.submitted_at,
       sortable: true,
-      width:"170px",
+      width: "170px",
       cell: (row) => {
         // Get the assigned date from the row
         const assignedDate = new Date(row.submitted_at);
@@ -293,7 +293,7 @@ const AssetSingleuserOverview = ({
             row.asset_repair_request_status !== "ApprovedByManager" && (
               <button
                 onClick={() => handleRow(row)}
-                className="btn btn-outline-warning btn-sm"
+                className="btn cmnbtn btn_sm btn-outline-warning btn-sm"
                 type="button"
               >
                 Repair Request
@@ -314,7 +314,7 @@ const AssetSingleuserOverview = ({
                 data-toggle="modal"
                 data-target="#return-asset-modal"
                 size="small"
-                className="btn btn-outline-primary btn-sm"
+                className="btn cmnbtn btn_sm btn-outline-primary btn-sm"
                 onClick={() => handleReturnAsset(row)}
               >
                 Return Asset
@@ -322,7 +322,7 @@ const AssetSingleuserOverview = ({
             )}
         </>
       ),
-      width:"200px"
+      width: "200px"
     },
   ];
 
@@ -379,7 +379,7 @@ const AssetSingleuserOverview = ({
       name: "Tagged Person",
       cell: (row) => (
         <div style={{ maxHeight: "100px", overflowY: "auto" }}>
-       { row.multi_tag_names.join(", ")}</div>),
+          {row.multi_tag_names.join(", ")}</div>),
       sortable: true,
     },
 
@@ -387,18 +387,19 @@ const AssetSingleuserOverview = ({
       name: "Reject Reason",
       cell: (row) => (
         <div style={{ maxHeight: "100px", overflowY: "auto" }}>
-       { row.reject_reason}</div>),
+          {row.reject_reason}</div>),
       sortable: true,
-      width:"200px",
+      width: "200px",
     },
     {
       name: "Action",
-     
+
       cell: (row) => (
         <>
           {row.asset_request_status == "Requested" && (
             <div class="btn-group">
               <button
+
                 type="button"
                 class=" icon-1 "
                 data-toggle="dropdown"
@@ -411,10 +412,10 @@ const AssetSingleuserOverview = ({
                 <button
                   onClick={() => handleUpdateNewAssetRow(row)}
                   class="dropdown-item "
-                  // type="button"
-                  // data-toggle="modal"
-                  // data-target="#sidebar-right"
-                  // size="small"
+                // type="button"
+                // data-toggle="modal"
+                // data-target="#sidebar-right"
+                // size="small"
                 >
                   Edit
                 </button>
@@ -505,23 +506,23 @@ const AssetSingleuserOverview = ({
   return (
     <>
       {tab ? (
-       
-          <div className="card mb-4">
-            <div className="data_tbl table-responsive">
-              <DataTable
-            
-                columns={columns}
-                data={filterData}
-                // fixedHeader
-                // fixedHeaderScrollHeight="64vh"
-                pagination
-                exportToCSV
-                highlightOnHover
-                subHeader
-              />
-            </div>
+
+        <div className="card mb-4">
+          <div className="data_tbl table-responsive">
+            <DataTable
+
+              columns={columns}
+              data={filterData}
+              // fixedHeader
+              // fixedHeaderScrollHeight="64vh"
+              pagination
+              exportToCSV
+              highlightOnHover
+              subHeader
+            />
           </div>
-      
+        </div>
+
       ) : (
         <>
           <button
@@ -529,8 +530,8 @@ const AssetSingleuserOverview = ({
             // data-toggle="modal"
             // data-target="#sidebar-right"
             // size="small"
-            className="col-2 ml-3 mb-2 btn btn-outline-primary btn-sm"
-            style={{ height:"30px",minWidth:"200px" }}
+            className="col-2 ml-3 mb-2 cmnbtn btn_sm btn btn-outline-primary "
+            style={{ height: "30px", minWidth: "200px" }}
             onClick={() => {
               setIsEditMode(false);
               setIsModalOpen(true);
@@ -540,22 +541,22 @@ const AssetSingleuserOverview = ({
             New Asset Request
           </button>
 
-          
-            <div className="card mb-4">
-              <div className="data_tbl table-responsive">
-                <DataTable
-                 
-                  columns={NewAssetcolumns}
-                  data={newAssetRequestData}
-                  // fixedHeader
-                  pagination
-                  fixedHeaderScrollHeight="50vh"
-                  exportToCSV
-                  highlightOnHover
-                  subHeader
-                />
-              </div>
+
+          <div className="card mb-4">
+            <div className="data_tbl table-responsive">
+              <DataTable
+
+                columns={NewAssetcolumns}
+                data={newAssetRequestData}
+                // fixedHeader
+                pagination
+                fixedHeaderScrollHeight="50vh"
+                exportToCSV
+                highlightOnHover
+                subHeader
+              />
             </div>
+          </div>
 
         </>
       )}
@@ -664,7 +665,7 @@ const AssetSingleuserOverview = ({
                   />
                 </div>
 
-                <div className="col-sm-12 col-lg-8 p-2" style={{display:"flex",alignItems:"center"}}>
+                <div className="col-sm-12 col-lg-8 p-2" style={{ display: "flex", alignItems: "center" }}>
                   {/* <Autocomplete
                     multiple
                     id="combo-box-demo"
@@ -743,7 +744,7 @@ const AssetSingleuserOverview = ({
                 type="button"
                 className="btn btn-primary"
                 onClick={handleSubmit}
-                // data-dismiss="modal"
+              // data-dismiss="modal"
               >
                 Save changes
               </button>

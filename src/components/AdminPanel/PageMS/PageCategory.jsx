@@ -8,6 +8,7 @@ import jwtDecode from "jwt-decode";
 import DataTable from "react-data-table-component";
 import { FaEdit } from "react-icons/fa";
 import DeleteButton from "../DeleteButton";
+import { data } from "jquery";
 
 const PageCategory = () => {
   const { toastAlert, toastError } = useGlobalContext();
@@ -130,6 +131,13 @@ const PageCategory = () => {
         title="Category" 
         handleSubmit={handleSubmit}
       >
+{/* {
+  data.map((item) => {
+    <span>{
+
+  }</span>
+} */}
+
         <FieldContainer
           label="Category Name *" 
           value={categoryName}

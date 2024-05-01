@@ -109,11 +109,13 @@ const SalaryWFH = () => {
     variableWidth: true,
   };
 
+  useEffect(() => {
   if (new Date().getMonth() > 3) {
     settings.initialSlide = new Date().getMonth - 4;
   } else {
     settings.initialSlide = new Date().getMonth() + 8;
   }
+}, []);
 
   useEffect(() => {
     if (location.state) {
@@ -153,7 +155,6 @@ const SalaryWFH = () => {
       .get(baseUrl + `single_dept_whole_year_total_salary/${department}`)
       .then((res) => {
         setSingleDeptWholeYearSalaryData(res.data.data);
-        console.log(res.data, "lll>>>>>>>>>>>>>>>>>>>>>>>>>.");
       });
   }, [department]);
 
@@ -192,7 +193,7 @@ const SalaryWFH = () => {
           }
         );
 
-        const ActiveUsersCount = ActiveUsers?.data?.message[0]?.count;
+        const ActiveUsersCount = ActiveUsers?.data?.message?.count;
 
         setActiveUsers(ActiveUsersCount);
       } catch (error) {
@@ -645,6 +646,22 @@ const SalaryWFH = () => {
       toastAlert("Failed to send to finance");
     }
   }
+  const handleDeleteSalary = async () => {
+    try {
+      const res = await axios.delete(`${baseUrl}delete_all_attendance`, {
+        data: {
+          dept: department,
+          month: month,
+          year: year,
+        },
+      });
+      handleSubmit();
+      toastAlert("Attendence deleted success");
+      console.log(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   async function handleInvoiceDownload() {
     try {
@@ -961,7 +978,9 @@ const SalaryWFH = () => {
             </button>
           )}
           {row.sendToFinance == 1 && row.status_ == 0 && (
-            <button className="btn cmnbtn btn_sm btn-danger ml-2 ">Pending</button>
+            <button className="btn cmnbtn btn_sm btn-danger ml-2 ">
+              Pending
+            </button>
           )}
 
           {row?.invoice_template_no !== "0" && row?.digital_signature_image && (
@@ -1105,9 +1124,11 @@ const SalaryWFH = () => {
         <Slider {...settings} className="timeline_slider">
           {completedYearsMonths.map((data, index) => (
             <div
-              className={`timeline_slideItem ${data.atdGenerated && "completed"
-                } ${selectedCardIndex === index ? "selected" : ""} ${currentMonth == data.month && "current"
-                }`}
+              className={`timeline_slideItem ${
+                data.atdGenerated && "completed"
+              } ${selectedCardIndex === index ? "selected" : ""} ${
+                currentMonth == data.month && "current"
+              }`}
               onClick={() => handleCardSelect(index, data)}
               key={index}
             >
@@ -1134,8 +1155,8 @@ const SalaryWFH = () => {
                 {data.atdGenerated == 1
                   ? "Completed"
                   : currentMonthNumber - 4 - index < 0
-                    ? "Upcoming"
-                    : "Pending"}
+                  ? "Upcoming"
+                  : "Pending"}
               </h3>
             </div>
           ))}
@@ -1153,14 +1174,13 @@ const SalaryWFH = () => {
                 <button
                   onClick={handleAttendance}
                   className="btn cmnbtn btn_sm btn-danger"
-
                   style={{
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     gap: "10px",
                   }}
-                // style={{ marginTop: "25px" }}
+                  // style={{ marginTop: "25px" }}
                 >
                   No Absents, Create Attendance{" "}
                   <i className="bi bi-arrow-right"></i>
@@ -1185,7 +1205,6 @@ const SalaryWFH = () => {
               )}
             <button
               className="btn cmnbtn btn_sm btn-outline-primary "
-
               style={{
                 display: "flex",
                 justifyContent: "center",
@@ -1201,7 +1220,6 @@ const SalaryWFH = () => {
               (RoleIDContext == 1 || RoleIDContext == 5) && (
                 <button
                   className="btn cmnbtn btn_sm btn-primary "
-
                   style={{
                     display: "flex",
                     justifyContent: "center",
@@ -1228,12 +1246,13 @@ const SalaryWFH = () => {
 
               return (
                 <div
-                  className={`card hover body-padding ${department === option.dept_id
-                    ? "btn-primary"
-                    : isDeptInSalary
+                  className={`card hover body-padding ${
+                    department === option.dept_id
+                      ? "btn-primary"
+                      : isDeptInSalary
                       ? "btn-success"
                       : "btn-outline-primary"
-                    }`}
+                  }`}
                   style={{
                     height: "100px",
                     minWidth: "300px",
@@ -1474,6 +1493,12 @@ const SalaryWFH = () => {
             <div className="card-header">
               <h5>Salary Overview</h5>
               <div className="pack w-75">
+                <button
+                  className="btn  cmnbtn btn_sm btn-danger mr-2"
+                  onClick={handleDeleteSalary}
+                >
+                  Delete Salary
+                </button>
                 {selectedRows.length > 0 && activeTab === 0 && (
                   <>
                     <button
@@ -1525,7 +1550,10 @@ const SalaryWFH = () => {
                       color: "#4a4a4a",
                     }}
                   >
-                    <button className="btn  cmnbtn btn_sm btn-primary mr-2" type="button">
+                    <button
+                      className="btn  cmnbtn btn_sm btn-primary mr-2"
+                      type="button"
+                    >
                       Download
                     </button>
                   </PDFDownloadLink>
@@ -1849,13 +1877,13 @@ const SalaryWFH = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                  <FieldContainer
-                    label="Reinstated Date"
-                    type="date"
-                    value={separationReinstateDate}
-                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                  />
-                )}
+                <FieldContainer
+                  label="Reinstated Date"
+                  type="date"
+                  value={separationReinstateDate}
+                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                />
+              )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"

@@ -318,11 +318,16 @@ import EditPaymentMode from "./Sales/PaymentMode/EditPaymentMode";
 import CreatePaymentDetails from "./Sales/PaymentDetails/CreatePaymentDetails";
 import ViewPaymentDetails from "./Sales/PaymentDetails/ViewPaymentDetails";
 import EditPaymentDetails from "./Sales/PaymentDetails/EditPayementDetails";
+import OrgTree from "./WFH/OrgTree/OrgTree";
 
 import PaymentModePaymentDetails from "./Finance/PaymentModePaymentDetails";
 import BalanceTransactionList from "./Finance/BalanceTransactionList";
 import Overview from "./Finance/Overview";
 import IncentiveParent from "./Finance/IncentiveParent";
+import DeletedSaleBooking from "./Sales/SaleBooking/DeletedSaleBooking";
+import RejectedPaymentRequest from "./Sales/PaymentRequest/RejectedPaymentRequest";
+import PendingPaymentRequestSales from "./Sales/PaymentRequest/PendingPaymentRequestSales";
+import RecordServices from "./Sales/RecordService/RecordServices";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -453,6 +458,8 @@ const Admin = () => {
                   </>
 
                   {/* Attendence  */}
+
+                  <Route path="/org-tree" element={<OrgTree />} />
 
                   <Route path="/wfhd-register" element={<WFHDRegister />} />
                   <Route path="/total-NDG" element={<TotalNDG />} />
@@ -1463,6 +1470,7 @@ const Admin = () => {
                   <Route
                     path="/view-sales-booking"
                     element={<ViewSaleBooking />}
+                    g
                   />
 
                   <Route
@@ -1494,6 +1502,22 @@ const Admin = () => {
                     path="/create-payment-update"
                     element={<CreatePaymentUpdate />}
                   />
+
+                  <Route
+                    path="/deleted-sales-booking"
+                    element={<DeletedSaleBooking />}
+                  />
+                  <Route
+                    path="/pending-payment-request-sales"
+                    element={<PendingPaymentRequestSales />}
+                  />
+
+                  <Route
+                    path="/rejected-payment-request-sales"
+                    element={<RejectedPaymentRequest />}
+                  />
+
+                  <Route path="/record-servcies" element={<RecordServices />} />
 
                   {/* Harshal */}
                   <Route

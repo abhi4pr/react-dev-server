@@ -86,20 +86,20 @@ const EmailTempOverview = () => {
   ];
 
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Email Template Overview"
         // title=""
         link="admin/email-template"
         submitButton={false}
       />
-        <div>
-          <Link className="btn btn-primary btn-sm " to="/admin/email-events">
-             Email Events
-          </Link>
-        <Link to="/admin/email-template " className="btn-success btn-sm btn">Add Email Template</Link>
-        </div>
-        {/* <button
+      <div className="gap16 flex-row mb-3">
+        <Link className="btn btn-primary cmnbtn btn-sm " to="/admin/email-events">
+          Email Events
+        </Link>
+        <Link to="/admin/email-template " className="btn-success cmnbtn btn-sm btn">Add Email Template</Link>
+      </div>
+      {/* <button
           type="button"
           className="btn btn-success"
           style={{
@@ -110,35 +110,38 @@ const EmailTempOverview = () => {
             height: "10%",
           }}
         > */}
-        {/* </button> */}
+      {/* </button> */}
 
-        {/* <div className="page_height"> */}
-          <div className="card mb-4 d-block">
-            <div className="data_tbl table-responsive">
-              <DataTable
-                title="Email Temp Overview"
-                columns={columns}
-                data={filterdata}
-                fixedHeader
-                // pagination
-                fixedHeaderScrollHeight="64vh"
-                highlightOnHover
-                subHeader
-                subHeaderComponent={
-                  <input
-                    type="text"
-                    placeholder="Search here"
-                    className="w-50 form-control "
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                }
-              />
-            </div>
+      {/* <div className="page_height"> */}
+      <div className="card">
+        <div className="card-header sb">
+          <div className="card-title">
+            Email Temp Overview
           </div>
-        {/* </div> */}
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-25 form-control "
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="card-body thm_table">
+          <DataTable
+
+            columns={columns}
+            data={filterdata}
+            fixedHeader
+            pagination
+            // fixedHeaderScrollHeight="64vh"
+            highlightOnHover
+
+          />
+        </div>
+      </div>
+      {/* </div> */}
       {/* </FormContainer> */}
-    </>
+    </div>
   );
 };
 

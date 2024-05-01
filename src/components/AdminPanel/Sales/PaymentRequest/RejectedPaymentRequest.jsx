@@ -5,7 +5,7 @@ import DataTable from "react-data-table-component";
 import FormContainer from "../../FormContainer";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 
-const ViewSaleBooking = () => {
+const RejectedPaymentRequest = () => {
   const [saleBookingData, setSaleBookingData] = useState([]);
   const [origionalData, setOrigionalData] = useState([]);
   const [search, setSearch] = useState("");
@@ -108,7 +108,7 @@ const ViewSaleBooking = () => {
       <div className="action_heading">
         <div className="action_title">
           <FormContainer
-            mainTitle="Sales Booking"
+            mainTitle="Rejected Payment Request"
             link="/admin/create-sales-booking"
             buttonAccess={true}
             submitButton={false}
@@ -118,7 +118,7 @@ const ViewSaleBooking = () => {
 
       <div className="card">
         <div className="card-header sb">
-          <div className="card-title">Sale Booking Overview</div>
+          <div className="card-title">Rejected Payment Request Overview</div>
           <input
             type="text"
             placeholder="Search here"
@@ -141,4 +141,4 @@ const ViewSaleBooking = () => {
   );
 };
 
-export default ViewSaleBooking;
+export default RejectedPaymentRequest;

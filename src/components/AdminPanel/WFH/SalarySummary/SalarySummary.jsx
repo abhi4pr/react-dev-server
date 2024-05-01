@@ -5,7 +5,6 @@ import DataTable from "react-data-table-component";
 import Select from "react-select";
 import Modal from "react-modal";
 import { baseUrl } from "../../../../utils/config";
-import DynamicSelect from "../../Sales/DynamicSelectManualy";
 
 const SalarySummary = () => {
   const [allSalaryData, setAllSalaryData] = useState([]);
@@ -16,18 +15,31 @@ const SalarySummary = () => {
   const [handleOpenUser, setHandleOpenUser] = useState(false);
   const [month, setMonth] = useState("");
   const MonthData = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    { label: "All", value: "" },
+    { label: "January", value: "January" },
+    { label: "February", value: "February" },
+    { label: "March", value: "March" },
+    { label: "April", value: "April" },
+    { label: "May", value: "May" },
+    { label: "June", value: "June" },
+    { label: "July", value: "July" },
+    { label: "August", value: "August" },
+    { label: "September", value: "September" },
+    { label: "October", value: "October" },
+    { label: "November", value: "November" },
+    { label: "December", value: "December" },
+  ];
+
+  const [dynamicFilter, setDynamicFilter] = useState("");
+  const FilterDynamic = [
+    // { label: "Today", value: "today" },
+    // { label: "This Week", value: "this_week" },
+    { label: "All", value: "" },
+    { label: "This Month", value: "this_month" },
+    { label: "This Quater", value: "this_quater" },
+    { label: "This Year", value: "this_year" },
+    { label: "Previous Month", value: "previous_month" },
+    { label: "Previous Year", value: "previous_year" },
   ];
 
   const handleOpenSubCat = () => {
@@ -50,7 +62,7 @@ const SalarySummary = () => {
     const result = savedData.filter((d) => {
       const deptMatch = !departmentFilter || d.dept_id === departmentFilter;
       const monthMatch = !month || d.month === month;
-      return deptMatch || monthMatch;
+      return deptMatch && monthMatch;
     });
     setAllSalaryData(result);
   }, [departmentFilter, month]);
@@ -77,14 +89,25 @@ const SalarySummary = () => {
   };
 
   const getData = async () => {
-    const response = await axios.get(baseUrl + "get_salary_calculation_data");
-    setAllSalaryData(response.data.data);
-    setSavedData(response.data.data);
+    try {
+      const response = await axios.get(
+        baseUrl + "get_salary_calculation_with_filter_data",
+        {
+          params: {
+            filterOption: dynamicFilter,
+          },
+        }
+      );
+      setSavedData(response.data.data);
+      setAllSalaryData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [dynamicFilter]);
 
   useEffect(() => {
     const lowerCaseSearch = search.toLowerCase();
@@ -204,14 +227,37 @@ const SalarySummary = () => {
             required
           />
         </div>
-        <DynamicSelect
-          lable="Month"
-          astric={true}
-          data={MonthData}
-          value={month}
-          cols={3}
-          onChange={(e) => setMonth(e.value)}
-        />
+        <div className={`form-group col-3`}>
+          <label className="form-label">Filter</label>
+          <Select
+            options={MonthData}
+            value={FilterDynamic.find((option) => option.value === month)}
+            onChange={(selectedOption) => {
+              if (selectedOption.value === "") {
+                getData(); // Call getData function
+              } else {
+                setMonth(selectedOption.value); // Update state
+              }
+            }}
+          />
+        </div>
+
+        <div className={`form-group col-3`}>
+          <label className="form-label">Filter</label>
+          <Select
+            options={FilterDynamic}
+            value={FilterDynamic.find(
+              (option) => option.value === dynamicFilter
+            )}
+            onChange={(selectedOption) => {
+              if (selectedOption.value === "") {
+                setDynamicFilter("");
+              } else {
+                setDynamicFilter(selectedOption.value);
+              }
+            }}
+          />
+        </div>
       </div>
 
       <div className="master-card-css">

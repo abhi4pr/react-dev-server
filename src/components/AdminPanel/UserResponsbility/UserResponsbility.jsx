@@ -106,7 +106,7 @@ const UserResponsbility = () => {
   };
 
   return (
-    <>
+    <div>
       <FormContainer
         submitButton={false}
         mainTitle="Responsibiliy"
@@ -293,7 +293,7 @@ const UserResponsbility = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 export default UserResponsbility;
