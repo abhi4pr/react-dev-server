@@ -1043,7 +1043,7 @@ export default function PaymentDone() {
       },
     },
     {
-      filed: "payment_amount",
+      field: "payment_amount",
       headerName: "Payment Amount",
       width: 150,
       renderCell: (params) => {
@@ -1052,6 +1052,12 @@ export default function PaymentDone() {
         )[0]?.payment_amount;
         return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
       },
+    },
+    {
+      field: "payment_by",
+      headerName: "Payment By",
+      width: 150,
+      renderCell: (params) => <div>{params.row.payment_by}</div>,
     },
     {
       field: "aging",
@@ -1213,6 +1219,7 @@ export default function PaymentDone() {
       />
     );
   }
+  console.log(filterData, "filter -----------------------------Data");
   return (
     <div>
       <FormContainer

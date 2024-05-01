@@ -15,7 +15,10 @@ const FormContainer = ({
   handleOpenUniqueVendorClick,
   uniqueCustomerInvoiceCount,
   uniqueSalesExecutiveInvoiceCount,
+  nonInvcbalanceAmountTotal,
   link,
+  uniqueNonInvoiceCustomerCount,
+  uniqueNonInvoiceSalesExecutiveCount,
   openCount,
   closeCount,
   aboutToCloseCount,
@@ -332,7 +335,7 @@ const FormContainer = ({
               </h2>
             </div>
           )}
-          {balancePaymentAdditionalTitles && (
+          {balancePaymentAdditionalTitles && accIndex === 0 ? (
             <div className="additional-titles ">
               <h2 onClick={handleOpenUniqueCustomerClick}>
                 Unique Customer : <a href="#">{uniqueCustomerCount}</a>
@@ -345,6 +348,22 @@ const FormContainer = ({
                 Balance Amount : <a href="#">{balanceAmountTotal}</a>
               </h2>
             </div>
+          ) : (
+            balancePaymentAdditionalTitles && (
+              <div className="additional-titles ">
+                <h2 onClick={handleOpenUniqueCustomerClick}>
+                  Unique Customer :{" "}
+                  <a href="#">{uniqueNonInvoiceCustomerCount}</a>
+                </h2>
+                <h2 onClick={handleOpenUniqueSalesExecutive}>
+                  Unique Sales Executive :{" "}
+                  <a href="#">{uniqueNonInvoiceSalesExecutiveCount}</a>
+                </h2>
+                <h2>
+                  Balance Amount : <a href="#">{nonInvcbalanceAmountTotal}</a>
+                </h2>
+              </div>
+            )
           )}
           {incentivePaymentAdditionalTitles && (
             <div className="additional-titles ">
