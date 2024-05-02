@@ -12,7 +12,6 @@ import ChatApplication from "../../Common/ChatApplication";
 import { useLocation } from "react-router-dom";
 import titleimg from "/bg-img.png";
 import jsPDF from "jspdf";
-import temphHead1 from "/invoice-tempelate/invoice-tem-header-1.png";
 import "jspdf-autotable";
 import { Details } from "@mui/icons-material";
 import WFHDDahboard from "./WFHDDahboard";
