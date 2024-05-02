@@ -1138,9 +1138,7 @@ export default function PendingPaymentRequest() {
             </Button>
             <a
               style={{ cursor: "pointer", marginRight: "20px", color: "blue" }}
-              onClick={() =>
-                handleOpenUniqueVendorClick(params.row.vendor_name)
-              }
+              onClick={() => handleOpenSameVender(params.row.vendor_name)}
             >
               {params.row.vendor_name}
             </a>

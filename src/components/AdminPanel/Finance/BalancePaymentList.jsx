@@ -1372,7 +1372,30 @@ const BalancePaymentList = () => {
         </Link>
       ),
     },
+
+    // {
+    //   field: "Discard ",
+    //   headerName: "Discard",
+    //   width: 190,
+    //   renderCell: (params) => (
+    //     <div>
+    //       {params.row.gst_status === "0" ? (
+    //         <button
+    //           variant="contained"
+    //           autoFocus
+    //           className="btn cmnbtn btn_sm btn-outline-primary"
+    //           onClick={(e) => handleDiscardOpenDialog(e)}
+    //         >
+    //           Discard
+    //         </button>
+    //       ) : (
+    //         ""
+    //       )}
+    //     </div>
+    //   ),
+    // },
   ];
+
   const filterDataBasedOnSelection = (apiData) => {
     console.log(apiData, "api data >>");
     const now = moment();
@@ -1637,10 +1660,10 @@ const BalancePaymentList = () => {
       </Dialog>
       {/* Dialog For Discard */}
       <Dialog
-        open={closeDialog}
-        onClose={handleCloseTDSFields}
-        fullWidth={"md"}
-        maxWidth={"md"}
+        open={discardDialog}
+        onClose={handleDiscardCloseDialog}
+        fullWidth={true}
+        maxWidth="md"
         sx={{
           display: "flex",
           alignItems: "center",
@@ -1650,8 +1673,7 @@ const BalancePaymentList = () => {
         <DialogTitle>TDS</DialogTitle>
         <IconButton
           aria-label="close"
-          s
-          onClick={handleCloseTDSFields}
+          onClick={handleDiscardCloseDialog}
           sx={{
             position: "absolute",
             right: 8,
@@ -1665,32 +1687,13 @@ const BalancePaymentList = () => {
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          <div className="row">
-            <TextField
-              multiline
-              label="Reason for Discard"
-              // value={discardRemark}
-              // onChange={(e) => setDiscardRemark(e.target.value)}
-              fullWidth
-            />
-
-            <Button
-              variant="contained"
-              color="success"
-              autoFocus
-              // onClick={}
-            >
-              yes
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              autoFocus
-              // onClick={}
-            >
-              No
-            </Button>
-          </div>
+          <TextField
+            multiline
+            label="Reason for Discard"
+            // value={discardRemark}
+            // onChange={(e) => setDiscardRemark(e.target.value)}
+            fullWidth
+          />
           <div className="pack w-100 mt-3 sb">
             <div></div>
             <div className="pack gap16">
@@ -2072,7 +2075,7 @@ const BalancePaymentList = () => {
             </div>
             <div className="card-body">
               <h5 className="mediumText">Non GST Count</h5>
-              <h4 className="font-weight-bold mt8">₹{nonGstCounts?.length}</h4>
+              <h4 className="font-weight-bold mt8">{nonGstCounts?.length}</h4>
               <h5 className="mediumText"> Total Balance Amount</h5>
               <h4 className="font-weight-bold mt8">
                 ₹{totalNonGstBalanceAmount}
@@ -2566,7 +2569,7 @@ const BalancePaymentList = () => {
                     <Button
                       variant="contained"
                       autoFocus
-                      onClick={(e) => handleDiscardSubmit(e)}
+                      onClick={(e) => handleDiscardOpenDialog(e)}
                     >
                       Discard
                     </Button>

@@ -864,7 +864,6 @@ const IncentivePayment = () => {
     }
   };
 
-  console.log(balRelInvc, "balance release invoice>>>");
   return (
     <div>
       <FormContainer
