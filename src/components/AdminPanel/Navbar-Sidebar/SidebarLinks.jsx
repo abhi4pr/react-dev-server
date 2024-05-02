@@ -1278,17 +1278,17 @@ const SidebarLinks = () => {
                             >
                               <i className="bi bi-dot"></i> Payment Mode
                             </NavLink>
-                            <NavLink
+                            {/* <NavLink
                               className="collapse-item"
                               to="/admin/finance-pendingapproveupdate"
                             >
                               <i className="bi bi-dot"></i> Pending Approval
-                            </NavLink>
+                            </NavLink> */}
                           </div>
                         </div>
                       </li>
 
-                      <li className="nav-item">
+                      {/* <li className="nav-item">
                         <a
                           className="nav-btn nav-link collapsed"
                           data-toggle="collapse"
@@ -1296,7 +1296,7 @@ const SidebarLinks = () => {
                           aria-expanded="true"
                           aria-controls="collapsInnerOneFinanceSecound"
                         >
-                          {/* <i className="bi bi-person-gear" /> */}
+                     
                           <i className="bi bi-dash"></i>
                           <span>Payment Refund</span>
                         </a>
@@ -1304,7 +1304,7 @@ const SidebarLinks = () => {
                           id="collapsInnerOneFinanceSecound"
                           className="collapse"
                           aria-labelledby="headingTwo"
-                          // data-parent="#accordionSidebar"
+  
                         >
                           <div className="internal collapse-inner">
                             <NavLink
@@ -1322,7 +1322,7 @@ const SidebarLinks = () => {
                             </NavLink>
                           </div>
                         </div>
-                      </li>
+                      </li> */}
 
                       <li className="nav-item">
                         {/* <NavLink
@@ -1353,7 +1353,7 @@ const SidebarLinks = () => {
                         {/* </div>
                         </div> */}
                       </li>
-
+                      {/* 
                       <li className="nav-item">
                         <Link
                           className="nav-btn nav-link collapsed"
@@ -1369,7 +1369,6 @@ const SidebarLinks = () => {
                           id="collapsInnerFourFinance"
                           className="collapse"
                           aria-labelledby="headingTwo"
-                          // data-parent="#accordionSidebar"
                         >
                           <div className="internal collapse-inner">
                             <>
@@ -1382,7 +1381,7 @@ const SidebarLinks = () => {
                             </>
                           </div>
                         </div>
-                      </li>
+                      </li> */}
 
                       {/* <li className="nav-item">
                         <NavLink
@@ -1426,15 +1425,15 @@ const SidebarLinks = () => {
                           </div>
                         </div>
                       </li> */}
-                      <li className="nav-item">
+                      {/* <li className="nav-item">
                         <NavLink
                           className="collapse-item"
                           to="/admin/finance-invoice"
                         >
                           <i className="bi bi-dot"></i> Invoice
                         </NavLink>
-                      </li>
-                      <li className="nav-item">
+                      </li> */}
+                      {/* <li className="nav-item">
                         <Link
                           className="nav-btn nav-link collapsed"
                           data-toggle="collapse"
@@ -1460,24 +1459,11 @@ const SidebarLinks = () => {
                                 <i className="bi bi-dot"></i> Sales Booking
                               </NavLink>
 
-                              {/* <NavLink
-                                className="collapse-item"
-                                to="/admin/finance-salebookingclose"
-                              >
-                                <i className="bi bi-dot"></i> Sales Booking
-                                Closing
-                              </NavLink>
-                              <NavLink
-                                className="collapse-item"
-                                to="/admin/finance-salebookingverify"
-                              >
-                                <i className="bi bi-dot"></i> Sales Booking
-                                Verification
-                              </NavLink> */}
+                            
                             </>
                           </div>
                         </div>
-                      </li>
+                      </li> */}
                     </>
                   </div>
                 </div>
@@ -1520,30 +1506,30 @@ const SidebarLinks = () => {
                       >
                         <i className="bi bi-dot"></i> Payment Mode Master
                       </NavLink>
-                      <NavLink
+                      {/* <NavLink
                         className="collapse-item"
                         to="/admin/payment-TDS_deduct"
                       >
                         <i className="bi bi-dot"></i> TDS Deduction
-                      </NavLink>
-                      <NavLink
+                      </NavLink> */}
+                      {/* <NavLink
                         className="collapse-item"
                         to="/admin/payment-GST_hold"
                       >
                         <i className="bi bi-dot"></i> GST Hold
-                      </NavLink>
-                      <NavLink
+                      </NavLink> */}
+                      {/* <NavLink
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-paymentdone"
                       >
                         <i className="bi bi-dot"></i> Payment Done
-                      </NavLink>
-                      <NavLink
+                      </NavLink> */}
+                      {/* <NavLink
                         className="collapse-item"
                         to="/admin/finance-pruchasemanagement-discardpayment"
                       >
                         <i className="bi bi-dot"></i> Discard Payment
-                      </NavLink>
+                      </NavLink> */}
                     </>
                   </div>
                 </div>

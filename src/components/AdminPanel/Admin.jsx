@@ -329,6 +329,7 @@ import RejectedPaymentRequest from "./Sales/PaymentRequest/RejectedPaymentReques
 import PendingPaymentRequestSales from "./Sales/PaymentRequest/PendingPaymentRequestSales";
 import RecordServices from "./Sales/RecordService/RecordServices";
 import ReleasedAmountIncentive from "./Finance/ReleasedAmountIncentive";
+import RefundPayment from "./Finance/RefundPayment";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -804,6 +805,10 @@ const Admin = () => {
                   <Route
                     path="/finance-pendingapproverefund"
                     element={<PendingApprovalRefund />}
+                  />
+                  <Route
+                    path="/finance-refundpayment"
+                    element={<RefundPayment />}
                   />
                   <Route
                     path="/finance-pendingapproveupdate"

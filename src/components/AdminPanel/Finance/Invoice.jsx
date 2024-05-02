@@ -104,33 +104,38 @@ const Invoice = () => {
     formData.append("loggedin_user_id", 36);
     formData.append("sale_booking_id", row.sale_booking_id);
 
-    await axios
-      .post(
-        "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_reject",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then(() => {
-        axios
-          .put(baseUrl + "pending_invoice_update", formData, {
+    const confirmation = confirm("Are you sure you want to reject this data?");
+    if (confirmation) {
+      await axios
+        .post(
+          "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_reject",
+          formData,
+          {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          })
-          .then(() => {
-            getData();
-            setDate(dayjs());
-            setInoiceNum("");
-            setPartyName("");
-          });
-      });
-
-    toastAlert("Data updated");
-    setIsFormSubmitted(true);
+          }
+        )
+        .then(() => {
+          axios
+            .put(baseUrl + "pending_invoice_update", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then(() => {
+              toastAlert("Data Rejected Successfully");
+              getData();
+              setDate(dayjs());
+              setInoiceNum("");
+              setPartyName("");
+            });
+        });
+    } else {
+      getData();
+    }
+    // toastAlert("Data updated");
+    // setIsFormSubmitted(true);
   };
 
   // const handleGetFormData =
@@ -141,41 +146,47 @@ const Invoice = () => {
       toastError("Please fill all the fields");
       return;
     }
-    const formData = new FormData();
-    formData.append("loggedin_user_id", 36);
-    formData.append("sale_booking_id", row.sale_booking_id);
-    formData.append("invoiceFormSubmit", 1);
-    formData.append("invoice", fileUpload);
-    formData.append("invoice_mnj_number", inoiceNum);
-    formData.append(
-      "invoice_mnj_date",
-      new Date(date.$d).toISOString().split("T")[0]
-    );
-    formData.append("party_mnj_name", partyName);
 
-    await axios
-      .post(
-        "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_upload_file",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then((res) => {
-        toastAlert("Data updated");
-        getDataInvoiceCreated();
-        axios
-          .put(baseUrl + "pending_invoice_update", formData, {
+    const confirmation = confirm("Are you sure you want to submit this data?");
+    if (confirmation) {
+      const formData = new FormData();
+      formData.append("loggedin_user_id", 36);
+      formData.append("sale_booking_id", row.sale_booking_id);
+      formData.append("invoiceFormSubmit", 1);
+      formData.append("invoice", fileUpload);
+      formData.append("invoice_mnj_number", inoiceNum);
+      formData.append(
+        "invoice_mnj_date",
+        new Date(date.$d).toISOString().split("T")[0]
+      );
+      formData.append("party_mnj_name", partyName);
+
+      await axios
+        .post(
+          "https://sales.creativefuel.io/webservices/RestController.php?view=invoice_upload_file",
+          formData,
+          {
             headers: {
               "Content-Type": "multipart/form-data",
             },
-          })
-          .then((res) => {
-            getData();
-          });
-      });
+          }
+        )
+        .then((res) => {
+          toastAlert("Data Submitted Successfully");
+          getDataInvoiceCreated();
+          axios
+            .put(baseUrl + "pending_invoice_update", formData, {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            })
+            .then((res) => {
+              getData();
+            });
+        });
+    } else {
+      getData();
+    }
   };
 
   function getData() {

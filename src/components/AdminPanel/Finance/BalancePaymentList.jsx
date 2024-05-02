@@ -97,6 +97,7 @@ const BalancePaymentList = () => {
   // const [TDSPercentage, setTDSPercetage] = useState("");
   // const [TDSValue, setTDSValue] = useState("");
   const [tdsFieldSaleBookingId, setTDSFieldSaleBookingId] = useState("");
+  const [discardSaleBookingId, setDiscardSaleBookingId] = useState("");
   const [paidPercentage, setPaidPercentage] = useState("");
   const [tdsPercentage, setTDSPercentage] = useState("");
   const [showField, setShowField] = useState(false);
@@ -108,6 +109,7 @@ const BalancePaymentList = () => {
   const [customerList, setCustomerList] = useState([]);
   const [salesExecutiveList, setSalesExecutiveList] = useState([]);
   const [nonGstStatus, setNonGstStatus] = useState("");
+  const [reason, setReason] = useState("");
   const [discardDialog, setDiscardDialog] = useState(false);
   const accordionButtons = ["Invoice Created", "Non Invoice Created"];
 
@@ -115,18 +117,36 @@ const BalancePaymentList = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  const DateFormateToYYYYMMDD = (date) => {
-    const d = new Date(date);
-    const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
-    const mo = new Intl.DateTimeFormat("en", { month: "2-digit" }).format(d);
-    const da = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
-    return `${ye}-${mo}-${da}`;
-  };
-
   useEffect(() => {
     calculatePaidPercentage();
     calculateTDSPercentage();
   }, [balAmount, paidAmount, baseAmount]);
+
+  const handleDiscard = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+
+    formData.append("sale_booking_id", discardSaleBookingId);
+    formData.append("balance_payment_discard", 1);
+    formData.append("reason", reason);
+
+    await axios
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales_balance_payment_discard",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then(() => {
+        toastAlert("Data Discard Successfully");
+        handleDiscardCloseDialog();
+        // getData();
+      });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -142,25 +162,6 @@ const BalancePaymentList = () => {
     formData.append("payment_mode", "others");
     formData.append("paid_amount", paidAmount);
     formData.append("incentive_adjustment_amount", adjustmentAmount);
-
-    //     // sale_booking_id:161
-    //     payment_update_id:
-    //     payment_ref_no:Axispo444385821
-    //     payment_detail_id:43
-    //     loggedin_user_id:36
-    //     paid_amount:54000
-    //     payment_type:Partial
-    //     payment_mode:Others
-    //     payment_screenshot
-
-    //     sale_booking_id:161
-    // payment_update_id:
-    // payment_ref_no:Axispo444385821
-    // payment_detail_id:43
-    // loggedin_user_id:36
-    // paid_amount:54000
-    // payment_type:Partial
-    // payment_mode:Others
 
     await axios
       .post(
@@ -196,12 +197,13 @@ const BalancePaymentList = () => {
     setImageModalOpen(false);
   };
 
-  const handleDiscardOpenDialog = (e) => {
+  const handleDiscardOpenDialog = (e, rowData) => {
     e.preventDefault();
+    setDiscardSaleBookingId(rowData.sale_booking_id);
     setDiscardDialog(true);
   };
   const handleDiscardCloseDialog = (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     setDiscardDialog(false);
   };
 
@@ -1373,27 +1375,27 @@ const BalancePaymentList = () => {
       ),
     },
 
-    // {
-    //   field: "Discard ",
-    //   headerName: "Discard",
-    //   width: 190,
-    //   renderCell: (params) => (
-    //     <div>
-    //       {params.row.gst_status === "0" ? (
-    //         <button
-    //           variant="contained"
-    //           autoFocus
-    //           className="btn cmnbtn btn_sm btn-outline-primary"
-    //           onClick={(e) => handleDiscardOpenDialog(e)}
-    //         >
-    //           Discard
-    //         </button>
-    //       ) : (
-    //         ""
-    //       )}
-    //     </div>
-    //   ),
-    // },
+    {
+      field: "Discard ",
+      headerName: "Discard",
+      width: 190,
+      renderCell: (params) => (
+        <div>
+          {params.row.gst_status === "0" ? (
+            <button
+              variant="contained"
+              autoFocus
+              className="btn cmnbtn btn_sm btn-outline-primary"
+              onClick={(e) => handleDiscardOpenDialog(e, params.row)}
+            >
+              Discard
+            </button>
+          ) : (
+            ""
+          )}
+        </div>
+      ),
+    },
   ];
 
   const filterDataBasedOnSelection = (apiData) => {
@@ -1552,10 +1554,6 @@ const BalancePaymentList = () => {
   const totalPA = () => {
     return +campaignAmountData - (+paidAmountData + paidAmount);
   };
-  console.log(
-    filterData.filter((count) => count.gst_status === "0"),
-    "nonGstCounts?.gst_status????"
-  );
 
   return (
     <div>
@@ -1690,18 +1688,14 @@ const BalancePaymentList = () => {
           <TextField
             multiline
             label="Reason for Discard"
-            // value={discardRemark}
-            // onChange={(e) => setDiscardRemark(e.target.value)}
+            onChange={(e) => setReason(e.target.value)}
             fullWidth
           />
           <div className="pack w-100 mt-3 sb">
             <div></div>
             <div className="pack gap16">
-              <Button variant="contained" onClick={handleSaveTDS}>
-                YES
-              </Button>
-              <Button variant="contained" onClick={handleCloseTDSFields}>
-                NO
+              <Button variant="contained" onClick={(e) => handleDiscard(e)}>
+                Submit
               </Button>
             </div>
           </div>

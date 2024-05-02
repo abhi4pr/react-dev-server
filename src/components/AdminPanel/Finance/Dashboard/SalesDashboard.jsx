@@ -655,7 +655,7 @@ export default function SalesDashboard() {
                 </Link>
               </div>
               <div className="col">
-                <Link to="/admin/finance-pendingapproverefund">
+                <Link to="/admin/finance-refundpayment">
                   <div className="card-body cardGrdnt blueGrdnt financeCardSmall">
                     <h2>Total Refund Request Amount Pending</h2>
                     <h3>
