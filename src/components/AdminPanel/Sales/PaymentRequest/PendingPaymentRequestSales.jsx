@@ -83,10 +83,9 @@ const PendingPaymentRequestSales = () => {
       name: "Action",
       cell: (row) => (
         <>
-          <Link to={`/admin/wfh-update-document/${row.user_id}`}>
-            {/* <UploadIcon /> */}
+          <Link to={`/admin/create-payment-update`}>
             <div className="icon-1" title="Document upload">
-              <i class="bi bi-upload"></i>
+              <i class="bi bi-file-earmark-plus"></i>
             </div>
           </Link>
         </>
