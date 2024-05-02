@@ -47,7 +47,7 @@ export default function FinanceWFHDashboard() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [CSVFile, setCSVFile] = useState(null);
   const [rowUTR, setRowUTR] = useState({ value: "", row: null });
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
 
   const monthOptions = [
     { value: "January", label: "January" },
@@ -138,9 +138,17 @@ export default function FinanceWFHDashboard() {
   }, [showFilterModal]);
 
   const handleDownloadInvoices = async () => {
+    const handleError = (error) => {
+      var err = error.toString();
+      if (err === "RangeError: Array buffer allocation failed")
+        toastError("Please select only 40 invoices at a time")
+    };
     try {
-      await downloadSelectedInvoices(rowForPayment);
-    } catch (error) { }
+      await downloadSelectedInvoices(rowForPayment, handleError);
+    } catch (error) {
+      console.error("Error downloading invoices:", error);
+    }
+
   };
 
   const handleDownloadIPayoutReleased = async () => {

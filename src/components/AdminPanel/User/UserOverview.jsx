@@ -701,13 +701,13 @@ const UserOverview = () => {
         </div>
         <div className="action_btns">
           <Link to="/admin/users-dashboard">
-            <button type="button" className="btn btn-outline-danger btn-sm">
+            <button type="button" className="btn btn-outline-primary btn-sm">
               Dashboard
             </button>
           </Link>
           {contextData && contextData[2] && contextData[2].view_value === 1 && (
             <Link className="collapse-item" to="/admin/object-overview">
-              <button type="button" className="btn btn-outline-warning btn-sm">
+              <button type="button" className="btn btn-outline-primary btn-sm">
                 Objects Auth
               </button>
             </Link>
@@ -761,7 +761,7 @@ const UserOverview = () => {
             contextData[0] &&
             contextData[0].insert_value === 1 && (
               <Link to="/admin/user">
-                <button type="button" className="btn btn-primary btn-sm">
+                <button type="button" className="btn btn-outline-primary btn-sm">
                   Add New User
                 </button>
               </Link>
@@ -841,8 +841,13 @@ const UserOverview = () => {
         </div>
       ) : (
         //  Active inActive toggle button here
-        <div className="page_height">
-          <div className="pack w-100 justify-content-end d-flex p-2 ">
+        <>
+          <div className="tab">
+            <button className={`named-tab ${activeButton === 1 ? "active-tab" : ""}`} onClick={() => handleRadioChange(1)}>All</button>
+            <button className={`named-tab ${activeButton === 2 ? "active-tab" : ""}`} onClick={() => handleRadioChange(2)}>Active</button>
+            <button className={`named-tab ${activeButton === 3 ? "active-tab" : ""}`} onClick={() => handleRadioChange(3)}>Exit</button>
+          </div>
+          {/* <div className="pack w-100 justify-content-end d-flex p-2 ">
             <div
               className="btn-group ml-3 mb-1"
               role="group"
@@ -891,8 +896,8 @@ const UserOverview = () => {
                 Exit
               </label>
             </div>
-          </div>
-          <div className="card mb-4">
+          </div> */}
+          <div className="card">
             <div className="card-body pb0 pb4">
               <div className="row thm_form">
                 <div className="form-group col-3">
@@ -1008,7 +1013,7 @@ const UserOverview = () => {
               />
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Modal here  */}

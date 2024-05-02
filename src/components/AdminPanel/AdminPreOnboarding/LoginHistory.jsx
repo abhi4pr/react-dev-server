@@ -363,7 +363,7 @@ const LoginHistory = () => {
             data={filterdata}
             // fixedHeader
             pagination
-            selectableRows
+          // selectableRows
           // fixedHeaderScrollHeight="64vh"
           // highlightOnHover
 

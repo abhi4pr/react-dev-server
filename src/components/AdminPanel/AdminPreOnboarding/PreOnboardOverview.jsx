@@ -236,7 +236,7 @@ const PreOnboardingOverview = () => {
 
                 pagination
 
-                selectableRows
+
 
               />
               <div />

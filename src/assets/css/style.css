@@ -13819,8 +13819,8 @@ body.sidebar-toggled .sidebar .nav-item .collapsing .collapse-inner {
 .sidebar .nav-item .collapsing .collapse-inner .collapse-item.active {
   border-radius: 50px;
   height: 40px;
-  background-color: var(--primary);
-  color: var(--white);
+  background-color: var(--primaryLight);
+  color: var(--primary);
   display: flex;
   align-items: center;
 }
