@@ -133,6 +133,7 @@ const Invoice = () => {
     setIsFormSubmitted(true);
   };
 
+  // const handleGetFormData =
   const handleImageUpload = async (row) => {
     console.log(inoiceNum, "inoiceNum", date, "date", partyName, "partyName>>");
     console.log(partyName, "partyName>>>");
@@ -162,7 +163,7 @@ const Invoice = () => {
           },
         }
       )
-      .then(() => {
+      .then((res) => {
         toastAlert("Data updated");
         getDataInvoiceCreated();
         axios
@@ -171,7 +172,7 @@ const Invoice = () => {
               "Content-Type": "multipart/form-data",
             },
           })
-          .then(() => {
+          .then((res) => {
             getData();
           });
       });
@@ -559,7 +560,6 @@ const Invoice = () => {
   };
   // handle submit  function for updating fields
   const handleInvoiceEditFields = async () => {
-    console.log(saleBookingId, "Sale Booking ID", invcDate, "DATE dATA >?????");
     const formData = new FormData();
     // const moment = require("moment");
 
@@ -1120,64 +1120,6 @@ const Invoice = () => {
         </>
       ),
     },
-
-    // {
-    //   field: "Input",
-    //   headerName: "Input",
-    //   width: 600,
-    //   renderCell: (params, index) => (
-    //     <div className="mt-2 d-flex">
-    //       <TextField
-    //         key={params.row.sale_booking_id}
-    //         className="d-block"
-    //         type="text"
-    //         name="input"
-    //         label="Invoice No."
-    //         sx={{
-    //           marginBottom: "1px",
-    //           "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
-    //             padding: "12px ",
-    //           },
-    //         }}
-    //         onChange={(e) => setInoiceNum(e.target.value)}
-    //       />
-    //       {/* //invoice num , date , party name */}
-    //       <div>
-    //         <LocalizationProvider dateAdapter={AdapterDayjs}>
-    //           <DatePicker
-    //             key={params.row.sale_booking_id}
-    //             format="DD/MM/YYYY"
-    //             sx={{
-    //               "& .css-nxo287-MuiInputBase-input-MuiOutlinedInput-input": {
-    //                 padding: "10px",
-    //               },
-    //             }}
-    //             defaultValue={dayjs()}
-    //             onChange={(e) => {
-    //               setDate(e);
-    //             }}
-    //           />
-    //         </LocalizationProvider>
-    //       </div>
-    //       <div>
-    //         <TextField
-    //           key={params.row.sale_booking_id}
-    //           type="text"
-    //           name="input"
-    //           variant="outlined"
-    //           label="Party Name"
-    //           sx={{
-    //             marginBottom: "1px",
-    //             "& .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input": {
-    //               padding: "12px ",
-    //             },
-    //           }}
-    //           onChange={(e) => setPartyName(e.target.value)}
-    //         />
-    //       </div>
-    //     </div>
-    //   ),
-    // },
     {
       field: "invoice_mnj_number",
       headerName: "Invoice No.",

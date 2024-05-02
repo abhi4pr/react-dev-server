@@ -1499,7 +1499,7 @@ const SalaryWFH = () => {
                 >
                   Delete Salary
                 </button>
-                {selectedRows.length > 0 && activeTab === 0 && (
+                {selectedRows?.length > 0 && activeTab === 0 && (
                   <>
                     <button
                       className="btn  cmnbtn btn_sm btn-primary mr-2"

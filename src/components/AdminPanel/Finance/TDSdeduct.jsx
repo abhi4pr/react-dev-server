@@ -780,8 +780,8 @@ export default function TDSdeduct() {
       field: "Pan Img",
       headerName: "Pan Img",
       renderCell: (params) => {
-        const ImgUrl = `https://purchase.creativefuel.io/${params.row.pan_img}`;
-        return params.row.pan_img.includes("uploads") ? (
+        const ImgUrl = `https://purchase.creativefuel.io/${params?.row?.pan_img}`;
+        return params?.row?.pan_img?.includes("uploads") ? (
           <img
             onClick={() => {
               setOpenImageDialog(true);

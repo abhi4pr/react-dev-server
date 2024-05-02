@@ -936,8 +936,8 @@ export default function PaymentDone() {
       field: "Pan Img",
       headerName: "Pan Img",
       renderCell: (params) => {
-        const ImgUrl = `https://purchase.creativefuel.io/${params.row.pan_img}`;
-        return params.row.pan_img.includes("uploads") ? (
+        const ImgUrl = `https://purchase.creativefuel.io/${params?.row?.pan_img}`;
+        return params?.row?.pan_img?.includes("uploads") ? (
           <img
             onClick={() => {
               setOpenImageDialog(true);
@@ -1043,7 +1043,7 @@ export default function PaymentDone() {
       },
     },
     {
-      filed: "payment_amount",
+      field: "payment_amount",
       headerName: "Payment Amount",
       width: 150,
       renderCell: (params) => {
@@ -1052,6 +1052,12 @@ export default function PaymentDone() {
         )[0]?.payment_amount;
         return paymentAmount ? <p>&#8377; {paymentAmount}</p> : "NA";
       },
+    },
+    {
+      field: "payment_by",
+      headerName: "Payment By",
+      width: 150,
+      renderCell: (params) => <div>{params.row.payment_by}</div>,
     },
     {
       field: "aging",
@@ -1213,6 +1219,7 @@ export default function PaymentDone() {
       />
     );
   }
+  console.log(filterData, "filter -----------------------------Data");
   return (
     <div>
       <FormContainer

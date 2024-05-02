@@ -62,40 +62,43 @@ const DepartmentMaster = () => {
   }
 
   return (
-    <>
+    <div>
       <FormContainer
         mainTitle="Department"
         title="Department"
         handleSubmit={handleSubmit}
       >
-        <FieldContainer
-          label="Deparment Name"
-          value={departmentName}
-          onChange={(e) => setDepartmentName(e.target.value)}
-        />
-        <FieldContainer
-          label="Short Name"
-          value={shortName}
-          onChange={(e) => setShortName(e.target.value)}
-          required={false}
-        />
-        {/* <FieldContainer
+        <div className="mb-4 row">
+
+          <FieldContainer
+            label="Deparment Name"
+            value={departmentName}
+            onChange={(e) => setDepartmentName(e.target.value)}
+          />
+          <FieldContainer
+            label="Short Name"
+            value={shortName}
+            onChange={(e) => setShortName(e.target.value)}
+            required={false}
+          />
+          {/* <FieldContainer
           label="Created By"
           value={createdBy}
           onChange={(e) => setCreatedBy(e.target.value)}
           disabled
         /> */}
-        <FieldContainer
-          label="Remark"
-          Tag="textarea"
-          value={remark}
-          required={false}
-          onChange={(e) => setRemark(e.target.value)}
-        />
+          <FieldContainer
+            label="Remark"
+            Tag="textarea"
+            value={remark}
+            required={false}
+            onChange={(e) => setRemark(e.target.value)}
+          />
 
-        {error && <p style={{ color: "red" }}>{error}</p>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
+        </div>
       </FormContainer>
-    </>
+    </div>
   );
 };
 

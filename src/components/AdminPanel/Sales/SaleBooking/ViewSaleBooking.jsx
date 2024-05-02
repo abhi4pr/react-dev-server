@@ -53,7 +53,7 @@ const ViewSaleBooking = () => {
     },
     {
       name: "Paid Amount",
-      selector: (row) => console.log(row),
+      // selector: (row) => console.log(row),
     },
     {
       name: "Base Amount",
@@ -67,9 +67,6 @@ const ViewSaleBooking = () => {
       name: "Refund Amount",
     },
     {
-      name: "Refund Amount Files",
-    },
-    {
       name: "Service Taken Amount",
       selector: (row) => row.service_taken_amount + "₹",
     },
@@ -77,8 +74,8 @@ const ViewSaleBooking = () => {
       name: "Service Balance Amount",
     },
     {
-      name: "Has Incentive",
-      selector: (row) => row.incentive_status,
+      name: "Incentive",
+      selector: (row) => (row.incentive_status === "incentive" ? "Yes" : "No"),
     },
     {
       name: "Execution Running Status",
@@ -94,9 +91,6 @@ const ViewSaleBooking = () => {
     },
     {
       name: "Refund Reasons",
-    },
-    {
-      name: "Badge Achievement",
     },
     {
       name: "Booking Date Created",

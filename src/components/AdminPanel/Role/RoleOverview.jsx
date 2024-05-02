@@ -73,7 +73,7 @@ const RoleOverView = () => {
               <Link to="/admin/role-update">
                 <button
                   title="Edit"
-                  className="btn btn-outline-primary btn-sml"
+                  className=" icon-1"
                   onClick={() =>
                     setToLocalStorage(
                       row.role_id,
@@ -86,7 +86,7 @@ const RoleOverView = () => {
                     )
                   }
                 >
-                  <FaEdit />{" "}
+                  <i className="bi bi-pencil" />{" "}
                 </button>
               </Link>
             )}
@@ -146,25 +146,26 @@ const RoleOverView = () => {
         }
       />
       <div className="card">
-        <div className="data_tbl table-responsive">
+        <div className="card-header sb">
+          <div className="card-title">Role Overview</div>
+          <input
+            type="text"
+            placeholder="Search here"
+            className="w-25] form-control"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="card-body">
           <DataTable
-            title="Role Overview"
+            // title="Role Overview"
             columns={columns}
             data={filterdata}
             fixedHeader
-            // pagination
+            pagination
             fixedHeaderScrollHeight="62vh"
             highlightOnHover
-            subHeader
-            subHeaderComponent={
-              <input
-                type="text"
-                placeholder="Search here"
-                className="w-50 form-control"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            }
+
           />
         </div>
       </div>
