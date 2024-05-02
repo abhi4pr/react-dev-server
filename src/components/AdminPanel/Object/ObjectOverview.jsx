@@ -164,6 +164,7 @@ const ObjectOverview = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [filters, setFilters] = useState([]);
   const [savedFilters, setSavedFilters] = useState([]);
+  const [customFilterNames, setCustomFilterNames] = useState(Array(savedFilters?.length)?.fill(''));
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -356,6 +357,25 @@ const ObjectOverview = () => {
     setFilterData(result);
   }, [search]);
 
+  // filter save code start here
+
+  const handleFilterNameChange = (index, name) => {
+    const updatedCustomFilterNames = [...customFilterNames];
+    updatedCustomFilterNames[index] = name;
+    setCustomFilterNames(updatedCustomFilterNames);
+  };
+
+  const saveFilterName = (index) => {
+    const updatedSavedFilters = [...savedFilters];
+    updatedSavedFilters[index].name = customFilterNames[index] || `Filter ${index + 1}`;
+    setSavedFilters(updatedSavedFilters);
+    axios.put(baseUrl+'edit_dynamic_table_data',{
+      user_id: userID,
+      table_name: 'object table',
+      filter_array: updatedSavedFilters
+    });
+  };
+
   const saveFilter = () => {
     const newSavedFilters = [...savedFilters, { filters }];
     setSavedFilters(newSavedFilters); 
@@ -371,6 +391,8 @@ const ObjectOverview = () => {
     filterDataFun(savedFilter.filters);
   };
 
+  // save filter code end here
+
   return (
     <div >
       <FormContainer
@@ -384,14 +406,32 @@ const ObjectOverview = () => {
         }
       />
 
-    <div style={{marginBottom:'10px'}}>
-      {savedFilters.map((savedFilter, index) => (
-        <button className="btn btn-warning" key={index} onClick={() => applySavedFilter(savedFilter)} style={{marginRight:'10px'}}>
-          Saved Filter {index + 1}
+      <div style={{marginBottom:'10px'}}>
+        {savedFilters?.map((savedFilter, index) => (
+          <div key={index} className="saved-filter-container" style={{display: 'flex', alignItems: 'center', marginBottom:'1%'}}>
+            <input
+              type="text"
+              value={customFilterNames[index]}
+              required="true"
+              onChange={(e) => handleFilterNameChange(index, e.target.value)}
+              placeholder={`Filter ${index + 1} Name`}
+              className="form-control filter-name-input"
+              style={{width:'25%', marginRight: '10px'}}
+            />
+            <button className="btn btn-warning" onClick={() => applySavedFilter(savedFilter)} style={{marginRight:'10px'}}>
+              {savedFilter.name ? savedFilter.name : `Filter ${index + 1}`}
+            </button>
+            <button className="btn btn-success" onClick={() => saveFilterName(index)}>Change filter name</button>
+          </div>
+        ))}
+        <button 
+          className="btn btn-success" 
+          onClick={saveFilter} 
+          disabled={filters.length === 0}
+        >
+          Save Filter
         </button>
-      ))}
-      <button className="btn btn-success" onClick={saveFilter} disabled={filters.length === 0}>Save Filter</button>
-    </div>
+      </div>
 
       <div className="card">
         <div className="card-body thm_table dt">
