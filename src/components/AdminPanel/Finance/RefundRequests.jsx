@@ -896,7 +896,7 @@ const RefundRequests = () => {
               <div className="row thm_form">
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
-                    <label htmlFor="">Customer Name</label>
+                    <label>Customer Name</label>
                     <Autocomplete
                       value={custName}
                       onChange={(event, newValue) => setCustName(newValue)}
@@ -930,7 +930,7 @@ const RefundRequests = () => {
                 </div>
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
-                    <label htmlFor="">Refund Amount</label>
+                    <label>Refund Amount</label>
                     <input
                       type="text"
                       className="form-control"
@@ -944,7 +944,7 @@ const RefundRequests = () => {
                 </div>
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
-                    <label htmlFor="">Refund Request From Date </label>
+                    <label>Refund Request From Date </label>
                     <input
                       type="date"
                       className="form-control"
@@ -957,7 +957,7 @@ const RefundRequests = () => {
                 </div>
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
-                    <label htmlFor="">Refund Request To Date </label>
+                    <label>Refund Request To Date </label>
                     <input
                       type="date"
                       className="form-control"
@@ -970,7 +970,7 @@ const RefundRequests = () => {
                 </div>
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
-                    <label htmlFor="">Refund Update From Date </label>
+                    <label>Refund Update From Date </label>
                     <input
                       type="date"
                       className="form-control"
@@ -983,7 +983,7 @@ const RefundRequests = () => {
                 </div>
                 <div className="col-md-4 col-sm-12">
                   <div className="form-group">
-                    <label htmlFor="">Refund Update To Date </label>
+                    <label>Refund Update To Date </label>
                     <input
                       type="date"
                       className="form-control"
