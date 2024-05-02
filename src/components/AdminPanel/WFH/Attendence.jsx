@@ -53,11 +53,13 @@ const Attendence = () => {
     variableWidth: true,
   };
 
+  useEffect(() => {
   if (new Date().getMonth() > 3) {
     settings.initialSlide = new Date().getMonth - 4;
   } else {
     settings.initialSlide = new Date().getMonth() + 8;
   }
+}, []);
 
   function gettingSliderData() {
     axios.get(baseUrl + "get_month_year_merged_data").then((res) => {

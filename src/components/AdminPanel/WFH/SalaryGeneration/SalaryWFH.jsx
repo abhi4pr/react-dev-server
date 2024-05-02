@@ -109,11 +109,13 @@ const SalaryWFH = () => {
     variableWidth: true,
   };
 
+  useEffect(() => {
   if (new Date().getMonth() > 3) {
     settings.initialSlide = new Date().getMonth - 4;
   } else {
     settings.initialSlide = new Date().getMonth() + 8;
   }
+}, []);
 
   useEffect(() => {
     if (location.state) {
