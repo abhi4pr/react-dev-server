@@ -57,17 +57,13 @@ const BalanceTransactionList = () => {
       ),
       sortable: true,
     },
-    {
-      field: "aging",
-      headerName: "Aging",
-      renderCell: (params) => {
-        const date = new Date(params.row.sale_booking_date);
-        const today = new Date();
-        const diffTime = Math.abs(today - date);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        return diffDays + " Days";
-      },
-    },
+    // {
+    //   field: "aging",
+    //   headerName: "Aging",
+    //   renderCell: (params) => {
+    //    <div>{params.row}</div>
+    //   },
+    // },
     {
       field: "cust_name",
       headerName: "Customer Name",
