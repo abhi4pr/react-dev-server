@@ -30,6 +30,7 @@ function ExecutionPending() {
   const userID = decodedToken.id;
   const [openPaymentDetailDialog, setOpenPaymentDetaliDialog] = useState(false);
   const [paymentDialogDetails, setPaymentDialogDetails] = useState([{}]);
+  const [multipleToken, setMultipleToken] = useState("");
 
   const handleClickOpenPaymentDetailDialog = (data) => {
     setPaymentDialogDetails(data);
@@ -39,8 +40,61 @@ function ExecutionPending() {
     setOpenPaymentDetaliDialog(false);
   };
 
-
-
+  const handleMultipleVerification = (e) => {
+    e.preventDefault();
+    axios
+      .put(baseUrl + `update_all_list_token/${multipleToken}`)
+      .then((res) => {
+        let data = res.data.data;
+        const payload = {
+          loggedin_user_id: userID,
+          sale_booking_id: data.sale_booking_id,
+          sale_booking_execution_id: data.sale_booking_execution_id,
+          start_date_: new Date(),
+          execution_status: 2,
+        };
+        axios
+          .put(`${baseUrl}` + `edit_exe_sum`, payload)
+          .then((res) => {
+            console.log(res);
+            setReload((preVal) => !preVal);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+  
+  
+        const payload1 = {
+          loggedin_user_id: userID,
+          sale_booking_execution_id: data.sale_booking_execution_id,
+          execution_date_time: new Date().toISOString().split("T")[0],
+          execution_time: "0.00",
+          execution_remark: "Accepted",
+          execution_status: 2,
+        };
+        axios
+          .post(
+            `https://sales.creativefuel.io/webservices/RestController.php?view=executionSummaryUpdate`,
+            payload1
+          )
+          .then((res) => {
+            console.log(res);
+  
+            setReload((preVal) => !preVal);
+          })
+          .catch((err) => {
+            console.log(err);
+            setSnackbar({
+              open: true,
+              message: "Error Updating",
+              severity: "error",
+            });
+          });
+  
+        setConfirmation(false);
+        fetchData();
+      });
+  };
   const handleAccept = (row) => {
     setRowData(row);
     setConfirmation(true);
@@ -76,9 +130,11 @@ function ExecutionPending() {
       }
       const response = axios.get(baseUrl + "get_exe_sum").then((res) => {
         setData(
-          res.data.filter(
-            (ele) => ele.execution_status == 1 || ele.execution_status == 2
-          ).reverse()
+          res.data
+            .filter(
+              (ele) => ele.execution_status == 1 || ele.execution_status == 2
+            )
+            .reverse()
         );
       });
     } catch (error) {
@@ -147,7 +203,6 @@ function ExecutionPending() {
               color="success"
               variant="outlined"
               className="btn btn_sm cmnbtn"
-
               fontSize="inherit"
             >
               In Progress
@@ -246,7 +301,8 @@ function ExecutionPending() {
       field: "campaign_amount",
       headerName: "Amount",
       width: 120,
-    }, {
+    },
+    {
       field: "execution_excel",
       headerName: "Excel",
       width: 150,
@@ -257,7 +313,6 @@ function ExecutionPending() {
               size="small"
               color="success"
               className="btn btn_sm cmnbtn"
-
               variant="outlined"
               fontSize="inherit"
               href={params.row.execution_excel}
@@ -299,233 +354,227 @@ function ExecutionPending() {
       type: "number",
       width: 110,
       renderCell: (params) => {
-
         if (params.row.execution_status == "2") {
           let time =
-            Math.abs((new Date(params.row.start_date) - new Date()) / 36e5).toFixed(1)
-            + " hours"
-          return (
-            time.includes(".0") ? time.split(".")[0] : time
-          );
+            Math.abs(
+              (new Date(params.row.start_date) - new Date()) / 36e5
+            ).toFixed(1) + " hours";
+          return time.includes(".0") ? time.split(".")[0] : time;
         }
       },
     },
     contextData
       ? {
-        field: "actions",
-        type: "actions",
-        headerName: "Actions",
-        width: 400,
-        cellClassName: "actions",
-        getActions: (params) => {
-          const { id, row } = params; // Destructure the id and row from params
-          const executionStatus = row.execution_status; // Get the execution_status
+          field: "actions",
+          type: "actions",
+          headerName: "Actions",
+          width: 400,
+          cellClassName: "actions",
+          getActions: (params) => {
+            const { id, row } = params; // Destructure the id and row from params
+            const executionStatus = row.execution_status; // Get the execution_status
 
-          if (executionStatus == "1") {
-            // Show Accept and Reject buttons when execution_status is "0"
-            return [
-              // <Button key={id}><PointOfSaleTwoToneIcon/></Button>,
-              <div className="icon-1">
+            if (executionStatus == "1") {
+              // Show Accept and Reject buttons when execution_status is "0"
+              return [
+                // <Button key={id}><PointOfSaleTwoToneIcon/></Button>,
+                <div className="icon-1">
+                  <GridActionsCellItem
+                    key={id}
+                    icon={<PointOfSaleTwoToneIcon />}
+                    onClick={() =>
+                      handleClickOpenPaymentDetailDialog(params.row)
+                    }
+                    color="inherit"
+                    title="Payment Detail"
+                  />
+                </div>,
+                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                  <div className="icon-1">
+                    <GridActionsCellItem
+                      icon={<ListAltOutlinedIcon />}
+                      onClick={handleViewClick(id)}
+                      color="inherit"
+                      title="Record Service Detail"
+                    />
+                  </div>
+                </Link>,
 
                 <GridActionsCellItem
                   key={id}
-                  icon={<PointOfSaleTwoToneIcon />}
-                  onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
+                  icon={
+                    <Button className="btn btn_sm cmnbtn" variant="outlined">
+                      Accept
+                    </Button>
+                  }
+                  onClick={() => handleAccept(row)}
                   color="inherit"
-                  title="Payment Detail"
-                />
-              </div>
-              ,
-
-              <Link key={id} to={`/admin/exeexecution/${id}`}>
-                <div className="icon-1">
-                  <GridActionsCellItem
-                    icon={<ListAltOutlinedIcon />}
-                    onClick={handleViewClick(id)}
-                    color="inherit"
-                    title="Record Service Detail"
-                  />
-                </div>
-              </Link >,
-
-
-              <GridActionsCellItem
-                key={id}
-
-                icon={<Button className="btn btn_sm cmnbtn" variant="outlined">Accept</Button>}
-                onClick={() => handleAccept(row)}
-                color="inherit"
-              />
-
-              ,
-
-              <GridActionsCellItem
-                key={id}
-                icon={
-                  <ExecutionUpdate
-                    setReload={setReload}
-                    id={id}
-                    rowData={row}
-                    status={3}
-                  />
-                }
-                color="inherit"
-              />,
-            ];
-          } else if (executionStatus == "2") {
-            // Show "Done" button when execution_status is "2"
-            return [
-              <div className="icon-1">
+                />,
 
                 <GridActionsCellItem
                   key={id}
-                  icon={<PointOfSaleTwoToneIcon />}
-                  onClick={() => handleClickOpenPaymentDetailDialog(params.row)}
+                  icon={
+                    <ExecutionUpdate
+                      setReload={setReload}
+                      id={id}
+                      rowData={row}
+                      status={3}
+                    />
+                  }
                   color="inherit"
-                  title="Payment Detail"
-                />
-              </div>
-              ,
-              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                />,
+              ];
+            } else if (executionStatus == "2") {
+              // Show "Done" button when execution_status is "2"
+              return [
                 <div className="icon-1">
-
                   <GridActionsCellItem
-                    icon={<ListAltOutlinedIcon />}
-                    onClick={handleViewClick(id)}
+                    key={id}
+                    icon={<PointOfSaleTwoToneIcon />}
+                    onClick={() =>
+                      handleClickOpenPaymentDetailDialog(params.row)
+                    }
                     color="inherit"
-                    title="Record Service Detail"
+                    title="Payment Detail"
                   />
-                </div>
-              </Link>,
-              <GridActionsCellItem
-                key={id}
-                icon={
-                  <ExecutionUpdate
-                    setReload={setReload}
-                    id={id}
-                    rowData={row}
-                    status={1}
-                  />
-                }
-                label="Delete"
-                onClick={() => handleDone(row)}
-                color="inherit"
-              />,
-            ];
-          } else {
-            // Default case, no special buttons
-            return [
-              <div className="icon-1">
-
+                </div>,
+                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                  <div className="icon-1">
+                    <GridActionsCellItem
+                      icon={<ListAltOutlinedIcon />}
+                      onClick={handleViewClick(id)}
+                      color="inherit"
+                      title="Record Service Detail"
+                    />
+                  </div>
+                </Link>,
                 <GridActionsCellItem
                   key={id}
-                  icon={<PointOfSaleTwoToneIcon />}
-                  onClick={handleClickOpenPaymentDetailDialog}
+                  icon={
+                    <ExecutionUpdate
+                      setReload={setReload}
+                      id={id}
+                      rowData={row}
+                      status={1}
+                    />
+                  }
+                  label="Delete"
+                  onClick={() => handleDone(row)}
                   color="inherit"
-                />
-              </div>
-              ,
-              <Link key={id} to={`/admin/exeexecution/${id}`}>
+                />,
+              ];
+            } else {
+              // Default case, no special buttons
+              return [
                 <div className="icon-1">
-
                   <GridActionsCellItem
-                    icon={<ListAltOutlinedIcon />}
-                    onClick={handleViewClick(id)}
+                    key={id}
+                    icon={<PointOfSaleTwoToneIcon />}
+                    onClick={handleClickOpenPaymentDetailDialog}
                     color="inherit"
                   />
-                </div>
-              </Link>,
-            ];
-          }
-        },
-      }
+                </div>,
+                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                  <div className="icon-1">
+                    <GridActionsCellItem
+                      icon={<ListAltOutlinedIcon />}
+                      onClick={handleViewClick(id)}
+                      color="inherit"
+                    />
+                  </div>
+                </Link>,
+              ];
+            }
+          },
+        }
       : {
-        field: "actions",
-        type: "actions",
-        headerName: "Actions",
-        width: 300,
-        cellClassName: "actions",
-        getActions: (params) => {
-          const { id, row } = params; // Destructure the id and row from params
-          const executionStatus = row.execution_status; // Get the execution_status
+          field: "actions",
+          type: "actions",
+          headerName: "Actions",
+          width: 300,
+          cellClassName: "actions",
+          getActions: (params) => {
+            const { id, row } = params; // Destructure the id and row from params
+            const executionStatus = row.execution_status; // Get the execution_status
 
-          if (executionStatus == "1") {
-            // Show Accept and Reject buttons when execution_status is "0"
-            return [
-              <Link key={id} to={`/admin/exeexecution/${id}`}>
-                <div className="icon-1">
-
-                  <GridActionsCellItem
-                    icon={<ListAltOutlinedIcon />}
-                    onClick={handleViewClick(id)}
-                    color="inherit"
-                  />
-                </div>
-              </Link>,
-              <GridActionsCellItem
-                key={id}
-                icon={
-                  <ExecutionUpdate
-                    setReload={setReload}
-                    id={id}
-                    rowData={row}
-                    status={4}
-                  />
-                }
-                color="inherit"
-              />,
-              <GridActionsCellItem
-                key={id}
-                icon={<Button variant="outlined" className="btn btn_sm cmnbtn">Accept</Button>}
-                onClick={() => handleAccept(row)}
-                color="inherit"
-              />,
-            ];
-          } else if (executionStatus == "2") {
-            // Show "Done" button when execution_status is "2"
-            return [
-              <Link key={id} to={`/admin/exeexecution/${id}`}>
-                <div className="icon-1">
-
-                  <GridActionsCellItem
-                    icon={<ListAltOutlinedIcon />}
-                    label="Delete"
-                    onClick={handleViewClick(id)}
-                    color="inherit"
-                  />
-                </div>
-              </Link>,
-              <GridActionsCellItem
-                key={id}
-                icon={
-                  <ExecutionUpdate
-                    setReload={setReload}
-                    id={id}
-                    rowData={row}
-                    status={1}
-                  />
-                }
-                label="Delete"
-                onClick={() => handleDone(row)}
-                color="inherit"
-              />,
-            ];
-          } else {
-            return [
-              <Link key={id} to={`/admin/exeexecution/${id}`}>
-                <div className="icon-1">
-
-                  <GridActionsCellItem
-                    icon={<ListAltOutlinedIcon />}
-                    onClick={handleViewClick(id)}
-                    color="inherit"
-                  />
-                </div>
-              </Link>,
-            ];
-          }
+            if (executionStatus == "1") {
+              // Show Accept and Reject buttons when execution_status is "0"
+              return [
+                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                  <div className="icon-1">
+                    <GridActionsCellItem
+                      icon={<ListAltOutlinedIcon />}
+                      onClick={handleViewClick(id)}
+                      color="inherit"
+                    />
+                  </div>
+                </Link>,
+                <GridActionsCellItem
+                  key={id}
+                  icon={
+                    <ExecutionUpdate
+                      setReload={setReload}
+                      id={id}
+                      rowData={row}
+                      status={4}
+                    />
+                  }
+                  color="inherit"
+                />,
+                <GridActionsCellItem
+                  key={id}
+                  icon={
+                    <Button variant="outlined" className="btn btn_sm cmnbtn">
+                      Accept
+                    </Button>
+                  }
+                  onClick={() => handleAccept(row)}
+                  color="inherit"
+                />,
+              ];
+            } else if (executionStatus == "2") {
+              // Show "Done" button when execution_status is "2"
+              return [
+                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                  <div className="icon-1">
+                    <GridActionsCellItem
+                      icon={<ListAltOutlinedIcon />}
+                      label="Delete"
+                      onClick={handleViewClick(id)}
+                      color="inherit"
+                    />
+                  </div>
+                </Link>,
+                <GridActionsCellItem
+                  key={id}
+                  icon={
+                    <ExecutionUpdate
+                      setReload={setReload}
+                      id={id}
+                      rowData={row}
+                      status={1}
+                    />
+                  }
+                  label="Delete"
+                  onClick={() => handleDone(row)}
+                  color="inherit"
+                />,
+              ];
+            } else {
+              return [
+                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                  <div className="icon-1">
+                    <GridActionsCellItem
+                      icon={<ListAltOutlinedIcon />}
+                      onClick={handleViewClick(id)}
+                      color="inherit"
+                    />
+                  </div>
+                </Link>,
+              ];
+            }
+          },
         },
-      },
   ];
   return (
     <>
@@ -552,7 +601,23 @@ function ExecutionPending() {
           <FormContainer mainTitle={"Execution Pending Summary"} link={true} />
 
           <div className="thm_table card body-padding fx-head thm_row">
-
+            <form onSubmit={handleMultipleVerification}>
+              <input
+                type="text"
+                placeholder="Search here"
+                className="w-25 form-control"
+                value={multipleToken}
+                onChange={(e) => setMultipleToken(e.target.value)}
+              />
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                className="btn btn_sm cmnbtn"
+              >
+                Add
+              </Button>
+            </form>
             <DataGrid
               rows={addSerialNumber(data)}
               columns={columns}
@@ -566,7 +631,6 @@ function ExecutionPending() {
             ></DataGrid>
           </div>
         </div>
-
       </ThemeProvider>
       <PaymentDetailDailog
         handleClickOpenPaymentDetailDialog={handleClickOpenPaymentDetailDialog}
