@@ -49,15 +49,15 @@ const PreonboardingDocumentOverview = () => {
       cell: (row) => (
         <>
           <Link to={`/admin/preonboarding-documents-update/${row?._id}`}>
-          <div className="icon-1"  title="Edit User">
-                    <i className="bi bi-pencil"></i>
-                  </div>
+            <div className="icon-1" title="Edit User">
+              <i className="bi bi-pencil"></i>
+            </div>
           </Link>
-         
-          
-                
+
+
+
           <DeleteButton
-          
+
             endpoint={"delete_doc"}
             id={row._id}
             getData={getData}
@@ -102,23 +102,23 @@ const PreonboardingDocumentOverview = () => {
       <div className="page_height">
         <div className="card">
           <div className="card-header sb">
-          Overview 
-          <input
-                    type="text"
-                    placeholder="Search here"
-                    className="w-50 form-control "
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
+            Overview
+            <input
+              type="text"
+              placeholder="Search here"
+              className="w-50 form-control "
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
           </div>
           <div className="card-body body-padding">
             <DataTable
-              
+
               columns={columns}
               data={filterData}
               pagination
-              selectableRows
-             
+            // selectableRows
+
             />
 
           </div>

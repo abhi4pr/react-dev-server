@@ -117,7 +117,7 @@ const NotificationHistory = () => {
             data={filterdata}
             // fixedHeader
             pagination
-            selectableRows
+            // selectableRows
             highlightOnHover
           />
 

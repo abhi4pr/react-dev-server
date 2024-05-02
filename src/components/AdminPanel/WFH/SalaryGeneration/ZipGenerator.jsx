@@ -10,6 +10,8 @@ import InvoiceTemplate6 from "../Templates/Component/InvoiceTemplate6";
 import InvoiceTemplate7 from "../Templates/Component/InvoiceTemplate7";
 import InvoiceTemplate8 from "../Templates/Component/InvoiceTemplate8";
 import InvoiceTemplate9 from "../Templates/Component/InvoiceTemplate9";
+// import { useGlobalContext } from "../../../../Context/Context";
+
 import JSZip from "jszip";
 import jsPDF from "jspdf";
 import 'jspdf-autotable';
@@ -1937,7 +1939,8 @@ export const generatePDF = async (data) => {
 };
 
 
-export const downloadSelectedInvoices = async (data) => {
+// const { toastAlert } = useGlobalContext();
+export const downloadSelectedInvoices = async (data, handelError) => {
   const zip = new JSZip();
   const pdfPromises = [];
 
@@ -1976,6 +1979,7 @@ export const downloadSelectedInvoices = async (data) => {
       console.error("No valid PDFs generated to create ZIP.");
     }
   } catch (error) {
+    handelError(error);
     console.error("Error generating ZIP file:", error);
     // Handle any errors in ZIP file creation here
   }
