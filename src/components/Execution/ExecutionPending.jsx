@@ -62,8 +62,7 @@ function ExecutionPending() {
           .catch((err) => {
             console.log(err);
           });
-  
-  
+
         const payload1 = {
           loggedin_user_id: userID,
           sale_booking_execution_id: data.sale_booking_execution_id,
@@ -79,7 +78,7 @@ function ExecutionPending() {
           )
           .then((res) => {
             console.log(res);
-  
+
             setReload((preVal) => !preVal);
           })
           .catch((err) => {
@@ -90,7 +89,7 @@ function ExecutionPending() {
               severity: "error",
             });
           });
-  
+
         setConfirmation(false);
         fetchData();
       });
@@ -167,6 +166,16 @@ function ExecutionPending() {
       field: "S_No",
       headerName: "S No",
       width: 90,
+    },
+    {
+      field: "brand_name",
+      headerName: "Brand Name",
+      width: 150,
+    },
+    {
+      field:"record_service_campaign_name",
+      headerName:"Campaign Name",
+      width:150
     },
     {
       field: "cust_name",
@@ -601,10 +610,10 @@ function ExecutionPending() {
           <FormContainer mainTitle={"Execution Pending Summary"} link={true} />
 
           <div className="thm_table card body-padding fx-head thm_row">
-            <form onSubmit={handleMultipleVerification}>
+            <form onSubmit={handleMultipleVerification} className="d-flex">
               <input
                 type="text"
-                placeholder="Search here"
+                placeholder="Enter Token"
                 className="w-25 form-control"
                 value={multipleToken}
                 onChange={(e) => setMultipleToken(e.target.value)}
@@ -613,7 +622,8 @@ function ExecutionPending() {
                 variant="contained"
                 color="primary"
                 type="submit"
-                className="btn btn_sm cmnbtn"
+                className="btn btn_sm cmnbtn ml-2 mt-1"
+                size="large"
               >
                 Add
               </Button>
