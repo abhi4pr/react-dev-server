@@ -848,7 +848,7 @@ export default function RegisteredCampaigns() {
 
         </div>
         <div className="action_btns ">
-          <Link to="/admin/register-campaign">
+          <Link to="/admin/op-register-campaign">
             <button type="button" className="btn cmnbtn btn_sm btn-outline-primary btn-sm">
               Add campagin{" "}
             </button>

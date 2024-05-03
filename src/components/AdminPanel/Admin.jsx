@@ -310,7 +310,7 @@ import OperationMasters from "./Operation/Masters/OperationMasters";
 import RegisteredCampaigns from "./Operation/RegisteredCampaigns";
 import PlanCreation from "./Operation/PlanCreation";
 import PhaseCreation from "./Operation/PhaseCreation";
-import CampaignExecutions from "./Operation/CampaignExecutions";
+import CampaignExecutions from "./Operation/CampaignExecutionOverview/CampaignExecutions";
 import CreatePaymentUpdate from "./Sales/PaymentUpdate/CreatePaymentUpdate";
 import CreatePaymentMode from "./Sales/PaymentMode/CreatePaymentMode";
 import ViewPaymentMode from "./Sales/PaymentMode/ViewPaymentMode";
@@ -330,6 +330,7 @@ import PendingPaymentRequestSales from "./Sales/PaymentRequest/PendingPaymentReq
 import RecordServices from "./Sales/RecordService/RecordServices";
 import ReleasedAmountIncentive from "./Finance/ReleasedAmountIncentive";
 import RefundPayment from "./Finance/RefundPayment";
+import RegisterCampaigns from "./Operation/RegisterCampaigns";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1561,6 +1562,10 @@ const Admin = () => {
                   <Route
                     path="/exeoperation/master"
                     element={<OperationMasters />}
+                  />
+                  <Route
+                    path="/op-register-campaign"
+                    element={<RegisterCampaigns />}
                   />
                   <Route
                     path="/op-registered-campaign"
