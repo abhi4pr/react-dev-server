@@ -715,7 +715,7 @@ const UserUpdate = () => {
     formData.append("sitting_id", jobType === "WFH" ? 0 : Number(sitting));
     formData.append(
       "room_id",
-      jobType === "WFH" || jobType === "WFHD" ? "1" : roomId
+      jobType === "WFH" || jobType === "WFHD" ? "1" : 1 //roomId
     );
     formData.append("joining_date", joiningDate);
     // formData.append("room_id", roomId);

@@ -1233,7 +1233,14 @@ const PreOnboardingUserMaster = () => {
       content: "From here you can logout",
     },
   ];
-  console.log("documentPercentage", documentPercentage)
+
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2, "0");
+  const mm = String(today.getMonth()).padStart(2, "0");
+  const yyyy = today.getFullYear();
+
+  const formattedDate = dd + "-" + mm + "-" + yyyy;
+
   return (
     <>
       <Modal
@@ -1338,7 +1345,6 @@ const PreOnboardingUserMaster = () => {
                 {/* pp-100 is percentage of document procedure */}
                 <div
                   className={`progress-circle progressing pp-${formFieldProgressPercentage}`}
-              
                 >
                   <div className="progress-circle-border">
                     <div className="left-half-circle" />
@@ -1361,9 +1367,7 @@ const PreOnboardingUserMaster = () => {
               >
                 <div className="sidebar_itemboxColIn">
                   <div
-                  
                     className={`progress-circle progressing pp-${documentPercentage}`}
-                
                   >
                     <div className="progress-circle-border">
                       <div className="left-half-circle" />
@@ -1372,15 +1376,13 @@ const PreOnboardingUserMaster = () => {
                     <div className="progress-circle-content">
                       <i className="bi bi-file-richtext" />
                     </div>
-                    
                   </div>
-                 
                 </div>
                 <div className="sidebar_iteminfo">
-                  <div className="pack" style={{flexDirection:"row"}}>
-                  <h2 className="document_tab_name">Documents</h2>
-                  (verified)
-                  <h3>{documentPercentage}%</h3>
+                  <div className="pack" style={{ flexDirection: "row" }}>
+                    <h2 className="document_tab_name">Documents</h2>
+                    (verified)
+                    <h3>{documentPercentage}%</h3>
                   </div>
                   <h3>
                     Mandatory <span>{showMandotaryPer}%</span>
@@ -1393,32 +1395,20 @@ const PreOnboardingUserMaster = () => {
                   </h3>
                 </div>
               </div>
-              <div
-                className={`sidebar_itembox  ${
-                  activeTab == 3 ? "sidebar_item_active" : ""
-                }`}
-                id="sidebarPolicyBox"
-                onClick={() => setActiveTab(3)}
-              >
-                <div className="progress-circle progressing pp-100">
-                  <div className="progress-circle-border">
-                    <div className="left-half-circle" />
-                    <div className="right-half-circle" />
-                  </div>
-                  <div className="progress-circle-content">
-                    <i className="bi bi-book" />
-                  </div>
-                </div>
-                <h2 className="policy_tab_name">Policy</h2>
-              </div>
 
               {allUserData.offer_letter_send && (
                 <div
                   className={`sidebar_itembox ${
-                    activeTab == 5 ? "sidebar_item_active" : ""
+                    activeTab === 5 ? "sidebar_item_active" : ""
                   }`}
                   id="sidebarLetterBox"
                   onClick={() => setActiveTab(5)}
+                  style={{
+                    opacity: joiningDate <= formattedDate ? 0.5 : 1,
+                    // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
+                    pointerEvents:
+                      joiningDate <= formattedDate ? "none" : "auto",
+                  }}
                 >
                   <div className="progress-circle progressing pp-26">
                     <div className="progress-circle-border">
@@ -1432,6 +1422,34 @@ const PreOnboardingUserMaster = () => {
                   <h2 className="letter_tab_name">Letter</h2>
                 </div>
               )}
+
+              <div
+                // className={`sidebar_itembox  ${
+                //   activeTab == 3 ? "sidebar_item_active" : ""
+                // }`}
+                className={`sidebar_itembox ${
+                  activeTab === 3 && documentPercentage < 90
+                    ? "sidebar_item_active"
+                    : ""
+                }`}
+                id="sidebarPolicyBox"
+                style={{
+                  pointerEvents: documentPercentage < 90 ? "none" : "auto",
+                  opacity: documentPercentage < 90 ? 0.5 : 1,
+                }}
+                onClick={() => setActiveTab(3)}
+              >
+                <div className="progress-circle progressing pp-100">
+                  <div className="progress-circle-border">
+                    <div className="left-half-circle" />
+                    <div className="right-half-circle" />
+                  </div>
+                  <div className="progress-circle-content">
+                    <i className="bi bi-book" />
+                  </div>
+                </div>
+                <h2 className="policy_tab_name">Policy</h2>
+              </div>
 
               <div
                 className={`sidebar_itembox ${
@@ -1498,6 +1516,7 @@ const PreOnboardingUserMaster = () => {
             <div className="dashboard_body">
               <div className="dashboard_body_inner">
                 {/* Welcome Screen Start */}
+
                 {activeTab == 0 && (
                   <div className="welcome_board">
                     <div className="welcome_board_heading">
@@ -1755,7 +1774,6 @@ const PreOnboardingUserMaster = () => {
                                 value={dateOfBirth}
                                 onChange={(e) => setDateOfBirth(e.target.value)}
                               />
-                                     
                             </div>
                             <div className="form-group">
                               <TextField
