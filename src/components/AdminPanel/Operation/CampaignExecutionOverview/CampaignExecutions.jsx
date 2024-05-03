@@ -100,7 +100,8 @@ const CampaignExecutions = () => {
             payload,
             config
           );
-          if (response.status === 200) {
+
+          if (response.data.success == true) {
             const res = await axios.put(
               `${baseUrl}assignment/post/details/update`,
               {
@@ -117,18 +118,19 @@ const CampaignExecutions = () => {
               }
             )
             setAssId("")
+            setPageDetails((prevPageDetails) => {
+              let updatedPageDetails;
+              if (Array.isArray(prevPageDetails)) {
+                updatedPageDetails = [...prevPageDetails];
+              } else {
+                updatedPageDetails = { ...prevPageDetails };
+              }
+              updatedPageDetails = response?.data?.data;
+              return updatedPageDetails;
+            });
+          }else if(response.data.success == false){
+            setTimeout(fetchPageDetails, 1000);
           }
-
-          setPageDetails((prevPageDetails) => {
-            let updatedPageDetails;
-            if (Array.isArray(prevPageDetails)) {
-              updatedPageDetails = [...prevPageDetails];
-            } else {
-              updatedPageDetails = { ...prevPageDetails };
-            }
-            updatedPageDetails = response?.data?.data;
-            return updatedPageDetails;
-          });
         } catch (error) {
           console.error("Error fetching page details:", error);
         }
@@ -220,6 +222,9 @@ const CampaignExecutions = () => {
       field: "replacement",
       headerName: "Replacement",
       width: 150,
+      renderCell: (params, i) => (
+        <button className="btn btn-danger">Replace page</button>
+      ),
     },
     {
       field: "Story link",
