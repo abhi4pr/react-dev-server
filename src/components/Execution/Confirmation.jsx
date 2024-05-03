@@ -9,7 +9,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { useState } from "react";
 import jwtDecode from "jwt-decode";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
 const Confirmation = ({
   confirmation,
@@ -23,6 +23,7 @@ const Confirmation = ({
 }) => {
   const [open, setOpen] = useState(confirmation);
   const [data, setData] = useState(rowData);
+  const [token, setToken] = useState("");
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
   const userID = decodedToken.id;
@@ -31,6 +32,49 @@ const Confirmation = ({
     console.log(rowData, "this is row data");
   }, []);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("some to handle submit");
+    if (!token) {
+      alert("Please Enter Token");
+      return;
+    }
+    // const payload = {
+    //   loggedin_user_id: userID,
+    //   sale_booking_id: data.sale_booking_id,
+    //   sale_booking_execution_id: data.sale_booking_execution_id,
+    //   start_date_: new Date(),
+    //   execution_status: 2,
+    //   token: token,
+    // };
+
+    // axios
+    //   .put(`${baseUrl}` + `edit_exe_sum`, payload)
+    //   .then((res) => {
+    //     console.log(res);
+    //     setReload((preVal) => !preVal);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
+
+    let payload = {
+      execution_token: token,
+    };
+
+    axios
+      .post(`${baseUrl}token_get_data/${data.sale_booking_execution_id}`, payload)
+      .then((res) => {
+        if (res.data.data) {
+          handleYes();
+          setTimeout(() => {
+            setReload((preVal) => !preVal);
+          }, 1000);
+        } else {
+          alert("Invalid Token");
+        }
+      });
+  };
   function getCurrentDateTime() {
     const now = new Date();
     const year = now.getUTCFullYear();
@@ -54,7 +98,7 @@ const Confirmation = ({
         execution_status: 2,
       };
       axios
-        .put(`${baseUrl}`+`edit_exe_sum`, payload)
+        .put(`${baseUrl}` + `edit_exe_sum`, payload)
         .then((res) => {
           console.log(res);
           setReload((preVal) => !preVal);
@@ -106,7 +150,7 @@ const Confirmation = ({
         end_date: new Date(),
       };
       axios
-        .put(`${baseUrl}`+`edit_exe_sum`, payload)
+        .put(`${baseUrl}` + `edit_exe_sum`, payload)
         .then((res) => {
           console.log(res);
           setReload((preVal) => !preVal);
@@ -165,7 +209,7 @@ const Confirmation = ({
         execution_time: hoursDifference.toFixed(2),
       };
       axios
-        .put(`${baseUrl}`+`edit_exe_sum`, payload)
+        .put(`${baseUrl}` + `edit_exe_sum`, payload)
         .then((res) => {
           console.log(res);
           setReload((preVal) => !preVal);
@@ -216,8 +260,8 @@ const Confirmation = ({
 
       setOpen(false);
       setConfirmation(false);
-    }else{
-      console.log("executon status is 1")
+    } else {
+      console.log("executon status is 1");
       const currentDateTime = new Date(getCurrentDateTime());
       const start_date = new Date(data.start_date_);
       const end_date = currentDateTime;
@@ -236,7 +280,7 @@ const Confirmation = ({
         execution_time: hoursDifference.toFixed(2),
       };
       axios
-        .put(`${baseUrl}`+`edit_exe_sum`, payload)
+        .put(`${baseUrl}` + `edit_exe_sum`, payload)
         .then((res) => {
           console.log(res);
           setReload((preVal) => !preVal);
@@ -301,14 +345,40 @@ const Confirmation = ({
       // TransitionProps={{ onEntered: handleEntered }}
       // open={!!promiseArguments}
     >
-      <DialogTitle>Are you sure?</DialogTitle>
-      <DialogContent dividers>
-        {`Pressing 'Yes' will Update the status.`}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleYes}>Yes</Button>
-        <Button onClick={handleNo}>No</Button>
-      </DialogActions>
+      {status != 2 && (
+        <>
+          {" "}
+          <DialogTitle>Are you sure?</DialogTitle>
+          <DialogContent dividers>
+            {`Pressing 'Yes' will Update the status.`}
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleYes}>Yes</Button>
+            <Button onClick={handleNo}>No</Button>
+          </DialogActions>
+        </>
+      )}
+      {status == 2 && (
+        <>
+          <DialogTitle>Please Enter the Token </DialogTitle>
+          <form onSubmit={handleSubmit}>
+            <DialogContent dividers>
+              <input
+                type="text"
+                placeholder="Enter Token"
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  setToken(e.target.value);
+                }}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button type="submit">Yes</Button>
+              <Button onClick={handleNo}>No</Button>
+            </DialogActions>
+          </form>
+        </>
+      )}
     </Dialog>
   );
 };
