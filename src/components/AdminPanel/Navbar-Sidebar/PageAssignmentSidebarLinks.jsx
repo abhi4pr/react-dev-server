@@ -5,7 +5,7 @@ const PageAssignmentSidebarLinks = () => {
   return (
     <li className="nav-item">
       <Link
-        className="nav-link collapsed"
+        className="nav-link nav-btn collapsed"
         data-toggle="collapse"
         data-target="#collapseTwom99s"
         aria-expanded="true"

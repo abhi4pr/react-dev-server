@@ -13763,7 +13763,7 @@ body[theme="dark"] .sidebar .nav-item.active .nav-link {
 
 .sidebar .nav-item .collapse .collapse-inner,
 .sidebar .nav-item .collapsing .collapse-inner {
-  padding: 0px 0px;
+  padding-top: 5px;
   margin: 0px 0px;
   /* background-color: var(--body-bg); */
   border-radius: var(--radius);
@@ -16080,4 +16080,14 @@ body[theme="dark"] .blurBg {
 
 .btn-wid {
   max-width: max-content !important;
+}
+
+.nav-btn:has(+ .collapse .active) {
+  background-color: var(--primary);
+  color: var(--white) !important;
+}
+
+.sidebar .nav-item {
+  padding-top: 5px !important;
+
 }
