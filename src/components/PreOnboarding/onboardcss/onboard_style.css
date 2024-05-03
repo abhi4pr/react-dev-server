@@ -131,7 +131,7 @@ img {
 }
 
 .btn_primary:first-child:active,
-:not(.btn-check)+.btn_primary:active {
+:not(.btn-check) + .btn_primary:active {
   border-color: var(--primary-board);
   background-color: var(--primary-board);
   color: var(--text-white);
@@ -158,7 +158,7 @@ img {
 }
 
 .btn_white:first-child:active,
-:not(.btn-check)+.btn_white:active {
+:not(.btn-check) + .btn_white:active {
   border-color: var(--bg-white);
   background-color: var(--bg-white);
   color: var(--primary-board);
@@ -176,7 +176,8 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url(../../../assets/imgs/bg/auth-bg.png) var(--bg-board) center no-repeat;
+  background: url(../../../assets/imgs/bg/auth-bg.png) var(--bg-board) center
+    no-repeat;
   background-size: cover;
   padding: 40px 40px;
 }
@@ -185,11 +186,14 @@ img {
   width: 460px;
   border-radius: 15px;
   background: rgba(255, 255, 255, 0.07);
-  box-shadow: -22.366666793823242px 22.366666793823242px 22.366666793823242px 0px rgba(255, 255, 255, 0.07) inset,
-    22.366666793823242px -22.366666793823242px 22.366666793823242px 0px rgba(194,
-      194,
-      194,
-      0.07) inset,
+  box-shadow: -22.366666793823242px 22.366666793823242px 22.366666793823242px
+      0px rgba(255, 255, 255, 0.07) inset,
+    22.366666793823242px -22.366666793823242px 22.366666793823242px 0px rgba(
+        194,
+        194,
+        194,
+        0.07
+      ) inset,
     0px 0px 16px 0px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
 }
@@ -386,7 +390,6 @@ img {
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-
   }
 }
 
@@ -1351,7 +1354,10 @@ img {
 .sidebar_item_active .progress-circle,
 .sidebar_item_active .progress-circle .progress-circle-border,
 .sidebar_item_active .progress-circle .progress-circle-border .left-half-circle,
-.sidebar_item_active .progress-circle .progress-circle-border .right-half-circle {
+.sidebar_item_active
+  .progress-circle
+  .progress-circle-border
+  .right-half-circle {
   height: 90px;
   width: 90px;
 }
@@ -1522,7 +1528,7 @@ img {
 }
 
 .dashboard_body_inner p {
-  color: var(--text-white);
+  color: var(--bg-white) !important;
   font-weight: 400;
 }
 
@@ -1651,7 +1657,6 @@ img {
   display: flex;
   position: absolute;
   z-index: 5;
-
 }
 
 .board_form input[type="date"] {
@@ -1678,7 +1683,6 @@ img {
   position: absolute;
   right: 0;
   top: 10px;
-
 }
 
 .spacing_lg {
@@ -1876,13 +1880,14 @@ img {
 }
 
 .thm_textbx p {
-  color: var(--text-white);
+  /* color: var(--text-white); */
   font-size: 18px;
   line-height: 24px;
   margin: 0;
   padding: 0px 0px 10px;
   font-style: normal;
   font-weight: 400;
+  color: var(--bg-white) !important;
 }
 
 .thm_textbx .thm_textbx {
@@ -1971,7 +1976,10 @@ img {
   fill: var(--white) !important;
 }
 
-.board_form label[data-shrink="false"]+.MuiInputBase-formControl .MuiInputBase-input {
+.board_form
+  label[data-shrink="false"]
+  + .MuiInputBase-formControl
+  .MuiInputBase-input {
   color: transparent !important;
 }
 
@@ -1991,7 +1999,10 @@ img {
   height: 38px;
 }
 
-.board_form .form-group .input-group-append button.btn.btn-outline-primary:hover {
+.board_form
+  .form-group
+  .input-group-append
+  button.btn.btn-outline-primary:hover {
   border-color: transparent;
   color: var(--white);
   background-color: transparent;
@@ -2038,11 +2049,11 @@ img {
   border-radius: 6px;
 }
 
-.cstm_check:hover input~.checkmark {
+.cstm_check:hover input ~ .checkmark {
   background-color: transparent;
 }
 
-.cstm_check input:checked~.checkmark {
+.cstm_check input:checked ~ .checkmark {
   background-color: var(--white);
 }
 
@@ -2052,7 +2063,7 @@ img {
   display: none;
 }
 
-.cstm_check input:checked~.checkmark:after {
+.cstm_check input:checked ~ .checkmark:after {
   display: block;
 }
 
@@ -2405,13 +2416,17 @@ img {
 
 /* Responsive Start Here */
 
-@media only screen and (max-width: 1599px) {}
+@media only screen and (max-width: 1599px) {
+}
 
-@media only screen and (max-width: 1399px) {}
+@media only screen and (max-width: 1399px) {
+}
 
-@media only screen and (max-width: 1199px) {}
+@media only screen and (max-width: 1199px) {
+}
 
-@media only screen and (max-width: 991px) {}
+@media only screen and (max-width: 991px) {
+}
 
 @media only screen and (max-width: 767px) {
   .authwrapper {

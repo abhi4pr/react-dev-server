@@ -39,11 +39,11 @@ const PreonboardingDocuments = () => {
   const [documentType, setDocumentType] = useState("");
   const [period, setPeriod] = useState(null);
   const [priority, setPriority] = useState("");
-  const [description, setDescription] = useState("");
   const [mandatory, setMandatory] = useState("");
   const [documentNumber, setDocumentNumber] = useState("");
-  const [jobTypeData, setJobTypeData] = useState([]);
   const [jobType, setJobType] = useState([]);
+  const [jobTypeData, setJobTypeData] = useState([]);
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     async function getJobtTypes() {
@@ -78,17 +78,7 @@ const PreonboardingDocuments = () => {
   };
   return (
     <div>
-      <FormContainer
-        mainTitle="Document"
-        link={true}
-      >
-
-
-
-
-
-
-      </FormContainer>
+      <FormContainer mainTitle="Document" link={true}></FormContainer>
       <div className="card">
         <div className="card-header">
           <div className="card-title">
@@ -97,7 +87,6 @@ const PreonboardingDocuments = () => {
         </div>
         <div className="card-body">
           <div className="row">
-
             <FieldContainer
               label="Document Type"
               astric
@@ -116,7 +105,9 @@ const PreonboardingDocuments = () => {
               <label className="form-label">Priority</label>
               <sup style={{ color: "red" }}>*</sup>
               <Select
-                value={selectOptions.find((option) => option.value === priority)}
+                value={selectOptions.find(
+                  (option) => option.value === priority
+                )}
                 label={priority}
                 options={selectOptions}
                 onChange={(e) => setPriority(e.value)}
@@ -128,7 +119,9 @@ const PreonboardingDocuments = () => {
                 Mandatory <sup style={{ color: "red" }}>*</sup>
               </label>
               <Select
-                value={mandatoryOption.find((option) => option.value === mandatory)}
+                value={mandatoryOption.find(
+                  (option) => option.value === mandatory
+                )}
                 label={mandatory}
                 options={mandatoryOption}
                 onChange={(e) => setMandatory(e.value)}
@@ -175,7 +168,6 @@ const PreonboardingDocuments = () => {
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-
         </div>
       </div>
       <button className="btn btn-primary  cmnbtn">Submit</button>
