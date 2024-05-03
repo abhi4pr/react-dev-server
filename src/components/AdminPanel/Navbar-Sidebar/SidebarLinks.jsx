@@ -735,20 +735,20 @@ const SidebarLinks = () => {
                       <i className="bi bi-dot"></i>
                       Regsiter Campaign
                     </NavLink>
-                    <NavLink
+                    {/* <NavLink
                       className="collapse-item"
                       to="/admin/op-plan-creation"
                     >
                       <i className="bi bi-dot"></i>
                       Plan Creation
-                    </NavLink>
-                    <NavLink
+                    </NavLink> */}
+                    {/* <NavLink
                       className="collapse-item"
                       to="/admin/op-phase-creation"
                     >
                       <i className="bi bi-dot"></i>
                       Phase Creation
-                    </NavLink>
+                    </NavLink> */}
                     <NavLink
                       className="collapse-item"
                       to="/admin/op-campaign-executions"
