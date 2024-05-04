@@ -23,6 +23,7 @@ import moment from "moment";
 
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
+import Tab from "../../Tab/Tab";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -208,7 +209,7 @@ const BalancePaymentList = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {});
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => { });
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -1144,13 +1145,13 @@ const BalancePaymentList = () => {
         const rowIndex =
           activeAccordionIndex == 0
             ? filterData
-                .filter((d) => d.invoice_mnj_number !== "")
-                .indexOf(params.row)
+              .filter((d) => d.invoice_mnj_number !== "")
+              .indexOf(params.row)
             : activeAccordionIndex == 1
-            ? filterData
+              ? filterData
                 .filter((d) => d.invoice_mnj_number === "")
                 .indexOf(params.row)
-            : "";
+              : "";
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -1360,39 +1361,32 @@ const BalancePaymentList = () => {
       headerName: "Action",
       width: 190,
       renderCell: (params) => (
-        <Link
-          to={`/admin/finance-transaction-list/${params.row.sale_booking_id}`}
-          className="link-primary"
-        >
-          {params.row.total_paid_amount > 0 ? (
-            <button className="btn cmnbtn btn_sm btn-outline-primary">
-              Transaction History
-            </button>
-          ) : (
-            ""
-          )}
-        </Link>
-      ),
-    },
-
-    {
-      field: "Discard ",
-      headerName: "Discard",
-      width: 190,
-      renderCell: (params) => (
-        <div>
+        <div className="flex-row">
           {params.row.gst_status === "0" ? (
             <button
               variant="contained"
               autoFocus
-              className="btn cmnbtn btn_sm btn-outline-primary"
+              className="icon-1"
+              title="Discard"
               onClick={(e) => handleDiscardOpenDialog(e, params.row)}
             >
-              Discard
+              <i className="bi bi-trash"></i>
             </button>
           ) : (
             ""
           )}
+          <Link
+            to={`/admin/finance-transaction-list/${params.row.sale_booking_id}`}
+            className="link-primary"
+          >
+            {params.row.total_paid_amount > 0 ? (
+              <button className="icon-1" title="Transaction History">
+                <i className="bi bi-file-earmark-text-fill"></i>
+              </button>
+            ) : (
+              ""
+            )}
+          </Link>
         </div>
       ),
     },
@@ -1967,7 +1961,7 @@ const BalancePaymentList = () => {
       </Dialog>
 
       <div className="row">
-        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div className="w-100">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
@@ -1979,23 +1973,32 @@ const BalancePaymentList = () => {
                 </Link>
               </h5>
             </div>
-            <div className="card-body">
-              <h5 className="mediumText">Invoice Count</h5>
-              <h4 className="font-weight-bold mt8">{invoiceCounts?.length}</h4>
-              <h5 className="mediumText">Balance Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                ₹{totalInvoiceBalanceAmount}
-              </h4>
+            <div className="card-body flex-row sb">
+              <div>
+
+                <h5 className="mediumText">Invoice Count</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--orange)" }}>{invoiceCounts?.length}</h4>
+              </div>
+              <div>
+
+                <h5 className="mediumText"> Total Balance Amount</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--yellow)" }}>
+                  ₹{totalInvoiceBalanceAmount}
+                </h4>
+              </div>
               {/* <h5 className="mediumText">Total Due Amount</h5>
               <h4 className="font-weight-bold mt8">₹{}</h4> */}
-              <h5 className="mediumText">Received Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                ₹{totalInvoiceReceivedAmount}
-              </h4>
+              <div>
+
+                <h5 className="mediumText">Total Received Amount</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--success)" }}>
+                  ₹{totalInvoiceReceivedAmount}
+                </h4>
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div className="w-100">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
@@ -2007,28 +2010,37 @@ const BalancePaymentList = () => {
                 </Link>
               </h5>
             </div>
-            <div className="card-body">
-              <h5 className="mediumText">Non Invoice Count</h5>
-              <h4 className="font-weight-bold mt8">
-                {nonInvoiceCounts?.length}
-              </h4>
-              <h5 className="mediumText">Balance Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                ₹{totalNonInvoiceBalanceAmount}
-              </h4>
+            <div className="card-body flex-row sb">
+              <div>
+
+                <h5 className="mediumText">Non Invoice Count</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--orange)" }}>
+                  {nonInvoiceCounts?.length}
+                </h4>
+              </div>
+              <div>
+
+                <h5 className="mediumText">Total Balance Amount</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--yellow)" }}>
+                  ₹{totalNonInvoiceBalanceAmount}
+                </h4>
+              </div>
               {/* <h5 className="mediumText">Total Due Amount</h5>
               <h4 className="font-weight-bold mt8">
                 ₹
                 {}
               </h4> */}
-              <h5 className="mediumText">Received Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                ₹{totalNonInvoiceReceivedAmount}
-              </h4>
+              <div>
+
+                <h5 className="mediumText">Total Received Amount</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--success)" }}>
+                  ₹{totalNonInvoiceReceivedAmount}
+                </h4>
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div className="w-100">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
@@ -2040,22 +2052,31 @@ const BalancePaymentList = () => {
                 </Link>
               </h5>
             </div>
-            <div className="card-body">
-              <h5 className="mediumText">GST Count</h5>
-              <h4 className="font-weight-bold mt8">{gstCounts?.length}</h4>
-              <h5 className="mediumText">Total Balance Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                {" "}
-                ₹ {totalGstBalanceAmount}
-              </h4>
-              <h5 className="mediumText">Total Received Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                ₹ {totalGstReceivedAmount}
-              </h4>
+            <div className="card-body flex-row sb">
+              <div>
+
+                <h5 className="mediumText">GST Count</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--orange)" }}>{gstCounts?.length}</h4>
+              </div>
+
+              <div>
+                <h5 className="mediumText">Total Balance Amount</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--yellow)" }}>
+                  {" "}
+                  ₹ {totalGstBalanceAmount}
+                </h4>
+              </div>
+              <div>
+
+                <h5 className="mediumText">Total Received Amount</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--success)" }}>
+                  ₹ {totalGstReceivedAmount}
+                </h4>
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-xl-4 col-lg-4 col-md-4 col-sm-12 col-12">
+        <div className="w-100">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
@@ -2067,17 +2088,26 @@ const BalancePaymentList = () => {
                 </Link>
               </h5>
             </div>
-            <div className="card-body">
-              <h5 className="mediumText">Non GST Count</h5>
-              <h4 className="font-weight-bold mt8">{nonGstCounts?.length}</h4>
-              <h5 className="mediumText"> Total Balance Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                ₹{totalNonGstBalanceAmount}
-              </h4>
-              <h5 className="mediumText">Total Received Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                ₹{totalNonGstReceivedAmount}
-              </h4>
+            <div className="card-body flex-row sb">
+              <div>
+
+                <h5 className="mediumText">Non GST Count</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--orange)" }}>{nonGstCounts?.length}</h4>
+              </div>
+              <div>
+
+                <h5 className="mediumText"> Total Balance Amount</h5>
+                <h4 className="font-weight-bold mt8" style={{ color: "var(--bs-yellow)" }}>
+                  ₹{totalNonGstBalanceAmount}
+                </h4>
+              </div>
+              <div>
+
+                <h5 className="mediumText">Total Received Amount</h5>
+                <h4 className="font-weight-bold mt8 " style={{ color: "var(--success)" }}>
+                  ₹{totalNonGstReceivedAmount}
+                </h4>
+              </div>
             </div>
           </div>
         </div>
@@ -2274,8 +2304,48 @@ const BalancePaymentList = () => {
           </div>
         </div>
       </div>
-
-      <div className="row">
+      <Tab
+        tabName={accordionButtons}
+        activeTabindex={activeAccordionIndex}
+        onTabClick={handleAccordionButtonClick}
+      />
+      <div className="card">
+        <div className="card-body thm_table fx-head">
+          {activeAccordionIndex === 0 && (
+            <DataGrid
+              rows={filterData.filter((invc) => invc.invoice !== "")}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => filterData.indexOf(row)}
+            />
+          )}
+          {activeAccordionIndex === 1 && (
+            <DataGrid
+              rows={filterData.filter((invc) => invc.invoice === "")}
+              columns={columns}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => filterData.indexOf(row)}
+            />
+          )}
+        </div>
+      </div>
+      {/* <div className="row">
         <div className="col-12">
           <div className="card" style={{ height: "600px" }}>
             <div className="card-body thm_table">
@@ -2286,303 +2356,15 @@ const BalancePaymentList = () => {
                 onAccordionButtonClick={handleAccordionButtonClick}
                 mainTitleRequired={false}
               >
-                {activeAccordionIndex === 0 && (
-                  <DataGrid
-                    rows={filterData.filter((invc) => invc.invoice !== "")}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                    disableSelectionOnClick
-                    slots={{ toolbar: GridToolbar }}
-                    slotProps={{
-                      toolbar: {
-                        showQuickFilter: true,
-                      },
-                    }}
-                    getRowId={(row) => filterData.indexOf(row)}
-                  />
-                )}
-                {activeAccordionIndex === 1 && (
-                  <DataGrid
-                    rows={filterData.filter((invc) => invc.invoice === "")}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                    disableSelectionOnClick
-                    slots={{ toolbar: GridToolbar }}
-                    slotProps={{
-                      toolbar: {
-                        showQuickFilter: true,
-                      },
-                    }}
-                    getRowId={(row) => filterData.indexOf(row)}
-                  />
-                )}
+
               </FormContainer>
-              {/* Dialog box for balance payment update*/}
-              <BootstrapDialog
-                onClose={handleCloseImageModal}
-                aria-labelledby="customized-dialog-title"
-                open={ImageModalOpen}
-              >
-                <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-                  Payment Update
-                </DialogTitle>
-                <IconButton
-                  aria-label="close"
-                  onClick={handleCloseImageModal}
-                  sx={{
-                    position: "absolute",
-                    right: 8,
-                    top: 8,
-                    color: (theme) => theme.palette.grey[500],
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-                <DialogContent dividers>
-                  <div className="row">
-                    <div className="col-md-12 ">
-                      <form onSubmit={handleSubmit}>
-                        <div className="form-group col-12"></div>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DatePicker
-                            className="form-control mt-3"
-                            label="Payment Date"
-                            value={paymentDate}
-                            format="DD/MM/YYYY"
-                            onChange={setPaymentDate}
-                          />
-                        </LocalizationProvider>
-                        <div className="form-group mt-3">
-                          <label htmlFor="images">Balance Amount</label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            id="balance Amount"
-                            name="balance Amount"
-                            value={balAmount}
-                            readOnly
-                            // onChange={(e) => setBalAmount(e.target.value)}
-                            required
-                          />
-                        </div>
-                        <div className="form-group mt-3">
-                          <label htmlFor="images">Paid Amount</label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            id="paid Amount"
-                            name="paid Amount"
-                            value={paidAmountData}
-                            readOnly
-                            // onChange={(e) => setBalAmount(e.target.value)}
-                            required
-                          />
-                        </div>
-                        <TextField
-                          variant="outlined"
-                          label="Paid Amount *"
-                          className="form-control "
-                          value={paidAmount}
-                          onChange={(e) => {
-                            const inputValue = e.target.value;
-                            if (!isNaN(inputValue) && inputValue !== "") {
-                              const parsedValue = parseFloat(inputValue);
-                              if (parsedValue <= balAmount) {
-                                setPaidAmount(parsedValue);
-                                setShowField(true);
+             
 
-                                setPaymentType(
-                                  parsedValue === balAmount
-                                    ? { label: "Full", value: "full" }
-                                    : { label: "Partial", value: "partial" }
-                                );
-                              } else {
-                                toastError(
-                                  "Paid amount should be less than or equal to the balance amount"
-                                );
-                              }
-                            } else {
-                              toastError("Please enter a valid numeric value");
-                              setPaidAmount("");
-                              setShowField(false);
-                            }
-                          }}
-                        />
-
-                        {showField && paidAmount > 0 && (
-                          <div className="row">
-                            <div className="col-md-12 ">
-                              <div className="form-group">
-                                <label htmlFor="images">Remaining Amount</label>
-                                <input
-                                  type="number"
-                                  className="form-control"
-                                  id="remaining amount"
-                                  name="remaining amount"
-                                  value={balAmount - paidAmount}
-                                  readOnly
-                                  // onChange={(e) => e.target.value}
-                                  required
-                                />
-                              </div>
-                            </div>
-                            <div className="col-md-12 ">
-                              <div className="form-group">
-                                <label htmlFor="images">
-                                  Paid Percentage %
-                                </label>
-                                <input
-                                  type="number"
-                                  className="form-control"
-                                  id="paid %"
-                                  name="paid %"
-                                  value={paidPercentage}
-                                  readOnly
-                                  // onChange={(e) => setBalAmount(e.target.value)}
-                                  required
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                        <div className="form-group mt-3">
-                          <label htmlFor="images">Adjustment Amount</label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            id="paid %"
-                            name="paid %"
-                            onChange={(e) =>
-                              setAdjustmentAmount(e.target.value)
-                            }
-                          />
-                        </div>
-                        <div className="form-group mt-3">
-                          <label htmlFor="images">
-                            Payment Reference Number:
-                          </label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            id="images"
-                            name="images"
-                            value={paymentRefNo}
-                            onChange={(e) => setPaymentRefNo(e.target.value)}
-                          />
-                        </div>
-                        <Autocomplete
-                          className="my-2 mt-3"
-                          id="combo-box-demo"
-                          // value={row.statusDropdown}
-                          options={dropdownData.map((item) => ({
-                            label: item.title,
-                            value: item.id,
-                          }))}
-                          // style={{ width: 180, zIndex: 1, position: "relative" }}
-                          onChange={(e, value) => {
-                            setPaymentDetails(value);
-                          }}
-                          getOptionLabel={(option) => option.label}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Payment Details *"
-                              variant="outlined"
-                            />
-                          )}
-                        />
-                        <div className="form-group">
-                          <label htmlFor="images">
-                            Payment Reference Image:
-                          </label>
-                          <input
-                            type="file"
-                            className="form-control"
-                            id="images"
-                            name="images"
-                            accept="image/*"
-                            onChange={(e) =>
-                              setPaymentRefImg(e.target.files[0])
-                            }
-                          />
-                        </div>
-                        <Autocomplete
-                          className="my-2 mt-3"
-                          id="combo-box-demo"
-                          value={paymentType}
-                          // disabled
-                          readOnly
-                          options={[
-                            { label: "Full", value: "full" },
-                            { label: "Partial", value: "partial" },
-                          ]}
-                          // style={{ width: 328, zIndex: 1, position: "relative" }}
-                          onChange={(e, value) => {
-                            setPaymentType(value);
-                          }}
-                          getOptionLabel={(option) => option.label}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="Status"
-                              variant="outlined"
-                            />
-                          )}
-                        />
-                      </form>
-                    </div>
-                  </div>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    disabled={
-                      paidAmount === 0 ||
-                      paidAmount === "" ||
-                      paymentDetails === ""
-                    }
-                    variant="contained"
-                    autoFocus
-                    onClick={(e) => handleSubmit(e)}
-                  >
-                    Save
-                  </Button>
-                  {paidPercentage === 90 || paidPercentage >= 90 ? (
-                    <Button
-                      variant="contained"
-                      autoFocus
-                      onClick={handleOpenTDSFields}
-                    >
-                      Close
-                    </Button>
-                  ) : (
-                    ""
-                  )}
-                  {/* {nonGstStatus === "0" ? (
-                    <Button
-                      variant="contained"
-                      autoFocus
-                      onClick={(e) => handleDiscardOpenDialog(e)}
-                    >
-                      Discard
-                    </Button>
-                  ) : (
-                    ""
-                  )} */}
-                </DialogActions>
-              </BootstrapDialog>
-              {viewImgDialog && (
-                <ImageView
-                  viewImgSrc={viewImgSrc}
-                  setViewImgDialog={setViewImgDialog}
-                />
-              )}
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div> */}
+    </div >
   );
 };
 

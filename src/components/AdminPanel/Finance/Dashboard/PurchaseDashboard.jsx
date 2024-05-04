@@ -3,7 +3,9 @@ import axios from "axios";
 import { baseUrl } from "../../../../utils/config";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-
+import gifone from "../../../../assets/img/finance/gifone.gif";
+import giftwo from "../../../../assets/img/finance/giftwo.gif";
+import gifthree from "../../../../assets/img/finance/gifthree.gif";
 const PurchaseDashboard = () => {
   const [pendingReqData, setPendingReqData] = useState([]);
   const [filterPendingReqData, setFilterPendingReqData] = useState([]);
@@ -214,7 +216,7 @@ const PurchaseDashboard = () => {
 
   console.log(pendingReqData, "pending request data >>>>>>");
   return (
-    <div>
+    <div className="card body-padding">
       {/* <div className="pack flex-row" style={{ gap: "16px" }}>
         <div className="fin-card w-50">
           <div
@@ -301,94 +303,31 @@ const PurchaseDashboard = () => {
           </div>
         </div>
       </div> */}
-      <div className="card-body cardGrdnt orangeGrdnt">
+      <div className="cardGrdnt orangeGrdnt">
         {/* <Link to="/admin/finance-pruchasemanagement-pendingpaymentrequest"> */}
-        <div className="row align-items-center">
+        <div className="row align-items-center p-2">
           <div className="col-md-6 financeCardBox border-right ">
             <div className="financeCardBoxIn p0">
               <div className="financeCardBoxTitle">
-                <div className="financeCardBoxImg"></div>
+                <div className="financeCardBoxImg">
+                  <img src={gifone} alt="" />
+                </div>
                 <h2>Pending Payment Request</h2>
               </div>
-              <div className="scroll-con pl40">
+              <div className="scroll-con">
                 <div className="scroller">
                   <h3>0</h3>
                   {pendingReqData?.map((item, index) => (
-                    <h1>{index + 1}</h1>
+                    <h3>{index + 1}</h3>
                   ))}
                 </div>
               </div>
-              <div className="financeCardBoxDetails">
-                <ul className="pl32">
-                  <li>
-                    Request Amount
-                    <span>
-                      <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) =>
-                          total + parseFloat(item.request_amount),
-                        0
-                      )}
-                    </span>
-                  </li>
 
-                  <li>
-                    Balance Release
-                    <span>
-                      <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) =>
-                          total + parseFloat(item.balance_amount),
-                        0
-                      )}
-                    </span>
-                  </li>
-                  <li>
-                    Base Amount
-                    <span>
-                      <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) => total + parseFloat(item.base_amount),
-                        0
-                      )}
-                    </span>
-                  </li>
-                  <li>
-                    Paid Amount
-                    <span>
-                      <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) => total + parseFloat(item.paid_amount),
-                        0
-                      )}
-                    </span>
-                  </li>
-                  <li>
-                    GST Amount
-                    <span>
-                      <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) => total + parseFloat(item.gst_amount),
-                        0
-                      )}
-                    </span>
-                  </li>
-                  <li>
-                    OutStanding
-                    <span>
-                      <span>&#8377; </span>
-                      {pendingReqData?.reduce(
-                        (total, item) => total + parseFloat(item.outstandings),
-                        0
-                      )}
-                    </span>
-                  </li>
-                </ul>
-              </div>
             </div>
+
           </div>
           <div className="col-md-6 financeCardBox">
-            <div className="financeCardBoxIn p0">
+            {/* <div className="financeCardBoxIn p0">
               <div className="financeCardBoxDetails">
                 <ul className="pl32">
                   <li
@@ -420,287 +359,360 @@ const PurchaseDashboard = () => {
                   </li>
                 </ul>
               </div>
+            </div> */}
+            <div className="financeCardBoxDetails">
+              <ul className="pl32">
+                <li>
+                  Request Amount
+                  <span>
+                    <span>&#8377; </span>
+                    {pendingReqData?.reduce(
+                      (total, item) =>
+                        total + parseFloat(item.request_amount),
+                      0
+                    )}
+                  </span>
+                </li>
+
+                <li>
+                  Balance Release
+                  <span>
+                    <span>&#8377; </span>
+                    {pendingReqData?.reduce(
+                      (total, item) =>
+                        total + parseFloat(item.balance_amount),
+                      0
+                    )}
+                  </span>
+                </li>
+                <li>
+                  Base Amount
+                  <span>
+                    <span>&#8377; </span>
+                    {pendingReqData?.reduce(
+                      (total, item) => total + parseFloat(item.base_amount),
+                      0
+                    )}
+                  </span>
+                </li>
+                <li>
+                  Paid Amount
+                  <span>
+                    <span>&#8377; </span>
+                    {pendingReqData?.reduce(
+                      (total, item) => total + parseFloat(item.paid_amount),
+                      0
+                    )}
+                  </span>
+                </li>
+                <li>
+                  GST Amount
+                  <span>
+                    <span>&#8377; </span>
+                    {pendingReqData?.reduce(
+                      (total, item) => total + parseFloat(item.gst_amount),
+                      0
+                    )}
+                  </span>
+                </li>
+                <li>
+                  OutStanding
+                  <span>
+                    <span>&#8377; </span>
+                    {pendingReqData?.reduce(
+                      (total, item) => total + parseFloat(item.outstandings),
+                      0
+                    )}
+                  </span>
+                </li>
+              </ul>
             </div>
           </div>
+
         </div>
         {/* </Link> */}
       </div>{" "}
-      <Link to="/admin/finance-pruchasemanagement-paymentdone">
-        <div className="pack flex-row" style={{ gap: "16px" }}>
-          <div className="fin-card w-50">
-            <div
-              className="pack flex-row w-100"
-              style={{ gap: "32px", padding: "20px" }}
-            >
-              <div className="fd-circle">
-                {/* <img src={giftwo} alt="gif" /> */}
-              </div>
-              <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
-                <h4> Payment Done</h4>
-                <div className="scroll-con">
-                  <div className="scroller">
-                    <h1>0</h1>
-                    {paymentDoneData?.map((item, index) => (
-                      <h1>{index + 1}</h1>
-                    ))}
+      <div className="row">
+
+        <Link className="col-md-6 mb-4" to="/admin/finance-pruchasemanagement-paymentdone">
+          <div className="pack flex-row " style={{ gap: "16px" }}>
+            <div className="fin-card w-100">
+              <div
+                className="pack flex-row w-100"
+                style={{ gap: "32px", padding: "20px" }}
+              >
+                <div className="fd-circle">
+                  <img src={giftwo} alt="gif" />
+                </div>
+                <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                  <h4> Payment Done</h4>
+                  <div className="scroll-con">
+                    <div className="scroller">
+                      <h1>0</h1>
+                      {paymentDoneData?.map((item, index) => (
+                        <h1>{index + 1}</h1>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              className="pack d-flex flex-column w-100"
-              style={{ gap: "10px", padding: "20px" }}
-            >
-              <div className="pack sb">
-                <h6>Requested Amount</h6>{" "}
-                <h6>
-                  {" "}
-                  {paymentDoneData?.reduce(
-                    (total, item) => total + parseFloat(item.request_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>Base Amount</h6>
-                <h6>
-                  {" "}
-                  {paymentDoneData?.reduce(
-                    (total, item) => total + parseFloat(item.base_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>GST Amount</h6>
-                <h6>
-                  {paymentDoneData?.reduce(
-                    (total, item) => total + parseFloat(item.gst_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>Outstanding</h6>
-                <h6>
-                  {" "}
-                  {paymentDoneData?.reduce(
-                    (total, item) => total + parseFloat(item.outstandings),
-                    0
-                  )}
-                </h6>
-              </div>
-            </div>
-          </div>
-        </div>{" "}
-      </Link>{" "}
-      <Link to="/admin/payment-GST_hold">
-        <div className="pack flex-row" style={{ gap: "16px" }}>
-          <div className="fin-card w-50">
-            <div
-              className="pack flex-row w-100"
-              style={{ gap: "32px", padding: "20px" }}
-            >
-              <div className="fd-circle">
-                {/* <img src={giftwo} alt="gif" /> */}
-              </div>
-              <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
-                <h4> GST Hold</h4>
-                <div className="scroll-con">
-                  <div className="scroller">
-                    <h1>0</h1>
-                    {gstData?.map((item, index) => (
-                      <h1>{index + 1}</h1>
-                    ))}
-                  </div>
+              <div
+                className="pack d-flex flex-column w-100"
+                style={{ gap: "10px", padding: "20px" }}
+              >
+                <div className="pack sb">
+                  <h6>Requested Amount</h6>{" "}
+                  <h6>
+                    {" "}
+                    {paymentDoneData?.reduce(
+                      (total, item) => total + parseFloat(item.request_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>Base Amount</h6>
+                  <h6>
+                    {" "}
+                    {paymentDoneData?.reduce(
+                      (total, item) => total + parseFloat(item.base_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>GST Amount</h6>
+                  <h6>
+                    {paymentDoneData?.reduce(
+                      (total, item) => total + parseFloat(item.gst_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>Outstanding</h6>
+                  <h6>
+                    {" "}
+                    {paymentDoneData?.reduce(
+                      (total, item) => total + parseFloat(item.outstandings),
+                      0
+                    )}
+                  </h6>
                 </div>
               </div>
             </div>
-            <div
-              className="pack d-flex flex-column w-100"
-              style={{ gap: "10px", padding: "20px" }}
-            >
-              <div className="pack sb">
-                <h6>Requested Amount</h6>{" "}
-                <h6>
-                  {" "}
-                  {gstData?.reduce(
-                    (total, item) => total + parseFloat(item.request_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>Base Amount</h6>
-                <h6>
-                  {" "}
-                  {gstData?.reduce(
-                    (total, item) => total + parseFloat(item.base_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>GST Amount</h6>
-                <h6>
-                  {gstData?.reduce(
-                    (total, item) => total + parseFloat(item.gst_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>Outstanding</h6>
-                <h6>
-                  {" "}
-                  {gstData?.reduce(
-                    (total, item) => total + parseFloat(item.outstandings),
-                    0
-                  )}
-                </h6>
-              </div>
-            </div>
-          </div>
-        </div>{" "}
-      </Link>{" "}
-      <Link to="/admin/payment-TDS_deduct">
-        <div className="pack flex-row" style={{ gap: "16px" }}>
-          <div className="fin-card w-50">
-            <div
-              className="pack flex-row w-100"
-              style={{ gap: "32px", padding: "20px" }}
-            >
-              <div className="fd-circle">
-                {/* <img src={giftwo} alt="gif" /> */}
-              </div>
-              <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
-                <h4> TDS Deduction</h4>
-                <div className="scroll-con">
-                  <div className="scroller">
-                    <h1>0</h1>
-                    {tdsData?.map((item, index) => (
-                      <h1>{index + 1}</h1>
-                    ))}
+          </div>{" "}
+        </Link>{" "}
+        <Link className="col-md-6" to="/admin/payment-GST_hold">
+          <div className="pack flex-row" style={{ gap: "16px" }}>
+            <div className="fin-card w-100">
+              <div
+                className="pack flex-row w-100"
+                style={{ gap: "32px", padding: "20px" }}
+              >
+                <div className="fd-circle">
+                  <img src={gifthree} alt="gif" />
+                </div>
+                <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                  <h4> GST Hold</h4>
+                  <div className="scroll-con">
+                    <div className="scroller">
+                      <h1>0</h1>
+                      {gstData?.map((item, index) => (
+                        <h1>{index + 1}</h1>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              className="pack d-flex flex-column w-100"
-              style={{ gap: "10px", padding: "20px" }}
-            >
-              <div className="pack sb">
-                <h6>Requested Amount</h6>{" "}
-                <h6>
-                  {" "}
-                  {tdsData?.reduce(
-                    (total, item) => total + parseFloat(item.request_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>Base Amount</h6>
-                <h6>
-                  {" "}
-                  {tdsData?.reduce(
-                    (total, item) => total + parseFloat(item.base_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>GST Amount</h6>
-                <h6>
-                  {tdsData?.reduce(
-                    (total, item) => total + parseFloat(item.gst_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>Outstanding</h6>
-                <h6>
-                  {" "}
-                  {tdsData?.reduce(
-                    (total, item) => total + parseFloat(item.outstandings),
-                    0
-                  )}
-                </h6>
-              </div>
-            </div>
-          </div>
-        </div>{" "}
-      </Link>{" "}
-      <Link to="/admin/finance-pruchasemanagement-discardpayment">
-        <div className="pack flex-row" style={{ gap: "16px" }}>
-          <div className="fin-card w-50">
-            <div
-              className="pack flex-row w-100"
-              style={{ gap: "32px", padding: "20px" }}
-            >
-              <div className="fd-circle">
-                {/* <img src={giftwo} alt="gif" /> */}
-              </div>
-              <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
-                <h4> Discard Payment</h4>
-                <div className="scroll-con">
-                  <div className="scroller">
-                    <h1>0</h1>
-                    {discardData?.map((item, index) => (
-                      <h1>{index + 1}</h1>
-                    ))}
-                  </div>
+              <div
+                className="pack d-flex flex-column w-100"
+                style={{ gap: "10px", padding: "20px" }}
+              >
+                <div className="pack sb">
+                  <h6>Requested Amount</h6>{" "}
+                  <h6>
+                    {" "}
+                    {gstData?.reduce(
+                      (total, item) => total + parseFloat(item.request_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>Base Amount</h6>
+                  <h6>
+                    {" "}
+                    {gstData?.reduce(
+                      (total, item) => total + parseFloat(item.base_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>GST Amount</h6>
+                  <h6>
+                    {gstData?.reduce(
+                      (total, item) => total + parseFloat(item.gst_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>Outstanding</h6>
+                  <h6>
+                    {" "}
+                    {gstData?.reduce(
+                      (total, item) => total + parseFloat(item.outstandings),
+                      0
+                    )}
+                  </h6>
                 </div>
               </div>
             </div>
-            <div
-              className="pack d-flex flex-column w-100"
-              style={{ gap: "10px", padding: "20px" }}
-            >
-              <div className="pack sb">
-                <h6>Requested Amount</h6>{" "}
-                <h6>
-                  {" "}
-                  {discardData?.reduce(
-                    (total, item) => total + parseFloat(item.request_amount),
-                    0
-                  )}
-                </h6>
+          </div>{" "}
+        </Link>{" "}
+
+        <Link className="col-md-6" to="/admin/payment-TDS_deduct">
+          <div className="pack flex-row" style={{ gap: "16px" }}>
+            <div className="fin-card w-100">
+              <div
+                className="pack flex-row w-100"
+                style={{ gap: "32px", padding: "20px" }}
+              >
+                <div className="fd-circle">
+                  <img src={gifone} alt="gif" />
+                </div>
+                <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                  <h4> TDS Deduction</h4>
+                  <div className="scroll-con">
+                    <div className="scroller">
+                      <h1>0</h1>
+                      {tdsData?.map((item, index) => (
+                        <h1>{index + 1}</h1>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="pack sb">
-                <h6>Base Amount</h6>
-                <h6>
-                  {" "}
-                  {discardData?.reduce(
-                    (total, item) => total + parseFloat(item.base_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>GST Amount</h6>
-                <h6>
-                  {discardData?.reduce(
-                    (total, item) => total + parseFloat(item.gst_amount),
-                    0
-                  )}
-                </h6>
-              </div>
-              <div className="pack sb">
-                <h6>Outstanding</h6>
-                <h6>
-                  {" "}
-                  {discardData?.reduce(
-                    (total, item) => total + parseFloat(item.outstandings),
-                    0
-                  )}
-                </h6>
+              <div
+                className="pack d-flex flex-column w-100"
+                style={{ gap: "10px", padding: "20px" }}
+              >
+                <div className="pack sb">
+                  <h6>Requested Amount</h6>{" "}
+                  <h6>
+                    {" "}
+                    {tdsData?.reduce(
+                      (total, item) => total + parseFloat(item.request_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>Base Amount</h6>
+                  <h6>
+                    {" "}
+                    {tdsData?.reduce(
+                      (total, item) => total + parseFloat(item.base_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>GST Amount</h6>
+                  <h6>
+                    {tdsData?.reduce(
+                      (total, item) => total + parseFloat(item.gst_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>Outstanding</h6>
+                  <h6>
+                    {" "}
+                    {tdsData?.reduce(
+                      (total, item) => total + parseFloat(item.outstandings),
+                      0
+                    )}
+                  </h6>
+                </div>
               </div>
             </div>
-          </div>
-        </div>{" "}
-      </Link>
+          </div>{" "}
+        </Link>{" "}
+        <Link className="col-md-6" to="/admin/finance-pruchasemanagement-discardpayment">
+          <div className="pack flex-row" style={{ gap: "16px" }}>
+            <div className="fin-card w-100">
+              <div
+                className="pack flex-row w-100"
+                style={{ gap: "32px", padding: "20px" }}
+              >
+                <div className="fd-circle">
+                  <img src={giftwo} alt="gif" />
+                </div>
+                <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                  <h4> Discard Payment</h4>
+                  <div className="scroll-con">
+                    <div className="scroller">
+                      <h1>0</h1>
+                      {discardData?.map((item, index) => (
+                        <h1>{index + 1}</h1>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                className="pack d-flex flex-column w-100"
+                style={{ gap: "10px", padding: "20px" }}
+              >
+                <div className="pack sb">
+                  <h6>Requested Amount</h6>{" "}
+                  <h6>
+                    {" "}
+                    {discardData?.reduce(
+                      (total, item) => total + parseFloat(item.request_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>Base Amount</h6>
+                  <h6>
+                    {" "}
+                    {discardData?.reduce(
+                      (total, item) => total + parseFloat(item.base_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>GST Amount</h6>
+                  <h6>
+                    {discardData?.reduce(
+                      (total, item) => total + parseFloat(item.gst_amount),
+                      0
+                    )}
+                  </h6>
+                </div>
+                <div className="pack sb">
+                  <h6>Outstanding</h6>
+                  <h6>
+                    {" "}
+                    {discardData?.reduce(
+                      (total, item) => total + parseFloat(item.outstandings),
+                      0
+                    )}
+                  </h6>
+                </div>
+              </div>
+            </div>
+          </div>{" "}
+        </Link>
+      </div>
+
     </div>
   );
 };
