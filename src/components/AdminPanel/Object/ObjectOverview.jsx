@@ -391,6 +391,16 @@ const ObjectOverview = () => {
     filterDataFun(savedFilter.filters);
   };
 
+  const deleteFilter = (index) => {
+    const updatedSavedFilters = savedFilters.filter((_, i) => i !== index);
+    setSavedFilters(updatedSavedFilters);
+    axios.put(baseUrl+'edit_dynamic_table_data',{
+      user_id: userID,
+      table_name: 'object table',
+      filter_array: updatedSavedFilters
+    });
+  };
+
   // save filter code end here
 
   return (
@@ -421,7 +431,8 @@ const ObjectOverview = () => {
             <button className="btn btn-warning" onClick={() => applySavedFilter(savedFilter)} style={{marginRight:'10px'}}>
               {savedFilter.name ? savedFilter.name : `Filter ${index + 1}`}
             </button>
-            <button className="btn btn-success" onClick={() => saveFilterName(index)}>Change filter name</button>
+            <button className="btn btn-success" onClick={() => saveFilterName(index)} style={{marginRight:'10px'}}>Change filter name</button>
+            <button className="btn btn-danger" onClick={() => deleteFilter(index)}>Delete</button>
           </div>
         ))}
         <button 

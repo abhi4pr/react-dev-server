@@ -1,4 +1,4 @@
-import { TextField, Button, Modal } from "@mui/material";
+import { TextField, Button, Modal, Box, Typography } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
@@ -6,30 +6,41 @@ import { baseUrl } from "../../../../utils/config";
 import Select from "react-select";
 import FormContainer from "../../FormContainer";
 import CampaignExecutionSummary from "./CampaignExecutionSummary";
+import ScreenRotationAltRoundedIcon from '@mui/icons-material/ScreenRotationAltRounded';
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 const CampaignExecutions = () => {
   const [shortcode, setShortcode] = useState([]);
   const [pageDetails, setPageDetails] = useState([]);
-  console.log(pageDetails,);
   const [assignData, setAssignData] = useState([]);
   const [allCampData, setAllCampData] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState("");
+  const [shiftPages, setShiftPages] = useState("");
+  console.log(shiftPages,"  jjjjj");
   const [allPhaseData, setAllPhaseData] = useState([]);
-  // const [singlePhaseData, setSinglePhaseData] = useState([]);
   const [allExecutedData, setAllExecutedData] = useState([]);
   const [allPhaseCommitCount, setAllPhaseCommitCount] = useState([]);
   const [overviewCommitData, setOverviewCommitData] = useState([]);
   const [phases, setphases] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [assId, setAssId] = useState("")
+  const [assId, setAssId] = useState("");
+  const [phaseId, setPhaseId] = useState();
 
-  // const handleShortcodeChange = (event, index) => {
-  //   const newShortcodes = [...shortcode];
-  //   newShortcodes[index] = event.target.value;
-  //   setShortcode(newShortcodes);
-  // };
-  const openModal = () => {
+  const openModal = (phase_id) => {
     setIsModalOpen(true);
+    setPhaseId(phase_id); 
+
   };
 
   const closeModal = () => {
@@ -61,7 +72,6 @@ const CampaignExecutions = () => {
     const res = await axios.get(
       `${baseUrl}assignment/get_all_exe_phases_by_campid/${selectedCampaign}`
     );
-    console.log(res, "hi");
     setphases("all");
     setAllExecutedData(res?.data?.data);
   };
@@ -75,7 +85,6 @@ const CampaignExecutions = () => {
     handleAllCampaign();
     allCommitInOverview();
   }, [selectedCampaign]);
-  // use
 
   useEffect(() => {
     const fetchPageDetails = async (index) => {
@@ -163,11 +172,9 @@ const CampaignExecutions = () => {
   };
 
   const { tags, hashtags, tagCount, hashtagCount } = extractTags(
-    pageDetails?.post_caption
+    pageDetails?.post_captions
   );
 
-
-  console.log(allExecutedData, "all saimyual");
   const Columns = [
     {
       field: "S.NO",
@@ -179,25 +186,26 @@ const CampaignExecutions = () => {
         return <div>{rowIndex + 1}</div>;
       },
     },
-    {
+
+    phases === "all" ? "" : {
       field: "Shifting",
       headerName: "Shifting",
       width: 120,
       renderCell: (params) => {
         return (
-          <Button variant="text" onClick={openModal}>
-            Shift pages
-          </Button>
+          <Button variant="text" onClick={() => openModal(params.row.phase_id)}>
+          <ScreenRotationAltRoundedIcon color="secondary" sx={{ fontSize: "1.5rem" }} />
+        </Button>
         );
       },
     },
     {
-      field: "Date",
+      field: "last_link_hit_date",
       headerName: " Fetched D|T",
       width: 180,
-      valueGetter: () =>
-        pageDetails?.postedOn ? pageDetails?.postedOn : " Not Fetched",
+      
     },
+    
     {
       field: "page_name",
       headerName: "Page Name",
@@ -235,8 +243,6 @@ const CampaignExecutions = () => {
           className="form-control"
           placeholder="Story Link"
           type="text"
-        // value=""
-        // onChange={(event) => setShortcode(event.target.value)}
         />
       ),
     },
@@ -250,7 +256,6 @@ const CampaignExecutions = () => {
             className="form-control"
             placeholder="Post Link"
             type="text"
-            // value={shortcode}
             value={shortcode[params.row._id]}
             onChange={(event) => {
               setShortcode(event.target.value);
@@ -299,17 +304,16 @@ const CampaignExecutions = () => {
       headerName: "Views",
       width: 150,
     },
+    // {
+    //   field: "Post",
+    //   headerName: "Post",
+    //   width: 150,
+    //   valueGetter: () => pageDetails?.owner_info?.post_count,
+    // },
     {
-      field: "Post",
-      headerName: "Post",
-      width: 150,
-      valueGetter: () => pageDetails?.owner_info?.post_count,
-    },
-    {
-      field: "post_caption",
+      field: "post_captions",
       headerName: "Caption",
       width: 150,
-      // valueGetter: () => pageDetails?.post_caption,
     },
     {
       field: "Tags",
@@ -348,10 +352,18 @@ const CampaignExecutions = () => {
     setAllPhaseCommitCount(response.data.data);
   };
 
+  const handleShift = async () => {
+    const res = await axios.post(`${baseUrl}assignment/get_shift_phases`, {
+      _id: selectedCampaign,
+      phaseId1: phaseId,
+      phaseId2: shiftPages
+    })
+    console.log("new ")
+  }
+
   return (
     <>
       <FormContainer link={true} mainTitle={"Exection Campaign"} />
-
       <div className="card">
         <div className="card-header sb">
           <div className="card-title">Execution</div>
@@ -416,14 +428,23 @@ const CampaignExecutions = () => {
       </div>
       <>
         <Modal open={isModalOpen} onClose={closeModal}>
-          <div style={{ backgroundColor: "white", padding: "1rem" }}>
-            <h2>Modal Content</h2>
-            <p>This is the content of the modal.</p>
-            <Button variant="contained" onClick={closeModal}>
-              Close Modal
-            </Button>
-          </div>
+          <Box sx={style}>
+            <div className="form-group w-75">
+              <label className="form-label">Shift Pages</label>
+              <Select
+                options={allPhaseData.map((option) => ({
+                  value: option.phase_id,
+                  label: option.phaseName,
+                }))}
+                onChange={(e) => {
+                  setShiftPages(e.value);
+                }}
+              />
+            </div>
+            <Button onClick={handleShift}> Shift</Button>
+          </Box>
         </Modal>
+
       </>
     </>
   );
