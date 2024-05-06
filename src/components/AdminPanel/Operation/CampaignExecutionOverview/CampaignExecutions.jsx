@@ -37,6 +37,8 @@ const CampaignExecutions = () => {
   const [isModalOpen3, setIsModalOpen3] = useState(false);
   const [assId, setAssId] = useState("");
   const [phaseId, setPhaseId] = useState();
+  const [allPages, setAllPages] = useState([]);
+  const [newPage, setNewPage] = useState('')
 
   const openModal = (phase_id) => {
     setIsModalOpen(true);
@@ -379,8 +381,23 @@ const CampaignExecutions = () => {
     })
   }
 
-  const handleAddPage = async () => {
+  const getPageData = async () => {
+    const pageData = await axios.get(
+      `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
+    );
+    setAllPages(pageData.data.body);
+  };
 
+  useEffect(() => {
+    getPageData();
+  }, []);
+
+  const handleAddPage = async () => {
+    const res = await axios.post(`${baseUrl}assignment/add_new_page`, {
+      _id: selectedCampaign,
+      page_name: newPage,
+      phase_id: shiftPages
+    })
   }
 
   const handleReplace = async () => {
@@ -475,18 +492,44 @@ const CampaignExecutions = () => {
         <Modal open={isModalOpen2} onClose={closeModal2}>
           <Box sx={style}>
             <div className="form-group w-75">
-              <label className="form-label">Add New Page</label>
-              
+              <label className="form-label">Select Page</label>
+              <Select
+                options={allPages.map((option)=>({
+                  value: option.p_id,
+                  label: option.page_name
+                }))}
+                onChange={(e) => {
+                  setNewPage(e.value)
+                }}
+              />
+              <label className="form-label">Select Phase</label>
+              <Select
+                options={allPhaseData.map((option) => ({
+                  value: option.phase_id,
+                  label: option.phaseName,
+                }))}
+                onChange={(e) => {
+                  setShiftPages(e.value);
+                }}
+              />
             </div>
-            <Button onClick={handleAddPage}> Add</Button>
+            <Button onClick={handleAddPage}> Add Page</Button>
           </Box>
         </Modal>
 
         <Modal open={isModalOpen3} onClose={closeModal3}>
           <Box sx={style}>
             <div className="form-group w-75">
-              <label className="form-label">Replace Page</label>
-              
+              <label className="form-label">Select Page To Replace with</label>
+              <Select
+                options={allPages.map((option)=>({
+                  value: option.p_id,
+                  label: option.page_name
+                }))}
+                onChange={(e) => {
+                  setNewPage(e.value)
+                }}
+              />
             </div>
             <Button onClick={handleReplace}> Replace</Button>
           </Box>

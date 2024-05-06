@@ -176,7 +176,7 @@ const ObjectOverview = () => {
     try {
       const response = await axios.get(baseUrl + `get_dynamic_table_data?userId=${userID}&tableName=${'object table'}`);
       const responseData = response.data;
-      
+
       const savedFiltersData = response.data.data[0]?.filter_array;
       setSavedFilters(savedFiltersData);
 
@@ -193,7 +193,7 @@ const ObjectOverview = () => {
       setColumns(defaultColumns);
     }
   }
-  
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerOpen1, setDrawerOpen1] = useState(false);
 
@@ -236,7 +236,8 @@ const ObjectOverview = () => {
     } else {
       newColumns = [...columns, columnName];
     }
-    axios.put(`${baseUrl}` + `edit_dynamic_table_data`, { 
+    
+    axios.put(`${baseUrl}` + `edit_dynamic_table_data`, {
       user_id: userID,
       table_name: 'object table',
       column_order_Obj: newColumns
@@ -265,7 +266,7 @@ const ObjectOverview = () => {
   const getPageData = () => {
     const startIndex = currentPage * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return filterData.slice(startIndex, endIndex); 
+    return filterData.slice(startIndex, endIndex);
   };
 
   // custom dynamic table code ends here
@@ -369,7 +370,7 @@ const ObjectOverview = () => {
     const updatedSavedFilters = [...savedFilters];
     updatedSavedFilters[index].name = customFilterNames[index] || `Filter ${index + 1}`;
     setSavedFilters(updatedSavedFilters);
-    axios.put(baseUrl+'edit_dynamic_table_data',{
+    axios.put(baseUrl + 'edit_dynamic_table_data', {
       user_id: userID,
       table_name: 'object table',
       filter_array: updatedSavedFilters
@@ -378,8 +379,8 @@ const ObjectOverview = () => {
 
   const saveFilter = () => {
     const newSavedFilters = [...savedFilters, { filters }];
-    setSavedFilters(newSavedFilters); 
-    axios.put(baseUrl+'edit_dynamic_table_data',{
+    setSavedFilters(newSavedFilters);
+    axios.put(baseUrl + 'edit_dynamic_table_data', {
       user_id: userID,
       table_name: 'object table',
       filter_array: newSavedFilters
@@ -394,7 +395,7 @@ const ObjectOverview = () => {
   const deleteFilter = (index) => {
     const updatedSavedFilters = savedFilters.filter((_, i) => i !== index);
     setSavedFilters(updatedSavedFilters);
-    axios.put(baseUrl+'edit_dynamic_table_data',{
+    axios.put(baseUrl + 'edit_dynamic_table_data', {
       user_id: userID,
       table_name: 'object table',
       filter_array: updatedSavedFilters
@@ -416,9 +417,9 @@ const ObjectOverview = () => {
         }
       />
 
-      <div style={{marginBottom:'10px'}}>
+      <div style={{ marginBottom: '10px' }}>
         {savedFilters?.map((savedFilter, index) => (
-          <div key={index} className="saved-filter-container" style={{display: 'flex', alignItems: 'center', marginBottom:'1%'}}>
+          <div key={index} className="saved-filter-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
             <input
               type="text"
               value={customFilterNames[index]}
@@ -426,18 +427,18 @@ const ObjectOverview = () => {
               onChange={(e) => handleFilterNameChange(index, e.target.value)}
               placeholder={`Filter ${index + 1} Name`}
               className="form-control filter-name-input"
-              style={{width:'25%', marginRight: '10px'}}
+              style={{ width: '25%', marginRight: '10px' }}
             />
-            <button className="btn btn-warning" onClick={() => applySavedFilter(savedFilter)} style={{marginRight:'10px'}}>
+            <button className="btn btn-warning" onClick={() => applySavedFilter(savedFilter)} style={{ marginRight: '10px' }}>
               {savedFilter.name ? savedFilter.name : `Filter ${index + 1}`}
             </button>
-            <button className="btn btn-success" onClick={() => saveFilterName(index)} style={{marginRight:'10px'}}>Change filter name</button>
+            <button className="btn btn-success" onClick={() => saveFilterName(index)} style={{ marginRight: '10px' }}>Change filter name</button>
             <button className="btn btn-danger" onClick={() => deleteFilter(index)}>Delete</button>
           </div>
         ))}
-        <button 
-          className="btn btn-success" 
-          onClick={saveFilter} 
+        <button
+          className="btn btn-success"
+          onClick={saveFilter}
           disabled={filters.length === 0}
         >
           Save Filter
@@ -584,7 +585,7 @@ const ObjectOverview = () => {
               </tbody>
             </table>
           </div>
-          
+
           <div className="border-pagination pagination MuiDataGrid-footerContainer MuiDataGrid-withBorderColor css-wop1k0-MuiDataGrid-footerContainer sb">
             <div></div>
             <div className="MuiToolbar-root MuiToolbar-gutters MuiToolbar-regular MuiTablePagination-toolbar css-78c6dr-MuiToolbar-root-MuiTablePagination-toolbar">
@@ -604,15 +605,20 @@ const ObjectOverview = () => {
                 >
                   <svg className="MuiSvgIcon-root MuiSvgIcon-fontSizeMedium css-i4bv87-MuiSvgIcon-root" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="KeyboardArrowRightIcon"><path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"></path></svg>
                 </button>
-                <div>
-                  <label htmlFor="itemsPerPage">Items Per Page:</label>
-                  <select id="itemsPerPage" value={itemsPerPage} onChange={handleItemsPerPageChange}>
+
+              </div>
+              <div className="MuiTablePagination-actions mr-4">
+                <div className="MuiInputBase-root MuiInputBase-colorPrimary MuiTablePagination-input css-16c50h-MuiInputBase-root-MuiTablePagination-select">
+                  <label className="mr-4" htmlFor="itemsPerPage">Items Per Page</label>
+                  <select style={{ borderRadius:"40px",background:"var(--white)", border:"none"}} id="itemsPerPage" value={itemsPerPage} onChange={handleItemsPerPageChange}>
                     <option value={10}>10</option>
                     <option value={20}>20</option>
                     <option value={50}>50</option>
                     <option value={100}>100</option>
                   </select>
                 </div>
+              </div>
+              <div className="mr-4">
                 Total Rows: {datas.length}
               </div>
             </div>
