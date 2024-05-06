@@ -10,7 +10,7 @@ import DynamicPDFDownload from "../DynamicPDFDownload";
 
 const IncentiveOverview = () => {
   const [incentiveData, setIncentiveData] = useState([]);
-  const [origionalData, setOrigionalData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [search, setSearch] = useState("");
   const getData = async () => {
     try {
@@ -20,7 +20,7 @@ const IncentiveOverview = () => {
       const data = response.data.data;
       console.log(data, "hello world");
       setIncentiveData(data);
-      setOrigionalData(data);
+      setOriginalData(data);
     } catch (error) {
       console.error(error);
     }
@@ -31,7 +31,7 @@ const IncentiveOverview = () => {
   }, []);
 
   useEffect(() => {
-    const result = origionalData.filter((d) => {
+    const result = originalData.filter((d) => {
       return d.service_name?.toLowerCase().includes(search.toLowerCase());
     });
     setIncentiveData(result);
@@ -107,7 +107,7 @@ const IncentiveOverview = () => {
             <button
               className="btn btn-danger mt-2"
               onClick={() => {
-                const selectedData = origionalData.map((row, index) => ({
+                const selectedData = originalData.map((row, index) => ({
                   "S.No": index + 1,
                   "Service Name": row.Sales_Service_Master.service_name,
                   "Incentive Type": row.incentive_type,
@@ -122,7 +122,7 @@ const IncentiveOverview = () => {
 
             <button
               className="btn btn-success mt-2"
-              onClick={() => DynamicPDFDownload(origionalData)}
+              onClick={() => DynamicPDFDownload(originalData)}
             >
               PDF Download
             </button>

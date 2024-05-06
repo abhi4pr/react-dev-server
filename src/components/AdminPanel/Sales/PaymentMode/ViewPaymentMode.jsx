@@ -8,7 +8,7 @@ import DeleteButton from "../../DeleteButton";
 
 const ViewPaymentMode = () => {
   const [paymentModeData, setPaymentModeData] = useState([]);
-  const [origionalData, setOrigionalData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [search, setSearch] = useState("");
 
   const getData = async () => {
@@ -17,7 +17,7 @@ const ViewPaymentMode = () => {
         `${baseUrl}sales/getlist_sale_payment_mode`
       );
       setPaymentModeData(response.data.data);
-      setOrigionalData(response.data.data);
+      setOriginalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
     }
@@ -27,7 +27,7 @@ const ViewPaymentMode = () => {
   }, []);
 
   useEffect(() => {
-    const result = origionalData.filter((d) => {
+    const result = originalData.filter((d) => {
       return d.reason?.toLowerCase().includes(search.toLowerCase());
     });
     setPaymentModeData(result);

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const CreditApprovalReasonView = () => {
   const [creditAppReasonData, setCreditAppReasonData] = useState([]);
-  const [origionalData, setOrigionalData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [search, setSearch] = useState("");
 
   const getData = async () => {
@@ -17,7 +17,7 @@ const CreditApprovalReasonView = () => {
         `${baseUrl}sales/getlist_reason_credit_approval`
       );
       setCreditAppReasonData(response.data.data);
-      setOrigionalData(response.data.data);
+      setOriginalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
     }
@@ -27,7 +27,7 @@ const CreditApprovalReasonView = () => {
   }, []);
 
   useEffect(() => {
-    const result = origionalData.filter((d) => {
+    const result = originalData.filter((d) => {
       return d.reason?.toLowerCase().includes(search.toLowerCase());
     });
     setCreditAppReasonData(result);

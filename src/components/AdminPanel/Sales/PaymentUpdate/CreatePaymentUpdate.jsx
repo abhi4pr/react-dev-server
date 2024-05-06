@@ -7,16 +7,19 @@ import { baseUrl } from "../../../../utils/config";
 import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 import { useGlobalContext } from "../../../../Context/Context";
 import getDecodedToken from "../../../../utils/DecodedToken";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const CreatePaymentUpdate = () => {
+  const { id } = useParams();
   const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
   const token = getDecodedToken();
   const loginUserId = token.id;
   const [saleBookingData, setSaleBookingData] = useState([]);
   const [selectedBookingData, setselectedBookingData] = useState(null);
-  const [selectedSaleBooking, setSelectedSaleBooking] = useState(null);
+  const [selectedSaleBooking, setSelectedSaleBooking] = useState(
+    Number(id) ? Number(id) : null
+  );
   const [paymentDate, setPaymentDate] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -61,15 +64,17 @@ const CreatePaymentUpdate = () => {
         );
         const response = res.data.data;
         setselectedBookingData(response);
+        console.log(response);
       } catch (error) {
         console.error("Error fetching Sales Booking");
       }
     };
 
-    fetchData();
+    if (selectedSaleBooking) {
+      fetchData();
+    }
   }, [selectedSaleBooking]);
 
-  console.log(selectedSaleBooking, "", selectedBookingData, "harshal");
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -143,6 +148,7 @@ const CreatePaymentUpdate = () => {
             }}
             onChange={(e) => setSelectedSaleBooking(e.value)}
             required
+            isDisabled={Number(id)}
           />
         </div>
         <FieldContainer
