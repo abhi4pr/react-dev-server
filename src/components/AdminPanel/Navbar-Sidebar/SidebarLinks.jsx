@@ -758,6 +758,63 @@ const SidebarLinks = () => {
                   </>
                 )}
             </div>
+
+            {contextData &&
+                      contextData[24] &&
+                      contextData[24].view_value === 1 && (
+                        <li className="nav-item">
+                          <a
+                            className="nav-btn nav-link collapsed"
+                            data-toggle="collapse"
+                            data-target="#collapsInnerOne"
+                            aria-expanded="true"
+                            aria-controls="collapsInnerOne"
+                          >
+                            <i className="bi bi-dash"></i>
+                            {/* <i className="bi bi-person-gear" /> */}
+                            <span>Execution</span>
+                          </a>
+                          <div
+                            id="collapsInnerOne"
+                            className="collapse"
+                            aria-labelledby="headingTwo"
+                          // data-parent="#accordionSidebar"
+                          >
+                            <div className="internal collapse-inner">
+                              <NavLink
+                                className="collapse-item"
+                                to="/admin/execution"
+                              >
+                                <i className="bi bi-dot"></i> Dashboard
+                              </NavLink>
+                              <NavLink
+                                className="collapse-item"
+                                to="/admin/exeexecution/pending"
+                              >
+                                <i className="bi bi-dot"></i> Pending
+                              </NavLink>{" "}
+                              <NavLink
+                                className="collapse-item"
+                                to="/admin/exeexecution/done"
+                              >
+                                <i className="bi bi-dot"></i> Executed
+                              </NavLink>{" "}
+                              {/* <NavLink
+                          className="collapse-item"
+                          to="/admin/exeexecution/accepted"
+                        >
+                          In Progress
+                        </NavLink>{" "} */}
+                              <NavLink
+                                className="collapse-item"
+                                to="/admin/exeexecution/rejected"
+                              >
+                                <i className="bi bi-dot"></i> Rejected
+                              </NavLink>
+                            </div>
+                          </div>
+                        </li>
+                      )}
           </div>
         </li>
       )}
@@ -882,64 +939,6 @@ const SidebarLinks = () => {
                 contextData[24] &&
                 contextData[24].view_value === 1 &&
                 ""} */}
-
-                    {contextData &&
-                      contextData[24] &&
-                      contextData[24].view_value === 1 && (
-                        <li className="nav-item">
-                          <a
-                            className="nav-btn nav-link collapsed"
-                            data-toggle="collapse"
-                            data-target="#collapsInnerOne"
-                            aria-expanded="true"
-                            aria-controls="collapsInnerOne"
-                          >
-                            <i className="bi bi-dash"></i>
-                            {/* <i className="bi bi-person-gear" /> */}
-                            <span>Execution</span>
-                          </a>
-                          <div
-                            id="collapsInnerOne"
-                            className="collapse"
-                            aria-labelledby="headingTwo"
-                          // data-parent="#accordionSidebar"
-                          >
-                            <div className="internal collapse-inner">
-                              <NavLink
-                                className="collapse-item"
-                                to="/admin/execution"
-                              >
-                                <i className="bi bi-dot"></i> Dashboard
-                              </NavLink>
-                              <NavLink
-                                className="collapse-item"
-                                to="/admin/exeexecution/pending"
-                              >
-                                <i className="bi bi-dot"></i> Pending
-                              </NavLink>{" "}
-                              <NavLink
-                                className="collapse-item"
-                                to="/admin/exeexecution/done"
-                              >
-                                <i className="bi bi-dot"></i> Executed
-                              </NavLink>{" "}
-                              {/* <NavLink
-                          className="collapse-item"
-                          to="/admin/exeexecution/accepted"
-                        >
-                          In Progress
-                        </NavLink>{" "} */}
-                              <NavLink
-                                className="collapse-item"
-                                to="/admin/exeexecution/rejected"
-                              >
-                                <i className="bi bi-dot"></i> Rejected
-                              </NavLink>
-                            </div>
-                          </div>
-                        </li>
-                      )}
-
                     {contextData &&
                       contextData[24] &&
                       contextData[24].view_value === 1 && (

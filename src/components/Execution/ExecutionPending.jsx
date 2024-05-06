@@ -5,7 +5,22 @@ import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-import { Button } from "@mui/material";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  FormControlLabel,
+  IconButton,
+  InputLabel,
+  Switch,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Confirmation from "./Confirmation";
 import jwtDecode from "jwt-decode";
 import { GridToolbar } from "@mui/x-data-grid";
@@ -14,6 +29,9 @@ import PaymentDetailDailog from "./PaymentDetailDailog";
 import PointOfSaleTwoToneIcon from "@mui/icons-material/PointOfSaleTwoTone";
 import { baseUrl } from "../../utils/config";
 import FormContainer from "../AdminPanel/FormContainer";
+import { styled } from "@mui/material/styles";
+import CloseIcon from "@mui/icons-material/Close";
+import { set } from "date-fns";
 
 function ExecutionPending() {
   const [snackbar, setSnackbar] = useState(null);
@@ -31,6 +49,109 @@ function ExecutionPending() {
   const [openPaymentDetailDialog, setOpenPaymentDetaliDialog] = useState(false);
   const [paymentDialogDetails, setPaymentDialogDetails] = useState([{}]);
   const [multipleToken, setMultipleToken] = useState("");
+  const [filterData, setFilterData] = useState([]);
+  const [holdDialog, setShowHoldDialog] = useState(false);
+  const [reason, setReason] = useState("");
+
+  const handleHoldSubmit = () => {
+    const payload = {
+      loggedin_user_id: userID,
+      sale_booking_id: rowData.sale_booking_id,
+      sale_booking_execution_id: rowData.sale_booking_execution_id,
+      start_date_: new Date(),
+      execution_status: executionStatus,
+      execution_remark: reason,
+    };
+    axios
+      .put(`${baseUrl}` + `edit_exe_sum`, payload)
+      .then((res) => {
+        console.log(res);
+        setReload((preVal) => !preVal);
+
+        const payload1 = {
+          loggedin_user_id: userID,
+          sale_booking_execution_id: rowData.sale_booking_execution_id,
+          execution_date_time: new Date().toISOString().split("T")[0],
+          execution_time: "0.00",
+          execution_remark: reason,
+          execution_status: 5,
+        };
+        axios
+          .post(
+            `https://sales.creativefuel.io/webservices/RestController.php?view=executionSummaryUpdate`,
+            payload1
+          )
+          .then((res) => {
+            setReload((preVal) => !preVal);
+            handleClose();
+            setExecutionStatus(null);
+          })
+          .catch((err) => {
+            console.log(err);
+            setSnackbar({
+              open: true,
+              message: "Error Updating",
+              severity: "error",
+            });
+          });
+      })
+
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleClose = () => {
+    setShowHoldDialog(false);
+  };
+
+  const handleReleaseRow = (row) => {
+    return () => {
+      const payload = {
+        loggedin_user_id: userID,
+        sale_booking_id: row.sale_booking_id,
+        sale_booking_execution_id: row.sale_booking_execution_id,
+        start_date_: new Date(),
+        execution_status: row.execution_status==5?1:2,
+      };
+      axios
+        .put(`${baseUrl}` + `edit_exe_sum`, payload)
+        .then((res) => {
+          console.log(res);
+          setReload((preVal) => !preVal);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      const payload1 = {
+        loggedin_user_id: userID,
+        sale_booking_execution_id: row.sale_booking_execution_id,
+        execution_date_time: new Date().toISOString().split("T")[0],
+        execution_time: "0.00",
+        execution_remark: "Accepted",
+        execution_status: row.execution_status==5?1:2,
+      };
+      axios
+        .post(
+          `https://sales.creativefuel.io/webservices/RestController.php?view=executionSummaryUpdate`,
+          payload1
+        )
+        .then((res) => {
+          console.log(res);
+          setReload((preVal) => !preVal);
+        })
+        .catch((err) => {
+          console.log(err);
+          setSnackbar({
+            open: true,
+            message: "Error Updating",
+            severity: "error",
+          });
+        });
+    };
+  };
+  
 
   const handleClickOpenPaymentDetailDialog = (data) => {
     setPaymentDialogDetails(data);
@@ -40,6 +161,23 @@ function ExecutionPending() {
     setOpenPaymentDetaliDialog(false);
   };
 
+  const BootstrapDialog = styled(Dialog)(({ theme }) => ({
+    "& .MuiDialogContent-root": {
+      padding: theme.spacing(2),
+    },
+    "& .MuiDialogActions-root": {
+      padding: theme.spacing(1),
+    },
+  }));
+
+  const handleRowHold = (row, hold_execution_status) => {
+    return () => {
+      console.log(row, "row");
+      setRowData(row);
+      setShowHoldDialog(true);
+      setExecutionStatus(hold_execution_status);
+    };
+  };
   const handleMultipleVerification = (e) => {
     e.preventDefault();
     axios
@@ -92,7 +230,15 @@ function ExecutionPending() {
 
         setConfirmation(false);
         fetchData();
-      });
+      }).catch((err) => {
+        console.log(err);
+        setSnackbar({
+          open: true,
+          message: "Wrong Token",
+          severity: "error",
+        });
+      }
+      );
   };
   const handleAccept = (row) => {
     setRowData(row);
@@ -131,10 +277,11 @@ function ExecutionPending() {
         setData(
           res.data
             .filter(
-              (ele) => ele.execution_status == 1 || ele.execution_status == 2
+              (ele) => ele.execution_status == 1 
             )
             .reverse()
         );
+        setFilterData(res.data.reverse());
       });
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -173,9 +320,9 @@ function ExecutionPending() {
       width: 150,
     },
     {
-      field:"record_service_campaign_name",
-      headerName:"Campaign Name",
-      width:150
+      field: "record_service_campaign_name",
+      headerName: "Campaign Name",
+      width: 150,
     },
     {
       field: "cust_name",
@@ -215,6 +362,42 @@ function ExecutionPending() {
               fontSize="inherit"
             >
               In Progress
+            </Button>
+          );
+        }else if (params.row.execution_status == "3") {
+          return (
+            <Button
+              size="small"
+              color="success"
+              variant="outlined"
+              className="btn btn_sm cmnbtn"
+              fontSize="inherit"
+            >
+              Completed
+            </Button>
+          );
+        }else if (params.row.execution_status == "4") {
+          return (
+            <Button
+              size="small"
+              color="error"
+              variant="outlined"
+              className="btn btn_sm cmnbtn"
+              fontSize="inherit"
+            >
+              Rejected
+            </Button>
+          );
+        }else if (params.row.execution_status == "5" || params.row.execution_status == 6) {
+          return (
+            <Button
+              size="small"
+              color="warning"
+              variant="outlined"
+              className="btn btn_sm cmnbtn"
+              fontSize="inherit"
+            >
+              Hold
             </Button>
           );
         }
@@ -372,6 +555,11 @@ function ExecutionPending() {
         }
       },
     },
+    {
+      field : "execution_remark",
+      headerName: "Remark",
+      width: 150
+    },
     contextData
       ? {
           field: "actions",
@@ -432,6 +620,14 @@ function ExecutionPending() {
                   }
                   color="inherit"
                 />,
+                <Button
+                  variant="outlined"
+                  onClick={handleRowHold(row, 5)}
+                  className="btn btn_sm cmnbtn"
+                  color="warning"
+                >
+                  Hold
+                </Button>,
               ];
             } else if (executionStatus == "2") {
               // Show "Done" button when execution_status is "2"
@@ -471,8 +667,50 @@ function ExecutionPending() {
                   onClick={() => handleDone(row)}
                   color="inherit"
                 />,
+                <Button
+                variant="outlined"
+                onClick={handleRowHold(row,6)}
+                className="btn btn_sm cmnbtn"
+                color="warning"
+              >
+                Hold
+              </Button>,
               ];
-            } else {
+
+
+            } else if(executionStatus==5 || executionStatus==6){
+              return [
+                
+                <div className="icon-1">
+                  <GridActionsCellItem
+                    key={id}
+                    icon={<PointOfSaleTwoToneIcon />}
+                    onClick={handleClickOpenPaymentDetailDialog}
+                    color="inherit"
+                  />
+                </div>,
+                <Link key={id} to={`/admin/exeexecution/${id}`}>
+                  <div className="icon-1">
+                    <GridActionsCellItem
+                      icon={<ListAltOutlinedIcon />}
+                      onClick={handleViewClick(id)}
+                      color="inherit"
+                    />
+                  </div>
+                </Link>,
+                <Button
+                  variant="outlined"
+                  onClick={handleReleaseRow(row)}
+                  className="btn btn_sm cmnbtn"
+                  color="success"
+                >
+                  Release
+                </Button>,
+              ]
+            }
+            
+            
+            else {
               // Default case, no special buttons
               return [
                 <div className="icon-1">
@@ -628,6 +866,75 @@ function ExecutionPending() {
                 Add
               </Button>
             </form>
+
+            <div className="d-flex">
+              <Button
+                className={(isActive) => {
+                  return isActive ? "disabled" : "";
+                }}
+                onClick={() => {
+                  setData(
+                    filterData.filter((ele) => ele.execution_status == 1)
+                  );
+                  console.log(
+                    filterData.filter((ele) => ele.execution_status == 1)
+                  );
+                }}
+              >
+                Pending{" "}
+                {filterData.filter((ele) => ele.execution_status == 1).length}
+              </Button>
+              <Button
+                onClick={() => {
+                  setData(
+                    filterData.filter((ele) => ele.execution_status == 2)
+                  );
+                  console.log(
+                    filterData.filter((ele) => ele.execution_status == 2)
+                  );
+                }}
+              >
+                In Progress{" "}
+                {filterData.filter((ele) => ele.execution_status == 2).length}
+              </Button>
+              <Button
+                onClick={() => {
+                  setData(
+                    filterData.filter((ele) => ele.execution_status == 3)
+                  );
+                }}
+              >
+                Completed{" "}
+                {filterData.filter((ele) => ele.execution_status == 3).length}
+              </Button>
+              <Button
+                onClick={() => {
+                  setData(
+                    filterData.filter((ele) => ele.execution_status == 4)
+                  );
+                  console.log(
+                    filterData.filter((ele) => ele.execution_status == "4")
+                  );
+                }}
+              >
+                Rejected{" "}
+                {filterData.filter((ele) => ele.execution_status == 4).length}
+              </Button>
+              <Button
+                onClick={() => {
+                  setData(
+                    filterData.filter((ele) => ele.execution_status == 5|| ele.execution_status==6)
+                  );
+                  console.log(
+                    filterData.filter((ele) => ele.execution_status == "4")
+                  );
+                }}
+              >
+                Hold{" "}
+                {filterData.filter((ele) => ele.execution_status == 5 || ele.execution_status==6 ).length}
+              </Button>
+            </div>
+
             <DataGrid
               rows={addSerialNumber(data)}
               columns={columns}
@@ -648,6 +955,41 @@ function ExecutionPending() {
         openPaymentDetailDialog={openPaymentDetailDialog}
         paymentDialogDetails={paymentDialogDetails}
       />
+
+      <Dialog
+        fullWidth={"sm"}
+        maxWidth={"sm"}
+        open={holdDialog}
+        onClose={handleClose}
+      >
+        <DialogTitle>PLEASE ENTER THE REASON FOR HOLD</DialogTitle>
+        <DialogContent>
+          <Box
+            noValidate
+            component="form"
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              m: "auto",
+              width: "fit-content",
+            }}
+          >
+            <FormControl sx={{ mt: 2, minWidth: 120 }}>
+              <TextField
+                multiline
+                rows={2}
+                columns={5}
+                variant="outlined"
+                placeholder="Enter Reason"
+                onChange={(e) => setReason(e.target.value)}
+              />
+            </FormControl>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleHoldSubmit}>Submit</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
