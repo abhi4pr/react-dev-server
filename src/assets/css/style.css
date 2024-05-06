@@ -244,10 +244,7 @@ body {
     z-index: 1;
   }
 
-  .css-1u0lry5-MuiChartsLegend-root {
-    position: absolute;
-    transform: scale(0.3);
-  }
+
 }
 
 .fin-up-card {
@@ -286,7 +283,7 @@ body {
     justify-content: center;
     align-items: center;
     transform: translateY(calc(-100% + 50px));
-    animation: slideInFromTop 4s linear 1;
+    animation: slideInFromTop 2s linear 1;
   }
 }
 
@@ -3114,6 +3111,8 @@ textarea.form-control.is-invalid {
   align-items: center;
   gap: 0px 8px;
   width: max-content !important;
+  display: flex;
+  justify-content: center;
 
   svg {
     font-size: 20px;
@@ -13943,6 +13942,8 @@ body.sidebar-toggled .sidebar .nav-item .collapsing .collapse-inner {
   &:hover {
     box-shadow: var(--shadowOne);
     background-color: var(--body-sub-bg);
+    color: var(--medium) !important;
+
   }
 }
 

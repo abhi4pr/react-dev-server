@@ -27,24 +27,42 @@ const CampaignExecutions = () => {
   const [allCampData, setAllCampData] = useState([]);
   const [selectedCampaign, setSelectedCampaign] = useState("");
   const [shiftPages, setShiftPages] = useState("");
-  console.log(shiftPages,"  jjjjj");
   const [allPhaseData, setAllPhaseData] = useState([]);
   const [allExecutedData, setAllExecutedData] = useState([]);
   const [allPhaseCommitCount, setAllPhaseCommitCount] = useState([]);
   const [overviewCommitData, setOverviewCommitData] = useState([]);
   const [phases, setphases] = useState("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen2, setIsModalOpen2] = useState(false);
+  const [isModalOpen3, setIsModalOpen3] = useState(false);
   const [assId, setAssId] = useState("");
   const [phaseId, setPhaseId] = useState();
 
   const openModal = (phase_id) => {
     setIsModalOpen(true);
     setPhaseId(phase_id); 
+  };
 
+  const openModal2 = (phase_id) => {
+    setIsModalOpen2(true);
+    setPhaseId(phase_id); 
+  };
+
+  const openModal3 = (phase_id) => {
+    setIsModalOpen3(true);
+    setPhaseId(phase_id); 
   };
 
   const closeModal = () => {
     setIsModalOpen(false);
+  };
+
+  const closeModal2 = () => {
+    setIsModalOpen2(false);
+  };
+
+  const closeModal3 = () => {
+    setIsModalOpen3(false);
   };
 
   const getAllAssignments = async () => {
@@ -80,6 +98,7 @@ const CampaignExecutions = () => {
     getAllAssignments();
     getCampaign();
   }, []);
+
   useEffect(() => {
     getAllPhases();
     handleAllCampaign();
@@ -231,7 +250,7 @@ const CampaignExecutions = () => {
       headerName: "Replacement",
       width: 150,
       renderCell: (params, i) => (
-        <button className="btn btn-danger">Replace page</button>
+        <button className="btn btn-danger" onClick={() => openModal3(params.row.phase_id)}>Replace page</button>
       ),
     },
     {
@@ -358,7 +377,14 @@ const CampaignExecutions = () => {
       phaseId1: phaseId,
       phaseId2: shiftPages
     })
-    console.log("new ")
+  }
+
+  const handleAddPage = async () => {
+
+  }
+
+  const handleReplace = async () => {
+
   }
 
   return (
@@ -383,6 +409,7 @@ const CampaignExecutions = () => {
         <div className="card-body">
           {phases === "all" ? (
             <div>
+              {selectedCampaign == '' ? "" : <button style={{float:'right'}} onClick={() => openModal2()} className="btn btn-warning">Add Page</button>}
               <CampaignExecutionSummary
                 overviewCommitData={overviewCommitData}
               />
@@ -402,7 +429,7 @@ const CampaignExecutions = () => {
               className={`named-tab ${phases === "all" ? "active-tab" : ""} `}
               onClick={handleAllCampaign}
             >
-              Overview
+              All Pages
             </button>
             {allPhaseData.length > 0 &&
               allPhaseData.map((item, i) => (
@@ -445,6 +472,25 @@ const CampaignExecutions = () => {
           </Box>
         </Modal>
 
+        <Modal open={isModalOpen2} onClose={closeModal2}>
+          <Box sx={style}>
+            <div className="form-group w-75">
+              <label className="form-label">Add New Page</label>
+              
+            </div>
+            <Button onClick={handleAddPage}> Add</Button>
+          </Box>
+        </Modal>
+
+        <Modal open={isModalOpen3} onClose={closeModal3}>
+          <Box sx={style}>
+            <div className="form-group w-75">
+              <label className="form-label">Replace Page</label>
+              
+            </div>
+            <Button onClick={handleReplace}> Replace</Button>
+          </Box>
+        </Modal>
       </>
     </>
   );

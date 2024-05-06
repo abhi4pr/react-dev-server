@@ -51,7 +51,6 @@ import {
     }, [planData]);
   
     const handleSubmit = async () => {
-      console.log(selection);
       const pagesData = selectedPages.map((page, index) => ({
         page_name: page.page_name,
         postPerPage: postPages[index] || 0,
@@ -76,7 +75,6 @@ import {
           newPage_id: pagesData.map((page) => page.p_id),
         }
       );
-      console.log(result);
       handleClose();
     };
     const handlepagesChange = (index, value) => {

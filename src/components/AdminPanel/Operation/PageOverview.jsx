@@ -98,7 +98,6 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
     if (stage == "plan") {
       try {
         const response = await axios.put(`${baseUrl}` + `updateplan`, updatePayload)
-        console.log(response)
         toastAlert(response.data.message)
       }
       catch (error) {
@@ -110,8 +109,6 @@ const PageOverview = ({ selectData, setrender, stage, id, phase_id }) => {
 
 
   }
-
-  console.log(updatePayload)
   const columns = [
     {
       field: "S.NO",

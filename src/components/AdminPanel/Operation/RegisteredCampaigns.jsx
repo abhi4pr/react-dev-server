@@ -261,7 +261,7 @@ export default function RegisteredCampaigns() {
 
           // Handle the response as needed
           if (response.status === 200) {
-            console.log(`Successfully sent data for ${field.brief}`);
+            console.log(``);
           } else {
             console.error(`Error sending data for ${field.brief}`);
           }
