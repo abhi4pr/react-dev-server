@@ -1,56 +1,43 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const Overview = () => {
-  const location = useLocation();
-  const { selectedRange, pendingReqData } = location.state || {};
-  const [filteredData, setFilteredData] = useState([]);
+const Overview = (props) => {
+  const { data } = props;
+  console.log(data, "data >>>");
+  // const [filteredData, setFilteredData] = useState([]);
 
-  console.log(
-    selectedRange,
-    "selectedRange>>",
-    pendingReqData,
-    "pendingReqData>>>"
-  );
-
-  useEffect(() => {
-    if (selectedRange && pendingReqData) {
-      filterData();
-    }
-  }, [selectedRange, pendingReqData]);
-
-  const filterData = () => {
-    switch (selectedRange) {
-      case "0-10k":
-        setFilteredData(
-          pendingReqData?.filter((data) => data?.balance_amount <= 10000)
-        );
-        break;
-      case "10k-50k":
-        setFilteredData(
-          pendingReqData?.filter(
-            (data) =>
-              data?.balance_amount > 10000 && data?.balance_amount <= 50000
-          )
-        );
-        break;
-      case "50k-100k":
-        setFilteredData(
-          pendingReqData?.filter(
-            (data) =>
-              data?.balance_amount > 50000 && data?.balance_amount <= 100000
-          )
-        );
-        break;
-      case "100k-above":
-        setFilteredData(
-          pendingReqData?.filter((data) => data?.balance_amount > 100000)
-        );
-        break;
-      default:
-        setFilteredData(pendingReqData);
-    }
-  };
+  // const filterData = () => {
+  //   switch (selectedRange) {
+  //     case "0-10k":
+  //       setFilteredData(
+  //         pendingReqData?.filter((data) => data?.balance_amount <= 10000)
+  //       );
+  //       break;
+  //     case "10k-50k":
+  //       setFilteredData(
+  //         pendingReqData?.filter(
+  //           (data) =>
+  //             data?.balance_amount > 10000 && data?.balance_amount <= 50000
+  //         )
+  //       );
+  //       break;
+  //     case "50k-100k":
+  //       setFilteredData(
+  //         pendingReqData?.filter(
+  //           (data) =>
+  //             data?.balance_amount > 50000 && data?.balance_amount <= 100000
+  //         )
+  //       );
+  //       break;
+  //     case "100k-above":
+  //       setFilteredData(
+  //         pendingReqData?.filter((data) => data?.balance_amount > 100000)
+  //       );
+  //       break;
+  //     default:
+  //       setFilteredData(pendingReqData);
+  //   }
+  // };
 
   const calculateTotalAmount = (data) => {
     return data?.reduce(
@@ -75,15 +62,12 @@ const Overview = () => {
               <tr>
                 <td>0-10k</td>
                 <td>
-                  {
-                    filteredData?.filter((item) => item.balance_amount <= 10000)
-                      .length
-                  }
+                  {data?.filter((item) => item.balance_amount <= 10000).length}
                 </td>
                 <td>
                   {" "}
                   {calculateTotalAmount(
-                    filteredData?.filter((item) => item.balance_amount <= 10000)
+                    data?.filter((item) => item.balance_amount <= 10000)
                   )}
                 </td>
               </tr>
@@ -92,9 +76,9 @@ const Overview = () => {
                 <td>10k-50k</td>
                 <td>
                   {
-                    filteredData?.filter(
+                    data?.filter(
                       (item) =>
-                        item.balance_amount > 10000 &&
+                        item.balance_amount >= 10000 &&
                         item.balance_amount <= 50000
                     ).length
                   }
@@ -102,9 +86,9 @@ const Overview = () => {
                 <td>
                   {" "}
                   {calculateTotalAmount(
-                    filteredData?.filter(
+                    data?.filter(
                       (item) =>
-                        item.balance_amount > 10000 &&
+                        item.balance_amount >= 10000 &&
                         item.balance_amount <= 50000
                     )
                   )}
@@ -115,9 +99,9 @@ const Overview = () => {
                 <td>50k-100k</td>
                 <td>
                   {
-                    filteredData?.filter(
+                    data?.filter(
                       (item) =>
-                        item.balance_amount > 50000 &&
+                        item.balance_amount >= 50000 &&
                         item.balance_amount <= 100000
                     ).length
                   }
@@ -125,9 +109,9 @@ const Overview = () => {
                 <td>
                   {" "}
                   {calculateTotalAmount(
-                    filteredData?.filter(
+                    data?.filter(
                       (item) =>
-                        item.balance_amount > 50000 &&
+                        item.balance_amount >= 50000 &&
                         item.balance_amount <= 100000
                     )
                   )}
@@ -137,15 +121,12 @@ const Overview = () => {
               <tr>
                 <td>100k-above</td>
                 <td>
-                  {
-                    filteredData?.filter((item) => item.balance_amount > 100000)
-                      .length
-                  }
+                  {data?.filter((item) => item.balance_amount >= 100000).length}
                 </td>
                 <td>
                   {" "}
                   {calculateTotalAmount(
-                    filteredData?.filter((item) => item.balance_amount > 100000)
+                    data?.filter((item) => item.balance_amount >= 100000)
                   )}
                 </td>
               </tr>

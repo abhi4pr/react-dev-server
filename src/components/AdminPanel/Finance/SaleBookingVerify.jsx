@@ -721,23 +721,23 @@ const SaleBookingVerify = () => {
       cell: (row) => convertDateToDDMMYYYY(row.creation_date),
       width: "9%",
     },
-    {
-      name: "Action",
-      selector: (row) => (
-        <>
-          {row.tds_status == 2 ? (
-            <span>Verified</span>
-          ) : (
-            <button
-              className="btn cmnbtn btn_sm btn-outline-primary mr4"
-              onClick={() => handleImageClick(row)}
-            >
-              Verify
-            </button>
-          )}
-        </>
-      ),
-    },
+    // {
+    //   name: "Action",
+    //   selector: (row) => (
+    //     <>
+    //       {row.tds_status == 2 ? (
+    //         <span>Verified</span>
+    //       ) : (
+    //         <button
+    //           className="btn cmnbtn btn_sm btn-outline-primary mr4"
+    //           onClick={() => handleImageClick(row)}
+    //         >
+    //           Verify
+    //         </button>
+    //       )}
+    //     </>
+    //   ),
+    // },
   ];
 
   return (

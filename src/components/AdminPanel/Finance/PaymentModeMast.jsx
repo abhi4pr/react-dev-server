@@ -177,7 +177,7 @@ export default function PaymentModeMast() {
                   type="text"
                   variant="outlined"
                   label="Payment Mode Name"
-                  value={addPaymentMode}
+                  // value={addPaymentMode}
                   onChange={handlePaymentModeInputChange}
                 />
                 <button

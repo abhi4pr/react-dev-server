@@ -88,6 +88,16 @@ const BalanceTransactionList = () => {
       ),
     },
     {
+      field: "payment_date",
+      headerName: "Payment Date",
+      width: 190,
+      renderCell: (params) => (
+        <div style={{ whiteSpace: "normal" }}>
+          {convertDateToDDMMYYYY(params.row.payment_date)}
+        </div>
+      ),
+    },
+    {
       field: "campaign_amount",
       headerName: "Campaign Amount",
       width: 190,

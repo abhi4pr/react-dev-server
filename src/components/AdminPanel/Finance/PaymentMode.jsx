@@ -421,7 +421,7 @@ const PaymentMode = () => {
                           variant="outlined"
                           InputProps={{
                             ...params.InputProps,
-                            className: "form-control", // Apply Bootstrap's form-control class
+                            className: "form-control",
                           }}
                           style={{
                             borderRadius: "0.25rem",
@@ -537,10 +537,9 @@ const PaymentMode = () => {
                 <Link to="/admin/Incentive-Payment-Mode-Payment-Details">
                   <Button
                     variant="contained"
-                    // onClick={handleAddPaymentDetail}
                     className="btn cmnbtn btn-primary"
                   >
-                    Add Data
+                    Add Payment Details
                   </Button>
                 </Link>
               </div>

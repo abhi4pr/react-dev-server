@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FormContainer from "../FormContainer";
 import { Button } from "@mui/material";
 import { useGlobalContext } from "../../../Context/Context";
 import axios from "axios";
 import { baseUrl } from "../../../utils/config";
+import { useNavigate } from "react-router-dom";
 
 const PaymentModePaymentDetails = () => {
   const [title, setTitle] = useState("");
@@ -11,8 +12,11 @@ const PaymentModePaymentDetails = () => {
   const [details, setDetails] = useState("");
   const [gstBanks, setGSTBanks] = useState(0);
   const { toastAlert, toastError } = useGlobalContext();
+  const navigate = useNavigate();
 
-  const handleAddPaymentDetails = async () => {
+  const handleAddPaymentDetails = async (e) => {
+    e.preventDefault();
+
     const paymentDetails = {
       title: title,
       payment_type: type,
@@ -25,9 +29,13 @@ const PaymentModePaymentDetails = () => {
       .then((res) => {
         console.log(res, "response>>>");
         toastAlert("Data Created Successfully");
+        navigate(-1);
       });
   };
-
+  const handleCancel = (e) => {
+    e.preventDefault();
+    navigate(-1);
+  };
   return (
     <div>
       <FormContainer
@@ -66,7 +74,6 @@ const PaymentModePaymentDetails = () => {
           <div className="form-group">
             <label>Details</label>
             <input
-              // value={requestedAmountField}
               type="text"
               placeholder="Request Amount"
               className="form-control"
@@ -78,7 +85,6 @@ const PaymentModePaymentDetails = () => {
           <div className="form-group">
             <label>GST Banks</label>
             <select
-              // value={priorityFilter}
               className="form-control"
               type="number"
               onChange={(e) => setGSTBanks(e.target.value)}
@@ -93,11 +99,15 @@ const PaymentModePaymentDetails = () => {
               <Button
                 variant="contained"
                 className="btn cmnbtn btn-primary"
-                onClick={handleAddPaymentDetails}
+                onClick={(e) => handleAddPaymentDetails(e)}
               >
                 Save
               </Button>
-              <Button variant="contained" className="btn cmnbtn btn-secondary">
+              <Button
+                variant="contained"
+                className="btn cmnbtn btn-secondary"
+                onClick={(e) => handleCancel(e)}
+              >
                 Cancel
               </Button>
             </div>

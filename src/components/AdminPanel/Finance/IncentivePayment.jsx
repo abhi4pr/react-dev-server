@@ -877,7 +877,7 @@ const IncentivePayment = () => {
         }
         handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
         uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
-        requestedAmountTotal={requestedAmountTotal}
+        requestedAmountTotal={requestedAmountTotal.toFixed(2)}
         incentivePaymentAdditionalTitles={true}
       />
       {/* Same Sales Executive Dialog Box */}

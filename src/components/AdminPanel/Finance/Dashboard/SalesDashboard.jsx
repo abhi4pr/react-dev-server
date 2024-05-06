@@ -517,7 +517,8 @@ export default function SalesDashboard() {
                               <span>&#8377; </span>
                               {incentiveData
                                 .map((item) => +item.request_amount)
-                                .reduce((prev, next) => prev + next, 0)}
+                                .reduce((prev, next) => prev + next, 0)
+                                .toFixed(2)}
                             </span>
                           </li>
                           <li>

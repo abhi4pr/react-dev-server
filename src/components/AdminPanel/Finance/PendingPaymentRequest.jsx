@@ -34,6 +34,7 @@ import moment from "moment";
 import jsPDF from "jspdf";
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
+import Overview from "./Overview";
 
 export default function PendingPaymentRequest() {
   const whatsappApi = WhatsappAPI();
@@ -101,6 +102,7 @@ export default function PendingPaymentRequest() {
   const [adjustAmount, setAdjustAmount] = useState("");
   const [preview, setPreview] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
+  const [overviewDialog, setOverviewDialog] = useState(false);
 
   const accordionButtons = ["All", "Partial", "Instant"];
 
@@ -409,7 +411,7 @@ export default function PendingPaymentRequest() {
               },
             }
           )
-          .then(() => {
+          .then((res) => {
             toastAlert("Payment Done Successfully");
 
             whatsappApi.callWhatsAPI(
@@ -591,7 +593,15 @@ export default function PendingPaymentRequest() {
   const handleCloseUniqueVendor = () => {
     setUniqueVenderDialog(false);
   };
+  // overview functions :----
+  const handleOpenOverview = () => {
+    setOverviewDialog(true);
+  };
 
+  const handleCloseOverview = () => {
+    setOverviewDialog(false);
+  };
+  // --------------------------------------------
   const handleOpenSameVender = (vendorName) => {
     setSameVendorDialog(true);
 
@@ -1362,16 +1372,6 @@ export default function PendingPaymentRequest() {
         );
       },
     },
-    // {
-    //   field: "Aging (in hours)",
-    //   headerName: "Aging (in hours)",
-    //   width: 150,
-    //   renderCell: (params) => {
-    //     const hours = calculateHours(params.row.request_date, new Date());
-
-    //     return <p> {Math.round(hours)} Hours</p>;
-    //   },
-    // },
     {
       field: "Status",
       headerName: "Status",
@@ -1613,7 +1613,12 @@ export default function PendingPaymentRequest() {
   const openImgDialog = () => {
     setOpenDialog(true);
   };
-
+  console.log(
+    paymentAmout,
+    "payment amount ",
+    adjustAmount,
+    "adjustment amout??"
+  );
   return (
     <div>
       <FormContainer
@@ -1908,6 +1913,38 @@ export default function PendingPaymentRequest() {
         </DialogContent>
       </Dialog>
 
+      {/* Overview Dialog Box */}
+      <Dialog
+        open={overviewDialog}
+        onClose={handleCloseOverview}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Overview</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseOverview}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <Overview data={filterData} />
+        </DialogContent>
+      </Dialog>
       <div className="row">
         <div className="col-12">
           <div className="card">
@@ -2055,19 +2092,40 @@ export default function PendingPaymentRequest() {
                 >
                   Clear
                 </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleOpenOverview}
+                  className="btn cmnbtn btn-primary"
+                >
+                  Overview
+                </Button>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="row">
-        <div className="col-12">
-          <div className="card">
-            <div className="card-body thm_table">
+      <>
+        <div className="tab">
+          {accordionButtons.map((button, index) => (
+            <div
+              className={`named-tab ${
+                activeAccordionIndex === index ? "active-tab" : ""
+              }`}
+              onClick={() => handleAccordionButtonClick(index)}
+            >
+              {button}
+            </div>
+          ))}
+        </div>
+
+        <div className="card">
+          <div className="card-header sb">
+            <div className="caard-title">Pending Payment Oveview</div>
+            <div className="pack w-75">
               {rowSelectionModel.length > 0 && (
                 <Button
-                  className="btn btn-primary ml-3 mb-2"
+                  className="btn btn-primary cmnbtn btn_sm"
                   variant="contained"
                   color="primary"
                   size="small"
@@ -2076,590 +2134,601 @@ export default function PendingPaymentRequest() {
                   Download PDF Zip
                 </Button>
               )}
-              <FormContainer
-                submitButton={false}
-                accordionButtons={accordionButtons}
-                activeAccordionIndex={activeAccordionIndex}
-                onAccordionButtonClick={handleAccordionButtonClick}
-                mainTitleRequired={false}
-              >
-                <div style={{ height: "400px" }}>
-                  {activeAccordionIndex === 0 && (
-                    <DataGrid
-                      rows={filterData}
-                      columns={columns}
-                      pageSize={5}
-                      rowsPerPageOptions={[5]}
-                      getRowClassName={getValidationCSSForRemainder}
-                      slots={{ toolbar: GridToolbar }}
-                      disableSelectionOnClick
-                      // disableColumnMenu
-                      checkboxSelection
-                      getRowId={(row) => filterData.indexOf(row)}
-                      slotProps={{
-                        toolbar: {
-                          showQuickFilter: true,
-                        },
-                      }}
-                      onRowSelectionModelChange={(rowIds) => {
-                        handleRowSelectionModelChange(rowIds);
-                        console.log(rowIds, "IDS");
-                      }}
-                      rowSelectionModel={rowSelectionModel}
-                    />
-                  )}
-                  {openImageDialog && (
-                    <ImageView
-                      viewImgSrc={viewImgSrc}
-                      fullWidth={true}
-                      maxWidth={"md"}
-                      setViewImgDialog={setOpenImageDialog}
-                      openImageDialog={openImageDialog}
-                    />
-                  )}
-
-                  {activeAccordionIndex === 1 && (
-                    <DataGrid
-                      rows={filterData.filter((d) => d.status === "3")}
-                      columns={columns}
-                      pageSize={5}
-                      rowsPerPageOptions={[5]}
-                      getRowClassName={getValidationCSSForRemainder}
-                      slots={{ toolbar: GridToolbar }}
-                      checkboxSelection
-                      disableSelectionOnClick
-                      disableColumnMenu
-                      getRowId={(row) => filterData.indexOf(row)}
-                      slotProps={{
-                        toolbar: {
-                          showQuickFilter: true,
-                        },
-                      }}
-                      onRowSelectionModelChange={(rowIds) => {
-                        handleRowSelectionModelChange(rowIds);
-                        console.log(rowIds, "IDS");
-                      }}
-                      rowSelectionModel={rowSelectionModel}
-                    />
-                  )}
-                  {openImageDialog && (
-                    <ImageView
-                      viewImgSrc={viewImgSrc}
-                      fullWidth={true}
-                      maxWidth={"md"}
-                      setViewImgDialog={setOpenImageDialog}
-                    />
-                  )}
-                  {activeAccordionIndex === 2 && (
-                    <DataGrid
-                      rows={filterData.filter((d) => d.status === "0")}
-                      columns={columns}
-                      pageSize={5}
-                      rowsPerPageOptions={[5]}
-                      getRowClassName={getValidationCSSForRemainder}
-                      slots={{ toolbar: GridToolbar }}
-                      checkboxSelection
-                      disableSelectionOnClick
-                      disableColumnMenu
-                      getRowId={(row) => filterData.indexOf(row)}
-                      slotProps={{
-                        toolbar: {
-                          showQuickFilter: true,
-                        },
-                      }}
-                      onRowSelectionModelChange={(rowIds) => {
-                        handleRowSelectionModelChange(rowIds);
-                        console.log(rowIds, "IDS");
-                      }}
-                      rowSelectionModel={rowSelectionModel}
-                    />
-                  )}
-                  {openImageDialog && (
-                    <ImageView
-                      viewImgSrc={viewImgSrc}
-                      fullWidth={true}
-                      maxWidth={"md"}
-                      setViewImgDialog={setOpenImageDialog}
-                    />
-                  )}
-                </div>
-              </FormContainer>
-              {/*Dialog Box */}
-              <Dialog open={payDialog} onClose={handleClosePayDialog}>
-                <DialogTitle>Vendor Payment</DialogTitle>
-                <IconButton
-                  aria-label="close"
-                  onClick={handleClosePayDialog}
-                  sx={{
-                    position: "absolute",
-                    right: 8,
-                    top: 8,
-                    color: (theme) => theme.palette.grey[500],
-                  }}
-                >
-                  <CloseIcon />
-                </IconButton>
-                <DialogContent>
-                  <div className="row">
-                    <TextField
-                      className="col-md-6 me-3"
-                      value={rowData.vendor_name}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      readOnly={true}
-                      label="Vendor Name"
-                      type="text"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                      variant="outlined"
-                    />
-                    <TextField
-                      className="col-md-5 ml-2"
-                      value={rowData.address}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      // disabled
-                      readOnly
-                      label="Address"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                  </div>
-                  <div className="row">
-                    <TextField
-                      className="col-md-6 me-3"
-                      value={rowData.mob1}
-                      autoFocus
-                      margin="dense"
-                      // disabledreadOnly
-                      readOnly
-                      label="Mobile"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                    <TextField
-                      className="col-md-5 ml-2"
-                      value={rowData.pan}
-                      autoFocus
-                      margin="dense"
-                      // disabled
-                      readOnly
-                      label="Pan"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                  </div>
-                  <div className="row">
-                    <TextField
-                      className="col-md-6 me-3"
-                      value={rowData.gst}
-                      autoFocus
-                      margin="dense"
-                      // disabled
-                      readOnly
-                      label="GST"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                    <TextField
-                      className="col-md-5 ml-2"
-                      value={`₹${rowData.outstandings}`}
-                      autoFocus
-                      margin="dense"
-                      // disabled
-                      readOnly
-                      label="Outstanding"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                  </div>
-                  <div className="row">
-                    <TextField
-                      className="col-md-3 me-3"
-                      value={`₹${rowData.request_amount}`}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      // disabled
-                      readOnly
-                      label="Amount Requested"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                    <TextField
-                      className="col-md-3 me-3"
-                      value={`₹${rowData.balance_amount}`}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      // disabled
-                      readOnly
-                      label="Balance Amount"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                    <TextField
-                      className="col-md-4 me-3"
-                      value={`₹${baseAmount}`}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      // disabled
-                      readOnly
-                      label="Base Amount"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                    <TextField
-                      className="col-md-4 "
-                      value={`₹${rowData.gst_amount ? rowData.gst_amount : 0}`}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      // disabled
-                      readOnly
-                      label="GST Amount"
-                      type="text"
-                      variant="outlined"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                    />
-                    <FormControlLabel
-                      className="col-md-5"
-                      control={
-                        <Checkbox
-                          onChange={handleGstHold}
-                          disabled={rowData.gst_amount == 0}
-                        />
-                      }
-                      label="GST Hold"
-                    />
-                    <FormControlLabel
-                      className="col-md-5"
-                      control={<Checkbox onChange={handleTDSDeduction} />}
-                      label="TDS Deduction"
-                    />
-                    {gstHold && (
-                      <TextField
-                        className="col-md-5 me-3"
-                        value={GSTHoldAmount}
-                        onChange={handleGSTHoldInputChange}
-                        autoFocus
-                        margin="dense"
-                        id="name"
-                        label="GST Hold"
-                      />
-                    )}
-                    {TDSDeduction && (
-                      <>
-                        <Autocomplete
-                          onChange={(e, value) => setTDSPercentage(value)}
-                          disablePortal
-                          className="col-md-3 mt-2"
-                          value={TDSPercentage}
-                          id="combo-box-demo"
-                          options={[
-                            1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-                            17, 18, 19, 20,
-                          ]}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label="TDS %"
-                              placeholder="TDS %"
-                            />
-                          )}
-                        />
-                        <TextField
-                          className="col-md-3 mt-2"
-                          value={TDSValue}
-                          autoFocus
-                          readOnly
-                          margin="dense"
-                          id="name"
-                          label="TDS Amount"
-                        />
-                      </>
-                    )}
-
-                    <TextField
-                      className="col-md-6 me-3"
-                      value={rowData.name}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      // disabled
-                      readOnly
-                      label="Requested By"
-                      type="text"
-                      variant="outlined"
-                    />
-                    <TextField
-                      className="col-md-5 ml-2"
-                      value={convertDateToDDMMYYYY(rowData.request_date)}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      // disabled
-                      readOnly
-                      label="Request Date"
-                      type="text"
-                      variant="outlined"
-                    />
-                  </div>
-                  <div className="row">
-                    <TextField
-                      className="col-md-11 ml-3"
-                      value={rowData.t3}
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      disabled
-                      label="Remark"
-                      type="text"
-                      variant="outlined"
-                    />
-                  </div>
-                  <div className="me-3">
-                    <Autocomplete
-                      onChange={(e, value) => setPaymentMode(value)}
-                      disablePortal
-                      className=" mt-2"
-                      id="combo-box-demo"
-                      options={
-                        paymentModeData.length > 0
-                          ? paymentModeData.map((item) => item.payment_mode)
-                          : []
-                      }
-                      fullWidth={true}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Payment Mode *"
-                          placeholder="Payment Mode"
-                        />
-                      )}
-                    />
-
-                    <Autocomplete
-                      onChange={(e, value) => setPaymentStatus(value)}
-                      value={paymentStatus}
-                      disablePortal
-                      disabled
-                      className=" mt-2"
-                      id="combo-box-demo"
-                      options={[
-                        "Fully Paid",
-                        "Fully Paid(TDS Deducted)",
-                        "Fully Paid(GST Hold)",
-                        "Fully Paid(TDS Deducted & GST Hold)",
-                        "Partially Paid",
-                      ]}
-                      fullWidth={true}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Payment Status *"
-                          placeholder="Payment Status"
-                        />
-                      )}
-                    />
-                    <TextField
-                      InputProps={{
-                        readOnly: gstHold,
-                      }}
-                      onChange={(e) => {
-                        rowData.balance_amount;
-
-                        const currentValue = e.target.value;
-                        if (/^\d+$/.test(currentValue) || currentValue === "") {
-                          // setPaymentAmount(currentValue);
-                          if (currentValue <= +rowData.balance_amount) {
-                            setPaymentAmount(currentValue);
-                            setPaymentStatus;
-                          } else {
-                            toastError(
-                              "Payment Amount should be less than or equal to Requested Amount"
-                            );
-                          }
-                        } else {
-                          setPaymentAmount("");
-                        }
-                      }}
-                      className="mt-3"
-                      autoFocus
-                      type="number"
-                      margin="dense"
-                      id="name"
-                      label="Amount *"
-                      variant="outlined"
-                      fullWidth
-                      value={paymentAmout}
-                    />
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DatePicker
-                        format="DD/MM/YYYY"
-                        className="mt-3"
-                        defaultValue={dayjs()}
-                        autoFocus
-                        label="Payment Date "
-                        onChange={(newValue) => {
-                          setPaymentDate(
-                            newValue
-                              .add(5, "hours")
-                              .add(30, "minutes")
-                              .$d.toGMTString()
-                          );
-                        }}
-                        disableFuture
-                        views={["year", "month", "day"]}
-                      />
-                    </LocalizationProvider>
-                    <TextField
-                      onChange={(e) => setAdjustAmount(e.target.value)}
-                      multiline
-                      className="mt-3"
-                      autoFocus
-                      margin="dense"
-                      id="Adjust Amount"
-                      label="Adjust Amount"
-                      type="text"
-                      variant="outlined"
-                      fullWidth
-                      value={adjustAmount}
-                    />
-
-                    <TextField
-                      onChange={(e) => setPayRemark(e.target.value)}
-                      multiline
-                      className="mt-3"
-                      autoFocus
-                      margin="dense"
-                      id="name"
-                      label="Remark"
-                      type="text"
-                      variant="outlined"
-                      fullWidth
-                      value={payRemark}
-                    />
-                    <div className="form-group mt-3">
-                      <div className="row">
-                        <label htmlFor="paymentProof">
-                          Payment Proof/ScreenShot
-                        </label>
-
-                        <input
-                          type="file"
-                          className="form-control col-md-6"
-                          id="paymentProof"
-                          onChange={handleFileChange}
-                          // onClick={openImgDialog}
-                        />
-                        <Button
-                          variant="contained"
-                          className="col-md-5 ms-3"
-                          fullWidth
-                          onClick={openImgDialog}
-                        >
-                          view image
-                        </Button>
-                        {openDialog && preview && (
-                          <div
-                            style={{
-                              position: "fixed",
-                              top: 0,
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              background: "rgba(0,0,0,0.5)",
-                              display: "flex",
-                              justifyContent: "center",
-                              alignItems: "center",
-                              zIndex: 9999,
-                            }}
-                            onClick={() => setOpenDialog(false)}
-                          >
-                            <img
-                              src={preview}
-                              alt="Selected file"
-                              style={{
-                                maxWidth: "50%",
-                                maxHeight: "80%",
-                                cursor: "pointer",
-                              }}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    variant="contained"
-                    className="mx-2"
-                    fullWidth
-                    onClick={handlePayVendorClick}
-                    disabled={!paymentMode || !paymentAmout}
-                  >
-                    Pay Vendor
-                  </Button>
-                </DialogActions>
-              </Dialog>
-              {showDisCardModal && (
-                <DiscardConfirmation
-                  userName={userName}
-                  rowData={rowData}
-                  setShowDiscardModal={setShowDiscardModal}
-                  userID={userID}
-                  callApi={callApi}
-                />
-              )}
-
-              {remainderDialog && (
-                <ShowDataModal
-                  handleClose={setRemainderDialog}
-                  rows={reminderData}
-                  columns={remainderDialogColumns}
-                  aknowledgementDialog={aknowledgementDialog}
-                  setAknowledgementDialog={setAknowledgementDialog}
-                  userName={userName}
-                  callApi={callApi}
-                  setRemainderDialo={setRemainderDialog}
-                />
-              )}
             </div>
           </div>
+          <div className="card-body thm_table fx-head">
+            {activeAccordionIndex === 0 && (
+              <DataGrid
+                rows={filterData}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                getRowClassName={getValidationCSSForRemainder}
+                slots={{ toolbar: GridToolbar }}
+                disableSelectionOnClick
+                checkboxSelection
+                getRowId={(row) => filterData.indexOf(row)}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                onRowSelectionModelChange={(rowIds) => {
+                  handleRowSelectionModelChange(rowIds);
+                  console.log(rowIds, "IDS");
+                }}
+                rowSelectionModel={rowSelectionModel}
+              />
+            )}
+            {openImageDialog && (
+              <ImageView
+                viewImgSrc={viewImgSrc}
+                fullWidth={true}
+                maxWidth={"md"}
+                setViewImgDialog={setOpenImageDialog}
+                openImageDialog={openImageDialog}
+              />
+            )}
+
+            {activeAccordionIndex === 1 && (
+              <DataGrid
+                rows={filterData.filter((d) => d.status === "3")}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                getRowClassName={getValidationCSSForRemainder}
+                slots={{ toolbar: GridToolbar }}
+                checkboxSelection
+                disableSelectionOnClick
+                disableColumnMenu
+                getRowId={(row) => filterData.indexOf(row)}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                onRowSelectionModelChange={(rowIds) => {
+                  handleRowSelectionModelChange(rowIds);
+                  console.log(rowIds, "IDS");
+                }}
+                rowSelectionModel={rowSelectionModel}
+              />
+            )}
+            {openImageDialog && (
+              <ImageView
+                viewImgSrc={viewImgSrc}
+                fullWidth={true}
+                maxWidth={"md"}
+                setViewImgDialog={setOpenImageDialog}
+              />
+            )}
+            {activeAccordionIndex === 2 && (
+              <DataGrid
+                rows={filterData.filter((d) => d.status === "0")}
+                columns={columns}
+                pageSize={5}
+                rowsPerPageOptions={[5]}
+                getRowClassName={getValidationCSSForRemainder}
+                slots={{ toolbar: GridToolbar }}
+                checkboxSelection
+                disableSelectionOnClick
+                disableColumnMenu
+                getRowId={(row) => filterData.indexOf(row)}
+                slotProps={{
+                  toolbar: {
+                    showQuickFilter: true,
+                  },
+                }}
+                onRowSelectionModelChange={(rowIds) => {
+                  handleRowSelectionModelChange(rowIds);
+                  console.log(rowIds, "IDS");
+                }}
+                rowSelectionModel={rowSelectionModel}
+              />
+            )}
+            {openImageDialog && (
+              <ImageView
+                viewImgSrc={viewImgSrc}
+                fullWidth={true}
+                maxWidth={"md"}
+                setViewImgDialog={setOpenImageDialog}
+              />
+            )}
+          </div>
         </div>
-      </div>
+
+        {/*Dialog Box */}
+        <Dialog open={payDialog} onClose={handleClosePayDialog}>
+          <DialogTitle>Vendor Payment</DialogTitle>
+          <IconButton
+            aria-label="close"
+            onClick={handleClosePayDialog}
+            sx={{
+              position: "absolute",
+              right: 8,
+              top: 8,
+              color: (theme) => theme.palette.grey[500],
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <DialogContent>
+            <div className="row">
+              <TextField
+                className="col-md-6 me-3"
+                value={rowData.vendor_name}
+                autoFocus
+                margin="dense"
+                id="name"
+                readOnly={true}
+                label="Vendor Name"
+                type="text"
+                InputProps={{
+                  readOnly: true,
+                }}
+                variant="outlined"
+              />
+              <TextField
+                className="col-md-5 ml-2"
+                value={rowData.address}
+                autoFocus
+                margin="dense"
+                id="name"
+                // disabled
+                readOnly
+                label="Address"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+            <div className="row">
+              <TextField
+                className="col-md-6 me-3"
+                value={rowData.mob1}
+                autoFocus
+                margin="dense"
+                // disabledreadOnly
+                readOnly
+                label="Mobile"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                className="col-md-5 ml-2"
+                value={rowData.pan}
+                autoFocus
+                margin="dense"
+                // disabled
+                readOnly
+                label="Pan"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+            <div className="row">
+              <TextField
+                className="col-md-6 me-3"
+                value={rowData.gst}
+                autoFocus
+                margin="dense"
+                // disabled
+                readOnly
+                label="GST"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                className="col-md-5 ml-2"
+                value={`₹${rowData.outstandings}`}
+                autoFocus
+                margin="dense"
+                // disabled
+                readOnly
+                label="Outstanding"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+            <div className="row">
+              <TextField
+                className="col-md-3 me-3"
+                value={`₹${rowData.request_amount}`}
+                autoFocus
+                margin="dense"
+                id="name"
+                // disabled
+                readOnly
+                label="Amount Requested"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                className="col-md-3 me-3"
+                value={`₹${rowData.balance_amount}`}
+                autoFocus
+                margin="dense"
+                id="name"
+                // disabled
+                readOnly
+                label="Balance Amount"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                className="col-md-4 me-3"
+                value={`₹${baseAmount}`}
+                autoFocus
+                margin="dense"
+                id="name"
+                // disabled
+                readOnly
+                label="Base Amount"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <TextField
+                className="col-md-4 "
+                value={`₹${rowData.gst_amount ? rowData.gst_amount : 0}`}
+                autoFocus
+                margin="dense"
+                id="name"
+                // disabled
+                readOnly
+                label="GST Amount"
+                type="text"
+                variant="outlined"
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+              <FormControlLabel
+                className="col-md-5"
+                control={
+                  <Checkbox
+                    onChange={handleGstHold}
+                    disabled={rowData.gst_amount == 0}
+                  />
+                }
+                label="GST Hold"
+              />
+              <FormControlLabel
+                className="col-md-5"
+                control={<Checkbox onChange={handleTDSDeduction} />}
+                label="TDS Deduction"
+              />
+              {gstHold && (
+                <TextField
+                  className="col-md-5 me-3"
+                  value={GSTHoldAmount}
+                  onChange={handleGSTHoldInputChange}
+                  autoFocus
+                  margin="dense"
+                  id="name"
+                  label="GST Hold"
+                />
+              )}
+              {TDSDeduction && (
+                <>
+                  <Autocomplete
+                    onChange={(e, value) => setTDSPercentage(value)}
+                    disablePortal
+                    className="col-md-3 mt-2"
+                    value={TDSPercentage}
+                    id="combo-box-demo"
+                    options={[
+                      1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                      18, 19, 20,
+                    ]}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="TDS %"
+                        placeholder="TDS %"
+                      />
+                    )}
+                  />
+                  <TextField
+                    className="col-md-3 mt-2"
+                    value={TDSValue}
+                    autoFocus
+                    readOnly
+                    margin="dense"
+                    id="name"
+                    label="TDS Amount"
+                  />
+                </>
+              )}
+
+              <TextField
+                className="col-md-6 me-3"
+                value={rowData.name}
+                autoFocus
+                margin="dense"
+                id="name"
+                // disabled
+                readOnly
+                label="Requested By"
+                type="text"
+                variant="outlined"
+              />
+
+              <TextField
+                className="col-md-5 ml-2"
+                value={convertDateToDDMMYYYY(rowData.request_date)}
+                autoFocus
+                margin="dense"
+                id="name"
+                // disabled
+                readOnly
+                label="Request Date"
+                type="text"
+                variant="outlined"
+              />
+            </div>
+            <div className="row">
+              <TextField
+                className="col-md-11 ml-3"
+                value={rowData.t3}
+                autoFocus
+                margin="dense"
+                id="name"
+                disabled
+                label="Remark"
+                type="text"
+                variant="outlined"
+              />
+            </div>
+            <div className="me-3">
+              <Autocomplete
+                onChange={(e, value) => setPaymentMode(value)}
+                disablePortal
+                className=" mt-2"
+                id="combo-box-demo"
+                options={
+                  paymentModeData.length > 0
+                    ? paymentModeData.map((item) => item.payment_mode)
+                    : []
+                }
+                fullWidth={true}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Payment Mode *"
+                    placeholder="Payment Mode"
+                  />
+                )}
+              />
+
+              <Autocomplete
+                onChange={(e, value) => setPaymentStatus(value)}
+                value={paymentStatus}
+                disablePortal
+                disabled
+                className=" mt-2"
+                id="combo-box-demo"
+                options={[
+                  "Fully Paid",
+                  "Fully Paid(TDS Deducted)",
+                  "Fully Paid(GST Hold)",
+                  "Fully Paid(TDS Deducted & GST Hold)",
+                  "Partially Paid",
+                ]}
+                fullWidth={true}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Payment Status *"
+                    placeholder="Payment Status"
+                  />
+                )}
+              />
+              <TextField
+                InputProps={{
+                  readOnly: gstHold,
+                }}
+                onChange={(e) => {
+                  rowData.balance_amount;
+
+                  const currentValue = e.target.value;
+                  if (/^\d+$/.test(currentValue) || currentValue === "") {
+                    // setPaymentAmount(currentValue);
+                    if (currentValue <= +rowData.balance_amount) {
+                      setPaymentAmount(currentValue);
+                      setPaymentStatus;
+                    } else {
+                      toastError(
+                        "Payment Amount should be less than or equal to Requested Amount"
+                      );
+                    }
+                  } else {
+                    setPaymentAmount("");
+                  }
+                }}
+                className="mt-3"
+                autoFocus
+                type="number"
+                margin="dense"
+                id="name"
+                label="Amount *"
+                variant="outlined"
+                fullWidth
+                value={paymentAmout}
+              />
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  format="DD/MM/YYYY"
+                  className="mt-3"
+                  defaultValue={dayjs()}
+                  autoFocus
+                  label="Payment Date "
+                  onChange={(newValue) => {
+                    setPaymentDate(
+                      newValue
+                        .add(5, "hours")
+                        .add(30, "minutes")
+                        .$d.toGMTString()
+                    );
+                  }}
+                  disableFuture
+                  views={["year", "month", "day"]}
+                />
+              </LocalizationProvider>
+              <TextField
+                onChange={(e) => setAdjustAmount(e.target.value)}
+                multiline
+                className="mt-3"
+                autoFocus
+                margin="dense"
+                id="Adjust Amount"
+                label="Adjust Amount"
+                type="text"
+                variant="outlined"
+                fullWidth
+                value={adjustAmount}
+              />
+              {adjustAmount ? (
+                <TextField
+                  // onChange={(e) => setAdjustAmount(e.target.value)}
+                  multiline
+                  readOnly
+                  className="mt-3"
+                  autoFocus
+                  margin="dense"
+                  id="After Adjust Amount"
+                  label="AfterAdjust Amount"
+                  // type="text"
+                  variant="outlined"
+                  fullWidth
+                  value={(
+                    parseFloat(paymentAmout) + parseFloat(adjustAmount)
+                  ).toFixed(2)}
+                />
+              ) : (
+                ""
+              )}
+
+              <TextField
+                onChange={(e) => setPayRemark(e.target.value)}
+                multiline
+                className="mt-3"
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Remark"
+                type="text"
+                variant="outlined"
+                fullWidth
+                value={payRemark}
+              />
+              <div className="form-group mt-3">
+                <div className="row">
+                  <label htmlFor="paymentProof">Payment Proof/ScreenShot</label>
+
+                  <input
+                    type="file"
+                    className="form-control col-md-6"
+                    id="paymentProof"
+                    onChange={handleFileChange}
+                    // onClick={openImgDialog}
+                  />
+                  <Button
+                    variant="contained"
+                    className="col-md-5 ms-3"
+                    fullWidth
+                    onClick={openImgDialog}
+                  >
+                    view image
+                  </Button>
+                  {openDialog && preview && (
+                    <div
+                      style={{
+                        position: "fixed",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: "rgba(0,0,0,0.5)",
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        zIndex: 9999,
+                      }}
+                      onClick={() => setOpenDialog(false)}
+                    >
+                      <img
+                        src={preview}
+                        alt="Selected file"
+                        style={{
+                          maxWidth: "50%",
+                          maxHeight: "80%",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              variant="contained"
+              className="mx-2"
+              fullWidth
+              onClick={handlePayVendorClick}
+              disabled={!paymentMode || !paymentAmout}
+            >
+              Pay Vendor
+            </Button>
+          </DialogActions>
+        </Dialog>
+        {showDisCardModal && (
+          <DiscardConfirmation
+            userName={userName}
+            rowData={rowData}
+            setShowDiscardModal={setShowDiscardModal}
+            userID={userID}
+            callApi={callApi}
+          />
+        )}
+
+        {remainderDialog && (
+          <ShowDataModal
+            handleClose={setRemainderDialog}
+            rows={reminderData}
+            columns={remainderDialogColumns}
+            aknowledgementDialog={aknowledgementDialog}
+            setAknowledgementDialog={setAknowledgementDialog}
+            userName={userName}
+            callApi={callApi}
+            setRemainderDialo={setRemainderDialog}
+          />
+        )}
+      </>
     </div>
   );
 }

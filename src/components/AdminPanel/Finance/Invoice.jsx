@@ -92,6 +92,9 @@ const Invoice = () => {
   const [dateFilter, setDateFilter] = useState("");
   const [dateFilterInvoice, setDateFilterInvoice] = useState("");
   const [invoiceMngDate, setInvoiceMngDate] = useState("");
+  const [reason, setReason] = useState("");
+  const [discardSaleBookingId, setDiscardSaleBookingId] = useState("");
+  const [discardDialog, setDiscardDialog] = useState(false);
 
   const accordionButtons = ["Pending Invoice", "Invoice Created"];
 
@@ -99,10 +102,12 @@ const Invoice = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
 
-  const handleReject = async (row) => {
+  const handleReject = async (e) => {
+    e.preventDefault();
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
-    formData.append("sale_booking_id", row.sale_booking_id);
+    formData.append("sale_booking_id", discardSaleBookingId);
+    formData.append("invoice_action_reason", reason);
 
     const confirmation = confirm("Are you sure you want to reject this data?");
     if (confirmation) {
@@ -125,6 +130,7 @@ const Invoice = () => {
             })
             .then(() => {
               toastAlert("Data Rejected Successfully");
+              handleDiscardCloseDialog();
               getData();
               setDate(dayjs());
               setInoiceNum("");
@@ -490,6 +496,17 @@ const Invoice = () => {
     setUniqueSalesExecutiveInvoiceData(uniqueSEInData);
   };
   // ============================================
+  // For discard-----
+  const handleDiscardOpenDialog = (e, rowData) => {
+    e.preventDefault();
+    setDiscardSaleBookingId(rowData.sale_booking_id);
+    setDiscardDialog(true);
+  };
+  const handleDiscardCloseDialog = (e) => {
+    // e.preventDefault();
+    setDiscardDialog(false);
+  };
+  // ------------------------
   // For Customers
   const handleOpenUniqueCustomerClick = () => {
     setUniqueCustomerDialog(true);
@@ -1221,7 +1238,7 @@ const Invoice = () => {
           <button
             type="button"
             className="btn btn-success ms-3"
-            onClick={() => handleReject(params.row)}
+            onClick={(e) => handleDiscardOpenDialog(e, params.row)}
           >
             Reject
           </button>
@@ -1818,6 +1835,51 @@ const Invoice = () => {
             >
               Update
             </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+      {/* Dialog For Discard */}
+      <Dialog
+        open={discardDialog}
+        onClose={handleDiscardCloseDialog}
+        fullWidth={true}
+        maxWidth="md"
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>TDS</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleDiscardCloseDialog}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          <TextField
+            multiline
+            label="Reason for Discard"
+            onChange={(e) => setReason(e.target.value)}
+            fullWidth
+          />
+          <div className="pack w-100 mt-3 sb">
+            <div></div>
+            <div className="pack gap16">
+              <Button variant="contained" onClick={(e) => handleReject(e)}>
+                Submit
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>

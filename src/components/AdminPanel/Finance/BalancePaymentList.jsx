@@ -162,6 +162,7 @@ const BalancePaymentList = () => {
     formData.append("payment_type", paymentType.label);
     formData.append("payment_mode", "others");
     formData.append("paid_amount", paidAmount);
+    formData.append("payment_date", paymentDate);
     formData.append("incentive_adjustment_amount", adjustmentAmount);
 
     await axios
@@ -209,7 +210,7 @@ const BalancePaymentList = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => { });
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {});
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -225,6 +226,11 @@ const BalancePaymentList = () => {
       .then((res) => {
         setData(res.data.body);
         setFilterData(res.data.body);
+
+        let sno = res?.data?.body?.map((e, i) => {
+          return { ...e, sno: i++ };
+        });
+        console.log(sno, "sno");
         const invcData = res.data.body.filter((d) => d.invoice !== "");
         const NonInvoiceData = res.data.body.filter((d) => d.invoice === "");
         // For Invoice
@@ -702,7 +708,17 @@ const BalancePaymentList = () => {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = sameSalesExecutiveData.indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? sameSalesExecutiveData
+                .filter((d) => d.invoice_mnj_number !== "")
+                .indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? sameSalesExecutiveData
+                .filter((d) => d.invoice_mnj_number === "")
+                .indexOf(params.row)
+            : "";
+
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -774,7 +790,17 @@ const BalancePaymentList = () => {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = uniqueSalesExecutiveData.indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? uniqueSalesExecutiveData
+                .filter((d) => d.invoice_mnj_number !== "")
+                .indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? uniqueSalesExecutiveData
+                .filter((d) => d.invoice_mnj_number === "")
+                .indexOf(params.row)
+            : "";
+
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -917,7 +943,17 @@ const BalancePaymentList = () => {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = sameCustomerData.indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? sameCustomerData
+                .filter((d) => d.invoice_mnj_number !== "")
+                .indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? sameCustomerData
+                .filter((d) => d.invoice_mnj_number === "")
+                .indexOf(params.row)
+            : "";
+
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -989,7 +1025,17 @@ const BalancePaymentList = () => {
       width: 90,
       editable: false,
       renderCell: (params) => {
-        const rowIndex = uniqueCustomerData.indexOf(params.row);
+        const rowIndex =
+          activeAccordionIndex == 0
+            ? uniqueCustomerData
+                .filter((d) => d.invoice_mnj_number !== "")
+                .indexOf(params.row)
+            : activeAccordionIndex == 1
+            ? uniqueCustomerData
+                .filter((d) => d.invoice_mnj_number === "")
+                .indexOf(params.row)
+            : "";
+
         return <div>{rowIndex + 1}</div>;
       },
     },
@@ -1138,22 +1184,25 @@ const BalancePaymentList = () => {
   const columns = [
     {
       width: 70,
-      field: "s_no",
+      field: "sno",
       headerName: "S.No",
       renderCell: (params) => {
-        // const rowIndex = filterData.indexOf(params.row);
+        const invcForCreated = filterData.filter(
+          (count) => count.invoice !== ""
+        );
+        const invcForNonCreated = filterData.filter(
+          (count) => count.invoice === ""
+        );
         const rowIndex =
           activeAccordionIndex == 0
-            ? filterData
-              .filter((d) => d.invoice_mnj_number !== "")
-              .indexOf(params.row)
+            ? invcForCreated.indexOf(params.row)
             : activeAccordionIndex == 1
-              ? filterData
-                .filter((d) => d.invoice_mnj_number === "")
-                .indexOf(params.row)
-              : "";
+            ? invcForNonCreated.indexOf(params.row)
+            : "";
 
         return <div>{rowIndex + 1}</div>;
+
+        // return <div>{params.row.sno}</div>;
       },
       sortable: true,
     },
@@ -1392,6 +1441,17 @@ const BalancePaymentList = () => {
     },
   ];
 
+  // const handleRowChange = function (num) {
+  //   if (num == 0) {
+  //     let data = filterData.filter((invc) => invc.invoice !== "");
+  //     console.log(
+  //       data.map((e, i) => ({ ...e, sno: i++ })),
+  //       "manoj"
+  //     );
+  //     return data.map((e, i) => ({ ...e, sno: i + 1 }));
+  //   }
+  // };
+
   const filterDataBasedOnSelection = (apiData) => {
     console.log(apiData, "api data >>");
     const now = moment();
@@ -1464,22 +1524,22 @@ const BalancePaymentList = () => {
 
   useEffect(() => {
     if (activeAccordionIndex === 0) {
-      const filteredData = datas.filter((d) => d?.invoice !== "");
+      const filteredData = datas?.filter((d) => d?.invoice !== "");
       const uniqueCustomersNames = [
-        ...new Set(filteredData.map((d) => d?.cust_name)),
+        ...new Set(filteredData?.map((d) => d?.cust_name)),
       ];
       const uniqueSalesExeNames = [
-        ...new Set(filteredData.map((d) => d?.username)),
+        ...new Set(filteredData?.map((d) => d?.username)),
       ];
       setCustomerList(uniqueCustomersNames);
       setSalesExecutiveList(uniqueSalesExeNames);
     } else if (activeAccordionIndex === 1) {
-      const filteredData = datas.filter((d) => d?.invoice === "");
+      const filteredData = datas?.filter((d) => d?.invoice === "");
       const uniqueCustomersNames = [
-        ...new Set(filteredData.map((d) => d?.cust_name)),
+        ...new Set(filteredData?.map((d) => d?.cust_name)),
       ];
       const uniqueSalesExeNames = [
-        ...new Set(filteredData.map((d) => d?.username)),
+        ...new Set(filteredData?.map((d) => d?.username)),
       ];
       setCustomerList(uniqueCustomersNames);
       setSalesExecutiveList(uniqueSalesExeNames);
@@ -1517,7 +1577,9 @@ const BalancePaymentList = () => {
   );
 
   // invoice counts :-
-  const invoiceCounts = filterData?.filter((count) => count.invoice !== "");
+  const invoiceCounts = filterData?.filter(
+    (count) => count.invoice_mnj_number !== ""
+  );
 
   const totalInvoiceBalanceAmount = invoiceCounts?.reduce(
     (total, item) =>
@@ -1531,7 +1593,9 @@ const BalancePaymentList = () => {
   );
 
   // Non invoice counts :-
-  const nonInvoiceCounts = filterData.filter((count) => count.invoice === "");
+  const nonInvoiceCounts = filterData.filter(
+    (count) => count.invoice_mnj_number === ""
+  );
 
   // Total gst - balance amounts
   const totalNonInvoiceBalanceAmount = nonInvoiceCounts?.reduce(
@@ -1548,7 +1612,7 @@ const BalancePaymentList = () => {
   const totalPA = () => {
     return +campaignAmountData - (+paidAmountData + paidAmount);
   };
-
+  console.log(filterData, "filterData >>>");
   return (
     <div>
       <FormContainer
@@ -1966,32 +2030,35 @@ const BalancePaymentList = () => {
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
                 Invoice Created
-                <Link className="link-primary">
-                  <span className="iconLink">
-                    <i class="bi bi-arrow-up-right"></i>
-                  </span>
-                </Link>
               </h5>
             </div>
             <div className="card-body flex-row sb">
               <div>
-
                 <h5 className="mediumText">Invoice Count</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--orange)" }}>{invoiceCounts?.length}</h4>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--orange)" }}
+                >
+                  {invoiceCounts?.length}
+                </h4>
               </div>
               <div>
-
                 <h5 className="mediumText"> Total Balance Amount</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--yellow)" }}>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--yellow)" }}
+                >
                   ₹{totalInvoiceBalanceAmount}
                 </h4>
               </div>
               {/* <h5 className="mediumText">Total Due Amount</h5>
               <h4 className="font-weight-bold mt8">₹{}</h4> */}
               <div>
-
                 <h5 className="mediumText">Total Received Amount</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--success)" }}>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--success)" }}
+                >
                   ₹{totalInvoiceReceivedAmount}
                 </h4>
               </div>
@@ -2003,25 +2070,24 @@ const BalancePaymentList = () => {
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
                 Non Invoice Created
-                <Link className="link-primary">
-                  <span className="iconLink">
-                    <i class="bi bi-arrow-up-right"></i>
-                  </span>
-                </Link>
               </h5>
             </div>
             <div className="card-body flex-row sb">
               <div>
-
                 <h5 className="mediumText">Non Invoice Count</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--orange)" }}>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--orange)" }}
+                >
                   {nonInvoiceCounts?.length}
                 </h4>
               </div>
               <div>
-
                 <h5 className="mediumText">Total Balance Amount</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--yellow)" }}>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--yellow)" }}
+                >
                   ₹{totalNonInvoiceBalanceAmount}
                 </h4>
               </div>
@@ -2031,9 +2097,11 @@ const BalancePaymentList = () => {
                 {}
               </h4> */}
               <div>
-
                 <h5 className="mediumText">Total Received Amount</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--success)" }}>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--success)" }}
+                >
                   ₹{totalNonInvoiceReceivedAmount}
                 </h4>
               </div>
@@ -2043,33 +2111,35 @@ const BalancePaymentList = () => {
         <div className="w-100">
           <div className="card">
             <div className="card-header">
-              <h5 className="card-title w-100 flexCenterBetween">
-                GST
-                <Link className="link-primary">
-                  <span className="iconLink">
-                    <i class="bi bi-arrow-up-right"></i>
-                  </span>
-                </Link>
-              </h5>
+              <h5 className="card-title w-100 flexCenterBetween">GST</h5>
             </div>
             <div className="card-body flex-row sb">
               <div>
-
                 <h5 className="mediumText">GST Count</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--orange)" }}>{gstCounts?.length}</h4>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--orange)" }}
+                >
+                  {gstCounts?.length}
+                </h4>
               </div>
 
               <div>
                 <h5 className="mediumText">Total Balance Amount</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--yellow)" }}>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--yellow)" }}
+                >
                   {" "}
                   ₹ {totalGstBalanceAmount}
                 </h4>
               </div>
               <div>
-
                 <h5 className="mediumText">Total Received Amount</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--success)" }}>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--success)" }}
+                >
                   ₹ {totalGstReceivedAmount}
                 </h4>
               </div>
@@ -2079,32 +2149,33 @@ const BalancePaymentList = () => {
         <div className="w-100">
           <div className="card">
             <div className="card-header">
-              <h5 className="card-title w-100 flexCenterBetween">
-                Non GST
-                <Link className="link-primary">
-                  <span className="iconLink">
-                    <i class="bi bi-arrow-up-right"></i>
-                  </span>
-                </Link>
-              </h5>
+              <h5 className="card-title w-100 flexCenterBetween">Non GST</h5>
             </div>
             <div className="card-body flex-row sb">
               <div>
-
                 <h5 className="mediumText">Non GST Count</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--orange)" }}>{nonGstCounts?.length}</h4>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--orange)" }}
+                >
+                  {nonGstCounts?.length}
+                </h4>
               </div>
               <div>
-
                 <h5 className="mediumText"> Total Balance Amount</h5>
-                <h4 className="font-weight-bold mt8" style={{ color: "var(--bs-yellow)" }}>
+                <h4
+                  className="font-weight-bold mt8"
+                  style={{ color: "var(--bs-yellow)" }}
+                >
                   ₹{totalNonGstBalanceAmount}
                 </h4>
               </div>
               <div>
-
                 <h5 className="mediumText">Total Received Amount</h5>
-                <h4 className="font-weight-bold mt8 " style={{ color: "var(--success)" }}>
+                <h4
+                  className="font-weight-bold mt8 "
+                  style={{ color: "var(--success)" }}
+                >
                   ₹{totalNonGstReceivedAmount}
                 </h4>
               </div>
@@ -2178,7 +2249,7 @@ const BalancePaymentList = () => {
                           variant="outlined"
                           InputProps={{
                             ...params.InputProps,
-                            className: "form-control", // Apply Bootstrap's form-control class
+                            className: "form-control",
                           }}
                         />
                       )}
@@ -2356,7 +2427,6 @@ const BalancePaymentList = () => {
                 onAccordionButtonClick={handleAccordionButtonClick}
                 mainTitleRequired={false}
               >
-
               </FormContainer>
              
 
@@ -2364,7 +2434,7 @@ const BalancePaymentList = () => {
           </div>
         </div>
       </div> */}
-    </div >
+    </div>
   );
 };
 
