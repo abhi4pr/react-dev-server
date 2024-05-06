@@ -84,8 +84,7 @@ const PhaseCreation = () => {
     setShowPageDetails(!showPageDetails);
     setAssignAll(true);
   };
-
-  console.log(allPageData);
+  
   useEffect(() => {
     if (allPhaseData.length > 0) {
       let flag = false;

@@ -64,8 +64,6 @@ const CreateMaster = ({ name, data }) => {
     }
   };
 
-
-  console.log(payload);
   return (
     <div>
       <FormContainer mainTitle={`Create ${name}`}

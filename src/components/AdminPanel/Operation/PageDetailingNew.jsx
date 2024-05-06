@@ -244,8 +244,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
             return { ...page, postPerPage: 0, storyPerPage: 0 };
           });
 
-        console.log(newPageData);
-
         if (phaseInfo.assignAll) {
           let row = [];
           newPageData = newPageData.map((page) => {
@@ -564,7 +562,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     const pageReplacement = allPageData.find((page) => {
       return page.page_name == e;
     });
-    console.log(pageReplacement);
 
     setPayload([
       ...payload,
@@ -580,8 +577,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     setSelectedRows([...selectedRows, pageReplacement.p_id]);
     setRadioSelected("selected");
   };
-
-  console.log(filteredPages);
   //copy paste logic ends here
 
   const handlePost = (e, field) => {
@@ -729,7 +724,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           navigate(`/admin/op-phase-creation/${data.campaignId}`);
         }, 2000);
       } catch (error) {
-        console.log();
         toastError(`Plan not Created `);
         toastError(`${error?.response?.data?.message}`);
         setIsLoadingPlan(false);
@@ -793,7 +787,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
           navigate(`/admin/op-phase-creation/${data.campaignId}`);
         }, 2000);
       } catch (error) {
-        console.log();
         toastError(`Plan not Created `);
         toastError(`${error?.response?.data?.message}`);
         setIsLoadingPlan(false);
@@ -1033,8 +1026,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
     return <Loader message="Plan creation in progress..." />;
   }
 
-  console.log(options);
-
   return (
     <>
       <div className="card body-padding">
@@ -1159,7 +1150,6 @@ const PageDetailingNew = ({ pageName, data, setPhaseDataError, phaseInfo }) => {
       <div
         style={{ display: "flex", justifyContent: "space-between", gap: 0.5 }}
       >
-        {console.log(selectedRows.length)}
         <div style={{ height:"700px", width:`${selectedRows.length !== 0?"60%":"100%"}`}}>
           <DataGrid
             rows={unregisteredPages || searchedPages || filteredPages || []}

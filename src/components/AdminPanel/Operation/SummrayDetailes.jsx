@@ -8,7 +8,6 @@ import generatePDF from "../../../utils/PdfConverter";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 
 const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
-  console.log(payload)
   const [summaryData, setSummaryData] = useState({
     total: 0,
     totalPost: 0,
@@ -87,10 +86,8 @@ const SummaryDetails = ({ payload, campName, generatePdf, drawer }) => {
     setStoryPerPage(formatNumber(totalStory));
   };
 
-  console.log(totalPostPerPage)
   const formatNumber = (value) => {
 
-    console.log(value)
     if (value >= 1000000) {
       return `${(value / 1000000).toFixed(2)}M`;
     } else if (value >= 1000) {

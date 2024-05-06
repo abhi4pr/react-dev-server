@@ -29,7 +29,6 @@ export default function ContentType() {
   const { toastAlert, toastError } = useGlobalContext();
   const [errorMessage, setErrorMessage] = useState("");
   const [rows, setRows] = useState([]);
-  console.log(rows, "<---------Rows data");
   const [rowModesModel, setRowModesModel] = useState({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editData, setEditData] = useState([]);
@@ -94,7 +93,6 @@ export default function ContentType() {
         }
         setPostData("");
         setReload(!reload);
-        console.log("Data saved:", response.data);
       })
       .catch((error) => {
         console.error("Error saving data:", error);
@@ -134,7 +132,6 @@ export default function ContentType() {
         content_type: editData.content_type,
       })
       .then((res) => {
-        console.log(res.data);
         if (res.data.success === false) {
           toastError(res.data.message);
         } else {
@@ -148,7 +145,6 @@ export default function ContentType() {
       });
   };
   const handleEditClick = (id, row) => () => {
-    console.log(row);
     setEditData(row);
     setIsPutOpen(true);
   };

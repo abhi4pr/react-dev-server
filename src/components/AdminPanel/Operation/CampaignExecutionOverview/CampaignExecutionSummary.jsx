@@ -1,7 +1,6 @@
 import React from "react";
 
 const CampaignExecutionSummary = ({ overviewCommitData }) => {
-  console.log(overviewCommitData?.completedData, "kkkk");
   return (
     <div>
       <div className="summary-section mb-3">
