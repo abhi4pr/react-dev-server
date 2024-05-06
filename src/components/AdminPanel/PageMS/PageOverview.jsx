@@ -58,18 +58,20 @@ const PageOverview = () => {
   const [updatedRows, setUpdatedRows] = useState([]);
 
   const handleEditCellChange = (params) => {
-    (async()=>{
-      console.log(params, "params" , params.field,"params.field")
+    (async () => {
+      console.log(params, "params", params.field, "params.field");
       const updatedRow = {
         ...params.row,
         [params.field]: params.value,
       };
-      
-      console.log("come to edit ")
-      return  axios.put(baseUrl + `updatePage/${params.row._id}`, updatedRow).then((res) => {
-        console.log(res.data);
-      });
-    })()
+
+      console.log("come to edit ");
+      return axios
+        .put(baseUrl + `updatePage/${params.row._id}`, updatedRow)
+        .then((res) => {
+          console.log(res.data);
+        });
+    })();
 
     // Make API call to update the row data
     // Example: fetch('/api/updateRow', { method: 'POST', body: JSON.stringify(updatedRow) })
@@ -165,6 +167,24 @@ const PageOverview = () => {
       let data = res.data.data;
 
       data = data.map((e) => {
+        let priceKeyWithValues = e.purchase_price.map((item) => {
+          console.log(item, "item");
+          let name = allPriceTypeList?.find(
+            (item) => item.price_type_id == e.purchase_price[0].price_type_id
+          )?.price_type;
+          console.log(name, "name");
+
+          let objname = allPriceTypeList?.find(
+            (item) => item.price_type_id == item.price_type_id
+          )?.price_type;
+          console.log(objname, "objname");
+          objname = objname ? objname : "";
+          return {
+            price_type_id: item.price_type_id,
+            price: item.price,
+          };
+        });
+        console.log(priceKeyWithValues, "obj");
         return {
           ...e,
           tag_category_name: cat
@@ -173,22 +193,19 @@ const PageOverview = () => {
             })
             .map((item) => item.page_category)
             .join(","),
-            // price_name: allPriceTypeList?.find(
-            //   (item) => item?.price_type_id == e.purchase_price?.price_type_id
-            // )
+          // price_name: allPriceTypeList?.find(
+          //   (item) => item?.price_type_id == e.purchase_price?.price_type_id
+          // )
 
-            // allPriceTypeList?.find(
-            //   (item) => item.price_type_id == params.row.price_type_id
-            // )?.price_type;
+          // allPriceTypeList?.find(
+          //   (item) => item.price_type_id == params.row.price_type_id
+          // )?.price_type;
         };
       });
       setVendorTypes(data);
       setFilterData(data.reverse());
       setLoading(false);
     });
-
-
-
 
     // {
     //   field: "price_type",
@@ -269,7 +286,11 @@ const PageOverview = () => {
       // },
       renderCell: (params) => {
         let name = params.row.page_user_name;
-        return <Link target="__black" to={params.row.link} className="link-primary">{name}</Link>;
+        return (
+          <Link target="__black" to={params.row.link} className="link-primary">
+            {name}
+          </Link>
+        );
       },
     },
     { field: "page_level", headerName: "Level", width: 200 },
@@ -448,7 +469,7 @@ const PageOverview = () => {
       headerName: "Price",
       width: 200,
       renderCell: ({ row }) => {
-        console.log(row.price_name, "row.price_name")
+        console.log(row.price_name, "row.price_name");
         return (
           <div>
             {row.purchase_price && (
@@ -1330,7 +1351,9 @@ const PageOverview = () => {
                 // onCellEditStop={handleEditCellChange}
                 // onCellEditStart={handleEditCellChange}
                 // onEditCellChange={handleEditCellChange}
-                onCellEditStop={(params)=> setTimeout(()=>handleEditCellChange(params),1000)}
+                onCellEditStop={(params) =>
+                  setTimeout(() => handleEditCellChange(params), 1000)
+                }
                 pageSize={5}
                 rowsPerPageOptions={[5]}
                 rowHeight={38}
