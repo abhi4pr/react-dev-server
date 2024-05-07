@@ -584,7 +584,8 @@ const WFHDRegister = ({ userUpdateID }) => {
         <div className="card-body">
           <div className="row">
             <FieldContainer
-              label="Full Name *"
+              label="Full Name"
+              astric
               fieldGrid={3}
               required
               value={username}
@@ -650,8 +651,9 @@ const WFHDRegister = ({ userUpdateID }) => {
                 value={{
                   value: designation,
                   label:
-                    designationData?.find((user) => user.desi_id === designation)
-                      ?.desi_name || "",
+                    designationData?.find(
+                      (user) => user.desi_id === designation
+                    )?.desi_name || "",
                 }}
                 onChange={(e) => {
                   setDesignation(e.value);
@@ -754,8 +756,9 @@ const WFHDRegister = ({ userUpdateID }) => {
           <p style={{ color: "red" }}>*Please enter valid email</p>
         )} */}
             <FieldContainer
-              label="Personal Email *"
+              label="Personal Email"
               type="email"
+              astric
               fieldGrid={3}
               required={false}
               value={personalEmail}
@@ -799,7 +802,8 @@ const WFHDRegister = ({ userUpdateID }) => {
             <>
               <FieldContainer
                 // label="Salary"
-                label="Monthly Salary *"
+                label="Monthly Salary"
+                astric
                 type="number"
                 fieldGrid={3}
                 value={salary}
@@ -809,7 +813,8 @@ const WFHDRegister = ({ userUpdateID }) => {
 
               <FieldContainer
                 // label="Salary"
-                label="CTC *"
+                label="CTC"
+                astric
                 type="number"
                 fieldGrid={3}
                 value={yearlySalary}
@@ -896,7 +901,8 @@ const WFHDRegister = ({ userUpdateID }) => {
         )} */}
 
             <FieldContainer
-              label="Personal Contact *"
+              label="Personal Contact"
+              astric
               type="number"
               fieldGrid={3}
               value={personalContact}
@@ -910,8 +916,9 @@ const WFHDRegister = ({ userUpdateID }) => {
               )}
 
             <FieldContainer
-              label="Alternate Contact *"
+              label="Alternate Contact "
               type="number"
+              astric
               fieldGrid={3}
               value={contact}
               required={false}
@@ -1006,14 +1013,16 @@ const WFHDRegister = ({ userUpdateID }) => {
 
             <FieldContainer
               type="date"
-              label="Joining Date *"
+              label="Joining Date "
+              astric
               fieldGrid={3}
               value={joiningDate}
               onChange={(e) => setJoiningDate(e.target.value)}
             />
 
             <FieldContainer
-              label="DOB *"
+              label="DOB "
+              astric
               fieldGrid={3}
               type="date"
               value={dateOfBirth}

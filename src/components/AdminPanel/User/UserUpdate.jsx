@@ -135,6 +135,7 @@ const UserUpdate = () => {
   const [gender, setGender] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [age, setAge] = useState(0);
+  const [ageCalculate, setAgeCalculate] = useState("");
   const [nationality, setNationality] = useState("Indian");
   const [maritialStatus, setMaritialStatus] = useState("");
   const [dateOfMarraige, setDateOfMarraige] = useState("");
@@ -248,6 +249,7 @@ const UserUpdate = () => {
   ];
   const bankTypeData = ["Saving A/C", "Current A/C", "Salary A/C"];
   const genderData = ["Male", "Female", "Other"];
+  const nationalityData = ["India", "USA", "Uk"];
 
   const familyRelations = [
     "Brother",
@@ -589,7 +591,14 @@ const UserUpdate = () => {
       setGender(Gender);
       setNationality(Nationality);
       setDateOfBirth(DOB.split("T")?.[0]);
-      setAge(Age);
+
+      function agesCalculate() {
+        const years = Math.floor(Age / 365);
+        const remainingDays = Age % 365;
+        return years + " years " + remainingDays + " days";
+      }
+      setAge(agesCalculate);
+
       setHobbies(Hobbies);
       setBloodGroup(BloodGroup);
       setMaritialStatus(MartialStatus);
@@ -691,7 +700,7 @@ const UserUpdate = () => {
     formData.append("alternate_contact", alternateContact);
     formData.append("Gender", gender);
     formData.append("DOB", dateOfBirth);
-    formData.append("Age", age);
+    formData.append("Age", ageCalculate);
     formData.append("Nationality", nationality);
     formData.append("MartialStatus", maritialStatus);
     formData.append("DateofMarriage", dateOfMarraige);
@@ -1171,27 +1180,52 @@ const UserUpdate = () => {
     const selectedLoginId = event.target.value;
     setLoginId(selectedLoginId);
   };
-  const calculateAge = (dob) => {
-    const currentDate = new Date();
+  // const calculateAge = (dob) => {
+  //   const currentDate = new Date();
+  //   const birthDate = new Date(dob);
+  //   let age = currentDate.getFullYear() - birthDate.getFullYear();
+  //   const m = currentDate.getMonth() - birthDate.getMonth();
+
+  //   if (m < 0 || (m === 0 && currentDate.getDate() < birthDate.getDate())) {
+  //     age--;
+  //   }
+
+  //   return age;
+  // };
+  function calculateAge(dob) {
     const birthDate = new Date(dob);
-    let age = currentDate.getFullYear() - birthDate.getFullYear();
-    const m = currentDate.getMonth() - birthDate.getMonth();
+    const currentDate = new Date();
+    // Calculate the difference in milliseconds
+    const difference = currentDate - birthDate;
+    // Convert milliseconds to days
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    // Calculate years and remaining days
+    const years = Math.floor(days / 365);
+    const remainingDays = days % 365;
+    return `${years} years ${remainingDays} days`;
+  }
 
-    if (m < 0 || (m === 0 && currentDate.getDate() < birthDate.getDate())) {
-      age--;
-    }
+  function calculateAgeInDays(dob) {
+    const birthDate = new Date(dob);
+    const currentDate = new Date();
+    // Calculate the difference in milliseconds
+    const difference = currentDate - birthDate;
+    // Convert milliseconds to days
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    return days;
+  }
 
-    return age;
-  };
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
     const age = calculateAge(selectedDate);
+    const ageDays = calculateAgeInDays(selectedDate);
 
     if (age < 15) {
       window.alert("Your age must be greater than 15 years.");
     } else {
       setDateOfBirth(selectedDate);
       setAge(age);
+      setAgeCalculate(ageDays);
     }
   };
 
@@ -1384,13 +1418,34 @@ const UserUpdate = () => {
       {dateOfBirth !== "" && (
         <FieldContainer fieldGrid={3} label="Age" value={age} />
       )}
-      <FieldContainer
+      {/* <FieldContainer
         label="Nationality"
         astric={true}
         fieldGrid={3}
         value={nationality}
         onChange={(e) => setNationality(e.target.value)}
-      />
+      /> */}
+      <div className="form-group col-3">
+        <label className="form-label">
+          Nationality <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={nationalityData.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
+          }))}
+          value={{
+            value: nationality,
+            label: `${nationality}`,
+          }}
+          onChange={(e) => {
+            setNationality(e.value);
+          }}
+          required
+        />
+      </div>
+
       <div className="form-group col-3">
         <label className="form-label">
           Maritial Status <sup style={{ color: "red" }}>*</sup>
@@ -1762,8 +1817,6 @@ const UserUpdate = () => {
           required={false}
         />
 
-        {console.log(banktype, "-------------bank type")}
-        {console.log(city, "-------------parmanetnt city")}
         <div className="form-group col-4">
           <label className="form-label">
             Current City <sup style={{ color: "red" }}>*</sup>
@@ -1982,7 +2035,6 @@ const UserUpdate = () => {
         <label className="form-label">
           Bank Type <sup style={{ color: "red" }}>*</sup>
         </label>
-        {console.log(banktype, "----------account type")}
         <Select
           className=""
           options={bankTypeData.map((option) => ({
