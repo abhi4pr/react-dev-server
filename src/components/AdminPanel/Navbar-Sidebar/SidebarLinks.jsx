@@ -1239,6 +1239,7 @@ const SidebarLinks = () => {
                   <i className="bi bi-dash"></i>
                   <span>Sales Management</span>
                 </Link>
+
                 <div
                   id="collapsInnerEightFinanceEdit"
                   className="collapse"
@@ -1269,6 +1270,12 @@ const SidebarLinks = () => {
                               to="/admin/finance-alltransactions"
                             >
                               <i className="bi bi-dot"></i> Dashboard
+                            </NavLink>
+                            <NavLink
+                              className="collapse-item"
+                              to="/admin/finance-pending-sales-approval"
+                            >
+                              <i className="bi bi-dot"></i> Pending for approval
                             </NavLink>
                             <NavLink
                               className="collapse-item"

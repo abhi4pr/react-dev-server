@@ -63,7 +63,26 @@ import { set } from "date-fns";
 import ImageSelector from "./ImageSelector";
 import RocketAnimation from "./RocketAnimation";
 
-const LanguageList = ["English", "Hindi", "Other"];
+const LanguageList = [
+  "English",
+  "Hindi",
+  "Spanish",
+  "French",
+  "Arabic",
+  "Bengali",
+  "Russian",
+  "Urdu",
+  "German",
+  "Japanese",
+  "Telugu",
+  "Marathi",
+  "Tamil",
+  "Italian",
+  "Punjabi",
+  "Gujarati",
+  "Other",
+];
+const nationalityData = ["India", "USA", "Uk"];
 
 const bloodGroupData = [
   "A+ (A Positive)",
@@ -85,18 +104,21 @@ const initialGuardianDetailsGroup = {
   guardian_name: "",
   guardian_contact: "",
   guardian_address: "",
+  relation_with_guardian: "",
 };
 
 const guardianDisplayFields = [
   "guardian_name",
   "guardian_contact",
   "guardian_address",
+  "relation_with_guardian",
 ];
 
 const guardianFieldLabels = {
   guardian_name: "Guardian Name",
   guardian_contact: "Guardian Contact",
   guardian_address: "Guardian Address",
+  relation_with_guardian: " Relation",
 };
 
 //Family
@@ -517,10 +539,10 @@ const PreOnboardingUserMaster = () => {
 
       const preselectedHobbies = fetchedData?.Hobbies?.map((hobbyId) => ({
         value: hobbyId,
-        label:
-          hobbiesData?.find((hobby) => hobby?.value === hobbyId)?.label ||
-          hobbyId.toString(),
+        label: hobbiesData?.find((hobby) => hobby?.hobby_id == hobbyId)
+          ?.hobby_name,
       }));
+
       setHobbies(preselectedHobbies);
       const {
         user_name,
@@ -648,15 +670,19 @@ const PreOnboardingUserMaster = () => {
       setCocFlag(coc_flag);
     });
   };
+
   useEffect(() => {
     gettingData();
+  }, [hobbiesData]);
+
+  useEffect(() => {
     fetchCOCData();
     getDocuments();
   }, [id]);
 
-  const handleHobbiesChange = (event, selectedOptions) => {
-    setHobbies(selectedOptions || []);
-  };
+  // const handleHobbiesChange = (event, selectedOptions) => {
+  //   setHobbies(selectedOptions || []);
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -757,6 +783,7 @@ const PreOnboardingUserMaster = () => {
         guardian_name: elements.guardian_name,
         guardian_contact: elements.guardian_contact,
         guardian_address: elements.guardian_address,
+        relation_with_guardian: elements.relation_with_guardian,
       };
       if (elements.guardian_id) {
         payload.guardian_id = elements.guardian_id;
@@ -1035,13 +1062,21 @@ const PreOnboardingUserMaster = () => {
 
   useEffect(() => {
     axios.get(`${baseUrl}get_all_hobbies`).then((res) => {
-      const formattedHobbies = res.data.data.map((hobby) => ({
-        value: hobby.hobby_id,
-        label: hobby.hobby_name,
-      }));
-      setHobbiesData(formattedHobbies);
+      setHobbiesData(res.data.data);
     });
   }, []);
+  const filteredHobbyOption = hobbiesData
+    .filter(
+      (category) =>
+        !hobbies.find((selected) => selected.value === category.hobby_id)
+    )
+    .map((category) => ({
+      label: category.hobby_name,
+      value: category.hobby_id,
+    }));
+  const categoryChangeHandler = (e, op) => {
+    setHobbies(op);
+  };
 
   useEffect(() => {
     setSpeakingLanguage(
@@ -1403,12 +1438,12 @@ const PreOnboardingUserMaster = () => {
                   }`}
                   id="sidebarLetterBox"
                   onClick={() => setActiveTab(5)}
-                  style={{
-                    opacity: joiningDate <= formattedDate ? 0.5 : 1,
-                    // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
-                    pointerEvents:
-                      joiningDate <= formattedDate ? "none" : "auto",
-                  }}
+                  // style={{
+                  //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
+                  //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
+                  //   pointerEvents:
+                  //     joiningDate <= formattedDate ? "none" : "auto",
+                  // }}
                 >
                   <div className="progress-circle progressing pp-26">
                     <div className="progress-circle-border">
@@ -1419,14 +1454,11 @@ const PreOnboardingUserMaster = () => {
                       <i className="bi bi-file-earmark-text" />
                     </div>
                   </div>
-                  <h2 className="letter_tab_name">Letter</h2>
+                  <h2 className="letter_tab_name">Offer Letter</h2>
                 </div>
               )}
 
               <div
-                // className={`sidebar_itembox  ${
-                //   activeTab == 3 ? "sidebar_item_active" : ""
-                // }`}
                 className={`sidebar_itembox ${
                   activeTab === 3 && documentPercentage < 90
                     ? "sidebar_item_active"
@@ -1438,6 +1470,11 @@ const PreOnboardingUserMaster = () => {
                   opacity: documentPercentage < 90 ? 0.5 : 1,
                 }}
                 onClick={() => setActiveTab(3)}
+                title={
+                  documentPercentage < 90
+                    ? "Please complete documentation by 90%"
+                    : ""
+                }
               >
                 <div className="progress-circle progressing pp-100">
                   <div className="progress-circle-border">
@@ -1448,8 +1485,14 @@ const PreOnboardingUserMaster = () => {
                     <i className="bi bi-book" />
                   </div>
                 </div>
-                <h2 className="policy_tab_name">Policy</h2>
+                <h2 className="policy_tab_name">COC</h2>
+                <p>Code Of Conduct</p>
               </div>
+              {documentPercentage < 90 && (
+                <span style={{ fontSize: "15px", color: "red" }}>
+                  Please complete documentation by 90% then you can read coc
+                </span>
+              )}
 
               <div
                 className={`sidebar_itembox ${
@@ -1681,7 +1724,7 @@ const PreOnboardingUserMaster = () => {
                               />
                             </div>
                             <div className="form-group form_select">
-                              <Autocomplete
+                              {/* <Autocomplete
                                 multiple
                                 id="hobbies-autocomplete"
                                 options={hobbiesData}
@@ -1699,6 +1742,18 @@ const PreOnboardingUserMaster = () => {
                                   />
                                 )}
                                 clearOnEscape
+                              /> */}
+                              <Autocomplete
+                                multiple
+                                id="combo-box-demo"
+                                options={filteredHobbyOption}
+                                getOptionLabel={(option) => option.label}
+                                InputLabelProps={{ shrink: true }}
+                                renderInput={(params) => (
+                                  <TextField {...params} label="Hobbie" />
+                                )}
+                                onChange={categoryChangeHandler}
+                                value={hobbies}
                               />
                             </div>
 
@@ -1759,7 +1814,6 @@ const PreOnboardingUserMaster = () => {
                                   <TextField
                                     {...params}
                                     label="Speaking Languages"
-                                    placeholder="Select languages"
                                   />
                                 )}
                               />
@@ -1776,13 +1830,29 @@ const PreOnboardingUserMaster = () => {
                               />
                             </div>
                             <div className="form-group">
-                              <TextField
+                              {/* <TextField
                                 id="outlined-basic"
                                 label="Nationality"
                                 variant="outlined"
                                 type="text"
                                 value={nationality}
                                 onChange={(e) => setNationality(e.target.value)}
+                              /> */}
+                              <Autocomplete
+                                disablePortal
+                                id="combo-box-demo"
+                                options={nationalityData} // Use correct array for options
+                                value={nationality}
+                                onChange={(event, newValue) =>
+                                  setNationality(newValue)
+                                }
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    label="Nationality"
+                                    placeholder="Select.."
+                                  />
+                                )}
                               />
                             </div>
 
@@ -1880,7 +1950,7 @@ const PreOnboardingUserMaster = () => {
                               <TextField
                                 required
                                 id="outlined-basic"
-                                label="Current Pincode"
+                                label="Pincode"
                                 variant="outlined"
                                 type="text"
                                 value={currentPincode}
@@ -1948,7 +2018,7 @@ const PreOnboardingUserMaster = () => {
                               <TextField
                                 required
                                 id="outlined-basic"
-                                label="Permanent Pincode"
+                                label="Pincode"
                                 variant="outlined"
                                 type="text"
                                 value={permanentPincode}

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 
 const RecordServices = () => {
   const [recordServiceData, setRecordServiceData] = useState([]);
-  const [origionalData, setOrigionalData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [search, setSearch] = useState("");
 
   const getData = async () => {
@@ -17,7 +17,7 @@ const RecordServices = () => {
         `${baseUrl}sales/get_record_service_master`
       );
       setRecordServiceData(response.data.data);
-      setOrigionalData(response.data.data);
+      setOriginalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
     }
@@ -27,7 +27,7 @@ const RecordServices = () => {
   }, []);
 
   useEffect(() => {
-    const result = origionalData.filter((d) => {
+    const result = originalData.filter((d) => {
       return (
         d?.sale_executive_by_name
           ?.toLowerCase()

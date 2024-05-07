@@ -47,10 +47,6 @@ const SalesSidebarLinks = () => {
             <i className="bi bi-dot" />
             Credit Reason Approval
           </NavLink>
-          <NavLink className="collapse-item" to="/admin/create-sales-booking">
-            <i className="bi bi-dot" />
-            Create Sale Booking
-          </NavLink>
           <NavLink className="collapse-item" to="/admin/view-sales-booking">
             <i className="bi bi-dot" />
             Sale Booking Overview
@@ -79,7 +75,7 @@ const SalesSidebarLinks = () => {
             Record Services
           </NavLink>
 
-          <NavLink className="collapse-item" to="/admin/create-payment-update">
+          <NavLink className="collapse-item" to="/admin/view-payment-update">
             <i className="bi bi-dot" />
             Payment Update
           </NavLink>
@@ -88,9 +84,15 @@ const SalesSidebarLinks = () => {
             <i className="bi bi-dot" />
             Payment Mode
           </NavLink>
+
           <NavLink className="collapse-item" to="/admin/view-payment-details">
             <i className="bi bi-dot" />
             Payment Details
+          </NavLink>
+
+          <NavLink className="collapse-item" to="/admin/credit-approval">
+            <i className="bi bi-dot" />
+            Credit Approval
           </NavLink>
         </div>
       </div>

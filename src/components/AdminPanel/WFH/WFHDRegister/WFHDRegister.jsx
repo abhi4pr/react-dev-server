@@ -516,13 +516,25 @@ const WFHDRegister = ({ userUpdateID }) => {
   const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
 
+    // Extracting last 4 and 6 digits from personal contact
+    const personalContactLast4 = personalContact.slice(-4);
+    const personalContactLast6 = personalContact.slice(-6);
+
     // Define login ID options
-    const loginIdOptions = [
-      userName[0], // loginIdOption1
-      userName[0] + (userName[1] ? userName[1].charAt(0) : ""), // loginIdOption2
-      (userName[0] ? userName[0].charAt(0) : "") + (userName[1] || ""), // loginIdOption3
-      userName.join("."), // loginIdOption4
+    let loginIdOptions = [
+      userName[0], // lalit
+      userName.join("."), // lalit.gour
+      userName[0] + personalContactLast4, // lalit5413
+      userName[0] + personalContactLast6, // lalit815413
     ];
+
+    if (userName.length > 1) {
+      loginIdOptions.push(
+        userName[0].charAt(0) + userName[1], // lgour
+        userName.join("") // lalitgour
+      );
+    }
+
     const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
     setLastIndexUsed(nextIndex);
     const generatedLoginId = loginIdOptions[nextIndex];
@@ -584,7 +596,8 @@ const WFHDRegister = ({ userUpdateID }) => {
         <div className="card-body">
           <div className="row">
             <FieldContainer
-              label="Full Name *"
+              label="Full Name"
+              astric
               fieldGrid={3}
               required
               value={username}
@@ -650,8 +663,9 @@ const WFHDRegister = ({ userUpdateID }) => {
                 value={{
                   value: designation,
                   label:
-                    designationData?.find((user) => user.desi_id === designation)
-                      ?.desi_name || "",
+                    designationData?.find(
+                      (user) => user.desi_id === designation
+                    )?.desi_name || "",
                 }}
                 onChange={(e) => {
                   setDesignation(e.value);
@@ -754,8 +768,9 @@ const WFHDRegister = ({ userUpdateID }) => {
           <p style={{ color: "red" }}>*Please enter valid email</p>
         )} */}
             <FieldContainer
-              label="Personal Email *"
+              label="Personal Email"
               type="email"
+              astric
               fieldGrid={3}
               required={false}
               value={personalEmail}
@@ -799,7 +814,8 @@ const WFHDRegister = ({ userUpdateID }) => {
             <>
               <FieldContainer
                 // label="Salary"
-                label="Monthly Salary *"
+                label="Monthly Salary"
+                astric
                 type="number"
                 fieldGrid={3}
                 value={salary}
@@ -809,7 +825,8 @@ const WFHDRegister = ({ userUpdateID }) => {
 
               <FieldContainer
                 // label="Salary"
-                label="CTC *"
+                label="CTC"
+                astric
                 type="number"
                 fieldGrid={3}
                 value={yearlySalary}
@@ -896,7 +913,8 @@ const WFHDRegister = ({ userUpdateID }) => {
         )} */}
 
             <FieldContainer
-              label="Personal Contact *"
+              label="Personal Contact"
+              astric
               type="number"
               fieldGrid={3}
               value={personalContact}
@@ -910,8 +928,9 @@ const WFHDRegister = ({ userUpdateID }) => {
               )}
 
             <FieldContainer
-              label="Alternate Contact *"
+              label="Alternate Contact "
               type="number"
+              astric
               fieldGrid={3}
               value={contact}
               required={false}
@@ -924,23 +943,30 @@ const WFHDRegister = ({ userUpdateID }) => {
 
             <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
               <div className="form-group">
-                <p
+                {/* <p
                   className={
-                    loginResponse == "login id available"
+                    loginResponse === "login id available"
                       ? "login-success1"
                       : "login-error1"
                   }
                 >
                   {loginResponse}
-                </p>
+                </p> */}
 
                 <label>
                   Login ID <sup style={{ color: "red" }}>*</sup>
                 </label>
                 <div className="input-group">
                   <input
-                    className="form-control"
+                    className={`form-control ${
+                      loginId
+                        ? loginResponse === "login id available"
+                          ? "login-success-border"
+                          : "login-error-border"
+                        : ""
+                    }`}
                     value={loginId}
+                    disabled
                     required
                     onChange={handleLoginIdChange}
                   />
@@ -1006,14 +1032,16 @@ const WFHDRegister = ({ userUpdateID }) => {
 
             <FieldContainer
               type="date"
-              label="Joining Date *"
+              label="Joining Date "
+              astric
               fieldGrid={3}
               value={joiningDate}
               onChange={(e) => setJoiningDate(e.target.value)}
             />
 
             <FieldContainer
-              label="DOB *"
+              label="DOB "
+              astric
               fieldGrid={3}
               type="date"
               value={dateOfBirth}

@@ -46,6 +46,7 @@ const WFHDOverview = () => {
   const [separationResignationDate, setSeparationResignationDate] =
     useState("");
   const [separationLWD, setSeparationLWD] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -59,10 +60,12 @@ const WFHDOverview = () => {
   // }, [])
 
   const getData = async () => {
+    setLoading(true);
     const response = await axios.get(baseUrl + "get_all_wfh_users");
     if (RoleIDContext == 1 || RoleIDContext == 5) {
       setAllWFHDData(response.data.data);
       const FinalResonse = response.data.data;
+      setLoading(false);
 
       let filterTabWise = [];
       switch (activeTab) {
@@ -296,6 +299,10 @@ const WFHDOverview = () => {
       sortable: true,
     },
     {
+      name: "User Image",
+      cell: (row) => (<img src={row.image} />),
+    },
+    {
       name: "User Name",
       cell: (row) => row.user_name,
     },
@@ -392,7 +399,7 @@ const WFHDOverview = () => {
               <Link to={`/admin/wfhd-update/${row.user_id}`}>
                 {/* <EditIcon /> */}
                 <div className="icon-1" title="Edit User">
-                  <i class="bi bi-pencil"></i>
+                  <i className="bi bi-pencil"></i>
                 </div>
               </Link>
               {/* <button
@@ -404,7 +411,7 @@ const WFHDOverview = () => {
               <Link to={`/admin/wfhd-bank-update/${row.user_id}`}>
                 {/* <DetailsIcon /> */}
                 <div className="icon-1" title="Bank details">
-                  <i class="bi bi-info-square"></i>
+                  <i className="bi bi-info-square"></i>
                 </div>
               </Link>
               {/* <button
@@ -416,7 +423,7 @@ const WFHDOverview = () => {
               <Link to={`/admin/wfh-update-document/${row.user_id}`}>
                 {/* <UploadIcon /> */}
                 <div className="icon-1" title="Document upload">
-                  <i class="bi bi-upload"></i>
+                  <i className="bi bi-upload"></i>
                 </div>
               </Link>
             </>
@@ -466,13 +473,13 @@ const WFHDOverview = () => {
               <Link to={`/admin/wfhd-bank-update/${row.user_id}`}>
                 {/* <DetailsIcon /> */}
                 <div className="icon-1" title="Bank details">
-                  <i class="bi bi-info-square"></i>
+                  <i className="bi bi-info-square"></i>
                 </div>
               </Link>
               <Link to={`/admin/wfhd-update/${row.user_id}`}>
                 {/* <EditIcon /> */}
                 <div className="icon-1" title="Edit User">
-                  <i class="bi bi-pencil"></i>
+                  <i className="bi bi-pencil"></i>
                 </div>
               </Link>
             </>
@@ -485,292 +492,34 @@ const WFHDOverview = () => {
 
   return (
     <>
-      <Modal
-        className="Ready to Onboard"
-        isOpen={showOnBoardModal}
-        onRequestClose={() => setShowOnBoardModal(false)}
-        contentLabel="Preview Modal"
-        appElement={document.getElementById("root")}
-        style={{
-          overlay: {
-            position: "fixed",
-            backgroundColor: "rgba(255, 255, 255, 0.75)",
-          },
-          content: {
-            position: "absolute",
+      {loading ? <div className="loader">Loading...</div> : (
+        <>
+          <Modal
+            className="Ready to Onboard"
+            isOpen={showOnBoardModal}
+            onRequestClose={() => setShowOnBoardModal(false)}
+            contentLabel="Preview Modal"
+            appElement={document.getElementById("root")}
+            style={{
+              overlay: {
+                position: "fixed",
+                backgroundColor: "rgba(255, 255, 255, 0.75)",
+              },
+              content: {
+                position: "absolute",
 
-            width: "500px",
-            height: "max-content",
-            border: "1px solid #ccc",
-            background: "#fff",
+                width: "500px",
+                height: "max-content",
+                border: "1px solid #ccc",
+                background: "#fff",
 
-            borderRadius: "4px",
-            outline: "none",
-          },
-        }}
-      >
-        <div className="" role="document">
-          <div className="">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel2">
-                Onboard user
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span
-                  aria-hidden="true"
-                  onClick={() => setShowOnBoardModal(false)}
-                >
-                  ×
-                </span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <FieldContainer
-                label="Remark"
-                fieldGrid={12}
-                value={remark}
-                onChange={(e) => setRemark(e.target.value)}
-                required={true}
-              ></FieldContainer>
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn cmnbtn btn_sm btn-secondary"
-                // data-dismiss="modal"
-                onClick={() => setShowOnBoardModal(false)}
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="btn cmnbtn btn_sm btn-primary"
-                onClick={onboardingFunc}
-                // data-dismiss="modal"
-                disabled={!remark}
-              >
-                Save changes
-              </button>
-            </div>
-          </div>
-        </div>
-      </Modal>
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-        <FormContainer mainTitle="My Team" link={"/admin/"} />
-        {/* <ul
-          className="nav nav-pills nav-fill navtop"
-          style={{ marginBottom: "20px" }}
-        >
-          <li className="nav-item">
-            <a
-              className="nav-link active"
-              href="#menu1"
-              data-toggle="tab"
-              onClick={() => getFilterData("registered")}
-            >
-              Registered ({statusCounts.registered})
-            </a>
-          </li>
-          <li className="nav-item">
-            <a
-              className="nav-link"
-              href="#menu2"
-              data-toggle="tab"
-              onClick={() => getFilterData("document_upload")}
-            >
-              Upload Document ({statusCounts.document_upload})
-            </a>
-          </li>
-          <li className="nav-item">
-            <a
-              className="nav-link"
-              href="#menu3"
-              data-toggle="tab"
-              id="training_tab"
-              onClick={() => getFilterData("training")}
-            >
-              Training ({statusCounts?.training ? statusCounts.training : 0})
-            </a>
-          </li>
-          <li className="nav-item">
-            <a
-              className="nav-link"
-              href="#menu4"
-              id="onboarded_tab"
-              data-toggle="tab"
-              onClick={() => getFilterData("onboarded")}
-            >
-              Onboarded ({statusCounts.onboarded})
-            </a>
-          </li>
-        </ul> */}
-        <div className="tab">
-          <div
-            className={` named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
-            onClick={() => {
-              FilterTabData("registered"), setActiveTab(3);
+                borderRadius: "4px",
+                outline: "none",
+              },
             }}
           >
-            Registered (
-            {statusCounts?.registered ? statusCounts?.registered : 0})
-          </div>
-          <div
-            className={`named-tab  ${activeTab == 1 ? "active-tab" : ""}`}
-            onClick={() => {
-              FilterTabData("document_upload"), setActiveTab(1);
-            }}
-          >
-            Upload Document (
-            {statusCounts?.document_upload ? statusCounts?.document_upload : 0})
-          </div>
-          <div
-            className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
-            onClick={() => {
-              FilterTabData("training"), setActiveTab(2);
-            }}
-          >
-            Training ({statusCounts?.training ? statusCounts?.training : 0})
-          </div>
-        </div>
-        <div className="tab">
-          <div
-            className={`named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
-            onClick={() => {
-              FilterTabData("onboarded"), setActiveTab(0);
-            }}
-          >
-            Onboarded ({statusCounts?.onboarded ? statusCounts?.onboarded : 0})
-          </div>
-        </div>
-        <div className="card">
-          {/* <div className="data_tbl table-responsive" >
-            
-            <DataTable
-              title="Payout Users"
-              columns={columns}
-              data={filterDataS}
-              fixedHeader
-              fixedHeaderScrollHeight="64vh"
-              highlightOnHover
-              subHeader
-              striped="true"
-                subHeaderComponent={
-                  <input
-                    type="text"
-                    placeholder="Search Here"
-                    className="w-50 form-control"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                }
-            />
-          </div> */}
-          <div
-            className="card-header"
-            style={{ justifyContent: "space-between" }}
-          >
-            Payout User
-            <input
-              type="text"
-              placeholder="Search Here"
-              className="form-control"
-              value={search}
-              style={{ width: "300px" }}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="card-body body-padding">
-            <DataTable
-              columns={columns}
-              data={filterDataS}
-              pagination
-              //  selectableRows={true}
-              paginationDefaultPage={1}
-              highlightOnHover
-              paginationResetDefaultPage={true}
-              striped="true"
-            />
-          </div>
-        </div>
-
-        <div
-          className="modal fade"
-          id="exampleModal"
-          tabIndex={-1}
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Training Done
-                </h5>
-                <button
-                  type="button"
-                  className="close"
-                  data-dismiss="modal"
-                  aria-label="Close"
-                >
-                  <span aria-hidden="true">×</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <FieldContainer
-                  label="Remark"
-                  fieldGrid={12}
-                  value={remark}
-                  onChange={(e) => setRemark(e.target.value)}
-                  required={true}
-                ></FieldContainer>
-                <FieldContainer
-                  type="date"
-                  label="Training Date"
-                  fieldGrid={12}
-                  min={
-                    rowData?.joining_date && rowData?.joining_date.split("T")[0]
-                  }
-                  value={trainingDate}
-                  onChange={(e) => setTrainingDate(e.target.value)}
-                />
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn cmnbtn btn_sm btn-secondary"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-                <button
-                  type="button"
-                  className="btn cmnbtn sm_btn btn-primary"
-                  onClick={trainingFunc}
-                  data-dismiss="modal"
-                  disabled={!remark || !trainingDate}
-                >
-                  Save changes
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* <div
-            className="modal fade"
-            id="exampleModal2"
-            tabIndex={-1}
-            role="dialog"
-            aria-labelledby="exampleModalLabel2"
-            aria-hidden="true"
-          >
-            <div className="modal-dialog" role="document">
-              <div className="modal-content">
+            <div className="" role="document">
+              <div className="">
                 <div className="modal-header">
                   <h5 className="modal-title" id="exampleModalLabel2">
                     Onboard user
@@ -781,7 +530,12 @@ const WFHDOverview = () => {
                     data-dismiss="modal"
                     aria-label="Close"
                   >
-                    <span aria-hidden="true">×</span>
+                    <span
+                      aria-hidden="true"
+                      onClick={() => setShowOnBoardModal(false)}
+                    >
+                      ×
+                    </span>
                   </button>
                 </div>
                 <div className="modal-body">
@@ -796,6 +550,373 @@ const WFHDOverview = () => {
                 <div className="modal-footer">
                   <button
                     type="button"
+                    className="btn cmnbtn btn_sm btn-secondary"
+                    // data-dismiss="modal"
+                    onClick={() => setShowOnBoardModal(false)}
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    className="btn cmnbtn btn_sm btn-primary"
+                    onClick={onboardingFunc}
+                    // data-dismiss="modal"
+                    disabled={!remark}
+                  >
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </Modal>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <FormContainer mainTitle="My Team" link={"/admin/"} />
+            {/* <ul
+              className="nav nav-pills nav-fill navtop"
+              style={{ marginBottom: "20px" }}
+            >
+              <li className="nav-item">
+                <a
+                  className="nav-link active"
+                  href="#menu1"
+                  data-toggle="tab"
+                  onClick={() => getFilterData("registered")}
+                >
+                  Registered ({statusCounts.registered})
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="#menu2"
+                  data-toggle="tab"
+                  onClick={() => getFilterData("document_upload")}
+                >
+                  Upload Document ({statusCounts.document_upload})
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="#menu3"
+                  data-toggle="tab"
+                  id="training_tab"
+                  onClick={() => getFilterData("training")}
+                >
+                  Training ({statusCounts?.training ? statusCounts.training : 0})
+                </a>
+              </li>
+              <li className="nav-item">
+                <a
+                  className="nav-link"
+                  href="#menu4"
+                  id="onboarded_tab"
+                  data-toggle="tab"
+                  onClick={() => getFilterData("onboarded")}
+                >
+                  Onboarded ({statusCounts.onboarded})
+                </a>
+              </li>
+            </ul> */}
+            <div className="tab">
+              <div
+                className={` named-tab  ${activeTab == 3 ? "active-tab" : ""}`}
+                onClick={() => {
+                  FilterTabData("registered"), setActiveTab(3);
+                }}
+              >
+                Registered (
+                {statusCounts?.registered ? statusCounts?.registered : 0})
+              </div>
+              <div
+                className={`named-tab  ${activeTab == 1 ? "active-tab" : ""}`}
+                onClick={() => {
+                  FilterTabData("document_upload"), setActiveTab(1);
+                }}
+              >
+                Upload Document (
+                {statusCounts?.document_upload ? statusCounts?.document_upload : 0})
+              </div>
+              <div
+                className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
+                onClick={() => {
+                  FilterTabData("training"), setActiveTab(2);
+                }}
+              >
+                Training ({statusCounts?.training ? statusCounts?.training : 0})
+              </div>
+            </div>
+            <div className="tab">
+              <div
+                className={`named-tab  ${activeTab == 0 ? "active-tab" : ""}`}
+                onClick={() => {
+                  FilterTabData("onboarded"), setActiveTab(0);
+                }}
+              >
+                Onboarded ({statusCounts?.onboarded ? statusCounts?.onboarded : 0})
+              </div>
+            </div>
+            <div className="card">
+              {/* <div className="data_tbl table-responsive" >
+                
+                <DataTable
+                  title="Payout Users"
+                  columns={columns}
+                  data={filterDataS}
+                  fixedHeader
+                  fixedHeaderScrollHeight="64vh"
+                  highlightOnHover
+                  subHeader
+                  striped="true"
+                    subHeaderComponent={
+                      <input
+                        type="text"
+                        placeholder="Search Here"
+                        className="w-50 form-control"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                      />
+                    }
+                />
+              </div> */}
+              <div
+                className="card-header"
+                style={{ justifyContent: "space-between" }}
+              >
+                Payout User
+                <input
+                  type="text"
+                  placeholder="Search Here"
+                  className="form-control"
+                  value={search}
+                  style={{ width: "300px" }}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <div className="card-body body-padding">
+                <DataTable
+                  columns={columns}
+                  data={filterDataS}
+                  pagination
+                  //  selectableRows={true}
+                  paginationDefaultPage={1}
+                  highlightOnHover
+                  paginationResetDefaultPage={true}
+                  striped="true"
+                />
+              </div>
+            </div>
+
+            <div
+              className="modal fade"
+              id="exampleModal"
+              tabIndex={-1}
+              role="dialog"
+              aria-labelledby="exampleModalLabel"
+              aria-hidden="true"
+            >
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="exampleModalLabel">
+                      Training Done
+                    </h5>
+                    <button
+                      type="button"
+                      className="close"
+                      data-dismiss="modal"
+                      aria-label="Close"
+                    >
+                      <span aria-hidden="true">×</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <FieldContainer
+                      label="Remark"
+                      fieldGrid={12}
+                      value={remark}
+                      onChange={(e) => setRemark(e.target.value)}
+                      required={true}
+                    ></FieldContainer>
+                    <FieldContainer
+                      type="date"
+                      label="Training Date"
+                      fieldGrid={12}
+                      min={
+                        rowData?.joining_date && rowData?.joining_date.split("T")[0]
+                      }
+                      value={trainingDate}
+                      onChange={(e) => setTrainingDate(e.target.value)}
+                    />
+                  </div>
+                  <div className="modal-footer">
+                    <button
+                      type="button"
+                      className="btn cmnbtn btn_sm btn-secondary"
+                      data-dismiss="modal"
+                    >
+                      Close
+                    </button>
+                    <button
+                      type="button"
+                      className="btn cmnbtn sm_btn btn-primary"
+                      onClick={trainingFunc}
+                      data-dismiss="modal"
+                      disabled={!remark || !trainingDate}
+                    >
+                      Save changes
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* <div
+                className="modal fade"
+                id="exampleModal2"
+                tabIndex={-1}
+                role="dialog"
+                aria-labelledby="exampleModalLabel2"
+                aria-hidden="true"
+              >
+                <div className="modal-dialog" role="document">
+                  <div className="modal-content">
+                    <div className="modal-header">
+                      <h5 className="modal-title" id="exampleModalLabel2">
+                        Onboard user
+                      </h5>
+                      <button
+                        type="button"
+                        className="close"
+                        data-dismiss="modal"
+                        aria-label="Close"
+                      >
+                        <span aria-hidden="true">×</span>
+                      </button>
+                    </div>
+                    <div className="modal-body">
+                      <FieldContainer
+                        label="Remark"
+                        fieldGrid={12}
+                        value={remark}
+                        onChange={(e) => setRemark(e.target.value)}
+                        required={true}
+                      ></FieldContainer>
+                    </div>
+                    <div className="modal-footer">
+                      <button
+                        type="button"
+                        className="btn btn-secondary"
+                        data-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={onboardingFunc}
+                        data-dismiss="modal"
+                        disabled={!remark}
+                      >
+                        Save changes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div> */}
+            </div>
+          </div>
+
+          {/* SEP Modal */}
+          <div
+            className="modal fade"
+            id="sepmodal"
+            tabIndex={-1}
+            role="dialog"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+          >
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="exampleModalLabel">
+                    Separation
+                  </h5>
+                  <button
+                    type="button"
+                    className="close"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">×</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <FieldContainer
+                    label="Status"
+                    Tag="select"
+                    value={separationStatus}
+                    onChange={(e) => setSeparationStatus(e.target.value)}
+                  >
+                    <option value="" disabled>
+                      Choose...
+                    </option>
+                    <option value="Resigned">Resigned</option>
+                    {/* <option value="Resign Accepted">Resign Accepted</option>
+                    <option value="On Long Leave">On Long Leave</option>
+                    <option value="Subatical">Subatical</option>
+                    <option value="Suspended">Suspended</option> */}
+                  </FieldContainer>
+                  <FieldContainer
+                    label="Reason"
+                    Tag="select"
+                    value={separationReason}
+                    onChange={(e) => setSeparationReason(e.target.value)}
+                  >
+                    {separationReasonGet.map((option) => (
+                      <option value={option.id} key={option.id}>
+                        {" "}
+                        {option.reason}
+                      </option>
+                    ))}
+                  </FieldContainer>
+                  <FieldContainer
+                    label="Remark"
+                    value={separationRemark}
+                    onChange={(e) => setSeparationRemark(e.target.value)}
+                  />
+                  {(separationStatus === "On Long Leave" ||
+                    separationStatus === "Subatical" ||
+                    separationStatus === "Suspended") && (
+                    <FieldContainer
+                      label="Reinstated Date"
+                      type="date"
+                      value={separationReinstateDate}
+                      onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                    />
+                  )}
+                  {separationStatus == "Resign Accepted" && (
+                    <input
+                      label="Last Working Day"
+                      className="form-control"
+                      style={{ width: "220px" }}
+                      type="date"
+                      value={separationLWD}
+                      max={today}
+                      onChange={(e) => setSeparationLWD(e.target.value)}
+                    />
+                  )}
+                  {separationStatus == "Resigned" && (
+                    <FieldContainer
+                      label="Resignation Date"
+                      type="date"
+                      value={separationResignationDate}
+                      onChange={(e) => setSeparationResignationDate(e.target.value)}
+                    />
+                  )}
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
                     className="btn btn-secondary"
                     data-dismiss="modal"
                   >
@@ -804,127 +925,17 @@ const WFHDOverview = () => {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={onboardingFunc}
+                    onClick={() => handleSeparationDataPost()}
                     data-dismiss="modal"
-                    disabled={!remark}
                   >
                     Save changes
                   </button>
                 </div>
               </div>
             </div>
-          </div> */}
-        </div>
-      </div>
-
-      {/* SEP Modal */}
-      <div
-        className="modal fade"
-        id="sepmodal"
-        tabIndex={-1}
-        role="dialog"
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog" role="document">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Separation
-              </h5>
-              <button
-                type="button"
-                className="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">×</span>
-              </button>
-            </div>
-            <div className="modal-body">
-              <FieldContainer
-                label="Status"
-                Tag="select"
-                value={separationStatus}
-                onChange={(e) => setSeparationStatus(e.target.value)}
-              >
-                <option value="" disabled>
-                  Choose...
-                </option>
-                <option value="Resigned">Resigned</option>
-                {/* <option value="Resign Accepted">Resign Accepted</option>
-                <option value="On Long Leave">On Long Leave</option>
-                <option value="Subatical">Subatical</option>
-                <option value="Suspended">Suspended</option> */}
-              </FieldContainer>
-              <FieldContainer
-                label="Reason"
-                Tag="select"
-                value={separationReason}
-                onChange={(e) => setSeparationReason(e.target.value)}
-              >
-                {separationReasonGet.map((option) => (
-                  <option value={option.id} key={option.id}>
-                    {" "}
-                    {option.reason}
-                  </option>
-                ))}
-              </FieldContainer>
-              <FieldContainer
-                label="Remark"
-                value={separationRemark}
-                onChange={(e) => setSeparationRemark(e.target.value)}
-              />
-              {(separationStatus === "On Long Leave" ||
-                separationStatus === "Subatical" ||
-                separationStatus === "Suspended") && (
-                <FieldContainer
-                  label="Reinstated Date"
-                  type="date"
-                  value={separationReinstateDate}
-                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                />
-              )}
-              {separationStatus == "Resign Accepted" && (
-                <input
-                  label="Last Working Day"
-                  className="form-control"
-                  style={{ width: "220px" }}
-                  type="date"
-                  value={separationLWD}
-                  max={today}
-                  onChange={(e) => setSeparationLWD(e.target.value)}
-                />
-              )}
-              {separationStatus == "Resigned" && (
-                <FieldContainer
-                  label="Resignation Date"
-                  type="date"
-                  value={separationResignationDate}
-                  onChange={(e) => setSeparationResignationDate(e.target.value)}
-                />
-              )}
-            </div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-dismiss="modal"
-              >
-                Close
-              </button>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => handleSeparationDataPost()}
-                data-dismiss="modal"
-              >
-                Save changes
-              </button>
-            </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </>
   );
 };

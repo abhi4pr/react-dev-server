@@ -50,29 +50,17 @@ const colourOptions = [
   { value: "English", label: "English" },
   { value: "Hindi", label: "Hindi" },
   { value: "Spanish", label: "Spanish" },
-  { value: "Mandarin", label: "Mandarin" },
   { value: "French", label: "French" },
   { value: "Arabic", label: "Arabic" },
   { value: "Bengali", label: "Bengali" },
   { value: "Russian", label: "Russian" },
-  { value: "Portuguese", label: "Portuguese" },
-  { value: "Indonesian", label: "Indonesian" },
   { value: "Urdu", label: "Urdu" },
   { value: "German", label: "German" },
   { value: "Japanese", label: "Japanese" },
-  { value: "Swahili", label: "Swahili" },
   { value: "Marathi", label: "Marathi" },
   { value: "Telugu", label: "Telugu" },
-  { value: "Turkish", label: "Turkish" },
   { value: "Tamil", label: "Tamil" },
-  { value: "Vietnamese", label: "Vietnamese" },
   { value: "Italian", label: "Italian" },
-  { value: "Korean", label: "Korean" },
-  { value: "Persian", label: "Persian" },
-  { value: "Polish", label: "Polish" },
-  { value: "Dutch", label: "Dutch" },
-  { value: "Greek", label: "Greek" },
-  { value: "Thai", label: "Thai" },
   { value: "Other", label: "Other" },
 ];
 
@@ -134,6 +122,7 @@ const UserMaster = () => {
   const [gender, setGender] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [age, setAge] = useState("");
+  const [ageCalculate, setAgeCalculate] = useState("");
   const [nationality, setNationality] = useState("Indian");
   const [maritialStatus, setMaritialStatus] = useState("");
   const [dateOfMarraige, setDateOfMarraige] = useState("");
@@ -144,7 +133,6 @@ const UserMaster = () => {
   //--------------------Official Info State Start
   const [jobType, setJobType] = useState("");
   const [department, setDepartment] = useState("");
-  console.log(department, "department>>>>>>>>>>>>>>>>");
   const [departmentdata, getDepartmentData] = useState([]);
   const [subDepartmentData, setSubDepartmentData] = useState([]);
   const [subDepartment, setSubDeparment] = useState([]);
@@ -278,6 +266,8 @@ const UserMaster = () => {
 
   const [loading, setLoading] = useState(false);
 
+  console.log(nationality, "nationojo");
+
   const higestQualificationData = [
     "10th",
     "12th",
@@ -289,6 +279,7 @@ const UserMaster = () => {
   const bankTypeData = ["Saving A/C", "Current A/C", "Salary A/C"];
   const statusData = ["Active", "Exit", "PreOnboard"];
   const genderData = ["Male", "Female", "Other"];
+  const nationalityData = ["India", "USA", "Uk"];
   const bloodGroupData = [
     "A+ (A Positive)",
     "A- (A Negetive)",
@@ -554,7 +545,7 @@ const UserMaster = () => {
     formData.append("alternate_contact", alternateContact);
     formData.append("Gender", gender);
     formData.append("DOB", dateOfBirth);
-    formData.append("Age", Number(age));
+    formData.append("Age", Number(ageCalculate));
     formData.append("Nationality", nationality);
     formData.append("MartialStatus", maritialStatus);
     formData.append("DateofMarriage", dateOfMarraige);
@@ -623,7 +614,7 @@ const UserMaster = () => {
                 const userResponseID = res.data.simv.user_id;
                 setUserResID(userResponseID);
                 setIsFormSubmitted(true);
-                toastAlert(res.data.simv.emp_id + " " + "Employe Registerd");
+                toastAlert(res.data.simv.emp_id + " " + "Employee Registerd");
                 setIsLoading(false);
               } else {
                 toastError("Sorry User is Not Created, Please try again later");
@@ -898,6 +889,12 @@ const UserMaster = () => {
       const newContact1 = event.target.value;
       setAlternateContact(newContact1);
 
+      if (newContact1 === "" || (newContact1.length === 1 && parseInt(newContact1) < 6)) {
+        setPersonalContact("");
+      } else {
+        setPersonalContact(newContact1);
+      }
+
       if (newContact1 === "") {
         setValidContact3(false);
       } else {
@@ -972,13 +969,25 @@ const UserMaster = () => {
   const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
 
+    // Extracting last 4 and 6 digits from personal contact
+    const personalContactLast4 = personalContact.slice(-4);
+    const personalContactLast6 = personalContact.slice(-6);
+
     // Define login ID options
-    const loginIdOptions = [
-      userName[0], // loginIdOption1
-      userName[0] + (userName[1] ? userName[1].charAt(0) : ""), // loginIdOption2
-      (userName[0] ? userName[0].charAt(0) : "") + (userName[1] || ""), // loginIdOption3
-      userName.join("."), // loginIdOption4
+    let loginIdOptions = [
+      userName[0], // lalit
+      userName.join("."), // lalit.gour
+      userName[0] + personalContactLast4, // lalit5413
+      userName[0] + personalContactLast6, // lalit815413
     ];
+
+    if (userName.length > 1) {
+      loginIdOptions.push(
+        userName[0].charAt(0) + userName[1], // lgour
+        userName.join("") // lalitgour
+      );
+    }
+
     const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
     setLastIndexUsed(nextIndex);
     const generatedLoginId = loginIdOptions[nextIndex];
@@ -1071,28 +1080,52 @@ const UserMaster = () => {
     setSelectedImage(file);
   };
 
-  const calculateAge = (dob) => {
-    const currentDate = new Date();
+  // const calculateAge = (dob) => {
+  //   const currentDate = new Date();
+  //   const birthDate = new Date(dob);
+  //   let age = currentDate.getFullYear() - birthDate.getFullYear();
+  //   const m = currentDate.getMonth() - birthDate.getMonth();
+
+  //   if (m < 0 || (m === 0 && currentDate.getDate() < birthDate.getDate())) {
+  //     age--;
+  //   }
+
+  //   return age;
+  // };
+
+  function calculateAge(dob) {
     const birthDate = new Date(dob);
-    let age = currentDate.getFullYear() - birthDate.getFullYear();
-    const m = currentDate.getMonth() - birthDate.getMonth();
-
-    if (m < 0 || (m === 0 && currentDate.getDate() < birthDate.getDate())) {
-      age--;
-    }
-
-    return age;
-  };
+    const currentDate = new Date();
+    // Calculate the difference in milliseconds
+    const difference = currentDate - birthDate;
+    // Convert milliseconds to days
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    // Calculate years and remaining days
+    const years = Math.floor(days / 365);
+    const remainingDays = days % 365;
+    return `${years} years ${remainingDays} days`;
+  }
+  function calculateAgeInDays(dob) {
+    const birthDate = new Date(dob);
+    const currentDate = new Date();
+    // Calculate the difference in milliseconds
+    const difference = currentDate - birthDate;
+    // Convert milliseconds to days
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    return days;
+  }
 
   const handleDateChange = (e) => {
     const selectedDate = e.target.value;
     const age = calculateAge(selectedDate);
+    const ageDays = calculateAgeInDays(selectedDate);
 
     if (age < 15) {
       window.alert("Your age must be greater than 15 years.");
     } else {
       setDateOfBirth(selectedDate);
       setAge(age);
+      setAgeCalculate(ageDays);
     }
   };
 
@@ -1397,7 +1430,45 @@ const UserMaster = () => {
       {dateOfBirth !== "" && (
         <FieldContainer fieldGrid={3} label="Age" value={age} />
       )}
-      <FieldContainer
+
+      <div className="form-group col-3">
+        <label className="form-label">
+          Nationality <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={nationalityData.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
+          }))}
+          value={{
+            value: nationality,
+            label: `${nationality}`,
+          }}
+          onChange={(e) => {
+            setNationality(e.value);
+          }}
+          onBlur={() => {
+            if (nationality === "" || nationality === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                nationality: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                nationality: false,
+              });
+            }
+          }}
+          required
+        />
+        {mandatoryFieldsEmpty.nationality && (
+          <p style={{ color: "red" }}>Please enter nationality</p>
+        )}
+      </div>
+
+      {/* <FieldContainer
         label="Nationality"
         astric={true}
         fieldGrid={3}
@@ -1423,7 +1494,7 @@ const UserMaster = () => {
       />
       {mandatoryFieldsEmpty.nationality && (
         <p style={{ color: "red" }}>Please Enter Nationality</p>
-      )}
+      )} */}
       <div className="form-group col-3">
         <label className="form-label">
           Maritial Status <sup style={{ color: "red" }}>*</sup>
@@ -1791,7 +1862,7 @@ const UserMaster = () => {
       )}
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <p
+          {/* <p
             className={
               loginResponse == "login id available"
                 ? "login-success1"
@@ -1799,14 +1870,21 @@ const UserMaster = () => {
             }
           >
             {loginResponse}
-          </p>
+          </p> */}
           <label>
             Login ID <sup style={{ color: "red" }}>*</sup>
           </label>
           <div className="input-group">
             <input
-              className="form-control"
+              className={`form-control ${
+                loginId
+                  ? loginResponse === "login id available"
+                    ? "login-success-border"
+                    : "login-error-border"
+                  : ""
+              }`}
               value={loginId}
+              disabled
               onChange={handleLoginIdChange}
               onBlur={() => {
                 if (loginId === "") {
@@ -2842,126 +2920,6 @@ const UserMaster = () => {
           </div>
         </div>
       ))}
-      {/* {educationDetails?.map((detail, index) => (
-        <div key={index} mb={2}>
-          <div className="row">
-            {educationDispalyFields.map((key) => {
-              switch (key) {
-                case "institute_name":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      fieldGrid={3}
-                      type="text"
-                      name={key}
-                      label={educationFieldLabels[key]}
-                      value={detail[key] || ""}
-                      onChange={(e) => handleEducationDetailsChange(index, e)}
-                    />
-                  );
-
-                case "from_year":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      fieldGrid={3}
-                      type="date"
-                      name={key}
-                      label={educationFieldLabels[key]}
-                      value={detail[key]?.split("T")[0]}
-                      onChange={(e) => handleEducationDetailsChange(index, e)}
-                    />
-                  );
-                case "to_year":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      fieldGrid={3}
-                      type="date"
-                      name={key}
-                      label={educationFieldLabels[key]}
-                      value={detail[key]?.split("T")[0]}
-                      onChange={(e) => handleEducationDetailsChange(index, e)}
-                    />
-                  );
-
-                case "percentage":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      fieldGrid={3}
-                      type="number"
-                      name={key}
-                      label={educationFieldLabels[key]}
-                      value={detail[key] || ""}
-                      onChange={(e) => handleEducationDetailsChange(index, e)}
-                    />
-                  );
-
-                case "stream":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      fieldGrid={3}
-                      type="text"
-                      name={key}
-                      label={educationFieldLabels[key]}
-                      value={detail[key] || ""}
-                      onChange={(e) => handleEducationDetailsChange(index, e)}
-                    />
-                  );
-                case "specialization":
-                  return (
-                    <FieldContainer
-                      key={key}
-                      fieldGrid={3}
-                      type="text"
-                      name={key}
-                      label={educationFieldLabels[key]}
-                      value={detail[key] || ""}
-                      onChange={(e) => handleEducationDetailsChange(index, e)}
-                    />
-                  );
-                case "title":
-                  return (
-                    <div>
-                      <Autocomplete
-                        key={key}
-                        name={key}
-                        options={EducationList}
-                        getOptionLabel={(option) => option.label}
-                        value={EducationList.find(
-                          (option) => option.value === detail[key]
-                        )}
-                        onChange={(e, newValue) => {
-                          handleEducationDetailsChange(index, {
-                            target: {
-                              name: key,
-                              value: newValue ? newValue.value : "",
-                            },
-                          });
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Standard"
-                            variant="outlined"
-                            fullWidth
-                          />
-                        )}
-                      />
-                    </div>
-                  );
-              }
-            })}
-            {educationDetails?.length > 1 && (
-              <IconButton onClick={() => handleRemoveEducationDetails(index)}>
-                <DeleteIcon />
-              </IconButton>
-            )}
-          </div>
-        </div>
-      ))} */}
       <div className="row">
         <div className="col-12">
           <button

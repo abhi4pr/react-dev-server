@@ -9,16 +9,14 @@ import { baseUrl } from "../../../utils/config";
 const HobbiesOverview = () => {
   const navigate = useNavigate();
   const [hobbiesData, setHobbiesData] = useState([]);
-  const [origionalData, setOrigionalData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [search, setSearch] = useState("");
   const getData = async () => {
     try {
-      const response = await axios.get(
-        baseUrl + "get_all_hobbies"
-      );
+      const response = await axios.get(baseUrl + "get_all_hobbies");
       const data = response.data.data;
       setHobbiesData(data);
-      setOrigionalData(data);
+      setOriginalData(data);
     } catch (error) {
       console.error(error);
     }
@@ -29,7 +27,7 @@ const HobbiesOverview = () => {
   }, []);
 
   useEffect(() => {
-    const result = origionalData.filter((d) => {
+    const result = originalData.filter((d) => {
       return d.hobby_name?.toLowerCase().includes(search.toLowerCase());
     });
     setHobbiesData(result);

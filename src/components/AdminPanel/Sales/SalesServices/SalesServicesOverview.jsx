@@ -8,7 +8,7 @@ import DeleteButton from "../../DeleteButton";
 
 const SalesServicesOverview = () => {
   const [hobbiesData, setHobbiesData] = useState([]);
-  const [origionalData, setOrigionalData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [search, setSearch] = useState("");
   const [post, setPost] = useState("post");
   const getData = async () => {
@@ -19,7 +19,7 @@ const SalesServicesOverview = () => {
       const data = response.data.data;
       console.log(data, "hello world");
       setHobbiesData(data);
-      setOrigionalData(data);
+      setOriginalData(data);
     } catch (error) {
       console.error(error);
     }
@@ -30,7 +30,7 @@ const SalesServicesOverview = () => {
   }, []);
 
   useEffect(() => {
-    const result = origionalData.filter((d) => {
+    const result = originalData.filter((d) => {
       return d.service_name?.toLowerCase().includes(search.toLowerCase());
     });
     setHobbiesData(result);

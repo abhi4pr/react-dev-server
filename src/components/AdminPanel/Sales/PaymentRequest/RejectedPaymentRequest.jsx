@@ -7,7 +7,7 @@ import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 
 const RejectedPaymentRequest = () => {
   const [rejectedPaymentData, setRejectedPaymentData] = useState([]);
-  const [origionalData, setOrigionalData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [search, setSearch] = useState("");
 
   const getData = async () => {
@@ -16,7 +16,7 @@ const RejectedPaymentRequest = () => {
         `${baseUrl}sales/getAll_rejected_sales_booking_payment_list`
       );
       setRejectedPaymentData(response.data.data);
-      setOrigionalData(response.data.data);
+      setOriginalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
     }
@@ -26,7 +26,7 @@ const RejectedPaymentRequest = () => {
   }, []);
 
   useEffect(() => {
-    const result = origionalData.filter((d) => {
+    const result = originalData.filter((d) => {
       return d?.customer_name?.toLowerCase()?.includes(search?.toLowerCase());
     });
     setRejectedPaymentData(result);
