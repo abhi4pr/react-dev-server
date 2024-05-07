@@ -102,7 +102,6 @@ export default function PendingPaymentRequest() {
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [adjustAmount, setAdjustAmount] = useState("");
   const [adjustmentAmt, setAdjustmentAmt] = useState("");
-  console.log(adjustAmount, "adjustAmount>");
   const [preview, setPreview] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [overviewDialog, setOverviewDialog] = useState(false);
