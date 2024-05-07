@@ -21,6 +21,9 @@ const DesignationOverview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUserData, setSelectedUserData] = useState([]);
 
+  const [desiDeptAuthData, setDesiDeptDataAuth] = useState([]);
+  const [desiDeptTotalAuth, setDesiDeptToaltAuth] = useState([]);
+
   // Get user ID from JWT token
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -49,8 +52,21 @@ const DesignationOverview = () => {
     });
   }
 
+  function DesiDeptCountAuth() {
+    axios.get(`${baseUrl}` + `get_single_desi_dept_auth_count`).then((res) => {
+      setDesiDeptDataAuth(res.data.data.map((d) => d.total_count));
+      setDesiDeptToaltAuth(res.data.result);
+      console.log(
+        res.data.data.map((d) => d.total_count),
+        "hello welcome"
+      );
+      console.log(res.data.result, "result");
+    });
+  }
+
   useEffect(() => {
     getData();
+    DesiDeptCountAuth();
   }, []);
 
   // Filter data based on search input
@@ -88,6 +104,17 @@ const DesignationOverview = () => {
           </button>
         </Link>
       ),
+    },
+    {
+      name: "Assigned Auth",
+      cell: (row) => {
+        const match =
+          desiDeptAuthData._id === row.desi_id
+            ? desiDeptAuthData.total_count
+            : 0 + "/" + desiDeptTotalAuth;
+        console.log(desiDeptAuthData._id === row.desi_id);
+      },
+      sortable: true,
     },
     {
       name: "Emp Count",
@@ -179,9 +206,7 @@ const DesignationOverview = () => {
       <>
         <div className="card">
           <div className="card-header sb">
-            <div className="card-title">
-              Designation Overview
-            </div>
+            <div className="card-title">Designation Overview</div>
             <input
               type="text"
               placeholder="Search here"
@@ -192,7 +217,6 @@ const DesignationOverview = () => {
           </div>
           <div className="card-body thm_table">
             <DataTable
-
               columns={columns}
               data={filterdata}
               fixedHeader

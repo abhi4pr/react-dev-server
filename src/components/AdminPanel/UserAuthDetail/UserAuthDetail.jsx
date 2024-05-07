@@ -78,6 +78,21 @@ const UserAuthDetail = () => {
     });
     setFilterData(updatedData);
   };
+  const handleUnselectRow = (row) => {
+    const updatedData = filterData.map((item) => {
+      if (item.obj_id === row.obj_id) {
+        return {
+          ...item,
+          insert_value: 0,
+          view_value: 0,
+          update_value: 0,
+          delete_flag_value: 0,
+        };
+      }
+      return item;
+    });
+    setFilterData(updatedData);
+  };
 
   const handleSelectAllColumn = (columnName) => {
     const updatedData = filterData.map((item) => ({
@@ -91,7 +106,7 @@ const UserAuthDetail = () => {
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "9%",
+      width: "100px",
       sortable: true,
     },
     {
@@ -144,13 +159,22 @@ const UserAuthDetail = () => {
     {
       name: "Select Row",
       cell: (row) => (
-        <button
-          className="btn btn-outline-info"
-          onClick={() => handleSelectRow(row)}
-        >
-          Select All
-        </button>
+        <>
+          <button
+            className="btn btn-outline-info btn-sm mr-1"
+            onClick={() => handleSelectRow(row)}
+          >
+            Select All
+          </button>
+          <button
+            className="btn btn-outline-danger btn-sm"
+            onClick={() => handleUnselectRow(row)}
+          >
+            Undo
+          </button>
+        </>
       ),
+      width: "100px",
     },
   ];
 

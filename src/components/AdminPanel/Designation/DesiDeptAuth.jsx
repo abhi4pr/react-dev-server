@@ -4,14 +4,14 @@ import DataTable from "react-data-table-component";
 import { Navigate, useParams } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import { useGlobalContext } from "../../../Context/Context";
-import {baseUrl} from '../../../utils/config'
+import { baseUrl } from "../../../utils/config";
 
 const DesiDeptAuth = () => {
-  const { toastAlert } = useGlobalContext();
+  const { toastAlert, toastError } = useGlobalContext();
+  const { id } = useParams();
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const userId = decodedToken.id;
-  const { id } = useParams();
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -22,12 +22,10 @@ const DesiDeptAuth = () => {
   }, []);
 
   function getData() {
-    axios
-      .get(`${baseUrl}`+`get_single_desi_dept_auth/${id}`)
-      .then((res) => {
-        setData(res.data);
-        setFilterData(res.data);
-      });
+    axios.get(`${baseUrl}` + `get_single_desi_dept_auth/${id}`).then((res) => {
+      setData(res.data);
+      setFilterData(res.data);
+    });
   }
 
   useEffect(() => {
@@ -36,7 +34,38 @@ const DesiDeptAuth = () => {
     });
     setFilterData(result);
   }, [search]);
-  
+
+  const handleSelectRow = (row) => {
+    const updatedData = filterData.map((item) => {
+      if (item.obj_id === row.obj_id) {
+        return {
+          ...item,
+          insert_value: 1,
+          view_value: 1,
+          update_value: 1,
+          delete_flag_value: 1,
+        };
+      }
+      return item;
+    });
+    setFilterData(updatedData);
+  };
+  const handleUnselectRow = (row) => {
+    const updatedData = filterData.map((item) => {
+      if (item.obj_id === row.obj_id) {
+        return {
+          ...item,
+          insert_value: 0,
+          view_value: 0,
+          update_value: 0,
+          delete_flag_value: 0,
+        };
+      }
+      return item;
+    });
+    setFilterData(updatedData);
+  };
+
   const handleCheckboxChange = (event, row, property) => {
     const { checked } = event.target;
     setFilterData((prevData) =>
@@ -106,28 +135,54 @@ const DesiDeptAuth = () => {
         />
       ),
     },
+    {
+      name: "Select Row",
+      cell: (row) => (
+        <>
+          <button
+            className="btn btn-outline-info btn-sm mr-1"
+            onClick={() => handleSelectRow(row)}
+          >
+            Select All
+          </button>
+          <button
+            className="btn btn-outline-danger btn-sm"
+            onClick={() => handleUnselectRow(row)}
+          >
+            Undo
+          </button>
+        </>
+      ),
+      width: "100px",
+    },
   ];
-  function postData() {
-    for (const element of filterData) {
-      axios.put(baseUrl+"update_dept_desi_auth", {
-        dept_desi_auth_id: element.dept_desi_auth_id,
-        dept_id: element.dept_id,
-        desi_id: element.desi_id,
-        obj_id: element.obj_id,
-        insert: element.insert_value,
-        view: element.view_value,
-        update: element.update_value,
-        delete_flag: element.delete_flag_value,
-        Last_updated_by: userId,
-      });
+  async function postData() {
+    try {
+      for (const element of filterData) {
+        await axios.put(baseUrl + "update_dept_desi_auth", {
+          dept_desi_auth_id: element.dept_desi_auth_id,
+          dept_id: element.dept_id,
+          desi_id: element.desi_id,
+          obj_id: element.obj_id,
+          insert: element.insert_value,
+          view: element.view_value,
+          update: element.update_value,
+          delete_flag: element.delete_flag_value,
+          Last_updated_by: userId,
+        });
+      }
+      setIsSubmitted(true);
+      toastAlert("Updated Successfully");
+      getData();
+    } catch (error) {
+      console.error("Error updating data:", error);
+      toastError("Update failed. Please try again later.");
     }
-    setIsSubmitted(true);
-    toastAlert("Updated Successfully");
   }
 
-  if (isSubmitted) {
-    return <Navigate to="/admin/user-overview" />;
-  }
+  // if (isSubmitted) {
+  //   return <Navigate to="/admin/user-overview" />;
+  // }
   return (
     <>
       <div className="form-heading">
