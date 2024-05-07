@@ -95,13 +95,13 @@ export default function SalesDashboard() {
         });
     });
 
-    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => { });
+    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {});
     axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
       setFilterPendingForApprovalData(res.data.data);
       setPendingForApprovalData(res.data.data);
     });
 
-    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => { });
+    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {});
     setTimeout(() => {
       axios
         .get(
@@ -116,13 +116,13 @@ export default function SalesDashboard() {
         });
     });
 
-    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => { });
+    axios.post(baseUrl + "add_php_finance_data_in_node").then(() => {});
     axios.get(baseUrl + "get_all_php_finance_data_pending").then((res) => {
       setFilterPendingForApprovalData(res.data.data);
       setPendingForApprovalData(res.data.data);
     });
 
-    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => { });
+    axios.post(baseUrl + "add_php_payment_refund_data_in_node").then(() => {});
     setTimeout(() => {
       axios
         .get(baseUrl + "get_all_php_payment_refund_data_pending")
@@ -132,7 +132,7 @@ export default function SalesDashboard() {
         });
     }, 1000);
 
-    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => { });
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {});
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -150,7 +150,7 @@ export default function SalesDashboard() {
         setCstPaymentData(res.data.body);
       });
 
-    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then(() => { });
+    axios.post(baseUrl + "add_php_pending_invoice_data_in_node").then(() => {});
     const formDataa = new FormData();
     formDataa.append("loggedin_user_id", 36);
     axios
@@ -170,7 +170,7 @@ export default function SalesDashboard() {
 
     axios
       .post(baseUrl + "add_php_sale_booking_tds_data_in_node")
-      .then(() => { });
+      .then(() => {});
     let formDataSalesbookingAboutToClose = new FormData();
     formDataSalesbookingAboutToClose.append("loggedin_user_id", 36);
     formDataSalesbookingAboutToClose.append("tds_status", 0);
@@ -238,11 +238,11 @@ export default function SalesDashboard() {
         setFilterPayoutData(response);
         setPayoutData(response);
       });
-    } catch (error) { }
+    } catch (error) {}
 
     axios
       .post(baseUrl + "add_php_payment_incentive_data_in_node")
-      .then(() => { });
+      .then(() => {});
     const formDataIncentive = new FormData();
     formDataIncentive.append("loggedin_user_id", 36);
     axios
@@ -687,9 +687,9 @@ export default function SalesDashboard() {
                         .map((e) => e.toPay)
                         .reduce((prev, next) => prev + next, 0)
                         ? payoutData
-                          .map((e) => e.toPay)
-                          .reduce((prev, next) => prev + next, 0)
-                          .toLocaleString("en-IN")
+                            .map((e) => e.toPay)
+                            .reduce((prev, next) => prev + next, 0)
+                            .toLocaleString("en-IN")
                         : 0}
                     </h3>
                   </div>
@@ -816,8 +816,8 @@ export default function SalesDashboard() {
                             .reduce((prev, next) => prev + next, 0) === "Nan"
                             ? 0
                             : payoutData
-                              .map((e) => e.toPay)
-                              .reduce((prev, next) => prev + next, 0),
+                                .map((e) => e.toPay)
+                                .reduce((prev, next) => prev + next, 0),
                         label: " Total Payout Pending",
                       },
                     ],

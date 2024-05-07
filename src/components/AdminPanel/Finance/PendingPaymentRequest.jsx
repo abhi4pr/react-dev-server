@@ -13,6 +13,7 @@ import {
   DialogTitle,
   FormControlLabel,
   TextField,
+  InputAdornment,
 } from "@mui/material";
 import DiscardConfirmation from "./DiscardConfirmation";
 import jwtDecode from "jwt-decode";
@@ -100,6 +101,8 @@ export default function PendingPaymentRequest() {
   const [vendorNameList, setVendorNameList] = useState([]);
   const [rowSelectionModel, setRowSelectionModel] = useState([]);
   const [adjustAmount, setAdjustAmount] = useState("");
+  const [adjustmentAmt, setAdjustmentAmt] = useState("");
+  console.log(adjustAmount, "adjustAmount>");
   const [preview, setPreview] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
   const [overviewDialog, setOverviewDialog] = useState(false);
@@ -1619,6 +1622,32 @@ export default function PendingPaymentRequest() {
     adjustAmount,
     "adjustment amout??"
   );
+  const handleAdjustmentAmount = (e) => {
+    setAdjustAmount(e.target.value);
+  };
+  // float value increment decrement----------------
+  const handleIncrement = () => {
+    setAdjustAmount(parseFloat(adjustAmount) + 1);
+  };
+
+  const handleDecrement = () => {
+    setAdjustAmount(parseFloat(adjustAmount) - 1);
+  };
+  // ------------------------------------------------
+
+  console.log(
+    rowData?.request_amount - TDSValue || "",
+    "RA------------",
+    TDSValue,
+    "TDS Value------------------"
+  );
+
+  useEffect(() => {
+    const initialAdjustmentAmt = rowData?.request_amount - paymentAmout || "";
+    setAdjustAmount(initialAdjustmentAmt);
+  }, [rowData, TDSValue]);
+
+  console.log(adjustAmount, "initialAdjustmentAmt>>>>>>>>>>>>>");
   return (
     <div>
       <FormContainer
@@ -2610,26 +2639,20 @@ export default function PendingPaymentRequest() {
                 fullWidth
                 value={adjustAmount}
               />
-              {adjustAmount ? (
-                <TextField
-                  // onChange={(e) => setAdjustAmount(e.target.value)}
-                  multiline
-                  readOnly
-                  className="mt-3"
-                  autoFocus
-                  margin="dense"
-                  id="After Adjust Amount"
-                  label="AfterAdjust Amount"
-                  // type="text"
-                  variant="outlined"
-                  fullWidth
-                  value={(
-                    parseFloat(paymentAmout) + parseFloat(adjustAmount)
-                  ).toFixed(2)}
-                />
-              ) : (
-                ""
-              )}
+              <TextField
+                multiline
+                readOnly
+                className="mt-3"
+                autoFocus
+                margin="dense"
+                id="After Adjust Amount"
+                label="AfterAdjust Amount"
+                variant="outlined"
+                fullWidth
+                value={(parseFloat(rowData?.request_amount) - TDSValue).toFixed(
+                  2
+                )}
+              />
 
               <TextField
                 onChange={(e) => setPayRemark(e.target.value)}

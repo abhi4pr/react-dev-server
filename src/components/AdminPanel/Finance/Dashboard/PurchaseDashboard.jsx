@@ -295,28 +295,28 @@ const PurchaseDashboard = () => {
         </div>
       </div> */}
       <div className="cardGrdnt orangeGrdnt">
-        {/* <Link to="/admin/finance-pruchasemanagement-pendingpaymentrequest"> */}
-        <div className="row align-items-center p-2">
-          <div className="col-md-6 financeCardBox border-right ">
-            <div className="financeCardBoxIn p0">
-              <div className="financeCardBoxTitle">
-                <div className="financeCardBoxImg">
-                  <img src={gifone} alt="" />
+        <Link to="/admin/finance-pruchasemanagement-pendingpaymentrequest">
+          <div className="row align-items-center p-2">
+            <div className="col-md-6 financeCardBox border-right ">
+              <div className="financeCardBoxIn p0">
+                <div className="financeCardBoxTitle">
+                  <div className="financeCardBoxImg">
+                    <img src={gifone} alt="" />
+                  </div>
+                  <h2>Pending Payment Request</h2>
                 </div>
-                <h2>Pending Payment Request</h2>
-              </div>
-              <div className="scroll-con">
-                <div className="scroller">
-                  <h3>0</h3>
-                  {pendingReqData?.map((item, index) => (
-                    <h3>{index + 1}</h3>
-                  ))}
+                <div className="scroll-con">
+                  <div className="scroller">
+                    <h3>0</h3>
+                    {pendingReqData?.map((item, index) => (
+                      <h3>{index + 1}</h3>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-md-6 financeCardBox">
-            {/* <div className="financeCardBoxIn p0">
+            <div className="col-md-6 financeCardBox">
+              {/* <div className="financeCardBoxIn p0">
               <div className="financeCardBoxDetails">
                 <ul className="pl32">
                   <li
@@ -349,73 +349,76 @@ const PurchaseDashboard = () => {
                 </ul>
               </div>
             </div> */}
-            <div className="financeCardBoxDetails">
-              <ul className="pl32">
-                <li>
-                  Request Amount
-                  <span>
-                    <span>&#8377; </span>
-                    {pendingReqData?.reduce(
-                      (total, item) => total + parseFloat(item.request_amount),
-                      0
-                    )}
-                  </span>
-                </li>
+              <div className="financeCardBoxDetails">
+                <ul className="pl32">
+                  <li>
+                    Request Amount
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) =>
+                          total + parseFloat(item.request_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
 
-                <li>
-                  Balance Release
-                  <span>
-                    <span>&#8377; </span>
-                    {pendingReqData?.reduce(
-                      (total, item) => total + parseFloat(item.balance_amount),
-                      0
-                    )}
-                  </span>
-                </li>
-                <li>
-                  Base Amount
-                  <span>
-                    <span>&#8377; </span>
-                    {pendingReqData?.reduce(
-                      (total, item) => total + parseFloat(item.base_amount),
-                      0
-                    )}
-                  </span>
-                </li>
-                <li>
-                  Paid Amount
-                  <span>
-                    <span>&#8377; </span>
-                    {pendingReqData?.reduce(
-                      (total, item) => total + parseFloat(item.paid_amount),
-                      0
-                    )}
-                  </span>
-                </li>
-                <li>
-                  GST Amount
-                  <span>
-                    <span>&#8377; </span>
-                    {pendingReqData?.reduce(
-                      (total, item) => total + parseFloat(item.gst_amount),
-                      0
-                    )}
-                  </span>
-                </li>
-                <li>
-                  OutStanding
-                  <span>
-                    <span>&#8377; </span>
-                    {pendingReqData?.reduce(
-                      (total, item) => total + parseFloat(item.outstandings),
-                      0
-                    )}
-                  </span>
-                </li>
-              </ul>
+                  <li>
+                    Balance Release
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) =>
+                          total + parseFloat(item.balance_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    Base Amount
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) => total + parseFloat(item.base_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    Paid Amount
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) => total + parseFloat(item.paid_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    GST Amount
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) => total + parseFloat(item.gst_amount),
+                        0
+                      )}
+                    </span>
+                  </li>
+                  <li>
+                    OutStanding
+                    <span>
+                      <span>&#8377; </span>
+                      {pendingReqData?.reduce(
+                        (total, item) => total + parseFloat(item.outstandings),
+                        0
+                      )}
+                    </span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
-        </div>
+        </Link>
       </div>{" "}
       <div className="row">
         <Link
