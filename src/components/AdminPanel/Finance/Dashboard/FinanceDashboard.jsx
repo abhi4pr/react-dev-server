@@ -19,15 +19,14 @@ export default function FinanceDashboard() {
         mainTitle="Finance Dashboard"
         link="/admin/finance-dashboard"
       />
-      <Tab tabName={accordionButtons}
+      <Tab
+        tabName={accordionButtons}
         activeTabindex={activeAccordionIndex}
         onTabClick={handleAccordionButtonClick}
       />
 
       {activeAccordionIndex === 0 && <SalesDashboard />}
       {activeAccordionIndex === 1 && <PurchaseDashboard />}
-
-
     </div>
   );
 }
