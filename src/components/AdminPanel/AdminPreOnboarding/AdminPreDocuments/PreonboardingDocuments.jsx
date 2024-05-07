@@ -6,6 +6,10 @@ import Select from "react-select";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { baseUrl } from "../../../../utils/config";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TextField } from "@mui/material";
 
 const selectOptions = [
   {
@@ -36,6 +40,7 @@ const mandatoryOption = [
 const PreonboardingDocuments = () => {
   const { toastAlert, toastError } = useGlobalContext();
   const navigate = useNavigate();
+  const [docName, setDocName] = useState("")
   const [documentType, setDocumentType] = useState("");
   const [period, setPeriod] = useState(null);
   const [priority, setPriority] = useState("");
@@ -44,19 +49,32 @@ const PreonboardingDocuments = () => {
   const [jobType, setJobType] = useState([]);
   const [jobTypeData, setJobTypeData] = useState([]);
   const [description, setDescription] = useState("");
-
+  const [selectedOption, setSelectedOption] = useState('no');
+  const [selectedOption2, setSelectedOption2] = useState('no');
+  const [expiredDate, setExpiredDate] = useState('');
+  
   useEffect(() => {
     async function getJobtTypes() {
       const jobTypeResponse = await axios.get(baseUrl + "get_all_job_types");
-      setJobTypeData(jobTypeResponse.data.data);
+      const filteredData = jobTypeResponse.data.data.filter(option => option.job_type !== 'WFHD')
+      setJobTypeData(filteredData);
     }
     getJobtTypes();
   }, []);
+
+  const handleSelectNumber = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const handleSelectExpire = (event) => {
+    setSelectedOption2(event.target.value);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post(baseUrl + "add_doc", {
+        doc_name: docName,
         doc_type: documentType,
         priority: priority,
         period: Number(period),
@@ -64,6 +82,9 @@ const PreonboardingDocuments = () => {
         isRequired: mandatory,
         doc_number: documentNumber,
         job_type: jobType,
+        is_doc_number: selectedOption,
+        is_document_expired: selectedOption2,
+        expired_date: expiredDate
       });
 
       setDocumentType("");
@@ -76,6 +97,7 @@ const PreonboardingDocuments = () => {
       if (error) return toastError("Document Type Already Exists");
     }
   };
+
   return (
     <div>
       <FormContainer mainTitle="Document" link={true}></FormContainer>
@@ -87,6 +109,12 @@ const PreonboardingDocuments = () => {
         </div>
         <div className="card-body">
           <div className="row">
+            <FieldContainer
+              label="Document Name"
+              astric
+              value={docName}
+              onChange={(e) => setDocName(e.target.value)}
+            />
             <FieldContainer
               label="Document Type"
               astric
@@ -101,7 +129,7 @@ const PreonboardingDocuments = () => {
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
             />
-            <div className="form-group col-3">
+            {/* <div className="form-group col-3">
               <label className="form-label">Priority</label>
               <sup style={{ color: "red" }}>*</sup>
               <Select
@@ -113,7 +141,7 @@ const PreonboardingDocuments = () => {
                 onChange={(e) => setPriority(e.value)}
                 required
               />
-            </div>
+            </div> */}
             <div className="form-group col-3">
               <label className="form-label">
                 Mandatory <sup style={{ color: "red" }}>*</sup>
@@ -128,13 +156,28 @@ const PreonboardingDocuments = () => {
                 required
               />
             </div>
-            <FieldContainer
-              fieldGrid={3}
-              label="Document Number"
-              astric
-              value={documentNumber}
-              onChange={(e) => setDocumentNumber(e.target.value)}
-            />
+
+            <div className="form-group col-4">
+              <label className="form-label">
+                Has Document Number ?<sup style={{ color: "red" }}>*</sup>
+              </label>
+              <select id="selectOption" value={selectedOption} onChange={handleSelectNumber}>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+
+            {selectedOption === 'yes' && (
+              <>
+                <FieldContainer
+                  fieldGrid={3}
+                  label="Document Number"
+                  // astric
+                  value={documentNumber}
+                  onChange={(e) => setDocumentNumber(e.target.value)}
+                />
+              </>
+            )}
 
             <div className="form-group col-6">
               <label className="form-label">
@@ -160,17 +203,39 @@ const PreonboardingDocuments = () => {
                 required
               />
             </div>
-            <FieldContainer
+            {/* <FieldContainer
               Tag="textarea"
               astric
               label="Description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-            />
+            /> */}
+
+            <div className="form-group col-4">
+              <label className="form-label">
+                Has Document Expired ?<sup style={{ color: "red" }}>*</sup>
+              </label>
+              <select id="selectOption" value={selectedOption2} onChange={handleSelectExpire}>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+
+            {selectedOption2 === 'yes' && (
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker 
+                  label="Expired Date" 
+                  value={expiredDate}
+                  onChange={(newValue) => setExpiredDate(newValue)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            )}
+
           </div>
         </div>
       </div>
-      <button className="btn btn-primary  cmnbtn">Submit</button>
+      <button className="btn btn-primary cmnbtn" onClick={handleSubmit}>Submit</button>
     </div>
   );
 };

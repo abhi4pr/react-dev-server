@@ -45,34 +45,23 @@ import { ToastContainer } from "react-toastify";
 import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 import EducationList from "../../../assets/js/EducationList";
 import { constant } from "../../../utils/constants";
+import { User } from "@phosphor-icons/react";
 
 const colourOptions = [
   { value: "English", label: "English" },
   { value: "Hindi", label: "Hindi" },
   { value: "Spanish", label: "Spanish" },
-  { value: "Mandarin", label: "Mandarin" },
   { value: "French", label: "French" },
   { value: "Arabic", label: "Arabic" },
   { value: "Bengali", label: "Bengali" },
   { value: "Russian", label: "Russian" },
-  { value: "Portuguese", label: "Portuguese" },
-  { value: "Indonesian", label: "Indonesian" },
   { value: "Urdu", label: "Urdu" },
   { value: "German", label: "German" },
   { value: "Japanese", label: "Japanese" },
-  { value: "Swahili", label: "Swahili" },
   { value: "Marathi", label: "Marathi" },
   { value: "Telugu", label: "Telugu" },
-  { value: "Turkish", label: "Turkish" },
   { value: "Tamil", label: "Tamil" },
-  { value: "Vietnamese", label: "Vietnamese" },
   { value: "Italian", label: "Italian" },
-  { value: "Korean", label: "Korean" },
-  { value: "Persian", label: "Persian" },
-  { value: "Polish", label: "Polish" },
-  { value: "Dutch", label: "Dutch" },
-  { value: "Greek", label: "Greek" },
-  { value: "Thai", label: "Thai" },
   { value: "Other", label: "Other" },
 ];
 
@@ -123,7 +112,7 @@ const UserMaster = () => {
   // Genral Information Tab-------------------Start------------------------------------
   // ---------------------Prsonal Info State Start
   const [username, setUserName] = useState("");
-  const [selectedImage, setSelectedImage] = useState();
+  const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [personalEmail, setPersonalEmail] = useState("");
   const [personalContact, setPersonalContact] = useState("");
@@ -596,6 +585,7 @@ const UserMaster = () => {
             user.user_login_id.toLocaleLowerCase() ===
             loginId.toLocaleLowerCase()
         );
+
         const contactNumberExists = usersData.some(
           (user) => user.user_contact_no == personalContact
         );
@@ -626,7 +616,7 @@ const UserMaster = () => {
                 const userResponseID = res.data.simv.user_id;
                 setUserResID(userResponseID);
                 setIsFormSubmitted(true);
-                toastAlert(res.data.simv.emp_id + " " + "Employe Registerd");
+                toastAlert(res.data.simv.emp_id + " " + "Employee Registerd");
                 setIsLoading(false);
               } else {
                 toastError("Sorry User is Not Created, Please try again later");
@@ -901,6 +891,12 @@ const UserMaster = () => {
       const newContact1 = event.target.value;
       setAlternateContact(newContact1);
 
+      if (newContact1 === "" || (newContact1.length === 1 && parseInt(newContact1) < 6)) {
+        setPersonalContact("");
+      } else {
+        setPersonalContact(newContact1);
+      }
+
       if (newContact1 === "") {
         setValidContact3(false);
       } else {
@@ -975,13 +971,25 @@ const UserMaster = () => {
   const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
 
+    // Extracting last 4 and 6 digits from personal contact
+    const personalContactLast4 = personalContact.slice(-4);
+    const personalContactLast6 = personalContact.slice(-6);
+
     // Define login ID options
-    const loginIdOptions = [
-      userName[0], // loginIdOption1
-      userName[0] + (userName[1] ? userName[1].charAt(0) : ""), // loginIdOption2
-      (userName[0] ? userName[0].charAt(0) : "") + (userName[1] || ""), // loginIdOption3
-      userName.join("."), // loginIdOption4
+    let loginIdOptions = [
+      userName[0], // lalit
+      userName.join("."), // lalit.gour
+      userName[0] + personalContactLast4, // lalit5413
+      userName[0] + personalContactLast6, // lalit815413
     ];
+
+    if (userName.length > 1) {
+      loginIdOptions.push(
+        userName[0].charAt(0) + userName[1], // lgour
+        userName.join("") // lalitgour
+      );
+    }
+
     const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
     setLastIndexUsed(nextIndex);
     const generatedLoginId = loginIdOptions[nextIndex];
@@ -1205,9 +1213,30 @@ const UserMaster = () => {
     <>
       {/* Personal Info Inputs------------------------Start------------ */}
       <div className="personal_header">Personal Details</div>
+      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
+        <div className="form-group">
+          <label className="form-label ">Upload Image</label>
+          <button
+            className="profile-holder ml-1"
+            data-bs-toggle="modal"
+            data-bs-target="#transferModal"
+            title="Upload Image"
+            style={{ border: selectedImage === null ? "1px solid var(--medium)" : "none" }}
+          >
+            {!selectedImage && (<User style={{ fontSize: "200px" }} />)}
+            {selectedImage && (<img
+              className="profile-image"
+              src={imagePreview}
+              alt="Selected"
+
+            />)}
+          </button>
+
+        </div>
+      </div>
       <div className=" col-3">
         <FieldContainer
-          className="pb-1"
+
           label="Full Name"
           astric={true}
           fieldGrid={12}
@@ -1248,37 +1277,11 @@ const UserMaster = () => {
           )}
         </div>
       </div>
-      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-        <div className="form-group">
-          <label className="form-label"> </label>
-          <button
-            className="btn btn-success d-block w-100"
-            data-bs-toggle="modal"
-            data-bs-target="#transferModal"
-          >
-            Profile
-          </button>
 
-          {selectedImage && (
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <img
-                className="mt-1"
-                src={imagePreview}
-                alt="Selected"
-                style={{
-                  width: "120px",
-                  height: "120px",
-                  marginBottom: "10px",
-                  borderRadius: "50%",
-                }}
-              />
-            </div>
-          )}
-        </div>
-      </div>
       <div className="col-md-3">
         <FieldContainer
           label="Personal Email"
+
           astric={true}
           type="email"
           fieldGrid={12}
@@ -1322,11 +1325,9 @@ const UserMaster = () => {
         {(isContactTouched1 || personalContact.length >= 10) &&
           !isValidcontact1 &&
           mandatoryFieldsEmpty.personalContact && (
-            <p style={{ color: "red" }}>*Please enter a valid Number</p>
+            <p style={{ color: "var(--danger)" }}>*Please enter a valid Contact Number</p>
           )}
-        {mandatoryFieldsEmpty.personalContact && (
-          <p style={{ color: "red" }}>Please enter Personal Contact</p>
-        )}
+
       </div>
       <div className="col-3">
         <FieldContainer
@@ -1421,48 +1422,12 @@ const UserMaster = () => {
           </div>
         </div>
       </div>
-      {dateOfBirth !== "" && (
-        <FieldContainer fieldGrid={3} label="Age" value={age} />
-      )}
-
-      <div className="form-group col-3">
-        <label className="form-label">
-          Nationality <sup style={{ color: "red" }}>*</sup>
-        </label>
-        <Select
-          className=""
-          options={nationalityData.map((option) => ({
-            value: `${option}`,
-            label: `${option}`,
-          }))}
-          value={{
-            value: nationality,
-            label: `${nationality}`,
-          }}
-          onChange={(e) => {
-            setNationality(e.value);
-          }}
-          onBlur={() => {
-            if (nationality === "" || nationality === null) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                nationality: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                nationality: false,
-              });
-            }
-          }}
-          required
-        />
-        {mandatoryFieldsEmpty.nationality && (
-          <p style={{ color: "red" }}>Please enter nationality</p>
-        )}
-      </div>
-
-      {/* <FieldContainer
+      {
+        dateOfBirth !== "" && (
+          <FieldContainer fieldGrid={3} label="Age" value={age} />
+        )
+      }
+      <FieldContainer
         label="Nationality"
         astric={true}
         fieldGrid={3}
@@ -1486,9 +1451,11 @@ const UserMaster = () => {
           }
         }}
       />
-      {mandatoryFieldsEmpty.nationality && (
-        <p style={{ color: "red" }}>Please Enter Nationality</p>
-      )} */}
+      {
+        mandatoryFieldsEmpty.nationality && (
+          <p style={{ color: "red" }}>Please Enter Nationality</p>
+        )
+      }
       <div className="form-group col-3">
         <label className="form-label">
           Maritial Status <sup style={{ color: "red" }}>*</sup>
@@ -1526,26 +1493,30 @@ const UserMaster = () => {
         )}
       </div>
 
-      {maritialStatus === "Married" && (
-        <FieldContainer
-          label="Spouse Name"
-          value={spouseName}
-          fieldGrid={3}
-          onChange={(e) => setSpouseName(e.target.value)}
-          required={false}
-        />
-      )}
-      {maritialStatus == "Married" && (
-        <FieldContainer
-          type="date"
-          fieldGrid={3}
-          label="Date Of Marraige"
-          value={dateOfMarraige}
-          onChange={(e) => setDateOfMarraige(e.target.value)}
-          max={today}
-          required={false}
-        />
-      )}
+      {
+        maritialStatus === "Married" && (
+          <FieldContainer
+            label="Spouse Name"
+            value={spouseName}
+            fieldGrid={3}
+            onChange={(e) => setSpouseName(e.target.value)}
+            required={false}
+          />
+        )
+      }
+      {
+        maritialStatus == "Married" && (
+          <FieldContainer
+            type="date"
+            fieldGrid={3}
+            label="Date Of Marraige"
+            value={dateOfMarraige}
+            onChange={(e) => setDateOfMarraige(e.target.value)}
+            max={today}
+            required={false}
+          />
+        )
+      }
 
       {/* Personal Info Inputs------------------------End------------ */}
 
@@ -1851,12 +1822,14 @@ const UserMaster = () => {
         onChange={handleContactChange}
         onBlur={handleContentBlur}
       />
-      {(isContactTouched || contact.length >= 10) && !isValidcontact && (
-        <p style={{ color: "red" }}>*Please enter a valid Number</p>
-      )}
+      {
+        (isContactTouched || contact.length >= 10) && !isValidcontact && (
+          <p style={{ color: "red" }}>*Please enter a valid Number</p>
+        )
+      }
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <p
+          {/* <p
             className={
               loginResponse == "login id available"
                 ? "login-success1"
@@ -1864,7 +1837,7 @@ const UserMaster = () => {
             }
           >
             {loginResponse}
-          </p>
+          </p> */}
           <label>
             Login ID <sup style={{ color: "red" }}>*</sup>
           </label>
@@ -1872,6 +1845,7 @@ const UserMaster = () => {
             <input
               className="form-control"
               value={loginId}
+              disabled
               onChange={handleLoginIdChange}
               onBlur={() => {
                 if (loginId === "") {
@@ -2013,16 +1987,18 @@ const UserMaster = () => {
         </div>
       </div>
 
-      {department == constant.CONST_SALES_DEPT_ID && (
-        <FieldContainer
-          label="Credit Limit"
-          type="number"
-          fieldGrid={3}
-          value={creditLimit}
-          required={true}
-          onChange={(e) => setCreditLimit(e.target.value)}
-        />
-      )}
+      {
+        department == constant.CONST_SALES_DEPT_ID && (
+          <FieldContainer
+            label="Credit Limit"
+            type="number"
+            fieldGrid={3}
+            value={creditLimit}
+            required={true}
+            onChange={(e) => setCreditLimit(e.target.value)}
+          />
+        )
+      }
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         {/* <button
@@ -2034,7 +2010,7 @@ const UserMaster = () => {
         </button> */}
         <button
           type="submit"
-          className="btn btn-primary"
+          className="btn cmnbtn btn-primary"
           onClick={handleSubmit}
           disabled={isLoading}
           style={{ width: "20%", marginLeft: "1%" }}
@@ -2052,24 +2028,23 @@ const UserMaster = () => {
         tabIndex={-1}
         aria-labelledby="transferModalLabel"
         aria-hidden="true"
-        style={{ marginLeft: "7%" }}
+
       >
         <div className="modal-dialog modal-dialog-centered modal-lg">
-          <div className="modal-content">
+          <div className="modal-content m-0">
             <div className="modal-body">
               <div>
+
                 {selectedImage && (
-                  <div style={{ display: "flex", justifyContent: "center" }}>
-                    <img
-                      src={imagePreview}
-                      alt="Selected"
-                      style={{
-                        width: "150px",
-                        height: "80px",
-                        marginBottom: "10px",
-                        borderRadius: "50%",
-                      }}
-                    />
+                  <div className=" flex-row  w-100 flexCenter">
+
+                    <div className="profile-holder" style={{ width: "80px", height: "80px" }}>
+                      <img
+                        src={imagePreview}
+                        alt="Selected"
+                        className="profile-image"
+                      />
+                    </div>
                   </div>
                 )}
 

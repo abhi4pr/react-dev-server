@@ -11,6 +11,8 @@ const GuardianFields = ({
   handleAddGuardianDetails,
   handleRemoveGuardianDetails,
 }) => {
+  const canAddMoreGuardians = guardianDetails.length < 3;
+
   return (
     <>
       {guardianDetails &&
@@ -46,16 +48,18 @@ const GuardianFields = ({
           </div>
         ))}
 
-      <div className="mb-5">
-        <button
-          type="button"
-          onClick={handleAddGuardianDetails}
-          variant="contained"
-          className="btn onboardBtn btn-outline-danger"
-        >
-          Add {guardianDetails.length > 0 && "More"} Guardian Details
-        </button>
-      </div>
+      {canAddMoreGuardians && (
+        <div className="mb-5">
+          <button
+            type="button"
+            onClick={handleAddGuardianDetails}
+            variant="contained"
+            className="btn onboardBtn btn-outline-danger"
+          >
+            Add {guardianDetails.length > 0 ? "More" : ""} Guardian Details
+          </button>
+        </div>
+      )}
     </>
   );
 };

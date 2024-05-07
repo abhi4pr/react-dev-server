@@ -15,6 +15,7 @@ const FamilyFields = ({
   handleAddFamilyDetails,
   handleRemoveFamilyDetails,
 }) => {
+  const canAddMoreFamily = familyDetails.length < 3;
   return (
     <>
       {familyDetails?.map((detail, index) => (
@@ -166,16 +167,18 @@ const FamilyFields = ({
         </div>
       ))}
 
-      <div className="mb-5">
-        <button
-          type="button"
-          onClick={handleAddFamilyDetails}
-          variant="contained"
-          className="btn onboardBtn btn-outline-primary"
-        >
-          Add {familyDetails?.length > 0 && "More"} Family Details
-        </button>
-      </div>
+      {canAddMoreFamily && (
+        <div className="mb-5">
+          <button
+            type="button"
+            onClick={handleAddFamilyDetails}
+            variant="contained"
+            className="btn onboardBtn btn-outline-primary"
+          >
+            Add {familyDetails?.length > 0 && "More"} Family Details
+          </button>
+        </div>
+      )}
     </>
   );
 };

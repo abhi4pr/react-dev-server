@@ -18,8 +18,9 @@ import {
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import moment from "moment";
+import { set } from "date-fns";
 
-const SaleBookingClose = () => {
+const SaleBookingClose = ({ onHandleOpenUniqueSalesExecutiveChange, onHandleOpenUniqueCustomerClickChange, setAbouttoclosecount, setButtonaccess, setclosecount, setOpencount, setUniquecustomerCount, setBaseamountTotal, setUniquesalesexecutiveCount }) => {
   const { toastAlert } = useGlobalContext();
   const [displaySeq, setDisplaySeq] = useState("");
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
@@ -83,7 +84,7 @@ const SaleBookingClose = () => {
   function getData() {
     axios
       .post(baseUrl + "add_php_sale_booking_tds_data_in_node")
-      .then((res) => {});
+      .then((res) => { });
     let formData = new FormData();
     formData.append("loggedin_user_id", 36);
     formData.append("tds_status", tdsStatus);
@@ -110,6 +111,7 @@ const SaleBookingClose = () => {
         const custData = res.data.body;
         const uniqueCustomers = new Set(custData.map((item) => item.cust_name));
         setUniqueCustomerCount(uniqueCustomers.size);
+        setUniquecustomerCount(uniqueCustomers.size);
         const uniqueCustomerData = Array.from(uniqueCustomers).map(
           (customerName) => {
             return custData.find((item) => item.cust_name === customerName);
@@ -122,6 +124,7 @@ const SaleBookingClose = () => {
           salesExecuteiveData.map((item) => item.sales_exe_name)
         );
         setUniqueSalesExecutiveCount(uniqueSalesEx.size);
+        setUniquesalesexecutiveCount(uniqueSalesEx.size);
         const uniqueSEData = Array.from(uniqueSalesEx).map((salesEName) => {
           return salesExecuteiveData.find(
             (item) => item.sales_exe_name === salesEName
@@ -150,6 +153,10 @@ const SaleBookingClose = () => {
 
   useEffect(() => {
     getData();
+    setButtonaccess(contextData &&
+      contextData[2] &&
+      contextData[2].insert_value === 1 &&
+      false);
   }, [tdsStatus, aboutToClose, dateFilter]);
 
   const aboutClose = (e) => {
@@ -296,12 +303,16 @@ const SaleBookingClose = () => {
   const handleCloseSameSalesExecutive = () => {
     setSameSalesExecutiveDialog(false);
   };
-
+  useEffect(() => {
+    onHandleOpenUniqueSalesExecutiveChange(() => handleOpenUniqueSalesExecutive);
+    onHandleOpenUniqueCustomerClickChange(() => handleOpenUniqueCustomerClick);
+  }, []);
   // Total base amount:-
   const baseAmountTotal = filterData.reduce(
     (total, item) => total + parseFloat(item.base_amount),
     0
   );
+  setBaseamountTotal(baseAmountTotal);
   // For Verify :-
   const handleOpenVerifyDialog = (e, row) => {
     e.preventDefault();
@@ -343,69 +354,96 @@ const SaleBookingClose = () => {
   const sameSalesExecutivecolumn = [
     {
       field: "S.No",
+      width: 200,
+
       renderCell: (params, index) => (
         <div>{[...sameSalesExecutiveData].indexOf(params.row) + 1}</div>
       ),
+
       sortable: true,
     },
     {
       field: "Customer Name",
       fieldName: "cust_name",
       renderCell: (params) => params.row.cust_name,
+      width: 200,
+
     },
     {
       field: "Sales Executive Name",
       fieldName: "sales_exe_name",
+      width: 200,
+
       renderCell: (params) => params.row.sales_exe_name,
     },
     {
       field: "Booking Date",
       fieldName: "sale_booking_date",
+      width: 200,
+
       renderCell: (params) => params.row.sale_booking_date,
     },
     {
       field: "Campaign Amount",
       fieldName: "campaign_amount",
+      width: 200,
+
       renderCell: (params) => params.row.campaign_amount,
     },
     {
       field: "Base Amount",
       fieldName: "base_amount",
+      width: 200,
+
       renderCell: (params) => params.row.base_amount,
     },
     {
       field: "GST Amount",
       fieldName: "gst_amount",
+      width: 200,
+
       renderCell: (params) => params.row.gst_amount,
     },
     {
       field: "Net Amount",
       fieldName: "net_amount",
+      width: 200,
+
       renderCell: (params) => params.row.net_amount,
     },
     {
       field: "Paid Amount",
       fieldName: "total_paid_amount",
+      width: 200,
+
       renderCell: (params) => params.row.total_paid_amount,
     },
     {
       field: "Refund Amount",
       fieldName: "total_refund_amount",
+      width: 200,
+
       renderCell: (params) => params.row.total_refund_amount,
     },
     {
       field: "Refund Balance Amount",
       fieldName: "balance_refund_amount",
+      width: 200,
+
       renderCell: (params) => params.row.balance_refund_amount,
     },
     {
       field: "Net Bal Cust to pay Amt (%)",
       fieldName: "net_balance_amount_to_pay_percentage",
+      width: 200,
+
       renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
     },
     {
       field: "Booking Created Date",
       fieldName: "booking_created_date",
+      width: 200,
+
       renderCell: (params) => params.row.booking_created_date,
     },
   ];
@@ -416,11 +454,13 @@ const SaleBookingClose = () => {
         <div>{[...uniqueSalesExecutiveData].indexOf(params.row) + 1}</div>
       ),
       sortable: true,
+      width: 80,
     },
     {
       field: "Customer Name",
       fieldName: "cust_name",
       renderCell: (params) => params.row.cust_name,
+      width: 200,
     },
     {
       field: "Sales Executive Name",
@@ -435,11 +475,15 @@ const SaleBookingClose = () => {
           {params.row.sales_exe_name}
         </div>
       ),
+      width: 200,
+
     },
     {
       field: "Booking Date",
       fieldName: "sale_booking_date",
       renderCell: (params) => params.row.sale_booking_date,
+      width: 200,
+
     },
     {
       field: "Campaign Amount",
@@ -485,6 +529,8 @@ const SaleBookingClose = () => {
       field: "Booking Created Date",
       fieldName: "booking_created_date",
       renderCell: (params) => params.row.booking_created_date,
+      width: 200,
+
     },
     {
       field: "Action",
@@ -500,12 +546,17 @@ const SaleBookingClose = () => {
         ) : (
           <span>{params.row.show_fstatus}</span>
         );
+
       },
+      width: 200,
+
     },
   ];
   const sameCustomercolumn = [
     {
       field: "S.No",
+      width: 80,
+
       renderCell: (params, index) => (
         <div>{[...sameCustomerData].indexOf(params.row) + 1}</div>
       ),
@@ -514,61 +565,87 @@ const SaleBookingClose = () => {
     {
       field: "Customer Name",
       fieldName: "cust_name",
-      renderCell: (params) => params.row.cust_name,
+      renderCell: (params) => (<div style={{ wordWrap: "break-word" }}>{params.row.cust_name} </div>),
+      width: 200,
+
     },
     {
       field: "Sales Executive Name",
       fieldName: "sales_exe_name",
       renderCell: (params) => params.row.sales_exe_name,
+      width: 200,
+
     },
     {
       field: "Booking Date",
       fieldName: "sale_booking_date",
       renderCell: (params) => params.row.sale_booking_date,
+      width: 200,
+
     },
     {
       field: "Campaign Amount",
       fieldName: "campaign_amount",
       renderCell: (params) => params.row.campaign_amount,
+      width: 200,
+
     },
     {
       field: "Base Amount",
       fieldName: "base_amount",
       renderCell: (params) => params.row.base_amount,
+      width: 200,
+
     },
     {
       field: "GST Amount",
       fieldName: "gst_amount",
       renderCell: (params) => params.row.gst_amount,
+      width: 200,
+
     },
     {
       field: "Net Amount",
       fieldName: "net_amount",
+      width: 200,
+
       renderCell: (params) => params.row.net_amount,
     },
     {
       field: "Paid Amount",
       fieldName: "total_paid_amount",
       renderCell: (params) => params.row.total_paid_amount,
+      width: 200,
+
     },
     {
       field: "Refund Amount",
       fieldName: "total_refund_amount",
+      width: 200,
+
+      width: 200,
+
       renderCell: (params) => params.row.total_refund_amount,
     },
     {
       field: "Refund Balance Amount",
       fieldName: "balance_refund_amount",
+      width: 200,
+
       renderCell: (params) => params.row.balance_refund_amount,
     },
     {
       field: "Net Bal Cust to pay Amt (%)",
       fieldName: "net_balance_amount_to_pay_percentage",
+      width: 200,
+
       renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
     },
     {
       field: "Booking Created Date",
       fieldName: "booking_created_date",
+      width: 200,
+
       renderCell: (params) => params.row.booking_created_date,
     },
   ];
@@ -576,6 +653,8 @@ const SaleBookingClose = () => {
   const uniqueCustomercolumn = [
     {
       field: "S.No",
+      width: 80,
+
       renderCell: (params, index) => (
         <div>{[...uniqueCustomerData].indexOf(params.row) + 1}</div>
       ),
@@ -584,72 +663,104 @@ const SaleBookingClose = () => {
     {
       field: "Customer Name",
       fieldName: "cust_name",
+      width: 200,
+
       renderCell: (params) => (
         <div
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: "pointer",
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis'
+          }}
           onClick={() => handleOpenSameCustomer(params.row.cust_name)}
+          title={params.row.cust_name} // Add this line
         >
           {params.row.cust_name}
         </div>
       ),
+
     },
     {
       field: "Sales Executive Name",
       fieldName: "sales_exe_name",
+      width: 200,
+
       renderCell: (params) => params.row.sales_exe_name,
     },
     {
       field: "Booking Date",
       fieldName: "sale_booking_date",
+      width: 200,
+
       renderCell: (params) => params.row.sale_booking_date,
     },
     {
       field: "Campaign Amount",
       fieldName: "campaign_amount",
+      width: 200,
+
       renderCell: (params) => params.row.campaign_amount,
     },
     {
       field: "Base Amount",
       fieldName: "base_amount",
+      width: 200,
+
       renderCell: (params) => params.row.base_amount,
     },
     {
       field: "GST Amount",
       fieldName: "gst_amount",
+      width: 200,
+
       renderCell: (params) => params.row.gst_amount,
     },
     {
       field: "Net Amount",
       fieldName: "net_amount",
+      width: 200,
+
       renderCell: (params) => params.row.net_amount,
     },
     {
       field: "Paid Amount",
       fieldName: "total_paid_amount",
+      width: 200,
+
       renderCell: (params) => params.row.total_paid_amount,
     },
     {
       field: "Refund Amount",
       fieldName: "total_refund_amount",
+      width: 200,
+
       renderCell: (params) => params.row.total_refund_amount,
     },
     {
       field: "Refund Balance Amount",
       fieldName: "balance_refund_amount",
+      width: 200,
+
       renderCell: (params) => params.row.balance_refund_amount,
     },
     {
       field: "Net Bal Cust to pay Amt (%)",
       fieldName: "net_balance_amount_to_pay_percentage",
+      width: 200,
+
       renderCell: (params) => params.row.net_balance_amount_to_pay_percentage,
     },
     {
       field: "Booking Created Date",
       fieldName: "booking_created_date",
+      width: 200,
+
       renderCell: (params) => params.row.booking_created_date,
     },
     {
       field: "Action",
+      width: 200,
+
       renderCell: (params) => {
         // return row.show_fstatus === "About To Close" ? (
         return tdsStatus === 0 && aboutToClose == true ? (
@@ -665,21 +776,47 @@ const SaleBookingClose = () => {
       },
     },
   ];
+  const [columnWidth, setColumnWidth] = useState(200);
+
+  // const handleMouseDown = (e) => {
+  //   e.preventDefault();
+  //   document.addEventListener('mousemove', handleMouseMove);
+  //   document.addEventListener('mouseup', handleMouseUp);
+  // };
+
+  // const handleMouseMove = (e) => {
+  //   setColumnWidth(prevWidth => prevWidth + e.movementX);
+  // };
+
+  // const handleMouseUp = () => {
+  //   document.removeEventListener('mousemove', handleMouseMove);
+  //   document.removeEventListener('mouseup', handleMouseUp);
+  // <div onMouseDown={handleMouseDown} style={{ cursor: 'col-resize' }}>{row.cust_name}</div>
+  // };
   const columns = [
     {
       name: "S.No",
       cell: (row, index) => <div>{index + 1}</div>,
-      width: "5%",
+
       sortable: true,
     },
     {
       name: "Customer Name",
-      selector: (row) => row.cust_name,
-      width: "10%",
+      cell: (row) => (
+
+        <div >{row.cust_name}</div>
+
+      ),
+      width: "150px",
     },
     {
       name: "Sales Executive Name",
-      selector: (row) => row.sales_exe_name,
+      cell: (row) => (<div>
+
+        {row.sales_exe_name}
+      </div>
+      ),
+      width: "170px",
     },
     {
       name: "Booking Date",
@@ -688,38 +825,57 @@ const SaleBookingClose = () => {
     {
       name: "Campaign Amount",
       selector: (row) => row.campaign_amount,
+      width: "170px",
+
     },
+
     {
       name: "Base Amount",
       selector: (row) => row.base_amount,
+      width: "170px",
+
     },
     {
       name: "GST Amount",
       selector: (row) => row.gst_amount,
+      width: "170px",
+
     },
     {
       name: "Net Amount",
       selector: (row) => row.net_amount,
+      width: "170px",
+
     },
     {
       name: "Paid Amount",
       selector: (row) => row.total_paid_amount,
+      width: "170px",
+
     },
     {
       name: "Refund Amount",
       selector: (row) => row.total_refund_amount,
+      width: "170px",
+
     },
     {
       name: "Refund Balance Amount",
       selector: (row) => row.balance_refund_amount,
+      width: "170px",
+
     },
     {
       name: "Net Bal Cust to pay Amt (%)",
       selector: (row) => row.net_balance_amount_to_pay_percentage,
+      width: "190px",
+
     },
     {
       name: "Booking Created Date",
       selector: (row) => row.booking_created_date,
+      width: "170px",
+
     },
     {
       name: "Action",
@@ -733,25 +889,32 @@ const SaleBookingClose = () => {
             Close
           </button>
         ) : (
-          <span>{row.show_fstatus}</span>
+          <div className="flex-row gap16">
+            <span className="mt-2">{row.show_fstatus}</span>
+            {row.show_fstatus === "Closed" ? (
+              <button
+                className="btn cmnbtn btn_sm btn-outline-primary mr4"
+                onClick={(e) => handleOpenVerifyDialog(e, row)}
+              >
+                Verify
+              </button>
+            ) : null}
+          </div>
         );
       },
+      width: "170px",
+
     },
     {
       field: "Action",
       fieldName: "Action",
       selector: (row) => (
         <>
-          {row.show_fstatus === "Closed" ? (
-            <button
-              className="btn cmnbtn btn_sm btn-outline-primary mr4"
-              onClick={(e) => handleOpenVerifyDialog(e, row)}
-            >
-              Verify
-            </button>
-          ) : null}
+
         </>
       ),
+      width: "170px",
+
     },
   ];
   console.log(filterData, "FILTER DATA>>");
@@ -842,13 +1005,15 @@ const SaleBookingClose = () => {
   const openCount = filterData?.filter(
     (item) => item.show_fstatus === "Open"
   ).length;
+  setOpencount(openCount);
   const closeCount = filterData?.filter(
     (item) => item.show_fstatus === "Closed"
   ).length;
+  setclosecount(closeCount);
   const aboutToCloseCount = filterData?.filter(
     (item) => item.show_fstatus === "About To Close"
   ).length;
-
+  setAbouttoclosecount(aboutToCloseCount);
   // setOpenCount(openCount);
   // setCloseCount(closeCount);
   // setAboutToCloseCount(aboutToCloseCount);
@@ -862,8 +1027,8 @@ const SaleBookingClose = () => {
   // );
   console.log(filterData, "filterData>");
   return (
-    <div className="mt-4">
-      <FormContainer
+    <>
+      {/* <FormContainer
         mainTitle="Sale Booking "
         link="/admin/incentive-payment-list"
         buttonAccess={
@@ -881,7 +1046,7 @@ const SaleBookingClose = () => {
         handleOpenUniqueSalesExecutive={handleOpenUniqueSalesExecutive}
         uniqueSalesExecutiveCount={uniqueSalesExecutiveCount}
         saleBookingClosePaymentAdditionalTitles={true}
-      />
+      /> */}
       {/* verify dialog box */}
       <Dialog
         open={verifyDialog}
@@ -990,21 +1155,25 @@ const SaleBookingClose = () => {
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          <DataGrid
-            rows={sameSalesExecutiveData}
-            columns={sameSalesExecutivecolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
-          />
+          <div className="thm_table fx-head">
+
+            <DataGrid
+              rows={sameSalesExecutiveData}
+              columns={sameSalesExecutivecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              disableColumnResize={false}
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameSalesExecutiveData.indexOf(row)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
       {/* Unique Sales Executive Dialog Box */}
@@ -1036,21 +1205,25 @@ const SaleBookingClose = () => {
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          <DataGrid
-            rows={uniqueSalesExecutiveData}
-            columns={uniqueSalesExecutivecolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
-          />
+          <div className="thm_table fx-head">
+
+
+            <DataGrid
+              rows={uniqueSalesExecutiveData}
+              columns={uniqueSalesExecutivecolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueSalesExecutiveData.indexOf(row)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
       {/* Same Customer Dialog */}
@@ -1082,21 +1255,25 @@ const SaleBookingClose = () => {
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          <DataGrid
-            rows={sameCustomerData}
-            columns={sameCustomercolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => sameCustomerData.indexOf(row)}
-          />
+          <div className="thm_table fx-head">
+
+
+            <DataGrid
+              rows={sameCustomerData}
+              columns={sameCustomercolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => sameCustomerData.indexOf(row)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
       {/* Unique Customer Dialog Box */}
@@ -1128,246 +1305,247 @@ const SaleBookingClose = () => {
           dividers={true}
           sx={{ maxHeight: "80vh", overflowY: "auto" }}
         >
-          <DataGrid
-            rows={uniqueCustomerData}
-            columns={uniqueCustomercolumn}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick
-            autoHeight
-            slots={{ toolbar: GridToolbar }}
-            slotProps={{
-              toolbar: {
-                showQuickFilter: true,
-              },
-            }}
-            getRowId={(row) => uniqueCustomerData.indexOf(row)}
-          />
+          <div className="thm_table fx-head">
+
+
+            <DataGrid
+              rows={uniqueCustomerData}
+              columns={uniqueCustomercolumn}
+              pageSize={5}
+              rowsPerPageOptions={[5]}
+              disableSelectionOnClick
+              autoHeight
+              slots={{ toolbar: GridToolbar }}
+              slotProps={{
+                toolbar: {
+                  showQuickFilter: true,
+                },
+              }}
+              getRowId={(row) => uniqueCustomerData.indexOf(row)}
+            />
+          </div>
         </DialogContent>
       </Dialog>
 
-      <div className="row">
-        <div className="col-12">
-          <div className="card">
-            <div className="card-header flexCenterBetween">
-              <h5 className="card-title">Search by filter</h5>
-              <div className="flexCenter colGap12">
-                <div className="form-group flexCenter colGap8">
-                  <label className="w-100 m0">Select Date Range:</label>
-                  <select
-                    className="form-control form_sm"
-                    value={dateFilter}
-                    onChange={(e) => setDateFilter(e.target.value)}
-                  >
-                    <option value="">All</option>
-                    <option value="last7Days">Last 7 Days</option>
-                    <option value="last30Days">Last 30 Days</option>
-                    <option value="thisWeek">This Week</option>
-                    <option value="lastWeek">Last Week</option>
-                    <option value="currentMonth">Current Month</option>
-                    <option value="nextMonth">Next Month</option>
-                    <option value="currentQuarter">This Quarter</option>
-                  </select>
-                </div>
-              </div>
+      <div className="card">
+        <div className="card-header flexCenterBetween">
+          <h5 className="card-title">Search by filter</h5>
+          <div className="flexCenter colGap12">
+            <div className="form-group flexCenter colGap8">
+              <label className="w-100 m0">Select Date Range:</label>
+              <select
+                className="form-control form_sm"
+                value={dateFilter}
+                onChange={(e) => setDateFilter(e.target.value)}
+              >
+                <option value="">All</option>
+                <option value="last7Days">Last 7 Days</option>
+                <option value="last30Days">Last 30 Days</option>
+                <option value="thisWeek">This Week</option>
+                <option value="lastWeek">Last Week</option>
+                <option value="currentMonth">Current Month</option>
+                <option value="nextMonth">Next Month</option>
+                <option value="currentQuarter">This Quarter</option>
+              </select>
             </div>
-            <div className="card-body pb4">
-              <div className="row thm_form">
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Customer Name</label>
-                    <Autocomplete
-                      value={customerName}
-                      onChange={(event, newValue) => setCustomerName(newValue)}
-                      options={Array.from(
-                        new Set(datas.map((option) => option.cust_name))
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Customer Name"
-                          type="text"
-                          variant="outlined"
-                          InputProps={{
-                            ...params.InputProps,
-                            className: "form-control", // Apply Bootstrap's form-control class
-                          }}
-                          style={{
-                            borderRadius: "0.25rem",
-                            transition:
-                              "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                            "&:focus": {
-                              borderColor: "#80bdff",
-                              boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Sales Executive Name</label>
-                    <Autocomplete
-                      value={salesExecutive}
-                      onChange={(event, newValue) =>
-                        setSalesExecutive(newValue)
-                      }
-                      options={Array.from(
-                        new Set(datas.map((option) => option.sales_exe_name))
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Sales Executive Name"
-                          type="text"
-                          variant="outlined"
-                          InputProps={{
-                            ...params.InputProps,
-                            className: "form-control", // Apply Bootstrap's form-control class
-                          }}
-                          style={{
-                            borderRadius: "0.25rem",
-                            transition:
-                              "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
-                            "&:focus": {
-                              borderColor: "#80bdff",
-                              boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>From Date</label>
-                    <input
-                      value={fromDate}
-                      type="date"
-                      className="form-control"
-                      onChange={(e) => setFromDate(e.target.value)}
-                    />
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>To Date</label>
-                    <input
-                      value={toDate}
-                      type="date"
-                      className="form-control"
-                      onChange={(e) => {
-                        setToDate(e.target.value);
+          </div>
+        </div>
+        <div className="card-body pb4">
+          <div className="row thm_form">
+            <div className="col-md-4 col-sm-12">
+              <div className="form-group">
+                <label>Customer Name</label>
+                <Autocomplete
+                  value={customerName}
+                  onChange={(event, newValue) => setCustomerName(newValue)}
+                  options={Array.from(
+                    new Set(datas.map((option) => option.cust_name))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Customer Name"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
                       }}
                     />
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Campaign Amount Filter</label>
-                    <select
-                      value={campaignAmountFilter}
-                      className="form-control"
-                      onChange={(e) => setCampaignAmountFilter(e.target.value)}
-                    >
-                      <option value="">Select Amount</option>
-                      <option value="greaterThan">Greater Than</option>
-                      <option value="lessThan">Less Than</option>
-                      <option value="equalTo">Equal To</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="col-md-4 col-sm-12">
-                  <div className="form-group">
-                    <label>Campaign Amount</label>
-                    <input
-                      value={campaignAmountField}
-                      type="number"
-                      placeholder="Request Amount"
-                      className="form-control"
-                      onChange={(e) => {
-                        setcampaignAmountField(e.target.value);
-                      }}
-                    />
-                  </div>
-                </div>
+                  )}
+                />
               </div>
             </div>
-            <div className="card-footer">
-              <div className="flexCenter colGap16">
-                <Button
-                  variant="contained"
-                  onClick={handleAllFilters}
-                  className="btn cmnbtn btn-primary"
+            <div className="col-md-4 col-sm-12">
+              <div className="form-group">
+                <label>Sales Executive Name</label>
+                <Autocomplete
+                  value={salesExecutive}
+                  onChange={(event, newValue) =>
+                    setSalesExecutive(newValue)
+                  }
+                  options={Array.from(
+                    new Set(datas.map((option) => option.sales_exe_name))
+                  )}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Sales Executive Name"
+                      type="text"
+                      variant="outlined"
+                      InputProps={{
+                        ...params.InputProps,
+                        className: "form-control", // Apply Bootstrap's form-control class
+                      }}
+                      style={{
+                        borderRadius: "0.25rem",
+                        transition:
+                          "border-color .15s ease-in-out,box-shadow .15s ease-in-out",
+                        "&:focus": {
+                          borderColor: "#80bdff",
+                          boxShadow: "0 0 0 0.2rem rgba(0,123,255,.25)",
+                        },
+                      }}
+                    />
+                  )}
+                />
+              </div>
+            </div>
+            <div className="col-md-4 col-sm-12">
+              <div className="form-group">
+                <label>From Date</label>
+                <input
+                  value={fromDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => setFromDate(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="col-md-4 col-sm-12">
+              <div className="form-group">
+                <label>To Date</label>
+                <input
+                  value={toDate}
+                  type="date"
+                  className="form-control"
+                  onChange={(e) => {
+                    setToDate(e.target.value);
+                  }}
+                />
+              </div>
+            </div>
+            <div className="col-md-4 col-sm-12">
+              <div className="form-group">
+                <label>Campaign Amount Filter</label>
+                <select
+                  value={campaignAmountFilter}
+                  className="form-control"
+                  onChange={(e) => setCampaignAmountFilter(e.target.value)}
                 >
-                  <i className="fas fa-search"></i> Search
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleClearAllFilter}
-                  className="btn cmnbtn btn-secondary"
-                >
-                  Clear
-                </Button>
+                  <option value="">Select Amount</option>
+                  <option value="greaterThan">Greater Than</option>
+                  <option value="lessThan">Less Than</option>
+                  <option value="equalTo">Equal To</option>
+                </select>
+              </div>
+            </div>
+            <div className="col-md-4 col-sm-12">
+              <div className="form-group">
+                <label>Campaign Amount</label>
+                <input
+                  value={campaignAmountField}
+                  type="number"
+                  placeholder="Request Amount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setcampaignAmountField(e.target.value);
+                  }}
+                />
               </div>
             </div>
           </div>
         </div>
+        <div className="card-footer">
+          <div className="flexCenter colGap16">
+            <Button
+              variant="contained"
+              onClick={handleAllFilters}
+              className="btn cmnbtn btn-primary"
+            >
+              <i className="fas fa-search"></i> Search
+            </Button>
+            <Button
+              variant="contained"
+              onClick={handleClearAllFilter}
+              className="btn cmnbtn btn-secondary"
+            >
+              Clear
+            </Button>
+          </div>
+        </div>
       </div>
 
-      <div className="row">
-        <div className="col-12">
-          <div className="card">
-            <div className="card-header flexCenterBetween">
-              <h5 className="card-title">Sale Booking</h5>
-              <div className="flexCenter colGap12">
-                <button
-                  className="btn cmnbtn btn_sm btn-success"
-                  onClick={(e) => open(e)}
-                >
-                  Open ({openCount})
-                </button>
-                <button
-                  className="btn cmnbtn btn_sm btn-danger"
-                  onClick={(e) => close(e)}
-                >
-                  Closed({closeCount})
-                </button>
-                {/* <button
+
+
+
+
+      <div className="card">
+        <div className="card-header flexCenterBetween">
+          <h5 className="card-title">Sale Booking Close</h5>
+          <div className="flexCenter colGap12">
+            <input
+              type="text"
+              placeholder="Search here"
+              className="w-25 form-control"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button
+              className="btn cmnbtn btn_sm btn-success"
+              onClick={(e) => open(e)}
+            >
+              Open ({openCount})
+            </button>
+            <button
+              className="btn cmnbtn btn_sm btn-danger"
+              onClick={(e) => close(e)}
+            >
+              Closed({closeCount})
+            </button>
+            {/* <button
                   className="btn cmnbtn btn_sm btn-warning"
                   onClick={(e) => aboutClose(e)}
                 >
                   About to close
                 </button> */}
-              </div>
-            </div>
-            <div className="card-body thm_table data_tbl table-responsive">
-              <DataTable
-                columns={columns}
-                data={filterData}
-                fixedHeader
-                // pagination
-                fixedHeaderScrollHeight="64vh"
-                highlightOnHover
-                subHeader
-                subHeaderComponent={
-                  <input
-                    type="text"
-                    placeholder="Search here"
-                    className="w-50 form-control"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                }
-              />
-            </div>
           </div>
         </div>
+        <div className="card-body thm_table fx-head data_tbl table-responsive">
+          <DataTable
+            columns={columns}
+            data={filterData}
+            fixedHeader
+            pagination
+            fixedHeaderScrollHeight="64vh"
+            highlightOnHover
+
+
+          />
+        </div>
       </div>
-    </div>
+
+
+    </>
   );
 };
 
