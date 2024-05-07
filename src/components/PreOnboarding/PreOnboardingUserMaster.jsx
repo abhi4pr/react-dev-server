@@ -104,21 +104,21 @@ const initialGuardianDetailsGroup = {
   guardian_name: "",
   guardian_contact: "",
   guardian_address: "",
-  relation_with_guardian: ""
+  relation_with_guardian: "",
 };
 
 const guardianDisplayFields = [
   "guardian_name",
   "guardian_contact",
   "guardian_address",
-  "relation_with_guardian"
+  "relation_with_guardian",
 ];
 
 const guardianFieldLabels = {
   guardian_name: "Guardian Name",
   guardian_contact: "Guardian Contact",
   guardian_address: "Guardian Address",
-  relation_with_guardian: " Relation"
+  relation_with_guardian: " Relation",
 };
 
 //Family
@@ -783,7 +783,7 @@ const PreOnboardingUserMaster = () => {
         guardian_name: elements.guardian_name,
         guardian_contact: elements.guardian_contact,
         guardian_address: elements.guardian_address,
-        relation_with_guardian: elements.relation_with_guardian
+        relation_with_guardian: elements.relation_with_guardian,
       };
       if (elements.guardian_id) {
         payload.guardian_id = elements.guardian_id;
@@ -1470,7 +1470,11 @@ const PreOnboardingUserMaster = () => {
                   opacity: documentPercentage < 90 ? 0.5 : 1,
                 }}
                 onClick={() => setActiveTab(3)}
-                title={documentPercentage < 90 ? "Please complete documentation by 90%" : ""}
+                title={
+                  documentPercentage < 90
+                    ? "Please complete documentation by 90%"
+                    : ""
+                }
               >
                 <div className="progress-circle progressing pp-100">
                   <div className="progress-circle-border">
@@ -1484,6 +1488,11 @@ const PreOnboardingUserMaster = () => {
                 <h2 className="policy_tab_name">COC</h2>
                 <p>Code Of Conduct</p>
               </div>
+              {documentPercentage < 90 && (
+                <span style={{ fontSize: "15px", color: "red" }}>
+                  Please complete documentation by 90% then you can read coc
+                </span>
+              )}
 
               <div
                 className={`sidebar_itembox ${
