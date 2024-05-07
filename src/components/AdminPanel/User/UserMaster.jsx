@@ -889,6 +889,12 @@ const UserMaster = () => {
       const newContact1 = event.target.value;
       setAlternateContact(newContact1);
 
+      if (newContact1 === "" || (newContact1.length === 1 && parseInt(newContact1) < 6)) {
+        setPersonalContact("");
+      } else {
+        setPersonalContact(newContact1);
+      }
+
       if (newContact1 === "") {
         setValidContact3(false);
       } else {
