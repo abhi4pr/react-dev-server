@@ -331,6 +331,9 @@ import RecordServices from "./Sales/RecordService/RecordServices";
 import ReleasedAmountIncentive from "./Finance/ReleasedAmountIncentive";
 import RefundPayment from "./Finance/RefundPayment";
 import RegisterCampaigns from "./Operation/RegisterCampaigns";
+import PendingCreditApproval from "./Finance/CreditApproval/CreditApproval";
+import CreditApproval from "./Finance/CreditApproval/CreditApproval";
+import ViewPaymentUpdate from "./Sales/PaymentUpdate/ViewPaymentUpdate";
 
 const Admin = () => {
   const [contextData, setData] = useState([]);
@@ -1475,13 +1478,12 @@ const Admin = () => {
                     element={<CreditApprovalReasonUpdate />}
                   />
                   <Route
-                    path="/create-sales-booking"
+                    path="/create-sales-booking/:editId"
                     element={<CreateSaleBooking />}
                   />
                   <Route
                     path="/view-sales-booking"
                     element={<ViewSaleBooking />}
-                    g
                   />
 
                   <Route
@@ -1510,8 +1512,12 @@ const Admin = () => {
                   />
 
                   <Route
-                    path="/create-payment-update"
+                    path="/create-payment-update/:id"
                     element={<CreatePaymentUpdate />}
+                  />
+                  <Route
+                    path="/view-payment-update"
+                    element={<ViewPaymentUpdate />}
                   />
 
                   <Route
@@ -1529,6 +1535,8 @@ const Admin = () => {
                   />
 
                   <Route path="/record-servcies" element={<RecordServices />} />
+
+                  <Route path="/credit-approval" element={<CreditApproval />} />
 
                   {/* Harshal */}
                   <Route

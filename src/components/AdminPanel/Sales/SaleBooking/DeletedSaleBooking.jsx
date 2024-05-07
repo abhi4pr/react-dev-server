@@ -7,7 +7,7 @@ import DateISOtoNormal from "../../../../utils/DateISOtoNormal";
 
 const DeletedSaleBooking = () => {
   const [deletedSaleBookingData, setDeletedSaleBookingData] = useState([]);
-  const [origionalData, setOrigionalData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [search, setSearch] = useState("");
 
   const getData = async () => {
@@ -16,7 +16,7 @@ const DeletedSaleBooking = () => {
         `${baseUrl}sales/get_all_new_deleted_data`
       );
       setDeletedSaleBookingData(response.data.data);
-      setOrigionalData(response.data.data);
+      setOriginalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
     }
@@ -26,7 +26,7 @@ const DeletedSaleBooking = () => {
   }, []);
 
   useEffect(() => {
-    const result = origionalData.filter((d) => {
+    const result = originalData.filter((d) => {
       return d?.customer_name?.toLowerCase()?.includes(search?.toLowerCase());
     });
     setDeletedSaleBookingData(result);

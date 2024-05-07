@@ -7,11 +7,12 @@ import FieldContainer from "../../FieldContainer";
 import Select from "react-select";
 import getDecodedToken from "../../../../utils/DecodedToken";
 import { useAPIGlobalContext } from "../../APIContext/APIContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const todayDate = new Date().toISOString().split("T")[0];
 
 const CreateSaleBooking = () => {
+  const { editId } = useParams();
   const navigate = useNavigate();
   const { loginUserData } = useAPIGlobalContext();
 
@@ -36,6 +37,7 @@ const CreateSaleBooking = () => {
   const [selectedCreditApp, setSelectedCreditApp] = useState("");
   const [reasonCreditApproval, setReasonCreditApproval] = useState("");
   const [selectedReasonDays, setSelectedReasonDays] = useState(0);
+  const [selectedReasonType, setSelectedReasonType] = useState("");
   const [balancePayDate, setBalancePayDate] = useState(new Date());
   // const [executiveSelfCredit, setExecutiveSelfCredit] = useState(false);
   const [excelFile, setExcelFile] = useState(null);
@@ -59,7 +61,7 @@ const CreateSaleBooking = () => {
     const fetchData = async () => {
       try {
         const customerListRes = await axios.get(
-          `${baseUrl}get_all_customer_mast`
+          `${baseUrl}get_all_customer_name_data`
         );
         const creditAppList = await axios.get(
           `${baseUrl}sales/getlist_reason_credit_approval`
@@ -75,28 +77,33 @@ const CreateSaleBooking = () => {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`${baseUrl}get_customer_mast/${selectedCustomerPart}`)
-      .then((res) => setSelectedCustomerData(res.data.data[0]));
+    const fetchIdData = async () => {
+      try {
+        const response = await axios.get(
+          `${baseUrl}sales/get_single_sales_booking/${editId}`
+        );
+
+        const res = response.data.data;
+
+        setSelectedCustomer(res.customer_id);
+        // setSelectedCustomerPart(res.CustomerMast_data._id);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (editId !== 0) {
+      fetchIdData();
+    }
+  }, [editId]);
+
+  useEffect(() => {
+    if (selectedCustomerPart) {
+      axios
+        .get(`${baseUrl}get_customer_mast/${selectedCustomerPart}`)
+        .then((res) => setSelectedCustomerData(res.data.data[0]));
+    }
   }, [selectedCustomerPart]);
-
-  // useEffect(() => {
-  //   if (executiveSelfCredit) {
-  //     setSelectedPaymentStatus(paymentStatusList[0]);
-  //   } else if (selectedPaymentStatus.label === "Sent For Payment Approval") {
-  //     setSelectedPaymentStatus(paymentStatusList[1]);
-  //   } else {
-  //     setSelectedPaymentStatus("");
-  //   }
-  // }, [executiveSelfCredit]);
-
-  // useEffect(() => {
-  //   if (selectedPaymentStatus.label == "Use Credit Limit") {
-  //     setExecutiveSelfCredit(true);
-  //   } else {
-  //     setExecutiveSelfCredit(false);
-  //   }
-  // }, [selectedPaymentStatus]);
 
   const handleDateChange = (operation) => {
     const currentDate = new Date(bookingDate);
@@ -152,9 +159,9 @@ const CreateSaleBooking = () => {
       formData.append("payment_credit_status", selectedPaymentStatus?.value);
       formData.append(
         "credit_approval_status",
-        selectedPaymentStatus?.value === "sent_for_credit_approval"
-          ? "manager_pending"
-          : "self_credit_used"
+        selectedPaymentStatus?.label === "Use Credit Limit"
+          ? "self_credit_used"
+          : "pending"
       );
       formData.append(
         "booking_status",
@@ -172,7 +179,7 @@ const CreateSaleBooking = () => {
         reasonCreditApproval
       );
 
-      formData.append("balance_payment_date", balancePayDate);
+      formData.append("balance_payment_ondate", balancePayDate);
       formData.append(
         "executive_self_credit",
         selectedPaymentStatus.label == "Use Credit Limit"
@@ -230,6 +237,7 @@ const CreateSaleBooking = () => {
   const handleReasonCreditApp = (selectedOption) => {
     setSelectedCreditApp(selectedOption.value);
     setSelectedReasonDays(selectedOption.days);
+    setSelectedReasonType(selectedOption.reasonType);
   };
 
   useEffect(() => {
@@ -374,6 +382,7 @@ const CreateSaleBooking = () => {
                   days: option.day_count,
                   value: option._id,
                   label: option.reason,
+                  reasonType: option.reason_type,
                 }))}
                 value={{
                   value: selectedCreditApp,
@@ -386,8 +395,7 @@ const CreateSaleBooking = () => {
                 required
               />
             </div>
-            {console.log(selectedCreditApp)}
-            {selectedCreditApp === "660e77d6d83f9cce30f8b783" && (
+            {selectedReasonType === "own_reason" && (
               <FieldContainer
                 label="Reason Credit Approval"
                 fieldGrid={4}
