@@ -3,6 +3,16 @@
   display: none;
 }
 
+.login-success-border {
+  /* border-color: green !important; */
+  border: 2px solid green !important;
+}
+
+.login-error-border {
+  /* border-color: red !important; */
+  border: 2px solid red !important;
+}
+
 .message {
   display: flex;
   height: 100%;
@@ -217,7 +227,7 @@ i.bi {
   width: 60%;
 }
 
-.additional-titles>* {
+.additional-titles > * {
   flex-shrink: 0;
   width: 100%;
   max-width: 100%;

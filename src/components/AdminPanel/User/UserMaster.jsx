@@ -963,13 +963,25 @@ const UserMaster = () => {
   const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
 
+    // Extracting last 4 and 6 digits from personal contact
+    const personalContactLast4 = personalContact.slice(-4);
+    const personalContactLast6 = personalContact.slice(-6);
+
     // Define login ID options
-    const loginIdOptions = [
-      userName[0], // loginIdOption1
-      userName[0] + (userName[1] ? userName[1].charAt(0) : ""), // loginIdOption2
-      (userName[0] ? userName[0].charAt(0) : "") + (userName[1] || ""), // loginIdOption3
-      userName.join("."), // loginIdOption4
+    let loginIdOptions = [
+      userName[0], // lalit
+      userName.join("."), // lalit.gour
+      userName[0] + personalContactLast4, // lalit5413
+      userName[0] + personalContactLast6, // lalit815413
     ];
+
+    if (userName.length > 1) {
+      loginIdOptions.push(
+        userName[0].charAt(0) + userName[1], // lgour
+        userName.join("") // lalitgour
+      );
+    }
+
     const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
     setLastIndexUsed(nextIndex);
     const generatedLoginId = loginIdOptions[nextIndex];
@@ -1844,7 +1856,7 @@ const UserMaster = () => {
       )}
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
-          <p
+          {/* <p
             className={
               loginResponse == "login id available"
                 ? "login-success1"
@@ -1852,14 +1864,21 @@ const UserMaster = () => {
             }
           >
             {loginResponse}
-          </p>
+          </p> */}
           <label>
             Login ID <sup style={{ color: "red" }}>*</sup>
           </label>
           <div className="input-group">
             <input
-              className="form-control"
+              className={`form-control ${
+                loginId
+                  ? loginResponse === "login id available"
+                    ? "login-success-border"
+                    : "login-error-border"
+                  : ""
+              }`}
               value={loginId}
+              disabled
               onChange={handleLoginIdChange}
               onBlur={() => {
                 if (loginId === "") {

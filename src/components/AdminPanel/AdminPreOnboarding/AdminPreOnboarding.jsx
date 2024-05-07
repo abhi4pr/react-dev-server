@@ -63,6 +63,8 @@ const AdminPreOnboarding = () => {
   const [isContactTouched1, setisContactTouched1] = useState(false);
 
   const [loginId, setLoginId] = useState("");
+  const [loginResponse, setLoginResponse] = useState("");
+  const [lastIndexUsed, setLastIndexUsed] = useState(-1);
   const [password, setPassword] = useState("");
 
   const [sitting, setSitting] = useState("");
@@ -393,10 +395,44 @@ const AdminPreOnboarding = () => {
     setPassword(generatePassword);
   };
 
-  const generateLoginId = () => {
-    const randomSuffix = Math.floor(Math.random() * 1000);
-    const generatedLoginId = `${username}@${randomSuffix}`;
+  const generateLoginId = async () => {
+    const userName = username.trim().toLowerCase().split(" ");
+
+    // Extracting last 4 and 6 digits from personal contact
+    const personalContactLast4 = personalContact.slice(-4);
+    const personalContactLast6 = personalContact.slice(-6);
+
+    // Define login ID options
+    let loginIdOptions = [
+      userName[0], // lalit
+      userName.join("."), // lalit.gour
+      userName[0] + personalContactLast4, // lalit5413
+      userName[0] + personalContactLast6, // lalit815413
+    ];
+
+    if (userName.length > 1) {
+      loginIdOptions.push(
+        userName[0].charAt(0) + userName[1], // lgour
+        userName.join("") // lalitgour
+      );
+    }
+
+    const nextIndex = (lastIndexUsed + 1) % loginIdOptions.length;
+    setLastIndexUsed(nextIndex);
+    const generatedLoginId = loginIdOptions[nextIndex];
     setLoginId(generatedLoginId);
+
+    await axios
+      .post(baseUrl + `check_login_exist`, {
+        user_login_id: loginId,
+      })
+      .then((res) => {
+        setLoginResponse(res.data.message);
+      });
+
+    if (generatedLoginId?.length > 0) {
+      setMandatoryFieldsEmpty({ ...mandatoryFieldsEmpty, loginId: false });
+    }
   };
 
   const handleLoginIdChange = (event) => {
@@ -436,7 +472,7 @@ const AdminPreOnboarding = () => {
         title="User Registration"
         handleSubmit={handleSubmit}
         submitButton={false}
-      // loading={loading}
+        // loading={loading}
       >
         <FieldContainer
           label="Full Name"
@@ -722,8 +758,15 @@ const AdminPreOnboarding = () => {
             <sup style={{ color: "red" }}>*</sup>
             <div className="input-group">
               <input
-                className="form-control"
+                className={`form-control ${
+                  loginId
+                    ? loginResponse === "login id available"
+                      ? "login-success-border"
+                      : "login-error-border"
+                    : ""
+                }`}
                 value={loginId}
+                disabled
                 onChange={handleLoginIdChange}
               />
               <div className="input-group-append">
@@ -852,17 +895,18 @@ const AdminPreOnboarding = () => {
         </div>
       </FormContainer>
       <div className="form-group">
-
         <button
           type="submit"
           className="btn cmnbtn  btn-primary"
-
           onClick={handleSubmit}
           disabled={loading}
         >
           {loading ? "Submitting" : "Submit"}
-          {loading ? <i className="bi bi-arrow-clockwise"></i> : <i className="bi bi-arrow-right"></i>}
-
+          {loading ? (
+            <i className="bi bi-arrow-clockwise"></i>
+          ) : (
+            <i className="bi bi-arrow-right"></i>
+          )}
         </button>
       </div>
     </div>
