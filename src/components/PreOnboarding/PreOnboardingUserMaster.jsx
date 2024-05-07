@@ -85,18 +85,21 @@ const initialGuardianDetailsGroup = {
   guardian_name: "",
   guardian_contact: "",
   guardian_address: "",
+  relation_with_guardian: ""
 };
 
 const guardianDisplayFields = [
   "guardian_name",
   "guardian_contact",
   "guardian_address",
+  "relation_with_guardian"
 ];
 
 const guardianFieldLabels = {
   guardian_name: "Guardian Name",
   guardian_contact: "Guardian Contact",
   guardian_address: "Guardian Address",
+  relation_with_guardian: " Relation"
 };
 
 //Family
@@ -757,6 +760,7 @@ const PreOnboardingUserMaster = () => {
         guardian_name: elements.guardian_name,
         guardian_contact: elements.guardian_contact,
         guardian_address: elements.guardian_address,
+        relation_with_guardian: elements.relation_with_guardian
       };
       if (elements.guardian_id) {
         payload.guardian_id = elements.guardian_id;
@@ -1424,9 +1428,6 @@ const PreOnboardingUserMaster = () => {
               )}
 
               <div
-                // className={`sidebar_itembox  ${
-                //   activeTab == 3 ? "sidebar_item_active" : ""
-                // }`}
                 className={`sidebar_itembox ${
                   activeTab === 3 && documentPercentage < 90
                     ? "sidebar_item_active"
@@ -1438,6 +1439,7 @@ const PreOnboardingUserMaster = () => {
                   opacity: documentPercentage < 90 ? 0.5 : 1,
                 }}
                 onClick={() => setActiveTab(3)}
+                title={documentPercentage < 90 ? "Please complete documentation by 90%" : ""}
               >
                 <div className="progress-circle progressing pp-100">
                   <div className="progress-circle-border">
@@ -1448,7 +1450,8 @@ const PreOnboardingUserMaster = () => {
                     <i className="bi bi-book" />
                   </div>
                 </div>
-                <h2 className="policy_tab_name">Policy</h2>
+                <h2 className="policy_tab_name">COC</h2>
+                <p>Code Of Conduct</p>
               </div>
 
               <div
@@ -1880,7 +1883,7 @@ const PreOnboardingUserMaster = () => {
                               <TextField
                                 required
                                 id="outlined-basic"
-                                label="Current Pincode"
+                                label="Pincode"
                                 variant="outlined"
                                 type="text"
                                 value={currentPincode}
@@ -1948,7 +1951,7 @@ const PreOnboardingUserMaster = () => {
                               <TextField
                                 required
                                 id="outlined-basic"
-                                label="Permanent Pincode"
+                                label="Pincode"
                                 variant="outlined"
                                 type="text"
                                 value={permanentPincode}
