@@ -127,7 +127,7 @@ const UserOverview = () => {
       });
       reJoinClose();
       getData();
-    } catch { }
+    } catch {}
   };
 
   const SummaryData = (userId) => {
@@ -367,9 +367,9 @@ const UserOverview = () => {
       sortable: true,
     },
     {
-      field: "emp_id",
+      field: "user_id",
       headerName: "Employee ID",
-      width: 120,
+      width: 130,
       sortable: true,
     },
     {
@@ -444,7 +444,11 @@ const UserOverview = () => {
             contextData[0] &&
             contextData[3].update_value === 1 && (
               <Link to={`/admin/user-auth-detail/${params.row.user_id}`}>
-                <button className="btn cmnbtn btn_sm btn-outline-primary" variant="outline" size="small">
+                <button
+                  className="btn cmnbtn btn_sm btn-outline-primary"
+                  variant="outline"
+                  size="small"
+                >
                   Auth
                 </button>
               </Link>
@@ -479,7 +483,6 @@ const UserOverview = () => {
         <Button
           variant="outlined"
           className="btn cmnbtn btn_sm btn-outline-primary"
-
           startIcon={<RiLoginBoxLine />}
           onClick={() =>
             handleLogin(
@@ -563,7 +566,10 @@ const UserOverview = () => {
           {contextData &&
             contextData[0] &&
             contextData[0].delete_flag_value === 1 && (
-              <div className="icon-1" onClick={() => handleDelete(params.row.user_id)}>
+              <div
+                className="icon-1"
+                onClick={() => handleDelete(params.row.user_id)}
+              >
                 <i className="bi bi-trash" />
               </div>
             )}
@@ -761,7 +767,10 @@ const UserOverview = () => {
             contextData[0] &&
             contextData[0].insert_value === 1 && (
               <Link to="/admin/user">
-                <button type="button" className="btn btn-outline-primary btn-sm">
+                <button
+                  type="button"
+                  className="btn btn-outline-primary btn-sm"
+                >
                   Add New User
                 </button>
               </Link>
@@ -843,9 +852,24 @@ const UserOverview = () => {
         //  Active inActive toggle button here
         <>
           <div className="tab">
-            <button className={`named-tab ${activeButton === 1 ? "active-tab" : ""}`} onClick={() => handleRadioChange(1)}>All</button>
-            <button className={`named-tab ${activeButton === 2 ? "active-tab" : ""}`} onClick={() => handleRadioChange(2)}>Active</button>
-            <button className={`named-tab ${activeButton === 3 ? "active-tab" : ""}`} onClick={() => handleRadioChange(3)}>Exit</button>
+            <button
+              className={`named-tab ${activeButton === 1 ? "active-tab" : ""}`}
+              onClick={() => handleRadioChange(1)}
+            >
+              All
+            </button>
+            <button
+              className={`named-tab ${activeButton === 2 ? "active-tab" : ""}`}
+              onClick={() => handleRadioChange(2)}
+            >
+              Active
+            </button>
+            <button
+              className={`named-tab ${activeButton === 3 ? "active-tab" : ""}`}
+              onClick={() => handleRadioChange(3)}
+            >
+              Exit
+            </button>
           </div>
           {/* <div className="pack w-100 justify-content-end d-flex p-2 ">
             <div
@@ -916,12 +940,12 @@ const UserOverview = () => {
                       departmentFilter === ""
                         ? { value: "", label: "All" }
                         : {
-                          value: departmentFilter,
-                          label:
-                            departmentData.find(
-                              (dept) => dept.dept_id === departmentFilter
-                            )?.dept_name || "Select...",
-                        }
+                            value: departmentFilter,
+                            label:
+                              departmentData.find(
+                                (dept) => dept.dept_id === departmentFilter
+                              )?.dept_name || "Select...",
+                          }
                     }
                     onChange={(selectedOption) => {
                       const selectedValue = selectedOption
@@ -952,12 +976,12 @@ const UserOverview = () => {
                       designationFilter === ""
                         ? { value: "", label: "All" }
                         : {
-                          value: designationFilter,
-                          label:
-                            designationData.find(
-                              (option) => option.desi_id === designationFilter
-                            )?.desi_name || "Select...",
-                        }
+                            value: designationFilter,
+                            label:
+                              designationData.find(
+                                (option) => option.desi_id === designationFilter
+                              )?.desi_name || "Select...",
+                          }
                     }
                     onChange={(selectedOption) => {
                       const newValue = selectedOption
@@ -998,7 +1022,10 @@ const UserOverview = () => {
               </div>
             </div>
 
-            <div className="data_tbl card-body thm_table" style={{ height: "64vh", width: "100%" }}>
+            <div
+              className="data_tbl card-body thm_table"
+              style={{ height: "64vh", width: "100%" }}
+            >
               <DataGrid
                 rows={filterdata.map((data, index) => ({ ...data, id: index }))}
                 columns={columns}
@@ -1191,13 +1218,13 @@ const UserOverview = () => {
               {(separationStatus === "On Long Leave" ||
                 separationStatus === "Subatical" ||
                 separationStatus === "Suspended") && (
-                  <FieldContainer
-                    label="Reinstated Date"
-                    type="date"
-                    value={separationReinstateDate}
-                    onChange={(e) => setSeparationReinstateDate(e.target.value)}
-                  />
-                )}
+                <FieldContainer
+                  label="Reinstated Date"
+                  type="date"
+                  value={separationReinstateDate}
+                  onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                />
+              )}
               {separationStatus == "Resign Accepted" && (
                 <input
                   label="Last Working Day"

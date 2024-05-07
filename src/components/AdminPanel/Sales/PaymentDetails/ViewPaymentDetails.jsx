@@ -8,7 +8,7 @@ import DeleteButton from "../../DeleteButton";
 
 const ViewPaymentDetails = () => {
   const [paymentDetailsData, setPaymentDetailsData] = useState([]);
-  const [origionalData, setOrigionalData] = useState([]);
+  const [originalData, setOriginalData] = useState([]);
   const [search, setSearch] = useState("");
   const [copiedRowId, setCopiedRowId] = useState(null);
 
@@ -18,7 +18,7 @@ const ViewPaymentDetails = () => {
         `${baseUrl}sales/getlist_payment_details`
       );
       setPaymentDetailsData(response.data.data);
-      setOrigionalData(response.data.data);
+      setOriginalData(response.data.data);
     } catch (error) {
       console.error("Error fetching credit approval reasons:", error);
     }
@@ -29,7 +29,7 @@ const ViewPaymentDetails = () => {
   }, []);
 
   useEffect(() => {
-    const result = origionalData.filter((d) => {
+    const result = originalData.filter((d) => {
       return d.reason?.toLowerCase().includes(search.toLowerCase());
     });
     setPaymentDetailsData(result);
