@@ -112,7 +112,7 @@ const UserMaster = () => {
   // Genral Information Tab-------------------Start------------------------------------
   // ---------------------Prsonal Info State Start
   const [username, setUserName] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState();
   const [imagePreview, setImagePreview] = useState(null);
   const [personalEmail, setPersonalEmail] = useState("");
   const [personalContact, setPersonalContact] = useState("");
@@ -585,7 +585,6 @@ const UserMaster = () => {
             user.user_login_id.toLocaleLowerCase() ===
             loginId.toLocaleLowerCase()
         );
-
         const contactNumberExists = usersData.some(
           (user) => user.user_contact_no == personalContact
         );
@@ -877,6 +876,12 @@ const UserMaster = () => {
       const newContact1 = event.target.value;
       setPersonalContact(newContact1);
 
+      if (newContact1 === "" || (newContact1.length === 1 && parseInt(newContact1) < 6)) {
+        setPersonalContact("");
+      } else {
+        setPersonalContact(newContact1);
+      }
+
       if (newContact1 === "") {
         setValidContact1(false);
       } else {
@@ -890,12 +895,6 @@ const UserMaster = () => {
     if (event.target.value.length <= 10) {
       const newContact1 = event.target.value;
       setAlternateContact(newContact1);
-
-      if (newContact1 === "" || (newContact1.length === 1 && parseInt(newContact1) < 6)) {
-        setPersonalContact("");
-      } else {
-        setPersonalContact(newContact1);
-      }
 
       if (newContact1 === "") {
         setValidContact3(false);
@@ -1277,11 +1276,9 @@ const UserMaster = () => {
           )}
         </div>
       </div>
-
       <div className="col-md-3">
         <FieldContainer
           label="Personal Email"
-
           astric={true}
           type="email"
           fieldGrid={12}
@@ -1325,7 +1322,7 @@ const UserMaster = () => {
         {(isContactTouched1 || personalContact.length >= 10) &&
           !isValidcontact1 &&
           mandatoryFieldsEmpty.personalContact && (
-            <p style={{ color: "var(--danger)" }}>*Please enter a valid Contact Number</p>
+            <p style={{ color: "red" }}>*Please enter a valid Contact Number</p>
           )}
 
       </div>
@@ -1422,12 +1419,48 @@ const UserMaster = () => {
           </div>
         </div>
       </div>
-      {
-        dateOfBirth !== "" && (
-          <FieldContainer fieldGrid={3} label="Age" value={age} />
-        )
-      }
-      <FieldContainer
+      {dateOfBirth !== "" && (
+        <FieldContainer fieldGrid={3} label="Age" value={age} />
+      )}
+
+      <div className="form-group col-3">
+        <label className="form-label">
+          Nationality <sup style={{ color: "red" }}>*</sup>
+        </label>
+        <Select
+          className=""
+          options={nationalityData.map((option) => ({
+            value: `${option}`,
+            label: `${option}`,
+          }))}
+          value={{
+            value: nationality,
+            label: `${nationality}`,
+          }}
+          onChange={(e) => {
+            setNationality(e.value);
+          }}
+          onBlur={() => {
+            if (nationality === "" || nationality === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                nationality: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                nationality: false,
+              });
+            }
+          }}
+          required
+        />
+        {mandatoryFieldsEmpty.nationality && (
+          <p style={{ color: "red" }}>Please enter nationality</p>
+        )}
+      </div>
+
+      {/* <FieldContainer
         label="Nationality"
         astric={true}
         fieldGrid={3}
@@ -1451,11 +1484,9 @@ const UserMaster = () => {
           }
         }}
       />
-      {
-        mandatoryFieldsEmpty.nationality && (
-          <p style={{ color: "red" }}>Please Enter Nationality</p>
-        )
-      }
+      {mandatoryFieldsEmpty.nationality && (
+        <p style={{ color: "red" }}>Please Enter Nationality</p>
+      )} */}
       <div className="form-group col-3">
         <label className="form-label">
           Maritial Status <sup style={{ color: "red" }}>*</sup>
@@ -1493,30 +1524,26 @@ const UserMaster = () => {
         )}
       </div>
 
-      {
-        maritialStatus === "Married" && (
-          <FieldContainer
-            label="Spouse Name"
-            value={spouseName}
-            fieldGrid={3}
-            onChange={(e) => setSpouseName(e.target.value)}
-            required={false}
-          />
-        )
-      }
-      {
-        maritialStatus == "Married" && (
-          <FieldContainer
-            type="date"
-            fieldGrid={3}
-            label="Date Of Marraige"
-            value={dateOfMarraige}
-            onChange={(e) => setDateOfMarraige(e.target.value)}
-            max={today}
-            required={false}
-          />
-        )
-      }
+      {maritialStatus === "Married" && (
+        <FieldContainer
+          label="Spouse Name"
+          value={spouseName}
+          fieldGrid={3}
+          onChange={(e) => setSpouseName(e.target.value)}
+          required={false}
+        />
+      )}
+      {maritialStatus == "Married" && (
+        <FieldContainer
+          type="date"
+          fieldGrid={3}
+          label="Date Of Marraige"
+          value={dateOfMarraige}
+          onChange={(e) => setDateOfMarraige(e.target.value)}
+          max={today}
+          required={false}
+        />
+      )}
 
       {/* Personal Info Inputs------------------------End------------ */}
 
@@ -1811,22 +1838,23 @@ const UserMaster = () => {
         }}
       />
       {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
+      <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
 
-      <FieldContainer
-        label="Official Contact"
-        type="number"
-        placeholder="Not Allocated"
-        fieldGrid={3}
-        value={contact}
-        required={true}
-        onChange={handleContactChange}
-        onBlur={handleContentBlur}
-      />
-      {
-        (isContactTouched || contact.length >= 10) && !isValidcontact && (
+        <FieldContainer
+          label="Official Contact"
+          type="number"
+          placeholder="Not Allocated"
+          fieldGrid={3}
+          value={contact}
+          required={true}
+          onChange={handleContactChange}
+          onBlur={handleContentBlur}
+        />
+        {(isContactTouched || contact.length >= 10) && !isValidcontact && (
           <p style={{ color: "red" }}>*Please enter a valid Number</p>
-        )
-      }
+        )}
+      </div>
+
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
           {/* <p
@@ -1843,7 +1871,12 @@ const UserMaster = () => {
           </label>
           <div className="input-group">
             <input
-              className="form-control"
+              className={`form-control ${loginId
+                ? loginResponse === "login id available"
+                  ? "login-success-border"
+                  : "login-error-border"
+                : ""
+                }`}
               value={loginId}
               disabled
               onChange={handleLoginIdChange}
@@ -1987,18 +2020,16 @@ const UserMaster = () => {
         </div>
       </div>
 
-      {
-        department == constant.CONST_SALES_DEPT_ID && (
-          <FieldContainer
-            label="Credit Limit"
-            type="number"
-            fieldGrid={3}
-            value={creditLimit}
-            required={true}
-            onChange={(e) => setCreditLimit(e.target.value)}
-          />
-        )
-      }
+      {department == constant.CONST_SALES_DEPT_ID && (
+        <FieldContainer
+          label="Credit Limit"
+          type="number"
+          fieldGrid={3}
+          value={creditLimit}
+          required={true}
+          onChange={(e) => setCreditLimit(e.target.value)}
+        />
+      )}
 
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         {/* <button
@@ -2028,7 +2059,7 @@ const UserMaster = () => {
         tabIndex={-1}
         aria-labelledby="transferModalLabel"
         aria-hidden="true"
-
+        style={{ marginLeft: "7%" }}
       >
         <div className="modal-dialog modal-dialog-centered modal-lg">
           <div className="modal-content m-0">
@@ -2036,7 +2067,7 @@ const UserMaster = () => {
               <div>
 
                 {selectedImage && (
-                  <div className=" flex-row  w-100 flexCenter">
+                  <div className=" flex-row  w-100 justify-content-center">
 
                     <div className="profile-holder" style={{ width: "80px", height: "80px" }}>
                       <img
