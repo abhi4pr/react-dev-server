@@ -11,6 +11,7 @@ const EducationFields = ({
   handleAddEducationDetails,
   handleRemoveEducationDetails,
 }) => {
+  const canAddMoreEducation = educationDetails.length < 10;
   return (
     <>
       {educationDetails?.map((detail, index) => (
@@ -145,15 +146,18 @@ const EducationFields = ({
         </div>
         // </div>
       ))}
-      <div className="mb-1">
-        <button
-          type="button"
-          onClick={handleAddEducationDetails}
-          className="btn onboardBtn btn-outline-warning"
-        >
-          Add {educationDetails?.length > 0 && "More"} Education Details
-        </button>
-      </div>
+
+      {canAddMoreEducation && (
+        <div className="mb-1">
+          <button
+            type="button"
+            onClick={handleAddEducationDetails}
+            className="btn onboardBtn btn-outline-warning"
+          >
+            Add {educationDetails?.length > 0 && "More"} Education Details
+          </button>
+        </div>
+      )}
     </>
   );
 };

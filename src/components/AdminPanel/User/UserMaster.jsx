@@ -50,29 +50,17 @@ const colourOptions = [
   { value: "English", label: "English" },
   { value: "Hindi", label: "Hindi" },
   { value: "Spanish", label: "Spanish" },
-  { value: "Mandarin", label: "Mandarin" },
   { value: "French", label: "French" },
   { value: "Arabic", label: "Arabic" },
   { value: "Bengali", label: "Bengali" },
   { value: "Russian", label: "Russian" },
-  { value: "Portuguese", label: "Portuguese" },
-  { value: "Indonesian", label: "Indonesian" },
   { value: "Urdu", label: "Urdu" },
   { value: "German", label: "German" },
   { value: "Japanese", label: "Japanese" },
-  { value: "Swahili", label: "Swahili" },
   { value: "Marathi", label: "Marathi" },
   { value: "Telugu", label: "Telugu" },
-  { value: "Turkish", label: "Turkish" },
   { value: "Tamil", label: "Tamil" },
-  { value: "Vietnamese", label: "Vietnamese" },
   { value: "Italian", label: "Italian" },
-  { value: "Korean", label: "Korean" },
-  { value: "Persian", label: "Persian" },
-  { value: "Polish", label: "Polish" },
-  { value: "Dutch", label: "Dutch" },
-  { value: "Greek", label: "Greek" },
-  { value: "Thai", label: "Thai" },
   { value: "Other", label: "Other" },
 ];
 
@@ -626,7 +614,7 @@ const UserMaster = () => {
                 const userResponseID = res.data.simv.user_id;
                 setUserResID(userResponseID);
                 setIsFormSubmitted(true);
-                toastAlert(res.data.simv.emp_id + " " + "Employe Registerd");
+                toastAlert(res.data.simv.emp_id + " " + "Employee Registerd");
                 setIsLoading(false);
               } else {
                 toastError("Sorry User is Not Created, Please try again later");
