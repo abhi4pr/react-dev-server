@@ -106,7 +106,7 @@ function Dashboard() {
           <img className="img-bg" src={titleimg} alt="" width={160} />
           <div className="form_heading_title">
             <h1>Dashboard</h1>
-            <nav aria-label="breadcrumb">
+            {/* <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                   <a href="#">
@@ -118,7 +118,7 @@ function Dashboard() {
                     activeLink.slice(2)}
                 </li>
               </ol>
-            </nav>
+            </nav> */}
           </div>
           {/* <Link to={`/admin/kra/${userId}`}>
             <button type="button" className="btn btn-outline-primary btn-sm">
