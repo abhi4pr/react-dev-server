@@ -61,7 +61,7 @@ const VendorOverview = () => {
     {
       field: "sno",
       headerName: "S.NO",
-      width: 200,
+      width: 80,
       renderCell: (params) => <div>{filterData.indexOf(params.row) + 1}</div>,
     },
     {
@@ -69,6 +69,11 @@ const VendorOverview = () => {
       headerName: "Vendor Name",
       width: 200,
       editable: true,
+    },
+    {
+      field: "vendor_category",
+      headerName: "Vendor Category",
+      width:150
     },
     {
       field: "mobile",
