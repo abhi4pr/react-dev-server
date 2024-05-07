@@ -29,7 +29,7 @@ export default function PaymentModeMast() {
   const handleEditPaymentMode = (e) => {
     setEditPaymentMode(e.target.value);
   };
-
+  console.log(rowData, "rowDaa>>>>");
   const handleSaveEditPaymentMode = () => {
     axios
       .put(baseUrl + `edit_payment_mode/${rowData._id}`, {

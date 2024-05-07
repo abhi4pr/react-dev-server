@@ -2416,6 +2416,246 @@ const BalancePaymentList = () => {
           )}
         </div>
       </div>
+
+      {/* Dialog box for balance payment update*/}
+      <BootstrapDialog
+        onClose={handleCloseImageModal}
+        aria-labelledby="customized-dialog-title"
+        open={ImageModalOpen}
+      >
+        <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+          Payment Update
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseImageModal}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent dividers>
+          <div className="row">
+            <div className="col-md-12 ">
+              <form onSubmit={handleSubmit}>
+                <div className="form-group col-12"></div>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    className="form-control mt-3"
+                    label="Payment Date"
+                    value={paymentDate}
+                    format="DD/MM/YYYY"
+                    onChange={setPaymentDate}
+                  />
+                </LocalizationProvider>
+                <div className="form-group mt-3">
+                  <label htmlFor="images">Balance Amount</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="balance Amount"
+                    name="balance Amount"
+                    value={balAmount}
+                    readOnly
+                    // onChange={(e) => setBalAmount(e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group mt-3">
+                  <label htmlFor="images">Paid Amount</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="paid Amount"
+                    name="paid Amount"
+                    value={paidAmountData}
+                    readOnly
+                    // onChange={(e) => setBalAmount(e.target.value)}
+                    required
+                  />
+                </div>
+                <TextField
+                  variant="outlined"
+                  label="Paid Amount *"
+                  className="form-control "
+                  value={paidAmount}
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    if (!isNaN(inputValue) && inputValue !== "") {
+                      const parsedValue = parseFloat(inputValue);
+                      if (parsedValue <= balAmount) {
+                        setPaidAmount(parsedValue);
+                        setShowField(true);
+
+                        setPaymentType(
+                          parsedValue === balAmount
+                            ? { label: "Full", value: "full" }
+                            : { label: "Partial", value: "partial" }
+                        );
+                      } else {
+                        toastError(
+                          "Paid amount should be less than or equal to the balance amount"
+                        );
+                      }
+                    } else {
+                      toastError("Please enter a valid numeric value");
+                      setPaidAmount("");
+                      setShowField(false);
+                    }
+                  }}
+                />
+
+                {showField && paidAmount > 0 && (
+                  <div className="row">
+                    <div className="col-md-12 ">
+                      <div className="form-group">
+                        <label htmlFor="images">Remaining Amount</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="remaining amount"
+                          name="remaining amount"
+                          value={balAmount - paidAmount}
+                          readOnly
+                          // onChange={(e) => e.target.value}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="col-md-12 ">
+                      <div className="form-group">
+                        <label htmlFor="images">Paid Percentage %</label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          id="paid %"
+                          name="paid %"
+                          value={paidPercentage}
+                          readOnly
+                          // onChange={(e) => setBalAmount(e.target.value)}
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div className="form-group mt-3">
+                  <label htmlFor="images">Adjustment Amount</label>
+                  <input
+                    type="number"
+                    className="form-control"
+                    id="paid %"
+                    name="paid %"
+                    onChange={(e) => setAdjustmentAmount(e.target.value)}
+                  />
+                </div>
+                <div className="form-group mt-3">
+                  <label htmlFor="images">Payment Reference Number:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="images"
+                    name="images"
+                    value={paymentRefNo}
+                    onChange={(e) => setPaymentRefNo(e.target.value)}
+                  />
+                </div>
+                <Autocomplete
+                  className="my-2 mt-3"
+                  id="combo-box-demo"
+                  // value={row.statusDropdown}
+                  options={dropdownData.map((item) => ({
+                    label: item.title,
+                    value: item.id,
+                  }))}
+                  // style={{ width: 180, zIndex: 1, position: "relative" }}
+                  onChange={(e, value) => {
+                    setPaymentDetails(value);
+                  }}
+                  getOptionLabel={(option) => option.label}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Payment Details *"
+                      variant="outlined"
+                    />
+                  )}
+                />
+                <div className="form-group">
+                  <label htmlFor="images">Payment Reference Image:</label>
+                  <input
+                    type="file"
+                    className="form-control"
+                    id="images"
+                    name="images"
+                    accept="image/*"
+                    onChange={(e) => setPaymentRefImg(e.target.files[0])}
+                  />
+                </div>
+                <Autocomplete
+                  className="my-2 mt-3"
+                  id="combo-box-demo"
+                  value={paymentType}
+                  // disabled
+                  readOnly
+                  options={[
+                    { label: "Full", value: "full" },
+                    { label: "Partial", value: "partial" },
+                  ]}
+                  // style={{ width: 328, zIndex: 1, position: "relative" }}
+                  onChange={(e, value) => {
+                    setPaymentType(value);
+                  }}
+                  getOptionLabel={(option) => option.label}
+                  renderInput={(params) => (
+                    <TextField {...params} label="Status" variant="outlined" />
+                  )}
+                />
+              </form>
+            </div>
+          </div>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            disabled={
+              paidAmount === 0 || paidAmount === "" || paymentDetails === ""
+            }
+            variant="contained"
+            autoFocus
+            onClick={(e) => handleSubmit(e)}
+          >
+            Save
+          </Button>
+          {paidPercentage === 90 || paidPercentage >= 90 ? (
+            <Button variant="contained" autoFocus onClick={handleOpenTDSFields}>
+              Close
+            </Button>
+          ) : (
+            ""
+          )}
+          {/* {nonGstStatus === "0" ? (
+                    <Button
+                      variant="contained"
+                      autoFocus
+                      onClick={(e) => handleDiscardSubmit(e)}
+                    >
+                      Discard
+                    </Button>
+                  ) : (
+                    ""
+                  )} */}
+        </DialogActions>
+      </BootstrapDialog>
+      {viewImgDialog && (
+        <ImageView
+          viewImgSrc={viewImgSrc}
+          setViewImgDialog={setViewImgDialog}
+        />
+      )}
       {/* <div className="row">
         <div className="col-12">
           <div className="card" style={{ height: "600px" }}>
