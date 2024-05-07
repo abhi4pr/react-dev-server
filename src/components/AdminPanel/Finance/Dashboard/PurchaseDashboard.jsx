@@ -20,14 +20,6 @@ const PurchaseDashboard = () => {
   const [selectedRange, setSelectedRange] = useState("0-10k");
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   handlePendingReqData();
-  //   handlePaymentDone();
-  //   handleGSTHold();
-  //   TDSDeducted();
-  //   handleDiscardData();
-  // }, []);
-
   useEffect(() => {
     handlePendingReqData();
   }, []);
@@ -214,7 +206,6 @@ const PurchaseDashboard = () => {
     });
   };
 
-  console.log(pendingReqData, "pending request data >>>>>>");
   return (
     <div className="card body-padding">
       {/* <div className="pack flex-row" style={{ gap: "16px" }}>
@@ -322,9 +313,7 @@ const PurchaseDashboard = () => {
                   ))}
                 </div>
               </div>
-
             </div>
-
           </div>
           <div className="col-md-6 financeCardBox">
             {/* <div className="financeCardBoxIn p0">
@@ -367,8 +356,7 @@ const PurchaseDashboard = () => {
                   <span>
                     <span>&#8377; </span>
                     {pendingReqData?.reduce(
-                      (total, item) =>
-                        total + parseFloat(item.request_amount),
+                      (total, item) => total + parseFloat(item.request_amount),
                       0
                     )}
                   </span>
@@ -379,8 +367,7 @@ const PurchaseDashboard = () => {
                   <span>
                     <span>&#8377; </span>
                     {pendingReqData?.reduce(
-                      (total, item) =>
-                        total + parseFloat(item.balance_amount),
+                      (total, item) => total + parseFloat(item.balance_amount),
                       0
                     )}
                   </span>
@@ -428,13 +415,13 @@ const PurchaseDashboard = () => {
               </ul>
             </div>
           </div>
-
         </div>
-        {/* </Link> */}
       </div>{" "}
       <div className="row">
-
-        <Link className="col-md-6 mb-4" to="/admin/finance-pruchasemanagement-paymentdone">
+        <Link
+          className="col-md-6 mb-4"
+          to="/admin/finance-pruchasemanagement-paymentdone"
+        >
           <div className="pack flex-row " style={{ gap: "16px" }}>
             <div className="fin-card w-100">
               <div
@@ -444,7 +431,10 @@ const PurchaseDashboard = () => {
                 <div className="fd-circle">
                   <img src={giftwo} alt="gif" />
                 </div>
-                <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                <div
+                  className="pack d-flex flex-column"
+                  style={{ gap: "15px" }}
+                >
                   <h4> Payment Done</h4>
                   <div className="scroll-con">
                     <div className="scroller">
@@ -513,7 +503,10 @@ const PurchaseDashboard = () => {
                 <div className="fd-circle">
                   <img src={gifthree} alt="gif" />
                 </div>
-                <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                <div
+                  className="pack d-flex flex-column"
+                  style={{ gap: "15px" }}
+                >
                   <h4> GST Hold</h4>
                   <div className="scroll-con">
                     <div className="scroller">
@@ -572,7 +565,6 @@ const PurchaseDashboard = () => {
             </div>
           </div>{" "}
         </Link>{" "}
-
         <Link className="col-md-6" to="/admin/payment-TDS_deduct">
           <div className="pack flex-row" style={{ gap: "16px" }}>
             <div className="fin-card w-100">
@@ -583,7 +575,10 @@ const PurchaseDashboard = () => {
                 <div className="fd-circle">
                   <img src={gifone} alt="gif" />
                 </div>
-                <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                <div
+                  className="pack d-flex flex-column"
+                  style={{ gap: "15px" }}
+                >
                   <h4> TDS Deduction</h4>
                   <div className="scroll-con">
                     <div className="scroller">
@@ -642,7 +637,10 @@ const PurchaseDashboard = () => {
             </div>
           </div>{" "}
         </Link>{" "}
-        <Link className="col-md-6" to="/admin/finance-pruchasemanagement-discardpayment">
+        <Link
+          className="col-md-6"
+          to="/admin/finance-pruchasemanagement-discardpayment"
+        >
           <div className="pack flex-row" style={{ gap: "16px" }}>
             <div className="fin-card w-100">
               <div
@@ -652,7 +650,10 @@ const PurchaseDashboard = () => {
                 <div className="fd-circle">
                   <img src={giftwo} alt="gif" />
                 </div>
-                <div className="pack d-flex flex-column" style={{ gap: "15px" }}>
+                <div
+                  className="pack d-flex flex-column"
+                  style={{ gap: "15px" }}
+                >
                   <h4> Discard Payment</h4>
                   <div className="scroll-con">
                     <div className="scroller">
@@ -712,7 +713,6 @@ const PurchaseDashboard = () => {
           </div>{" "}
         </Link>
       </div>
-
     </div>
   );
 };

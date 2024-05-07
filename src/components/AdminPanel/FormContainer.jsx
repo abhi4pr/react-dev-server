@@ -99,11 +99,11 @@ const FormContainer = ({
           _heading_title "
           >
             <h2>{mainTitle}</h2>
-            <div className="pack">
+            {/* <div className="pack">
               <i class="bi bi-house"></i>{" "}
               {activeLink.slice(1).charAt(0).toUpperCase() +
                 activeLink.slice(2)}
-            </div>
+            </div> */}
           </div>
           {includeAdditionalTitles && accIndex === 0 ? (
             <div className="additional-titles ">
@@ -472,9 +472,8 @@ const FormContainer = ({
               <Link to={link}>
                 <button
                   title={"Add New " + mainTitle}
-                  className={`btn cmnbtn btn-primary ${
-                    addNewButtonName && "text_button"
-                  }`}
+                  className={`btn cmnbtn btn-primary ${addNewButtonName && "text_button"
+                    }`}
                 >
                   {/* {addNewButtonName ? addNewButtonName : <FaUserPlus />} */}
                   {addNewButtonName ? addNewButtonName : "Add"}
@@ -484,9 +483,8 @@ const FormContainer = ({
                 <Link to={newbuttonRouting}>
                   <button
                     title={"Add " + mainTitle}
-                    className={`btn cmnbtn btn-success ml-2 ${
-                      newbuttonName && "text_button"
-                    }`}
+                    className={`btn cmnbtn btn-success ml-2 ${newbuttonName && "text_button"
+                      }`}
                   >
                     {/* {newbuttonName ? newbuttonName : <FaUserPlus />} */}
                     {newbuttonName ? newbuttonName : "Add"}
@@ -521,9 +519,8 @@ const FormContainer = ({
             <div
               className="btn-group w-100"
               style={{
-                display: `${
-                  TitleHeaderComponentDisplay === "none" ? "" : "none"
-                }`,
+                display: `${TitleHeaderComponentDisplay === "none" ? "" : "none"
+                  }`,
               }}
             >
               {accordionButtons.map((buttonName, index) => (
@@ -561,9 +558,8 @@ const FormContainer = ({
                     {activeAccordionIndex === accordionButtons.length - 1 &&
                       submitButton && (
                         <button
-                          className={`btn cmnbtn ${
-                            loading ? "btn-danger" : "btn-success"
-                          }`}
+                          className={`btn cmnbtn ${loading ? "btn-danger" : "btn-success"
+                            }`}
                           style={{ marginRight: "5px" }}
                           type="submit"
                           disabled={loading}

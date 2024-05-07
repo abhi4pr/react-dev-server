@@ -1369,7 +1369,9 @@ export default function PurchaseManagementAllTransaction() {
                       value={vendorName}
                       onChange={(event, newValue) => setVendorName(newValue)}
                       options={Array.from(
-                        new Set(data.map((option) => option.vendor_name))
+                        new Set(
+                          data?.map((option) => option?.vendor_name || [])
+                        )
                       )}
                       renderInput={(params) => (
                         <TextField
