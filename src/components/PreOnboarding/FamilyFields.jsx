@@ -171,7 +171,7 @@ const FamilyFields = ({
       ))}
 
       {canAddMoreFamily && (
-        <div className="mb-5">
+        <div>
           <button
             type="button"
             onClick={handleAddFamilyDetails}

@@ -151,57 +151,59 @@ const DocumentTab = ({
           normalUserLayout && "documentareaLight"
         }`}
       >
-        <div className="document_box">
-          <h2>Documents</h2>
-
-          <div
-            className={`docTable ${
-              normalUserLayout && "docTableLight"
-            } table-responsive`}
-          >
-            <table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">Document Name</th>
-                  <th scope="col">Document Type</th>
-                  <th scope="col">Period (Days)</th>
-                  <th scope="col">Time Left</th>
-                  <th scope="col">Upload</th>
-                  <th scope="col" className="text-center">
-                    Status
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {documentData.map((item) => (
-                  <tr key={item._id}>
-                    <td style={{ width: "20%" }}>
-                      {item.document.doc_name}
-                      {item.document.isRequired && (
-                        <span style={{ color: "red" }}> * (Mandatory)</span>
-                      )}
-                    </td>
-                    <td scope="row">{item.document.doc_type}</td>
-                    <td>{item.document.period} days</td>
-                    {/* <td>1 Day</td> */}
-                    <td>{diffDate < 0 ? "Please Upload Docs" : diffDate}</td>
-                    <td>
-                      <div className="uploadDocBtn">
-                        <span>
-                          <i className="bi bi-cloud-arrow-up" /> Upload
-                        </span>
-                        <input
-                          type="file"
-                          onChange={(e) =>
-                            handleFileUpload(e.target.files[0], item._id)
-                          }
-                        />
-                      </div>
-                    </td>
-                    <td>
-                      <div className="docStatus">
-                        <span
-                          className={`warning_badges 
+        <div className="cardHeaderBoard">
+          <h5 className="cardTitle">Documents</h5>
+        </div>
+        <div className="cardBodyBoard p0">
+          <div className="document_box">
+            <div
+              className={`docTable ${
+                normalUserLayout && "docTableLight"
+              } table-responsive`}
+            >
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Document Name</th>
+                    <th scope="col">Document Type</th>
+                    <th scope="col">Period (Days)</th>
+                    <th scope="col">Time Left</th>
+                    <th scope="col">Upload</th>
+                    <th scope="col" className="text-center">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {documentData.map((item) => (
+                    <tr key={item._id}>
+                      <td style={{ width: "20%" }}>
+                        {item.document.doc_name}
+                        {item.document.isRequired && (
+                          <span style={{ color: "red" }}> * (Mandatory)</span>
+                        )}
+                      </td>
+                      <td scope="row">{item.document.doc_type}</td>
+                      <td>{item.document.period} days</td>
+                      {/* <td>1 Day</td> */}
+                      <td>{diffDate < 0 ? "Please Upload Docs" : diffDate}</td>
+                      <td>
+                        <div className="uploadDocBtn">
+                          <span>
+                            <i className="bi bi-cloud-arrow-up" /> Upload
+                          </span>
+                          <input
+                            type="file"
+                            onChange={(e) =>
+                              handleFileUpload(e.target.files[0], item._id)
+                            }
+                          />
+                        </div>
+                      </td>
+                      <td>
+                        <div className="docStatus">
+                          <span
+                            className={`warning_badges 
                         ${item.status == "" && "not_uploaded"}
                         ${
                           item.status == "Document Uploaded" &&
@@ -211,48 +213,48 @@ const DocumentTab = ({
                         ${item.status == "Approved" && "approve"}
                         ${item.status == "Rejected" && "reject"}
                         `}
-                        >
-                          <h4>
-                            {item.status == "" && "Not Uploaded"}
-                            {item.status !== "" && item.status}
-                          </h4>
-                          {item.status == "Rejected" && (
-                            <i
-                              className="bi bi-exclamation-circle-fill"
-                              title={item.reject_reason}
-                            />
-                          )}
-                          {item.status == "Approved" && (
-                            <button
-                              type="button"
-                              style={{ borderRadius: 17, padding: 7 }}
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleDocDelete(item)}
-                            >
-                              Unapprove
-                            </button>
-                          )}
-                          {item?.status == "Not Available" ? (
-                            ""
-                          ) : (
-                            <button
-                              type="button"
-                              style={{ borderRadius: 17, padding: 7 }}
-                              className="btn btn-danger btn-sm"
-                              onClick={() => handleNotAvail(item)}
-                            >
-                              N/A
-                            </button>
-                          )}
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {/* {submitButton && (
+                          >
+                            <h4>
+                              {item.status == "" && "Not Uploaded"}
+                              {item.status !== "" && item.status}
+                            </h4>
+                            {item.status == "Rejected" && (
+                              <i
+                                className="bi bi-exclamation-circle-fill"
+                                title={item.reject_reason}
+                              />
+                            )}
+                            {item.status == "Approved" && (
+                              <button
+                                type="button"
+                                style={{ borderRadius: 17, padding: 7 }}
+                                className="btn btn-danger btn-sm"
+                                onClick={() => handleDocDelete(item)}
+                              >
+                                Unapprove
+                              </button>
+                            )}
+                            {item?.status == "Not Available" ? (
+                              ""
+                            ) : (
+                              <button
+                                type="button"
+                                style={{ borderRadius: 17, padding: 7 }}
+                                className="btn btn-danger btn-sm"
+                                onClick={() => handleNotAvail(item)}
+                              >
+                                N/A
+                              </button>
+                            )}
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {/* {submitButton && (
             <div className="ml-auto mr-auto text-center">
               <button
                 className="btn onboardBtn btn_primary"
@@ -262,6 +264,7 @@ const DocumentTab = ({
               </button>
             </div>
           )} */}
+          </div>
         </div>
       </div>
     </>
