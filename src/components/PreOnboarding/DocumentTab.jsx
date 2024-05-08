@@ -3,6 +3,7 @@ import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
 import { baseUrl } from "../../utils/config";
 import { useParams, useNavigate } from "react-router-dom";
+import jwtDecode from "jwt-decode";
 
 const DocumentTab = ({
   documentData,
@@ -17,16 +18,26 @@ const DocumentTab = ({
   const { toastAlert, toastError } = useGlobalContext();
   const { user_id } = useParams();
   const [user, setUser] = useState({});
+  const [diffDate, setDiffDate] = useState('');
   const navigate = useNavigate();
 
+  const storedToken = sessionStorage.getItem("token");
+  const decodedToken = jwtDecode(storedToken);
+  const userID = decodedToken.id;
+
   const getData = () => {
-    axios.get(`${baseUrl}` + `get_single_user/${user_id}`).then((res) => {
+    axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
       setUser(res.data);
+      var currentDate = new Date();
+      var joiningDate = new Date(user.joining_date);
+      var difference = joiningDate - currentDate;
+      var daysDifference = Math.floor(difference / (1000 * 3600 * 24));
+      setDiffDate(daysDifference)
     });
   };
 
   const handleDocDelete = async (item) => {
-    console.log(item, "item here");
+    // console.log(item, "item here");
     await axios
       .put(`${baseUrl}` + `update_doc_user`, {
         _id: item._id,
@@ -50,10 +61,10 @@ const DocumentTab = ({
     );
   };
 
-  const handleFileUpload = (file, documentId) => {
-    updateDocumentData(documentId, "file", file);
-    updateDocumentData(documentId, "status", "Document Uploaded");
-  };
+  // const handleFileUpload = (file, documentId) => {
+  //   updateDocumentData(documentId, "file", file);
+  //   updateDocumentData(documentId, "status", "Document Uploaded");
+  // };
 
   const handleSubmit = async () => {
     try {
@@ -90,6 +101,48 @@ const DocumentTab = ({
     }
   };
 
+  const handleNotAvail = async(item) => {
+    await axios.put(baseUrl + "update_user_doc", {
+      _id: item._id,
+      status:'Not Available'
+    });
+    toastAlert("Documents Updated");
+    getDocuments();
+  }
+
+  const handleFileUpload = async (file, documentId) => {
+    const document = documentData.find(item => item._id === documentId)?.document;
+    if (document && document.doc_name == `Last 3 Months Salary Slip's`) {
+      if (file && file.type !== 'application/pdf') {
+        toastError('Please upload single pdf file which has "Last 3 month salary slip"');
+        return;
+      }
+    }
+
+    updateDocumentData(documentId, "file", file);
+    updateDocumentData(documentId, "status", "Document Uploaded");
+
+    try {
+      let formData = new FormData();
+      formData.append("doc_image", file);
+      formData.append("_id", documentId);
+      formData.append(
+        "status",
+        "Verification Pending" 
+      );
+      await axios.put(baseUrl + "update_user_doc", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      toastAlert("Document Uploaded Successfully");
+    } catch (error) {
+      console.error("Error uploading document", error);
+      toastError("Failed to upload document");
+    }
+  };
+
   return (
     <>
       <div
@@ -109,7 +162,7 @@ const DocumentTab = ({
                   <th scope="col">Document Name</th>
                   <th scope="col">Document Type</th>
                   <th scope="col">Period (Days)</th>
-                  <th scope="col">Time</th>
+                  <th scope="col">Time Left</th>
                   <th scope="col">Upload</th>
                   <th scope="col" className="text-center">
                     Status
@@ -119,15 +172,17 @@ const DocumentTab = ({
               <tbody>
                 {documentData.map((item) => (
                   <tr key={item._id}>
-                    <td>{item.document.doc_name}</td>
-                    <td scope="row">
-                      {item.document.doc_type}
+                    <td style={{width:'20%'}}>{item.document.doc_name}
                       {item.document.isRequired && (
                         <span style={{ color: "red" }}> * (Mandatory)</span>
                       )}
                     </td>
+                    <td scope="row">
+                      {item.document.doc_type}
+                    </td>
                     <td>{item.document.period} days</td>
-                    <td>1 Day</td>
+                    {/* <td>1 Day</td> */}
+                    <td>{diffDate < 0 ? 'Please Upload Docs' : diffDate}</td>
                     <td>
                       <div className="uploadDocBtn">
                         <span>
@@ -161,7 +216,7 @@ const DocumentTab = ({
                           </h4>
                           {item.status == "Rejected" && (
                             <i
-                              class="bi bi-exclamation-circle-fill"
+                              className="bi bi-exclamation-circle-fill"
                               title={item.reject_reason}
                             />
                           )}
@@ -175,6 +230,16 @@ const DocumentTab = ({
                               Unapprove
                             </button>
                           )}
+                          {item?.status == 'Not Available' ? '' : (
+                            <button
+                              type="button"
+                              style={{ borderRadius: 17, padding: 7 }}
+                              className="btn btn-danger btn-sm"
+                              onClick={() => handleNotAvail(item)}
+                            >
+                              N/A
+                            </button>
+                          )}
                         </span>
                       </div>
                     </td>
@@ -183,7 +248,7 @@ const DocumentTab = ({
               </tbody>
             </table>
           </div>
-          {submitButton && (
+          {/* {submitButton && (
             <div className="ml-auto mr-auto text-center">
               <button
                 className="btn btn_pill btn_cmn btn_success"
@@ -193,7 +258,7 @@ const DocumentTab = ({
                 Submit
               </button>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </>
