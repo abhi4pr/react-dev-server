@@ -33,7 +33,7 @@ const AdminPreOnboarding = () => {
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
   const [username, setUserName] = useState("");
-  const [jobType, setJobType] = useState("");
+  const [jobType, setJobType] = useState("WFO");
   const [roles, setRoles] = useState("");
   const [reportL1, setReportL1] = useState("");
   const [reportL2, setReportL2] = useState("");
@@ -502,6 +502,7 @@ const AdminPreOnboarding = () => {
             onChange={(e) => {
               setJobType(e.value);
             }}
+            isDisabled
           />
         </div>
 
