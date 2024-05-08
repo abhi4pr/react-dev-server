@@ -9,6 +9,10 @@ import FormContainer from "../../FormContainer";
 import FieldContainer from "../../FieldContainer";
 import WhatsappAPI from "../../../WhatsappAPI/WhatsappAPI";
 import { baseUrl } from "../../../../utils/config";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DatePicker } from "antd";
+import { TextField } from "@mui/material";
 
 const onBoardStatus = 1;
 
@@ -237,6 +241,35 @@ const WFHDRegister = ({ userUpdateID }) => {
     }
   }, [department]);
 
+  function validateAndCorrectUserName(userName) {
+    // Remove extra white spaces and trim the userName
+    userName = userName.replace(/\s{2,}/g, " ").trim();
+
+    // Define a regular expression to match only letters
+    const lettersOnly = /^[A-Za-z]+$/;
+
+    // Split the userName into parts, correct each part, and join them back together
+    const correctedNameParts = userName.split(" ").map((part) => {
+      // Remove numbers and special characters from each part
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+
+      // Ensure the first letter is uppercase and the rest of the part is lowercase
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
+    });
+
+    // Join the corrected parts back into a single string
+    const correctedUserName = correctedNameParts.join(" ");
+
+    // return correctedUserName;
+    return correctedUserName.replace(/\s+/g, " ").trim();
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!jobType) {
@@ -267,7 +300,7 @@ const WFHDRegister = ({ userUpdateID }) => {
     formData.append("dept_id", department);
     formData.append("permanent_city", city);
     formData.append("created_by", loginUserId);
-    formData.append("user_name", username);
+    formData.append("user_name", validateAndCorrectUserName(username));
     formData.append("role_id", 4);
     formData.append("image", selectedImage);
     // formData.append("permanent_city", city?.value ? city.value : "");
@@ -457,6 +490,15 @@ const WFHDRegister = ({ userUpdateID }) => {
       const newContact1 = event.target.value;
       setContact(newContact1);
 
+      if (
+        newContact1 === "" ||
+        (newContact1.length === 1 && parseInt(newContact1) < 6)
+      ) {
+        setContact("");
+      } else {
+        setContact(newContact1);
+      }
+
       if (newContact1 === "") {
         setValidContact(false);
       } else {
@@ -480,6 +522,15 @@ const WFHDRegister = ({ userUpdateID }) => {
     if (event.target.value.length <= 10) {
       const newContact1 = event.target.value;
       setPersonalContact(newContact1);
+
+      if (
+        newContact1 === "" ||
+        (newContact1.length === 1 && parseInt(newContact1) < 6)
+      ) {
+        setPersonalContact("");
+      } else {
+        setPersonalContact(newContact1);
+      }
 
       if (newContact1 === "") {
         setValidContact1(false);
@@ -575,7 +626,7 @@ const WFHDRegister = ({ userUpdateID }) => {
   };
 
   const handleDateChange = (e) => {
-    const selectedDate = e.target.value;
+    const selectedDate = e;
     const age = calculateAge(selectedDate);
 
     if (age < 15) {
@@ -583,6 +634,38 @@ const WFHDRegister = ({ userUpdateID }) => {
     } else {
       setDateOfBirth(selectedDate);
     }
+  };
+
+  const handleFullNameChange = (event) => {
+    // Extract the value from the event object
+    let userName = event.target.value;
+
+    // Remove extra white spaces and trim the userName
+    // userName = userName.replace(/\s{2,}/g, ' ').trim();
+
+    // Define a regular expression to match only letters
+    const lettersOnly = /^[A-Za-z]+$/;
+
+    // Split the userName into parts, correct each part, and join them back together
+    const correctedNameParts = userName.split(" ").map((part) => {
+      // Remove numbers and special characters from each part
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+
+      // Ensure the first letter is uppercase and the rest of the part is lowercase
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
+    });
+
+    // Join the corrected parts back into a single string, ensuring only a single space between names
+    // const correctedUserName = correctedNameParts.join(" ").trim();
+
+    // Update the state with the validated and corrected user name
+    setUserName(correctedNameParts.join(" "));
   };
 
   return (
@@ -604,7 +687,7 @@ const WFHDRegister = ({ userUpdateID }) => {
               fieldGrid={3}
               required
               value={username}
-              onChange={(e) => setUserName(e.target.value)}
+              onChange={handleFullNameChange}
             />
 
             <div className="form-group col-3">
@@ -1033,23 +1116,47 @@ const WFHDRegister = ({ userUpdateID }) => {
           ></Select>
         </div> */}
 
-            <FieldContainer
+            {/* <FieldContainer
               type="date"
               label="Joining Date "
               astric
               fieldGrid={3}
               value={joiningDate}
               onChange={(e) => setJoiningDate(e.target.value)}
-            />
+            /> */}
+            <div className="col-md-3">
+              <label className="form-label">
+                Joining Date <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={joiningDate}
+                  onChange={(e) => setJoiningDate(e)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </div>
+            <div className="col-md-3">
+              <label className="form-label">
+                DOB <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={dateOfBirth}
+                  onChange={handleDateChange}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </div>
 
-            <FieldContainer
+            {/* <FieldContainer
               label="DOB "
               astric
               fieldGrid={3}
               type="date"
               value={dateOfBirth}
               onChange={handleDateChange}
-            />
+            /> */}
 
             <div className="form-group col-3">
               <label className="form-label">

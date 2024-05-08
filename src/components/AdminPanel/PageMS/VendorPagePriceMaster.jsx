@@ -122,7 +122,7 @@ export default function VendorPagePriceMaster() {
           <Select
             options={platformPriceList.map((option) => ({
               value: option._id,
-              label: option._id,
+              label: option.platform_price_name,
             }))}
             required={true}
             value={platformPriceId}

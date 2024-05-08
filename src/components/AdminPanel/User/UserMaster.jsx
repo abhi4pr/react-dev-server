@@ -35,7 +35,7 @@ import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 import IndianStates from "../../ReusableComponents/IndianStates";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import { Autocomplete, IconButton } from "@mui/material";
+import { Autocomplete, IconButton, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { baseUrl } from "../../../utils/config";
 import familyRelationList from "../../../assets/js/familyRelationList";
@@ -46,6 +46,8 @@ import IndianStatesMui from "../../ReusableComponents/IndianStatesMui";
 import EducationList from "../../../assets/js/EducationList";
 import { constant } from "../../../utils/constants";
 import { User } from "@phosphor-icons/react";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -488,6 +490,24 @@ const UserMaster = () => {
     banktype,
   ]);
 
+  function validateAndCorrectUserName(userName) {
+
+    userName = userName.replace(/\s{2,}/g, ' ').trim();
+  
+    const lettersOnly = /^[A-Za-z]+$/;
+  
+    const correctedNameParts = userName.split(" ").map(part => {
+      let filteredPart = part.split('').filter(char => char.match(lettersOnly)).join('');
+  
+      return filteredPart.charAt(0).toUpperCase() + filteredPart.slice(1).toLowerCase();
+    });
+  
+    const correctedUserName = correctedNameParts.join(" ");
+
+    return correctedUserName.replace(/\s+/g, ' ').trim();
+  }
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!jobType) {
@@ -547,7 +567,7 @@ const UserMaster = () => {
     const formData = new FormData();
     formData.append("created_by", loginUserId);
     // personal info payload Start
-    formData.append("user_name", username);
+    formData.append("user_name", validateAndCorrectUserName(username));
     formData.append("image", selectedImage);
     formData.append("Personal_email", personalEmail);
     formData.append("personal_number", personalContact);
@@ -869,6 +889,14 @@ const UserMaster = () => {
     if (event.target.value.length <= 10) {
       const newContact = event.target.value;
       setContact(newContact);
+      if (
+        newContact === "" ||
+        (newContact.length === 1 && parseInt(newContact) < 6)
+      ) {
+        setContact("");
+      } else {
+        setContact(newContact);
+      }
 
       if (newContact === "") {
         setValidContact(false);
@@ -884,7 +912,10 @@ const UserMaster = () => {
       const newContact1 = event.target.value;
       setPersonalContact(newContact1);
 
-      if (newContact1 === "" || (newContact1.length === 1 && parseInt(newContact1) < 6)) {
+      if (
+        newContact1 === "" ||
+        (newContact1.length === 1 && parseInt(newContact1) < 6)
+      ) {
         setPersonalContact("");
       } else {
         setPersonalContact(newContact1);
@@ -1216,6 +1247,31 @@ const UserMaster = () => {
 
   const accordionButtons = ["General", "Others", "Education & Family"];
 
+  const handleFullNameChange = (event) => {
+    let userName = event.target.value;
+    if (userName !== "") {
+      setMandatoryFieldsEmpty((prevState) => ({
+        ...prevState,
+        fullName: false,
+      }));
+    }
+
+    const lettersOnly = /^[A-Za-z]+$/;
+
+    const correctedNameParts = userName.split(" ").map((part) => {
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
+    });
+    setUserName(correctedNameParts.join(" "));
+  };
+
   const genralFields = (
     <>
       {/* Personal Info Inputs------------------------Start------------ */}
@@ -1250,26 +1306,11 @@ const UserMaster = () => {
       </div>
       <div className=" col-3">
         <FieldContainer
-
           label="Full Name"
           astric={true}
           fieldGrid={12}
           value={username}
-          onChange={(e) => {
-            const inputValue = e.target.value;
-            // Validation for number presence
-            const containsNumber = /\d/.test(inputValue);
-
-            if (!containsNumber) {
-              setUserName(inputValue);
-              if (inputValue !== "") {
-                setMandatoryFieldsEmpty((prevState) => ({
-                  ...prevState,
-                  fullName: false,
-                }));
-              }
-            }
-          }}
+          onChange={handleFullNameChange}
           onBlur={() => {
             if (username === "") {
               setMandatoryFieldsEmpty((prevState) => ({
@@ -1339,7 +1380,6 @@ const UserMaster = () => {
           mandatoryFieldsEmpty.personalContact && (
             <p className="form-error">*Please enter a valid Contact Number</p>
           )}
-
       </div>
       <div className="col-3">
         <FieldContainer
@@ -1401,7 +1441,7 @@ const UserMaster = () => {
         <label className="form-label">
           DOB <sup className="form-error">*</sup>
         </label>
-        <div className="pack" style={{ position: "relative" }}>
+        {/* <div className="pack" style={{ position: "relative" }}>
           <input
             label="DOB"
             type="date"
@@ -1432,7 +1472,14 @@ const UserMaster = () => {
           >
             <i class="bi bi-calendar-week"></i>
           </div>
-        </div>
+        </div> */}
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={dateOfBirth}
+                  onChange={handleDateChange}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
       </div>
       {dateOfBirth !== "" && (
         <FieldContainer fieldGrid={3} label="Age" value={age} />
@@ -1854,7 +1901,6 @@ const UserMaster = () => {
       />
       {!validEmail && <p className="form-error">*Please enter valid email</p>}
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
-
         <FieldContainer
           label="Official Contact"
           type="number"
@@ -1886,12 +1932,13 @@ const UserMaster = () => {
           </label>
           <div className="input-group">
             <input
-              className={`form-control ${loginId
-                ? loginResponse === "login id available"
-                  ? "login-success-border"
-                  : "login-error-border"
-                : ""
-                }`}
+              className={`form-control ${
+                loginId
+                  ? loginResponse === "login id available"
+                    ? "login-success-border"
+                    : "login-error-border"
+                  : ""
+              }`}
               value={loginId}
               disabled
               onChange={handleLoginIdChange}
@@ -2004,7 +2051,7 @@ const UserMaster = () => {
         <label className="form-label">
           Joining Date <sup className="form-error">*</sup>
         </label>
-        <div className="pack" style={{ position: "relative" }}>
+        {/* <div className="pack" style={{ position: "relative" }}>
           <input
             type="date"
             className="form-control"
@@ -2032,7 +2079,15 @@ const UserMaster = () => {
               }}
             ></i>
           </div>
-        </div>
+        </div> */}
+
+<LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker 
+                value={joiningDate}
+                onChange={(e) => setJoiningDate(e.target.value)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
       </div>
 
       {department == constant.CONST_SALES_DEPT_ID && (
@@ -2080,11 +2135,12 @@ const UserMaster = () => {
           <div className="modal-content m-0">
             <div className="modal-body">
               <div>
-
                 {selectedImage && (
                   <div className=" flex-row  w-100 justify-content-center">
-
-                    <div className="profile-holder" style={{ width: "80px", height: "80px" }}>
+                    <div
+                      className="profile-holder"
+                      style={{ width: "80px", height: "80px" }}
+                    >
                       <img
                         src={imagePreview}
                         alt="Selected"

@@ -11,6 +11,10 @@ import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 // import { City } from "country-state-city";
 import { baseUrl } from "../../../utils/config";
 import IndianCitiesReact from "../../ReusableComponents/IndianCitiesReact";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker } from "antd";
+import { TextField } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 const onBoardStatus = 2;
 
@@ -130,6 +134,28 @@ const AdminPreOnboarding = () => {
     }
   }, [department]);
 
+  function validateAndCorrectUserName(userName) {
+    userName = userName.replace(/\s{2,}/g, " ").trim();
+
+    const lettersOnly = /^[A-Za-z]+$/;
+
+    const correctedNameParts = userName.split(" ").map((part) => {
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
+    });
+
+    const correctedUserName = correctedNameParts.join(" ");
+
+    return correctedUserName.replace(/\s+/g, " ").trim();
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!username) {
@@ -166,7 +192,7 @@ const AdminPreOnboarding = () => {
 
     const formData = new FormData();
     formData.append("created_by", loginUserId);
-    formData.append("user_name", username);
+    formData.append("user_name", validateAndCorrectUserName(username));
     formData.append("role_id", roles);
     formData.append("image", selectedImage);
     formData.append("ctc", userCtc);
@@ -363,6 +389,15 @@ const AdminPreOnboarding = () => {
       const newContact1 = event.target.value;
       setPersonalContact(newContact1);
 
+      if (
+        newContact1 === "" ||
+        (newContact1.length === 1 && parseInt(newContact1) < 6)
+      ) {
+        setPersonalContact("");
+      } else {
+        setPersonalContact(newContact1);
+      }
+
       if (newContact1 === "") {
         setValidContact1(false);
       } else {
@@ -457,7 +492,7 @@ const AdminPreOnboarding = () => {
   };
 
   const handleDateChange = (e) => {
-    const selectedDate = e.target.value;
+    const selectedDate = e;
     const age = calculateAge(selectedDate);
 
     if (age < 15) {
@@ -468,8 +503,28 @@ const AdminPreOnboarding = () => {
     }
   };
 
+  const handleFullNameChange = (event) => {
+    let userName = event.target.value;
+
+    const lettersOnly = /^[A-Za-z]+$/;
+
+    const correctedNameParts = userName.split(" ").map((part) => {
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
+    });
+
+    setUserName(correctedNameParts.join(" "));
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+    <div >
       <FormContainer
         mainTitle="User"
         title="User Registration"
@@ -482,7 +537,7 @@ const AdminPreOnboarding = () => {
           astric
           fieldGrid={3}
           value={username}
-          onChange={(e) => setUserName(e.target.value)}
+          onChange={handleFullNameChange}
         />
 
         <div className="form-group col-3">
@@ -843,8 +898,19 @@ const AdminPreOnboarding = () => {
             <p style={{ color: "red" }}>*Please select a Role</p>
           )}
         </div>
-
-        <FieldContainer
+        <div className="col-md-3">
+              <label className="form-label">
+                Joining Date <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={joiningDate}
+                  onChange={(e) => setJoiningDate(e)}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </div>
+        {/* <FieldContainer
           type="date"
           astric
           label="Joining Date"
@@ -852,9 +918,20 @@ const AdminPreOnboarding = () => {
           fieldGrid={3}
           value={joiningDate}
           onChange={(e) => setJoiningDate(e.target.value)}
-        />
-
-        <FieldContainer
+        /> */}
+ <div className="col-md-3">
+              <label className="form-label">
+                DOB <sup style={{ color: "red" }}>*</sup>
+              </label>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DatePicker
+                  value={dateOfBirth}
+                  onChange={handleDateChange}
+                  renderInput={(params) => <TextField {...params} />}
+                />
+              </LocalizationProvider>
+            </div>
+        {/* <FieldContainer
           astric
           label="DOB"
           required={false}
@@ -862,7 +939,7 @@ const AdminPreOnboarding = () => {
           type="date"
           value={dateOfBirth}
           onChange={handleDateChange}
-        />
+        /> */}
 
         <div className="form-group col-3">
           <label className="form-label">
