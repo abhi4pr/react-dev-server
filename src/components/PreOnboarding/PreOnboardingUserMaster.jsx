@@ -1364,155 +1364,12 @@ const PreOnboardingUserMaster = () => {
 
       <section className="section">
         <div className="page_wrapper">
-          <div className="sidebar_wrapper">
-            <div className="sidebar_header">
-              <h2 onClick={() => setActiveTab(0)}>
-                Home <i className="bi bi-house-fill" />
-              </h2>
-            </div>
-            <div className="sidebar_items">
-              <div
-                className={`sidebar_itembox ${
-                  activeTab == 1 ? "sidebar_item_active" : ""
-                }`}
-                id="sidebarFormBox"
-                onClick={() => setActiveTab(1)}
-              >
-                {/* pp-100 is percentage of document procedure */}
-                <div
-                  className={`progress-circle progressing pp-${formFieldProgressPercentage}`}
-                >
-                  <div className="progress-circle-border">
-                    <div className="left-half-circle" />
-                    <div className="right-half-circle" />
-                  </div>
-                  <div className="progress-circle-content">
-                    <i className="bi bi-journal-text" />
-                  </div>
-                </div>
-                <h2>Form</h2>
-                <h3>{formFieldProgressPercentage}%</h3>
-              </div>
-
-              <div
-                className={`sidebar_itembox sidebar_itemboxCol ${
-                  activeTab == 2 ? "sidebar_item_active" : ""
-                }`}
-                id="sidebarDocumentBox"
-                onClick={() => setActiveTab(2)}
-              >
-                <div className="sidebar_itemboxColIn">
-                  <div
-                    className={`progress-circle progressing pp-${documentPercentage}`}
-                  >
-                    <div className="progress-circle-border">
-                      <div className="left-half-circle" />
-                      <div className="right-half-circle" />
-                    </div>
-                    <div className="progress-circle-content">
-                      <i className="bi bi-file-richtext" />
-                    </div>
-                  </div>
-                </div>
-                <div className="sidebar_iteminfo">
-                  <div className="pack" style={{ flexDirection: "row" }}>
-                    <h2 className="document_tab_name">Documents</h2>
-                    (verified)
-                    <h3>{documentPercentage}%</h3>
-                  </div>
-                  <h3>
-                    Mandatory <span>{showMandotaryPer}%</span>
-                  </h3>
-                  <h3>
-                    Non Mandatory{" "}
-                    <span>
-                      {showNonMandotaryPer ? showNonMandotaryPer : 0}%
-                    </span>
-                  </h3>
-                </div>
-              </div>
-
-              {/* {console.log(allUserData)} */}
-              {allUserData.offer_letter_send && (
-                <div
-                  className={`sidebar_itembox ${
-                    activeTab === 5 ? "sidebar_item_active" : ""
-                  }`}
-                  id="sidebarLetterBox"
-                  onClick={() => setActiveTab(5)}
-                  // style={{
-                  //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
-                  //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
-                  //   pointerEvents:
-                  //     joiningDate <= formattedDate ? "none" : "auto",
-                  // }}
-                >
-                  <div className="progress-circle progressing pp-26">
-                    <div className="progress-circle-border">
-                      <div className="left-half-circle" />
-                      <div className="right-half-circle" />
-                    </div>
-                    <div className="progress-circle-content">
-                      <i className="bi bi-file-earmark-text" />
-                    </div>
-                  </div>
-                  <h2 className="letter_tab_name">Offer Letter</h2>
-                </div>
-              )}
-
-              <div
-                className={`sidebar_itembox ${
-                  activeTab === 3 && documentPercentage < 90
-                    ? "sidebar_item_active"
-                    : ""
-                }`}
-                id="sidebarPolicyBox"
-                style={{
-                  pointerEvents: documentPercentage < 90 ? "none" : "auto",
-                  opacity: documentPercentage < 90 ? 0.5 : 1,
-                }}
-                onClick={() => setActiveTab(3)}
-                title={
-                  documentPercentage < 90
-                    ? "Please complete documentation by 90%"
-                    : ""
-                }
-              >
-                <div className="progress-circle progressing pp-100">
-                  <div className="progress-circle-border">
-                    <div className="left-half-circle" />
-                    <div className="right-half-circle" />
-                  </div>
-                  <div className="progress-circle-content">
-                    <i className="bi bi-book" />
-                  </div>
-                </div>
-                <h2 className="policy_tab_name">COC</h2>
-                <p>Code Of Conduct</p>
-              </div>
-              {documentPercentage < 90 && (
-                <span style={{ fontSize: "15px", color: "red" }}>
-                  Please complete documentation by 90% then you can read coc
-                </span>
-              )}
-
-              <div
-                className={`sidebar_itembox ${
-                  activeTab == 4 ? "sidebar_item_active" : ""
-                }`}
-                id="sidebarFaqBox"
-                onClick={() => setActiveTab(4)}
-              >
-                <div className="progress-circle progressing pp-100">
-                  <div className="progress-circle-border">
-                    <div className="left-half-circle" />
-                    <div className="right-half-circle" />
-                  </div>
-                  <div className="progress-circle-content">
-                    <i className="bi bi-question-circle" />
-                  </div>
-                </div>
-                <h2>FAQ</h2>
+          <div className="topnavbar">
+            <div className="topnavbarLeft">
+              <div className="sidebar_header">
+                <h2 onClick={() => setActiveTab(0)}>
+                  <i className="bi bi-house-fill" />
+                </h2>
               </div>
             </div>
             <div className="topnavbarRight">
@@ -1871,11 +1728,11 @@ const PreOnboardingUserMaster = () => {
                                 />
                               </div>
                               <div className="form-group form_select">
-                                <Autocomplete
+                                {/* <Autocomplete
                                   multiple
                                   id="hobbies-autocomplete"
                                   options={hobbiesData}
-                                  getOptionLabel={(option) => option.label} // Adjust according to your data structure
+                                  getOptionLabel={(option) => option.label}
                                   value={hobbies}
                                   onChange={handleHobbiesChange}
                                   isOptionEqualToValue={(option, value) =>
@@ -1889,6 +1746,18 @@ const PreOnboardingUserMaster = () => {
                                     />
                                   )}
                                   clearOnEscape
+                                /> */}
+                                <Autocomplete
+                                  multiple
+                                  id="combo-box-demo"
+                                  options={filteredHobbyOption}
+                                  getOptionLabel={(option) => option.label}
+                                  InputLabelProps={{ shrink: true }}
+                                  renderInput={(params) => (
+                                    <TextField {...params} label="Hobbie" />
+                                  )}
+                                  onChange={categoryChangeHandler}
+                                  value={hobbies}
                                 />
                               </div>
 
@@ -1952,7 +1821,6 @@ const PreOnboardingUserMaster = () => {
                                     <TextField
                                       {...params}
                                       label="Speaking Languages"
-                                      placeholder="Select languages"
                                     />
                                   )}
                                 />

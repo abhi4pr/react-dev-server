@@ -52,7 +52,7 @@ const GuardianFields = ({
         ))}
 
       {canAddMoreGuardians && (
-        <div className="mb-5">
+        <div>
           <button
             type="button"
             onClick={handleAddGuardianDetails}

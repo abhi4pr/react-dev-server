@@ -323,7 +323,7 @@ img {
   border: 1px solid var(--bgBoard);
   border-radius: 60px;
   background: var(--bgBoard);
-  color: var(--primary-board);
+  color: var(--darkTextBoard);
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -2341,7 +2341,7 @@ img {
 }
 
 .letterBoard .thm_textbx {
-  margin: 0px 0px 20px;
+  margin: 0px 0px 10px;
   text-align: center;
 }
 
@@ -2559,6 +2559,7 @@ img {
 .ReactModal__Content {
   border-radius: var(--radiusM) !important;
   background: var(--bgBoard) !important;
+  border: none !important;
 }
 
 .OnboardPrompt {
@@ -2666,11 +2667,11 @@ img {
   color: var(--darkTextBoard);
   font-family: var(--font-robotoSerif);
   text-align: center;
-  font-size: 34px;
+  font-size: 30px;
   font-style: normal;
   font-weight: 500;
   line-height: normal;
-  margin: 0px 0px 13px;
+  margin: 0px 0px 8px;
 }
 
 .signBox {
