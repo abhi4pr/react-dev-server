@@ -1719,6 +1719,7 @@ const UserUpdate = () => {
                   : ""
               }`}
               value={loginId}
+              disabled
               onChange={handleLoginIdChange}
             />
             <div className="input-group-append">

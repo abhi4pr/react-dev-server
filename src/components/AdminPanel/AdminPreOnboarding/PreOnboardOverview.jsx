@@ -230,14 +230,10 @@ const PreOnboardingOverview = () => {
             </div>
             <div className="card-body thn_table">
               <DataTable
-
                 columns={columns}
                 data={filterdata}
-
                 pagination
-
-
-
+                paginationPerPage={100}
               />
               <div />
               {/* <div className="data_tbl table-responsive">

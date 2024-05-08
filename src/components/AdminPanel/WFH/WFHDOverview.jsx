@@ -300,7 +300,7 @@ const WFHDOverview = () => {
     },
     {
       name: "User Image",
-      cell: (row) => (<img src={row.image} />),
+      cell: (row) => <img src={row.image} />,
     },
     {
       name: "User Name",
@@ -492,7 +492,9 @@ const WFHDOverview = () => {
 
   return (
     <>
-      {loading ? <div className="loader">Loading...</div> : (
+      {loading ? (
+        <div className="loader">Loading...</div>
+      ) : (
         <>
           <Modal
             className="Ready to Onboard"
@@ -569,7 +571,9 @@ const WFHDOverview = () => {
               </div>
             </div>
           </Modal>
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
             <FormContainer mainTitle="My Team" link={"/admin/"} />
             {/* <ul
               className="nav nav-pills nav-fill navtop"
@@ -635,7 +639,10 @@ const WFHDOverview = () => {
                 }}
               >
                 Upload Document (
-                {statusCounts?.document_upload ? statusCounts?.document_upload : 0})
+                {statusCounts?.document_upload
+                  ? statusCounts?.document_upload
+                  : 0}
+                )
               </div>
               <div
                 className={`named-tab  ${activeTab == 2 ? "active-tab" : ""}`}
@@ -653,7 +660,8 @@ const WFHDOverview = () => {
                   FilterTabData("onboarded"), setActiveTab(0);
                 }}
               >
-                Onboarded ({statusCounts?.onboarded ? statusCounts?.onboarded : 0})
+                Onboarded (
+                {statusCounts?.onboarded ? statusCounts?.onboarded : 0})
               </div>
             </div>
             <div className="card">
@@ -743,7 +751,8 @@ const WFHDOverview = () => {
                       label="Training Date"
                       fieldGrid={12}
                       min={
-                        rowData?.joining_date && rowData?.joining_date.split("T")[0]
+                        rowData?.joining_date &&
+                        rowData?.joining_date.split("T")[0]
                       }
                       value={trainingDate}
                       onChange={(e) => setTrainingDate(e.target.value)}
@@ -891,7 +900,9 @@ const WFHDOverview = () => {
                       label="Reinstated Date"
                       type="date"
                       value={separationReinstateDate}
-                      onChange={(e) => setSeparationReinstateDate(e.target.value)}
+                      onChange={(e) =>
+                        setSeparationReinstateDate(e.target.value)
+                      }
                     />
                   )}
                   {separationStatus == "Resign Accepted" && (
@@ -910,7 +921,9 @@ const WFHDOverview = () => {
                       label="Resignation Date"
                       type="date"
                       value={separationResignationDate}
-                      onChange={(e) => setSeparationResignationDate(e.target.value)}
+                      onChange={(e) =>
+                        setSeparationResignationDate(e.target.value)
+                      }
                     />
                   )}
                 </div>
