@@ -16303,3 +16303,8 @@ body[theme="dark"] .blurBg {
   font-weight: 400;
   line-height: 16px;
 }
+:where(.css-dev-only-do-not-override-zl9ks2).ant-picker {
+  padding: 11px 16px 11px 16px !important;
+  border-radius: 12px !important;
+  width: 100% !important;
+}

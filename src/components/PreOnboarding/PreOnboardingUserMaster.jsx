@@ -326,6 +326,38 @@ const PreOnboardingUserMaster = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const handleFullNameChange = (event) => {
+    // Extract the value from the event object
+    let userName = event.target.value;
+
+    // Remove extra white spaces and trim the userName
+    // userName = userName.replace(/\s{2,}/g, ' ').trim();
+
+    // Define a regular expression to match only letters
+    const lettersOnly = /^[A-Za-z]+$/;
+
+    // Split the userName into parts, correct each part, and join them back together
+    const correctedNameParts = userName.split(" ").map((part) => {
+      // Remove numbers and special characters from each part
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+
+      // Ensure the first letter is uppercase and the rest of the part is lowercase
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
+    });
+
+    // Join the corrected parts back into a single string, ensuring only a single space between names
+    // const correctedUserName = correctedNameParts.join(" ").trim();
+
+    // Update the state with the validated and corrected user name
+    setUserName(correctedNameParts.join(" "));
+  };
+
   useEffect(() => {
     const getLocation = () => {
       if (navigator.geolocation) {
@@ -685,6 +717,28 @@ const PreOnboardingUserMaster = () => {
   //   setHobbies(selectedOptions || []);
   // };
 
+  function validateAndCorrectUserName(userName) {
+    userName = userName.replace(/\s{2,}/g, " ").trim();
+
+    const lettersOnly = /^[A-Za-z]+$/;
+
+    const correctedNameParts = userName.split(" ").map((part) => {
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
+    });
+
+    const correctedUserName = correctedNameParts.join(" ");
+
+    return correctedUserName.replace(/\s+/g, " ").trim();
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -692,7 +746,7 @@ const PreOnboardingUserMaster = () => {
 
     const formData = new FormData();
     formData.append("user_id", id);
-    formData.append("user_name", username);
+    formData.append("user_name", validateAndCorrectUserName(username));
     formData.append("user_email_id", email);
     formData.append("user_login_id", loginId);
     formData.append("user_login_password", password);
@@ -1620,7 +1674,7 @@ const PreOnboardingUserMaster = () => {
                                   />
                                 </Modal>
                               </h3>
-                              <div className="form-group">
+                              {/* <div className="form-group">
                                 <TextField
                                   id="outlined-basic"
                                   label="Full Name"
@@ -1631,8 +1685,20 @@ const PreOnboardingUserMaster = () => {
                                   // placeholder="Full Name"
                                   value={username}
                                   onChange={(e) => setUserName(e.target.value)}
-                                />
-                              </div>
+                                />*/}
+                            <div className="form-group">
+                              <TextField
+                                id="outlined-basic"
+                                label="Full Name"
+                                variant="outlined"
+                                type="text"
+                                // className="form-control"
+                                name="name"
+                                // placeholder="Full Name"
+                                value={username}
+                                onChange={handleFullNameChange}
+                              />
+                            </div>
 
                               {/* <div className="form-group">
                               <TextField

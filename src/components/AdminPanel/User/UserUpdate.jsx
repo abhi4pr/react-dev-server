@@ -13,7 +13,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import ContactNumber from "../../ReusableComponents/ContactNumber";
 import ContactNumberReact from "../../ReusableComponents/ContactNumberReact";
-import { IconButton } from "@mui/material";
+import { IconButton, TextField } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DocumentTab from "../../PreOnboarding/DocumentTab";
 import { baseUrl } from "../../../utils/config";
@@ -644,6 +644,27 @@ const UserUpdate = () => {
     setSittingValue(updatedSitting);
   }, [sitting, refrenceData]);
 
+  function validateAndCorrectUserName(userName) {
+    userName = userName.replace(/\s{2,}/g, " ").trim();
+
+    const lettersOnly = /^[A-Za-z]+$/;
+
+    const correctedNameParts = userName.split(" ").map((part) => {
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
+    });
+    const correctedUserName = correctedNameParts.join(" ");
+
+    return correctedUserName.replace(/\s+/g, " ").trim();
+  }
+
   const handleSubmit = async (e) => {
     // setLoading(true);
     e.preventDefault();
@@ -693,7 +714,7 @@ const UserUpdate = () => {
     const formData = new FormData();
     //personal info payload Start
     // formData.append("user_id", id);
-    formData.append("user_name", username);
+    formData.append("user_name", validateAndCorrectUserName(username));
     formData.append("image", profile);
     formData.append("Personal_email", personalEmail);
     formData.append("personal_number", personalContact);
@@ -1358,6 +1379,24 @@ const UserUpdate = () => {
     }
   };
 
+  const handleFullNameChange = (event) => {
+    let userName = event.target.value;
+
+    const lettersOnly = /^[A-Za-z]+$/;
+
+    const correctedNameParts = userName.split(" ").map((part) => {
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
+    });
+    setUserName(correctedNameParts.join(" "));
+  };
+
   const genralFields = (
     <>
       <div className="personal_header">Personal Details</div>
@@ -1366,7 +1405,7 @@ const UserUpdate = () => {
         astric={true}
         fieldGrid={3}
         value={username}
-        onChange={(e) => setUserName(e.target.value)}
+        onChange={handleFullNameChange}
       />
       <FieldContainer
         label="Personal Email"
