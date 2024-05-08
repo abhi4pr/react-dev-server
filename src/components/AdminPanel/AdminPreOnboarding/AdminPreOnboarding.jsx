@@ -123,6 +123,9 @@ const AdminPreOnboarding = () => {
         .get(baseUrl + `get_all_designations_by_deptId/${department}`)
         .then((res) => {
           setDesignationData(res.data.data);
+          if (res.data.data.length > 0) {
+            setDesignation(res.data.data[0]?.desi_id);
+          }
         });
     }
   }, [department]);

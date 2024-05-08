@@ -54,10 +54,7 @@ const PreonboardingDocumentOverview = () => {
             </div>
           </Link>
 
-
-
           <DeleteButton
-
             endpoint={"delete_doc"}
             id={row._id}
             getData={getData}
@@ -113,17 +110,14 @@ const PreonboardingDocumentOverview = () => {
           </div>
           <div className="card-body body-padding">
             <DataTable
-
               columns={columns}
               data={filterData}
               pagination
-            // selectableRows
-
+              paginationPerPage={100}
+              // selectableRows
             />
-
           </div>
-          <div className="data_tbl table-responsive">
-          </div>
+          <div className="data_tbl table-responsive"></div>
         </div>
       </div>
     </>

@@ -151,7 +151,6 @@ const WFHDRegister = ({ userUpdateID }) => {
           setGender(Gender);
           setReportL2(Report_L2);
           setReportL3(Report_L3);
-
           setTdsApplicable(tbs_applicable);
           setTdsPercentage(tds_per);
           setPersonalEmail(user_email_id);
@@ -230,6 +229,10 @@ const WFHDRegister = ({ userUpdateID }) => {
         .get(baseUrl + `get_all_designations_by_deptId/${department}`)
         .then((res) => {
           setDesignationData(res.data.data);
+          // Set the default designation to the first option
+          if (res.data.data.length > 0) {
+            setDesignation(res.data.data[0].desi_id);
+          }
         });
     }
   }, [department]);

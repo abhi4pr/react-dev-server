@@ -304,7 +304,12 @@ const UserMaster = () => {
     if (department) {
       axios
         .get(`${baseUrl}` + `get_subdept_from_dept/${department}`)
-        .then((res) => setSubDepartmentData(res.data));
+        .then((res) => {
+          setSubDepartmentData(res.data);
+          if (res.data.length > 0) {
+            setSubDeparment(res.data[0].id);
+          }
+        });
     }
   }, [department]);
 
@@ -353,6 +358,9 @@ const UserMaster = () => {
         .get(baseUrl + `get_all_designations_by_deptId/${department}`)
         .then((res) => {
           setDesignationData(res.data.data);
+          if (res.data.data.length > 0) {
+            setDesignation(res.data.data[0].desi_id);
+          }
         });
     }
   }, [department]);
