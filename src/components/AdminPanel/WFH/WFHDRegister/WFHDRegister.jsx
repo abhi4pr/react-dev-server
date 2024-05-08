@@ -609,7 +609,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
             <div className="form-group col-3">
               <label className="form-label">
-                Job Type <sup style={{ color: "red" }}>*</sup>
+                Job Type <sup className="form-error">*</sup>
               </label>
               <Select
                 className=""
@@ -631,7 +631,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
             <div className="form-group col-3">
               <label className="form-label">
-                Department Name <sup style={{ color: "red" }}>*</sup>
+                Department Name <sup className="form-error">*</sup>
               </label>
               <Select
                 className=""
@@ -655,7 +655,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
             <div className="form-group col-3">
               <label className="form-label">
-                Designation <sup style={{ color: "red" }}>*</sup>
+                Designation <sup className="form-error">*</sup>
               </label>
               <Select
                 className=""
@@ -679,7 +679,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
             <div className="form-group col-3">
               <label className="form-label">
-                Report L1 <sup style={{ color: "red" }}>*</sup>
+                Report L1 <sup className="form-error">*</sup>
               </label>
               <Select
                 required={true}
@@ -713,7 +713,7 @@ const WFHDRegister = ({ userUpdateID }) => {
                 }}
               />
               {isRequired.reportL1 && (
-                <p style={{ color: "red" }}>*Please select Report L1</p>
+                <p className="form-error">*Please select Report L1</p>
               )}
             </div>
 
@@ -768,7 +768,7 @@ const WFHDRegister = ({ userUpdateID }) => {
           onChange={handleEmailChange}
         />
         {!validEmail && (
-          <p style={{ color: "red" }}>*Please enter valid email</p>
+          <p  className="form-error">*Please enter valid email</p>
         )} */}
             <FieldContainer
               label="Personal Email"
@@ -780,7 +780,7 @@ const WFHDRegister = ({ userUpdateID }) => {
               onChange={handlePersonalEmailChange}
             />
             {!validPersonalEmail && (
-              <p style={{ color: "red" }}>*Please enter valid email</p>
+              <p className="form-error">*Please enter valid email</p>
             )}
             {/* <FieldContainer
           label=" City"
@@ -792,7 +792,7 @@ const WFHDRegister = ({ userUpdateID }) => {
         /> */}
             <div className="form-group col-3">
               <label className="form-label">
-                City <sup style={{ color: "red" }}>*</sup>
+                City <sup className="form-error">*</sup>
               </label>
               <Select
                 options={cityData.map((city) => ({
@@ -839,7 +839,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
               <div className="form-group col-3">
                 <label className="form-label">
-                  TDS Applicable<sup style={{ color: "red" }}>*</sup>
+                  TDS Applicable<sup className="form-error">*</sup>
                 </label>
                 <Select
                   className=""
@@ -886,7 +886,7 @@ const WFHDRegister = ({ userUpdateID }) => {
             {/* {jobType == "WFO" && (
           <div className="form-group col-3">
             <label className="form-label">
-              Letter send <sup style={{ color: "red" }}>*</sup>
+              Letter send <sup  className="form-error">*</sup>
             </label>
             <Select
               options={offerLetter.map((option) => ({
@@ -914,22 +914,23 @@ const WFHDRegister = ({ userUpdateID }) => {
             required={false}
           />
         )} */}
+            <div className="col-md-3">
 
-            <FieldContainer
-              label="Personal Contact"
-              astric
-              type="number"
-              fieldGrid={3}
-              value={personalContact}
-              required={false}
-              onChange={handlePersonalContactChange}
-              onBlur={handlePersonalContactBlur}
-            />
-            {(isContactTouched1 || personalContact?.length >= 10) &&
-              !isValidcontact1 && (
-                <p style={{ color: "red" }}>*Please enter a valid Number</p>
-              )}
-
+              <FieldContainer
+                label="Personal Contact"
+                astric
+                type="number"
+                fieldGrid={3}
+                value={personalContact}
+                required={false}
+                onChange={handlePersonalContactChange}
+                onBlur={handlePersonalContactBlur}
+              />
+              {(isContactTouched1 || personalContact?.length >= 10) &&
+                !isValidcontact1 && (
+                  <p className="form-error">*Please enter a valid Number</p>
+                )}
+            </div>
             <FieldContainer
               label="Alternate Contact "
               type="number"
@@ -941,7 +942,7 @@ const WFHDRegister = ({ userUpdateID }) => {
               onBlur={handleContactBlur}
             />
             {/* {(isContactTouched || contact.length >= 10) && !isValidcontact && (
-          <p style={{ color: "red" }}>*Please enter a valid Number</p>
+          <p  className="form-error">*Please enter a valid Number</p>
         )} */}
 
             <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
@@ -957,17 +958,16 @@ const WFHDRegister = ({ userUpdateID }) => {
                 </p> */}
 
                 <label>
-                  Login ID <sup style={{ color: "red" }}>*</sup>
+                  Login ID <sup className="form-error">*</sup>
                 </label>
                 <div className="input-group">
                   <input
-                    className={`form-control ${
-                      loginId
-                        ? loginResponse === "login id available"
-                          ? "login-success-border"
-                          : "login-error-border"
-                        : ""
-                    }`}
+                    className={`form-control ${loginId
+                      ? loginResponse === "login id available"
+                        ? "login-success-border"
+                        : "login-error-border"
+                      : ""
+                      }`}
                     value={loginId}
                     disabled
                     required
@@ -989,7 +989,7 @@ const WFHDRegister = ({ userUpdateID }) => {
             <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
               <div className="form-group">
                 <label>
-                  Generate Password <sup style={{ color: "red" }}>*</sup>
+                  Generate Password <sup className="form-error">*</sup>
                 </label>
                 <div className="input-group">
                   <input
@@ -1014,7 +1014,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
             {/* <div className="form-group col-3">
           <label className="form-label">
-            Role <sup style={{ color: "red" }}>*</sup>
+            Role <sup  className="form-error">*</sup>
           </label>
           <Select
             options={roledata.map((option) => ({
@@ -1053,7 +1053,7 @@ const WFHDRegister = ({ userUpdateID }) => {
 
             <div className="form-group col-3">
               <label className="form-label">
-                Gender <sup style={{ color: "red" }}>*</sup>
+                Gender <sup className="form-error">*</sup>
               </label>
               <Select
                 className=""
