@@ -134,7 +134,7 @@ const EducationDynamic = ({
           </div>
         </div>
       ))}
-      <div className="mb-1">
+      <div>
         <button
           type="button"
           onClick={handleAddEducationDetails}

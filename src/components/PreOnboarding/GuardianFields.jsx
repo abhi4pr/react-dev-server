@@ -17,7 +17,7 @@ const GuardianFields = ({
     <>
       {guardianDetails &&
         guardianDetails.map((detail, index) => (
-          <div key={index}>
+          <div className="board_form_flex" key={index}>
             {guardianDisplayFields.map((field) => (
               <div className="form-group" key={field}>
                 <TextField
@@ -41,7 +41,10 @@ const GuardianFields = ({
             ))}
 
             {guardianDetails.length > 1 && (
-              <IconButton onClick={() => handleRemoveGuardianDetails(index)}>
+              <IconButton
+                className="btn-icon"
+                onClick={() => handleRemoveGuardianDetails(index)}
+              >
                 <DeleteIcon />
               </IconButton>
             )}

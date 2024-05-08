@@ -19,7 +19,7 @@ const FamilyFields = ({
   return (
     <>
       {familyDetails?.map((detail, index) => (
-        <div key={index} mb={2}>
+        <div className="board_form_flex" key={index}>
           {Object.keys(detail)?.map((key) => {
             switch (key) {
               case "DOB":
@@ -160,7 +160,10 @@ const FamilyFields = ({
             }
           })}
           {familyDetails?.length > 1 && (
-            <IconButton onClick={() => handleRemoveFamilyDetails(index)}>
+            <IconButton
+              className="btn-icon"
+              onClick={() => handleRemoveFamilyDetails(index)}
+            >
               <DeleteIcon />
             </IconButton>
           )}

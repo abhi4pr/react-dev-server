@@ -5,6 +5,7 @@ import "./onboardcss/onboard_style.css";
 import "./onboardcss/onboard_responsive.css";
 import "./onboardcss/onboard_animate.min.css";
 import profilepic from "../../assets/imgs/user/naruto.png";
+import hourGlass from "../../assets/imgs/other/hourglass.gif";
 import welcomeImage from "../../assets/imgs/other/welcome.png";
 import welcomeText from "../../assets/imgs/other/welcometext.gif";
 import Select from "react-select";
@@ -1279,7 +1280,7 @@ const PreOnboardingUserMaster = () => {
   return (
     <>
       <Modal
-        className="Ready to Onboard"
+        className="OnboardPrompt"
         isOpen={readyToOnboardModal}
         onRequestClose={closeReadyToOnboardModal}
         contentLabel="I am ready modal"
@@ -1431,7 +1432,7 @@ const PreOnboardingUserMaster = () => {
                 </div>
               </div>
 
-              {console.log(allUserData)}
+              {/* {console.log(allUserData)} */}
               {allUserData.offer_letter_send && (
                 <div
                   className={`sidebar_itembox ${
@@ -1514,14 +1515,14 @@ const PreOnboardingUserMaster = () => {
                 <h2>FAQ</h2>
               </div>
             </div>
-          </div>
-
-          <div className="page_area">
-            <div className="topnavbar">
+            <div className="topnavbarRight">
               <div className="navbar_menu">
-                <h3>
-                  <span>{daysLeftCount}</span> days left to Join
-                </h3>
+                <div className="daysLeft">
+                  <img src={hourGlass} alt="welcome" />
+                  <h3>
+                    <span>{daysLeftCount}</span> Days left to join
+                  </h3>
+                </div>
               </div>
               <div className="user_box">
                 <div className="user_name">
@@ -1557,86 +1558,226 @@ const PreOnboardingUserMaster = () => {
                 </div>
               </div>
             </div>
-            <div className="dashboard_body">
-              <div className="dashboard_body_inner">
-                {/* Welcome Screen Start */}
-
-                {activeTab == 0 && (
-                  <div className="welcome_board">
-                    <div className="welcome_board_heading">
-                      <h1>Welcome </h1>
-                      <h2>{loginUserName}</h2>
+          </div>
+          <div className="page_wrapper_in">
+            <div className="sidebar_wrapper">
+              <div className="sidebar_wrapper_in">
+                <div className="sidebar_items">
+                  <div
+                    className={`sidebar_itembox ${
+                      activeTab == 1 ? "sidebar_item_active" : ""
+                    }`}
+                    id="sidebarFormBox"
+                    onClick={() => setActiveTab(1)}
+                  >
+                    {/* pp-100 is percentage of document procedure */}
+                    <div
+                      className={`progress-circle progressing pp-${formFieldProgressPercentage}`}
+                    >
+                      <div className="progress-circle-border">
+                        <div className="left-half-circle" />
+                        <div className="right-half-circle" />
+                      </div>
+                      <div className="progress-circle-content">
+                        <i className="bi bi-journal-text" />
+                      </div>
                     </div>
-                    {/* <button
+                    <h2>Form</h2>
+                    <h3>{formFieldProgressPercentage}%</h3>
+                  </div>
+                  <div
+                    className={`sidebar_itembox sidebar_itemboxCol ${
+                      activeTab == 2 ? "sidebar_item_active" : ""
+                    }`}
+                    id="sidebarDocumentBox"
+                    onClick={() => setActiveTab(2)}
+                  >
+                    <div className="sidebar_itemboxColIn">
+                      <div
+                        className={`progress-circle progressing pp-${documentPercentage}`}
+                      >
+                        <div className="progress-circle-border">
+                          <div className="left-half-circle" />
+                          <div className="right-half-circle" />
+                        </div>
+                        <div className="progress-circle-content">
+                          <i className="bi bi-file-richtext" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="sidebar_iteminfo">
+                      <div className="pack" style={{ flexDirection: "row" }}>
+                        <h2 className="document_tab_name">Documents</h2>
+                        <span>(verified)</span>
+                        <h3>{documentPercentage}%</h3>
+                      </div>
+                      <h3>
+                        Mandatory <span>{showMandotaryPer}%</span>
+                      </h3>
+                      <h3>
+                        Non Mandatory{" "}
+                        <span>
+                          {showNonMandotaryPer ? showNonMandotaryPer : 0}%
+                        </span>
+                      </h3>
+                    </div>
+                  </div>
+                  {/* Remove Comment */}
+                  {/* {allUserData.offer_letter_send && ( */}
+                  <div
+                    className={`sidebar_itembox ${
+                      activeTab === 5 ? "sidebar_item_active" : ""
+                    }`}
+                    id="sidebarLetterBox"
+                    onClick={() => setActiveTab(5)}
+                    style={{
+                      opacity: joiningDate <= formattedDate ? 0.5 : 1,
+                      // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
+                      pointerEvents:
+                        joiningDate <= formattedDate ? "none" : "auto",
+                    }}
+                  >
+                    <div className="progress-circle progressing pp-26">
+                      <div className="progress-circle-border">
+                        <div className="left-half-circle" />
+                        <div className="right-half-circle" />
+                      </div>
+                      <div className="progress-circle-content">
+                        <i className="bi bi-file-earmark-text" />
+                      </div>
+                    </div>
+                    <h2 className="letter_tab_name">Letter</h2>
+                  </div>
+                  {/* )} */}
+                  <div
+                    // className={`sidebar_itembox  ${
+                    //   activeTab == 3 ? "sidebar_item_active" : ""
+                    // }`}
+                    className={`sidebar_itembox ${
+                      activeTab === 3 && documentPercentage < 90
+                        ? "sidebar_item_active"
+                        : ""
+                    }`}
+                    id="sidebarPolicyBox"
+                    style={{
+                      pointerEvents: documentPercentage < 90 ? "none" : "auto",
+                      opacity: documentPercentage < 90 ? 0.5 : 1,
+                    }}
+                    onClick={() => setActiveTab(3)}
+                  >
+                    <div className="progress-circle progressing pp-100">
+                      <div className="progress-circle-border">
+                        <div className="left-half-circle" />
+                        <div className="right-half-circle" />
+                      </div>
+                      <div className="progress-circle-content">
+                        <i className="bi bi-book" />
+                      </div>
+                    </div>
+                    <h2 className="policy_tab_name">Policy</h2>
+                  </div>
+                  <div
+                    className={`sidebar_itembox ${
+                      activeTab == 4 ? "sidebar_item_active" : ""
+                    }`}
+                    id="sidebarFaqBox"
+                    onClick={() => setActiveTab(4)}
+                  >
+                    <div className="progress-circle progressing pp-100">
+                      <div className="progress-circle-border">
+                        <div className="left-half-circle" />
+                        <div className="right-half-circle" />
+                      </div>
+                      <div className="progress-circle-content">
+                        <i className="bi bi-question-circle" />
+                      </div>
+                    </div>
+                    <h2>FAQ</h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="page_area">
+              <div className="dashboard_body">
+                <div className="dashboard_body_inner">
+                  {/* Welcome Screen Start */}
+
+                  {activeTab == 0 && (
+                    <div className="welcome_board">
+                      <div className="welcome_board_heading">
+                        <h1>Welcome </h1>
+                        <h2>{loginUserName}</h2>
+                      </div>
+                      {/* <button
                       className="btn btn-success d-block w-100"
                       onClick={openModal}
                     >
                       Profile
                     </button> */}
-                    <div className="welcome_board_img">
-                      <div className="imgone">
-                        <img src={welcomeImage} alt="welcome" />
-                      </div>
-                      <div className="imgtwo">
-                        <img src={welcomeText} alt="welcome" />
+                      <div className="welcome_board_img">
+                        <div className="imgone">
+                          <img src={welcomeImage} alt="welcome" />
+                        </div>
+                        {/* <div className="imgtwo">
+                          <img src={welcomeText} alt="welcome" />
+                        </div> */}
                       </div>
                     </div>
-                  </div>
-                )}
-                {/* Welcome Screen End */}
+                  )}
+                  {/* Welcome Screen End */}
 
-                {/* Form Screen Start */}
-                {activeTab == 1 && (
-                  <form onSubmit={handleSubmit}>
-                    <div className="formarea">
-                      <div className="row spacing_lg">
-                        <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                          <div className="board_form">
-                            <h2>On-Boarding Form</h2>
-                            <h3>
-                              Your Current Joning Date is : &nbsp;
-                              <span>{joiningDate}</span>
-                              <button
-                                className="btn btn-primary extndBtn"
-                                type="button"
-                                onClick={openReactModal}
-                              >
-                                Extend
-                              </button>
-                              <Modal
-                                className="onboardModal"
-                                isOpen={isModalOpen}
-                                onRequestClose={closeReactModal}
-                                contentLabel="Modal"
-                                appElement={document.getElementById("root")}
-                                shouldCloseOnOverlayClick={true}
-                              >
-                                <ExtendJoining
-                                  gettingData={gettingData}
-                                  id={id}
-                                  loginId={loginId}
-                                  username={username}
-                                  password={password}
-                                  currentJoiningDate={joiningDate}
-                                  closeModal={closeReactModal}
+                  {/* Form Screen Start */}
+                  {activeTab == 1 && (
+                    <form onSubmit={handleSubmit}>
+                      <div className="formarea">
+                        <div className="row spacing_lg">
+                          <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <div className="board_form board_form_flex">
+                              <h2>On-Boarding Form</h2>
+                              <h3>
+                                Your Current Joning Date is : &nbsp;
+                                <span>{joiningDate}</span>
+                                <button
+                                  className="btn btn-primary extndBtn"
+                                  type="button"
+                                  onClick={openReactModal}
+                                >
+                                  Extend
+                                </button>
+                                <Modal
+                                  className="onboardModal"
+                                  isOpen={isModalOpen}
+                                  onRequestClose={closeReactModal}
+                                  contentLabel="Modal"
+                                  appElement={document.getElementById("root")}
+                                  shouldCloseOnOverlayClick={true}
+                                >
+                                  <ExtendJoining
+                                    gettingData={gettingData}
+                                    id={id}
+                                    loginId={loginId}
+                                    username={username}
+                                    password={password}
+                                    currentJoiningDate={joiningDate}
+                                    closeModal={closeReactModal}
+                                  />
+                                </Modal>
+                              </h3>
+                              <div className="form-group">
+                                <TextField
+                                  id="outlined-basic"
+                                  label="Full Name"
+                                  variant="outlined"
+                                  type="text"
+                                  // className="form-control"
+                                  name="name"
+                                  // placeholder="Full Name"
+                                  value={username}
+                                  onChange={(e) => setUserName(e.target.value)}
                                 />
-                              </Modal>
-                            </h3>
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Full Name"
-                                variant="outlined"
-                                type="text"
-                                // className="form-control"
-                                name="name"
-                                // placeholder="Full Name"
-                                value={username}
-                                onChange={(e) => setUserName(e.target.value)}
-                              />
-                            </div>
+                              </div>
 
-                            {/* <div className="form-group">
+                              {/* <div className="form-group">
                               <TextField
                                 id="outlined-basic"
                                 label="Official Email"
@@ -1655,55 +1796,58 @@ const PreOnboardingUserMaster = () => {
                               )}
                             </div> */}
 
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Personal Email"
-                                variant="outlined"
-                                type="email"
-                                value={personalEmail}
-                                onChange={(e) =>
-                                  setPersonalEmail(e.target.value)
-                                }
-                              />
-                            </div>
+                              <div className="form-group">
+                                <TextField
+                                  id="outlined-basic"
+                                  label="Personal Email"
+                                  variant="outlined"
+                                  type="email"
+                                  value={personalEmail}
+                                  onChange={(e) =>
+                                    setPersonalEmail(e.target.value)
+                                  }
+                                />
+                              </div>
 
-                            <div className="form-group">
-                              <ContactNumber
-                                label="Personal Contact"
-                                setParentComponentContact={setPersonalContact}
-                                parentComponentContact={personalContact}
-                              />
-                            </div>
+                              <div className="form-group">
+                                <ContactNumber
+                                  label="Personal Contact"
+                                  setParentComponentContact={setPersonalContact}
+                                  parentComponentContact={personalContact}
+                                />
+                              </div>
 
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Father Name"
-                                variant="outlined"
-                                type="text"
-                                name="father Name"
-                                value={FatherName}
-                                onChange={(e) => setFatherName(e.target.value)}
-                              />
-                            </div>
+                              <div className="form-group">
+                                <TextField
+                                  id="outlined-basic"
+                                  label="Father Name"
+                                  variant="outlined"
+                                  type="text"
+                                  name="father Name"
+                                  value={FatherName}
+                                  onChange={(e) =>
+                                    setFatherName(e.target.value)
+                                  }
+                                />
+                              </div>
 
-                            <div className="form-group form_select">
-                              <Autocomplete
-                                disablePortal
-                                id="combo-box-demo"
-                                options={genderData}
-                                // defaultValue={genderData[0]}
-                                value={gender}
-                                onChange={(e, newValue) => setGender(newValue)}
-                                renderInput={(params) => (
-                                  <TextField {...params} label="Gender" />
-                                )}
-                              />
-                            </div>
+                              <div className="form-group form_select">
+                                <Autocomplete
+                                  disablePortal
+                                  id="combo-box-demo"
+                                  options={genderData}
+                                  // defaultValue={genderData[0]}
+                                  value={gender}
+                                  onChange={(e, newValue) =>
+                                    setGender(newValue)
+                                  }
+                                  renderInput={(params) => (
+                                    <TextField {...params} label="Gender" />
+                                  )}
+                                />
+                              </div>
 
-                            <div className="from-group"></div>
-                            {/* <div className="form-group">
+                              {/* <div className="form-group">
                               <input
                                 type="text"
                                 className="form-control"
@@ -1711,379 +1855,370 @@ const PreOnboardingUserMaster = () => {
                                 placeholder="Father’s Occupation "
                               />
                             </div> */}
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Mother Name"
-                                variant="outlined"
-                                type="text"
-                                // className="form-control"
-                                // name="mother name"
-                                // placeholder="Mother Name"
-                                value={motherName}
-                                onChange={(e) => setMotherName(e.target.value)}
-                              />
-                            </div>
-                            <div className="form-group form_select">
-                              {/* <Autocomplete
-                                multiple
-                                id="hobbies-autocomplete"
-                                options={hobbiesData}
-                                getOptionLabel={(option) => option.label} // Adjust according to your data structure
-                                value={hobbies}
-                                onChange={handleHobbiesChange}
-                                isOptionEqualToValue={(option, value) =>
-                                  option.value === value.value
-                                }
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label="Hobbies"
-                                    placeholder="Select hobbies"
-                                  />
-                                )}
-                                clearOnEscape
-                              /> */}
-                              <Autocomplete
-                                multiple
-                                id="combo-box-demo"
-                                options={filteredHobbyOption}
-                                getOptionLabel={(option) => option.label}
-                                InputLabelProps={{ shrink: true }}
-                                renderInput={(params) => (
-                                  <TextField {...params} label="Hobbie" />
-                                )}
-                                onChange={categoryChangeHandler}
-                                value={hobbies}
-                              />
-                            </div>
-
-                            <div className="form-group form_select">
-                              <Autocomplete
-                                disablePortal
-                                id="combo-box-demo"
-                                options={bloodGroupData}
-                                value={bloodGroup}
-                                onChange={(event, newValue) => {
-                                  setBloodGroup(newValue);
-                                }}
-                                renderInput={(params) => (
-                                  <TextField {...params} label="Blood Group" />
-                                )}
-                              />
-                            </div>
-
-                            {maritialStatus === "Married  " && (
                               <div className="form-group">
                                 <TextField
                                   id="outlined-basic"
-                                  label="Spouse Name"
+                                  label="Mother Name"
                                   variant="outlined"
                                   type="text"
-                                  value={spouseName}
+                                  // className="form-control"
+                                  // name="mother name"
+                                  // placeholder="Mother Name"
+                                  value={motherName}
                                   onChange={(e) =>
-                                    setSpouseName(e.target.value)
+                                    setMotherName(e.target.value)
                                   }
                                 />
                               </div>
-                            )}
-                            {maritialStatus == "Married" && (
+                              <div className="form-group form_select">
+                                <Autocomplete
+                                  multiple
+                                  id="hobbies-autocomplete"
+                                  options={hobbiesData}
+                                  getOptionLabel={(option) => option.label} // Adjust according to your data structure
+                                  value={hobbies}
+                                  onChange={handleHobbiesChange}
+                                  isOptionEqualToValue={(option, value) =>
+                                    option.value === value.value
+                                  }
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Hobbies"
+                                      placeholder="Select hobbies"
+                                    />
+                                  )}
+                                  clearOnEscape
+                                />
+                              </div>
+
+                              <div className="form-group form_select">
+                                <Autocomplete
+                                  disablePortal
+                                  id="combo-box-demo"
+                                  options={bloodGroupData}
+                                  value={bloodGroup}
+                                  onChange={(event, newValue) => {
+                                    setBloodGroup(newValue);
+                                  }}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Blood Group"
+                                    />
+                                  )}
+                                />
+                              </div>
+
+                              {maritialStatus === "Married  " && (
+                                <div className="form-group">
+                                  <TextField
+                                    id="outlined-basic"
+                                    label="Spouse Name"
+                                    variant="outlined"
+                                    type="text"
+                                    value={spouseName}
+                                    onChange={(e) =>
+                                      setSpouseName(e.target.value)
+                                    }
+                                  />
+                                </div>
+                              )}
+                              {maritialStatus == "Married" && (
+                                <div className="form-group">
+                                  <TextField
+                                    id="outlined-basic"
+                                    label="Date Of Marriage"
+                                    variant="outlined"
+                                    type="date"
+                                    value={dateOfMarraige}
+                                    onChange={(e) =>
+                                      setDateOfMarraige(e.target.value)
+                                    }
+                                  />
+                                </div>
+                              )}
+
+                              <div className="form-group">
+                                <Autocomplete
+                                  multiple
+                                  id="multi-select-autocomplete"
+                                  options={LanguageList} // Use correct array for options
+                                  value={speakingLanguage}
+                                  onChange={(event, newValue) =>
+                                    setSpeakingLanguage(newValue)
+                                  }
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Speaking Languages"
+                                      placeholder="Select languages"
+                                    />
+                                  )}
+                                />
+                              </div>
+
+                              <div className="form-group Muiform_date">
+                                <TextField
+                                  id="outlined-basic"
+                                  label="Date Of Birth"
+                                  variant="outlined"
+                                  type="date"
+                                  value={dateOfBirth}
+                                  onChange={(e) =>
+                                    setDateOfBirth(e.target.value)
+                                  }
+                                />
+                              </div>
                               <div className="form-group">
                                 <TextField
                                   id="outlined-basic"
-                                  label="Date Of Marriage"
+                                  label="Nationality"
                                   variant="outlined"
-                                  type="date"
-                                  value={dateOfMarraige}
+                                  type="text"
+                                  value={nationality}
                                   onChange={(e) =>
-                                    setDateOfMarraige(e.target.value)
+                                    setNationality(e.target.value)
                                   }
                                 />
                               </div>
-                            )}
 
-                            <div className="form-group">
-                              <Autocomplete
-                                multiple
-                                id="multi-select-autocomplete"
-                                options={LanguageList} // Use correct array for options
-                                value={speakingLanguage}
-                                onChange={(event, newValue) =>
-                                  setSpeakingLanguage(newValue)
-                                }
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label="Speaking Languages"
-                                  />
-                                )}
-                              />
-                            </div>
-
-                            <div className="form-group Muiform_date">
-                              <TextField
-                                id="outlined-basic"
-                                label="Date Of Birth"
-                                variant="outlined"
-                                type="date"
-                                value={dateOfBirth}
-                                onChange={(e) => setDateOfBirth(e.target.value)}
-                              />
-                            </div>
-                            <div className="form-group">
-                              {/* <TextField
-                                id="outlined-basic"
-                                label="Nationality"
-                                variant="outlined"
-                                type="text"
-                                value={nationality}
-                                onChange={(e) => setNationality(e.target.value)}
-                              /> */}
-                              <Autocomplete
-                                disablePortal
-                                id="combo-box-demo"
-                                options={nationalityData} // Use correct array for options
-                                value={nationality}
-                                onChange={(event, newValue) =>
-                                  setNationality(newValue)
-                                }
-                                renderInput={(params) => (
-                                  <TextField
-                                    {...params}
-                                    label="Nationality"
-                                    placeholder="Select.."
-                                  />
-                                )}
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <ContactNumber
-                                label="Emergency Contact"
-                                parentComponentContact={emergencyContact}
-                                setParentComponentContact={setEmergencyContact}
-                              />
-                            </div>
-
-                            <GuardianFields
-                              guardianDetails={guardianDetails}
-                              guardianDisplayFields={guardianDisplayFields}
-                              guardianFieldLabels={guardianFieldLabels}
-                              guardianContactErrors={guardianContactErrors}
-                              handleGuardianDetailsChange={
-                                handleGuardianDetailsChange
-                              }
-                              handleAddGuardianDetails={
-                                handleAddGuardianDetails
-                              }
-                              handleRemoveGuardianDetails={
-                                handleRemoveGuardianDetails
-                              }
-                            />
-
-                            <FamilyFields
-                              familyDetails={familyDetails}
-                              familyDisplayFields={familyDisplayFields}
-                              familyFieldLabels={familyFieldLabels}
-                              familyValidationErrors={familyValidationErrors}
-                              handleFamilyDetailsChange={
-                                handleFamilyDetailsChange
-                              }
-                              handleAddFamilyDetails={handleAddFamilyDetails}
-                              handleRemoveFamilyDetails={
-                                handleRemoveFamilyDetails
-                              }
-                            />
-
-                            <EducationFields
-                              educationDetails={educationDetails}
-                              educationDispalyFields={educationDispalyFields}
-                              educationFieldLabels={educationFieldLabels}
-                              handleEducationDetailsChange={
-                                handleEducationDetailsChange
-                              }
-                              handleAddEducationDetails={
-                                handleAddEducationDetails
-                              }
-                              handleRemoveEducationDetails={
-                                handleRemoveEducationDetails
-                              }
-                            />
-                          </div>
-                        </div>
-
-                        <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-                          <div className="board_form">
-                            <h2>Current Address</h2>
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Current Address"
-                                variant="outlined"
-                                type="text"
-                                value={currentAddress}
-                                onChange={(e) =>
-                                  setCurrentAddress(e.target.value)
-                                }
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <IndianStatesMui
-                                selectedState={currentState}
-                                onChange={(option) =>
-                                  setcurrentState(option ? option : null)
-                                }
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <IndianCitiesMui
-                                selectedState={currentState}
-                                selectedCity={currentCity}
-                                onChange={(option) =>
-                                  setcurrentCity(option ? option : null)
-                                }
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <TextField
-                                required
-                                id="outlined-basic"
-                                label="Pincode"
-                                variant="outlined"
-                                type="text"
-                                value={currentPincode}
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  const cleanedValue = value.replace(/\D/g, "");
-                                  if (cleanedValue.length <= 6) {
-                                    setcurrentPincode(cleanedValue);
+                              <div className="form-group">
+                                <ContactNumber
+                                  label="Emergency Contact"
+                                  parentComponentContact={emergencyContact}
+                                  setParentComponentContact={
+                                    setEmergencyContact
                                   }
-                                }}
+                                />
+                              </div>
+
+                              <GuardianFields
+                                guardianDetails={guardianDetails}
+                                guardianDisplayFields={guardianDisplayFields}
+                                guardianFieldLabels={guardianFieldLabels}
+                                guardianContactErrors={guardianContactErrors}
+                                handleGuardianDetailsChange={
+                                  handleGuardianDetailsChange
+                                }
+                                handleAddGuardianDetails={
+                                  handleAddGuardianDetails
+                                }
+                                handleRemoveGuardianDetails={
+                                  handleRemoveGuardianDetails
+                                }
+                              />
+
+                              <FamilyFields
+                                familyDetails={familyDetails}
+                                familyDisplayFields={familyDisplayFields}
+                                familyFieldLabels={familyFieldLabels}
+                                familyValidationErrors={familyValidationErrors}
+                                handleFamilyDetailsChange={
+                                  handleFamilyDetailsChange
+                                }
+                                handleAddFamilyDetails={handleAddFamilyDetails}
+                                handleRemoveFamilyDetails={
+                                  handleRemoveFamilyDetails
+                                }
+                              />
+
+                              <EducationFields
+                                educationDetails={educationDetails}
+                                educationDispalyFields={educationDispalyFields}
+                                educationFieldLabels={educationFieldLabels}
+                                handleEducationDetailsChange={
+                                  handleEducationDetailsChange
+                                }
+                                handleAddEducationDetails={
+                                  handleAddEducationDetails
+                                }
+                                handleRemoveEducationDetails={
+                                  handleRemoveEducationDetails
+                                }
                               />
                             </div>
                           </div>
 
-                          <div className="board_form form_checkbox">
-                            <label className="cstm_check">
-                              Same as Current Address
-                              <input
-                                className="form-control"
-                                type="checkbox"
-                                checked={sameAsCurrent}
-                                onChange={handleCheckboxChange}
-                              />
-                              <span className="checkmark"></span>
-                            </label>
-                          </div>
-
-                          <div className="board_form">
-                            <h2>Permanent Address</h2>
-
-                            <div className="form-group">
-                              <TextField
-                                required
-                                id="outlined-basic"
-                                label="Permanent Address"
-                                variant="outlined"
-                                type="text"
-                                value={permanentAddress}
-                                onChange={(e) =>
-                                  setPermanentAddress(e.target.value)
-                                }
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <IndianStatesMui
-                                selectedState={permanentState}
-                                onChange={(option) =>
-                                  setPermanentState(option ? option : null)
-                                }
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <IndianCitiesMui
-                                selectedState={permanentState}
-                                selectedCity={permanentCity}
-                                onChange={(option) =>
-                                  setPermanentCity(option ? option : null)
-                                }
-                              />
-                            </div>
-
-                            <div className="form-group">
-                              <TextField
-                                required
-                                id="outlined-basic"
-                                label="Pincode"
-                                variant="outlined"
-                                type="text"
-                                value={permanentPincode}
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  const cleanedValue = value.replace(/\D/g, "");
-                                  if (cleanedValue.length <= 6) {
-                                    setPermanentPincode(cleanedValue);
+                          <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+                            <div className="board_form board_form_flex">
+                              <h2>Current Address</h2>
+                              <div className="form-group">
+                                <TextField
+                                  id="outlined-basic"
+                                  label="Current Address"
+                                  variant="outlined"
+                                  type="text"
+                                  value={currentAddress}
+                                  onChange={(e) =>
+                                    setCurrentAddress(e.target.value)
                                   }
-                                }}
-                              />
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <IndianStatesMui
+                                  selectedState={currentState}
+                                  onChange={(option) =>
+                                    setcurrentState(option ? option : null)
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <IndianCitiesMui
+                                  selectedState={currentState}
+                                  selectedCity={currentCity}
+                                  onChange={(option) =>
+                                    setcurrentCity(option ? option : null)
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <TextField
+                                  required
+                                  id="outlined-basic"
+                                  label="Current Pincode"
+                                  variant="outlined"
+                                  type="text"
+                                  value={currentPincode}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    const cleanedValue = value.replace(
+                                      /\D/g,
+                                      ""
+                                    );
+                                    if (cleanedValue.length <= 6) {
+                                      setcurrentPincode(cleanedValue);
+                                    }
+                                  }}
+                                />
+                              </div>
+                            </div>
+
+                            <div className="board_form form_checkbox">
+                              <label className="cstm_check">
+                                Same as Current Address
+                                <input
+                                  className="form-control"
+                                  type="checkbox"
+                                  checked={sameAsCurrent}
+                                  onChange={handleCheckboxChange}
+                                />
+                                <span className="checkmark"></span>
+                              </label>
+                            </div>
+
+                            <div className="board_form board_form_flex">
+                              <h2>Permanent Address</h2>
+
+                              <div className="form-group">
+                                <TextField
+                                  required
+                                  id="outlined-basic"
+                                  label="Permanent Address"
+                                  variant="outlined"
+                                  type="text"
+                                  value={permanentAddress}
+                                  onChange={(e) =>
+                                    setPermanentAddress(e.target.value)
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <IndianStatesMui
+                                  selectedState={permanentState}
+                                  onChange={(option) =>
+                                    setPermanentState(option ? option : null)
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <IndianCitiesMui
+                                  selectedState={permanentState}
+                                  selectedCity={permanentCity}
+                                  onChange={(option) =>
+                                    setPermanentCity(option ? option : null)
+                                  }
+                                />
+                              </div>
+
+                              <div className="form-group">
+                                <TextField
+                                  required
+                                  id="outlined-basic"
+                                  label="Permanent Pincode"
+                                  variant="outlined"
+                                  type="text"
+                                  value={permanentPincode}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    const cleanedValue = value.replace(
+                                      /\D/g,
+                                      ""
+                                    );
+                                    if (cleanedValue.length <= 6) {
+                                      setPermanentPincode(cleanedValue);
+                                    }
+                                  }}
+                                />
+                              </div>
                             </div>
                           </div>
-                        </div>
-                        <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                          <div className="form-group ml-auto mr-auto text-center">
-                            <button
-                              className="btn btn_pill btn_cmn btn_white"
-                              onClick={handleSubmit}
-                              type="button"
-                              disabled={
-                                !currentAddress &&
-                                !currentState &&
-                                !permanentCity &&
-                                !currentPincode &&
-                                !permanentAddress &&
-                                !permanentState &&
-                                !permanentCity &&
-                                !permanentPincode &&
-                                isSubmitting &&
-                                true
-                              }
-                            >
-                              {isSubmitting ? "Submitting...." : "Submit"}
-                            </button>
+                          <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                            <div className="form-group ml-auto mr-auto text-center">
+                              <button
+                                className="btn onboardBtn btn_primary"
+                                onClick={handleSubmit}
+                                type="button"
+                                disabled={
+                                  !currentAddress &&
+                                  !currentState &&
+                                  !permanentCity &&
+                                  !currentPincode &&
+                                  !permanentAddress &&
+                                  !permanentState &&
+                                  !permanentCity &&
+                                  !permanentPincode &&
+                                  isSubmitting &&
+                                  true
+                                }
+                              >
+                                {isSubmitting ? "Submitting...." : "Submit"}
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </form>
-                )}
-                {/* Form Screen End */}
+                    </form>
+                  )}
+                  {/* Form Screen End */}
 
-                {activeTab == 2 && (
-                  <DocumentTab
-                    documentData={documentData}
-                    setDocumentData={setDocumentData}
-                    getDocuments={getDocuments}
-                    showMandotaryPer={showMandotaryPer}
-                    showNonMandotaryPer={showNonMandotaryPer}
-                    id={id}
-                  />
-                )}
+                  {activeTab == 2 && (
+                    <DocumentTab
+                      documentData={documentData}
+                      setDocumentData={setDocumentData}
+                      getDocuments={getDocuments}
+                      showMandotaryPer={showMandotaryPer}
+                      showNonMandotaryPer={showNonMandotaryPer}
+                      id={id}
+                    />
+                  )}
 
-                {activeTab == 3 && <CocTabPreonboarding cocData={cocData} />}
+                  {activeTab == 3 && <CocTabPreonboarding cocData={cocData} />}
 
-                {activeTab == 4 && <FAQTab />}
+                  {activeTab == 4 && <FAQTab />}
 
-                {activeTab == 5 && allUserData.offer_letter_send && (
-                  <LetterTab
-                    allUserData={allUserData}
-                    gettingData={gettingData}
-                  />
-                )}
+                  {activeTab == 5 && allUserData.offer_letter_send && (
+                    <LetterTab
+                      allUserData={allUserData}
+                      gettingData={gettingData}
+                    />
+                  )}
+                </div>
               </div>
             </div>
           </div>
