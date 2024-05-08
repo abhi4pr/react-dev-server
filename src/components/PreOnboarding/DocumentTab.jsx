@@ -106,6 +106,7 @@ const DocumentTab = ({
             <table className="table">
               <thead>
                 <tr>
+                  <th scope="col">Document Name</th>
                   <th scope="col">Document Type</th>
                   <th scope="col">Period (Days)</th>
                   <th scope="col">Time</th>
@@ -118,6 +119,7 @@ const DocumentTab = ({
               <tbody>
                 {documentData.map((item) => (
                   <tr key={item._id}>
+                    <td>{item.document.doc_name}</td>
                     <td scope="row">
                       {item.document.doc_type}
                       {item.document.isRequired && (

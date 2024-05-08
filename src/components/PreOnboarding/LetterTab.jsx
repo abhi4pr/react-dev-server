@@ -445,7 +445,11 @@ const LetterTab = ({ allUserData, gettingData }) => {
       <div className="letterBoard">
         <div className="thm_textbx">
           <p>
-            Welcome {allUserData.user_name} to CreativeFuel As our new{" "}
+            Hello {allUserData.user_name}, Welcome to Creativefuel - The home to the most vibrant & talented individuals!
+            We're to have you join our team of Meme Enthusiasts & Coffee Addicts as a {allUserData.designation_name}! 
+            We believe that your experience & skills will be a great asset to our organisation.
+            Congratulations on your new role, and cheers to a journey full of excitement, growth & achievement!
+            {/* Welcome {allUserData.user_name} to CreativeFuel As our new{" "}
             {allUserData.designation_name}, he/she brings valuable experience to
             our team. <br />
             Based at {allUserData.permanent_address}, {allUserData.user_name}{" "}
@@ -463,11 +467,16 @@ const LetterTab = ({ allUserData, gettingData }) => {
             salary {allUserData.ctc}, reflects his/her value. <br />
             {allUserData.user_name}'s digital signature symbolizes his/her
             commitment. Congratulations on accepting our offer—we look forward
-            to achieving great milestones together!
+            to achieving great milestones together! */}
           </p>
         </div>
 
-        <div className="letterAction">
+        <span onClick={downloadOfferLetter} className="btn btn-outline-primary">
+          <FcDownload />
+          Download
+        </span>
+
+        {/* <div className="letterAction">
           {allUserData.offer_later_status == false &&
             allUserData.offer_later_reject_reason == "" && (
               <div className="letterStatus">
@@ -498,7 +507,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
               Download
             </span>
           )}
-        </div>
+        </div> */}
+
       </div>
 
       {reasonField && (

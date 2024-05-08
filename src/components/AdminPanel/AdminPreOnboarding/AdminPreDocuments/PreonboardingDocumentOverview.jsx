@@ -12,12 +12,18 @@ const PreonboardingDocumentOverview = () => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
+
   const columns = [
     {
       name: "S.No",
       cell: (row, index) => <>{index + 1}</>,
       width: "9%",
       sortable: true,
+    },
+    {
+      name: "Document Name",
+      selector: (row) => row.doc_name,
+      sortable: true
     },
     {
       name: "Document Type",
@@ -29,21 +35,21 @@ const PreonboardingDocumentOverview = () => {
       selector: (row) => <>{row.isRequired ? "Mandatory" : "Non mandatory"}</>,
       sortable: true,
     },
-    {
-      name: "Priority",
-      selector: (row) => row.priority,
-      sortable: true,
-    },
+    // {
+    //   name: "Priority",
+    //   selector: (row) => row.priority,
+    //   sortable: true,
+    // },
     {
       name: "Period",
       selector: (row) => row.period + " days",
       sortable: true,
     },
-    {
-      name: "Description",
-      selector: (row) => row.description,
-      sortable: true,
-    },
+    // {
+    //   name: "Description",
+    //   selector: (row) => row.description,
+    //   sortable: true,
+    // },
     {
       name: "Action",
       cell: (row) => (
