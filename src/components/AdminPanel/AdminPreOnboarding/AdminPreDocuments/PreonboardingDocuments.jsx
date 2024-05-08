@@ -10,6 +10,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from "@mui/material";
+import { set } from "date-fns";
 
 const selectOptions = [
   {
@@ -45,6 +46,8 @@ const PreonboardingDocuments = () => {
   const [period, setPeriod] = useState(null);
   const [priority, setPriority] = useState("");
   const [mandatory, setMandatory] = useState("");
+  const [documentaproval, setdocumentapproval] = useState("");
+
   const [documentNumber, setDocumentNumber] = useState("");
   const [jobType, setJobType] = useState([]);
   const [jobTypeData, setJobTypeData] = useState([]);
@@ -52,7 +55,7 @@ const PreonboardingDocuments = () => {
   const [selectedOption, setSelectedOption] = useState('no');
   const [selectedOption2, setSelectedOption2] = useState('no');
   const [expiredDate, setExpiredDate] = useState('');
-  
+
   useEffect(() => {
     async function getJobtTypes() {
       const jobTypeResponse = await axios.get(baseUrl + "get_all_job_types");
@@ -64,6 +67,7 @@ const PreonboardingDocuments = () => {
 
   const handleSelectNumber = (event) => {
     setSelectedOption(event.target.value);
+    setdocumentapproval(event.target.value);
   };
 
   const handleSelectExpire = (event) => {
@@ -109,26 +113,35 @@ const PreonboardingDocuments = () => {
         </div>
         <div className="card-body">
           <div className="row">
-            <FieldContainer
-              label="Document Name"
-              astric
-              value={docName}
-              onChange={(e) => setDocName(e.target.value)}
-            />
-            <FieldContainer
-              label="Document Type"
-              astric
-              value={documentType}
-              onChange={(e) => setDocumentType(e.target.value)}
-            />
-            <FieldContainer
-              label="Period (days)"
-              astric
-              type="number"
-              fieldGrid={3}
-              value={period}
-              onChange={(e) => setPeriod(e.target.value)}
-            />
+            <div className="col-md-3">
+
+              <FieldContainer
+                label="Document Name"
+                astric
+                value={docName}
+                onChange={(e) => setDocName(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3">
+
+              <FieldContainer
+                label="Document Type"
+                astric
+                value={documentType}
+                onChange={(e) => setDocumentType(e.target.value)}
+              />
+            </div>
+            <div className="col-md-3">
+
+              <FieldContainer
+                label="Period (days)"
+                astric
+                type="number"
+                fieldGrid={3}
+                value={period}
+                onChange={(e) => setPeriod(e.target.value)}
+              />
+            </div>
             {/* <div className="form-group col-3">
               <label className="form-label">Priority</label>
               <sup style={{ color: "red" }}>*</sup>
@@ -142,7 +155,7 @@ const PreonboardingDocuments = () => {
                 required
               />
             </div> */}
-            <div className="form-group col-3">
+            <div className="form-group col-md-3">
               <label className="form-label">
                 Mandatory <sup style={{ color: "red" }}>*</sup>
               </label>
@@ -157,18 +170,22 @@ const PreonboardingDocuments = () => {
               />
             </div>
 
-            <div className="form-group col-4">
+            <div className="form-group col-3">
               <label className="form-label">
                 Has Document Number ?<sup style={{ color: "red" }}>*</sup>
               </label>
-              <select id="selectOption" value={selectedOption} onChange={handleSelectNumber}>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
+              <Select
+                value={selectedOption === 'yes' ? { value: "yes", label: "Yes" } : { value: "no", label: "No" }}
+                label={documentaproval}
+                options={[{ value: "yes", label: "Yes" }, { value: "no", label: "No" }]}
+                onChange={(e) => setSelectedOption(e.value)}
+                required
+              />
+
             </div>
 
             {selectedOption === 'yes' && (
-              <>
+              <div className="col-md-3">
                 <FieldContainer
                   fieldGrid={3}
                   label="Document Number"
@@ -176,10 +193,10 @@ const PreonboardingDocuments = () => {
                   value={documentNumber}
                   onChange={(e) => setDocumentNumber(e.target.value)}
                 />
-              </>
+              </div>
             )}
 
-            <div className="form-group col-6">
+            <div className="form-group col-md-3">
               <label className="form-label">
                 Job Type <sup style={{ color: "red" }}>*</sup>
               </label>
@@ -211,25 +228,32 @@ const PreonboardingDocuments = () => {
               onChange={(e) => setDescription(e.target.value)}
             /> */}
 
-            <div className="form-group col-4">
+            <div className="form-group col-3">
               <label className="form-label">
                 Has Document Expired ?<sup style={{ color: "red" }}>*</sup>
               </label>
-              <select id="selectOption" value={selectedOption2} onChange={handleSelectExpire}>
-                <option value="yes">Yes</option>
-                <option value="no">No</option>
-              </select>
+              <Select
+                value={selectedOption2 === 'yes' ? { value: "yes", label: "Yes" } : { value: "no", label: "No" }}
+                label={documentaproval}
+                options={[{ value: "yes", label: "Yes" }, { value: "no", label: "No" }]}
+                onChange={(e) => setSelectedOption2(e.value)}
+                required
+              />
+
             </div>
 
             {selectedOption2 === 'yes' && (
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker 
-                  label="Expired Date" 
-                  value={expiredDate}
-                  onChange={(newValue) => setExpiredDate(newValue)}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
+              <div className="col-md-3 mt-4">
+
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Expired Date"
+                    value={expiredDate}
+                    onChange={(newValue) => setExpiredDate(newValue)}
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </LocalizationProvider>
+              </div>
             )}
 
           </div>

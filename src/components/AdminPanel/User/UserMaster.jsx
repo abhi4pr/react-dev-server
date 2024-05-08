@@ -1223,21 +1223,28 @@ const UserMaster = () => {
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
           <label className="form-label ">Upload Image</label>
-          <button
-            className="profile-holder ml-1"
-            data-bs-toggle="modal"
-            data-bs-target="#transferModal"
-            title="Upload Image"
-            style={{ border: selectedImage === null ? "1px solid var(--medium)" : "none" }}
-          >
-            {!selectedImage && (<User style={{ fontSize: "200px" }} />)}
-            {selectedImage && (<img
-              className="profile-image"
-              src={imagePreview}
-              alt="Selected"
+          <div className="flex-row sb">
+            <label htmlFor="uploadImage" className="profile-holder ml-1">
+              <User style={{ fontSize: "200px" }} />
+            </label>
+            <div style={{ borderBottom: "2px dashed black", width: "calc(100% - 100px)" }}></div>
+            <button
+              id="uploadImage"
+              className="profile-holder ml-1"
+              data-bs-toggle="modal"
+              data-bs-target="#transferModal"
+              title="Upload Image"
+              style={{ border: selectedImage === null ? "1px solid var(--medium)" : "none" }}
+            >
+              {!selectedImage && (<User style={{ fontSize: "200px" }} />)}
+              {selectedImage && (<img
+                className="profile-holder"
+                src={imagePreview}
+                alt="Selected"
 
-            />)}
-          </button>
+              />)}
+            </button>
+          </div>
 
         </div>
       </div>
@@ -1280,7 +1287,7 @@ const UserMaster = () => {
         />
         <div className="">
           {mandatoryFieldsEmpty.fullName && (
-            <p style={{ color: "red" }}>Please enter Full Name</p>
+            <p className="form-error">Please enter Full Name</p>
           )}
         </div>
       </div>
@@ -1309,11 +1316,11 @@ const UserMaster = () => {
           }}
         />
         {!isPersonalEmailValid && personalEmail && (
-          <p style={{ color: "red" }}>*Please enter valid email</p>
+          <p className="form-error">*Please enter valid email</p>
         )}
 
         {mandatoryFieldsEmpty.personalEmail && (
-          <p style={{ color: "red" }}>Please enter Personal Email</p>
+          <p className="form-error">Please enter Personal Email</p>
         )}
       </div>
       <div className="col-3">
@@ -1330,7 +1337,7 @@ const UserMaster = () => {
         {(isContactTouched1 || personalContact.length >= 10) &&
           !isValidcontact1 &&
           mandatoryFieldsEmpty.personalContact && (
-            <p style={{ color: "red" }}>*Please enter a valid Contact Number</p>
+            <p className="form-error">*Please enter a valid Contact Number</p>
           )}
 
       </div>
@@ -1348,15 +1355,15 @@ const UserMaster = () => {
         {(isAlternateTouched1 || alternateContact.length >= 10) &&
           !isValidcontact3 &&
           !mandatoryFieldsEmpty.alternateContact && (
-            <p style={{ color: "red" }}>*Please enter a valid Number</p>
+            <p className="form-error">*Please enter a valid Number</p>
           )}
         {mandatoryFieldsEmpty.alternateContact && (
-          <p style={{ color: "red" }}>Please enter Alternate Contact</p>
+          <p className="form-error">Please enter Alternate Contact</p>
         )}
       </div>
       <div className="form-group col-3">
         <label className="form-label">
-          Gender <sup style={{ color: "red" }}>*</sup>
+          Gender <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -1387,12 +1394,12 @@ const UserMaster = () => {
           required
         />
         {mandatoryFieldsEmpty.gender && (
-          <p style={{ color: "red" }}>Please enter Gender</p>
+          <p className="form-error">Please enter Gender</p>
         )}
       </div>
       <div className="from-group col-3">
         <label className="form-label">
-          DOB <sup style={{ color: "red" }}>*</sup>
+          DOB <sup className="form-error">*</sup>
         </label>
         <div className="pack" style={{ position: "relative" }}>
           <input
@@ -1433,7 +1440,7 @@ const UserMaster = () => {
 
       <div className="form-group col-3">
         <label className="form-label">
-          Nationality <sup style={{ color: "red" }}>*</sup>
+          Nationality <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -1464,7 +1471,7 @@ const UserMaster = () => {
           required
         />
         {mandatoryFieldsEmpty.nationality && (
-          <p style={{ color: "red" }}>Please enter nationality</p>
+          <p className="form-error">Please enter nationality</p>
         )}
       </div>
 
@@ -1493,11 +1500,11 @@ const UserMaster = () => {
         }}
       />
       {mandatoryFieldsEmpty.nationality && (
-        <p style={{ color: "red" }}>Please Enter Nationality</p>
+        <p  className="form-error">Please Enter Nationality</p>
       )} */}
       <div className="form-group col-3">
         <label className="form-label">
-          Maritial Status <sup style={{ color: "red" }}>*</sup>
+          Maritial Status <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -1528,7 +1535,7 @@ const UserMaster = () => {
           required={false}
         />
         {mandatoryFieldsEmpty.maritialStatus && (
-          <p style={{ color: "red" }}>Please enter Maritial Status</p>
+          <p className="form-error">Please enter Maritial Status</p>
         )}
       </div>
 
@@ -1559,7 +1566,7 @@ const UserMaster = () => {
       <div className="personal_header">Official Details</div>
       <div className="form-group col-3">
         <label className="form-label">
-          Job Type <sup style={{ color: "red" }}>*</sup>
+          Job Type <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -1591,14 +1598,14 @@ const UserMaster = () => {
         />
         <div className="">
           {mandatoryFieldsEmpty.jobType && (
-            <p style={{ color: "red" }}>Please enter Job Type</p>
+            <p className="form-error">Please enter Job Type</p>
           )}
         </div>
       </div>
 
       <div className="form-group col-3">
         <label className="form-label">
-          Department Name <sup style={{ color: "red" }}>*</sup>
+          Department Name <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -1632,14 +1639,14 @@ const UserMaster = () => {
         />
         <div className="">
           {mandatoryFieldsEmpty.department && (
-            <p style={{ color: "red" }}>Please enter Department</p>
+            <p className="form-error">Please enter Department</p>
           )}
         </div>
       </div>
 
       <div className="form-group col-3">
         <label className="form-label">
-          Sub Department <sup style={{ color: "red" }}>*</sup>
+          Sub Department <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -1677,13 +1684,13 @@ const UserMaster = () => {
         />
         <div className="">
           {mandatoryFieldsEmpty.subDepartment && (
-            <p style={{ color: "red" }}>Please enter Sub Department</p>
+            <p className="form-error">Please enter Sub Department</p>
           )}
         </div>
       </div>
       <div className="form-group col-3">
         <label className="form-label">
-          Designation <sup style={{ color: "red" }}>*</sup>
+          Designation <sup className="form-error">*</sup>
         </label>
         <Select
           options={designationData.map((option) => ({
@@ -1716,13 +1723,13 @@ const UserMaster = () => {
         />
         <div className="">
           {mandatoryFieldsEmpty.designation && (
-            <p style={{ color: "red" }}>Please enter Designation</p>
+            <p className="form-error">Please enter Designation</p>
           )}
         </div>
       </div>
       <div className="form-group col-3">
         <label className="form-label">
-          Report L1 <sup style={{ color: "red" }}>*</sup>
+          Report L1 <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -1756,7 +1763,7 @@ const UserMaster = () => {
         />
         <div className="">
           {mandatoryFieldsEmpty.reportL1 && (
-            <p style={{ color: "red" }}>Please enter Report L1</p>
+            <p className="form-error">Please enter Report L1</p>
           )}
         </div>
       </div>
@@ -1805,7 +1812,7 @@ const UserMaster = () => {
 
       <div className="form-group col-3">
         <label className="form-label">
-          Role <sup style={{ color: "red" }}>*</sup>
+          Role <sup className="form-error">*</sup>
         </label>
         <Select
           options={roledata.map((option) => ({
@@ -1845,7 +1852,7 @@ const UserMaster = () => {
           }
         }}
       />
-      {!validEmail && <p style={{ color: "red" }}>*Please enter valid email</p>}
+      {!validEmail && <p className="form-error">*Please enter valid email</p>}
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
 
         <FieldContainer
@@ -1859,7 +1866,7 @@ const UserMaster = () => {
           onBlur={handleContentBlur}
         />
         {(isContactTouched || contact.length >= 10) && !isValidcontact && (
-          <p style={{ color: "red" }}>*Please enter a valid Number</p>
+          <p className="form-error">*Please enter a valid Number</p>
         )}
       </div>
 
@@ -1875,7 +1882,7 @@ const UserMaster = () => {
             {loginResponse}
           </p> */}
           <label>
-            Login ID <sup style={{ color: "red" }}>*</sup>
+            Login ID <sup className="form-error">*</sup>
           </label>
           <div className="input-group">
             <input
@@ -1914,13 +1921,13 @@ const UserMaster = () => {
           </div>
         </div>
         {mandatoryFieldsEmpty.loginId && (
-          <p style={{ color: "red" }}>Please enter Login ID</p>
+          <p className="form-error">Please enter Login ID</p>
         )}
       </div>
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <div className="form-group">
           <label>
-            Generate Password <sup style={{ color: "red" }}>*</sup>
+            Generate Password <sup className="form-error">*</sup>
           </label>
           <div className="input-group">
             <input
@@ -1954,12 +1961,12 @@ const UserMaster = () => {
           </div>
         </div>
         {mandatoryFieldsEmpty.password && (
-          <p style={{ color: "red" }}>Please enter Password</p>
+          <p className="form-error">Please enter Password</p>
         )}
       </div>
       <div className="form-group col-3">
         <label className="form-label">
-          Status <sup style={{ color: "red" }}>*</sup>
+          Status <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -1990,12 +1997,12 @@ const UserMaster = () => {
           required
         />
         {mandatoryFieldsEmpty.status && (
-          <p style={{ color: "red" }}>Please enter Status</p>
+          <p className="form-error">Please enter Status</p>
         )}
       </div>
       <div className="from-group col-3">
         <label className="form-label">
-          Joining Date <sup style={{ color: "red" }}>*</sup>
+          Joining Date <sup className="form-error">*</sup>
         </label>
         <div className="pack" style={{ position: "relative" }}>
           <input
@@ -2067,7 +2074,7 @@ const UserMaster = () => {
         tabIndex={-1}
         aria-labelledby="transferModalLabel"
         aria-hidden="true"
-        style={{ marginLeft: "7%" }}
+
       >
         <div className="modal-dialog modal-dialog-centered modal-lg">
           <div className="modal-content m-0">
@@ -2081,7 +2088,7 @@ const UserMaster = () => {
                       <img
                         src={imagePreview}
                         alt="Selected"
-                        className="profile-image"
+                        className="profile-holder"
                       />
                     </div>
                   </div>
@@ -2141,7 +2148,7 @@ const UserMaster = () => {
       {/* {jobType == "WFO" && (
         <div className="form-group col-3">
           <label className="form-label">
-            Seat Number <sup style={{ color: "red" }}>*</sup>
+            Seat Number <sup  className="form-error">*</sup>
           </label>
           <Select
             className=""
@@ -2200,11 +2207,11 @@ const UserMaster = () => {
           required={false}
         />
         {mandatoryFieldsEmpty.currentAddress && (
-          <p style={{ color: "red" }}>Please enter Address</p>
+          <p className="form-error">Please enter Address</p>
         )}
         <div className="form-group col-4">
           <label className="form-label">
-            Current City <sup style={{ color: "red" }}>*</sup>
+            Current City <sup className="form-error">*</sup>
           </label>
           <Select
             options={cityData.map((city) => ({
@@ -2232,7 +2239,7 @@ const UserMaster = () => {
             isClearable
           />
           {mandatoryFieldsEmpty.city && (
-            <p style={{ color: "red" }}>Please enter City</p>
+            <p className="form-error">Please enter City</p>
           )}
         </div>
 
@@ -2255,7 +2262,7 @@ const UserMaster = () => {
             onChange={(option) => setcurrentState(option ? option.value : null)}
           />
           {mandatoryFieldsEmpty.state && (
-            <p style={{ color: "red" }}>Please enter State</p>
+            <p className="form-error">Please enter State</p>
           )}
         </div>
 
@@ -2290,11 +2297,11 @@ const UserMaster = () => {
           required={false}
         />
         {mandatoryFieldsEmpty.currentPincode && (
-          <p style={{ color: "red" }}>Please enter Pincode</p>
+          <p className="form-error">Please enter Pincode</p>
         )}
         {/*  Parmanent Address here------------ */}
         <div className="board_form form_checkbox">
-          <label className="cstm_check" style={{ color: "red" }}>
+          <label className="cstm_check" className="form-error">
             Same as Current Addresss
             <input
               className="form-control"
@@ -2329,7 +2336,7 @@ const UserMaster = () => {
         required={false}
       />
       {/* {mandatoryFieldsEmpty.address && (
-        <p style={{ color: "red" }}>Please enter Address</p>
+        <p  className="form-error">Please enter Address</p>
       )} */}
       <div className="form-group col-4">
         <label className="form-label">Parmanent City</label>
@@ -2359,7 +2366,7 @@ const UserMaster = () => {
           isClearable
         />
         {/* {mandatoryFieldsEmpty.city && (
-          <p style={{ color: "red" }}>Please enter City</p>
+          <p  className="form-error">Please enter City</p>
         )} */}
       </div>
       <div className="form-group col-4">
@@ -2382,7 +2389,7 @@ const UserMaster = () => {
         />
 
         {/* {mandatoryFieldsEmpty.state && (
-          <p style={{ color: "red" }}>Please enter State</p>
+          <p  className="form-error">Please enter State</p>
         )} */}
       </div>
       <FieldContainer
@@ -2400,11 +2407,11 @@ const UserMaster = () => {
         required={false}
       />
       {/* {mandatoryFieldsEmpty.pincode && (
-        <p style={{ color: "red" }}>Please enter Pincode</p>
+        <p  className="form-error">Please enter Pincode</p>
       )} */}
       <div className="form-group col-3">
         <label className="form-label">
-          Blood Group <sup style={{ color: "red" }}>*</sup>
+          Blood Group <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -2440,7 +2447,7 @@ const UserMaster = () => {
         />
 
         {mandatoryFieldsEmpty.bloodGroup && (
-          <p style={{ color: "red" }}>Please enter Blood Group</p>
+          <p className="form-error">Please enter Blood Group</p>
         )}
       </div>
       <div className="form-group col-3">
@@ -2456,7 +2463,7 @@ const UserMaster = () => {
       </div>
       <div className="form-group col-3">
         <label className="form-label">
-          Spoken Languages <sup style={{ color: "red" }}>*</sup>
+          Spoken Languages <sup className="form-error">*</sup>
         </label>
         <Select
           isMulti
@@ -2485,7 +2492,7 @@ const UserMaster = () => {
           }}
         />
         {mandatoryFieldsEmpty.language && (
-          <p style={{ color: "red" }}>Please enter Languages</p>
+          <p className="form-error">Please enter Languages</p>
         )}
       </div>
       <div className="form-group col-3">
@@ -2534,7 +2541,7 @@ const UserMaster = () => {
       <div className="personal_header">Bank Details</div>
       <div className="form-group col-6">
         <label className="form-label">
-          Bank Name <sup style={{ color: "red" }}>*</sup>
+          Bank Name <sup className="form-error">*</sup>
         </label>
         <Select
           options={IndianBankList}
@@ -2559,13 +2566,13 @@ const UserMaster = () => {
           required
         />
         {mandatoryFieldsEmpty.bankName && (
-          <p style={{ color: "red" }}>Please enter Bank Name</p>
+          <p className="form-error">Please enter Bank Name</p>
         )}
       </div>
 
       <div className="form-group col-3">
         <label className="form-label">
-          Bank Type <sup style={{ color: "red" }}>*</sup>
+          Bank Type <sup className="form-error">*</sup>
         </label>
         <Select
           className=""
@@ -2596,7 +2603,7 @@ const UserMaster = () => {
           required
         />
         {mandatoryFieldsEmpty.banktype && (
-          <p style={{ color: "red" }}>Please enter Bank Type</p>
+          <p className="form-error">Please enter Bank Type</p>
         )}
       </div>
 
@@ -2622,7 +2629,7 @@ const UserMaster = () => {
         }}
       />
       {mandatoryFieldsEmpty.bankAccountNumber && (
-        <p style={{ color: "red" }}>Please enter Bank Account Number</p>
+        <p className="form-error">Please enter Bank Account Number</p>
       )}
       <FieldContainer
         astric={true}
@@ -2649,7 +2656,7 @@ const UserMaster = () => {
         }}
       />
       {mandatoryFieldsEmpty.IFSC && (
-        <p style={{ color: "red" }}>Please enter IFSC</p>
+        <p className="form-error">Please enter IFSC</p>
       )}
       <FieldContainer
         label="Beneficiary"
@@ -2794,7 +2801,7 @@ const UserMaster = () => {
                         onChange={(e) => handleFamilyDetailsChange(index, e)}
                       />
                       {familyValidationErrors[`Contact-${index}`] && (
-                        <span style={{ color: "red" }}>
+                        <span className="form-error">
                           {familyValidationErrors[`Contact-${index}`]}
                         </span>
                       )}

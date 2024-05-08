@@ -210,7 +210,7 @@ const BalancePaymentList = () => {
   };
 
   function getData() {
-    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => {});
+    axios.post(baseUrl + "add_php_payment_bal_data_in_node").then(() => { });
     const formData = new FormData();
     formData.append("loggedin_user_id", 36);
     axios
@@ -711,13 +711,13 @@ const BalancePaymentList = () => {
         const rowIndex =
           activeAccordionIndex == 0
             ? sameSalesExecutiveData
-                .filter((d) => d.invoice_mnj_number !== "")
-                .indexOf(params.row)
+              .filter((d) => d.invoice_mnj_number !== "")
+              .indexOf(params.row)
             : activeAccordionIndex == 1
-            ? sameSalesExecutiveData
+              ? sameSalesExecutiveData
                 .filter((d) => d.invoice_mnj_number === "")
                 .indexOf(params.row)
-            : "";
+              : "";
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -793,13 +793,13 @@ const BalancePaymentList = () => {
         const rowIndex =
           activeAccordionIndex == 0
             ? uniqueSalesExecutiveData
-                .filter((d) => d.invoice_mnj_number !== "")
-                .indexOf(params.row)
+              .filter((d) => d.invoice_mnj_number !== "")
+              .indexOf(params.row)
             : activeAccordionIndex == 1
-            ? uniqueSalesExecutiveData
+              ? uniqueSalesExecutiveData
                 .filter((d) => d.invoice_mnj_number === "")
                 .indexOf(params.row)
-            : "";
+              : "";
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -946,13 +946,13 @@ const BalancePaymentList = () => {
         const rowIndex =
           activeAccordionIndex == 0
             ? sameCustomerData
-                .filter((d) => d.invoice_mnj_number !== "")
-                .indexOf(params.row)
+              .filter((d) => d.invoice_mnj_number !== "")
+              .indexOf(params.row)
             : activeAccordionIndex == 1
-            ? sameCustomerData
+              ? sameCustomerData
                 .filter((d) => d.invoice_mnj_number === "")
                 .indexOf(params.row)
-            : "";
+              : "";
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -1028,13 +1028,13 @@ const BalancePaymentList = () => {
         const rowIndex =
           activeAccordionIndex == 0
             ? uniqueCustomerData
-                .filter((d) => d.invoice_mnj_number !== "")
-                .indexOf(params.row)
+              .filter((d) => d.invoice_mnj_number !== "")
+              .indexOf(params.row)
             : activeAccordionIndex == 1
-            ? uniqueCustomerData
+              ? uniqueCustomerData
                 .filter((d) => d.invoice_mnj_number === "")
                 .indexOf(params.row)
-            : "";
+              : "";
 
         return <div>{rowIndex + 1}</div>;
       },
@@ -1197,8 +1197,8 @@ const BalancePaymentList = () => {
           activeAccordionIndex == 0
             ? invcForCreated.indexOf(params.row)
             : activeAccordionIndex == 1
-            ? invcForNonCreated.indexOf(params.row)
-            : "";
+              ? invcForNonCreated.indexOf(params.row)
+              : "";
 
         return <div>{rowIndex + 1}</div>;
 
@@ -2025,7 +2025,7 @@ const BalancePaymentList = () => {
       </Dialog>
 
       <div className="row">
-        <div className="w-100">
+        <div className="col-md-6">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
@@ -2065,7 +2065,7 @@ const BalancePaymentList = () => {
             </div>
           </div>
         </div>
-        <div className="w-100">
+        <div className="col-md-6">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">
@@ -2108,7 +2108,7 @@ const BalancePaymentList = () => {
             </div>
           </div>
         </div>
-        <div className="w-100">
+        <div className="col-md-6">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">GST</h5>
@@ -2146,7 +2146,7 @@ const BalancePaymentList = () => {
             </div>
           </div>
         </div>
-        <div className="w-100">
+        <div className="col-md-6">
           <div className="card">
             <div className="card-header">
               <h5 className="card-title w-100 flexCenterBetween">Non GST</h5>
