@@ -314,6 +314,7 @@ const PreOnboardingUserMaster = () => {
   const [getNickName, setGetNickName] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [readyToOnboardModal, setReadyToOnboard] = useState(false);
+  const [designation, setDesignation] = useState("");
   const [coordinates, setCoordinates] = useState({
     latitude: 0,
     longitude: 0,
@@ -621,7 +622,9 @@ const PreOnboardingUserMaster = () => {
         showOnboardingModal,
         image,
         coc_flag,
+        designation_name,
       } = fetchedData;
+      setDesignation(designation_name);
       setAllUserData(fetchedData);
       setUserName(user_name);
       setEmail(user_email_id);
@@ -1585,8 +1588,14 @@ const PreOnboardingUserMaster = () => {
                         <i className="bi bi-book" />
                       </div>
                     </div>
-                    <h2 className="policy_tab_name">Policy</h2>
+                    <h2 className="policy_tab_name">COC</h2>
+                    <p>Code Of Conduct</p>
                   </div>
+                  {documentPercentage < 90 && (
+                    <span style={{ fontSize: "15px", color: "red" }}>
+                      Please complete documentation by 90% then you can read coc
+                    </span>
+                  )}
                   <div
                     className={`sidebar_itembox ${
                       activeTab == 4 ? "sidebar_item_active" : ""
@@ -1686,19 +1695,19 @@ const PreOnboardingUserMaster = () => {
                                   value={username}
                                   onChange={(e) => setUserName(e.target.value)}
                                 />*/}
-                            <div className="form-group">
-                              <TextField
-                                id="outlined-basic"
-                                label="Full Name"
-                                variant="outlined"
-                                type="text"
-                                // className="form-control"
-                                name="name"
-                                // placeholder="Full Name"
-                                value={username}
-                                onChange={handleFullNameChange}
-                              />
-                            </div>
+                              <div className="form-group">
+                                <TextField
+                                  id="outlined-basic"
+                                  label="Full Name"
+                                  variant="outlined"
+                                  type="text"
+                                  // className="form-control"
+                                  name="name"
+                                  // placeholder="Full Name"
+                                  value={username}
+                                  onChange={handleFullNameChange}
+                                />
+                              </div>
 
                               {/* <div className="form-group">
                               <TextField
@@ -2144,7 +2153,9 @@ const PreOnboardingUserMaster = () => {
 
                   {activeTab == 3 && <CocTabPreonboarding cocData={cocData} />}
 
-                  {activeTab == 4 && <FAQTab />}
+                  {activeTab == 4 && (
+                    <FAQTab username={username} designation={designation} />
+                  )}
 
                   {activeTab == 5 && allUserData.offer_letter_send && (
                     <LetterTab

@@ -739,7 +739,7 @@ const AdminPreOnboarding = () => {
 
         {jobType == "WFO" && (
           <FieldContainer
-            label=" CTC"
+            label=" Monthly CTC"
             type="number"
             fieldGrid={3}
             required={false}
