@@ -18,7 +18,7 @@ const DocumentTab = ({
   const { toastAlert, toastError } = useGlobalContext();
   const { user_id } = useParams();
   const [user, setUser] = useState({});
-  const [diffDate, setDiffDate] = useState('');
+  const [diffDate, setDiffDate] = useState("");
   const navigate = useNavigate();
 
   const storedToken = sessionStorage.getItem("token");
@@ -32,7 +32,7 @@ const DocumentTab = ({
       var joiningDate = new Date(user.joining_date);
       var difference = joiningDate - currentDate;
       var daysDifference = Math.floor(difference / (1000 * 3600 * 24));
-      setDiffDate(daysDifference)
+      setDiffDate(daysDifference);
     });
   };
 
@@ -101,20 +101,24 @@ const DocumentTab = ({
     }
   };
 
-  const handleNotAvail = async(item) => {
+  const handleNotAvail = async (item) => {
     await axios.put(baseUrl + "update_user_doc", {
       _id: item._id,
-      status:'Not Available'
+      status: "Not Available",
     });
     toastAlert("Documents Updated");
     getDocuments();
-  }
+  };
 
   const handleFileUpload = async (file, documentId) => {
-    const document = documentData.find(item => item._id === documentId)?.document;
+    const document = documentData.find(
+      (item) => item._id === documentId
+    )?.document;
     if (document && document.doc_name == `Last 3 Months Salary Slip's`) {
-      if (file && file.type !== 'application/pdf') {
-        toastError('Please upload single pdf file which has "Last 3 month salary slip"');
+      if (file && file.type !== "application/pdf") {
+        toastError(
+          'Please upload single pdf file which has "Last 3 month salary slip"'
+        );
         return;
       }
     }
@@ -126,10 +130,7 @@ const DocumentTab = ({
       let formData = new FormData();
       formData.append("doc_image", file);
       formData.append("_id", documentId);
-      formData.append(
-        "status",
-        "Verification Pending" 
-      );
+      formData.append("status", "Verification Pending");
       await axios.put(baseUrl + "update_user_doc", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -146,7 +147,9 @@ const DocumentTab = ({
   return (
     <>
       <div
-        className={`documentarea ${normalUserLayout && "documentareaLight"}`}
+        className={`documentarea cardBoard ${
+          normalUserLayout && "documentareaLight"
+        }`}
       >
         <div className="document_box">
           <h2>Documents</h2>
@@ -172,17 +175,16 @@ const DocumentTab = ({
               <tbody>
                 {documentData.map((item) => (
                   <tr key={item._id}>
-                    <td style={{width:'20%'}}>{item.document.doc_name}
+                    <td style={{ width: "20%" }}>
+                      {item.document.doc_name}
                       {item.document.isRequired && (
                         <span style={{ color: "red" }}> * (Mandatory)</span>
                       )}
                     </td>
-                    <td scope="row">
-                      {item.document.doc_type}
-                    </td>
+                    <td scope="row">{item.document.doc_type}</td>
                     <td>{item.document.period} days</td>
                     {/* <td>1 Day</td> */}
-                    <td>{diffDate < 0 ? 'Please Upload Docs' : diffDate}</td>
+                    <td>{diffDate < 0 ? "Please Upload Docs" : diffDate}</td>
                     <td>
                       <div className="uploadDocBtn">
                         <span>
@@ -230,7 +232,9 @@ const DocumentTab = ({
                               Unapprove
                             </button>
                           )}
-                          {item?.status == 'Not Available' ? '' : (
+                          {item?.status == "Not Available" ? (
+                            ""
+                          ) : (
                             <button
                               type="button"
                               style={{ borderRadius: 17, padding: 7 }}
@@ -251,9 +255,8 @@ const DocumentTab = ({
           {/* {submitButton && (
             <div className="ml-auto mr-auto text-center">
               <button
-                className="btn btn_pill btn_cmn btn_success"
+                className="btn onboardBtn btn_primary"
                 onClick={handleSubmit}
-                style={{ marginBottom: "5%" }}
               >
                 Submit
               </button>

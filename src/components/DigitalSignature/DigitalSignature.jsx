@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import axios from "axios";
 import { useGlobalContext } from "../../Context/Context";
-import {baseUrl} from '../../utils/config'
+import { baseUrl } from "../../utils/config";
 
 const DigitalSignature = ({
   userID,
@@ -52,15 +52,11 @@ const DigitalSignature = ({
         }
 
         try {
-          await axios.put(
-            `${baseUrl}`+`update_user`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+          await axios.put(`${baseUrl}` + `update_user`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
           closeModal();
           toastAlert("Submitted");
@@ -80,23 +76,23 @@ const DigitalSignature = ({
   return (
     <>
       <h1>Digital Signature</h1>
-      <div
-        style={{ border: "2px solid black", height: "200px", width: "500px" }}
-      >
+      <div className="signBox">
         <SignatureCanvas
           ref={(data) => setSignature(data)}
-          canvasProps={{ width: 500, height: 200, className: "sigCanvas" }}
+          canvasProps={{ className: "sigCanvas" }}
         />
       </div>
-      <div className="mt-3">
-        <button className="btn btn-outline-danger mr-3" onClick={handleClear}>
+      <div className="signBtn">
+        <button className="btn onboardBtn btn_primary" onClick={handleClear}>
           Clear
         </button>
-        <button className="btn btn-primary" onClick={handleGenerate}>
+        <button
+          className="btn onboardBtn btn_secondary"
+          onClick={handleGenerate}
+        >
           Save
         </button>
       </div>
-      <br />
     </>
   );
 };

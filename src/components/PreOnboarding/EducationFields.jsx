@@ -15,7 +15,7 @@ const EducationFields = ({
   return (
     <>
       {educationDetails?.map((detail, index) => (
-        <div key={index} mb={2}>
+        <div className="board_form_flex" key={index}>
           {/* <div className="row"> */}
           {educationDispalyFields.map((key) => {
             switch (key) {
@@ -139,7 +139,10 @@ const EducationFields = ({
             }
           })}
           {educationDetails?.length > 1 && (
-            <IconButton onClick={() => handleRemoveEducationDetails(index)}>
+            <IconButton
+              className="btn-icon"
+              onClick={() => handleRemoveEducationDetails(index)}
+            >
               <DeleteIcon />
             </IconButton>
           )}
