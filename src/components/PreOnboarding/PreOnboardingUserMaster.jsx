@@ -1431,6 +1431,7 @@ const PreOnboardingUserMaster = () => {
                 </div>
               </div>
 
+              {console.log(allUserData)}
               {allUserData.offer_letter_send && (
                 <div
                   className={`sidebar_itembox ${
