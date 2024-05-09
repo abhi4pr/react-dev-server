@@ -396,7 +396,12 @@ export default function SalesDashboard() {
     });
     setIncentiveData(filterData9);
   };
+  console.log(incentiveData, "incentiveData>>>");
 
+  const incentiveCount = incentiveData?.filter(
+    (data) => data?.action === "Complete Release Button"
+  );
+  console.log(incentiveCount?.length, "count--------------");
   return (
     <div>
       <div className="card">
@@ -495,13 +500,13 @@ export default function SalesDashboard() {
                         <div className="financeCardBoxImg">
                           <img src={gifone} alt="" />
                         </div>
-                        <h2>Total Incentive Count</h2>
+                        <h2>Pending Incentive Release </h2>
                       </div>
                       <div className="scroll-con pl40">
                         <div className="scroller">
                           <h3>0</h3>
-                          {incentiveData.map((item, index) => (
-                            <h3>{index + 1}</h3>
+                          {incentiveData?.map((item, index) => (
+                            <h3>{incentiveCount?.length}</h3>
                           ))}
                         </div>
                       </div>
@@ -511,7 +516,7 @@ export default function SalesDashboard() {
                     <div className="financeCardBoxIn p0">
                       <div className="financeCardBoxDetails">
                         <ul className="pl32">
-                          <li>
+                          {/* <li>
                             Request Amount
                             <span>
                               <span>&#8377; </span>
@@ -529,9 +534,9 @@ export default function SalesDashboard() {
                                 .map((item) => +item.released_amount)
                                 .reduce((prev, next) => prev + next, 0)}
                             </span>
-                          </li>
+                          </li> */}
                           <li>
-                            Balance Release
+                            Balance
                             <span>
                               <span>&#8377; </span>
                               {incentiveData

@@ -888,10 +888,17 @@ const PendingInvoice = () => {
               type="file"
               name="upload_image"
               className="w-70"
-              onChange={(e) => handleImageUpload(params.row, e.target.files[0])}
+              onChange={(e) => handleImageUpload(e.target.files[0])}
             />
           </form>
           <br />
+          {/* <button
+            type="button"
+            className="btn btn-success"
+            onClick={() => handleImageUpload(params.row)}
+          >
+            Sybmit
+          </button> */}
           <button
             type="button"
             className="btn btn-success"
@@ -945,7 +952,9 @@ const PendingInvoice = () => {
     //   ),
     // },
   ];
+
   console.log(filterData, "filterData------------------------ ");
+
   return (
     <>
       <FormContainer
@@ -1150,6 +1159,7 @@ const PendingInvoice = () => {
           />
         </DialogContent>
       </Dialog>
+
       <div className="card body-padding">
         <div className="row">
           <div className="col-md-3">

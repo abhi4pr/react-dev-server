@@ -106,10 +106,12 @@ const PendingApprovalUpdate = () => {
         }
       )
       .then((res) => {
-        getData();
+        if (res.status === 200) {
+          toastAlert("Status Updated Successfully");
+          getData();
+        }
       });
 
-    toastAlert("Data updated");
     setIsFormSubmitted(true);
   };
 

@@ -720,7 +720,7 @@ const IncentivePayment = () => {
       ),
     },
   ];
-
+  console.log(filterData, "filterData>>>");
   const handlePendingFilterData = () => {
     const result = datas.filter((d) => {
       return d.action == "Complete Release Button";

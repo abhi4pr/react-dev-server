@@ -148,10 +148,23 @@ const Invoice = () => {
   const handleImageUpload = async (row) => {
     console.log(inoiceNum, "inoiceNum", date, "date", partyName, "partyName>>");
     console.log(partyName, "partyName>>>");
-    if (!inoiceNum || !date || !partyName) {
-      toastError("Please fill all the fields");
+    // if (!inoiceNum || !date || !partyName || !fileUpload) {
+    //   toastError("Please fill all the fields");
+    //   return;
+    // }
+    if (!fileUpload) {
+      toastError("Please Add Invoice Image");
       return;
     }
+    // if (!inoiceNum) {
+    //   toastError("Please fill Invoice Number");
+    // } else if (!date) {
+    //   toastError("Please fill Invoice Date ");
+    // } else if (!partyName) {
+    //   toastError("Please fill Party Name ");
+    // } else if (!fileUpload) {
+    //   toastError("Please Add File ");
+    // }
 
     const confirmation = confirm("Are you sure you want to submit this data?");
     if (confirmation) {

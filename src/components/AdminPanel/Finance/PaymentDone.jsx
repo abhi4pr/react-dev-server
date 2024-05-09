@@ -1187,19 +1187,19 @@ export default function PaymentDone() {
     }
   };
 
-  const handleRowSelectionModelChange = async (rowIds) => {
-    setRowSelectionModel(rowIds);
-  };
   const handleDownloadInvoices = async () => {
     const zip = new JSZip();
 
     // Generate PDFs and add them to the zip
     await Promise.all(
       rowSelectionModel.map(async (rowId) => {
-        const pdf = new jsPDF();
-        // Customize your PDF content here
-        pdf.text(`PDF content for row ${rowId}`, 10, 10);
-        zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        const rowData = filterData[rowId]; // Access the row data using rowId
+        if (rowData) {
+          const pdf = new jsPDF();
+          // Customize your PDF content here using rowData
+          pdf.text(`PDF content for ${rowData}`, 10, 10); // Example of how to use rowData
+          zip.file(`invoice_${rowId}.pdf`, pdf.output());
+        }
       })
     );
 
@@ -1209,6 +1209,7 @@ export default function PaymentDone() {
     // Save the zip file
     saveAs(zipBlob, "invoices.zip");
   };
+
   function CustomColumnMenu(props) {
     return (
       <GridColumnMenu
@@ -1547,13 +1548,13 @@ export default function PaymentDone() {
                 rowsPerPageOptions={[5]}
                 disableSelectionOnClick
                 checkboxSelection
-                slots={{ toolbar: GridToolbar, columnMenu: CustomColumnMenu }}
+                slots={{ toolbar: GridToolbar }}
                 slotProps={{
                   toolbar: {
                     showQuickFilter: true,
                   },
                 }}
-                getRowId={(row) => filterData.indexOf(row)}
+                getRowId={(row) => filterData?.indexOf(row)}
                 onRowSelectionModelChange={(rowIds) => {
                   handleRowSelectionModelChange(rowIds);
                   console.log(rowIds, "IDS");
