@@ -71,15 +71,14 @@ const Overview = (props) => {
                   )}
                 </td>
               </tr>
-
               <tr>
-                <td>10k-50k</td>
+                <td>10k-20k</td>
                 <td>
                   {
                     data?.filter(
                       (item) =>
                         item.balance_amount >= 10000 &&
-                        item.balance_amount <= 50000
+                        item.balance_amount <= 20000
                     ).length
                   }
                 </td>
@@ -89,12 +88,77 @@ const Overview = (props) => {
                     data?.filter(
                       (item) =>
                         item.balance_amount >= 10000 &&
+                        item.balance_amount <= 20000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>20k-30k</td>
+                <td>
+                  {
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 20000 &&
+                        item.balance_amount <= 30000
+                    ).length
+                  }
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 20000 &&
+                        item.balance_amount <= 30000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>30k-40k</td>
+                <td>
+                  {
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 30000 &&
+                        item.balance_amount <= 40000
+                    ).length
+                  }
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 30000 &&
+                        item.balance_amount <= 40000
+                    )
+                  )}
+                </td>
+              </tr>
+              <tr>
+                <td>40k-50k</td>
+                <td>
+                  {
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 40000 &&
+                        item.balance_amount <= 50000
+                    ).length
+                  }
+                </td>
+                <td>
+                  {" "}
+                  {calculateTotalAmount(
+                    data?.filter(
+                      (item) =>
+                        item.balance_amount >= 40000 &&
                         item.balance_amount <= 50000
                     )
                   )}
                 </td>
               </tr>
-
               <tr>
                 <td>50k-100k</td>
                 <td>

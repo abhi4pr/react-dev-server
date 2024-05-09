@@ -19,11 +19,13 @@ import ImageView from "./ImageView";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import EditIcon from "@mui/icons-material/Edit";
+
 import moment from "moment";
 
 import dayjs from "dayjs";
 import { Link } from "react-router-dom";
 import Tab from "../../Tab/Tab";
+import PendingApprovalUpdate from "./PendingApprovalsUpdate";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -112,6 +114,9 @@ const BalancePaymentList = () => {
   const [nonGstStatus, setNonGstStatus] = useState("");
   const [reason, setReason] = useState("");
   const [discardDialog, setDiscardDialog] = useState(false);
+  const [invoiceDateDialog, setInvoiceDateDialog] = useState(false);
+  const [invoiceDateData, setInvoiceDate] = useState(dayjs(new Date()));
+
   const accordionButtons = ["Invoice Created", "Non Invoice Created"];
 
   const token = sessionStorage.getItem("token");
@@ -647,6 +652,30 @@ const BalancePaymentList = () => {
       });
   };
 
+  const handleUpdateInvoiceDate = () => {
+    const formData = new FormData();
+
+    formData.append("sale_booking_id", saleBookingIdForInvoiceNo);
+    formData.append("invoice_mnj_number", invoiceNumber);
+    formData.append(
+      "invoice_mnj_date",
+      moment(invoiceDateData).format("YYYY/MM/DD")
+    );
+
+    axios
+      .post(
+        "https://sales.creativefuel.io/webservices/RestController.php?view=sales_edit_invoice_detail",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      )
+      .then((res) => {
+        console.log(res, "RESPONSE<<>>>>>>>>>>>");
+        getData();
+        handleCloseEditDateField();
+      });
+  };
   const handleOpenEditPartyField = (id) => {
     setPartyNameDialog(true);
     setSaleBookingIdforPartyName(id);
@@ -664,10 +693,23 @@ const BalancePaymentList = () => {
     setInvoiceNumberDialog(false);
   };
 
+  const handleOpenEditDateField = (id) => {
+    setInvoiceDateDialog(true);
+    setSaleBookingIdForInvoiceNo(id);
+  };
+
+  const handleCloseEditDateField = () => {
+    setInvoiceDateDialog(false);
+  };
+
   // TDS DIALOG FUNCTION:-
   const handleOpenTDSFields = (row) => {
+    if (!paymentDetails) {
+      toastError("Please Fill Payment Details");
+    } else {
+      setCloseDialog(true);
+    }
     // setTDSFieldSaleBookingId(row.sale_booking_id);
-    setCloseDialog(true);
     // setBalAmount(row.campaign_amount - row.total_paid_amount);
   };
 
@@ -675,28 +717,53 @@ const BalancePaymentList = () => {
     setCloseDialog(false);
   };
 
-  const handleSaveTDS = async () => {
+  const handleSaveTDS = async (e) => {
     // if (parseFloat(TDSValue) > parseFloat(balAmount)) {
     //   toastError("TDS shouldn't be more than Balance Amount");
     //   // You can also display a message to the user indicating the issue
     //   return;
     // } else {
 
-    const formData = new FormData();
+    e.preventDefault();
 
-    formData.append("sale_booking_id", tdsFieldSaleBookingId);
-    formData.append("tds_status", 1);
+    const formData = new FormData();
+    formData.append("loggedin_user_id", 36);
+    formData.append("sale_booking_id", +singleRow.sale_booking_id);
+    formData.append("payment_update_id", "");
+    formData.append("payment_ref_no", paymentRefNo);
+    formData.append("payment_detail_id", paymentDetails.value);
+    formData.append("payment_screenshot", paymentRefImg);
+    formData.append("payment_type", paymentType.label);
+    formData.append("payment_mode", "others");
+    formData.append("paid_amount", paidAmount);
+    formData.append("payment_date", paymentDate);
+    formData.append("incentive_adjustment_amount", adjustmentAmount);
 
     await axios
       .post(
-        "https://sales.creativefuel.io/webservices/RestController.php?view=sales_tds_detail_update",
-        formData
+        "https://sales.creativefuel.io/webservices/RestController.php?view=balance_payment_update",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       )
-      .then((res) => {
-        handleCloseTDSFields();
-        toastAlert(`TDS Done Successfully`);
-        getData();
-        handleCloseImageModal();
+      .then(() => {
+        const formData = new FormData();
+        formData.append("sale_booking_id", tdsFieldSaleBookingId);
+        formData.append("tds_status", 1);
+        axios
+          .post(
+            "https://sales.creativefuel.io/webservices/RestController.php?view=sales_tds_detail_update",
+            formData
+          )
+          .then((res) => {
+            handleCloseTDSFields();
+            toastAlert(`TDS Done Successfully`);
+            getData();
+            handleCloseImageModal();
+          });
       });
     // }
   };
@@ -1207,6 +1274,11 @@ const BalancePaymentList = () => {
       sortable: true,
     },
     {
+      field: "sale_booking_id",
+      headerName: "Booking Id",
+      renderCell: (params) => <div>{params.row.sale_booking_id}</div>,
+    },
+    {
       field: "aging",
       headerName: "Aging",
       renderCell: (params) => <div>{params.row.aging} days</div>,
@@ -1280,7 +1352,20 @@ const BalancePaymentList = () => {
       headerName: "Invoice Date",
       renderCell: (params) =>
         params.row.invoice_mnj_date != "0000-00-00" ? (
-          <div style={{ whiteSpace: "normal" }}>
+          <div style={{ whiteSpace: "normal" }} className="flexCenter colGap8">
+            {params.row.invoice && params.row.invoice !== "" ? (
+              <button
+                className="btn tableIconBtn btn_sm "
+                onClick={() =>
+                  handleOpenEditDateField(params.row.sale_booking_id)
+                }
+              >
+                <EditIcon />
+              </button>
+            ) : (
+              ""
+            )}
+
             {moment(params.row.invoice_mnj_date).format("DD/MM/YYYY")}
           </div>
         ) : (
@@ -1613,6 +1698,7 @@ const BalancePaymentList = () => {
     return +campaignAmountData - (+paidAmountData + paidAmount);
   };
   console.log(filterData, "filterData >>>");
+
   return (
     <div>
       <FormContainer
@@ -1639,6 +1725,10 @@ const BalancePaymentList = () => {
         handleOpenUniqueCustomerClick={handleOpenUniqueCustomerClick}
         balancePaymentAdditionalTitles={true}
       />
+
+      <Button variant="contained" className="mb-4">
+        <Link to="/admin/finance-pendingapproveupdate">Pending Approval</Link>
+      </Button>
 
       {/* Add Icon TDS */}
       <Dialog
@@ -1704,7 +1794,7 @@ const BalancePaymentList = () => {
           <div className="pack w-100 mt-3 sb">
             <div></div>
             <div className="pack gap16">
-              <Button variant="contained" onClick={handleSaveTDS}>
+              <Button variant="contained" onClick={(e) => handleSaveTDS(e)}>
                 YES
               </Button>
               <Button variant="contained" onClick={handleCloseTDSFields}>
@@ -1835,6 +1925,60 @@ const BalancePaymentList = () => {
             onChange={(e) => setInvoiceNumber(e.target.value)}
           />
           <Button variant="contained" onClick={handleUpdateInvoiceNumber}>
+            Update
+          </Button>
+        </DialogContent>
+      </Dialog>
+      {/* Edit Invoice Date Column */}
+      <Dialog
+        open={invoiceDateDialog}
+        onClose={handleCloseEditDateField}
+        fullWidth={"md"}
+        maxWidth={"md"}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <DialogTitle>Edit Column</DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseEditDateField}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent
+          dividers={true}
+          sx={{ maxHeight: "80vh", overflowY: "auto" }}
+        >
+          {/* <TextField
+            id="outlined-basic"
+            label="Invoice Number"
+            variant="outlined"
+            onChange={(e) => setInvoiceDate(e.target.value)}
+          /> */}
+
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              className="form-control mt-3"
+              label="Payment Date"
+              value={invoiceDateData}
+              format="DD/MM/YYYY"
+              onChange={(e) => setInvoiceDate(e.target.value)}
+            />
+          </LocalizationProvider>
+          <Button
+            variant="contained"
+            className="mt-4"
+            onClick={handleUpdateInvoiceDate}
+          >
             Update
           </Button>
         </DialogContent>
@@ -2051,17 +2195,6 @@ const BalancePaymentList = () => {
                   ₹{totalInvoiceBalanceAmount}
                 </h4>
               </div>
-              {/* <h5 className="mediumText">Total Due Amount</h5>
-              <h4 className="font-weight-bold mt8">₹{}</h4> */}
-              <div>
-                <h5 className="mediumText">Total Received Amount</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--success)" }}
-                >
-                  ₹{totalInvoiceReceivedAmount}
-                </h4>
-              </div>
             </div>
           </div>
         </div>
@@ -2089,20 +2222,6 @@ const BalancePaymentList = () => {
                   style={{ color: "var(--yellow)" }}
                 >
                   ₹{totalNonInvoiceBalanceAmount}
-                </h4>
-              </div>
-              {/* <h5 className="mediumText">Total Due Amount</h5>
-              <h4 className="font-weight-bold mt8">
-                ₹
-                {}
-              </h4> */}
-              <div>
-                <h5 className="mediumText">Total Received Amount</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--success)" }}
-                >
-                  ₹{totalNonInvoiceReceivedAmount}
                 </h4>
               </div>
             </div>
@@ -2134,15 +2253,6 @@ const BalancePaymentList = () => {
                   ₹ {totalGstBalanceAmount}
                 </h4>
               </div>
-              <div>
-                <h5 className="mediumText">Total Received Amount</h5>
-                <h4
-                  className="font-weight-bold mt8"
-                  style={{ color: "var(--success)" }}
-                >
-                  ₹ {totalGstReceivedAmount}
-                </h4>
-              </div>
             </div>
           </div>
         </div>
@@ -2168,15 +2278,6 @@ const BalancePaymentList = () => {
                   style={{ color: "var(--bs-yellow)" }}
                 >
                   ₹{totalNonGstBalanceAmount}
-                </h4>
-              </div>
-              <div>
-                <h5 className="mediumText">Total Received Amount</h5>
-                <h4
-                  className="font-weight-bold mt8 "
-                  style={{ color: "var(--success)" }}
-                >
-                  ₹{totalNonGstReceivedAmount}
                 </h4>
               </div>
             </div>

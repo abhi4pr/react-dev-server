@@ -295,7 +295,7 @@ export default function PendingPaymentRequest() {
       setPaymentStatus("Fully Paid");
     }
 
-    let paymentAmount = rowData.request_amount;
+    let paymentAmount = rowData.balance_amount;
     let baseamount = baseAmount;
     let tdsvalue = 0;
 
@@ -571,6 +571,7 @@ export default function PendingPaymentRequest() {
   };
 
   const handlePayClick = (e, row) => {
+    console.log(row, "ROW>>>");
     e.preventDefault();
     let x = phpRemainderData.filter(
       (item) => item.request_id == row.request_id
@@ -1642,11 +1643,11 @@ export default function PendingPaymentRequest() {
   );
 
   useEffect(() => {
-    const initialAdjustmentAmt = rowData?.request_amount - paymentAmout || "";
+    const initialAdjustmentAmt = rowData?.balance_amount - paymentAmout || "";
     setAdjustAmount(initialAdjustmentAmt);
   }, [rowData, TDSValue]);
 
-  console.log(adjustAmount, "initialAdjustmentAmt>>>>>>>>>>>>>");
+  console.log(filterData, "filterData>>>>>>>>>>>>>", rowData, "rowData");
   return (
     <div>
       <FormContainer
@@ -2443,61 +2444,65 @@ export default function PendingPaymentRequest() {
                 }
                 label="GST Hold"
               />
-              <FormControlLabel
-                className="col-md-5"
-                control={<Checkbox onChange={handleTDSDeduction} />}
-                label="TDS Deduction"
-              />
-              {gstHold && (
-                <TextField
-                  className="col-md-5 me-3"
-                  value={GSTHoldAmount}
-                  onChange={handleGSTHoldInputChange}
-                  autoFocus
-                  margin="dense"
-                  id="name"
-                  label="GST Hold"
-                />
-              )}
-              {TDSDeduction && (
+              {rowData?.TDSDeduction !== "1" ? (
                 <>
-                  <Autocomplete
-                    onChange={(e, value) => setTDSPercentage(value)}
-                    disablePortal
-                    className="col-md-3 mt-2"
-                    value={TDSPercentage}
-                    id="combo-box-demo"
-                    options={[
-                      1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
-                      18, 19, 20,
-                    ]}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label="TDS %"
-                        placeholder="TDS %"
+                  <FormControlLabel
+                    className="col-md-5"
+                    control={<Checkbox onChange={handleTDSDeduction} />}
+                    label="TDS Deduction"
+                  />
+                  {gstHold && (
+                    <TextField
+                      className="col-md-5 me-3"
+                      value={GSTHoldAmount}
+                      onChange={handleGSTHoldInputChange}
+                      autoFocus
+                      margin="dense"
+                      id="name"
+                      label="GST Hold"
+                    />
+                  )}
+                  {TDSDeduction && (
+                    <>
+                      <Autocomplete
+                        onChange={(e, value) => setTDSPercentage(value)}
+                        disablePortal
+                        className="col-md-3 mt-2"
+                        value={TDSPercentage}
+                        id="combo-box-demo"
+                        options={[
+                          1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+                          17, 18, 19, 20,
+                        ]}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="TDS %"
+                            placeholder="TDS %"
+                          />
+                        )}
                       />
-                    )}
-                  />
-                  <TextField
-                    className="col-md-3 mt-2"
-                    value={TDSValue}
-                    autoFocus
-                    readOnly
-                    margin="dense"
-                    id="name"
-                    label="TDS Amount"
-                  />
+                      <TextField
+                        className="col-md-3 mt-2"
+                        value={TDSValue}
+                        autoFocus
+                        readOnly
+                        margin="dense"
+                        id="name"
+                        label="TDS Amount"
+                      />
+                    </>
+                  )}
                 </>
+              ) : (
+                ""
               )}
-
               <TextField
                 className="col-md-6 me-3"
                 value={rowData.name}
                 autoFocus
                 margin="dense"
                 id="name"
-                // disabled
                 readOnly
                 label="Requested By"
                 type="text"
@@ -2525,7 +2530,7 @@ export default function PendingPaymentRequest() {
                 margin="dense"
                 id="name"
                 disabled
-                label="Remark"
+                label=" Purchase Remark"
                 type="text"
                 variant="outlined"
               />
@@ -2636,8 +2641,9 @@ export default function PendingPaymentRequest() {
                 type="text"
                 variant="outlined"
                 fullWidth
-                value={adjustAmount}
+                value={TDSValue ? adjustAmount : ""}
               />
+
               <TextField
                 multiline
                 readOnly
@@ -2645,14 +2651,17 @@ export default function PendingPaymentRequest() {
                 autoFocus
                 margin="dense"
                 id="After Adjust Amount"
-                label="AfterAdjust Amount"
+                label="After Adjustment Amount"
                 variant="outlined"
                 fullWidth
-                value={(parseFloat(rowData?.request_amount) - TDSValue).toFixed(
+                InputProps={{
+                  readOnly: true,
+                  style: { color: "#6a89ba" },
+                }}
+                value={(parseFloat(rowData?.balance_amount) - TDSValue).toFixed(
                   2
                 )}
               />
-
               <TextField
                 onChange={(e) => setPayRemark(e.target.value)}
                 multiline
