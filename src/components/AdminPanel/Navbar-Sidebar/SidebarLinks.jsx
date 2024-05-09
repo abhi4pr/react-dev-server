@@ -418,7 +418,7 @@ const SidebarLinks = () => {
             <i className="ph">
               <House weight="duotone" />
             </i>
-            <span>{RoleId == 2 ? "Team" : "WFHD"}</span>
+            <span>{RoleId == 2 ? "Team" : "HR"}</span>
           </a>
           <div
             id="collapsInnerOneModify"
@@ -709,7 +709,7 @@ const SidebarLinks = () => {
             <i className="ph">
               <Laptop weight="duotone" />
             </i>
-            <span>Operation New</span>
+            <span>Operation</span>
           </Link>
           <div
             id="collapsInnerexeop"
@@ -828,7 +828,8 @@ const SidebarLinks = () => {
             <i className="ph">
               <Laptop weight="duotone" />
             </i>
-            <span>Operation Old</span>
+            {/* <span>Operation Old</span> */}
+            <span>Execution</span>
           </a>
           <div
             id="collapsInnerOneModifyTwo"
@@ -914,7 +915,7 @@ const SidebarLinks = () => {
                 </li>
               )}
 
-            {isExecutionVisible && (
+            {/* {isExecutionVisible && (
               <li className="nav-item">
                 <Link
                   className="nav-btn nav-link collapsed"
@@ -933,10 +934,7 @@ const SidebarLinks = () => {
                   data-parent="#accordionSidebar"
                 >
                   <div className="collapse-inner">
-                    {/* {contextData &&
-                contextData[24] &&
-                contextData[24].view_value === 1 &&
-                ""} */}
+                    
                     {contextData &&
                       contextData[24] &&
                       contextData[24].view_value === 1 && (
@@ -955,7 +953,7 @@ const SidebarLinks = () => {
                             id="collapsInnerTwoCamp"
                             className="collapse"
                             aria-labelledby="headingTwo"
-                            // data-parent="#accordionSidebar"
+                            
                           >
                             <div className="internal collapse-inner">
                               <>
@@ -1010,10 +1008,7 @@ const SidebarLinks = () => {
                           <NavLink
                             className="nav-btn nav-link collapsed"
                             to="/admin/create-plan"
-                            // data-toggle="collapse"
-                            // data-target="#collapsInnerThree"
-                            // aria-expanded="true"
-                            // aria-controls="collapsInnerThree"
+                            
                           >
                             <i className="bi bi-dash"></i>
                             <span>Create Plan </span>
@@ -1027,10 +1022,7 @@ const SidebarLinks = () => {
                           <NavLink
                             className="nav-btn nav-link collapsed"
                             to="/admin/tempexcusion"
-                            // data-toggle="collapse"
-                            // data-target="#collapsInnerThree"
-                            // aria-expanded="true"
-                            // aria-controls="collapsInnerThree"
+                            
                           >
                             <i className="bi bi-dash"></i>
                             <span> Temp. Execution</span>
@@ -1068,22 +1060,11 @@ const SidebarLinks = () => {
                             id="collapsInnerTwo"
                             className="collapse"
                             aria-labelledby="headingTwo"
-                            // data-parent="#accordionSidebar"
+                            
                           >
                             <div className="internal collapse-inner">
                               <>
-                                {/* <NavLink
-                            className="collapse-item"
-                            to="/admin/register-campaign"
-                          >
-                            Add Campaign
-                          </NavLink>
-                          <NavLink
-                            className="collapse-item"
-                            to="/admin/registered-campaign"
-                          >
-                            Registered Campaign
-                          </NavLink> */}
+                                
                                 <NavLink
                                   className="collapse-item"
                                   to="/admin/createrdashboard"
@@ -1121,7 +1102,7 @@ const SidebarLinks = () => {
                             id="collapsInnerThree"
                             className="collapse"
                             aria-labelledby="headingTwo"
-                            // data-parent="#accordionSidebar"
+                            
                           >
                             <div className="internal collapse-inner">
                               <>
@@ -1139,7 +1120,7 @@ const SidebarLinks = () => {
                   </div>
                 </div>
               </li>
-            )}
+            )} */}
           </div>
         </li>
       )}
@@ -1629,7 +1610,7 @@ const SidebarLinks = () => {
 
       {/* Asset Management here  */}
 
-      {isTaskManagment && (
+      {/* {isTaskManagment && (
         <li className="nav-item">
           <Link
             className="nav-btn nav-link collapsed"
@@ -1647,7 +1628,6 @@ const SidebarLinks = () => {
             id="taskmanagement"
             className="collapse"
             aria-labelledby="headingTwo"
-            // data-parent="#accordionSidebar"
           >
             <div className="internal   collapse-inner">
               <>
@@ -1661,8 +1641,7 @@ const SidebarLinks = () => {
             </div>
           </div>
         </li>
-      )}
-      {/* {isUserManagementVisible && ( */}
+      )} */}
 
       {isCustomer && (
         <li className="nav-item">

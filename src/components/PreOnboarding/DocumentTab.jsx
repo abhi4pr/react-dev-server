@@ -175,7 +175,18 @@ const DocumentTab = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {documentData.map((item) => (
+                  {documentData
+                  .slice()
+                  .sort((a, b) => {
+                    if (a.document.isRequired && !b.document.isRequired) {
+                      return -1; 
+                    } else if (!a.document.isRequired && b.document.isRequired) {
+                      return 1; 
+                    } else {
+                      return 0;
+                    }
+                  })
+                  .map((item) => (
                     <tr key={item._id}>
                       <td style={{ width: "20%" }}>
                         {item.document.doc_name}
@@ -234,7 +245,7 @@ const DocumentTab = ({
                                 Unapprove
                               </button>
                             )}
-                            {item?.status == "Not Available" ? (
+                            {item?.status == "Not Available" || item?.status !== '' ? (
                               ""
                             ) : (
                               <button
