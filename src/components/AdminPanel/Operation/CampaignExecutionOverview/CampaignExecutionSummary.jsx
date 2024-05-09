@@ -1,6 +1,7 @@
 import React from "react";
 
 const CampaignExecutionSummary = ({ overviewCommitData }) => {
+
   return (
     <div>
       <div className="summary-section mb-3">
@@ -14,8 +15,9 @@ const CampaignExecutionSummary = ({ overviewCommitData }) => {
           <div class="card-header  ">Commitment</div>
           <div className="card-body">
             <p>Comments: {overviewCommitData?.commitmentdata?.comments}</p>
-            <p>Engagement: {overviewCommitData?.commitmentdata?.engagement}</p>
-            <p>Views: {overviewCommitData?.commitmentdata?.reach}</p>
+            <p>Likes: {overviewCommitData?.commitmentdata?.Likes}</p>
+            {/* <p>Engagement: {overviewCommitData?.commitmentdata?.engagement}</p> */}
+            <p>Views: {overviewCommitData?.commitmentdata?.views}</p>
           </div>
         </div>
         <div className="card" style={{ width: "250px", background: "#FFDEAD" }}>
@@ -35,13 +37,20 @@ const CampaignExecutionSummary = ({ overviewCommitData }) => {
                 overviewCommitData?.completedData?.post_comments}
             </p>
 
-            <p>Likes: 2000</p>
+            <p>Likes :  {overviewCommitData?.completedData?.post_likes >
+              overviewCommitData?.commitmentdata?.Likes
+              ? "+"
+              : ""}{" "}
+              {Math.abs(
+                overviewCommitData?.commitmentdata?.Likes -
+                overviewCommitData?.completedData?.post_likes
+              )}</p>
             <p>
-              Views:{" "}
+              Views :{" "}
               {overviewCommitData?.completedData?.post_views >
                 overviewCommitData?.commitmentdata?.reach
                 ? "+"
-                : "-"}{" "}
+                : ""}{" "}
               {Math.abs(
                 overviewCommitData?.commitmentdata?.reach -
                 overviewCommitData?.completedData?.post_views

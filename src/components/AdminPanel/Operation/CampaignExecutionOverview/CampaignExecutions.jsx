@@ -6,7 +6,7 @@ import { baseUrl } from "../../../../utils/config";
 import Select from "react-select";
 import FormContainer from "../../FormContainer";
 import CampaignExecutionSummary from "./CampaignExecutionSummary";
-import ScreenRotationAltRoundedIcon from '@mui/icons-material/ScreenRotationAltRounded';
+import ScreenRotationAltRoundedIcon from "@mui/icons-material/ScreenRotationAltRounded";
 
 const style = {
   position: "absolute",
@@ -38,21 +38,25 @@ const CampaignExecutions = () => {
   const [assId, setAssId] = useState("");
   const [phaseId, setPhaseId] = useState();
   const [allPages, setAllPages] = useState([]);
-  const [newPage, setNewPage] = useState('')
+  const [newPage, setNewPage] = useState("");
+  const [storyLink, setStoryLink] = useState("");
+  const [storyViews, setStoryViews] = useState("");
+  const [updateClicked, setUpdateClicked] = useState(false);
+  const [updateParams, setUpdateParams] = useState(null);
 
   const openModal = (phase_id) => {
     setIsModalOpen(true);
-    setPhaseId(phase_id); 
+    setPhaseId(phase_id);
   };
 
   const openModal2 = (phase_id) => {
     setIsModalOpen2(true);
-    setPhaseId(phase_id); 
+    setPhaseId(phase_id);
   };
 
   const openModal3 = (phase_id) => {
     setIsModalOpen3(true);
-    setPhaseId(phase_id); 
+    setPhaseId(phase_id);
   };
 
   const closeModal = () => {
@@ -107,9 +111,18 @@ const CampaignExecutions = () => {
     allCommitInOverview();
   }, [selectedCampaign]);
 
+  const handleUpdateDetailes = (params) => {
+    setShortcode(
+      params.post_link ? params.post_link : shortcode[params.row._id]
+    );
+    setAssId(params.ass_id);
+    setUpdateParams(params);
+    setUpdateClicked(true);
+  };
+
   useEffect(() => {
     const fetchPageDetails = async (index) => {
-      if (shortcode) {
+      if ((shortcode, updateClicked && updateParams)) {
         const regex = /\/(reel|p)\/([A-Za-z0-9-_]+)/;
         const match = shortcode?.match(regex);
         try {
@@ -144,10 +157,13 @@ const CampaignExecutions = () => {
                 post_views: response.data.data?.play_count,
                 post_captions: response.data.data?.post_caption,
                 post_media: response.data.data?.postImage,
+                story_link: storyLink,
+                story_views: storyViews,
                 last_link_hit_date: new Date(),
               }
-            )
-            setAssId("")
+            );
+            handleAllCampaign();
+            setAssId("");
             setPageDetails((prevPageDetails) => {
               let updatedPageDetails;
               if (Array.isArray(prevPageDetails)) {
@@ -158,18 +174,19 @@ const CampaignExecutions = () => {
               updatedPageDetails = response?.data?.data;
               return updatedPageDetails;
             });
-          }else if(response.data.success == false){
+          } else if (response.data.success == false) {
             setTimeout(fetchPageDetails, 1000);
           }
         } catch (error) {
           console.error("Error fetching page details:", error);
         }
+        setUpdateClicked(false);
       } else {
         console.log("No match found or invalid shortcode.");
       }
     };
     fetchPageDetails();
-  }, [shortcode]);
+  }, [shortcode, updateClicked, updateParams]);
 
   //  filter hashtags and tags -->
   const extractTags = (caption) => {
@@ -192,9 +209,9 @@ const CampaignExecutions = () => {
     return { tags, hashtags, tagCount, hashtagCount };
   };
 
-  const { tags, hashtags, tagCount, hashtagCount } = extractTags(
-    pageDetails?.post_captions
-  );
+  // const { tags, hashtags, tagCount, hashtagCount } = extractTags(
+  //   pageDetails?.post_captions
+  // );
 
   const Columns = [
     {
@@ -208,25 +225,32 @@ const CampaignExecutions = () => {
       },
     },
 
-    phases === "all" ? "" : {
-      field: "Shifting",
-      headerName: "Shifting",
-      width: 120,
-      renderCell: (params) => {
-        return (
-          <Button variant="text" onClick={() => openModal(params.row.phase_id)}>
-          <ScreenRotationAltRoundedIcon color="secondary" sx={{ fontSize: "1.5rem" }} />
-        </Button>
-        );
+    phases === "all"
+      ? ""
+      : {
+        field: "Shifting",
+        headerName: "Shifting",
+        width: 120,
+        renderCell: (params) => {
+          return (
+            <Button
+              variant="text"
+              onClick={() => openModal(params.row.phase_id)}
+            >
+              <ScreenRotationAltRoundedIcon
+                color="secondary"
+                sx={{ fontSize: "1.5rem" }}
+              />
+            </Button>
+          );
+        },
       },
-    },
     {
       field: "last_link_hit_date",
       headerName: " Fetched D|T",
       width: 180,
-      
     },
-    
+
     {
       field: "page_name",
       headerName: "Page Name",
@@ -243,6 +267,11 @@ const CampaignExecutions = () => {
       width: 150,
     },
     {
+      field: "post_link",
+      headerName: "Link",
+      width: 150,
+    },
+    {
       field: "storyPerPage",
       headerName: "Story",
       width: 150,
@@ -252,7 +281,12 @@ const CampaignExecutions = () => {
       headerName: "Replacement",
       width: 150,
       renderCell: (params, i) => (
-        <button className="btn btn-danger" onClick={() => openModal3(params.row.phase_id)}>Replace page</button>
+        <button
+          className="btn btn-danger"
+          onClick={() => openModal3(params.row.phase_id)}
+        >
+          Replace page
+        </button>
       ),
     },
     {
@@ -264,20 +298,46 @@ const CampaignExecutions = () => {
           className="form-control"
           placeholder="Story Link"
           type="text"
+          value={storyLink[params.row._id]}
+          onChange={(e) => setStoryLink(e.target.value)}
+        />
+      ),
+    },
+    // {
+    //   field: "Preview",
+    //   headerName: "Preview",
+    //   width: 150,
+    // },
+    {
+      field: " Story Views",
+      headerName: "Story Views",
+      width: 150,
+      renderCell: (params, i) => (
+        <TextField
+          className="form-control"
+          placeholder="Story Views"
+          type="text"
+          value={storyViews[params.row._id]}
+          onChange={(e) => setStoryViews(e.target.value)}
         />
       ),
     },
     {
       field: "Post link",
       headerName: "Post Link",
-      width: 150,
+      width: 250,
       renderCell: (params) => (
         <>
           <TextField
+            fullWidth
             className="form-control"
             placeholder="Post Link"
             type="text"
-            value={shortcode[params.row._id]}
+            value={
+              params.row.post_link
+                ? params.row.post_link
+                : shortcode[params.row._id]
+            }
             onChange={(event) => {
               setShortcode(event.target.value);
               setAssId(params.row.ass_id);
@@ -325,12 +385,6 @@ const CampaignExecutions = () => {
       headerName: "Views",
       width: 150,
     },
-    // {
-    //   field: "Post",
-    //   headerName: "Post",
-    //   width: 150,
-    //   valueGetter: () => pageDetails?.owner_info?.post_count,
-    // },
     {
       field: "post_captions",
       headerName: "Caption",
@@ -340,25 +394,48 @@ const CampaignExecutions = () => {
       field: "Tags",
       headerName: "Tags",
       width: 150,
-      valueGetter: () => tags.join(", "),
+      valueGetter: (params) => {
+        const { tags } = extractTags(params.row.post_captions);
+        return tags.join(", ");
+      },
     },
     {
       field: "Tag Count",
       headerName: "Tag Count",
       width: 150,
-      valueGetter: () => tagCount,
+      valueGetter: (params) => {
+        const { tags } = extractTags(params.row.post_captions);
+        return tags.length;
+      },
     },
     {
       field: "Hashtags",
       headerName: "Hashtags",
       width: 150,
-      valueGetter: () => hashtags.join(", "),
+      valueGetter: (params) => {
+        const { hashtags } = extractTags(params.row.post_captions);
+        return hashtags.join(", ");
+      },
     },
     {
       field: "Hashtag Count",
       headerName: "Hashtag Count",
       width: 150,
-      valueGetter: () => hashtagCount,
+      valueGetter: (params) => {
+        const { hashtags } = extractTags(params.row.post_captions);
+        return hashtags.length;
+      },
+    },
+    {
+      field: "Action",
+      headerName: "Update",
+      width: 150,
+      renderCell: (params) => (
+        <Button color="error" onClick={() => handleUpdateDetailes(params.row)}>
+          {" "}
+          Update
+        </Button>
+      ),
     },
   ];
   const handleClick = async (phase_id) => {
@@ -377,9 +454,9 @@ const CampaignExecutions = () => {
     const res = await axios.post(`${baseUrl}assignment/get_shift_phases`, {
       _id: selectedCampaign,
       phaseId1: phaseId,
-      phaseId2: shiftPages
-    })
-  }
+      phaseId2: shiftPages,
+    });
+  };
 
   const getPageData = async () => {
     const pageData = await axios.get(
@@ -396,13 +473,11 @@ const CampaignExecutions = () => {
     const res = await axios.post(`${baseUrl}assignment/add_new_page`, {
       _id: selectedCampaign,
       page_name: newPage,
-      phase_id: shiftPages
-    })
-  }
+      phase_id: shiftPages,
+    });
+  };
 
-  const handleReplace = async () => {
-
-  }
+  const handleReplace = async () => { };
 
   return (
     <>
@@ -426,7 +501,17 @@ const CampaignExecutions = () => {
         <div className="card-body">
           {phases === "all" ? (
             <div>
-              {selectedCampaign == '' ? "" : <button style={{float:'right'}} onClick={() => openModal2()} className="btn btn-warning">Add Page</button>}
+              {selectedCampaign == "" ? (
+                ""
+              ) : (
+                <button
+                  style={{ float: "right" }}
+                  onClick={() => openModal2()}
+                  className="btn btn-warning"
+                >
+                  Add Page
+                </button>
+              )}
               <CampaignExecutionSummary
                 overviewCommitData={overviewCommitData}
               />
@@ -453,7 +538,7 @@ const CampaignExecutions = () => {
                 <button
                   key={i}
                   className={`named-tab ${phases === item.phase_id ? "active-tab" : ""
-                    } `}
+                    }`}
                   onClick={() => handleClick(item.phase_id)}
                 >
                   {item?.phaseName}
@@ -494,12 +579,12 @@ const CampaignExecutions = () => {
             <div className="form-group w-75">
               <label className="form-label">Select Page</label>
               <Select
-                options={allPages.map((option)=>({
+                options={allPages.map((option) => ({
                   value: option.p_id,
-                  label: option.page_name
+                  label: option.page_name,
                 }))}
                 onChange={(e) => {
-                  setNewPage(e.value)
+                  setNewPage(e.value);
                 }}
               />
               <label className="form-label">Select Phase</label>
@@ -522,12 +607,12 @@ const CampaignExecutions = () => {
             <div className="form-group w-75">
               <label className="form-label">Select Page To Replace with</label>
               <Select
-                options={allPages.map((option)=>({
+                options={allPages.map((option) => ({
                   value: option.p_id,
-                  label: option.page_name
+                  label: option.page_name,
                 }))}
                 onChange={(e) => {
-                  setNewPage(e.value)
+                  setNewPage(e.value);
                 }}
               />
             </div>
