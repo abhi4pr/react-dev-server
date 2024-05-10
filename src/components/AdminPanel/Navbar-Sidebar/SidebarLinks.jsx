@@ -829,7 +829,7 @@ const SidebarLinks = () => {
               <Laptop weight="duotone" />
             </i>
             {/* <span>Operation Old</span> */}
-            <span>Execution</span>
+            <span>Inventory</span>
           </a>
           <div
             id="collapsInnerOneModifyTwo"

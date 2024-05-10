@@ -11,7 +11,7 @@ import WhatsappAPI from "../../../WhatsappAPI/WhatsappAPI";
 import { baseUrl } from "../../../../utils/config";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "antd";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from "@mui/material";
 
 const onBoardStatus = 1;
