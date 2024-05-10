@@ -1496,8 +1496,10 @@ const PreOnboardingUserMaster = () => {
                         <i className="bi bi-journal-text" />
                       </div>
                     </div>
-                    <h2>Form</h2>
-                    <h3>{formFieldProgressPercentage}%</h3>
+                    <div className="sidebar_itemboxText">
+                      <h2>Form</h2>
+                      <h3>{formFieldProgressPercentage}%</h3>
+                    </div>
                   </div>
                   <div
                     className={`sidebar_itembox sidebar_itemboxCol ${
@@ -1574,8 +1576,8 @@ const PreOnboardingUserMaster = () => {
                     }`}
                     id="sidebarPolicyBox"
                     style={{
-                      pointerEvents: documentPercentage < 90 ? "none" : "auto",
-                      opacity: documentPercentage < 90 ? 0.5 : 1,
+                      pointerEvents: documentPercentage < 0 ? "none" : "auto",
+                      opacity: documentPercentage < 0 ? 0.5 : 1,
                     }}
                     onClick={() => setActiveTab(3)}
                   >
@@ -1588,14 +1590,18 @@ const PreOnboardingUserMaster = () => {
                         <i className="bi bi-book" />
                       </div>
                     </div>
-                    <h2 className="policy_tab_name">COC</h2>
-                    <p>Code Of Conduct</p>
+                    <h2 className="policy_tab_name">
+                      COC <small>Code of conduct</small>
+                      <div className="cocInfo">
+                        {documentPercentage < 0 && (
+                          <p>
+                            Please complete documentation by 90% then you can
+                            read coc
+                          </p>
+                        )}
+                      </div>
+                    </h2>
                   </div>
-                  {documentPercentage < 90 && (
-                    <span style={{ fontSize: "15px", color: "red" }}>
-                      Please complete documentation by 90% then you can read coc
-                    </span>
-                  )}
                   <div
                     className={`sidebar_itembox ${
                       activeTab == 4 ? "sidebar_item_active" : ""
@@ -1665,7 +1671,7 @@ const PreOnboardingUserMaster = () => {
                                   Extend
                                 </button>
                                 <Modal
-                                  className="onboardModal"
+                                  className="onboardModal2"
                                   isOpen={isModalOpen}
                                   onRequestClose={closeReactModal}
                                   contentLabel="Modal"
