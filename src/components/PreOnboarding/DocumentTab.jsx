@@ -18,7 +18,7 @@ const DocumentTab = ({
   const { toastAlert, toastError } = useGlobalContext();
   const { user_id } = useParams();
   const [user, setUser] = useState({});
-  const [diffDate, setDiffDate] = useState("");
+  const [diffDate, setDiffDate] = useState(null);
   const navigate = useNavigate();
 
   const storedToken = sessionStorage.getItem("token");
@@ -29,10 +29,10 @@ const DocumentTab = ({
     axios.get(`${baseUrl}` + `get_single_user/${userID}`).then((res) => {
       setUser(res.data);
       var currentDate = new Date();
-      var joiningDate = new Date(user.joining_date);
+      var joiningDate = new Date(res.data?.joining_date);
       var difference = joiningDate - currentDate;
       var daysDifference = Math.floor(difference / (1000 * 3600 * 24));
-      setDiffDate(daysDifference);
+      setDiffDate(daysDifference); 
     });
   };
 
@@ -51,7 +51,7 @@ const DocumentTab = ({
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [documentData]);
 
   const updateDocumentData = (documentId, key, value) => {
     setDocumentData((prevDocumentData) =>
@@ -144,6 +144,69 @@ const DocumentTab = ({
     }
   };
 
+  const handleDragStart = (e, documentId) => {
+    e.dataTransfer.setData("text/plain", documentId);
+  };
+  
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  function findDocumentIdByParentId(parentId, responseArray) {
+    for (const item of responseArray) {
+        if (item._id === parentId) {
+            return item.document._id;
+        }
+    }
+  }
+
+  function findOrderNumberByParentId(parentId, responseArray) {
+    for (const item of responseArray) {
+        if (item._id === parentId) {
+            return item.document.order_number;
+        }
+    }
+  }
+  
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    const droppedDocumentId = e.dataTransfer.getData("text/plain");
+    const draggedDocumentIndex = documentData.findIndex(
+      (item) => item._id === droppedDocumentId
+    );
+    const targetDocumentId = e.target.parentElement.getAttribute("data-id");
+    const targetDocumentIndex = documentData.findIndex(
+      (item) => item._id === targetDocumentId
+    );
+  
+    const reorderedDocuments = Array.from(documentData);
+    const [draggedDocument] = reorderedDocuments.splice(
+      draggedDocumentIndex,
+      1
+    );
+    reorderedDocuments.splice(targetDocumentIndex, 0, draggedDocument);
+
+    const data = {
+      _id: draggedDocument.document._id,
+      order_number: targetDocumentIndex + 1 
+    };
+    
+    const replaceData = {
+      _id: findDocumentIdByParentId(targetDocumentId, documentData),
+      order_number: findOrderNumberByParentId(droppedDocumentId, documentData)
+    }
+  
+    try {
+      await axios.put(`${baseUrl}edit_document_order`, data);
+      await axios.put(`${baseUrl}edit_document_order`, replaceData);
+      setDocumentData(reorderedDocuments);
+      getDocuments();
+    } catch (error) {
+      console.error("Error updating document order", error);
+      toastError("Failed to update document order");
+    }
+  };
+
   return (
     <>
       <div
@@ -179,25 +242,32 @@ const DocumentTab = ({
                   .slice()
                   .sort((a, b) => {
                     if (a.document.isRequired && !b.document.isRequired) {
-                      return -1; 
+                      return -1;
                     } else if (!a.document.isRequired && b.document.isRequired) {
-                      return 1; 
+                      return 1;
                     } else {
-                      return 0;
+                      return a.document.order_number - b.document.order_number;
                     }
                   })
                   .map((item) => (
-                    <tr key={item._id}>
+                    <tr
+                      draggable="true"
+                      onDragStart={(e) => handleDragStart(e, item._id)}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
+                      data-id={item._id}
+                      key={item._id}
+                    >
                       <td style={{ width: "20%" }}>
                         {item.document.doc_name}
                         {item.document.isRequired && (
-                          <span style={{ color: "red" }}> * (Mandatory)</span>
+                          <span style={{ color: "red" }}> * </span>
                         )}
                       </td>
                       <td scope="row">{item.document.doc_type}</td>
                       <td>{item.document.period} days</td>
                       {/* <td>1 Day</td> */}
-                      <td>{diffDate < 0 ? "Please Upload Docs" : diffDate}</td>
+                      <td>{diffDate  < 0 ? "Please Upload Docs" : diffDate}</td>
                       <td>
                         <div className="uploadDocBtn">
                           <span>
