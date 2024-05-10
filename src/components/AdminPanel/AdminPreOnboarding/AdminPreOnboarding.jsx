@@ -11,8 +11,8 @@ import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 // import { City } from "country-state-city";
 import { baseUrl } from "../../../utils/config";
 import IndianCitiesReact from "../../ReusableComponents/IndianCitiesReact";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { DatePicker } from "antd";
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TextField } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 

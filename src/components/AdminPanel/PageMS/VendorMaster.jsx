@@ -7,7 +7,14 @@ import { baseUrl } from "../../../utils/config";
 import jwtDecode from "jwt-decode";
 import { Navigate } from "react-router";
 import Select from "react-select";
-import { Autocomplete, Box, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  Box,
+  Button,
+  IconButton,
+  TextField,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const countries = [
   { code: "AD", label: "Andorra", phone: "376" },
@@ -468,6 +475,29 @@ const VendorMaster = () => {
   const [gstApplicable, setGstApplicable] = useState("No");
   const [vendorCategory, setVendorCategory] = useState("Theme Page");
   // const [countries, setCountries] = useState([{}]);
+  const [bankName, setBankName] = useState("");
+  const [accountType, setAccountType] = useState("");
+  const [accountNo, setAccountNo] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
+  const [upiId, setUpiId] = useState("");
+  const [whatsappLink, setWhatsappLink] = useState([]);
+
+  const handleLinkChange = (index, newValue) => {
+    const updatedLinks = whatsappLink.map((link, i) =>
+      i === index ? newValue : link
+    );
+    setWhatsappLink(updatedLinks);
+  };
+
+  const addLink = () => {
+    setWhatsappLink([...whatsappLink, ""]);
+  };
+  const removeLink = (index) => {
+    return () => {
+      const updatedLinks = whatsappLink.filter((link, i) => i !== index);
+      setWhatsappLink(updatedLinks);
+    };
+  };
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -541,6 +571,7 @@ const VendorMaster = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!vendorName) {
       toastError("Please enter vendor name");
       return;
@@ -593,6 +624,18 @@ const VendorMaster = () => {
     formData.append("home_state", homeState);
     formData.append("created_by", userID);
     formData.append("vendor_category", vendorCategory);
+    formData.append("whatsapp_link", whatsappLink.map((link) => link.trim()));
+
+    if (bankName) {
+      formData.append("bank_name", bankName);
+      formData.append("account_type", accountType);
+      formData.append("account_no", accountNo);
+      formData.append("ifsc_code", ifscCode);
+    }
+
+    if (upiId) {
+      formData.append("upi_id", upiId);
+    }
 
     axios.post(baseUrl + "addVendorMast", formData).then(() => {
       setIsFormSubmitted(true);
@@ -656,53 +699,56 @@ const VendorMaster = () => {
           type="number"
           onChange={(e) => setCountryCode(e.target.value)}
         /> */}
- <div className="form-group col-6">
+        <div className="form-group col-6">
           <label className="form-label">
             Country Code <sup style={{ color: "red" }}>*</sup>
           </label>
-          
-        <Autocomplete
-          id="country-select-demo"
-          sx={{ width: 300 }}
-          options={countries}
-          required={true}
-          // className=" col-6"
-          onChange={(e,val) =>{ setCountryCode(val.phone);console.log(e.target.value , "e",val.phone,"val")}}
-          autoHighlight
-          getOptionLabel={(option) => option.phone}
-          renderOption={(props, option) => (
-            <Box
-              component="li"
-              sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
-              {...props}
-            >
-              <img
-                loading="lazy"
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 1,
-                  objectFit: "cover",
-                  marginRight: 1,
+
+          <Autocomplete
+            id="country-select-demo"
+            sx={{ width: 300 }}
+            options={countries}
+            required={true}
+            // className=" col-6"
+            onChange={(e, val) => {
+              setCountryCode(val.phone);
+              console.log(e.target.value, "e", val.phone, "val");
+            }}
+            autoHighlight
+            getOptionLabel={(option) => option.phone}
+            renderOption={(props, option) => (
+              <Box
+                component="li"
+                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+                {...props}
+              >
+                <img
+                  loading="lazy"
+                  style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: 1,
+                    objectFit: "cover",
+                    marginRight: 1,
+                  }}
+                  srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                  src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                  alt=""
+                />
+                {option.label} ({option.code}) +{option.phone}
+              </Box>
+            )}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                // label="Choose a country"
+                inputProps={{
+                  ...params.inputProps,
+                  autoComplete: "new-password", // disable autocomplete and autofill
                 }}
-                srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
-                src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
-                alt=""
               />
-              {option.label} ({option.code}) +{option.phone}
-            </Box>
-          )}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              // label="Choose a country"
-              inputProps={{
-                ...params.inputProps,
-                autoComplete: "new-password", // disable autocomplete and autofill
-              }}
-            />
-          )}
-        />
+            )}
+          />
         </div>
 
         <FieldContainer
@@ -803,6 +849,81 @@ const VendorMaster = () => {
             }}
           ></Select>
         </div>
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "Bank Details" && (
+          <FieldContainer
+            label="Bank Name *"
+            value={bankName}
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "Bank Details"
+                ? true
+                : false
+            }
+            onChange={(e) => setBankName(e.target.value)}
+          />
+        )}
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "Bank Details" && (
+          <FieldContainer
+            label="Account Type *"
+            value={accountType}
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "Bank Details"
+                ? true
+                : false
+            }
+            onChange={(e) => setAccountType(e.target.value)}
+          />
+        )}
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "Bank Details" && (
+          <FieldContainer
+            label="Account Number *"
+            value={accountNo}
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "Bank Details"
+                ? true
+                : false
+            }
+            onChange={(e) => setAccountNo(e.target.value)}
+          />
+        )}
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "Bank Details" && (
+          <FieldContainer
+            label="IFSC *"
+            value={ifscCode}
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "Bank Details"
+                ? true
+                : false
+            }
+            onChange={(e) => setIfscCode(e.target.value)}
+          />
+        )}
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "UPI" && (
+          <FieldContainer
+            label="UPI ID *"
+            value={upiId}
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "UPI"
+                ? true
+                : false
+            }
+            onChange={(e) => setUpiId(e.target.value)}
+          />
+        )}
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -958,6 +1079,33 @@ const VendorMaster = () => {
             style={{ width: "100px", height: "100px" }}
           />
         )}
+        {whatsappLink.map((link, index) => (
+          <>
+            <FieldContainer
+              key={index}
+              label={`Whatsapp Link ${index + 1}`}
+              value={link}
+              required={false}
+              onChange={(e) => handleLinkChange(index, e.target.value)}
+            />
+            {index > 0 && (
+              // <Button onClick={removeLink(index)}  icon />
+
+              <IconButton
+              size="small"
+              sx={{
+                display: "inline",
+              }}
+                onClick={removeLink(index)}
+                color="secondary"
+                aria-label="add an alarm"
+              >
+                <CloseIcon />
+              </IconButton>
+            )}
+          </>
+        ))}
+        <Button onClick={addLink}>ADD Link</Button>
       </FormContainer>
     </>
   );

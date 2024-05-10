@@ -219,6 +219,43 @@ const VendorOverview = () => {
       },
       editable: true,
     },
+{
+      field: "bank_name",
+      headerName: "Bank Name",
+      width: 200,
+},
+{
+      field: "account_type",
+      headerName: "Account Type",
+      width: 200,
+},
+{
+      field: "account_no",
+      headerName: "Account No",
+      width: 200,
+},
+{
+      field: "ifsc_code",
+      headerName: "IFSC Code",
+      width: 200,
+},
+{
+      field: "upi_id",
+      headerName: "UPI ID",
+      width: 200,
+},
+    // formData.append("whatsapp_link", whatsappLink.map((link) => link.trim()));
+
+    // if (bankName) {
+    //   formData.append("bank_name", bankName);
+    //   formData.append("account_type", accountType);
+    //   formData.append("account_no", accountNo);
+    //   formData.append("ifsc_code", ifscCode);
+    // }
+
+    // if (upiId) {
+    //   formData.append("upi_id", upiId);
+    // }
     {
       field: "action",
       headerName: "Action",

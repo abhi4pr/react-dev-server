@@ -1006,6 +1006,20 @@ const UserMaster = () => {
     }
   };
 
+
+  function trimeUserName(userName) {
+    userName = userName.replace(/\s{2,}/g, ' ').trim();
+    const lettersOnly = /^[A-Za-z]+$/;
+    const correctedNameParts = userName.split(" ").map(part => {
+        let filteredPart = part.split('').filter(char => char.match(lettersOnly)).join('');
+        return filteredPart.charAt(0).toUpperCase() + filteredPart.slice(1).toLowerCase();
+    });
+    // Join the corrected parts back into a single string without spaces
+    const correctedUserName = correctedNameParts.join("");
+    return correctedUserName;
+}
+
+
   const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
 
@@ -1016,7 +1030,8 @@ const UserMaster = () => {
     // Define login ID options
     let loginIdOptions = [
       userName[0], // lalit
-      userName.join("."), // lalit.gour
+      trimeUserName(username),
+      // userName.join("."), // lalit.gour
       userName[0] + personalContactLast4, // lalit5413
       userName[0] + personalContactLast6, // lalit815413
     ];
@@ -1133,6 +1148,10 @@ const UserMaster = () => {
   //   return age;
   // };
 
+  useEffect(() => {
+    console.log(dateOfBirth, "dateOfBirth");
+  }, [dateOfBirth])
+
   function calculateAge(dob) {
     const birthDate = new Date(dob);
     const currentDate = new Date();
@@ -1156,7 +1175,7 @@ const UserMaster = () => {
   }
 
   const handleDateChange = (e) => {
-    const selectedDate = e.target.value;
+    const selectedDate = e;
     const age = calculateAge(selectedDate);
     const ageDays = calculateAgeInDays(selectedDate);
 
@@ -1876,6 +1895,7 @@ const UserMaster = () => {
           }}
         ></Select>
       </div>
+      <div className="col-md-3">
 
       <FieldContainer
         label="Official Email"
@@ -1898,8 +1918,9 @@ const UserMaster = () => {
             });
           }
         }}
-      />
+        />
       {!validEmail && <p className="form-error">*Please enter valid email</p>}
+        </div>
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <FieldContainer
           label="Official Contact"
@@ -2084,7 +2105,7 @@ const UserMaster = () => {
 <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker 
                 value={joiningDate}
-                onChange={(e) => setJoiningDate(e.target.value)}
+                onChange={(e) => setJoiningDate(e)}
                   renderInput={(params) => <TextField {...params} />}
                 />
               </LocalizationProvider>

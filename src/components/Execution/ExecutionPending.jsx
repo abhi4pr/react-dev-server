@@ -32,8 +32,10 @@ import FormContainer from "../AdminPanel/FormContainer";
 import { styled } from "@mui/material/styles";
 import CloseIcon from "@mui/icons-material/Close";
 import { set } from "date-fns";
+import { useGlobalContext } from "../../Context/Context";
 
 function ExecutionPending() {
+  const { toastAlert, toastError } = useGlobalContext();
   const [snackbar, setSnackbar] = useState(null);
   const [confirmation, setConfirmation] = useState(false);
   const [rowData, setRowData] = useState([]);
@@ -112,7 +114,7 @@ function ExecutionPending() {
         sale_booking_id: row.sale_booking_id,
         sale_booking_execution_id: row.sale_booking_execution_id,
         start_date_: new Date(),
-        execution_status: row.execution_status==5?1:2,
+        execution_status: row.execution_status == 5 ? 1 : 2,
       };
       axios
         .put(`${baseUrl}` + `edit_exe_sum`, payload)
@@ -130,7 +132,7 @@ function ExecutionPending() {
         execution_date_time: new Date().toISOString().split("T")[0],
         execution_time: "0.00",
         execution_remark: "Accepted",
-        execution_status: row.execution_status==5?1:2,
+        execution_status: row.execution_status == 5 ? 1 : 2,
       };
       axios
         .post(
@@ -151,7 +153,6 @@ function ExecutionPending() {
         });
     };
   };
-  
 
   const handleClickOpenPaymentDetailDialog = (data) => {
     setPaymentDialogDetails(data);
@@ -190,7 +191,7 @@ function ExecutionPending() {
           sale_booking_execution_id: data.sale_booking_execution_id,
           start_date_: new Date(),
           execution_status: 2,
-        };
+        }
         axios
           .put(`${baseUrl}` + `edit_exe_sum`, payload)
           .then((res) => {
@@ -230,15 +231,12 @@ function ExecutionPending() {
 
         setConfirmation(false);
         fetchData();
-      }).catch((err) => {
-        console.log(err);
-        setSnackbar({
-          open: true,
-          message: "Wrong Token",
-          severity: "error",
-        });
-      }
-      );
+        multipleToken("");
+        toastAlert("Token Verified");
+      })
+      .catch((err) => {
+        toastError("Invalid Token");
+      });
   };
   const handleAccept = (row) => {
     setRowData(row);
@@ -274,13 +272,7 @@ function ExecutionPending() {
           });
       }
       const response = axios.get(baseUrl + "get_exe_sum").then((res) => {
-        setData(
-          res.data
-            .filter(
-              (ele) => ele.execution_status == 1 
-            )
-            .reverse()
-        );
+        setData(res.data.filter((ele) => ele.execution_status == 1).reverse());
         setFilterData(res.data.reverse());
       });
     } catch (error) {
@@ -364,7 +356,7 @@ function ExecutionPending() {
               In Progress
             </Button>
           );
-        }else if (params.row.execution_status == "3") {
+        } else if (params.row.execution_status == "3") {
           return (
             <Button
               size="small"
@@ -376,7 +368,7 @@ function ExecutionPending() {
               Completed
             </Button>
           );
-        }else if (params.row.execution_status == "4") {
+        } else if (params.row.execution_status == "4") {
           return (
             <Button
               size="small"
@@ -388,7 +380,10 @@ function ExecutionPending() {
               Rejected
             </Button>
           );
-        }else if (params.row.execution_status == "5" || params.row.execution_status == 6) {
+        } else if (
+          params.row.execution_status == "5" ||
+          params.row.execution_status == 6
+        ) {
           return (
             <Button
               size="small"
@@ -465,21 +460,23 @@ function ExecutionPending() {
       headerName: "End Date",
       width: 150,
       renderCell: (params) => {
-        const startDate = new Date(params.row.end_date);
+        const startDate = params.row.end_date
+          ? new Date(params.row.end_date)
+          : new Date();
         const dateOptions = {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
         };
 
-        const formattedDate = startDate.toLocaleDateString(
+        const formattedDate = startDate?.toLocaleDateString(
           "en-GB",
           dateOptions
         );
-        const formattedTime = startDate
-          .toISOString()
-          .split("T")[1]
-          .substring(0, 8);
+        const formattedTime =
+          startDate != "Invalid Date"
+            ? startDate?.toISOString()?.split("T")[1]?.substring(0, 8)
+            : "";
 
         return (
           <div>
@@ -556,9 +553,9 @@ function ExecutionPending() {
       },
     },
     {
-      field : "execution_remark",
+      field: "execution_remark",
       headerName: "Remark",
-      width: 150
+      width: 150,
     },
     contextData
       ? {
@@ -668,19 +665,16 @@ function ExecutionPending() {
                   color="inherit"
                 />,
                 <Button
-                variant="outlined"
-                onClick={handleRowHold(row,6)}
-                className="btn btn_sm cmnbtn"
-                color="warning"
-              >
-                Hold
-              </Button>,
+                  variant="outlined"
+                  onClick={handleRowHold(row, 6)}
+                  className="btn btn_sm cmnbtn"
+                  color="warning"
+                >
+                  Hold
+                </Button>,
               ];
-
-
-            } else if(executionStatus==5 || executionStatus==6){
+            } else if (executionStatus == 5 || executionStatus == 6) {
               return [
-                
                 <div className="icon-1">
                   <GridActionsCellItem
                     key={id}
@@ -706,11 +700,8 @@ function ExecutionPending() {
                 >
                   Release
                 </Button>,
-              ]
-            }
-            
-            
-            else {
+              ];
+            } else {
               // Default case, no special buttons
               return [
                 <div className="icon-1">
@@ -923,7 +914,10 @@ function ExecutionPending() {
               <Button
                 onClick={() => {
                   setData(
-                    filterData.filter((ele) => ele.execution_status == 5|| ele.execution_status==6)
+                    filterData.filter(
+                      (ele) =>
+                        ele.execution_status == 5 || ele.execution_status == 6
+                    )
                   );
                   console.log(
                     filterData.filter((ele) => ele.execution_status == "4")
@@ -931,7 +925,12 @@ function ExecutionPending() {
                 }}
               >
                 Hold{" "}
-                {filterData.filter((ele) => ele.execution_status == 5 || ele.execution_status==6 ).length}
+                {
+                  filterData.filter(
+                    (ele) =>
+                      ele.execution_status == 5 || ele.execution_status == 6
+                  ).length
+                }
               </Button>
             </div>
 
