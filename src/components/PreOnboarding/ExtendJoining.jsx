@@ -116,7 +116,7 @@ const ExtendJoining = ({
 
   return (
     <>
-      <form>
+      <form className="extendDateForm">
         <div className="formarea">
           <div className="row spacing_lg">
             <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
@@ -190,21 +190,21 @@ const ExtendJoining = ({
                 Request Rejected: {allUserData?.joining_date_extend_reason}
               </h1>
             )} */}
-            <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 d-flex">
-              <div className="form-group mb-0 ml-auto mr-auto text-center">
+            <div className="col-12 d-flex justify-content-center gap-3">
+              <div className="form-group mb-0 text-center">
                 <button
-                  className="btn btn_pill btn_cmn btn_white"
-                  onClick={handleJoiningExtend}
-                >
-                  Request
-                </button>
-              </div>
-              <div className="form-group mb-0 ml-auto mr-auto text-center">
-                <button
-                  className="btn btn_pill btn_cmn btn-danger"
+                  className="btn onboardBtn btn_primary mw_auto"
                   onClick={closeModal}
                 >
                   Close
+                </button>
+              </div>
+              <div className="form-group mb-0 text-center">
+                <button
+                  className="btn onboardBtn btn_secondary mw_auto"
+                  onClick={handleJoiningExtend}
+                >
+                  Request
                 </button>
               </div>
             </div>

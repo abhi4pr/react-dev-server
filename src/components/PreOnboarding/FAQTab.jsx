@@ -5,99 +5,102 @@ import "./onboardcss/onboard_animate.min.css";
 const FAQTab = ({ username, designation }) => {
   return (
     <>
-      <div className="policyarea">
-        <div className="thm_texthead">
-          <h2 className="text-center">FAQ (Frequently Asked Questions)</h2>
-          <div className="thm_textarea">
-            <div className="thm_textbx">
-              <p>
-                Hello {username}, Welcome to Creativefuel - The home to the most
-                vibrant & talented individuals!
-                <br />
-                <br />
-                We're to have you join our team of Meme Enthusiasts & Coffee
-                Addicts as a {designation} ! We believe that your experience &
-                skills will be a great asset to our organisation.
-                <br />
-                <br />
-                Congratulations on your new role, and cheers to a journey full
-                of excitement, growth & achievement!
-              </p>
-            </div>
-            <div className="thm_textbx">
-              <h3>1. What is Salary cycle?</h3>
-              <p>
-                salary cycle refers to the regular interval at which employees
-                are paid their salaries. The salary cycle in creativefuel is
-                calculated for 26 working days excluding Sundays, and the number
-                of days will be decreased if there is any national holiday.
-              </p>
-            </div>
-            <div className="thm_textbx">
-              <h3>
-                2.What is the duration of the notice period that needs to be
-                served?
-              </h3>
-              <p>60 days</p>
-            </div>
-            <div className="thm_textbx">
-              <h3>
-                3. What is the notice period that needs to be served under
-                probation?
-              </h3>
-              <p>7days</p>
-            </div>
-            <div className="thm_textbx">
-              <h3>
-                4. Am I eligible for paid leave during the probationary period
-                (6 months)?
-              </h3>
-              <p>
-                Yes, you are eligible to take paid leaves after 3 months of your
-                joining period.
-              </p>
-            </div>
-            <div className="thm_textbx">
-              <h3>
-                5. What is the aim behind designing the Onboarding process?
-              </h3>
-              <p>
-                The onboarding process for Creativefuel employees is designed to
-                integrate new team members into our creative culture, acquaint
-                them with their key roles and responsibilities, and provide the
-                necessary training and resources for them to excel in their
-                positions.
-              </p>
-            </div>
-            <div className="thm_textbx">
-              <h3>6. When Performance Evaluation is done?</h3>
-              <p>
-                In the month of January, the performance of employees are
-                evaluated.
-              </p>
-            </div>
-            <div className="thm_textbx">
-              <h3>7.What are the standard working hours of the company?</h3>
-              <p>9 Hours including lunch break.</p>
-            </div>
-            <div className="thm_textbx">
-              <h3>
-                8.What are the prerequisites for employees to be eligible for
-                working from home (WFH)?
-              </h3>
-              <p>
-                * Prior approval must be obtained before taking leave from the
-                regular office and working from home. Failure to obtain such
-                approval may result in the employee being considered absent from
-                work.
-              </p>
-              <p>
-                * Work from home will be considered half-day attendance, and
-                accordingly, the employee will receive only 50% of there salary
-                for that day.
-              </p>
-            </div>
-            {/* <div className="thm_textbx">
+      <div className="cardBoard">
+        <div className="cardBodyBoard">
+          <div className="policyarea">
+            <div className="thm_texthead">
+              <h2 className="text-center">FAQ (Frequently Asked Questions)</h2>
+              <div className="thm_textarea">
+                <div className="thm_textbx">
+                  <p>
+                    Hello {username}, Welcome to Creativefuel - The home to the
+                    most vibrant & talented individuals!
+                    <br />
+                    <br />
+                    We're to have you join our team of Meme Enthusiasts & Coffee
+                    Addicts as a {designation} ! We believe that your experience
+                    & skills will be a great asset to our organisation.
+                    <br />
+                    <br />
+                    Congratulations on your new role, and cheers to a journey
+                    full of excitement, growth & achievement!
+                  </p>
+                </div>
+                <div className="thm_textbx">
+                  <h3>1. What is Salary cycle?</h3>
+                  <p>
+                    salary cycle refers to the regular interval at which
+                    employees are paid their salaries. The salary cycle in
+                    creativefuel is calculated for 26 working days excluding
+                    Sundays, and the number of days will be decreased if there
+                    is any national holiday.
+                  </p>
+                </div>
+                <div className="thm_textbx">
+                  <h3>
+                    2.What is the duration of the notice period that needs to be
+                    served?
+                  </h3>
+                  <p>60 days</p>
+                </div>
+                <div className="thm_textbx">
+                  <h3>
+                    3. What is the notice period that needs to be served under
+                    probation?
+                  </h3>
+                  <p>7days</p>
+                </div>
+                <div className="thm_textbx">
+                  <h3>
+                    4. Am I eligible for paid leave during the probationary
+                    period (6 months)?
+                  </h3>
+                  <p>
+                    Yes, you are eligible to take paid leaves after 3 months of
+                    your joining period.
+                  </p>
+                </div>
+                <div className="thm_textbx">
+                  <h3>
+                    5. What is the aim behind designing the Onboarding process?
+                  </h3>
+                  <p>
+                    The onboarding process for Creativefuel employees is
+                    designed to integrate new team members into our creative
+                    culture, acquaint them with their key roles and
+                    responsibilities, and provide the necessary training and
+                    resources for them to excel in their positions.
+                  </p>
+                </div>
+                <div className="thm_textbx">
+                  <h3>6. When Performance Evaluation is done?</h3>
+                  <p>
+                    In the month of January, the performance of employees are
+                    evaluated.
+                  </p>
+                </div>
+                <div className="thm_textbx">
+                  <h3>7.What are the standard working hours of the company?</h3>
+                  <p>9 Hours including lunch break.</p>
+                </div>
+                <div className="thm_textbx">
+                  <h3>
+                    8.What are the prerequisites for employees to be eligible
+                    for working from home (WFH)?
+                  </h3>
+                  <p>
+                    * Prior approval must be obtained before taking leave from
+                    the regular office and working from home. Failure to obtain
+                    such approval may result in the employee being considered
+                    absent from work.
+                  </p>
+                  <p>
+                    * Work from home will be considered half-day attendance, and
+                    accordingly, the employee will receive only 50% of there
+                    salary for that day.
+                  </p>
+                </div>
+                {/* <div className="thm_textbx">
               <h3>9. What’s the feedback form and how should I Fill it out?</h3>
               <p>
                 Our employee feedback form will help us gather honest feedback
@@ -107,6 +110,8 @@ const FAQTab = ({ username, designation }) => {
                 your First day.
               </p>
             </div> */}
+              </div>
+            </div>
           </div>
         </div>
       </div>

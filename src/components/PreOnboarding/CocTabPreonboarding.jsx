@@ -3,10 +3,14 @@ import React from "react";
 const CocTabPreonboarding = ({ cocData }) => {
   return (
     <>
-      <div
-        style={{ color: "white" }}
-        dangerouslySetInnerHTML={{ __html: cocData }}
-      ></div>
+      <div className="cardBoard">
+        <div className="cardBodyBoard">
+          <div
+            className="thm_textbx"
+            dangerouslySetInnerHTML={{ __html: cocData }}
+          ></div>
+        </div>
+      </div>
     </>
   );
 };
