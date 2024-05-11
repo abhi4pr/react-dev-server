@@ -11,7 +11,7 @@ const FAQTab = ({ username, designation }) => {
             <div className="thm_texthead">
               <h2 className="text-center">FAQ (Frequently Asked Questions)</h2>
               <div className="thm_textarea">
-                <div className="thm_textbx">
+                {/* <div className="thm_textbx">
                   <p>
                     Hello {username}, Welcome to Creativefuel - The home to the
                     most vibrant & talented individuals!
@@ -25,7 +25,7 @@ const FAQTab = ({ username, designation }) => {
                     Congratulations on your new role, and cheers to a journey
                     full of excitement, growth & achievement!
                   </p>
-                </div>
+                </div> */}
                 <div className="thm_textbx">
                   <h3>1. What is Salary cycle?</h3>
                   <p>
@@ -41,14 +41,14 @@ const FAQTab = ({ username, designation }) => {
                     2.What is the duration of the notice period that needs to be
                     served?
                   </h3>
-                  <p>60 days</p>
+                  <p>60 Days</p>
                 </div>
                 <div className="thm_textbx">
                   <h3>
                     3. What is the notice period that needs to be served under
                     probation?
                   </h3>
-                  <p>7days</p>
+                  <p>7 Days</p>
                 </div>
                 <div className="thm_textbx">
                   <h3>
@@ -100,16 +100,51 @@ const FAQTab = ({ username, designation }) => {
                     salary for that day.
                   </p>
                 </div>
-                {/* <div className="thm_textbx">
-              <h3>9. What’s the feedback form and how should I Fill it out?</h3>
-              <p>
-                Our employee feedback form will help us gather honest feedback
-                and to Find out how employees feel about the work environment,
-                employee beneits, salary, company culture, or management. This
-                feedback form will be sent to you on your registered mail id on
-                your First day.
-              </p>
-            </div> */}
+                <div className="thm_textbx">
+                  <h3>
+                    9. What is the official Email ID for sharing any concerns or
+                    queries
+                  </h3>
+                  <p>
+                    The HR E-mail ID,
+                    <a
+                      style={{ color: "blue" }}
+                      href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=hr@creativefuel.io"
+                    >
+                      {" "}
+                      hr@creativefuel.io
+                    </a>
+                    , should only be used for talent acquisition, such as
+                    requesting Introducing new team members or recommending
+                    someone for a position. All other human resource concerns,
+                    such as payroll, leave, and reimbursement, should be
+                    directed to{" "}
+                    <a
+                      style={{ color: "blue" }}
+                      href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to= fabhr@creativefuel.io"
+                    >
+                      {" "}
+                      fabhr@creativefuel.io
+                    </a>
+                    . Please ensure that every email is cc'd to{" "}
+                    <a
+                      style={{ color: "blue" }}
+                      href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=nikhil@creativefuel.io"
+                    >
+                      {" "}
+                      nikhil@creativefuel.io
+                    </a>{" "}
+                    ,
+                    <a
+                      style={{ color: "blue" }}
+                      href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=tushar@creativefuel.io"
+                    >
+                      {" "}
+                      tushar@creativefuel.io
+                    </a>
+                    and your team leader when necessary.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

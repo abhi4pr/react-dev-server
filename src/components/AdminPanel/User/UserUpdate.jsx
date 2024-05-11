@@ -2298,13 +2298,15 @@ const UserUpdate = () => {
 
       <div className="row">
         <div className="col-12">
-          <button
-            onClick={handleAddFamilyDetails}
-            variant="contained"
-            className="btn btn-outline-primary me-2"
-          >
-            Add More Family Details
-          </button>
+          {familyDetails.length < 3 && (
+            <button
+              onClick={handleAddFamilyDetails}
+              variant="contained"
+              className="btn btn-outline-primary me-2"
+            >
+              Add More Family Details
+            </button>
+          )}
         </div>
       </div>
 
@@ -2371,13 +2373,15 @@ const UserUpdate = () => {
       ))}
       <div className="row">
         <div className="col-12">
-          <button
-            type="button"
-            onClick={handleAddEducationDetails}
-            className="btn btn-outline-warning"
-          >
-            Add More Education Details
-          </button>
+          {educationDetails.length < 5 && (
+            <button
+              type="button"
+              onClick={handleAddEducationDetails}
+              className="btn btn-outline-warning"
+            >
+              Add More Education Details
+            </button>
+          )}
         </div>
       </div>
       {/* <div style={{ display: "flex", justifyContent: "space-between" }}>

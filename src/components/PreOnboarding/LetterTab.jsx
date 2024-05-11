@@ -40,8 +40,34 @@ const LetterTab = ({ allUserData, gettingData }) => {
   const handelClose = () => {
     setpreview(!previewOffer);
   };
+  // const downloadOfferLetter = () => {
+  //   console.log(allUserData, "allUserData");
+  //   var element = document.getElementById("element-to-print");
+  //   var opt = {
+  //     margin: 1,
+  //     filename: `${allUserData.user_name}_offer_letter.pdf`,
+  //     image: { type: "jpeg", quality: 1.0 },
+  //     html2canvas: { scale: 4 },
+  //     jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+  //   };
+
+  //   html2pdf().from(element).set(opt).save();
+  // };
+  console.log("personal email", allUserData);
   const downloadOfferLetter = () => {
-    console.log(allUserData, "allUserData");
+    var element = document.getElementById("element-to-print");
+    var opt = {
+      margin: 1,
+      filename: `${allUserData.user_name}_offer_letter.pdf`,
+      image: { type: "jpeg", quality: 1.0 },
+      html2canvas: { scale: 4 },
+      jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+    };
+
+    html2pdf().from(element).set(opt).save();
+
+    // --------------------------------------------------------------
+
     var element = document.getElementById("element-to-print");
     var opt = {
       margin: 1,
@@ -51,7 +77,34 @@ const LetterTab = ({ allUserData, gettingData }) => {
       jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
     };
 
-    html2pdf().from(element).set(opt).save();
+    html2pdf()
+      .from(element)
+      .set(opt)
+      .toPdf()
+      .get("pdf")
+      .then(function (pdf) {
+        var pdfData = new FormData();
+        pdfData.append(
+          "attachment",
+          pdf.output("blob"),
+          `${allUserData.user_name}_offer_letter.pdf`
+        );
+
+        pdfData.append("email_id", allUserData.PersonalEmail);
+
+        axios
+          .post(baseUrl + "offer_letter_send_in_mail", pdfData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+      });
   };
 
   useEffect(() => {
@@ -66,7 +119,6 @@ const LetterTab = ({ allUserData, gettingData }) => {
         console.error("Error fetching data:", error);
       });
   }, []);
-  console.log(image64, "image 64");
 
   return (
     <>
@@ -518,16 +570,31 @@ const LetterTab = ({ allUserData, gettingData }) => {
             <div className="letterBoard">
               <div className="thm_textbx">
                 {allUserData.offer_later_status ? (
-                  <p>sent to mail</p>
+                  <p>
+                    <span className="bold">
+                      {" "}
+                      Congratulations on accepting the offer letter and becoming
+                      a part of Creativefuel team!{" "}
+                    </span>{" "}
+                    <br /> Your offer letter has been sent to your email
+                    address. Kindly take a moment to review the attached
+                    document, which outlines the terms and conditions of your
+                    employment, including your start date, compensation package,
+                    and other important details.
+                  </p>
                 ) : (
                   <p>
-                    Hello, {allUserData.user_name}, Welcome to Creativefuel -
-                    The home to the most vibrant & talented individuals! We're
-                    to have you join our team of Meme Enthusiasts & Coffee
-                    Addicts as a {allUserData.designation_name}! We believe that
-                    your experience & skills will be a great asset to our
-                    organisation. Congratulations on your new role, and cheers
-                    to a journey full of excitement, growth & achievement!
+                    Hello, <span className="bold">{allUserData.user_name}</span>
+                    , Welcome to Creativefuel - The home to the most vibrant &
+                    talented individuals! <br /> <br /> We're to have you join
+                    our team of Meme Enthusiasts & Coffee Addicts as a{" "}
+                    <span className="bold">
+                      {allUserData.designation_name}{" "}
+                    </span>
+                    ! We believe that your experience & skills will be a great
+                    asset to our organisation. <br /> <br /> Congratulations on
+                    your new role, and cheers to a journey full of excitement,
+                    growth & achievement!
                   </p>
                 )}
               </div>
