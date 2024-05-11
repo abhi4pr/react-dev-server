@@ -524,7 +524,7 @@ const AdminPreOnboarding = () => {
   };
 
   return (
-    <div >
+    <div>
       <FormContainer
         mainTitle="User"
         title="User Registration"
@@ -542,7 +542,7 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
-            Job Type <sup style={{ color: "red" }}>*</sup>
+            Job Type <sup className="form-error">*</sup>
           </label>
           <Select
             className=""
@@ -563,7 +563,7 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
-            Department Name <sup style={{ color: "red" }}>*</sup>
+            Department Name <sup className="form-error">*</sup>
           </label>
           <Select
             className=""
@@ -585,7 +585,7 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
-            Designation <sup style={{ color: "red" }}>*</sup>
+            Designation <sup className="form-error">*</sup>
           </label>
           <Select
             className=""
@@ -607,7 +607,7 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
-            Report L1 <sup style={{ color: "red" }}>*</sup>
+            Report L1 <sup className="form-error">*</sup>
           </label>
           <Select
             required={true}
@@ -641,7 +641,7 @@ const AdminPreOnboarding = () => {
             }}
           />
           {isRequired.reportL1 && (
-            <p style={{ color: "red" }}>*Please select Report L1</p>
+            <p className="form-error">*Please select Report L1</p>
           )}
         </div>
 
@@ -654,36 +654,38 @@ const AdminPreOnboarding = () => {
           onChange={handleEmailChange}
         />
         {!validEmail && (
-          <p style={{ color: "red" }}>*Please enter valid email</p>
+          <p className="form-error">*Please enter valid email</p>
         )} */}
-        <FieldContainer
-          label="Personal Email"
-          type="email"
-          astric
-          fieldGrid={3}
-          required={false}
-          value={personalEmail}
-          onChange={handlePersonalEmailChange}
-        />
-        {!validPersonalEmail && (
-          <p style={{ color: "red" }}>*Please enter valid email</p>
-        )}
-
-        <FieldContainer
-          label="Personal Contact"
-          astric
-          type="number"
-          fieldGrid={3}
-          value={personalContact}
-          required={false}
-          onChange={handlePersonalContactChange}
-          onBlur={handlePersonalContactBlur}
-        />
-        {(isContactTouched1 || personalContact.length >= 10) &&
-          !isValidcontact1 && (
-            <p style={{ color: "red" }}>*Please enter a valid Number</p>
+        <div className="col-md-3">
+          <FieldContainer
+            label="Personal Email"
+            type="email"
+            astric
+            fieldGrid={3}
+            required={false}
+            value={personalEmail}
+            onChange={handlePersonalEmailChange}
+          />
+          {!validPersonalEmail && (
+            <p className="form-error">*Please enter valid email</p>
           )}
-
+        </div>
+        <div className="col-md-3">
+          <FieldContainer
+            label="Personal Contact"
+            astric
+            type="number"
+            fieldGrid={3}
+            value={personalContact}
+            required={false}
+            onChange={handlePersonalContactChange}
+            onBlur={handlePersonalContactBlur}
+          />
+          {(isContactTouched1 || personalContact.length >= 10) &&
+            !isValidcontact1 && (
+              <p className="form-error">*Please enter a valid Number</p>
+            )}
+        </div>
         {/* <FieldContainer
           label=" City"
           type="text"
@@ -704,7 +706,7 @@ const AdminPreOnboarding = () => {
             />
             <div className="form-group col-3">
               <label className="form-label">
-                TDS Applicable<sup style={{ color: "red" }}>*</sup>
+                TDS Applicable<sup className="form-error">*</sup>
               </label>
               <Select
                 className=""
@@ -751,7 +753,7 @@ const AdminPreOnboarding = () => {
         {jobType == "WFO" && (
           <div className="form-group col-3">
             <label className="form-label">
-              Letter send <sup style={{ color: "red" }}>*</sup>
+              Letter send <sup className="form-error">*</sup>
             </label>
             <Select
               options={offerLetter.map((option) => ({
@@ -777,19 +779,21 @@ const AdminPreOnboarding = () => {
               }}
             />
             {isRequired.sendLetter && (
-              <p style={{ color: "red" }}>*Please select a Letter</p>
+              <p className="form-error">*Please select a Letter</p>
             )}
           </div>
         )}
 
         {sendLetter.label == "Yes" && (
-          <FieldContainer
-            label="Annexure pdf"
-            fieldGrid={3}
-            type="file"
-            onChange={(e) => setAnnexurePdf(e.target.files[0])}
-            required={false}
-          />
+          <div className="col-md-3">
+            <FieldContainer
+              label="Annexure pdf"
+              fieldGrid={3}
+              type="file"
+              onChange={(e) => setAnnexurePdf(e.target.files[0])}
+              required={false}
+            />
+          </div>
         )}
 
         {/* <FieldContainer
@@ -802,7 +806,7 @@ const AdminPreOnboarding = () => {
           onBlur={handleContactBlur}
         />
         {(isContactTouched || contact.length >= 10) && !isValidcontact && (
-          <p style={{ color: "red" }}>*Please enter a valid Number</p>
+          <p className="form-error">*Please enter a valid Number</p>
         )} */}
         {/* 
         <IndianCitiesReact
@@ -814,7 +818,7 @@ const AdminPreOnboarding = () => {
         <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
           <div className="form-group">
             <label>Login ID</label>
-            <sup style={{ color: "red" }}>*</sup>
+            <sup className="form-error">*</sup>
             <div className="input-group">
               <input
                 className={`form-control ${
@@ -844,7 +848,7 @@ const AdminPreOnboarding = () => {
         <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
           <div className="form-group">
             <label>Generate Password</label>
-            <sup style={{ color: "red" }}>*</sup>
+            <sup className="form-error">*</sup>
             <div className="input-group">
               <input
                 type="text"
@@ -867,7 +871,7 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
-            Role <sup style={{ color: "red" }}>*</sup>
+            Role <sup className="form-error">*</sup>
           </label>
           <Select
             options={roledata.map((option) => ({
@@ -895,21 +899,21 @@ const AdminPreOnboarding = () => {
             }}
           />
           {isRequired.role && (
-            <p style={{ color: "red" }}>*Please select a Role</p>
+            <p className="form-error">*Please select a Role</p>
           )}
         </div>
         <div className="col-md-3">
-              <label className="form-label">
-                Joining Date <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={joiningDate}
-                  onChange={(e) => setJoiningDate(e)}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </div>
+          <label className="form-label">
+            Joining Date <sup className="form-error">*</sup>
+          </label>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              value={joiningDate}
+              onChange={(e) => setJoiningDate(e)}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </div>
         {/* <FieldContainer
           type="date"
           astric
@@ -919,18 +923,18 @@ const AdminPreOnboarding = () => {
           value={joiningDate}
           onChange={(e) => setJoiningDate(e.target.value)}
         /> */}
- <div className="col-md-3">
-              <label className="form-label">
-                DOB <sup style={{ color: "red" }}>*</sup>
-              </label>
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={dateOfBirth}
-                  onChange={handleDateChange}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-            </div>
+        <div className="col-md-3">
+          <label className="form-label">
+            DOB <sup className="form-error">*</sup>
+          </label>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              value={dateOfBirth}
+              onChange={handleDateChange}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </div>
         {/* <FieldContainer
           astric
           label="DOB"
@@ -943,7 +947,7 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
-            Gender <sup style={{ color: "red" }}>*</sup>
+            Gender <sup className="form-error">*</sup>
           </label>
           <Select
             className=""
@@ -971,7 +975,7 @@ const AdminPreOnboarding = () => {
             required
           />
           {isRequired.gender && (
-            <p style={{ color: "red" }}>*Please select a Gender</p>
+            <p className="form-error">*Please select a Gender</p>
           )}
         </div>
       </FormContainer>

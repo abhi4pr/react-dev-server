@@ -491,22 +491,26 @@ const UserMaster = () => {
   ]);
 
   function validateAndCorrectUserName(userName) {
+    userName = userName.replace(/\s{2,}/g, " ").trim();
 
-    userName = userName.replace(/\s{2,}/g, ' ').trim();
-  
     const lettersOnly = /^[A-Za-z]+$/;
-  
-    const correctedNameParts = userName.split(" ").map(part => {
-      let filteredPart = part.split('').filter(char => char.match(lettersOnly)).join('');
-  
-      return filteredPart.charAt(0).toUpperCase() + filteredPart.slice(1).toLowerCase();
+
+    const correctedNameParts = userName.split(" ").map((part) => {
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
     });
-  
+
     const correctedUserName = correctedNameParts.join(" ");
 
-    return correctedUserName.replace(/\s+/g, ' ').trim();
+    return correctedUserName.replace(/\s+/g, " ").trim();
   }
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -1006,19 +1010,23 @@ const UserMaster = () => {
     }
   };
 
-
   function trimeUserName(userName) {
-    userName = userName.replace(/\s{2,}/g, ' ').trim();
+    userName = userName.replace(/\s{2,}/g, " ").trim();
     const lettersOnly = /^[A-Za-z]+$/;
-    const correctedNameParts = userName.split(" ").map(part => {
-        let filteredPart = part.split('').filter(char => char.match(lettersOnly)).join('');
-        return filteredPart.charAt(0).toUpperCase() + filteredPart.slice(1).toLowerCase();
+    const correctedNameParts = userName.split(" ").map((part) => {
+      let filteredPart = part
+        .split("")
+        .filter((char) => char.match(lettersOnly))
+        .join("");
+      return (
+        filteredPart.charAt(0).toUpperCase() +
+        filteredPart.slice(1).toLowerCase()
+      );
     });
     // Join the corrected parts back into a single string without spaces
     const correctedUserName = correctedNameParts.join("");
     return correctedUserName;
-}
-
+  }
 
   const generateLoginId = async () => {
     const userName = username.trim().toLowerCase().split(" ");
@@ -1150,7 +1158,7 @@ const UserMaster = () => {
 
   useEffect(() => {
     console.log(dateOfBirth, "dateOfBirth");
-  }, [dateOfBirth])
+  }, [dateOfBirth]);
 
   function calculateAge(dob) {
     const birthDate = new Date(dob);
@@ -1299,28 +1307,27 @@ const UserMaster = () => {
         <div className="form-group">
           <label className="form-label ">Upload Image</label>
           <div className="flex-row sb">
-            <label htmlFor="uploadImage" className="profile-holder ml-1">
-              <User style={{ fontSize: "200px" }} />
-            </label>
-            <div style={{ borderBottom: "2px dashed black", width: "calc(100% - 100px)" }}></div>
             <button
               id="uploadImage"
               className="profile-holder ml-1"
               data-bs-toggle="modal"
               data-bs-target="#transferModal"
               title="Upload Image"
-              style={{ border: selectedImage === null ? "1px solid var(--medium)" : "none" }}
+              style={{
+                border:
+                  selectedImage === null ? "1px solid var(--medium)" : "none",
+              }}
             >
-              {!selectedImage && (<User style={{ fontSize: "200px" }} />)}
-              {selectedImage && (<img
-                className="profile-holder"
-                src={imagePreview}
-                alt="Selected"
-
-              />)}
+              {!selectedImage && <User style={{ fontSize: "200px" }} />}
+              {selectedImage && (
+                <img
+                  className="profile-holder"
+                  src={imagePreview}
+                  alt="Selected"
+                />
+              )}
             </button>
           </div>
-
         </div>
       </div>
       <div className=" col-3">
@@ -1493,12 +1500,12 @@ const UserMaster = () => {
           </div>
         </div> */}
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
-                  value={dateOfBirth}
-                  onChange={handleDateChange}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
+          <DatePicker
+            value={dateOfBirth}
+            onChange={handleDateChange}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
       </div>
       {dateOfBirth !== "" && (
         <FieldContainer fieldGrid={3} label="Age" value={age} />
@@ -1896,31 +1903,30 @@ const UserMaster = () => {
         ></Select>
       </div>
       <div className="col-md-3">
-
-      <FieldContainer
-        label="Official Email"
-        type="email"
-        placeholder="Not Allocated"
-        fieldGrid={3}
-        value={email}
-        onChange={handleEmailChange}
-        onBlur={() => {
-          if (email === "") {
-            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,personalEmail:true});
-            return setMandatoryFieldsEmpty((prevState) => ({
-              ...prevState,
-              email: true,
-            }));
-          } else {
-            setMandatoryFieldsEmpty({
-              ...mandatoryFieldsEmpty,
-              email: false,
-            });
-          }
-        }}
+        <FieldContainer
+          label="Official Email"
+          type="email"
+          placeholder="Not Allocated"
+          fieldGrid={3}
+          value={email}
+          onChange={handleEmailChange}
+          onBlur={() => {
+            if (email === "") {
+              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,personalEmail:true});
+              return setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
+                email: true,
+              }));
+            } else {
+              setMandatoryFieldsEmpty({
+                ...mandatoryFieldsEmpty,
+                email: false,
+              });
+            }
+          }}
         />
-      {!validEmail && <p className="form-error">*Please enter valid email</p>}
-        </div>
+        {!validEmail && <p className="form-error">*Please enter valid email</p>}
+      </div>
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
         <FieldContainer
           label="Official Contact"
@@ -1932,9 +1938,6 @@ const UserMaster = () => {
           onChange={handleContactChange}
           onBlur={handleContentBlur}
         />
-        {(isContactTouched || contact.length >= 10) && !isValidcontact && (
-          <p className="form-error">*Please enter a valid Number</p>
-        )}
       </div>
 
       <div className="col-xl-3 col-lg-3 col-md-3 col-sm-12">
@@ -2102,13 +2105,13 @@ const UserMaster = () => {
           </div>
         </div> */}
 
-<LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker 
-                value={joiningDate}
-                onChange={(e) => setJoiningDate(e)}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            value={joiningDate}
+            onChange={(e) => setJoiningDate(e)}
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
       </div>
 
       {department == constant.CONST_SALES_DEPT_ID && (
@@ -2150,7 +2153,6 @@ const UserMaster = () => {
         tabIndex={-1}
         aria-labelledby="transferModalLabel"
         aria-hidden="true"
-
       >
         <div className="modal-dialog modal-dialog-centered modal-lg">
           <div className="modal-content m-0">
@@ -2378,7 +2380,7 @@ const UserMaster = () => {
         )}
         {/*  Parmanent Address here------------ */}
         <div className="board_form form_checkbox">
-          <label className="cstm_check" className="form-error">
+          <label className="cstm_check form-error">
             Same as Current Addresss
             <input
               className="form-control"
@@ -2923,13 +2925,15 @@ const UserMaster = () => {
       ))}
       <div className="row">
         <div className="col-12">
-          <button
-            onClick={handleAddFamilyDetails}
-            variant="contained"
-            className="btn btn-outline-primary me-2"
-          >
-            Add More Family Details
-          </button>
+          {familyDetails.length < 3 && (
+            <button
+              onClick={handleAddFamilyDetails}
+              variant="contained"
+              className="btn btn-outline-primary me-2"
+            >
+              Add More Family Details
+            </button>
+          )}
         </div>
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -3007,14 +3011,16 @@ const UserMaster = () => {
       ))}
       <div className="row">
         <div className="col-12">
-          <button
-            type="button"
-            onClick={(e) => handleAddEducationDetails(e)}
-            variant="contained"
-            className="btn btn-outline-primary me-2"
-          >
-            Add More Education Details
-          </button>
+          {educationDetails.length < 5 && (
+            <button
+              type="button"
+              onClick={(e) => handleAddEducationDetails(e)}
+              variant="contained"
+              className="btn btn-outline-primary me-2"
+            >
+              Add More Education Details
+            </button>
+          )}
         </div>
       </div>
       <div style={{ display: "flex", justifyContent: "flex-end" }}>

@@ -12,7 +12,6 @@ const DigitalSignature = ({
   gettingData,
 }) => {
   const { toastAlert } = useGlobalContext();
-
   const [signature, setSignature] = useState();
 
   const handleClear = () => {

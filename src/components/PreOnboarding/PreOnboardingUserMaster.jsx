@@ -1546,12 +1546,12 @@ const PreOnboardingUserMaster = () => {
                     }`}
                     id="sidebarLetterBox"
                     onClick={() => setActiveTab(5)}
-                    style={{
-                      opacity: joiningDate <= formattedDate ? 0.5 : 1,
-                      // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
-                      pointerEvents:
-                        joiningDate <= formattedDate ? "none" : "auto",
-                    }}
+                    // style={{
+                    //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
+                    //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
+                    //   pointerEvents:
+                    //     joiningDate <= formattedDate ? "none" : "auto",
+                    // }}
                   >
                     <div className="progress-circle progressing pp-26">
                       <div className="progress-circle-border">
@@ -1562,7 +1562,7 @@ const PreOnboardingUserMaster = () => {
                         <i className="bi bi-file-earmark-text" />
                       </div>
                     </div>
-                    <h2 className="letter_tab_name">Letter</h2>
+                    <h2 className="letter_tab_name">Offer Letter</h2>
                   </div>
                   {/* )} */}
                   <div
@@ -1576,8 +1576,8 @@ const PreOnboardingUserMaster = () => {
                     }`}
                     id="sidebarPolicyBox"
                     style={{
-                      pointerEvents: documentPercentage < 0 ? "none" : "auto",
-                      opacity: documentPercentage < 0 ? 0.5 : 1,
+                      pointerEvents: documentPercentage < 90 ? "none" : "auto",
+                      opacity: documentPercentage < 90 ? 0.5 : 1,
                     }}
                     onClick={() => setActiveTab(3)}
                   >
@@ -1593,7 +1593,7 @@ const PreOnboardingUserMaster = () => {
                     <h2 className="policy_tab_name">
                       COC <small>Code of conduct</small>
                       <div className="cocInfo">
-                        {documentPercentage < 0 && (
+                        {documentPercentage < 90 && (
                           <p>
                             Please complete documentation by 90% then you can
                             read coc
