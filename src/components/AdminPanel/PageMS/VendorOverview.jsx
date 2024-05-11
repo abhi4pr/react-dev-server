@@ -7,11 +7,20 @@ import { Link } from "react-router-dom";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import RouteIcon from "@mui/icons-material/Route";
 import PriceChangeIcon from "@mui/icons-material/PriceChange";
-import { Box, Button, Grid, Skeleton, Stack } from "@mui/material";
+import { Box, Grid, Skeleton, Stack } from "@mui/material";
 import ContentCopyOutlinedIcon from "@mui/icons-material/ContentCopyOutlined";
 import CopyAllOutlinedIcon from "@mui/icons-material/CopyAllOutlined";
-import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import { useGlobalContext } from "../../../Context/Context";
+import {
+  setShowPageModal,
+  setShowWhatsappModal,
+  setVendorRowData,
+  setWhatsappLink,
+} from "../../Store/PageOverview";
+import { useDispatch } from "react-redux";
+import VendorWhatsappLinkModla from "./VendorWhatsappLinkModla";
+import OpenWithIcon from "@mui/icons-material/OpenWith";
+import VendorPageModal from "./VendorPageModal";
 
 const VendorOverview = () => {
   const { toastAlert } = useGlobalContext();
@@ -23,6 +32,8 @@ const VendorOverview = () => {
   const [cycleData, setCycleData] = useState([{}]);
   const [payData, setPayData] = useState([{}]);
   const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
 
   const getData = () => {
     setLoading(true);
@@ -57,6 +68,20 @@ const VendorOverview = () => {
     setFilterData(result);
   }, [search]);
 
+  const handleOpenWhatsappModal = (whatsappLink) => {
+    return () => {
+      dispatch(setShowWhatsappModal());
+      dispatch(setWhatsappLink(whatsappLink));
+    };
+  };
+
+  const handleClickVendorName = (params) => {
+    return () => {
+      dispatch(setVendorRowData(params.row));
+      dispatch(setShowPageModal());
+    };
+  };
+
   const dataGridcolumns = [
     {
       field: "sno",
@@ -68,12 +93,22 @@ const VendorOverview = () => {
       field: "vendorMast_name",
       headerName: "Vendor Name",
       width: 200,
-      editable: true,
+      // editable: true,
+      renderCell: (params) => {
+        return (
+          <div
+            onClick={handleClickVendorName(params)}
+            className="link-primary cursor-pointer text-truncate"
+          >
+            {params.row.vendorMast_name}
+          </div>
+        );
+      },
     },
     {
       field: "vendor_category",
       headerName: "Vendor Category",
-      width:150
+      width: 150,
     },
     {
       field: "mobile",
@@ -219,43 +254,53 @@ const VendorOverview = () => {
       },
       editable: true,
     },
-{
+    {
       field: "bank_name",
       headerName: "Bank Name",
       width: 200,
-},
-{
+    },
+    {
       field: "account_type",
       headerName: "Account Type",
       width: 200,
-},
-{
+    },
+    {
       field: "account_no",
       headerName: "Account No",
       width: 200,
-},
-{
+    },
+    {
       field: "ifsc_code",
       headerName: "IFSC Code",
       width: 200,
-},
-{
+    },
+    {
       field: "upi_id",
       headerName: "UPI ID",
       width: 200,
-},
-    // formData.append("whatsapp_link", whatsappLink.map((link) => link.trim()));
-
-    // if (bankName) {
-    //   formData.append("bank_name", bankName);
-    //   formData.append("account_type", accountType);
-    //   formData.append("account_no", accountNo);
-    //   formData.append("ifsc_code", ifscCode);
-    // }
-
-    // if (upiId) {
-    //   formData.append("upi_id", upiId);
-    // }
+    },
+    {
+      field: "whatsapp_link",
+      headerName: "Whatsapp Link",
+      width: 200,
+      renderCell: (params) => {
+        return (
+          <div>
+            {
+              params.row?.whatsapp_link && (
+                <div
+                  className="text-truncate link-primary cursor-pointer"
+                  onClick={handleOpenWhatsappModal(params.row.whatsapp_link)}
+                >
+                  <OpenWithIcon />
+                </div>
+              )
+              // ))
+            }
+          </div>
+        );
+      },
+    },
     {
       field: "action",
       headerName: "Action",
@@ -302,13 +347,13 @@ const VendorOverview = () => {
   const copySelectedRows = (type) => {
     let data = [];
     let selectedRows = [];
-    
+
     if (type === 1) {
       selectedRows = Array.from(
         document.getElementsByClassName("MuiDataGrid-row")
       ).filter((row) => row.classList.contains("Mui-selected"));
     }
-    
+
     data = selectedRows.map((row) => {
       let rowData = {};
       for (let j = 1; j < row.children.length - 1; j++) {
@@ -318,35 +363,43 @@ const VendorOverview = () => {
       }
       return rowData;
     });
-    
+
     let copyData = data.map((item) => {
-      return `Vendor Name: ${item.vendorMast_name}\n` +
-             `Mobile: ${item.mobile}\n` +
-             `Alternate Mobile: ${item.alternate_mobile}\n` +
-             `Email: ${item.email}\n` +
-             `Home City: ${item.home_city}\n` +
-             `GST No: ${item.gst_no}\n` +
-             `Threshold Limit: ${item.threshold_limit}\n` +
-             `Country Code: ${item.country_code}\n` +
-             `Company Pincode: ${item.company_pincode}\n` +
-             `Company Address: ${item.company_address}\n` +
-             `Company City: ${item.company_city}\n` +
-             `Company Name: ${item.company_name}\n` +
-             `Company State: ${item.company_state}\n` +
-             `Home Address: ${item.home_address}\n` +
-             `Home State: ${item.home_state}\n` +
-             `Pan No: ${item.pan_no}\n` +
-             `Personal Address: ${item.personal_address}\n` +
-             `Vendor Type: ${typeData?.find((type) => type._id == item.type_id)?.type_name}\n` +
-             `Platform: ${item.platform_id}\n` +
-             `Payment Method: ${payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name}\n` +
-             `Cycle: ${cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name}\n`;
+      return (
+        `Vendor Name: ${item.vendorMast_name}\n` +
+        `Mobile: ${item.mobile}\n` +
+        `Alternate Mobile: ${item.alternate_mobile}\n` +
+        `Email: ${item.email}\n` +
+        `Home City: ${item.home_city}\n` +
+        `GST No: ${item.gst_no}\n` +
+        `Threshold Limit: ${item.threshold_limit}\n` +
+        `Country Code: ${item.country_code}\n` +
+        `Company Pincode: ${item.company_pincode}\n` +
+        `Company Address: ${item.company_address}\n` +
+        `Company City: ${item.company_city}\n` +
+        `Company Name: ${item.company_name}\n` +
+        `Company State: ${item.company_state}\n` +
+        `Home Address: ${item.home_address}\n` +
+        `Home State: ${item.home_state}\n` +
+        `Pan No: ${item.pan_no}\n` +
+        `Personal Address: ${item.personal_address}\n` +
+        `Vendor Type: ${
+          typeData?.find((type) => type._id == item.type_id)?.type_name
+        }\n` +
+        `Platform: ${item.platform_id}\n` +
+        `Payment Method: ${
+          payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
+        }\n` +
+        `Cycle: ${
+          cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
+        }\n`
+      );
     });
-    
+
     converttoclipboard(copyData.join("\n"));
     toastAlert("Copied Selected Pages");
   };
-  
+
   const converttoclipboard = (copydata) => {
     const textarea = document.createElement("textarea");
     textarea.value = copydata;
@@ -355,49 +408,47 @@ const VendorOverview = () => {
     document.execCommand("copy");
     document.body.removeChild(textarea);
   };
-  
 
   const copyAllRows = () => {
-  let data = filterData.map((item) => {
-    let formattedData =
-      `Vendor Name: ${item.vendorMast_name}\n` +
-      `Mobile: ${item.mobile}\n` +
-      `Alternate Mobile: ${item.alternate_mobile}\n` +
-      `Email: ${item.email}\n` +
-      `Home City: ${item.home_city}\n` +
-      `GST No: ${item.gst_no}\n` +
-      `Threshold Limit: ${item.threshold_limit}\n` +
-      `Country Code: ${item.country_code}\n` +
-      `Company Pincode: ${item.company_pincode}\n` +
-      `Company Address: ${item.company_address}\n` +
-      `Company City: ${item.company_city}\n` +
-      `Company Name: ${item.company_name}\n` +
-      `Company State: ${item.company_state}\n` +
-      `Home Address: ${item.home_address}\n` +
-      `Home State: ${item.home_state}\n` +
-      `Pan No: ${item.pan_no}\n` +
-      `Personal Address: ${item.personal_address}\n` +
-      `Vendor Type: ${
-        typeData?.find((type) => type._id == item.type_id)?.type_name
-      }\n` +
-      `Platform: ${item.platform_id}\n` +
-      `Payment Method: ${
-        payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
-      }\n` +
-      `Cycle: ${
-        cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
-      }\n`;
-    return formattedData;
-  }
-  );
-  console.log(data, "data");
-  // navigator.clipboard.writeText(data.join("\n"));
-  converttoclipboard(data.join("\n"));
-  toastAlert("Copied All Pages");
+    let data = filterData.map((item) => {
+      let formattedData =
+        `Vendor Name: ${item.vendorMast_name}\n` +
+        `Mobile: ${item.mobile}\n` +
+        `Alternate Mobile: ${item.alternate_mobile}\n` +
+        `Email: ${item.email}\n` +
+        `Home City: ${item.home_city}\n` +
+        `GST No: ${item.gst_no}\n` +
+        `Threshold Limit: ${item.threshold_limit}\n` +
+        `Country Code: ${item.country_code}\n` +
+        `Company Pincode: ${item.company_pincode}\n` +
+        `Company Address: ${item.company_address}\n` +
+        `Company City: ${item.company_city}\n` +
+        `Company Name: ${item.company_name}\n` +
+        `Company State: ${item.company_state}\n` +
+        `Home Address: ${item.home_address}\n` +
+        `Home State: ${item.home_state}\n` +
+        `Pan No: ${item.pan_no}\n` +
+        `Personal Address: ${item.personal_address}\n` +
+        `Vendor Type: ${
+          typeData?.find((type) => type._id == item.type_id)?.type_name
+        }\n` +
+        `Platform: ${item.platform_id}\n` +
+        `Payment Method: ${
+          payData?.find((pay) => pay._id == item.payMethod_id)?.payMethod_name
+        }\n` +
+        `Cycle: ${
+          cycleData?.find((cycle) => cycle._id == item.cycle_id)?.cycle_name
+        }\n`;
+      return formattedData;
+    });
+
+    converttoclipboard(data.join("\n"));
+    toastAlert("Copied All Pages");
   };
 
   return (
     <>
+      <VendorWhatsappLinkModla />
       <div className="d-flex ">
         <Link to={`/admin/pms-vendor-master`} className="me-3">
           <button
@@ -565,6 +616,7 @@ const VendorOverview = () => {
           )}
         </div>
       </div>
+      <VendorPageModal  />
     </>
   );
 };

@@ -8,6 +8,8 @@ import jwtDecode from "jwt-decode";
 import { Navigate } from "react-router";
 import { useParams } from "react-router-dom";
 import Select from "react-select";
+import { IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const VendorEdit = () => {
   const [cycleName, setCycleName] = useState("");
@@ -28,7 +30,7 @@ const VendorEdit = () => {
   const [compName, setCompName] = useState("");
   const [compAddress, setCompAddress] = useState("");
   const [compCity, setCompCity] = useState("");
-  const [compPin, setCompPin] = useState("");
+  const [compPin, setCompPin] = useState(0);
   const [compState, setCompState] = useState("");
   const [limit, setLimit] = useState("");
   const [homeAddress, setHomeAddress] = useState("");
@@ -44,6 +46,13 @@ const VendorEdit = () => {
   const [cycleData, setCycleData] = useState([]);
   const [panImglink, setPanImglink] = useState("");
   const [gstImglink, setGstImglink] = useState("");
+  const [vendorCategory, setVendorCategory] = useState("Theme Page");
+  const [bankName, setBankName] = useState("");
+  const [accountType, setAccountType] = useState("");
+  const [accountNo, setAccountNo] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
+  const [upiId, setUpiId] = useState("");
+  const [whatsappLink, setWhatsappLink] = useState([]);
 
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
@@ -84,10 +93,13 @@ const VendorEdit = () => {
       setCycleId(data[0].cycle_id);
       setPanImglink(data[0].upload_pan_image);
       setGstImglink(data[0].upload_gst_image);
-      // setTypeData(res.data.tmsVendorTypeList)
-      // setPlatformData(res.data.tmsVendorPlatformList)
-      // setPayData(res.data.tmsVendorPayList)
-      // setCycleData(res.data.tmsVendorCycleList)
+      setBankName(data[0].bank_name);
+      setAccountType(data[0].account_type);
+      setAccountNo(data[0].account_no);
+      setIfscCode(data[0].ifsc_code);
+      setUpiId(data[0].upi_id);
+      setWhatsappLink(data[0].whatsapp_link);
+      setVendorCategory(data[0].vendor_category );
     });
 
     axios.get(baseUrl + "getAllVendor").then((res) => {
@@ -115,6 +127,31 @@ const VendorEdit = () => {
   useEffect(() => {
     getData();
   }, []);
+
+  // useEffect(()=>{
+  //   if(payData.find((role) => role._id === payId)?.payMethod_name ===
+  //   "Bank Details"){
+  //     setBankName('')
+  //     setAccountType('')
+  //     setAccountNo('')
+  //     setIfscCode('')
+  //   }
+  // },[payId])
+
+  
+  const handleLinkChange = (index, newValue) => {
+    const updatedLinks = whatsappLink.map((link, i) =>
+      i === index ? newValue : link
+    );
+    setWhatsappLink(updatedLinks);
+  };
+
+  const removeLink = (index) => {
+    return () => {
+      const updatedLinks = whatsappLink.filter((link, i) => i !== index);
+      setWhatsappLink(updatedLinks);
+    };
+  };
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -154,7 +191,7 @@ const VendorEdit = () => {
     formData.append("vendorMast_name", vendorName);
     formData.append("country_code", countryCode);
     formData.append("mobile", mobile);
-    formData.append("alternate_mobile", altMobile);
+    formData.append("alternate_mobile", altMobile?altMobile:"");
     formData.append("email", email);
     formData.append("personal_address", perAddress);
     formData.append("pan_no", pan);
@@ -164,7 +201,7 @@ const VendorEdit = () => {
     formData.append("company_name", compName);
     formData.append("company_address", compAddress);
     formData.append("company_city", compCity);
-    formData.append("company_pincode", compPin);
+    formData.append("company_pincode", compPin?Number(compPin):0);
     formData.append("company_state", compState);
     formData.append("threshold_limit", limit);
     formData.append("home_address", homeAddress);
@@ -175,7 +212,26 @@ const VendorEdit = () => {
     formData.append("payMethod_id", payId);
     formData.append("cycle_id", cycleId);
     formData.append("created_by", userID);
-    
+    formData.append("vendor_category", vendorCategory);
+    formData.append("whatsapp_link", whatsappLink.map((link) => link.trim()));
+
+    if (bankName) {
+      formData.append("bank_name", bankName);
+      formData.append("account_type", accountType);
+      formData.append("account_no", Number(accountNo));
+      formData.append("ifsc_code", ifscCode);
+    }else{
+      formData.append("bank_name", "");
+      formData.append("account_type", "");
+      formData.append("account_no", "");
+      formData.append("ifsc_code", "");
+    }
+
+    if (upiId) {
+      formData.append("upi_id", upiId);
+    }else{
+      formData.append("upi_id", "");
+    }
     axios
       .put(baseUrl + `updateVendorMast/${_id}`, formData,{
         headers: {
@@ -206,6 +262,8 @@ const VendorEdit = () => {
     } 
   };
 
+ 
+
   return (
     <>
       <FormContainer
@@ -219,6 +277,25 @@ const VendorEdit = () => {
           required={true}
           onChange={(e) => setVendorName(e.target.value)}
         />
+         <div className="form-group col-6">
+          <label className="form-label">
+            Vendor Category <sup style={{ color: "red" }}>*</sup>
+          </label>
+          <Select
+            options={["Theme Page", "Influancer"].map((option) => ({
+              label: option,
+              value: option,
+            }))}
+            required={true}
+            value={{
+              value: vendorCategory,
+              label: vendorCategory,
+            }}
+            onChange={(e) => {
+              setVendorCategory(e.value);
+            }}
+          ></Select>
+        </div>
 
         <FieldContainer
           label="Country Code *"
@@ -316,6 +393,83 @@ const VendorEdit = () => {
             }}
           ></Select>
         </div>
+
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "Bank Details" && (
+          <FieldContainer
+            label="Bank Name *"
+            value={bankName}
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "Bank Details"
+                ? true
+                : false
+            }
+            onChange={(e) => setBankName(e.target.value)}
+          />
+        )}
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "Bank Details" && (
+          <FieldContainer
+            label="Account Type *"
+            value={accountType}
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "Bank Details"
+                ? true
+                : false
+            }
+            onChange={(e) => setAccountType(e.target.value)}
+          />
+        )}
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "Bank Details" && (
+          <FieldContainer
+            label="Account Number *"
+            value={accountNo}
+            type="number"
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "Bank Details"
+                ? true
+                : false
+            }
+            onChange={(e) => setAccountNo(e.target.value)}
+          />
+        )}
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "Bank Details" && (
+          <FieldContainer
+            label="IFSC *"
+            value={ifscCode}
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "Bank Details"
+                ? true
+                : false
+            }
+            onChange={(e) => setIfscCode(e.target.value)}
+          />
+        )}
+        {payData.find((role) => role._id === payId)?.payMethod_name ===
+          "UPI" && (
+          <FieldContainer
+            label="UPI ID *"
+            value={upiId}
+            // className= "w-100"
+            required={
+              payData.find((role) => role._id === payId)?.payMethod_name ===
+              "UPI"
+                ? true
+                : false
+            }
+            onChange={(e) => setUpiId(e.target.value)}
+          />
+        )}
 
         <div className="form-group col-6">
           <label className="form-label">
@@ -430,6 +584,32 @@ const VendorEdit = () => {
           required={false}
           onChange={(e) => setHomeState(e.target.value)}
         />
+          {whatsappLink.map((link, index) => (
+          <>
+            <FieldContainer
+              key={index}
+              label={`Whatsapp Link ${index + 1}`}
+              value={link}
+              required={false}
+              onChange={(e) => handleLinkChange(index, e.target.value)}
+            />
+            {index > 0 && (
+              // <Button onClick={removeLink(index)}  icon />
+
+              <IconButton
+              size="small"
+              sx={{
+                display: "inline",
+              }}
+                onClick={removeLink(index)}
+                color="secondary"
+                aria-label="add an alarm"
+              >
+                <CloseIcon />
+              </IconButton>
+            )}
+          </>
+        ))}
      {panImglink?.length>0 &&   <img  style={{ width: "100px", height: "100px" }} src={panImglink} alt="pan" />}
      {  gstImglink?.length>0 && <img   style={{ width: "100px", height: "100px" }} src={gstImglink} alt="gst" />}
       </FormContainer>
