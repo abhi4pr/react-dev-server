@@ -538,6 +538,16 @@ const VendorMaster = () => {
     getData();
   }, []);
 
+  // useEffect(()=>{
+  //   if(payData.find((role) => role._id === payId)?.payMethod_name ===
+  //   "Bank Details"){
+  //     setBankName('')
+  //     setAccountType('')
+  //     setAccountNo('')
+  //     setIfscCode('')
+  //   }
+  // },[payId])
+
   const handleMobileNumSet = (e, setState) => {
     const re = /^[0-9\b]+$/;
     if (
