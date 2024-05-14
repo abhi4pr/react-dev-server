@@ -14,9 +14,16 @@ export default function EmailEvent() {
   const [openDelateEmailEventDialog, setOpenDelateEmailEventDialog] =
     useState(false);
   const [rowData, setRowData] = useState({});
+
+  const token = sessionStorage.getItem("token");
+
   const getApi = () => {
     axios
-      .get(`${baseUrl}get_all_email_events`)
+      .get(`${baseUrl}get_all_email_events`,{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
+      })
       .then((response) => {
         console.log(response.data.data);
         setData(response.data.data);
@@ -26,6 +33,7 @@ export default function EmailEvent() {
         console.log(error);
       });
   };
+
   useEffect(() => {
     getApi();
   }, []);

@@ -21,7 +21,11 @@ const EmailTempOverview = () => {
   const loginUserId = decodedToken.id;
 
   async function getData() {
-    await axios.get(baseUrl + "get_all_email_contents").then((res) => {
+    await axios.get(baseUrl + "get_all_email_contents",{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    }).then((res) => { 
       setData(res.data.data);
       setFilterData(res.data.data);
     });
