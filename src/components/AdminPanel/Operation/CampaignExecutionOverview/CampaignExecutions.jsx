@@ -7,6 +7,7 @@ import Select from "react-select";
 import FormContainer from "../../FormContainer";
 import CampaignExecutionSummary from "./CampaignExecutionSummary";
 import ScreenRotationAltRoundedIcon from "@mui/icons-material/ScreenRotationAltRounded";
+import { useGlobalContext } from "../../../../Context/Context";
 
 const style = {
   position: "absolute",
@@ -21,6 +22,8 @@ const style = {
 };
 
 const CampaignExecutions = () => {
+  const { toastAlert, toastError } = useGlobalContext();
+
   const [shortcode, setShortcode] = useState([]);
   const [pageDetails, setPageDetails] = useState([]);
   const [assignData, setAssignData] = useState([]);
@@ -39,10 +42,14 @@ const CampaignExecutions = () => {
   const [phaseId, setPhaseId] = useState();
   const [allPages, setAllPages] = useState([]);
   const [newPage, setNewPage] = useState("");
+  console.log(newPage, "new data");
+
   const [storyLink, setStoryLink] = useState("");
   const [storyViews, setStoryViews] = useState("");
   const [updateClicked, setUpdateClicked] = useState(false);
   const [updateParams, setUpdateParams] = useState(null);
+  const [replaceData, setReplaceData] = useState();
+  console.log(replaceData, "new data");
 
   const openModal = (phase_id) => {
     setIsModalOpen(true);
@@ -54,9 +61,9 @@ const CampaignExecutions = () => {
     setPhaseId(phase_id);
   };
 
-  const openModal3 = (phase_id) => {
+  const openModal3 = (row) => {
     setIsModalOpen3(true);
-    setPhaseId(phase_id);
+    setReplaceData(row);
   };
 
   const closeModal = () => {
@@ -122,9 +129,11 @@ const CampaignExecutions = () => {
 
   useEffect(() => {
     const fetchPageDetails = async (index) => {
-      if ((shortcode, updateClicked && updateParams)) {
+      console.log(shortcode, "klklk");
+      if ((shortcode || updateClicked && updateParams)) {
         const regex = /\/(reel|p)\/([A-Za-z0-9-_]+)/;
         const match = shortcode?.match(regex);
+        console.log(match, "kkkk");
         try {
           const payload = {
             shortCode: match[2],
@@ -143,7 +152,7 @@ const CampaignExecutions = () => {
             payload,
             config
           );
-
+          console.log(response, "response")
           if (response.data.success == true) {
             const res = await axios.put(
               `${baseUrl}assignment/post/details/update`,
@@ -161,7 +170,9 @@ const CampaignExecutions = () => {
                 story_views: storyViews,
                 last_link_hit_date: new Date(),
               }
+              
             );
+            toastAlert('Add Details successful!')
             handleAllCampaign();
             setAssId("");
             setPageDetails((prevPageDetails) => {
@@ -283,7 +294,7 @@ const CampaignExecutions = () => {
       renderCell: (params, i) => (
         <button
           className="btn btn-danger"
-          onClick={() => openModal3(params.row.phase_id)}
+          onClick={() => openModal3(params.row)}
         >
           Replace page
         </button>
@@ -295,6 +306,7 @@ const CampaignExecutions = () => {
       width: 150,
       renderCell: (params, i) => (
         <TextField
+          fullWidth
           className="form-control"
           placeholder="Story Link"
           type="text"
@@ -462,6 +474,7 @@ const CampaignExecutions = () => {
     const pageData = await axios.get(
       `https://purchase.creativefuel.io/webservices/RestController.php?view=inventoryDataList`
     );
+    console.log(pageData.data.body.p_id, "kkkk");
     setAllPages(pageData.data.body);
   };
 
@@ -472,12 +485,23 @@ const CampaignExecutions = () => {
   const handleAddPage = async () => {
     const res = await axios.post(`${baseUrl}assignment/add_new_page`, {
       _id: selectedCampaign,
-      page_name: newPage,
+      // campaignName:selectedCampaignName,
+      p_id: newPage,
       phase_id: shiftPages,
     });
   };
 
-  const handleReplace = async () => { };
+  const handleReplace = async () => {
+    console.log("mmm");
+    const res = await axios.post(`${baseUrl}assignment/replace_page_new`, {
+      phase_id: replaceData?.phase_id,
+      p_id: replaceData?.p_id,
+      new_pId: newPage,
+      _id: selectedCampaign
+    })
+    console.log(res.data);
+    closeModal3()
+  };
 
   return (
     <>
