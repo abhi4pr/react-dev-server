@@ -144,7 +144,7 @@
 
 
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 // import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 // import { FaEdit } from "react-icons/fa";
@@ -153,6 +153,7 @@ import axios from "axios";
 import FormContainer from "../FormContainer";
 import jwtDecode from "jwt-decode";
 import { baseUrl } from "../../../utils/config";
+import { set } from "date-fns";
 
 const ObjectOverview = () => {
   const [search, setSearch] = useState("");
@@ -165,6 +166,15 @@ const ObjectOverview = () => {
   const [filters, setFilters] = useState([]);
   const [savedFilters, setSavedFilters] = useState([]);
   const [customFilterNames, setCustomFilterNames] = useState(Array(savedFilters?.length)?.fill(''));
+  const [editName, setEditName] = useState({ index: null, value: false });
+  const setToggleEdit = (index) => {
+    savedFilters.map((item, i) => {
+      if (i === index) {
+        setEditName({ index: index, value: true });
+      }
+    })
+  };
+
 
   const storedToken = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(storedToken);
@@ -236,7 +246,7 @@ const ObjectOverview = () => {
     } else {
       newColumns = [...columns, columnName];
     }
-    
+
     axios.put(`${baseUrl}` + `edit_dynamic_table_data`, {
       user_id: userID,
       table_name: 'object table',
@@ -370,13 +380,15 @@ const ObjectOverview = () => {
     const updatedSavedFilters = [...savedFilters];
     updatedSavedFilters[index].name = customFilterNames[index] || `Filter ${index + 1}`;
     setSavedFilters(updatedSavedFilters);
+    if (editName.index === index) { setEditName({ index: null, value: false }); }
+
     axios.put(baseUrl + 'edit_dynamic_table_data', {
       user_id: userID,
       table_name: 'object table',
       filter_array: updatedSavedFilters
     });
   };
-
+  console.log(editName);
   const saveFilter = () => {
     const newSavedFilters = [...savedFilters, { filters }];
     setSavedFilters(newSavedFilters);
@@ -416,33 +428,57 @@ const ObjectOverview = () => {
           true
         }
       />
+      <div className="card">
+        <div className="card-body">
 
-      <div style={{ marginBottom: '10px' }}>
-        {savedFilters?.map((savedFilter, index) => (
-          <div key={index} className="saved-filter-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '1%' }}>
-            <input
-              type="text"
-              value={customFilterNames[index]}
-              required="true"
-              onChange={(e) => handleFilterNameChange(index, e.target.value)}
-              placeholder={`Filter ${index + 1} Name`}
-              className="form-control filter-name-input"
-              style={{ width: '25%', marginRight: '10px' }}
-            />
-            <button className="btn btn-warning" onClick={() => applySavedFilter(savedFilter)} style={{ marginRight: '10px' }}>
-              {savedFilter.name ? savedFilter.name : `Filter ${index + 1}`}
-            </button>
-            <button className="btn btn-success" onClick={() => saveFilterName(index)} style={{ marginRight: '10px' }}>Change filter name</button>
-            <button className="btn btn-danger" onClick={() => deleteFilter(index)}>Delete</button>
+
+          <div className="filter-container row">
+            {savedFilters?.map((savedFilter, index) => (
+              <div key={index} className="saved-filter-container col-md-3" >
+
+                <div className="filter-wrapper">
+                  <span><Dropdown ><div className="drop-content">
+                    <div className="drop-option" onClick={() => setToggleEdit(index)} > <i className="bi bi-pencil"></i>
+                      <p className="w-100 pl-3">
+                        Edit Name
+                      </p>
+                    </div>
+                    <div className="drop-option mt-1" onClick={() => deleteFilter(index)}> <i className="bi bi-trash"></i> <p className="w-100 pl-3">
+                      Delete
+                    </p>
+                    </div>
+                  </div></Dropdown></span>
+                  <button className="btn cmnbtn btn_sm btn-warning" onClick={() => applySavedFilter(savedFilter)} style={{ marginRight: '10px' }}>
+                    {savedFilter.name ? savedFilter.name : `Filter ${index + 1}`}
+                  </button>
+                </div>
+                {editName.index === index && (
+                  <>
+                    <input
+                      type="text"
+                      value={customFilterNames[index]}
+                      required="true"
+                      onChange={(e) => handleFilterNameChange(index, e.target.value)}
+                      placeholder={`Filter ${index + 1} Name`}
+                      className="form-control filter-name-input"
+
+                    />
+                    <button className="btn cmnbtn btn-success" onClick={() => saveFilterName(index)} style={{ marginTop: '10px' }}>Change filter name</button>
+                  </>
+                )}
+                {/* <button className="btn btn-danger" onClick={() => deleteFilter(index)}>Delete</button> */}
+              </div>
+            ))}
+
           </div>
-        ))}
-        <button
-          className="btn btn-success"
-          onClick={saveFilter}
-          disabled={filters.length === 0}
-        >
-          Save Filter
-        </button>
+          <button
+            className="btn cmnbtn btn-success mt-2"
+            onClick={saveFilter}
+            disabled={filters.length === 0}
+          >
+            Save Filter
+          </button>
+        </div>
       </div>
 
       <div className="card">
@@ -610,7 +646,7 @@ const ObjectOverview = () => {
               <div className="MuiTablePagination-actions mr-4">
                 <div className="MuiInputBase-root MuiInputBase-colorPrimary MuiTablePagination-input css-16c50h-MuiInputBase-root-MuiTablePagination-select">
                   <label className="mr-4" htmlFor="itemsPerPage">Items Per Page</label>
-                  <select style={{ borderRadius:"40px",background:"var(--white)", border:"none"}} id="itemsPerPage" value={itemsPerPage} onChange={handleItemsPerPageChange}>
+                  <select style={{ borderRadius: "40px", background: "var(--white)", border: "none" }} id="itemsPerPage" value={itemsPerPage} onChange={handleItemsPerPageChange}>
                     <option value={10}>10</option>
                     <option value={20}>20</option>
                     <option value={50}>50</option>
@@ -628,5 +664,33 @@ const ObjectOverview = () => {
     </div>
   );
 };
+const Dropdown = ({ children, btnName }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef();
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref]);
+  return (
+    <div className="dropdown1" ref={ref}>
+      <div className="dropdown-toggle1" onClick={() => setIsOpen(!isOpen)}>
+        <i className="bi bi-three-dots"></i>
+      </div>
+      {isOpen &&
+        <div className="dropdown-content1">
+          {children}
+        </div>
+      }
+    </div>
+  );
+}
 export default ObjectOverview;
