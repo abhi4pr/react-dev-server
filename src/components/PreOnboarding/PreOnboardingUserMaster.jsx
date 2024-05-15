@@ -138,7 +138,7 @@ const familyDisplayFields = [
   "contact",
   "occupation",
   "relation",
-  "annual_income",
+  // "annual_income",
 ];
 
 const familyFieldLabels = {
@@ -146,7 +146,7 @@ const familyFieldLabels = {
   DOB: "Date of Birth",
   contact: "Contact Number",
   occupation: "Occupation",
-  annual_income: "Annual Income",
+  // annual_income: "Annual Income",
   relation: "Relationship",
 };
 
@@ -395,6 +395,8 @@ const PreOnboardingUserMaster = () => {
   //     console.error("Error fetching data:", error);
   //   }
   // };
+  // const newDate = new Date();
+  // const currectDate = `${newDate.getDate()}-${newDate.getMonth() + 1}-${newDate.getFullYear()}`;
 
   const fetchCOCData = async () => {
     try {
@@ -1430,14 +1432,17 @@ const PreOnboardingUserMaster = () => {
               </div>
             </div>
             <div className="topnavbarRight">
+
               <div className="navbar_menu">
-                <div className="daysLeft">
-                  <img src={hourGlass} alt="welcome" />
-                  <h3>
-                    <span>{daysLeftCount}</span> Days left to join
-                  </h3>
-                </div>
+                {/*    <div className="daysLeft">
+                    <img src={hourGlass} alt="welcome" />
+                    <h3>
+                      <span>{daysLeftCount}</span> Days left to join
+                    </h3>
+                  </div>
+                   */}
               </div>
+
               <div className="user_box">
                 <div className="user_name">
                   <h3>
@@ -1478,9 +1483,8 @@ const PreOnboardingUserMaster = () => {
               <div className="sidebar_wrapper_in">
                 <div className="sidebar_items">
                   <div
-                    className={`sidebar_itembox ${
-                      activeTab == 1 ? "sidebar_item_active" : ""
-                    }`}
+                    className={`sidebar_itembox ${activeTab == 1 ? "sidebar_item_active" : ""
+                      }`}
                     id="sidebarFormBox"
                     onClick={() => setActiveTab(1)}
                   >
@@ -1502,9 +1506,8 @@ const PreOnboardingUserMaster = () => {
                     </div>
                   </div>
                   <div
-                    className={`sidebar_itembox sidebar_itemboxCol ${
-                      activeTab == 2 ? "sidebar_item_active" : ""
-                    }`}
+                    className={`sidebar_itembox sidebar_itemboxCol ${activeTab == 2 ? "sidebar_item_active" : ""
+                      }`}
                     id="sidebarDocumentBox"
                     onClick={() => setActiveTab(2)}
                   >
@@ -1541,17 +1544,16 @@ const PreOnboardingUserMaster = () => {
                   {/* Remove Comment */}
                   {/* {allUserData.offer_letter_send && ( */}
                   <div
-                    className={`sidebar_itembox ${
-                      activeTab === 5 ? "sidebar_item_active" : ""
-                    }`}
+                    className={`sidebar_itembox ${activeTab === 5 ? "sidebar_item_active" : ""
+                      }`}
                     id="sidebarLetterBox"
                     onClick={() => setActiveTab(5)}
-                    // style={{
-                    //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
-                    //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
-                    //   pointerEvents:
-                    //     joiningDate <= formattedDate ? "none" : "auto",
-                    // }}
+                  // style={{
+                  //   opacity: joiningDate <= formattedDate ? 0.5 : 1,
+                  //   // cursor: joiningDate <= formattedDate ? "not-allowed" : "pointer",
+                  //   pointerEvents:
+                  //     joiningDate <= formattedDate ? "none" : "auto",
+                  // }}
                   >
                     <div className="progress-circle progressing pp-26">
                       <div className="progress-circle-border">
@@ -1569,11 +1571,10 @@ const PreOnboardingUserMaster = () => {
                     // className={`sidebar_itembox  ${
                     //   activeTab == 3 ? "sidebar_item_active" : ""
                     // }`}
-                    className={`sidebar_itembox ${
-                      activeTab === 3 && documentPercentage < 90
-                        ? "sidebar_item_active"
-                        : ""
-                    }`}
+                    className={`sidebar_itembox ${activeTab === 3 && documentPercentage < 90
+                      ? "sidebar_item_active"
+                      : ""
+                      }`}
                     id="sidebarPolicyBox"
                     style={{
                       pointerEvents: documentPercentage < 90 ? "none" : "auto",
@@ -1595,17 +1596,15 @@ const PreOnboardingUserMaster = () => {
                       <div className="cocInfo">
                         {documentPercentage < 90 && (
                           <p>
-                            Please complete documentation by 90% then you can
-                            read coc
+                            Please complete Mandatory Document
                           </p>
                         )}
                       </div>
                     </h2>
                   </div>
                   <div
-                    className={`sidebar_itembox ${
-                      activeTab == 4 ? "sidebar_item_active" : ""
-                    }`}
+                    className={`sidebar_itembox ${activeTab == 4 ? "sidebar_item_active" : ""
+                      }`}
                     id="sidebarFaqBox"
                     onClick={() => setActiveTab(4)}
                   >
@@ -1709,8 +1708,9 @@ const PreOnboardingUserMaster = () => {
                                   type="text"
                                   // className="form-control"
                                   name="name"
-                                  // placeholder="Full Name"
-                                  value={username}
+                                  InputProps={{
+                                    readOnly: true,
+                                  }} value={username}
                                   onChange={handleFullNameChange}
                                 />
                               </div>
@@ -1744,6 +1744,9 @@ const PreOnboardingUserMaster = () => {
                                   onChange={(e) =>
                                     setPersonalEmail(e.target.value)
                                   }
+                                  InputProps={{
+                                    readOnly: true,
+                                  }}
                                 />
                               </div>
 
@@ -1752,6 +1755,7 @@ const PreOnboardingUserMaster = () => {
                                   label="Personal Contact"
                                   setParentComponentContact={setPersonalContact}
                                   parentComponentContact={personalContact}
+                                  
                                 />
                               </div>
 
@@ -1782,6 +1786,7 @@ const PreOnboardingUserMaster = () => {
                                   renderInput={(params) => (
                                     <TextField {...params} label="Gender" />
                                   )}
+                                  
                                 />
                               </div>
 
@@ -1942,7 +1947,7 @@ const PreOnboardingUserMaster = () => {
                                 />
                               </div>
 
-                              <GuardianFields
+                              {/* <GuardianFields
                                 guardianDetails={guardianDetails}
                                 guardianDisplayFields={guardianDisplayFields}
                                 guardianFieldLabels={guardianFieldLabels}
@@ -1956,7 +1961,7 @@ const PreOnboardingUserMaster = () => {
                                 handleRemoveGuardianDetails={
                                   handleRemoveGuardianDetails
                                 }
-                              />
+                              /> */}
 
                               <FamilyFields
                                 familyDetails={familyDetails}

@@ -125,21 +125,21 @@ const FamilyFields = ({
                   </>
                 );
 
-              case "annual_income":
-                return (
-                  <div className="form-group">
-                    <TextField
-                      key={key}
-                      name={key}
-                      type="number"
-                      label={familyFieldLabels[key]}
-                      variant="outlined"
-                      fullWidth
-                      value={detail[key]}
-                      onChange={(e) => handleFamilyDetailsChange(index, e)}
-                    />
-                  </div>
-                );
+              // case "annual_income":
+              //   return (
+              //     <div className="form-group">
+              //       <TextField
+              //         key={key}
+              //         name={key}
+              //         type="number"
+              //         label={familyFieldLabels[key]}
+              //         variant="outlined"
+              //         fullWidth
+              //         value={detail[key]}
+              //         onChange={(e) => handleFamilyDetailsChange(index, e)}
+              //       />
+              //     </div>
+              //   );
 
               default:
                 if (familyDisplayFields.includes(key)) {

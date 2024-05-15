@@ -12,6 +12,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
   const [reasonField, setReasonField] = useState(false);
   const [reason, setReason] = useState("");
   const [image64, setImage64] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
 
   const [previewOffer, setpreview] = useState(false);
   const date = new Date();
@@ -25,7 +27,6 @@ const LetterTab = ({ allUserData, gettingData }) => {
     formData.append("user_id", allUserData.user_id);
     formData.append("offer_later_status", false);
     formData.append("offer_later_reject_reason", reason);
-
     axios
       .put(`${baseUrl}` + `update_user`, formData, {
         headers: {
@@ -55,6 +56,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
   // };
   console.log("personal email", allUserData);
   const downloadOfferLetter = () => {
+    setIsLoading(true)
     var element = document.getElementById("element-to-print");
     var opt = {
       margin: 1,
@@ -91,7 +93,6 @@ const LetterTab = ({ allUserData, gettingData }) => {
         );
 
         pdfData.append("email_id", allUserData.PersonalEmail);
-
         axios
           .post(baseUrl + "offer_letter_send_in_mail", pdfData, {
             headers: {
@@ -103,6 +104,9 @@ const LetterTab = ({ allUserData, gettingData }) => {
           })
           .catch(function (error) {
             console.error(error);
+          })
+          .finally(() => {
+            setIsLoading(false); // Set loading state to false after the download process completes
           });
       });
   };
@@ -575,12 +579,9 @@ const LetterTab = ({ allUserData, gettingData }) => {
                       {" "}
                       Congratulations on accepting the offer letter and becoming
                       a part of Creativefuel team!{" "}
+                      Your offer letter has been sent to your email address
                     </span>{" "}
-                    <br /> Your offer letter has been sent to your email
-                    address. Kindly take a moment to review the attached
-                    document, which outlines the terms and conditions of your
-                    employment, including your start date, compensation package,
-                    and other important details.
+                    <br />
                   </p>
                 ) : (
                   <p>
@@ -591,10 +592,10 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     <span className="bold">
                       {allUserData.designation_name}{" "}
                     </span>
-                    ! We believe that your experience & skills will be a great
+                    {/* ! We believe that your experience & skills will be a great
                     asset to our organisation. <br /> <br /> Congratulations on
                     your new role, and cheers to a journey full of excitement,
-                    growth & achievement!
+                    growth & achievement! */}
                   </p>
                 )}
               </div>
@@ -640,9 +641,11 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   <button
                     onClick={downloadOfferLetter}
                     className="btn onboardBtn btn_primary d-flex align-items-center gap-2"
+                    disabled={isLoading}
                   >
                     <i class="bi bi-cloud-arrow-down"></i>
-                    Download
+                    {isLoading ? " Downloading..." : "Download"} 
+                      {/* Download */}
                   </button>
                 )}
                 {reasonField && (

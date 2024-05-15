@@ -324,7 +324,7 @@ const DocumentTab = ({
                                 className="btn btn-danger btn-sm"
                                 onClick={() => handleNotAvail(item)}
                               >
-                                N/A
+                              Not Available
                               </button>
                             )}
                           </span>
