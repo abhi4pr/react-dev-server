@@ -671,35 +671,31 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 )}
               </div>
               <Modal
+                // className="hello"
                 isOpen={previewOffer}
                 onRequestClose={() => setpreview(false)}
                 contentLabel="offerletter Modal"
                 //sty appElement={}'
                 style={{
                   content: {
-                    width: "750px",
-                    display: "flex",
-
-                    flexDirection: "column",
-                    position: "absolute",
-                    left: "calc(100vw / 2 - 300px)",
+                    maxWidth: "750px",
+                    width: "80%",
+                    margin: "auto",
+                    inset: "15px",
                   },
                 }}
               >
                 <div className="pack sb">
                   <div></div>
                   <button
-                    className="btn cmnbtn btn_sm btn-danger"
+                    className="btn cmnbtn btn_sm btn-danger previewClose"
                     onClick={handelClose}
                   >
-                    close
+                    <i class="bi bi-x-lg"></i>
                   </button>
                 </div>
-                <div style={{ width: "700px" }}>
-                  <div
-                    id="element-to-print"
-                    style={{ color: "black", background: "white" }}
-                  >
+                <div style={{ width: "100%" }}>
+                  <div id="element-to-print" style={{ color: "black" }}>
                     <br />
                     <header className="header-letter">
                       <img
