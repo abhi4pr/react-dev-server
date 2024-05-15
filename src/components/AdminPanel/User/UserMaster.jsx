@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Navigate } from "react-router-dom";
 import jwtDecode from "jwt-decode";
 import FormContainer from "../FormContainer";
 import FieldContainer from "../FieldContainer";
@@ -48,6 +47,7 @@ import { constant } from "../../../utils/constants";
 import { User } from "@phosphor-icons/react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { subYears } from "date-fns";
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -264,12 +264,11 @@ const UserMaster = () => {
     bankDetails: false,
     email: false,
     banktype: false,
+    jobType: false,
   });
   const [jobTypeData, setJobTypeData] = useState([]);
 
   const [loading, setLoading] = useState(false);
-
-  console.log(nationality, "nationojo");
 
   const higestQualificationData = [
     "10th",
@@ -282,7 +281,7 @@ const UserMaster = () => {
   const bankTypeData = ["Saving A/C", "Current A/C", "Salary A/C"];
   const statusData = ["Active", "Exit", "PreOnboard"];
   const genderData = ["Male", "Female", "Other"];
-  const nationalityData = ["India", "USA", "Uk"];
+  const nationalityData = ["Indian", "USA", "Uk"];
   const bloodGroupData = [
     "A+ (A Positive)",
     "A- (A Negetive)",
@@ -514,58 +513,144 @@ const UserMaster = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (username == "") {
+      setMandatoryFieldsEmpty((perv) => ({ ...perv, fullName: true }));
+    }
+    if (personalEmail == "") {
+      setMandatoryFieldsEmpty((perv) => ({ ...perv, personalEmail: true }));
+    }
+    if (personalContact == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        personalContact: true,
+      }));
+    }
+    if (alternateContact == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        alternateContact: true,
+      }));
+    }
+    if (gender == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        gender: true,
+      }));
+    }
+    if (dateOfBirth == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        DOB: true,
+      }));
+    }
+    if (maritialStatus == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        maritialStatus: true,
+      }));
+    }
+    if (jobType == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        jobType: true,
+      }));
+    }
+    if (department == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        department: true,
+      }));
+    }
+    if (subDepartment == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        subDepartment: true,
+      }));
+    }
+    if (designation == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        designation: true,
+      }));
+    }
+    if (reportL1 == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        reportL1: true,
+      }));
+    }
+    if (loginId == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        loginId: true,
+      }));
+    }
+    if (password == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        password: true,
+      }));
+    }
+    if (joiningDate == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        joiningDate: true,
+      }));
+    }
+
     if (!jobType) {
-      return toastError("Job Type is Required");
+      console.log("job type");
+      toastError("Fill the Mandatory fields");
     } else if (!department || department == "") {
-      return toastError("Department is Required");
+      toastError("Fill the Mandatory fields");
     } else if (
       !subDepartment ||
       subDepartment == "" ||
       subDepartment.length === 0
     ) {
-      return toastError("Sub Department is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!designation || designation == "") {
-      return toastError("Designatoin is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!roles || roles == "") {
-      return toastError("Role is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!reportL1 || reportL1 == "") {
-      return toastError("Report L1 Is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!personalEmail || personalEmail == "") {
-      return toastError("Personal Email is Required");
+      toastError("Fill the Mandatory fields");
     } else if (
       !personalContact ||
       personalContact == "" ||
       personalContact.length !== 10
     ) {
-      return toastError("Personal Contact is Required and  must be 10 digits");
+      toastError("Personal Contact is Required and  must be 10 digits");
     } else if (
       !alternateContact ||
       alternateContact == "" ||
       alternateContact.length !== 10
     ) {
-      return toastError("Alternate Contact is Required and  must be 10 digits");
+      toastError("Alternate Contact is Required and  must be 10 digits");
     } else if (!loginId || loginId == "") {
-      return toastError("Login Id is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!password || password == "") {
-      return toastError("Password is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!gender || gender == "") {
-      return toastError("Gender is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!nationality || nationality == "") {
-      return toastError("Nationality is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!dateOfBirth || dateOfBirth == "") {
-      return toastError("Date of Birth is Required");
+      toastError("Fill the Mandatory fields");
     } else if (
       !maritialStatus ||
       maritialStatus == "" ||
       maritialStatus.length == 0
     ) {
-      return toastError("Maritial Status is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!joiningDate || joiningDate == "") {
-      return toastError("Joining Date is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!status || status == "") {
-      return toastError("Status is Required");
+      toastError("Fill the Mandatory fields");
     } else if (!username || username == "") {
-      return toastError("User Name Error is required");
+      toastError("Fill the Mandatory fields");
     }
 
     const formData = new FormData();
@@ -647,7 +732,7 @@ const UserMaster = () => {
                 const userResponseID = res.data.simv.user_id;
                 setUserResID(userResponseID);
                 setIsFormSubmitted(true);
-                toastAlert(res.data.simv.emp_id + " " + "Employee Registerd");
+                // toastAlert(res.data.simv.emp_id + " " + "Employee Registerd");
                 setIsLoading(false);
               } else {
                 toastError("Sorry User is Not Created, Please try again later");
@@ -707,18 +792,6 @@ const UserMaster = () => {
             );
           }
 
-          // for (const elements of documents) {
-          //   axios.post(
-          //     baseUrl + "add_user_other_field",
-          //     { field_name: elements.name, field_value: elements.file },
-          //     {
-          //       headers: {
-          //         "Content-Type": "multipart/form-data",
-          //       },
-          //     }
-          //   );
-          // }
-
           whatsappApi.callWhatsAPI(
             "userMng",
             JSON.stringify(personalContact),
@@ -743,14 +816,27 @@ const UserMaster = () => {
 
   const handleSubmitOtherDetails = async (e) => {
     e.preventDefault();
+    if (currentAddress == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        currentAddress: true,
+      }));
+    }
+    if (currentPincode == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        currentPincode: true,
+      }));
+    }
+
     if (!currentAddress || currentAddress == "") {
-      return toastError("Current Address is required");
+      return toastError("Fill the Mandatory fields");
     } else if (!currentCity || currentCity == "") {
       return toastError("Current city is required");
     } else if (!currentState || currentState == "") {
       return toastError("Current state is required");
     } else if (!currentPincode || currentPincode == "") {
-      return toastError("Current Pincode is required");
+      return toastError("Fill the Mandatory fields");
     }
     try {
       const response = await axios.put(
@@ -782,6 +868,7 @@ const UserMaster = () => {
   const [bankProveImage, setBankProveImage] = useState(null);
   const handleSubmitBank = async (e) => {
     e.preventDefault();
+
     const formData = new FormData();
     formData.append("bank_name", bankName);
     formData.append("account_no", bankAccountNumber);
@@ -790,14 +877,39 @@ const UserMaster = () => {
     formData.append("account_type", banktype);
     formData.append("bank_proof_image", bankProveImage);
 
+    if (bankName == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        bankName: true,
+      }));
+    }
+    if (bankAccountNumber == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        bankAccountNumber: true,
+      }));
+    }
+    if (banktype == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        banktype: true,
+      }));
+    }
+    if (IFSC == "") {
+      setMandatoryFieldsEmpty((prev) => ({
+        ...prev,
+        IFSC: true,
+      }));
+    }
+
     if (!bankName || bankName == "") {
-      return toastError("bank name is required");
+      return toastError("Fill the Mandatory fields");
     } else if (!bankAccountNumber || bankAccountNumber == "") {
-      return toastError("bank account number is required");
+      return toastError("Fill the Mandatory fields");
     } else if (!IFSC || IFSC == "" || IFSC.length < 11) {
       return toastError("IFSC is required and length must be 11 digit");
     } else if (!banktype || banktype == "") {
-      return toastError("Bank Type is required");
+      return toastError("Fill the Mandatory fields");
     }
     try {
       const response = await axios.put(
@@ -821,6 +933,7 @@ const UserMaster = () => {
       );
       toastAlert("Bank Details Submitted");
       console.log("Update successful", response.data);
+      setActiveAccordionIndex((prev) => prev + 1);
     } catch (error) {
       console.error(
         "Update failed",
@@ -890,61 +1003,79 @@ const UserMaster = () => {
 
   // Number validation
   function handleContactChange(event) {
-    if (event.target.value.length <= 10) {
-      const newContact = event.target.value;
+    const newContact = event.target.value;
+
+    if (newContact.length <= 10) {
       setContact(newContact);
+
       if (
         newContact === "" ||
         (newContact.length === 1 && parseInt(newContact) < 6)
       ) {
         setContact("");
-      } else {
-        setContact(newContact);
-      }
-
-      if (newContact === "") {
         setValidContact(false);
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          personalContact: true,
+        });
       } else {
         setValidContact(
           /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact)
         );
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          personalContact: false,
+        });
       }
     }
   }
   function handlePersonalContactChange(event) {
-    if (event.target.value.length <= 10) {
-      const newContact1 = event.target.value;
-      setPersonalContact(newContact1);
+    const newContact = event.target.value;
 
+    if (newContact.length <= 10) {
       if (
-        newContact1 === "" ||
-        (newContact1.length === 1 && parseInt(newContact1) < 6)
+        newContact === "" ||
+        (newContact.length === 1 && parseInt(newContact) < 6)
       ) {
         setPersonalContact("");
-      } else {
-        setPersonalContact(newContact1);
-      }
-
-      if (newContact1 === "") {
         setValidContact1(false);
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          personalContact: true,
+        });
       } else {
+        setPersonalContact(newContact);
         setValidContact1(
-          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact)
         );
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          personalContact: false,
+        });
       }
     }
   }
-  function handleAlternateContactChange(event) {
-    if (event.target.value.length <= 10) {
-      const newContact1 = event.target.value;
-      setAlternateContact(newContact1);
 
-      if (newContact1 === "") {
+  function handleAlternateContactChange(event) {
+    const newContact = event.target.value;
+
+    if (newContact.length <= 10) {
+      setAlternateContact(newContact);
+
+      if (newContact === "") {
         setValidContact3(false);
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          alternateContact: true,
+        });
       } else {
         setValidContact3(
-          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact1)
+          /^(\+91[ \-\s]?)?[0]?(91)?[6789]\d{9}$/.test(newContact)
         );
+        setMandatoryFieldsEmpty({
+          ...mandatoryFieldsEmpty,
+          alternateContact: false,
+        });
       }
     }
   }
@@ -1077,6 +1208,8 @@ const UserMaster = () => {
   const handleAccordionButtonClick = (index) => {
     // {
     setActiveAccordionIndex(index);
+    console.log("hhhhhh");
+    console.log("ss");
   };
 
   const images = [
@@ -1272,16 +1405,38 @@ const UserMaster = () => {
 
   const isPersonalEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personalEmail);
 
-  const accordionButtons = ["General", "Others", "Education & Family"];
+  // const accordionButtons = ["General", "Others", "Education & Family"];
+  const accordionButtons = ["General"];
+  if (userResID) {
+    accordionButtons.push("Others", "Education & Family");
+  }
 
+  // const handleFullNameChange = (event) => {
+  //   let userName = event.target.value;
+  //   if (userName !== "") {
+  //     setMandatoryFieldsEmpty((prevState) => ({
+  //       ...prevState,
+  //       fullName: false,
+  //     }));
+  //   }
+
+  //   const lettersOnly = /^[A-Za-z]+$/;
+
+  //   const correctedNameParts = userName.split(" ").map((part) => {
+  //     let filteredPart = part
+  //       .split("")
+  //       .filter((char) => char.match(lettersOnly))
+  //       .join("");
+
+  //     return (
+  //       filteredPart.charAt(0).toUpperCase() +
+  //       filteredPart.slice(1).toLowerCase()
+  //     );
+  //   });
+  //   setUserName(correctedNameParts.join(" "));
+  // };
   const handleFullNameChange = (event) => {
     let userName = event.target.value;
-    if (userName !== "") {
-      setMandatoryFieldsEmpty((prevState) => ({
-        ...prevState,
-        fullName: false,
-      }));
-    }
 
     const lettersOnly = /^[A-Za-z]+$/;
 
@@ -1297,6 +1452,19 @@ const UserMaster = () => {
       );
     });
     setUserName(correctedNameParts.join(" "));
+
+    // Check if the input is empty on blur
+    if (userName === "") {
+      setMandatoryFieldsEmpty((prevState) => ({
+        ...prevState,
+        fullName: true,
+      }));
+    } else {
+      setMandatoryFieldsEmpty((prevState) => ({
+        ...prevState,
+        fullName: false,
+      }));
+    }
   };
 
   const genralFields = (
@@ -1337,23 +1505,9 @@ const UserMaster = () => {
           fieldGrid={12}
           value={username}
           onChange={handleFullNameChange}
-          onBlur={() => {
-            if (username === "") {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                fullName: true,
-              }));
-            } else {
-              // Validation for number presence
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                fullName: false,
-              });
-            }
-          }}
         />
-        <div className="">
-          {mandatoryFieldsEmpty.fullName && (
+        <div className="h-100 w-100">
+          {mandatoryFieldsEmpty?.fullName && (
             <p className="form-error">Please enter Full Name</p>
           )}
         </div>
@@ -1366,26 +1520,26 @@ const UserMaster = () => {
           fieldGrid={12}
           required={false}
           value={personalEmail}
-          onChange={(e) => setPersonalEmail(e.target.value)}
-          onBlur={() => {
-            if (personalEmail === "") {
-              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,personalEmail:true});
-              return setMandatoryFieldsEmpty((prevState) => ({
+          onChange={(e) => {
+            const email = e.target.value;
+            setPersonalEmail(email);
+
+            if (email === "") {
+              setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 personalEmail: true,
               }));
             } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
+              setMandatoryFieldsEmpty((prevState) => ({
+                ...prevState,
                 personalEmail: false,
-              });
+              }));
             }
           }}
         />
         {!isPersonalEmailValid && personalEmail && (
           <p className="form-error">*Please enter valid email</p>
         )}
-
         {mandatoryFieldsEmpty.personalEmail && (
           <p className="form-error">Please enter Personal Email</p>
         )}
@@ -1399,7 +1553,7 @@ const UserMaster = () => {
           value={personalContact}
           required={false}
           onChange={handlePersonalContactChange}
-          onBlur={(e) => handleContentBlur(e, "personalContact")}
+          // onBlur={(e) => handleContentBlur(e, "personalContact")}
         />
         {(isContactTouched1 || personalContact.length >= 10) &&
           !isValidcontact1 &&
@@ -1416,7 +1570,7 @@ const UserMaster = () => {
           value={alternateContact}
           required={false}
           onChange={handleAlternateContactChange}
-          onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
+          // onBlur={(e) => handleAlternateBlur(e, "alternateContact")}
         />
         {(isAlternateTouched1 || alternateContact.length >= 10) &&
           !isValidcontact3 &&
@@ -1443,9 +1597,8 @@ const UserMaster = () => {
           }}
           onChange={(e) => {
             setGender(e.value);
-          }}
-          onBlur={() => {
-            if (gender === "" || gender === null) {
+
+            if (e.value === "" || e.value === null) {
               setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 gender: true,
@@ -1528,19 +1681,19 @@ const UserMaster = () => {
           onChange={(e) => {
             setNationality(e.value);
           }}
-          onBlur={() => {
-            if (nationality === "" || nationality === null) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                nationality: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                nationality: false,
-              });
-            }
-          }}
+          // onBlur={() => {
+          //   if (nationality === "" || nationality === null) {
+          //     setMandatoryFieldsEmpty((prevState) => ({
+          //       ...prevState,
+          //       nationality: true,
+          //     }));
+          //   } else {
+          //     setMandatoryFieldsEmpty({
+          //       ...mandatoryFieldsEmpty,
+          //       nationality: false,
+          //     });
+          //   }
+          // }}
           required
         />
         {mandatoryFieldsEmpty.nationality && (
@@ -1591,9 +1744,9 @@ const UserMaster = () => {
           }}
           onChange={(e) => {
             setMaritialStatus(e.value);
-          }}
-          onBlur={() => {
-            if (maritialStatus === "" || maritialStatus === null) {
+
+            // onBlur functionality
+            if (e.value === "" || e.value === null) {
               setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 maritialStatus: true,
@@ -1622,15 +1775,27 @@ const UserMaster = () => {
         />
       )}
       {maritialStatus == "Married" && (
-        <FieldContainer
-          type="date"
-          fieldGrid={3}
-          label="Date Of Marraige"
-          value={dateOfMarraige}
-          onChange={(e) => setDateOfMarraige(e.target.value)}
-          max={today}
-          required={false}
-        />
+        // <FieldContainer
+        //   type="date"
+        //   fieldGrid={3}
+        //   label="Date Of Marraige"
+        //   value={dateOfMarraige}
+        //   onChange={(e) => setDateOfMarraige(e.target.value)}
+        //   max={today}
+        //   required={false}
+        // />
+        <div className="col-3">
+          <label className="form-label">
+            Date Of Marraige <sup className="form-error">*</sup>
+          </label>
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+              value={dateOfMarraige}
+              onChange={(e) => setDateOfMarraige(e)}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
+        </div>
       )}
 
       {/* Personal Info Inputs------------------------End------------ */}
@@ -1653,10 +1818,10 @@ const UserMaster = () => {
           }}
           onChange={(e) => {
             setJobType(e.value);
-          }}
-          onBlur={() => {
-            if (jobType === "" || jobType === null) {
-              return setMandatoryFieldsEmpty((prevState) => ({
+
+            // onBlur functionality
+            if (e.value === "" || e.value === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 jobType: true,
               }));
@@ -1694,10 +1859,10 @@ const UserMaster = () => {
           }}
           onChange={(e) => {
             setDepartment(e.value);
-          }}
-          onBlur={() => {
-            if (department === "" || department === null) {
-              return setMandatoryFieldsEmpty((prevState) => ({
+
+            // onBlur functionality
+            if (e.value === "" || e.value === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 department: true,
               }));
@@ -1735,14 +1900,10 @@ const UserMaster = () => {
           }}
           onChange={(e) => {
             setSubDeparment(e.value);
-          }}
-          onBlur={() => {
-            if (
-              subDepartmentData === "" ||
-              subDepartmentData === null ||
-              subDepartmentData.length === 0
-            ) {
-              return setMandatoryFieldsEmpty((prevState) => ({
+
+            // onBlur functionality
+            if (e.value === "" || e.value === null || e.value.length === 0) {
+              setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 subDepartment: true,
               }));
@@ -1778,10 +1939,10 @@ const UserMaster = () => {
           }}
           onChange={(e) => {
             setDesignation(e.value);
-          }}
-          onBlur={() => {
-            if (designation === "" || designation === null) {
-              return setMandatoryFieldsEmpty((prevState) => ({
+
+            // onBlur functionality
+            if (e.value === "" || e.value === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 designation: true,
               }));
@@ -1818,10 +1979,10 @@ const UserMaster = () => {
           }}
           onChange={(e) => {
             setReportL1(e.value);
-          }}
-          onBlur={() => {
-            if (reportL1 === "" || reportL1 === null) {
-              return setMandatoryFieldsEmpty((prevState) => ({
+
+            // onBlur functionality
+            if (e.value === "" || e.value === null) {
+              setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 reportL1: true,
               }));
@@ -1936,7 +2097,7 @@ const UserMaster = () => {
           value={contact}
           required={true}
           onChange={handleContactChange}
-          onBlur={handleContentBlur}
+          // onBlur={handleContentBlur}
         />
       </div>
 
@@ -2005,10 +2166,12 @@ const UserMaster = () => {
               type="text"
               className="form-control"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onBlur={() => {
-                if (password === "") {
-                  return setMandatoryFieldsEmpty((prevState) => ({
+              onChange={(e) => {
+                setPassword(e.target.value);
+
+                // onBlur functionality
+                if (e.target.value === "") {
+                  setMandatoryFieldsEmpty((prevState) => ({
                     ...prevState,
                     password: true,
                   }));
@@ -2108,10 +2271,29 @@ const UserMaster = () => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             value={joiningDate}
-            onChange={(e) => setJoiningDate(e)}
+            // onChange={(e) => setJoiningDate(e)}
+            onChange={(e) => {
+              setJoiningDate(e);
+
+              // Check if joiningDate is empty
+              if (!e) {
+                setMandatoryFieldsEmpty((prevState) => ({
+                  ...prevState,
+                  joiningDate: true,
+                }));
+              } else {
+                setMandatoryFieldsEmpty({
+                  ...mandatoryFieldsEmpty,
+                  joiningDate: false,
+                });
+              }
+            }}
             renderInput={(params) => <TextField {...params} />}
           />
         </LocalizationProvider>
+        {mandatoryFieldsEmpty.joiningDate && (
+          <p className="form-error">Please enter Joining Date</p>
+        )}
       </div>
 
       {department == constant.CONST_SALES_DEPT_ID && (
@@ -2137,7 +2319,8 @@ const UserMaster = () => {
           type="submit"
           className="btn cmnbtn btn-primary"
           onClick={handleSubmit}
-          disabled={isLoading}
+          // disabled={isLoading}
+          disabled={isLoading || userResID !== ""}
           style={{ width: "20%", marginLeft: "1%" }}
         >
           {isLoading ? "Please wait submiting..." : "Register"}
@@ -2268,11 +2451,12 @@ const UserMaster = () => {
           fieldGrid={12}
           astric={true}
           value={currentAddress}
-          onChange={(e) => setCurrentAddress(e.target.value)}
-          onBlur={() => {
-            if (currentAddress === "") {
-              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,address:true});
-              return setMandatoryFieldsEmpty((prevState) => ({
+          onChange={(e) => {
+            setCurrentAddress(e.target.value);
+
+            // onBlur functionality
+            if (e.target.value === "") {
+              setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 currentAddress: true,
               }));
@@ -2317,36 +2501,36 @@ const UserMaster = () => {
             placeholder="Select a city..."
             isClearable
           />
-          {mandatoryFieldsEmpty.city && (
+          {/* {mandatoryFieldsEmpty.city && (
             <p className="form-error">Please enter City</p>
-          )}
+          )} */}
         </div>
 
         <div className="form-group col-4">
           <IndianStates
-            onBlur={() => {
-              if (currentState === "") {
-                // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,state:true});
-                return setMandatoryFieldsEmpty((prevState) => ({
-                  ...prevState,
-                  state: true,
-                }));
-              } else {
-                setMandatoryFieldsEmpty({
-                  ...mandatoryFieldsEmpty,
-                  state: false,
-                });
-              }
-            }}
+            // onBlur={() => {
+            //   if (currentState === "") {
+            //     // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,state:true});
+            //     return setMandatoryFieldsEmpty((prevState) => ({
+            //       ...prevState,
+            //       state: true,
+            //     }));
+            //   } else {
+            //     setMandatoryFieldsEmpty({
+            //       ...mandatoryFieldsEmpty,
+            //       state: false,
+            //     });
+            //   }
+            // }}
             onChange={(option) => setcurrentState(option ? option.value : null)}
           />
-          {mandatoryFieldsEmpty.state && (
+          {/* {mandatoryFieldsEmpty.state && (
             <p className="form-error">Please enter State</p>
-          )}
+          )} */}
         </div>
 
         <FieldContainer
-          label="Current Pincode"
+          label="Pincode"
           type="number"
           astric={true}
           fieldGrid={4}
@@ -2355,22 +2539,23 @@ const UserMaster = () => {
           value={currentPincode}
           onChange={(e) => {
             const value = e.target.value;
+
+            // Ensure that the input value consists of maximum 6 digits
             if (/^\d{0,6}$/.test(value)) {
               setcurrentPincode(value);
-            }
-          }}
-          onBlur={() => {
-            if (currentPincode === "") {
-              // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,pincode:true});
-              return setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                currentPincode: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                currentPincode: false,
-              });
+
+              // onBlur functionality
+              if (value === "") {
+                setMandatoryFieldsEmpty((prevState) => ({
+                  ...prevState,
+                  currentPincode: true,
+                }));
+              } else {
+                setMandatoryFieldsEmpty({
+                  ...mandatoryFieldsEmpty,
+                  currentPincode: false,
+                });
+              }
             }
           }}
           required={false}
@@ -2489,9 +2674,7 @@ const UserMaster = () => {
         <p  className="form-error">Please enter Pincode</p>
       )} */}
       <div className="form-group col-3">
-        <label className="form-label">
-          Blood Group <sup className="form-error">*</sup>
-        </label>
+        <label className="form-label">Blood Group</label>
         <Select
           className=""
           options={bloodGroupData.map((option) => ({
@@ -2505,29 +2688,29 @@ const UserMaster = () => {
           onChange={(e) => {
             setBloodGroup(e.value);
           }}
-          onBlur={() => {
-            if (
-              bloodGroup === "" ||
-              bloodGroup === null ||
-              bloodGroup.length === 0
-            ) {
-              setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                bloodGroup: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                bloodGroup: false,
-              });
-            }
-          }}
+          // onBlur={() => {
+          //   if (
+          //     bloodGroup === "" ||
+          //     bloodGroup === null ||
+          //     bloodGroup.length === 0
+          //   ) {
+          //     setMandatoryFieldsEmpty((prevState) => ({
+          //       ...prevState,
+          //       bloodGroup: true,
+          //     }));
+          //   } else {
+          //     setMandatoryFieldsEmpty({
+          //       ...mandatoryFieldsEmpty,
+          //       bloodGroup: false,
+          //     });
+          //   }
+          // }}
           required={false}
         />
 
-        {mandatoryFieldsEmpty.bloodGroup && (
+        {/* {mandatoryFieldsEmpty.bloodGroup && (
           <p className="form-error">Please enter Blood Group</p>
-        )}
+        )} */}
       </div>
       <div className="form-group col-3">
         <label className="form-label">Hobbies</label>
@@ -2541,9 +2724,7 @@ const UserMaster = () => {
         />
       </div>
       <div className="form-group col-3">
-        <label className="form-label">
-          Spoken Languages <sup className="form-error">*</sup>
-        </label>
+        <label className="form-label">Spoken Languages</label>
         <Select
           isMulti
           name="langauages"
@@ -2552,27 +2733,27 @@ const UserMaster = () => {
           classNamePrefix="select"
           value={tempLanguage}
           onChange={handleLanguageSelect}
-          onBlur={() => {
-            if (
-              tempLanguage === "" ||
-              tempLanguage === null ||
-              tempLanguage.length === 0
-            ) {
-              return setMandatoryFieldsEmpty((prevState) => ({
-                ...prevState,
-                language: true,
-              }));
-            } else {
-              setMandatoryFieldsEmpty({
-                ...mandatoryFieldsEmpty,
-                language: false,
-              });
-            }
-          }}
+          // onBlur={() => {
+          //   if (
+          //     tempLanguage === "" ||
+          //     tempLanguage === null ||
+          //     tempLanguage.length === 0
+          //   ) {
+          //     return setMandatoryFieldsEmpty((prevState) => ({
+          //       ...prevState,
+          //       language: true,
+          //     }));
+          //   } else {
+          //     setMandatoryFieldsEmpty({
+          //       ...mandatoryFieldsEmpty,
+          //       language: false,
+          //     });
+          //   }
+          // }}
         />
-        {mandatoryFieldsEmpty.language && (
+        {/* {mandatoryFieldsEmpty.language && (
           <p className="form-error">Please enter Languages</p>
-        )}
+        )} */}
       </div>
       <div className="form-group col-3">
         <label className="form-label">Category</label>
@@ -2624,9 +2805,6 @@ const UserMaster = () => {
         </label>
         <Select
           options={IndianBankList}
-          onChange={(selectedOption) => {
-            setBankName(selectedOption ? selectedOption.value : null);
-          }}
           isClearable
           isSearchable
           value={
@@ -2634,14 +2812,26 @@ const UserMaster = () => {
               ? IndianBankList.find((bank) => bank.value === bankName)
               : null
           }
+          // onChange={(selectedOption) => {
+          //   setBankName(selectedOption ? selectedOption.value : null);
+          // }}
           getOptionLabel={(option) => option.label}
           getOptionValue={(option) => option.value}
-          onBlur={() => {
+          onChange={(selectedOption) => {
+            setBankName(selectedOption ? selectedOption.value : null);
+
+            // onBlur functionality
             setMandatoryFieldsEmpty((prevState) => ({
               ...prevState,
-              bankName: !bankName,
+              bankName: !selectedOption,
             }));
           }}
+          // onBlur={() => {
+          //   setMandatoryFieldsEmpty((prevState) => ({
+          //     ...prevState,
+          //     bankName: !bankName,
+          //   }));
+          // }}
           required
         />
         {mandatoryFieldsEmpty.bankName && (
@@ -2665,9 +2855,9 @@ const UserMaster = () => {
           }}
           onChange={(e) => {
             setBankType(e.value);
-          }}
-          onBlur={() => {
-            if (banktype === "" || banktype === null) {
+
+            // onBlur functionality
+            if (!e.value) {
               setMandatoryFieldsEmpty((prevState) => ({
                 ...prevState,
                 banktype: true,
@@ -2691,11 +2881,18 @@ const UserMaster = () => {
         astric={true}
         fieldGrid={3}
         value={bankAccountNumber}
-        onChange={(e) => setBankAccountNumber(e.target.value)}
-        onBlur={() => {
-          if (bankAccountNumber === "") {
-            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,bankAccountNumber:true});
-            return setMandatoryFieldsEmpty((prevState) => ({
+        onChange={(e) => {
+          const inputValue = e.target.value;
+          const onlyNumbers = /^[0-9]+$/;
+
+          if (onlyNumbers.test(inputValue)) {
+            setBankAccountNumber(inputValue);
+          } else {
+            setBankAccountNumber(""); // Clearing the input value
+          }
+          // onBlur functionality
+          if (inputValue === "") {
+            setMandatoryFieldsEmpty((prevState) => ({
               ...prevState,
               bankAccountNumber: true,
             }));
@@ -2718,11 +2915,10 @@ const UserMaster = () => {
         onChange={(e) => {
           const inputValue = e.target.value.toUpperCase();
           setIFSC(inputValue.slice(0, 11)); // Limiting the input to 11 characters
-        }}
-        onBlur={() => {
-          if (IFSC === "") {
-            // setMandatoryFieldsEmpty({...mandatoryFieldsEmpty,IFSC:true});
-            return setMandatoryFieldsEmpty((prevState) => ({
+
+          // onBlur functionality
+          if (inputValue === "") {
+            setMandatoryFieldsEmpty((prevState) => ({
               ...prevState,
               IFSC: true,
             }));
@@ -2743,7 +2939,7 @@ const UserMaster = () => {
         onChange={(e) => setBeneficiary(e.target.value)}
       />
       <FieldContainer
-        label="Upload Proof *"
+        label="Upload Proof"
         type="file"
         multiple
         accept="image/*"
@@ -2965,31 +3161,6 @@ const UserMaster = () => {
                   onChange={(e) => handleEducationDetailsChange(index, e)}
                 />
               ) : (
-                // <div className="form-group col-2">
-                //   <label className="form-label">Relation</label>
-                //   <Select
-                //     label="Title"
-                //     placeholder="Select Relation"
-                //     className=""
-                //     options={familyRelationList}
-                //     name={key}
-                //     value={
-                //       higestQualificationData.find(
-                //         (option) => option.value === detail.Relation
-                //       ) || null
-                //     }
-                //     onChange={(selectedOption) =>
-                //       handleFamilyDetailsChange(index, {
-                //         target: {
-                //           name: key,
-                //           value: selectedOption ? selectedOption.value : "",
-                //         },
-                //       })
-                //     }
-                //     isClearable={true}
-                //     isSearchable={true}
-                //   />
-                // </div>
                 <FieldContainer
                   key={key}
                   fieldGrid={3}
@@ -3074,7 +3245,6 @@ const UserMaster = () => {
       <FormContainer
         mainTitle="User"
         title="User Registration"
-        // handleSubmit={handleSubmit}
         submitButton={false}
         accordionButtons={accordionButtons}
         activeAccordionIndex={activeAccordionIndex}
@@ -3082,8 +3252,6 @@ const UserMaster = () => {
         loading={loading}
       >
         {activeAccordionIndex === 0 && genralFields}
-        {/* {activeAccordionIndex === 1 && othersFields}
-        {activeAccordionIndex === 2 && educationFamilyFieald} */}
         {isGeneralSubmitted && activeAccordionIndex === 1 && othersFields}
         {isGeneralSubmitted &&
           activeAccordionIndex === 2 &&
