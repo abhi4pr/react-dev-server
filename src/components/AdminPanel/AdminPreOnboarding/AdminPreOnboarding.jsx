@@ -284,7 +284,7 @@ const AdminPreOnboarding = () => {
           })
           .then((res) => {
             if (res.status == 200) {
-              toastAlert("User Registerd");
+              toastAlert("User Registered");
               setIsFormSubmitted(true);
               setLoading(false);
             } else {
@@ -317,7 +317,7 @@ const AdminPreOnboarding = () => {
         setReportL2("");
         setReportL3("");
         setDesignation("");
-        toastAlert("User Registerd");
+        toastAlert("User Registered");
         setIsFormSubmitted(true);
       }
     } catch (error) {
@@ -741,7 +741,7 @@ const AdminPreOnboarding = () => {
 
         {jobType == "WFO" && (
           <FieldContainer
-            label=" Monthly CTC"
+            label="Yearly CTC"
             type="number"
             fieldGrid={3}
             required={false}
@@ -753,7 +753,7 @@ const AdminPreOnboarding = () => {
         {jobType == "WFO" && (
           <div className="form-group col-3">
             <label className="form-label">
-              Letter send <sup className="form-error">*</sup>
+              Offer Letter Send <sup className="form-error">*</sup>
             </label>
             <Select
               options={offerLetter.map((option) => ({
@@ -784,7 +784,7 @@ const AdminPreOnboarding = () => {
           </div>
         )}
 
-        {sendLetter.label == "Yes" && (
+        {/* {sendLetter.label == "Yes" && (
           <div className="col-md-3">
             <FieldContainer
               label="Annexure pdf"
@@ -794,7 +794,7 @@ const AdminPreOnboarding = () => {
               required={false}
             />
           </div>
-        )}
+        )} */}
 
         {/* <FieldContainer
           label="Contact"
