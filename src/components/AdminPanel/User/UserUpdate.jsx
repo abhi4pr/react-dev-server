@@ -2153,6 +2153,12 @@ const UserUpdate = () => {
         >
           Submit Bank Details
         </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
+        >
+          <ArrowForwardIosIcon />
+        </button>
       </div>
 
       {/* Bank Info Inputs------------------------End------------ */}
@@ -2399,6 +2405,12 @@ const UserUpdate = () => {
           onClick={handleSubmitEducation}
         >
           Submit Education Details
+        </button>
+        <button
+          className="btn btn-primary"
+          onClick={() => setActiveAccordionIndex((prev) => prev + 1)}
+        >
+          <ArrowForwardIosIcon />
         </button>
       </div>
 
