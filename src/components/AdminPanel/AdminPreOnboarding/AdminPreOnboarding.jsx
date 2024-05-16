@@ -11,8 +11,8 @@ import WhatsappAPI from "../../WhatsappAPI/WhatsappAPI";
 // import { City } from "country-state-city";
 import { baseUrl } from "../../../utils/config";
 import IndianCitiesReact from "../../ReusableComponents/IndianCitiesReact";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TextField } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
@@ -99,10 +99,15 @@ const AdminPreOnboarding = () => {
   const [gender, setGender] = useState("");
 
   const [isRequired, setIsRequired] = useState({
+    username: false,
     reportL1: false,
     sendLetter: false,
     role: false,
     gender: false,
+    department: false,
+    userCtc: false,
+    loginId: false,
+    personalEmail: false,
   });
 
   useEffect(() => {
@@ -158,36 +163,67 @@ const AdminPreOnboarding = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (username == "") {
+      setIsRequired((perv) => ({ ...perv, username: true }));
+    }
+    if (department == "") {
+      setIsRequired((perv) => ({ ...perv, department: true }));
+    }
+    if (designation == "") {
+      setIsRequired((perv) => ({ ...perv, designation: true }));
+    }
+    if (reportL1 == "") {
+      setIsRequired((perv) => ({ ...perv, reportL1: true }));
+    }
+    if (userCtc == "") {
+      setIsRequired((perv) => ({ ...perv, userCtc: true }));
+    }
+    if (roles == "") {
+      setIsRequired((perv) => ({ ...perv, roles: true }));
+    }
+    if (joiningDate == "") {
+      setIsRequired((perv) => ({ ...perv, joiningDate: true }));
+    }
+    if (dateOfBirth == "") {
+      setIsRequired((perv) => ({ ...perv, dateOfBirth: true }));
+    }
+    if (gender == "") {
+      setIsRequired((perv) => ({ ...perv, gender: true }));
+    }
+    if (loginId == "") {
+      setIsRequired((perv) => ({ ...perv, loginId: true }));
+    }
+    if (personalEmail == "") {
+      setIsRequired((perv) => ({ ...perv, personalEmail: true }));
+    }
+
     if (!username) {
-      return toastError("Job Type is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!jobType || jobType == "") {
-      return toastError("Job type is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!department || department == "") {
-      return toastError("Department is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!designation || designation == "") {
-      return toastError("Designatoin is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!reportL1 || reportL1 == "") {
-      return toastError("Report manager Is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!personalEmail || personalEmail == "") {
       return toastError("Email is Required");
     } else if (!personalContact || personalContact == "") {
       return toastError("Contact Is Required and should be equal to 10");
-    } else if (jobType == "WFO") {
-      if (!sendLetter.label || sendLetter.label == "") {
-        return toastError("Select letter options");
-      }
     } else if (!loginId || loginId == "") {
-      return toastError("Login Id is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!password || password == "") {
       return toastError("Password is Required");
     } else if (!roles || roles == "") {
-      return toastError("Role is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!joiningDate || joiningDate == "") {
-      return toastError("Joining Date is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!dateOfBirth || dateOfBirth == "") {
-      return toastError("DOB is Required");
+      return toastError("Fill the Mandatory fields");
     } else if (!gender || gender == "") {
-      return toastError("Gender is Required");
+      return toastError("Fill the Mandatory fields");
     }
 
     const formData = new FormData();
@@ -350,6 +386,11 @@ const AdminPreOnboarding = () => {
   function handlePersonalEmailChange(e) {
     const newEmail = e.target.value;
     setPersonalEmail(newEmail);
+    if (personalEmail === "") {
+      setIsRequired((prev) => ({ ...prev, personalEmail: true }));
+    } else {
+      setIsRequired((prev) => ({ ...prev, personalEmail: false }));
+    }
 
     if (newEmail == "") {
       setValidPersonalEmail(false);
@@ -476,6 +517,11 @@ const AdminPreOnboarding = () => {
   const handleLoginIdChange = (event) => {
     const selectedLoginId = event.target.value;
     setLoginId(selectedLoginId);
+    if (selectedLoginId === "") {
+      setIsRequired((prev) => ({ ...prev, loginId: true }));
+    } else {
+      setIsRequired((prev) => ({ ...prev, loginId: false }));
+    }
   };
 
   const calculateAge = (dob) => {
@@ -495,6 +541,12 @@ const AdminPreOnboarding = () => {
     const selectedDate = e;
     const age = calculateAge(selectedDate);
 
+    if (selectedDate === "") {
+      setIsRequired((prev) => ({ ...prev, dateOfBirth: true }));
+    } else {
+      setIsRequired((prev) => ({ ...prev, dateOfBirth: false }));
+    }
+
     if (age < 15) {
       window.alert("Your age must be greater than 15 years.");
     } else {
@@ -505,6 +557,12 @@ const AdminPreOnboarding = () => {
 
   const handleFullNameChange = (event) => {
     let userName = event.target.value;
+
+    if (userName === "") {
+      setIsRequired((prev) => ({ ...prev, username: true }));
+    } else {
+      setIsRequired((prev) => ({ ...prev, username: false }));
+    }
 
     const lettersOnly = /^[A-Za-z]+$/;
 
@@ -532,13 +590,20 @@ const AdminPreOnboarding = () => {
         submitButton={false}
         // loading={loading}
       >
-        <FieldContainer
-          label="Full Name"
-          astric
-          fieldGrid={3}
-          value={username}
-          onChange={handleFullNameChange}
-        />
+        <div className="col-md-3">
+          <FieldContainer
+            label="Full Name"
+            astric
+            fieldGrid={3}
+            value={username}
+            onChange={handleFullNameChange}
+          />
+          <div className="">
+            {isRequired.username && (
+              <p className="form-error">Please enter Full Name</p>
+            )}
+          </div>
+        </div>
 
         <div className="form-group col-3">
           <label className="form-label">
@@ -579,8 +644,22 @@ const AdminPreOnboarding = () => {
             }}
             onChange={(e) => {
               setDepartment(e.value);
+
+              department !== "" &&
+                setIsRequired((prev) => {
+                  return { ...prev, department: true };
+                });
+              department &&
+                setIsRequired((prev) => {
+                  return { ...prev, department: false };
+                });
             }}
           />
+          <div className="">
+            {isRequired.department && (
+              <p className="form-error">Please enter Department</p>
+            )}
+          </div>
         </div>
 
         <div className="form-group col-3">
@@ -601,8 +680,22 @@ const AdminPreOnboarding = () => {
             }}
             onChange={(e) => {
               setDesignation(e.value);
+
+              designation !== "" &&
+                setIsRequired((prev) => {
+                  return { ...prev, designation: true };
+                });
+              designation &&
+                setIsRequired((prev) => {
+                  return { ...prev, designation: false };
+                });
             }}
           />
+          <div className="">
+            {isRequired.designation && (
+              <p className="form-error">Please enter Designation</p>
+            )}
+          </div>
         </div>
 
         <div className="form-group col-3">
@@ -628,9 +721,8 @@ const AdminPreOnboarding = () => {
                 setIsRequired((prev) => {
                   return { ...prev, reportL1: false };
                 });
-            }}
-            onBlur={(e) => {
-              !reportL1 &&
+
+              reportL1 !== "" &&
                 setIsRequired((prev) => {
                   return { ...prev, reportL1: true };
                 });
@@ -639,23 +731,22 @@ const AdminPreOnboarding = () => {
                   return { ...prev, reportL1: false };
                 });
             }}
+            // onBlur={(e) => {
+            //   !reportL1 &&
+            //     setIsRequired((prev) => {
+            //       return { ...prev, reportL1: true };
+            //     });
+            //   reportL1 &&
+            //     setIsRequired((prev) => {
+            //       return { ...prev, reportL1: false };
+            //     });
+            // }}
           />
           {isRequired.reportL1 && (
             <p className="form-error">*Please select Report L1</p>
           )}
         </div>
 
-        {/* <FieldContainer
-          label="Email"
-          type="email"
-          fieldGrid={3}
-          required
-          value={email}
-          onChange={handleEmailChange}
-        />
-        {!validEmail && (
-          <p className="form-error">*Please enter valid email</p>
-        )} */}
         <div className="col-md-3">
           <FieldContainer
             label="Personal Email"
@@ -668,6 +759,9 @@ const AdminPreOnboarding = () => {
           />
           {!validPersonalEmail && (
             <p className="form-error">*Please enter valid email</p>
+          )}
+          {isRequired.personalEmail && (
+            <p className="form-error">*Please select Personal Email</p>
           )}
         </div>
         <div className="col-md-3">
@@ -739,18 +833,38 @@ const AdminPreOnboarding = () => {
           </>
         )}
 
-        {jobType == "WFO" && (
+        {/* {jobType == "WFO" && ( */}
+        <div className="col-3">
           <FieldContainer
             label="Yearly CTC"
+            astric
             type="number"
             fieldGrid={3}
             required={false}
             value={userCtc}
-            onChange={(e) => setUserCtc(e.target.value)}
-          />
-        )}
+            onChange={(e) => {
+              // setUserCtc(e.target.value);
+              const value = e.target.value;
+              // Limit input to 6 digits
+              if (/^\d{0,6}$/.test(value)) {
+                setUserCtc(value);
+              }
 
-        {jobType == "WFO" && (
+              userCtc !== "" &&
+                setIsRequired((prev) => {
+                  return { ...prev, userCtc: true };
+                });
+              userCtc &&
+                setIsRequired((prev) => {
+                  return { ...prev, userCtc: false };
+                });
+            }}
+          />
+          {isRequired.userCtc && <p className="form-error">Please enter CTC</p>}
+        </div>
+        {/* )} */}
+
+        {/* {jobType == "WFO" && (
           <div className="form-group col-3">
             <label className="form-label">
               Offer Letter Send <sup className="form-error">*</sup>
@@ -782,7 +896,7 @@ const AdminPreOnboarding = () => {
               <p className="form-error">*Please select a Letter</p>
             )}
           </div>
-        )}
+        )} */}
 
         {/* {sendLetter.label == "Yes" && (
           <div className="col-md-3">
@@ -842,6 +956,9 @@ const AdminPreOnboarding = () => {
                 </button>
               </div>
             </div>
+            {isRequired.loginId && (
+              <p className="form-error">*Please select a LoginId</p>
+            )}
           </div>
         </div>
 
@@ -886,19 +1003,21 @@ const AdminPreOnboarding = () => {
             }}
             onChange={(e) => {
               setRoles(e.value);
-              setIsRequired((prev) => ({
-                ...prev,
-                role: !e.value, // Set to true if e.value is empty (no selection), false otherwise
-              }));
-            }}
-            onBlur={() => {
-              setIsRequired((prev) => ({
-                ...prev,
-                role: !roles, // Set to true if roles is empty (no selection), false otherwise
-              }));
+              // setIsRequired((prev) => ({
+              //   ...prev,
+              //   role: !e.value, // Set to true if e.value is empty (no selection), false otherwise
+              // }));
+              roles !== "" &&
+                setIsRequired((prev) => {
+                  return { ...prev, roles: true };
+                });
+              roles &&
+                setIsRequired((prev) => {
+                  return { ...prev, roles: false };
+                });
             }}
           />
-          {isRequired.role && (
+          {isRequired.roles && (
             <p className="form-error">*Please select a Role</p>
           )}
         </div>
@@ -909,10 +1028,20 @@ const AdminPreOnboarding = () => {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
               value={joiningDate}
-              onChange={(e) => setJoiningDate(e)}
+              onChange={(e) => {
+                setJoiningDate(e);
+                if (e === "") {
+                  setIsRequired((prev) => ({ ...prev, joiningDate: true }));
+                } else {
+                  setIsRequired((prev) => ({ ...prev, joiningDate: false }));
+                }
+              }}
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+          {isRequired.joiningDate && (
+            <p className="form-error">*Please select a Joining Date</p>
+          )}
         </div>
         {/* <FieldContainer
           type="date"
@@ -934,6 +1063,9 @@ const AdminPreOnboarding = () => {
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
+          {isRequired.dateOfBirth && (
+            <p className="form-error">*Please select a DOB</p>
+          )}
         </div>
         {/* <FieldContainer
           astric
@@ -961,16 +1093,11 @@ const AdminPreOnboarding = () => {
             }}
             onChange={(e) => {
               setGender(e.value);
-              setIsRequired((prev) => ({
-                ...prev,
-                gender: !e.value, // Set to true if e.value is empty, false otherwise
-              }));
-            }}
-            onBlur={() => {
-              setIsRequired((prev) => ({
-                ...prev,
-                gender: !gender, // Set to true if gender is empty, indicating a selection hasn't been made
-              }));
+              if (e === "") {
+                setIsRequired((prev) => ({ ...prev, gender: true }));
+              } else {
+                setIsRequired((prev) => ({ ...prev, gender: false }));
+              }
             }}
             required
           />

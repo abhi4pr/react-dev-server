@@ -29,7 +29,8 @@ const FAQTab = ({ username, designation }) => {
                 <div className="thm_textbx">
                   <h3>1. What is Salary cycle?</h3>
                   <p>
-                    salary cycle refers to the regular interval at which
+                    <span className="bold">Ans:- </span>
+                    Salary cycle refers to the regular interval at which
                     employees are paid their salaries. The salary cycle in
                     creativefuel is calculated for 26 working days excluding
                     Sundays, and the number of days will be decreased if there
@@ -41,14 +42,18 @@ const FAQTab = ({ username, designation }) => {
                     2.What is the duration of the notice period that needs to be
                     served?
                   </h3>
-                  <p>60 Days</p>
+                  <p>
+                    <span className="bold">Ans:- </span>60 Days
+                  </p>
                 </div>
                 <div className="thm_textbx">
                   <h3>
                     3. What is the notice period that needs to be served under
                     probation?
                   </h3>
-                  <p>7 Days</p>
+                  <p>
+                    <span className="bold">Ans:- </span>7 Days
+                  </p>
                 </div>
                 <div className="thm_textbx">
                   <h3>
@@ -56,6 +61,7 @@ const FAQTab = ({ username, designation }) => {
                     period (6 months)?
                   </h3>
                   <p>
+                    <span className="bold">Ans:- </span>
                     Yes, you are eligible to take paid leaves after 3 months of
                     your joining period.
                   </p>
@@ -65,6 +71,7 @@ const FAQTab = ({ username, designation }) => {
                     5. What is the aim behind designing the Onboarding process?
                   </h3>
                   <p>
+                    <span className="bold">Ans:- </span>
                     The onboarding process for Creativefuel employees is
                     designed to integrate new team members into our creative
                     culture, acquaint them with their key roles and
@@ -75,13 +82,17 @@ const FAQTab = ({ username, designation }) => {
                 <div className="thm_textbx">
                   <h3>6. When Performance Evaluation is done?</h3>
                   <p>
+                    <span className="bold">Ans:- </span>
                     In the month of January, the performance of employees are
                     evaluated.
                   </p>
                 </div>
                 <div className="thm_textbx">
                   <h3>7.What are the standard working hours of the company?</h3>
-                  <p>9 Hours including lunch break.</p>
+                  <p>
+                    <span className="bold">Ans:- </span>9 Hours including lunch
+                    break.
+                  </p>
                 </div>
                 <div className="thm_textbx">
                   <h3>
@@ -89,10 +100,10 @@ const FAQTab = ({ username, designation }) => {
                     for working from home (WFH)?
                   </h3>
                   <p>
-                    * Prior approval must be obtained before taking leave from
-                    the regular office and working from home. Failure to obtain
-                    such approval may result in the employee being considered
-                    absent from work.
+                    <span className="bold">Ans:- </span>* Prior approval must be
+                    obtained before taking leave from the regular office and
+                    working from home. Failure to obtain such approval may
+                    result in the employee being considered absent from work.
                   </p>
                   <p>
                     * Work from home will be considered half-day attendance, and
@@ -106,6 +117,7 @@ const FAQTab = ({ username, designation }) => {
                     queries
                   </h3>
                   <p>
+                    <span className="bold">Ans:- </span>
                     The HR E-mail ID,
                     <a
                       style={{ color: "blue" }}
@@ -132,15 +144,13 @@ const FAQTab = ({ username, designation }) => {
                       href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=nikhil@creativefuel.io"
                     >
                       {" "}
-                      nikhil@creativefuel.io
+                      nikhil@creativefuel.io,
                     </a>{" "}
-                    ,
                     <a
                       style={{ color: "blue" }}
                       href="https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=tushar@creativefuel.io"
                     >
-                      {" "}
-                      tushar@creativefuel.io
+                      tushar@creativefuel.io{" "}
                     </a>
                     and your team leader when necessary.
                   </p>

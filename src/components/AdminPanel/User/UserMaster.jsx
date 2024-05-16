@@ -48,7 +48,6 @@ import { User } from "@phosphor-icons/react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { subYears } from "date-fns";
-import dayjs from 'dayjs';
 
 const colourOptions = [
   { value: "English", label: "English" },
@@ -235,7 +234,6 @@ const UserMaster = () => {
   const token = sessionStorage.getItem("token");
   const decodedToken = jwtDecode(token);
   const loginUserId = decodedToken.id;
-  const ROLEID = decodedToken.role_id;
 
   const [familyValidationErrors, setFamilyValidationErrors] = useState({});
 
@@ -348,15 +346,6 @@ const UserMaster = () => {
       setCityData(res.data.data);
     });
   }, []);
-
-  // to disable admin and super admin in role dropdown start
-  const modifiedRoleData = roledata.map((option) => ({
-    value: option.role_id,
-    label: option.Role_name,
-    isDisabled: ROLEID === 1 && (option.role_id === 1 || option.role_id === 6),
-  }));
-  const selectedRole = roledata.find((role) => role.role_id === roles);
-  // to disable admin and super admin in role dropdown end
 
   useEffect(() => {
     axios.get(baseUrl + "get_all_hobbies").then((res) => {
@@ -1326,19 +1315,7 @@ const UserMaster = () => {
     return days;
   }
 
-  const handleDateChange = (e, newDate) => {
-    // const today = dayjs();
-    // const minDate = today.subtract(15, 'year');
-    // const selectedDateN = dayjs(newDate);
-
-    // if (selectedDateN.isValid() && selectedDateN.isBefore(minDate)) {
-    //   console.log('Date Set');
-    // } else {
-    //   alert('Age must be at least 15 years');
-    //   setDateOfBirth('')
-    //   return
-    // }
-
+  const handleDateChange = (e) => {
     const selectedDate = e;
     const age = calculateAge(selectedDate);
     const ageDays = calculateAgeInDays(selectedDate);
@@ -1680,7 +1657,6 @@ const UserMaster = () => {
             value={dateOfBirth}
             onChange={handleDateChange}
             renderInput={(params) => <TextField {...params} />}
-            maxDate={dayjs()}
           />
         </LocalizationProvider>
       </div>
@@ -2073,12 +2049,19 @@ const UserMaster = () => {
           Role <sup className="form-error">*</sup>
         </label>
         <Select
-          options={modifiedRoleData}
-          value={selectedRole ? { value: selectedRole.role_id, label: selectedRole.Role_name } : null}
+          options={roledata.map((option) => ({
+            value: option.role_id,
+            label: option.Role_name,
+          }))}
+          value={{
+            value: roles,
+            label:
+              roledata.find((role) => role.role_id === roles)?.Role_name || "",
+          }}
           onChange={(e) => {
             setRoles(e.value);
           }}
-        />
+        ></Select>
       </div>
       <div className="col-md-3">
         <FieldContainer
