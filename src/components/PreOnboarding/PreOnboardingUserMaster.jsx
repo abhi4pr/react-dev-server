@@ -83,7 +83,7 @@ const LanguageList = [
   "Gujarati",
   "Other",
 ];
-const nationalityData = ["India", "USA", "Uk"];
+const nationalityData = ["Indian", "USA", "Uk"];
 
 const bloodGroupData = [
   "A+ (A Positive)",
@@ -530,6 +530,7 @@ const PreOnboardingUserMaster = () => {
   };
 
   useEffect(() => {
+    console.log(documentData,"mmmmmmmmmmmmmmmm");
     const MandatoryDocuments = documentData.filter(
       (doc) => doc.document.isRequired == true
     );
@@ -1755,7 +1756,7 @@ const PreOnboardingUserMaster = () => {
                                   label="Personal Contact"
                                   setParentComponentContact={setPersonalContact}
                                   parentComponentContact={personalContact}
-                                  
+
                                 />
                               </div>
 
@@ -1786,7 +1787,7 @@ const PreOnboardingUserMaster = () => {
                                   renderInput={(params) => (
                                     <TextField {...params} label="Gender" />
                                   )}
-                                  
+
                                 />
                               </div>
 
@@ -1925,7 +1926,7 @@ const PreOnboardingUserMaster = () => {
                                 />
                               </div>
                               <div className="form-group">
-                                <TextField
+                                {/* <TextField
                                   id="outlined-basic"
                                   label="Nationality"
                                   variant="outlined"
@@ -1934,6 +1935,21 @@ const PreOnboardingUserMaster = () => {
                                   onChange={(e) =>
                                     setNationality(e.target.value)
                                   }
+                                /> */}
+                                
+                                <Autocomplete
+                                  options={nationalityData}
+                                  value={nationality}
+                                  onChange={(e, newValue) => {
+                                    setNationality(newValue);
+                                  }}
+                                  renderInput={(params) => (
+                                    <TextField
+                                      {...params}
+                                      label="Nationality "
+                                      variant="outlined"
+                                    />
+                                  )}
                                 />
                               </div>
 
@@ -2053,7 +2069,7 @@ const PreOnboardingUserMaster = () => {
 
                             <div className="board_form form_checkbox">
                               <label className="cstm_check">
-                                Same as Current Address
+                                Permanent Address  Same as Current Address
                                 <input
                                   className="form-control"
                                   type="checkbox"

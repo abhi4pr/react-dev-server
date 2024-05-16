@@ -193,18 +193,18 @@ const LetterTab = ({ allUserData, gettingData }) => {
               </div>{" "}
               <br />
               <div>
-                <p className="bold">1)Compensation:</p>
-                <p>
+                <p className="bold">1) Compensation:</p>
+                <p className="pl-3">
                   Your remuneration will have a fixed component of INR{" "}
-                  {allUserData?.ctc} Lacs per annum (CTC), paid monthly, and a
+                  {allUserData?.ctc} per month (CTC), paid monthly, and a
                   detailed breakdown of your remuneration can be found in
                   [Annexure-A].
                 </p>
               </div>{" "}
               <br />
               <div>
-                <p className="bold">2)Acceptance:</p>
-                <p>
+                <p className="bold">2) Acceptance:</p>
+                <p className="pl-3">
                   To accept this offer, please sign and return a copy of this
                   letter within 48 hours. You can scan and email it to,
                   onboarding@creativefuel.io CC: fahbir@creativefuel.io or just
@@ -243,8 +243,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 </div>
               </header>
               <div>
-                <p className="bold">3)Probation Period:</p>
-                <p>
+                <p className="bold">3) Probation Period:</p>
+                <p className="pl-3">
                   Both parties agree to a probationary period of three months,
                   during which either party may terminate the employment
                   relationship with a notice period of 7 days. This period is
@@ -254,8 +254,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
               </div>{" "}
               <br />
               <div>
-                <p className="bold">4)Performance Review:</p>
-                <p>
+                <p className="bold">4) Performance Review:</p>
+                <p className="pl-3">
                   At the end of the probation period, your performance will be
                   reviewed. If your performance aligns with our expectations and
                   you are comfortable with the work environment, the
@@ -264,10 +264,13 @@ const LetterTab = ({ allUserData, gettingData }) => {
               </div>{" "}
               <br />
               <div>
-                <p className="bold">5)Employment Relationship:</p> <br />
+                <p className="bold">5) Employment Relationship:</p> <br />
                 <div>
+                  <div className="flex-row gap-1">
+
+                  <p>A)</p>
                   <p>
-                    A) Your annual leaves will be as per the company's
+                    Your annual leaves will be as per the company's
                     attendance and leave policy. Uninformed or unapproved
                     absence from work for a continuous period of 5 days or
                     beyond the period of approved leave, without prior approval
@@ -275,9 +278,13 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     termination of your employment without any further notice
                     unless the Company waives such requirement.
                   </p>{" "}
+                  </div>
                   <br />
+                  <div className="flex-row gap-1">
+
+                  <p>B)</p>
                   <p>
-                    B) The company reserves its legal right to terminate you
+                    The company reserves its legal right to terminate you
                     immediately in case of deviation or nonadherence to
                     company's policies and rules as communicated via this letter
                     and in other physical or digital documents provided to you
@@ -287,6 +294,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     company policies, involvement in criminal act or non-
                     performance for a prolonged period.
                   </p>{" "}
+                  </div>
                   <br />
                   <footer
                     className="footer-letter "
@@ -316,8 +324,10 @@ const LetterTab = ({ allUserData, gettingData }) => {
                       Creative <span>fuel</span>
                     </div>
                   </header>
+                  <div className="flex-row gap-1">
+                  <p>C)</p>
                   <p>
-                    C) In case of termination, the company, at its sole
+                     In case of termination, the company, at its sole
                     discretion, will recover such amount, as the case may be, in
                     lieu of notice period against the full and final settlement
                     upon your separation. In such a case, the company will also
@@ -327,9 +337,13 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     by you, in case your employment relationship gets terminated
                     before completion of one year upon joining.
                   </p>{" "}
+                  </div>
                   <br />
+                  <div className="flex-row gap-1">
+
+                  <p>D)</p>
                   <p>
-                    D) You are required to indemnify and keep indemnifying the
+                     You are required to indemnify and keep indemnifying the
                     Company against all claims, damages, losses etc., which the
                     Company might suffer, on account of any breach by you of any
                     of the terms of your employment or the terms of any policy
@@ -338,7 +352,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     restraining you from breaching or otherwise violating any
                     terms of your employment.
                   </p>
-                  <p>
+                  </div>
+                  <p className="pl-3">
                     You shall be bound by all policies and procedures of the
                     Company, which may change from time to time. The management
                     of the Company reserves the right to amend and update the
@@ -348,8 +363,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 </div>
               </div>
               <div>
-                <p className="bold">6)Reimbursement for Expenses:</p>
-                <p>
+                <p className="bold">6) Reimbursement for Expenses:</p>
+                <p className="pl-3">
                   You will be reimbursed for reasonable expenses incurred by you
                   in performance of your duties, according to the Company's
                   Expense Policy.
@@ -357,8 +372,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 <br />
               </div>
               <div>
-                <p className="bold">7)Absence/Leave:</p>
-                <p>
+                <p className="bold">7) Absence/Leave:</p>
+                <p  className="pl-3">
                   Your annual leaves will be as per the Company's Attendance and
                   Leave Policy. Uninformed or unapproved absence from work for a
                   continuous period of 3 days or beyond the period of approved
@@ -397,8 +412,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 </div>
               </header>
               <div>
-                <p className="bold">8)Indemnity:</p>
-                <p>
+                <p className="bold">8) Indemnity:</p>
+                <p className="pl-3">
                   You are required to indemnify and keep indemnifying the
                   Company against all claims, damages, losses etc., which the
                   Company might suffer, on account of any breach by you of any
@@ -411,8 +426,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 <br />
               </div>
               <div>
-                <p className="bold">9)Acknowledgement:</p>
-                <p>
+                <p className="bold">9) Acknowledgement:</p>
+                <p className="pl-3">
                   You are required to indemnify and keep indemnifying the
                   Company against all claims, damages, losses etc., which the
                   Company might suffer, on account of any breach by you of any
@@ -425,8 +440,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 <br />
               </div>
               <div>
-                <p className="bold">10)Understanding:</p>
-                <p>
+                <p className="bold">10) Understanding:</p>
+                <p className="pl-3">
                   This letter contains the entire understanding between the
                   parties and supersedes all previous agreements and/or
                   arrangements relating to engagement with the company.
@@ -434,8 +449,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 <br />
               </div>
               <div>
-                <p className="bold">11)Company policies:</p>
-                <p>
+                <p className="bold">11) Company policies:</p>
+                <p className="pl-3">
                   You shall be bound by all policies and procedures of the
                   Company, which may change from time to time. The management of
                   the Company reserves the right to amend and update the
@@ -691,13 +706,13 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 <div className="pack sb">
                   <div></div>
                   <button
-                    className="btn cmnbtn btn_sm btn-danger previewClose"
+                    className="btn cmnbtn btn_sm btn-danger previewClose mt-1"
                     onClick={handelClose}
                   >
                     <i class="bi bi-x-lg"></i>
                   </button>
                 </div>
-                <div style={{ width: "100%" }}>
+                <div style={{ width: "100%",padding:"5px" }}>
                   <div id="element-to-print" style={{ color: "black" }}>
                     <br />
                     <header className="header-letter">
@@ -776,18 +791,18 @@ const LetterTab = ({ allUserData, gettingData }) => {
                         </div>{" "}
                         <br />
                         <div>
-                          <p className="bold">1)Compensation:</p>
-                          <p>
+                          <p className="bold">1) Compensation:</p>
+                          <p className="pl-3">
                             Your remuneration will have a fixed component of INR{" "}
-                            {allUserData?.ctc} Lacs per annum (CTC), paid
+                            {allUserData?.ctc} per month (CTC), paid
                             monthly, and a detailed breakdown of your
                             remuneration can be found in [Annexure-A].
                           </p>
                         </div>{" "}
                         <br />
                         <div>
-                          <p className="bold">2)Acceptance:</p>
-                          <p>
+                          <p className="bold">2) Acceptance:</p>
+                          <p className="pl-3">
                             To accept this offer, please sign and return a copy
                             of this letter within 48 hours. You can scan and
                             email it to, onboarding@creativefuel.io CC:
@@ -834,8 +849,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           </div>
                         </header>
                         <div>
-                          <p className="bold">3)Probation Period:</p>
-                          <p>
+                          <p className="bold">3) Probation Period:</p>
+                          <p className="pl-3">
                             Both parties agree to a probationary period of three
                             months, during which either party may terminate the
                             employment relationship with a notice period of 7
@@ -846,8 +861,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                         </div>{" "}
                         <br />
                         <div>
-                          <p className="bold">4)Performance Review:</p>
-                          <p>
+                          <p className="bold">4) Performance Review:</p>
+                          <p className="pl-3">
                             At the end of the probation period, your performance
                             will be reviewed. If your performance aligns with
                             our expectations and you are comfortable with the
@@ -857,11 +872,14 @@ const LetterTab = ({ allUserData, gettingData }) => {
                         </div>{" "}
                         <br />
                         <div>
-                          <p className="bold">5)Employment Relationship:</p>{" "}
+                          <p className="bold">5) Employment Relationship:</p>{" "}
                           <br />
                           <div>
+                            <div className="flex-row gap-1">
+
+                            <p>A)</p>
                             <p>
-                              A) Your annual leaves will be as per the company's
+                              Your annual leaves will be as per the company's
                               attendance and leave policy. Uninformed or
                               unapproved absence from work for a continuous
                               period of 5 days or beyond the period of approved
@@ -870,9 +888,13 @@ const LetterTab = ({ allUserData, gettingData }) => {
                               your employment without any further notice unless
                               the Company waives such requirement.
                             </p>{" "}
+                            </div>
                             <br />
+                            <div className="flex-row gap-1">
+
+                            <p>B)</p>
                             <p>
-                              B) The company reserves its legal right to
+                              The company reserves its legal right to
                               terminate you immediately in case of deviation or
                               nonadherence to company's policies and rules as
                               communicated via this letter and in other physical
@@ -884,6 +906,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                               involvement in criminal act or non- performance
                               for a prolonged period.
                             </p>{" "}
+                            </div>
                             <br />
                             <footer
                               className="footer-letter "
@@ -922,8 +945,10 @@ const LetterTab = ({ allUserData, gettingData }) => {
                                 Creative <span>fuel</span>
                               </div>
                             </header>
+                            <div className="flex-row gap-1">
+                            <p>C)</p>
                             <p>
-                              C) In case of termination, the company, at its
+                               In case of termination, the company, at its
                               sole discretion, will recover such amount, as the
                               case may be, in lieu of notice period against the
                               full and final settlement upon your separation. In
@@ -935,9 +960,13 @@ const LetterTab = ({ allUserData, gettingData }) => {
                               employment relationship gets terminated before
                               completion of one year upon joining.
                             </p>{" "}
+                            </div>
                             <br />
+                            <div className="flex-row gap-1">
+
+                            <p>D)</p>
                             <p>
-                              D) You are required to indemnify and keep
+                               You are required to indemnify and keep
                               indemnifying the Company against all claims,
                               damages, losses etc., which the Company might
                               suffer, on account of any breach by you of any of
@@ -948,7 +977,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                               breaching or otherwise violating any terms of your
                               employment.
                             </p>
-                            <p>
+                            </div>
+                            <p className="pl-3">
                               You shall be bound by all policies and procedures
                               of the Company, which may change from time to
                               time. The management of the Company reserves the
@@ -959,8 +989,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           </div>
                         </div>
                         <div>
-                          <p className="bold">6)Reimbursement for Expenses:</p>
-                          <p>
+                          <p className="bold">6) Reimbursement for Expenses:</p>
+                          <p className="pl-3">
                             You will be reimbursed for reasonable expenses
                             incurred by you in performance of your duties,
                             according to the Company's Expense Policy.
@@ -968,8 +998,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           <br />
                         </div>
                         <div>
-                          <p className="bold">7)Absence/Leave:</p>
-                          <p>
+                          <p className="bold">7) Absence/Leave:</p>
+                          <p className="pl-3">
                             Your annual leaves will be as per the Company's
                             Attendance and Leave Policy. Uninformed or
                             unapproved absence from work for a continuous period
@@ -1017,8 +1047,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           </div>
                         </header>
                         <div>
-                          <p className="bold">8)Indemnity:</p>
-                          <p>
+                          <p className="bold">8) Indemnity:</p>
+                          <p className="pl-3">
                             You are required to indemnify and keep indemnifying
                             the Company against all claims, damages, losses
                             etc., which the Company might suffer, on account of
@@ -1032,8 +1062,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           <br />
                         </div>
                         <div>
-                          <p className="bold">9)Acknowledgement:</p>
-                          <p>
+                          <p className="bold">9) Acknowledgement:</p>
+                          <p className="pl-3">
                             You are required to indemnify and keep indemnifying
                             the Company against all claims, damages, losses
                             etc., which the Company might suffer, on account of
@@ -1047,8 +1077,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           <br />
                         </div>
                         <div>
-                          <p className="bold">10)Understanding:</p>
-                          <p>
+                          <p className="bold">10) Understanding:</p>
+                          <p className="pl-3">
                             This letter contains the entire understanding
                             between the parties and supersedes all previous
                             agreements and/or arrangements relating to
@@ -1057,8 +1087,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           <br />
                         </div>
                         <div>
-                          <p className="bold">11)Company policies:</p>
-                          <p>
+                          <p className="bold">11) Company policies:</p>
+                          <p className="pl-3">
                             You shall be bound by all policies and procedures of
                             the Company, which may change from time to time. The
                             management of the Company reserves the right to
