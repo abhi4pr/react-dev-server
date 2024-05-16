@@ -7,6 +7,7 @@ import { FcDownload } from "react-icons/fc";
 import { baseUrl } from "../../utils/config";
 import html2pdf from "html2pdf.js";
 import logo from "/logo.png";
+
 const LetterTab = ({ allUserData, gettingData }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reasonField, setReasonField] = useState(false);
@@ -14,13 +15,14 @@ const LetterTab = ({ allUserData, gettingData }) => {
   const [image64, setImage64] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-
   const [previewOffer, setpreview] = useState(false);
   const date = new Date();
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();
   const todayDate = `${year}-${month}-${day}`;
+
+  const monthlySalary = allUserData?.ctc;
 
   const handleReject = () => {
     const formData = new FormData();
@@ -38,6 +40,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
         setReason("");
       });
   };
+
   const handelClose = () => {
     setpreview(!previewOffer);
   };
@@ -54,7 +57,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
 
   //   html2pdf().from(element).set(opt).save();
   // };
-  console.log("personal email", allUserData);
+
   const downloadOfferLetter = () => {
     setIsLoading(true)
     var element = document.getElementById("element-to-print");
@@ -1215,6 +1218,17 @@ const LetterTab = ({ allUserData, gettingData }) => {
               </div> */}
                       </div>
                     </article>
+                    <p>Basic Salary - {(monthlySalary) * (0.60)}</p>
+                    <p>HRA - {(((monthlySalary) * (0.60))*0.40)}</p>
+                    <p>Advance Bonus - {(((monthlySalary) * (0.60))/20)}</p>
+                    <p>Monthly Leave Enhancement - {(((monthlySalary * 0.60)/26)*3).toFixed(2)}</p>
+                    <p>PF - {monthlySalary <= 12000 ? 0 : 1800}</p>
+                    <p>PT - {(monthlySalary >= 18500 && monthlySalary <= 25000) ? 125 : 
+                          (monthlySalary >= 25001 && monthlySalary <= 34999) ? 167 :
+                          (monthlySalary >= 35000) ? 208 : 0
+                        }
+                    </p>
+                    <p>ESIC - {monthlySalary <= 21000 ? monthlySalary * (0.0075) : 0}</p>
                     <footer
                       className="footer-letter "
                       style={{ pageBreakAfter: "always" }}
