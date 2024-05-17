@@ -69,9 +69,8 @@ const DepartmentMaster = () => {
         handleSubmit={handleSubmit}
       >
         <div className="mb-4 row">
-
           <FieldContainer
-            label="Deparment Name"
+            label="Department Name"
             value={departmentName}
             onChange={(e) => setDepartmentName(e.target.value)}
           />

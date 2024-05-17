@@ -646,6 +646,9 @@ const UserMaster = () => {
     } else if (!username || username == "") {
       toastError("Fill the Mandatory fields");
     }
+    // if (!joiningDate || joiningDate == "") {
+    //   toastError("Fill the Mandatory fields");
+    // }
 
     const formData = new FormData();
     formData.append("created_by", loginUserId);
@@ -714,7 +717,7 @@ const UserMaster = () => {
           alert("Personal Email Already Exists");
         } else {
           setIsLoading(true);
-          const response = await axios
+          await axios
             .post(baseUrl + "add_user_for_general_information", formData, {
               headers: {
                 "Content-Type": "multipart/form-data",
