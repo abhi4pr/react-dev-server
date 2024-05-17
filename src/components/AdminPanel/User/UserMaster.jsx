@@ -307,9 +307,10 @@ const UserMaster = () => {
         .get(`${baseUrl}` + `get_subdept_from_dept/${department}`)
         .then((res) => {
           setSubDepartmentData(res.data);
-          if (res.data.length > 0) {
-            setSubDeparment(res.data[0].id);
-          }
+          // console.log(res.data, "subdept");
+          // if (res.data.length > 0) {
+          //   setSubDeparment(res.data[0].id);
+          // }
         });
     }
   }, [department]);
@@ -354,17 +355,18 @@ const UserMaster = () => {
   }, []);
 
   useEffect(() => {
-    if (department) {
+    if (subDepartment) {
       axios
-        .get(baseUrl + `get_all_designations_by_deptId/${department}`)
+        .get(baseUrl + `get_all_designation/${subDepartment}`)
         .then((res) => {
           setDesignationData(res.data.data);
-          if (res.data.data.length > 0) {
-            setDesignation(res.data.data[0].desi_id);
-          }
+          console.log(res.data.data, "hello desisub");
+          // if (res.data.data.length > 0) {
+          //   setDesignation(res.data[0].desi_id);
+          // }
         });
     }
-  }, [department]);
+  }, [subDepartment]);
   // new-----------------------------------------------------
   const handleChange = (selectedOptions) => {
     setHobbies(selectedOptions || []);
@@ -1889,14 +1891,15 @@ const UserMaster = () => {
         <Select
           className=""
           options={subDepartmentData.map((option) => ({
-            value: option.id,
+            value: option.sub_dept_id,
             label: `${option.sub_dept_name}`,
           }))}
           value={{
             value: subDepartmentData,
             label:
-              subDepartmentData.find((user) => user.id === subDepartment)
-                ?.sub_dept_name || "",
+              subDepartmentData.find(
+                (user) => user.sub_dept_id === subDepartment
+              )?.sub_dept_name || "",
           }}
           onChange={(e) => {
             setSubDeparment(e.value);

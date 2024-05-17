@@ -59,7 +59,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
   // };
 
   const downloadOfferLetter = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     var element = document.getElementById("element-to-print");
     var opt = {
       margin: 1,
@@ -114,18 +114,16 @@ const LetterTab = ({ allUserData, gettingData }) => {
       });
   };
 
-  useEffect(() => {
-    axios
-      .post(baseUrl + "image_to_base64", {
-        imageUrl: allUserData.digital_signature_image_url,
-      })
-      .then((response) => {
-        setImage64(response.data.base64String);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
+  axios
+    .post(baseUrl + "image_to_base64", {
+      imageUrl: allUserData.digital_signature_image_url,
+    })
+    .then((response) => {
+      setImage64(response.data.base64String);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
 
   return (
     <>
@@ -270,33 +268,31 @@ const LetterTab = ({ allUserData, gettingData }) => {
                 <p className="bold">5) Employment Relationship:</p> <br />
                 <div>
                   <div className="flex-row gap-1">
-
-                  <p>A)</p>
-                  <p>
-                    Your annual leaves will be as per the company's
-                    attendance and leave policy. Uninformed or unapproved
-                    absence from work for a continuous period of 5 days or
-                    beyond the period of approved leave, without prior approval
-                    of the reporting manager shall result in automatic
-                    termination of your employment without any further notice
-                    unless the Company waives such requirement.
-                  </p>{" "}
+                    <p>A)</p>
+                    <p>
+                      Your annual leaves will be as per the company's attendance
+                      and leave policy. Uninformed or unapproved absence from
+                      work for a continuous period of 5 days or beyond the
+                      period of approved leave, without prior approval of the
+                      reporting manager shall result in automatic termination of
+                      your employment without any further notice unless the
+                      Company waives such requirement.
+                    </p>{" "}
                   </div>
                   <br />
                   <div className="flex-row gap-1">
-
-                  <p>B)</p>
-                  <p>
-                    The company reserves its legal right to terminate you
-                    immediately in case of deviation or nonadherence to
-                    company's policies and rules as communicated via this letter
-                    and in other physical or digital documents provided to you
-                    pursuant to your signing of this letter. The Company may
-                    also terminate you with immediate effect for any dishonest
-                    and malicious practices, poor attendance, violation of
-                    company policies, involvement in criminal act or non-
-                    performance for a prolonged period.
-                  </p>{" "}
+                    <p>B)</p>
+                    <p>
+                      The company reserves its legal right to terminate you
+                      immediately in case of deviation or nonadherence to
+                      company's policies and rules as communicated via this
+                      letter and in other physical or digital documents provided
+                      to you pursuant to your signing of this letter. The
+                      Company may also terminate you with immediate effect for
+                      any dishonest and malicious practices, poor attendance,
+                      violation of company policies, involvement in criminal act
+                      or non- performance for a prolonged period.
+                    </p>{" "}
                   </div>
                   <br />
                   <footer
@@ -328,33 +324,33 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     </div>
                   </header>
                   <div className="flex-row gap-1">
-                  <p>C)</p>
-                  <p>
-                     In case of termination, the company, at its sole
-                    discretion, will recover such amount, as the case may be, in
-                    lieu of notice period against the full and final settlement
-                    upon your separation. In such a case, the company will also
-                    not be liable to pay you any pending salary. Furthermore,
-                    the Company is at liberty to recover any amount in relation
-                    to the performance bonus and sign-on bonus, if any, earned
-                    by you, in case your employment relationship gets terminated
-                    before completion of one year upon joining.
-                  </p>{" "}
+                    <p>C)</p>
+                    <p>
+                      In case of termination, the company, at its sole
+                      discretion, will recover such amount, as the case may be,
+                      in lieu of notice period against the full and final
+                      settlement upon your separation. In such a case, the
+                      company will also not be liable to pay you any pending
+                      salary. Furthermore, the Company is at liberty to recover
+                      any amount in relation to the performance bonus and
+                      sign-on bonus, if any, earned by you, in case your
+                      employment relationship gets terminated before completion
+                      of one year upon joining.
+                    </p>{" "}
                   </div>
                   <br />
                   <div className="flex-row gap-1">
-
-                  <p>D)</p>
-                  <p>
-                     You are required to indemnify and keep indemnifying the
-                    Company against all claims, damages, losses etc., which the
-                    Company might suffer, on account of any breach by you of any
-                    of the terms of your employment or the terms of any policy
-                    of the Company. The Company shall, in addition to any other
-                    remedies available by law, be entitled to an injunction
-                    restraining you from breaching or otherwise violating any
-                    terms of your employment.
-                  </p>
+                    <p>D)</p>
+                    <p>
+                      You are required to indemnify and keep indemnifying the
+                      Company against all claims, damages, losses etc., which
+                      the Company might suffer, on account of any breach by you
+                      of any of the terms of your employment or the terms of any
+                      policy of the Company. The Company shall, in addition to
+                      any other remedies available by law, be entitled to an
+                      injunction restraining you from breaching or otherwise
+                      violating any terms of your employment.
+                    </p>
                   </div>
                   <p className="pl-3">
                     You shall be bound by all policies and procedures of the
@@ -376,7 +372,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
               </div>
               <div>
                 <p className="bold">7) Absence/Leave:</p>
-                <p  className="pl-3">
+                <p className="pl-3">
                   Your annual leaves will be as per the Company's Attendance and
                   Leave Policy. Uninformed or unapproved absence from work for a
                   continuous period of 3 days or beyond the period of approved
@@ -529,6 +525,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                   this offer.
                 </p>
                 <br />
+                {console.log(image64, "image 6555")}
                 <img
                   className="signature-img"
                   src={`data:image/png;base64,${image64}`}
@@ -596,8 +593,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     <span className="bold">
                       {" "}
                       Congratulations on accepting the offer letter and becoming
-                      a part of Creativefuel team!{" "}
-                      Your offer letter has been sent to your email address
+                      a part of Creativefuel team! Your offer letter has been
+                      sent to your email address
                     </span>{" "}
                     <br />
                   </p>
@@ -662,8 +659,8 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     disabled={isLoading}
                   >
                     <i class="bi bi-cloud-arrow-down"></i>
-                    {isLoading ? " Downloading..." : "Download"} 
-                      {/* Download */}
+                    {isLoading ? " Downloading..." : "Download"}
+                    {/* Download */}
                   </button>
                 )}
                 {reasonField && (
@@ -715,7 +712,7 @@ const LetterTab = ({ allUserData, gettingData }) => {
                     <i class="bi bi-x-lg"></i>
                   </button>
                 </div>
-                <div style={{ width: "100%",padding:"5px" }}>
+                <div style={{ width: "100%", padding: "5px" }}>
                   <div id="element-to-print" style={{ color: "black" }}>
                     <br />
                     <header className="header-letter">
@@ -797,9 +794,9 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           <p className="bold">1) Compensation:</p>
                           <p className="pl-3">
                             Your remuneration will have a fixed component of INR{" "}
-                            {allUserData?.ctc} per month (CTC), paid
-                            monthly, and a detailed breakdown of your
-                            remuneration can be found in [Annexure-A].
+                            {allUserData?.ctc} per month (CTC), paid monthly,
+                            and a detailed breakdown of your remuneration can be
+                            found in [Annexure-A].
                           </p>
                         </div>{" "}
                         <br />
@@ -879,36 +876,35 @@ const LetterTab = ({ allUserData, gettingData }) => {
                           <br />
                           <div>
                             <div className="flex-row gap-1">
-
-                            <p>A)</p>
-                            <p>
-                              Your annual leaves will be as per the company's
-                              attendance and leave policy. Uninformed or
-                              unapproved absence from work for a continuous
-                              period of 5 days or beyond the period of approved
-                              leave, without prior approval of the reporting
-                              manager shall result in automatic termination of
-                              your employment without any further notice unless
-                              the Company waives such requirement.
-                            </p>{" "}
+                              <p>A)</p>
+                              <p>
+                                Your annual leaves will be as per the company's
+                                attendance and leave policy. Uninformed or
+                                unapproved absence from work for a continuous
+                                period of 5 days or beyond the period of
+                                approved leave, without prior approval of the
+                                reporting manager shall result in automatic
+                                termination of your employment without any
+                                further notice unless the Company waives such
+                                requirement.
+                              </p>{" "}
                             </div>
                             <br />
                             <div className="flex-row gap-1">
-
-                            <p>B)</p>
-                            <p>
-                              The company reserves its legal right to
-                              terminate you immediately in case of deviation or
-                              nonadherence to company's policies and rules as
-                              communicated via this letter and in other physical
-                              or digital documents provided to you pursuant to
-                              your signing of this letter. The Company may also
-                              terminate you with immediate effect for any
-                              dishonest and malicious practices, poor
-                              attendance, violation of company policies,
-                              involvement in criminal act or non- performance
-                              for a prolonged period.
-                            </p>{" "}
+                              <p>B)</p>
+                              <p>
+                                The company reserves its legal right to
+                                terminate you immediately in case of deviation
+                                or nonadherence to company's policies and rules
+                                as communicated via this letter and in other
+                                physical or digital documents provided to you
+                                pursuant to your signing of this letter. The
+                                Company may also terminate you with immediate
+                                effect for any dishonest and malicious
+                                practices, poor attendance, violation of company
+                                policies, involvement in criminal act or non-
+                                performance for a prolonged period.
+                              </p>{" "}
                             </div>
                             <br />
                             <footer
@@ -949,37 +945,37 @@ const LetterTab = ({ allUserData, gettingData }) => {
                               </div>
                             </header>
                             <div className="flex-row gap-1">
-                            <p>C)</p>
-                            <p>
-                               In case of termination, the company, at its
-                              sole discretion, will recover such amount, as the
-                              case may be, in lieu of notice period against the
-                              full and final settlement upon your separation. In
-                              such a case, the company will also not be liable
-                              to pay you any pending salary. Furthermore, the
-                              Company is at liberty to recover any amount in
-                              relation to the performance bonus and sign-on
-                              bonus, if any, earned by you, in case your
-                              employment relationship gets terminated before
-                              completion of one year upon joining.
-                            </p>{" "}
+                              <p>C)</p>
+                              <p>
+                                In case of termination, the company, at its sole
+                                discretion, will recover such amount, as the
+                                case may be, in lieu of notice period against
+                                the full and final settlement upon your
+                                separation. In such a case, the company will
+                                also not be liable to pay you any pending
+                                salary. Furthermore, the Company is at liberty
+                                to recover any amount in relation to the
+                                performance bonus and sign-on bonus, if any,
+                                earned by you, in case your employment
+                                relationship gets terminated before completion
+                                of one year upon joining.
+                              </p>{" "}
                             </div>
                             <br />
                             <div className="flex-row gap-1">
-
-                            <p>D)</p>
-                            <p>
-                               You are required to indemnify and keep
-                              indemnifying the Company against all claims,
-                              damages, losses etc., which the Company might
-                              suffer, on account of any breach by you of any of
-                              the terms of your employment or the terms of any
-                              policy of the Company. The Company shall, in
-                              addition to any other remedies available by law,
-                              be entitled to an injunction restraining you from
-                              breaching or otherwise violating any terms of your
-                              employment.
-                            </p>
+                              <p>D)</p>
+                              <p>
+                                You are required to indemnify and keep
+                                indemnifying the Company against all claims,
+                                damages, losses etc., which the Company might
+                                suffer, on account of any breach by you of any
+                                of the terms of your employment or the terms of
+                                any policy of the Company. The Company shall, in
+                                addition to any other remedies available by law,
+                                be entitled to an injunction restraining you
+                                from breaching or otherwise violating any terms
+                                of your employment.
+                              </p>
                             </div>
                             <p className="pl-3">
                               You shall be bound by all policies and procedures
