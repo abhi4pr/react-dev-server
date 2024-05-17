@@ -101,13 +101,14 @@ const AdminPreOnboarding = () => {
   const [isRequired, setIsRequired] = useState({
     username: false,
     reportL1: false,
-    sendLetter: false,
+    // sendLetter: false,
     role: false,
     gender: false,
     department: false,
     userCtc: false,
     loginId: false,
     personalEmail: false,
+    subDepartment: false,
   });
 
   useEffect(() => {
@@ -129,15 +130,24 @@ const AdminPreOnboarding = () => {
   useEffect(() => {
     if (department) {
       axios
-        .get(baseUrl + `get_all_designations_by_deptId/${department}`)
+        .get(`${baseUrl}` + `get_subdept_from_dept/${department}`)
         .then((res) => {
-          setDesignationData(res.data.data);
-          if (res.data.data.length > 0) {
-            setDesignation(res.data.data[0]?.desi_id);
-          }
+          setSubDepartmentData(res.data);
         });
     }
   }, [department]);
+
+  const [subDepartmentData, setSubDepartmentData] = useState([]);
+  const [subDepartment, setSubDeparment] = useState([]);
+  useEffect(() => {
+    if (subDepartment) {
+      axios
+        .get(baseUrl + `get_all_designation/${subDepartment}`)
+        .then((res) => {
+          setDesignationData(res.data.data);
+        });
+    }
+  }, [subDepartment]);
 
   function validateAndCorrectUserName(userName) {
     userName = userName.replace(/\s{2,}/g, " ").trim();
@@ -197,6 +207,9 @@ const AdminPreOnboarding = () => {
     if (personalEmail == "") {
       setIsRequired((perv) => ({ ...perv, personalEmail: true }));
     }
+    if (subDepartment == "") {
+      setIsRequired((perv) => ({ ...perv, subDepartment: true }));
+    }
 
     if (!username) {
       return toastError("Fill the Mandatory fields");
@@ -233,11 +246,13 @@ const AdminPreOnboarding = () => {
     formData.append("image", selectedImage);
     formData.append("ctc", userCtc);
     formData.append("Age", Number(age));
-    formData.append(
-      "offer_letter_send",
-      sendLetter.value ? Boolean(sendLetter.value) : false
-    );
-    formData.append("annexure_pdf", annexurePdf);
+    // formData.append(
+    //   "offer_letter_send",
+    //   sendLetter.value ? Boolean(sendLetter.value) : false
+    // );
+    formData.append("offer_letter_send", true);
+
+    // formData.append("annexure_pdf", annexurePdf);
     formData.append("tds_applicable", tdsApplicable);
     formData.append("tds_per", tdsPercentage);
     formData.append("user_login_id", loginId);
@@ -245,6 +260,7 @@ const AdminPreOnboarding = () => {
     formData.append("sitting_id", 183);
     formData.append("room_id", roomId);
     formData.append("dept_id", department);
+    formData.append("sub_dept_id", subDepartment);
     formData.append("Gender", gender);
     formData.append("job_type", jobType);
     formData.append("DOB", dateOfBirth);
@@ -664,6 +680,44 @@ const AdminPreOnboarding = () => {
 
         <div className="form-group col-3">
           <label className="form-label">
+            Sub Department <sup className="form-error">*</sup>
+          </label>
+          <Select
+            className=""
+            options={subDepartmentData.map((option) => ({
+              value: option.sub_dept_id,
+              label: `${option.sub_dept_name}`,
+            }))}
+            value={{
+              value: subDepartmentData,
+              label:
+                subDepartmentData.find(
+                  (user) => user.sub_dept_id === subDepartment
+                )?.sub_dept_name || "",
+            }}
+            onChange={(e) => {
+              setSubDeparment(e.value);
+
+              subDepartment !== "" &&
+                setIsRequired((prev) => {
+                  return { ...prev, subDepartment: true };
+                });
+              subDepartment &&
+                setIsRequired((prev) => {
+                  return { ...prev, subDepartment: false };
+                });
+            }}
+            required
+          />
+          <div className="">
+            {isRequired.subDepartment && (
+              <p className="form-error">Please enter Sub-Department</p>
+            )}
+          </div>
+        </div>
+
+        <div className="form-group col-3">
+          <label className="form-label">
             Designation <sup className="form-error">*</sup>
           </label>
           <Select
@@ -864,39 +918,38 @@ const AdminPreOnboarding = () => {
         </div>
         {/* )} */}
 
-        {jobType == "WFO" && (
-          <div className="form-group col-3">
-            <label className="form-label">
-              Offer Letter Send <sup className="form-error">*</sup>
-            </label>
-            <Select
-              options={offerLetter.map((option) => ({
-                value: `${option.value}`,
-                label: `${option.label}`,
-              }))}
-              value={{
-                value: sendLetter.value,
-                label: sendLetter.label || "", // Fallback to empty string if label is undefined
-              }}
-              onChange={(e) => {
-                setSendLetter(e);
-                setIsRequired((prev) => ({
-                  ...prev,
-                  sendLetter: !e.value, // Set to true if e.value is empty, false otherwise
-                }));
-              }}
-              onBlur={() => {
-                setIsRequired((prev) => ({
-                  ...prev,
-                  sendLetter: !sendLetter.value, // Set to true if sendLetter.value is empty, false otherwise
-                }));
-              }}
-            />
-            {isRequired.sendLetter && (
-              <p className="form-error">*Please select a Letter</p>
-            )}
-          </div>
-        )}
+        {/* {jobType == "WFO" && ( */}
+        {/* <div className="form-group col-3">
+          <label className="form-label">
+            Offer Letter Send <sup className="form-error">*</sup>
+          </label>
+          <Select
+            options={offerLetter.map((option) => ({
+              value: `${option.value}`,
+              label: `${option.label}`,
+            }))}
+            value={{
+              value: sendLetter.value,
+              label: sendLetter.label || "", // Fallback to empty string if label is undefined
+            }}
+            onChange={(e) => {
+              setSendLetter(e);
+
+              sendLetter !== "" &&
+                setIsRequired((prev) => {
+                  return { ...prev, sendLetter: true };
+                });
+              sendLetter &&
+                setIsRequired((prev) => {
+                  return { ...prev, sendLetter: false };
+                });
+            }}
+          />
+          {isRequired.sendLetter && (
+            <p className="form-error">*Please select a Letter</p>
+          )}
+        </div> */}
+        {/* )} */}
 
         {/* {sendLetter.label == "Yes" && (
           <div className="col-md-3">
