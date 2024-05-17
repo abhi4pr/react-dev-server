@@ -15,6 +15,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { TextField } from "@mui/material";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { constant } from "../../../utils/constants";
 
 const onBoardStatus = 2;
 
@@ -38,7 +39,7 @@ const AdminPreOnboarding = () => {
   const loginUserId = decodedToken.id;
   const [username, setUserName] = useState("");
   const [jobType, setJobType] = useState("WFO");
-  const [roles, setRoles] = useState("");
+  const [roles, setRoles] = useState(constant.CONST_USER_ROLE);
   const [reportL1, setReportL1] = useState("");
   const [reportL2, setReportL2] = useState("");
   const [reportL3, setReportL3] = useState("");
@@ -222,11 +223,11 @@ const AdminPreOnboarding = () => {
     } else if (!reportL1 || reportL1 == "") {
       return toastError("Fill the Mandatory fields");
     } else if (!personalEmail || personalEmail == "") {
-      return toastError("Email is Required");
-    } else if (!personalContact || personalContact == "") {
-      return toastError("Contact Is Required and should be equal to 10");
-    } else if (!loginId || loginId == "") {
       return toastError("Fill the Mandatory fields");
+    } else if (!personalContact || personalContact == "") {
+      return toastError("Contact is Required and should be equal to 10");
+    } else if (!loginId || loginId == "") {
+      return toastError("Login ID is Required");
     } else if (!password || password == "") {
       return toastError("Password is Required");
     } else if (!roles || roles == "") {
@@ -236,6 +237,8 @@ const AdminPreOnboarding = () => {
     } else if (!dateOfBirth || dateOfBirth == "") {
       return toastError("Fill the Mandatory fields");
     } else if (!gender || gender == "") {
+      return toastError("Fill the Mandatory fields");
+    } else if (!userCtc || userCtc == "") {
       return toastError("Fill the Mandatory fields");
     }
 
@@ -659,16 +662,20 @@ const AdminPreOnboarding = () => {
                   ?.dept_name || "",
             }}
             onChange={(e) => {
-              setDepartment(e.value);
+              const selectedDepartment = e.value;
+              setDepartment(selectedDepartment);
 
-              department !== "" &&
-                setIsRequired((prev) => {
-                  return { ...prev, department: true };
-                });
-              department &&
-                setIsRequired((prev) => {
-                  return { ...prev, department: false };
-                });
+              if (selectedDepartment === "") {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  department: true,
+                }));
+              } else {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  department: false,
+                }));
+              }
             }}
           />
           <div className="">
@@ -733,16 +740,20 @@ const AdminPreOnboarding = () => {
                   ?.desi_name || "",
             }}
             onChange={(e) => {
-              setDesignation(e.value);
+              const selectDesi = e.value;
+              setDesignation(selectDesi);
 
-              designation !== "" &&
-                setIsRequired((prev) => {
-                  return { ...prev, designation: true };
-                });
-              designation &&
-                setIsRequired((prev) => {
-                  return { ...prev, designation: false };
-                });
+              if (selectDesi === "") {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  designation: true,
+                }));
+              } else {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  designation: false,
+                }));
+              }
             }}
           />
           <div className="">
@@ -998,6 +1009,19 @@ const AdminPreOnboarding = () => {
                 value={loginId}
                 disabled
                 onChange={handleLoginIdChange}
+                onBlur={() => {
+                  if (loginId === "") {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      loginId: true,
+                    }));
+                  } else {
+                    setIsRequired((prev) => ({
+                      ...prev,
+                      loginId: false,
+                    }));
+                  }
+                }}
               />
               <div className="input-group-append">
                 <button
@@ -1009,9 +1033,9 @@ const AdminPreOnboarding = () => {
                 </button>
               </div>
             </div>
-            {isRequired.loginId && (
+            {/* {isRequired.loginId && (
               <p className="form-error">*Please select a LoginId</p>
-            )}
+            )} */}
           </div>
         </div>
 
@@ -1055,19 +1079,20 @@ const AdminPreOnboarding = () => {
                 "",
             }}
             onChange={(e) => {
-              setRoles(e.value);
-              // setIsRequired((prev) => ({
-              //   ...prev,
-              //   role: !e.value, // Set to true if e.value is empty (no selection), false otherwise
-              // }));
-              roles !== "" &&
-                setIsRequired((prev) => {
-                  return { ...prev, roles: true };
-                });
-              roles &&
-                setIsRequired((prev) => {
-                  return { ...prev, roles: false };
-                });
+              const selectRole = e.value;
+              setRoles(selectRole);
+
+              if (selectRole === "") {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  roles: true,
+                }));
+              } else {
+                setIsRequired((prev) => ({
+                  ...prev,
+                  roles: false,
+                }));
+              }
             }}
           />
           {isRequired.roles && (

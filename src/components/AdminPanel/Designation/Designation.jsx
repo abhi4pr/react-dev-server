@@ -108,14 +108,15 @@ const Designation = () => {
             <Select
               className=""
               options={subDepartmentData.map((option) => ({
-                value: option.id,
+                value: option.sub_dept_id,
                 label: `${option.sub_dept_name}`,
               }))}
               value={{
                 value: subDeparmtment,
                 label:
-                  subDepartmentData.find((user) => user.id === subDeparmtment)
-                    ?.sub_dept_name || "",
+                  subDepartmentData.find(
+                    (user) => user.sub_dept_id === subDeparmtment
+                  )?.sub_dept_name || "",
               }}
               onChange={(e) => {
                 setSubDepartment(e.value);
