@@ -530,7 +530,6 @@ const PreOnboardingUserMaster = () => {
   };
 
   useEffect(() => {
-    console.log(documentData, "mmmmmmmmmmmmmmmm");
     const MandatoryDocuments = documentData.filter(
       (doc) => doc.document.isRequired == true
     );

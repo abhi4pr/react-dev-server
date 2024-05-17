@@ -307,10 +307,6 @@ const UserMaster = () => {
         .get(`${baseUrl}` + `get_subdept_from_dept/${department}`)
         .then((res) => {
           setSubDepartmentData(res.data);
-          // console.log(res.data, "subdept");
-          // if (res.data.length > 0) {
-          //   setSubDeparment(res.data[0].id);
-          // }
         });
     }
   }, [department]);
@@ -360,10 +356,6 @@ const UserMaster = () => {
         .get(baseUrl + `get_all_designation/${subDepartment}`)
         .then((res) => {
           setDesignationData(res.data.data);
-          console.log(res.data.data, "hello desisub");
-          // if (res.data.data.length > 0) {
-          //   setDesignation(res.data[0].desi_id);
-          // }
         });
     }
   }, [subDepartment]);
